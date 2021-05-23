@@ -20,18 +20,8 @@
   <toolchain>
     <type>jdk</type>
     <provides>
-      <version>1.7</version>
-      <vendor>sun</vendor>
-    </provides>
-    <configuration>
-      <jdkHome>/usr/lib/jvm/java-7-openjdk-amd64</jdkHome>
-    </configuration>
-  </toolchain>
-  <toolchain>
-    <type>jdk</type>
-    <provides>
       <version>1.8</version>
-      <vendor>sun</vendor>
+      <vendor>openjdk</vendor>
     </provides>
     <configuration>
       <jdkHome>/usr/lib/jvm/java-8-openjdk-amd64</jdkHome>
@@ -40,11 +30,11 @@
   <toolchain>
     <type>jdk</type>
     <provides>
-      <version>9</version>
-      <vendor>sun</vendor>
+      <version>11</version>
+      <vendor>openjdk</vendor>
     </provides>
     <configuration>
-      <jdkHome>/usr/lib/jvm/java-9-openjdk-amd64</jdkHome>
+      <jdkHome>/usr/lib/jvm/java-11-openjdk-amd64</jdkHome>
     </configuration>
   </toolchain>
 

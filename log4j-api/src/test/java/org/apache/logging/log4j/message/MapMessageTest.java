@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.message;
 
-import com.google.common.base.Strings;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
-import org.junit.Test;
+import org.apache.logging.log4j.util.Strings;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -27,7 +27,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -155,19 +155,19 @@ public class MapMessageTest {
         assertEquals(expectedJson, actualJson);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testJsonFormatterInfiniteRecursionPrevention() {
         final List<Object> recursiveValue = Arrays.asList(1, null);
         // noinspection CollectionAddedToSelf
         recursiveValue.set(1, recursiveValue);
-        new ObjectMapMessage()
+        assertThrows(IllegalArgumentException.class, () -> new ObjectMapMessage()
                 .with("key", recursiveValue)
-                .getFormattedMessage(new String[]{"JSON"});
+                .getFormattedMessage(new String[]{"JSON"}));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testJsonFormatterMaxDepthViolation() {
-        testJsonFormatterMaxDepth(MapMessageJsonFormatter.MAX_DEPTH - 1);
+        assertThrows(IllegalArgumentException.class, () -> testJsonFormatterMaxDepth(MapMessageJsonFormatter.MAX_DEPTH - 1));
     }
 
     @Test

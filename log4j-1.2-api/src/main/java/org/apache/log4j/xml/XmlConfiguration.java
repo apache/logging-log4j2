@@ -29,6 +29,7 @@ import org.apache.log4j.spi.AppenderAttachable;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.Filter;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
@@ -165,6 +166,23 @@ public class XmlConfiguration extends Log4j1Configuration {
             // I know this is miserable...
             LOGGER.error("Could not parse " + action.toString() + ".", e);
         }
+    }
+
+    @Override
+    public Configuration reconfigure() {
+        try {
+            final ConfigurationSource source = getConfigurationSource().resetInputStream();
+            if (source == null) {
+                return null;
+            }
+            final XmlConfigurationFactory factory = new XmlConfigurationFactory();
+            final XmlConfiguration config =
+                    (XmlConfiguration) factory.getConfiguration(getLoggerContext(), source);
+            return config == null || config.getState() != State.INITIALIZING ? null : config;
+        } catch (final IOException ex) {
+            LOGGER.error("Cannot locate file {}: {}", getConfigurationSource(), ex);
+        }
+        return null;
     }
 
     /**
@@ -386,7 +404,7 @@ public class XmlConfiguration extends Log4j1Configuration {
                                     appender.getName());
                             aa.addAppender(child);
                         } else {
-                            LOGGER.error("Requesting attachment of appender named [{}] to appender named [{}}]"
+                            LOGGER.error("Requesting attachment of appender named [{}] to appender named [{}]"
                                             + "which does not implement org.apache.log4j.spi.AppenderAttachable.",
                                     refName, appender.getName());
                         }
@@ -545,7 +563,7 @@ public class XmlConfiguration extends Log4j1Configuration {
                                 loggerConfig.getName());
                         loggerConfig.addAppender(getAppender(refName), null, null);
                     } else {
-                        LOGGER.debug("Appender named [{}}] not found.", refName);
+                        LOGGER.debug("Appender named [{}] not found.", refName);
                     }
                     break;
                 }
@@ -624,7 +642,7 @@ public class XmlConfiguration extends Log4j1Configuration {
         }
 
         String priStr = subst(element.getAttribute(VALUE_ATTR));
-        LOGGER.debug("Level value for {} is [{}}].", catName, priStr);
+        LOGGER.debug("Level value for {} is [{}].", catName, priStr);
 
         if (INHERITED.equalsIgnoreCase(priStr) || NULL.equalsIgnoreCase(priStr)) {
             if (isRoot) {

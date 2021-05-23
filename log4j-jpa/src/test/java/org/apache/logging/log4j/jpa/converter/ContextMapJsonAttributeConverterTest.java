@@ -19,8 +19,7 @@ package org.apache.logging.log4j.jpa.converter;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.categories.Appenders;
-import org.apache.logging.log4j.jpa.converter.ContextMapJsonAttributeConverter;
+import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;

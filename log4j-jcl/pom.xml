@@ -32,12 +32,16 @@
     <docLabel>JCL Bridge Documentation</docLabel>
     <projectDir>/jcl-bridge</projectDir>
     <module.name>org.apache.logging.log4j.jcl</module.name>
+    <maven.doap.skip>true</maven.doap.skip>
   </properties>
   <dependencies>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
     </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>
@@ -106,8 +110,9 @@
           </reportSet>
         </reportSets>
         <configuration>
-          <issueLinkTemplate>%URL%/show_bug.cgi?id=%ISSUE%</issueLinkTemplate>
+          <issueLinkTemplate>%URL%/%ISSUE%</issueLinkTemplate>
           <useJql>true</useJql>
+          <component>JCL Bridge</component>
         </configuration>
       </plugin>
       <plugin>
@@ -135,6 +140,7 @@
                project -->
           <detectOfflineLinks>false</detectOfflineLinks>
           <linksource>true</linksource>
+          <source>8</source>
         </configuration>
         <reportSets>
           <reportSet>
@@ -148,13 +154,6 @@
       <plugin>
         <groupId>com.github.spotbugs</groupId>
         <artifactId>spotbugs-maven-plugin</artifactId>
-        <configuration>
-          <fork>true</fork>
-          <jvmArgs>-Duser.language=en</jvmArgs>
-          <threshold>Normal</threshold>
-          <effort>Default</effort>
-          <excludeFilterFile>${log4jParentDir}/spotbugs-exclude-filter.xml</excludeFilterFile>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

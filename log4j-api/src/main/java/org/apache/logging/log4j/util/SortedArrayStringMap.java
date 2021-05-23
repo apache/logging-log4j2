@@ -106,7 +106,7 @@ public class SortedArrayStringMap implements IndexedStringMap {
         Method newMethod = null;
         try {
             if (setMethod != null) {
-                Class<?> clazz = Class.forName("org.apache.logging.log4j.util.internal.DefaultObjectInputFilter");
+                Class<?> clazz = Class.forName("org.apache.logging.log4j.internal.DefaultObjectInputFilter");
                 methods = clazz.getMethods();
                 for (Method method : methods) {
                     if (method.getName().equals("newInstance") && Modifier.isStatic(method.getModifiers())) {
@@ -158,6 +158,14 @@ public class SortedArrayStringMap implements IndexedStringMap {
         for (final Map.Entry<String, ?> entry : map.entrySet()) {
             putValue(entry.getKey(), entry.getValue());
         }
+    }
+
+    /**
+     * For unit testing.
+     * @return The threshold.
+     */
+    public int getThreshold() {
+        return threshold;
     }
 
     private void assertNotFrozen() {
@@ -502,6 +510,9 @@ public class SortedArrayStringMap implements IndexedStringMap {
      * Save the state of the {@code SortedArrayStringMap} instance to a stream (i.e.,
      * serialize it).
      *
+     * @param s The ObjectOutputStream.
+     * @throws IOException if there is an error serializing the object to the stream.
+     *
      * @serialData The <i>capacity</i> of the SortedArrayStringMap (the length of the
      *             bucket array) is emitted (int), followed by the
      *             <i>size</i> (an int, the number of key-value
@@ -549,6 +560,7 @@ public class SortedArrayStringMap implements IndexedStringMap {
         }
     }
 
+    @SuppressWarnings("BanSerializableRead")
     private static Object unmarshall(final byte[] data, ObjectInputStream inputStream)
             throws IOException, ClassNotFoundException {
         final ByteArrayInputStream bin = new ByteArrayInputStream(data);
@@ -590,6 +602,9 @@ public class SortedArrayStringMap implements IndexedStringMap {
     /**
      * Reconstitute the {@code SortedArrayStringMap} instance from a stream (i.e.,
      * deserialize it).
+     * @param s The ObjectInputStream.
+     * @throws IOException If there is an error reading the input stream.
+     * @throws ClassNotFoundException if the class to be instantiated could not be found.
      */
     private void readObject(final java.io.ObjectInputStream s)  throws IOException, ClassNotFoundException {
         if (!(s instanceof FilteredObjectInputStream) && setObjectInputFilter == null) {

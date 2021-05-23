@@ -26,6 +26,7 @@
     <docLabel>Log4j JMS Documentation</docLabel>
     <projectDir>/log4j-jms</projectDir>
     <module.name>org.apache.logging.log4j.jms</module.name>
+    <maven.doap.skip>true</maven.doap.skip>
   </properties>
 
   <dependencies>
@@ -42,8 +43,17 @@
     </dependency>
     <!-- Test Dependencies -->
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-all</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -54,6 +64,11 @@
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core</artifactId>
       <type>test-jar</type>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <scope>test</scope>
     </dependency>
     <!-- Mocking framework for use with JUnit -->
     <dependency>
@@ -125,6 +140,7 @@
           <!-- module link generation is completely broken in the javadoc plugin for a multi-module non-aggregating project -->
           <detectOfflineLinks>false</detectOfflineLinks>
           <linksource>true</linksource>
+          <source>8</source>
         </configuration>
         <reportSets>
           <reportSet>
@@ -138,13 +154,6 @@
       <plugin>
         <groupId>com.github.spotbugs</groupId>
         <artifactId>spotbugs-maven-plugin</artifactId>
-        <configuration>
-          <fork>true</fork>
-          <jvmArgs>-Duser.language=en</jvmArgs>
-          <threshold>Normal</threshold>
-          <effort>Default</effort>
-          <excludeFilterFile>${log4jParentDir}/spotbugs-exclude-filter.xml</excludeFilterFile>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

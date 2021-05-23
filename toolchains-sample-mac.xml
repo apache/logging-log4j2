@@ -20,31 +20,21 @@
   <toolchain>
     <type>jdk</type>
     <provides>
-      <version>1.7</version>
-      <vendor>sun</vendor>
-    </provides>
-    <configuration>
-      <jdkHome>/Library/Java/JavaVirtualMachines/java7/Contents/Home</jdkHome>
-    </configuration>
-  </toolchain>
-  <toolchain>
-    <type>jdk</type>
-    <provides>
       <version>1.8</version>
-      <vendor>sun</vendor>
+      <vendor>adoptopenjdk</vendor>
     </provides>
     <configuration>
-      <jdkHome>/Library/Java/JavaVirtualMachines/java8/Contents/Home</jdkHome>
+      <jdkHome>/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home</jdkHome>
     </configuration>
   </toolchain>
   <toolchain>
     <type>jdk</type>
     <provides>
-      <version>9</version>
-      <vendor>sun</vendor>
+      <version>11</version>
+      <vendor>adoptopenjdk</vendor>
     </provides>
     <configuration>
-      <jdkHome>/Library/Java/JavaVirtualMachines/java9/Contents/Home</jdkHome>
+      <jdkHome>/Library/Java/JavaVirtualMachines/adoptopenjdk-11.jdk/Contents/Home</jdkHome>
     </configuration>
   </toolchain>
  

@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.message;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -26,13 +23,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Locale;
 
-import org.apache.logging.log4j.junit.Mutable;
-import org.junit.Assert;
-import org.junit.Test;
+import org.apache.logging.log4j.test.junit.Mutable;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceAccessMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 
-/**
- *
- */
+import static org.junit.jupiter.api.Assertions.*;
+
+@ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
 public class StringFormattedMessageTest {
 
     private static final int LOOP_CNT = 500;
@@ -86,7 +85,7 @@ public class StringFormattedMessageTest {
         final String expected = "Test message Apache";
         assertEquals(expected, result);
         final Throwable t = msg.getThrowable();
-        assertNotNull("No Throwable", t);
+        assertNotNull(t, "No Throwable");
     }
 
     @Test
@@ -98,7 +97,7 @@ public class StringFormattedMessageTest {
         // modify parameter before calling msg.getFormattedMessage
         param.set("XYZ");
         final String actual = msg.getFormattedMessage();
-        assertEquals("Should use initial param value", "Test message XYZ", actual);
+        assertEquals("Test message XYZ", actual, "Should use initial param value");
     }
 
     @Test
@@ -111,9 +110,10 @@ public class StringFormattedMessageTest {
         msg.getFormattedMessage();
         param.set("XYZ");
         final String actual = msg.getFormattedMessage();
-        assertEquals("Should use initial param value", "Test message abc", actual);
+        assertEquals("Test message abc", actual, "Should use initial param value");
     }
 
+    @SuppressWarnings("BanSerializableRead")
     @Test
     public void testSerialization() throws IOException, ClassNotFoundException {
         final StringFormattedMessage expected = new StringFormattedMessage("Msg", "a", "b", "c");
@@ -124,9 +124,9 @@ public class StringFormattedMessageTest {
         final ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         final ObjectInputStream in = new ObjectInputStream(bais);
         final StringFormattedMessage actual = (StringFormattedMessage) in.readObject();
-        Assert.assertEquals(expected, actual);
-        Assert.assertEquals(expected.getFormat(), actual.getFormat());
-        Assert.assertEquals(expected.getFormattedMessage(), actual.getFormattedMessage());
-        Assert.assertArrayEquals(expected.getParameters(), actual.getParameters());
+        assertEquals(expected, actual);
+        assertEquals(expected.getFormat(), actual.getFormat());
+        assertEquals(expected.getFormattedMessage(), actual.getFormattedMessage());
+        assertArrayEquals(expected.getParameters(), actual.getParameters());
     }
 }

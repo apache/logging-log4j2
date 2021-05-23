@@ -172,7 +172,7 @@ the exact list of JAR files needed for these features.
 |http://lmax-exchange.github.io/disruptor/[LMAX Disruptor]
 
 |Kafka Appender
-a|http://kafka.apache.org/[Kafka client library].
+|http://kafka.apache.org/[Kafka client library].
 [NOTE]
 ====
 You need to use a version of the Kafka client library matching the Kafka server used.
@@ -199,6 +199,9 @@ It also requires an appropriate JDBC driver
 
 |NoSQL Appender with Apache CouchDB provider
 |LightCouch CouchDB client library and Log4j CouchDB library
+
+|Redis Appender
+|https://github.com/xetorthio/jedis[Jedis client]
 
 |Cassandra Appender
 |Datastax Cassandra driver and Log4j Cassandra library

@@ -25,6 +25,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.util.UuidUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,6 +54,7 @@ public class SampleController {
         }
         String msg = "";
         if (threads == 1) {
+            ThreadContext.put("requestId", UuidUtil.getTimeBasedUuid().toString());
             Timer timer = new Timer("sample");
             timer.start();
             for (int n = 0; n < count; ++n) {
@@ -61,6 +64,7 @@ public class SampleController {
             StringBuilder sb = new StringBuilder("Elapsed time = ");
             timer.formatTo(sb);
             msg = sb.toString();
+            ThreadContext.clearMap();
         } else {
             ExecutorService service = Executors.newFixedThreadPool(threads);
             Timer timer = new Timer("sample");
@@ -85,6 +89,7 @@ public class SampleController {
 
     @GetMapping("/exception")
     public ResponseEntity<String> exception() {
+        ThreadContext.put("requestId", UuidUtil.getTimeBasedUuid().toString());
         Throwable t = new Throwable("This is a test");
         LOGGER.info("This is a test", t);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -92,6 +97,7 @@ public class SampleController {
         t.printStackTrace(ps);
         String stackTrace = os.toString();
         stackTrace = stackTrace.replaceAll("\n", "<br>");
+        ThreadContext.clearMap();
 
         //LOGGER.info("Hello, World");
         return ResponseEntity.ok(stackTrace);
@@ -109,9 +115,11 @@ public class SampleController {
 
         public void run() {
             String prefix = "Thread " + id + " record ";
+            ThreadContext.put("requestId", UuidUtil.getTimeBasedUuid().toString());
             for (int i = 0; i < count; ++i) {
                 LOGGER.info(prefix + i);
             }
+            ThreadContext.clearMap();
         }
     }
 }

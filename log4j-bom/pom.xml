@@ -19,7 +19,8 @@
   <parent>
     <groupId>org.apache.logging</groupId>
     <artifactId>logging-parent</artifactId>
-    <version>1</version>
+    <version>3</version>
+    <relativePath/>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <name>Apache Log4j BOM</name>
@@ -70,6 +71,12 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-layout-jackson-yaml</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- JSON template layout -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-layout-template-json</artifactId>
         <version>${project.version}</version>
       </dependency>
       <!-- Legacy Log4j 1.2 API -->
@@ -162,10 +169,10 @@
         <artifactId>log4j-csv</artifactId>
         <version>${project.version}</version>
       </dependency>
-      <!-- MongoDB 2 Appender Plugin -->
+      <!-- MongoDB 4 Appender Plugin -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-mongodb2</artifactId>
+        <artifactId>log4j-mongodb4</artifactId>
         <version>${project.version}</version>
       </dependency>
       <!-- MongoDB 3 Appender Plugin -->
@@ -204,7 +211,13 @@
         <artifactId>log4j-jul</artifactId>
         <version>${project.version}</version>
       </dependency>
-      <!-- java.util.logging adapter -->
+      <!-- Java System Platform Loggerr -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-jpl</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- Liquibase adapter -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-liquibase</artifactId>
@@ -226,6 +239,18 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-docker</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- Kubernetes support -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-kubernetes</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- Spring Boot support  -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-spring-boot</artifactId>
         <version>${project.version}</version>
       </dependency>
       <!-- Spring Cloud Config Client -->
@@ -257,6 +282,14 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-doap-plugin</artifactId>
         <version>1.2</version>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <version>4.0.4</version>
         <configuration>
           <skip>true</skip>
         </configuration>

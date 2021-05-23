@@ -21,9 +21,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.apache.logging.log4j.categories.Appenders;
+import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.jpa.appender.JpaAppender;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;

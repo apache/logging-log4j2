@@ -243,6 +243,7 @@ public class SslConfiguration {
      * @param protocol The protocol, see http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#SSLContext
      * @param keyStoreConfig The KeyStoreConfiguration.
      * @param trustStoreConfig The TrustStoreConfiguration.
+     * @param verifyHostName whether or not to perform host name verification
      * @return a new SslConfiguration
      * @since 2.12
      */
@@ -251,7 +252,7 @@ public class SslConfiguration {
             @PluginAttribute final String protocol,
             @PluginElement final KeyStoreConfiguration keyStoreConfig,
             @PluginElement final TrustStoreConfiguration trustStoreConfig,
-            @PluginElement final boolean verifyHostName) {
+            @PluginAttribute final boolean verifyHostName) {
         // @formatter:on
         return new SslConfiguration(protocol, keyStoreConfig, trustStoreConfig, verifyHostName);
     }

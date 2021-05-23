@@ -16,22 +16,21 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.lang.reflect.Field;
-import java.util.concurrent.atomic.AtomicLong;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.async.DefaultAsyncQueueFullPolicy;
 import org.apache.logging.log4j.core.async.EventRoute;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.apache.logging.log4j.test.appender.BlockingAppender;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.core.test.appender.BlockingAppender;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import java.lang.reflect.Field;
+import java.util.concurrent.atomic.AtomicLong;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests the AsyncAppender (LOG4J2-1080) event routing logic:
@@ -43,21 +42,18 @@ import static org.junit.Assert.*;
  *         else queue.add(event) // blocking call
  * </pre>
  */
+@LoggerContextSource("log4j-asynch-queue-full.xml")
 public class AsyncAppenderQueueFullPolicyTest {
-    private static final String CONFIG = "log4j-asynch-queue-full.xml";
 
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
+    private final BlockingAppender blockingAppender;
+    private final AsyncAppender asyncAppender;
+    private final CountingAsyncQueueFullPolicy policy;
 
-    private BlockingAppender blockingAppender;
-    private AsyncAppender asyncAppender;
-    private CountingAsyncQueueFullPolicy policy;
-
-    @Before
-    public void before() throws Exception {
-        blockingAppender = context.getAppender("Block", BlockingAppender.class);
-        asyncAppender = context.getAppender("Async", AsyncAppender.class);
-
+    public AsyncAppenderQueueFullPolicyTest(
+            @Named("Block") final BlockingAppender blockingAppender, @Named("Async") final AsyncAppender asyncAppender)
+            throws Exception {
+        this.blockingAppender = blockingAppender;
+        this.asyncAppender = asyncAppender;
         final Field field = AsyncAppender.class.getDeclaredField("asyncQueueFullPolicy");
         field.setAccessible(true);
         policy = new CountingAsyncQueueFullPolicy();
@@ -65,7 +61,7 @@ public class AsyncAppenderQueueFullPolicyTest {
         policy.queueFull.set(0L);
     }
 
-    @After
+    @AfterEach
     public void after() {
         blockingAppender.running = false;
         policy.queueFull.set(0L);
@@ -84,8 +80,8 @@ public class AsyncAppenderQueueFullPolicyTest {
             Thread.yield(); // wait until background thread takes one element off the queue
         }
         logger.info("event 5 - now the queue is full");
-        assertEquals("queue remaining capacity", 0, asyncAppender.getQueueRemainingCapacity());
-        assertEquals("EventRouter invocations", 0, policy.queueFull.get());
+        assertEquals(0, asyncAppender.getQueueRemainingCapacity(), "queue remaining capacity");
+        assertEquals(0, policy.queueFull.get(), "EventRouter invocations");
 
         final Thread release = new Thread("AsyncAppenderReleaser") {
             @Override

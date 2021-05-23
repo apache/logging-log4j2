@@ -21,19 +21,14 @@ import java.io.File;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
-import org.junit.rules.TestRule;
-import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
 import static org.junit.Assert.*;
 
-/**
- *
- */
 public class ContextMapLookupTest {
 
     private static final String TESTKEY = "TestKey";
@@ -42,27 +37,22 @@ public class ContextMapLookupTest {
     private final LoggerContextRule context = new LoggerContextRule("ContextMapLookupTest.xml");
 
     @Rule
-    public RuleChain chain = RuleChain.outerRule(new TestRule() {
+    public RuleChain chain = RuleChain.outerRule((base, description) -> new Statement() {
         @Override
-        public Statement apply(final Statement base, final Description description) {
-            return new Statement() {
-                @Override
-                public void evaluate() throws Throwable {
-                    final File logFile = new File("target",
-                        description.getClassName() + '.' + description.getMethodName() + ".log");
-                    ThreadContext.put("testClassName", description.getClassName());
-                    ThreadContext.put("testMethodName", description.getMethodName());
-                    try {
-                        base.evaluate();
-                    } finally {
-                        ThreadContext.remove("testClassName");
-                        ThreadContext.remove("testMethodName");
-                        if (logFile.exists()) {
-                            logFile.deleteOnExit();
-                        }
-                    }
+        public void evaluate() throws Throwable {
+            final File logFile = new File("target",
+                description.getClassName() + '.' + description.getMethodName() + ".log");
+            ThreadContext.put("testClassName", description.getClassName());
+            ThreadContext.put("testMethodName", description.getMethodName());
+            try {
+                base.evaluate();
+            } finally {
+                ThreadContext.remove("testClassName");
+                ThreadContext.remove("testMethodName");
+                if (logFile.exists()) {
+                    logFile.deleteOnExit();
                 }
-            };
+            }
         }
     }).around(context);
 

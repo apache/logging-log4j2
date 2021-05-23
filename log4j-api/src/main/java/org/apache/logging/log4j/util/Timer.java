@@ -22,7 +22,7 @@ import java.text.DecimalFormat;
 /**
  * Primarily used in unit tests, but can be used to track elapsed time for a request or portion of any other operation
  * so long as all the timer methods are called on the same thread in which it was started. Calling start on
- * multiple threads will cause the the times to be aggregated.
+ * multiple threads will cause the times to be aggregated.
  */
 public class Timer implements Serializable, StringBuilderFormattable
 {
@@ -58,6 +58,7 @@ public class Timer implements Serializable, StringBuilderFormattable
      * Constructor.
      *
      * @param name the timer name.
+     * @param iterations the number of iterations that will take place.
      */
     public Timer(final String name, final int iterations)
     {
@@ -86,6 +87,7 @@ public class Timer implements Serializable, StringBuilderFormattable
 
     /**
      * Stop the timer.
+     * @return the String result of the timer completing.
      */
     public synchronized String stop()
     {

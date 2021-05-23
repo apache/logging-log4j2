@@ -68,7 +68,7 @@ import org.apache.logging.log4j.util.Supplier;
  * </pre>
  *
  * <p>
- * Note that although {@link MessageSupplier} is provided, using {@link Supplier {@code Supplier<Message>}} works just the
+ * Note that although {@link MessageSupplier} is provided, using {@link Supplier Supplier&lt;Message&gt;} works just the
  * same. MessageSupplier was deprecated in 2.6 and un-deprecated in 2.8.1. Anonymous class usage of these APIs
  * should prefer using Supplier instead.
  * </p>
@@ -1681,6 +1681,7 @@ public interface Logger {
     /**
      * Gets the message factory used to convert message Objects and Strings/CharSequences into actual log Messages.
      *
+     * @param <MF> The type of the MessageFactory.
      * @return the message factory, as an instance of {@link MessageFactory}
      */
     <MF extends MessageFactory> MF getMessageFactory();
@@ -3524,7 +3525,7 @@ public interface Logger {
      * <pre>
      * <code>
      * public void doSomething(Request foo) {
-     *     LOGGER.traceEntry(()->gson.toJson(foo));
+     *     LOGGER.traceEntry(()-&gt;gson.toJson(foo));
      *     // do something
      * }
      * </code>
@@ -3543,7 +3544,7 @@ public interface Logger {
      * <pre>
      * <code>
      * public void doSomething(String foo, int bar) {
-     *     LOGGER.traceEntry("Parameters: {} and {}", ()->gson.toJson(foo), ()-> bar);
+     *     LOGGER.traceEntry("Parameters: {} and {}", ()-&gt;gson.toJson(foo), ()-&gt; bar);
      *     // do something
      * }
      * </code>
@@ -4270,6 +4271,7 @@ public interface Logger {
     }
     /**
      * Construct a log event.
+     * @param level The Logging Level.
      * @return a LogBuilder.
      * @since 2.13.0
      */

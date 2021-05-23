@@ -15,31 +15,26 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationAware;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.io.File;
 
 import static org.apache.logging.log4j.core.lookup.Log4jLookup.KEY_CONFIG_LOCATION;
 import static org.apache.logging.log4j.core.lookup.Log4jLookup.KEY_CONFIG_PARENT_LOCATION;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 
-/**
- *
- */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class Log4jLookupWithSpacesTest {
 
     private final static File EXPECT = new File(System.getProperty("user.home"), "/a a/b b/c c/d d/e e/log4j2 file.xml");
@@ -50,14 +45,14 @@ public class Log4jLookupWithSpacesTest {
     @Mock
     private ConfigurationSource configSrc;
 
-    @Before
-    public void setup() throws URISyntaxException, MalformedURLException {
+    @BeforeEach
+    public void setup() {
         ContextAnchor.THREAD_CONTEXT.set(mockCtx);
         given(config.getConfigurationSource()).willReturn(configSrc);
         given(configSrc.getFile()).willReturn(EXPECT);
     }
 
-    @After
+    @AfterEach
     public void cleanup() {
         ContextAnchor.THREAD_CONTEXT.set(null);
     }

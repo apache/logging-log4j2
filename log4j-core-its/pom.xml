@@ -145,9 +145,12 @@
     </dependency>
     <!-- JUnit, naturally -->
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
     </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>
@@ -273,8 +276,8 @@
             <exclude>**/ForceNoDefClassFoundError.*</exclude>
           </excludes>
           <groups>
-            org.apache.logging.log4j.categories.PerformanceTests,
-            org.apache.logging.log4j.categories.Appenders$Jms
+            org.apache.logging.log4j.core.test.categories.PerformanceTests,
+            org.apache.logging.log4j.core.test.categories.Appenders$Jms
           </groups>
         </configuration>
       </plugin>
@@ -282,6 +285,22 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
         <version>${deploy.plugin.version}</version>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+          <skipDeploy>true</skipDeploy>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-doap-plugin</artifactId>
+        <version>1.2</version>
         <configuration>
           <skip>true</skip>
         </configuration>

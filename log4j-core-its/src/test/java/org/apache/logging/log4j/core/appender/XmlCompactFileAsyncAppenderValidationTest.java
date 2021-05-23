@@ -29,8 +29,8 @@ import javax.xml.validation.Validator;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.categories.Layouts;
-import org.apache.logging.log4j.core.CoreLoggerContexts;
+import org.apache.logging.log4j.core.test.categories.Layouts;
+import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.junit.BeforeClass;
 import org.junit.Ignore;

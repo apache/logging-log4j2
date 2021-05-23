@@ -20,18 +20,18 @@ package org.apache.logging.log4j.core.appender.rolling.action;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class IfFileNameTest {
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCreateNameConditionFailsIfBothRegexAndPathAreNull() {
-        IfFileName.createNameCondition(null, null);
+        assertThrows(IllegalArgumentException.class, () -> IfFileName.createNameCondition(null, null));
     }
 
-    @Test()
+    @Test
     public void testCreateNameConditionAcceptsIfEitherRegexOrPathOrBothAreNonNull() {
         IfFileName.createNameCondition("bar", null);
         IfFileName.createNameCondition(null, "foo");

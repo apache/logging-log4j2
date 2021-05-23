@@ -88,6 +88,7 @@ public interface ReadOnlyStringMap extends Serializable {
      * Returns the value for the specified key, or {@code null} if the specified key does not exist in this collection.
      *
      * @param key the key whose value to return.
+     * @param <V> The type of the value to be returned.
      * @return the value for the specified key or {@code null}.
      */
     <V> V getValue(final String key);

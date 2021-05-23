@@ -74,6 +74,7 @@
         <item name="Trade-offs" href="/performance.html#tradeoffs" />
       </item>
       <item name="Articles and Tutorials" href="/articles.html"/>
+      <item name="Security" href="/security.html"/>
       <item name="Support" href="/support.html"/>
       <item name="Thanks" href="/thanks.html"/>
     </menu>
@@ -102,6 +103,8 @@
       <item name="Scala API" href="/manual/scala-api.html"/>
 
       <item name="Configuration" href="/manual/configuration.html" collapse="true">
+        <item name="Configuration Archtecture" href="/manual/configuration.html#Architecture"/>
+        <item name="Arbiters" href="/manual/configuration.html#Arbiters"/>
         <item name="Automatic Configuration" href="/manual/configuration.html#AutomaticConfiguration"/>
         <item name="Additivity" href="/manual/configuration.html#Additivity"/>
         <item name="Automatic Reconfiguration" href="/manual/configuration.html#AutomaticReconfiguration"/>
@@ -175,11 +178,12 @@
         <item name="Memory Mapped File" href="/manual/appenders.html#MemoryMappedFileAppender"/>
         <item name="NoSQL" href="/manual/appenders.html#NoSQLAppender"/>
         <item name="NoSQL for MongoDB" href="/manual/appenders.html#NoSQLAppenderMongoDB"/>
-        <item name="NoSQL for MongoDB 2" href="/manual/appenders.html#NoSQLAppenderMongoDB2"/>
         <item name="NoSQL for MongoDB 3" href="/manual/appenders.html#NoSQLAppenderMongoDB3"/>
+        <item name="NoSQL for MongoDB 4" href="/manual/appenders.html#NoSQLAppenderMongoDB4"/>
         <item name="NoSQL for CouchDB" href="/manual/appenders.html#NoSQLAppenderCouchDB"/>
         <item name="Output Stream" href="/manual/appenders.html#OutputStreamAppender"/>
         <item name="Random Access File" href="/manual/appenders.html#RandomAccessFileAppender"/>
+        <item name="Redis" href="/manual/appenders.html#RedisAppender"/>
         <item name="Rewrite" href="/manual/appenders.html#RewriteAppender"/>
         <item name="Rolling File" href="/manual/appenders.html#RollingFileAppender"/>
         <item name="Rolling Random Access File" href="/manual/appenders.html#RollingRandomAccessFileAppender"/>
@@ -197,6 +201,7 @@
         <item name="GELF" href="/manual/layouts.html#GELFLayout"/>
         <item name="HTML" href="/manual/layouts.html#HTMLLayout"/>
         <item name="JSON" href="/manual/layouts.html#JSONLayout"/>
+        <item name="JSON Template" href="/manual/json-template-layout.html"/>
         <item name="Pattern" href="/manual/layouts.html#PatternLayout"/>
         <item name="RFC-5424" href="/manual/layouts.html#RFC5424Layout"/>
         <item name="Serialized" href="/manual/layouts.html#SerializedLayout"/>
@@ -307,6 +312,7 @@
       <item name="Log4j 1.2 API" href="log4j-1.2-api/index.html"/>
       <item name="SLF4J Binding" href="log4j-slf4j-impl/index.html"/>
       <item name="JUL Adapter" href="log4j-jul/index.html"/>
+      <item name="JDK Platform Logger" href="log4j-jpl/index.html"/>
       <item name="Log4j 2 to SLF4J Adapter" href="log4j-to-slf4j/index.html"/>
       <item name="Apache Flume Appender" href="log4j-flume-ng/index.html"/>
       <item name="Log4j Tag Library" href="log4j-taglib/index.html"/>
@@ -314,8 +320,8 @@
       <item name="Log4j Web Application Support" href="log4j-web/index.html"/>
       <item name="Log4j Application Server Integration" href="log4j-appserver/index.html"/>
       <item name="Log4j CouchDB appender" href="log4j-couchdb/index.html"/>
-      <item name="Log4j MongoDB2 appender" href="log4j-mongodb2/index.html"/>
       <item name="Log4j MongoDB3 appender" href="log4j-mongodb3/index.html"/>
+      <item name="Log4j MongoDB4 appender" href="log4j-mongodb4/index.html"/>
       <item name="Log4j Cassandra appender" href="log4j-cassandra/index.html"/>
       <item name="Log4j IO Streams" href="log4j-iostreams/index.html"/>
       <item name="Log4j Liquibase Binding" href="log4j-liquibase/index.html"/>

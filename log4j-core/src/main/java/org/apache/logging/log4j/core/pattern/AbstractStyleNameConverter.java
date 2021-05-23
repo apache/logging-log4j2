@@ -331,17 +331,8 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
         try {
             final Constructor<T> constructor = asnConverterClass.getConstructor(List.class, String.class);
             return constructor.newInstance(formatters, AnsiEscape.createSequence(name));
-        } catch (final SecurityException e) {
-            LOGGER.error(e.toString(), e);
-        } catch (final NoSuchMethodException e) {
-            LOGGER.error(e.toString(), e);
-        } catch (final IllegalArgumentException e) {
-            LOGGER.error(e.toString(), e);
-        } catch (final InstantiationException e) {
-            LOGGER.error(e.toString(), e);
-        } catch (final IllegalAccessException e) {
-            LOGGER.error(e.toString(), e);
-        } catch (final InvocationTargetException e) {
+        } catch (final SecurityException | NoSuchMethodException | IllegalArgumentException | InstantiationException
+                | IllegalAccessException | InvocationTargetException e) {
             LOGGER.error(e.toString(), e);
         }
         return null;

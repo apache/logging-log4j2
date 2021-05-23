@@ -21,7 +21,7 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

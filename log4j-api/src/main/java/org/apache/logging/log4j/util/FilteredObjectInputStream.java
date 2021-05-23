@@ -75,6 +75,7 @@ public class FilteredObjectInputStream extends ObjectInputStream {
         return allowedClasses;
     }
 
+    @SuppressWarnings("BanSerializableRead")
     @Override
     protected Class<?> resolveClass(final ObjectStreamClass desc) throws IOException, ClassNotFoundException {
         String name = desc.getName();

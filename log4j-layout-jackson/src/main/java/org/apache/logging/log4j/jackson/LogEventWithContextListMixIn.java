@@ -103,7 +103,7 @@ abstract class LogEventWithContextListMixIn implements LogEvent {
     @Override
     public abstract ThrowableProxy getThrownProxy();
 
-    @JsonIgnore // ignore from 2.11
+    @JsonProperty(value = JsonConstants.ELT_TIME_MILLIS, access = JsonProperty.Access.READ_ONLY)
     @Override
     public abstract long getTimeMillis();
 

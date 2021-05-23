@@ -16,22 +16,16 @@
  */
 package org.apache.logging.log4j.core;
 
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-/**
- *
- */
+@LoggerContextSource("log4j-deadlock.xml")
+@Tag("concurrency")
 public class DeadlockTest {
 
-    private static final String CONFIG = "log4j-deadlock.xml";
-    
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
-
     @Test
-    public void deadlockOnReconfigure() {
-        context.getLoggerContext().reconfigure();
+    public void deadlockOnReconfigure(final LoggerContext context) {
+        context.reconfigure();
     }
 }

@@ -16,26 +16,24 @@
  */
 package org.apache.logging.log4j;
 
+import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.test.TestLogger;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
+
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.junit.Before;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import static org.hamcrest.CoreMatchers.*;
-
-import static org.junit.Assert.*;
-
-/**
- *
- */
+@ResourceLock("log4j2.TestLogger")
 public class EventLoggerTest {
 
     TestLogger logger = (TestLogger) LogManager.getLogger("EventLogger");
     List<String> results = logger.getEntries();
 
-    @Before
+    @BeforeEach
     public void setup() {
         results.clear();
     }
@@ -51,9 +49,9 @@ public class EventLoggerTest {
         msg.put("Amount", "200.00");
         EventLogger.logEvent(msg);
         ThreadContext.clearMap();
-        assertEquals(1, results.size());
+        assertThat(results).hasSize(1);
         final String expected = "EVENT OFF Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"] Transfer Complete";
-        assertThat("Incorrect structured data", results.get(0), startsWith(expected));
+        assertThat(results.get(0)).startsWith(expected);
     }
 
 }

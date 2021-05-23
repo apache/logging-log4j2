@@ -16,43 +16,35 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.List;
-
-import org.apache.logging.log4j.*;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import java.util.List;
 
-/**
- *
- */
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
+@LoggerContextSource("log4j-test2.xml")
 public class LoggerUpdateTest {
 
-    private static final String CONFIG = "log4j-test2.xml";
-    private ListAppender app;
+    private final ListAppender app;
 
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
-
-    @Before
-    public void before() {
-        app = context.getListAppender("List").clear();
+    public LoggerUpdateTest(@Named("List") final ListAppender app) {
+        this.app = app.clear();
     }
 
     @Test
-    public void resetLevel() {
+    public void resetLevel(final LoggerContext context) {
         final org.apache.logging.log4j.Logger logger = context.getLogger("com.apache.test");
         logger.traceEntry();
         List<LogEvent> events = app.getEvents();
-        assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 1, events.size());
+        assertEquals(1, events.size(), "Incorrect number of events. Expected 1, actual " + events.size());
         app.clear();
         final LoggerContext ctx = LoggerContext.getContext(false);
         final Configuration config = ctx.getConfiguration();
@@ -64,20 +56,16 @@ public class LoggerUpdateTest {
         ctx.updateLoggers();  // This causes all Loggers to refetch information from their LoggerConfig.
         logger.traceEntry();
         events = app.getEvents();
-        assertEquals("Incorrect number of events. Expected 0, actual " + events.size(), 0, events.size());
+        assertEquals(0, events.size(), "Incorrect number of events. Expected 0, actual " + events.size());
     }
 
     @Test
-    public void testUpdateLoggersPropertyListeners() throws Exception {
-        final LoggerContext ctx = context.getLoggerContext();
-        ctx.addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(final PropertyChangeEvent evt) {
-                assertEquals(LoggerContext.PROPERTY_CONFIG, evt.getPropertyName());
-                assertSame(ctx, evt.getSource());
-            }
+    public void testUpdateLoggersPropertyListeners(final LoggerContext context) throws Exception {
+        context.addPropertyChangeListener(evt -> {
+            assertEquals(LoggerContext.PROPERTY_CONFIG, evt.getPropertyName());
+            assertSame(context, evt.getSource());
         });
-        ctx.updateLoggers();
+        context.updateLoggers();
     }
 }
 

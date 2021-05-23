@@ -21,9 +21,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the {@code PathSortByModificationTime} class.
@@ -50,17 +50,17 @@ public class PathSortByModificationTimeTest {
         a1.lastModified = FileTime.fromMillis(100);
         a2.lastModified = FileTime.fromMillis(222);
         
-        assertEquals("same path, 2nd more recent", 1, sorter.compare(path(p1, a1), path(p1, a2)));
-        assertEquals("path ignored, 2nd more recent", 1, sorter.compare(path(p1, a1), path(p2, a2)));
-        assertEquals("path ignored, 2nd more recent", 1, sorter.compare(path(p2, a1), path(p1, a2)));
+        assertEquals(1, sorter.compare(path(p1, a1), path(p1, a2)), "same path, 2nd more recent");
+        assertEquals(1, sorter.compare(path(p1, a1), path(p2, a2)), "path ignored, 2nd more recent");
+        assertEquals(1, sorter.compare(path(p2, a1), path(p1, a2)), "path ignored, 2nd more recent");
         
-        assertEquals("same path, 1st more recent", -1, sorter.compare(path(p1, a2), path(p1, a1)));
-        assertEquals("path ignored, 1st more recent", -1, sorter.compare(path(p1, a2), path(p2, a1)));
-        assertEquals("path ignored, 1st more recent", -1, sorter.compare(path(p2, a2), path(p1, a1)));
+        assertEquals(-1, sorter.compare(path(p1, a2), path(p1, a1)), "same path, 1st more recent");
+        assertEquals(-1, sorter.compare(path(p1, a2), path(p2, a1)), "path ignored, 1st more recent");
+        assertEquals(-1, sorter.compare(path(p2, a2), path(p1, a1)), "path ignored, 1st more recent");
         
-        assertEquals("same path, same time", 0, sorter.compare(path(p1, a1), path(p1, a1)));
-        assertEquals("p2 < p1, same time", 1, sorter.compare(path(p1, a1), path(p2, a1)));
-        assertEquals("p2 < p1, same time", -1, sorter.compare(path(p2, a1), path(p1, a1)));
+        assertEquals(0, sorter.compare(path(p1, a1), path(p1, a1)), "same path, same time");
+        assertEquals(1, sorter.compare(path(p1, a1), path(p2, a1)), "p2 < p1, same time");
+        assertEquals(-1, sorter.compare(path(p2, a1), path(p1, a1)), "p2 < p1, same time");
     }
 
     @Test
@@ -73,17 +73,17 @@ public class PathSortByModificationTimeTest {
         a1.lastModified = FileTime.fromMillis(100);
         a2.lastModified = FileTime.fromMillis(222);
         
-        assertEquals("same path, 2nd more recent", -1, sorter.compare(path(p1, a1), path(p1, a2)));
-        assertEquals("path ignored, 2nd more recent", -1, sorter.compare(path(p1, a1), path(p2, a2)));
-        assertEquals("path ignored, 2nd more recent", -1, sorter.compare(path(p2, a1), path(p1, a2)));
+        assertEquals(-1, sorter.compare(path(p1, a1), path(p1, a2)), "same path, 2nd more recent");
+        assertEquals(-1, sorter.compare(path(p1, a1), path(p2, a2)), "path ignored, 2nd more recent");
+        assertEquals(-1, sorter.compare(path(p2, a1), path(p1, a2)), "path ignored, 2nd more recent");
         
-        assertEquals("same path, 1st more recent", 1, sorter.compare(path(p1, a2), path(p1, a1)));
-        assertEquals("path ignored, 1st more recent", 1, sorter.compare(path(p1, a2), path(p2, a1)));
-        assertEquals("path ignored, 1st more recent", 1, sorter.compare(path(p2, a2), path(p1, a1)));
+        assertEquals(1, sorter.compare(path(p1, a2), path(p1, a1)), "same path, 1st more recent");
+        assertEquals(1, sorter.compare(path(p1, a2), path(p2, a1)), "path ignored, 1st more recent");
+        assertEquals(1, sorter.compare(path(p2, a2), path(p1, a1)), "path ignored, 1st more recent");
         
-        assertEquals("same path, same time", 0, sorter.compare(path(p1, a1), path(p1, a1)));
-        assertEquals("p1 < p2, same time", -1, sorter.compare(path(p1, a1), path(p2, a1)));
-        assertEquals("p1 < p2, same time", 1, sorter.compare(path(p2, a1), path(p1, a1)));
+        assertEquals(0, sorter.compare(path(p1, a1), path(p1, a1)), "same path, same time");
+        assertEquals(-1, sorter.compare(path(p1, a1), path(p2, a1)), "p1 < p2, same time");
+        assertEquals(1, sorter.compare(path(p2, a1), path(p1, a1)), "p1 < p2, same time");
     }
 
     private PathWithAttributes path(final Path path, final DummyFileAttributes attributes) {

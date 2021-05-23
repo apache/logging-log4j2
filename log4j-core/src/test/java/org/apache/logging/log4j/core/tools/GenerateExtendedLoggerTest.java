@@ -19,13 +19,17 @@ package org.apache.logging.log4j.core.tools;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.lang.module.ModuleReference;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
@@ -36,49 +40,67 @@ import javax.tools.ToolProvider;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.TestLogger;
-import org.apache.logging.log4j.core.tools.Generate;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.ExtendedLogger;
+import org.apache.logging.log4j.test.TestLogger;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.Supplier;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
+@Tag("functional")
 public class GenerateExtendedLoggerTest {
+
+    private static final String TEST_SOURCE = "target/test-classes/org/apache/logging/log4j/core/MyExtendedLogger.java";
     
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
-        System.setProperty("log4j2.loggerContextFactory", "org.apache.logging.log4j.TestLoggerContextFactory");
+        System.setProperty("log4j2.loggerContextFactory", "org.apache.logging.log4j.test.TestLoggerContextFactory");
+    }
+
+    @AfterAll
+    public static void afterClass() {
+        File file = new File(TEST_SOURCE);
+        File parent = file.getParentFile();
+        if (file.exists()) {
+            file.delete();
+        }
+        file = new File(parent, "MyExtendedLogger.class");
+        if (file.exists()) {
+            file.delete();
+        }
     }
 
     @Test
     public void testGenerateSource() throws Exception {
-        final String CLASSNAME = "org.myorg.MyExtendedLogger";
+        final String CLASSNAME = "org.apache.logging.log4j.core.MyExtendedLogger";
 
         // generate custom logger source
         final List<String> values = Arrays.asList("DIAG=350 NOTICE=450 VERBOSE=550".split(" "));
         final List<Generate.LevelInfo> levels = Generate.LevelInfo.parse(values, Generate.ExtendedLogger.class);
         final String src = Generate.generateSource(CLASSNAME, levels, Generate.Type.EXTEND);
-        final File f = new File("target/test-classes/org/myorg/MyExtendedLogger.java");
+        final File f = new File(TEST_SOURCE);
         f.getParentFile().mkdirs();
         try (final FileOutputStream out = new FileOutputStream(f)) {
             out.write(src.getBytes(Charset.defaultCharset()));
         }
 
-        // set up compiler
         final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         final DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
         final List<String> errors = new ArrayList<>();
         try (final StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null)) {
             final Iterable<? extends JavaFileObject> compilationUnits = fileManager
-                    .getJavaFileObjectsFromFiles(Arrays.asList(f));
+                    .getJavaFileObjectsFromFiles(Collections.singletonList(f));
 
+            List<String> optionList =
+                    new ArrayList<>(Arrays.asList("-classpath", System.getProperty("jdk.module.path")));
             // compile generated source
-            compiler.getTask(null, fileManager, diagnostics, null, null, compilationUnits).call();
+            compiler.getTask(null, fileManager, diagnostics, optionList, null, compilationUnits).call();
 
             // check we don't have any compilation errors
             for (final Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
@@ -87,16 +109,16 @@ public class GenerateExtendedLoggerTest {
                 }
             }
         }
-        assertTrue(errors.toString(), errors.isEmpty());
+        assertTrue(errors.isEmpty(), errors.toString());
 
         // load the compiled class
         final Class<?> cls = Class.forName(CLASSNAME);
 
         // check that all factory methods exist and are static
-        assertTrue(Modifier.isStatic(cls.getDeclaredMethod("create", new Class[0]).getModifiers()));
-        assertTrue(Modifier.isStatic(cls.getDeclaredMethod("create", new Class[] { Class.class }).getModifiers()));
-        assertTrue(Modifier.isStatic(cls.getDeclaredMethod("create", new Class[] { Object.class }).getModifiers()));
-        assertTrue(Modifier.isStatic(cls.getDeclaredMethod("create", new Class[] { String.class }).getModifiers()));
+        assertTrue(Modifier.isStatic(cls.getDeclaredMethod("create").getModifiers()));
+        assertTrue(Modifier.isStatic(cls.getDeclaredMethod("create", Class.class).getModifiers()));
+        assertTrue(Modifier.isStatic(cls.getDeclaredMethod("create", Object.class).getModifiers()));
+        assertTrue(Modifier.isStatic(cls.getDeclaredMethod("create", String.class).getModifiers()));
         assertTrue(Modifier.isStatic(cls.getDeclaredMethod("create", Class.class, MessageFactory.class).getModifiers()));
         assertTrue(Modifier
                 .isStatic(cls.getDeclaredMethod("create", Object.class, MessageFactory.class).getModifiers()));
@@ -106,36 +128,38 @@ public class GenerateExtendedLoggerTest {
         // check that the extended log methods exist
         final String[] extendedMethods = { "diag", "notice", "verbose" };
         for (final String name : extendedMethods) {
-            cls.getDeclaredMethod(name, Marker.class, Message.class, Throwable.class);
-            cls.getDeclaredMethod(name, Marker.class, Object.class, Throwable.class);
-            cls.getDeclaredMethod(name, Marker.class, String.class, Throwable.class);
-            cls.getDeclaredMethod(name, Marker.class, Message.class);
-            cls.getDeclaredMethod(name, Marker.class, Object.class);
-            cls.getDeclaredMethod(name, Marker.class, String.class);
-            cls.getDeclaredMethod(name, Message.class);
-            cls.getDeclaredMethod(name, Object.class);
-            cls.getDeclaredMethod(name, String.class);
-            cls.getDeclaredMethod(name, Message.class, Throwable.class);
-            cls.getDeclaredMethod(name, Object.class, Throwable.class);
-            cls.getDeclaredMethod(name, String.class, Throwable.class);
-            cls.getDeclaredMethod(name, String.class, Object[].class);
-            cls.getDeclaredMethod(name, Marker.class, String.class, Object[].class);
+            assertDoesNotThrow(() -> {
+                cls.getDeclaredMethod(name, Marker.class, Message.class, Throwable.class);
+                cls.getDeclaredMethod(name, Marker.class, Object.class, Throwable.class);
+                cls.getDeclaredMethod(name, Marker.class, String.class, Throwable.class);
+                cls.getDeclaredMethod(name, Marker.class, Message.class);
+                cls.getDeclaredMethod(name, Marker.class, Object.class);
+                cls.getDeclaredMethod(name, Marker.class, String.class);
+                cls.getDeclaredMethod(name, Message.class);
+                cls.getDeclaredMethod(name, Object.class);
+                cls.getDeclaredMethod(name, String.class);
+                cls.getDeclaredMethod(name, Message.class, Throwable.class);
+                cls.getDeclaredMethod(name, Object.class, Throwable.class);
+                cls.getDeclaredMethod(name, String.class, Throwable.class);
+                cls.getDeclaredMethod(name, String.class, Object[].class);
+                cls.getDeclaredMethod(name, Marker.class, String.class, Object[].class);
 
-            // 2.4 lambda support
-            cls.getDeclaredMethod(name, Marker.class, MessageSupplier.class);
-            cls.getDeclaredMethod(name, Marker.class, MessageSupplier.class, Throwable.class);
-            cls.getDeclaredMethod(name, Marker.class, String.class, Supplier[].class);
-            cls.getDeclaredMethod(name, Marker.class, Supplier.class);
-            cls.getDeclaredMethod(name, Marker.class, Supplier.class, Throwable.class);
-            cls.getDeclaredMethod(name, MessageSupplier.class);
-            cls.getDeclaredMethod(name, MessageSupplier.class, Throwable.class);
-            cls.getDeclaredMethod(name, String.class, Supplier[].class);
-            cls.getDeclaredMethod(name, Supplier.class);
-            cls.getDeclaredMethod(name, Supplier.class, Throwable.class);
+                // 2.4 lambda support
+                cls.getDeclaredMethod(name, Marker.class, MessageSupplier.class);
+                cls.getDeclaredMethod(name, Marker.class, MessageSupplier.class, Throwable.class);
+                cls.getDeclaredMethod(name, Marker.class, String.class, Supplier[].class);
+                cls.getDeclaredMethod(name, Marker.class, Supplier.class);
+                cls.getDeclaredMethod(name, Marker.class, Supplier.class, Throwable.class);
+                cls.getDeclaredMethod(name, MessageSupplier.class);
+                cls.getDeclaredMethod(name, MessageSupplier.class, Throwable.class);
+                cls.getDeclaredMethod(name, String.class, Supplier[].class);
+                cls.getDeclaredMethod(name, Supplier.class);
+                cls.getDeclaredMethod(name, Supplier.class, Throwable.class);
+            });
         }
 
         // now see if it actually works...
-        final Method create = cls.getDeclaredMethod("create", new Class[] { String.class });
+        final Method create = cls.getDeclaredMethod("create", String.class);
         final Object extendedLogger = create.invoke(null, "X.Y.Z");
         int n = 0;
         for (final String name : extendedMethods) {

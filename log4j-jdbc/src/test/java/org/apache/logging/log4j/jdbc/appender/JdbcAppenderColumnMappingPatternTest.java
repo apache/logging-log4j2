@@ -28,8 +28,8 @@ import java.sql.Statement;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.apache.logging.log4j.test.RuleChainFactory;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.RuleChainFactory;
 import org.h2.util.IOUtils;
 import org.junit.Rule;
 import org.junit.Test;

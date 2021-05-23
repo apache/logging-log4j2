@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.util.JsonUtils;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.Patterns;
+import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
@@ -50,6 +51,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -102,9 +104,13 @@ public final class GelfLayout extends AbstractStringLayout {
     private final String host;
     private final boolean includeStacktrace;
     private final boolean includeThreadContext;
+    private final boolean includeMapMessage;
     private final boolean includeNullDelimiter;
+    private final boolean includeNewLineDelimiter;
+    private final boolean omitEmptyFields;
     private final PatternLayout layout;
-    private final FieldWriter fieldWriter;
+    private final FieldWriter mdcWriter;
+    private final FieldWriter mapWriter;
 
     public static class Builder<B extends Builder<B>> extends AbstractStringLayout.Builder<B>
         implements org.apache.logging.log4j.plugins.util.Builder<GelfLayout> {
@@ -131,13 +137,37 @@ public final class GelfLayout extends AbstractStringLayout {
         private boolean includeNullDelimiter = false;
 
         @PluginBuilderAttribute
+        private boolean includeNewLineDelimiter = false;
+
+        @PluginBuilderAttribute
         private String threadContextIncludes = null;
 
         @PluginBuilderAttribute
         private String threadContextExcludes = null;
 
         @PluginBuilderAttribute
+        private String mapMessageIncludes = null;
+
+        @PluginBuilderAttribute
+        private String mapMessageExcludes = null;
+
+        @PluginBuilderAttribute
+        private boolean includeMapMessage = true;
+
+        @PluginBuilderAttribute
+        private boolean omitEmptyFields = false;
+
+        @PluginBuilderAttribute
         private String messagePattern = null;
+
+        @PluginBuilderAttribute
+        private String threadContextPrefix = "";
+
+        @PluginBuilderAttribute
+        private String mapPrefix = "";
+
+        @PluginElement("PatternSelector")
+        private PatternSelector patternSelector = null;
 
         public Builder() {
             super();
@@ -146,39 +176,58 @@ public final class GelfLayout extends AbstractStringLayout {
 
         @Override
         public GelfLayout build() {
-            ListChecker checker = null;
-            if (threadContextExcludes != null) {
-                final String[] array = threadContextExcludes.split(Patterns.COMMA_SEPARATOR);
-                if (array.length > 0) {
-                    List<String> excludes = new ArrayList<>(array.length);
-                    for (final String str : array) {
-                        excludes.add(str.trim());
-                    }
-                    checker = new ExcludeChecker(excludes);
-                }
-            }
-            if (threadContextIncludes != null) {
-                final String[] array = threadContextIncludes.split(Patterns.COMMA_SEPARATOR);
-                if (array.length > 0) {
-                    List<String> includes = new ArrayList<>(array.length);
-                    for (final String str : array) {
-                        includes.add(str.trim());
-                    }
-                    checker = new IncludeChecker(includes);
-                }
-            }
-            if (checker == null) {
-                checker = ListChecker.NOOP_CHECKER;
-            }
+            ListChecker mdcChecker = createChecker(threadContextExcludes, threadContextIncludes);
+            ListChecker mapChecker = createChecker(mapMessageExcludes, mapMessageIncludes);
             PatternLayout patternLayout = null;
+            if (messagePattern != null && patternSelector != null) {
+                LOGGER.error("A message pattern and PatternSelector cannot both be specified on GelfLayout, "
+                        + "ignoring message pattern");
+                messagePattern = null;
+            }
             if (messagePattern != null) {
                 patternLayout = PatternLayout.newBuilder().setPattern(messagePattern)
                         .setAlwaysWriteExceptions(includeStacktrace)
                         .setConfiguration(getConfiguration())
                         .build();
             }
+            if (patternSelector != null) {
+                patternLayout = PatternLayout.newBuilder().setPatternSelector(patternSelector)
+                        .setAlwaysWriteExceptions(includeStacktrace)
+                        .setConfiguration(getConfiguration())
+                        .build();
+            }
             return new GelfLayout(getConfiguration(), host, additionalFields, compressionType, compressionThreshold,
-                includeStacktrace, includeThreadContext, includeNullDelimiter, checker, patternLayout);
+                    includeStacktrace, includeThreadContext, includeMapMessage, includeNullDelimiter,
+                    includeNewLineDelimiter, omitEmptyFields, mdcChecker, mapChecker, patternLayout,
+                    threadContextPrefix, mapPrefix);
+        }
+
+        private ListChecker createChecker(String excludes, String includes) {
+            ListChecker checker = null;
+            if (excludes != null) {
+                final String[] array = excludes.split(Patterns.COMMA_SEPARATOR);
+                if (array.length > 0) {
+                    List<String> excludeList = new ArrayList<>(array.length);
+                    for (final String str : array) {
+                        excludeList.add(str.trim());
+                    }
+                    checker = new ExcludeChecker(excludeList);
+                }
+            }
+            if (includes != null) {
+                final String[] array = includes.split(Patterns.COMMA_SEPARATOR);
+                if (array.length > 0) {
+                    List<String> includeList = new ArrayList<>(array.length);
+                    for (final String str : array) {
+                        includeList.add(str.trim());
+                    }
+                    checker = new IncludeChecker(includeList);
+                }
+            }
+            if (checker == null) {
+                checker = ListChecker.NOOP_CHECKER;
+            }
+            return checker;
         }
 
         public String getHost() {
@@ -202,6 +251,10 @@ public final class GelfLayout extends AbstractStringLayout {
         }
 
         public boolean isIncludeNullDelimiter() { return includeNullDelimiter; }
+
+        public boolean isIncludeNewLineDelimiter() {
+            return includeNewLineDelimiter;
+        }
 
         public KeyValuePair[] getAdditionalFields() {
             return additionalFields;
@@ -270,6 +323,16 @@ public final class GelfLayout extends AbstractStringLayout {
         }
 
         /**
+         * Whether to include newline (LF) as delimiter after each event (optional, default to false).
+         *
+         * @return this builder
+         */
+        public B setIncludeNewLineDelimiter(final boolean includeNewLineDelimiter) {
+            this.includeNewLineDelimiter = includeNewLineDelimiter;
+            return asBuilder();
+        }
+
+        /**
          * Additional fields to set on each log event.
          *
          * @return this builder
@@ -286,6 +349,16 @@ public final class GelfLayout extends AbstractStringLayout {
          */
         public B setMessagePattern(final String pattern) {
             this.messagePattern = pattern;
+            return asBuilder();
+        }
+
+        /**
+         * The PatternSelector to use to format the message.
+         * @param patternSelector the PatternSelector.
+         * @return this builder
+         */
+        public B setPatternSelector(final PatternSelector patternSelector) {
+            this.patternSelector = patternSelector;
             return asBuilder();
         }
 
@@ -308,12 +381,68 @@ public final class GelfLayout extends AbstractStringLayout {
             this.threadContextExcludes = mdcExcludes;
             return asBuilder();
         }
+
+        /**
+         * Whether to include MapMessage fields as additional fields (optional, default to true).
+         *
+         * @return this builder
+         */
+        public B setIncludeMapMessage(final boolean includeMapMessage) {
+            this.includeMapMessage = includeMapMessage;
+            return asBuilder();
+        }
+
+        /**
+         * A comma separated list of thread context keys to include;
+         * @param mapMessageIncludes the list of keys.
+         * @return this builder
+         */
+        public B setMapMessageIncludes(final String mapMessageIncludes) {
+            this.mapMessageIncludes = mapMessageIncludes;
+            return asBuilder();
+        }
+
+        /**
+         * A comma separated list of MapMessage keys to exclude;
+         * @param mapMessageExcludes the list of keys.
+         * @return this builder
+         */
+        public B setMapMessageExcludes(final String mapMessageExcludes) {
+            this.mapMessageExcludes = mapMessageExcludes;
+            return asBuilder();
+        }
+
+        /**
+         * The String to prefix the ThreadContext attributes.
+         * @param prefix The prefix value. Null values will be ignored.
+         * @return this builder.
+         */
+        public B setThreadContextPrefix(final String prefix) {
+            if (prefix != null) {
+                this.threadContextPrefix = prefix;
+            }
+            return asBuilder();
+        }
+
+        /**
+         * The String to prefix the MapMessage attributes.
+         * @param prefix The prefix value. Null values will be ignored.
+         * @return this builder.
+         */
+        public B setMapPrefix(final String prefix) {
+            if (prefix != null) {
+                this.mapPrefix = prefix;
+            }
+            return asBuilder();
+        }
     }
 
     private GelfLayout(final Configuration config, final String host, final KeyValuePair[] additionalFields,
             final CompressionType compressionType, final int compressionThreshold, final boolean includeStacktrace,
-            final boolean includeThreadContext, final boolean includeNullDelimiter, final ListChecker listChecker,
-            final PatternLayout patternLayout) {
+            final boolean includeThreadContext, final boolean includeMapMessage, final boolean includeNullDelimiter,
+            final boolean includeNewLineDelimiter, final boolean omitEmptyFields, final ListChecker mdcChecker,
+            final ListChecker mapChecker, final PatternLayout patternLayout, final String mdcPrefix,
+            final String mapPrefix) {
         super(config, StandardCharsets.UTF_8, null, null);
         this.host = host != null ? host : NetUtils.getLocalHostname();
         this.additionalFields = additionalFields != null ? additionalFields : new KeyValuePair[0];
@@ -328,11 +457,15 @@ public final class GelfLayout extends AbstractStringLayout {
         this.compressionThreshold = compressionThreshold;
         this.includeStacktrace = includeStacktrace;
         this.includeThreadContext = includeThreadContext;
+        this.includeMapMessage = includeMapMessage;
         this.includeNullDelimiter = includeNullDelimiter;
+        this.includeNewLineDelimiter = includeNewLineDelimiter;
+        this.omitEmptyFields = omitEmptyFields;
         if (includeNullDelimiter && compressionType != CompressionType.OFF) {
             throw new IllegalArgumentException("null delimiter cannot be used with compression");
         }
-        this.fieldWriter = new FieldWriter(listChecker);
+        this.mdcWriter = new FieldWriter(mdcChecker, mdcPrefix);
+        this.mapWriter = new FieldWriter(mapChecker, mapPrefix);
         this.layout = patternLayout;
     }
 
@@ -345,9 +478,14 @@ public final class GelfLayout extends AbstractStringLayout {
         sb.append(", includeStackTrace=").append(includeStacktrace);
         sb.append(", includeThreadContext=").append(includeThreadContext);
         sb.append(", includeNullDelimiter=").append(includeNullDelimiter);
-        String threadVars = fieldWriter.getChecker().toString();
+        sb.append(", includeNewLineDelimiter=").append(includeNewLineDelimiter);
+        String threadVars = mdcWriter.getChecker().toString();
         if (threadVars.length() > 0) {
             sb.append(", ").append(threadVars);
+        }
+        String mapVars = mapWriter.getChecker().toString();
+        if (mapVars.length() > 0) {
+            sb.append(", ").append(mapVars);
         }
         if (layout != null) {
             sb.append(", PatternLayout{").append(layout.toString()).append("}");
@@ -386,6 +524,11 @@ public final class GelfLayout extends AbstractStringLayout {
         final StringBuilder text = toText(event, getStringBuilder(), true);
         final Encoder<StringBuilder> helper = getStringBuilderEncoder();
         helper.encode(text, destination);
+    }
+
+    @Override
+    public boolean requiresLocation() {
+        return Objects.nonNull(layout) && layout.requiresLocation();
     }
 
     private byte[] compress(final byte[] bytes) {
@@ -432,18 +575,23 @@ public final class GelfLayout extends AbstractStringLayout {
         if (additionalFields.length > 0) {
             final StrSubstitutor strSubstitutor = getConfiguration().getStrSubstitutor();
             for (final KeyValuePair additionalField : additionalFields) {
-                builder.append(QU);
-                JsonUtils.quoteAsString(additionalField.getKey(), builder);
-                builder.append("\":\"");
                 final String value = valueNeedsLookup(additionalField.getValue())
-                    ? strSubstitutor.replace(event, additionalField.getValue())
-                    : additionalField.getValue();
-                JsonUtils.quoteAsString(toNullSafeString(value), builder);
-                builder.append(QC);
+                        ? strSubstitutor.replace(event, additionalField.getValue())
+                        : additionalField.getValue();
+                if (Strings.isNotEmpty(value) || !omitEmptyFields) {
+                    builder.append(QU);
+                    JsonUtils.quoteAsString(additionalField.getKey(), builder);
+                    builder.append("\":\"");
+                    JsonUtils.quoteAsString(toNullSafeString(value), builder);
+                    builder.append(QC);
+                }
             }
         }
         if (includeThreadContext) {
-            event.getContextData().forEach(fieldWriter, builder);
+            event.getContextData().forEach(mdcWriter, builder);
+        }
+        if (includeMapMessage && event.getMessage() instanceof MapMessage) {
+            ((MapMessage<?, Object>) event.getMessage()).forEach((key, value) -> mapWriter.accept(key, value, builder));
         }
 
         if (event.getThrown() != null || layout != null) {
@@ -482,6 +630,9 @@ public final class GelfLayout extends AbstractStringLayout {
         if (includeNullDelimiter) {
             builder.append('\0');
         }
+        if (includeNewLineDelimiter) {
+            builder.append('\n');
+        }
         return builder;
     }
 
@@ -489,20 +640,23 @@ public final class GelfLayout extends AbstractStringLayout {
         return value != null && value.contains("${");
     }
 
-    private static class FieldWriter implements TriConsumer<String, Object, StringBuilder> {
+    private class FieldWriter implements TriConsumer<String, Object, StringBuilder> {
         private final ListChecker checker;
+        private final String prefix;
 
-        FieldWriter(ListChecker checker) {
+        FieldWriter(ListChecker checker, String prefix) {
             this.checker = checker;
+            this.prefix = prefix;
         }
 
         @Override
         public void accept(final String key, final Object value, final StringBuilder stringBuilder) {
-            if (checker.check(key)) {
+            String stringValue = String.valueOf(value);
+            if (checker.check(key) && (Strings.isNotEmpty(stringValue) || !omitEmptyFields)) {
                 stringBuilder.append(QU);
-                JsonUtils.quoteAsString(key, stringBuilder);
+                JsonUtils.quoteAsString(Strings.concat(prefix, key), stringBuilder);
                 stringBuilder.append("\":\"");
-                JsonUtils.quoteAsString(toNullSafeString(String.valueOf(value)), stringBuilder);
+                JsonUtils.quoteAsString(toNullSafeString(stringValue), stringBuilder);
                 stringBuilder.append(QC);
             }
         }
@@ -510,7 +664,7 @@ public final class GelfLayout extends AbstractStringLayout {
         public ListChecker getChecker() {
             return checker;
         }
-    };
+    }
 
     private static final ThreadLocal<StringBuilder> messageStringBuilder = new ThreadLocal<>();
 

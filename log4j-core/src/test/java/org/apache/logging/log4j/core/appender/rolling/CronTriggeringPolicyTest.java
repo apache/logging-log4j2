@@ -22,9 +22,10 @@ import org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class CronTriggeringPolicyTest {
 
@@ -36,7 +37,7 @@ public class CronTriggeringPolicyTest {
     // @Rule
     // public CleanFiles cleanFiles = new CleanFiles("testcmd1.log", "testcmd2.log", "testcmd3.log");
 
-    @Before
+    @BeforeEach
     public void before() {
         configuration = new NullConfiguration();
     }
@@ -61,7 +62,7 @@ public class CronTriggeringPolicyTest {
             .setConfiguration(configuration)
             .build();
         // @formatter:on
-        Assert.assertNotNull(raf);
+        assertNotNull(raf);
     }
 
     /**

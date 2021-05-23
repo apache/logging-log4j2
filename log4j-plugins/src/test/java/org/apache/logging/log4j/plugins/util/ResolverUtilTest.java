@@ -17,7 +17,7 @@
 
 package org.apache.logging.log4j.plugins.util;
 
-import org.apache.logging.log4j.junit.CleanFolders;
+import org.apache.logging.log4j.test.junit.CleanFolders;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -232,6 +232,9 @@ public class ResolverUtilTest {
                         diagnostic.getColumnNumber(), diagnostic.getMessage(Locale.getDefault())));
                 }
             }
+        }
+        if (!errors.isEmpty()) {
+            System.err.println("Compilatoin of " + f.getAbsolutePath() + " failed");
         }
         assertTrue(errors.toString(), errors.isEmpty());
     }

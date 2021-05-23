@@ -16,35 +16,31 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.junit.jupiter.api.Test;
+
 import java.util.List;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.ClassRule;
-import org.junit.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
-/**
- *
- */
+@LoggerContextSource("SequenceNumberPatternConverterTest.yml")
 public class SequenceNumberPatternConverterTest {
 
-    @ClassRule
-    public static LoggerContextRule ctx = new LoggerContextRule("SequenceNumberPatternConverterTest.yml");
-
     @Test
-    public void testSequenceIncreases() throws Exception {
-        final Logger logger = ctx.getLogger();
+    public void testSequenceIncreases(final LoggerContext context, @Named("List") final ListAppender app) {
+        app.clear();
+        final Logger logger = context.getLogger(getClass().getName());
         logger.info("Message 1");
         logger.info("Message 2");
         logger.info("Message 3");
         logger.info("Message 4");
         logger.info("Message 5");
 
-        final ListAppender app = ctx.getListAppender("List");
         final List<String> messages = app.getMessages();
         assertThat(messages, contains("1", "2", "3", "4", "5"));
     }

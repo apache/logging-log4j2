@@ -43,6 +43,165 @@ Note that unlike Log4j 1.x, the public Log4j 2 API does not expose
 methods to add, modify or remove appenders and filters or manipulate the
 configuration in any way.
 
+[#Architecture]
+== Architecture
+
+In part because support for XML was added first, Log4j's configuration is reflected as a tree structure.
+In fact every configuration dialect, including the ConfigurationBuilder, generates a Node for every
+configuration element. A node is a fairly simple structure that contains a set of attributes, a set of
+child nodes and a PluginType. It is important to note that every Node must have a corresponding plugn,
+as the plugin is the component that actually performs the work represented by the node.
+
+Every document type supported by Log4j has a ConfigurationFactory. The factory itself is a Log4j plugin
+that declares what file extensions it supports and what its priority is. Properties have the highest
+precedence with a value of 8, followed by yaml, json and xml. When autoconfiguration is performed Log4j
+will call each of these factories in order to determine which, if any, support the specified configuration
+file format. If one is found that factory will create the corresponding Configuratoin object and pass the
+reference to the configuration data to it.
+
+Every configuration implementation, such as XMLConfiguration, YamlConfiguration, JsonConfiguration, etc.
+has the primary task of converting the configuration text into the Node tree, typically by parsing the
+text with whatever tool is available for that document type. It should be noted that while most of the
+supported document types are inherintly tree structured, the Java properties syntax is not. Because of the
+need to convert the syntax into a Node tree the Java properties syntax used by Log4j required all properties
+follow a naming pattern that made the tree structure clear. As a consequence, the Java Properties format
+tends to be more verbose than using a different document type.
+
+Once the Node tree is created control is delegated to AbstractConfiguration, which convertes the Nodes into
+their respective Java objects using Log4j's Plugin system and provides all the common functionality.
+
+[#Arbiters]
+== Arbiters
+
+In some situations it is desirable to have a single logging configuration that can be used in any
+deployment environment. For example, it may be necessary to have a different default logging level in
+production then in development. Another case might be where one type of appender is used when running
+natively but another is used when deployed to a docker container. One way to handle that is to use
+a tool such as Spring Cloud Config Server that can be environment aware and serve a different file for
+each environment. Another option is to include Arbiters in the configuration.
+
+An Arbiter is a Log4j plugin that has the job of determining whether other configured elements should be
+included in the generated configuration. While all other "Core" plugins are designed to execute as part of
+Log4j's runtime logic Arbiters execute after the Node tree has been constructed but before the tree is
+converted to a configuration. An Arbiter is a Node itself which is always removed from the Node tree
+before it the tree is processed. All an arbiter really does is provide a method that returns a boolean
+result that determines whether the child nodes of the arbiter should remain in the configuration or be
+pruned.
+
+Arbiters may occur anywhere an element is allowed in the configuration. So an Aribiter could encapsulate
+something as simple as a single property declaration or a whole set of Appenders or Loggers. Arbiters
+may also be nested although Arbiters that are the descendant of another arbiter will only be evalued if the
+ancestor returned true. The child elements of an Arbiter must be valid elements for whatever element is
+the parent of the Arbiter.
+
+This example shows two Arbiters configured that will include either a Console Appender or a List Appender
+depending on whether the value of the env System Property is "dev" or "prod".
+
+[source,xml]
+----
+<Configuration name="ConfigTest" status="ERROR" monitorInterval="5">
+  <Appenders>
+
+    <SystemPropertyArbiter propertyName="env" propertyValue="dev">
+      <Console name="Out">
+        <PatternLayout pattern="%m%n"/>
+      </Console>
+    </SystemPropertyArbiter>
+    <SystemPropertyArbiter propertyName="env" propertyValue="prod">
+      <List name="Out">
+      </List>
+    </SystemPropertyArbiter>
+
+  </Appenders>
+  <Loggers>
+    <Logger name="org.apache.test" level="trace" additivity="false">
+      <AppenderRef ref="Out"/>
+    </Logger>
+    <Root level="error">
+      <AppenderRef ref="Out"/>
+    </Root>
+  </Loggers>
+</Configuration>
+----
+
+Normally Arbiters act in isolation from other Arbiters. That is, the outcome of one Arbiter will not
+impact any other Arbiters. This can be cumbersome when you simply want to use one of a set of choices. A
+special plugin named "Select" can be used in this case. Each element under the Select is required to be
+an Arbiter. The first Arbiter that returns a true value will be the one used while others are ignored.
+If no Arbiter returns true a DefaultAtrbiter may be configured with the default configuration elements.
+The DefaultArbiter is an Arbiter that always returns true, so using it outside of a Select would result in
+its configured elements always being included just as if it hadn't been present.
+
+This example shows an Arbiter that uses Javascript residing in a separate file to determine whether to
+include the Console Appender. If the result is false then a List Appender will be included.
+
+[source,xml]
+----
+<Configuration name="ConfigTest" status="ERROR" monitorInterval="5">
+  <Appenders>
+    <Select>
+      <ScriptArbiter>
+        <ScriptFile language="JavaScript" path="src/test/resources/scripts/prodtest.js" charset="UTF-8" />
+        <Console name="Out">
+          <PatternLayout pattern="%m%n"/>
+        </Console>
+      </ScriptArbiter>
+      <DefaultArbiter>
+        <List name="Out">
+        </List>
+      </DefaultArbiter>
+    </Select>
+  </Appenders>
+  <Loggers>
+    <Logger name="org.apache.test" level="trace" additivity="false">
+      <AppenderRef ref="Out"/>
+    </Logger>
+    <Root level="error">
+      <AppenderRef ref="Out"/>
+    </Root>
+  </Loggers>
+</Configuration>
+----
+
+Natively Log4j contains the SystemProperty Arbister that can evaluate whether to include elements based on
+whether a SystemProperty is non-null or has a specific value, a ClassArbiter that makes its decision
+based on whether the specified class is present, and a ScriptArbiter that makes its decision based
+on the result of the script configured with it.
+
+For Spring Boot users an Arbiter named <code>SpringProfile</code> has been provided. The specified profiles
+are evaluated by Spring's <code>Environment.acceptsProfiles()</code> method, so any expressions it supports
+may be used as the name attribute.
+
+This example will use a Console Appender when the Spring profile is "dev" or "staging" and a List
+Appender when the active profile is "prod".
+
+[source,xml]
+----
+<Configuration name="ConfigTest" status="ERROR" monitorInterval="5">
+  <Appenders>
+
+    <SpringProfile name="dev | staging">
+      <Console name="Out">
+        <PatternLayout pattern="%m%n"/>
+      </Console>
+    </SpringProfile>
+    <SpringProfile name="prod">
+      <List name="Out">
+      </List>
+    </SpringProfile>
+
+  </Appenders>
+  <Loggers>
+    <Logger name="org.apache.test" level="trace" additivity="false">
+      <AppenderRef ref="Out"/>
+    </Logger>
+    <Root level="error">
+      <AppenderRef ref="Out"/>
+    </Root>
+  </Loggers>
+</Configuration>
+----
+
 [#AutomaticConfiguration]
 == Automatic Configuration
 
@@ -55,7 +214,9 @@ for properties, and one for XML.
 
 1.  Log4j will inspect the `"log4j.configurationFile"` system property
 and, if set, will attempt to load the configuration using the
-`ConfigurationFactory` that matches the file extension.
+`ConfigurationFactory` that matches the file extension. Note that this
+is not restricted to a location on the local file system and may contain
+a URL.
 2.  If no system property is set the properties ConfigurationFactory
 will look for `log4j2-test.properties` in the classpath.
 3.  If no such file is found the YAML ConfigurationFactory will look for
@@ -857,7 +1018,7 @@ rootLogger.appenderRef.stdout.ref = STDOUT
 
 
 [#Loggers]
-=== Configuring loggers
+=== Configuring Loggers
 
 An understanding of how loggers work in Log4j is critical before trying
 to configure them. Please reference the Log4j
@@ -872,6 +1033,16 @@ The level may be configured with one of TRACE, DEBUG, INFO, WARN, ERROR,
 ALL or OFF. If no level is specified it will default to ERROR. The
 additivity attribute may be assigned a value of true or false. If the
 attribute is omitted the default value of true will be used.
+
+Capturing location information (the class name, file name, method name, and line number of the caller)
+can be slow. Log4j tries to optimize this by reducing the size of the stack that must be traversed
+to find the caller of the logging method. It does this by determining if any component that might
+be accessed requires location information. This can cause performance issues if a logger is configured
+at a level like trace or debug with the expectation that most logs will be filtered on an Appender
+reference or Appender as Log4j will calculate the location information even though the log event
+is going to be discarded. To disable this behavior the `includeLocation` attribute
+can be set to false on the LoggerConfig. This will cause Log4j to defer calculating the location
+information until absolutely necessary.
 
 A LoggerConfig (including the root LoggerConfig) can be configured with
 properties that will be added to the properties copied from the
@@ -1134,6 +1305,13 @@ included, such as ``${main:\--file:-app.properties}`. This would use the
 `MainMapLookup` for a key named `--file`. If the key is not found then
 <code>app.properties</code> would be used as the default value.
 
+[#DisablingMessagePatternLookups]
+== Disables Message Pattern Lookups
+A message is processed (by default) by lookups, for example if you defined
+`<Property name="foo.bar">FOO_BAR</Property>`, then `logger.info("${foo.bar}")` will output `FOO_BAR` instead of `${foo.bar}`.
+You could disable message pattern lookups globally by setting system property `log4j2.formatMsgNoLookups` to true,
+or defining message pattern using %m{nolookups}.
+
 [#RuntimeLookup]
 == Lookup Variables with Multiple Leading '$' Characters
 
@@ -1386,10 +1564,11 @@ file that includes two other files:
 == Composite Configuration
 
 Log4j allows multiple configuration files to be used by specifying them
-as a list of comma separated file paths on log4j.configurationFile. The
-merge logic can be controlled by specifying a class that implements the
-MergeStrategy interface on the log4j.mergeStrategy property. The default
-merge strategy will merge the files using the following rules:
+as a list of comma separated file paths on log4j.configurationFile or,
+when using urls, by adding secondary configuration locations as query
+parameters named "override". The merge logic can be controlled by specifying
+a class that implements the MergeStrategy interface on the log4j.mergeStrategy
+property. The default merge strategy will merge the files using the following rules:
 
 1.  The global configuration attributes are aggregated with those in
 later configurations replacing those in previous configurations, with
@@ -1540,7 +1719,7 @@ During startup this configuration produces:
 2011-11-23 17:08:00,976 DEBUG Reconfiguration completed
 ....
 
-If the status attribute is set to error than only error messages will be
+If the status attribute is set to error then only error messages will be
 written to the console. This makes troubleshooting configuration errors
 possible. As an example, if the configuration above is changed to have
 the status set to error and the logger declaration is:
@@ -1676,7 +1855,9 @@ variable; and _Legacy Property Name_ for the pre-2.10 name.
 |LOG4J_CONFIGURATION_FILE
 | 
 |Path to an Log4j 2 configuration file. May
-also contain a comma separated list of configuration file names.
+also contain a comma separated list of configuration file names. May contain a URL.
+When specified as a URL the "override" query parameter may be used to specify additional
+configuration file locations.
 
 |[[debug]]log4j2.debug +
 ([[log4j2.debug]]log4j2.debug)
@@ -1686,9 +1867,9 @@ also contain a comma separated list of configuration file names.
 internal logging to the console if system property `log4j2.debug` is
 defined (with any or no value).
 
-|[[mergeFactory]]log4j2.mergeFactory +
-([[log4j.mergeFactory]]log4j.mergeFactory)
-|LOG4J_MERGE_FACTORY
+|[[mergeStrategy]]log4j2.mergeStrategy +
+([[log4j.mergeStrategy]]log4j.mergeStrategy)
+|LOG4J_MERGE_STRATEGY
 | 
 |The name of the class that implements the MergeStrategy interface. If not
 specified `DefaultMergeStrategy` will be used when creating a CompositeConfiguration.
@@ -1703,6 +1884,9 @@ circumstances. See link:logsep.html[Log Separation] for more details.
 Available context selector implementation classes: +
 `org.apache.logging.log4j.core.async .AsyncLoggerContextSelector` -
 makes link:async.html[all loggers asynchronous]. +
+`org.apache.logging.log4j.core.async .BasicAsyncLoggerContextSelector` -
+makes link:async.html[all loggers asynchronous] using a single shared
+AsyncLoggerContext. +
 `org.apache.logging.log4j.core.selector .BasicContextSelector` - creates
 a single shared LoggerContext. +
 `org.apache.logging.log4j.core.selector .ClassLoaderContextSelector` -
@@ -1769,6 +1953,12 @@ used for timestamping the log events. +
 By default, `System.currentTimeMillis` is called on every log event. +
 You can also specify a fully qualified class name of a custom class that
 implements the `Clock` interface.
+
+|[[usePreciseClock]]log4j2.usePreciseClock
+|LOG4J_USE_PRECISE_CLOCK
+|false
+|When false the clock resolution will be in milliseconds. When true it will use the smallest granularity supported by
+the JVM. The precise clock is not garbage free. This setting only applies when Log4j's default SystemClock is used.
 
 |[[level]]log4j2.level +
 ([[org.apache.logging.log4j.level]]org.apache.logging.log4j.level)
@@ -2041,6 +2231,30 @@ details.
 link:async.html#SysPropsAllAsync[Async Logger System Properties] for
 details.
 
+|[[asyncLoggerTimeout]]log4j2.asyncLoggerTimeout +
+([[AsyncLogger.Timeout]]AsyncLogger.Timeout)
+|LOG4J_ASYNC_LOGGER_TIMEOUT
+|10
+|See
+link:async.html#SysPropsAllAsync[Async Logger System Properties] for
+details.
+
+|[[asyncLoggerSleepTimeNs]]log4j2.asyncLoggerSleepTimeNs +
+([[AsyncLogger.SleepTimeNs]]AsyncLogger.SleepTimeNs)
+|LOG4J_ASYNC_LOGGER_SLEEP_TIME_NS
+|100
+|See
+link:async.html#SysPropsAllAsync[Async Logger System Properties] for
+details.
+
+|[[asyncLoggerRetries]]log4j2.asyncLoggerRetries +
+([[AsyncLogger.Retries]]AsyncLogger.Retries)
+|LOG4J_ASYNC_LOGGER_RETRIES
+|200
+|See
+link:async.html#SysPropsAllAsync[Async Logger System Properties] for
+details.
+
 |[[AsyncLogger.SynchronizeEnqueueWhenQueueFull]]AsyncLogger.SynchronizeEnqueueWhenQueueFull
 |ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL
 |true
@@ -2079,6 +2293,31 @@ System Properties] for details.
 |See
 link:async.html#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger
 System Properties] for details.
+
+|[[asyncLoggerConfigTimeout]]log4j2.asyncLoggerConfigTimeout +
+([[AsyncLoggerConfig.Timeout]]AsyncLoggerConfig.Timeout)
+|LOG4J_ASYNC_LOGGER_CONFIG_TIMEOUT
+|10
+|See
+link:async.html#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger
+System Properties] for details.
+
+|[[asyncLoggerConfigSleepTimeNs]]log4j2.asyncLoggerConfigSleepTimeNs +
+([[AsyncLoggerConfig.SleepTimeNs]]AsyncLoggerConfig.SleepTimeNs)
+|LOG4J_ASYNC_LOGGER_CONFIG_SLEEP_TIME_NS
+|100
+|See
+link:async.html#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger
+System Properties] for details.
+
+|[[asyncLoggerConfigRetries]]log4j2.asyncLoggerConfigRetries +
+([[AsyncLoggerConfig.Retries]]AsyncLoggerConfig.Retries)
+|LOG4J_ASYNC_LOGGER_CONFIG_RETRIES
+|200
+|See
+link:async.html#SysPropsMixedSync-Async[Mixed Async/Synchronous Logger
+System Properties] for details.
+
 
 |[[AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull]]AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull
 |ASYNC_LOGGER_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL

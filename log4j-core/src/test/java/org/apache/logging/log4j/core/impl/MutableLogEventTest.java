@@ -37,11 +37,10 @@ import org.apache.logging.log4j.util.FilteredObjectInputStream;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the MutableLogEvent class.
@@ -59,7 +58,7 @@ public class MutableLogEventTest {
         return result;
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         try {
             Class.forName("java.io.ObjectInputFilter");
@@ -72,7 +71,7 @@ public class MutableLogEventTest {
     @Test
     public void testToImmutable() {
         final LogEvent logEvent = new MutableLogEvent();
-        Assert.assertNotSame(logEvent, logEvent.toImmutable());
+        assertNotSame(logEvent, logEvent.toImmutable());
     }
 
     @Test
@@ -96,23 +95,23 @@ public class MutableLogEventTest {
                 .build();
         final MutableLogEvent mutable = new MutableLogEvent();
         mutable.initFrom(source);
-        assertEquals("contextMap", CONTEXT_DATA, mutable.getContextData());
-        assertEquals("stack", STACK, mutable.getContextStack());
-        assertEquals("endOfBatch", true, mutable.isEndOfBatch());
-        assertEquals("IncludeLocation()", true, mutable.isIncludeLocation());
-        assertEquals("level", Level.FATAL, mutable.getLevel());
-        assertEquals("LoggerFqcn()", source.getLoggerFqcn(), mutable.getLoggerFqcn());
-        assertEquals("LoggerName", source.getLoggerName(), mutable.getLoggerName());
-        assertEquals("marker", source.getMarker(), mutable.getMarker());
-        assertEquals("msg", source.getMessage(), mutable.getMessage());
-        assertEquals("nano", source.getNanoTime(), mutable.getNanoTime());
-        assertEquals("src", source.getSource(), mutable.getSource());
-        assertEquals("tid", source.getThreadId(), mutable.getThreadId());
-        assertEquals("tname", source.getThreadName(), mutable.getThreadName());
-        assertEquals("tpriority", source.getThreadPriority(), mutable.getThreadPriority());
-        assertEquals("throwns", source.getThrown(), mutable.getThrown());
-        assertEquals("proxy", source.getThrownProxy(), mutable.getThrownProxy());
-        assertEquals("millis", source.getTimeMillis(), mutable.getTimeMillis());
+        assertEquals(CONTEXT_DATA, mutable.getContextData(), "contextMap");
+        assertEquals(STACK, mutable.getContextStack(), "stack");
+        assertTrue(mutable.isEndOfBatch(), "endOfBatch");
+        assertTrue(mutable.isIncludeLocation(), "IncludeLocation()");
+        assertEquals(Level.FATAL, mutable.getLevel(), "level");
+        assertEquals(source.getLoggerFqcn(), mutable.getLoggerFqcn(), "LoggerFqcn()");
+        assertEquals(source.getLoggerName(), mutable.getLoggerName(), "LoggerName");
+        assertEquals(source.getMarker(), mutable.getMarker(), "marker");
+        assertEquals(source.getMessage(), mutable.getMessage(), "msg");
+        assertEquals(source.getNanoTime(), mutable.getNanoTime(), "nano");
+        assertEquals(source.getSource(), mutable.getSource(), "src");
+        assertEquals(source.getThreadId(), mutable.getThreadId(), "tid");
+        assertEquals(source.getThreadName(), mutable.getThreadName(), "tname");
+        assertEquals(source.getThreadPriority(), mutable.getThreadPriority(), "tpriority");
+        assertEquals(source.getThrown(), mutable.getThrown(), "throwns");
+        assertEquals(source.getThrownProxy(), mutable.getThrownProxy(), "proxy");
+        assertEquals(source.getTimeMillis(), mutable.getTimeMillis(), "millis");
     }
 
     @Test
@@ -136,23 +135,23 @@ public class MutableLogEventTest {
                 .build();
         final MutableLogEvent mutable = new MutableLogEvent();
         mutable.initFrom(source);
-        assertEquals("format", "msg in a {}", mutable.getFormat());
-        assertEquals("formatted", "msg in a bottle", mutable.getFormattedMessage());
-        assertEquals("parameters", new String[] {"bottle"}, mutable.getParameters());
+        assertEquals("msg in a {}", mutable.getFormat(), "format");
+        assertEquals("msg in a bottle", mutable.getFormattedMessage(), "formatted");
+        assertArrayEquals(new String[] {"bottle"}, mutable.getParameters(), "parameters");
         Message memento = mutable.memento();
-        assertEquals("format", "msg in a {}", memento.getFormat());
-        assertEquals("formatted", "msg in a bottle", memento.getFormattedMessage());
-        assertEquals("parameters", new String[] {"bottle"}, memento.getParameters());
+        assertEquals("msg in a {}", memento.getFormat(), "format");
+        assertEquals("msg in a bottle", memento.getFormattedMessage(), "formatted");
+        assertArrayEquals(new String[] {"bottle"}, memento.getParameters(), "parameters");
 
         Message eventMementoMessage = mutable.createMemento().getMessage();
-        assertEquals("format", "msg in a {}", eventMementoMessage.getFormat());
-        assertEquals("formatted", "msg in a bottle", eventMementoMessage.getFormattedMessage());
-        assertEquals("parameters", new String[] {"bottle"}, eventMementoMessage.getParameters());
+        assertEquals("msg in a {}", eventMementoMessage.getFormat(), "format");
+        assertEquals("msg in a bottle", eventMementoMessage.getFormattedMessage(), "formatted");
+        assertArrayEquals(new String[] {"bottle"}, eventMementoMessage.getParameters(), "parameters");
 
         Message log4JLogEventMessage = new Log4jLogEvent.Builder(mutable).build().getMessage();
-        assertEquals("format", "msg in a {}", log4JLogEventMessage.getFormat());
-        assertEquals("formatted", "msg in a bottle", log4JLogEventMessage.getFormattedMessage());
-        assertEquals("parameters", new String[] {"bottle"}, log4JLogEventMessage.getParameters());
+        assertEquals("msg in a {}", log4JLogEventMessage.getFormat(), "format");
+        assertEquals("msg in a bottle", log4JLogEventMessage.getFormattedMessage(), "formatted");
+        assertArrayEquals(new String[] {"bottle"}, log4JLogEventMessage.getParameters(), "parameters");
     }
 
     @Test
@@ -178,13 +177,13 @@ public class MutableLogEventTest {
                 .build();
         final MutableLogEvent mutable = new MutableLogEvent();
         mutable.initFrom(source);
-        assertNull("format", mutable.getFormat());
-        assertEquals("formatted", param.toString(), mutable.getFormattedMessage());
-        assertEquals("parameters", new Object[] {param}, mutable.getParameters());
+        assertNull(mutable.getFormat(), "format");
+        assertEquals(param.toString(), mutable.getFormattedMessage(), "formatted");
+        assertArrayEquals(new Object[] {param}, mutable.getParameters(), "parameters");
         Message memento = mutable.memento();
-        assertNull("format", memento.getFormat());
-        assertEquals("formatted", param.toString(), memento.getFormattedMessage());
-        assertEquals("parameters", new Object[] {param}, memento.getParameters());
+        assertNull(memento.getFormat(), "format");
+        assertEquals(param.toString(), memento.getFormattedMessage(), "formatted");
+        assertArrayEquals(new Object[] {param}, memento.getParameters(), "parameters");
     }
 
     @Test
@@ -194,24 +193,24 @@ public class MutableLogEventTest {
         ReusableSimpleMessage simpleMessage = new ReusableSimpleMessage();
         simpleMessage.set("");
         mutable.setMessage(simpleMessage);
-        assertEquals("context data", 0, mutable.getContextData().size());
-        assertNull("context stack", mutable.getContextStack());
-        assertFalse("end of batch", mutable.isEndOfBatch());
-        assertFalse("incl loc", mutable.isIncludeLocation());
-        assertSame("level", Level.OFF, mutable.getLevel());
-        assertNull("fqcn", mutable.getLoggerFqcn());
-        assertNull("logger", mutable.getLoggerName());
-        assertNull("marker", mutable.getMarker());
-        assertEquals("msg", mutable, mutable.getMessage());
-        assertEquals("nanoTm", 0, mutable.getNanoTime());
-        assertEquals("tid", 0, mutable.getThreadId());
-        assertNull("tname", mutable.getThreadName());
-        assertEquals("tpriority", 0, mutable.getThreadPriority());
-        assertNull("thrwn", mutable.getThrown());
-        assertEquals("timeMs", 0, mutable.getTimeMillis());
+        assertEquals(0, mutable.getContextData().size(), "context data");
+        assertNull(mutable.getContextStack(), "context stack");
+        assertFalse(mutable.isEndOfBatch(), "end of batch");
+        assertFalse(mutable.isIncludeLocation(), "incl loc");
+        assertSame(Level.OFF, mutable.getLevel(), "level");
+        assertNull(mutable.getLoggerFqcn(), "fqcn");
+        assertNull(mutable.getLoggerName(), "logger");
+        assertNull(mutable.getMarker(), "marker");
+        assertEquals(mutable, mutable.getMessage(), "msg");
+        assertEquals(0, mutable.getNanoTime(), "nanoTm");
+        assertEquals(0, mutable.getThreadId(), "tid");
+        assertNull(mutable.getThreadName(), "tname");
+        assertEquals(0, mutable.getThreadPriority(), "tpriority");
+        assertNull(mutable.getThrown(), "thrwn");
+        assertEquals(0, mutable.getTimeMillis(), "timeMs");
 
-        assertNull("source", mutable.getSource());
-        assertNull("thrownProxy", mutable.getThrownProxy());
+        assertNull(mutable.getSource(), "source");
+        assertNull(mutable.getThrownProxy(), "thrownProxy");
 
         mutable.setContextData(CONTEXT_DATA);
         mutable.setContextStack(STACK);
@@ -229,47 +228,47 @@ public class MutableLogEventTest {
         mutable.setThrown(new Exception());
         mutable.setTimeMillis(56789);
 
-        assertNotNull("context stack", mutable.getContextStack());
-        assertTrue("end of batch", mutable.isEndOfBatch());
-        assertTrue("incl loc", mutable.isIncludeLocation());
-        assertNotNull("level", mutable.getLevel());
-        assertNotNull("fqcn", mutable.getLoggerFqcn());
-        assertNotNull("logger", mutable.getLoggerName());
-        assertNotNull("marker", mutable.getMarker());
-        assertEquals("msg", new ParameterizedMessage("message in a {}", "bottle"), mutable.getMessage());
-        assertNotEquals("nanoTm", 0, mutable.getNanoTime());
-        assertNotEquals("tid", 0, mutable.getThreadId());
-        assertNotNull("tname", mutable.getThreadName());
-        assertNotEquals("tpriority", 0, mutable.getThreadPriority());
-        assertNotNull("thrwn", mutable.getThrown());
-        assertNotEquals("timeMs", 0, mutable.getTimeMillis());
+        assertNotNull(mutable.getContextStack(), "context stack");
+        assertTrue(mutable.isEndOfBatch(), "end of batch");
+        assertTrue(mutable.isIncludeLocation(), "incl loc");
+        assertNotNull(mutable.getLevel(), "level");
+        assertNotNull(mutable.getLoggerFqcn(), "fqcn");
+        assertNotNull(mutable.getLoggerName(), "logger");
+        assertNotNull(mutable.getMarker(), "marker");
+        assertEquals(new ParameterizedMessage("message in a {}", "bottle"), mutable.getMessage(), "msg");
+        assertNotEquals(0, mutable.getNanoTime(), "nanoTm");
+        assertNotEquals(0, mutable.getThreadId(), "tid");
+        assertNotNull(mutable.getThreadName(), "tname");
+        assertNotEquals(0, mutable.getThreadPriority(), "tpriority");
+        assertNotNull(mutable.getThrown(), "thrwn");
+        assertNotEquals(0, mutable.getTimeMillis(), "timeMs");
 
-        assertNotNull("source", mutable.getSource());
-        assertNotNull("thrownProxy", mutable.getThrownProxy());
+        assertNotNull(mutable.getSource(), "source");
+        assertNotNull(mutable.getThrownProxy(), "thrownProxy");
 
         mutable.clear();
-        assertEquals("context map", 0, mutable.getContextData().size());
-        assertNull("context stack", mutable.getContextStack());
-        assertSame("level", Level.OFF, mutable.getLevel());
-        assertNull("fqcn", mutable.getLoggerFqcn());
-        assertNull("logger", mutable.getLoggerName());
-        assertNull("marker", mutable.getMarker());
-        assertEquals("msg", mutable, mutable.getMessage());
-        assertNull("thrwn", mutable.getThrown());
+        assertEquals(0, mutable.getContextData().size(), "context map");
+        assertNull(mutable.getContextStack(), "context stack");
+        assertSame(Level.OFF, mutable.getLevel(), "level");
+        assertNull(mutable.getLoggerFqcn(), "fqcn");
+        assertNull(mutable.getLoggerName(), "logger");
+        assertNull(mutable.getMarker(), "marker");
+        assertEquals(mutable, mutable.getMessage(), "msg");
+        assertNull(mutable.getThrown(), "thrwn");
 
-        assertNull("source", mutable.getSource());
-        assertNull("thrownProxy", mutable.getThrownProxy());
+        assertNull(mutable.getSource(), "source");
+        assertNull(mutable.getThrownProxy(), "thrownProxy");
 
         // primitive fields are NOT reset:
-        assertTrue("end of batch", mutable.isEndOfBatch());
-        assertTrue("incl loc", mutable.isIncludeLocation());
-        assertNotEquals("nanoTm", 0, mutable.getNanoTime());
-        assertNotEquals("timeMs", 0, mutable.getTimeMillis());
+        assertTrue(mutable.isEndOfBatch(), "end of batch");
+        assertTrue(mutable.isIncludeLocation(), "incl loc");
+        assertNotEquals(0, mutable.getNanoTime(), "nanoTm");
+        assertNotEquals(0, mutable.getTimeMillis(), "timeMs");
 
         // thread-local fields are NOT reset:
-        assertNotEquals("tid", 0, mutable.getThreadId());
-        assertNotNull("tname", mutable.getThreadName());
-        assertNotEquals("tpriority", 0, mutable.getThreadPriority());
+        assertNotEquals(0, mutable.getThreadId(), "tid");
+        assertNotNull(mutable.getThreadName(), "tname");
+        assertNotEquals(0, mutable.getThreadPriority(), "tpriority");
     }
 
     @Test
@@ -316,7 +315,6 @@ public class MutableLogEventTest {
 
     @Test
     public void testJavaIoSerializableWithThrown() throws Exception {
-        new InternalError("test error");
         final MutableLogEvent evt = new MutableLogEvent();
         evt.setContextData(CONTEXT_DATA);
         evt.setContextStack(STACK);
@@ -366,6 +364,7 @@ public class MutableLogEventTest {
         return arr.toByteArray();
     }
 
+    @SuppressWarnings("BanSerializableRead")
     private Log4jLogEvent deserialize(final byte[] binary) throws IOException, ClassNotFoundException {
         final ByteArrayInputStream inArr = new ByteArrayInputStream(binary);
         final ObjectInputStream in = useObjectInputStream ? new ObjectInputStream(inArr) :

@@ -447,21 +447,21 @@
       <version>${project.version}</version>
       <classifier>javadoc</classifier>
     </dependency>
-    <!-- log4j-mongodb2 -->    
+    <!-- log4j-mongodb4 -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-mongodb2</artifactId>
+      <artifactId>log4j-mongodb4</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-mongodb2</artifactId>
+      <artifactId>log4j-mongodb4</artifactId>
       <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-mongodb2</artifactId>
+      <artifactId>log4j-mongodb4</artifactId>
       <version>${project.version}</version>
       <classifier>javadoc</classifier>
     </dependency>
@@ -551,6 +551,23 @@
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-docker</artifactId>
+      <version>${project.version}</version>
+      <classifier>javadoc</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-spring-boot</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-spring-boot</artifactId>
+      <version>${project.version}</version>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-spring-boot</artifactId>
       <version>${project.version}</version>
       <classifier>javadoc</classifier>
     </dependency>

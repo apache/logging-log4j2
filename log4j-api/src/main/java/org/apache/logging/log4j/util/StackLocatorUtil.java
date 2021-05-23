@@ -26,7 +26,7 @@ import java.util.Stack;
  */
 public final class StackLocatorUtil {
     private static StackLocator stackLocator = null;
-    private static volatile boolean errorLogged = false;
+    private static volatile boolean errorLogged;
 
     static {
         stackLocator = StackLocator.getInstance();
@@ -47,16 +47,35 @@ public final class StackLocatorUtil {
     public static StackTraceElement getStackTraceElement(final int depth) {
         return stackLocator.getStackTraceElement(depth + 1);
     }
+
+    /**
+     * Equivalent to {@link #getCallerClass(String, String)} with an empty {@code pkg}.
+     */
     // migrated from ClassLoaderContextSelector
     @PerformanceSensitive
     public static Class<?> getCallerClass(final String fqcn) {
         return getCallerClass(fqcn, Strings.EMPTY);
     }
 
-    // migrated from Log4jLoggerFactory
+    /**
+     * Equivalent to {@link #getCallerClass(String, String, int)} with {@code skipDepth = 0}.
+     */
     @PerformanceSensitive
     public static Class<?> getCallerClass(final String fqcn, final String pkg) {
         return stackLocator.getCallerClass(fqcn, pkg);
+    }
+
+    /**
+     * Search for a calling class.
+     *
+     * @param fqcn Root class name whose caller to search for.
+     * @param pkg Package name prefix that must be matched after the {@code fqcn} has been found.
+     * @param skipDepth Number of stack frames to skip after the {@code fqcn} and {@code pkg} have been matched.
+     * @return The caller class that was matched, or null if one could not be located.
+     */
+    @PerformanceSensitive
+    public static Class<?> getCallerClass(final String fqcn, final String pkg, final int skipDepth) {
+        return stackLocator.getCallerClass(fqcn, pkg, skipDepth);
     }
 
     // added for use in LoggerAdapter implementations mainly

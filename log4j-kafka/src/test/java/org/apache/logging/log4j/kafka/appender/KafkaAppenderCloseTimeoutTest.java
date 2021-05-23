@@ -22,11 +22,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.kafka.clients.producer.MockProducer;
 import org.apache.kafka.clients.producer.Producer;
-import org.apache.logging.log4j.categories.Appenders;
+import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.apache.logging.log4j.kafka.appender.KafkaManager;
-import org.apache.logging.log4j.kafka.appender.KafkaProducerFactory;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;

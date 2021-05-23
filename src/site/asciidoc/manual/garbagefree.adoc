@@ -179,6 +179,11 @@ them.
 GelfLayout is garbage-free when used with compressionType="OFF", as long
 as no additional field contains '${' (variable substitution).
 
+==== JsonTemplateLayout
+
+`JsonTemplateLayout` is garbage-free with
+link:json-template-layout.html#faq-garbage-free[a few exceptions].
+
 ==== PatternLayout
 
 PatternLayout with the following limited set of conversion patterns is
@@ -426,6 +431,8 @@ creates a vararg array. Logging a lambda expression by itself is
 garbage-free: `logger.debug(() -> callExpensiveMethod())`.
 * The `Logger.traceEntry` and `Logger.traceExit` methods create
 temporary objects.
+* Time calculations are not garbage free when log4j2.usePreciseClock is set to true.
+The default is false.
 ****
 
 [#Performance]

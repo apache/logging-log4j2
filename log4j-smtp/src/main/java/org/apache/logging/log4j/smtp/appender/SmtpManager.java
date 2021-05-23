@@ -35,6 +35,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeUtility;
 import javax.mail.util.ByteArrayDataSource;
+import javax.net.ssl.SSLSocketFactory;
 
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Layout;
@@ -46,6 +47,7 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.MutableLogEvent;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout.Serializer;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.util.CyclicBuffer;
 import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.core.util.NetUtils;
@@ -100,12 +102,36 @@ public class SmtpManager extends AbstractManager {
                                              final String from, final String replyTo,
                                              final String subject, String protocol, final String host,
                                              final int port, final String username, final String password,
-                                             final boolean isDebug, final String filterName, final int numElements) {
+                                             final boolean isDebug, final String filterName, final int numElements,
+                                             final SslConfiguration sslConfiguration) {
         if (Strings.isEmpty(protocol)) {
             protocol = "smtp";
         }
 
+        final String managerName = createManagerName(to, cc, bcc, from, replyTo, subject, protocol, host, username, password, isDebug, filterName);
+        final Serializer subjectSerializer = PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(subject).build();
+
+        return getManager(managerName, FACTORY, new FactoryData(to, cc, bcc, from, replyTo, subjectSerializer,
+            protocol, host, port, username, password, isDebug, numElements, sslConfiguration));
+
+    }
+
+    private static String createManagerName(
+            final String to,
+            final String cc,
+            final String bcc,
+            final String from,
+            final String replyTo,
+            final String subject,
+            final String protocol,
+            final String host,
+            final String username,
+            final String password,
+            final boolean isDebug,
+            final String filterName) {
+
         final StringBuilder sb = new StringBuilder();
+
         if (to != null) {
             sb.append(to);
         }
@@ -141,11 +167,9 @@ public class SmtpManager extends AbstractManager {
         sb.append(isDebug ? ":debug:" : "::");
         sb.append(filterName);
 
-        final String name = "SMTP:" + NameUtil.md5(sb.toString());
-        final Serializer subjectSerializer = PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(subject).build();
+        final String hash = NameUtil.md5(sb.toString());
+        return "SMTP:" + hash;
 
-        return getManager(name, FACTORY, new FactoryData(to, cc, bcc, from, replyTo, subjectSerializer,
-            protocol, host, port, username, password, isDebug, numElements));
     }
 
     /**
@@ -276,10 +300,12 @@ public class SmtpManager extends AbstractManager {
         private final String password;
         private final boolean isDebug;
         private final int numElements;
+        private final SslConfiguration sslConfiguration;
 
         public FactoryData(final String to, final String cc, final String bcc, final String from, final String replyTo,
                            final Serializer subjectSerializer, final String protocol, final String host, final int port,
-                           final String username, final String password, final boolean isDebug, final int numElements) {
+                           final String username, final String password, final boolean isDebug, final int numElements,
+                           final SslConfiguration sslConfiguration) {
             this.to = to;
             this.cc = cc;
             this.bcc = bcc;
@@ -293,6 +319,7 @@ public class SmtpManager extends AbstractManager {
             this.password = password;
             this.isDebug = isDebug;
             this.numElements = numElements;
+            this.sslConfiguration = sslConfiguration;
         }
     }
 
@@ -318,22 +345,31 @@ public class SmtpManager extends AbstractManager {
             final String prefix = "mail." + data.protocol;
 
             final Properties properties = PropertiesUtil.getSystemProperties();
-            properties.put("mail.transport.protocol", data.protocol);
+            properties.setProperty("mail.transport.protocol", data.protocol);
             if (properties.getProperty("mail.host") == null) {
                 // Prevent an UnknownHostException in Java 7
-                properties.put("mail.host", NetUtils.getLocalHostname());
+                properties.setProperty("mail.host", NetUtils.getLocalHostname());
             }
 
             if (null != data.host) {
-                properties.put(prefix + ".host", data.host);
+                properties.setProperty(prefix + ".host", data.host);
             }
             if (data.port > 0) {
-                properties.put(prefix + ".port", String.valueOf(data.port));
+                properties.setProperty(prefix + ".port", String.valueOf(data.port));
             }
 
             final Authenticator authenticator = buildAuthenticator(data.username, data.password);
             if (null != authenticator) {
-                properties.put(prefix + ".auth", "true");
+                properties.setProperty(prefix + ".auth", "true");
+            }
+
+            if (data.protocol.equals("smtps")) {
+                final SslConfiguration sslConfiguration = data.sslConfiguration;
+                if (sslConfiguration != null) {
+                    final SSLSocketFactory sslSocketFactory = sslConfiguration.getSslSocketFactory();
+                    properties.put(prefix + ".ssl.socketFactory", sslSocketFactory);
+                    properties.setProperty(prefix + ".ssl.checkserveridentity", Boolean.toString(sslConfiguration.isVerifyHostName()));
+                }
             }
 
             final Session session = Session.getInstance(properties, authenticator);

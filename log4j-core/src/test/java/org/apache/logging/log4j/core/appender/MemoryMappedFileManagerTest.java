@@ -16,17 +16,16 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the MemoryMappedFileManager class.
@@ -35,12 +34,13 @@ import org.junit.Test;
  */
 public class MemoryMappedFileManagerTest {
 
+    @TempDir
+    File tempDir;
+
     @Test
     public void testRemapAfterInitialMapSizeExceeded() throws IOException {
         final int mapSize = 64; // very small, on purpose
-        final File file = File.createTempFile("log4j2", "test");
-        file.deleteOnExit();
-        assertEquals(0, file.length());
+        final File file = new File(tempDir, "memory-mapped-file.bin");
 
         final boolean append = false;
         final boolean immediateFlush = false;
@@ -57,8 +57,8 @@ public class MemoryMappedFileManagerTest {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line = reader.readLine();
             for (int i = 0; i < 1000; i++) {
-                assertNotNull("line", line);
-                assertTrue("line incorrect", line.contains("Message " + i));
+                assertNotNull(line, "line");
+                assertTrue(line.contains("Message " + i), "line incorrect");
                 line = reader.readLine();
             }
         }
@@ -66,9 +66,7 @@ public class MemoryMappedFileManagerTest {
 
     @Test
     public void testAppendDoesNotOverwriteExistingFile() throws IOException {
-        final File file = File.createTempFile("log4j2", "test");
-        file.deleteOnExit();
-        assertEquals(0, file.length());
+        final File file = new File(tempDir, "memory-mapped-file.bin");
 
         final int initialLength = 4 * 1024;
 
@@ -77,7 +75,7 @@ public class MemoryMappedFileManagerTest {
             fos.write(new byte[initialLength], 0, initialLength);
             fos.flush();
         }
-        assertEquals("all flushed to disk", initialLength, file.length());
+        assertEquals(initialLength, file.length(), "all flushed to disk");
 
         final boolean isAppend = true;
         final boolean immediateFlush = false;
@@ -86,6 +84,6 @@ public class MemoryMappedFileManagerTest {
             manager.writeBytes(new byte[initialLength], 0, initialLength);
         }
         final int expected = initialLength * 2;
-        assertEquals("appended, not overwritten", expected, file.length());
+        assertEquals(expected, file.length(), "appended, not overwritten");
     }
 }

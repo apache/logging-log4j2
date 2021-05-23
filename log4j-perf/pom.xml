@@ -21,17 +21,12 @@
     <artifactId>log4j</artifactId>
     <groupId>org.apache.logging.log4j</groupId>
     <version>3.0.0-SNAPSHOT</version>
-    <relativePath>../</relativePath>
   </parent>
 
   <artifactId>log4j-perf</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4J Performance Tests</name>
   <description>The Apache Log4j development-time performance tests</description>
-
-  <prerequisites>
-    <maven>3.0</maven>
-  </prerequisites>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -42,6 +37,7 @@
     <javac.target>1.7</javac.target>
     <uberjar.name>benchmarks</uberjar.name>
     <revapi.skip>true</revapi.skip>
+    <maven.doap.skip>true</maven.doap.skip>
   </properties>
 
   <dependencies>
@@ -77,6 +73,22 @@
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-jpa</artifactId>
       <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-layout-jackson-json</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-layout-template-json</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-layout-template-json</artifactId>
+      <version>${project.version}</version>
+      <type>test-jar</type>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -152,39 +164,22 @@
       <artifactId>jackson-databind</artifactId>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>co.elastic.logging</groupId>
+      <artifactId>log4j2-ecs-layout</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-toolchains-plugin</artifactId>
-        <version>1.1</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>toolchain</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <toolchains>
-            <jdk>
-              <version>[11, )</version>
-            </jdk>
-          </toolchains>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${compiler.plugin.version}</version>
-        <configuration>
-          <compilerVersion>9</compilerVersion>
-          <source>9</source>
-          <target>9</target>
-          <!-- disable errorprone -->
-          <compilerId>javac</compilerId>
+        <configuration combine.self="override">
+          <source>${maven.compiler.source}</source>
+          <target>${maven.compiler.target}</target>
+          <release>${maven.compiler.release}</release>
         </configuration>
       </plugin>
       <plugin>
@@ -255,7 +250,13 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
-        <version>${deploy.plugin.version}</version>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
         <configuration>
           <skip>true</skip>
         </configuration>

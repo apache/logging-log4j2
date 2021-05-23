@@ -31,38 +31,47 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>API Documentation</docLabel>
     <projectDir>/api</projectDir>
+    <maven.doap.skip>true</maven.doap.skip>
   </properties>
   <dependencies>
     <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-api-java9</artifactId>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.framework</artifactId>
       <scope>provided</scope>
-      <type>zip</type>
-    </dependency>
-    <!-- Place Felix before Equinox because Felix is signed. / also place it before org.osgi.core so that its versions of the OSGi classes are used -->
-    <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.apache.felix.framework</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
+      <artifactId>org.osgi.resource</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.tycho</groupId>
-      <artifactId>org.eclipse.osgi</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-migrationsupport</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-core</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-all</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -87,66 +96,167 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.0.2</version>
+        <artifactId>maven-clean-plugin</artifactId>
         <executions>
           <execution>
-            <id>unpack-classes</id>
-            <phase>prepare-package</phase>
+            <id>clean</id>
+            <phase>initialize</phase>
             <goals>
-              <goal>unpack</goal>
+              <goal>clean</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>delete-test-module-info</id>
+            <phase>generate-test-resources</phase>
+            <goals>
+              <goal>clean</goal>
             </goals>
             <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.apache.logging.log4j</groupId>
-                  <artifactId>log4j-api-java9</artifactId>
-                  <version>${project.version}</version>
-                  <type>zip</type>
-                  <overWrite>false</overWrite>
-                </artifactItem>
-              </artifactItems>
-              <includes>**/*.class</includes>
-              <excludes>**/*.java</excludes>
-              <outputDirectory>${project.build.directory}</outputDirectory>
-              <overWriteReleases>false</overWriteReleases>
-              <overWriteSnapshots>true</overWriteSnapshots>
+              <excludeDefaultDirectories>true</excludeDefaultDirectories>
+              <verbose>true</verbose>
+              <filesets>
+                <fileset>
+                  <directory>${project.build.testOutputDirectory}</directory>
+                  <followSymlinks>false</followSymlinks>
+                  <useDefaultExcludes>true</useDefaultExcludes>
+                  <includes>
+                    <include>module-info.class</include>
+                  </includes>
+                </fileset>
+              </filesets>
             </configuration>
           </execution>
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <version>1.7</version>
+        <artifactId>maven-compiler-plugin</artifactId>
         <executions>
           <execution>
-            <id>add-source</id>
-            <phase>generate-sources</phase>
+            <id>default-compile</id>
             <goals>
-              <goal>add-source</goal>
+              <goal>compile</goal>
             </goals>
-            <configuration>
-              <sources>
-                <source>${project.build.directory}/log4j-api-java9</source>
-              </sources>
+            <configuration combine.self="override">
+              <source>${maven.compiler.source}</source>
+              <target>${maven.compiler.target}</target>
+              <release>${maven.compiler.release}</release>
+              <showDeprecation>true</showDeprecation>
+              <showWarnings>true</showWarnings>
+              <encoding>UTF-8</encoding>
+              <fork>true</fork>
+              <meminitial>256</meminitial>
+              <maxmem>1024</maxmem>
+              <compilerArgs>
+                <arg>-XDcompilePolicy=simple</arg>
+                <arg>-Xplugin:ErrorProne</arg>
+              </compilerArgs>
+              <compilerArguments>
+                <Xmaxwarns>10000</Xmaxwarns>
+                <Xlint />
+              </compilerArguments>
+              <annotationProcessorPaths>
+                <path>
+                  <groupId>com.google.errorprone</groupId>
+                  <artifactId>error_prone_core</artifactId>
+                  <version>${errorprone.version}</version>
+                </path>
+              </annotationProcessorPaths>
+              <forceJavacCompilerUse>true</forceJavacCompilerUse>
+              <parameters>true</parameters>
+            </configuration>
+          </execution>
+          <execution>
+            <!-- compile only the classes used by other modules. -->
+            <id>compile-test-utils</id>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+            <phase>generate-test-sources</phase>
+            <configuration combine.self="override">
+              <source>${maven.compiler.source}</source>
+              <target>${maven.compiler.target}</target>
+              <release>${maven.compiler.release}</release>
+              <showDeprecation>true</showDeprecation>
+              <showWarnings>true</showWarnings>
+              <encoding>UTF-8</encoding>
+              <fork>true</fork>
+              <meminitial>256</meminitial>
+              <maxmem>1024</maxmem>
+              <compilerArgs>
+                <arg>-XDcompilePolicy=simple</arg>
+                <arg>-Xplugin:ErrorProne</arg>
+              </compilerArgs>
+              <compilerArguments>
+                <Xmaxwarns>10000</Xmaxwarns>
+                <Xlint />
+              </compilerArguments>
+              <annotationProcessorPaths>
+                <path>
+                  <groupId>com.google.errorprone</groupId>
+                  <artifactId>error_prone_core</artifactId>
+                  <version>${errorprone.version}</version>
+                </path>
+              </annotationProcessorPaths>
+              <forceJavacCompilerUse>true</forceJavacCompilerUse>
+              <parameters>true</parameters>
+              <compileSourceRoots>
+                <compileSourceRoot>${project.basedir}/src/test/java-test</compileSourceRoot>
+              </compileSourceRoots>
+            </configuration>
+          </execution>
+          <execution>
+            <!-- compile the test source -->
+            <id>default-testCompile</id>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+            <configuration combine.self="override">
+              <source>${maven.compiler.source}</source>
+              <target>${maven.compiler.target}</target>
+              <release>${maven.compiler.release}</release>
+              <showDeprecation>true</showDeprecation>
+              <showWarnings>true</showWarnings>
+              <encoding>UTF-8</encoding>
+              <fork>true</fork>
+              <meminitial>256</meminitial>
+              <maxmem>1024</maxmem>
+              <compilerArgs>
+                <arg>-XDcompilePolicy=simple</arg>
+                <arg>-Xplugin:ErrorProne</arg>
+              </compilerArgs>
+              <compilerArguments>
+                <Xmaxwarns>10000</Xmaxwarns>
+                <Xlint />
+              </compilerArguments>
+              <annotationProcessorPaths>
+                <path>
+                  <groupId>com.google.errorprone</groupId>
+                  <artifactId>error_prone_core</artifactId>
+                  <version>${errorprone.version}</version>
+                </path>
+              </annotationProcessorPaths>
+              <forceJavacCompilerUse>true</forceJavacCompilerUse>
+              <parameters>true</parameters>
             </configuration>
           </execution>
         </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-compile</id>
-            <!-- recompile everything for target VM except the module-info.java -->
-            <configuration>
-              <source>1.8</source>
-              <target>1.8</target>
-            </configuration>
-          </execution>
-        </executions>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <properties>
+            <configurationParameters>
+              <!-- LOG4J2-2921: use parallel test execution by default -->
+              junit.jupiter.execution.parallel.enabled = true
+              junit.jupiter.execution.parallel.mode.default = concurrent
+            </configurationParameters>
+          </properties>
+          <forkCount>1C</forkCount>
+          <reuseForks>true</reuseForks>
+          <redirectTestOutputToFile>true</redirectTestOutputToFile>
+          <excludedGroups>performance,smoke</excludedGroups>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -170,7 +280,6 @@
                   <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
                   <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
                   <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
-                  <Multi-Release>true</Multi-Release>
                 </manifestEntries>
               </archive>
             </configuration>
@@ -180,6 +289,7 @@
             <goals>
               <goal>test-jar</goal>
             </goals>
+            <phase>process-test-sources</phase>
             <configuration>
               <archive>
                 <manifestFile>${manifestfile}</manifestFile>
@@ -250,8 +360,9 @@
           </reportSet>
         </reportSets>
         <configuration>
-          <issueLinkTemplate>%URL%/show_bug.cgi?id=%ISSUE%</issueLinkTemplate>
+          <issueLinkTemplate>%URL%/%ISSUE%</issueLinkTemplate>
           <useJql>true</useJql>
+          <component>API</component>
         </configuration>
       </plugin>
       <plugin>
@@ -284,6 +395,7 @@
           <links>
             <link>http://www.osgi.org/javadoc/r4v43/core/</link>
           </links>
+          <source>8</source>
         </configuration>
         <reportSets>
           <reportSet>
@@ -297,13 +409,6 @@
       <plugin>
         <groupId>com.github.spotbugs</groupId>
         <artifactId>spotbugs-maven-plugin</artifactId>
-        <configuration>
-          <fork>true</fork>
-          <jvmArgs>-Duser.language=en</jvmArgs>
-          <threshold>Normal</threshold>
-          <effort>Default</effort>
-          <excludeFilterFile>${log4jParentDir}/spotbugs-exclude-filter.xml</excludeFilterFile>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

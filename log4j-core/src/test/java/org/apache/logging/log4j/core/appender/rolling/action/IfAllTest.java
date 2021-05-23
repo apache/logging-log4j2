@@ -17,11 +17,9 @@
 
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import org.apache.logging.log4j.core.appender.rolling.action.IfAll;
-import org.apache.logging.log4j.core.appender.rolling.action.PathCondition;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the And composite condition.

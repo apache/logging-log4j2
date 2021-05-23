@@ -23,13 +23,10 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- */
 public class RegexReplacementConverterTest {
 
     @Test
@@ -47,6 +44,7 @@ public class RegexReplacementConverterTest {
         };
         final RegexReplacementConverter converter = RegexReplacementConverter.newInstance(ctx.getConfiguration(),
             options);
+        assertNotNull(converter);
         converter.format(event, sb);
         assertEquals("org/apache/logging/log4j/core/pattern/RegexReplacementConverterTest This is a test" +
             Strings.LINE_SEPARATOR, sb.toString());

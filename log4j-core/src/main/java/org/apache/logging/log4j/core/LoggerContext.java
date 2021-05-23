@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -43,6 +44,7 @@ import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.impl.ThreadContextDataInjector;
 import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.ExecutorServices;
@@ -58,7 +60,6 @@ import org.apache.logging.log4j.spi.LoggerRegistry;
 import org.apache.logging.log4j.spi.Terminable;
 import org.apache.logging.log4j.spi.ThreadContextMapFactory;
 import org.apache.logging.log4j.util.PropertiesUtil;
-
 
 /**
  * The LoggerContext is the anchor for the logging system. It maintains a list of all the loggers requested by
@@ -87,7 +88,7 @@ public class LoggerContext extends AbstractLifeCycle
 
     private final LoggerRegistry<Logger> loggerRegistry = new LoggerRegistry<>();
     private final CopyOnWriteArrayList<PropertyChangeListener> propertyChangeListeners = new CopyOnWriteArrayList<>();
-    private volatile List<LoggerContextShutdownAware> listeners = null;
+    private volatile List<LoggerContextShutdownAware> listeners;
 
     /**
      * The Configuration is volatile to guarantee that initialization of the Configuration has completed before the
@@ -136,6 +137,9 @@ public class LoggerContext extends AbstractLifeCycle
             externalMap.put(EXTERNAL_CONTEXT_KEY, externalContext);
         }
         this.configLocation = configLocn;
+        Thread runner = new Thread(new ThreadContextDataTask(), "Thread Context Data Task");
+        runner.setDaemon(true);
+        runner.start();
     }
 
     /**
@@ -164,6 +168,9 @@ public class LoggerContext extends AbstractLifeCycle
         } else {
             configLocation = null;
         }
+        Thread runner = new Thread(new ThreadContextDataTask(), "Thread Context Data Task");
+        runner.setDaemon(true);
+        runner.start();
     }
 
     public void addShutdownListener(LoggerContextShutdownAware listener) {
@@ -765,4 +772,13 @@ public class LoggerContext extends AbstractLifeCycle
         return new Logger(ctx, name, messageFactory);
     }
 
+    private class ThreadContextDataTask implements Runnable {
+
+        @Override
+        public void run() {
+            LOGGER.debug("Initializing Thread Context Data Service Providers");
+            ThreadContextDataInjector.initServiceProviders();
+            LOGGER.debug("Thread Context Data Service Provider initialization complete");
+        }
+    }
 }

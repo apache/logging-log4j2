@@ -16,19 +16,21 @@
  */
 package org.apache.logging.log4j.message;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Tests ParameterFormatter.
+ * Tests {@link ParameterFormatter}.
  */
 public class ParameterFormatterTest {
 
     @Test
-    public void testCountArgumentPlaceholders() throws Exception {
+    public void testCountArgumentPlaceholders() {
         assertEquals(0, ParameterFormatter.countArgumentPlaceholders(""));
         assertEquals(0, ParameterFormatter.countArgumentPlaceholders("aaa"));
         assertEquals(0, ParameterFormatter.countArgumentPlaceholders("\\{}"));
@@ -168,9 +170,10 @@ public class ParameterFormatterTest {
     }
 
     @Test
-    public void testDeepToString() throws Exception {
+    public void testDeepToString() {
         final List<Object> list = new ArrayList<>();
         list.add(1);
+        // noinspection CollectionAddedToSelf
         list.add(list);
         list.add(2);
         final String actual = ParameterFormatter.deepToString(list);
@@ -179,13 +182,29 @@ public class ParameterFormatterTest {
     }
 
     @Test
-    public void testIdentityToString() throws Exception {
+    public void testDeepToStringUsingNonRecursiveButConsequentObjects() {
+        final List<Object> list = new ArrayList<>();
+        final Object item = Collections.singletonList(0);
+        list.add(1);
+        list.add(item);
+        list.add(2);
+        list.add(item);
+        list.add(3);
+        final String actual = ParameterFormatter.deepToString(list);
+        final String expected = "[1, [0], 2, [0], 3]";
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testIdentityToString() {
         final List<Object> list = new ArrayList<>();
         list.add(1);
+        // noinspection CollectionAddedToSelf
         list.add(list);
         list.add(2);
         final String actual = ParameterFormatter.identityToString(list);
         final String expected = list.getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(list));
         assertEquals(expected, actual);
     }
+
 }

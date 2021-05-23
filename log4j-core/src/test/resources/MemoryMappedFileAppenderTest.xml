@@ -5,7 +5,7 @@
          fileName="target/MemoryMappedFileAppenderTest.log" 
          immediateFlush="false" append="false">
       <PatternLayout>
-        <Pattern>%d %p %c{1.} [%t] %X{aKey} %m%ex%n</Pattern>
+        <Pattern>%m%n</Pattern>
       </PatternLayout>
     </MemoryMappedFile>
   </Appenders>

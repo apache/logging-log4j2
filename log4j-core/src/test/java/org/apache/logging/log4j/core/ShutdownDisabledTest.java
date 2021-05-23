@@ -17,27 +17,17 @@
 package org.apache.logging.log4j.core;
 
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-/**
- *
- */
+@LoggerContextSource("log4j-test3.xml")
 public class ShutdownDisabledTest {
 
-    private static final String CONFIG = "log4j-test3.xml";
-
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
-
     @Test
-    public void testShutdownFlag() {
-        final Configuration config = context.getConfiguration();
-        assertNotNull("No configuration", config);
-        assertFalse("Shutdown hook is enabled", config.isShutdownHookEnabled());
+    public void testShutdownFlag(final Configuration config) {
+        assertFalse(config.isShutdownHookEnabled(), "Shutdown hook is enabled");
     }
 
 }

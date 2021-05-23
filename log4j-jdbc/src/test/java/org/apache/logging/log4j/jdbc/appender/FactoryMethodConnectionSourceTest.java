@@ -20,8 +20,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 
-import org.apache.logging.log4j.jdbc.appender.FactoryMethodConnectionSource;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.After;
 import org.junit.ClassRule;
 import org.junit.Test;

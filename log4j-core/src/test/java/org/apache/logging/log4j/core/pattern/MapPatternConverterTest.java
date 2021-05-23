@@ -21,13 +21,10 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.StringMapMessage;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- */
 public class MapPatternConverterTest {
 
     @Test
@@ -47,11 +44,11 @@ public class MapPatternConverterTest {
         converter.format(event, sb);
         final String str = sb.toString();
         String expected = "subject=I";
-        assertTrue("Missing or incorrect subject. Expected " + expected + ", actual " + str, str.contains(expected));
+        assertTrue(str.contains(expected), "Missing or incorrect subject. Expected " + expected + ", actual " + str);
         expected = "verb=love";
-        assertTrue("Missing or incorrect verb", str.contains(expected));
+        assertTrue(str.contains(expected), "Missing or incorrect verb");
         expected = "object=Log4j";
-        assertTrue("Missing or incorrect object", str.contains(expected));
+        assertTrue(str.contains(expected), "Missing or incorrect object");
 
         assertEquals("{object=Log4j, subject=I, verb=love}", str);
     }
@@ -93,11 +90,11 @@ public class MapPatternConverterTest {
         converter.format(event, sb);
         final String str = sb.toString();
         String expected = "subject=\"I\"";
-        assertTrue("Missing or incorrect subject. Expected " + expected + ", actual " + str, str.contains(expected));
+        assertTrue(str.contains(expected), "Missing or incorrect subject. Expected " + expected + ", actual " + str);
         expected = "verb=\"love\"";
-        assertTrue("Missing or incorrect verb", str.contains(expected));
+        assertTrue(str.contains(expected), "Missing or incorrect verb");
         expected = "object=\"Log4j\"";
-        assertTrue("Missing or incorrect object", str.contains(expected));
+        assertTrue(str.contains(expected), "Missing or incorrect object");
 
         assertEquals("{object=\"Log4j\", subject=\"I\", verb=\"love\"}", str);
     }

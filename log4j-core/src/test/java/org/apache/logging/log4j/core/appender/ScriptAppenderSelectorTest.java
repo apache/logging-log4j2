@@ -16,79 +16,44 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
-import org.apache.logging.log4j.categories.Scripts;
-import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.spi.ExtendedLogger;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-@RunWith(Parameterized.class)
-@Category(Scripts.Groovy.class)
 public class ScriptAppenderSelectorTest {
 
-    @Parameterized.Parameters(name = "{0}")
-    public static Object[][] getParameters() {
-        // @formatter:off
-        return new Object[][] { 
-            { "log4j-appender-selector-groovy.xml" },
-            { "log4j-appender-selector-javascript.xml" },
-        };
-        // @formatter:on
+    @Test
+    @LoggerContextSource("log4j-appender-selector-javascript.xml")
+    void testJavaScriptSelector(final Configuration config) {
+        verify(config);
     }
 
-    @Rule
-    public final LoggerContextRule loggerContextRule;
-
-    public ScriptAppenderSelectorTest(final String configLocation) {
-        this.loggerContextRule = new LoggerContextRule(configLocation);
+    @Test
+    @LoggerContextSource("log4j-appender-selector-groovy.xml")
+    void testGroovySelector(final Configuration config) {
+        verify(config);
     }
 
-    private ListAppender getListAppender() {
-        return loggerContextRule.getListAppender("SelectIt");
-    }
-
-    private void logAndCheck() {
-        final Marker marker = MarkerManager.getMarker("HEXDUMP");
-        final Logger logger = loggerContextRule.getLogger(ScriptAppenderSelectorTest.class);
+    static void verify(final Configuration config) {
+        assertNull(config.getAppender("List1"), "List1 appender should not be initialized");
+        assertNull(config.getAppender("List2"), "List2 appender should not be initialized");
+        final ListAppender listAppender = config.getAppender("SelectIt");
+        assertNotNull(listAppender);
+        final ExtendedLogger logger = config.getLoggerContext().getLogger(ScriptAppenderSelectorTest.class);
         logger.error("Hello");
-        final ListAppender listAppender = getListAppender();
-        assertEquals("Incorrect number of events", 1, listAppender.getEvents().size());
+        assertThat(listAppender.getEvents(), hasSize(1));
         logger.error("World");
-        assertEquals("Incorrect number of events", 2, listAppender.getEvents().size());
-        logger.error(marker, "DEADBEEF");
-        assertEquals("Incorrect number of events", 3, listAppender.getEvents().size());
+        assertThat(listAppender.getEvents(), hasSize(2));
+        logger.error(MarkerManager.getMarker("HEXDUMP"), "DEADBEEF");
+        assertThat(listAppender.getEvents(), hasSize(3));
     }
 
-    @Test(expected = AssertionError.class)
-    public void testAppender1Absence() {
-        loggerContextRule.getListAppender("List1");
-    }
-
-    @Test(expected = AssertionError.class)
-    public void testAppender2Absence() {
-        loggerContextRule.getListAppender("List2");
-    }
-
-    @Test
-    public void testAppenderPresence() {
-        getListAppender();
-    }
-
-    @Test
-    public void testLogging1() {
-        logAndCheck();
-    }
-
-    @Test
-    public void testLogging2() {
-        logAndCheck();
-    }
 }

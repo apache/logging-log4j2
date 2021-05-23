@@ -36,7 +36,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * This class implements {@link AutoCloseable} mostly to allow unit tests to be written safely and succinctly. While
  * managers do need to allocate resources (usually on construction) and then free these resources, a manager is longer
  * lived than other auto-closeable objects like streams. None the less, making a manager AutoCloseable forces readers to
- * be aware of the the pattern: allocate resources on construction and call {@link #close()} at some point.
+ * be aware of the pattern: allocate resources on construction and call {@link #close()} at some point.
  * </p>
  */
 public abstract class AbstractManager implements AutoCloseable {
@@ -126,6 +126,11 @@ public abstract class AbstractManager implements AutoCloseable {
         }
     }
 
+    /**
+     * Used by Log4j to update the Manager during reconfiguration. This method should be considered private.
+     * Implementations may not be thread safe. This method may be made protected in a future release.
+     * @param data The data to update.
+     */
     public void updateData(final Object data) {
         // This default implementation does nothing.
     }

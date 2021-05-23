@@ -31,23 +31,22 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Plugin Documentation</docLabel>
     <projectDir>/plugins</projectDir>
+    <maven.doap.skip>true</maven.doap.skip>
   </properties>
   <dependencies>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
     </dependency>
-    <!-- Classes and resources to be shaded into the core jar -->
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-plugins-java9</artifactId>
-      <scope>provided</scope>
-      <type>zip</type>
-    </dependency>
     <!-- Used for OSGi bundle support -->
     <dependency>
       <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
+      <artifactId>org.osgi.framework</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.resource</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -61,8 +60,13 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -75,30 +79,40 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.0.2</version>
+        <artifactId>maven-clean-plugin</artifactId>
         <executions>
           <execution>
-            <id>unpack-classes</id>
-            <phase>prepare-package</phase>
+            <id>clean</id>
+            <phase>initialize</phase>
             <goals>
-              <goal>unpack</goal>
+              <goal>clean</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>delete-test-module-info</id>
+            <phase>generate-test-sources</phase>
+            <goals>
+              <goal>clean</goal>
             </goals>
             <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.apache.logging.log4j</groupId>
-                  <artifactId>log4j-plugins-java9</artifactId>
-                  <version>${project.version}</version>
-                  <type>zip</type>
-                  <overWrite>false</overWrite>
-                </artifactItem>
-              </artifactItems>
-              <includes>**/*.class</includes>
-              <excludes>**/*.java</excludes>
-              <outputDirectory>${project.build.directory}</outputDirectory>
-              <overWriteReleases>false</overWriteReleases>
-              <overWriteSnapshots>true</overWriteSnapshots>
+              <excludeDefaultDirectories>true</excludeDefaultDirectories>
+              <verbose>true</verbose>
+              <filesets>
+                <fileset>
+                  <directory>${project.build.testOutputDirectory}</directory>
+                  <followSymlinks>false</followSymlinks>
+                  <useDefaultExcludes>true</useDefaultExcludes>
+                  <includes>
+                    <include>module-info.class</include>
+                    <include>**/Log4jPlugins.class</include>
+                  </includes>
+                </fileset>
+                <fileset>
+                  <directory>${project.build.directory}/generated-test-sources/test-annotations</directory>
+                  <followSymlinks>false</followSymlinks>
+                  <useDefaultExcludes>true</useDefaultExcludes>
+                </fileset>
+              </filesets>
             </configuration>
           </execution>
         </executions>
@@ -107,54 +121,195 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <executions>
           <execution>
-            <!-- disable annotation processing for first pass -->
-            <id>generate-plugins</id>
-            <phase>process-classes</phase>
+            <!-- build the plugin processor -->
+            <id>compile-processor</id>
+            <phase>generate-sources</phase>
             <goals>
               <goal>compile</goal>
             </goals>
-            <configuration>
-              <excludes>
-                <exclude>module-info.java</exclude>
-              </excludes>
+            <configuration combine.self="override">
+              <proc>none</proc>
             </configuration>
           </execution>
           <execution>
             <!-- then do a processing-only pass to generate plugins -->
-            <id>process-plugins</id>
+            <id>preprocess-plugins</id>
             <goals>
               <goal>compile</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration combine.self="override">
+              <source>${maven.compiler.source}</source>
+              <target>${maven.compiler.target}</target>
+              <proc>only</proc>
+              <compilerArguments>
+                <processor>org.apache.logging.log4j.plugins.processor.PluginProcessor</processor>
+              </compilerArguments>
+            </configuration>
+          </execution>
+          <execution>
+            <!-- capture the test plugins -->
+            <id>preprocess-test-plugins</id>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration combine.self="override">
+              <source>${maven.compiler.source}</source>
+              <target>${maven.compiler.target}</target>
+              <proc>only</proc>
+              <annotationProcessors>
+                <annotationProcessor>org.apache.logging.log4j.plugins.processor.PluginProcessor</annotationProcessor>
+              </annotationProcessors>
+              <compileSourceRoots>
+                <compileSourceRoot>${project.basedir}/src/test/java-test</compileSourceRoot>
+              </compileSourceRoots>
+              <parameters>true</parameters>
+            </configuration>
+          </execution>
+          <execution>
+            <!-- capture the test plugins -->
+            <id>preprocess-unit-test-plugins</id>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration combine.self="override">
+              <source>${maven.compiler.source}</source>
+              <target>${maven.compiler.target}</target>
+              <proc>only</proc>
+              <annotationProcessors>
+                <annotationProcessor>org.apache.logging.log4j.plugins.processor.PluginProcessor</annotationProcessor>
+              </annotationProcessors>
+              <compileSourceRoots>
+                <compileSourceRoot>${project.basedir}/src/test/java</compileSourceRoot>
+                <compileSourceRoot>${project.basedir}/src/test/java-test</compileSourceRoot>
+              </compileSourceRoots>
+              <generatedTestSourcesDirectory>${project.build.directory}/generated-test-sources/unit-test-annotations</generatedTestSourcesDirectory>
+              <outputDirectory>${project.build.directory}/unit-test-classes</outputDirectory>
+              <parameters>true</parameters>
+            </configuration>
+          </execution>
+          <execution>
+            <!-- compile the source -->
+            <id>default-compile</id>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <configuration combine.self="override">
+              <source>${maven.compiler.source}</source>
+              <target>${maven.compiler.target}</target>
+              <release>${maven.compiler.release}</release>
+              <showDeprecation>true</showDeprecation>
+              <showWarnings>true</showWarnings>
+              <encoding>UTF-8</encoding>
+              <fork>true</fork>
+              <meminitial>256</meminitial>
+              <maxmem>1024</maxmem>
+              <compilerArgs>
+                <arg>-XDcompilePolicy=simple</arg>
+                <arg>-Xplugin:ErrorProne</arg>
+              </compilerArgs>
+              <compilerArguments>
+                <Xmaxwarns>10000</Xmaxwarns>
+                <Xlint />
+              </compilerArguments>
+              <annotationProcessorPaths>
+                <path>
+                  <groupId>com.google.errorprone</groupId>
+                  <artifactId>error_prone_core</artifactId>
+                  <version>${errorprone.version}</version>
+                </path>
+              </annotationProcessorPaths>
+              <forceJavacCompilerUse>true</forceJavacCompilerUse>
+              <parameters>true</parameters>
+              <compileSourceRoots>
+                <compileSourceRoot>${project.basedir}/src/main/java</compileSourceRoot>
+                <compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
+              </compileSourceRoots>
+            </configuration>
+          </execution>
+          <execution>
+            <!-- then compile the test module-->
+            <id>process-test-plugins</id>
+            <goals>
+              <goal>testCompile</goal>
             </goals>
             <phase>process-classes</phase>
-            <configuration>
-              <excludes>
-                <exclude>module-info.java</exclude>
-              </excludes>
-              <proc>only</proc>
+            <configuration combine.self="override">
+              <source>${maven.compiler.source}</source>
+              <target>${maven.compiler.target}</target>
+              <proc>none</proc>
+              <compileSourceRoots>
+                <compileSourceRoot>${project.basedir}/src/test/java-test</compileSourceRoot>
+                <compileSourceRoot>${project.basedir}/src/test/java-test9</compileSourceRoot>
+              </compileSourceRoots>
+              <parameters>true</parameters>
             </configuration>
           </execution>
           <execution>
-            <!-- disable annotation processing for first pass -->
-            <id>generate-test-plugins</id>
-            <phase>generate-test-sources</phase>
+            <!-- compile the test source -->
+            <id>default-testCompile</id>
             <goals>
-              <goal>compile</goal>
+              <goal>testCompile</goal>
+            </goals>
+            <configuration combine.self="override">
+              <source>${maven.compiler.source}</source>
+              <target>${maven.compiler.target}</target>
+              <release>${maven.compiler.release}</release>
+              <showDeprecation>true</showDeprecation>
+              <showWarnings>true</showWarnings>
+              <encoding>UTF-8</encoding>
+              <fork>true</fork>
+              <meminitial>256</meminitial>
+              <maxmem>1024</maxmem>
+              <compilerArgs>
+                <arg>-XDcompilePolicy=simple</arg>
+                <arg>-Xplugin:ErrorProne</arg>
+              </compilerArgs>
+              <compilerArguments>
+                <Xmaxwarns>10000</Xmaxwarns>
+                <Xlint />
+              </compilerArguments>
+              <forceJavacCompilerUse>true</forceJavacCompilerUse>
+              <parameters>true</parameters>
+              <annotationProcessorPaths>
+                <path>
+                  <groupId>com.google.errorprone</groupId>
+                  <artifactId>error_prone_core</artifactId>
+                  <version>${errorprone.version}</version>
+                </path>
+              </annotationProcessorPaths>
+              <compileSourceRoots>
+                <compileSourceRoot>${project.basedir}/src/test/java</compileSourceRoot>
+                <compileSourceRoot>${project.basedir}/src/test/java9</compileSourceRoot>
+                <compileSourceRoot>${project.basedir}/src/test/java-test</compileSourceRoot>
+                <compileSourceRoot>${project.build.directory}/generated-test-sources/unit-test-annotations</compileSourceRoot>
+              </compileSourceRoots>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-service</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <excludes>
-                <exclude>module-info.java</exclude>
-              </excludes>
-              <proc>only</proc>
-            </configuration>
-          </execution>
-          <execution>
-            <!-- disable annotation processing for first pass -->
-            <id>default-compile</id>
-            <configuration>
-              <excludes>
-                <exclude>module-info.java</exclude>
-              </excludes>
-              <proc>none</proc>
+              <outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
+              <overwrite>true</overwrite>
+              <resources>
+                <resource>
+                  <directory>${project.build.directory}/unit-test-classes</directory>
+                  <includes>
+                    <include>**/*</include>
+                  </includes>
+                </resource>
+              </resources>
             </configuration>
           </execution>
         </executions>
@@ -162,6 +317,7 @@
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
+          <useModulePath>false</useModulePath>
           <excludedGroups>
             org.apache.logging.log4j.categories.PerformanceTests
           </excludedGroups>
@@ -199,20 +355,19 @@
                   <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
                   <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
                   <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
-                  <Automatic-Module-Name>org.apache.logging.log4j.plugins</Automatic-Module-Name>
-                  <Multi-Release>true</Multi-Release>
                 </manifestEntries>
               </archive>
             </configuration>
           </execution>
           <execution>
-            <id>default</id>
+            <id>test-jar</id>
             <goals>
               <goal>test-jar</goal>
             </goals>
+            <phase>process-classes</phase>
             <configuration>
               <archive>
-                <manifestFile>${manifestfile}</manifestFile>
+                <!--<manifestFile>${manifestfile}</manifestFile>-->
                 <manifestEntries>
                   <Specification-Title>${project.name}</Specification-Title>
                   <Specification-Version>${project.version}</Specification-Version>
@@ -263,8 +418,9 @@
           </reportSet>
         </reportSets>
         <configuration>
-          <issueLinkTemplate>%URL%/show_bug.cgi?id=%ISSUE%</issueLinkTemplate>
+          <issueLinkTemplate>%URL%/%ISSUE%</issueLinkTemplate>
           <useJql>true</useJql>
+          <component>Plugins</component>
         </configuration>
       </plugin>
       <plugin>
@@ -286,6 +442,7 @@
         <version>${javadoc.plugin.version}</version>
         <configuration>
           <failOnError>false</failOnError>
+          <source>8</source>
           <bottom><![CDATA[<p align="center">Copyright &#169; {inceptionYear}-{currentYear} {organizationName}. All Rights Reserved.<br />
             Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, the Apache Logging project logo,
             and the Apache Log4j logo are trademarks of The Apache Software Foundation.</p>]]></bottom>
@@ -334,13 +491,6 @@
       <plugin>
         <groupId>com.github.spotbugs</groupId>
         <artifactId>spotbugs-maven-plugin</artifactId>
-        <configuration>
-          <fork>true</fork>
-          <jvmArgs>-Duser.language=en</jvmArgs>
-          <threshold>Normal</threshold>
-          <effort>Default</effort>
-          <excludeFilterFile>${log4jParentDir}/spotbugs-exclude-filter.xml</excludeFilterFile>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

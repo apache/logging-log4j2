@@ -40,6 +40,10 @@ public abstract class AbstractJacksonFactory {
 
     abstract protected String getPropertyNameForContextMap();
 
+    abstract protected String getPropertyNameForTimeMillis();
+
+    abstract protected String getPropertyNameForInstant();
+
     abstract protected String getPropertyNameForNanoTime();
 
     abstract protected String getPropertyNameForSource();
@@ -52,9 +56,10 @@ public abstract class AbstractJacksonFactory {
 
     abstract protected PrettyPrinter newPrettyPrinter();
 
-    public ObjectWriter newWriter(final boolean locationInfo, final boolean properties, final boolean compact) {
+    public ObjectWriter newWriter(final boolean locationInfo, final boolean properties, final boolean compact,
+            final boolean includeMillis) {
         final SimpleFilterProvider filters = new SimpleFilterProvider();
-        final Set<String> except = new HashSet<>(4);
+        final Set<String> except = new HashSet<>(5);
         if (!locationInfo) {
             except.add(this.getPropertyNameForSource());
         }
@@ -63,6 +68,11 @@ public abstract class AbstractJacksonFactory {
         }
         if (!includeStacktrace) {
             except.add(this.getPropertyNameForStackTrace());
+        }
+        if (includeMillis) {
+            except.add(getPropertyNameForInstant());
+        } else {
+            except.add(getPropertyNameForTimeMillis());
         }
         except.add(this.getPropertyNameForNanoTime());
         filters.addFilter(Log4jLogEvent.class.getName(), SimpleBeanPropertyFilter.serializeAllExcept(except));

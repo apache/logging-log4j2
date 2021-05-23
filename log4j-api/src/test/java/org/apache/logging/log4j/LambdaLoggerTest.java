@@ -17,18 +17,18 @@
 
 package org.apache.logging.log4j;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.Supplier;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the AbstractLogger implementation of the Logger2 interface.
@@ -209,10 +209,10 @@ public class LambdaLoggerTest {
 
     final MySupplier supplier = new MySupplier();
     final MySupplier supplier2 = new MySupplier();
-    final Supplier[] supplierArray1 = new Supplier[] {supplier};
-    final Supplier[] supplierArray2 = new Supplier[] {supplier, supplier2};
+    final Supplier<?>[] supplierArray1 = new Supplier<?>[] {supplier};
+    final Supplier<?>[] supplierArray2 = new Supplier<?>[] {supplier, supplier2};
 
-    @Before
+    @BeforeEach
     public void beforeEachTest() {
         logger2.list.clear();
         supplier.invoked = false;

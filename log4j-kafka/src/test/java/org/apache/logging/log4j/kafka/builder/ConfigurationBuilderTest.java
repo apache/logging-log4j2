@@ -69,7 +69,7 @@ public class ConfigurationBuilderTest {
     }
 
     private final static String expectedXml =
-            "<?xml version=\"1.0\" ?>" + EOL +
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
             "<Configuration name=\"config name\" status=\"ERROR\" packages=\"foo,bar\" shutdownTimeout=\"5000\">" + EOL +
                 INDENT + "<Properties>" + EOL +
                 INDENT + INDENT + "<Property name=\"MyKey\">MyValue</Property>" + EOL +

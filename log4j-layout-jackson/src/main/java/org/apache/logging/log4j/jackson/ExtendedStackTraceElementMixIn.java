@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.impl.ExtendedStackTraceElement;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
@@ -31,6 +32,9 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  */
 @JsonPropertyOrder({
     //@formatter:off
+    ExtendedStackTraceElementMixIn.ATTR_CLASS_LOADER_NAME,
+    ExtendedStackTraceElementMixIn.ATTR_MODULE,
+    ExtendedStackTraceElementMixIn.ATTR_MODULE_VERSION,
     ExtendedStackTraceElementMixIn.ATTR_CLASS,
     ExtendedStackTraceElementMixIn.ATTR_METHOD,
     ExtendedStackTraceElementMixIn.ATTR_FILE,
@@ -42,6 +46,9 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 })
 public abstract class ExtendedStackTraceElementMixIn implements Serializable {
 
+    protected static final String ATTR_CLASS_LOADER_NAME = StackTraceElementConstants.ATTR_CLASS_LOADER_NAME;
+    protected static final String ATTR_MODULE = StackTraceElementConstants.ATTR_MODULE;
+    protected static final String ATTR_MODULE_VERSION = StackTraceElementConstants.ATTR_MODULE_VERSION;
     protected static final String ATTR_CLASS = StackTraceElementConstants.ATTR_CLASS;
     protected static final String ATTR_METHOD = StackTraceElementConstants.ATTR_METHOD;
     protected static final String ATTR_FILE = StackTraceElementConstants.ATTR_FILE;
@@ -55,6 +62,9 @@ public abstract class ExtendedStackTraceElementMixIn implements Serializable {
     @JsonCreator
     public ExtendedStackTraceElementMixIn(
     // @formatter:off
+            @JsonProperty(ATTR_CLASS_LOADER_NAME) final String classLoaderName,
+            @JsonProperty(ATTR_MODULE) final String moduleName,
+            @JsonProperty(ATTR_MODULE_VERSION) final String moduleVersion,
             @JsonProperty(ATTR_CLASS) final String declaringClass,
             @JsonProperty(ATTR_METHOD) final String methodName,
             @JsonProperty(ATTR_FILE) final String fileName,
@@ -66,6 +76,15 @@ public abstract class ExtendedStackTraceElementMixIn implements Serializable {
     ) {
         // empty
     }
+
+    @JsonProperty(ATTR_CLASS_LOADER_NAME)
+    public abstract String getClassLoaderName();
+
+    @JsonProperty(ATTR_MODULE)
+    public abstract String getModuleName();
+
+    @JsonProperty(ATTR_MODULE_VERSION)
+    public abstract String getModuleVersion();
 
     @JsonProperty(ATTR_CLASS)
     public abstract String getClassName();

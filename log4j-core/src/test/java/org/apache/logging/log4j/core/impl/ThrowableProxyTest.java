@@ -16,12 +16,6 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -46,10 +40,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -71,6 +67,7 @@ public class ThrowableProxyTest {
         ThrowableProxy proxy = new ThrowableProxy(new IOException("test"));
     }
 
+    @SuppressWarnings("BanSerializableRead")
     private ThrowableProxy deserialize(final byte[] binary) throws IOException, ClassNotFoundException {
         final ByteArrayInputStream inArr = new ByteArrayInputStream(binary);
         final ObjectInputStream in = new ObjectInputStream(inArr);
@@ -121,26 +118,21 @@ public class ThrowableProxyTest {
      */
     @Test
     public void testLogStackTraceWithClassThatCannotInitialize() {
-        try {
-            // Try to create the object, which will always fail during class initialization
-            final AlwaysThrowsError error = new AlwaysThrowsError();
+        final Error e = assertThrows(Error.class, AlwaysThrowsError::new);
+        // Print the stack trace to System.out for informational purposes
+        // System.err.println("### Here's the stack trace that we'll log with log4j ###");
+        // e.printStackTrace();
+        // System.err.println("### End stack trace ###");
 
-            // If the error was not triggered then fail
-            fail("Test did not throw expected error: " + error);
-        } catch (final Throwable e) {
-            // Print the stack trace to System.out for informational purposes
-            // System.err.println("### Here's the stack trace that we'll log with log4j ###");
-            // e.printStackTrace();
-            // System.err.println("### End stack trace ###");
+        final Logger logger = LogManager.getLogger(getClass());
 
-            final Logger logger = LogManager.getLogger(getClass());
-
+        assertDoesNotThrow(() -> {
             // This is the critical portion of the test. The log message must be printed without
             // throwing a java.lang.Error when introspecting the AlwaysThrowError class in the
             // stack trace.
             logger.error(e.getMessage(), e);
             logger.error(e);
-        }
+        });
     }
 
     @Test
@@ -159,11 +151,11 @@ public class ThrowableProxyTest {
                             }
                         }
                     });
-            ServerSocketChannel.open().socket().bind(new InetSocketAddress("localhost", 9300));
-            ServerSocketChannel.open().socket().bind(new InetSocketAddress("localhost", 9300));
-            fail("expected a java.net.BindException");
-        } catch (final BindException e) {
-            new ThrowableProxy(e);
+            final BindException e = assertThrows(BindException.class, () -> {
+                ServerSocketChannel.open().socket().bind(new InetSocketAddress("localhost", 9300));
+                ServerSocketChannel.open().socket().bind(new InetSocketAddress("localhost", 9300));
+            });
+            assertDoesNotThrow(() -> new ThrowableProxy(e));
         } finally {
             // restore the security manager
             System.setSecurityManager(sm);
@@ -199,10 +191,8 @@ public class ThrowableProxyTest {
             final byte[] encrypted = ec.doFinal(raw);
             final Cipher dc = Cipher.getInstance(algorithm);
             dc.init(Cipher.DECRYPT_MODE, generator.generateKey(), algorithmParameterSpec, secureRandom);
-            dc.doFinal(encrypted);
-            fail("expected a javax.crypto.BadPaddingException");
-        } catch (final BadPaddingException e) {
-            new ThrowableProxy(e);
+            final BadPaddingException e = assertThrows(BadPaddingException.class, () -> dc.doFinal(encrypted));
+            assertDoesNotThrow(() -> new ThrowableProxy(e));
         } finally {
             // restore the existing security manager
             System.setSecurityManager(sm);
@@ -300,7 +290,7 @@ public class ThrowableProxyTest {
         final String separator = " | ";
         final String extendedStackTraceAsString = proxy.getExtendedStackTraceAsString(null,
                 PlainTextRenderer.getInstance(), " | ", Strings.EMPTY);
-        assertTrue(extendedStackTraceAsString, allLinesContain(extendedStackTraceAsString, separator));
+        assertTrue(allLinesContain(extendedStackTraceAsString, separator), extendedStackTraceAsString);
     }
 
     @Test
@@ -310,7 +300,7 @@ public class ThrowableProxyTest {
 
         final String suffix = "some suffix";
         final String extendedStackTraceAsString = proxy.getExtendedStackTraceAsString(suffix);
-        assertTrue(extendedStackTraceAsString, lastLineContains(extendedStackTraceAsString, suffix));
+        assertTrue(lastLineContains(extendedStackTraceAsString, suffix), extendedStackTraceAsString);
     }
 
     @Test
@@ -370,7 +360,7 @@ public class ThrowableProxyTest {
         final ThrowableProxy proxy = new ThrowableProxy(throwable);
         final ExtendedStackTraceElement[] callerPackageData = ThrowableProxyHelper.toExtendedStackTrace(proxy, stack, map, null,
                 throwable.getStackTrace());
-        assertNotNull("No package data returned", callerPackageData);
+        assertNotNull(callerPackageData, "No package data returned");
     }
 
     /**
@@ -378,6 +368,7 @@ public class ThrowableProxyTest {
      * unloaded known class (already compiled and available as a test resource:
      * org.apache.logging.log4j.core.impl.ForceNoDefClassFoundError.class).
      */
+    @SuppressWarnings("BanSerializableRead")
     @Test
     public void testStackWithUnloadableClass() throws Exception {
         final Stack<Class<?>> stack = new Stack<>();

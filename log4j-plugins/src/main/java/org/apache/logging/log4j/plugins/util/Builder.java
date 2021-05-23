@@ -38,7 +38,6 @@ public interface Builder<T> {
      * unspecified attributes for the object.
      *
      * @return the configured instance.
-     * @throws org.apache.logging.log4j.core.config.ConfigurationException if there was an error building the
      * object.
      */
     T build();

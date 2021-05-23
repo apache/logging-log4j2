@@ -31,15 +31,13 @@ import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
-import org.junit.rules.TestRule;
-import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
 /**
@@ -54,28 +52,23 @@ public class LogEventFactoryTest {
 
     // this would look so cool using lambdas
     @ClassRule
-    public static RuleChain chain = RuleChain.outerRule(new TestRule() {
+    public static RuleChain chain = RuleChain.outerRule((base, description) -> new Statement() {
         @Override
-        public Statement apply(final Statement base, final Description description) {
-            return new Statement() {
-                @Override
-                public void evaluate() throws Throwable {
-                    System.setProperty(Constants.LOG4J_LOG_EVENT_FACTORY, TestLogEventFactory.class.getName());
-                    resetLogEventFactory(new TestLogEventFactory());
-                    try {
-                        base.evaluate();
-                    } finally {
-                        System.clearProperty(Constants.LOG4J_LOG_EVENT_FACTORY);
-                        resetLogEventFactory(new DefaultLogEventFactory());
-                    }
-                }
+        public void evaluate() throws Throwable {
+            System.setProperty(Constants.LOG4J_LOG_EVENT_FACTORY, TestLogEventFactory.class.getName());
+            resetLogEventFactory(new TestLogEventFactory());
+            try {
+                base.evaluate();
+            } finally {
+                System.clearProperty(Constants.LOG4J_LOG_EVENT_FACTORY);
+                resetLogEventFactory(new DefaultLogEventFactory());
+            }
+        }
 
-                private void resetLogEventFactory(final LogEventFactory logEventFactory) throws IllegalAccessException {
-                    final Field field = FieldUtils.getField(LoggerConfig.class, "LOG_EVENT_FACTORY", true);
-                    FieldUtils.removeFinalModifier(field, true);
-                    FieldUtils.writeStaticField(field, logEventFactory, false);
-                }
-            };
+        private void resetLogEventFactory(final LogEventFactory logEventFactory) throws IllegalAccessException {
+            final Field field = FieldUtils.getField(LoggerConfig.class, "LOG_EVENT_FACTORY", true);
+            FieldUtils.removeFinalModifier(field);
+            FieldUtils.writeStaticField(field, logEventFactory, false);
         }
     }).around(context);
 

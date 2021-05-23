@@ -1,0 +1,60 @@
+{
+  "mdc": {
+    "$resolver": "mdc"
+  },
+  "exception": {
+    "exception_class": {
+      "$resolver": "exception",
+      "field": "className"
+    },
+    "exception_message": {
+      "$resolver": "exception",
+      "field": "message",
+      "stringified": true
+    },
+    "stacktrace": {
+      "$resolver": "exception",
+      "field": "stackTrace",
+      "stackTrace": {
+        "stringified": true
+      }
+    }
+  },
+  "line_number": {
+    "$resolver": "source",
+    "field": "lineNumber"
+  },
+  "class": {
+    "$resolver": "source",
+    "field": "className"
+  },
+  "@version": 1,
+  "source_host": "${hostName}",
+  "message": {
+    "$resolver": "message",
+    "stringified": true
+  },
+  "thread_name": {
+    "$resolver": "thread",
+    "field": "name"
+  },
+  "@timestamp": {
+    "$resolver": "timestamp"
+  },
+  "level": {
+    "$resolver": "level",
+    "field": "name"
+  },
+  "file": {
+    "$resolver": "source",
+    "field": "fileName"
+  },
+  "method": {
+    "$resolver": "source",
+    "field": "methodName"
+  },
+  "logger_name": {
+    "$resolver": "logger",
+    "field": "name"
+  }
+}

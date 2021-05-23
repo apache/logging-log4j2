@@ -16,8 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.apache.logging.log4j.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
+import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
+import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
 import static org.junit.Assert.assertTrue;
@@ -26,7 +26,7 @@ import static org.junit.Assert.fail;
 import java.io.File;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.hamcrest.Matcher;
 import org.junit.Rule;
 import org.junit.Test;

@@ -16,19 +16,13 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.AbstractLifeCycle;
-import org.apache.logging.log4j.core.config.ConfigurationFileWatcher;
-import org.apache.logging.log4j.core.config.ConfigurationScheduler;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.LoaderUtil;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,6 +30,13 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.AbstractLifeCycle;
+import org.apache.logging.log4j.core.config.ConfigurationFileWatcher;
+import org.apache.logging.log4j.core.config.ConfigurationScheduler;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
  * Manages {@link FileWatcher}s.
@@ -45,26 +46,169 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class WatchManager extends AbstractLifeCycle {
 
+    private final class ConfigurationMonitor {
+        private volatile long lastModifiedMillis;
+        private final Watcher watcher;
+
+        public ConfigurationMonitor(final long lastModifiedMillis, final Watcher watcher) {
+            this.watcher = watcher;
+            this.lastModifiedMillis = lastModifiedMillis;
+        }
+
+        public Watcher getWatcher() {
+            return watcher;
+        }
+
+        private void setLastModifiedMillis(final long lastModifiedMillis) {
+            this.lastModifiedMillis = lastModifiedMillis;
+        }
+
+        @Override
+        public String toString() {
+            return "ConfigurationMonitor [watcher=" + watcher + ", lastModifiedMillis=" + lastModifiedMillis + "]";
+        }
+
+    }
+    private static class LocalUUID {
+        private static final AtomicInteger COUNT = new AtomicInteger(0);
+        private static final long HIGH_MASK = 0xfff000000000000L;
+        private static final int HUNDRED_NANOS_PER_MILLI = 10000;
+        private static final long LOW_MASK = 0xffffffffL;
+        private static final long MID_MASK = 0xffff00000000L;
+        private static final int NODE_SIZE = 8;
+        private static final long NUM_100NS_INTERVALS_SINCE_UUID_EPOCH = 0x01b21dd213814000L;
+        private static final int SEQUENCE_MASK = 0x3FFF;
+        private static final int SHIFT_2 = 16;
+        private static final int SHIFT_4 = 32;
+        private static final int SHIFT_6 = 48;
+        private static final long TYPE1 = 0x1000L;
+        private static final byte VARIANT = (byte) 0x80;
+
+
+        public static UUID get() {
+            final long time = ((System.currentTimeMillis() * HUNDRED_NANOS_PER_MILLI) +
+                    NUM_100NS_INTERVALS_SINCE_UUID_EPOCH) + (COUNT.incrementAndGet() % HUNDRED_NANOS_PER_MILLI);
+            final long timeLow = (time & LOW_MASK) << SHIFT_4;
+            final long timeMid = (time & MID_MASK) >> SHIFT_2;
+            final long timeHi = (time & HIGH_MASK) >> SHIFT_6;
+            final long most = timeLow | timeMid | TYPE1 | timeHi;
+            return new UUID(most, COUNT.incrementAndGet());
+        }
+    }
+    private final class WatchRunnable implements Runnable {
+
+        // Use a hard class reference here in case a refactoring changes the class name.
+        private final String SIMPLE_NAME = WatchRunnable.class.getSimpleName();
+
+        @Override
+        public void run() {
+            logger.trace("{} run triggered.", SIMPLE_NAME);
+            for (final Map.Entry<Source, ConfigurationMonitor> entry : watchers.entrySet()) {
+                final Source source = entry.getKey();
+                final ConfigurationMonitor monitor = entry.getValue();
+                if (monitor.getWatcher().isModified()) {
+                    final long lastModified = monitor.getWatcher().getLastModified();
+                    if (logger.isInfoEnabled()) {
+                        logger.info("Source '{}' was modified on {} ({}), previous modification was on {} ({})", source,
+                                millisToString(lastModified), lastModified, millisToString(monitor.lastModifiedMillis),
+                                monitor.lastModifiedMillis);
+                    }
+                    monitor.lastModifiedMillis = lastModified;
+                    monitor.getWatcher().modified();
+                }
+            }
+            logger.trace("{} run ended.", SIMPLE_NAME);
+        }
+    }
     private static final Logger logger = StatusLogger.getLogger();
-    private final ConcurrentMap<Source, ConfigurationMonitor> watchers = new ConcurrentHashMap<>();
-    private int intervalSeconds = 0;
-    private ScheduledFuture<?> future;
-    private final ConfigurationScheduler scheduler;
     private final List<WatchEventService> eventServiceList;
+    private ScheduledFuture<?> future;
     // This just needs to be a unique key within the WatchEventManager.
     private final UUID id = LocalUUID.get();
 
+    private int intervalSeconds = 0;
+
+    private final ConfigurationScheduler scheduler;
+
+    private final ConcurrentMap<Source, ConfigurationMonitor> watchers = new ConcurrentHashMap<>();
+
     public WatchManager(final ConfigurationScheduler scheduler) {
-        this.scheduler = scheduler;
+        this.scheduler = Objects.requireNonNull(scheduler, "scheduler");
         eventServiceList = getEventServices();
+    }
+
+    public void checkFiles() {
+        new WatchRunnable().run();
+    }
+
+
+    /**
+     * Return the ConfigurationWaatchers.
+     *
+     * @return the ConfigurationWatchers.
+     * @since 2.11.2
+     */
+    public Map<Source, Watcher> getConfigurationWatchers() {
+        final Map<Source, Watcher> map = new HashMap<>(watchers.size());
+        for (final Map.Entry<Source, ConfigurationMonitor> entry : watchers.entrySet()) {
+            map.put(entry.getKey(), entry.getValue().getWatcher());
+        }
+        return map;
+    }
+
+    private List<WatchEventService> getEventServices() {
+        List<WatchEventService> list = new ArrayList<>();
+        for (final ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
+            try {
+                final ServiceLoader<WatchEventService> serviceLoader =
+                        ServiceLoader.load(WatchEventService.class, classLoader);
+                for (final WatchEventService service : serviceLoader) {
+                    list.add(service);
+                }
+            } catch (final Throwable ex) {
+                LOGGER.debug("Unable to retrieve WatchEventService from ClassLoader {}", classLoader, ex);
+            }
+        }
+        return list;
     }
 
     public UUID getId() {
         return this.id;
     }
 
+    /**
+     * Gets how often this manager checks for file modifications.
+     *
+     * @return how often, in seconds, this manager checks for file modifications.
+     */
+    public int getIntervalSeconds() {
+        return this.intervalSeconds;
+    }
+
+    /**
+     * Returns a Map of the file watchers.
+     *
+     * @return A Map of the file watchers.
+     * @deprecated use getConfigurationWatchers.
+     */
+    public Map<File, FileWatcher> getWatchers() {
+        final Map<File, FileWatcher> map = new HashMap<>(watchers.size());
+        for (Map.Entry<Source, ConfigurationMonitor> entry : watchers.entrySet()) {
+            if (entry.getValue().getWatcher() instanceof ConfigurationFileWatcher) {
+                map.put(entry.getKey().getFile(), (FileWatcher) entry.getValue().getWatcher());
+            } else {
+                map.put(entry.getKey().getFile(), new WrappedFileWatcher((FileWatcher) entry.getValue().getWatcher()));
+            }
+        }
+        return map;
+    }
+
     public boolean hasEventListeners() {
         return eventServiceList.size() > 0;
+    }
+
+    private String millisToString(final long millis) {
+        return new Date(millis).toString();
     }
 
     /**
@@ -102,7 +246,6 @@ public class WatchManager extends AbstractLifeCycle {
         Source source = new Source(file);
         reset(source);
     }
-
 
     /**
      * Resets the configuration monitor for the given file being watched to its current last modified time. If this
@@ -145,15 +288,6 @@ public class WatchManager extends AbstractLifeCycle {
         }
     }
 
-    /**
-     * Gets how often this manager checks for file modifications.
-     *
-     * @return how often, in seconds, this manager checks for file modifications.
-     */
-    public int getIntervalSeconds() {
-        return this.intervalSeconds;
-    }
-
     @Override
     public void start() {
         super.start();
@@ -178,15 +312,10 @@ public class WatchManager extends AbstractLifeCycle {
         return stopped;
     }
 
-    /**
-     * Unwatches the given file.
-     *
-     * @param file the file to stop watching.
-     * @since 2.11.0
-     */
-    public void unwatchFile(final File file) {
-        Source source = new Source(file);
-        unwatch(source);
+    @Override
+    public String toString() {
+        return "WatchManager [intervalSeconds=" + intervalSeconds + ", watchers=" + watchers + ", scheduler="
+                + scheduler + ", future=" + future + "]";
     }
 
     /**
@@ -201,25 +330,15 @@ public class WatchManager extends AbstractLifeCycle {
         watchers.remove(source);
     }
 
-    public void checkFiles() {
-        new WatchRunnable().run();
-    }
-
     /**
-     * Watches the given file.
+     * Unwatches the given file.
      *
-     * @param file        the file to watch.
-     * @param fileWatcher the watcher to notify of file changes.
+     * @param file the file to stop watching.
+     * @since 2.11.0
      */
-    public void watchFile(final File file, final FileWatcher fileWatcher) {
-        Watcher watcher;
-        if (fileWatcher instanceof Watcher) {
-            watcher = (Watcher) fileWatcher;
-        } else {
-            watcher = new WrappedFileWatcher(fileWatcher);
-        }
+    public void unwatchFile(final File file) {
         Source source = new Source(file);
-        watch(source, watcher);
+        unwatch(source);
     }
 
     /**
@@ -238,137 +357,19 @@ public class WatchManager extends AbstractLifeCycle {
     }
 
     /**
-     * Returns a Map of the file watchers.
+     * Watches the given file.
      *
-     * @return A Map of the file watchers.
-     * @deprecated use getConfigurationWatchers.
+     * @param file        the file to watch.
+     * @param fileWatcher the watcher to notify of file changes.
      */
-    public Map<File, FileWatcher> getWatchers() {
-        final Map<File, FileWatcher> map = new HashMap<>(watchers.size());
-        for (Map.Entry<Source, ConfigurationMonitor> entry : watchers.entrySet()) {
-            if (entry.getValue().getWatcher() instanceof ConfigurationFileWatcher) {
-                map.put(entry.getKey().getFile(), (FileWatcher) entry.getValue().getWatcher());
-            } else {
-                map.put(entry.getKey().getFile(), new WrappedFileWatcher((FileWatcher) entry.getValue().getWatcher()));
-            }
+    public void watchFile(final File file, final FileWatcher fileWatcher) {
+        Watcher watcher;
+        if (fileWatcher instanceof Watcher) {
+            watcher = (Watcher) fileWatcher;
+        } else {
+            watcher = new WrappedFileWatcher(fileWatcher);
         }
-        return map;
-    }
-
-    /**
-     * Return the ConfigurationWaatchers.
-     *
-     * @return the ConfigurationWatchers.
-     * @since 2.11.2
-     */
-    public Map<Source, Watcher> getConfigurationWatchers() {
-        final Map<Source, Watcher> map = new HashMap<>(watchers.size());
-        for (final Map.Entry<Source, ConfigurationMonitor> entry : watchers.entrySet()) {
-            map.put(entry.getKey(), entry.getValue().getWatcher());
-        }
-        return map;
-    }
-
-    private String millisToString(final long millis) {
-        return new Date(millis).toString();
-    }
-
-    private List<WatchEventService> getEventServices() {
-        List<WatchEventService> list = new ArrayList<>();
-        for (final ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
-            try {
-                final ServiceLoader<WatchEventService> serviceLoader =
-                        ServiceLoader.load(WatchEventService.class, classLoader);
-                for (final WatchEventService service : serviceLoader) {
-                    list.add(service);
-                }
-            } catch (final Throwable ex) {
-                LOGGER.debug("Unable to retrieve WatchEventService from ClassLoader {}", classLoader, ex);
-            }
-        }
-        return list;
-    }
-
-    private final class WatchRunnable implements Runnable {
-
-        // Use a hard class reference here in case a refactoring changes the class name.
-        private final String SIMPLE_NAME = WatchRunnable.class.getSimpleName();
-
-        @Override
-        public void run() {
-            logger.trace("{} run triggered.", SIMPLE_NAME);
-            for (final Map.Entry<Source, ConfigurationMonitor> entry : watchers.entrySet()) {
-                final Source source = entry.getKey();
-                final ConfigurationMonitor monitor = entry.getValue();
-                if (monitor.getWatcher().isModified()) {
-                    final long lastModified = monitor.getWatcher().getLastModified();
-                    if (logger.isInfoEnabled()) {
-                        logger.info("Source '{}' was modified on {} ({}), previous modification was on {} ({})", source,
-                                millisToString(lastModified), lastModified, millisToString(monitor.lastModifiedMillis),
-                                monitor.lastModifiedMillis);
-                    }
-                    monitor.lastModifiedMillis = lastModified;
-                    monitor.getWatcher().modified();
-                }
-            }
-            logger.trace("{} run ended.", SIMPLE_NAME);
-        }
-    }
-
-    private final class ConfigurationMonitor {
-        private final Watcher watcher;
-        private volatile long lastModifiedMillis;
-
-        public Watcher getWatcher() {
-            return watcher;
-        }
-
-        public ConfigurationMonitor(final long lastModifiedMillis, final Watcher watcher) {
-            this.watcher = watcher;
-            this.lastModifiedMillis = lastModifiedMillis;
-        }
-
-        private void setLastModifiedMillis(final long lastModifiedMillis) {
-            this.lastModifiedMillis = lastModifiedMillis;
-        }
-
-        @Override
-        public String toString() {
-            return "ConfigurationMonitor [watcher=" + watcher + ", lastModifiedMillis=" + lastModifiedMillis + "]";
-        }
-
-    }
-
-    @Override
-    public String toString() {
-        return "WatchManager [intervalSeconds=" + intervalSeconds + ", watchers=" + watchers + ", scheduler="
-                + scheduler + ", future=" + future + "]";
-    }
-
-    private static class LocalUUID {
-        private static final long LOW_MASK = 0xffffffffL;
-        private static final long MID_MASK = 0xffff00000000L;
-        private static final long HIGH_MASK = 0xfff000000000000L;
-        private static final int NODE_SIZE = 8;
-        private static final int SHIFT_2 = 16;
-        private static final int SHIFT_4 = 32;
-        private static final int SHIFT_6 = 48;
-        private static final int HUNDRED_NANOS_PER_MILLI = 10000;
-        private static final long NUM_100NS_INTERVALS_SINCE_UUID_EPOCH = 0x01b21dd213814000L;
-        private static final AtomicInteger COUNT = new AtomicInteger(0);
-        private static final long TYPE1 = 0x1000L;
-        private static final byte VARIANT = (byte) 0x80;
-        private static final int SEQUENCE_MASK = 0x3FFF;
-
-
-        public static UUID get() {
-            final long time = ((System.currentTimeMillis() * HUNDRED_NANOS_PER_MILLI) +
-                    NUM_100NS_INTERVALS_SINCE_UUID_EPOCH) + (COUNT.incrementAndGet() % HUNDRED_NANOS_PER_MILLI);
-            final long timeLow = (time & LOW_MASK) << SHIFT_4;
-            final long timeMid = (time & MID_MASK) >> SHIFT_2;
-            final long timeHi = (time & HIGH_MASK) >> SHIFT_6;
-            final long most = timeLow | timeMid | TYPE1 | timeHi;
-            return new UUID(most, COUNT.incrementAndGet());
-        }
+        Source source = new Source(file);
+        watch(source, watcher);
     }
 }

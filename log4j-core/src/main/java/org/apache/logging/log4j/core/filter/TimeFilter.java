@@ -100,7 +100,7 @@ public final class TimeFilter extends AbstractFilter {
 
     private TimeFilter(final LocalTime start, final LocalTime end, final ZoneId timeZone, final Result onMatch,
                        final Result onMismatch) {
-        this(start, end, timeZone, onMatch, onMismatch, LocalDate.now());
+        this(start, end, timeZone, onMatch, onMismatch, LocalDate.now(timeZone));
     }
 
     private synchronized void adjustTimes(long currentTimeMillis) {

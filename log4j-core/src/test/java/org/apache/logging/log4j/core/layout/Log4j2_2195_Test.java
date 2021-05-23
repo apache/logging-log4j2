@@ -20,43 +20,38 @@ package org.apache.logging.log4j.core.layout;
 import java.io.Serializable;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout.Serializer;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.Assert;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+@LoggerContextSource("LOG4J-2195/log4j2.xml")
 public class Log4j2_2195_Test {
 
-    @ClassRule
-    public static final LoggerContextRule loggerContextRule = new LoggerContextRule(
-            "src/test/resources/LOG4J-2195/log4j2.xml");
-
-    private static final Logger logger = LogManager.getLogger(Log4j2_2195_Test.class);
-
     @Test
-    public void test() {
-        logger.info("This is a test.", new Exception("Test exception!"));
-        ListAppender listAppender = loggerContextRule.getListAppender("ListAppender");
-        Assert.assertNotNull(listAppender);
+    public void test(final LoggerContext context, @Named("ListAppender") final ListAppender listAppender) {
+        listAppender.clear();
+        context.getLogger(getClass()).info("This is a test.", new Exception("Test exception!"));
+        assertNotNull(listAppender);
         List<String> events = listAppender.getMessages();
-        Assert.assertNotNull(events);
-        Assert.assertEquals(1, events.size());
+        assertNotNull(events);
+        assertEquals(1, events.size());
         String logEvent = events.get(0);
-        Assert.assertNotNull(logEvent);
-        Assert.assertFalse("\"org.junit\" should not be here", logEvent.contains("org.junit"));
-        Assert.assertFalse("\"org.eclipse\" should not be here", logEvent.contains("org.eclipse"));
+        assertNotNull(logEvent);
+        assertFalse(logEvent.contains("org.junit"), "\"org.junit\" should not be here");
+        assertFalse(logEvent.contains("org.eclipse"), "\"org.eclipse\" should not be here");
         //
         Layout<? extends Serializable> layout = listAppender.getLayout();
         PatternLayout pLayout = (PatternLayout) layout;
-        Assert.assertNotNull(pLayout);
+        assertNotNull(pLayout);
         Serializer eventSerializer = pLayout.getEventSerializer();
-        Assert.assertNotNull(eventSerializer);
+        assertNotNull(eventSerializer);
         //
-        Assert.assertTrue("Missing \"|\"", logEvent.contains("|"));
+        assertTrue(logEvent.contains("|"), "Missing \"|\"");
     }
 }

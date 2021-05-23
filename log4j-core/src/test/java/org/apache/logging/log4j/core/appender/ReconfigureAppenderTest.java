@@ -32,12 +32,8 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFact
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.plugins.util.Builder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-/**
- * Class Description goes here.
- * Created by rgoers on 2019-02-02
- */
 public class ReconfigureAppenderTest {
 	private RollingFileAppender appender;
 
@@ -143,7 +139,7 @@ public class ReconfigureAppenderTest {
 			ConfigurationBuilderFactory.newConfigurationBuilder();
 
 		// All loggers must have a root logger. The default root logger logs ERRORs to the console.
-		// Override this with a root logger that does not log anywhere as we leave it up the the
+		// Override this with a root logger that does not log anywhere as we leave it up the
 		// appenders on the logger.
 		config_builder.add(config_builder.newRootLogger(Level.INFO));
 

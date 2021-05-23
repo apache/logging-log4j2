@@ -133,7 +133,8 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
             final ContextSelector selector = ((Log4jContextFactory) factory).getSelector();
             if (selector instanceof NamedContextSelector) {
                 this.namedContextSelector = (NamedContextSelector) selector;
-                context = this.namedContextSelector.locateContext(this.name, this.servletContext, configLocation);
+                context = this.namedContextSelector.locateContext(this.name,
+                        WebLoggerContextUtils.createExternalEntry(this.servletContext), configLocation);
                 ContextAnchor.THREAD_CONTEXT.set(context);
                 if (context.isInitialized()) {
                     context.start();
@@ -166,12 +167,14 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
         }
         if (location != null && location.contains(",")) {
             final List<URI> uris = getConfigURIs(location);
-            this.loggerContext = Configurator.initialize(this.name, this.getClassLoader(), uris, this.servletContext);
+            this.loggerContext = Configurator.initialize(this.name, this.getClassLoader(), uris,
+                    WebLoggerContextUtils.createExternalEntry(this.servletContext));
             return;
         }
 
         final URI uri = getConfigURI(location);
-        this.loggerContext = Configurator.initialize(this.name, this.getClassLoader(), uri, this.servletContext);
+        this.loggerContext = Configurator.initialize(this.name, this.getClassLoader(), uri,
+                WebLoggerContextUtils.createExternalEntry(this.servletContext));
     }
 
     private List<URI> getConfigURIs(final String location) {

@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Class Description goes here.
@@ -37,7 +37,7 @@ public class CronExpressionTest {
         final Date date = new GregorianCalendar(2015, 11, 2).getTime();
         final Date fireDate = parser.getNextValidTimeAfter(date);
         final Date expected = new GregorianCalendar(2015, 11, 2, 7, 0, 0).getTime();
-        assertEquals("Dates not equal.", expected, fireDate);
+        assertEquals(expected, fireDate, "Dates not equal.");
     }
 
     @Test
@@ -46,7 +46,7 @@ public class CronExpressionTest {
         final Date date = new GregorianCalendar(2015, 11, 2).getTime();
         final Date fireDate = parser.getNextValidTimeAfter(date);
         final Date expected = new GregorianCalendar(2015, 11, 4, 7, 0, 0).getTime();
-        assertEquals("Dates not equal.", expected, fireDate);
+        assertEquals(expected, fireDate, "Dates not equal.");
     }
 
     @Test
@@ -55,7 +55,7 @@ public class CronExpressionTest {
         final Date date = new GregorianCalendar(2015, 11, 2).getTime();
         final Date fireDate = parser.getNextValidTimeAfter(date);
         final Date expected = new GregorianCalendar(2016, 0, 1, 7, 0, 0).getTime();
-        assertEquals("Dates not equal.", expected, fireDate);
+        assertEquals(expected, fireDate, "Dates not equal.");
     }
 
     @Test
@@ -64,7 +64,7 @@ public class CronExpressionTest {
         final Date date = new GregorianCalendar(2015, 10, 2).getTime();
         final Date fireDate = parser.getNextValidTimeAfter(date);
         final Date expected = new GregorianCalendar(2015, 10, 30, 7, 0, 0).getTime();
-        assertEquals("Dates not equal.", expected, fireDate);
+        assertEquals(expected, fireDate, "Dates not equal.");
     }
 
     @Test
@@ -73,7 +73,7 @@ public class CronExpressionTest {
         final Date date = new GregorianCalendar(2015, 10, 2).getTime();
         final Date fireDate = parser.getNextValidTimeAfter(date);
         final Date expected = new GregorianCalendar(2015, 10, 3, 0, 0, 0).getTime();
-        assertEquals("Dates not equal.", expected, fireDate);
+        assertEquals(expected, fireDate, "Dates not equal.");
     }
 
     @Test
@@ -82,7 +82,7 @@ public class CronExpressionTest {
         final Date date = new GregorianCalendar(2015, 10, 2).getTime();
         final Date fireDate = parser.getPrevFireTime(date);
         final Date expected = new GregorianCalendar(2015, 9, 31, 17, 45, 0).getTime();
-        assertEquals("Dates not equal.", expected, fireDate);
+        assertEquals(expected, fireDate, "Dates not equal.");
     }
 
     @Test
@@ -91,7 +91,7 @@ public class CronExpressionTest {
         final Date date = new GregorianCalendar(2015, 10, 2).getTime();
         final Date fireDate = parser.getPrevFireTime(date);
         final Date expected = new GregorianCalendar(2015, 10, 1, 18, 55, 0).getTime();
-        assertEquals("Dates not equal.", expected, fireDate);
+        assertEquals(expected, fireDate, "Dates not equal.");
     }
 
     /**
@@ -103,7 +103,7 @@ public class CronExpressionTest {
         final Date date = new GregorianCalendar(2015, 10, 2).getTime();
         final Date fireDate = parser.getPrevFireTime(date);
         final Date expected = new GregorianCalendar(2015, 10, 1, 23, 55, 0).getTime();
-        assertEquals("Dates not equal.", expected, fireDate);
+        assertEquals(expected, fireDate, "Dates not equal.");
     }
 
     /**
@@ -116,7 +116,7 @@ public class CronExpressionTest {
         final Date date = new GregorianCalendar(2015, 10, 2).getTime();
         final Date fireDate = parser.getPrevFireTime(date);
         final Date expected = new GregorianCalendar(2015, 10, 1, 10, 15, 0).getTime();
-        assertEquals("Dates not equal.", expected, fireDate);
+        assertEquals(expected, fireDate, "Dates not equal.");
     }
 
     /**
@@ -128,7 +128,7 @@ public class CronExpressionTest {
         final Date date = new GregorianCalendar(2015, 10, 2).getTime();
         final Date fireDate = parser.getPrevFireTime(date);
         final Date expected = new GregorianCalendar(2015, 10, 1, 14, 59, 0).getTime();
-        assertEquals("Dates not equal.", expected, fireDate);
+        assertEquals(expected, fireDate, "Dates not equal.");
     }
 
     /**
@@ -140,7 +140,7 @@ public class CronExpressionTest {
         final Date date = new GregorianCalendar(2015, 10, 2).getTime();
         final Date fireDate = parser.getPrevFireTime(date);
         final Date expected = new GregorianCalendar(2015, 2, 25, 14, 44, 0).getTime();
-        assertEquals("Dates not equal.", expected, fireDate);
+        assertEquals(expected, fireDate, "Dates not equal.");
     }
 
     /**
@@ -152,7 +152,7 @@ public class CronExpressionTest {
         final Date date = new GregorianCalendar(2015, 10, 2).getTime();
         final Date fireDate = parser.getPrevFireTime(date);
         final Date expected = new GregorianCalendar(2015, 9, 16, 10, 15, 0).getTime();
-        assertEquals("Dates not equal.", expected, fireDate);
+        assertEquals(expected, fireDate, "Dates not equal.");
     }
 
     /*
@@ -170,7 +170,7 @@ public class CronExpressionTest {
         final Date fireDate = parser.getTimeBefore(date);
         System.err.println(sdf.format(fireDate));
         final Date expected = new GregorianCalendar(2015, 10, 1, 0, 0, 0).getTime();
-        assertEquals("Dates not equal.", expected, fireDate);
+        assertEquals(expected, fireDate, "Dates not equal.");
     }
 
 }

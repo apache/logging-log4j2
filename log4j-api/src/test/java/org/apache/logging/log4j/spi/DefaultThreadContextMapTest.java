@@ -16,20 +16,20 @@
  */
 package org.apache.logging.log4j.spi;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.ThreadContext;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the {@code DefaultThreadContextMap} class.
  */
+@UsingThreadContextMap
 public class DefaultThreadContextMapTest {
 
     @Test
@@ -172,7 +172,7 @@ public class DefaultThreadContextMapTest {
         assertNull(map.getImmutableMapOrNull());
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testGetImmutableMapReturnsImmutableMapIfNonEmpty() {
         final DefaultThreadContextMap map = new DefaultThreadContextMap(true);
         map.put("key1", "value1");
@@ -182,7 +182,7 @@ public class DefaultThreadContextMapTest {
         assertEquals("value1", immutable.get("key1")); // copy has values too
 
         // immutable
-        immutable.put("key", "value"); // error
+        assertThrows(UnsupportedOperationException.class, () -> immutable.put("key", "value"));
     }
 
     @Test
@@ -215,6 +215,7 @@ public class DefaultThreadContextMapTest {
     }
 
     @Test
+    @ResourceLock(Resources.SYSTEM_PROPERTIES)
     public void testThreadLocalNotInheritableByDefault() {
         System.clearProperty(DefaultThreadContextMap.INHERITABLE_MAP);
         final ThreadLocal<Map<String, String>> threadLocal = DefaultThreadContextMap.createThreadLocalMap(true);
@@ -222,6 +223,7 @@ public class DefaultThreadContextMapTest {
     }
     
     @Test
+    @ResourceLock(Resources.SYSTEM_PROPERTIES)
     public void testThreadLocalInheritableIfConfigured() {
         System.setProperty(DefaultThreadContextMap.INHERITABLE_MAP, "true");
         ThreadContextMapFactory.init();

@@ -16,29 +16,34 @@
  */
 package org.apache.logging.log4j.util;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.parallel.Isolated;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests that the Unbox ring buffer size is configurable.
  * Must be run in a separate process as the other UnboxTest or the last-run test will fail.
+ * Run this test on its own via {@code mvn --projects log4j-api test -Dtest=Unbox2ConfigurableTest} which will automatically
+ * enable the test, too.
  */
+@EnabledIfSystemProperty(named = "test", matches = ".*Unbox2ConfigurableTest.*")
+@Isolated
 public class Unbox2ConfigurableTest {
-    @Ignore
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         System.setProperty("log4j.unbox.ringbuffer.size", "65");
     }
 
-    @Ignore
-    @AfterClass
+    @AfterAll
     public static void afterClass() throws Exception {
         System.clearProperty("log4j.unbox.ringbuffer.size");
 
@@ -59,16 +64,14 @@ public class Unbox2ConfigurableTest {
         threadLocalField.set(null, new ThreadLocal<>());
     }
 
-    @Ignore
     @Test
-    public void testBoxConfiguredTo128Slots() throws Exception {
+    public void testBoxConfiguredTo128Slots() {
         // next power of 2 that is 65 or more
         assertEquals(128, Unbox.getRingbufferSize());
     }
 
-    @Ignore
     @Test
-    public void testBoxSuccessfullyConfiguredTo128Slots() throws Exception {
+    public void testBoxSuccessfullyConfiguredTo128Slots() {
         final int MAX = 128;
         final StringBuilder[] probe = new StringBuilder[MAX * 3];
         for (int i = 0; i <= probe.length - 8; ) {
@@ -82,9 +85,9 @@ public class Unbox2ConfigurableTest {
             probe[i++] = Unbox.box(Short.MAX_VALUE);
         }
         for (int i = 0; i < probe.length - MAX; i++) {
-            assertSame("probe[" + i +"], probe[" + (i + MAX) +"]", probe[i], probe[i + MAX]);
+            assertSame(probe[i], probe[i + MAX], "probe[" + i +"], probe[" + (i + MAX) +"]");
             for (int j = 1; j < MAX - 1; j++) {
-                assertNotSame("probe[" + i +"], probe[" + (i + j) +"]", probe[i], probe[i + j]);
+                assertNotSame(probe[i], probe[i + j], "probe[" + i +"], probe[" + (i + j) +"]");
             }
         }
     }

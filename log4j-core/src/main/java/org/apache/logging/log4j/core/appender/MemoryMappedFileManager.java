@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -216,11 +217,12 @@ public class MemoryMappedFileManager extends OutputStreamManager {
         AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
             @Override
             public Object run() throws Exception {
-                final Method getCleanerMethod = mbb.getClass().getMethod("cleaner");
-                getCleanerMethod.setAccessible(true);
-                final Object cleaner = getCleanerMethod.invoke(mbb); // sun.misc.Cleaner instance
-                final Method cleanMethod = cleaner.getClass().getMethod("clean");
-                cleanMethod.invoke(cleaner);
+                final Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
+                final Field unsafeField = unsafeClass.getDeclaredField("theUnsafe");
+                unsafeField.setAccessible(true);
+                final Object unsafe = unsafeField.get(null);
+                Method invokeCleaner = unsafeClass.getMethod("invokeCleaner", ByteBuffer.class);
+                invokeCleaner.invoke(unsafe, mbb);
                 return null;
             }
         });

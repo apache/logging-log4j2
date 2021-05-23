@@ -39,28 +39,33 @@ public @interface Plugin {
 
     /**
      * Name of the plugin. Note that this name is case-insensitive.
+     * @return the name of the plugin.
      */
     String name();
 
     /**
      * Category to place the plugin under. Category names are case-sensitive.
+     * @return the category
      */
     String category();
 
     /**
      * Name of the corresponding category of elements this plugin belongs under. For example, {@code appender} would
-     * indicate an {@link org.apache.logging.log4j.core.Appender} plugin which would be in the
-     * {@code <Appenders/>} element of a {@link org.apache.logging.log4j.core.config.Configuration}.
+     * indicate an Appender plugin which would be in the
+     * {@code <Appenders/>} element of a Configuration.
+     * @return the element's type.
      */
     String elementType() default EMPTY;
 
     /**
      * Indicates if the plugin class implements a useful {@link Object#toString()} method for use in log messages.
+     * @return true if the object should print nicely.
      */
     boolean printObject() default false;
 
     /**
      * Indicates if construction and injection of child configuration nodes should be deferred until first use.
+     * @return true if child elements should defer instantiation until they are accessed.
      */
     boolean deferChildren() default false;
 }

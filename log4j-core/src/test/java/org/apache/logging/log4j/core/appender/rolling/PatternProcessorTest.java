@@ -22,9 +22,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceAccessMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the PatternProcessor class.
@@ -36,11 +39,12 @@ public class PatternProcessorTest {
     }
 
     @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testDontInterpretBackslashAsEscape() {
         final PatternProcessor pp = new PatternProcessor("c:\\test\\new/app-%d{HH-mm-ss}.log");
         final Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 16);
-        cal.set(Calendar.MINUTE, 02);
+        cal.set(Calendar.MINUTE, 2);
         cal.set(Calendar.SECOND, 15);
 
         final StringBuilder buf = new StringBuilder();
@@ -49,6 +53,7 @@ public class PatternProcessorTest {
     }
 
     @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeHourlyReturnsFirstMinuteOfNextHour() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH}.log.gz");
         final Calendar initial = Calendar.getInstance();
@@ -57,12 +62,13 @@ public class PatternProcessorTest {
 
         // expect Wed, March 4, 2014, 11:00
         final Calendar expected = Calendar.getInstance();
-        expected.set(2014, Calendar.MARCH, 4, 11, 00, 00);
+        expected.set(2014, Calendar.MARCH, 4, 11, 0, 0);
         expected.set(Calendar.MILLISECOND, 0);
         assertEquals(format(expected.getTimeInMillis()), format(actual));
     }
 
     @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeHourlyReturnsFirstMinuteOfNextHour2() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH}.log.gz");
         final Calendar initial = Calendar.getInstance();
@@ -71,12 +77,13 @@ public class PatternProcessorTest {
 
         // expect Wed, March 5, 2014, 00:00
         final Calendar expected = Calendar.getInstance();
-        expected.set(2014, Calendar.MARCH, 5, 00, 00, 00);
+        expected.set(2014, Calendar.MARCH, 5, 0, 0, 0);
         expected.set(Calendar.MILLISECOND, 0);
         assertEquals(format(expected.getTimeInMillis()), format(actual));
     }
 
     @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeHourlyReturnsFirstMinuteOfNextYear() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH}.log.gz");
         final Calendar initial = Calendar.getInstance();
@@ -90,6 +97,7 @@ public class PatternProcessorTest {
     }
 
     @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeMillisecondlyReturnsNextMillisec() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH-mm-ss.SSS}.log.gz");
         final Calendar initial = Calendar.getInstance();
@@ -106,6 +114,7 @@ public class PatternProcessorTest {
     }
 
     @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeMinutelyReturnsFirstSecondOfNextMinute() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH-mm}.log.gz");
         final Calendar initial = Calendar.getInstance();
@@ -116,12 +125,13 @@ public class PatternProcessorTest {
 
         // expect Tue, March 4, 2014, 10:32
         final Calendar expected = Calendar.getInstance();
-        expected.set(2014, Calendar.MARCH, 4, 10, 32, 00);
+        expected.set(2014, Calendar.MARCH, 4, 10, 32, 0);
         expected.set(Calendar.MILLISECOND, 0);
         assertEquals(format(expected.getTimeInMillis()), format(actual));
     }
 
     @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeMonthlyReturnsFirstDayOfNextMonth() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM}.log.gz");
         final Calendar initial = Calendar.getInstance();
@@ -130,12 +140,13 @@ public class PatternProcessorTest {
 
         // We expect 1st day of next month
         final Calendar expected = Calendar.getInstance();
-        expected.set(2014, Calendar.NOVEMBER, 1, 00, 00, 00);
+        expected.set(2014, Calendar.NOVEMBER, 1, 0, 0, 0);
         expected.set(Calendar.MILLISECOND, 0);
         assertEquals(format(expected.getTimeInMillis()), format(actual));
     }
 
     @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeMonthlyReturnsFirstDayOfNextMonth2() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM}.log.gz");
         final Calendar initial = Calendar.getInstance();
@@ -144,12 +155,13 @@ public class PatternProcessorTest {
 
         // Expect 1st of next month: 2014 Feb 1st
         final Calendar expected = Calendar.getInstance();
-        expected.set(2014, Calendar.FEBRUARY, 1, 00, 00, 00);
+        expected.set(2014, Calendar.FEBRUARY, 1, 0, 0, 0);
         expected.set(Calendar.MILLISECOND, 0);
         assertEquals(format(expected.getTimeInMillis()), format(actual));
     }
 
     @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeMonthlyReturnsFirstDayOfNextMonth3() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM}.log.gz");
         final Calendar initial = Calendar.getInstance();
@@ -158,12 +170,13 @@ public class PatternProcessorTest {
 
         // Expect 1st of next month: 2015 Jan 1st
         final Calendar expected = Calendar.getInstance();
-        expected.set(2015, Calendar.JANUARY, 1, 00, 00, 00);
+        expected.set(2015, Calendar.JANUARY, 1, 0, 0, 0);
         expected.set(Calendar.MILLISECOND, 0);
         assertEquals(format(expected.getTimeInMillis()), format(actual));
     }
 
     @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeMonthlyReturnsFirstDayOfNextYear() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM}.log.gz");
         final Calendar initial = Calendar.getInstance();
@@ -172,12 +185,13 @@ public class PatternProcessorTest {
 
         // We expect 1st day of next month
         final Calendar expected = Calendar.getInstance();
-        expected.set(2016, Calendar.JANUARY, 1, 00, 00, 00);
+        expected.set(2016, Calendar.JANUARY, 1, 0, 0, 0);
         expected.set(Calendar.MILLISECOND, 0);
         assertEquals(format(expected.getTimeInMillis()), format(actual));
     }
 
     @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeSecondlyReturnsFirstMillisecOfNextSecond() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH-mm-ss}.log.gz");
         final Calendar initial = Calendar.getInstance();
@@ -194,6 +208,7 @@ public class PatternProcessorTest {
     }
 
     @Test
+    @ResourceLock(Resources.LOCALE)
     public void testGetNextTimeWeeklyReturnsFirstDayOfNextWeek_FRANCE() {
         final Locale old = Locale.getDefault();
         Locale.setDefault(Locale.FRANCE); // force 1st day of the week to be Monday
@@ -206,7 +221,7 @@ public class PatternProcessorTest {
 
             // expect Monday, March 10, 2014
             final Calendar expected = Calendar.getInstance();
-            expected.set(2014, Calendar.MARCH, 10, 00, 00, 00);
+            expected.set(2014, Calendar.MARCH, 10, 0, 0, 0);
             expected.set(Calendar.MILLISECOND, 0);
             assertEquals(format(expected.getTimeInMillis()), format(actual));
         } finally {
@@ -215,6 +230,7 @@ public class PatternProcessorTest {
     }
 
     @Test
+    @ResourceLock(Resources.LOCALE)
     public void testGetNextTimeWeeklyReturnsFirstDayOfNextWeek_US() {
         final Locale old = Locale.getDefault();
         Locale.setDefault(Locale.US); // force 1st day of the week to be Sunday
@@ -227,7 +243,7 @@ public class PatternProcessorTest {
 
             // expect Sunday, March 9, 2014
             final Calendar expected = Calendar.getInstance();
-            expected.set(2014, Calendar.MARCH, 9, 00, 00, 00);
+            expected.set(2014, Calendar.MARCH, 9, 0, 0, 0);
             expected.set(Calendar.MILLISECOND, 0);
             assertEquals(format(expected.getTimeInMillis()), format(actual));
         } finally {
@@ -239,18 +255,19 @@ public class PatternProcessorTest {
      * Tests https://issues.apache.org/jira/browse/LOG4J2-1232
      */
     @Test
+    @ResourceLock(Resources.LOCALE)
     public void testGetNextTimeWeeklyReturnsFirstWeekInYear_US() {
         final Locale old = Locale.getDefault();
         Locale.setDefault(Locale.US); // force 1st day of the week to be Sunday
         try {
             final PatternProcessor pp = new PatternProcessor("logs/market_data_msg.log-%d{yyyy-MM-'W'W}");
             final Calendar initial = Calendar.getInstance();
-            initial.set(2015, Calendar.DECEMBER, 28, 00, 00, 00); // Monday, December 28, 2015
+            initial.set(2015, Calendar.DECEMBER, 28, 0, 0, 0); // Monday, December 28, 2015
             final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
 
             // expect Sunday January 3, 2016
             final Calendar expected = Calendar.getInstance();
-            expected.set(2016, Calendar.JANUARY, 3, 00, 00, 00);
+            expected.set(2016, Calendar.JANUARY, 3, 0, 0, 0);
             expected.set(Calendar.MILLISECOND, 0);
             assertEquals(format(expected.getTimeInMillis()), format(actual));
         } finally {

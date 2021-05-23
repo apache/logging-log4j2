@@ -61,10 +61,15 @@ be used to locate the configuration file.
 
 A Servlet 3.0 or newer web application is any `<web-app>` whose
 `version` attribute has a value of "3.0" or higher. Of course, the
-application must also be running in a compatible web container. Some
-examples are: Tomcat 7.0 and higher, GlassFish 3.0 and higher, JBoss 7.0
-and higher, Oracle WebLogic 12c and higher, and IBM WebSphere 8.0 and
-higher.
+application must also be running in a compatible web container.
+
+Some examples are:
+
+- Tomcat 7.0 and higher
+- GlassFish 3.0 and higher
+- JBoss 7.0 and higher
+- Oracle WebLogic 12c and higher
+- IBM WebSphere 8.0 and higher.
 
 === The Short Story
 

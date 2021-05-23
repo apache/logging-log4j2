@@ -20,14 +20,10 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.util.KeyValuePair;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-
-/**
- *
- */
 public class ThreadContextMapFilterTest {
 
     @Test
@@ -37,6 +33,7 @@ public class ThreadContextMapFilterTest {
         final KeyValuePair[] pairs = new KeyValuePair[] { new KeyValuePair("userid", "JohnDoe"),
                                                     new KeyValuePair("organization", "Apache")};
         ThreadContextMapFilter filter = ThreadContextMapFilter.createFilter(pairs, "and", null, null);
+        assertNotNull(filter);
         filter.start();
         assertTrue(filter.isStarted());
         assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (Object) null, (Throwable) null));
@@ -48,6 +45,7 @@ public class ThreadContextMapFilterTest {
         assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (Object) null, (Throwable) null));
         ThreadContext.clearMap();
         filter = ThreadContextMapFilter.createFilter(pairs, "or", null, null);
+        assertNotNull(filter);
         filter.start();
         assertTrue(filter.isStarted());
         ThreadContext.put("userid", "testuser");
@@ -59,6 +57,7 @@ public class ThreadContextMapFilterTest {
         assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (Object) null, (Throwable) null));
         final KeyValuePair[] single = new KeyValuePair[] {new KeyValuePair("userid", "testuser")};
         filter = ThreadContextMapFilter.createFilter(single, null, null, null);
+        assertNotNull(filter);
         filter.start();
         assertTrue(filter.isStarted());
         assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.DEBUG, null, (Object) null, (Throwable) null));

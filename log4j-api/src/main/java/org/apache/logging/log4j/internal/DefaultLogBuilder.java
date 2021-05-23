@@ -25,6 +25,7 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LambdaUtil;
 import org.apache.logging.log4j.util.StackLocatorUtil;
+import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Supplier;
 
 
@@ -35,6 +36,7 @@ public class DefaultLogBuilder implements LogBuilder {
 
     private static final String FQCN = DefaultLogBuilder.class.getName();
     private static final Logger LOGGER = StatusLogger.getLogger();
+    private static final Message EMPTY_MESSAGE = new SimpleMessage(Strings.EMPTY);
 
     private final Logger logger;
     private Level level;
@@ -214,6 +216,13 @@ public class DefaultLogBuilder implements LogBuilder {
             Object p7, Object p8, Object p9) {
         if (isValid()) {
             logMessage(logger.getMessageFactory().newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9));
+        }
+    }
+
+    @Override
+    public void log() {
+        if (isValid()) {
+            logMessage(EMPTY_MESSAGE);
         }
     }
 

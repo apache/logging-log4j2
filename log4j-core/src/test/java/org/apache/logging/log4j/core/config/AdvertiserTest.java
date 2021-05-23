@@ -22,21 +22,20 @@ import java.util.Map;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- */
+@Tag("functional")
 public class AdvertiserTest {
 
     private static final String CONFIG = "log4j-advertiser.xml";
     private static final String STATUS_LOG = "target/status.log";
 
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         final File file = new File(STATUS_LOG);
         file.delete();
@@ -53,7 +52,7 @@ public class AdvertiserTest {
         }
     }
 
-    @AfterClass
+    @AfterAll
     public static void cleanupClass() {
         System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         final LoggerContext ctx = LoggerContext.getContext();
@@ -85,10 +84,10 @@ public class AdvertiserTest {
                 foundSocket2 = true;
             }
         }
-        assertTrue("Entries for File1 appender do not exist", foundFile1);
-        assertTrue("Entries for File2 appender exist", !foundFile2);
-        assertTrue("Entries for Socket1 appender do not exist", foundSocket1);
-        assertTrue("Entries for Socket2 appender exist", !foundSocket2);
+        assertTrue(foundFile1, "Entries for File1 appender do not exist");
+        assertFalse(foundFile2, "Entries for File2 appender exist");
+        assertTrue(foundSocket1, "Entries for Socket1 appender do not exist");
+        assertFalse(foundSocket2, "Entries for Socket2 appender exist");
     }
 
     @Test
@@ -104,7 +103,7 @@ public class AdvertiserTest {
         ctx.stop();
 
         final Map<Object, Map<String, String>> entries = InMemoryAdvertiser.getAdvertisedEntries();
-        assertTrue("Entries found: " + entries, entries.isEmpty());
+        assertTrue(entries.isEmpty(), "Entries found: " + entries);
 
         //reconfigure for subsequent testing
         ctx.start();
@@ -118,7 +117,7 @@ public class AdvertiserTest {
         ctx.stop();
 
         final Map<Object, Map<String, String>> entries = InMemoryAdvertiser.getAdvertisedEntries();
-        assertTrue("Entries found: " + entries, entries.isEmpty());
+        assertTrue(entries.isEmpty(), "Entries found: " + entries);
 
         ctx.start();
 

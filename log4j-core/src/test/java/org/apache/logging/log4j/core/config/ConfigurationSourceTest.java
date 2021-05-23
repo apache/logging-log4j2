@@ -17,17 +17,17 @@
 
 package org.apache.logging.log4j.core.config;
 
+import org.junit.jupiter.api.Test;
+
 import java.io.ByteArrayInputStream;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ConfigurationSourceTest {
 
     @Test
     public void testJira_LOG4J2_2770_byteArray() throws Exception {
-        ConfigurationSource configurationSource = new ConfigurationSource(
-                new ByteArrayInputStream(new byte[] { 'a', 'b' }));
-        Assert.assertNotNull(configurationSource.resetInputStream());
+        ConfigurationSource configurationSource = new ConfigurationSource(new ByteArrayInputStream(new byte[] { 'a', 'b' }));
+        assertNotNull(configurationSource.resetInputStream());
     }
 }

@@ -15,30 +15,39 @@ spec:
         app: sampleapp
     spec:
       containers:
-        - name: sampleapp
-          image: localhost:5000/sampleapp:latest
-          imagePullPolicy: Always
-          ports:
-            - containerPort: 8080
-            - containerPort: 5005
-          env:
-            - name: JAVA_OPTS
-              value: "-Delastic.search.host=host.docker.internal"
+      - name: sampleapp
+        image: localhost:5000/sampleapp:latest
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 8080
+          - containerPort: 5005
+        env:
+          - name: JAVA_OPTS
+            value: "-Delastic.search.host=host.docker.internal"
+      - name: key-value-store
+        image: redis
+        ports:
+        - containerPort: 6379
+
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: sampleapp
 spec:
-  type: NodePort
   selector:
     app: sampleapp
   ports:
     - protocol: TCP
       port: 8080
-      nodePort: 30011
+      targetPort: 8080
       name: http
     - protocol: TCP
+      port: 6379
+      targetPort: 6379
+      name: redis
+    - protocol: TCP
       port: 5005
-      nodePort: 30012
+      targetPort: 5005
       name: debug

@@ -16,42 +16,30 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.junit.jupiter.api.Test;
+
 import java.util.List;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-import static org.junit.Assert.*;
-
-/**
- *
- */
+@LoggerContextSource("log4j-rootthrowablefilter.xml")
 public class RootThrowableTest {
-    private static final String CONFIG = "log4j-rootthrowablefilter.xml";
-    private static ListAppender app;
-
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
-
-    @Before
-    public void setUp() throws Exception {
-        app = context.getListAppender("List").clear();
-    }
-
     @Test
-    public void testException() {
+    public void testException(final LoggerContext context, @Named("List") final ListAppender app) {
+        app.clear();
         final Logger logger = context.getLogger("LoggerTest");
         final Throwable cause = new NullPointerException("null pointer");
         final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
         logger.error("Exception", parent);
         final List<String> msgs = app.getMessages();
         assertNotNull(msgs);
-        assertEquals("Incorrect number of messages. Should be 1 is " + msgs.size(), 1, msgs.size());
-        assertTrue("No suppressed lines", msgs.get(0).contains("suppressed"));
+        assertEquals(1, msgs.size(), "Incorrect number of messages. Should be 1 is " + msgs.size());
+        assertTrue(msgs.get(0).contains("suppressed"), "No suppressed lines");
         app.clear();
     }
 }

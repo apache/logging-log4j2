@@ -24,42 +24,39 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.selector.ContextSelector;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ShutdownCallbackRegistryTest {
 
-    @Rule
-    public final LoggerContextRule ctx = new LoggerContextRule("ShutdownCallbackRegistryTest.xml");
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
+    @BeforeAll
+    public static void setUpClass() {
         System.setProperty("log4j2.is.webapp", "false");
         System.setProperty(ShutdownCallbackRegistry.SHUTDOWN_CALLBACK_REGISTRY, Registry.class.getName());
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         System.clearProperty(ShutdownCallbackRegistry.SHUTDOWN_CALLBACK_REGISTRY);
         System.clearProperty("log4j2.is.webapp");
     }
 
     @Test
-    public void testShutdownCallbackRegistry() throws Exception {
-        final LoggerContext context = ctx.getLoggerContext();
-        assertTrue("LoggerContext should be started", context.isStarted());
+    @LoggerContextSource("ShutdownCallbackRegistryTest.xml")
+    public void testShutdownCallbackRegistry(final LoggerContext context) {
+        assertTrue(context.isStarted(), "LoggerContext should be started");
         assertThat(Registry.CALLBACKS, hasSize(1));
         Registry.shutdown();
-        assertTrue("LoggerContext should be stopped", context.isStopped());
+        assertTrue(context.isStopped(), "LoggerContext should be stopped");
         assertThat(Registry.CALLBACKS, hasSize(0));
         final ContextSelector selector = ((Log4jContextFactory) LogManager.getFactory()).getSelector();
         assertThat(selector.getLoggerContexts(), not(hasItem(context)));

@@ -45,12 +45,14 @@ public @interface PluginBuilderAttribute {
     /**
      * Specifies the attribute name this corresponds to. If no attribute is set (i.e., a blank string), then the name
      * of the field (or member) this annotation is attached to will be used.
+     * @return the name of the attribute.
      */
     String value() default Strings.EMPTY;
 
     /**
      * Indicates that this attribute is a sensitive one that shouldn't be logged directly. Such attributes will instead
      * be output as a hashed value.
+     * @return true if this attribute should be considered sensitive.
      */
     boolean sensitive() default false;
 }

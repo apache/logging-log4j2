@@ -154,10 +154,10 @@ public class AppenderControl extends AbstractFilterable {
     private void tryCallAppender(final LogEvent event) {
         try {
             appender.append(event);
-        } catch (final RuntimeException ex) {
-            handleAppenderError(event, ex);
-        } catch (final Exception ex) {
-            handleAppenderError(event, new AppenderLoggingException(ex));
+        } catch (final RuntimeException error) {
+            handleAppenderError(event, error);
+        } catch (final Exception error) {
+            handleAppenderError(event, new AppenderLoggingException(error));
         }
     }
 

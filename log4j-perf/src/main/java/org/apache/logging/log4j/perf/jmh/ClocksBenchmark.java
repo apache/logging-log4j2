@@ -152,7 +152,7 @@ public class ClocksBenchmark {
         private static volatile OldCachedClock instance;
         private static final Object INSTANCE_LOCK = new Object();
         private volatile long millis = System.currentTimeMillis();
-        private volatile short count = 0;
+        private volatile short count;
 
         private OldCachedClock() {
             final Thread updater = new Thread(new Runnable() {

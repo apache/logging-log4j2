@@ -19,11 +19,13 @@ package org.apache.logging.log4j.core.impl;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -248,6 +250,26 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
         return ctx;
     }
 
+    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Map.Entry<String, Object> entry,
+            final boolean currentContext, final URI configLocation, final String name) {
+        final LoggerContext ctx = selector.getContext(fqcn, loader, entry, currentContext, configLocation);
+        if (name != null) {
+            ctx.setName(name);
+        }
+        if (ctx.getState() == LifeCycle.State.INITIALIZED) {
+            if (configLocation != null || name != null) {
+                ContextAnchor.THREAD_CONTEXT.set(ctx);
+                final Configuration config = ConfigurationFactory.getInstance().getConfiguration(ctx, name, configLocation);
+                LOGGER.debug("Starting LoggerContext[name={}] from configuration at {}", ctx.getName(), configLocation);
+                ctx.start(config);
+                ContextAnchor.THREAD_CONTEXT.remove();
+            } else {
+                ctx.start();
+            }
+        }
+        return ctx;
+    }
+
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Object externalContext,
             final boolean currentContext, final List<URI> configLocations, final String name) {
         final LoggerContext ctx = selector
@@ -265,18 +287,34 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
                 for (final URI configLocation : configLocations) {
                     final Configuration currentReadConfiguration = ConfigurationFactory.getInstance()
                             .getConfiguration(ctx, name, configLocation);
-                    if (currentReadConfiguration instanceof AbstractConfiguration) {
-                        configurations.add((AbstractConfiguration) currentReadConfiguration);
+                    if (currentReadConfiguration != null) {
+                        if (currentReadConfiguration instanceof DefaultConfiguration) {
+                            LOGGER.warn("Unable to locate configuration {}, ignoring", configLocation.toString());
+                        }
+                        else if (currentReadConfiguration instanceof AbstractConfiguration) {
+                            configurations.add((AbstractConfiguration) currentReadConfiguration);
+                        } else {
+                            LOGGER.error(
+                                    "Found configuration {}, which is not an AbstractConfiguration and can't be handled by CompositeConfiguration",
+                                    configLocation);
+                        }
                     } else {
-                        LOGGER.error(
-                                "Found configuration {}, which is not an AbstractConfiguration and can't be handled by CompositeConfiguration",
-                                configLocation);
+                        LOGGER.info("Unable to access configuration {}, ignoring", configLocation.toString());
                     }
                 }
-                final CompositeConfiguration compositeConfiguration = new CompositeConfiguration(configurations);
-                LOGGER.debug("Starting LoggerContext[name={}] from configurations at {}", ctx.getName(),
-                        configLocations);
-                ctx.start(compositeConfiguration);
+                if (configurations.size() == 0) {
+                    LOGGER.error("No configurations could be created for {}", configLocations.toString());
+                } else if (configurations.size() == 1) {
+                    AbstractConfiguration config = configurations.get(0);
+                    LOGGER.debug("Starting LoggerContext[name={}] from configuration at {}", ctx.getName(),
+                            config.getConfigurationSource().getLocation());
+                    ctx.start(config);
+                } else {
+                    final CompositeConfiguration compositeConfiguration = new CompositeConfiguration(configurations);
+                    LOGGER.debug("Starting LoggerContext[name={}] from configurations at {}", ctx.getName(),
+                            configLocations);
+                    ctx.start(compositeConfiguration);
+                }
                 ContextAnchor.THREAD_CONTEXT.remove();
             } else {
                 ctx.start();
@@ -334,6 +372,11 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
         if (context instanceof LoggerContext) {
             selector.removeContext((LoggerContext) context);
         }
+    }
+
+    @Override
+    public boolean isClassLoaderDependent() {
+        return selector.isClassLoaderDependent();
     }
 
     @Override

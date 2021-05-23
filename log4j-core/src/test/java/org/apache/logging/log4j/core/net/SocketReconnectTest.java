@@ -21,12 +21,12 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.test.AvailablePortFinder;
+import org.apache.logging.log4j.core.test.AvailablePortFinder;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -40,9 +40,9 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-//@Ignore("Currently needs better port choosing support")
+//@Disabled("Currently needs better port choosing support")
 public class SocketReconnectTest {
     private static final int SOCKET_PORT1 = AvailablePortFinder.getNextAvailable();
     private static final int SOCKET_PORT2 = AvailablePortFinder.getNextAvailable();
@@ -66,7 +66,7 @@ public class SocketReconnectTest {
     private static Logger logger;
 
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() throws IOException, InterruptedException {
         server1 = new TestSocketServer(0);
         server2 = new TestSocketServer(0);
@@ -89,12 +89,12 @@ public class SocketReconnectTest {
         list.clear();
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         Configurator.shutdown(loggerContext);
     }
 
-    @After
+    @AfterEach
     public void after() throws InterruptedException {
         if (server1 != null) {
             server1.shutdown();
@@ -128,7 +128,7 @@ public class SocketReconnectTest {
                 }
             }
         }
-        assertNotNull("No message", msg);
+        assertNotNull(msg, "No message");
         assertEquals(message, msg);
 
         logger.error(SHUTDOWN);
@@ -148,7 +148,7 @@ public class SocketReconnectTest {
                 // System.err.println("Caught expected exception");
             }
         }
-        assertTrue("No Exception thrown", exceptionCaught);
+        assertTrue(exceptionCaught, "No Exception thrown");
         message = "Log #3";
 
 
@@ -167,7 +167,7 @@ public class SocketReconnectTest {
                 }
             }
         }
-        assertNotNull("No message", msg);
+        assertNotNull(msg, "No message");
         assertEquals(message, msg);
         logger.error(SHUTDOWN);
         server1.join();
@@ -196,7 +196,7 @@ public class SocketReconnectTest {
                 }
             }
         }
-        assertNotNull("No message", msg);
+        assertNotNull(msg, "No message");
         assertEquals(message, msg);
 
         server1.shutdown();
@@ -215,7 +215,7 @@ public class SocketReconnectTest {
                 }
             }
         }
-        assertNotNull("No message", msg);
+        assertNotNull(msg, "No message");
         assertEquals(message, msg);
 
         server2.shutdown();

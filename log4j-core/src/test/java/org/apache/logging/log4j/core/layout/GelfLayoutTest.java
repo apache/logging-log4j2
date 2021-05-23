@@ -24,15 +24,15 @@ import org.apache.logging.log4j.core.*;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.layout.GelfLayout.CompressionType;
 import org.apache.logging.log4j.core.lookup.JavaLookup;
+import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.NetUtils;
-import org.apache.logging.log4j.junit.ThreadContextRule;
-import org.apache.logging.log4j.test.appender.EncodingListAppender;
-import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
+import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
+import org.apache.logging.log4j.core.test.appender.EncodingListAppender;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -42,12 +42,13 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
+@UsingAnyThreadContext
 public class GelfLayoutTest {
-    
+
     static ConfigurationFactory configFactory = new BasicConfigurationFactory();
-    
+
     private static final String HOSTNAME = "TheHost";
     private static final String KEY1 = "Key1";
     private static final String KEY2 = "Key2";
@@ -60,15 +61,12 @@ public class GelfLayoutTest {
     private static final String MDCVALUE2 = "MdcValue2";
     private static final String VALUE1 = "Value1";
 
-    @Rule
-    public final ThreadContextRule threadContextRule = new ThreadContextRule(); 
-
-    @AfterClass
+    @AfterAll
     public static void cleanupClass() {
         ConfigurationFactory.removeConfigurationFactory(configFactory);
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         ConfigurationFactory.setConfigurationFactory(configFactory);
         final LoggerContext ctx = LoggerContext.getContext();
@@ -80,7 +78,8 @@ public class GelfLayoutTest {
     Logger root = ctx.getRootLogger();
 
     private void testCompressedLayout(final CompressionType compressionType, final boolean includeStacktrace,
-                                      final boolean includeThreadContext, String host, final boolean includeNullDelimiter) throws IOException {
+                                      final boolean includeThreadContext, String host, final boolean includeNullDelimiter,
+                                      final boolean includeNewLineDelimiter) throws IOException {
         for (final Appender appender : root.getAppenders().values()) {
             root.removeAppender(appender);
         }
@@ -96,6 +95,7 @@ public class GelfLayoutTest {
             .setIncludeStacktrace(includeStacktrace)
             .setIncludeThreadContext(includeThreadContext)
             .setIncludeNullDelimiter(includeNullDelimiter)
+            .setIncludeNewLineDelimiter(includeNewLineDelimiter)
             .build();
         final ListAppender eventAppender = new ListAppender("Events", null, null, true, false);
         final ListAppender rawAppender = new ListAppender("Raw", null, layout, true, true);
@@ -218,41 +218,54 @@ public class GelfLayoutTest {
         //@formatter:on
         assertJsonEquals(expected, uncompressedString);
         assertJsonEquals(expected, uncompressedString2);
+        if (includeNullDelimiter) {
+            assertEquals(uncompressedString.indexOf('\0'), uncompressedString.length() - 1);
+            assertEquals(uncompressedString2.indexOf('\0'), uncompressedString2.length() - 1);
+        }
+        if (includeNewLineDelimiter) {
+            assertEquals(uncompressedString.indexOf('\n'), uncompressedString.length() - 1);
+            assertEquals(uncompressedString2.indexOf('\n'), uncompressedString2.length() - 1);
+        }
     }
 
     @Test
     public void testLayoutGzipCompression() throws Exception {
-        testCompressedLayout(CompressionType.GZIP, true, true, HOSTNAME, false);
+        testCompressedLayout(CompressionType.GZIP, true, true, HOSTNAME, false, false);
     }
 
     @Test
     public void testLayoutNoCompression() throws Exception {
-        testCompressedLayout(CompressionType.OFF, true, true, HOSTNAME, false);
+        testCompressedLayout(CompressionType.OFF, true, true, HOSTNAME, false, false);
     }
 
     @Test
     public void testLayoutZlibCompression() throws Exception {
-        testCompressedLayout(CompressionType.ZLIB, true, true, HOSTNAME, false);
+        testCompressedLayout(CompressionType.ZLIB, true, true, HOSTNAME, false, false);
     }
 
     @Test
     public void testLayoutNoStacktrace() throws Exception {
-        testCompressedLayout(CompressionType.OFF, false, true, HOSTNAME, false);
+        testCompressedLayout(CompressionType.OFF, false, true, HOSTNAME, false, false);
     }
 
     @Test
     public void testLayoutNoThreadContext() throws Exception {
-        testCompressedLayout(CompressionType.OFF, true, false, HOSTNAME, false);
+        testCompressedLayout(CompressionType.OFF, true, false, HOSTNAME, false, false);
     }
 
     @Test
     public void testLayoutNoHost() throws Exception {
-        testCompressedLayout(CompressionType.OFF, true, true, null, false);
+        testCompressedLayout(CompressionType.OFF, true, true, null, false, false);
     }
 
     @Test
     public void testLayoutNullDelimiter() throws Exception {
-        testCompressedLayout(CompressionType.OFF, false, true, HOSTNAME, true);
+        testCompressedLayout(CompressionType.OFF, false, true, HOSTNAME, true, false);
+    }
+
+    @Test
+    public void testLayoutNewLineDelimiter() throws Exception {
+        testCompressedLayout(CompressionType.OFF, true, true, HOSTNAME, false, true);
     }
 
     @Test
@@ -264,5 +277,28 @@ public class GelfLayoutTest {
         assertEquals("1.100", GelfLayout.formatTimestamp(1100L).toString());
         assertEquals("1458741206.653", GelfLayout.formatTimestamp(1458741206653L).toString());
         assertEquals("9223372036854775.807", GelfLayout.formatTimestamp(Long.MAX_VALUE).toString());
+    }
+
+    private void testRequiresLocation(String messagePattern, Boolean requiresLocation) {
+        GelfLayout layout = GelfLayout.newBuilder()
+            .setMessagePattern(messagePattern)
+            .build();
+
+        assertEquals(layout.requiresLocation(), requiresLocation);
+    }
+
+    @Test
+    public void testRequiresLocationPatternNotSet() {
+        testRequiresLocation(null, false);
+    }
+
+    @Test
+    public void testRequiresLocationPatternNotContainsLocation() {
+        testRequiresLocation("%m %n", false);
+    }
+
+    @Test
+    public void testRequiresLocationPatternContainsLocation() {
+        testRequiresLocation("%C %m %t", true);
     }
 }

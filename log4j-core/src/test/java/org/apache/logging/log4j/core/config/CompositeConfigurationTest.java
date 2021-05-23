@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
 import org.apache.logging.log4j.core.filter.RegexFilter;
 import org.apache.logging.log4j.core.util.Throwables;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.Description;
@@ -162,6 +162,25 @@ public class CompositeConfigurationTest {
                 assertEquals("Expected cat3 log level to be ERROR", Level.ERROR, config.getLogger("cat3").getLevel());
                 //Check level on cat1 (not present in overridden config)
                 assertEquals("Expected cat1 log level to be DEBUG", Level.DEBUG, config.getLogger("cat1").getLevel());
+            }
+        };
+        runTest(lcr, test);
+    }
+
+    @Test
+    public void testMissingConfig() {
+        final LoggerContextRule lcr = new LoggerContextRule("classpath:log4j-comp-logger-root.xml,log4j-does-not-exist.json");
+        final Statement test = new Statement() {
+            @Override
+            public void evaluate() throws Throwable {
+                final AbstractConfiguration config =  (AbstractConfiguration) lcr.getConfiguration();
+                assertNotNull("No configuration returned", config);
+                //Test for Root log level override
+                assertEquals("Expected Root logger log level to be ERROR", Level.ERROR, config.getRootLogger().getLevel());
+
+                //Test for no cat2 level override
+                final LoggerConfig cat2 = config.getLogger("cat2");
+                assertEquals("Expected cat2 log level to be INFO", Level.DEBUG, cat2.getLevel());
             }
         };
         runTest(lcr, test);

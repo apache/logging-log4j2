@@ -505,6 +505,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * @param fqcn The fully qualified class name of the <b>caller</b>.
      * @param format Format String for the parameters.
      * @param paramSuppliers The Suppliers of the parameters.
+     * @return The EntryMessage.
      */
     protected EntryMessage enter(final String fqcn, final String format, final Supplier<?>... paramSuppliers) {
         EntryMessage entryMsg = null;
@@ -520,6 +521,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * @param fqcn The fully qualified class name of the <b>caller</b>.
      * @param format The format String for the parameters.
      * @param params The parameters to the method.
+     * @return The EntryMessage.
      */
     protected EntryMessage enter(final String fqcn, final String format, final Object... params) {
         EntryMessage entryMsg = null;
@@ -532,10 +534,9 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     /**
      * Logs entry to a method with location information.
      *
-     * @param fqcn
-     *            The fully qualified class name of the <b>caller</b>.
-     * @param message
-     *            the Message.
+     * @param fqcn The fully qualified class name of the <b>caller</b>.
+     * @param message the Message.
+     * @return The EntryMessage.
      * @since 2.6
      */
     protected EntryMessage enter(final String fqcn, final Message message) {
@@ -885,6 +886,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * Logs exiting from a method with the result and location information.
      *
      * @param fqcn The fully qualified class name of the <b>caller</b>.
+     * @param format The format string.
      * @param <R> The type of the parameter and object being returned.
      * @param result The result being returned from the method call.
      * @return the return value passed to this method.

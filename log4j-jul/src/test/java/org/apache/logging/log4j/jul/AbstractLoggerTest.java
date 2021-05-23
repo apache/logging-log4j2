@@ -23,13 +23,10 @@ import java.util.logging.Logger;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -43,7 +40,7 @@ public abstract class AbstractLoggerTest {
 
     @Test
     public void testGetName() throws Exception {
-        assertThat(logger.getName(), equalTo(LOGGER_NAME));
+        assertThat(logger.getName()).isEqualTo(LOGGER_NAME);
     }
 
     @Test
@@ -53,35 +50,63 @@ public abstract class AbstractLoggerTest {
         root.config("Test info message");
         root.fine("Test info message");
         final List<LogEvent> events = eventAppender.getEvents();
-        assertThat(events, hasSize(3));
+        assertThat(events).hasSize(3);
         for (final LogEvent event : events) {
             final String message = event.getMessage().getFormattedMessage();
-            assertThat(message, equalTo("Test info message"));
+            assertThat(message).isEqualTo("Test info message");
         }
     }
 
     @Test
     public void testGlobalLoggerName() throws Exception {
         final Logger root = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-        assertThat(root.getName(), equalTo(Logger.GLOBAL_LOGGER_NAME));
+        assertThat(root.getName()).isEqualTo(Logger.GLOBAL_LOGGER_NAME);
     }
 
     @Test
     public void testIsLoggable() throws Exception {
-        assertThat(logger.isLoggable(java.util.logging.Level.SEVERE), equalTo(true));
+        assertThat(logger.isLoggable(java.util.logging.Level.SEVERE)).isTrue();
     }
 
     @Test
     public void testLog() throws Exception {
         logger.info("Informative message here.");
         final List<LogEvent> events = eventAppender.getEvents();
-        assertThat(events, hasSize(1));
+        assertThat(events).hasSize(1);
         final LogEvent event = events.get(0);
-        assertThat(event, instanceOf(Log4jLogEvent.class));
-        assertEquals(Level.INFO, event.getLevel());
-        assertEquals(LOGGER_NAME, event.getLoggerName());
-        assertEquals("Informative message here.", event.getMessage().getFormattedMessage());
-        assertEquals(ApiLogger.class.getName(), event.getLoggerFqcn());
+        assertThat(event).isInstanceOf(Log4jLogEvent.class);
+        assertThat(event.getLevel()).isEqualTo(Level.INFO);
+        assertThat(event.getLoggerName()).isEqualTo(LOGGER_NAME);
+        assertThat(event.getMessage().getFormattedMessage()).isEqualTo("Informative message here.");
+        assertThat(event.getLoggerFqcn()).isEqualTo(ApiLogger.class.getName());
+    }
+
+    @Test
+    public void testLogFilter() throws Exception {
+        logger.setFilter(record -> false);
+        logger.severe("Informative message here.");
+        logger.warning("Informative message here.");
+        logger.info("Informative message here.");
+        logger.config("Informative message here.");
+        logger.fine("Informative message here.");
+        logger.finer("Informative message here.");
+        logger.finest("Informative message here.");
+        final List<LogEvent> events = eventAppender.getEvents();
+        assertThat(events).isEmpty();
+    }
+
+    @Test
+    public void testAlteringLogFilter() throws Exception {
+        logger.setFilter(record -> { record.setMessage("This is not the message you are looking for."); return true; });
+        logger.info("Informative message here.");
+        final List<LogEvent> events = eventAppender.getEvents();
+        assertThat(events).hasSize(1);
+        final LogEvent event = events.get(0);
+        assertThat(event).isInstanceOf(Log4jLogEvent.class);
+        assertThat(event.getLevel()).isEqualTo(Level.INFO);
+        assertThat(event.getLoggerName()).isEqualTo(LOGGER_NAME);
+        assertThat(event.getMessage().getFormattedMessage()).isEqualTo("This is not the message you are looking for.");
+        assertThat(event.getLoggerFqcn()).isEqualTo(ApiLogger.class.getName());
     }
 
     @Test
@@ -89,16 +114,16 @@ public abstract class AbstractLoggerTest {
         final Logger flowLogger = Logger.getLogger("TestFlow");
         flowLogger.logp(java.util.logging.Level.FINER, "sourceClass", "sourceMethod", "ENTER {0}", "params");
         final List<LogEvent> events = flowAppender.getEvents();
-        assertEquals("ENTER params", events.get(0).getMessage().getFormattedMessage());
+        assertThat(events.get(0).getMessage().getFormattedMessage()).isEqualTo("ENTER params");
     }
 
     @Test
     public void testLogUsingCustomLevel() throws Exception {
         logger.config("Config level");
         final List<LogEvent> events = eventAppender.getEvents();
-        assertThat(events, hasSize(1));
+        assertThat(events).hasSize(1);
         final LogEvent event = events.get(0);
-        assertThat(event.getLevel(), equalTo(LevelTranslator.CONFIG));
+        assertThat(event.getLevel()).isEqualTo(LevelTranslator.CONFIG);
     }
 
     @Test
@@ -106,9 +131,9 @@ public abstract class AbstractLoggerTest {
         final Logger log = Logger.getLogger("Test.CallerClass");
         log.config("Calling from LoggerTest");
         final List<String> messages = stringAppender.getMessages();
-        assertThat(messages, hasSize(1));
+        assertThat(messages).hasSize(1);
         final String message = messages.get(0);
-        assertEquals(AbstractLoggerTest.class.getName(), message);
+        assertThat(message).isEqualTo(AbstractLoggerTest.class.getName());
     }
 
     @Test
@@ -132,10 +157,10 @@ public abstract class AbstractLoggerTest {
         root.config("Test info " + string);
         root.fine("Test info " + string);
         final List<LogEvent> events = eventAppender.getEvents();
-        assertThat(events, hasSize(3));
+        assertThat(events).hasSize(3);
         for (final LogEvent event : events) {
             final String message = event.getMessage().getFormattedMessage();
-            assertThat(message, equalTo("Test info " + string));
+            assertThat(message).isEqualTo("Test info " + string);
         }
     }
 
@@ -147,10 +172,10 @@ public abstract class AbstractLoggerTest {
         flowLogger.entering("com.example.TestSourceClass3", "testSourceMethod3(String)",
                 new Object[] { "TestParam0", "TestParam1" });
         final List<LogEvent> events = flowAppender.getEvents();
-        assertThat(events, hasSize(3));
-        assertEquals("Enter", events.get(0).getMessage().getFormattedMessage());
-        assertEquals("Enter params(TestParam)", events.get(1).getMessage().getFormattedMessage());
-        assertEquals("Enter params(TestParam0, TestParam1)", events.get(2).getMessage().getFormattedMessage());
+        assertThat(events).hasSize(3);
+        assertThat(events.get(0).getMessage().getFormattedMessage()).isEqualTo("Enter");
+        assertThat(events.get(1).getMessage().getFormattedMessage()).isEqualTo("Enter params(TestParam)");
+        assertThat(events.get(2).getMessage().getFormattedMessage()).isEqualTo("Enter params(TestParam0, TestParam1)");
     }
 
     @Test
@@ -174,17 +199,16 @@ public abstract class AbstractLoggerTest {
     }
 
     private void testLambdaMessages(final String string) {
-        // TODO FOR JAVA 8
-        // final Logger root = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-        // root.info(() -> "Test info " + string);
-        // root.config(() -> "Test info " + string);
-        // root.fine(() -> "Test info " + string);
-        // final List<LogEvent> events = eventAppender.getEvents();
-        // assertThat(events, hasSize(3));
-        // for (final LogEvent event : events) {
-        // final String message = event.getMessage().getFormattedMessage();
-        // assertThat(message, equalTo("Test info " + string));
-        // }
+        final Logger root = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+        root.info(() -> "Test info " + string);
+        root.config(() -> "Test info " + string);
+        root.fine(() -> "Test info " + string);
+        final List<LogEvent> events = eventAppender.getEvents();
+        assertThat(events).hasSize(3);
+        for (final LogEvent event : events) {
+            final String message = event.getMessage().getFormattedMessage();
+            assertThat(message).isEqualTo("Test info " + string);
+        }
     }
 
 }

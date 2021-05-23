@@ -16,43 +16,33 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.junit.jupiter.api.Test;
+
 import java.util.List;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.ClassRule;
-
-/**
- *
- */
+@LoggerContextSource("SequenceNumberPatternConverterZeroPaddedTest.yml")
 public class SequenceNumberPatternConverterZeroPaddedTest {
 
-    @ClassRule
-    public static LoggerContextRule ctx = new LoggerContextRule("SequenceNumberPatternConverterZeroPaddedTest.yml");
-
-    @Before
-    public void before() {
-      ctx.getListAppender("Padded").clear();
-    }
-
     @Test
-    public void testPaddedSequence() throws Exception {
-        final Logger logger = ctx.getLogger();
+    public void testPaddedSequence(final LoggerContext context, @Named("Padded") final ListAppender app) {
+        app.clear();
+        final Logger logger = context.getLogger(getClass().getName());
         logger.info("Message 1");
         logger.info("Message 2");
         logger.info("Message 3");
         logger.info("Message 4");
         logger.info("Message 5");
 
-        final ListAppender app = ctx.getListAppender("Padded");
         final List<String> messages = app.getMessages();
-        System.out.println("Written messages "+messages);
+        // System.out.println("Written messages "+messages);
         assertThat(messages, contains("001", "002", "003", "004", "005"));
     }
 }

@@ -16,16 +16,10 @@
  */
 package org.apache.logging.log4j;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- */
 public class LevelTest {
 
     @Test
@@ -49,6 +43,17 @@ public class LevelTest {
     @Test
     public void testGoodLevels() {
         final Level level = Level.toLevel("INFO");
+        assertNotNull(level);
+        assertEquals(Level.INFO, level);
+    }
+
+    @Test
+    public void testLevelsWithSpaces() {
+        Level level = Level.toLevel(" INFO ");
+        assertNotNull(level);
+        assertEquals(Level.INFO, level);
+
+        level = Level.valueOf(" INFO ");
         assertNotNull(level);
         assertEquals(Level.INFO, level);
     }

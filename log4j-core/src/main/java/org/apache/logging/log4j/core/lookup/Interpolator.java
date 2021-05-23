@@ -150,9 +150,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         try {
             strLookupMap.put(LOOKUP_KEY_KUBERNETES,
                     Loader.newCheckedInstanceOf("org.apache.logging.log4j.kubernetes.KubernetesLookup", StrLookup.class));
-        } catch (final Exception ignored) {
-            handleError(LOOKUP_KEY_KUBERNETES, ignored);
-        } catch (final NoClassDefFoundError error) {
+        } catch (final Exception | NoClassDefFoundError error) {
             handleError(LOOKUP_KEY_KUBERNETES, error);
         }
     }

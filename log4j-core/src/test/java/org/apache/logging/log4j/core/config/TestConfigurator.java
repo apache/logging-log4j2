@@ -39,12 +39,12 @@ import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-import static org.apache.logging.log4j.hamcrest.MapMatchers.hasSize;
+import static org.apache.logging.log4j.core.test.hamcrest.MapMatchers.hasSize;
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasKey;
@@ -52,12 +52,9 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.theInstance;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- */
-@RunWith(JUnit4.class)
+@Tag("functional")
 public class TestConfigurator {
 
     private static final String CONFIG_NAME = "ConfigTest";
@@ -83,7 +80,7 @@ public class TestConfigurator {
         "mmmmmmmmmm",
     };
 
-    @After
+    @AfterEach
     public void cleanup() {
         System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         if (ctx != null) {
@@ -97,15 +94,15 @@ public class TestConfigurator {
         ctx = Configurator.initialize("Test1", "target/test-classes/log4j2-config.xml");
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
-        assertNotNull("No configuration", config);
-        assertEquals("Incorrect Configuration.", CONFIG_NAME, config.getName());
+        assertNotNull(config, "No configuration");
+        assertEquals(CONFIG_NAME, config.getName(), "Incorrect Configuration.");
         final Map<String, Appender> map = config.getAppenders();
-        assertNotNull("Appenders map should not be null.", map);
+        assertNotNull(map, "Appenders map should not be null.");
         assertThat(map, hasSize(greaterThan(0)));
         assertThat("Wrong configuration", map, hasKey("List"));
         Configurator.shutdown(ctx);
         config = ctx.getConfiguration();
-        assertEquals("Unexpected Configuration.", NullConfiguration.NULL_NAME, config.getName());
+        assertEquals(NullConfiguration.NULL_NAME, config.getName(), "Unexpected Configuration.");
     }
 
     @Test
@@ -113,15 +110,15 @@ public class TestConfigurator {
         ctx = Configurator.initialize("Test1", null, new File("target/test-classes/log4j2-config.xml").toURI());
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
-        assertNotNull("No configuration", config);
-        assertEquals("Incorrect Configuration.", CONFIG_NAME, config.getName());
+        assertNotNull(config, "No configuration");
+        assertEquals(CONFIG_NAME, config.getName(), "Incorrect Configuration.");
         final Map<String, Appender> map = config.getAppenders();
-        assertNotNull("Appenders map should not be null.", map);
+        assertNotNull(map, "Appenders map should not be null.");
         assertThat(map, hasSize(greaterThan(0)));
         assertThat("Wrong configuration", map, hasKey("List"));
         Configurator.shutdown(ctx);
         config = ctx.getConfiguration();
-        assertEquals("Unexpected Configuration.", NullConfiguration.NULL_NAME, config.getName());
+        assertEquals(NullConfiguration.NULL_NAME, config.getName(), "Unexpected Configuration.");
     }
 
     @Test
@@ -132,15 +129,15 @@ public class TestConfigurator {
         ctx = Configurator.initialize(null, source);
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
-        assertNotNull("No configuration", config);
-        assertEquals("Incorrect Configuration.", CONFIG_NAME, config.getName());
+        assertNotNull(config, "No configuration");
+        assertEquals(CONFIG_NAME, config.getName(), "Incorrect Configuration.");
         final Map<String, Appender> map = config.getAppenders();
-        assertNotNull("Appenders map should not be null.", map);
+        assertNotNull(map, "Appenders map should not be null.");
         assertThat(map, hasSize(greaterThan(0)));
         assertThat("Wrong configuration", map, hasKey("List"));
         Configurator.shutdown(ctx);
         config = ctx.getConfiguration();
-        assertEquals("Unexpected Configuration.", NullConfiguration.NULL_NAME, config.getName());
+        assertEquals(NullConfiguration.NULL_NAME, config.getName(), "Unexpected Configuration.");
     }
 
     @Test
@@ -151,15 +148,15 @@ public class TestConfigurator {
         ctx = Configurator.initialize(null, source);
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
-        assertNotNull("No configuration", config);
-        assertEquals("Incorrect Configuration.", CONFIG_NAME, config.getName());
+        assertNotNull(config, "No configuration");
+        assertEquals(CONFIG_NAME, config.getName(), "Incorrect Configuration.");
         final Map<String, Appender> map = config.getAppenders();
-        assertNotNull("Appenders map should not be null.", map);
+        assertNotNull(map, "Appenders map should not be null.");
         assertThat(map, hasSize(greaterThan(0)));
         assertThat("Wrong configuration", map, hasKey("List"));
         Configurator.shutdown(ctx);
         config = ctx.getConfiguration();
-        assertEquals("Unexpected Configuration.", NullConfiguration.NULL_NAME, config.getName());
+        assertEquals(NullConfiguration.NULL_NAME, config.getName(), "Unexpected Configuration.");
     }
 
     @Test
@@ -167,15 +164,15 @@ public class TestConfigurator {
         ctx = Configurator.initialize("Test1", "log4j2-config.xml");
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
-        assertNotNull("No configuration", config);
-        assertEquals("Incorrect Configuration.", CONFIG_NAME, config.getName());
+        assertNotNull(config, "No configuration");
+        assertEquals(CONFIG_NAME, config.getName(), "Incorrect Configuration.");
         final Map<String, Appender> map = config.getAppenders();
-        assertNotNull("Appenders map should not be null.", map);
+        assertNotNull(map, "Appenders map should not be null.");
         assertThat(map, hasSize(greaterThan(0)));
         assertThat("Wrong configuration", map, hasKey("List"));
         Configurator.shutdown(ctx);
         config = ctx.getConfiguration();
-        assertEquals("Unexpected Configuration.", NullConfiguration.NULL_NAME, config.getName());
+        assertEquals(NullConfiguration.NULL_NAME, config.getName(), "Unexpected Configuration.");
     }
 
     @Test
@@ -184,15 +181,15 @@ public class TestConfigurator {
         ctx = Configurator.initialize("Test1", null);
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
-        assertNotNull("No configuration", config);
-        assertEquals("Incorrect Configuration.", CONFIG_NAME, config.getName());
+        assertNotNull(config, "No configuration");
+        assertEquals(CONFIG_NAME, config.getName(), "Incorrect Configuration.");
         final Map<String, Appender> map = config.getAppenders();
-        assertNotNull("Appenders map should not be null.", map);
+        assertNotNull(map, "Appenders map should not be null.");
         assertThat(map, hasSize(greaterThan(0)));
         assertThat("Wrong configuration", map, hasKey("List"));
         Configurator.shutdown(ctx);
         config = ctx.getConfiguration();
-        assertEquals("Unexpected Configuration.", NullConfiguration.NULL_NAME, config.getName());
+        assertEquals(NullConfiguration.NULL_NAME, config.getName(), "Unexpected Configuration.");
     }
 
     @Test
@@ -200,15 +197,15 @@ public class TestConfigurator {
         ctx = Configurator.initialize("Test1", "classpath:log4j2-config.xml");
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
-        assertNotNull("No configuration", config);
-        assertEquals("Incorrect Configuration.", CONFIG_NAME, config.getName());
+        assertNotNull(config, "No configuration");
+        assertEquals(CONFIG_NAME, config.getName(), "Incorrect Configuration.");
         final Map<String, Appender> map = config.getAppenders();
-        assertNotNull("Appenders map should not be null.", map);
+        assertNotNull(map, "Appenders map should not be null.");
         assertThat(map, hasSize(greaterThan(0)));
         assertThat("Wrong configuration", map, hasKey("List"));
         Configurator.shutdown(ctx);
         config = ctx.getConfiguration();
-        assertEquals("Incorrect Configuration.", NullConfiguration.NULL_NAME, config.getName());
+        assertEquals(NullConfiguration.NULL_NAME, config.getName(), "Incorrect Configuration.");
     }
 
     @Test
@@ -216,15 +213,15 @@ public class TestConfigurator {
         ctx = Configurator.initialize("Test1", "classloader:log4j2-config.xml");
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
-        assertNotNull("No configuration", config);
-        assertEquals("Incorrect Configuration.", CONFIG_NAME, config.getName());
+        assertNotNull(config, "No configuration");
+        assertEquals(CONFIG_NAME, config.getName(), "Incorrect Configuration.");
         final Map<String, Appender> map = config.getAppenders();
-        assertNotNull("Appenders map should not be null.", map);
+        assertNotNull(map, "Appenders map should not be null.");
         assertThat(map, hasSize(greaterThan(0)));
         assertThat("Wrong configuration", map, hasKey("List"));
         Configurator.shutdown(ctx);
         config = ctx.getConfiguration();
-        assertEquals("Incorrect Configuration.", NullConfiguration.NULL_NAME, config.getName());
+        assertEquals(NullConfiguration.NULL_NAME, config.getName(), "Incorrect Configuration.");
     }
 
     @Test
@@ -232,28 +229,28 @@ public class TestConfigurator {
         ctx = Configurator.initialize("-config", null);
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
-        assertNotNull("No configuration", config);
-        assertEquals("Incorrect Configuration.", CONFIG_NAME, config.getName());
+        assertNotNull(config, "No configuration");
+        assertEquals(CONFIG_NAME, config.getName(), "Incorrect Configuration.");
         final Map<String, Appender> map = config.getAppenders();
-        assertNotNull("Appenders map should not be null.", map);
+        assertNotNull(map, "Appenders map should not be null.");
         assertThat(map, hasSize(greaterThan(0)));
         assertThat("Wrong configuration", map, hasKey("List"));
         Configurator.shutdown(ctx);
         config = ctx.getConfiguration();
-        assertEquals("Unexpected Configuration.", NullConfiguration.NULL_NAME, config.getName());
+        assertEquals(NullConfiguration.NULL_NAME, config.getName(), "Unexpected Configuration.");
     }
 
     @Test
     public void testReconfiguration() throws Exception {
         final File file = new File("target/test-classes/log4j2-config.xml");
-        assertTrue("setLastModified should have succeeded.", file.setLastModified(System.currentTimeMillis() - 120000));
+        assertTrue(file.setLastModified(System.currentTimeMillis() - 120000), "setLastModified should have succeeded.");
         ctx = Configurator.initialize("Test1", "target/test-classes/log4j2-config.xml");
         final Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
-        assertNotNull("No configuration", config);
-        assertEquals("Incorrect Configuration.", CONFIG_NAME, config.getName());
+        assertNotNull(config, "No configuration");
+        assertEquals(CONFIG_NAME, config.getName(), "Incorrect Configuration.");
         final Map<String, Appender> map = config.getAppenders();
-        assertNotNull("Appenders map should not be null.", map);
+        assertNotNull(map, "Appenders map should not be null.");
         assertThat(map, hasSize(greaterThan(0)));
         assertThat("Wrong configuration", map, hasKey("List"));
 
@@ -262,7 +259,7 @@ public class TestConfigurator {
         if (!file.setLastModified(System.currentTimeMillis())) {
             Thread.sleep(500);
         }
-        assertTrue("setLastModified should have succeeded.", file.setLastModified(System.currentTimeMillis()));
+        assertTrue(file.setLastModified(System.currentTimeMillis()), "setLastModified should have succeeded.");
         TimeUnit.SECONDS.sleep(config.getWatchManager().getIntervalSeconds()+1);
         for (int i = 0; i < 17; ++i) {
             logger.debug("Test message " + i);
@@ -277,7 +274,7 @@ public class TestConfigurator {
         assertThat("Configuration not reset", newConfig, is(not(theInstance(config))));
         Configurator.shutdown(ctx);
         config = ctx.getConfiguration();
-        assertEquals("Unexpected Configuration.", NullConfiguration.NULL_NAME, config.getName());
+        assertEquals(NullConfiguration.NULL_NAME, config.getName(), "Unexpected Configuration.");
     }
 
 
@@ -286,19 +283,19 @@ public class TestConfigurator {
         ctx = Configurator.initialize("-config", null);
         LogManager.getLogger("org.apache.test.TestConfigurator");
         final Configuration config = ctx.getConfiguration();
-        assertNotNull("No configuration", config);
-        assertEquals("Incorrect Configuration.", CONFIG_NAME, config.getName());
+        assertNotNull(config, "No configuration");
+        assertEquals(CONFIG_NAME, config.getName(), "Incorrect Configuration.");
         final Map<String, Appender> map = config.getAppenders();
-        assertNotNull("Appenders map should not be null.", map);
+        assertNotNull(map, "Appenders map should not be null.");
         assertThat(map, hasSize(greaterThan(0)));
         assertThat("No ListAppender named List2", map, hasKey("List2"));
         final Appender app = map.get("List2");
         final Layout<? extends Serializable> layout = app.getLayout();
-        assertNotNull("Appender List2 does not have a Layout", layout);
+        assertNotNull(layout, "Appender List2 does not have a Layout");
         assertThat("Appender List2 is not configured with a PatternLayout", layout, instanceOf(PatternLayout.class));
         final String pattern = ((PatternLayout) layout).getConversionPattern();
-        assertNotNull("No conversion pattern for List2 PatternLayout", pattern);
-        assertFalse("Environment variable was not substituted", pattern.startsWith("${env:PATH}"));
+        assertNotNull(pattern, "No conversion pattern for List2 PatternLayout");
+        assertFalse(pattern.startsWith("${env:PATH}"), "Environment variable was not substituted");
     }
 
     @Test
@@ -306,9 +303,9 @@ public class TestConfigurator {
         ctx = Configurator.initialize("Test1", "bad/log4j-loggers.xml");
         LogManager.getLogger("org.apache.test.TestConfigurator");
         final Configuration config = ctx.getConfiguration();
-        assertNotNull("No configuration", config);
+        assertNotNull(config, "No configuration");
         final String name = DefaultConfiguration.DEFAULT_NAME + "@" + Integer.toHexString(config.hashCode());
-        assertEquals("Unexpected Configuration.", name, config.getName());
+        assertEquals(name, config.getName(), "Unexpected Configuration.");
     }
 
     @Test
@@ -316,11 +313,11 @@ public class TestConfigurator {
         ctx = Configurator.initialize("Test1", "bad/log4j-status.xml");
         LogManager.getLogger("org.apache.test.TestConfigurator");
         final Configuration config = ctx.getConfiguration();
-        assertNotNull("No configuration", config);
-        assertEquals("Unexpected Configuration", "XMLConfigTest", config.getName());
+        assertNotNull(config, "No configuration");
+        assertEquals("XMLConfigTest", config.getName(), "Unexpected Configuration");
         final LoggerConfig root = config.getLoggerConfig("");
-        assertNotNull("No Root Logger", root);
-        assertTrue("Expected error level, was " + root.getLevel(), Level.ERROR == root.getLevel());
+        assertNotNull(root, "No Root Logger");
+        assertSame(Level.ERROR, root.getLevel(), "Expected error level, was " + root.getLevel());
     }
 
     @Test
@@ -328,12 +325,12 @@ public class TestConfigurator {
         ctx = Configurator.initialize("Test1", "bad/log4j-badfilterparam.xml");
         LogManager.getLogger("org.apache.test.TestConfigurator");
         final Configuration config = ctx.getConfiguration();
-        assertNotNull("No configuration", config);
-        assertEquals("Unexpected Configuration", "XMLConfigTest", config.getName());
+        assertNotNull(config, "No configuration");
+        assertEquals("XMLConfigTest", config.getName(), "Unexpected Configuration");
         final LoggerConfig lcfg = config.getLoggerConfig("org.apache.logging.log4j.test1");
-        assertNotNull("No Logger", lcfg);
+        assertNotNull(lcfg, "No Logger");
         final Filter filter = lcfg.getFilter();
-        assertNull("Unexpected Filter", filter);
+        assertNull(filter, "Unexpected Filter");
     }
 
     @Test
@@ -341,14 +338,14 @@ public class TestConfigurator {
         ctx = Configurator.initialize("Test1", "bad/log4j-nofilter.xml");
         LogManager.getLogger("org.apache.test.TestConfigurator");
         final Configuration config = ctx.getConfiguration();
-        assertNotNull("No configuration", config);
-        assertEquals("Unexpected Configuration", "XMLConfigTest", config.getName());
+        assertNotNull(config, "No configuration");
+        assertEquals("XMLConfigTest", config.getName(), "Unexpected Configuration");
         final LoggerConfig lcfg = config.getLoggerConfig("org.apache.logging.log4j.test1");
-        assertNotNull("No Logger", lcfg);
+        assertNotNull(lcfg, "No Logger");
         final Filter filter = lcfg.getFilter();
-        assertNotNull("No Filter", filter);
+        assertNotNull(filter, "No Filter");
         assertThat(filter, instanceOf(CompositeFilter.class));
-        assertTrue("Unexpected filters", ((CompositeFilter) filter).isEmpty());
+        assertTrue(((CompositeFilter) filter).isEmpty(), "Unexpected filters");
     }
 
     @Test
@@ -356,8 +353,8 @@ public class TestConfigurator {
         ctx = Configurator.initialize("Test1", "bad/log4j-badlayout.xml");
         LogManager.getLogger("org.apache.test.TestConfigurator");
         final Configuration config = ctx.getConfiguration();
-        assertNotNull("No configuration", config);
-        assertEquals("Unexpected Configuration", "XMLConfigTest", config.getName());
+        assertNotNull(config, "No configuration");
+        assertEquals("XMLConfigTest", config.getName(), "Unexpected Configuration");
     }
 
     @Test
@@ -373,8 +370,8 @@ public class TestConfigurator {
         ctx = Configurator.initialize("Test1", "bad/log4j-badfilename.xml");
         LogManager.getLogger("org.apache.test.TestConfigurator");
         final Configuration config = ctx.getConfiguration();
-        assertNotNull("No configuration", config);
-        assertEquals("Unexpected Configuration", "XMLConfigTest", config.getName());
+        assertNotNull(config, "No configuration");
+        assertEquals("XMLConfigTest", config.getName(), "Unexpected Configuration");
         assertThat(config.getAppenders(), hasSize(equalTo(2)));
     }
 
@@ -398,8 +395,8 @@ public class TestConfigurator {
         builder.add(builder.newRootLogger(Level.ERROR).add(builder.newAppenderRef("Stdout")));
         ctx = Configurator.initialize(builder.build());
         final Configuration config = ctx.getConfiguration();
-        assertNotNull("No configuration", config);
-        assertEquals("Unexpected Configuration", "BuilderTest", config.getName());
+        assertNotNull(config, "No configuration");
+        assertEquals("BuilderTest", config.getName(), "Unexpected Configuration");
         assertThat(config.getAppenders(), hasSize(equalTo(1)));
     }
 
@@ -438,8 +435,8 @@ public class TestConfigurator {
                 .add( builder.newAppenderRef( "rolling" ) ) );
         final Configuration config = builder.build();
         config.initialize();
-        assertNotNull("No rolling file appender", config.getAppender("rolling"));
-        assertEquals("Unexpected Configuration", "RollingBuilder", config.getName());
+        assertNotNull(config.getAppender("rolling"), "No rolling file appender");
+        assertEquals("RollingBuilder", config.getName(), "Unexpected Configuration");
         // Initialize the new configuration
         final LoggerContext ctx = Configurator.initialize( config );
         Configurator.shutdown(ctx);
@@ -478,11 +475,11 @@ public class TestConfigurator {
         builder.add(builder.newRootLogger(Level.ERROR).add(builder.newAppenderRef("Stdout")));
         ctx = Configurator.initialize(builder.build());
         final Configuration config = ctx.getConfiguration();
-        assertNotNull("No configuration", config);
-        assertEquals("Unexpected Configuration", "BuilderTest", config.getName());
+        assertNotNull(config, "No configuration");
+        assertEquals("BuilderTest", config.getName(), "Unexpected Configuration");
         assertThat(config.getAppenders(), hasSize(equalTo(1)));
-        assertNotNull("Filter script not found", config.getScriptManager().getScript("filter.groovy"));
-        assertNotNull("pattern selector script not found", config.getScriptManager().getScript("selectorScript"));
+        assertNotNull(config.getScriptManager().getScript("filter.groovy"), "Filter script not found");
+        assertNotNull(config.getScriptManager().getScript("selectorScript"), "pattern selector script not found");
     }
 
 }

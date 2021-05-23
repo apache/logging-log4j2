@@ -161,7 +161,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
     private final class Reconnector extends Log4jThread {
 
         private final CountDownLatch latch = new CountDownLatch(1);
-        private volatile boolean shutdown = false;
+        private volatile boolean shutdown;
 
         private Reconnector() {
             super("JdbcDatabaseManager-Reconnector");
@@ -677,9 +677,16 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
      * Sets the given Object in the prepared statement. The value is truncated if needed.
      */
     private void setStatementObject(final int j, final String nameKey, final Object value) throws SQLException {
+        if (statement == null) {
+            throw new AppenderLoggingException("Cannot set a value when the PreparedStatement is null.");
+        }
         if (value == null) {
-            // [LOG4J2-2762] [JDBC] MS-SQL Server JDBC driver throws SQLServerException when inserting a null value for a VARBINARY column.
-            // Calling setNull() instead of setObject() for null values fixes [LOG4J2-2762]. 
+            if (columnMetaData == null) {
+                throw new AppenderLoggingException("Cannot set a value when the column metadata is null.");
+            }
+            // [LOG4J2-2762] [JDBC] MS-SQL Server JDBC driver throws SQLServerException when
+            // inserting a null value for a VARBINARY column.
+            // Calling setNull() instead of setObject() for null values fixes [LOG4J2-2762].
             this.statement.setNull(j, columnMetaData.get(nameKey).getType());
         } else {
             statement.setObject(j, truncate(nameKey, value));

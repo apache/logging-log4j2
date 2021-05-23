@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.categories.PerformanceTests;
+import org.apache.logging.log4j.core.test.categories.PerformanceTests;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.junit.After;
 import org.junit.AfterClass;

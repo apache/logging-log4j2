@@ -24,10 +24,10 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockServletContext;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -50,12 +50,12 @@ public class ServletAppenderTest {
             initializer.start();
             initializer.setLoggerContext();
             final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
-            assertNotNull("No LoggerContext", ctx);
-            assertNotNull("No ServletContext", ctx.getExternalContext());
+            assertNotNull(ctx, "No LoggerContext");
+            assertNotNull(WebLoggerContextUtils.getServletContext(), "No ServletContext");
             final Configuration configuration = ctx.getConfiguration();
-            assertNotNull("No configuration", configuration);
+            assertNotNull(configuration, "No configuration");
             final Appender appender = configuration.getAppender("Servlet");
-            assertNotNull("No ServletAppender", appender);
+            assertNotNull(appender, "No ServletAppender");
             final Logger logger = LogManager.getLogger("Test");
             logger.info("This is a test");
             logger.error("This is a test 2", new IllegalStateException().fillInStackTrace());

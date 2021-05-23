@@ -17,9 +17,9 @@
 
 package org.apache.logging.log4j.core.util;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * This class is borrowed from <a href="https://github.com/FasterXML/jackson-core">Jackson</a>.

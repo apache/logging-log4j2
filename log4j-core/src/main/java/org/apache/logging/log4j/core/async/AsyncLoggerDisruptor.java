@@ -25,6 +25,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
+import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.core.util.Throwables;
 
@@ -85,6 +86,11 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
                     contextName);
             return;
         }
+        if (isStarting()) {
+            LOGGER.trace("[{}] AsyncLoggerDisruptor is already starting.", contextName);
+            return;
+        }
+        setStarting();
         LOGGER.trace("[{}] AsyncLoggerDisruptor creating new disruptor for this context.", contextName);
         ringBufferSize = DisruptorUtil.calculateRingBufferSize("AsyncLogger.RingBufferSize");
         final WaitStrategy waitStrategy = DisruptorUtil.createWaitStrategy("AsyncLogger.WaitStrategy");
@@ -281,7 +287,12 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
     private boolean synchronizeEnqueueWhenQueueFull() {
         return DisruptorUtil.ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL
                 // Background thread must never block
-                && backgroundThreadId != Thread.currentThread().getId();
+                && backgroundThreadId != Thread.currentThread().getId()
+                // Threads owned by log4j are most likely to result in
+                // deadlocks because they generally consume events.
+                // This prevents deadlocks between AsyncLoggerContext
+                // disruptors.
+                && !(Thread.currentThread() instanceof Log4jThread);
     }
 
     private void logWarningOnNpeFromDisruptorPublish(final RingBufferLogEventTranslator translator) {

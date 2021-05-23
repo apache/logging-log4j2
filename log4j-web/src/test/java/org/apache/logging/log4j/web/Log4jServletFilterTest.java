@@ -22,23 +22,24 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.reset;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class Log4jServletFilterTest {
-    @Mock
+    @Mock(lenient = true) // because filterConfig is not used in testDestroy
     private FilterConfig filterConfig;
-    @Mock
+    @Mock(lenient = true) // because filterConfig is not used in testDestroy
     private ServletContext servletContext;
     @Mock
     private Log4jWebLifeCycle initializer;
@@ -51,7 +52,7 @@ public class Log4jServletFilterTest {
 
     private Log4jServletFilter filter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         given(filterConfig.getServletContext()).willReturn(servletContext);
         given(servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).willReturn(initializer);
@@ -69,9 +70,11 @@ public class Log4jServletFilterTest {
         then(initializer).should().setLoggerContext();
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testDestroy() {
-        this.filter.destroy();
+    	assertThrows(IllegalStateException.class, () -> {
+    		this.filter.destroy();
+    	});
     }
 
     @Test

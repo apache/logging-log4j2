@@ -31,6 +31,7 @@ public @interface Constraint {
 
     /**
      * {@link ConstraintValidator} class that implements the validation logic for the annotated constraint annotation.
+     * @return the class that implements the validation logic.
      */
     Class<? extends ConstraintValidator<? extends Annotation>> value();
 }

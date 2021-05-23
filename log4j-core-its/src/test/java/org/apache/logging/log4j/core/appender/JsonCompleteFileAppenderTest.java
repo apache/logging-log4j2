@@ -24,13 +24,13 @@ import java.nio.file.Files;
 import java.util.List;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.categories.Layouts;
-import org.apache.logging.log4j.core.impl.Log4jLogEventTest;
+import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.selector.CoreContextSelectors;
+import org.apache.logging.log4j.core.test.util.FixedTimeClock;
 import org.apache.logging.log4j.core.time.ClockFactory;
-import org.apache.logging.log4j.junit.CleanFiles;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.test.junit.CleanFiles;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -56,7 +56,7 @@ public class JsonCompleteFileAppenderTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(ClockFactory.PROPERTY_NAME, Log4jLogEventTest.FixedTimeClock.class.getName());
+        System.setProperty(ClockFactory.PROPERTY_NAME, FixedTimeClock.class.getName());
     }
 
     @AfterClass

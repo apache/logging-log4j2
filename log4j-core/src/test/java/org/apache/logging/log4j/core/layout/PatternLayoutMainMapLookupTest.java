@@ -17,20 +17,25 @@
 
 package org.apache.logging.log4j.core.layout;
 
-import java.util.List;
-
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.lookup.MainMapLookup;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.Assert;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.core.test.junit.ReconfigurationPolicy;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  * Tests LOG4j2-962.
  */
+@LoggerContextSource(value = "log4j2-962.xml", reconfigure = ReconfigurationPolicy.BEFORE_EACH)
 public class PatternLayoutMainMapLookupTest {
 
     static {
@@ -38,29 +43,25 @@ public class PatternLayoutMainMapLookupTest {
         MainMapLookup.setMainArguments("value0", "value1", "value2");
     }
 
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule("log4j2-962.xml");
-
     @Test
-    public void testFileName() {
-        final FileAppender fileApp = (FileAppender) context.getRequiredAppender("File");
+    public void testFileName(@Named("File") final FileAppender fileApp) {
         final String name = fileApp.getFileName();
-        Assert.assertEquals("target/value0.log", name);
+        assertEquals("target/value0.log", name);
     }
 
     @Test
-    public void testHeader() {
-        final ListAppender listApp = context.getListAppender("List");
-        final Logger logger = context.getLogger(this.getClass().getName());
+    public void testHeader(final LoggerContext context, @Named("List") final ListAppender listApp) {
+        final Logger logger = context.getLogger(getClass());
         logger.info("Hello World");
         final List<String> initialMessages = listApp.getMessages();
-        Assert.assertFalse(initialMessages.isEmpty());
+        assertFalse(initialMessages.isEmpty());
         final String messagesStr = initialMessages.toString();
-        Assert.assertEquals(messagesStr, "Header: value0", initialMessages.get(0));
+        assertEquals("Header: value0", initialMessages.get(0), messagesStr);
         listApp.stop();
         final List<String> finalMessages = listApp.getMessages();
-        Assert.assertEquals(3, finalMessages.size());
-        Assert.assertEquals("Footer: value1", finalMessages.get(2));
+        assertEquals(3, finalMessages.size());
+        assertEquals("Footer: value1", finalMessages.get(2));
+        listApp.clear();
     }
 
 }

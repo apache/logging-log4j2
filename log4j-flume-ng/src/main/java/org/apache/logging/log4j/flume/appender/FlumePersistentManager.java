@@ -469,7 +469,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
      * Thread that sends data to Flume and pulls it from Berkeley DB.
      */
     private static class WriterThread extends Log4jThread  {
-        private volatile boolean shutdown = false;
+        private volatile boolean shutdown;
         private final Database database;
         private final Environment environment;
         private final FlumePersistentManager manager;

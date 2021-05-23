@@ -16,14 +16,12 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import org.junit.jupiter.api.Test;
+
 import java.util.UUID;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-import static org.junit.Assert.*;
-/**
- *
- */
 public class UuidTest {
 
     private static final int COUNT = 200;
@@ -37,7 +35,7 @@ public class UuidTest {
         //final UUID uuid2 = UuidUtil.getTimeBasedUUID(); // unused
         final long current = (System.currentTimeMillis() * 10000) + NUM_100NS_INTERVALS_SINCE_UUID_EPOCH;
         final long time = uuid.timestamp();
-        assertTrue("Incorrect time", current + 10000 - time > 0);
+        assertTrue(current + 10000 - time > 0, "Incorrect time");
         final UUID[] uuids = new UUID[COUNT];
         final long start = System.nanoTime();
         for (int i=0; i < COUNT; ++i) {
@@ -54,13 +52,13 @@ public class UuidTest {
                 }
             }
         }
-        assertEquals(errors + " duplicate UUIDS", 0, errors);
+        assertEquals(0, errors, errors + " duplicate UUIDS");
         final int variant = uuid.variant();
-        assertEquals("Incorrect variant. Expected 2 got " + variant, 2, variant);
+        assertEquals(2, variant, "Incorrect variant. Expected 2 got " + variant);
         final int version = uuid.version();
-        assertEquals("Incorrect version. Expected 1 got " + version, 1, version);
+        assertEquals(1, version, "Incorrect version. Expected 1 got " + version);
         final long node = uuid.node();
-        assertTrue("Invalid node", node != 0);
+        assertTrue(node != 0, "Invalid node");
     }
 
     @Test
@@ -106,7 +104,7 @@ public class UuidTest {
                 }
             }
         }
-        assertEquals(errors + " duplicate UUIDS", 0, errors);
+        assertEquals(0, errors, errors + " duplicate UUIDS");
     }
 
 

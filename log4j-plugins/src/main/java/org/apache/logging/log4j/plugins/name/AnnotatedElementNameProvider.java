@@ -17,9 +17,9 @@
 
 package org.apache.logging.log4j.plugins.name;
 
+import org.apache.logging.log4j.plugins.internal.util.BeanUtils;
 import org.apache.logging.log4j.util.ReflectionUtil;
 
-import java.beans.Introspector;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
@@ -51,10 +51,10 @@ public interface AnnotatedElementNameProvider<A extends Annotation> {
             final Method method = (Method) element;
             final String methodName = method.getName();
             if (methodName.startsWith("set")) {
-                return Introspector.decapitalize(methodName.substring(3));
+                return BeanUtils.decapitalize(methodName.substring(3));
             }
             if (methodName.startsWith("with")) {
-                return Introspector.decapitalize(methodName.substring(4));
+                return BeanUtils.decapitalize(methodName.substring(4));
             }
             return methodName;
         }

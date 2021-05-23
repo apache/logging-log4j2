@@ -20,23 +20,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import org.apache.logging.log4j.util.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- *
- */
-@RunWith(Parameterized.class)
 public class AssertTest {
 
-    private final Object value;
-    private final boolean isEmpty;
-
-    @Parameterized.Parameters
     public static Object[][] data() {
         return new Object[][]{
             // value, isEmpty
@@ -56,13 +46,9 @@ public class AssertTest {
         };
     }
 
-    public AssertTest(final Object value, final boolean isEmpty) {
-        this.value = value;
-        this.isEmpty = isEmpty;
-    }
-
-    @Test
-    public void isEmpty() throws Exception {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void isEmpty(Object value, boolean isEmpty) throws Exception {
         assertEquals(isEmpty, Assert.isEmpty(value));
     }
 

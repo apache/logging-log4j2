@@ -139,18 +139,22 @@ public class FileManager extends OutputStreamManager {
         final String filename = getFileName();
         LOGGER.debug("Now writing to {} at {}", filename, new Date());
         final File file = new File(filename);
+        createParentDir(file);
         final FileOutputStream fos = new FileOutputStream(file, isAppend);
         if (file.exists() && file.length() == 0) {
             try {
                 FileTime now = FileTime.fromMillis(System.currentTimeMillis());
                 Files.setAttribute(file.toPath(), "creationTime", now);
             } catch (Exception ex) {
-                LOGGER.warn("Unable to set current file tiem for {}", filename);
+                LOGGER.warn("Unable to set current file time for {}", filename);
             }
             writeHeader(fos);
         }
         defineAttributeView(Paths.get(filename));
         return fos;
+    }
+
+    protected void createParentDir(File file) {
     }
 
     protected void defineAttributeView(final Path path) {

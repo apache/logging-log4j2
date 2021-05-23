@@ -15,40 +15,31 @@ package org.apache.logging.log4j.core.config;/*
  * limitations under the license.
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test for LOG4J2-1313
  *  <Property name="" value="" /> not working
  */
+@LoggerContextSource("configPropertyTest.xml")
 public class PropertyTest {
-    private static final String CONFIG = "configPropertyTest.xml";
-
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
 
     @Test
-    public void testEmptyAttribute() throws Exception {
+    public void testEmptyAttribute(@Named("List") final ListAppender app) throws Exception {
         final org.apache.logging.log4j.Logger logger = LogManager.getLogger();
         logger.info("msg");
 
-        final ListAppender app = (ListAppender) context.getRequiredAppender("List");
-        assertNotNull("No ListAppender", app);
-
         final List<String> messages = app.getMessages();
-        assertNotNull("No Messages", messages);
-        assertEquals("message count" + messages, 1, messages.size());
+        assertNotNull(messages, "No Messages");
+        assertEquals(1, messages.size(), "message count" + messages);
 
         //<Property name="emptyElementKey" />
         //<Property name="emptyAttributeKey" value="" />
@@ -75,11 +66,11 @@ public class PropertyTest {
 
     @Test
     public void testIsValueNeedsLookup() {
-        assertTrue("with ${ as value", Property.createProperty("", "${").isValueNeedsLookup());
-        assertTrue("with ${ in value", Property.createProperty("", "blah${blah").isValueNeedsLookup());
-        assertFalse("empty value", Property.createProperty("", "").isValueNeedsLookup());
-        assertFalse("without ${ in value", Property.createProperty("", "blahblah").isValueNeedsLookup());
-        assertFalse("without $ in value", Property.createProperty("", "blahb{sys:lah").isValueNeedsLookup());
-        assertFalse("without { in value", Property.createProperty("", "blahb$sys:lah").isValueNeedsLookup());
+        assertTrue(Property.createProperty("", "${").isValueNeedsLookup(), "with ${ as value");
+        assertTrue(Property.createProperty("", "blah${blah").isValueNeedsLookup(), "with ${ in value");
+        assertFalse(Property.createProperty("", "").isValueNeedsLookup(), "empty value");
+        assertFalse(Property.createProperty("", "blahblah").isValueNeedsLookup(), "without ${ in value");
+        assertFalse(Property.createProperty("", "blahb{sys:lah").isValueNeedsLookup(), "without $ in value");
+        assertFalse(Property.createProperty("", "blahb$sys:lah").isValueNeedsLookup(), "without { in value");
     }
 }

@@ -16,44 +16,33 @@
  */
 package org.apache.logging.log4j.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-/**
- *
- */
+import static org.junit.jupiter.api.Assertions.*;
+
+@LoggerContextSource("log4j-customLevelsWithFilters.xml")
 public class CustomLevelsWithFiltersTest {
-
-    private static final String CONFIG = "log4j-customLevelsWithFilters.xml";
-
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
 
     private Level infom1Level;
     private Level infop1Level;
 
-    @Before
+    @BeforeEach
     public void before() {
         infom1Level = Level.getLevel("INFOM1");
         infop1Level = Level.getLevel("INFOP1");
     }
 
     @Test
-    public void testConfiguration() {
-        final Configuration configuration = context.getConfiguration();
+    public void testConfiguration(final Configuration configuration, @Named("info") final FileAppender appender) {
         assertNotNull(configuration);
-        final FileAppender appender = configuration.getAppender("info");
         assertNotNull(appender);
         final CompositeFilter compFilter = (CompositeFilter) appender.getFilter();
         assertNotNull(compFilter);
@@ -67,7 +56,7 @@ public class CustomLevelsWithFiltersTest {
                 break;
             }
         }
-        Assert.assertTrue("Level not found: " + infom1Level, foundLevel);
+        assertTrue(foundLevel, "Level not found: " + infom1Level);
     }
 
     @Test

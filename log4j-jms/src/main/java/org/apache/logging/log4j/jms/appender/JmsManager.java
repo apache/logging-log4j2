@@ -141,7 +141,7 @@ public class JmsManager extends AbstractManager {
 
         private final CountDownLatch latch = new CountDownLatch(1);
 
-        private volatile boolean shutdown = false;
+        private volatile boolean shutdown;
 
         private final Object owner;
 

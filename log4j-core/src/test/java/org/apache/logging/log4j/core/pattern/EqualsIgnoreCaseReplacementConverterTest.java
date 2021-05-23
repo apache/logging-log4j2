@@ -16,19 +16,16 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import static org.junit.Assert.assertEquals;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-/**
- *
- */
+import static org.junit.jupiter.api.Assertions.*;
+
 public class EqualsIgnoreCaseReplacementConverterTest {
 
     @Test
@@ -57,6 +54,7 @@ public class EqualsIgnoreCaseReplacementConverterTest {
         final String[] options = new String[] { "aaa[" + tag + "]zzz", "AAA[]ZZZ", expectedValue };
         final EqualsIgnoreCaseReplacementConverter converter = EqualsIgnoreCaseReplacementConverter
                 .newInstance(ctx.getConfiguration(), options);
+        assertNotNull(converter);
         converter.format(event, sb);
         assertEquals(expectedValue, sb.toString());
     }

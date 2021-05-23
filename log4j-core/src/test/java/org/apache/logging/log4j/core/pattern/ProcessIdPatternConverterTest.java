@@ -1,4 +1,4 @@
-package org.apache.logging.log4j.core.pattern;/*
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -14,17 +14,18 @@ package org.apache.logging.log4j.core.pattern;/*
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+package org.apache.logging.log4j.core.pattern;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests that process ID succeeds.
  */
 public class ProcessIdPatternConverterTest {
     @Test
-    public void getProcessId() throws Exception {
+    public void getProcessId() {
         final String[] defaultValue = {"???"};
         final String actual = ProcessIdPatternConverter.newInstance(defaultValue).getProcessId();
         assertNotEquals("???", actual);

@@ -17,7 +17,7 @@
 
 package org.apache.logging.log4j.jackson.json;
 
-import org.apache.logging.log4j.categories.Layouts;
+import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.apache.logging.log4j.jackson.LevelMixInTest;
 import org.junit.experimental.categories.Category;
 

@@ -53,6 +53,7 @@ public class PatternProcessor {
 
     private final ArrayPatternConverter[] patternConverters;
     private final FormattingInfo[] patternFields;
+    private final FileExtension fileExtension;
 
     private long prevFileTime = 0;
     private long nextFileTime = 0;
@@ -88,6 +89,7 @@ public class PatternProcessor {
         patternFields = fields.toArray(infoArray);
         final ArrayPatternConverter[] converterArray = new ArrayPatternConverter[converters.size()];
         patternConverters = converters.toArray(converterArray);
+        this.fileExtension = FileExtension.lookupForFile(pattern);
 
         for (final ArrayPatternConverter converter : patternConverters) {
             // TODO: extract common interface
@@ -132,6 +134,10 @@ public class PatternProcessor {
     public void setPrevFileTime(final long prevFileTime) {
         LOGGER.debug("Setting prev file time to {}", new Date(prevFileTime));
         this.prevFileTime = prevFileTime;
+    }
+
+    public FileExtension getFileExtension() {
+        return fileExtension;
     }
 
     /**
@@ -226,6 +232,7 @@ public class PatternProcessor {
     public void updateTime() {
         if (nextFileTime != 0 || !isTimeBased) {
 			prevFileTime = nextFileTime;
+			currentFileTime = 0;
 		}
     }
 
@@ -279,8 +286,8 @@ public class PatternProcessor {
                                      final Object obj) {
         // LOG4J2-628: we deliberately use System time, not the log4j.Clock time
         // for creating the file name of rolled-over files.
-		LOGGER.debug("Formatting file name. useCurrentTime={}, currentFileTime={}, prevFileTime={}",
-			useCurrentTime, currentFileTime, prevFileTime);
+		LOGGER.debug("Formatting file name. useCurrentTime={}, currentFileTime={}, prevFileTime={}, nextFileTime={}",
+			useCurrentTime, currentFileTime, prevFileTime, nextFileTime);
 		final long time = useCurrentTime ? currentFileTime != 0 ? currentFileTime : System.currentTimeMillis() :
                 prevFileTime != 0 ? prevFileTime : System.currentTimeMillis();
         formatFileName(buf, new Date(time), obj);

@@ -49,6 +49,8 @@ import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfig;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfigDelegate;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfigDisruptor;
+import org.apache.logging.log4j.core.config.arbiters.Arbiter;
+import org.apache.logging.log4j.core.config.arbiters.SelectArbiter;
 import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.layout.PatternLayout;
@@ -370,6 +372,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             asyncLoggerConfigDisruptor.stop(timeout, timeUnit);
         }
 
+        LOGGER.trace("{} notifying ReliabilityStrategies that appenders will be stopped.", cls);
+        for (final LoggerConfig loggerConfig : loggerConfigs.values()) {
+            loggerConfig.getReliabilityStrategy().beforeStopAppenders();
+        }
+        root.getReliabilityStrategy().beforeStopAppenders();
+
         // Stop the appenders in reverse order in case they still have activity.
         final Appender[] array = appenders.values().toArray(new Appender[appenders.size()]);
         final List<Appender> async = getAsyncAppenders(array);
@@ -380,12 +388,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 ((LifeCycle) appender).stop(timeout, timeUnit);
             }
         }
-
-        LOGGER.trace("{} notifying ReliabilityStrategies that appenders will be stopped.", cls);
-        for (final LoggerConfig loggerConfig : loggerConfigs.values()) {
-            loggerConfig.getReliabilityStrategy().beforeStopAppenders();
-        }
-        root.getReliabilityStrategy().beforeStopAppenders();
 
         LOGGER.trace("{} stopping remaining Appenders.", cls);
         int appenderCount = 0;
@@ -518,7 +520,99 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
     }
 
+
+    /**
+     * Process conditions by evaluating them and including the children of conditions that are true
+     * and discarding those that are not.
+     * @param node The node to evaluate.
+     */
+    protected void processConditionals(final Node node) {
+        try {
+            List<Node> addList = new ArrayList<>();
+            List<Node> removeList = new ArrayList<>();
+            for (final Node child : node.getChildren()) {
+                final PluginType<?> type = child.getType();
+                if (type != null && Arbiter.ELEMENT_TYPE.equals(type.getElementName())) {
+                    final Class<?> clazz = type.getPluginClass();
+                    if (SelectArbiter.class.isAssignableFrom(clazz)) {
+                        removeList.add(child);
+                        addList.addAll(processSelect(child, type));
+                    } else if (Arbiter.class.isAssignableFrom(clazz)) {
+                        removeList.add(child);
+                        try {
+                            Arbiter condition = (Arbiter) createPluginObject(type, child, null);
+                            if (condition.isCondition()) {
+                                addList.addAll(child.getChildren());
+                                processConditionals(child);
+                            }
+                        } catch (final Exception inner) {
+                            LOGGER.error("Exception processing {}: Ignoring and including children",
+                                    type.getPluginClass());
+                            processConditionals(child);
+                        }
+                    } else {
+                        LOGGER.error("Encountered Condition Plugin that does not implement Condition: {}",
+                                child.getName());
+                        processConditionals(child);
+                    }
+                } else {
+                    processConditionals(child);
+                }
+            }
+            if (!removeList.isEmpty()) {
+                List<Node> children = node.getChildren();
+                children.removeAll(removeList);
+                children.addAll(addList);
+                for (Node grandChild : addList) {
+                    grandChild.setParent(node);
+                }
+            }
+        } catch (final Exception ex) {
+            LOGGER.error("Error capturing node data for node " + node.getName(), ex);
+        }
+    }
+
+    /**
+     * Handle Select nodes. This finds the first child condition that returns true and attaches its children
+     * to the parent of the Select Node. Other Nodes are discarded.
+     * @param selectNode The Select Node.
+     * @param type The PluginType of the Select Node.
+     * @return The list of Nodes to be added to the parent.
+     */
+    protected List<Node> processSelect(Node selectNode, PluginType<?> type) {
+        List<Node> addList = new ArrayList<>();
+        SelectArbiter select = (SelectArbiter) createPluginObject(type, selectNode, null);
+        List<Arbiter> conditions = new ArrayList<>();
+        for (Node child : selectNode.getChildren()) {
+            PluginType<?> nodeType = child.getType();
+            if (nodeType != null) {
+                if (Arbiter.class.isAssignableFrom(nodeType.getPluginClass())) {
+                    Arbiter condition = (Arbiter) createPluginObject(nodeType, child, null);
+                    conditions.add(condition);
+                    child.setObject(condition);
+                } else {
+                    LOGGER.error("Invalid Node {} for Select. Must be a Condition",
+                            child.getName());
+                }
+            } else {
+                LOGGER.error("No PluginType for node {}", child.getName());
+            }
+        }
+        Arbiter condition = select.evaluateConditions(conditions);
+        if (condition != null) {
+            for (Node child : selectNode.getChildren()) {
+                if (condition == child.getObject()) {
+                    addList.addAll(child.getChildren());
+                    processConditionals(child);
+                }
+            }
+        }
+        return addList;
+    }
+
+
     protected void doConfigure() {
+        processConditionals(rootNode);
         preConfigure(rootNode);
         configurationScheduler.start();
         if (rootNode.hasChildren() && rootNode.getChildren().get(0).getName().equalsIgnoreCase("Properties")) {
@@ -934,6 +1028,21 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             } else {
                 node.setObject(createPluginObject(type, node, event));
             }
+        }
+    }
+
+    /**
+     * This method is used by Arbiters to create specific children.
+     * @param type The PluginType.
+     * @param node The Node.
+     * @return The created object or null;
+     */
+    public Object createPluginObject(final PluginType<?> type, final Node node) {
+        if (this.getState().equals(State.INITIALIZING)) {
+            return createPluginObject(type, node, null);
+        } else {
+            LOGGER.warn("Plugin Object creation is not allowed after initialization");
+            return null;
         }
     }
 

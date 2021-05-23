@@ -15,6 +15,9 @@ public abstract class ExtendedStackTraceElementXmlMixIn extends ExtendedStackTra
     @JsonCreator
     public ExtendedStackTraceElementXmlMixIn(
     // @formatter:off
+            @JsonProperty(ATTR_CLASS_LOADER_NAME) final String classLoaderName,
+            @JsonProperty(ATTR_MODULE) final String moduleName,
+            @JsonProperty(ATTR_MODULE_VERSION) final String moduleVersion,
             @JsonProperty(ATTR_CLASS) final String declaringClass,
             @JsonProperty(ATTR_METHOD) final String methodName,
             @JsonProperty(ATTR_FILE) final String fileName,
@@ -24,8 +27,21 @@ public abstract class ExtendedStackTraceElementXmlMixIn extends ExtendedStackTra
             @JsonProperty(ATTR_VERSION) final String version
    // @formatter:on
     ) {
-        super(declaringClass, methodName, fileName, lineNumber, exact, location, version);
+        super(classLoaderName, moduleName, moduleVersion, declaringClass, methodName, fileName, lineNumber, exact,
+                location, version);
     }
+
+    @Override
+    @JacksonXmlProperty(localName = ATTR_CLASS_LOADER_NAME, isAttribute = true)
+    public abstract String getClassLoaderName();
+
+    @Override
+    @JacksonXmlProperty(localName = ATTR_MODULE, isAttribute = true)
+    public abstract String getModuleName();
+
+    @Override
+    @JacksonXmlProperty(localName = ATTR_MODULE_VERSION, isAttribute = true)
+    public abstract String getModuleVersion();
 
     @Override
     @JacksonXmlProperty(localName = ATTR_CLASS, isAttribute = true)

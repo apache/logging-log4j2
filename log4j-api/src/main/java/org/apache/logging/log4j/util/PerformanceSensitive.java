@@ -32,6 +32,9 @@ import java.lang.annotation.RetentionPolicy;
 // No @Target: No restrictions yet on what code elements may be annotated or not.
 @Retention(RetentionPolicy.CLASS) // Currently no need to reflectively discover this annotation at runtime.
 public @interface PerformanceSensitive {
-    /** Description of why this is written the way it is. */
+    /**
+     * Is this ever used?
+     * @return An array of strings.
+     */
     String[] value() default "";
 }

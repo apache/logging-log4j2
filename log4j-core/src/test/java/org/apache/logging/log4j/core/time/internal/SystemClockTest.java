@@ -16,10 +16,9 @@
  */
 package org.apache.logging.log4j.core.time.internal;
 
-import org.apache.logging.log4j.core.time.internal.SystemClock;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SystemClockTest {
 
@@ -30,7 +29,7 @@ public class SystemClockTest {
 
         final long diff = sysMillis - millis1;
 
-        assertTrue("diff too large: " + diff, diff <= 1);
+        assertTrue(diff <= 1, "diff too large: " + diff);
     }
 
     @Test
@@ -41,7 +40,7 @@ public class SystemClockTest {
 
         final long diff = sysMillis - millis1;
 
-        assertTrue("diff too large: " + diff, diff <= 1);
+        assertTrue(diff <= 1, "diff too large: " + diff);
     }
 
 }

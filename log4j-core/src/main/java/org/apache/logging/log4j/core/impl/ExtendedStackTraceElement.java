@@ -20,6 +20,7 @@ import java.io.Serializable;
 
 import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
 import org.apache.logging.log4j.core.pattern.TextRenderer;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Wraps and extends the concept of the JRE's final class {@link StackTraceElement} by adding more location information.
@@ -55,6 +56,17 @@ public final class ExtendedStackTraceElement implements Serializable {
                 new ExtendedClassInfo(exact, location, version));
     }
 
+    /**
+     * Called from Jackson for XML and JSON IO.
+     */
+    public ExtendedStackTraceElement(final String classLoaderName, final String moduleName, final String moduleVersion,
+            final String declaringClass, final String methodName, final String fileName, final int lineNumber,
+            final boolean exact, final String location, final String version) {
+        this(new StackTraceElement(classLoaderName, moduleName, moduleVersion, declaringClass, methodName, fileName,
+                        lineNumber),
+                new ExtendedClassInfo(exact, location, version));
+    }
+
     @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
@@ -82,6 +94,18 @@ public final class ExtendedStackTraceElement implements Serializable {
             return false;
         }
         return true;
+    }
+
+    public String getClassLoaderName() {
+        return this.stackTraceElement.getClassLoaderName();
+    }
+
+    public String getModuleName() {
+        return this.stackTraceElement.getModuleName();
+    }
+
+    public String getModuleVersion() {
+        return this.stackTraceElement.getModuleVersion();
     }
 
     public String getClassName() {
@@ -142,6 +166,16 @@ public final class ExtendedStackTraceElement implements Serializable {
     private void render(final StackTraceElement stElement, final StringBuilder output, final TextRenderer textRenderer) {
         final String fileName = stElement.getFileName();
         final int lineNumber = stElement.getLineNumber();
+        String moduleName = getModuleName();
+        String moduleVersion = getModuleVersion();
+        if (Strings.isNotEmpty(moduleName)) {
+            textRenderer.render(moduleName, output, "StackTraceElement.ModuleName");
+            if (Strings.isNotEmpty(moduleVersion) && !moduleName.startsWith("java")) {
+                textRenderer.render("@", output, "StackTraceElement.ModuleVersionSeparator");
+                textRenderer.render(moduleVersion, output, "StackTraceElement.ModuleVersion");
+            }
+            textRenderer.render("/", output, "StackTraceElement.ModuleNameSeparator");
+        }
         textRenderer.render(getClassName(), output, "StackTraceElement.ClassName");
         textRenderer.render(".", output, "StackTraceElement.ClassMethodSeparator");
         textRenderer.render(stElement.getMethodName(), output, "StackTraceElement.MethodName");

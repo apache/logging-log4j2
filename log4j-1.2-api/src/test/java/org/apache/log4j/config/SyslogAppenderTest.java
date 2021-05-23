@@ -18,8 +18,8 @@ package org.apache.log4j.config;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.net.mock.MockSyslogServer;
-import org.apache.logging.log4j.core.net.mock.MockSyslogServerFactory;
+import org.apache.logging.log4j.core.test.net.mock.MockSyslogServer;
+import org.apache.logging.log4j.core.test.net.mock.MockSyslogServerFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;

@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@Ignore
+@Disabled
 public class StoreConfigurationTest<T extends StoreConfiguration<?>> {
 
     @Test
@@ -31,8 +31,8 @@ public class StoreConfigurationTest<T extends StoreConfiguration<?>> {
         final StoreConfiguration<Object> a = new StoreConfiguration<>(location, password);
         final StoreConfiguration<Object> b = new StoreConfiguration<>(location, password);
 
-        assertTrue(a.equals(b));
-        assertTrue(b.equals(a));
+        assertEquals(b, a);
+        assertEquals(a, b);
     }
 
     @Test
@@ -51,7 +51,7 @@ public class StoreConfigurationTest<T extends StoreConfiguration<?>> {
         final StoreConfiguration<Object> a = new StoreConfiguration<>(null, new MemoryPasswordProvider(null));
         final StoreConfiguration<Object> b = new StoreConfiguration<>(null, new MemoryPasswordProvider(null));
 
-        assertTrue(a.equals(b));
-        assertTrue(b.equals(a));
+        assertEquals(b, a);
+        assertEquals(a, b);
     }
 }

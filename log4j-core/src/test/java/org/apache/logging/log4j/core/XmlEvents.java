@@ -16,25 +16,19 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.util.Locale;
-
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.message.AsynchronouslyFormattable;
 import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-/**
- *
- */
+import java.util.Locale;
+
+@LoggerContextSource("xml-events.xml")
+@Disabled("TODO")
 public class XmlEvents {
-
-    private static final String CONFIG = "xml-events.xml";
-
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
 
     @Test
     public void testEvents() {

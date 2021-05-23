@@ -30,9 +30,8 @@ import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.categories.Layouts;
+import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.async.RingBufferLogEvent;
@@ -40,8 +39,9 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.MutableLogEvent;
-import org.apache.logging.log4j.core.layout.LogEventFixtures;
 import org.apache.logging.log4j.core.lookup.JavaLookup;
+import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
+import org.apache.logging.log4j.core.test.layout.LogEventFixtures;
 import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.apache.logging.log4j.core.time.internal.SystemClock;
 import org.apache.logging.log4j.core.util.KeyValuePair;
@@ -53,7 +53,7 @@ import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
@@ -632,4 +632,18 @@ public class JsonLayoutTest {
 	private String toPropertySeparator(final boolean compact) {
         return compact ? ":" : " : ";
     }
+
+    @Test   // LOG4J2-2749 (#362)
+    public void testEmptyValuesAreIgnored() {
+        final AbstractJacksonLayout layout = JsonLayout
+                .newBuilder()
+                .setAdditionalFields(new KeyValuePair[] {
+                        new KeyValuePair("empty", "${ctx:empty:-}")
+                })
+                .setConfiguration(ctx.getConfiguration())
+                .build();
+        final String str = layout.toSerializable(LogEventFixtures.createLogEvent());
+        assertFalse(str, str.contains("\"empty\""));
+    }
+
 }

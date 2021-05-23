@@ -16,29 +16,22 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.junit.ThreadContextMapRule;
+import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-/**
- *
- */
+import static org.junit.jupiter.api.Assertions.*;
+
+@UsingThreadContextMap
 public class MdcPatternConverterTest {
 
-    @Rule
-    public final ThreadContextMapRule threadContextRule = new ThreadContextMapRule(); 
-
-    @Before
+    @BeforeEach
     public void setup() {
         ThreadContext.put("subject", "I");
         ThreadContext.put("verb", "love");
@@ -58,7 +51,7 @@ public class MdcPatternConverterTest {
         converter.format(event, sb);
         final String str = sb.toString();
         final String expected = "{object=Log4j, subject=I, verb=love}";
-        assertTrue("Incorrect result. Expected " + expected + ", actual " + str, str.equals(expected));
+        assertEquals(expected, str, "Incorrect result. Expected " + expected + ", actual " + str);
     }
 
     @Test
@@ -75,8 +68,9 @@ public class MdcPatternConverterTest {
         converter.format(event, sb);
         final String str = sb.toString();
         final String expected = "prefix {object=Log4j, subject=I, verb=love}";
-        assertTrue("Incorrect result. Expected " + expected + ", actual " + str, str.equals(expected));
+        assertEquals(expected, str, "Incorrect result. Expected " + expected + ", actual " + str);
     }
+
     @Test
     public void testConverterFullEmpty() {
         ThreadContext.clearMap();
@@ -91,7 +85,7 @@ public class MdcPatternConverterTest {
         converter.format(event, sb);
         final String str = sb.toString();
         final String expected = "{}";
-        assertTrue("Incorrect result. Expected " + expected + ", actual " + str, str.equals(expected));
+        assertEquals(expected, str, "Incorrect result. Expected " + expected + ", actual " + str);
     }
 
     @Test
@@ -109,7 +103,7 @@ public class MdcPatternConverterTest {
         converter.format(event, sb);
         final String str = sb.toString();
         final String expected = "{foo=bar}";
-        assertTrue("Incorrect result. Expected " + expected + ", actual " + str, str.equals(expected));
+        assertEquals(expected, str, "Incorrect result. Expected " + expected + ", actual " + str);
     }
 
     @Test

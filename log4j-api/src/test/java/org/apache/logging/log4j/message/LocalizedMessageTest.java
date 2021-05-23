@@ -20,14 +20,18 @@ import java.io.Serializable;
 import java.util.Locale;
 
 import org.apache.commons.lang3.SerializationUtils;
-import org.apache.logging.log4j.junit.Mutable;
-import org.junit.Test;
+import org.apache.logging.log4j.test.junit.Mutable;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceAccessMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests LocalizedMessage.
  */
+@ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
 public class LocalizedMessageTest {
 
     private <T extends Serializable> T roundtrip(final T msg) {
@@ -71,7 +75,7 @@ public class LocalizedMessageTest {
         // modify parameter before calling msg.getFormattedMessage
         param.set("XYZ");
         final String actual = msg.getFormattedMessage();
-        assertEquals("Expected most recent param value", "Test message XYZ", actual);
+        assertEquals("Test message XYZ", actual, "Expected most recent param value");
     }
 
     @Test
@@ -84,6 +88,13 @@ public class LocalizedMessageTest {
         msg.getFormattedMessage();
         param.set("XYZ");
         final String actual = msg.getFormattedMessage();
-        assertEquals("Should use initial param value", "Test message abc", actual);
+        assertEquals("Test message abc", actual, "Should use initial param value");
+    }
+	
+	@Test
+    public void testMessageUsingBaseName() { // LOG4J2-2850
+        final String testMsg = "hello_world";
+        final LocalizedMessage msg = new LocalizedMessage("MF", testMsg, null);
+        assertEquals("Hello world.", msg.getFormattedMessage());
     }
 }

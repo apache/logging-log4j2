@@ -22,10 +22,10 @@ import org.apache.logging.log4j.spring.cloud.config.sample.utils.spring.SampleRe
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class WebMvcConfig extends WebMvcConfigurerAdapter {
+public class WebMvcConfig implements WebMvcConfigurer {
     private Logger LOGGER = LogManager.getLogger(WebMvcConfig.class);
 
     @Bean

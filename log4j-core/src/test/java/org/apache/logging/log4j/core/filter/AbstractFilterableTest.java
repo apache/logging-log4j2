@@ -17,18 +17,18 @@
  */
 package org.apache.logging.log4j.core.filter;
 
-import static org.junit.Assert.*;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AbstractFilterableTest {
 
     MockedAbstractFilterable filterable;
 
-    @Before
+    @BeforeEach
     public void setup() {
         filterable = new MockedAbstractFilterable();
     }
@@ -253,9 +253,9 @@ public class AbstractFilterableTest {
         assertSame(anotherFilter, filterable.getFilter());
     }
 
-    private class MockedAbstractFilterable extends AbstractFilterable {}
+    private static class MockedAbstractFilterable extends AbstractFilterable {}
 
-    private class EqualFilter extends AbstractFilter {
+    private static class EqualFilter extends AbstractFilter {
         private final String key;
         public EqualFilter(final String key) {
             this.key = key;

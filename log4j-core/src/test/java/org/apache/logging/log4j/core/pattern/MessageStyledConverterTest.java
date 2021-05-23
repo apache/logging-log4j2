@@ -19,33 +19,29 @@ package org.apache.logging.log4j.core.pattern;
 import java.util.List;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- */
+@LoggerContextSource("log4j-message-styled.xml")
 public class MessageStyledConverterTest {
 
     private static final String EXPECTED = "\u001B[31;1mWarning!\u001B[m Pants on \u001B[31;1mfire!\u001B[m"
             + Strings.LINE_SEPARATOR;
 
-    @Rule
-    public LoggerContextRule init = new LoggerContextRule("log4j-message-styled.xml");
-
     private Logger logger;
     private ListAppender app;
 
-    @Before
-    public void setUp() throws Exception {
-        this.logger = this.init.getLogger("LoggerTest");
-        this.app = this.init.getListAppender("List").clear();
+    @BeforeEach
+    public void setUp(final LoggerContext context, @Named("List") final ListAppender app) {
+        this.logger = context.getLogger("LoggerTest");
+        this.app = app.clear();
     }
 
     @Test
@@ -55,8 +51,8 @@ public class MessageStyledConverterTest {
 
         final List<String> msgs = app.getMessages();
         assertNotNull(msgs);
-        assertEquals("Incorrect number of messages. Should be 1 is " + msgs.size(), 1, msgs.size());
-        assertTrue("Replacement failed - expected ending " + EXPECTED + ", actual " + msgs.get(0),
-                msgs.get(0).endsWith(EXPECTED));
+        assertEquals(1, msgs.size(), "Incorrect number of messages. Should be 1 is " + msgs.size());
+        assertTrue(
+                msgs.get(0).endsWith(EXPECTED), "Replacement failed - expected ending " + EXPECTED + ", actual " + msgs.get(0));
     }
 }

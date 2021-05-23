@@ -15,8 +15,8 @@
  limitations under the License.
 -->
 # Building Log4j 2
-  
-To build Log4j 2, you need a JDK implementation version 1.7 or greater, JDK 
+
+To build Log4j 2, you need a JDK implementation version 1.8 or greater, JDK 
 version 9, and Apache Maven 3.x.
 
 Log4j 2.x uses the Java 9 compiler in addition to 
@@ -35,10 +35,6 @@ To perform the license release audit, a.k.a. "RAT check", run.
 
     mvn apache-rat:check
 
-To build the site with Java 7, make sure you give Maven enough memory using 
-`MAVEN_OPTS` with options appropriate for your JVM. Alternatively, you can 
-build with Java 8 and not deal with `MAVEN_OPTS`. 
-
 To install the jars in your local Maven repository, from a command line, run:
 
     mvn clean install
@@ -50,10 +46,6 @@ Once install is run, you can run the Clirr check on the API and 1.2 API modules:
     mvn clirr:check -pl log4j-1.2-api
 
 Next, to build the site:
-
-If Java 7 runs out of memory building the site, you will need:
-
-    set MAVEN_OPTS=-Xmx2000m -XX:MaxPermSize=384m
 
     mvn site
 

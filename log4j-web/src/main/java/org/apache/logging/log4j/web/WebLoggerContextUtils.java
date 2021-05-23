@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.web;
 
+import java.util.AbstractMap;
+import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import javax.servlet.ServletContext;
@@ -37,6 +39,7 @@ public final class WebLoggerContextUtils {
     }
 
     private static final Lock WEB_SUPPORT_LOOKUP = new ReentrantLock();
+    private static final String SERVLET_CONTEXT = "__SERVLET_CONTEXT__";
 
     /**
      * Finds the main {@link org.apache.logging.log4j.core.LoggerContext} configured for the given ServletContext.
@@ -112,6 +115,16 @@ public final class WebLoggerContextUtils {
         };
     }
 
+    public static Map.Entry<String, Object> createExternalEntry(ServletContext servletContext) {
+        return new AbstractMap.SimpleEntry<>(SERVLET_CONTEXT, servletContext);
+    }
+
+    public static void setServletContext(LoggerContext lc, ServletContext servletContext) {
+        if (lc != null) {
+            lc.putObject(SERVLET_CONTEXT, servletContext);
+        }
+    }
+
     /**
      * Gets the current {@link ServletContext} if it has already been assigned to a LoggerContext's external context.
      *
@@ -123,7 +136,10 @@ public final class WebLoggerContextUtils {
         if (lc == null) {
             lc = LogManager.getContext(false);
         }
-        return lc == null ? null :
-            lc.getExternalContext() instanceof ServletContext ? (ServletContext) lc.getExternalContext() : null;
+        Object obj = lc != null ? lc.getObject(SERVLET_CONTEXT) : null;
+        if (obj instanceof ServletContext) {
+            return (ServletContext) obj;
+        }
+        return null;
     }
 }

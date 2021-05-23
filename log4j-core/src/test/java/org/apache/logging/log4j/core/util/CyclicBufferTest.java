@@ -16,11 +16,9 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CyclicBufferTest {
 
@@ -32,7 +30,7 @@ public class CyclicBufferTest {
         buffer.add(1);
         assertTrue(buffer.isEmpty());
         Integer[] items = buffer.removeAll();
-        assertTrue("Incorrect number of items", items.length == 0);
+        assertEquals(0, items.length, "Incorrect number of items");
 
         assertTrue(buffer.isEmpty());
         buffer.add(1);
@@ -40,7 +38,7 @@ public class CyclicBufferTest {
         buffer.add(3);
         buffer.add(4);
         items = buffer.removeAll();
-        assertTrue("Incorrect number of items", items.length == 0);
+        assertEquals(0, items.length, "Incorrect number of items");
         assertTrue(buffer.isEmpty());
     }
 
@@ -52,7 +50,7 @@ public class CyclicBufferTest {
         buffer.add(1);
         assertFalse(buffer.isEmpty());
         Integer[] items = buffer.removeAll();
-        assertTrue("Incorrect number of items", items.length == 1);
+        assertEquals(1, items.length, "Incorrect number of items");
 
         assertTrue(buffer.isEmpty());
         buffer.add(1);
@@ -60,7 +58,7 @@ public class CyclicBufferTest {
         buffer.add(3);
         buffer.add(4);
         items = buffer.removeAll();
-        assertTrue("Incorrect number of items", items.length == 1);
+        assertEquals(1, items.length, "Incorrect number of items");
         assertArrayEquals(new Integer[] { 4 }, items);
         assertTrue(buffer.isEmpty());
     }
@@ -73,7 +71,7 @@ public class CyclicBufferTest {
         buffer.add(1);
         assertFalse(buffer.isEmpty());
         Integer[] items = buffer.removeAll();
-        assertTrue("Incorrect number of items", items.length == 1);
+        assertEquals(1, items.length, "Incorrect number of items");
 
         assertTrue(buffer.isEmpty());
         buffer.add(1);
@@ -81,14 +79,14 @@ public class CyclicBufferTest {
         buffer.add(3);
         buffer.add(4);
         items = buffer.removeAll();
-        assertTrue("Incorrect number of items", items.length == 3);
+        assertEquals(3, items.length, "Incorrect number of items");
         assertArrayEquals(new Integer[] { 2, 3, 4 }, items);
         assertTrue(buffer.isEmpty());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testSizeNegative() {
-        final CyclicBuffer<Integer> buffer = new CyclicBuffer<>(Integer.class, -1);
+        assertThrows(IllegalArgumentException.class, () -> new CyclicBuffer<>(Integer.class, -1));
     }
 
 }

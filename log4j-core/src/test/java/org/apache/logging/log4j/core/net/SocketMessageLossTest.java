@@ -28,26 +28,22 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.apache.logging.log4j.test.AvailablePortFinder;
-import org.junit.ClassRule;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.AvailablePortFinder;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@Ignore("Currently needs better port choosing support")
+@Disabled("Currently needs better port choosing support")
+@LoggerContextSource("log4j-socket2.xml")
 public class SocketMessageLossTest {
     private static final int SOCKET_PORT = AvailablePortFinder.getNextAvailable();
 
-    private static final String CONFIG = "log4j-socket2.xml";
-
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
-
     @Test
-    public void testSocket() throws Exception {
+    public void testSocket(final LoggerContext context) throws Exception {
         TestSocketServer testServer;
         ExecutorService executor = null;
         Future<InputStream> futureIn;
@@ -59,7 +55,7 @@ public class SocketMessageLossTest {
             futureIn = executor.submit(testServer);
 
             //System.err.println("Initializing logger");
-            final Logger logger = context.getLogger();
+            final Logger logger = context.getLogger(getClass().getName());
 
             String message = "Log #1";
             logger.error(message);
@@ -69,7 +65,7 @@ public class SocketMessageLossTest {
 
             //System.err.println("Closing server");
             closeQuietly(testServer);
-            assertTrue("Server not shutdown", testServer.server.isClosed());
+            assertTrue(testServer.server.isClosed(), "Server not shutdown");
 
             //System.err.println("Sleeping to ensure no race conditions");
             Thread.sleep(1000);

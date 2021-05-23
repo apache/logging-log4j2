@@ -18,8 +18,8 @@ package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.categories.AsyncLoggers;
-import org.apache.logging.log4j.core.CoreLoggerContexts;
+import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
+import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.selector.ContextSelector;
@@ -105,6 +105,11 @@ public class AsyncLoggerCustomSelectorLocationTest {
         @Override
         public void removeContext(LoggerContext context) {
             // does not remove anything
+        }
+
+        @Override
+        public boolean isClassLoaderDependent() {
+            return false;
         }
     }
 }

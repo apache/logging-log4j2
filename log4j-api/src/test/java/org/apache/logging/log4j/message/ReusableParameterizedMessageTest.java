@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.apache.logging.log4j.junit.Mutable;
-import org.junit.Test;
+import org.apache.logging.log4j.test.junit.Mutable;
+import org.junit.jupiter.api.Test;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests ReusableParameterizedMessage.
@@ -127,12 +127,12 @@ public class ReusableParameterizedMessageTest {
         // modify parameter before calling msg.getFormattedMessage
         param.set("XYZ");
         final String actual = msg.getFormattedMessage();
-        assertEquals("Should use current param value", "Test message XYZ", actual);
+        assertEquals("Test message XYZ", actual, "Should use current param value");
 
         // modify parameter after calling msg.getFormattedMessage
         param.set("000");
         final String after = msg.getFormattedMessage();
-        assertEquals("Renders again", "Test message 000", after);
+        assertEquals("Test message 000", after, "Renders again");
     }
 
     @Test

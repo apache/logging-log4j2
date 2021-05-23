@@ -16,35 +16,26 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.io.File;
+import org.apache.logging.log4j.test.junit.CleanUpFiles;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.junit.jupiter.api.Test;
 
-import org.apache.logging.log4j.junit.CleanFiles;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-import static org.apache.logging.log4j.hamcrest.FileMatchers.exists;
-import static org.apache.logging.log4j.hamcrest.FileMatchers.hasLength;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
- *
- */
+@CleanUpFiles({"target/status.log", "target/test.log"})
 public class FileOutputTest {
 
-    private static final String CONFIG = "classpath:log4j-filetest.xml";
-    private static final String STATUS_LOG = "target/status.log";
-
-    @Rule
-    public RuleChain rules = RuleChain.outerRule(new CleanFiles(STATUS_LOG)).around(new LoggerContextRule(CONFIG));
-
     @Test
-    public void testConfig() {
-        final File file = new File(STATUS_LOG);
-        assertThat("Status output file does not exist", file, exists());
-        assertThat("File is empty", file, hasLength(greaterThan(0L)));
+    @LoggerContextSource("classpath:log4j-filetest.xml")
+    public void testConfig() throws IOException {
+        final Path logFile = Paths.get("target", "status.log");
+        assertTrue(Files.exists(logFile), "Status output file does not exist");
+        assertTrue(Files.size(logFile) > 0, "File is empty");
     }
 
 }

@@ -18,7 +18,7 @@ package org.apache.logging.log4j.jackson.json;
 
 import java.io.IOException;
 
-import org.apache.logging.log4j.categories.Layouts;
+import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Assert;
 import org.junit.Test;

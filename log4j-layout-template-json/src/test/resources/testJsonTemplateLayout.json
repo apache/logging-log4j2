@@ -1,0 +1,70 @@
+{
+  "exception_class": {
+    "$resolver": "exception",
+    "field": "className"
+  },
+  "exception_message": {
+    "$resolver": "exception",
+    "field": "message"
+  },
+  "stacktrace": {
+    "$resolver": "exception",
+    "field": "stackTrace",
+    "stackTrace": {
+      "stringified": true
+    }
+  },
+  "line_number": {
+    "$resolver": "source",
+    "field": "lineNumber"
+  },
+  "class": {
+    "$resolver": "source",
+    "field": "className"
+  },
+  "@version": 1,
+  "source_host": "${hostName}",
+  "message": {
+    "$resolver": "message",
+    "stringified": true
+  },
+  "thread_id": {
+    "$resolver": "thread",
+    "field": "id"
+  },
+  "thread_name": {
+    "$resolver": "thread",
+    "field": "name"
+  },
+  "thread_priority": {
+    "$resolver": "thread",
+    "field": "priority"
+  },
+  "@timestamp": {
+    "$resolver": "timestamp"
+  },
+  "level": {
+    "$resolver": "level",
+    "field": "name"
+  },
+  "file": {
+    "$resolver": "source",
+    "field": "fileName"
+  },
+  "method": {
+    "$resolver": "source",
+    "field": "methodName"
+  },
+  "logger_fqcn": {
+    "$resolver": "logger",
+    "field": "fqcn"
+  },
+  "logger_name": {
+    "$resolver": "logger",
+    "field": "name"
+  },
+  "end_of_batch": {
+    "$resolver": "endOfBatch"
+  },
+  "lookup_test_key": "${sys:lookup_test_key}"
+}

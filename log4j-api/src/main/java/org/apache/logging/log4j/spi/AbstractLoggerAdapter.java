@@ -95,6 +95,7 @@ public abstract class AbstractLoggerAdapter<L> implements LoggerAdapter<L>, Logg
 
     /**
      * For unit testing. Consider to be private.
+     * @return The Set of LoggerContexts.
      */
     public Set<LoggerContext> getLoggerContexts() {
         return new HashSet<>(registry.keySet());

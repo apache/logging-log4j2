@@ -32,12 +32,10 @@ import org.apache.logging.log4j.core.config.ConfigurationScheduler;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.HttpWatcher;
 import org.apache.logging.log4j.core.config.Reconfigurable;
-import org.apache.logging.log4j.core.net.ssl.TestConstants;
+import org.apache.logging.log4j.core.test.net.ssl.TestConstants;
 import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
 import org.apache.logging.log4j.util.PropertiesUtil;
-import org.junit.After;
 import org.junit.Assume;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -155,7 +153,7 @@ public class WatchHttpTest {
         }
     }
 
-    private class TestConfigurationListener implements ConfigurationListener {
+    private static class TestConfigurationListener implements ConfigurationListener {
         private final Queue<String> queue;
         private final String name;
 

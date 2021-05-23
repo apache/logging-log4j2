@@ -20,13 +20,10 @@ import java.util.Calendar;
 
 import org.apache.logging.log4j.core.AbstractLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- */
 public class DateLookupTest {
 
 
@@ -39,7 +36,7 @@ public class DateLookupTest {
         assertEquals("12/30/2011", value);
     }
 
-    private class MyLogEvent extends AbstractLogEvent {
+    private static class MyLogEvent extends AbstractLogEvent {
         /**
          * Generated serial version ID.
          */
@@ -48,7 +45,7 @@ public class DateLookupTest {
         @Override
         public long getTimeMillis() {
             final Calendar cal = Calendar.getInstance();
-            cal.set(2011, 11, 30, 10, 56, 35);
+            cal.set(2011, Calendar.DECEMBER, 30, 10, 56, 35);
             return cal.getTimeInMillis();
         }
 

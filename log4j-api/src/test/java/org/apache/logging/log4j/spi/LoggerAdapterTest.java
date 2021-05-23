@@ -17,11 +17,11 @@
 package org.apache.logging.log4j.spi;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.TestLogger;
-import org.apache.logging.log4j.TestLoggerContext;
-import org.apache.logging.log4j.TestLoggerContextFactory;
+import org.apache.logging.log4j.test.TestLogger;
+import org.apache.logging.log4j.test.TestLoggerContext;
+import org.apache.logging.log4j.test.TestLoggerContextFactory;
 import org.apache.logging.log4j.simple.SimpleLoggerContext;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -29,15 +29,14 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by Pavel.Sivolobtchik@uxpsystems.com on 2016-10-19.
  */
 public class LoggerAdapterTest {
 
-    private class RunnableThreadTest implements Runnable {
+    private static class RunnableThreadTest implements Runnable {
         private final AbstractLoggerAdapter<Logger> adapter;
         private final LoggerContext context;
         private final CountDownLatch doneSignal;
@@ -138,12 +137,12 @@ public class LoggerAdapterTest {
             LoggerContext lc = adapter.getContext(Integer.toString(i));
             lc.getLogger(Integer.toString(i));
         }
-        assertEquals("Expected 5 LoggerContexts", 5, adapter.registry.size());
+        assertEquals(5, adapter.registry.size(), "Expected 5 LoggerContexts");
         Set<LoggerContext> contexts = new HashSet<>(adapter.registry.keySet());
         for (LoggerContext context : contexts) {
             ((TestLoggerContext2) context).shutdown();
         }
-        assertEquals("Expected 0 LoggerContexts", 0, adapter.registry.size());
+        assertEquals(0, adapter.registry.size(), "Expected 0 LoggerContexts");
     }
 
 
@@ -180,7 +179,7 @@ public class LoggerAdapterTest {
             //maps for the same context should be the same instance
             final Map<String, Logger> resultMap1 = instances[i].getResultMap();
             final Map<String, Logger> resultMap2 = instances[i + 1].getResultMap();
-            assertSame("not the same map for instances" + i + " and " + (i + 1) + ":", resultMap1, resultMap2);
+            assertSame(resultMap1, resultMap2, "not the same map for instances" + i + " and " + (i + 1) + ":");
             assertEquals(2, resultMap1.size());
         }
     }

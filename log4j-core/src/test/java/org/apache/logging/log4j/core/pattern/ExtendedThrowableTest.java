@@ -19,37 +19,33 @@ package org.apache.logging.log4j.core.pattern;
 import java.util.List;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- */
+@LoggerContextSource("log4j-throwablefilter.xml")
 public class ExtendedThrowableTest {
     private ListAppender app;
 
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule("log4j-throwablefilter.xml");
-
-    @Before
-    public void setUp() throws Exception {
-        this.app = context.getListAppender("List").clear();
+    @BeforeEach
+    public void setUp(@Named("List") final ListAppender app) throws Exception {
+        this.app = app.clear();
     }
 
     @Test
-    public void testException() {
+    public void testException(final LoggerContext context) {
         final Logger logger = context.getLogger("LoggerTest");
         final Throwable cause = new NullPointerException("null pointer");
         final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
         logger.error("Exception", parent);
         final List<String> msgs = app.getMessages();
         assertNotNull(msgs);
-        assertEquals("Incorrect number of messages. Should be 1 is " + msgs.size(), 1, msgs.size());
-        assertTrue("No suppressed lines", msgs.get(0).contains("suppressed"));
+        assertEquals(1, msgs.size(), "Incorrect number of messages. Should be 1 is " + msgs.size());
+        assertTrue(msgs.get(0).contains("suppressed"), "No suppressed lines");
     }
 }

@@ -25,7 +25,7 @@ import static org.junit.Assert.assertThat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -48,6 +48,7 @@ public class CoreLoggerTest extends AbstractLoggerTest {
     @Before
     public void setUp() throws Exception {
         logger = Logger.getLogger(LOGGER_NAME);
+        logger.setFilter(null);
         assertThat(logger.getLevel(), equalTo(Level.FINE));
         eventAppender = ListAppender.getListAppender("TestAppender");
         flowAppender = ListAppender.getListAppender("FlowAppender");

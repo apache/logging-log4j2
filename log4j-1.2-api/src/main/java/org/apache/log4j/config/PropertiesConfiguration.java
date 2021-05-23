@@ -27,12 +27,14 @@ import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.Filter;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.util.LoaderUtil;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -89,6 +91,23 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
         }
         // If we reach here, then the config file is alright.
         doConfigure(props);
+    }
+
+    @Override
+    public Configuration reconfigure() {
+        try {
+            final ConfigurationSource source = getConfigurationSource().resetInputStream();
+            if (source == null) {
+                return null;
+            }
+            final PropertiesConfigurationFactory factory = new PropertiesConfigurationFactory();
+            final PropertiesConfiguration config =
+                    (PropertiesConfiguration) factory.getConfiguration(getLoggerContext(), source);
+            return config == null || config.getState() != State.INITIALIZING ? null : config;
+        } catch (final IOException ex) {
+            LOGGER.error("Cannot locate file {}: {}", getConfigurationSource(), ex);
+        }
+        return null;
     }
 
     /**
@@ -390,7 +409,7 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
                         logger.getName());
                 logger.addAppender(getAppender(appenderName), null, null);
             } else {
-                LOGGER.debug("Appender named [{}}] not found.", appenderName);
+                LOGGER.debug("Appender named [{}] not found.", appenderName);
             }
         }
     }

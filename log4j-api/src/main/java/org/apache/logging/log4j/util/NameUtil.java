@@ -16,19 +16,17 @@
  */
 package org.apache.logging.log4j.util;
 
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
-
-import org.apache.logging.log4j.util.Strings;
+import java.security.NoSuchAlgorithmException;
+import java.util.Objects;
 
 /**
  *
  */
 public final class NameUtil {
 
-    private static final int MASK = 0xff;
-
-    private NameUtil() {
-    }
+    private NameUtil() {}
 
     public static String getSubName(final String name) {
         if (Strings.isEmpty(name)) {
@@ -38,22 +36,41 @@ public final class NameUtil {
         return i > 0 ? name.substring(0, i) : Strings.EMPTY;
     }
 
-    public static String md5(final String string) {
+    /**
+     * Calculates the <a href="https://en.wikipedia.org/wiki/MD5">MD5</a> hash
+     * of the given input string encoded using the default platform
+     * {@link Charset charset}.
+     * <p>
+     * <b>MD5 has severe vulnerabilities and should not be used for sharing any
+     * sensitive information.</b> This function should only be used to create
+     * unique identifiers, e.g., configuration element names.
+     *
+     * @param input string to be hashed
+     * @return string composed of 32 hexadecimal digits of the calculated hash
+     */
+    public static String md5(final String input) {
+        Objects.requireNonNull(input, "input");
         try {
+            final byte[] inputBytes = input.getBytes();
             final MessageDigest digest = MessageDigest.getInstance("MD5");
-            digest.update(string.getBytes());
-            final byte[] bytes = digest.digest();
-            final StringBuilder md5 = new StringBuilder();
+            final byte[] bytes = digest.digest(inputBytes);
+            final StringBuilder md5 = new StringBuilder(bytes.length * 2);
             for (final byte b : bytes) {
-                final String hex = Integer.toHexString(MASK & b);
+                final String hex = Integer.toHexString(0xFF & b);
                 if (hex.length() == 1) {
                     md5.append('0');
                 }
                 md5.append(hex);
             }
             return md5.toString();
-        } catch (final Exception ex) {
-            return string;
+        }
+        // Every implementation of the Java platform is required to support MD5.
+        // Hence, this catch block should be unreachable.
+        // See https://docs.oracle.com/javase/8/docs/api/java/security/MessageDigest.html
+        // for details.
+        catch (final NoSuchAlgorithmException error) {
+            throw new RuntimeException(error);
         }
     }
+
 }

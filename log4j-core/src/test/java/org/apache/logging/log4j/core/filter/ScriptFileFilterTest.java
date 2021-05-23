@@ -16,25 +16,8 @@
  */
 package org.apache.logging.log4j.core.filter;
 
-import org.apache.logging.log4j.categories.Scripts;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.junit.ClassRule;
-import org.junit.experimental.categories.Category;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 
-/**
- *
- */
-@Category(Scripts.Groovy.class)
+@LoggerContextSource("log4j-scriptFile-filters.xml")
 public class ScriptFileFilterTest extends AbstractScriptFilterTest {
-
-    private static final String CONFIG = "log4j-scriptFile-filters.xml";
-
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
-
-    @Override
-    public LoggerContextRule getContext() {
-        return context;
-    }
-
 }

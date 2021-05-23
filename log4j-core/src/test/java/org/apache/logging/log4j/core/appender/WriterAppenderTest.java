@@ -22,6 +22,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.lang.reflect.Method;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,10 +30,12 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 
 /**
  * Tests {@link WriterAppender}.
@@ -41,11 +44,15 @@ public class WriterAppenderTest {
 
     private static final String TEST_MSG = "FOO ERROR";
 
-    @Rule
-    public TestName testName = new TestName();
+    private String testMethodName;
+
+    @BeforeEach
+    void setUp(final TestInfo testInfo) {
+        testMethodName = testInfo.getTestMethod().map(Method::getName).orElseGet(testInfo::getDisplayName);
+    }
 
     private String getName(final Writer writer) {
-        return writer.getClass().getSimpleName() + "." + testName.getMethodName();
+        return writer.getClass().getSimpleName() + "." + testMethodName;
     }
 
     private void test(final ByteArrayOutputStream out, final Writer writer) {
@@ -54,7 +61,7 @@ public class WriterAppenderTest {
         final Logger logger = LogManager.getLogger(name);
         logger.error(TEST_MSG);
         final String actual = out.toString();
-        Assert.assertTrue(actual, actual.contains(TEST_MSG));
+        assertThat(actual, containsString(TEST_MSG));
     }
 
     private void test(final Writer writer) {
@@ -63,7 +70,7 @@ public class WriterAppenderTest {
         final Logger logger = LogManager.getLogger(name);
         logger.error(TEST_MSG);
         final String actual = writer.toString();
-        Assert.assertTrue(actual, actual.contains(TEST_MSG));
+        assertThat(actual, containsString(TEST_MSG));
     }
 
     private void addAppender(final Writer writer, final String writerName) {

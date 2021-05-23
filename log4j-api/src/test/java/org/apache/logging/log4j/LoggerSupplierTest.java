@@ -16,15 +16,6 @@
  */
 package org.apache.logging.log4j;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.startsWith;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-
-import java.util.List;
-import java.util.Locale;
-
 import org.apache.logging.log4j.message.FormattedMessage;
 import org.apache.logging.log4j.message.JsonMessage;
 import org.apache.logging.log4j.message.LocalizedMessage;
@@ -35,14 +26,25 @@ import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.apache.logging.log4j.message.ThreadDumpMessage;
+import org.apache.logging.log4j.test.TestLogger;
 import org.apache.logging.log4j.util.Supplier;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.Properties;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests Logger APIs with {@link Supplier}.
  */
+@ResourceLock(Resources.LOCALE)
+@ResourceLock("log4j2.TestLogger")
 public class LoggerSupplierTest {
 
     private final TestLogger logger = (TestLogger) LogManager.getLogger("LoggerTest");
@@ -53,181 +55,132 @@ public class LoggerSupplierTest {
 
     @Test
     public void flowTracing_SupplierOfFormattedMessage() {
-        logger.traceEntry(new Supplier<FormattedMessage>() {
-            @Override
-            public FormattedMessage get() {
-                return new FormattedMessage("int foo={}", 1234567890);
-            }
-        });
-        assertEquals(1, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
-        assertThat("Missing entry data", results.get(0), containsString("(int foo=1234567890)"));
-        assertThat("Bad toString()", results.get(0), not(containsString("FormattedMessage")));
+        logger.traceEntry(() -> new FormattedMessage("int foo={}", 1234567890));
+        assertThat(results).hasSize(1);
+        String entry = results.get(0);
+        assertThat(entry).startsWith("ENTER[ FLOW ] TRACE Enter")
+                .contains("(int foo=1234567890)")
+                .doesNotContain("FormattedMessage");
     }
 
     @Test
     public void flowTracing_SupplierOfJsonMessage() {
-        logger.traceEntry(new Supplier<JsonMessage>() {
-            @Override
-            public JsonMessage get() {
-                return new JsonMessage(System.getProperties());
-            }
-        });
-        assertEquals(1, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
-        assertThat("Missing entry data", results.get(0), containsString("\"java.runtime.name\":"));
-        assertThat("Bad toString()", results.get(0), not(containsString("JsonMessage")));
+        Properties props = new Properties();
+        props.setProperty("foo", "bar");
+        logger.traceEntry(() -> new JsonMessage(props));
+        assertThat(results).hasSize(1);
+        String entry = results.get(0);
+        assertThat(entry).startsWith("ENTER[ FLOW ] TRACE Enter")
+                .contains("\"foo\":\"bar\"")
+                .doesNotContain("JsonMessage");
     }
 
     @Test
     public void flowTracing_SupplierOfLocalizedMessage() {
-        logger.traceEntry(new Supplier<LocalizedMessage>() {
-            @Override
-            public LocalizedMessage get() {
-                return new LocalizedMessage("int foo={}", 1234567890);
-            }
-        });
-        assertEquals(1, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
-        assertThat("Missing entry data", results.get(0), containsString("(int foo=1234567890)"));
-        assertThat("Bad toString()", results.get(0), not(containsString("LocalizedMessage")));
+        logger.traceEntry(() -> new LocalizedMessage("int foo={}", 1234567890));
+        assertThat(results).hasSize(1);
+        String entry = results.get(0);
+        assertThat(entry).startsWith("ENTER[ FLOW ] TRACE Enter")
+                .contains("(int foo=1234567890)")
+                .doesNotContain("LocalizedMessage");
     }
 
     @Test
     public void flowTracing_SupplierOfLong() {
-        logger.traceEntry(new Supplier<Long>() {
-            @Override
-            public Long get() {
-                return Long.valueOf(1234567890);
-            }
-        });
-        assertEquals(1, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
-        assertThat("Missing entry data", results.get(0), containsString("(1234567890)"));
-        assertThat("Bad toString()", results.get(0), not(containsString("SimpleMessage")));
+        logger.traceEntry(() -> 1234567890L);
+        assertThat(results).hasSize(1);
+        String entry = results.get(0);
+        assertThat(entry).startsWith("ENTER[ FLOW ] TRACE Enter")
+                .contains("(1234567890)")
+                .doesNotContain("SimpleMessage");
     }
 
     @Test
     public void flowTracing_SupplierOfMessageFormatMessage() {
-        logger.traceEntry(new Supplier<MessageFormatMessage>() {
-            @Override
-            public MessageFormatMessage get() {
-                return new MessageFormatMessage("int foo={0}", 1234567890);
-            }
-        });
-        assertEquals(1, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
-        assertThat("Missing entry data", results.get(0), containsString("(int foo=1,234,567,890)"));
-        assertThat("Bad toString()", results.get(0), not(containsString("MessageFormatMessage")));
+        logger.traceEntry(() -> new MessageFormatMessage("int foo={0}", 1234567890));
+        assertThat(results).hasSize(1);
+        String entry = results.get(0);
+        assertThat(entry).startsWith("ENTER[ FLOW ] TRACE Enter")
+                .contains("(int foo=1,234,567,890)")
+                .doesNotContain("MessageFormatMessage");
     }
 
     @Test
     public void flowTracing_SupplierOfObjectArrayMessage() {
-        logger.traceEntry(new Supplier<ObjectArrayMessage>() {
-            @Override
-            public ObjectArrayMessage get() {
-                return new ObjectArrayMessage(1234567890);
-            }
-        });
-        assertEquals(1, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
-        assertThat("Missing Enter data", results.get(0), containsString("([1234567890])"));
-        assertThat("Bad toString()", results.get(0), not(containsString("ObjectArrayMessage")));
+        logger.traceEntry(() -> new ObjectArrayMessage(1234567890));
+        assertThat(results).hasSize(1);
+        String entry = results.get(0);
+        assertThat(entry).startsWith("ENTER[ FLOW ] TRACE Enter")
+                .contains("([1234567890])")
+                .doesNotContain("ObjectArrayMessage");
     }
 
     @Test
     public void flowTracing_SupplierOfObjectMessage() {
-        logger.traceEntry(new Supplier<ObjectMessage>() {
-            @Override
-            public ObjectMessage get() {
-                return new ObjectMessage(1234567890);
-            }
-        });
-        assertEquals(1, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
-        assertThat("Missing entry data", results.get(0), containsString("(1234567890)"));
-        assertThat("Bad toString()", results.get(0), not(containsString("ObjectMessage")));
+        logger.traceEntry(() -> new ObjectMessage(1234567890));
+        assertThat(results).hasSize(1);
+        String entry = results.get(0);
+        assertThat(entry).startsWith("ENTER[ FLOW ] TRACE Enter")
+                .contains("(1234567890)")
+                .doesNotContain("ObjectMessage");
     }
 
     @Test
     public void flowTracing_SupplierOfParameterizedMessage() {
-        logger.traceEntry(new Supplier<ParameterizedMessage>() {
-            @Override
-            public ParameterizedMessage get() {
-                return new ParameterizedMessage("int foo={}", 1234567890);
-            }
-        });
-        assertEquals(1, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
-        assertThat("Missing entry data", results.get(0), containsString("(int foo=1234567890)"));
-        assertThat("Bad toString()", results.get(0), not(containsString("ParameterizedMessage")));
+        logger.traceEntry(() -> new ParameterizedMessage("int foo={}", 1234567890));
+        assertThat(results).hasSize(1);
+        String entry = results.get(0);
+        assertThat(entry).startsWith("ENTER[ FLOW ] TRACE Enter")
+                .contains("(int foo=1234567890)")
+                .doesNotContain("ParameterizedMessage");
     }
 
     @Test
     public void flowTracing_SupplierOfSimpleMessage() {
-        logger.traceEntry(new Supplier<SimpleMessage>() {
-            @Override
-            public SimpleMessage get() {
-                return new SimpleMessage("1234567890");
-            }
-        });
-        assertEquals(1, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
-        assertThat("Missing entry data", results.get(0), containsString("(1234567890)"));
-        assertThat("Bad toString()", results.get(0), not(containsString("SimpleMessage")));
+        logger.traceEntry(() -> new SimpleMessage("1234567890"));
+        assertThat(results).hasSize(1);
+        String entry = results.get(0);
+        assertThat(entry).startsWith("ENTER[ FLOW ] TRACE Enter")
+                .contains("(1234567890)")
+                .doesNotContain("SimpleMessage");
     }
 
     @Test
     public void flowTracing_SupplierOfString() {
-        logger.traceEntry(new Supplier<String>() {
-            @Override
-            public String get() {
-                return "1234567890";
-            }
-        });
-        assertEquals(1, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
-        assertThat("Missing entry data", results.get(0), containsString("(1234567890)"));
-        assertThat("Bad toString()", results.get(0), not(containsString("SimpleMessage")));
+        logger.traceEntry(() -> "1234567890");
+        assertThat(results).hasSize(1);
+        String entry = results.get(0);
+        assertThat(entry).startsWith("ENTER[ FLOW ] TRACE Enter")
+                .contains("(1234567890)")
+                .doesNotContain("SimpleMessage");
     }
 
     @Test
     public void flowTracing_SupplierOfStringFormattedMessage() {
-        logger.traceEntry(new Supplier<StringFormattedMessage>() {
-            @Override
-            public StringFormattedMessage get() {
-                return new StringFormattedMessage("int foo=%,d", 1234567890);
-            }
-        });
-        assertEquals(1, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
-        assertThat("Missing entry data", results.get(0), containsString("(int foo=1,234,567,890)"));
-        assertThat("Bad toString()", results.get(0), not(containsString("StringFormattedMessage")));
+        logger.traceEntry(() -> new StringFormattedMessage("int foo=%,d", 1234567890));
+        assertThat(results).hasSize(1);
+        String entry = results.get(0);
+        assertThat(entry).startsWith("ENTER[ FLOW ] TRACE Enter")
+                .contains("(int foo=1,234,567,890)")
+                .doesNotContain("StringFormattedMessage");
     }
 
     @Test
     public void flowTracing_SupplierOfThreadDumpMessage() {
-        logger.traceEntry(new Supplier<ThreadDumpMessage>() {
-            @Override
-            public ThreadDumpMessage get() {
-                return new ThreadDumpMessage("Title of ...");
-            }
-        });
-        assertEquals(1, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
-        assertThat("Missing entry data", results.get(0), containsString("RUNNABLE"));
-        assertThat("Missing entry data", results.get(0), containsString("Title of ..."));
-        assertThat("Missing entry data", results.get(0), containsString(getClass().getName()));
+        logger.traceEntry(() -> new ThreadDumpMessage("Title of ..."));
+        assertThat(results).hasSize(1);
+        String entry = results.get(0);
+        assertThat(entry).startsWith("ENTER[ FLOW ] TRACE Enter").contains("RUNNABLE", "Title of ...", getClass().getName());
     }
     
-    @Before
+    @BeforeEach
     public void setup() {
         results.clear();
         defaultLocale = Locale.getDefault(Locale.Category.FORMAT);
         Locale.setDefault(Locale.Category.FORMAT, java.util.Locale.US);
     }
     
-    @After
+    @AfterEach
     public void tearDown() {
         Locale.setDefault(Locale.Category.FORMAT, defaultLocale);
     }

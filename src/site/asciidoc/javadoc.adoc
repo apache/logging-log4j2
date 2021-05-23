@@ -83,11 +83,11 @@ likely will not use directly in code but instead will only configure or include 
 |link:log4j-liquibase/apidocs/index.html[Log4j Liquibase Binding]
 |The Apache Log4j Liquibase binding to Log4j 2 Core.
 
-|link:log4j-mongodb2/apidocs/index.html[Log4j MongoDB 2 Support]
-|Additional Appender for MongoDB using the version 2 driver.
-
 |link:log4j-mongodb3/apidocs/index.html[Log4j MongoDB 3 Support]
 |Additional Appender for MongoDB using the version 3 driver.
+
+|link:log4j-mongodb4/apidocs/index.html[Log4j MongoDB 4 Support]
+|Additional Appender for MongoDB using the version 4 driver.
 
 |link:log4j-cassandra/apidocs/index.html[Log4j Cassandra Support]
 |Additional Appender for Cassandra.

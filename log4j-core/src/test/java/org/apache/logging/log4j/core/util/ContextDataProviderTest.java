@@ -22,43 +22,40 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.ThreadContextDataInjector;
-import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- */
+@Tag("functional")
 public class ContextDataProviderTest {
 
     private static Logger logger;
     private static ListAppender appender;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         ThreadContextDataInjector.contextDataProviders.add(new TestContextDataProvider());
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "target/test-classes/log4j-contextData.xml");
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "log4j-contextData.xml");
         LoggerContext loggerContext = (LoggerContext) LogManager.getContext(false);
         logger = loggerContext.getLogger(ContextDataProviderTest.class.getName());
         appender = loggerContext.getConfiguration().getAppender("List");
-        assertNotNull("No List appender", appender);
+        assertNotNull(appender, "No List appender");
     }
 
     @Test
-    public void testContextProvider() throws Exception {
+    public void testContextProvider() {
         ThreadContext.put("loginId", "jdoe");
         logger.debug("This is a test");
         List<String> messages = appender.getMessages();
-        assertEquals("Incorrect number of messages", 1, messages.size());
-        assertTrue("Context data missing", messages.get(0).contains("testKey=testValue"));
+        assertEquals(1, messages.size(), "Incorrect number of messages");
+        assertTrue(messages.get(0).contains("testKey=testValue"), "Context data missing");
     }
 
     private static class TestContextDataProvider implements ContextDataProvider {

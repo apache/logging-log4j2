@@ -16,11 +16,6 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
@@ -33,11 +28,10 @@ import org.apache.logging.log4j.core.impl.ThrowableFormatOptions;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-/**
- *
- */
+import static org.junit.jupiter.api.Assertions.*;
+
 public class ExtendedThrowablePatternConverterTest {
 
     @Test
@@ -57,7 +51,7 @@ public class ExtendedThrowablePatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
-        assertTrue("No suffix", result.contains("test suffix"));
+        assertTrue(result.contains("test suffix"), "No suffix");
     }
 
     @Test
@@ -76,7 +70,7 @@ public class ExtendedThrowablePatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
-        assertTrue("No suffix", result.contains("test suffix"));
+        assertTrue(result.contains("test suffix"), "No suffix");
     }
 
     @Test
@@ -95,7 +89,7 @@ public class ExtendedThrowablePatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
-        assertFalse("Has unexpected suffix", result.contains("inner suffix"));
+        assertFalse(result.contains("inner suffix"), "Has unexpected suffix");
     }
 
     @Test
@@ -115,8 +109,8 @@ public class ExtendedThrowablePatternConverterTest {
 		final StringBuilder sb = new StringBuilder();
 		converter.format(event, sb);
 		final String result = sb.toString();
-		assertTrue(result, result.contains(originalThrowable.getMessage()));
-		assertTrue(result, result.contains(originalThrowable.getStackTrace()[0].getMethodName()));
+		assertTrue(result.contains(originalThrowable.getMessage()), result);
+		assertTrue(result.contains(originalThrowable.getStackTrace()[0].getMethodName()), result);
 	}
 
     @Test
@@ -135,7 +129,7 @@ public class ExtendedThrowablePatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
-        assertTrue("No suppressed lines", result.contains(" suppressed "));
+        assertTrue(result.contains(" suppressed "), "No suppressed lines");
     }
 
     @Test
@@ -168,8 +162,8 @@ public class ExtendedThrowablePatternConverterTest {
         final List<String> ignorePackages = options.getIgnorePackages();
         assertNotNull(ignorePackages);
         final String ignorePackagesString = ignorePackages.toString();
-        assertTrue(ignorePackagesString, ignorePackages.contains("org.junit"));
-        assertTrue(ignorePackagesString, ignorePackages.contains("org.eclipse"));
+        assertTrue(ignorePackages.contains("org.junit"), ignorePackagesString);
+        assertTrue(ignorePackages.contains("org.eclipse"), ignorePackagesString);
         assertEquals("|", options.getSeparator());
     }
 

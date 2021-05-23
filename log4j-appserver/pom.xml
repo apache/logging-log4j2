@@ -34,8 +34,9 @@
     <docLabel>Web Documentation</docLabel>
     <projectDir>/log4j-appserver</projectDir>
     <tomcat.version>8.5.20</tomcat.version>
-    <jetty.version>8.2.0.v20160908</jetty.version> <!--  Jetty 9 requires Java 8 -->
+    <jetty.version>9.4.31.v20200723</jetty.version> <!--  Jetty 9 requires Java 8 -->
     <module.name>org.apache.logging.log4j.appserver</module.name>
+    <maven.doap.skip>true</maven.doap.skip>
   </properties>
 
   <dependencies>
@@ -88,9 +89,12 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -164,6 +168,7 @@
           <additionalparam>${javadoc.opts}</additionalparam>
           <detectOfflineLinks>false</detectOfflineLinks>
           <linksource>true</linksource>
+          <source>8</source>
           <links>
             <link>http://docs.oracle.com/javaee/6/api/</link>
           </links>
@@ -180,13 +185,6 @@
       <plugin>
         <groupId>com.github.spotbugs</groupId>
         <artifactId>spotbugs-maven-plugin</artifactId>
-        <configuration>
-          <fork>true</fork>
-          <jvmArgs>-Duser.language=en</jvmArgs>
-          <threshold>Normal</threshold>
-          <effort>Default</effort>
-          <excludeFilterFile>${log4jParentDir}/spotbugs-exclude-filter.xml</excludeFilterFile>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

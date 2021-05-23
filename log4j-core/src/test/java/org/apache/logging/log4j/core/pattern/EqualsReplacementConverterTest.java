@@ -22,13 +22,10 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- */
 public class EqualsReplacementConverterTest {
 
     private static final String TEST_MESSAGE = "This is a test";
@@ -68,6 +65,7 @@ public class EqualsReplacementConverterTest {
         final LoggerContext ctx = LoggerContext.getContext();
         final EqualsReplacementConverter converter = EqualsReplacementConverter.newInstance(ctx.getConfiguration(),
             options);
+        assertNotNull(converter);
         converter.format(event, sb);
         assertEquals(expectedValue, sb.toString());
     }
@@ -104,6 +102,7 @@ public class EqualsReplacementConverterTest {
             new String[]{"[%marker]", "[]", substitution});
 
         final StringBuilder sb = new StringBuilder();
+        assertNotNull(converter);
         converter.parseSubstitution(event, sb);
         final String actual = sb.toString();
         assertEquals(expected, actual);

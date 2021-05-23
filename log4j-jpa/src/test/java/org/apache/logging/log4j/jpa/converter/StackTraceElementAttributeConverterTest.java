@@ -16,8 +16,7 @@
  */
 package org.apache.logging.log4j.jpa.converter;
 
-import org.apache.logging.log4j.categories.Appenders;
-import org.apache.logging.log4j.jpa.converter.StackTraceElementAttributeConverter;
+import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;

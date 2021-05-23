@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
+import java.nio.file.Paths;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -140,6 +141,9 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
 
     private void createFileAfterRollover(String fileName) throws IOException {
         this.randomAccessFile = new RandomAccessFile(fileName, "rw");
+        if (isAttributeViewEnabled()) {
+            defineAttributeView(Paths.get(fileName));
+        }
         if (isAppend()) {
             randomAccessFile.seek(randomAccessFile.length());
         }
@@ -308,11 +312,17 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
 
     }
 
+    /**
+     * Updates the RollingFileManager's data during a reconfiguration. This method should be considered private.
+     * It is not thread safe and calling it outside of a reconfiguration may lead to errors. This method may be
+     * made protected in a future release.
+     * @param data The data to update.
+     */
     @Override
     public void updateData(final Object data) {
         final FactoryData factoryData = (FactoryData) data;
         setRolloverStrategy(factoryData.getRolloverStrategy());
-        setTriggeringPolicy(factoryData.getTriggeringPolicy());
         setPatternProcessor(new PatternProcessor(factoryData.getPattern(), getPatternProcessor()));
+        setTriggeringPolicy(factoryData.getTriggeringPolicy());
     }
 }

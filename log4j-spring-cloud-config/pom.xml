@@ -21,9 +21,7 @@
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
     <version>3.0.0-SNAPSHOT</version>
-    <relativePath>../</relativePath>
   </parent>
-  <groupId>org.apache.logging.log4j</groupId>
   <artifactId>log4j-spring-cloud-config</artifactId>
   <packaging>pom</packaging>
   <name>Apache Log4j Spring Cloud Config Support</name>
@@ -31,10 +29,9 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <revapi.skip>true</revapi.skip>
-    <spring-cloud-version>Finchley.SR3</spring-cloud-version>
-    <spring-boot.version>2.0.8.RELEASE</spring-boot.version>
-    <springVersion>5.0.12.RELEASE</springVersion>
+    <spring-cloud-version>Hoxton.SR9</spring-cloud-version>
     <log4jParentDir>${basedir}/..</log4jParentDir>
+    <maven.doap.skip>true</maven.doap.skip>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -47,7 +44,7 @@
       </dependency>
       <dependency>
         <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot</artifactId>
+        <artifactId>spring-boot-starter-parent</artifactId>
         <version>${spring-boot.version}</version>
         <type>pom</type>
         <scope>import</scope>
@@ -62,7 +59,7 @@
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>4.12</version>
+        <version>4.13.1</version>
         <scope>test</scope>
       </dependency>
     </dependencies>

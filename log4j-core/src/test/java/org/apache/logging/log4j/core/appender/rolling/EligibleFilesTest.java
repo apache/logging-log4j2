@@ -20,9 +20,9 @@ import java.nio.file.Path;
 import java.util.Map;
 
 import org.apache.logging.log4j.core.pattern.NotANumber;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test getEligibleFiles method.
@@ -34,11 +34,11 @@ public class EligibleFilesTest {
         final String path = "target/test-classes/rolloverPath/log4j.txt.20170112_09-" + NotANumber.VALUE + ".gz";
         final TestRolloverStrategy strategy = new TestRolloverStrategy();
         final Map<Integer, Path> files = strategy.findFilesInPath(path);
-        assertTrue("No files found", files.size() > 0);
-        assertTrue("Incorrect number of files found. Should be 30, was " + files.size(), files.size() == 30);
+        assertTrue(files.size() > 0, "No files found");
+        assertEquals(30, files.size(), "Incorrect number of files found. Should be 30, was " + files.size());
     }
 
-    private class TestRolloverStrategy extends AbstractRolloverStrategy {
+    private static class TestRolloverStrategy extends AbstractRolloverStrategy {
 
         public TestRolloverStrategy() {
             super(null);

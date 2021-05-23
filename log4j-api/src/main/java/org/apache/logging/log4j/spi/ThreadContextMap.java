@@ -81,7 +81,7 @@ public interface ThreadContextMap {
     void put(final String key, final String value);
 
     /**
-     * Removes the the context identified by the <code>key</code>
+     * Removes the context identified by the <code>key</code>
      * parameter.
      * @param key The key to remove.
      */

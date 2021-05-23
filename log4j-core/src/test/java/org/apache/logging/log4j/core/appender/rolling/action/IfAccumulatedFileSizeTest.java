@@ -17,9 +17,9 @@
 
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the IfAccumulatedFileSize class.

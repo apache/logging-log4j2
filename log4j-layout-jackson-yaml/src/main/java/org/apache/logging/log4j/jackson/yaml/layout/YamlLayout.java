@@ -70,7 +70,7 @@ public final class YamlLayout extends AbstractJacksonLayout {
             final String footerPattern = toStringOrNull(getFooter());
             return new YamlLayout(getConfiguration(), isLocationInfo(), isProperties(), isComplete(), isCompact(),
                     getEventEol(), headerPattern, footerPattern, getCharset(), isIncludeStacktrace(),
-                    isStacktraceAsString(), isIncludeNullDelimiter(), getAdditionalFields());
+                    isStacktraceAsString(), isIncludeNullDelimiter(), isIncludeTimeMillis(), getAdditionalFields());
         }
     }
 
@@ -109,7 +109,7 @@ public final class YamlLayout extends AbstractJacksonLayout {
      */
     public static AbstractJacksonLayout createDefaultLayout() {
         return new YamlLayout(new DefaultConfiguration(), false, false, false, false, false, DEFAULT_HEADER,
-                DEFAULT_FOOTER, StandardCharsets.UTF_8, true, false, false, null);
+                DEFAULT_FOOTER, StandardCharsets.UTF_8, true, false, false, false, null);
     }
 
     @PluginFactory
@@ -120,11 +120,11 @@ public final class YamlLayout extends AbstractJacksonLayout {
     private YamlLayout(final Configuration config, final boolean locationInfo, final boolean properties,
             final boolean complete, final boolean compact, final boolean eventEol, final String headerPattern,
             final String footerPattern, final Charset charset, final boolean includeStacktrace,
-            final boolean stacktraceAsString, final boolean includeNullDelimiter,
+            final boolean stacktraceAsString, final boolean includeNullDelimiter, final boolean includeTimeMillis,
             final KeyValuePair[] additionalFields) {
         super(config,
                 new YamlJacksonFactory(includeStacktrace, stacktraceAsString).newWriter(locationInfo, properties,
-                        compact),
+                        compact, includeTimeMillis),
                 charset, compact, complete, eventEol,
                 PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(headerPattern)
                         .setDefaultPattern(DEFAULT_HEADER).build(),

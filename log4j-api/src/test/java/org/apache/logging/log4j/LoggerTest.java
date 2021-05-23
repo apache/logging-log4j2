@@ -16,10 +16,6 @@
  */
 package org.apache.logging.log4j;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
 import org.apache.logging.log4j.message.EntryMessage;
 import org.apache.logging.log4j.message.JsonMessage;
 import org.apache.logging.log4j.message.Message;
@@ -30,19 +26,24 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.SimpleMessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.test.TestLogger;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Supplier;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.endsWith;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.startsWith;
-import static org.junit.Assert.*;
-/**
- *
- */
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Properties;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
+@ResourceLock("log4j2.MarkerManager")
+@ResourceLock("log4j2.TestLogger")
 public class LoggerTest {
 
     private static class TestParameterizedMessageFactory {
@@ -64,12 +65,12 @@ public class LoggerTest {
         logger.atWarn().withThrowable(new Throwable("This is a test")).log((Message) new SimpleMessage("Log4j rocks!"));
         assertEquals(3, results.size());
         assertThat("Incorrect message 1", results.get(0),
-                equalTo(" DEBUG org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:62) Hello"));
+                equalTo(" DEBUG org.apache.logging.log4j/org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:63) Hello"));
         assertThat("Incorrect message 2", results.get(1), equalTo("test ERROR Hello John"));
         assertThat("Incorrect message 3", results.get(2),
                 startsWith(" WARN Log4j rocks! java.lang.Throwable: This is a test"));
         assertThat("Throwable incorrect in message 3", results.get(2),
-                containsString("at org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:64)"));
+                containsString("at org.apache.logging.log4j/org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:65)"));
     }
 
     @Test
@@ -84,12 +85,14 @@ public class LoggerTest {
 
     @Test
     public void flowTracingMessage() {
-        logger.traceEntry(new JsonMessage(System.getProperties()));
+        Properties props = new Properties();
+        props.setProperty("foo", "bar");
+        logger.traceEntry(new JsonMessage(props));
         final Response response = new Response(-1, "Generic error");
         logger.traceExit(new JsonMessage(response),  response);
         assertEquals(2, results.size());
         assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
-        assertThat("Missing entry data", results.get(0), containsString("\"java.runtime.name\":"));
+        assertThat("Missing entry data", results.get(0), containsString("\"foo\":\"bar\""));
         assertThat("incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
         assertThat("Missing exit data", results.get(1), containsString("\"message\":\"Generic error\""));
     }
@@ -214,29 +217,30 @@ public class LoggerTest {
     public void debug() {
         logger.debug("Debug message");
         assertEquals(1, results.size());
-        assertTrue("Incorrect message", results.get(0).startsWith(" DEBUG Debug message"));
+        assertTrue(results.get(0).startsWith(" DEBUG Debug message"), "Incorrect message");
     }
 
     @Test
     public void debugObject() {
         logger.debug(new Date());
         assertEquals(1, results.size());
-        assertTrue("Invalid length", results.get(0).length() > 7);
+        assertTrue(results.get(0).length() > 7, "Invalid length");
     }
 
     @Test
     public void debugWithParms() {
         logger.debug("Hello, {}", "World");
         assertEquals(1, results.size());
-        assertTrue("Incorrect substitution", results.get(0).startsWith(" DEBUG Hello, World"));
+        assertTrue(results.get(0).startsWith(" DEBUG Hello, World"), "Incorrect substitution");
     }
 
     @Test
     public void debugWithParmsAndThrowable() {
         logger.debug("Hello, {}", "World", new RuntimeException("Test Exception"));
         assertEquals(1, results.size());
-        assertTrue("Unexpected results: " + results.get(0),
-            results.get(0).startsWith(" DEBUG Hello, World java.lang.RuntimeException: Test Exception"));
+        assertTrue(
+                results.get(0).startsWith(" DEBUG Hello, World java.lang.RuntimeException: Test Exception"),
+                "Unexpected results: " + results.get(0));
     }
 
     @Test
@@ -452,94 +456,94 @@ public class LoggerTest {
 
     @Test
     public void isAllEnabled() {
-        assertTrue("Incorrect level", logger.isEnabled(Level.ALL));
+        assertTrue(logger.isEnabled(Level.ALL), "Incorrect level");
     }
 
     @Test
     public void isDebugEnabled() {
-        assertTrue("Incorrect level", logger.isDebugEnabled());
-        assertTrue("Incorrect level", logger.isEnabled(Level.DEBUG));
+        assertTrue(logger.isDebugEnabled(), "Incorrect level");
+        assertTrue(logger.isEnabled(Level.DEBUG), "Incorrect level");
     }
 
     @Test
     public void isErrorEnabled() {
-        assertTrue("Incorrect level", logger.isErrorEnabled());
-        assertTrue("Incorrect level", logger.isEnabled(Level.ERROR));
+        assertTrue(logger.isErrorEnabled(), "Incorrect level");
+        assertTrue(logger.isEnabled(Level.ERROR), "Incorrect level");
     }
 
     @Test
     public void isFatalEnabled() {
-        assertTrue("Incorrect level", logger.isFatalEnabled());
-        assertTrue("Incorrect level", logger.isEnabled(Level.FATAL));
+        assertTrue(logger.isFatalEnabled(), "Incorrect level");
+        assertTrue(logger.isEnabled(Level.FATAL), "Incorrect level");
     }
 
     @Test
     public void isInfoEnabled() {
-        assertTrue("Incorrect level", logger.isInfoEnabled());
-        assertTrue("Incorrect level", logger.isEnabled(Level.INFO));
+        assertTrue(logger.isInfoEnabled(), "Incorrect level");
+        assertTrue(logger.isEnabled(Level.INFO), "Incorrect level");
     }
 
     @Test
     public void isOffEnabled() {
-        assertTrue("Incorrect level", logger.isEnabled(Level.OFF));
+        assertTrue(logger.isEnabled(Level.OFF), "Incorrect level");
     }
 
     @Test
     public void isTraceEnabled() {
-        assertTrue("Incorrect level", logger.isTraceEnabled());
-        assertTrue("Incorrect level", logger.isEnabled(Level.TRACE));
+        assertTrue(logger.isTraceEnabled(), "Incorrect level");
+        assertTrue(logger.isEnabled(Level.TRACE), "Incorrect level");
     }
 
     @Test
     public void isWarnEnabled() {
-        assertTrue("Incorrect level", logger.isWarnEnabled());
-        assertTrue("Incorrect level", logger.isEnabled(Level.WARN));
+        assertTrue(logger.isWarnEnabled(), "Incorrect level");
+        assertTrue(logger.isEnabled(Level.WARN), "Incorrect level");
     }
 
     @Test
     public void isAllEnabledWithMarker() {
-        assertTrue("Incorrect level", logger.isEnabled(Level.ALL, marker));
+        assertTrue(logger.isEnabled(Level.ALL, marker), "Incorrect level");
     }
 
     @Test
     public void isDebugEnabledWithMarker() {
-        assertTrue("Incorrect level", logger.isDebugEnabled(marker));
-        assertTrue("Incorrect level", logger.isEnabled(Level.DEBUG, marker));
+        assertTrue(logger.isDebugEnabled(marker), "Incorrect level");
+        assertTrue(logger.isEnabled(Level.DEBUG, marker), "Incorrect level");
     }
 
     @Test
     public void isErrorEnabledWithMarker() {
-        assertTrue("Incorrect level", logger.isErrorEnabled(marker));
-        assertTrue("Incorrect level", logger.isEnabled(Level.ERROR, marker));
+        assertTrue(logger.isErrorEnabled(marker), "Incorrect level");
+        assertTrue(logger.isEnabled(Level.ERROR, marker), "Incorrect level");
     }
 
     @Test
     public void isFatalEnabledWithMarker() {
-        assertTrue("Incorrect level", logger.isFatalEnabled(marker));
-        assertTrue("Incorrect level", logger.isEnabled(Level.FATAL, marker));
+        assertTrue(logger.isFatalEnabled(marker), "Incorrect level");
+        assertTrue(logger.isEnabled(Level.FATAL, marker), "Incorrect level");
     }
 
     @Test
     public void isInfoEnabledWithMarker() {
-        assertTrue("Incorrect level", logger.isInfoEnabled(marker));
-        assertTrue("Incorrect level", logger.isEnabled(Level.INFO, marker));
+        assertTrue(logger.isInfoEnabled(marker), "Incorrect level");
+        assertTrue(logger.isEnabled(Level.INFO, marker), "Incorrect level");
     }
 
     @Test
     public void isOffEnabledWithMarker() {
-        assertTrue("Incorrect level", logger.isEnabled(Level.OFF, marker));
+        assertTrue(logger.isEnabled(Level.OFF, marker), "Incorrect level");
     }
 
     @Test
     public void isTraceEnabledWithMarker() {
-        assertTrue("Incorrect level", logger.isTraceEnabled(marker));
-        assertTrue("Incorrect level", logger.isEnabled(Level.TRACE, marker));
+        assertTrue(logger.isTraceEnabled(marker), "Incorrect level");
+        assertTrue(logger.isEnabled(Level.TRACE, marker), "Incorrect level");
     }
 
     @Test
     public void isWarnEnabledWithMarker() {
-        assertTrue("Incorrect level", logger.isWarnEnabled(marker));
-        assertTrue("Incorrect level", logger.isEnabled(Level.WARN, marker));
+        assertTrue(logger.isWarnEnabled(marker), "Incorrect level");
+        assertTrue(logger.isEnabled(Level.WARN, marker), "Incorrect level");
     }
 
     @Test
@@ -548,17 +552,17 @@ public class LoggerTest {
         ThreadContext.put("TestYear", Integer.valueOf(2010).toString());
         logger.debug("Debug message");
         String testYear = ThreadContext.get("TestYear");
-        assertNotNull("Test Year is null", testYear);
-        assertEquals("Incorrect test year: " + testYear, "2010", testYear);
+        assertNotNull(testYear, "Test Year is null");
+        assertEquals("2010", testYear, "Incorrect test year: " + testYear);
         ThreadContext.clearMap();
         logger.debug("Debug message");
         assertEquals(2, results.size());
         System.out.println("Log line 1: " + results.get(0));
         System.out.println("log line 2: " + results.get(1));
-        assertTrue("Incorrect MDC: " + results.get(0),
-            results.get(0).startsWith(" DEBUG Debug message {TestYear=2010}"));
-        assertTrue("MDC not cleared?: " + results.get(1),
-            results.get(1).startsWith(" DEBUG Debug message"));
+        assertTrue(
+                results.get(0).startsWith(" DEBUG Debug message {TestYear=2010}"), "Incorrect MDC: " + results.get(0));
+        assertTrue(
+                results.get(1).startsWith(" DEBUG Debug message"), "MDC not cleared?: " + results.get(1));
     }
 
     @Test
@@ -570,7 +574,7 @@ public class LoggerTest {
         assertThat("Incorrect message", results.get(1), startsWith("Test DEBUG Debug message 2"));
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
         results.clear();
     }
@@ -600,7 +604,7 @@ public class LoggerTest {
     }
 
 
-    private class Response {
+    private static class Response {
         int status;
         String message;
 

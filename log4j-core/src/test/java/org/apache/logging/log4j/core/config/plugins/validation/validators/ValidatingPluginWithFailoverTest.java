@@ -29,14 +29,16 @@ import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyCollectionOf;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ValidatingPluginWithFailoverTest {
 
@@ -44,12 +46,12 @@ public class ValidatingPluginWithFailoverTest {
     private Node node;
 
     @SuppressWarnings("unchecked")
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         final PluginManager manager = new PluginManager(Core.CATEGORY_NAME);
         manager.collectPlugins();
         plugin = (PluginType<FailoverAppender>) manager.getPluginType("failover");
-        assertNotNull("Rebuild this module to make sure annotation processing kicks in.", plugin);
+        assertNotNull(plugin, "Rebuild this module to make sure annotation processing kicks in.");
 
         AppenderRef appenderRef = AppenderRef.createAppenderRef("List", Level.ALL, null);
         node = new Node(null, "failover", plugin);

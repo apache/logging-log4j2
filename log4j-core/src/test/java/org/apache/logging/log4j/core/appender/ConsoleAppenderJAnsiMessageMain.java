@@ -24,11 +24,13 @@ import java.util.Map.Entry;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.categories.Layouts;
+import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 
 /**
  * Shows how to use ANSI escape codes to color messages. Each message is printed to the console in color, but the rest
@@ -59,6 +61,7 @@ public class ConsoleAppenderJAnsiMessageMain {
      * This is a @Test method to make it easy to run from a command line with {@code mvn -Dtest=FQCN test}
      */
     @Test
+    @ResourceLock(Resources.SYSTEM_PROPERTIES)
     public void test() {
         test(null);
     }

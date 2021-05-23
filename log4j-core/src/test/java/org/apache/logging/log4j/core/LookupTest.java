@@ -18,30 +18,23 @@ package org.apache.logging.log4j.core;
 
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- */
+@LoggerContextSource("log4j-lookup.xml")
 public class LookupTest {
 
-    private static final String CONFIG = "log4j-lookup.xml";
-
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
-
     @Test
-    public void testHostname() {
-        final ConsoleAppender app = context.getRequiredAppender("console", ConsoleAppender.class);
-        final Layout<?> layout = app.getLayout();
-        assertNotNull("No Layout", layout);
-        assertTrue("Layout is not a PatternLayout", layout instanceof PatternLayout);
+    public void testHostname(@Named final ConsoleAppender console) {
+        final Layout<?> layout = console.getLayout();
+        assertNotNull(layout, "No Layout");
+        assertTrue(layout instanceof PatternLayout, "Layout is not a PatternLayout");
         final String pattern = ((PatternLayout) layout).getConversionPattern();
-        assertNotNull("No conversion pattern", pattern);
-        assertTrue("No filters", pattern.contains("org.junit,org.apache.maven,org.eclipse,sun.reflect,java.lang.reflect"));
+        assertNotNull(pattern, "No conversion pattern");
+        assertTrue(pattern.contains("org.junit,org.apache.maven,org.eclipse,sun.reflect,java.lang.reflect"),
+                "No filters");
     }
 }

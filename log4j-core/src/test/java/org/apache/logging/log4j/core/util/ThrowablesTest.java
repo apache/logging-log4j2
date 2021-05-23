@@ -16,41 +16,56 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ThrowablesTest {
 
     @Test
-    public void testGetRootCauseNone() throws Exception {
+    public void testGetRootCauseNone() {
         final NullPointerException throwable = new NullPointerException();
-        org.junit.Assert.assertEquals(throwable, Throwables.getRootCause(throwable));
+        assertEquals(throwable, Throwables.getRootCause(throwable));
     }
 
     @Test
-    public void testGetRootCauseDepth1() throws Exception {
-        final NullPointerException throwable = new NullPointerException();
-        org.junit.Assert.assertEquals(throwable, Throwables.getRootCause(new UnsupportedOperationException(throwable)));
+    public void testGetRootCauseDepth1() {
+        final Throwable cause = new NullPointerException();
+        final Throwable error = new UnsupportedOperationException(cause);
+        assertEquals(cause, Throwables.getRootCause(error));
     }
 
     @Test
-    public void testGetRootCauseDepth2() throws Exception {
-        final NullPointerException throwable = new NullPointerException();
-        org.junit.Assert.assertEquals(throwable,
-                Throwables.getRootCause(new IllegalArgumentException(new UnsupportedOperationException(throwable))));
+    public void testGetRootCauseDepth2() {
+        final Throwable rootCause = new NullPointerException();
+        final Throwable cause = new UnsupportedOperationException(rootCause);
+        final Throwable error = new IllegalArgumentException(cause);
+        assertEquals(rootCause, Throwables.getRootCause(error));
     }
 
-    @Test(expected = NullPointerException.class)
-    public void testRethrowRuntimeException() throws Exception {
-        Throwables.rethrow(new NullPointerException());
+    @SuppressWarnings("ThrowableNotThrown")
+    @Test
+    public void testGetRootCauseLoop() {
+        final Throwable cause1 = new RuntimeException();
+        final Throwable cause2 = new RuntimeException(cause1);
+        final Throwable cause3 = new RuntimeException(cause2);
+        cause1.initCause(cause3);
+        assertThrows(IllegalArgumentException.class, () -> Throwables.getRootCause(cause3));
     }
 
-    @Test(expected = UnknownError.class)
-    public void testRethrowError() throws Exception {
-        Throwables.rethrow(new UnknownError());
+    @Test
+    public void testRethrowRuntimeException() {
+        assertThrows(NullPointerException.class, () -> Throwables.rethrow(new NullPointerException()));
     }
 
-    @Test(expected = NoSuchMethodException.class)
-    public void testRethrowCheckedException() throws Exception {
-        Throwables.rethrow(new NoSuchMethodException());
+    @Test
+    public void testRethrowError() {
+        assertThrows(UnknownError.class, () -> Throwables.rethrow(new UnknownError()));
+    }
+
+    @Test
+    public void testRethrowCheckedException() {
+        assertThrows(NoSuchMethodException.class, () -> Throwables.rethrow(new NoSuchMethodException()));
     }
 }

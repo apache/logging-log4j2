@@ -21,7 +21,8 @@ import java.util.ResourceBundle;
 
 /**
  * Creates {@link FormattedMessage} instances for {@link MessageFactory} methods.
- * 
+ *
+ * <h3></h3>
  * <h4>Note to implementors</h4>
  * <p>
  * This class does <em>not</em> implement any {@link MessageFactory} methods and lets the superclass funnel those calls
@@ -69,7 +70,7 @@ public class LocalizedMessageFactory implements MessageFactory, Serializable {
     @Override
     public Message newMessage(final String key) {
         if (resourceBundle == null) {
-            return new LocalizedMessage(baseName,  key);
+            return new LocalizedMessage(baseName,  key, null);
         }
         return new LocalizedMessage(resourceBundle, key);
     }

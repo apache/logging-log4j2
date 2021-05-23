@@ -21,8 +21,8 @@ import java.io.File;
 import java.io.FileReader;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.categories.AsyncLoggers;
-import org.apache.logging.log4j.core.CoreLoggerContexts;
+import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
+import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
@@ -72,6 +72,8 @@ public class AsyncLoggerTest {
 
         final String location = "testAsyncLogWritesToLog";
         assertTrue("no location", !line1.contains(location));
+
+        assertTrue(LogManager.getFactory().isClassLoaderDependent());
     }
 
     // NOTE: only define one @Test method per test class with Async Loggers to prevent spurious failures

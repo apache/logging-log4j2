@@ -279,7 +279,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
 
     protected byte[] serializeToBytes(final Serializer serializer, final byte[] defaultValue) {
         final String serializable = serializeToString(serializer);
-        if (serializer == null) {
+        if (serializable == null) {
             return defaultValue;
         }
         return StringEncoder.toBytes(serializable, getCharset());

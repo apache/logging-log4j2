@@ -50,6 +50,7 @@ public @interface PluginElement {
      *     (<var>XYZ</var>) of the method name. Otherwise, uses the name of the first parameter.</li>
      *     <li>Parameter: uses the parameter name.</li>
      * </ul>
+     * @return the element name.
      */
     String value() default Strings.EMPTY;
 }

@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.config.builder;
 
-import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
@@ -25,10 +23,13 @@ import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 
-import static org.junit.Assert.*;
-import static org.junit.Assume.assumeTrue;
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ConfigurationBuilderTest {
 
@@ -63,7 +64,7 @@ public class ConfigurationBuilderTest {
     }
 
     private final static String expectedXml =
-            "<?xml version='1.0' encoding='UTF-8'?>" + EOL +
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" /*+ EOL*/ +
             "<Configuration name=\"config name\" status=\"ERROR\" packages=\"foo,bar\" shutdownTimeout=\"5000\">" + EOL +
                 INDENT + "<Properties>" + EOL +
                 INDENT + INDENT + "<Property name=\"MyKey\">MyValue</Property>" + EOL +
@@ -94,10 +95,9 @@ public class ConfigurationBuilderTest {
                 INDENT + "</Loggers>" + EOL +
             "</Configuration>" + EOL;
 
-    // TODO make test run properly on Windows
     @Test
+    //@DisabledOnOs(OS.WINDOWS) // TODO make test run properly on Windows
     public void testXmlConstructing() throws Exception {
-        assumeTrue(System.lineSeparator().length() == 1); // Only run test on platforms with single character line endings (such as Linux), not on Windows
         final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
         addTestFixtures("config name", builder);
         final String xmlConfiguration = builder.toXmlConfiguration();

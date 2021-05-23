@@ -20,36 +20,31 @@ import java.util.List;
 
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- */
+@LoggerContextSource("log4j-reference-level.xml")
 public class AppenderRefLevelTest {
 
-    private static final String CONFIG = "log4j-reference-level.xml";
-    private ListAppender app1;
-    private ListAppender app2;
+    private final ListAppender app1;
+    private final ListAppender app2;
 
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
-
-    org.apache.logging.log4j.Logger logger1 = context.getLogger("org.apache.logging.log4j.test1");
-    org.apache.logging.log4j.Logger logger2 = context.getLogger("org.apache.logging.log4j.test2");
-    org.apache.logging.log4j.Logger logger3 = context.getLogger("org.apache.logging.log4j.test3");
-    Marker testMarker = MarkerManager.getMarker("TEST");
-
-    @Before
-    public void before() {
-        app1 = context.getListAppender("LIST1").clear();
-        app2 = context.getListAppender("LIST2").clear();
+    public AppenderRefLevelTest(final LoggerContext context, @Named("LIST1") final ListAppender first, @Named("LIST2") final ListAppender second) {
+        logger1 = context.getLogger("org.apache.logging.log4j.test1");
+        logger2 = context.getLogger("org.apache.logging.log4j.test2");
+        logger3 = context.getLogger("org.apache.logging.log4j.test3");
+        app1 = first.clear();
+        app2 = second.clear();
     }
+
+    org.apache.logging.log4j.Logger logger1;
+    org.apache.logging.log4j.Logger logger2;
+    org.apache.logging.log4j.Logger logger3;
+    Marker testMarker = MarkerManager.getMarker("TEST");
 
     @Test
     public void logger1() {
@@ -60,9 +55,9 @@ public class AppenderRefLevelTest {
         logger1.warn("warn Message");
         logger1.traceExit();
         List<LogEvent> events = app1.getEvents();
-        assertEquals("Incorrect number of events. Expected 6, actual " + events.size(), 6, events.size());
+        assertEquals(6, events.size(), "Incorrect number of events. Expected 6, actual " + events.size());
         events = app2.getEvents();
-        assertEquals("Incorrect number of events. Expected 1, actual " + events.size(), 1, events.size());
+        assertEquals(1, events.size(), "Incorrect number of events. Expected 1, actual " + events.size());
     }
 
     @Test
@@ -74,9 +69,9 @@ public class AppenderRefLevelTest {
         logger2.warn("warn Message");
         logger2.traceExit();
         List<LogEvent> events = app1.getEvents();
-        assertEquals("Incorrect number of events. Expected 2, actual " + events.size(), events.size(), 2);
+        assertEquals(events.size(), 2, "Incorrect number of events. Expected 2, actual " + events.size());
         events = app2.getEvents();
-        assertEquals("Incorrect number of events. Expected 4, actual " + events.size(), events.size(), 4);
+        assertEquals(events.size(), 4, "Incorrect number of events. Expected 4, actual " + events.size());
     }
 
     @Test
@@ -88,7 +83,7 @@ public class AppenderRefLevelTest {
         logger3.warn("warn Message");
         logger3.traceExit();
         final List<LogEvent> events = app1.getEvents();
-        assertEquals("Incorrect number of events. Expected 4, actual " + events.size(), 4, events.size());
+        assertEquals(4, events.size(), "Incorrect number of events. Expected 4, actual " + events.size());
     }
 }
 

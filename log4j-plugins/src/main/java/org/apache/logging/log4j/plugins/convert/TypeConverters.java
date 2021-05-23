@@ -378,6 +378,7 @@ public final class TypeConverters {
      *        the class to try to convert the string to
      * @param defaultValue
      *        the fallback object to use if the conversion is unsuccessful
+     * @param <T> The type of the clazz parameter.
      * @return the converted object which may be {@code null} if the string is invalid for the given type
      * @throws NullPointerException
      *         if {@code clazz} is {@code null}

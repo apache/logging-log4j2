@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.file.Files;
@@ -31,25 +28,26 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.config.ConfigurationScheduler;
-import org.apache.logging.log4j.util.PropertiesUtil;
-import org.junit.Assume;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.condition.OS;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test the WatchManager
  */
+@DisabledOnOs(OS.WINDOWS)
+@EnabledIfSystemProperty(named = "WatchManagerTest.forceRun", matches = "true")
 public class WatchManagerTest {
 
-    private static final String FORCE_RUN_KEY = WatchManagerTest.class.getSimpleName() + ".forceRun";
     private final String testFile = "target/testWatchFile";
     private final String originalFile = "target/test-classes/log4j-test1.xml";
     private final String newFile = "target/test-classes/log4j-test1.yaml";
 
-    private static final boolean IS_WINDOWS = PropertiesUtil.getProperties().isOsWindows();
-
     @Test
     public void testWatchManager() throws Exception {
-        Assume.assumeTrue(!IS_WINDOWS || Boolean.getBoolean(FORCE_RUN_KEY));
         final ConfigurationScheduler scheduler = new ConfigurationScheduler();
         scheduler.incrementScheduledItems();
         final WatchManager watchManager = new WatchManager(scheduler);
@@ -71,7 +69,7 @@ public class WatchManagerTest {
             Files.copy(source, Paths.get(targetFile.toURI()), StandardCopyOption.REPLACE_EXISTING);
             Thread.sleep(1000);
             final File f = queue.poll(1, TimeUnit.SECONDS);
-            assertNotNull("File change not detected", f);
+            assertNotNull(f, "File change not detected");
         } finally {
             watchManager.stop();
             scheduler.stop();
@@ -80,7 +78,6 @@ public class WatchManagerTest {
 
     @Test
     public void testWatchManagerReset() throws Exception {
-        Assume.assumeTrue(!IS_WINDOWS || Boolean.getBoolean(FORCE_RUN_KEY));
         final ConfigurationScheduler scheduler = new ConfigurationScheduler();
         scheduler.incrementScheduledItems();
         final WatchManager watchManager = new WatchManager(scheduler);
@@ -105,7 +102,7 @@ public class WatchManagerTest {
             watchManager.start();
             Thread.sleep(1000);
             final File f = queue.poll(1, TimeUnit.SECONDS);
-            assertNull("File change detected", f);
+            assertNull(f, "File change detected");
         } finally {
             watchManager.stop();
             scheduler.stop();
@@ -114,7 +111,6 @@ public class WatchManagerTest {
 
     @Test
     public void testWatchManagerResetFile() throws Exception {
-        Assume.assumeTrue(!IS_WINDOWS || Boolean.getBoolean(FORCE_RUN_KEY));
         final ConfigurationScheduler scheduler = new ConfigurationScheduler();
         scheduler.incrementScheduledItems();
         final WatchManager watchManager = new WatchManager(scheduler);
@@ -139,14 +135,14 @@ public class WatchManagerTest {
             watchManager.start();
             Thread.sleep(1000);
             final File f = queue.poll(1, TimeUnit.SECONDS);
-            assertNull("File change detected", f);
+            assertNull(f, "File change detected");
         } finally {
             watchManager.stop();
             scheduler.stop();
         }
     }
 
-    private class TestWatcher implements FileWatcher {
+    private static class TestWatcher implements FileWatcher {
 
         private final Queue<File> queue;
 

@@ -16,43 +16,43 @@
  */
 package org.apache.logging.log4j.core;
 
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
- *
- */
+@LoggerContextSource("log4j-test2.properties")
 public class PropertiesFileConfigTest {
 
     private static final String CONFIG = "target/test-classes/log4j-test2.properties";
 
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule(CONFIG);
+    private final org.apache.logging.log4j.Logger logger;
 
-    private final org.apache.logging.log4j.Logger logger = context.getLogger("LoggerTest");
+    public PropertiesFileConfigTest(final LoggerContext context) {
+        logger = context.getLogger("LoggerTest");
+    }
 
-    @Before
-    public void before() {
-        context.getListAppender("List").clear();
+    @BeforeEach
+    void clear(@Named("List") final ListAppender appender) {
+        appender.clear();
     }
 
     @Test
-    public void testReconfiguration() throws Exception {
+    public void testReconfiguration(final LoggerContext context) throws Exception {
         final Configuration oldConfig = context.getConfiguration();
         final int MONITOR_INTERVAL_SECONDS = 5;
         final File file = new File(CONFIG);
         final long orig = file.lastModified();
         final long newTime = orig + 10000;
-        assertTrue("setLastModified should have succeeded.", file.setLastModified(newTime));
+        assertTrue(file.setLastModified(newTime), "setLastModified should have succeeded.");
         TimeUnit.SECONDS.sleep(MONITOR_INTERVAL_SECONDS + 1);
         for (int i = 0; i < 17; ++i) {
             logger.info("Reconfigure");
@@ -63,7 +63,7 @@ public class PropertiesFileConfigTest {
             Thread.sleep(100);
             newConfig = context.getConfiguration();
         } while (newConfig == oldConfig && loopCount++ < 5);
-        assertNotSame("Reconfiguration failed", newConfig, oldConfig);
+        assertNotSame(newConfig, oldConfig, "Reconfiguration failed");
     }
 }
 

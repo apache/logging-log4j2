@@ -16,29 +16,29 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  * See (LOG4J2-905) Ability to disable (date) lookup completely, compatibility issues with other libraries like camel.
  *
  * This shows the behavior this user wants to disable.
  */
+@LoggerContextSource("log4j-list.xml")
 public class PatternLayoutLookupDateTest {
 
-    @Rule
-    public final LoggerContextRule context = new LoggerContextRule("log4j-list.xml");
-
     @Test
-    public void testDateLookupInMessage() {
+    public void testDateLookupInMessage(final LoggerContext context, @Named("List") final ListAppender listAppender) {
+        listAppender.clear();
         final String template = "${date:YYYY-MM-dd}";
         context.getLogger(PatternLayoutLookupDateTest.class.getName()).info(template);
-        final ListAppender listAppender = context.getListAppender("List");
         final String string = listAppender.getMessages().get(0);
-        Assert.assertFalse(string, string.contains(template));
+        assertFalse(string.contains(template), string);
     }
 
 }

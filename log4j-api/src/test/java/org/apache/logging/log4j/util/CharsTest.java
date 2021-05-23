@@ -16,31 +16,31 @@
  */
 package org.apache.logging.log4j.util;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.junit.Assert.assertEquals;
+import java.util.stream.IntStream;
 
-/**
- *
- */
+import static org.junit.jupiter.api.Assertions.*;
+
 public class CharsTest {
-    @Test
-    public void invalidDigitReturnsNullCharacter() throws Exception {
-        assertEquals('\0', Chars.getUpperCaseHex(-1));
-        assertEquals('\0', Chars.getUpperCaseHex(16));
-        assertEquals('\0', Chars.getUpperCaseHex(400));
-        assertEquals('\0', Chars.getLowerCaseHex(-1));
-        assertEquals('\0', Chars.getLowerCaseHex(16));
-        assertEquals('\0', Chars.getLowerCaseHex(400));
+    @ParameterizedTest
+    @ValueSource(ints = {-1, 16, 400, -1, 16, 400})
+    public void invalidDigitReturnsNullCharacter(int invalidDigit) {
+        assertAll(
+                () -> assertEquals('\0', Chars.getUpperCaseHex(invalidDigit)),
+                () -> assertEquals('\0', Chars.getLowerCaseHex(invalidDigit))
+        );
     }
 
     @Test
-    public void validDigitReturnsProperCharacter() throws Exception {
+    public void validDigitReturnsProperCharacter() {
         final char[] expectedLower = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
         final char[] expectedUpper = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
-        for (int i = 0; i < 16; i++) {
-            assertEquals(String.format("Expected %x", i), expectedLower[i], Chars.getLowerCaseHex(i));
-            assertEquals(String.format("Expected %X", i), expectedUpper[i], Chars.getUpperCaseHex(i));
-        }
+        assertAll(IntStream.range(0, 16).mapToObj(i -> () -> assertAll(
+                () -> assertEquals(expectedLower[i], Chars.getLowerCaseHex(i), String.format("Expected %x", i)),
+                () -> assertEquals(expectedUpper[i], Chars.getUpperCaseHex(i), String.format("Expected %X", i))
+        )));
     }
 }
