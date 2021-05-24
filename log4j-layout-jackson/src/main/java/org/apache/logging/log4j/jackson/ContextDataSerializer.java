@@ -42,7 +42,11 @@ public class ContextDataSerializer extends StdSerializer<ReadOnlyStringMap> {
         @Override
         public void accept(final String key, final Object value, final JsonGenerator jsonGenerator) {
             try {
-                jsonGenerator.writeStringField(key, String.valueOf(value));
+                if (value == null) {
+                    jsonGenerator.writeNullField(key);
+                } else {
+                    jsonGenerator.writeStringField(key, String.valueOf(value));
+                }
             } catch (final Exception ex) {
                 throw new IllegalStateException("Problem with key " + key, ex);
             }
