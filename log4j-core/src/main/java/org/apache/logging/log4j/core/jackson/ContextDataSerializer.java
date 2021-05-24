@@ -52,7 +52,11 @@ public class ContextDataSerializer extends StdSerializer<ReadOnlyStringMap> {
     private static final TriConsumer<String, Object, JsonGenerator> WRITE_STRING_FIELD_INTO =
             (key, value, jsonGenerator) -> {
         try {
-            jsonGenerator.writeStringField(key, String.valueOf(value));
+            if (value == null) {
+                jsonGenerator.writeNullField(key);
+            } else {
+                jsonGenerator.writeStringField(key, String.valueOf(value));
+            }
         } catch (final Exception ex) {
             throw new IllegalStateException("Problem with key " + key, ex);
         }
