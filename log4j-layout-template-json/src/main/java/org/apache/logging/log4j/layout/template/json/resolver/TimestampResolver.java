@@ -18,11 +18,10 @@ package org.apache.logging.log4j.layout.template.json.resolver;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.time.Instant;
-import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults;
+import org.apache.logging.log4j.layout.template.json.util.InstantFormatter;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 
-import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -209,52 +208,42 @@ public final class TimestampResolver implements EventResolver {
         }
         return epochProvided
                 ? createEpochResolver(config)
-                : createFormatResolver(config);
+                : createPatternResolver(config);
     }
 
-    /**
-     * Context for GC-free formatted timestamp resolver.
-     */
-    private static final class FormatResolverContext {
+    private static final class PatternResolverContext {
 
-        private final FastDateFormat timestampFormat;
+        private final InstantFormatter formatter;
 
-        private final Calendar calendar;
+        private final StringBuilder lastFormattedInstantBuffer = new StringBuilder();
 
-        private final StringBuilder formattedTimestampBuilder;
+        private Instant lastFormattedInstant;
 
-        private FormatResolverContext(
+        private PatternResolverContext(
+                final String pattern,
                 final TimeZone timeZone,
-                final Locale locale,
-                final FastDateFormat timestampFormat) {
-            this.timestampFormat = timestampFormat;
-            this.formattedTimestampBuilder = new StringBuilder();
-            this.calendar = Calendar.getInstance(timeZone, locale);
+                final Locale locale) {
+            this.formatter = InstantFormatter
+                    .newBuilder()
+                    .setPattern(pattern)
+                    .setTimeZone(timeZone)
+                    .setLocale(locale)
+                    .build();
         }
 
-        private static FormatResolverContext fromConfig(
+        private static PatternResolverContext fromConfig(
                 final TemplateResolverConfig config) {
-            final String format = readFormat(config);
+            final String pattern = readPattern(config);
             final TimeZone timeZone = readTimeZone(config);
             final Locale locale = config.getLocale(new String[]{"pattern", "locale"});
-            final FastDateFormat fastDateFormat =
-                    FastDateFormat.getInstance(format, timeZone, locale);
-            return new FormatResolverContext(timeZone, locale, fastDateFormat);
+            return new PatternResolverContext(pattern, timeZone, locale);
         }
 
-        private static String readFormat(final TemplateResolverConfig config) {
+        private static String readPattern(final TemplateResolverConfig config) {
             final String format = config.getString(new String[]{"pattern", "format"});
-            if (format == null) {
-                return JsonTemplateLayoutDefaults.getTimestampFormatPattern();
-            }
-            try {
-                FastDateFormat.getInstance(format);
-            } catch (final IllegalArgumentException error) {
-                throw new IllegalArgumentException(
-                        "invalid timestamp format: " + config,
-                        error);
-            }
-            return format;
+            return format != null
+                    ? format
+                    : JsonTemplateLayoutDefaults.getTimestampFormatPattern();
         }
 
         private static TimeZone readTimeZone(final TemplateResolverConfig config) {
@@ -278,15 +267,12 @@ public final class TimestampResolver implements EventResolver {
 
     }
 
-    /**
-     * GC-free formatted timestamp resolver.
-     */
-    private static final class FormatResolver implements EventResolver {
+    private static final class PatternResolver implements EventResolver {
 
-        private final FormatResolverContext formatResolverContext;
+        private final PatternResolverContext patternResolverContext;
 
-        private FormatResolver(final FormatResolverContext formatResolverContext) {
-            this.formatResolverContext = formatResolverContext;
+        private PatternResolver(final PatternResolverContext patternResolverContext) {
+            this.patternResolverContext = patternResolverContext;
         }
 
         @Override
@@ -295,24 +281,26 @@ public final class TimestampResolver implements EventResolver {
                 final JsonWriter jsonWriter) {
 
             // Format timestamp if it doesn't match the last cached one.
-            final long timestampMillis = logEvent.getTimeMillis();
-            if (formatResolverContext.formattedTimestampBuilder.length() == 0 || formatResolverContext.calendar.getTimeInMillis() != timestampMillis) {
+            if (patternResolverContext.lastFormattedInstant == null ||
+                    !patternResolverContext.formatter.isInstantMatching(
+                            patternResolverContext.lastFormattedInstant,
+                            logEvent.getInstant())) {
 
                 // Format the timestamp.
-                formatResolverContext.formattedTimestampBuilder.setLength(0);
-                formatResolverContext.calendar.setTimeInMillis(timestampMillis);
-                formatResolverContext.timestampFormat.format(
-                        formatResolverContext.calendar,
-                        formatResolverContext.formattedTimestampBuilder);
+                patternResolverContext.lastFormattedInstantBuffer.setLength(0);
+                patternResolverContext.lastFormattedInstant = logEvent.getInstant();
+                patternResolverContext.formatter.format(
+                        patternResolverContext.lastFormattedInstant,
+                        patternResolverContext.lastFormattedInstantBuffer);
 
                 // Write the formatted timestamp.
                 final StringBuilder jsonWriterStringBuilder = jsonWriter.getStringBuilder();
                 final int startIndex = jsonWriterStringBuilder.length();
-                jsonWriter.writeString(formatResolverContext.formattedTimestampBuilder);
+                jsonWriter.writeString(patternResolverContext.lastFormattedInstantBuffer);
 
                 // Cache the written value.
-                formatResolverContext.formattedTimestampBuilder.setLength(0);
-                formatResolverContext.formattedTimestampBuilder.append(
+                patternResolverContext.lastFormattedInstantBuffer.setLength(0);
+                patternResolverContext.lastFormattedInstantBuffer.append(
                         jsonWriterStringBuilder,
                         startIndex,
                         jsonWriterStringBuilder.length());
@@ -322,18 +310,18 @@ public final class TimestampResolver implements EventResolver {
             // Write the cached formatted timestamp.
             else {
                 jsonWriter.writeRawString(
-                        formatResolverContext.formattedTimestampBuilder);
+                        patternResolverContext.lastFormattedInstantBuffer);
             }
 
         }
 
     }
 
-    private static EventResolver createFormatResolver(
+    private static EventResolver createPatternResolver(
             final TemplateResolverConfig config) {
-        final FormatResolverContext formatResolverContext =
-                FormatResolverContext.fromConfig(config);
-        return new FormatResolver(formatResolverContext);
+        final PatternResolverContext patternResolverContext =
+                PatternResolverContext.fromConfig(config);
+        return new PatternResolver(patternResolverContext);
     }
 
     private static EventResolver createEpochResolver(
@@ -488,13 +476,6 @@ public final class TimestampResolver implements EventResolver {
             final LogEvent logEvent,
             final JsonWriter jsonWriter) {
         internalResolver.resolve(logEvent, jsonWriter);
-    }
-
-    /**
-     * Visible for tests
-     */
-    Calendar getCalendar() {
-        return ((FormatResolver) internalResolver).formatResolverContext.calendar;
     }
 
 }
