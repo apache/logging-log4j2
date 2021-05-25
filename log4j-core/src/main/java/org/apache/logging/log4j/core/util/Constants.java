@@ -141,6 +141,17 @@ public final class Constants {
     }
 
     /**
+     * Controls whether or not ThrowableProxy creation may load classes in order to discover extended stack frame
+     * information. This is enabled by default and used by the ExtendedThrowablePatternConverter but comes at a
+     * high cost as class loading incurs a great deal of work and synchronization.
+     * See <a href="https://issues.apache.org/jira/browse/LOG4J2-2391">LOG4J2-2391</a> for more information.
+     *
+     * @since 2.13.1
+     */
+    public static final boolean ENABLE_EXTENDED_THROWABLE_CLASS_LOADING = PropertiesUtil.getProperties().
+            getBooleanProperty("log4j2.enable.extended.throwable.class.loading", true);
+
+    /**
      * Prevent class instantiation.
      */
     private Constants() {
