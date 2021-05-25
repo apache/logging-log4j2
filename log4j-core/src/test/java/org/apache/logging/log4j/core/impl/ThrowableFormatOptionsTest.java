@@ -41,22 +41,22 @@ public final class ThrowableFormatOptionsTest {
      *            The list of options to parse.
      * @param expectedLines
      *            The expected lines.
-     * @param expectedPackages
+     * @param expectedFilterPackages
      *            The expected package filters.
      * @param expectedSeparator
      *            The expected separator.
      */
     private static ThrowableFormatOptions test(final String[] options, final int expectedLines,
-            final String expectedSeparator, final List<String> expectedPackages) {
+            final String expectedSeparator, final List<String> expectedFilterPackages) {
         final ThrowableFormatOptions tfo = ThrowableFormatOptions.newInstance(options);
         assertEquals(expectedLines, tfo.getLines(), "getLines");
         assertEquals(expectedSeparator, tfo.getSeparator(), "getSeparator");
-        assertEquals(expectedPackages, tfo.getIgnorePackages(), "getPackages");
+        assertEquals(expectedFilterPackages, tfo.getFilterPackages(), "getFilterPackages");
         assertEquals(expectedLines == Integer.MAX_VALUE, tfo.allLines(), "allLines");
         assertEquals(expectedLines != 0, tfo.anyLines(), "anyLines");
         assertEquals(0, tfo.minLines(0), "minLines");
         assertEquals(expectedLines, tfo.minLines(Integer.MAX_VALUE), "minLines");
-        assertEquals(expectedPackages != null && !expectedPackages.isEmpty(), tfo.hasPackages(), "hasPackages");
+        assertEquals(expectedFilterPackages != null && !expectedFilterPackages.isEmpty(), tfo.getFilterPackages(), "hasFilteredPackages");
         assertNotNull(tfo.toString(), "toString");
         return tfo;
     }

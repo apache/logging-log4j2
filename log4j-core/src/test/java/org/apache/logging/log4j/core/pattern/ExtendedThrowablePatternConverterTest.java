@@ -133,6 +133,55 @@ public class ExtendedThrowablePatternConverterTest {
     }
 
     @Test
+    public void testFiltersStartFrames() {
+        final ExtendedThrowablePatternConverter converter = ExtendedThrowablePatternConverter.newInstance(null, new String[] {
+            "filters.startFrames(org.apache.logging.log4j.core.pattern.ExtendedThrowablePatternConverterTest$ContrivedWebStack.vendorFramework)"});
+
+        Throwable thrown = null;
+        try {
+          new ContrivedWebStack().webContainerEntryPoint();
+        } catch (Throwable t) {
+            thrown = t;
+        }
+
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("testLogger") //
+                .setLoggerFqcn(this.getClass().getName()) //
+                .setLevel(Level.DEBUG) //
+                .setMessage(new SimpleMessage("test exception")) //
+                .setThrown(thrown).build();
+        final StringBuilder sb = new StringBuilder();
+        converter.format(event, sb);
+        final String parentToString = toString(thrown);
+        // System.out.println(parentToString);
+        final String result = sb.toString();
+        // System.out.println(result);
+        assertFalse(result.contains("webContainer"));
+        assertFalse(result.contains("application"));
+        assertFalse(result.contains("vendor"));
+        assertTrue(result.contains("company"));
+        assertTrue(result.contains("developer"));
+    }
+    
+    public static class ContrivedWebStack {
+        public void webContainerEntryPoint() { // Tomcat
+            applicationFramework();
+        }
+        public void applicationFramework() { // Spring
+            vendorFramework();
+        }
+        public void vendorFramework() {
+            companyFramework();
+        }
+        public void companyFramework() { // we care about this
+            developerCode();
+        }
+        public void developerCode() {
+            throw new NullPointerException("developerCode");
+        }
+    }
+
+    @Test
     public void testFull() {
         final ExtendedThrowablePatternConverter converter = ExtendedThrowablePatternConverter.newInstance(null, null);
         final Throwable cause = new NullPointerException("null pointer");
@@ -145,13 +194,17 @@ public class ExtendedThrowablePatternConverterTest {
                 .setThrown(parent).build();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
-        final StringWriter sw = new StringWriter();
-        final PrintWriter pw = new PrintWriter(sw);
-        parent.printStackTrace(pw);
         String result = sb.toString();
         result = result.replaceAll(" ~?\\[.*\\]", Strings.EMPTY);
-        final String expected = sw.toString(); //.replaceAll("\r", Strings.EMPTY);
+        final String expected = toString(parent); //.replaceAll("\r", Strings.EMPTY);
         assertEquals(expected, result);
+    }
+
+    private String toString(Throwable ex) {
+        final StringWriter sw = new StringWriter();
+        final PrintWriter pw = new PrintWriter(sw);
+        ex.printStackTrace(pw);
+        return sw.toString();
     }
     
     @Test
@@ -159,7 +212,7 @@ public class ExtendedThrowablePatternConverterTest {
         final ExtendedThrowablePatternConverter exConverter = ExtendedThrowablePatternConverter.newInstance(null,
                 new String[] { "full", "filters(org.junit,org.eclipse)", "separator(|)" });
         final ThrowableFormatOptions options = exConverter.getOptions();
-        final List<String> ignorePackages = options.getIgnorePackages();
+        final List<String> ignorePackages = options.getFilterPackages();
         assertNotNull(ignorePackages);
         final String ignorePackagesString = ignorePackages.toString();
         assertTrue(ignorePackages.contains("org.junit"), ignorePackagesString);

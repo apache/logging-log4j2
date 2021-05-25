@@ -288,7 +288,7 @@ public class ThrowableProxyTest {
         final ThrowableProxy proxy = new ThrowableProxy(throwable);
 
         final String separator = " | ";
-        final String extendedStackTraceAsString = proxy.getExtendedStackTraceAsString(null,
+        final String extendedStackTraceAsString = proxy.getExtendedStackTraceAsString(null,null,
                 PlainTextRenderer.getInstance(), " | ", Strings.EMPTY);
         assertTrue(allLinesContain(extendedStackTraceAsString, separator), extendedStackTraceAsString);
     }
