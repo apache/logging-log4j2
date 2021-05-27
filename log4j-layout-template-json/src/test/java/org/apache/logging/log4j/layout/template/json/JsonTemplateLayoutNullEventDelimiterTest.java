@@ -23,43 +23,40 @@ import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 
-import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.nio.file.Files;
-import java.nio.charset.StandardCharsets;
-import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.Duration;
 
-public class JsonTemplateLayoutNullEventDelimiterTest {
+class JsonTemplateLayoutNullEventDelimiterTest {
+
     @Test
-    public void test() throws Exception {
-        final File tempConfig = File.createTempFile("nullEventDelimitedJsonTemplateLayoutLogging", ".xml");
-        // Set the expected bytes.
-        final byte[] expectedBytes = {
-                '"', 'f', 'o', 'o', '"', '\0',
-                '"', 'b', 'a', 'r', '"', '\0'
-        };
+    void test() throws Exception {
 
         // Start the TCP server.
         try (final TcpServer server = new TcpServer(0)) {
-            makeTempConfig(server.getLocalPort(), tempConfig);
+
+            // Set the configuration.
+            System.setProperty(
+                    "serverPort",
+                    String.valueOf(server.getPort()));
             System.setProperty(
                     "log4j.configurationFile",
-                    tempConfig.getAbsolutePath());
-
+                    "nullEventDelimitedJsonTemplateLayoutLogging.xml");
 
             // Produce log events.
             final Logger logger = LogManager.getLogger(JsonTemplateLayoutNullEventDelimiterTest.class);
             logger.log(Level.INFO, "foo");
             logger.log(Level.INFO, "bar");
+
+            // Set the expected bytes.
+            final byte[] expectedBytes = {
+                    '"', 'f', 'o', 'o', '"', '\0',
+                    '"', 'b', 'a', 'r', '"', '\0'
+            };
 
             // Wait for the log events.
             Awaitility
@@ -71,22 +68,9 @@ public class JsonTemplateLayoutNullEventDelimiterTest {
             // Verify the received log events.
             final byte[] actualBytes = server.getReceivedBytes();
             Assertions.assertThat(actualBytes).startsWith(expectedBytes);
-        } finally {
-            tempConfig.delete();
+
         }
 
-    }
-
-    public void makeTempConfig(final int serverPort, final File tempConfigFile) throws IOException {
-        try (final FileOutputStream fos = new FileOutputStream(tempConfigFile);
-                final OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
-                final BufferedWriter bw = new BufferedWriter(osw);) {
-            final File xmlTemplate = new File("src/test/resources/nullEventDelimitedJsonTemplateLayoutLogging.xml");
-            for (final String line : Files.readAllLines(xmlTemplate.toPath())) {
-                bw.write(line.replace("TARGET_PORT_NUMBER", Integer.toString(serverPort)));
-                bw.newLine();
-            }
-        }
     }
 
     private static final class TcpServer extends Thread implements AutoCloseable {
@@ -106,10 +90,6 @@ public class JsonTemplateLayoutNullEventDelimiterTest {
             serverSocket.setSoTimeout(5_000);
             setDaemon(true);
             start();
-        }
-
-        public int getLocalPort() {
-            return serverSocket.getLocalPort();
         }
 
         @Override
@@ -136,6 +116,10 @@ public class JsonTemplateLayoutNullEventDelimiterTest {
                     throw new RuntimeException(error);
                 }
             }
+        }
+
+        public int getPort() {
+            return serverSocket.getLocalPort();
         }
 
         public synchronized byte[] getReceivedBytes() {
