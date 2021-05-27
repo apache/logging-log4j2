@@ -29,6 +29,7 @@ import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -77,6 +78,35 @@ class JsonWriterTest {
     }
 
     @Test
+    void test_close() {
+        withLockedWriter(writer -> {
+            writer.writeString("x");
+            writer.close();
+            assertStringBuilderReset(writer);
+        });
+    }
+
+    @Test
+    void test_close_after_excessive_write() {
+        withLockedWriter(writer -> {
+            final String text = Strings.repeat("x", writer.getMaxStringLength());
+            writer.writeString(text);
+            writer.writeString(text);
+            writer.close();
+            assertStringBuilderReset(writer);
+        });
+    }
+
+    private static void assertStringBuilderReset(final JsonWriter writer) {
+        Assertions
+                .assertThat(writer.getStringBuilder().capacity())
+                .isEqualTo(writer.getMaxStringLength());
+        Assertions
+                .assertThat(writer.getStringBuilder().length())
+                .isEqualTo(0);
+    }
+
+    @Test
     void test_surrogate_code_point() {
         Assertions
                 .assertThat(HI_SURROGATE)
@@ -91,6 +121,29 @@ class JsonWriterTest {
         Assertions
                 .assertThat(SURROGATE_CODE_POINT)
                 .matches(Character::isDefined, "is defined");
+    }
+
+    @Test
+    void test_use_null_Runnable() {
+        Assertions
+                .assertThatThrownBy(() -> withLockedWriter(writer -> writer.use(null)))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("runnable");
+    }
+
+    @Test
+    void test_use_failing_Runnable() {
+        final RuntimeException exception = new RuntimeException();
+        withLockedWriter(writer -> {
+            final int initialLength = writer.getStringBuilder().length();
+            Assertions
+                    .assertThatThrownBy(() -> writer.use(() -> {
+                        writer.writeString("extending the buffer");
+                        throw exception;
+                    }))
+                    .isSameAs(exception);
+            Assertions.assertThat(writer.getStringBuilder()).hasSize(initialLength);
+        });
     }
 
     @Test
@@ -428,6 +481,7 @@ class JsonWriterTest {
             final String actualJson =
                     writer.use(() -> writer.writeString(emitter, excessiveString));
             Assertions.assertThat(actualJson).isEqualTo(expectedJson);
+            assertFormattableBufferReset(writer);
         });
     }
 
@@ -449,6 +503,7 @@ class JsonWriterTest {
             final String actualJson =
                     writer.use(() -> writer.writeString(emitter, excessiveString));
             Assertions.assertThat(actualJson).isEqualTo(expectedJson);
+            assertFormattableBufferReset(writer);
         });
     }
 
@@ -480,6 +535,7 @@ class JsonWriterTest {
                     writer.writeString(stringBuilder ->
                             stringBuilder.append(excessiveString)));
             Assertions.assertThat(actualJson).isEqualTo(expectedJson);
+            assertFormattableBufferReset(writer);
         });
     }
 
@@ -501,7 +557,28 @@ class JsonWriterTest {
                     writer.writeString(stringBuilder ->
                             stringBuilder.append(excessiveString)));
             Assertions.assertThat(actualJson).isEqualTo(expectedJson);
+            assertFormattableBufferReset(writer);
         });
+    }
+
+    private static void assertFormattableBufferReset(final JsonWriter writer) {
+        final StringBuilder formattableBuffer = getFormattableBuffer(writer);
+        Assertions
+                .assertThat(formattableBuffer.capacity())
+                .isEqualTo(writer.getMaxStringLength());
+        Assertions
+                .assertThat(formattableBuffer.length())
+                .isEqualTo(0);
+    }
+
+    private static StringBuilder getFormattableBuffer(final JsonWriter writer) {
+        try {
+            final Field field = JsonWriter.class.getDeclaredField("formattableBuffer");
+            field.setAccessible(true);
+            return (StringBuilder) field.get(writer);
+        } catch (Exception error) {
+            throw new RuntimeException(error);
+        }
     }
 
     @Test
