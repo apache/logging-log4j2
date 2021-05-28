@@ -63,9 +63,9 @@ public class PatternSelectorTest {
         assertEquals(4, messages.size(),
                 "Incorrect number of messages. Expected 4, Actual " + messages.size() + ": " + messages);
         String expect = "[TRACE] TestScriptPatternSelector ====== " +
-                "o.a.l.l.c.PatternSelectorTest.testScriptPatternSelector:54 Enter ======" + Strings.LINE_SEPARATOR;
+                "o.a.l.l.c.PatternSelectorTest.testScriptPatternSelector:57 Enter ======" + Strings.LINE_SEPARATOR;
         assertEquals(expect, messages.get(0));
-        expect = "[INFO ] TestScriptPatternSelector o.a.l.l.c.PatternSelectorTest.testScriptPatternSelector.55 " +
+        expect = "[INFO ] TestScriptPatternSelector o.a.l.l.c.PatternSelectorTest.testScriptPatternSelector.58 " +
                 "Hello World" + Strings.LINE_SEPARATOR;
         assertEquals(expect, messages.get(1));
         assertEquals("[INFO ] NoLocation No location information" + Strings.LINE_SEPARATOR, messages.get(2));
@@ -86,10 +86,10 @@ public class PatternSelectorTest {
         assertEquals(4, messages.size(),
                 "Incorrect number of messages. Expected 4, Actual " + messages.size() + ": " + messages);
         String expect = "[TRACE] TestJavaScriptPatternSelector ====== " +
-                "o.a.l.l.c.PatternSelectorTest.testJavaScriptPatternSelector:76 Enter ======" + Strings.LINE_SEPARATOR;
+                "o.a.l.l.c.PatternSelectorTest.testJavaScriptPatternSelector:80 Enter ======" + Strings.LINE_SEPARATOR;
         assertEquals(expect, messages.get(0));
         expect = "[INFO ] TestJavaScriptPatternSelector " +
-                "o.a.l.l.c.PatternSelectorTest.testJavaScriptPatternSelector.77 Hello World" + Strings.LINE_SEPARATOR;
+                "o.a.l.l.c.PatternSelectorTest.testJavaScriptPatternSelector.81 Hello World" + Strings.LINE_SEPARATOR;
         assertEquals(expect, messages.get(1));
         assertEquals("[INFO ] JavascriptNoLocation No location information" + Strings.LINE_SEPARATOR, messages.get(2));
         app.clear();
