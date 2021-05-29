@@ -93,6 +93,9 @@
       <action issue="LOG4J2-2965" dev="ckozak" type="fix">
         Fixed a deadlock between the AsyncLoggerContextSelector and java.util.logging.LogManager by updating Disruptor to 3.4.4.
       </action>
+      <action issue="LOG4J2-3095" dev="ggregory" type="fix" due-to="Kenny MacLeod, Gary Gregory">
+        Category.setLevel should accept null value.
+      </action>
       <!-- UPDATES -->
       <action dev="ggregory" type="update">
         - org.eclipse.persistence:javax.persistence ............. 2.1.1 -> 2.2.1

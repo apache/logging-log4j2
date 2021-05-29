@@ -224,8 +224,12 @@ public class Category {
         return getEffectiveLevel();
     }
 
+    private String getLevelStr(final Priority priority) {
+        return priority == null ? null : priority.levelStr;
+    }
+
     public void setLevel(final Level level) {
-        setLevel(level.levelStr);
+        setLevel(getLevelStr(level));
     }
 
     public final Level getPriority() {
@@ -233,7 +237,7 @@ public class Category {
     }
 
     public void setPriority(final Priority priority) {
-        setLevel(priority.levelStr);
+        setLevel(getLevelStr(priority));
     }
 
     private void setLevel(final String levelStr) {
