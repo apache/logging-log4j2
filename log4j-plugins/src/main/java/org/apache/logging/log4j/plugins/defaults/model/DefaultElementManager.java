@@ -24,6 +24,7 @@ import org.apache.logging.log4j.plugins.api.Ignore;
 import org.apache.logging.log4j.plugins.api.Named;
 import org.apache.logging.log4j.plugins.api.QualifierType;
 import org.apache.logging.log4j.plugins.api.ScopeType;
+import org.apache.logging.log4j.plugins.internal.util.BeanUtils;
 import org.apache.logging.log4j.plugins.spi.bean.Bean;
 import org.apache.logging.log4j.plugins.spi.model.ElementManager;
 import org.apache.logging.log4j.plugins.spi.model.InjectionPoint;
@@ -41,7 +42,6 @@ import org.apache.logging.log4j.plugins.util.Cache;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.plugins.util.WeakCache;
 
-import java.beans.Introspector;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -96,12 +96,12 @@ public class DefaultElementManager implements ElementManager {
         if (element instanceof MetaMethod<?, ?>) {
             final Matcher matcher = BEAN_METHOD.matcher(elementName);
             if (matcher.matches()) {
-                defaultNamedValue = Introspector.decapitalize(matcher.group(2));
+                defaultNamedValue = BeanUtils.decapitalize(matcher.group(2));
             } else {
                 defaultNamedValue = elementName;
             }
         } else if (element instanceof MetaClass<?>) {
-            defaultNamedValue = Introspector.decapitalize(((MetaClass<?>) element).getJavaClass().getSimpleName());
+            defaultNamedValue = BeanUtils.decapitalize(((MetaClass<?>) element).getJavaClass().getSimpleName());
         } else {
             defaultNamedValue = elementName;
         }
