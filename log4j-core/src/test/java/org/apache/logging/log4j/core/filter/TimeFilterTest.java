@@ -33,9 +33,12 @@ import org.apache.logging.log4j.core.time.ClockFactoryTest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledForJreRange;
+import org.junit.jupiter.api.condition.JRE;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisabledForJreRange(min = JRE.JAVA_12, disabledReason = "In java 12+ final cannot be removed.")
 public class TimeFilterTest {
     private static long CLOCKTIME = System.currentTimeMillis();
 

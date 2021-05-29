@@ -47,9 +47,12 @@ import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledForJreRange;
+import org.junit.jupiter.api.condition.JRE;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisabledForJreRange(min = JRE.JAVA_12, disabledReason = "In java 12+ final cannot be removed.")
 public class Log4jLogEventTest {
 
     private static final Base64.Decoder decoder = Base64.getDecoder();

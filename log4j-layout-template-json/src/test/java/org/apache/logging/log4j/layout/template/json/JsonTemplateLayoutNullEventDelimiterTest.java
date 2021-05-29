@@ -31,34 +31,32 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.Duration;
 
-public class JsonTemplateLayoutNullEventDelimiterTest {
-
-    // Set the configuration.
-    static {
-        System.setProperty(
-                "log4j.configurationFile",
-                "nullEventDelimitedJsonTemplateLayoutLogging.xml");
-    }
-
-    // Note that this port is hardcoded in the configuration file too!
-    private static final int PORT = 50514;
+class JsonTemplateLayoutNullEventDelimiterTest {
 
     @Test
-    public void test() throws Exception {
-
-        // Set the expected bytes.
-        final byte[] expectedBytes = {
-                '"', 'f', 'o', 'o', '"', '\0',
-                '"', 'b', 'a', 'r', '"', '\0'
-        };
+    void test() throws Exception {
 
         // Start the TCP server.
-        try (final TcpServer server = new TcpServer(PORT)) {
+        try (final TcpServer server = new TcpServer(0)) {
+
+            // Set the configuration.
+            System.setProperty(
+                    "serverPort",
+                    String.valueOf(server.getPort()));
+            System.setProperty(
+                    "log4j.configurationFile",
+                    "nullEventDelimitedJsonTemplateLayoutLogging.xml");
 
             // Produce log events.
             final Logger logger = LogManager.getLogger(JsonTemplateLayoutNullEventDelimiterTest.class);
             logger.log(Level.INFO, "foo");
             logger.log(Level.INFO, "bar");
+
+            // Set the expected bytes.
+            final byte[] expectedBytes = {
+                    '"', 'f', 'o', 'o', '"', '\0',
+                    '"', 'b', 'a', 'r', '"', '\0'
+            };
 
             // Wait for the log events.
             Awaitility
@@ -118,6 +116,10 @@ public class JsonTemplateLayoutNullEventDelimiterTest {
                     throw new RuntimeException(error);
                 }
             }
+        }
+
+        public int getPort() {
+            return serverSocket.getLocalPort();
         }
 
         public synchronized byte[] getReceivedBytes() {

@@ -31,6 +31,8 @@ import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledForJreRange;
+import org.junit.jupiter.api.condition.JRE;
 
 import java.util.List;
 
@@ -44,6 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * </p>
  */
 @LoggerContextSource("log4j2-744.xml")
+@DisabledForJreRange(min = JRE.JAVA_12, disabledReason = "In java 12+ final cannot be removed.")
 public class TimestampMessageTest {
     private ListAppender app;
 

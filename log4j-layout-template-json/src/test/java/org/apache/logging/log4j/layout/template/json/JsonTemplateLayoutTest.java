@@ -66,8 +66,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -205,20 +206,22 @@ class JsonTemplateLayoutTest {
     }
 
     @Test
-    void test_inline_template() throws Exception {
+    void test_inline_template() {
 
         // Create the log event.
         final SimpleMessage message = new SimpleMessage("Hello, World");
-        final String timestamp = "2017-09-28T17:13:29.098+02:00";
-        final long timeMillis = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-                .parse(timestamp)
-                .getTime();
+        final String formattedInstant = "2017-09-28T17:13:29.098Z";
+        final TemporalAccessor instantAccessor = Instant.parse(formattedInstant);
+        final long instantEpochSeconds = instantAccessor.getLong(ChronoField.INSTANT_SECONDS);
+        final int instantEpochSecondsNanos = instantAccessor.get(ChronoField.NANO_OF_SECOND);
+        final MutableInstant instant = new MutableInstant();
+        instant.initFromEpochSecond(instantEpochSeconds, instantEpochSecondsNanos);
         final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()
                 .setLoggerName(LOGGER_NAME)
                 .setLevel(Level.INFO)
                 .setMessage(message)
-                .setTimeMillis(timeMillis)
+                .setInstant(instant)
                 .build();
 
         // Create the event template.
@@ -228,7 +231,9 @@ class JsonTemplateLayoutTest {
         final String eventTemplate = writeJson(asMap(
                 timestampFieldName, asMap(
                         "$resolver", "timestamp",
-                        "pattern", asMap("timeZone", "Europe/Amsterdam")),
+                        "pattern", asMap(
+                                "format", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+                                "timeZone", "UTC")),
                 staticFieldName, staticFieldValue));
 
         // Create the layout.
@@ -240,7 +245,7 @@ class JsonTemplateLayoutTest {
 
         // Check the serialized event.
         usingSerializedLogEventAccessor(layout, logEvent, accessor -> {
-            assertThat(accessor.getString(timestampFieldName)).isEqualTo(timestamp);
+            assertThat(accessor.getString(timestampFieldName)).isEqualTo(formattedInstant);
             assertThat(accessor.getString(staticFieldName)).isEqualTo(staticFieldValue);
         });
 

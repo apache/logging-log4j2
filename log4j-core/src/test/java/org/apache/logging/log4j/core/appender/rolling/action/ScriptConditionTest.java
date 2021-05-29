@@ -22,6 +22,8 @@ import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.script.Script;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledForJreRange;
+import org.junit.jupiter.api.condition.JRE;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -58,6 +60,7 @@ public class ScriptConditionTest {
     }
 
     @Test
+    @DisabledForJreRange(min = JRE.JAVA_15, disabledReason = "JEP 372: Remove the Nashorn JavaScript Engine")
     public void testSelectFilesToDelete() {
         final Configuration config = new DefaultConfiguration();
         config.initialize(); // creates the ScriptManager
@@ -71,6 +74,7 @@ public class ScriptConditionTest {
     }
 
     @Test
+    @DisabledForJreRange(min = JRE.JAVA_15, disabledReason = "JEP 372: Remove the Nashorn JavaScript Engine")
     public void testSelectFilesToDelete2() {
         final Configuration config = new DefaultConfiguration();
         config.initialize(); // creates the ScriptManager
@@ -94,6 +98,7 @@ public class ScriptConditionTest {
 
     @Test
     @Tag("groovy")
+    @DisabledForJreRange(min = JRE.JAVA_12, disabledReason = "Groovy ScriptEngine incompatibilities")
     public void testSelectFilesToDelete3() {
         final Configuration config = new DefaultConfiguration();
         config.initialize(); // creates the ScriptManager

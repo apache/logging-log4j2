@@ -208,6 +208,12 @@
         Allow a PatternSelector to be specified on GelfLayout.
       </action>
       <!-- FIXES -->
+      <action issue="LOG4J2-3089" dev="vy" type="fix" due-to="Tim Perry">
+        Fix sporadic JsonTemplateLayoutNullEventDelimiterTest failures on Windows.
+      </action>
+      <action issue="LOG4J2-3075" dev="vy" type="fix">
+        Fix formatting of nanoseconds in JsonTemplateLayout.
+      </action>
       <action issue="LOG4J2-3087" dev="vy" type="fix" due-to="Anton Klarén">
         Fix race in JsonTemplateLayout where a timestamp could end up unquoted.
       </action>
