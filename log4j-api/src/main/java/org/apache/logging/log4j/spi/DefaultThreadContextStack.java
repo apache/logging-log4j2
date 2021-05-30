@@ -261,7 +261,7 @@ public class DefaultThreadContextStack implements ThreadContextStack, StringBuil
         if (result == null) {
             return new String[0];
         }
-        return result.toArray(new Object[result.size()]);
+        return result.toArray(new Object[0]);
     }
 
     @Override

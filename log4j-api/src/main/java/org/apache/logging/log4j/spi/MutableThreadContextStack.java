@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
@@ -69,8 +70,7 @@ public class MutableThreadContextStack implements ThreadContextStack, StringBuil
             return null;
         }
         final int last = list.size() - 1;
-        final String result = list.remove(last);
-        return result;
+        return list.remove(last);
     }
 
     @Override
@@ -230,14 +230,7 @@ public class MutableThreadContextStack implements ThreadContextStack, StringBuil
         }
         final ThreadContextStack other = (ThreadContextStack) obj;
         final List<String> otherAsList = other.asList();
-        if (this.list == null) {
-            if (otherAsList != null) {
-                return false;
-            }
-        } else if (!this.list.equals(otherAsList)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(list, otherAsList);
     }
 
     @Override

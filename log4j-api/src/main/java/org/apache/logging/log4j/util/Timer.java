@@ -263,11 +263,7 @@ public class Timer implements Serializable, StringBuilderFormattable
         if (name != null ? !name.equals(timer.name) : timer.name != null) {
             return false;
         }
-        if (status != null ? !status.equals(timer.status) : timer.status != null) {
-            return false;
-        }
-
-        return true;
+        return status != null ? status.equals(timer.status) : timer.status == null;
     }
 
     @Override

@@ -17,11 +17,8 @@
 package org.apache.logging.log4j.util;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Stack;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * <em>Consider this class private.</em> Determines the caller's class.

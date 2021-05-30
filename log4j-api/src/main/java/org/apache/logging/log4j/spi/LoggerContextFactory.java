@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.spi;
 
 import java.net.URI;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Implemented by factories that create {@link LoggerContext} objects.
