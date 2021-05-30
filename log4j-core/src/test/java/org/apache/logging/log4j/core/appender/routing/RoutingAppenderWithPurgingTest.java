@@ -82,7 +82,7 @@ public class RoutingAppenderWithPurgingTest {
         EventLogger.logEvent(msg);
         final List<LogEvent> list = app.getEvents();
         assertNotNull("No events generated", list);
-        assertTrue("Incorrect number of events. Expected 1, got " + list.size(), list.size() == 1);
+        assertEquals("Incorrect number of events. Expected 1, got " + list.size(), 1, list.size());
         msg = new StructuredDataMessage("2", "This is a test 2", "Service");
         EventLogger.logEvent(msg);
         msg = new StructuredDataMessage("3", "This is a test 3", "Service");

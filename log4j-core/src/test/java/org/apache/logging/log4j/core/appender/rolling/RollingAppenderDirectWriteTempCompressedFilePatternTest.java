@@ -20,6 +20,7 @@ import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -96,8 +97,7 @@ public class RollingAppenderDirectWriteTempCompressedFilePatternTest {
                 }
             }
             assertTrue("No temporary file created during compression", temporaryFilesCreated > 0);
-            assertTrue("Temporarys file created not equals to compressed files",
-                    compressedFiles == temporaryFilesCreated);
+            assertEquals("Temporarys file created not equals to compressed files", compressedFiles, temporaryFilesCreated);
         }
     }
 }

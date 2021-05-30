@@ -53,7 +53,7 @@ public class RolloverWithPaddingTest {
 
     final File dir = new File(DIR);
     assertTrue("Dir " + DIR + " should exist", dir.exists());
-    assertTrue("Dir " + DIR + " should contain files", dir.listFiles().length == 6);
+      assertEquals("Dir " + DIR + " should contain files", 6, dir.listFiles().length);
 
     final File[] files = dir.listFiles();
     final List<String> expected = Arrays.asList("rollingtest.log", "test-001.log", "test-002.log", "test-003.log", "test-004.log", "test-005.log");
