@@ -55,7 +55,7 @@ public abstract class AbstractLoggerAdapter<L> implements LoggerAdapter<L>, Logg
     }
 
     @Override
-    public void contextShutdown(LoggerContext loggerContext) {
+    public void contextShutdown(final LoggerContext loggerContext) {
         registry.remove(loggerContext);
     }
 

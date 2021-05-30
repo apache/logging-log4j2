@@ -185,9 +185,9 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
      * @return a StructuredDataId.
      */
     public StructuredDataId makeId(final String defaultId, final int anEnterpriseNumber) {
-        String id;
-        String[] req;
-        String[] opt;
+        final String id;
+        final String[] req;
+        final String[] opt;
         if (anEnterpriseNumber <= 0) {
             return this;
         }

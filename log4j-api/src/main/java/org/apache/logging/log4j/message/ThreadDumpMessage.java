@@ -70,7 +70,7 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
             while (result == null && iterator.hasNext()) {
                 result = iterator.next();
             }
-        } catch (ServiceConfigurationError | LinkageError | Exception unavailable) { // if java management classes not available
+        } catch (final ServiceConfigurationError | LinkageError | Exception unavailable) { // if java management classes not available
             StatusLogger.getLogger().info("ThreadDumpMessage uses BasicThreadInfoFactory: " +
                             "could not load extended ThreadInfoFactory: {}", unavailable.toString());
             result = null;

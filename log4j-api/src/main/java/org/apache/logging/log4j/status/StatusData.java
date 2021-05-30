@@ -128,7 +128,7 @@ public class StatusData implements Serializable {
         sb.append(SPACE);
         sb.append(msg.getFormattedMessage());
         final Object[] params = msg.getParameters();
-        Throwable t;
+        final Throwable t;
         if (throwable == null && params != null && params[params.length - 1] instanceof Throwable) {
             t = (Throwable) params[params.length - 1];
         } else {

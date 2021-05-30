@@ -88,7 +88,7 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
                     if (parentValue == null) {
                         return null;
                     }
-                    StringMap stringMap = createStringMap(parentValue);
+                    final StringMap stringMap = createStringMap(parentValue);
                     stringMap.freeze();
                     return stringMap;
                 }
