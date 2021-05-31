@@ -165,6 +165,17 @@ public class CategoryTest {
         logger.setPriority(debug);
     }
 
+    /**
+     * Tests setPriority(Priority).
+     *
+     * @deprecated
+     */
+    @Deprecated
+    @Test
+    public void testSetPriorityNull() {
+        Logger.getLogger("org.example.foo").setPriority(null);
+    }
+    
     @Test
     public void testClassName() {
         final Category category = Category.getInstance("TestCategory");
