@@ -1089,7 +1089,7 @@ public final class Generate {
     static String generateSource(final String classNameFQN, final List<LevelInfo> levels, final Type type) {
         final StringBuilder sb = new StringBuilder(10000 * levels.size());
         final int lastDot = classNameFQN.lastIndexOf('.');
-        final String pkg = classNameFQN.substring(0, lastDot >= 0 ? lastDot : 0);
+        final String pkg = classNameFQN.substring(0, Math.max(lastDot, 0));
         if (!pkg.isEmpty()) {
             sb.append(String.format(PACKAGE_DECLARATION, pkg));
         }
