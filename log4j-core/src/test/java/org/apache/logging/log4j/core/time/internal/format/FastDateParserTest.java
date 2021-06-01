@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.time.internal.format;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.Serializable;
@@ -479,7 +480,7 @@ public class FastDateParserTest {
             }
         }
         // SDF and FDF should produce equivalent results
-        assertTrue("Should both or neither throw Exceptions", (f==null)==(s==null));
+        assertEquals("Should both or neither throw Exceptions", (f == null), (s == null));
         assertEquals("Parsed dates should be equal", dsdf, dfdp);
     }
 
@@ -571,7 +572,7 @@ public class FastDateParserTest {
         assertEquals(parser1, parser2);
         assertEquals(parser1.hashCode(), parser2.hashCode());
 
-        assertFalse(parser1.equals(new Object()));
+        assertNotEquals(parser1, new Object());
     }
 
     @Test

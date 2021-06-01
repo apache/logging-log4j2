@@ -32,6 +32,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -86,8 +87,7 @@ public class RandomRollingAppenderOnStartupTest {
                     size = Files.size(path);
                 } else {
                     final long fileSize = Files.size(path);
-                    assertTrue("Expected size: " + size + " Size of " + path.getFileName() + ": " + fileSize,
-                            size == fileSize);
+                    assertEquals("Expected size: " + size + " Size of " + path.getFileName() + ": " + fileSize, size, fileSize);
                 }
                 Files.delete(path);
             }

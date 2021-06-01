@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -62,7 +63,7 @@ public class RollingAppenderDeleteScriptTest {
             assertTrue(file.getName() + " ends with '.log'", file.getName().endsWith(".log"));
             final String strIndex = file.getName().substring(5, file.getName().indexOf('.'));
             final int index = Integer.parseInt(strIndex);
-            assertTrue(file + " should have odd index", index % 2 == 1);
+            assertEquals(file + " should have odd index", 1, index % 2);
         }
     }
 }

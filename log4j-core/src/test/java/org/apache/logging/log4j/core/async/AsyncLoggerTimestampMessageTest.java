@@ -82,7 +82,7 @@ public class AsyncLoggerTimestampMessageTest {
         reader.close();
         file.delete();
         assertNotNull(line1);
-        assertTrue("line1 correct", line1.equals("123456789000 Async logger msg with embedded timestamp"));
+        assertEquals("line1 correct", "123456789000 Async logger msg with embedded timestamp", line1);
     }
 
     public static class PoisonClock implements Clock {

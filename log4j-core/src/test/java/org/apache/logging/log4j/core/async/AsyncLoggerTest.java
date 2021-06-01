@@ -71,7 +71,7 @@ public class AsyncLoggerTest {
         assertTrue("line1 correct", line1.contains(msg));
 
         final String location = "testAsyncLogWritesToLog";
-        assertTrue("no location", !line1.contains(location));
+        assertFalse("no location", line1.contains(location));
 
         assertTrue(LogManager.getFactory().isClassLoaderDependent());
     }
