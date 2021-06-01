@@ -17,8 +17,6 @@
 package org.apache.logging.log4j.core.pattern;
 
 import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Stream;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;

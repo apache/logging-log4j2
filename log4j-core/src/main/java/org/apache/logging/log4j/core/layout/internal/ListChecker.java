@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.layout.internal;
 
-import java.util.List;
-
 /**
  * Class Description goes here.
  */

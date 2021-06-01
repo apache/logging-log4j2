@@ -19,17 +19,14 @@ package org.apache.logging.log4j.core.tools;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.lang.module.ModuleReference;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.charset.Charset;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
