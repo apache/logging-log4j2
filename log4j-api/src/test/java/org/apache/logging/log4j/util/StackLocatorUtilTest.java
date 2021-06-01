@@ -23,9 +23,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.ParentRunner;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
-import static org.junit.Assume.assumeThat;
 
 @RunWith(BlockJUnit4ClassRunner.class)
 public class StackLocatorUtilTest {

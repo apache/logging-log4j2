@@ -172,7 +172,7 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
      * Implementations of this class are loaded via the standard java Service Provider interface.
      * </p>
      */
-    public static interface ThreadInfoFactory {
+    public interface ThreadInfoFactory {
         Map<ThreadInformation, StackTraceElement[]> createThreadInfo();
     }
 
