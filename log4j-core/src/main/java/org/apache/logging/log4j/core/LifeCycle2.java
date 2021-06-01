@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * Extends the LifeCycle interface.
  * <p>

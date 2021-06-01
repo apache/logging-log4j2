@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.async;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
