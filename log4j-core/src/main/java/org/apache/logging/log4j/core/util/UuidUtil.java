@@ -79,7 +79,7 @@ public final class UuidUtil {
             mac = new byte[6];
             randomGenerator.nextBytes(mac);
         }
-        final int length = mac.length >= 6 ? 6 : mac.length;
+        final int length = Math.min(mac.length, 6);
         final int index = mac.length >= 6 ? mac.length - 6 : 0;
         final byte[] node = new byte[NODE_SIZE];
         node[0] = VARIANT;
