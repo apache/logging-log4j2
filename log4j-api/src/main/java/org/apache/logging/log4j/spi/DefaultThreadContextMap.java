@@ -153,8 +153,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
         }
         for (final Map.Entry<String, String> entry : map.entrySet()) {
             //BiConsumer should be able to handle values of any type V. In our case the values are of type String.
-            @SuppressWarnings("unchecked")
-            V value = (V) entry.getValue();
+            @SuppressWarnings("unchecked") final V value = (V) entry.getValue();
             action.accept(entry.getKey(), value);
         }
     }
@@ -167,8 +166,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
         }
         for (final Map.Entry<String, String> entry : map.entrySet()) {
             //TriConsumer should be able to handle values of any type V. In our case the values are of type String.
-            @SuppressWarnings("unchecked")
-            V value = (V) entry.getValue();
+            @SuppressWarnings("unchecked") final V value = (V) entry.getValue();
             action.accept(entry.getKey(), value, state);
         }
     }

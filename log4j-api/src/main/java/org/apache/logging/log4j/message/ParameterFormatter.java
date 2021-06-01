@@ -623,7 +623,7 @@ final class ParameterFormatter {
         }
     }
 
-    private static Set<Object> getOrCreateDejaVu(Set<Object> dejaVu) {
+    private static Set<Object> getOrCreateDejaVu(final Set<Object> dejaVu) {
         return dejaVu == null
                 ? createDejaVu()
                 : dejaVu;
@@ -633,8 +633,8 @@ final class ParameterFormatter {
         return Collections.newSetFromMap(new IdentityHashMap<>());
     }
 
-    private static Set<Object> cloneDejaVu(Set<Object> dejaVu) {
-        Set<Object> clonedDejaVu = createDejaVu();
+    private static Set<Object> cloneDejaVu(final Set<Object> dejaVu) {
+        final Set<Object> clonedDejaVu = createDejaVu();
         clonedDejaVu.addAll(dejaVu);
         return clonedDejaVu;
     }

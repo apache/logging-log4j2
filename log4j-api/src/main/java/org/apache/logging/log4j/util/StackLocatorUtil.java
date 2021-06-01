@@ -93,7 +93,7 @@ public final class StackLocatorUtil {
     public static StackTraceElement calcLocation(final String fqcnOfLogger) {
         try {
             return stackLocator.calcLocation(fqcnOfLogger);
-        } catch (NoSuchElementException ex) {
+        } catch (final NoSuchElementException ex) {
             if (!errorLogged) {
                 errorLogged = true;
                 StatusLogger.getLogger().warn("Unable to locate stack trace element for {}", fqcnOfLogger, ex);

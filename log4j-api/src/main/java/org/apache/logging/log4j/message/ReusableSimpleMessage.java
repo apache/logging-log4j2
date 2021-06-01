@@ -81,7 +81,7 @@ public class ReusableSimpleMessage implements ReusableMessage, CharSequence, Par
     }
 
     @Override
-    public <S> void forEachParameter(ParameterConsumer<S> action, S state) {
+    public <S> void forEachParameter(final ParameterConsumer<S> action, final S state) {
     }
 
     @Override

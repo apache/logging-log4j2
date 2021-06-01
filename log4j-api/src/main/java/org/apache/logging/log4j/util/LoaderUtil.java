@@ -154,7 +154,7 @@ public final class LoaderUtil {
         if (tcl != null) {
             classLoaders.add(tcl);
         }
-        ModuleLayer layer = LoaderUtil.class.getModule().getLayer();
+        final ModuleLayer layer = LoaderUtil.class.getModule().getLayer();
         if (layer == null) {
             if (!isForceTccl()) {
                 accumulateClassLoaders(LoaderUtil.class.getClassLoader(), classLoaders);
@@ -167,7 +167,7 @@ public final class LoaderUtil {
         } else {
             accumulateLayerClassLoaders(layer, classLoaders);
             if (layer != ModuleLayer.boot()) {
-                for (Module module : ModuleLayer.boot().modules()) {
+                for (final Module module : ModuleLayer.boot().modules()) {
                     accumulateClassLoaders(module.getClassLoader(), classLoaders);
                 }
             }
@@ -175,12 +175,12 @@ public final class LoaderUtil {
         return classLoaders.toArray(new ClassLoader[0]);
     }
 
-    private static void accumulateLayerClassLoaders(ModuleLayer layer, Collection<ClassLoader> classLoaders) {
-        for (Module module : layer.modules()) {
+    private static void accumulateLayerClassLoaders(final ModuleLayer layer, final Collection<ClassLoader> classLoaders) {
+        for (final Module module : layer.modules()) {
             accumulateClassLoaders(module.getClassLoader(), classLoaders);
         }
         if (layer.parents().size() > 0) {
-            for (ModuleLayer parent : layer.parents()) {
+            for (final ModuleLayer parent : layer.parents()) {
                 accumulateLayerClassLoaders(parent, classLoaders);
             }
         }
@@ -190,7 +190,7 @@ public final class LoaderUtil {
      * Adds the provided loader to the loaders collection, and traverses up the tree until either a null
      * value or a classloader which has already been added is encountered.
      */
-    private static void accumulateClassLoaders(ClassLoader loader, Collection<ClassLoader> loaders) {
+    private static void accumulateClassLoaders(final ClassLoader loader, final Collection<ClassLoader> loaders) {
         // Some implementations may use null to represent the bootstrap class loader.
         if (loader != null && loaders.add(loader)) {
             accumulateClassLoaders(loader.getParent(), loaders);
@@ -230,7 +230,7 @@ public final class LoaderUtil {
             return Class.forName(className);
         }
         try {
-            ClassLoader tccl = getThreadContextClassLoader();
+            final ClassLoader tccl = getThreadContextClassLoader();
             if (tccl != null) {
                 return tccl.loadClass(className);
             }

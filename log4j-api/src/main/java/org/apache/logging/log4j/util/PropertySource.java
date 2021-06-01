@@ -45,7 +45,7 @@ public interface PropertySource {
      *
      * @param action action to perform on each key/value pair
      */
-    default void forEach(BiConsumer<String, String> action) {
+    default void forEach(final BiConsumer<String, String> action) {
     }
 
     /**
@@ -55,7 +55,7 @@ public interface PropertySource {
      * @param tokens list of property name tokens
      * @return a normalized property name using the given tokens
      */
-    default CharSequence getNormalForm(Iterable<? extends CharSequence> tokens) {
+    default CharSequence getNormalForm(final Iterable<? extends CharSequence> tokens) {
         return null;
     }
 
@@ -65,7 +65,7 @@ public interface PropertySource {
      * @return The value or null;
      * @since 2.13.0
      */
-    default String getProperty(String key) {
+    default String getProperty(final String key) {
         return null;
     }
 
@@ -76,7 +76,7 @@ public interface PropertySource {
      * @return The value or null;
      * @since 2.13.0
      */
-    default boolean containsProperty(String key) {
+    default boolean containsProperty(final String key) {
         return false;
     }
 
@@ -117,7 +117,7 @@ public interface PropertySource {
             if (CACHE.containsKey(value)) {
                 return CACHE.get(value);
             }
-            List<CharSequence> tokens = new ArrayList<>();
+            final List<CharSequence> tokens = new ArrayList<>();
             final Matcher matcher = PROPERTY_TOKENIZER.matcher(value);
             while (matcher.find()) {
                 tokens.add(matcher.group(1).toLowerCase());

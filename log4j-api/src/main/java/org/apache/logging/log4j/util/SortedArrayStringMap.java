@@ -96,7 +96,7 @@ public class SortedArrayStringMap implements IndexedStringMap {
         Method[] methods = ObjectInputStream.class.getMethods();
         Method setMethod = null;
         Method getMethod = null;
-        for (Method method : methods) {
+        for (final Method method : methods) {
             if (method.getName().equals("setObjectInputFilter")) {
                 setMethod = method;
             } else if (method.getName().equals("getObjectInputFilter")) {
@@ -106,16 +106,16 @@ public class SortedArrayStringMap implements IndexedStringMap {
         Method newMethod = null;
         try {
             if (setMethod != null) {
-                Class<?> clazz = Class.forName("org.apache.logging.log4j.internal.DefaultObjectInputFilter");
+                final Class<?> clazz = Class.forName("org.apache.logging.log4j.internal.DefaultObjectInputFilter");
                 methods = clazz.getMethods();
-                for (Method method : methods) {
+                for (final Method method : methods) {
                     if (method.getName().equals("newInstance") && Modifier.isStatic(method.getModifiers())) {
                         newMethod = method;
                         break;
                     }
                 }
             }
-        } catch (ClassNotFoundException ex) {
+        } catch (final ClassNotFoundException ex) {
             // Ignore the exception
         }
         newObjectInputFilter = newMethod;
@@ -553,7 +553,7 @@ public class SortedArrayStringMap implements IndexedStringMap {
             return null;
         }
         final ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        try (ObjectOutputStream oos = new ObjectOutputStream(bout)) {
+        try (final ObjectOutputStream oos = new ObjectOutputStream(bout)) {
             oos.writeObject(obj);
             oos.flush();
             return bout.toByteArray();
@@ -561,21 +561,21 @@ public class SortedArrayStringMap implements IndexedStringMap {
     }
 
     @SuppressWarnings("BanSerializableRead")
-    private static Object unmarshall(final byte[] data, ObjectInputStream inputStream)
+    private static Object unmarshall(final byte[] data, final ObjectInputStream inputStream)
             throws IOException, ClassNotFoundException {
         final ByteArrayInputStream bin = new ByteArrayInputStream(data);
         Collection<String> allowedClasses = null;
-        ObjectInputStream ois;
+        final ObjectInputStream ois;
         if (inputStream instanceof FilteredObjectInputStream) {
             allowedClasses = ((FilteredObjectInputStream) inputStream).getAllowedClasses();
             ois = new FilteredObjectInputStream(bin, allowedClasses);
         } else {
             try {
-                Object obj = getObjectInputFilter.invoke(inputStream);
-                Object filter = newObjectInputFilter.invoke(null, obj);
+                final Object obj = getObjectInputFilter.invoke(inputStream);
+                final Object filter = newObjectInputFilter.invoke(null, obj);
                 ois = new ObjectInputStream(bin);
                 setObjectInputFilter.invoke(ois, filter);
-            } catch (IllegalAccessException | InvocationTargetException ex) {
+            } catch (final IllegalAccessException | InvocationTargetException ex) {
                 throw new StreamCorruptedException("Unable to set ObjectInputFilter on stream");
             }
         }

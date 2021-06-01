@@ -205,7 +205,7 @@ public class SimpleLogger extends AbstractLogger {
         // Append date-time if so configured
         if (showDateTime) {
             final Date now = new Date();
-            String dateText;
+            final String dateText;
             synchronized (dateFormatter) {
                 dateText = dateFormatter.format(now);
             }
@@ -229,7 +229,7 @@ public class SimpleLogger extends AbstractLogger {
             }
         }
         final Object[] params = msg.getParameters();
-        Throwable t;
+        final Throwable t;
         if (throwable == null && params != null && params.length > 0
                 && params[params.length - 1] instanceof Throwable) {
             t = (Throwable) params[params.length - 1];

@@ -81,8 +81,8 @@ public final class StackLocator {
         if (PrivateSecurityManagerStackTraceUtil.isEnabled()) {
             return PrivateSecurityManagerStackTraceUtil.getCurrentStackTrace();
         }
-        Stack<Class<?>> stack = new Stack<Class<?>>();
-        List<Class<?>> classes = walker.walk(s -> s.map(f -> f.getDeclaringClass()).collect(Collectors.toList()));
+        final Stack<Class<?>> stack = new Stack<Class<?>>();
+        final List<Class<?>> classes = walker.walk(s -> s.map(f -> f.getDeclaringClass()).collect(Collectors.toList()));
         stack.addAll(classes);
         return stack;
     }

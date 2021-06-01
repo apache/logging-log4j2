@@ -38,7 +38,7 @@ public class SystemPropertiesPropertySource implements PropertySource {
 
 	@Override
 	public void forEach(final BiConsumer<String, String> action) {
-		Properties properties;
+		final Properties properties;
 		try {
 			properties = System.getProperties();
 		} catch (final SecurityException e) {
