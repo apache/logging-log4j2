@@ -22,23 +22,21 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import liquibase.logging.Logger;
-
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class LoggingTest {
+public class DeprecatedLog4J2LoggerTest {
 
     private static final String NAME = "LoggerName";
 
-    static Logger logger;
+    static DeprecatedLog4j2Logger logger;
 
     @BeforeClass
     public static void setupClass() {
-        logger = new Log4j2Logger();
+        logger = new DeprecatedLog4j2Logger();
         logger.setName(NAME);
         logger.setLogLevel("debug", null);
     }
