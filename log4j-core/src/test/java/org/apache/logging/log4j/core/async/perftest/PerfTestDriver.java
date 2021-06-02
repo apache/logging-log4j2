@@ -36,7 +36,7 @@ import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
 public class PerfTestDriver {
     private static final String DEFAULT_WAIT_STRATEGY = "Block";
 
-    static enum WaitStrategy {
+    enum WaitStrategy {
         Sleep, Yield, Block;
 
         public static WaitStrategy get() {
@@ -192,14 +192,14 @@ public class PerfTestDriver {
         }
     }
 
-    static enum Runner {
+    enum Runner {
         Log4j12(RunLog4j1.class), //
         Log4j2(RunLog4j2.class), //
         Logback(RunLogback.class);
 
         private final Class<? extends IPerfTestRunner> implementationClass;
 
-        private Runner(final Class<? extends IPerfTestRunner> cls) {
+        Runner(final Class<? extends IPerfTestRunner> cls) {
             this.implementationClass = cls;
         }
     }

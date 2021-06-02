@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.time.internal.format;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -628,12 +627,12 @@ public class FastDateParserTest {
         return cal;
     }
 
-    private static enum Expected1806 {
+    private enum Expected1806 {
         India(INDIA, "+05", "+0530", "+05:30", true), 
         Greenwich(GMT, "Z", "Z", "Z", false), 
         NewYork(NEW_YORK, "-05", "-0500", "-05:00", false);
 
-        private Expected1806(final TimeZone zone, final String one, final String two, final String three, final boolean hasHalfHourOffset) {
+        Expected1806(final TimeZone zone, final String one, final String two, final String three, final boolean hasHalfHourOffset) {
             this.zone = zone;
             this.one = one;
             this.two = two;

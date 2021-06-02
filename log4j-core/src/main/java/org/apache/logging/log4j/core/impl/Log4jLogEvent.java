@@ -763,10 +763,10 @@ public class Log4jLogEvent implements LogEvent {
         if (threadPriority != that.threadPriority) {
             return false;
         }
-        if (thrown != null ? !thrown.equals(that.thrown) : that.thrown != null) {
+        if (!Objects.equals(thrown, that.thrown)) {
             return false;
         }
-        if (thrownProxy != null ? !thrownProxy.equals(that.thrownProxy) : that.thrownProxy != null) {
+        if (!Objects.equals(thrownProxy, that.thrownProxy)) {
             return false;
         }
 

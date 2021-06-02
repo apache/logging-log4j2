@@ -1411,10 +1411,7 @@ public final class CronExpression {
                         daysToAdd = dow + (7 - cDow);
                     }
 
-                    boolean dayShifted = false;
-                    if (daysToAdd > 0) {
-                        dayShifted = true;
-                    }
+                    final boolean dayShifted = daysToAdd > 0;
 
                     day += daysToAdd;
                     int weekOfMonth = day / 7;

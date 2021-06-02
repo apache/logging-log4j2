@@ -58,9 +58,8 @@ public class OnStartupTriggeringPolicy extends AbstractTriggeringPolicy {
 
             final Class<?> runtimeMXBeanClass = Loader.loadSystemClass("java.lang.management.RuntimeMXBean");
             final Method getStartTime = runtimeMXBeanClass.getMethod("getStartTime");
-            final Long result = (Long) getStartTime.invoke(runtimeMXBean);
 
-            return result;
+            return (Long) getStartTime.invoke(runtimeMXBean);
         } catch (final Throwable t) {
             StatusLogger.getLogger().error("Unable to call ManagementFactory.getRuntimeMXBean().getStartTime(), "
                     + "using system time for OnStartupTriggeringPolicy", t);

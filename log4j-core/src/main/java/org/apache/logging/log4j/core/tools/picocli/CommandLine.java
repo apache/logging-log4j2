@@ -361,7 +361,7 @@ public class CommandLine {
      * @see RunLast
      * @see RunAll
      * @since 2.0 */
-    public static interface IParseResultHandler {
+    public interface IParseResultHandler {
         /** Processes a List of {@code CommandLine} objects resulting from successfully
          * {@linkplain #parse(String...) parsing} the command line arguments and optionally returns a list of results.
          * @param parsedCommands the {@code CommandLine} objects that resulted from successfully parsing the command line arguments
@@ -384,7 +384,7 @@ public class CommandLine {
      * </p>
      * @see DefaultExceptionHandler
      * @since 2.0 */
-    public static interface IExceptionHandler {
+    public interface IExceptionHandler {
         /** Handles a {@code ParameterException} that occurred while {@linkplain #parse(String...) parsing} the command
          * line arguments and optionally returns a list of results.
          * @param ex the ParameterException describing the problem that occurred while parsing the command line arguments,
@@ -1747,8 +1747,7 @@ public class CommandLine {
                 variable = max == Integer.MAX_VALUE;
                 min = variable ? 0 : max;
             }
-            Range result = new Range(min, max, variable, unspecified, range);
-            return result;
+            return new Range(min, max, variable, unspecified, range);
         }
         private static int parseInt(String str, int defaultValue) {
             try {
@@ -2592,12 +2591,12 @@ public class CommandLine {
                     Range indexRange = Range.parameterIndex(field);
                     Help.IParamLabelRenderer labelRenderer = Help.createMinimalParamLabelRenderer();
                     String sep = "";
-                    String names = "";
+                    StringBuilder names = new StringBuilder();
                     int count = 0;
                     for (int i = indexRange.min; i < positionalParametersFields.size(); i++) {
                         if (Range.parameterArity(positionalParametersFields.get(i)).min > 0) {
-                            names += sep + labelRenderer.renderParameterLabel(positionalParametersFields.get(i),
-                                    Help.Ansi.OFF, Collections.<IStyle>emptyList());
+                            names.append(sep).append(labelRenderer.renderParameterLabel(positionalParametersFields.get(i),
+                                    Help.Ansi.OFF, Collections.<IStyle>emptyList()));
                             sep = ", ";
                             count++;
                         }
@@ -4257,7 +4256,7 @@ public class CommandLine {
             ON,
             /** Forced OFF: never emit ANSI escape code regardless of the platform. */
             OFF;
-            static Text EMPTY_TEXT = OFF.new Text(0);
+            static final Text EMPTY_TEXT = OFF.new Text(0);
             static final boolean isWindows  = System.getProperty("os.name").startsWith("Windows");
             static final boolean isXterm    = System.getenv("TERM") != null && System.getenv("TERM").startsWith("xterm");
             static final boolean ISATTY = calcTTY();
@@ -4402,8 +4401,10 @@ public class CommandLine {
                 public String off() { return CSI + (fgbg + 1) + "m"; }
             }
             private static class StyledSection {
-                int startIndex, length;
-                String startStyles, endStyles;
+                final int startIndex;
+                final int length;
+                final String startStyles;
+                final String endStyles;
                 StyledSection(int start, int len, String style1, String style2) {
                     startIndex = start; length = len; startStyles = style1; endStyles = style2;
                 }
@@ -4668,8 +4669,8 @@ public class CommandLine {
         static TraceLevel lookup(String key) { return key == null ? WARN : empty(key) || "true".equalsIgnoreCase(key) ? INFO : valueOf(key); }
     }
     private static class Tracer {
-        TraceLevel level = TraceLevel.lookup(System.getProperty("picocli.trace"));
-        PrintStream stream = System.err;
+        private final TraceLevel level = TraceLevel.lookup(System.getProperty("picocli.trace"));
+        private final PrintStream stream = System.err;
         void warn (String msg, Object... params) { TraceLevel.WARN.print(this, msg, params); }
         void info (String msg, Object... params) { TraceLevel.INFO.print(this, msg, params); }
         void debug(String msg, Object... params) { TraceLevel.DEBUG.print(this, msg, params); }

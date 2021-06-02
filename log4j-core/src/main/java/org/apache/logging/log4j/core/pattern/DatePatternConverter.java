@@ -145,9 +145,9 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     }
 
     private final class CachedTime {
-        public long epochSecond;
-        public int nanoOfSecond;
-        public String formatted;
+        public final long epochSecond;
+        public final int nanoOfSecond;
+        public final String formatted;
 
         public CachedTime(final Instant instant) {
             this.epochSecond = instant.getEpochSecond();

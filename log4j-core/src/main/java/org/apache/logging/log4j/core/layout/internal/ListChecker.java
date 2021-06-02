@@ -22,14 +22,14 @@ package org.apache.logging.log4j.core.layout.internal;
 
 public interface ListChecker {
 
-    static final NoopChecker NOOP_CHECKER = new NoopChecker();
+    NoopChecker NOOP_CHECKER = new NoopChecker();
 
     boolean check(final String key);
 
     /**
      * Does nothing.
      */
-    public class NoopChecker implements ListChecker {
+    class NoopChecker implements ListChecker {
         @Override
         public boolean check(final String key) {
             return true;

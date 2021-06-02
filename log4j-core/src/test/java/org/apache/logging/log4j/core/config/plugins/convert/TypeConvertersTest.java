@@ -152,11 +152,11 @@ public class TypeConvertersTest {
                 { "123", "123".getBytes(Charset.defaultCharset()), null, byte[].class },
                 { "0xC773218C7EC8EE99", byteArray, null, byte[].class },
                 { "0xc773218c7ec8ee99", byteArray, null, byte[].class },
-                { "Base64:cGxlYXN1cmUu", "pleasure.".getBytes("US-ASCII"), null, byte[].class },
+                { "Base64:cGxlYXN1cmUu", "pleasure.".getBytes(StandardCharsets.US_ASCII), null, byte[].class },
                 // JRE
                 // JRE Charset
                 { "UTF-8", StandardCharsets.UTF_8, null, Charset.class },
-                { "ASCII", Charset.forName("ASCII"), "UTF-8", Charset.class },
+                { "ASCII", StandardCharsets.US_ASCII, "UTF-8", Charset.class },
                 { "Not a real charset", StandardCharsets.UTF_8, "UTF-8", Charset.class },
                 { null, StandardCharsets.UTF_8, "UTF-8", Charset.class },
                 { null, null, null, Charset.class },
