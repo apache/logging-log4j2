@@ -176,7 +176,7 @@ public class LoggerContext extends AbstractLifeCycle
         if (listeners == null) {
             synchronized(this) {
                 if (listeners == null) {
-                    listeners = Collections.synchronizedList(new ArrayList<>());
+                    listeners = new CopyOnWriteArrayList<>();
                 }
             }
         }
