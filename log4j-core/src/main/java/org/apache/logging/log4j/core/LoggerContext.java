@@ -22,9 +22,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -178,7 +176,7 @@ public class LoggerContext extends AbstractLifeCycle
         if (listeners == null) {
             synchronized(this) {
                 if (listeners == null) {
-                    listeners = Collections.synchronizedList(new ArrayList<LoggerContextShutdownAware>());
+                    listeners = new CopyOnWriteArrayList<LoggerContextShutdownAware>();
                 }
             }
         }
