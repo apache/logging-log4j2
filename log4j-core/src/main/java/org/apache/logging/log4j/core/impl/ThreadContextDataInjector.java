@@ -54,7 +54,7 @@ import org.apache.logging.log4j.util.StringMap;
  */
 public class ThreadContextDataInjector {
 
-    private static Logger LOGGER = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     /**
      * ContextDataProviders loaded via OSGi.

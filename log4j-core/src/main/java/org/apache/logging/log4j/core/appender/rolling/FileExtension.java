@@ -95,7 +95,7 @@ public enum FileExtension {
 
     private final String extension;
 
-    private FileExtension(final String extension) {
+    FileExtension(final String extension) {
         Objects.requireNonNull(extension, "extension");
         this.extension = extension;
     }

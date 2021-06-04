@@ -227,8 +227,7 @@ public final class Server {
     private static ContextSelector getContextSelector() {
         final LoggerContextFactory factory = LogManager.getFactory();
         if (factory instanceof Log4jContextFactory) {
-            final ContextSelector selector = ((Log4jContextFactory) factory).getSelector();
-            return selector;
+            return ((Log4jContextFactory) factory).getSelector();
         }
         return null;
     }

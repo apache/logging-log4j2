@@ -71,7 +71,7 @@ public final class ScriptFilter extends AbstractFilter {
         bindings.putAll(configuration.getProperties());
         bindings.put("substitutor", configuration.getStrSubstitutor());
         final Object object = configuration.getScriptManager().execute(script.getName(), bindings);
-        return object == null || !Boolean.TRUE.equals(object) ? onMismatch : onMatch;
+        return !Boolean.TRUE.equals(object) ? onMismatch : onMatch;
     }
 
     @Override

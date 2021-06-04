@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -39,7 +40,7 @@ import org.apache.logging.log4j.core.util.IOUtils;
 
 public class HttpURLConnectionManager extends HttpManager {
 
-    private static final Charset CHARSET = Charset.forName("US-ASCII");
+    private static final Charset CHARSET = StandardCharsets.US_ASCII;
 
     private final URL url;
     private final boolean isHttps;

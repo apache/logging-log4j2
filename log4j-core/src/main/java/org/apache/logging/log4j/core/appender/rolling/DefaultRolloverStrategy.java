@@ -121,7 +121,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
                 maxIndex = Integer.MAX_VALUE;
                 useMax = false;
             } else {
-                useMax = fileIndex == null ? true : fileIndex.equalsIgnoreCase("max");
+                useMax = fileIndex == null || fileIndex.equalsIgnoreCase("max");
                 minIndex = MIN_WINDOW_SIZE;
                 if (min != null) {
                     minIndex = Integer.parseInt(min);

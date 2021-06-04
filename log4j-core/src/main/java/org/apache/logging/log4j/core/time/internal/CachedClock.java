@@ -41,8 +41,7 @@ public final class CachedClock implements Clock {
             @Override
             public void run() {
                 while (true) {
-                    final long time = System.currentTimeMillis();
-                    millis = time;
+                    millis = System.currentTimeMillis();
 
                     // avoid explicit dependency on sun.misc.Util
                     LockSupport.parkNanos(1000 * 1000);
