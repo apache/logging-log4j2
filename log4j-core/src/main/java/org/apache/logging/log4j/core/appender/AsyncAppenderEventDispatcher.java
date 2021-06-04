@@ -50,6 +50,7 @@ class AsyncAppenderEventDispatcher extends Log4jThread {
             final List<AppenderControl> appenders,
             final BlockingQueue<LogEvent> queue) {
         super("AsyncAppenderEventDispatcher-" + THREAD_COUNTER.incrementAndGet() + "-" + name);
+        this.setDaemon(true);
         this.errorAppender = errorAppender;
         this.appenders = appenders;
         this.queue = queue;

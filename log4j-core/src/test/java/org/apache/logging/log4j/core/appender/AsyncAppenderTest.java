@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Timeout;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -74,6 +75,14 @@ class AsyncAppenderTest {
     void defaultAsyncAppenderConfig(final LoggerContext context) throws InterruptedException {
         rewriteTest(context);
         exceptionTest(context);
+
+        List<Thread> backgroundThreads = Thread.getAllStackTraces().keySet().stream()
+                .filter(AsyncAppenderEventDispatcher.class::isInstance)
+                .collect(Collectors.toList());
+        assertFalse(backgroundThreads.isEmpty(), "Failed to locate background thread");
+        for (Thread thread : backgroundThreads) {
+            assertTrue(thread.isDaemon(), "AsyncAppender should use daemon threads");
+        }
     }
 
     @Test
