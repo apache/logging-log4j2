@@ -208,6 +208,9 @@
         Allow a PatternSelector to be specified on GelfLayout.
       </action>
       <!-- FIXES -->
+      <action issue="LOG4J2-3103" dev="ckozak" type="fix" due-to="Mike Glazer">
+        Fix race condition which can result in ConcurrentModificationException on context.stop.
+      </action>
       <action issue="LOG4J2-3092" dev="vy" type="fix" due-to="xmh51">
         Fix JsonWriter memory leaks due to retained excessive buffer growth.
       </action>
