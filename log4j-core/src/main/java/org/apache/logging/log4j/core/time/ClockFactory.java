@@ -74,7 +74,7 @@ public final class ClockFactory {
     }
 
     private static Map<String, Supplier<Clock>> aliases() {
-        Map<String, Supplier<Clock>> result = new HashMap<>();
+        final Map<String, Supplier<Clock>> result = new HashMap<>();
         result.put("SystemClock",       new Supplier<Clock>() { @Override public Clock get() { return new SystemClock(); } });
         result.put("SystemMillisClock", new Supplier<Clock>() { @Override public Clock get() { return new SystemMillisClock(); } });
         result.put("CachedClock",       new Supplier<Clock>() { @Override public Clock get() { return CachedClock.instance(); } });
@@ -90,7 +90,7 @@ public final class ClockFactory {
             LOGGER.trace("Using default SystemClock for timestamps.");
             return logSupportedPrecision(new SystemClock());
         }
-        Supplier<Clock> specified = aliases().get(userRequest);
+        final Supplier<Clock> specified = aliases().get(userRequest);
         if (specified != null) {
             LOGGER.trace("Using specified {} for timestamps.", userRequest);
             return logSupportedPrecision(specified.get());
@@ -106,8 +106,8 @@ public final class ClockFactory {
         }
     }
 
-    private static Clock logSupportedPrecision(Clock clock) {
-        String support = clock instanceof PreciseClock ? "supports" : "does not support";
+    private static Clock logSupportedPrecision(final Clock clock) {
+        final String support = clock instanceof PreciseClock ? "supports" : "does not support";
         LOGGER.debug("{} {} precise timestamps.", clock.getClass().getName(), support);
         return clock;
     }

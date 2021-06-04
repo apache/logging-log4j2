@@ -129,7 +129,7 @@ public class MarkerPatternSelector implements PatternSelector {
             try {
                 final List<PatternFormatter> list = parser.parse(property.getPattern(), alwaysWriteExceptions,
                         disableAnsi, noConsoleNoAnsi);
-                PatternFormatter[] formatters = list.toArray(new PatternFormatter[list.size()]);
+                final PatternFormatter[] formatters = list.toArray(new PatternFormatter[list.size()]);
                 formatterMap.put(property.getKey(), formatters);
                 for (int i = 0; !needsLocation && i < formatters.length; ++i) {
                     needsLocation = formatters[i].requiresLocation();

@@ -64,7 +64,7 @@ public final class FileUtils {
             if (JBOSS_FILE.equals(uri.getScheme())) try {
                 // patch the scheme
                 uri = new URI(PROTOCOL_FILE, uri.getSchemeSpecificPart(), uri.getFragment());
-            } catch (URISyntaxException use) {
+            } catch (final URISyntaxException use) {
                 // should not happen, ignore
             }
             try {
@@ -75,7 +75,7 @@ public final class FileUtils {
                 LOGGER.warn("Invalid URI {}", uri);
             }
         } else {
-            File file = new File(uri.toString());
+            final File file = new File(uri.toString());
             try {
                 if (file.exists()) {
                     return file;

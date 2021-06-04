@@ -35,16 +35,16 @@ public class BasicAsyncLoggerContextSelector implements ContextSelector {
     private static final AsyncLoggerContext CONTEXT = new AsyncLoggerContext("AsyncDefault");
 
     @Override
-    public void shutdown(String fqcn, ClassLoader loader, boolean currentContext, boolean allContexts) {
-        LoggerContext ctx = getContext(fqcn, loader, currentContext);
+    public void shutdown(final String fqcn, final ClassLoader loader, final boolean currentContext, final boolean allContexts) {
+        final LoggerContext ctx = getContext(fqcn, loader, currentContext);
         if (ctx != null && ctx.isStarted()) {
             ctx.stop(DEFAULT_STOP_TIMEOUT, TimeUnit.MILLISECONDS);
         }
     }
 
     @Override
-    public boolean hasContext(String fqcn, ClassLoader loader, boolean currentContext) {
-        LoggerContext ctx = getContext(fqcn, loader, currentContext);
+    public boolean hasContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
+        final LoggerContext ctx = getContext(fqcn, loader, currentContext);
         return ctx != null && ctx.isStarted();
     }
 

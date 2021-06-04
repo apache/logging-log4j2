@@ -79,7 +79,7 @@ public class ThreadContextDataInjector {
     }
 
     private static List<ContextDataProvider> getServiceProviders() {
-        List<ContextDataProvider> providers = new ArrayList<>();
+        final List<ContextDataProvider> providers = new ArrayList<>();
         for (final ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
             try {
                 for (final ContextDataProvider provider : ServiceLoader.load(ContextDataProvider.class, classLoader)) {
@@ -126,7 +126,7 @@ public class ThreadContextDataInjector {
                 copy = providers.get(0).supplyContextData();
             } else {
                 copy = new HashMap<>();
-                for (ContextDataProvider provider : providers) {
+                for (final ContextDataProvider provider : providers) {
                     copy.putAll(provider.supplyContextData());
                 }
             }
@@ -244,7 +244,7 @@ public class ThreadContextDataInjector {
                 return providers.get(0).supplyStringMap();
             }
             int count = props == null ? 0 : props.size();
-            StringMap[] maps = new StringMap[providers.size()];
+            final StringMap[] maps = new StringMap[providers.size()];
             for (int i = 0; i < providers.size(); ++i) {
                 maps[i] = providers.get(i).supplyStringMap();
                 count += maps[i].size();
@@ -255,7 +255,7 @@ public class ThreadContextDataInjector {
             // the ThreadContext - this will throw an UnsupportedOperationException if we try to modify it.
             final StringMap result = ContextDataFactory.createContextData(count);
             copyProperties(props, result);
-            for (StringMap map : maps) {
+            for (final StringMap map : maps) {
                 result.putAll(map);
             }
             return result;

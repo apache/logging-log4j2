@@ -221,7 +221,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
                 final Field unsafeField = unsafeClass.getDeclaredField("theUnsafe");
                 unsafeField.setAccessible(true);
                 final Object unsafe = unsafeField.get(null);
-                Method invokeCleaner = unsafeClass.getMethod("invokeCleaner", ByteBuffer.class);
+                final Method invokeCleaner = unsafeClass.getMethod("invokeCleaner", ByteBuffer.class);
                 invokeCleaner.invoke(unsafe, mbb);
                 return null;
             }

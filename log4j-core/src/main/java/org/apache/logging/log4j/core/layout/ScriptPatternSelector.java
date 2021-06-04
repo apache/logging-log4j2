@@ -159,7 +159,7 @@ public class ScriptPatternSelector implements PatternSelector {
         for (final PatternMatch property : properties) {
             try {
                 final List<PatternFormatter> list = parser.parse(property.getPattern(), alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi);
-                PatternFormatter[] formatters = list.toArray(new PatternFormatter[list.size()]);
+                final PatternFormatter[] formatters = list.toArray(new PatternFormatter[list.size()]);
                 formatterMap.put(property.getKey(), formatters);
                 patternMap.put(property.getKey(), property.getPattern());
                 for (int i = 0; !needsLocation && i < formatters.length; ++i) {

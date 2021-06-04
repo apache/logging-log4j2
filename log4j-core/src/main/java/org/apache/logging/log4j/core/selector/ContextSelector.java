@@ -54,7 +54,7 @@ public interface ContextSelector {
      * @return true if a LoggerContext has been installed, false otherwise.
      * @since 2.13.0
      */
-    default boolean hasContext(String fqcn, ClassLoader loader, boolean currentContext) {
+    default boolean hasContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
         return false;
     }
 
@@ -77,8 +77,8 @@ public interface ContextSelector {
      * for the caller if a more appropriate Context can be determined.
      * @return The LoggerContext.
      */
-    default LoggerContext getContext(String fqcn, ClassLoader loader, Map.Entry<String, Object> entry, boolean currentContext) {
-        LoggerContext lc = getContext(fqcn, loader, currentContext);
+    default LoggerContext getContext(final String fqcn, final ClassLoader loader, final Map.Entry<String, Object> entry, final boolean currentContext) {
+        final LoggerContext lc = getContext(fqcn, loader, currentContext);
         if (lc != null) {
             lc.putObject(entry.getKey(), entry.getValue());
         }
@@ -106,9 +106,9 @@ public interface ContextSelector {
      * @param configLocation The location of the configuration for the LoggerContext.
      * @return The LoggerContext.
      */
-    default LoggerContext getContext(String fqcn, ClassLoader loader, Map.Entry<String, Object> entry,
-            boolean currentContext, URI configLocation) {
-        LoggerContext lc = getContext(fqcn, loader, currentContext, configLocation);
+    default LoggerContext getContext(final String fqcn, final ClassLoader loader, final Map.Entry<String, Object> entry,
+            final boolean currentContext, final URI configLocation) {
+        final LoggerContext lc = getContext(fqcn, loader, currentContext, configLocation);
         if (lc != null) {
             lc.putObject(entry.getKey(), entry.getValue());
         }

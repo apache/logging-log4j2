@@ -127,7 +127,7 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
 
     private MemoryMappedFileAppender(final String name, final Layout<? extends Serializable> layout,
             final Filter filter, final MemoryMappedFileManager manager, final String filename,
-            final boolean ignoreExceptions, final boolean immediateFlush, final Advertiser advertiser, Property[] properties) {
+            final boolean ignoreExceptions, final boolean immediateFlush, final Advertiser advertiser, final Property[] properties) {
         super(name, layout, filter, ignoreExceptions, immediateFlush, properties, manager);
         if (advertiser != null) {
             final Map<String, String> configuration = new HashMap<>(layout.getContentFormat());

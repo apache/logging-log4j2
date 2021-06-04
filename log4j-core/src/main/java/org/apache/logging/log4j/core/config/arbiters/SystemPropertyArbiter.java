@@ -43,7 +43,7 @@ public class SystemPropertyArbiter implements Arbiter {
      */
     @Override
     public boolean isCondition() {
-        String value = System.getProperty(propertyName);
+        final String value = System.getProperty(propertyName);
         return value != null && (propertyValue == null || value.equals(propertyValue));
     }
 

@@ -97,7 +97,7 @@ final class DisruptorUtil {
     private static long parseAdditionalLongProperty(
             final String propertyName,
             final String additionalKey,
-            long defaultValue) {
+            final long defaultValue) {
         final String key = getFullPropertyKey(propertyName, additionalKey);
         return PropertiesUtil.getProperties().getLongProperty(key, defaultValue);
     }

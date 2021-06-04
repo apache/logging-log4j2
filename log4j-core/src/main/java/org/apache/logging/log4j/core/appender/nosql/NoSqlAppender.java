@@ -89,7 +89,7 @@ public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseM
          *            buffer reaches this size.
          * @return this
          */
-        public B setBufferSize(int bufferSize) {
+        public B setBufferSize(final int bufferSize) {
             this.bufferSize = bufferSize;
             return asBuilder();
         }
@@ -101,7 +101,7 @@ public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseM
          *            The NoSQL provider that provides connections to the chosen NoSQL database.
          * @return this
          */
-        public B setProvider(NoSqlProvider<?> provider) {
+        public B setProvider(final NoSqlProvider<?> provider) {
             this.provider = provider;
             return asBuilder();
         }
@@ -114,8 +114,8 @@ public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseM
 
     private final String description;
 
-    private NoSqlAppender(final String name, final Filter filter, Layout<? extends Serializable> layout,
-            final boolean ignoreExceptions, Property[] properties, final NoSqlDatabaseManager<?> manager) {
+    private NoSqlAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
+            final boolean ignoreExceptions, final Property[] properties, final NoSqlDatabaseManager<?> manager) {
         super(name, filter, layout, ignoreExceptions, properties, manager);
         this.description = this.getName() + "{ manager=" + this.getManager() + " }";
     }

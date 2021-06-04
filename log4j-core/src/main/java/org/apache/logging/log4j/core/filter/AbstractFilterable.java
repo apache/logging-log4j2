@@ -80,7 +80,7 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
         this(null, null);
     }
 
-    protected AbstractFilterable(final Filter filter, Property[] propertyArray) {
+    protected AbstractFilterable(final Filter filter, final Property[] propertyArray) {
         this.filter = filter;
         this.propertyArray = propertyArray == null ? Property.EMPTY_ARRAY : propertyArray;
     }

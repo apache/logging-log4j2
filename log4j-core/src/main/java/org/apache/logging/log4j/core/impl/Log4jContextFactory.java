@@ -303,7 +303,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
                 if (configurations.size() == 0) {
                     LOGGER.error("No configurations could be created for {}", configLocations.toString());
                 } else if (configurations.size() == 1) {
-                    AbstractConfiguration config = configurations.get(0);
+                    final AbstractConfiguration config = configurations.get(0);
                     LOGGER.debug("Starting LoggerContext[name={}] from configuration at {}", ctx.getName(),
                             config.getConfigurationSource().getLocation());
                     ctx.start(config);
@@ -322,7 +322,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
     }
 
     @Override
-    public void shutdown(String fqcn, ClassLoader loader, boolean currentContext, boolean allContexts) {
+    public void shutdown(final String fqcn, final ClassLoader loader, final boolean currentContext, final boolean allContexts) {
         if (selector.hasContext(fqcn, loader, currentContext)) {
             selector.shutdown(fqcn, loader, currentContext, allContexts);
         }
@@ -338,7 +338,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
      * @since 2.13.0
      */
     @Override
-    public boolean hasContext(String fqcn, ClassLoader loader, boolean currentContext) {
+    public boolean hasContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
         return selector.hasContext(fqcn, loader, currentContext);
     }
 

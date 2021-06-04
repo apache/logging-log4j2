@@ -55,7 +55,7 @@ public abstract class NameAbbreviator {
                 return DEFAULT;
             }
 
-            boolean isNegativeNumber;
+            final boolean isNegativeNumber;
             final String number;
 
             // check if number is a negative number

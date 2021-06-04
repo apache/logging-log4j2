@@ -55,8 +55,8 @@ public interface ReliabilityStrategy {
      * @param t A Throwable or null.
      * @since 3.0
      */
-    default void log(Supplier<LoggerConfig> reconfigured, String loggerName, String fqcn, StackTraceElement location,
-            Marker marker, Level level, Message data, Throwable t) {
+    default void log(final Supplier<LoggerConfig> reconfigured, final String loggerName, final String fqcn, final StackTraceElement location,
+                     final Marker marker, final Level level, final Message data, final Throwable t) {
     }
 
     /**

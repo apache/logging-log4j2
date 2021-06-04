@@ -94,10 +94,10 @@ public class JndiContextSelector implements NamedContextSelector {
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     @Override
-    public void shutdown(String fqcn, ClassLoader loader, boolean currentContext, boolean allContexts) {
+    public void shutdown(final String fqcn, final ClassLoader loader, final boolean currentContext, final boolean allContexts) {
         LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
         if (ctx == null) {
-            String loggingContextName = getContextName();
+            final String loggingContextName = getContextName();
             if (loggingContextName != null) {
                 ctx = CONTEXT_MAP.get(loggingContextName);
             }
@@ -108,10 +108,10 @@ public class JndiContextSelector implements NamedContextSelector {
     }
 
     @Override
-    public boolean hasContext(String fqcn, ClassLoader loader, boolean currentContext) {
+    public boolean hasContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
         LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
         if (ctx == null) {
-            String loggingContextName = getContextName();
+            final String loggingContextName = getContextName();
             if (loggingContextName == null) {
                 return false;
             }
@@ -134,7 +134,7 @@ public class JndiContextSelector implements NamedContextSelector {
             return lc;
         }
 
-        String loggingContextName = getContextName();
+        final String loggingContextName = getContextName();
 
         return loggingContextName == null ? CONTEXT : locateContext(loggingContextName, null, configLocation);
     }

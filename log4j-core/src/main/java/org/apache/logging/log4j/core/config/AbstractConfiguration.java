@@ -246,8 +246,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         LOGGER.debug("Configuration {} initialized", this);
     }
 
-    protected void initializeWatchers(Reconfigurable reconfigurable, ConfigurationSource configSource,
-            int monitorIntervalSeconds) {
+    protected void initializeWatchers(final Reconfigurable reconfigurable, final ConfigurationSource configSource,
+                 final int monitorIntervalSeconds) {
         if (configSource.getFile() != null || configSource.getURL() != null) {
             if (monitorIntervalSeconds > 0) {
                 watchManager.setIntervalSeconds(monitorIntervalSeconds);
@@ -268,7 +268,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
     }
 
-    private void monitorSource(Reconfigurable reconfigurable, ConfigurationSource configSource) {
+    private void monitorSource(final Reconfigurable reconfigurable, final ConfigurationSource configSource) {
         if (configSource.getLastModified() > 0) {
             final Source cfgSource = new Source(configSource);
             final Watcher watcher = WatcherFactory.getInstance(pluginPackages)
@@ -528,8 +528,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     protected void processConditionals(final Node node) {
         try {
-            List<Node> addList = new ArrayList<>();
-            List<Node> removeList = new ArrayList<>();
+            final List<Node> addList = new ArrayList<>();
+            final List<Node> removeList = new ArrayList<>();
             for (final Node child : node.getChildren()) {
                 final PluginType<?> type = child.getType();
                 if (type != null && Arbiter.ELEMENT_TYPE.equals(type.getElementName())) {
@@ -540,7 +540,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                     } else if (Arbiter.class.isAssignableFrom(clazz)) {
                         removeList.add(child);
                         try {
-                            Arbiter condition = (Arbiter) createPluginObject(type, child, null);
+                            final Arbiter condition = (Arbiter) createPluginObject(type, child, null);
                             if (condition.isCondition()) {
                                 addList.addAll(child.getChildren());
                                 processConditionals(child);
@@ -560,10 +560,10 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 }
             }
             if (!removeList.isEmpty()) {
-                List<Node> children = node.getChildren();
+                final List<Node> children = node.getChildren();
                 children.removeAll(removeList);
                 children.addAll(addList);
-                for (Node grandChild : addList) {
+                for (final Node grandChild : addList) {
                     grandChild.setParent(node);
                 }
             }
@@ -579,15 +579,15 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * @param type The PluginType of the Select Node.
      * @return The list of Nodes to be added to the parent.
      */
-    protected List<Node> processSelect(Node selectNode, PluginType<?> type) {
-        List<Node> addList = new ArrayList<>();
-        SelectArbiter select = (SelectArbiter) createPluginObject(type, selectNode, null);
-        List<Arbiter> conditions = new ArrayList<>();
-        for (Node child : selectNode.getChildren()) {
-            PluginType<?> nodeType = child.getType();
+    protected List<Node> processSelect(final Node selectNode, final PluginType<?> type) {
+        final List<Node> addList = new ArrayList<>();
+        final SelectArbiter select = (SelectArbiter) createPluginObject(type, selectNode, null);
+        final List<Arbiter> conditions = new ArrayList<>();
+        for (final Node child : selectNode.getChildren()) {
+            final PluginType<?> nodeType = child.getType();
             if (nodeType != null) {
                 if (Arbiter.class.isAssignableFrom(nodeType.getPluginClass())) {
-                    Arbiter condition = (Arbiter) createPluginObject(nodeType, child, null);
+                    final Arbiter condition = (Arbiter) createPluginObject(nodeType, child, null);
                     conditions.add(condition);
                     child.setObject(condition);
                 } else {
@@ -598,9 +598,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 LOGGER.error("No PluginType for node {}", child.getName());
             }
         }
-        Arbiter condition = select.evaluateConditions(conditions);
+        final Arbiter condition = select.evaluateConditions(conditions);
         if (condition != null) {
-            for (Node child : selectNode.getChildren()) {
+            for (final Node child : selectNode.getChildren()) {
                 if (condition == child.getObject()) {
                     addList.addAll(child.getChildren());
                     processConditionals(child);

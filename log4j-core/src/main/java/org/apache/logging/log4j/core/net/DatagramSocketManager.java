@@ -110,7 +110,7 @@ public class DatagramSocketManager extends AbstractSocketManager {
 
         @Override
         public DatagramSocketManager createManager(final String name, final FactoryData data) {
-            InetAddress inetAddress;
+            final InetAddress inetAddress;
             try {
                 inetAddress = InetAddress.getByName(data.host);
             } catch (final UnknownHostException ex) {
