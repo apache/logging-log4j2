@@ -2036,7 +2036,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         try {
             incrementRecursionDepth();
             log(level, marker, fqcn, location, message, throwable);
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             handleLogMessageException(ex, fqcn, message);
         } finally {
             decrementRecursionDepth();
@@ -2107,7 +2107,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         getRecursionDepthHolder()[0]++;
     }
     private static void decrementRecursionDepth() {
-        int[] depth = getRecursionDepthHolder();
+        final int[] depth = getRecursionDepthHolder();
         depth[0]--;
         if (depth[0] < 0) {
             throw new IllegalStateException("Recursion depth became negative: " + depth[0]);
@@ -2144,7 +2144,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     @PerformanceSensitive
     // NOTE: This is a hot method. Current implementation compiles to 15 bytes of byte code.
     // This is within the 35 byte MaxInlineSize threshold. Modify with care!
-    private StackTraceElement getLocation(String fqcn) {
+    private StackTraceElement getLocation(final String fqcn) {
         return requiresLocation() ? StackLocatorUtil.calcLocation(fqcn) : null;
     }
 
@@ -2829,7 +2829,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      */
     @Override
     public LogBuilder always() {
-        DefaultLogBuilder builder = logBuilder.get();
+        final DefaultLogBuilder builder = logBuilder.get();
         if (builder.isInUse()) {
             return new DefaultLogBuilder(this);
         }
@@ -2841,7 +2841,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * @since 2.13.0
      */
     @Override
-    public LogBuilder atLevel(Level level) {
+    public LogBuilder atLevel(final Level level) {
         if (isEnabled(level)) {
             return (getLogBuilder(level).reset(level));
         } else {
@@ -2849,25 +2849,25 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         }
     }
 
-    private DefaultLogBuilder getLogBuilder(Level level) {
-        DefaultLogBuilder builder = logBuilder.get();
+    private DefaultLogBuilder getLogBuilder(final Level level) {
+        final DefaultLogBuilder builder = logBuilder.get();
         return Constants.ENABLE_THREADLOCALS && !builder.isInUse() ? builder : new DefaultLogBuilder(this, level);
     }
 
     private void readObject (final ObjectInputStream s) throws ClassNotFoundException, IOException {
         s.defaultReadObject( );
         try {
-            Field f = this.getClass().getDeclaredField("logBuilder");
+            final Field f = this.getClass().getDeclaredField("logBuilder");
             f.setAccessible(true);
             f.set(this, new LocalLogBuilder(this));
-        } catch (NoSuchFieldException | IllegalAccessException ex) {
+        } catch (final NoSuchFieldException | IllegalAccessException ex) {
             StatusLogger.getLogger().warn("Unable to initialize LogBuilder");
         }
     }
 
     private class LocalLogBuilder extends ThreadLocal<DefaultLogBuilder> {
         private final AbstractLogger logger;
-        LocalLogBuilder(AbstractLogger logger) {
+        LocalLogBuilder(final AbstractLogger logger) {
             this.logger = logger;
         }
 

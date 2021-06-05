@@ -39,7 +39,7 @@ public enum Rfc1349TrafficClass {
 
     private final int trafficClass;
 
-    private Rfc1349TrafficClass(final int trafficClass) {
+    Rfc1349TrafficClass(final int trafficClass) {
         this.trafficClass = trafficClass;
     }
 

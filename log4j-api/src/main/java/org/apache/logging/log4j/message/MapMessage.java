@@ -222,7 +222,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      * @return The value of the element or null if the key is not present.
      */
     public String get(final String key) {
-        Object result = data.getValue(key);
+        final Object result = data.getValue(key);
         return ParameterFormatter.deepToString(result);
     }
 
@@ -435,7 +435,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
         asJava(sb, true);
     }
 
-    private void asJava(final StringBuilder sb, boolean quoted) {
+    private void asJava(final StringBuilder sb, final boolean quoted) {
         sb.append('{');
         for (int i = 0; i < data.size(); i++) {
             if (i > 0) {

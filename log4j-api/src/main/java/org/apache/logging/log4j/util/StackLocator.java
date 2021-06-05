@@ -17,11 +17,8 @@
 package org.apache.logging.log4j.util;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Stack;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * <em>Consider this class private.</em> Determines the caller's class.
@@ -81,8 +78,8 @@ public final class StackLocator {
         if (PrivateSecurityManagerStackTraceUtil.isEnabled()) {
             return PrivateSecurityManagerStackTraceUtil.getCurrentStackTrace();
         }
-        Stack<Class<?>> stack = new Stack<Class<?>>();
-        List<Class<?>> classes = walker.walk(s -> s.map(f -> f.getDeclaringClass()).collect(Collectors.toList()));
+        final Stack<Class<?>> stack = new Stack<Class<?>>();
+        final List<Class<?>> classes = walker.walk(s -> s.map(f -> f.getDeclaringClass()).collect(Collectors.toList()));
         stack.addAll(classes);
         return stack;
     }

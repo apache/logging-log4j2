@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.spi;
 
 import java.net.URI;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Implemented by factories that create {@link LoggerContext} objects.
@@ -33,9 +32,9 @@ public interface LoggerContextFactory {
      * @param allContexts if true all LoggerContexts that can be located will be shutdown.
      * @since 2.13.0
      */
-    default void shutdown(String fqcn, ClassLoader loader, boolean currentContext, boolean allContexts) {
+    default void shutdown(final String fqcn, final ClassLoader loader, final boolean currentContext, final boolean allContexts) {
         if (hasContext(fqcn, loader, currentContext)) {
-            LoggerContext ctx = getContext(fqcn, loader, null, currentContext);
+            final LoggerContext ctx = getContext(fqcn, loader, null, currentContext);
             if (ctx instanceof Terminable) {
                 ((Terminable) ctx).terminate();
             }
@@ -51,7 +50,7 @@ public interface LoggerContextFactory {
      * @return true if a LoggerContext has been installed, false otherwise.
      * @since 2.13.0
      */
-    default boolean hasContext(String fqcn, ClassLoader loader, boolean currentContext) {
+    default boolean hasContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
         return false;
     }
 

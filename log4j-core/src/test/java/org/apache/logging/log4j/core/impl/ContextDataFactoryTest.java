@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import java.lang.reflect.Field;
-
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.junit.jupiter.api.Test;
 

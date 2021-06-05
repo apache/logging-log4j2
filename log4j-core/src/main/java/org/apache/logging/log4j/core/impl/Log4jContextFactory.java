@@ -38,9 +38,7 @@ import org.apache.logging.log4j.core.util.DefaultShutdownCallbackRegistry;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
-import org.apache.logging.log4j.spi.Terminable;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**

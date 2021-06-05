@@ -324,11 +324,11 @@ public class FixedDateFormat {
          */
         HHCMM(':', true, 6);
 
-        private FixedTimeZoneFormat() {
+        FixedTimeZoneFormat() {
             this(NONE, true, 4);
         }
 
-        private FixedTimeZoneFormat(final char timeSeparatorChar, final boolean minutes, final int length) {
+        FixedTimeZoneFormat(final char timeSeparatorChar, final boolean minutes, final int length) {
             this.timeSeparatorChar = timeSeparatorChar;
             this.timeSeparatorCharLen = timeSeparatorChar != NONE ? 1 : 0;
             this.useMinutes = minutes;
@@ -685,7 +685,7 @@ public class FixedDateFormat {
         return pos;
     }
 
-    static int[] TABLE = {
+    static final int[] TABLE = {
             100000, // 0
             10000, // 1
             1000, // 2

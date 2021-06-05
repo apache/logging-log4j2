@@ -208,6 +208,16 @@
         Allow a PatternSelector to be specified on GelfLayout.
       </action>
       <!-- FIXES -->
+      <action issue="LOG4J2-3102" dev="ckozak" type="fix">
+        Fix a regression in 2.14.1 which allowed the AsyncAppender background thread to keep the JVM alive because
+        the daemon flag was not set.
+      </action>
+      <action issue="LOG4J2-3103" dev="ckozak" type="fix" due-to="Mike Glazer">
+        Fix race condition which can result in ConcurrentModificationException on context.stop.
+      </action>
+      <action issue="LOG4J2-3092" dev="vy" type="fix" due-to="xmh51">
+        Fix JsonWriter memory leaks due to retained excessive buffer growth.
+      </action>
       <action issue="LOG4J2-3089" dev="vy" type="fix" due-to="Tim Perry">
         Fix sporadic JsonTemplateLayoutNullEventDelimiterTest failures on Windows.
       </action>

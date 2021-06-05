@@ -19,6 +19,7 @@ package org.apache.logging.log4j.spi;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
@@ -153,8 +154,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
         }
         for (final Map.Entry<String, String> entry : map.entrySet()) {
             //BiConsumer should be able to handle values of any type V. In our case the values are of type String.
-            @SuppressWarnings("unchecked")
-            V value = (V) entry.getValue();
+            @SuppressWarnings("unchecked") final V value = (V) entry.getValue();
             action.accept(entry.getKey(), value);
         }
     }
@@ -167,8 +167,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
         }
         for (final Map.Entry<String, String> entry : map.entrySet()) {
             //TriConsumer should be able to handle values of any type V. In our case the values are of type String.
-            @SuppressWarnings("unchecked")
-            V value = (V) entry.getValue();
+            @SuppressWarnings("unchecked") final V value = (V) entry.getValue();
             action.accept(entry.getKey(), value, state);
         }
     }
@@ -239,13 +238,6 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
         final ThreadContextMap other = (ThreadContextMap) obj;
         final Map<String, String> map = this.localMap.get();
         final Map<String, String> otherMap = other.getImmutableMapOrNull();
-        if (map == null) {
-            if (otherMap != null) {
-                return false;
-            }
-        } else if (!map.equals(otherMap)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(map, otherMap);
     }
 }

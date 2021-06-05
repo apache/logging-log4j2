@@ -35,7 +35,7 @@ public interface LoggerContext {
      * @return The Object that is associated with the key, if any.
      * @since 2.13.0
      */
-    default Object getObject(String key) {
+    default Object getObject(final String key) {
         return null;
     }
 
@@ -46,7 +46,7 @@ public interface LoggerContext {
      * @return The previous object or null.
      * @since 2.13.0
      */
-    default Object putObject(String key, Object value) {
+    default Object putObject(final String key, final Object value) {
         return null;
     }
 
@@ -57,7 +57,7 @@ public interface LoggerContext {
      * @return The previous object or null.
      * @since 2.13.0
      */
-    default Object putObjectIfAbsent(String key, Object value) {
+    default Object putObjectIfAbsent(final String key, final Object value) {
         return null;
     }
 
@@ -67,7 +67,7 @@ public interface LoggerContext {
      * @return The object if it was present, null if it was not.
      * @since 2.13.0
      */
-    default Object removeObject(String key) {
+    default Object removeObject(final String key) {
         return null;
     }
 
@@ -78,7 +78,7 @@ public interface LoggerContext {
      * @return The object if it was present, null if it was not.
      * @since 2.13.0
      */
-    default boolean removeObject(String key, Object value) {
+    default boolean removeObject(final String key, final Object value) {
         return false;
     }
 
@@ -95,7 +95,7 @@ public interface LoggerContext {
      * @return The logger.
      * @since 2.14.0
      */
-    default ExtendedLogger getLogger(Class<?> cls) {
+    default ExtendedLogger getLogger(final Class<?> cls) {
         final String canonicalName = cls.getCanonicalName();
         return getLogger(canonicalName != null ? canonicalName : cls.getName());
     }
@@ -117,7 +117,7 @@ public interface LoggerContext {
      * @return The logger.
      * @since 2.14.0
      */
-    default ExtendedLogger getLogger(Class<?> cls, MessageFactory messageFactory) {
+    default ExtendedLogger getLogger(final Class<?> cls, final MessageFactory messageFactory) {
         final String canonicalName = cls.getCanonicalName();
         return getLogger(canonicalName != null ? canonicalName : cls.getName(), messageFactory);
     }

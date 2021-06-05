@@ -19,7 +19,6 @@ package org.apache.logging.log4j.util;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.ServiceLoader;
@@ -63,10 +62,10 @@ public final class ProviderUtil {
     private static volatile ProviderUtil instance;
 
     private ProviderUtil() {
-        for (ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
+        for (final ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
             try {
                 loadProviders(classLoader);
-            } catch (Throwable ex) {
+            } catch (final Throwable ex) {
                 LOGGER.debug("Unable to retrieve provider from ClassLoader {}", classLoader, ex);
             }
         }

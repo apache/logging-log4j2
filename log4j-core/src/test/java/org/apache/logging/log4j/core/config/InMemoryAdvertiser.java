@@ -25,24 +25,24 @@ import org.apache.logging.log4j.core.net.Advertiser;
 
 @Plugin(name = "memory", category = Core.CATEGORY_NAME, elementType = "advertiser", printObject = false)
 public class InMemoryAdvertiser implements Advertiser {
-    private static Map<Object, Map<String, String>> properties = new HashMap<>();
+    private static final Map<Object, Map<String, String>> PROPERTIES = new HashMap<>();
 
     public static Map<Object, Map<String, String>> getAdvertisedEntries()
     {
         final Map<Object, Map<String, String>> result = new HashMap<>();
-        result.putAll(properties);
+        result.putAll(PROPERTIES);
         return result;
     }
 
     @Override
     public Object advertise(final Map<String, String> newEntry) {
         final Object object = new Object();
-        properties.put(object, new HashMap<>(newEntry));
+        PROPERTIES.put(object, new HashMap<>(newEntry));
         return object;
     }
 
     @Override
     public void unadvertise(final Object advertisedObject) {
-        properties.remove(advertisedObject);
+        PROPERTIES.remove(advertisedObject);
     }
 }

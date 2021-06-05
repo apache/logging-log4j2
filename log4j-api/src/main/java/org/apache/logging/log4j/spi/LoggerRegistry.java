@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import org.apache.logging.log4j.message.MessageFactory;
 
@@ -63,7 +62,7 @@ public class LoggerRegistry<T extends ExtendedLogger> {
 
         @Override
         public void putIfAbsent(final Map<String, T> innerMap, final String name, final T logger) {
-            ((ConcurrentMap<String, T>) innerMap).putIfAbsent(name, logger);
+            innerMap.putIfAbsent(name, logger);
         }
     }
 
@@ -89,7 +88,7 @@ public class LoggerRegistry<T extends ExtendedLogger> {
     }
 
     public LoggerRegistry() {
-        this(new ConcurrentMapFactory<T>());
+        this(new ConcurrentMapFactory<>());
     }
 
     public LoggerRegistry(final MapFactory<T> factory) {
@@ -126,7 +125,7 @@ public class LoggerRegistry<T extends ExtendedLogger> {
     }
 
     public Collection<T> getLoggers() {
-        return getLoggers(new ArrayList<T>());
+        return getLoggers(new ArrayList<>());
     }
 
     public Collection<T> getLoggers(final Collection<T> destination) {

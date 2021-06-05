@@ -22,7 +22,6 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LifeCycle;
-import org.apache.logging.log4j.core.LifeCycle2;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.plugins.PluginElement;

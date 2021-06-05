@@ -253,7 +253,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
     }
 
     @Override
-    public void formatTo(String[] formats, StringBuilder buffer) {
+    public void formatTo(final String[] formats, final StringBuilder buffer) {
         asString(getFormat(formats), null, buffer);
     }
 
@@ -355,7 +355,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
         }
     }
 
-    private void asXml(StructuredDataId structuredDataId, StringBuilder sb) {
+    private void asXml(final StructuredDataId structuredDataId, final StringBuilder sb) {
         sb.append("<StructuredData>\n");
         sb.append("<type>").append(type).append("</type>\n");
         sb.append("<id>").append(structuredDataId).append("</id>\n");
@@ -386,7 +386,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
         return asString(getFormat(formats), null);
     }
 
-    private Format getFormat(String[] formats) {
+    private Format getFormat(final String[] formats) {
         if (formats != null && formats.length > 0) {
             for (int i = 0; i < formats.length; i++) {
                 final String format = formats[i];
@@ -432,11 +432,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
         if (id != null ? !id.equals(that.id) : that.id != null) {
             return false;
         }
-        if (message != null ? !message.equals(that.message) : that.message != null) {
-            return false;
-        }
-
-        return true;
+        return message != null ? message.equals(that.message) : that.message == null;
     }
 
     @Override

@@ -50,7 +50,7 @@ public final class Generate {
 
     static final String PACKAGE_DECLARATION = "package %s;%n%n";
 
-    static enum Type {
+    enum Type {
         CUSTOM {
             @Override
             String imports() {
@@ -1073,10 +1073,7 @@ public final class Generate {
     }
 
     static boolean validate(final String[] args) {
-        if (args.length < 2) {
-            return false;
-        }
-        return true;
+        return args.length >= 2;
     }
 
     private static void usage(final PrintStream out, final Class<?> generator) {
@@ -1089,7 +1086,7 @@ public final class Generate {
     static String generateSource(final String classNameFQN, final List<LevelInfo> levels, final Type type) {
         final StringBuilder sb = new StringBuilder(10000 * levels.size());
         final int lastDot = classNameFQN.lastIndexOf('.');
-        final String pkg = classNameFQN.substring(0, lastDot >= 0 ? lastDot : 0);
+        final String pkg = classNameFQN.substring(0, Math.max(lastDot, 0));
         if (!pkg.isEmpty()) {
             sb.append(String.format(PACKAGE_DECLARATION, pkg));
         }

@@ -28,8 +28,6 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFact
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -102,7 +100,7 @@ public class RollingFileAppenderUpdateDataTest {
         // rebuild config with date based rollover
         loggerContext2 = Configurator.initialize(buildConfigB().build());
         Assert.assertNotNull("No LoggerContext", loggerContext2);
-        Assert.assertTrue("Expected same logger context to be returned", loggerContext1 == loggerContext2);
+        Assert.assertSame("Expected same logger context to be returned", loggerContext1, loggerContext2);
 		validateAppender(loggerContext1, "target/rolling-update-date/foo.log.%i");
     }
 

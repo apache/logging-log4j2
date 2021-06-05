@@ -29,7 +29,6 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.layout.ByteBufferDestinationHelper;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.util.StackLocatorUtil;
 
 /**
  * Manages an OutputStream so that it can be shared by multiple Appenders and will

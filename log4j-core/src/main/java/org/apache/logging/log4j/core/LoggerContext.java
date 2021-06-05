@@ -22,12 +22,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -177,7 +174,7 @@ public class LoggerContext extends AbstractLifeCycle
         if (listeners == null) {
             synchronized(this) {
                 if (listeners == null) {
-                    listeners = Collections.synchronizedList(new ArrayList<>());
+                    listeners = new CopyOnWriteArrayList<>();
                 }
             }
         }
@@ -388,7 +385,7 @@ public class LoggerContext extends AbstractLifeCycle
             final Configuration prev = configuration;
             configuration = NULL_CONFIGURATION;
             updateLoggers();
-            ((LifeCycle) prev).stop(timeout, timeUnit);
+            prev.stop(timeout, timeUnit);
             externalMap.clear();
             LogManager.getFactory().removeContext(this);
         } finally {
@@ -772,7 +769,7 @@ public class LoggerContext extends AbstractLifeCycle
         return new Logger(ctx, name, messageFactory);
     }
 
-    private class ThreadContextDataTask implements Runnable {
+    private static class ThreadContextDataTask implements Runnable {
 
         @Override
         public void run() {

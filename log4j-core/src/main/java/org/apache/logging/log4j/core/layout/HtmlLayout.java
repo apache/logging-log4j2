@@ -24,7 +24,6 @@ import org.apache.logging.log4j.core.pattern.DatePatternConverter;
 import org.apache.logging.log4j.core.util.Transform;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.util.Strings;
@@ -73,13 +72,13 @@ public final class HtmlLayout extends AbstractStringLayout {
     private final DatePatternConverter datePatternConverter;
 
     /**Possible font sizes */
-    public static enum FontSize {
+    public enum FontSize {
         SMALLER("smaller"), XXSMALL("xx-small"), XSMALL("x-small"), SMALL("small"), MEDIUM("medium"), LARGE("large"),
         XLARGE("x-large"), XXLARGE("xx-large"),  LARGER("larger");
 
         private final String size;
 
-        private FontSize(final String size) {
+        FontSize(final String size) {
             this.size = size;
         }
 

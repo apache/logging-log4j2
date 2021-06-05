@@ -149,11 +149,7 @@ public class FormattedMessage implements Message {
         if (messagePattern != null ? !messagePattern.equals(that.messagePattern) : that.messagePattern != null) {
             return false;
         }
-        if (!Arrays.equals(stringArgs, that.stringArgs)) {
-            return false;
-        }
-
-        return true;
+        return Arrays.equals(stringArgs, that.stringArgs);
     }
 
     /**

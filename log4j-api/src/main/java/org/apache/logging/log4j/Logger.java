@@ -4208,8 +4208,8 @@ public interface Logger {
      * @param throwable the exception to log, including its stack trace.
      * @since 2.13.0
      */
-    default void logMessage(Level level, Marker marker, String fqcn, StackTraceElement location, Message message,
-            Throwable throwable) {
+    default void logMessage(final Level level, final Marker marker, final String fqcn, final StackTraceElement location, final Message message,
+                            final Throwable throwable) {
 
     }
 
@@ -4275,7 +4275,7 @@ public interface Logger {
      * @return a LogBuilder.
      * @since 2.13.0
      */
-    default LogBuilder atLevel(Level level) {
+    default LogBuilder atLevel(final Level level) {
         return LogBuilder.NOOP;
     }
 

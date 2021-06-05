@@ -35,7 +35,6 @@ import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.apache.logging.log4j.util.IndexedStringMap;
 import org.apache.logging.log4j.util.PerformanceSensitive;

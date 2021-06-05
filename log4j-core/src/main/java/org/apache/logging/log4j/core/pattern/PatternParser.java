@@ -76,7 +76,7 @@ public final class PatternParser {
         /**
          * Max state.
          */
-        MAX_STATE;
+        MAX_STATE
     }
 
     private static final Logger LOGGER = StatusLogger.getLogger();

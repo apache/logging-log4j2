@@ -240,12 +240,8 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
         if (messagePattern != null ? !messagePattern.equals(that.messagePattern) : that.messagePattern != null) {
             return false;
         }
-        if (!Arrays.equals(this.argArray, that.argArray)) {
-            return false;
-        }
+        return Arrays.equals(this.argArray, that.argArray);
         //if (throwable != null ? !throwable.equals(that.throwable) : that.throwable != null) return false;
-
-        return true;
     }
 
     @Override

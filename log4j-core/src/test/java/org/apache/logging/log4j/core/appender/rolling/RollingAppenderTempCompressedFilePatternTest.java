@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -147,8 +148,8 @@ public class RollingAppenderTempCompressedFilePatternTest {
                 }
             }
             assertTrue("No temporary file created during compression", temporaryFilesCreated > 0);
-            assertTrue("Temporarys file created not equals to compressed files " + temporaryFilesCreated + "/"
-                    + gzippedFiles, gzippedFiles == temporaryFilesCreated);
+            assertEquals("Temporarys file created not equals to compressed files " + temporaryFilesCreated + "/"
+                    + gzippedFiles, gzippedFiles, temporaryFilesCreated);
         }
     }
 }

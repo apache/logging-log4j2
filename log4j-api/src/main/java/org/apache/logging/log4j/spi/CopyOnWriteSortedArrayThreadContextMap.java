@@ -19,6 +19,7 @@ package org.apache.logging.log4j.spi;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
@@ -88,7 +89,7 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
                     if (parentValue == null) {
                         return null;
                     }
-                    StringMap stringMap = createStringMap(parentValue);
+                    final StringMap stringMap = createStringMap(parentValue);
                     stringMap.freeze();
                     return stringMap;
                 }
@@ -266,13 +267,6 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
         final ThreadContextMap other = (ThreadContextMap) obj;
         final Map<String, String> map = this.getImmutableMapOrNull();
         final Map<String, String> otherMap = other.getImmutableMapOrNull();
-        if (map == null) {
-            if (otherMap != null) {
-                return false;
-            }
-        } else if (!map.equals(otherMap)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(map, otherMap);
     }
 }

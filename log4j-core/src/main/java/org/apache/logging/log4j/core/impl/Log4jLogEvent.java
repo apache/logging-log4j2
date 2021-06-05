@@ -30,7 +30,6 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.time.*;
-import org.apache.logging.log4j.core.time.ClockFactory;
 import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.core.LogEvent;
@@ -764,10 +763,10 @@ public class Log4jLogEvent implements LogEvent {
         if (threadPriority != that.threadPriority) {
             return false;
         }
-        if (thrown != null ? !thrown.equals(that.thrown) : that.thrown != null) {
+        if (!Objects.equals(thrown, that.thrown)) {
             return false;
         }
-        if (thrownProxy != null ? !thrownProxy.equals(that.thrownProxy) : that.thrownProxy != null) {
+        if (!Objects.equals(thrownProxy, that.thrownProxy)) {
             return false;
         }
 

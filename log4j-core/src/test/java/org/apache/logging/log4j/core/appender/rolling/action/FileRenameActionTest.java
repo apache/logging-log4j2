@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.appender.rolling.action;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.PrintStream;

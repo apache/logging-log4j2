@@ -95,8 +95,7 @@ public class DeleteAction extends AbstractPathAction {
     private List<PathWithAttributes> callScript() throws IOException {
         final List<PathWithAttributes> sortedPaths = getSortedPaths();
         trace("Sorted paths:", sortedPaths);
-        final List<PathWithAttributes> result = scriptCondition.selectFilesToDelete(getBasePath(), sortedPaths);
-        return result;
+        return scriptCondition.selectFilesToDelete(getBasePath(), sortedPaths);
     }
 
     private void deleteSelectedFiles(final List<PathWithAttributes> selectedForDeletion) throws IOException {
@@ -160,8 +159,7 @@ public class DeleteAction extends AbstractPathAction {
     List<PathWithAttributes> getSortedPaths() throws IOException {
         final SortingVisitor sort = new SortingVisitor(pathSorter);
         super.execute(sort);
-        final List<PathWithAttributes> sortedPaths = sort.getSortedPaths();
-        return sortedPaths;
+        return sort.getSortedPaths();
     }
 
     /**

@@ -104,7 +104,7 @@ public class ReusableObjectMessage implements ReusableMessage, ParameterVisitabl
         // go ahead and allocate the memory now;
         // this saves an allocation in the future when this buffer is re-used
         if (emptyReplacement.length == 0) {
-            Object[] params = new Object[10]; // Default reusable parameter buffer size
+            final Object[] params = new Object[10]; // Default reusable parameter buffer size
             params[0] = obj;
             return params;
         }
@@ -122,7 +122,7 @@ public class ReusableObjectMessage implements ReusableMessage, ParameterVisitabl
     }
 
     @Override
-    public <S> void forEachParameter(ParameterConsumer<S> action, S state) {
+    public <S> void forEachParameter(final ParameterConsumer<S> action, final S state) {
         action.accept(obj, 0, state);
     }
 

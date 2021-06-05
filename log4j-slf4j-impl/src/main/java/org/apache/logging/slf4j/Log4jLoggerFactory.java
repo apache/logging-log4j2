@@ -45,7 +45,7 @@ public class Log4jLoggerFactory extends AbstractLoggerAdapter<Logger> implements
                 ? StackLocatorUtil.getCallerClass(FQCN, PACKAGE, 1)
                 : null;
         return anchor == null
-                ? LogManager.getContext()
+                ? LogManager.getContext(false)
                 : getContext(anchor);
     }
 

@@ -94,7 +94,7 @@ public final class Constants {
 
     static int getMajorVersion(final String version) {
         final String[] parts = version.split("-|\\.");
-        boolean isJEP223;
+        final boolean isJEP223;
         try {
             final int token = Integer.parseInt(parts[0]);
             isJEP223 = token != 1;
