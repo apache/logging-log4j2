@@ -18,6 +18,7 @@
 package org.apache.logging.log4j.perf.jmh;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
@@ -55,7 +56,7 @@ public class PatternLayoutBenchmark {
     final static String STR = "AB!(%087936DZYXQWEIOP$#^~-=/><nb"; // length=32
     final static LogEvent EVENT = createLogEvent();
     private static final String STRING_ISO8859_1 = "ISO-8859-1";
-    private static final Charset CHARSET_ISO8859_1 = Charset.forName(STRING_ISO8859_1);
+    private static final Charset CHARSET_ISO8859_1 = StandardCharsets.ISO_8859_1;
     private static final Charset CHARSET_DEFAULT = Charset.defaultCharset();
     private static final String DEFAULT_ENCODING = CHARSET_DEFAULT.name();
     private static final String STRING_SHIFT_JIS = "SHIFT_JIS";

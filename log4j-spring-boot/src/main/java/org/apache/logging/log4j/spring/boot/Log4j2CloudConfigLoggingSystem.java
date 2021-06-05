@@ -19,13 +19,12 @@ package org.apache.logging.log4j.spring.boot;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -167,13 +166,9 @@ public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
                 final String[] pairs = url.getQuery().split("&");
                 for (String pair : pairs) {
                     final int idx = pair.indexOf("=");
-                    try {
-                        final String key = idx > 0 ? URLDecoder.decode(pair.substring(0, idx), "UTF-8") : pair;
-                        if (key.equalsIgnoreCase(OVERRIDE_PARAM)) {
-                            locations.add(URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
-                        }
-                    } catch (UnsupportedEncodingException ex) {
-                        LOGGER.warn("Bad data in configuration string: {}", pair);
+                    final String key = idx > 0 ? URLDecoder.decode(pair.substring(0, idx), StandardCharsets.UTF_8) : pair;
+                    if (key.equalsIgnoreCase(OVERRIDE_PARAM)) {
+                        locations.add(URLDecoder.decode(pair.substring(idx + 1), StandardCharsets.UTF_8));
                     }
                 }
                 return locations.toArray(new String[0]);
