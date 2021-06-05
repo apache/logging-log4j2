@@ -79,10 +79,5 @@ public final class Log4j1MdcPatternConverter extends LogEventPatternConverter {
         }
     }
 
-    private static final TriConsumer<String, Object, StringBuilder> APPEND_EACH = new TriConsumer<String, Object, StringBuilder>() {
-        @Override
-        public void accept(final String key, final Object value, final StringBuilder toAppendTo) {
-            toAppendTo.append('{').append(key).append(',').append(value).append('}');
-        }
-    };
+    private static final TriConsumer<String, Object, StringBuilder> APPEND_EACH = (key, value, toAppendTo) -> toAppendTo.append('{').append(key).append(',').append(value).append('}');
 }

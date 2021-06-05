@@ -137,16 +137,13 @@ public final class Log4j1XmlLayout extends AbstractStringLayout {
             final ReadOnlyStringMap contextMap = event.getContextData();
             if (!contextMap.isEmpty()) {
                 buf.append("<log4j:properties>\r\n");
-                contextMap.forEach(new BiConsumer<String, String>() {
-                    @Override
-                    public void accept(final String key, final String val) {
-                        if (val != null) {
-                            buf.append("<log4j:data name=\"");
-                            buf.append(Transform.escapeHtmlTags(key));
-                            buf.append("\" value=\"");
-                            buf.append(Transform.escapeHtmlTags(val));
-                            buf.append("\"/>\r\n");
-                        }
+                contextMap.forEach((BiConsumer<String, String>) (key, val) -> {
+                    if (val != null) {
+                        buf.append("<log4j:data name=\"");
+                        buf.append(Transform.escapeHtmlTags(key));
+                        buf.append("\" value=\"");
+                        buf.append(Transform.escapeHtmlTags(val));
+                        buf.append("\"/>\r\n");
                     }
                 });
                 buf.append("</log4j:properties>\r\n");

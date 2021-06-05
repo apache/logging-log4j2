@@ -37,21 +37,17 @@ public class ContextDataSerializer extends StdSerializer<ReadOnlyStringMap> {
     private static final long serialVersionUID = 1L;
 
     private static final TriConsumer<String, Object, JsonGenerator> WRITE_STRING_FIELD_INTO =
-            new TriConsumer<String, Object, JsonGenerator>() {
-
-        @Override
-        public void accept(final String key, final Object value, final JsonGenerator jsonGenerator) {
-            try {
-                if (value == null) {
-                    jsonGenerator.writeNullField(key);
-                } else {
-                    jsonGenerator.writeStringField(key, String.valueOf(value));
+            (key, value, jsonGenerator) -> {
+                try {
+                    if (value == null) {
+                        jsonGenerator.writeNullField(key);
+                    } else {
+                        jsonGenerator.writeStringField(key, String.valueOf(value));
+                    }
+                } catch (final Exception ex) {
+                    throw new IllegalStateException("Problem with key " + key, ex);
                 }
-            } catch (final Exception ex) {
-                throw new IllegalStateException("Problem with key " + key, ex);
-            }
-        }
-    };
+            };
 
     protected ContextDataSerializer() {
         super(Map.class, false);

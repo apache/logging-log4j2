@@ -119,11 +119,8 @@ public class FileAppenderThrowableBenchmark {
     interface TestIface30 extends ThrowableHelper {}
 
     private static Throwable getComplexThrowable() {
-        ThrowableHelper helper = new ThrowableHelper() {
-            @Override
-            public void action() {
-                throw new IllegalStateException("Test Throwable");
-            }
+        ThrowableHelper helper = () -> {
+            throw new IllegalStateException("Test Throwable");
         };
         try {
             for (int i = 0; i < 31; i++) {
@@ -131,14 +128,11 @@ public class FileAppenderThrowableBenchmark {
                 helper = (ThrowableHelper) Proxy.newProxyInstance(
                         FileAppenderThrowableBenchmark.class.getClassLoader(),
                         new Class<?>[]{Class.forName(FileAppenderThrowableBenchmark.class.getName() + "$TestIface" + (i % 31))},
-                        new InvocationHandler() {
-                            @Override
-                            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                                try {
-                                    return method.invoke(delegate, args);
-                                } catch (InvocationTargetException e) {
-                                    throw e.getCause();
-                                }
+                        (proxy, method, args) -> {
+                            try {
+                                return method.invoke(delegate, args);
+                            } catch (InvocationTargetException e) {
+                                throw e.getCause();
                             }
                         });
             }

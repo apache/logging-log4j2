@@ -2577,6 +2577,7 @@ public class CommandLine {
                         return Enum.valueOf((Class<Enum>) type, value);
                     }
                 };
+                return (ITypeConverter<Object>) value -> Enum.valueOf((Class<Enum>) type, value);
             }
             throw new MissingTypeConverterException(CommandLine.this, "No TypeConverter registered for " + type.getName() + " of field " + field);
         }

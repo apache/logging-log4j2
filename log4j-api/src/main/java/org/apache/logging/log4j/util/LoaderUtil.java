@@ -338,12 +338,7 @@ public final class LoaderUtil {
             try {
                 forceTcclOnly = System.getSecurityManager() == null ?
                     Boolean.getBoolean(FORCE_TCL_ONLY_PROPERTY) :
-                    AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
-                        @Override
-                        public Boolean run() {
-                            return Boolean.getBoolean(FORCE_TCL_ONLY_PROPERTY);
-                        }
-                    });
+                    AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> Boolean.getBoolean(FORCE_TCL_ONLY_PROPERTY));
             } catch (final SecurityException se) {
                 forceTcclOnly = false;
             }
