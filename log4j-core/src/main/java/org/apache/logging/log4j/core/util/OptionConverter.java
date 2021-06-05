@@ -297,7 +297,7 @@ public final class OptionConverter {
                     LOGGER.error("A \"{}\" object is not assignable to a \"{}\" variable.", className,
                         superClass.getName());
                     LOGGER.error("The class \"{}\" was loaded by [{}] whereas object of type [{}] was loaded by [{}].",
-                        superClass.getName(), superClass.getClassLoader(), classObj.getName());
+                        superClass.getName(), superClass.getClassLoader(), classObj.getTypeName(), classObj.getName());
                     return defaultValue;
                 }
                 return classObj.newInstance();

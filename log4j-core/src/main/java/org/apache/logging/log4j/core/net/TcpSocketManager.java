@@ -479,7 +479,7 @@ public class TcpSocketManager extends AbstractSocketManager {
                 os = socket.getOutputStream();
                 return createManager(name, os, socket, inetAddress, data);
             } catch (final IOException ex) {
-                LOGGER.error("TcpSocketManager ({}) caught exception and will continue:", name, ex, ex);
+                LOGGER.error("TcpSocketManager ({}) caught exception and will continue:", name, ex);
                 os = NullOutputStream.getInstance();
             }
             if (data.reconnectDelayMillis == 0) {

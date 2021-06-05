@@ -95,7 +95,7 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
             LOGGER.error("The keystore file {} is not found", loadLocation, e);
             throw new StoreConfigurationException(loadLocation, e);
         } catch (final IOException e) {
-            LOGGER.error("Something is wrong with the format of the keystore or the given password for location", loadLocation, e);
+            LOGGER.error("Something is wrong with the format of the keystore or the given password for location {}", loadLocation, e);
             throw new StoreConfigurationException(loadLocation, e);
         }
     }
