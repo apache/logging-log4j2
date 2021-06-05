@@ -74,11 +74,9 @@ public class EventParameterMemoryLeakTest {
         assertThat(line4, containsString("paramValue"));
         assertNull(line5, "Expected only three lines");
         GarbageCollectionHelper gcHelper = new GarbageCollectionHelper();
-        gcHelper.run();
-        try {
+        try (gcHelper) {
+            gcHelper.run();
             assertTrue(latch.await(30, TimeUnit.SECONDS), "Parameter should have been garbage collected");
-        } finally {
-            gcHelper.close();
         }
     }
 

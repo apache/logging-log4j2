@@ -35,11 +35,9 @@ public class ReusableParameterizedMessageMemoryLeakTest {
         // Large enough for the parameters, but smaller than the default reusable array size.
         message.swapParameters(new Object[5]);
         GarbageCollectionHelper gcHelper = new GarbageCollectionHelper();
-        gcHelper.run();
-        try {
+        try (gcHelper) {
+            gcHelper.run();
             assertTrue(latch.await(30, TimeUnit.SECONDS), "Parameter should have been garbage collected");
-        } finally {
-            gcHelper.close();
         }
     }
 

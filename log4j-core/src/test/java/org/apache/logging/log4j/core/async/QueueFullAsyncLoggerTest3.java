@@ -86,11 +86,9 @@ public class QueueFullAsyncLoggerTest3 extends QueueFullAbstractTest {
         blockingAppender.countDownLatch.countDown();
 
         final GarbageCollectionHelper gcHelper = new GarbageCollectionHelper();
-        gcHelper.run();
-        try {
+        try (gcHelper) {
+            gcHelper.run();
             assertTrue("Parameter should have been garbage collected", garbageCollectionLatch.await(30, TimeUnit.SECONDS));
-        } finally {
-            gcHelper.close();
         }
     }
 

@@ -58,12 +58,10 @@ public class AsyncLoggerTestArgumentFreedOnError {
         CountDownLatch garbageCollectionLatch = new CountDownLatch(1);
         log.fatal(new ThrowingMessage(garbageCollectionLatch));
         GarbageCollectionHelper gcHelper = new GarbageCollectionHelper();
-        gcHelper.run();
-        try {
+        try (gcHelper) {
+            gcHelper.run();
             assertTrue("Parameter should have been garbage collected",
                     garbageCollectionLatch.await(30, TimeUnit.SECONDS));
-        } finally {
-            gcHelper.close();
         }
     }
 
