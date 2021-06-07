@@ -17,20 +17,15 @@
 
 package org.apache.log4j;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.lang.reflect.Method;
-import java.util.List;
-
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
+import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
@@ -38,6 +33,15 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests of Category.
@@ -65,7 +69,7 @@ public class CategoryTest {
     public void before() {
         appender.clear();
     }
-    
+
     /**
      * Tests Category.forcedLog.
      */
@@ -118,7 +122,7 @@ public class CategoryTest {
         logger.setLevel(Level.ERROR);
         final Priority debug = Level.DEBUG;
         logger.l7dlog(debug, "Hello, World", null);
-        assertTrue(appender.getEvents().size() == 0);
+        assertTrue(appender.getEvents().isEmpty());
     }
 
     /**
@@ -130,7 +134,7 @@ public class CategoryTest {
         logger.setLevel(Level.ERROR);
         final Priority debug = Level.DEBUG;
         logger.l7dlog(debug, "Hello, World", new Object[0], null);
-        assertTrue(appender.getEvents().size() == 0);
+        assertTrue(appender.getEvents().isEmpty());
     }
 
     /**
@@ -149,7 +153,7 @@ public class CategoryTest {
         // the next line will throw an exception if the LogManager loggers
         // aren't supported by 1.2 Logger/Category
         logger.l7dlog(debug, "Hello, World", new Object[0], null);
-        assertTrue(appender.getEvents().size() == 0);
+        assertTrue(appender.getEvents().isEmpty());
     }
 
     /**
@@ -175,7 +179,7 @@ public class CategoryTest {
     public void testSetPriorityNull() {
         Logger.getLogger("org.example.foo").setPriority(null);
     }
-    
+
     @Test
     public void testClassName() {
         final Category category = Category.getInstance("TestCategory");
@@ -192,6 +196,97 @@ public class CategoryTest {
         final String threadName = Thread.currentThread().getName();
         final String expected = "ERROR o.a.l.CategoryTest [" + threadName + "] Test Message" + Strings.LINE_SEPARATOR;
         assertTrue("Incorrect message " + Strings.dquote(msg) + " expected " + Strings.dquote(expected), msg.endsWith(expected));
+    }
+
+    @Test
+    public void testStringLog() {
+        final String payload = "payload";
+        testMessageImplementation(
+                payload,
+                SimpleMessage.class,
+                message -> assertEquals(message.getFormattedMessage(), payload));
+    }
+
+    @Test
+    public void testCharSequenceLog() {
+        final CharSequence payload = new CharSequence() {
+
+            @Override
+            public int length() {
+                return 3;
+            }
+
+            @Override
+            public char charAt(final int index) {
+                return "abc".charAt(index);
+            }
+
+            @Override
+            public CharSequence subSequence(final int start, final int end) {
+                return "abc".subSequence(start, end);
+            }
+
+            @Override
+            public String toString() {
+                return "abc";
+            }
+
+        };
+        testMessageImplementation(
+                payload,
+                SimpleMessage.class,
+                message -> assertEquals(message.getFormattedMessage(), payload.toString()));
+    }
+
+    @Test
+    public void testMapLog() {
+        final String key = "key";
+        final Object value = 0xDEADBEEF;
+        final Map<String, Object> payload = Collections.singletonMap(key, value);
+        testMessageImplementation(
+                payload,
+                MapMessage.class,
+                message -> assertEquals(message.getData(), payload));
+    }
+
+    @Test
+    public void testObjectLog() {
+        final Object payload = new Object();
+        testMessageImplementation(
+                payload,
+                ObjectMessage.class,
+                message -> assertEquals(message.getParameter(), payload));
+    }
+
+    private <M extends Message> void testMessageImplementation(
+            final Object messagePayload,
+            final Class<M> expectedMessageClass,
+            final Consumer<M> messageTester) {
+
+        // Setup the logger and the appender.
+        final Category category = Category.getInstance("TestCategory");
+        final org.apache.logging.log4j.core.Logger logger =
+                (org.apache.logging.log4j.core.Logger) category.getLogger();
+        logger.addAppender(appender);
+
+        // Log the message payload.
+        category.info(messagePayload);
+
+        // Verify collected log events.
+        final List<LogEvent> events = appender.getEvents();
+        assertEquals("was expecting a single event", 1, events.size());
+        final LogEvent logEvent = events.get(0);
+
+        // Verify the collected message.
+        final Message message = logEvent.getMessage();
+        final Class<? extends Message> actualMessageClass = message.getClass();
+        assertTrue(
+                "was expecting message to be instance of " + expectedMessageClass + ", found: " + actualMessageClass,
+                expectedMessageClass.isAssignableFrom(actualMessageClass));
+        @SuppressWarnings("unchecked")
+        final M typedMessage = (M) message;
+        messageTester.accept(typedMessage);
+
     }
 
     /**
