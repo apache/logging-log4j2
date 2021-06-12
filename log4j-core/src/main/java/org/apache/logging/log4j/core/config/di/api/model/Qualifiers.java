@@ -17,7 +17,7 @@
 
 package org.apache.logging.log4j.core.config.di.api.model;
 
-import org.apache.logging.log4j.plugins.api.Default;
+import org.apache.logging.log4j.plugins.di.Default;
 import org.apache.logging.log4j.util.StringBuilders;
 
 import java.lang.annotation.Annotation;
@@ -28,7 +28,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Represents a normalized set of {@linkplain org.apache.logging.log4j.plugins.api.QualifierType qualifier annotations}.
+ * Represents a normalized set of {@linkplain org.apache.logging.log4j.plugins.di.QualifierType qualifier annotations}.
  */
 public final class Qualifiers {
 

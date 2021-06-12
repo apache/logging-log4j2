@@ -15,17 +15,20 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.api;
+package org.apache.logging.log4j.plugins.di;
 
 import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-@QualifierType
+// TODO: consider making this the default scope?
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD})
 @Documented
 @Inherited
-// default qualifier unless qualifier besides @Named is present
-public @interface Default {
+@ScopeType
+public @interface SingletonScoped {
 }

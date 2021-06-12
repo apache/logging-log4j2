@@ -15,8 +15,19 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.api;
+package org.apache.logging.log4j.plugins.di;
 
-public interface Provider<T> {
-    T get();
+import java.lang.annotation.Documented;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+/**
+ * Default {@linkplain QualifierType qualifier type} when no other qualifiers are present.
+ */
+@QualifierType
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Inherited
+public @interface Default {
 }

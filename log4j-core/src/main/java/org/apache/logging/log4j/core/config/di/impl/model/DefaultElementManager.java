@@ -17,13 +17,13 @@
 
 package org.apache.logging.log4j.core.config.di.impl.model;
 
-import org.apache.logging.log4j.plugins.api.AnnotationAlias;
-import org.apache.logging.log4j.plugins.api.Default;
-import org.apache.logging.log4j.plugins.api.DependentScoped;
-import org.apache.logging.log4j.plugins.api.Ignore;
-import org.apache.logging.log4j.plugins.api.Named;
-import org.apache.logging.log4j.plugins.api.QualifierType;
-import org.apache.logging.log4j.plugins.api.ScopeType;
+import org.apache.logging.log4j.plugins.di.AnnotationAlias;
+import org.apache.logging.log4j.plugins.di.Default;
+import org.apache.logging.log4j.plugins.di.DependentScoped;
+import org.apache.logging.log4j.plugins.di.Ignore;
+import org.apache.logging.log4j.plugins.di.Named;
+import org.apache.logging.log4j.plugins.di.QualifierType;
+import org.apache.logging.log4j.plugins.di.ScopeType;
 import org.apache.logging.log4j.plugins.internal.util.BeanUtils;
 import org.apache.logging.log4j.core.config.di.api.bean.Bean;
 import org.apache.logging.log4j.core.config.di.api.model.ElementManager;

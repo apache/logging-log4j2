@@ -15,21 +15,16 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.api;
-
-import org.apache.logging.log4j.plugins.name.NameProvider;
-import org.apache.logging.log4j.plugins.name.NamedQualifierNameProvider;
-import org.apache.logging.log4j.util.Strings;
+package org.apache.logging.log4j.plugins.di;
 
 import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.CONSTRUCTOR, ElementType.METHOD, ElementType.FIELD})
 @Documented
-@QualifierType
-@NameProvider(NamedQualifierNameProvider.class)
-public @interface Named {
-    // TODO: consider supporting String[] for listing aliases? (or see @Alternative?)
-    String value() default Strings.EMPTY;
+public @interface Inject {
 }

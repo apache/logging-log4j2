@@ -17,7 +17,7 @@
 
 package org.apache.logging.log4j.core.config.di.api.model;
 
-import org.apache.logging.log4j.plugins.api.AnnotationAlias;
+import org.apache.logging.log4j.plugins.di.AnnotationAlias;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 
 import java.lang.annotation.Annotation;

@@ -15,11 +15,16 @@
  * limitations under the license.
  */
 
-/**
- * Plugin scopes and dependency injection APIs. These annotations and interfaces form the public API used by plugins
- * to declare necessary dependencies of a class along with any produced objects and other lifecycle callbacks to
- * participate in the Log4j plugin system.
- *
- * @since 3.0
- */
-package org.apache.logging.log4j.plugins.api;
+package org.apache.logging.log4j.plugins.di;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+@Documented
+public @interface PostConstruct {
+}

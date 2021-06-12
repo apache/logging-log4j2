@@ -15,17 +15,26 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.api;
+package org.apache.logging.log4j.plugins.di;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-// TODO: validate this is not allowed on static methods
+/**
+ * Meta annotation for making an annotation an alias for another annotation. Annotations with this annotation will be
+ * interpreted as if they were implemented by the given annotation type instead. This applies to
+ * {@linkplain QualifierType qualifiers}, {@linkplain ScopeType scopes}, {@link Inject}, {@link Produces},
+ * {@link Disposes}, {@link PostConstruct}, and {@link PreDestroy}. Individual annotation elements are aliased to the
+ * same element names from the aliased annotation unless otherwise annotated with {@link Named} which should specify
+ * the aliased annotation element name.
+ */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
+@Target(ElementType.ANNOTATION_TYPE)
 @Documented
-public @interface Disposes {
+public @interface AnnotationAlias {
+    Class<? extends Annotation> value();
 }

@@ -17,11 +17,11 @@
 
 package org.apache.logging.log4j.core.config.di.api.model;
 
-import org.apache.logging.log4j.plugins.api.Default;
-import org.apache.logging.log4j.plugins.api.Inject;
-import org.apache.logging.log4j.plugins.api.Named;
-import org.apache.logging.log4j.plugins.api.Produces;
-import org.apache.logging.log4j.plugins.api.QualifierType;
+import org.apache.logging.log4j.plugins.di.Default;
+import org.apache.logging.log4j.plugins.di.Inject;
+import org.apache.logging.log4j.plugins.di.Named;
+import org.apache.logging.log4j.plugins.di.Produces;
+import org.apache.logging.log4j.plugins.di.QualifierType;
 import org.apache.logging.log4j.core.config.di.api.bean.Bean;
 
 import java.lang.annotation.Annotation;

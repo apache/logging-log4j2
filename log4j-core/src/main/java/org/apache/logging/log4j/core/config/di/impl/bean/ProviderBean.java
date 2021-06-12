@@ -17,7 +17,7 @@
 
 package org.apache.logging.log4j.core.config.di.impl.bean;
 
-import org.apache.logging.log4j.plugins.api.Provider;
+import org.apache.logging.log4j.plugins.di.Provider;
 import org.apache.logging.log4j.core.config.di.api.bean.InitializationContext;
 import org.apache.logging.log4j.core.config.di.api.bean.ProviderFactory;
 import org.apache.logging.log4j.core.config.di.api.model.Variable;

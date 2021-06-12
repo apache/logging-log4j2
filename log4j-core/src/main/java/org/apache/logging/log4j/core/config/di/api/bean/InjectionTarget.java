@@ -17,16 +17,45 @@
 
 package org.apache.logging.log4j.core.config.di.api.bean;
 
+import org.apache.logging.log4j.plugins.di.Inject;
+import org.apache.logging.log4j.plugins.di.PostConstruct;
+import org.apache.logging.log4j.plugins.di.PreDestroy;
+
+/**
+ * Provides lifecycle and dependency injection operations for instances of a specified type.
+ *
+ * @param <T> type of instance managed by this injection target
+ */
 public interface InjectionTarget<T> extends Producer<T> {
-    // sets values of injected fields and calls initializer methods
+
+    /**
+     * Performs dependency injection on the provided instance in the given initialization context. This sets the values
+     * of injected fields and calls initializer methods (i.e., fields and methods annotated with {@link Inject}).
+     *
+     * @param instance instance upon which to perform dependency injection
+     * @param context  initialization context to perform injection in
+     */
     void inject(final T instance, final InitializationContext<T> context);
 
-    // calls @PostConstruct from top to bottom
+    /**
+     * Invokes the {@link PostConstruct} methods of the provided instance.
+     * Post construct methods are invoked starting with the highest level method and continue down the type hierarchy.
+     *
+     * @param instance instance upon which to invoke post construct methods
+     */
     void postConstruct(final T instance);
 
-    // calls @PreDestroy from bottom to top
+    /**
+     * Invokes the {@link PreDestroy} methods of the provided instance.
+     * Pre destroy methods are invoked starting with the lowest level method and continue up the type hierarchy.
+     *
+     * @param instance instance upone which to invoke pre destroy methods
+     */
     void preDestroy(final T instance);
 
+    /**
+     * Does nothing. This method only applies to producers.
+     */
     @Override
     default void dispose(T instance) {
         // @Disposes only applies to @Produces methods and fields

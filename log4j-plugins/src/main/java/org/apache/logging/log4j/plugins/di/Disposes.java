@@ -15,19 +15,23 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.api;
+package org.apache.logging.log4j.plugins.di;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-// TODO: documentation around where this can be applied
+/**
+ * Marks a parameter of a method to be used for disposing a {@linkplain Produces produced instance}. A disposer method
+ * more generally is a non-abstract method in a bean class with one argument annotated with {@code @Disposes} to indicate
+ * the injection point for the produced bean for disposal along with any other normal injectable parameters if desired.
+ * A bean can have more than one disposer method, but each disposer method can only dispose of one produced type.
+ * Disposer methods can be static or non-static. Disposer methods are <em>not inherited</em> by subclasses.
+ */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PACKAGE, ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
+@Target(ElementType.PARAMETER)
 @Documented
-@Inherited
-public @interface Ignore {
+public @interface Disposes {
 }

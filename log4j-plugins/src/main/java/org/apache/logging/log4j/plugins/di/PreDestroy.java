@@ -15,7 +15,7 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.api;
+package org.apache.logging.log4j.plugins.di;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -26,5 +26,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @Documented
-public @interface PostConstruct {
+public @interface PreDestroy {
 }

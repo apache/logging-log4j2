@@ -33,8 +33,8 @@ public interface InjectionPoint {
     Type getType();
 
     /**
-     * Gets the qualifiers of this point. If no qualifiers other than {@link org.apache.logging.log4j.plugins.api.Named}
-     * are present, then these qualifiers will also include {@link org.apache.logging.log4j.plugins.api.Default}.
+     * Gets the qualifiers of this point. If no qualifiers other than {@link org.apache.logging.log4j.plugins.di.Named}
+     * are present, then these qualifiers will also include {@link org.apache.logging.log4j.plugins.di.Default}.
      */
     Qualifiers getQualifiers();
 

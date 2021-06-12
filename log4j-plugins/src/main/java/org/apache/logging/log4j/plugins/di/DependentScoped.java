@@ -15,7 +15,7 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.api;
+package org.apache.logging.log4j.plugins.di;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -24,11 +24,18 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-// TODO: consider making this the default scope?
+/**
+ * Dependent scoped beans are beans that belong to another bean. Beans with this scope are created and destroyed in
+ * participation of the lifecycle of the owning bean. That is, when a bean is destroyed, any of its dependent objects
+ * are destroyed; dependent beans injected into a {@linkplain Disposes disposer method} are destroyed after the method
+ * is finished executing; dependent beans created to {@linkplain Produces produce} or {@linkplain Disposes dispose}
+ * a bean are destroyed after the producer or disposer is finished executing; and any other dependent beans no longer
+ * directly referenced by the application may be destroyed.
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD})
 @Documented
 @Inherited
 @ScopeType
-public @interface SingletonScoped {
+public @interface DependentScoped {
 }

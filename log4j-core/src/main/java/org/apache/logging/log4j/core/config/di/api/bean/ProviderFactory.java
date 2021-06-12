@@ -17,7 +17,7 @@
 
 package org.apache.logging.log4j.core.config.di.api.bean;
 
-import org.apache.logging.log4j.plugins.api.Provider;
+import org.apache.logging.log4j.plugins.di.Provider;
 
 public interface ProviderFactory<T> {
     Provider<T> getProvider(final InitializationContext<?> context);

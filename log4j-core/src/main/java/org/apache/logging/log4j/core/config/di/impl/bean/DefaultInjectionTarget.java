@@ -17,9 +17,9 @@
 
 package org.apache.logging.log4j.core.config.di.impl.bean;
 
-import org.apache.logging.log4j.plugins.api.Disposes;
-import org.apache.logging.log4j.plugins.api.Inject;
-import org.apache.logging.log4j.plugins.api.Produces;
+import org.apache.logging.log4j.plugins.di.Disposes;
+import org.apache.logging.log4j.plugins.di.Inject;
+import org.apache.logging.log4j.plugins.di.Produces;
 import org.apache.logging.log4j.core.config.di.api.bean.InitializationContext;
 import org.apache.logging.log4j.core.config.di.api.bean.InjectionTarget;
 import org.apache.logging.log4j.core.config.di.api.bean.Injector;

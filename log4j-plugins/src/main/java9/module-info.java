@@ -17,6 +17,7 @@
 module org.apache.logging.log4j.plugins {
     exports org.apache.logging.log4j.plugins;
     exports org.apache.logging.log4j.plugins.convert;
+    exports org.apache.logging.log4j.plugins.di;
     exports org.apache.logging.log4j.plugins.processor;
     exports org.apache.logging.log4j.plugins.util;
     exports org.apache.logging.log4j.plugins.validation;

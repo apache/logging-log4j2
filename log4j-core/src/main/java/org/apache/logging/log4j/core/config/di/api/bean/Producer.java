@@ -18,20 +18,51 @@
 package org.apache.logging.log4j.core.config.di.api.bean;
 
 import org.apache.logging.log4j.core.config.di.api.model.InjectionPoint;
+import org.apache.logging.log4j.plugins.di.Disposes;
+import org.apache.logging.log4j.plugins.di.Inject;
+import org.apache.logging.log4j.plugins.di.Produces;
 
 import java.util.Collection;
 
+/**
+ * Provides lifecycle operations for producing instances of a specified type. Producers represent three different ways
+ * to manage instances: injectable classes, producer methods, and producer fields.
+ *
+ * @param <T> type of instance managed by this producer
+ * @see Inject
+ * @see Produces
+ */
 public interface Producer<T> {
-    // for a class: calls @Inject constructor or default constructor
-    // for a producer method, this is invoked on that instance
-    // for a producer field, the value is gotten from that instance
+
+    /**
+     * Creates an instance in the given initialization context. When this represents a class, this calls the
+     * constructor annotated with {@link Inject} or the default constructor.
+     * When this represents a producer method, this invokes the producer method. When this represents a producer
+     * field, this obtains the value of the field.
+     *
+     * @param context initialization context to use to create the instance
+     * @return produced instance
+     * @see Produces
+     */
     T produce(InitializationContext<T> context);
 
-    // for a class, no-op (preDestroy is relevant there instead)
-    // for a producer method or producer field, calls the disposer method
+    /**
+     * Destroys the provided instance. When this represents a class, this does nothing. When this represents a
+     * producer method or field, then this invokes the corresponding disposer method.
+     *
+     * @param instance instance to dispose
+     * @see Disposes
+     */
     void dispose(T instance);
 
-    // for a class: injected fields, @Inject constructor parameters, and initializer method params
-    // for a producer method: method params
+    /**
+     * Returns all the injection points of this producer. For a class, this returns all injected fields, bean
+     * constructor parameters, and initialization method parameters. For a producer method, this returns the
+     * parameters to that method.
+     *
+     * @return all injection points for this producer
+     * @see Inject
+     * @see Produces
+     */
     Collection<InjectionPoint> getInjectionPoints();
 }

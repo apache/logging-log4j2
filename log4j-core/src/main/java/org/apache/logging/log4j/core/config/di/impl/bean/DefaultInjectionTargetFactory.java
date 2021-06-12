@@ -17,9 +17,9 @@
 
 package org.apache.logging.log4j.core.config.di.impl.bean;
 
-import org.apache.logging.log4j.plugins.api.Inject;
-import org.apache.logging.log4j.plugins.api.PostConstruct;
-import org.apache.logging.log4j.plugins.api.PreDestroy;
+import org.apache.logging.log4j.plugins.di.Inject;
+import org.apache.logging.log4j.plugins.di.PostConstruct;
+import org.apache.logging.log4j.plugins.di.PreDestroy;
 import org.apache.logging.log4j.core.config.di.DefinitionException;
 import org.apache.logging.log4j.core.config.di.api.bean.Bean;
 import org.apache.logging.log4j.core.config.di.api.bean.InjectionTarget;

@@ -15,18 +15,11 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.api;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-// https://docs.jboss.org/cdi/api/2.0/javax/enterprise/inject/Produces.html
-// https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/annotation/Bean.html
-@Target({ElementType.METHOD, ElementType.FIELD})
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface Produces {
-}
+/**
+ * Plugin scopes and dependency injection APIs. These annotations and interfaces form the public API used by plugins
+ * to declare necessary dependencies of a class along with any produced objects and other lifecycle callbacks to
+ * participate in the Log4j plugin system.
+ *
+ * @since 3.0
+ */
+package org.apache.logging.log4j.plugins.di;

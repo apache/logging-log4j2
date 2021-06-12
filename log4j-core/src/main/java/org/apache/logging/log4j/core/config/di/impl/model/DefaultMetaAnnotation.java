@@ -17,8 +17,8 @@
 
 package org.apache.logging.log4j.core.config.di.impl.model;
 
-import org.apache.logging.log4j.plugins.api.AnnotationAlias;
-import org.apache.logging.log4j.plugins.api.Named;
+import org.apache.logging.log4j.plugins.di.AnnotationAlias;
+import org.apache.logging.log4j.plugins.di.Named;
 import org.apache.logging.log4j.core.config.di.InitializationException;
 import org.apache.logging.log4j.core.config.di.api.model.MetaAnnotation;
 import org.apache.logging.log4j.core.config.di.api.model.MetaAnnotationElement;

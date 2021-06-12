@@ -15,17 +15,19 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.api;
+package org.apache.logging.log4j.plugins.di;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-// essentially the same as @Scope and @NormalScope combined; no distinction necessary here
-@Target(ElementType.ANNOTATION_TYPE) // on an annotation typically with @Target(TYPE), but we use static factory methods
+// TODO: documentation around where this can be applied
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PACKAGE, ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
 @Documented
-public @interface ScopeType {
+@Inherited
+public @interface Ignore {
 }

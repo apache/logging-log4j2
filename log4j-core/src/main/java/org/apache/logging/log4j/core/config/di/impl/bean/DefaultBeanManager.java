@@ -41,11 +41,11 @@ import org.apache.logging.log4j.core.config.di.api.model.MetaParameter;
 import org.apache.logging.log4j.core.config.di.api.model.Qualifiers;
 import org.apache.logging.log4j.core.config.di.api.model.Variable;
 import org.apache.logging.log4j.core.config.di.impl.model.DefaultElementManager;
-import org.apache.logging.log4j.plugins.api.DependentScoped;
-import org.apache.logging.log4j.plugins.api.Disposes;
-import org.apache.logging.log4j.plugins.api.Produces;
-import org.apache.logging.log4j.plugins.api.Provider;
-import org.apache.logging.log4j.plugins.api.SingletonScoped;
+import org.apache.logging.log4j.plugins.di.DependentScoped;
+import org.apache.logging.log4j.plugins.di.Disposes;
+import org.apache.logging.log4j.plugins.di.Produces;
+import org.apache.logging.log4j.plugins.di.Provider;
+import org.apache.logging.log4j.plugins.di.SingletonScoped;
 import org.apache.logging.log4j.plugins.util.LazyValue;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 

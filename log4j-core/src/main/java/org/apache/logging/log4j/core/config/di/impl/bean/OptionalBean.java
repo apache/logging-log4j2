@@ -17,7 +17,7 @@
 
 package org.apache.logging.log4j.core.config.di.impl.bean;
 
-import org.apache.logging.log4j.plugins.api.DependentScoped;
+import org.apache.logging.log4j.plugins.di.DependentScoped;
 import org.apache.logging.log4j.core.config.di.api.bean.Bean;
 import org.apache.logging.log4j.core.config.di.api.bean.InitializationContext;
 import org.apache.logging.log4j.core.config.di.api.model.InjectionPoint;
