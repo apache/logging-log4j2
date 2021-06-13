@@ -23,6 +23,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Marks a method as a post construct callback. These methods are invoked after dependency injection is complete but
+ * before the injection target instance is returned. Post construct callbacks are invoked superclass-first.
+ *
+ * @see PreDestroy
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @Documented
