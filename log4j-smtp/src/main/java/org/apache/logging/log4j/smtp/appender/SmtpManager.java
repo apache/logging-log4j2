@@ -108,7 +108,7 @@ public class SmtpManager extends AbstractManager {
             protocol = "smtp";
         }
 
-        final String managerName = createManagerName(to, cc, bcc, from, replyTo, subject, protocol, host, username, password, isDebug, filterName);
+        final String managerName = createManagerName(to, cc, bcc, from, replyTo, subject, protocol, host, port, username, password, isDebug, filterName);
         final Serializer subjectSerializer = PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(subject).build();
 
         return getManager(managerName, FACTORY, new FactoryData(to, cc, bcc, from, replyTo, subjectSerializer,
@@ -125,6 +125,7 @@ public class SmtpManager extends AbstractManager {
             final String subject,
             final String protocol,
             final String host,
+            final int port,
             final String username,
             final String password,
             final boolean isDebug,
@@ -156,7 +157,7 @@ public class SmtpManager extends AbstractManager {
             sb.append(subject);
         }
         sb.append(':');
-        sb.append(protocol).append(':').append(host).append(':').append("port").append(':');
+        sb.append(protocol).append(':').append(host).append(':').append(port).append(':');
         if (username != null) {
             sb.append(username);
         }
