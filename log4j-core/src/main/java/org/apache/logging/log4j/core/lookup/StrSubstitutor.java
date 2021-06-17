@@ -995,9 +995,9 @@ public class StrSubstitutor implements ConfigurationAware {
                                             break;
                                         }
                                         if (valueEscapeDelimiterMatcher != null) {
-                                            int matchLen = valueEscapeDelimiterMatcher.isMatch(varNameExprChars, i);
+                                            final int matchLen = valueEscapeDelimiterMatcher.isMatch(varNameExprChars, i);
                                             if (matchLen != 0) {
-                                                String varNamePrefix = varNameExpr.substring(0, i) + Interpolator.PREFIX_SEPARATOR;
+                                                final String varNamePrefix = varNameExpr.substring(0, i) + Interpolator.PREFIX_SEPARATOR;
                                                 varName = varNamePrefix + varNameExpr.substring(i + matchLen - 1);
                                                 for (int j = i + matchLen; j < varNameExprChars.length; ++j){
                                                     if ((valueDelimiterMatchLen = valueDelimiterMatcher.isMatch(varNameExprChars, j)) != 0) {
@@ -1350,7 +1350,7 @@ public class StrSubstitutor implements ConfigurationAware {
             setValueDelimiterMatcher(null);
             return this;
         }
-        String escapeValue = valueDelimiter.substring(0, valueDelimiter.length() - 1) + "\\"
+        final String escapeValue = valueDelimiter.substring(0, valueDelimiter.length() - 1) + "\\"
                 + valueDelimiter.substring(valueDelimiter.length() - 1);
         valueEscapeDelimiterMatcher = StrMatcher.stringMatcher(escapeValue);
         return setValueDelimiterMatcher(StrMatcher.stringMatcher(valueDelimiter));

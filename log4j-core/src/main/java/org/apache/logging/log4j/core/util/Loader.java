@@ -287,7 +287,7 @@ public final class Loader {
         throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException,
         IllegalAccessException {
         final String className = PropertiesUtil.getProperties().getStringProperty(propertyName);
-        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(getClassLoader());
             return LoaderUtil.newCheckedInstanceOfProperty(propertyName, clazz);
@@ -323,7 +323,7 @@ public final class Loader {
      * @return {@code true} if the class could be found or {@code false} otherwise.
      */
     public static boolean isClassAvailable(final String className) {
-        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(getClassLoader());
             return LoaderUtil.isClassAvailable(className);

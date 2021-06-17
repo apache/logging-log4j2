@@ -165,7 +165,7 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
     }
 
     private OutputStreamAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
-            final OutputStreamManager manager, final boolean ignoreExceptions, Property[] properties) {
+            final OutputStreamManager manager, final boolean ignoreExceptions, final Property[] properties) {
         super(name, layout, filter, ignoreExceptions, true, null, manager);
     }
 

@@ -138,7 +138,7 @@ public class FastDateParser implements DateParser, Serializable {
 
         final Calendar definingCalendar = Calendar.getInstance(timeZone, locale);
 
-        int centuryStartYear;
+        final int centuryStartYear;
         if(centuryStart!=null) {
             definingCalendar.setTime(centuryStart);
             centuryStartYear= definingCalendar.get(Calendar.YEAR);

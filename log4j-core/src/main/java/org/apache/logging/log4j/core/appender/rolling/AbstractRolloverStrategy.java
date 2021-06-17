@@ -123,14 +123,14 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
         final Path current = currentFile.length() > 0 ? new File(currentFile).toPath() : null;
         LOGGER.debug("Current file: {}", currentFile);
 
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
+        try (final DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
             for (final Path entry: stream) {
                 final Matcher matcher = pattern.matcher(entry.toFile().getName());
                 if (matcher.matches() && !entry.equals(current)) {
                     try {
                         final Integer index = Integer.parseInt(matcher.group(1));
                         eligibleFiles.put(index, entry);
-                    } catch (NumberFormatException ex) {
+                    } catch (final NumberFormatException ex) {
                         LOGGER.debug("Ignoring file {} which matches pattern but the index is invalid.",
                                 entry.toFile().getName());
                     }

@@ -184,7 +184,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         cachedTime = new AtomicReference<>(fromEpochMillis(System.currentTimeMillis()));
     }
 
-    private CachedTime fromEpochMillis(long epochMillis) {
+    private CachedTime fromEpochMillis(final long epochMillis) {
         final MutableInstant temp = new MutableInstant();
         temp.initFromEpochMilli(epochMillis, 0);
         return new CachedTime(temp);
@@ -266,7 +266,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     }
 
     public void format(final long epochMilli, final StringBuilder output) {
-        MutableInstant instant = getMutableInstant();
+        final MutableInstant instant = getMutableInstant();
         instant.initFromEpochMilli(epochMilli, 0);
         format(instant, output);
     }

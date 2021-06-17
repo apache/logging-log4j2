@@ -374,7 +374,7 @@ public class LoggerConfig extends AbstractFilterable {
                 }
             }
         }
-        StackTraceElement location = requiresLocation() ? StackLocatorUtil.calcLocation(fqcn) : null;
+        final StackTraceElement location = requiresLocation() ? StackLocatorUtil.calcLocation(fqcn) : null;
         final LogEvent logEvent = logEventFactory.createEvent(loggerName, marker, fqcn, location, level, data, props, t);
         try {
             log(logEvent, LoggerConfigPredicate.ALL);
@@ -462,7 +462,7 @@ public class LoggerConfig extends AbstractFilterable {
         return reliabilityStrategy;
     }
 
-    private void processLogEvent(final LogEvent event, LoggerConfigPredicate predicate) {
+    private void processLogEvent(final LogEvent event, final LoggerConfigPredicate predicate) {
         event.setIncludeLocation(isIncludeLocation());
         if (predicate.allow(this)) {
             callAppenders(event);
@@ -477,7 +477,7 @@ public class LoggerConfig extends AbstractFilterable {
         AppenderControl[] controls = appenders.get();
         LoggerConfig loggerConfig = this;
         while (loggerConfig != null) {
-            for (AppenderControl control : controls) {
+            for (final AppenderControl control : controls) {
                 if (control.getAppender().requiresLocation()) {
                     return true;
                 }
@@ -596,19 +596,19 @@ public class LoggerConfig extends AbstractFilterable {
     protected enum LoggerConfigPredicate {
         ALL() {
             @Override
-            boolean allow(LoggerConfig config) {
+            boolean allow(final LoggerConfig config) {
                 return true;
             }
         },
         ASYNCHRONOUS_ONLY() {
             @Override
-            boolean allow(LoggerConfig config) {
+            boolean allow(final LoggerConfig config) {
                 return config instanceof AsyncLoggerConfig;
             }
         },
         SYNCHRONOUS_ONLY() {
             @Override
-            boolean allow(LoggerConfig config) {
+            boolean allow(final LoggerConfig config) {
                 return !ASYNCHRONOUS_ONLY.allow(config);
             }
         };

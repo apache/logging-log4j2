@@ -258,7 +258,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
         final String level = Strings.trimToNull((String) properties.remove("level"));
         final String type = (String) properties.remove(CONFIG_TYPE);
         final LoggerComponentBuilder loggerBuilder;
-        boolean includeLocation;
+        final boolean includeLocation;
         if (type != null) {
             if (type.equalsIgnoreCase("asyncLogger")) {
                 if (location != null) {

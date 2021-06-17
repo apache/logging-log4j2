@@ -350,7 +350,7 @@ public class Log4jLogEvent implements LogEvent {
             final String threadName, final int threadPriority, final StackTraceElement source,
             final long timestampMillis, final int nanoOfMillisecond, final long nanoTime) {
         this(loggerName, marker, loggerFQCN, level, message, thrown, thrownProxy, contextData, contextStack, threadId, threadName, threadPriority, source, nanoTime);
-        long millis = message instanceof TimestampMessage
+        final long millis = message instanceof TimestampMessage
                 ? ((TimestampMessage) message).getTimestamp()
                 : timestampMillis;
         instant.initFromEpochMilli(millis, nanoOfMillisecond);

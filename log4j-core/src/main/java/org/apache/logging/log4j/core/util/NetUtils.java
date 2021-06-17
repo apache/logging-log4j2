@@ -128,7 +128,7 @@ public final class NetUtils {
     public static String getMacAddressString() {
         final byte[] macAddr = getMacAddress();
         if (!ArrayUtils.isEmpty(macAddr)) {
-            StringBuilder sb = new StringBuilder(String.format("%02x", macAddr[0]));
+            final StringBuilder sb = new StringBuilder(String.format("%02x", macAddr[0]));
             for (int i = 1; i < macAddr.length; ++i) {
                 sb.append(":").append(String.format("%02x", macAddr[i]));
             }
@@ -158,7 +158,7 @@ public final class NetUtils {
             try {
                 final URL url = new URL(path);
                 return new URI(url.getProtocol(), url.getHost(), url.getPath(), null);
-            } catch (MalformedURLException | URISyntaxException nestedEx) {
+            } catch (final MalformedURLException | URISyntaxException nestedEx) {
                 return new File(path).toURI();
             }
         }

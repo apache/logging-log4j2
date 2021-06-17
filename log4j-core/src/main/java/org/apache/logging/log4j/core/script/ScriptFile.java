@@ -92,7 +92,7 @@ public class ScriptFile extends AbstractScript {
         }
 
         final Charset actualCharset = charset == null ? Charset.defaultCharset() : charset;
-        String scriptText;
+        final String scriptText;
         try (final Reader reader = new InputStreamReader(
                 file != null ? new FileInputStream(file) : uri.toURL().openStream(), actualCharset)) {
             scriptText = IOUtils.toString(reader);

@@ -182,7 +182,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public T build(final boolean initialize) {
-        T configuration;
+        final T configuration;
         try {
             if (source == null) {
                 source = ConfigurationSource.NULL_SOURCE;
@@ -253,7 +253,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         return writer.toString();
     }
 
-    private String formatXml(String xml)
+    private String formatXml(final String xml)
             throws TransformerConfigurationException, TransformerException, TransformerFactoryConfigurationError {
         final StringWriter writer = new StringWriter();
         formatXml(new StreamSource(new StringReader(xml)), new StreamResult(writer));
@@ -363,12 +363,12 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public LoggerComponentBuilder newAsyncLogger(String name) {
+    public LoggerComponentBuilder newAsyncLogger(final String name) {
         return new DefaultLoggerComponentBuilder(this, name, null, "AsyncLogger");
     }
 
     @Override
-    public LoggerComponentBuilder newAsyncLogger(String name, boolean includeLocation) {
+    public LoggerComponentBuilder newAsyncLogger(final String name, final boolean includeLocation) {
         return new DefaultLoggerComponentBuilder(this, name, null, "AsyncLogger", includeLocation);
     }
 
@@ -398,7 +398,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public RootLoggerComponentBuilder newAsyncRootLogger(boolean includeLocation) {
+    public RootLoggerComponentBuilder newAsyncRootLogger(final boolean includeLocation) {
         return new DefaultRootLoggerComponentBuilder(this, null, "AsyncRoot", includeLocation);
     }
 
@@ -471,12 +471,12 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public LoggerComponentBuilder newLogger(String name) {
+    public LoggerComponentBuilder newLogger(final String name) {
         return new DefaultLoggerComponentBuilder(this, name, null);
     }
 
     @Override
-    public LoggerComponentBuilder newLogger(String name, boolean includeLocation) {
+    public LoggerComponentBuilder newLogger(final String name, final boolean includeLocation) {
         return new DefaultLoggerComponentBuilder(this, name, null, includeLocation);
     }
 
@@ -506,7 +506,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public RootLoggerComponentBuilder newRootLogger(boolean includeLocation) {
+    public RootLoggerComponentBuilder newRootLogger(final boolean includeLocation) {
         return new DefaultRootLoggerComponentBuilder(this, null, includeLocation);
     }
 

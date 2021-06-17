@@ -103,7 +103,7 @@ public class FastDateFormat extends Format implements DateParser, DatePrinter {
         return new FastDateFormat(org.apache.logging.log4j.core.time.internal.format.FastDateFormat.getDateTimeInstance(dateStyle, timeStyle, timeZone, locale));
     }
 
-    private FastDateFormat(org.apache.logging.log4j.core.time.internal.format.FastDateFormat formatter) {
+    private FastDateFormat(final org.apache.logging.log4j.core.time.internal.format.FastDateFormat formatter) {
         this.formatter = formatter;
     }
 

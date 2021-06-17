@@ -162,7 +162,7 @@ public class TcpSocketManager extends AbstractSocketManager {
                     reconnector = createReconnector();
                     try {
                         reconnector.reconnect();
-                    } catch (IOException reconnEx) {
+                    } catch (final IOException reconnEx) {
                         LOGGER.debug("Cannot reestablish socket connection to {}: {}; starting reconnector thread {}",
                                 config, reconnEx.getLocalizedMessage(), reconnector.getName(), reconnEx);
                         reconnector.start();
@@ -171,7 +171,7 @@ public class TcpSocketManager extends AbstractSocketManager {
                     }
                     try {
                         writeAndFlush(bytes, offset, length, immediateFlush);
-                    } catch (IOException e) {
+                    } catch (final IOException e) {
                         throw new AppenderLoggingException(
                                 String.format("Error writing to %s after reestablishing connection for %s", getName(),
                                         config),
@@ -281,18 +281,18 @@ public class TcpSocketManager extends AbstractSocketManager {
         }
 
         void reconnect() throws IOException {
-            List<InetSocketAddress> socketAddresses = FACTORY.resolver.resolveHost(host, port);
+            final List<InetSocketAddress> socketAddresses = FACTORY.resolver.resolveHost(host, port);
             if (socketAddresses.size() == 1) {
                 LOGGER.debug("Reconnecting " + socketAddresses.get(0));
                 connect(socketAddresses.get(0));
             } else {
                 IOException ioe = null;
-                for (InetSocketAddress socketAddress : socketAddresses) {
+                for (final InetSocketAddress socketAddress : socketAddresses) {
                     try {
                         LOGGER.debug("Reconnecting " + socketAddress);
                         connect(socketAddress);
                         return;
-                    } catch (IOException ex) {
+                    } catch (final IOException ex) {
                         ioe = ex;
                     }
                 }
@@ -300,11 +300,11 @@ public class TcpSocketManager extends AbstractSocketManager {
             }
         }
 
-        private void connect(InetSocketAddress socketAddress) throws IOException {
+        private void connect(final InetSocketAddress socketAddress) throws IOException {
             final Socket sock = createSocket(socketAddress);
             @SuppressWarnings("resource") // newOS is managed by the enclosing Manager.
             final OutputStream newOS = sock.getOutputStream();
-            InetAddress prev = socket != null ? socket.getInetAddress() : null;
+            final InetAddress prev = socket != null ? socket.getInetAddress() : null;
             synchronized (owner) {
                 Closer.closeSilently(getOutputStream());
                 setOutputStream(newOS);
@@ -312,7 +312,7 @@ public class TcpSocketManager extends AbstractSocketManager {
                 reconnector = null;
                 shutdown = true;
             }
-            String type = prev != null && prev.getHostAddress().equals(socketAddress.getAddress().getHostAddress()) ?
+            final String type = prev != null && prev.getHostAddress().equals(socketAddress.getAddress().getHostAddress()) ?
                     "reestablished" : "established";
             LOGGER.debug("Connection to {}:{} {}: {}", host, port, type, socket);
         }
@@ -401,7 +401,7 @@ public class TcpSocketManager extends AbstractSocketManager {
         @SuppressWarnings("resource")
         @Override
         public M createManager(final String name, final T data) {
-            InetAddress inetAddress;
+            final InetAddress inetAddress;
             OutputStream os;
             try {
                 inetAddress = InetAddress.getByName(data.host);
@@ -427,27 +427,27 @@ public class TcpSocketManager extends AbstractSocketManager {
         }
 
         @SuppressWarnings("unchecked")
-        M createManager(final String name, OutputStream os, Socket socket, InetAddress inetAddress, final T data) {
+        M createManager(final String name, final OutputStream os, final Socket socket, final InetAddress inetAddress, final T data) {
             return (M) new TcpSocketManager(name, os, socket, inetAddress, data.host, data.port,
                     data.connectTimeoutMillis, data.reconnectDelayMillis, data.immediateFail, data.layout,
                     data.bufferSize, data.socketOptions);
         }
 
         Socket createSocket(final T data) throws IOException {
-            List<InetSocketAddress> socketAddresses = resolver.resolveHost(data.host, data.port);
+            final List<InetSocketAddress> socketAddresses = resolver.resolveHost(data.host, data.port);
             IOException ioe = null;
-            for (InetSocketAddress socketAddress : socketAddresses) {
+            for (final InetSocketAddress socketAddress : socketAddresses) {
                 try {
                     return TcpSocketManager.createSocket(socketAddress, data.socketOptions, data.connectTimeoutMillis);
-                } catch (IOException ex) {
+                } catch (final IOException ex) {
                     ioe = ex;
                 }
             }
             throw new IOException(errorMessage(data, socketAddresses) , ioe);
         }
 
-        protected String errorMessage(final T data, List<InetSocketAddress> socketAddresses) {
-            StringBuilder sb = new StringBuilder("Unable to create socket for ");
+        protected String errorMessage(final T data, final List<InetSocketAddress> socketAddresses) {
+            final StringBuilder sb = new StringBuilder("Unable to create socket for ");
             sb.append(data.host).append(" at port ").append(data.port);
             if (socketAddresses.size() == 1) {
                 if (!socketAddresses.get(0).getAddress().getHostAddress().equals(data.host)) {
@@ -472,16 +472,16 @@ public class TcpSocketManager extends AbstractSocketManager {
      * This method is only for unit testing. It is not Thread-safe.
      * @param resolver the HostResolver.
      */
-    public static void setHostResolver(HostResolver resolver) {
+    public static void setHostResolver(final HostResolver resolver) {
         TcpSocketManagerFactory.resolver = resolver;
     }
 
     public static class HostResolver {
 
-        public List<InetSocketAddress> resolveHost(String host, int port) throws UnknownHostException {
-            InetAddress[] addresses = InetAddress.getAllByName(host);
-            List<InetSocketAddress> socketAddresses = new ArrayList<>(addresses.length);
-            for (InetAddress address: addresses) {
+        public List<InetSocketAddress> resolveHost(final String host, final int port) throws UnknownHostException {
+            final InetAddress[] addresses = InetAddress.getAllByName(host);
+            final List<InetSocketAddress> socketAddresses = new ArrayList<>(addresses.length);
+            for (final InetAddress address: addresses) {
                 socketAddresses.add(new InetSocketAddress(address, port));
             }
             return socketAddresses;

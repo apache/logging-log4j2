@@ -231,7 +231,7 @@ public final class HighlightConverter extends LogEventPatternConverter implement
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
         int start = 0;
         int end = 0;
-        String levelStyle = levelStyles.get(event.getLevel().name());
+        final String levelStyle = levelStyles.get(event.getLevel().name());
         if (!noAnsi) { // use ANSI: set prefix
             start = toAppendTo.length();
             if (levelStyle != null) {
@@ -256,7 +256,7 @@ public final class HighlightConverter extends LogEventPatternConverter implement
         }
     }
 
-    String getLevelStyle(Level level) {
+    String getLevelStyle(final Level level) {
         return levelStyles.get(level.name());
     }
 

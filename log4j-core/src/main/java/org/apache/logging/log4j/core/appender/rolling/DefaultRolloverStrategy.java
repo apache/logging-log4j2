@@ -114,7 +114,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         public DefaultRolloverStrategy build() {
             int minIndex;
             int maxIndex;
-            boolean useMax;
+            final boolean useMax;
 
             if (fileIndex != null && fileIndex.equalsIgnoreCase("nomax")) {
                 minIndex = Integer.MIN_VALUE;
@@ -141,7 +141,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
             }
             final int compressionLevel = Integers.parseInt(compressionLevelStr, Deflater.DEFAULT_COMPRESSION);
             // The config object can be null when this object is built programmatically.
-            StrSubstitutor nonNullStrSubstitutor = config != null ? config.getStrSubstitutor() : new StrSubstitutor();
+            final StrSubstitutor nonNullStrSubstitutor = config != null ? config.getStrSubstitutor() : new StrSubstitutor();
             return new DefaultRolloverStrategy(minIndex, maxIndex, useMax, compressionLevel, nonNullStrSubstitutor,
                     customActions, stopCustomActionsOnError, tempCompressedFilePattern);
         }
@@ -460,7 +460,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
      */
     @Override
     public RolloverDescription rollover(final RollingFileManager manager) throws SecurityException {
-        int fileIndex;
+        final int fileIndex;
 		final StringBuilder buf = new StringBuilder(255);
         if (minIndex == Integer.MIN_VALUE) {
             final SortedMap<Integer, Path> eligibleFiles = getEligibleFiles(manager);

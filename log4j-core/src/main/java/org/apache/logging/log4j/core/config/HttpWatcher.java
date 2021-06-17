@@ -54,7 +54,7 @@ public class HttpWatcher extends AbstractWatcher {
     private static final String HTTPS = "https";
 
     public HttpWatcher(final Configuration configuration, final Reconfigurable reconfigurable,
-        final List<ConfigurationListener> configurationListeners, long lastModifiedMillis) {
+                       final List<ConfigurationListener> configurationListeners, final long lastModifiedMillis) {
         super(configuration, reconfigurable, configurationListeners);
         sslConfiguration = SslConfigurationFactory.getSslConfiguration();
         this.lastModifiedMillis = lastModifiedMillis;
@@ -71,23 +71,23 @@ public class HttpWatcher extends AbstractWatcher {
     }
 
     @Override
-    public void watching(Source source) {
+    public void watching(final Source source) {
         if (!source.getURI().getScheme().equals(HTTP) && !source.getURI().getScheme().equals(HTTPS)) {
             throw new IllegalArgumentException(
                 "HttpWatcher requires a url using the HTTP or HTTPS protocol, not " + source.getURI().getScheme());
         }
         try {
             url = source.getURI().toURL();
-        } catch (MalformedURLException ex) {
+        } catch (final MalformedURLException ex) {
             throw new IllegalArgumentException("Invalid URL for HttpWatcher " + source.getURI(), ex);
         }
         super.watching(source);
     }
 
     @Override
-    public Watcher newWatcher(Reconfigurable reconfigurable, List<ConfigurationListener> listeners,
-        long lastModifiedMillis) {
-        HttpWatcher watcher = new HttpWatcher(getConfiguration(), reconfigurable, listeners, lastModifiedMillis);
+    public Watcher newWatcher(final Reconfigurable reconfigurable, final List<ConfigurationListener> listeners,
+           final long lastModifiedMillis) {
+        final HttpWatcher watcher = new HttpWatcher(getConfiguration(), reconfigurable, listeners, lastModifiedMillis);
         if (getSource() != null) {
             watcher.watching(getSource());
         }
@@ -101,22 +101,22 @@ public class HttpWatcher extends AbstractWatcher {
             urlConnection.connect();
 
             try {
-                int code = urlConnection.getResponseCode();
+                final int code = urlConnection.getResponseCode();
                 switch (code) {
                     case NOT_MODIFIED: {
                         LOGGER.debug("Configuration Not Modified");
                         return false;
                     }
                     case OK: {
-                        try (InputStream is = urlConnection.getInputStream()) {
-                            ConfigurationSource configSource = getConfiguration().getConfigurationSource();
+                        try (final InputStream is = urlConnection.getInputStream()) {
+                            final ConfigurationSource configSource = getConfiguration().getConfigurationSource();
                             configSource.setData(readStream(is));
                             lastModifiedMillis = urlConnection.getLastModified();
                             configSource.setModifiedMillis(lastModifiedMillis);
                             LOGGER.debug("Content was modified for {}", url.toString());
                             return true;
                         } catch (final IOException e) {
-                            try (InputStream es = urlConnection.getErrorStream()) {
+                            try (final InputStream es = urlConnection.getErrorStream()) {
                                 LOGGER.info("Error accessing configuration at {}: {}", url, readStream(es));
                             } catch (final IOException ioe) {
                                 LOGGER.error("Error accessing configuration at {}: {}", url, e.getMessage());
@@ -142,9 +142,9 @@ public class HttpWatcher extends AbstractWatcher {
         return false;
     }
 
-    private byte[] readStream(InputStream is) throws IOException {
-        ByteArrayOutputStream result = new ByteArrayOutputStream();
-        byte[] buffer = new byte[BUF_SIZE];
+    private byte[] readStream(final InputStream is) throws IOException {
+        final ByteArrayOutputStream result = new ByteArrayOutputStream();
+        final byte[] buffer = new byte[BUF_SIZE];
         int length;
         while ((length = is.read(buffer)) != -1) {
             result.write(buffer, 0, length);

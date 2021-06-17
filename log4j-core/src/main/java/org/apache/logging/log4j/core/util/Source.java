@@ -40,7 +40,7 @@ public class Source {
      * Constructs a Source from a ConfigurationSource.
      * @param source The ConfigurationSource.
      */
-    public Source(ConfigurationSource source) {
+    public Source(final ConfigurationSource source) {
         this.file = source.getFile();
         this.uri = source.getURI();
         this.location = source.getLocation();
@@ -105,14 +105,14 @@ public class Source {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
         if (!(o instanceof Source)) {
             return false;
         }
-        Source source = (Source) o;
+        final Source source = (Source) o;
         return Objects.equals(location, source.location);
     }
 

@@ -88,14 +88,14 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
 
         public abstract Charset getDefaultCharset();
 
-        protected Charset getCharset(final String property, Charset defaultCharset) {
+        protected Charset getCharset(final String property, final Charset defaultCharset) {
             return new PropertiesUtil(PropertiesUtil.getSystemProperties()).getCharsetProperty(property, defaultCharset);
         }
 
     }
 
     private ConsoleAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
-            final OutputStreamManager manager, final boolean ignoreExceptions, final Target target, Property[] properties) {
+            final OutputStreamManager manager, final boolean ignoreExceptions, final Target target, final Property[] properties) {
         super(name, layout, filter, ignoreExceptions, true, properties, manager);
         this.target = target;
     }
@@ -204,7 +204,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         return outputStream;
     }
 
-    private static String clean(String string) {
+    private static String clean(final String string) {
         return string.replace(Chars.NUL, Chars.SPACE);
     }
 

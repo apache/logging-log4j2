@@ -107,7 +107,7 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
         }
         try {
             // @formatter:off
-            PasswordProvider provider = passwordFile != null
+            final PasswordProvider provider = passwordFile != null
                     ? new FilePasswordProvider(passwordFile)
                     : passwordEnvironmentVariable != null
                             ? new EnvironmentPasswordProvider(passwordEnvironmentVariable)
@@ -118,7 +118,7 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
                 Arrays.fill(password, '\0');
             }
             return new KeyStoreConfiguration(location, provider, keyStoreType, keyManagerFactoryAlgorithm);
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             throw new StoreConfigurationException("Could not configure KeyStore", ex);
         }
     }
@@ -126,7 +126,7 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
     public KeyManagerFactory initKeyManagerFactory() throws NoSuchAlgorithmException, UnrecoverableKeyException,
             KeyStoreException {
         final KeyManagerFactory kmFactory = KeyManagerFactory.getInstance(this.keyManagerFactoryAlgorithm);
-        char[] password = this.getPassword();
+        final char[] password = this.getPassword();
         try {
             kmFactory.init(this.getKeyStore(), password);
         } finally {

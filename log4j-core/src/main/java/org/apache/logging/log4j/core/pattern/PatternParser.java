@@ -186,7 +186,7 @@ public final class PatternParser {
                     config.setNanoClock(new SystemNanoClock());
                 }
             }
-            LogEventPatternConverter pc;
+            final LogEventPatternConverter pc;
             if (converter instanceof LogEventPatternConverter) {
                 pc = (LogEventPatternConverter) converter;
                 handlesThrowable |= pc.handlesThrowable();
@@ -194,7 +194,7 @@ public final class PatternParser {
                 pc = new LiteralPatternConverter(config, Strings.EMPTY, true);
             }
 
-            FormattingInfo field;
+            final FormattingInfo field;
             if (fieldIter.hasNext()) {
                 field = fieldIter.next();
             } else {
@@ -275,7 +275,7 @@ public final class PatternParser {
             final int begin = i; // position of first real char
             int depth = 1; // already inside one level
             while (depth > 0 && i < pattern.length()) {
-                char c = pattern.charAt(i);
+                final char c = pattern.charAt(i);
                 if (c == '{') {
                     depth++;
                 } else if (c == '}') {
@@ -603,8 +603,8 @@ public final class PatternParser {
     }
 
     /** LOG4J2-2564: Returns true if all method parameters are valid for injection. */
-    private static boolean areValidNewInstanceParameters(Class<?>[] parameterTypes) {
-        for (Class<?> clazz : parameterTypes) {
+    private static boolean areValidNewInstanceParameters(final Class<?>[] parameterTypes) {
+        for (final Class<?> clazz : parameterTypes) {
             if (!clazz.isAssignableFrom(Configuration.class)
                     && !(clazz.isArray() && "[Ljava.lang.String;".equals(clazz.getName()))) {
                 return false;
@@ -658,7 +658,7 @@ public final class PatternParser {
             noConsoleNoAnsi);
 
         if (pc == null) {
-            StringBuilder msg;
+            final StringBuilder msg;
 
             if (Strings.isEmpty(converterId)) {
                 msg = new StringBuilder("Empty conversion specifier starting at position ");

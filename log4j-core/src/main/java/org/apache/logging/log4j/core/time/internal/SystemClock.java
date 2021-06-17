@@ -45,9 +45,9 @@ public final class SystemClock implements Clock, PreciseClock {
      * {@inheritDoc}
      */
     @Override
-    public void init(MutableInstant mutableInstant) {
+    public void init(final MutableInstant mutableInstant) {
         if (USE_PRECISE_CLOCK) {
-            Instant instant = java.time.Clock.systemUTC().instant();
+            final Instant instant = java.time.Clock.systemUTC().instant();
             mutableInstant.initFromEpochSecond(instant.getEpochSecond(), instant.getNano());
         } else {
             mutableInstant.initFromEpochMilli(System.currentTimeMillis(), 0);

@@ -275,7 +275,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
     }
 
     @Override
-    public <S> void forEachParameter(ParameterConsumer<S> action, S state) {
+    public <S> void forEachParameter(final ParameterConsumer<S> action, final S state) {
         if (parameters != null) {
             for (short i = 0; i < parameterCount; i++) {
                 action.accept(parameters[i], i, state);

@@ -118,7 +118,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
         if (level == getLevel()) {
             return;
         }
-        Level actualLevel;
+        final Level actualLevel;
         if (level != null) {
             actualLevel = level;
         } else {

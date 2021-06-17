@@ -86,7 +86,7 @@ public final class UuidUtil {
         final ByteBuffer buf = ByteBuffer.wrap(node);
         long rand = INITIAL_UUID_SEQNO;
         String assigned = PropertiesUtil.getProperties().getStringProperty(ASSIGNED_SEQUENCES);
-        long[] sequences;
+        final long[] sequences;
         if (assigned == null) {
             sequences = new long[0];
         } else {

@@ -166,8 +166,8 @@ public final class ExtendedStackTraceElement implements Serializable {
     private void render(final StackTraceElement stElement, final StringBuilder output, final TextRenderer textRenderer) {
         final String fileName = stElement.getFileName();
         final int lineNumber = stElement.getLineNumber();
-        String moduleName = getModuleName();
-        String moduleVersion = getModuleVersion();
+        final String moduleName = getModuleName();
+        final String moduleVersion = getModuleVersion();
         if (Strings.isNotEmpty(moduleName)) {
             textRenderer.render(moduleName, output, "StackTraceElement.ModuleName");
             if (Strings.isNotEmpty(moduleVersion) && !moduleName.startsWith("java")) {

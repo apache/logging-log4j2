@@ -196,7 +196,7 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
 
     private FileAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
             final FileManager manager, final String filename, final boolean ignoreExceptions,
-            final boolean immediateFlush, final Advertiser advertiser, Property[] properties) {
+            final boolean immediateFlush, final Advertiser advertiser, final Property[] properties) {
 
         super(name, layout, filter, ignoreExceptions, immediateFlush, properties, manager);
         if (advertiser != null) {

@@ -30,7 +30,7 @@ public class DefaultAsyncQueueFullPolicy implements AsyncQueueFullPolicy {
 
         // LOG4J2-471: prevent deadlock when RingBuffer is full and object
         // being logged calls Logger.log() from its toString() method
-        Thread currentThread = Thread.currentThread();
+        final Thread currentThread = Thread.currentThread();
         if (currentThread.getId() == backgroundThreadId
                 // Threads owned by log4j are most likely to result in
                 // deadlocks because they generally consume events.

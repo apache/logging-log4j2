@@ -53,13 +53,13 @@ class ThrowableProxyRenderer {
     }
 
     private static void formatCause(final StringBuilder sb, final String prefix, final ThrowableProxy cause,
-                                    final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, String lineSeparator) {
+                                    final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
         formatThrowableProxy(sb, prefix, CAUSED_BY_LABEL, cause, ignorePackages, textRenderer, suffix, lineSeparator);
     }
 
     private static void formatThrowableProxy(final StringBuilder sb, final String prefix, final String causeLabel,
                                              final ThrowableProxy throwableProxy, final List<String> ignorePackages,
-                                             final TextRenderer textRenderer, final String suffix, String lineSeparator) {
+                                             final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
         if (throwableProxy == null) {
             return;
         }
@@ -75,7 +75,7 @@ class ThrowableProxyRenderer {
     }
 
     private static void formatSuppressed(final StringBuilder sb, final String prefix, final ThrowableProxy[] suppressedProxies,
-                                         final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, String lineSeparator) {
+                                         final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
         if (suppressedProxies == null) {
             return;
         }
@@ -86,7 +86,7 @@ class ThrowableProxyRenderer {
 
     private static void formatElements(final StringBuilder sb, final String prefix, final int commonCount,
                                        final StackTraceElement[] causedTrace, final ExtendedStackTraceElement[] extStackTrace,
-                                       final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, String lineSeparator) {
+                                       final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
         if (ignorePackages == null || ignorePackages.isEmpty()) {
             for (final ExtendedStackTraceElement element : extStackTrace) {
                 formatEntry(element, sb, prefix, textRenderer, suffix, lineSeparator);
@@ -126,7 +126,7 @@ class ThrowableProxyRenderer {
     }
 
     private static void appendSuppressedCount(final StringBuilder sb, final String prefix, final int count,
-                                              final TextRenderer textRenderer, final String suffix, String lineSeparator) {
+                                              final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
         textRenderer.render(prefix, sb, "Prefix");
         if (count == 1) {
             textRenderer.render("\t... ", sb, "Suppressed");
@@ -140,7 +140,7 @@ class ThrowableProxyRenderer {
     }
 
     private static void formatEntry(final ExtendedStackTraceElement extStackTraceElement, final StringBuilder sb,
-                                    final String prefix, final TextRenderer textRenderer, final String suffix, String lineSeparator) {
+                                    final String prefix, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
         textRenderer.render(prefix, sb, "Prefix");
         textRenderer.render("\tat ", sb, "At");
         extStackTraceElement.renderOn(sb, textRenderer);
@@ -170,7 +170,7 @@ class ThrowableProxyRenderer {
      * @param suffix         Append this to the end of each stack frame.
      * @param lineSeparator  The end-of-line separator.
      */
-    static void formatExtendedStackTraceTo(ThrowableProxy src, final StringBuilder sb, final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
+    static void formatExtendedStackTraceTo(final ThrowableProxy src, final StringBuilder sb, final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
         textRenderer.render(src.getName(), sb, "Name");
         textRenderer.render(": ", sb, "NameMessageSeparator");
         textRenderer.render(src.getMessage(), sb, "Message");
@@ -193,7 +193,7 @@ class ThrowableProxyRenderer {
      * @param lineSeparator  The end-of-line separator.
      */
     static void formatCauseStackTrace(final ThrowableProxy src, final StringBuilder sb, final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
-        ThrowableProxy causeProxy = src.getCauseProxy();
+        final ThrowableProxy causeProxy = src.getCauseProxy();
         if (causeProxy != null) {
             formatWrapper(sb, causeProxy, ignorePackages, textRenderer, suffix, lineSeparator);
             sb.append(WRAPPED_BY_LABEL);

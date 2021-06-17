@@ -30,12 +30,12 @@ import org.apache.logging.log4j.plugins.Plugin;
         printObject = true)
 public class SelectArbiter {
 
-    public Arbiter evaluateConditions(List<Arbiter> conditions) {
-        Optional<Arbiter> opt = conditions.stream().filter((c) -> c instanceof DefaultArbiter)
+    public Arbiter evaluateConditions(final List<Arbiter> conditions) {
+        final Optional<Arbiter> opt = conditions.stream().filter((c) -> c instanceof DefaultArbiter)
                 .reduce((a, b) -> {
                     throw new IllegalStateException("Multiple elements: " + a + ", " + b);
                 });
-        for (Arbiter condition : conditions) {
+        for (final Arbiter condition : conditions) {
             if (condition instanceof DefaultArbiter) {
                 continue;
             }
