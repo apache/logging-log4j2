@@ -142,9 +142,9 @@ public class FileManager extends OutputStreamManager {
         final FileOutputStream fos = new FileOutputStream(file, isAppend);
         if (file.exists() && file.length() == 0) {
             try {
-                FileTime now = FileTime.fromMillis(System.currentTimeMillis());
+                final FileTime now = FileTime.fromMillis(System.currentTimeMillis());
                 Files.setAttribute(file.toPath(), "creationTime", now);
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 LOGGER.warn("Unable to set current file time for {}", filename);
             }
             writeHeader(fos);
@@ -153,7 +153,7 @@ public class FileManager extends OutputStreamManager {
         return fos;
     }
 
-    protected void createParentDir(File file) {
+    protected void createParentDir(final File file) {
     }
 
     protected void defineAttributeView(final Path path) {

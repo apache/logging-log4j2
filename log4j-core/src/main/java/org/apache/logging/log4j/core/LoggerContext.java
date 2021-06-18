@@ -134,7 +134,7 @@ public class LoggerContext extends AbstractLifeCycle
             externalMap.put(EXTERNAL_CONTEXT_KEY, externalContext);
         }
         this.configLocation = configLocn;
-        Thread runner = new Thread(new ThreadContextDataTask(), "Thread Context Data Task");
+        final Thread runner = new Thread(new ThreadContextDataTask(), "Thread Context Data Task");
         runner.setDaemon(true);
         runner.start();
     }
@@ -165,12 +165,12 @@ public class LoggerContext extends AbstractLifeCycle
         } else {
             configLocation = null;
         }
-        Thread runner = new Thread(new ThreadContextDataTask(), "Thread Context Data Task");
+        final Thread runner = new Thread(new ThreadContextDataTask(), "Thread Context Data Task");
         runner.setDaemon(true);
         runner.start();
     }
 
-    public void addShutdownListener(LoggerContextShutdownAware listener) {
+    public void addShutdownListener(final LoggerContextShutdownAware listener) {
         if (listeners == null) {
             synchronized(this) {
                 if (listeners == null) {
@@ -393,10 +393,10 @@ public class LoggerContext extends AbstractLifeCycle
             this.setStopped();
         }
         if (listeners != null) {
-            for (LoggerContextShutdownAware listener : listeners) {
+            for (final LoggerContextShutdownAware listener : listeners) {
                 try {
                     listener.contextShutdown(this);
-                } catch (Exception ex) {
+                } catch (final Exception ex) {
                     // Ignore the exception.
                 }
             }
@@ -434,27 +434,27 @@ public class LoggerContext extends AbstractLifeCycle
     }
 
     @Override
-    public Object getObject(String key) {
+    public Object getObject(final String key) {
         return externalMap.get(key);
     }
 
     @Override
-    public Object putObject(String key, Object value) {
+    public Object putObject(final String key, final Object value) {
         return externalMap.put(key, value);
     }
 
     @Override
-    public Object putObjectIfAbsent(String key, Object value) {
+    public Object putObjectIfAbsent(final String key, final Object value) {
         return externalMap.putIfAbsent(key, value);
     }
 
     @Override
-    public Object removeObject(String key) {
+    public Object removeObject(final String key) {
         return externalMap.remove(key);
     }
 
     @Override
-    public boolean removeObject(String key, Object value) {
+    public boolean removeObject(final String key, final Object value) {
         return externalMap.remove(key, value);
     }
 
@@ -680,7 +680,7 @@ public class LoggerContext extends AbstractLifeCycle
      * Reconfigures the context.
      */
     private void reconfigure(final URI configURI) {
-        Object externalContext = externalMap.get(EXTERNAL_CONTEXT_KEY);
+        final Object externalContext = externalMap.get(EXTERNAL_CONTEXT_KEY);
         final ClassLoader cl = ClassLoader.class.isInstance(externalContext) ? (ClassLoader) externalContext : null;
         LOGGER.debug("Reconfiguration started for context[name={}] at URI {} ({}) with optional ClassLoader: {}",
                 contextName, configURI, this, cl);
@@ -708,11 +708,11 @@ public class LoggerContext extends AbstractLifeCycle
         reconfigure(configLocation);
     }
 
-    public void reconfigure(Configuration configuration) {
+    public void reconfigure(final Configuration configuration) {
         setConfiguration(configuration);
-        ConfigurationSource source = configuration.getConfigurationSource();
+        final ConfigurationSource source = configuration.getConfigurationSource();
         if (source != null) {
-            URI uri = source.getURI();
+            final URI uri = source.getURI();
             if (uri != null) {
                 configLocation = uri;
             }

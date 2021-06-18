@@ -157,7 +157,7 @@ public final class RoutingAppender extends AbstractAppender {
 
     private RoutingAppender(final String name, final Filter filter, final boolean ignoreExceptions, final Routes routes,
             final RewritePolicy rewritePolicy, final Configuration configuration, final PurgePolicy purgePolicy,
-            final AbstractScript defaultRouteScript, Property[] properties, final Boolean requiresLocation) {
+            final AbstractScript defaultRouteScript, final Property[] properties, final Boolean requiresLocation) {
         super(name, filter, null, ignoreExceptions, properties);
         this.routes = routes;
         this.configuration = configuration;
@@ -286,7 +286,7 @@ public final class RoutingAppender extends AbstractAppender {
             if (app == null) {
                 return null;
             }
-            CreatedRouteAppenderControl created = new CreatedRouteAppenderControl(app);
+            final CreatedRouteAppenderControl created = new CreatedRouteAppenderControl(app);
             control = created;
             createdAppenders.put(key, created);
         }
@@ -404,7 +404,7 @@ public final class RoutingAppender extends AbstractAppender {
      */
     private static abstract class RouteAppenderControl extends AppenderControl {
 
-        RouteAppenderControl(Appender appender) {
+        RouteAppenderControl(final Appender appender) {
             super(appender, null, null);
         }
 
@@ -418,7 +418,7 @@ public final class RoutingAppender extends AbstractAppender {
         private volatile boolean pendingDeletion;
         private final AtomicInteger depth = new AtomicInteger();
 
-        CreatedRouteAppenderControl(Appender appender) {
+        CreatedRouteAppenderControl(final Appender appender) {
             super(appender);
         }
 
@@ -443,7 +443,7 @@ public final class RoutingAppender extends AbstractAppender {
                     // 1. Another invocation of tryStopAppender has succeeded, or
                     // 2. Events are being appended, and will trigger stop when they complete
                     && depth.compareAndSet(0, -100_000)) {
-                Appender appender = getAppender();
+                final Appender appender = getAppender();
                 LOGGER.debug("Stopping appender {}", appender);
                 appender.stop();
             }
@@ -452,7 +452,7 @@ public final class RoutingAppender extends AbstractAppender {
 
     private static final class ReferencedRouteAppenderControl extends RouteAppenderControl {
 
-        ReferencedRouteAppenderControl(Appender appender) {
+        ReferencedRouteAppenderControl(final Appender appender) {
             super(appender);
         }
 

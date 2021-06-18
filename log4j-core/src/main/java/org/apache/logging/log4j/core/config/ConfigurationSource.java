@@ -86,7 +86,7 @@ public class ConfigurationSource {
         long modified = 0;
         try {
             modified = file.lastModified();
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             // There is a problem with the file. It will be handled somewhere else.
         }
         this.lastModified = modified;
@@ -100,7 +100,7 @@ public class ConfigurationSource {
      * @param url the URL where the input stream originated
      * @param lastModified when the source was last modified.
      */
-    public ConfigurationSource(final InputStream stream, final URL url, long lastModified) {
+    public ConfigurationSource(final InputStream stream, final URL url, final long lastModified) {
         this.stream = Objects.requireNonNull(stream, "stream is null");
         this.url = Objects.requireNonNull(url, "URL is null");
         this.location = url.toString();
@@ -136,7 +136,7 @@ public class ConfigurationSource {
         this(toByteArray(stream), null, 0);
     }
 
-    public ConfigurationSource(final Source source, final byte[] data, long lastModified) throws IOException {
+    public ConfigurationSource(final Source source, final byte[] data, final long lastModified) throws IOException {
         Objects.requireNonNull(source, "source is null");
         this.data = Objects.requireNonNull(data, "data is null");
         this.stream = new ByteArrayInputStream(data);
@@ -146,7 +146,7 @@ public class ConfigurationSource {
         this.lastModified = lastModified;
     }
 
-    private ConfigurationSource(final byte[] data, final URL url, long lastModified) {
+    private ConfigurationSource(final byte[] data, final URL url, final long lastModified) {
         this.data = Objects.requireNonNull(data, "data is null");
         this.stream = new ByteArrayInputStream(data);
         this.file = null;
@@ -198,15 +198,15 @@ public class ConfigurationSource {
         return url;
     }
 
-    public void setSource(Source source) {
+    public void setSource(final Source source) {
         this.source = source;
     }
 
-    public void setData(byte[] data) {
+    public void setData(final byte[] data) {
         this.data = data;
     }
 
-    public void setModifiedMillis(long modifiedMillis) {
+    public void setModifiedMillis(final long modifiedMillis) {
         this.modifiedMillis = modifiedMillis;
     }
 
@@ -329,10 +329,10 @@ public class ConfigurationSource {
             return null;
         }
         try {
-            URL url = configLocation.toURL();
-            URLConnection urlConnection = UrlConnectionFactory.createConnection(url);
-            InputStream is = urlConnection.getInputStream();
-            long lastModified = urlConnection.getLastModified();
+            final URL url = configLocation.toURL();
+            final URLConnection urlConnection = UrlConnectionFactory.createConnection(url);
+            final InputStream is = urlConnection.getInputStream();
+            final long lastModified = urlConnection.getLastModified();
             return new ConfigurationSource(is, configLocation.toURL(), lastModified);
         } catch (final FileNotFoundException ex) {
             ConfigurationFactory.LOGGER.warn("Could not locate file {}", configLocation.toString());
@@ -358,13 +358,13 @@ public class ConfigurationSource {
         return getConfigurationSource(url);
     }
 
-    private static ConfigurationSource getConfigurationSource(URL url) {
+    private static ConfigurationSource getConfigurationSource(final URL url) {
         try {
-            URLConnection urlConnection = url.openConnection();
-            AuthorizationProvider provider = ConfigurationFactory.authorizationProvider(PropertiesUtil.getProperties());
+            final URLConnection urlConnection = url.openConnection();
+            final AuthorizationProvider provider = ConfigurationFactory.authorizationProvider(PropertiesUtil.getProperties());
             provider.addAuthorization(urlConnection);
             if (url.getProtocol().equals(HTTPS)) {
-                SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration();
+                final SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration();
                 if (sslConfiguration != null) {
                     ((HttpsURLConnection) urlConnection).setSSLSocketFactory(sslConfiguration.getSslSocketFactory());
                     if (!sslConfiguration.isVerifyHostName()) {
@@ -372,18 +372,18 @@ public class ConfigurationSource {
                     }
                 }
             }
-            File file = FileUtils.fileFromUri(url.toURI());
+            final File file = FileUtils.fileFromUri(url.toURI());
             try {
                 if (file != null) {
                     return new ConfigurationSource(urlConnection.getInputStream(), FileUtils.fileFromUri(url.toURI()));
                 } else {
                     return new ConfigurationSource(urlConnection.getInputStream(), url, urlConnection.getLastModified());
                 }
-            } catch (FileNotFoundException ex) {
+            } catch (final FileNotFoundException ex) {
                 ConfigurationFactory.LOGGER.info("Unable to locate file {}, ignoring.", url.toString());
                 return null;
             }
-        } catch (IOException | URISyntaxException ex) {
+        } catch (final IOException | URISyntaxException ex) {
             ConfigurationFactory.LOGGER.warn("Error accessing {} due to {}, ignoring.", url.toString(),
                     ex.getMessage());
             return null;

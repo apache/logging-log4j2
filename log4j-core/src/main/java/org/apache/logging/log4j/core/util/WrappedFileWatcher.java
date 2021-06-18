@@ -32,16 +32,16 @@ public class WrappedFileWatcher extends AbstractWatcher implements FileWatcher {
     private final FileWatcher watcher;
     private volatile long lastModifiedMillis;
 
-    public WrappedFileWatcher(FileWatcher watcher, final Configuration configuration,
-        final Reconfigurable reconfigurable, final List<ConfigurationListener> configurationListeners,
-        final long lastModifiedMillis) {
+    public WrappedFileWatcher(final FileWatcher watcher, final Configuration configuration,
+                              final Reconfigurable reconfigurable, final List<ConfigurationListener> configurationListeners,
+                              final long lastModifiedMillis) {
         super(configuration, reconfigurable, configurationListeners);
         this.watcher = watcher;
         this.lastModifiedMillis = lastModifiedMillis;
     }
 
 
-    public WrappedFileWatcher(FileWatcher watcher) {
+    public WrappedFileWatcher(final FileWatcher watcher) {
         super(null, null, null);
         this.watcher = watcher;
     }
@@ -51,13 +51,13 @@ public class WrappedFileWatcher extends AbstractWatcher implements FileWatcher {
     }
 
     @Override
-    public void fileModified(File file) {
+    public void fileModified(final File file) {
         watcher.fileModified(file);
     }
 
     @Override
     public boolean isModified() {
-        long lastModified = getSource().getFile().lastModified();
+        final long lastModified = getSource().getFile().lastModified();
         if (lastModifiedMillis != lastModified) {
             lastModifiedMillis = lastModified;
             return true;
@@ -84,15 +84,15 @@ public class WrappedFileWatcher extends AbstractWatcher implements FileWatcher {
     }
 
     @Override
-    public void watching(Source source) {
+    public void watching(final Source source) {
         lastModifiedMillis = source.getFile().lastModified();
         super.watching(source);
     }
 
     @Override
     public Watcher newWatcher(final Reconfigurable reconfigurable, final List<ConfigurationListener> listeners,
-        long lastModifiedMillis) {
-        WrappedFileWatcher watcher = new WrappedFileWatcher(this.watcher, getConfiguration(), reconfigurable, listeners,
+           final long lastModifiedMillis) {
+        final WrappedFileWatcher watcher = new WrappedFileWatcher(this.watcher, getConfiguration(), reconfigurable, listeners,
             lastModifiedMillis);
         if (getSource() != null) {
             watcher.watching(getSource());

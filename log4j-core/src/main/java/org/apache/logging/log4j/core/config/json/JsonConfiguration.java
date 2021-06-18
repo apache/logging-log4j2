@@ -53,7 +53,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
     public JsonConfiguration(final LoggerContext loggerContext, final ConfigurationSource configSource) {
         super(loggerContext, configSource);
         final File configFile = configSource.getFile();
-        byte[] buffer;
+        final byte[] buffer;
         try {
             try (final InputStream configStream = configSource.getInputStream()) {
                 buffer = toByteArray(configStream);
@@ -196,7 +196,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
             }
         }
 
-        String t;
+        final String t;
         if (type == null) {
             t = "null";
         } else {

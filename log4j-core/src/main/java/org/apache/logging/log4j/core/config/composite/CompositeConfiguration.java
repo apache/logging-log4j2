@@ -68,7 +68,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
                 DefaultMergeStrategy.class.getName());
         try {
             mergeStrategy = Loader.newInstanceOf(mergeStrategyClassName);
-        } catch (ClassNotFoundException | IllegalAccessException | InvocationTargetException |
+        } catch (final ClassNotFoundException | IllegalAccessException | InvocationTargetException |
                 InstantiationException ex) {
             mergeStrategy = new DefaultMergeStrategy();
         }

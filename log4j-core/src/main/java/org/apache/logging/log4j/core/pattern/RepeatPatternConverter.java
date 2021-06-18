@@ -57,7 +57,7 @@ public final class RepeatPatternConverter extends LogEventPatternConverter {
         try {
             count = Integer.parseInt(options[1].trim());
             result = Strings.repeat(options[0], count);
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             LOGGER.error("The repeat count is not an integer: {}", options[1].trim());
         }
 

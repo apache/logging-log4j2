@@ -58,7 +58,7 @@ public class PluginElementVisitor extends AbstractConfigurationInjector<PluginEl
                     if (childObject == null) {
                         LOGGER.warn("Skipping null object returned for element {} in node {}", child.getName(), node.getName());
                     } else if (childObject.getClass().isArray()) {
-                        Object[] children = (Object[]) childObject;
+                        final Object[] children = (Object[]) childObject;
                         debugLog.append(Arrays.toString(children)).append('}');
                         node.getChildren().removeAll(used);
                         configurationBinder.bindObject(factory, children);

@@ -306,13 +306,13 @@ public class PluginBuilder implements Builder<Object> {
         private final LogEvent event;
         private final StrSubstitutor strSubstitutor;
 
-        Substitutor(LogEvent event) {
+        Substitutor(final LogEvent event) {
             this.event = event;
             this.strSubstitutor = configuration.getStrSubstitutor();
         }
 
         @Override
-        public String apply(String str) {
+        public String apply(final String str) {
             return strSubstitutor.replace(event, str);
         }
     }
@@ -320,7 +320,7 @@ public class PluginBuilder implements Builder<Object> {
     public static class BuilderWrapper<T> implements Builder<T> {
         private final org.apache.logging.log4j.core.util.Builder<T> builder;
 
-        BuilderWrapper(org.apache.logging.log4j.core.util.Builder<T> builder) {
+        BuilderWrapper(final org.apache.logging.log4j.core.util.Builder<T> builder) {
             this.builder = builder;
         }
 

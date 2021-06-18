@@ -101,7 +101,7 @@ public final class HtmlLayout extends AbstractStringLayout {
     }
 
     private HtmlLayout(final boolean locationInfo, final String title, final String contentType, final Charset charset,
-        final String font, final String fontSize, final String headerSize, String datePattern, String timezone) {
+            final String font, final String fontSize, final String headerSize, final String datePattern, final String timezone) {
         super(charset);
         this.locationInfo = locationInfo;
         this.title = title;

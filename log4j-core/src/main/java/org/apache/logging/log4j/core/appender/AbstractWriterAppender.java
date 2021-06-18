@@ -59,7 +59,7 @@ public abstract class AbstractWriterAppender<M extends WriterManager> extends Ab
      *            The OutputStreamManager.
      */
     protected AbstractWriterAppender(final String name, final StringLayout layout, final Filter filter,
-            final boolean ignoreExceptions, final boolean immediateFlush, Property[] properties, final M manager) {
+              final boolean ignoreExceptions, final boolean immediateFlush, final Property[] properties, final M manager) {
         super(name, filter, layout, ignoreExceptions, properties);
         this.manager = manager;
         this.immediateFlush = immediateFlush;

@@ -139,7 +139,7 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
             return;
         }
         if (msg != null) {
-            String result;
+            final String result;
             if (msg instanceof MultiformatMessage) {
                 result = ((MultiformatMessage) msg).getFormattedMessage(formats);
             } else {

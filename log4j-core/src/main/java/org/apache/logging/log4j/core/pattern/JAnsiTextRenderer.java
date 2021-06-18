@@ -172,7 +172,7 @@ public final class JAnsiTextRenderer implements TextRenderer {
     public JAnsiTextRenderer(final String[] formats, final Map<String, Code[]> defaultStyleMap) {
         String tempBeginToken = AnsiRenderer.BEGIN_TOKEN;
         String tempEndToken = AnsiRenderer.END_TOKEN;
-        Map<String, Code[]> map;
+        final Map<String, Code[]> map;
         if (formats.length > 1) {
             final String allStylesStr = formats[1];
             // Style def split

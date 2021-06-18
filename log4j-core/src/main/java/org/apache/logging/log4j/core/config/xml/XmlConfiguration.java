@@ -141,7 +141,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             LOGGER.error("Error parsing " + configSource.getLocation(), e);
         }
         if (strict && schemaResource != null && buffer != null) {
-            try (InputStream is = Loader.getResourceAsStream(schemaResource, XmlConfiguration.class.getClassLoader())) {
+            try (final InputStream is = Loader.getResourceAsStream(schemaResource, XmlConfiguration.class.getClassLoader())) {
                 if (is != null) {
                     final javax.xml.transform.Source src = new StreamSource(is, LOG4J_XSD);
                     final SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
@@ -202,7 +202,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
     private static void setFeature(final DocumentBuilderFactory factory, final String featureName, final boolean value) {
         try {
             factory.setFeature(featureName, value);
-        } catch (Exception | LinkageError e) {
+        } catch (final Exception | LinkageError e) {
             getStatusLogger().error("Caught {} setting feature {} to {} on DocumentBuilderFactory {}: {}",
                     e.getClass().getCanonicalName(), featureName, value, factory, e, e);
         }
