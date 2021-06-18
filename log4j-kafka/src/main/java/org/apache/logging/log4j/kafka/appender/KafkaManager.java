@@ -101,14 +101,11 @@ public class KafkaManager extends AbstractManager {
     private void closeProducer(final long timeout, final TimeUnit timeUnit) {
         if (producer != null) {
             // This thread is a workaround for this Kafka issue: https://issues.apache.org/jira/browse/KAFKA-1660
-           final Thread closeThread = new Log4jThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (producer != null) {
-                        producer.close();
-                    }
-                }
-            }, "KafkaManager-CloseThread");
+           final Thread closeThread = new Log4jThread(() -> {
+               if (producer != null) {
+                   producer.close();
+               }
+           }, "KafkaManager-CloseThread");
             closeThread.setDaemon(true); // avoid blocking JVM shutdown
             closeThread.start();
             try {
@@ -140,12 +137,9 @@ public class KafkaManager extends AbstractManager {
                 final Future<RecordMetadata> response = producer.send(newRecord);
                 response.get(timeoutMillis, TimeUnit.MILLISECONDS);
             } else {
-                producer.send(newRecord, new Callback() {
-                    @Override
-                    public void onCompletion(final RecordMetadata metadata, final Exception e) {
-                        if (e != null) {
-                            LOGGER.error("Unable to write to Kafka in appender [" + getName() + "]", e);
-                        }
+                producer.send(newRecord, (metadata, e) -> {
+                    if (e != null) {
+                        LOGGER.error("Unable to write to Kafka in appender [" + getName() + "]", e);
                     }
                 });
             }
