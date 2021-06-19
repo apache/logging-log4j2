@@ -27,9 +27,11 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * Implementation of the {@code Clock} interface that returns the system time.
  * @since 2.11.0
  */
-// Precise clock is not implemented because the instant() method in the init method is not garbage free.
 public final class SystemClock implements Clock, PreciseClock {
 
+    /**
+     * The precise clock is not enabled by default, since access to it is not garbage free.
+     */
     private static final boolean USE_PRECISE_CLOCK = PropertiesUtil.getProperties()
             .getBooleanProperty("log4j2.usePreciseClock", false);
     /**
