@@ -21,7 +21,6 @@ import org.apache.logging.log4j.core.config.di.Bean;
 import org.apache.logging.log4j.core.config.di.BeanManager;
 import org.apache.logging.log4j.core.config.di.InitializationContext;
 import org.apache.logging.log4j.core.config.di.InjectionPoint;
-import org.apache.logging.log4j.core.config.di.Injector;
 import org.apache.logging.log4j.core.config.di.Producer;
 
 import java.lang.reflect.Method;
@@ -43,7 +42,7 @@ abstract class AbstractProducer<P, T> implements Producer<T> {
         this.producerBean = producerBean;
         this.disposerMethod = disposerMethod;
         this.disposerInjectionPoints = Objects.requireNonNull(disposerInjectionPoints);
-        this.injector = new DefaultInjector(beanManager);
+        this.injector = new Injector(beanManager);
     }
 
     // context is managed separately as the declaring instance is only used for producing the object and is not a dependent of the bean

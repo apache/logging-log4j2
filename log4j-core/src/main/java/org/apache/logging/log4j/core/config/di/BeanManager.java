@@ -28,6 +28,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -48,6 +49,29 @@ public interface BeanManager extends AutoCloseable {
      * @return beans loaded from the given classes
      */
     Collection<Bean<?>> loadBeans(final Collection<Class<?>> beanClasses);
+
+    /**
+     * Creates a bean for an injectable bean class.
+     */
+    <T> Bean<T> createBean(final Class<T> beanClass);
+
+    /**
+     * Creates a bean for a producer field.
+     *
+     * @param producerField field to obtain bean instance from
+     * @param owner         owning bean for instance field or null for a static field
+     * @return newly created bean
+     */
+    Bean<?> createBean(final Field producerField, final Bean<?> owner);
+
+    /**
+     * Creates a bean for a producer method.
+     *
+     * @param producerMethod method to obtain bean instance from
+     * @param owner          owning bean for instance method or null for a static method
+     * @return newly created bean
+     */
+    Bean<?> createBean(final Method producerMethod, final Bean<?> owner);
 
     /**
      * Loads beans from the given classes. This looks for injectable classes and producers, registers them in this

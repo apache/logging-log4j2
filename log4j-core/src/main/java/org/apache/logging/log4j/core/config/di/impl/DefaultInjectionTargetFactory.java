@@ -23,7 +23,6 @@ import org.apache.logging.log4j.core.config.di.DefinitionException;
 import org.apache.logging.log4j.core.config.di.InjectionPoint;
 import org.apache.logging.log4j.core.config.di.InjectionTarget;
 import org.apache.logging.log4j.core.config.di.InjectionTargetFactory;
-import org.apache.logging.log4j.core.config.di.Injector;
 import org.apache.logging.log4j.plugins.di.Inject;
 import org.apache.logging.log4j.plugins.di.PostConstruct;
 import org.apache.logging.log4j.plugins.di.PreDestroy;

@@ -21,7 +21,6 @@ import org.apache.logging.log4j.core.config.di.BeanManager;
 import org.apache.logging.log4j.core.config.di.InitializationContext;
 import org.apache.logging.log4j.core.config.di.InitializationException;
 import org.apache.logging.log4j.core.config.di.InjectionPoint;
-import org.apache.logging.log4j.core.config.di.Injector;
 import org.apache.logging.log4j.plugins.di.Disposes;
 import org.apache.logging.log4j.plugins.util.AnnotationUtil;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
@@ -34,14 +33,13 @@ import java.lang.reflect.Parameter;
 import java.util.Collection;
 import java.util.Optional;
 
-public class DefaultInjector implements Injector {
+public class Injector {
     private final BeanManager beanManager;
 
-    public DefaultInjector(final BeanManager beanManager) {
+    public Injector(final BeanManager beanManager) {
         this.beanManager = beanManager;
     }
 
-    @Override
     public <T> T construct(final Constructor<T> constructor, final Collection<InjectionPoint> points, final InitializationContext<T> context) {
         try {
             return constructor.newInstance(createArguments(constructor.getParameters(), points, context, null));
@@ -52,7 +50,6 @@ public class DefaultInjector implements Injector {
         }
     }
 
-    @Override
     public <D, T> T produce(final D producerInstance, final Method producerMethod, final Collection<InjectionPoint> points, final InitializationContext<D> context) {
         try {
             return TypeUtil.cast(producerMethod.invoke(producerInstance, createArguments(producerMethod.getParameters(), points, context, null)));
@@ -63,7 +60,6 @@ public class DefaultInjector implements Injector {
         }
     }
 
-    @Override
     public <T> void dispose(final T disposerInstance, final Method disposerMethod, final Collection<InjectionPoint> points, final Object instance, final InitializationContext<T> context) {
         try {
             disposerMethod.invoke(disposerInstance, createArguments(disposerMethod.getParameters(), points, context, instance));
@@ -74,7 +70,6 @@ public class DefaultInjector implements Injector {
         }
     }
 
-    @Override
     public <T> void invoke(final T instance, final Method method, final Collection<InjectionPoint> points, final InitializationContext<T> context) {
         try {
             method.invoke(instance, createArguments(method.getParameters(), points, context, null));
@@ -85,7 +80,6 @@ public class DefaultInjector implements Injector {
         }
     }
 
-    @Override
     public <D, T> void set(final D instance, final Field field, final InjectionPoint point, final InitializationContext<D> context) {
         final Optional<T> optionalValue = beanManager.getInjectableValue(point, context);
         optionalValue.ifPresent(value -> {

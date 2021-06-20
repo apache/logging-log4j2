@@ -21,7 +21,6 @@ import org.apache.logging.log4j.core.config.di.InitializationContext;
 import org.apache.logging.log4j.core.config.di.InitializationException;
 import org.apache.logging.log4j.core.config.di.InjectionPoint;
 import org.apache.logging.log4j.core.config.di.InjectionTarget;
-import org.apache.logging.log4j.core.config.di.Injector;
 import org.apache.logging.log4j.plugins.di.Disposes;
 import org.apache.logging.log4j.plugins.di.Inject;
 import org.apache.logging.log4j.plugins.di.Produces;

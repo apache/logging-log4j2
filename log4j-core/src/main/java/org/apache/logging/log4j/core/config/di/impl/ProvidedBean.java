@@ -20,20 +20,21 @@ package org.apache.logging.log4j.core.config.di.impl;
 import org.apache.logging.log4j.core.config.di.Bean;
 import org.apache.logging.log4j.core.config.di.InitializationContext;
 import org.apache.logging.log4j.core.config.di.InjectionPoint;
-import org.apache.logging.log4j.core.config.di.ProviderFactory;
 import org.apache.logging.log4j.plugins.di.Provider;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.function.Function;
 
 class ProvidedBean<T> implements Bean<T> {
     private final Collection<Type> types;
     private final Bean<Provider<T>> providerBean;
-    private final ProviderFactory<T> providerFactory;
+    private final Function<InitializationContext<?>, Provider<T>> providerFactory;
 
-    ProvidedBean(final Type type, final Bean<Provider<T>> providerBean, final ProviderFactory<T> providerFactory) {
+    ProvidedBean(final Type type, final Bean<Provider<T>> providerBean,
+                 final Function<InitializationContext<?>, Provider<T>> providerFactory) {
         this.types = TypeUtil.getTypeClosure(type);
         this.providerBean = providerBean;
         this.providerFactory = providerFactory;
@@ -41,7 +42,7 @@ class ProvidedBean<T> implements Bean<T> {
 
     @Override
     public T create(final InitializationContext<T> context) {
-        return providerFactory.getProvider(context).get();
+        return providerFactory.apply(context).get();
     }
 
     @Override

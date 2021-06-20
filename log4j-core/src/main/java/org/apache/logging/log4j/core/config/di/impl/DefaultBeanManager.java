@@ -25,7 +25,6 @@ import org.apache.logging.log4j.core.config.di.InitializationContext;
 import org.apache.logging.log4j.core.config.di.InjectionException;
 import org.apache.logging.log4j.core.config.di.InjectionPoint;
 import org.apache.logging.log4j.core.config.di.InjectionTargetFactory;
-import org.apache.logging.log4j.core.config.di.Injector;
 import org.apache.logging.log4j.core.config.di.ProducerFactory;
 import org.apache.logging.log4j.core.config.di.ResolutionException;
 import org.apache.logging.log4j.core.config.di.ScopeContext;
@@ -68,7 +67,7 @@ import java.util.stream.Stream;
 
 public class DefaultBeanManager implements BeanManager {
 
-    private final Injector injector = new DefaultInjector(this);
+    private final Injector injector = new Injector(this);
 
     private final Collection<Bean<?>> enabledBeans = ConcurrentHashMap.newKeySet();
     private final Map<Type, Collection<Bean<?>>> beansByType = new ConcurrentHashMap<>();
@@ -83,29 +82,62 @@ public class DefaultBeanManager implements BeanManager {
 
     @Override
     public Collection<Bean<?>> loadBeans(final Collection<Class<?>> beanClasses) {
-        return beanClasses.stream()
-                .flatMap(beanClass -> loadBeans(beanClass).stream())
-                .collect(Collectors.toSet());
+        final Collection<Bean<?>> loadedBeans = new HashSet<>();
+        for (final Class<?> beanClass : beanClasses) {
+            final Bean<?> bean = isInjectable(beanClass) ? createBean(beanClass) : null;
+            loadDisposerMethods(beanClass, bean);
+            for (final Method method : beanClass.getDeclaredMethods()) {
+                if (AnnotationUtil.isAnnotationPresent(method, Produces.class)) {
+                    method.setAccessible(true);
+                    loadedBeans.add(createBean(method, bean));
+                }
+            }
+            for (final Field field : beanClass.getDeclaredFields()) {
+                if (AnnotationUtil.isAnnotationPresent(field, Produces.class)) {
+                    field.setAccessible(true);
+                    loadedBeans.add(createBean(field, bean));
+                }
+            }
+            if (bean != null) {
+                loadedBeans.add(bean);
+            }
+        }
+        return loadedBeans;
     }
 
-    private <T> Collection<Bean<?>> loadBeans(final Class<T> beanClass) {
-        final Bean<T> created;
-        if (isInjectable(beanClass)) {
-            final Collection<Type> types = TypeUtil.getTypeClosure(beanClass);
-            final String name = AnnotatedElementNameProvider.getName(beanClass);
-            final Class<? extends Annotation> scopeType = getScopeType(beanClass);
-            final InjectionTargetFactory<T> factory =
-                    new DefaultInjectionTargetFactory<>(this, injector, beanClass);
-            created = addBean(new InjectionTargetBean<>(types, name, scopeType, beanClass, factory));
-        } else {
-            created = null;
-        }
-        loadDisposerMethods(beanClass, created);
-        final Collection<Bean<?>> beans = loadProducerBeans(beanClass, created);
-        if (created != null) {
-            beans.add(created);
-        }
-        return beans;
+    @Override
+    public <T> Bean<T> createBean(final Class<T> beanClass) {
+        final Collection<Type> types = TypeUtil.getTypeClosure(beanClass);
+        final String name = AnnotatedElementNameProvider.getName(beanClass);
+        final Class<? extends Annotation> scopeType = getScopeType(beanClass);
+        final InjectionTargetFactory<T> factory =
+                new DefaultInjectionTargetFactory<>(this, injector, beanClass);
+        return addBean(new InjectionTargetBean<>(types, name, scopeType, beanClass, factory));
+    }
+
+    @Override
+    public Bean<?> createBean(final Field producerField, final Bean<?> owner) {
+        final Collection<Type> types = TypeUtil.getTypeClosure(producerField.getGenericType());
+        final String name = AnnotatedElementNameProvider.getName(producerField);
+        final Method disposerMethod = resolveDisposerMethod(types, name, owner);
+        final Collection<InjectionPoint> disposerIPs =
+                disposerMethod == null ? Set.of() : createExecutableInjectionPoints(disposerMethod, owner);
+        final ProducerFactory factory =
+                new FieldProducerFactory(this, owner, producerField, disposerMethod, disposerIPs);
+        return addBean(new ProducerBean<>(types, name, getScopeType(producerField), producerField.getDeclaringClass(), factory));
+    }
+
+    @Override
+    public Bean<?> createBean(final Method producerMethod, final Bean<?> owner) {
+        final Collection<Type> types = TypeUtil.getTypeClosure(producerMethod.getGenericReturnType());
+        final String name = AnnotatedElementNameProvider.getName(producerMethod);
+        final Method disposerMethod = resolveDisposerMethod(types, name, owner);
+        final Collection<InjectionPoint> disposerIPs =
+                disposerMethod == null ? Collections.emptySet() : createExecutableInjectionPoints(disposerMethod, owner);
+        final Collection<InjectionPoint> producerIPs = createExecutableInjectionPoints(producerMethod, owner);
+        final ProducerFactory factory =
+                new MethodProducerFactory(this, owner, producerMethod, producerIPs, disposerMethod, disposerIPs);
+        return addBean(new ProducerBean<>(types, name, getScopeType(producerMethod), producerMethod.getDeclaringClass(), factory));
     }
 
     private <T> Bean<T> addBean(final Bean<T> bean) {
@@ -134,8 +166,8 @@ public class DefaultBeanManager implements BeanManager {
         beansByType.computeIfAbsent(type, ignored -> ConcurrentHashMap.newKeySet()).add(bean);
     }
 
-    private void loadDisposerMethods(final Class<?> metaClass, final Bean<?> bean) {
-        for (final Method method : metaClass.getDeclaredMethods()) {
+    private void loadDisposerMethods(final Class<?> beanClass, final Bean<?> bean) {
+        for (final Method method : beanClass.getDeclaredMethods()) {
             for (final Parameter parameter : method.getParameters()) {
                 if (AnnotationUtil.isAnnotationPresent(parameter, Disposes.class)) {
                     final String name = AnnotatedElementNameProvider.getName(parameter);
@@ -145,46 +177,6 @@ public class DefaultBeanManager implements BeanManager {
                 }
             }
         }
-    }
-
-    private <P> Collection<Bean<?>> loadProducerBeans(final Class<P> producingClass, final Bean<P> producingBean) {
-        final Collection<Bean<?>> beans = new HashSet<>();
-        for (final Method method : producingClass.getDeclaredMethods()) {
-            if (AnnotationUtil.isAnnotationPresent(method, Produces.class)) {
-                method.setAccessible(true);
-                beans.add(loadProducerBean(method, producingBean));
-            }
-        }
-        for (final Field field : producingClass.getDeclaredFields()) {
-            if (AnnotationUtil.isAnnotationPresent(field, Produces.class)) {
-                field.setAccessible(true);
-                beans.add(loadProducerBean(field, producingBean));
-            }
-        }
-        return beans;
-    }
-
-    private Bean<?> loadProducerBean(final Method method, final Bean<?> producingBean) {
-        final Collection<Type> types = TypeUtil.getTypeClosure(method.getGenericReturnType());
-        final String name = AnnotatedElementNameProvider.getName(method);
-        final Method disposerMethod = resolveDisposerMethod(types, name, producingBean);
-        final Collection<InjectionPoint> disposerIPs = disposerMethod == null ? Collections.emptySet() :
-                createExecutableInjectionPoints(disposerMethod, producingBean);
-        final Collection<InjectionPoint> producerIPs = createExecutableInjectionPoints(method, producingBean);
-        final ProducerFactory factory = new MethodProducerFactory(
-                this, producingBean, method, producerIPs, disposerMethod, disposerIPs);
-        return addBean(new ProducerBean<>(types, name, getScopeType(method), method.getDeclaringClass(), factory));
-    }
-
-    private Bean<?> loadProducerBean(final Field field, final Bean<?> producingBean) {
-        final Collection<Type> types = TypeUtil.getTypeClosure(field.getGenericType());
-        final String name = AnnotatedElementNameProvider.getName(field);
-        final Method disposerMethod = resolveDisposerMethod(types, name, producingBean);
-        final Collection<InjectionPoint> disposerIPs = disposerMethod == null ? Collections.emptySet() :
-                createExecutableInjectionPoints(disposerMethod, producingBean);
-        final ProducerFactory factory = new FieldProducerFactory(
-                this, producingBean, field, disposerMethod, disposerIPs);
-        return addBean(new ProducerBean<>(types, name, getScopeType(field), field.getDeclaringClass(), factory));
     }
 
     private Method resolveDisposerMethod(final Collection<Type> types, final String name, final Bean<?> disposingBean) {
