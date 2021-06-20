@@ -193,7 +193,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
 
             final boolean writeHeader = !data.append || !file.exists();
             final OutputStream os = NullOutputStream.getInstance();
-            RandomAccessFile raf;
+            final RandomAccessFile raf;
             try {
                 FileUtils.makeParentDirs(file);
                 raf = new RandomAccessFile(name, "rw");

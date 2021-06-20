@@ -74,7 +74,7 @@ public class ReusableLogEventFactory implements LogEventFactory {
      */
     @Override
     public LogEvent createEvent(final String loggerName, final Marker marker,
-                                final String fqcn, StackTraceElement location, final Level level, final Message message,
+                                final String fqcn, final StackTraceElement location, final Level level, final Message message,
                                 final List<Property> properties, final Throwable t) {
         MutableLogEvent result = mutableLogEventThreadLocal.get();
         if (result == null || result.reserved) {
@@ -118,7 +118,7 @@ public class ReusableLogEventFactory implements LogEventFactory {
      */
     public static void release(final LogEvent logEvent) { // LOG4J2-1583
         if (logEvent instanceof MutableLogEvent) {
-            MutableLogEvent mutableLogEvent = (MutableLogEvent) logEvent;
+            final MutableLogEvent mutableLogEvent = (MutableLogEvent) logEvent;
             mutableLogEvent.clear();
             mutableLogEvent.reserved = false;
         }

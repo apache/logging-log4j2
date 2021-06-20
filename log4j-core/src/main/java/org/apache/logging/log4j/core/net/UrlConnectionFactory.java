@@ -43,10 +43,10 @@ public class UrlConnectionFactory {
     private static final String HTTP = "http";
     private static final String HTTPS = "https";
 
-    public static HttpURLConnection createConnection(URL url, long lastModifiedMillis, SslConfiguration sslConfiguration)
+    public static HttpURLConnection createConnection(final URL url, final long lastModifiedMillis, final SslConfiguration sslConfiguration)
         throws IOException {
         final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-        AuthorizationProvider provider = ConfigurationFactory.getAuthorizationProvider();
+        final AuthorizationProvider provider = ConfigurationFactory.getAuthorizationProvider();
         if (provider != null) {
             provider.addAuthorization(urlConnection);
         }
@@ -60,9 +60,9 @@ public class UrlConnectionFactory {
         if (readTimeoutMillis > 0) {
             urlConnection.setReadTimeout(readTimeoutMillis);
         }
-        String[] fileParts = url.getFile().split("\\.");
-        String type = fileParts[fileParts.length - 1].trim();
-        String contentType = isXml(type) ? XML : isJson(type) ? JSON : isProperties(type) ? PROPERTIES : TEXT;
+        final String[] fileParts = url.getFile().split("\\.");
+        final String type = fileParts[fileParts.length - 1].trim();
+        final String contentType = isXml(type) ? XML : isJson(type) ? JSON : isProperties(type) ? PROPERTIES : TEXT;
         urlConnection.setRequestProperty("Content-Type", contentType);
         if (lastModifiedMillis > 0) {
             urlConnection.setIfModifiedSince(lastModifiedMillis);
@@ -76,7 +76,7 @@ public class UrlConnectionFactory {
         return urlConnection;
     }
 
-    public static URLConnection createConnection(URL url) throws IOException {
+    public static URLConnection createConnection(final URL url) throws IOException {
         URLConnection urlConnection = null;
         if (url.getProtocol().equals(HTTPS) || url.getProtocol().equals(HTTP)) {
             urlConnection = createConnection(url, 0, SslConfigurationFactory.getSslConfiguration());
@@ -87,15 +87,15 @@ public class UrlConnectionFactory {
     }
 
 
-    private static boolean isXml(String type) {
+    private static boolean isXml(final String type) {
         return type.equalsIgnoreCase("xml");
     }
 
-    private static boolean isJson(String type) {
+    private static boolean isJson(final String type) {
         return type.equalsIgnoreCase("json") || type.equalsIgnoreCase("jsn");
     }
 
-    private static boolean isProperties(String type) {
+    private static boolean isProperties(final String type) {
         return type.equalsIgnoreCase("properties");
     }
 }

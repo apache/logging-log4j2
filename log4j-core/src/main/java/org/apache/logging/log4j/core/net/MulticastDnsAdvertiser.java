@@ -93,7 +93,7 @@ public class MulticastDnsAdvertiser implements Advertiser {
             } catch (final NoSuchMethodException e) {
                 // no-op
             }
-            Object serviceInfo;
+            final Object serviceInfo;
             if (isVersion3) {
                 serviceInfo = buildServiceInfoVersion3(zone, port, name, truncatedProperties);
             } else {

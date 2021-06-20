@@ -272,7 +272,7 @@ public final class Configurator {
      */
     public static void reconfigure() {
         try {
-            Log4jContextFactory factory = getFactory();
+            final Log4jContextFactory factory = getFactory();
             if (factory != null) {
                 factory.getSelector().getContext(FQCN, null, false).reconfigure();
             } else {
@@ -290,7 +290,7 @@ public final class Configurator {
      */
     public static void reconfigure(final URI uri) {
         try {
-            Log4jContextFactory factory = getFactory();
+            final Log4jContextFactory factory = getFactory();
             if (factory != null) {
                 factory.getSelector().getContext(FQCN, null, false).setConfigLocation(uri);
             } else {
@@ -374,7 +374,7 @@ public final class Configurator {
     }
 
     private static boolean setLevel(final String loggerName, final Level level, final Configuration config) {
-        boolean set;
+        final boolean set;
         LoggerConfig loggerConfig = config.getLoggerConfig(loggerName);
         if (!loggerName.equals(loggerConfig.getName())) {
             // TODO Should additivity be inherited?

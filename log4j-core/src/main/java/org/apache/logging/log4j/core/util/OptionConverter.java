@@ -156,14 +156,14 @@ public final class OptionConverter {
         return defaultValue;
     }
 
-    public static Level toLevel(String value, Level defaultValue) {
+    public static Level toLevel(String value, final Level defaultValue) {
         if(value == null) {
             return defaultValue;
         }
 
         value = value.trim();
 
-        int hashIndex = value.indexOf('#');
+        final int hashIndex = value.indexOf('#');
         if (hashIndex == -1) {
             if("NULL".equalsIgnoreCase(value)) {
                 return null;
@@ -175,8 +175,8 @@ public final class OptionConverter {
 
         Level result = defaultValue;
 
-        String clazz = value.substring(hashIndex+1);
-        String levelName = value.substring(0, hashIndex);
+        final String clazz = value.substring(hashIndex+1);
+        final String levelName = value.substring(0, hashIndex);
 
         // This is degenerate case but you never know.
         if("NULL".equalsIgnoreCase(levelName)) {
@@ -187,36 +187,36 @@ public final class OptionConverter {
                 + ":pri=[" + levelName + "]");
 
         try {
-            Class customLevel = Loader.loadClass(clazz);
+            final Class customLevel = Loader.loadClass(clazz);
 
             // get a ref to the specified class' static method
             // toLevel(String, org.apache.log4j.Level)
-            Class[] paramTypes = new Class[] { String.class, Level.class
+            final Class[] paramTypes = new Class[] { String.class, Level.class
             };
-            java.lang.reflect.Method toLevelMethod =
+            final java.lang.reflect.Method toLevelMethod =
                     customLevel.getMethod("toLevel", paramTypes);
 
             // now call the toLevel method, passing level string + default
-            Object[] params = new Object[] {levelName, defaultValue};
-            Object o = toLevelMethod.invoke(null, params);
+            final Object[] params = new Object[] {levelName, defaultValue};
+            final Object o = toLevelMethod.invoke(null, params);
 
             result = (Level) o;
-        } catch(ClassNotFoundException e) {
+        } catch(final ClassNotFoundException e) {
             LOGGER.warn("custom level class [" + clazz + "] not found.");
-        } catch(NoSuchMethodException e) {
+        } catch(final NoSuchMethodException e) {
             LOGGER.warn("custom level class [" + clazz + "]"
                     + " does not have a class function toLevel(String, Level)", e);
-        } catch(java.lang.reflect.InvocationTargetException e) {
+        } catch(final java.lang.reflect.InvocationTargetException e) {
             if (e.getTargetException() instanceof InterruptedException
                     || e.getTargetException() instanceof InterruptedIOException) {
                 Thread.currentThread().interrupt();
             }
             LOGGER.warn("custom level class [" + clazz + "]" + " could not be instantiated", e);
-        } catch(ClassCastException e) {
+        } catch(final ClassCastException e) {
             LOGGER.warn("class [" + clazz + "] is not a subclass of org.apache.log4j.Level", e);
-        } catch(IllegalAccessException e) {
+        } catch(final IllegalAccessException e) {
             LOGGER.warn("class ["+clazz+ "] cannot be instantiated due to access restrictions", e);
-        } catch(RuntimeException e) {
+        } catch(final RuntimeException e) {
             LOGGER.warn("class ["+clazz+"], level [" + levelName + "] conversion failed.", e);
         }
         return result;

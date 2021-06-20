@@ -184,7 +184,7 @@ public final class PatternLayout extends AbstractStringLayout {
         return eventSerializer.toSerializable(event);
     }
 
-    public void serialize(final LogEvent event, StringBuilder stringBuilder) {
+    public void serialize(final LogEvent event, final StringBuilder stringBuilder) {
         eventSerializer.toSerializable(event, stringBuilder);
     }
 
@@ -285,7 +285,7 @@ public final class PatternLayout extends AbstractStringLayout {
 
         @Override
         public boolean requiresLocation() {
-            for (PatternFormatter formatter : formatters) {
+            for (final PatternFormatter formatter : formatters) {
                 if (formatter.requiresLocation()) {
                     return true;
                 }
@@ -495,9 +495,9 @@ public final class PatternLayout extends AbstractStringLayout {
         }
 
         private boolean useAnsiEscapeCodes() {
-            PropertiesUtil propertiesUtil = PropertiesUtil.getProperties();
-            boolean isPlatformSupportsAnsi = !propertiesUtil.isOsWindows();
-            boolean isJansiRequested = !propertiesUtil.getBooleanProperty("log4j.skipJansi", true);
+            final PropertiesUtil propertiesUtil = PropertiesUtil.getProperties();
+            final boolean isPlatformSupportsAnsi = !propertiesUtil.isOsWindows();
+            final boolean isJansiRequested = !propertiesUtil.getBooleanProperty("log4j.skipJansi", true);
             return isPlatformSupportsAnsi || isJansiRequested;
         }
 

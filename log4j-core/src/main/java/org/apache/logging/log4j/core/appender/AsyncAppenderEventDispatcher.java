@@ -66,7 +66,7 @@ class AsyncAppenderEventDispatcher extends Log4jThread {
 
     private void dispatchAll() {
         while (!stoppedRef.get()) {
-            LogEvent event;
+            final LogEvent event;
             try {
                 event = queue.take();
             } catch (final InterruptedException ignored) {

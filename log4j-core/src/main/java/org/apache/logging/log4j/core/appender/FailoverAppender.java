@@ -64,7 +64,7 @@ public final class FailoverAppender extends AbstractAppender {
 
     private FailoverAppender(final String name, final Filter filter, final String primary, final String[] failovers,
             final int intervalMillis, final Configuration config, final boolean ignoreExceptions,
-            Property[] properties) {
+            final Property[] properties) {
         super(name, filter, null, ignoreExceptions, properties);
         this.primaryRef = primary;
         this.failovers = failovers;
@@ -191,7 +191,7 @@ public final class FailoverAppender extends AbstractAppender {
             @PluginElement final Filter filter,
             @PluginAttribute(defaultBoolean = true) final boolean ignoreExceptions) {
 
-        int retryIntervalMillis;
+        final int retryIntervalMillis;
         if (retryIntervalSeconds >= 0) {
             retryIntervalMillis = retryIntervalSeconds * Constants.MILLIS_IN_SECONDS;
         } else {

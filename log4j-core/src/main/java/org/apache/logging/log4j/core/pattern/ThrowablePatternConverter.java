@@ -127,9 +127,9 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
     }
 
     private void formatSubShortOption(final Throwable t, final String suffix, final StringBuilder buffer) {
-        StackTraceElement[] trace;
+        final StackTraceElement[] trace;
         StackTraceElement throwingMethod = null;
-        int len;
+        final int len;
 
         if (t != null) {
             trace = t.getStackTrace();

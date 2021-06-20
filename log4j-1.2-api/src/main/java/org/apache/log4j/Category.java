@@ -30,6 +30,7 @@ import org.apache.log4j.or.RendererSupport;
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.logging.log4j.message.MapMessage;
+import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.message.LocalizedMessage;
@@ -504,11 +505,27 @@ public class Category {
         }
     }
 
-    private void maybeLog(final String fqcn, final org.apache.logging.log4j.Level level,
-            final Object message, final Throwable throwable) {
+    private void maybeLog(
+            final String fqcn,
+            final org.apache.logging.log4j.Level level,
+            final Object message,
+            final Throwable throwable) {
         if (logger.isEnabled(level)) {
-            @SuppressWarnings("unchecked")
-            Message msg = message instanceof Map ? new MapMessage((Map) message) : new ObjectMessage(message);
+            final Message msg;
+            if (message instanceof String) {
+                msg = new SimpleMessage((String) message);
+            }
+            // SimpleMessage treats String and CharSequence differently, hence
+            // this else-if block.
+            else if (message instanceof CharSequence) {
+                msg = new SimpleMessage((CharSequence) message);
+            } else if (message instanceof Map) {
+                @SuppressWarnings("unchecked")
+                final Map<String, ?> map = (Map<String, ?>) message;
+                msg = new MapMessage<>(map);
+            } else {
+                msg = new ObjectMessage(message);
+            }
             if (logger instanceof ExtendedLogger) {
                 ((ExtendedLogger) logger).logMessage(fqcn, level, null, msg, throwable);
             } else {

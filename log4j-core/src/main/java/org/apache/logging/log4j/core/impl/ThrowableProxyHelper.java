@@ -72,7 +72,7 @@ class ThrowableProxyHelper {
             final Stack<Class<?>> stack, final Map<String, CacheEntry> map,
             final StackTraceElement[] rootTrace,
             final StackTraceElement[] stackTrace) {
-        int stackLength;
+        final int stackLength;
         if (rootTrace != null) {
             int rootIndex = rootTrace.length - 1;
             int stackIndex = stackTrace.length - 1;
@@ -95,7 +95,7 @@ class ThrowableProxyHelper {
             // The stack returned from getCurrentStack may be missing entries for java.lang.reflect.Method.invoke()
             // and its implementation. The Throwable might also contain stack entries that are no longer
             // present as those methods have returned.
-            ExtendedClassInfo extClassInfo;
+            final ExtendedClassInfo extClassInfo;
             if (clazz != null && className.equals(clazz.getName())) {
                 final CacheEntry entry = toCacheEntry(clazz, true);
                 extClassInfo = entry.element;

@@ -115,7 +115,7 @@ public class PatternProcessor {
         this.currentFileTime = copy.currentFileTime;
     }
 
-    public void setTimeBased(boolean isTimeBased) {
+    public void setTimeBased(final boolean isTimeBased) {
         this.isTimeBased = isTimeBased;
     }
 
@@ -153,7 +153,7 @@ public class PatternProcessor {
         // Call setMinimalDaysInFirstWeek(7);
         //
         prevFileTime = nextFileTime;
-        long nextTime;
+        final long nextTime;
 
         if (frequency == null) {
             throw new IllegalStateException("Pattern does not contain a date");

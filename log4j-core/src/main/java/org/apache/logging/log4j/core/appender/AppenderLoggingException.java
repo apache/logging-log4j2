@@ -50,7 +50,7 @@ public class AppenderLoggingException extends LoggingException {
      * @param args The reason arguments for the exception, see {@link String#format(String, Object...)}.
      * @since 2.12.1
      */
-    public AppenderLoggingException(final String format, Object... args) {
+    public AppenderLoggingException(final String format, final Object... args) {
         super(String.format(format, args));
     }
 
@@ -81,7 +81,7 @@ public class AppenderLoggingException extends LoggingException {
      * @param args The reason arguments for the exception, see {@link String#format(String, Object...)}.
      * @since 2.12.1
      */
-    public AppenderLoggingException(final Throwable cause, final String format, Object... args) {
+    public AppenderLoggingException(final Throwable cause, final String format, final Object... args) {
         super(String.format(format, args), cause);
     }
 }

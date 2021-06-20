@@ -157,7 +157,7 @@ public class WatchManager extends AbstractLifeCycle {
     }
 
     private List<WatchEventService> getEventServices() {
-        List<WatchEventService> list = new ArrayList<>();
+        final List<WatchEventService> list = new ArrayList<>();
         for (final ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
             try {
                 final ServiceLoader<WatchEventService> serviceLoader =
@@ -193,7 +193,7 @@ public class WatchManager extends AbstractLifeCycle {
      */
     public Map<File, FileWatcher> getWatchers() {
         final Map<File, FileWatcher> map = new HashMap<>(watchers.size());
-        for (Map.Entry<Source, ConfigurationMonitor> entry : watchers.entrySet()) {
+        for (final Map.Entry<Source, ConfigurationMonitor> entry : watchers.entrySet()) {
             if (entry.getValue().getWatcher() instanceof ConfigurationFileWatcher) {
                 map.put(entry.getKey().getFile(), (FileWatcher) entry.getValue().getWatcher());
             } else {
@@ -243,7 +243,7 @@ public class WatchManager extends AbstractLifeCycle {
         if (file == null) {
             return;
         }
-        Source source = new Source(file);
+        final Source source = new Source(file);
         reset(source);
     }
 
@@ -264,7 +264,7 @@ public class WatchManager extends AbstractLifeCycle {
         }
         final ConfigurationMonitor monitor = watchers.get(source);
         if (monitor != null) {
-            Watcher watcher = monitor.getWatcher();
+            final Watcher watcher = monitor.getWatcher();
             if (watcher.isModified()) {
                 final long lastModifiedMillis = watcher.getLastModified();
                 if (logger.isDebugEnabled()) {
@@ -296,7 +296,7 @@ public class WatchManager extends AbstractLifeCycle {
             future = scheduler.scheduleWithFixedDelay(new WatchRunnable(), intervalSeconds, intervalSeconds,
                     TimeUnit.SECONDS);
         }
-        for (WatchEventService service : eventServiceList) {
+        for (final WatchEventService service : eventServiceList) {
             service.subscribe(this);
         }
     }
@@ -304,7 +304,7 @@ public class WatchManager extends AbstractLifeCycle {
     @Override
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
         setStopping();
-        for (WatchEventService service : eventServiceList) {
+        for (final WatchEventService service : eventServiceList) {
             service.unsubscribe(this);
         }
         final boolean stopped = stop(future);
@@ -337,7 +337,7 @@ public class WatchManager extends AbstractLifeCycle {
      * @since 2.11.0
      */
     public void unwatchFile(final File file) {
-        Source source = new Source(file);
+        final Source source = new Source(file);
         unwatch(source);
     }
 
@@ -363,13 +363,13 @@ public class WatchManager extends AbstractLifeCycle {
      * @param fileWatcher the watcher to notify of file changes.
      */
     public void watchFile(final File file, final FileWatcher fileWatcher) {
-        Watcher watcher;
+        final Watcher watcher;
         if (fileWatcher instanceof Watcher) {
             watcher = (Watcher) fileWatcher;
         } else {
             watcher = new WrappedFileWatcher(fileWatcher);
         }
-        Source source = new Source(file);
+        final Source source = new Source(file);
         watch(source, watcher);
     }
 }

@@ -108,7 +108,7 @@ public class SslSocketManager extends TcpSocketManager {
     }
 
     private static SSLSocketFactory createSslSocketFactory(final SslConfiguration sslConf) {
-        SSLSocketFactory socketFactory;
+        final SSLSocketFactory socketFactory;
 
         if (sslConf != null) {
             socketFactory = sslConf.getSslSocketFactory();
@@ -123,8 +123,8 @@ public class SslSocketManager extends TcpSocketManager {
     private static class SslSocketManagerFactory extends TcpSocketManagerFactory<SslSocketManager, SslFactoryData> {
 
         @Override
-        SslSocketManager createManager(final String name, OutputStream os, Socket socket, InetAddress inetAddress,
-                final SslFactoryData data) {
+        SslSocketManager createManager(final String name, final OutputStream os, final Socket socket, final InetAddress inetAddress,
+                 final SslFactoryData data) {
             return new SslSocketManager(name, os, socket, data.sslConfiguration, inetAddress, data.host, data.port,
                     data.connectTimeoutMillis, data.reconnectDelayMillis, data.immediateFail, data.layout, data.bufferSize,
                     data.socketOptions);
@@ -132,13 +132,13 @@ public class SslSocketManager extends TcpSocketManager {
 
         @Override
         Socket createSocket(final SslFactoryData data) throws IOException {
-            List<InetSocketAddress> socketAddresses = resolver.resolveHost(data.host, data.port);
+            final List<InetSocketAddress> socketAddresses = resolver.resolveHost(data.host, data.port);
             IOException ioe = null;
-            for (InetSocketAddress socketAddress : socketAddresses) {
+            for (final InetSocketAddress socketAddress : socketAddresses) {
                 try {
                     return SslSocketManager.createSocket(socketAddress, data.connectTimeoutMillis,
                             data.sslConfiguration, data.socketOptions);
-                } catch (IOException ex) {
+                } catch (final IOException ex) {
                     ioe = ex;
                 }
             }

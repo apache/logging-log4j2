@@ -92,8 +92,8 @@ public class ScriptArbiter implements Arbiter {
 
         public ScriptArbiter build() {
             AbstractScript script = null;
-            for (Node child : node.getChildren()) {
-                PluginType<?> type = child.getType();
+            for (final Node child : node.getChildren()) {
+                final PluginType<?> type = child.getType();
                 if (type == null) {
                     LOGGER.error("Node {} is missing a Plugintype", child.getName());
                     continue;

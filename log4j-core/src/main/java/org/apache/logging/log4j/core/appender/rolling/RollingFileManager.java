@@ -115,7 +115,7 @@ public class RollingFileManager extends FileManager {
             // LOG4J2-2981 - set the file size before initializing the triggering policy.
             if (directWrite) {
                 // LOG4J2-2485: Initialize size from the most recently written file.
-                File file = new File(getFileName());
+                final File file = new File(getFileName());
                 if (file.exists()) {
                     size = file.length();
                 } else {
@@ -169,7 +169,7 @@ public class RollingFileManager extends FileManager {
      * Add a RolloverListener.
      * @param listener The RolloverListener.
      */
-    public void addRolloverListener(RolloverListener listener) {
+    public void addRolloverListener(final RolloverListener listener) {
         rolloverListeners.add(listener);
     }
 
@@ -177,7 +177,7 @@ public class RollingFileManager extends FileManager {
      * Remove a RolloverListener.
      * @param listener The RolloverListener.
      */
-    public void removeRolloverListener(RolloverListener listener) {
+    public void removeRolloverListener(final RolloverListener listener) {
         rolloverListeners.remove(listener);
     }
 
@@ -194,7 +194,7 @@ public class RollingFileManager extends FileManager {
     }
 
     @Override
-    protected void createParentDir(File file) {
+    protected void createParentDir(final File file) {
         if (directWrite) {
             file.getParentFile().mkdirs();
         }
@@ -302,7 +302,7 @@ public class RollingFileManager extends FileManager {
         return status;
     }
 
-	public synchronized void rollover(long prevFileTime, long prevRollTime) {
+	public synchronized void rollover(final long prevFileTime, final long prevRollTime) {
 		getPatternProcessor().setPrevFileTime(prevFileTime);
 		getPatternProcessor().setCurrentFileTime(prevRollTime);
 		rollover();
@@ -312,12 +312,12 @@ public class RollingFileManager extends FileManager {
         if (!hasOutputStream() && !isCreateOnDemand() && !isDirectWrite()) {
             return;
         }
-        String currentFileName = fileName;
+        final String currentFileName = fileName;
         if (rolloverListeners.size() > 0) {
-            for (RolloverListener listener : rolloverListeners) {
+            for (final RolloverListener listener : rolloverListeners) {
                 try {
                     listener.rolloverTriggered(currentFileName);
-                } catch (Exception ex) {
+                } catch (final Exception ex) {
                     LOGGER.warn("Rollover Listener {} failed with {}: {}", listener.getClass().getSimpleName(),
                             ex.getClass().getName(), ex.getMessage());
                 }
@@ -333,10 +333,10 @@ public class RollingFileManager extends FileManager {
             }
         }
         if (rolloverListeners.size() > 0) {
-            for (RolloverListener listener : rolloverListeners) {
+            for (final RolloverListener listener : rolloverListeners) {
                 try {
                     listener.rolloverComplete(currentFileName);
-                } catch (Exception ex) {
+                } catch (final Exception ex) {
                     LOGGER.warn("Rollover Listener {} failed with {}: {}", listener.getClass().getSimpleName(),
                             ex.getClass().getName(), ex.getMessage());
                 }
@@ -685,17 +685,17 @@ public class RollingFileManager extends FileManager {
         }
     }
 
-    private static long initialFileTime(File file) {
-        Path path = file.toPath();
+    private static long initialFileTime(final File file) {
+        final Path path = file.toPath();
         if (Files.exists(path)) {
             try {
-                BasicFileAttributes attrs = Files.readAttributes(path, BasicFileAttributes.class);
-                FileTime fileTime = attrs.creationTime();
+                final BasicFileAttributes attrs = Files.readAttributes(path, BasicFileAttributes.class);
+                final FileTime fileTime = attrs.creationTime();
                 if (fileTime.compareTo(EPOCH) > 0) {
                     return fileTime.toMillis();
                 }
                 LOGGER.info("Unable to obtain file creation time for " + file.getAbsolutePath());
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 LOGGER.info("Unable to calculate file creation time for " + file.getAbsolutePath() + ": " + ex.getMessage());
             }
         }

@@ -393,7 +393,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
 
         if (isStructured) {
             if (message instanceof MessageCollectionMessage) {
-                for (StructuredDataMessage data : ((StructuredDataCollectionMessage)message)) {
+                for (final StructuredDataMessage data : ((StructuredDataCollectionMessage)message)) {
                     addStructuredData(sdElements, data);
                 }
             } else {
@@ -446,7 +446,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     }
 
     private String computeTimeStampString(final long now) {
-        long last;
+        final long last;
         synchronized (this) {
             last = lastTimestamp;
             if (now == lastTimestamp) {

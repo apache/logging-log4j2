@@ -253,7 +253,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
     }
 
     @Override
-    public <S> void forEachParameter(ParameterConsumer<S> action, S state) {
+    public <S> void forEachParameter(final ParameterConsumer<S> action, final S state) {
         if (parameters != null) {
             for (short i = 0; i < parameterCount; i++) {
                 action.accept(parameters[i], i, state);
@@ -350,7 +350,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         return thrownProxy;
     }
 
-    public void setSource(StackTraceElement source) {
+    public void setSource(final StackTraceElement source) {
         this.source = source;
     }
 

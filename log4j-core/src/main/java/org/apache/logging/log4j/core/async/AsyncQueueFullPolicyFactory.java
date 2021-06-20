@@ -78,9 +78,9 @@ public class AsyncQueueFullPolicyFactory {
     }
 
     private static boolean isRouterSelected(
-            String propertyValue,
-            Class<? extends AsyncQueueFullPolicy> policy,
-            String shortPropertyValue) {
+            final String propertyValue,
+            final Class<? extends AsyncQueueFullPolicy> policy,
+            final String shortPropertyValue) {
         return propertyValue != null && (shortPropertyValue.equalsIgnoreCase(propertyValue)
                 || policy.getName().equals(propertyValue)
                 || policy.getSimpleName().equals(propertyValue));

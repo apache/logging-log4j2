@@ -43,12 +43,12 @@ public class WatcherFactory {
 
     private final Map<String, PluginType<?>> plugins;
 
-    private WatcherFactory(List<String> packages) {
+    private WatcherFactory(final List<String> packages) {
         pluginManager.collectPlugins(packages);
         plugins = pluginManager.getPlugins();
     }
 
-    public static WatcherFactory getInstance(List<String> packages) {
+    public static WatcherFactory getInstance(final List<String> packages) {
         if (factory == null) {
             synchronized (pluginManager) {
                 if (factory == null) {
@@ -59,14 +59,14 @@ public class WatcherFactory {
         return factory;
     }
 
-    public Watcher newWatcher(Source source, final Configuration configuration, final Reconfigurable reconfigurable,
-        final List<ConfigurationListener> configurationListeners, long lastModifiedMillis) {
+    public Watcher newWatcher(final Source source, final Configuration configuration, final Reconfigurable reconfigurable,
+                              final List<ConfigurationListener> configurationListeners, final long lastModifiedMillis) {
         if (source.getFile() != null) {
             return new ConfigurationFileWatcher(configuration, reconfigurable, configurationListeners,
                 lastModifiedMillis);
         } else {
-            String name = source.getURI().getScheme();
-            PluginType<?> pluginType = plugins.get(name);
+            final String name = source.getURI().getScheme();
+            final PluginType<?> pluginType = plugins.get(name);
             if (pluginType != null) {
                 return instantiate(name, pluginType.getPluginClass().asSubclass(Watcher.class), configuration,
                     reconfigurable, configurationListeners, lastModifiedMillis);
@@ -76,15 +76,15 @@ public class WatcherFactory {
         }
     }
 
-    public static <T extends Watcher> T instantiate(String name, final Class<T> clazz,
-        final Configuration configuration, final Reconfigurable reconfigurable,
-        final List<ConfigurationListener> listeners, long lastModifiedMillis) {
+    public static <T extends Watcher> T instantiate(final String name, final Class<T> clazz,
+                                                    final Configuration configuration, final Reconfigurable reconfigurable,
+                                                    final List<ConfigurationListener> listeners, final long lastModifiedMillis) {
         Objects.requireNonNull(clazz, "No class provided");
         try {
-            Constructor<T> constructor = clazz
+            final Constructor<T> constructor = clazz
                 .getConstructor(Configuration.class, Reconfigurable.class, List.class, long.class);
             return constructor.newInstance(configuration, reconfigurable, listeners, lastModifiedMillis);
-        } catch (NoSuchMethodException ex) {
+        } catch (final NoSuchMethodException ex) {
             throw new IllegalArgumentException("No valid constructor for Watcher plugin " + name, ex);
         } catch (final LinkageError | InstantiationException e) {
             // LOG4J2-1051

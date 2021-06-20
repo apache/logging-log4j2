@@ -197,7 +197,7 @@ abstract class FormatCache<F extends Format> {
         String pattern = cDateTimeInstanceCache.get(key);
         if (pattern == null) {
             try {
-                DateFormat formatter;
+                final DateFormat formatter;
                 if (dateStyle == null) {
                     formatter = DateFormat.getTimeInstance(timeStyle.intValue(), locale);                    
                 }
