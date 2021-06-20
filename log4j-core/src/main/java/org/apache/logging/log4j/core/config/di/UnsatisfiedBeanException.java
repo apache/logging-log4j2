@@ -17,8 +17,6 @@
 
 package org.apache.logging.log4j.core.config.di;
 
-import org.apache.logging.log4j.core.config.di.api.model.InjectionPoint;
-
 import java.lang.reflect.Type;
 
 public class UnsatisfiedBeanException extends ResolutionException {

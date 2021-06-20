@@ -18,13 +18,17 @@
 package org.apache.logging.log4j.plugins.name;
 
 import org.apache.logging.log4j.plugins.internal.util.BeanUtils;
+import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.util.ReflectionUtil;
+import org.apache.logging.log4j.util.Strings;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.lang.reflect.Type;
 import java.util.Optional;
 
 /**
@@ -35,12 +39,23 @@ import java.util.Optional;
  */
 public interface AnnotatedElementNameProvider<A extends Annotation> {
 
-    static String getName(final AnnotatedElement element) {
+    static boolean hasName(final AnnotatedElement element) {
         for (final Annotation annotation : element.getAnnotations()) {
-            final Optional<String> specifiedName = getSpecifiedNameForAnnotation(annotation);
-            if (specifiedName.isPresent()) {
-                return specifiedName.get();
+            if (annotation.annotationType().isAnnotationPresent(NameProvider.class)) {
+                return true;
             }
+        }
+        return false;
+    }
+
+    // note: empty name is the equivalent to a default name
+    static String getName(final AnnotatedElement element) {
+        if (!hasName(element)) {
+            return Strings.EMPTY;
+        }
+        final Optional<String> specifiedName = getSpecifiedName(element);
+        if (specifiedName.isPresent()) {
+            return specifiedName.get();
         }
 
         if (element instanceof Field) {
@@ -50,7 +65,10 @@ public interface AnnotatedElementNameProvider<A extends Annotation> {
         if (element instanceof Method) {
             final Method method = (Method) element;
             final String methodName = method.getName();
-            if (methodName.startsWith("set")) {
+            if (methodName.startsWith("is")) {
+                return BeanUtils.decapitalize(methodName.substring(2));
+            }
+            if (methodName.startsWith("set") | methodName.startsWith("get")) {
                 return BeanUtils.decapitalize(methodName.substring(3));
             }
             if (methodName.startsWith("with")) {
@@ -63,17 +81,33 @@ public interface AnnotatedElementNameProvider<A extends Annotation> {
             return ((Parameter) element).getName();
         }
 
+        if (element instanceof Type) {
+            return ((Type) element).getTypeName();
+        }
+
+        if (element instanceof Constructor<?>) {
+            return ((Constructor<?>) element).getDeclaringClass().getName();
+        }
+
         throw new IllegalArgumentException("Unknown element type for naming: " + element.getClass());
     }
 
-    static <A extends Annotation> Optional<String> getSpecifiedNameForAnnotation(final A annotation) {
+    private static Optional<String> getSpecifiedName(final AnnotatedElement element) {
+        for (final Annotation annotation : element.getAnnotations()) {
+            final Optional<String> name = getSpecifiedNameForAnnotation(annotation);
+            if (name.isPresent()) {
+                return name;
+            }
+        }
+        return Optional.empty();
+    }
+
+    private static <A extends Annotation> Optional<String> getSpecifiedNameForAnnotation(final A annotation) {
         return Optional.ofNullable(annotation.annotationType().getAnnotation(NameProvider.class))
                 .map(NameProvider::value)
-                .flatMap(clazz -> {
-                    @SuppressWarnings("unchecked") final AnnotatedElementNameProvider<A> factory =
-                            (AnnotatedElementNameProvider<A>) ReflectionUtil.instantiate(clazz);
-                    return factory.getSpecifiedName(annotation);
-                });
+                .map(TypeUtil::<Class<? extends AnnotatedElementNameProvider<A>>>cast)
+                .map(ReflectionUtil::instantiate)
+                .flatMap(provider -> provider.getSpecifiedName(annotation));
     }
 
     /**

@@ -15,21 +15,17 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.di;
+package org.apache.logging.log4j.core.config.plugins.util;
 
-import org.apache.logging.log4j.plugins.name.NameProvider;
-import org.apache.logging.log4j.plugins.name.NamedQualifierNameProvider;
-import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.core.config.plugins.PluginAliases;
+import org.apache.logging.log4j.plugins.name.AnnotatedElementAliasesProvider;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.Repeatable;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import java.util.Collection;
+import java.util.List;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-@NameProvider(NamedQualifierNameProvider.class)
-@Repeatable(NamedAliases.class)
-public @interface Named {
-    String value() default Strings.EMPTY;
+public class PluginAliasesProvider implements AnnotatedElementAliasesProvider<PluginAliases> {
+    @Override
+    public Collection<String> getAliases(final PluginAliases annotation) {
+        return List.of(annotation.value());
+    }
 }

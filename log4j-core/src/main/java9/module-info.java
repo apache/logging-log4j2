@@ -30,10 +30,7 @@ module org.apache.logging.log4j.core {
     exports org.apache.logging.log4j.core.config.builder.impl;
     exports org.apache.logging.log4j.core.config.composite;
     exports org.apache.logging.log4j.core.config.di;
-    exports org.apache.logging.log4j.core.config.di.api.bean;
-    exports org.apache.logging.log4j.core.config.di.api.model;
-    exports org.apache.logging.log4j.core.config.di.impl.bean;
-    exports org.apache.logging.log4j.core.config.di.impl.model;
+    exports org.apache.logging.log4j.core.config.di.impl;
     exports org.apache.logging.log4j.core.config.json;
     exports org.apache.logging.log4j.core.config.plugins;
     exports org.apache.logging.log4j.core.config.plugins.convert;

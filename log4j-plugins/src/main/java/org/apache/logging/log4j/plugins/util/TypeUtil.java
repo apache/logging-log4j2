@@ -27,7 +27,6 @@ import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -503,20 +502,15 @@ public final class TypeUtil {
 
     }
 
-    private static final Map<Class<?>, Class<?>> PRIMITIVE_BOXED_TYPES;
-
-    static {
-        final Map<Class<?>, Class<?>> map = new HashMap<>();
-        map.put(boolean.class, Boolean.class);
-        map.put(byte.class, Byte.class);
-        map.put(char.class, Character.class);
-        map.put(double.class, Double.class);
-        map.put(float.class, Float.class);
-        map.put(int.class, Integer.class);
-        map.put(long.class, Long.class);
-        map.put(short.class, Short.class);
-        PRIMITIVE_BOXED_TYPES = Collections.unmodifiableMap(map);
-    }
+    private static final Map<Class<?>, Class<?>> PRIMITIVE_BOXED_TYPES = Map.of(
+            boolean.class, Boolean.class,
+            byte.class, Byte.class,
+            char.class, Character.class,
+            double.class, Double.class,
+            float.class, Float.class,
+            int.class, Integer.class,
+            long.class, Long.class,
+            short.class, Short.class);
 
     /**
      * Returns the reference type for a class. For primitives, this is their boxed equivalent. For other types, this is

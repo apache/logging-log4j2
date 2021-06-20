@@ -41,7 +41,7 @@ import java.lang.annotation.Target;
  * declare any type parameters of their own, take zero or more dependencies as arguments, and may return a value which
  * is ignored (e.g., for builder method chaining).
  *
- * @see QualifierType
+ * @see Named
  * @see Provider
  */
 @Retention(RetentionPolicy.RUNTIME)

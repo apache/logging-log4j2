@@ -17,8 +17,6 @@
 
 package org.apache.logging.log4j.core.config.di;
 
-import org.apache.logging.log4j.core.config.di.api.bean.Bean;
-
 import java.util.Collection;
 
 public class AmbiguousBeanException extends ResolutionException {

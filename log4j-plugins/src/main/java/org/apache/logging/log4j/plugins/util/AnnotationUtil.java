@@ -15,22 +15,28 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.core.config.di;
+package org.apache.logging.log4j.plugins.util;
 
-import java.util.Collection;
+import org.apache.logging.log4j.plugins.di.AnnotationAlias;
 
-public class ValidationException extends InjectionException {
-    public static ValidationException fromValidationErrors(final Collection<Throwable> validationErrors) {
-        final StringBuilder sb = new StringBuilder();
-        sb.append("Found ").append(validationErrors.size()).append(" error(s) in bean deployment. Errors:");
-        validationErrors.forEach(error -> sb.append("\n • ").append(error.getMessage()));
-        final String message = sb.toString();
-        final ValidationException exception = new ValidationException(message);
-        validationErrors.forEach(exception::addSuppressed);
-        return exception;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+
+public final class AnnotationUtil {
+
+    public static boolean isAnnotationPresent(final AnnotatedElement element, final Class<? extends Annotation> annotationType) {
+        if (element.isAnnotationPresent(annotationType)) {
+            return true;
+        }
+        for (final Annotation annotation : element.getAnnotations()) {
+            final AnnotationAlias alias = annotation.annotationType().getAnnotation(AnnotationAlias.class);
+            if (alias != null && annotationType.equals(alias.value())) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    private ValidationException(final String message) {
-        super(message);
+    private AnnotationUtil() {
     }
 }

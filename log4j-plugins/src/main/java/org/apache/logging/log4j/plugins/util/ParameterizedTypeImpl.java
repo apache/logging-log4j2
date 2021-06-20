@@ -22,7 +22,7 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class ParameterizedTypeImpl implements ParameterizedType {
+class ParameterizedTypeImpl implements ParameterizedType {
     private final Type ownerType;
     private final Type rawType;
     private final Type[] actualTypeArguments;

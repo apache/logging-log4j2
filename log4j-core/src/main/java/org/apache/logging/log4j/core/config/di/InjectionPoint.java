@@ -17,20 +17,39 @@
 
 package org.apache.logging.log4j.core.config.di;
 
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Member;
+import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.Optional;
 
-public class ValidationException extends InjectionException {
-    public static ValidationException fromValidationErrors(final Collection<Throwable> validationErrors) {
-        final StringBuilder sb = new StringBuilder();
-        sb.append("Found ").append(validationErrors.size()).append(" error(s) in bean deployment. Errors:");
-        validationErrors.forEach(error -> sb.append("\n • ").append(error.getMessage()));
-        final String message = sb.toString();
-        final ValidationException exception = new ValidationException(message);
-        validationErrors.forEach(exception::addSuppressed);
-        return exception;
-    }
+/**
+ * Represents metadata about an element in a program where a value should be injected.
+ */
+public interface InjectionPoint {
 
-    private ValidationException(final String message) {
-        super(message);
-    }
+    /**
+     * Gets the generic type information of this point.
+     */
+    Type getType();
+
+    String getName();
+
+    Collection<String> getAliases();
+
+    /**
+     * Gets the bean where this injection point is defined or empty for static methods and fields.
+     */
+    Optional<Bean<?>> getBean();
+
+    /**
+     * Gets the field, method, or constructor where injection takes place.
+     */
+    Member getMember();
+
+    /**
+     * Gets the program element corresponding to this injection point.
+     */
+    AnnotatedElement getElement();
+
 }

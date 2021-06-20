@@ -15,21 +15,9 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.di;
+package org.apache.logging.log4j.core.config.di;
 
-import org.apache.logging.log4j.plugins.name.NameProvider;
-import org.apache.logging.log4j.plugins.name.NamedQualifierNameProvider;
-import org.apache.logging.log4j.util.Strings;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.Repeatable;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-@NameProvider(NamedQualifierNameProvider.class)
-@Repeatable(NamedAliases.class)
-public @interface Named {
-    String value() default Strings.EMPTY;
+public interface ProducerFactory {
+    // only time bean is null is static @Produces potentially?
+    <T> Producer<T> createProducer(final Bean<T> bean);
 }

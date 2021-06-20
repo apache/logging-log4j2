@@ -15,21 +15,10 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.di;
+package org.apache.logging.log4j.core.config.di;
 
-import org.apache.logging.log4j.plugins.name.NameProvider;
-import org.apache.logging.log4j.plugins.name.NamedQualifierNameProvider;
-import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.plugins.di.Provider;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.Repeatable;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-@NameProvider(NamedQualifierNameProvider.class)
-@Repeatable(NamedAliases.class)
-public @interface Named {
-    String value() default Strings.EMPTY;
+public interface ProviderFactory<T> {
+    Provider<T> getProvider(final InitializationContext<?> context);
 }

@@ -1,0 +1,455 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache license, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
+ */
+
+package org.apache.logging.log4j.core.config.di.impl;
+
+import org.apache.logging.log4j.core.config.di.AmbiguousBeanException;
+import org.apache.logging.log4j.core.config.di.Bean;
+import org.apache.logging.log4j.core.config.di.BeanManager;
+import org.apache.logging.log4j.core.config.di.DefinitionException;
+import org.apache.logging.log4j.core.config.di.InitializationContext;
+import org.apache.logging.log4j.core.config.di.InjectionException;
+import org.apache.logging.log4j.core.config.di.InjectionPoint;
+import org.apache.logging.log4j.core.config.di.InjectionTargetFactory;
+import org.apache.logging.log4j.core.config.di.Injector;
+import org.apache.logging.log4j.core.config.di.ProducerFactory;
+import org.apache.logging.log4j.core.config.di.ResolutionException;
+import org.apache.logging.log4j.core.config.di.ScopeContext;
+import org.apache.logging.log4j.core.config.di.UnsatisfiedBeanException;
+import org.apache.logging.log4j.core.config.di.ValidationException;
+import org.apache.logging.log4j.plugins.di.DependentScoped;
+import org.apache.logging.log4j.plugins.di.Disposes;
+import org.apache.logging.log4j.plugins.di.Produces;
+import org.apache.logging.log4j.plugins.di.Provider;
+import org.apache.logging.log4j.plugins.di.ScopeType;
+import org.apache.logging.log4j.plugins.di.SingletonScoped;
+import org.apache.logging.log4j.plugins.name.AnnotatedElementAliasesProvider;
+import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
+import org.apache.logging.log4j.plugins.util.AnnotationUtil;
+import org.apache.logging.log4j.plugins.util.LazyValue;
+import org.apache.logging.log4j.plugins.util.TypeUtil;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Executable;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class DefaultBeanManager implements BeanManager {
+
+    private final Injector injector = new DefaultInjector(this);
+
+    private final Collection<Bean<?>> enabledBeans = ConcurrentHashMap.newKeySet();
+    private final Map<Type, Collection<Bean<?>>> beansByType = new ConcurrentHashMap<>();
+    private final Collection<DisposesMethod> disposesMethods = Collections.synchronizedCollection(new ArrayList<>());
+    private final Map<Class<? extends Annotation>, ScopeContext> scopes = new ConcurrentHashMap<>();
+
+    public DefaultBeanManager() {
+        // TODO: need a better way to register scope contexts
+        scopes.put(DependentScoped.class, new DependentScopeContext());
+        scopes.put(SingletonScoped.class, new DefaultScopeContext(SingletonScoped.class));
+    }
+
+    @Override
+    public Collection<Bean<?>> loadBeans(final Collection<Class<?>> beanClasses) {
+        return beanClasses.stream()
+                .flatMap(beanClass -> loadBeans(beanClass).stream())
+                .collect(Collectors.toSet());
+    }
+
+    private <T> Collection<Bean<?>> loadBeans(final Class<T> beanClass) {
+        final Bean<T> created;
+        if (isInjectable(beanClass)) {
+            final Collection<Type> types = TypeUtil.getTypeClosure(beanClass);
+            final String name = AnnotatedElementNameProvider.getName(beanClass);
+            final Class<? extends Annotation> scopeType = getScopeType(beanClass);
+            final InjectionTargetFactory<T> factory =
+                    new DefaultInjectionTargetFactory<>(this, injector, beanClass);
+            created = addBean(new InjectionTargetBean<>(types, name, scopeType, beanClass, factory));
+        } else {
+            created = null;
+        }
+        loadDisposerMethods(beanClass, created);
+        final Collection<Bean<?>> beans = loadProducerBeans(beanClass, created);
+        if (created != null) {
+            beans.add(created);
+        }
+        return beans;
+    }
+
+    private <T> Bean<T> addBean(final Bean<T> bean) {
+        if (enabledBeans.add(bean)) {
+            addBeanTypes(bean);
+        }
+        return bean;
+    }
+
+    private void addBeanTypes(final Bean<?> bean) {
+        for (final Type type : bean.getTypes()) {
+            addBeanType(bean, type);
+            if (type instanceof ParameterizedType) {
+                final Type rawType = ((ParameterizedType) type).getRawType();
+                addBeanType(bean, rawType);
+            } else if (type instanceof Class<?>) {
+                final Class<?> clazz = (Class<?>) type;
+                if (clazz.isPrimitive()) {
+                    addBeanType(bean, TypeUtil.getReferenceType(clazz));
+                }
+            }
+        }
+    }
+
+    private void addBeanType(final Bean<?> bean, final Type type) {
+        beansByType.computeIfAbsent(type, ignored -> ConcurrentHashMap.newKeySet()).add(bean);
+    }
+
+    private void loadDisposerMethods(final Class<?> metaClass, final Bean<?> bean) {
+        for (final Method method : metaClass.getDeclaredMethods()) {
+            for (final Parameter parameter : method.getParameters()) {
+                if (AnnotationUtil.isAnnotationPresent(parameter, Disposes.class)) {
+                    final String name = AnnotatedElementNameProvider.getName(parameter);
+                    final Collection<String> aliases = AnnotatedElementAliasesProvider.getAliases(parameter);
+                    method.setAccessible(true);
+                    disposesMethods.add(new DisposesMethod(parameter.getParameterizedType(), name, aliases, bean, method));
+                }
+            }
+        }
+    }
+
+    private <P> Collection<Bean<?>> loadProducerBeans(final Class<P> producingClass, final Bean<P> producingBean) {
+        final Collection<Bean<?>> beans = new HashSet<>();
+        for (final Method method : producingClass.getDeclaredMethods()) {
+            if (AnnotationUtil.isAnnotationPresent(method, Produces.class)) {
+                method.setAccessible(true);
+                beans.add(loadProducerBean(method, producingBean));
+            }
+        }
+        for (final Field field : producingClass.getDeclaredFields()) {
+            if (AnnotationUtil.isAnnotationPresent(field, Produces.class)) {
+                field.setAccessible(true);
+                beans.add(loadProducerBean(field, producingBean));
+            }
+        }
+        return beans;
+    }
+
+    private Bean<?> loadProducerBean(final Method method, final Bean<?> producingBean) {
+        final Collection<Type> types = TypeUtil.getTypeClosure(method.getGenericReturnType());
+        final String name = AnnotatedElementNameProvider.getName(method);
+        final Method disposerMethod = resolveDisposerMethod(types, name, producingBean);
+        final Collection<InjectionPoint> disposerIPs = disposerMethod == null ? Collections.emptySet() :
+                createExecutableInjectionPoints(disposerMethod, producingBean);
+        final Collection<InjectionPoint> producerIPs = createExecutableInjectionPoints(method, producingBean);
+        final ProducerFactory factory = new MethodProducerFactory(
+                this, producingBean, method, producerIPs, disposerMethod, disposerIPs);
+        return addBean(new ProducerBean<>(types, name, getScopeType(method), method.getDeclaringClass(), factory));
+    }
+
+    private Bean<?> loadProducerBean(final Field field, final Bean<?> producingBean) {
+        final Collection<Type> types = TypeUtil.getTypeClosure(field.getGenericType());
+        final String name = AnnotatedElementNameProvider.getName(field);
+        final Method disposerMethod = resolveDisposerMethod(types, name, producingBean);
+        final Collection<InjectionPoint> disposerIPs = disposerMethod == null ? Collections.emptySet() :
+                createExecutableInjectionPoints(disposerMethod, producingBean);
+        final ProducerFactory factory = new FieldProducerFactory(
+                this, producingBean, field, disposerMethod, disposerIPs);
+        return addBean(new ProducerBean<>(types, name, getScopeType(field), field.getDeclaringClass(), factory));
+    }
+
+    private Method resolveDisposerMethod(final Collection<Type> types, final String name, final Bean<?> disposingBean) {
+        final List<Method> methods = disposesMethods.stream()
+                .filter(method -> method.matches(types, name, disposingBean))
+                .map(method -> method.disposesMethod)
+                .collect(Collectors.toList());
+        if (methods.isEmpty()) {
+            return null;
+        }
+        if (methods.size() == 1) {
+            return methods.get(0);
+        }
+        throw new ResolutionException("Ambiguous @Disposes methods for matching types " + types + " and name '" + name + "': " + methods);
+    }
+
+    @Override
+    public void validateBeans(final Iterable<Bean<?>> beans) {
+        final List<Throwable> errors = new ArrayList<>();
+        for (final Bean<?> bean : beans) {
+            for (final InjectionPoint point : bean.getInjectionPoints()) {
+                try {
+                    validateInjectionPoint(point);
+                } catch (final InjectionException e) {
+                    errors.add(e);
+                }
+            }
+        }
+        if (!errors.isEmpty()) {
+            throw ValidationException.fromValidationErrors(errors);
+        }
+    }
+
+    @Override
+    public void validateInjectionPoint(final InjectionPoint point) {
+        final AnnotatedElement element = point.getElement();
+        if (AnnotationUtil.isAnnotationPresent(element, Produces.class)) {
+            throw new DefinitionException("Cannot inject into a @Produces element: " + element);
+        }
+        final Type type = point.getType();
+        if (type instanceof TypeVariable<?>) {
+            throw new DefinitionException("Cannot inject into a TypeVariable: " + point);
+        }
+        final Class<?> rawType = TypeUtil.getRawType(type);
+        if (rawType.equals(InjectionPoint.class)) {
+            final Bean<?> bean = point.getBean()
+                    .orElseThrow(() -> new DefinitionException("Cannot inject " + point + " into a non-bean"));
+            if (!bean.isDependentScoped()) {
+                throw new DefinitionException("Injection points can only be @DependentScoped scoped; got: " + point);
+            }
+        }
+        if (rawType.equals(Bean.class)) {
+            final Bean<?> bean = point.getBean().orElseThrow(() -> new UnsatisfiedBeanException(point));
+            if (bean instanceof InjectionTargetBean<?>) {
+                validateBeanInjectionPoint(point, bean.getDeclaringClass());
+            } else if (bean instanceof ProducerBean<?>) {
+                validateBeanInjectionPoint(point, ((ProducerBean<?>) bean).getType());
+            }
+        }
+        final Optional<Bean<Object>> bean = getBean(point.getType(), point.getName(), point.getAliases());
+        if (bean.isEmpty() && !rawType.equals(Optional.class)) {
+            throw new UnsatisfiedBeanException(point);
+        }
+    }
+
+    private void validateBeanInjectionPoint(final InjectionPoint point, final Type expectedType) {
+        final Type type = point.getType();
+        if (!(type instanceof ParameterizedType)) {
+            throw new DefinitionException("Expected parameterized type for " + point + " but got " + expectedType);
+        }
+        final ParameterizedType parameterizedType = (ParameterizedType) type;
+        final Type[] typeArguments = parameterizedType.getActualTypeArguments();
+        if (typeArguments.length != 1) {
+            throw new DefinitionException("Expected one type parameter argument for " + point + " but got " +
+                    Arrays.toString(typeArguments));
+        }
+        final Type typeArgument = typeArguments[0];
+        if (!typeArgument.equals(expectedType)) {
+            throw new DefinitionException("Expected type " + expectedType + " but got " + typeArgument + " in " + point);
+        }
+    }
+
+    @Override
+    public <T> Optional<Bean<T>> getBean(final Type type, final String name, final Collection<String> aliases) {
+        // TODO: this will need to allow for TypeConverter usage somehow
+        // first, look for an existing bean
+        final Optional<Bean<T>> existingBean = getExistingOrProvidedBean(type, name, aliases);
+        if (existingBean.isPresent()) {
+            return existingBean;
+        }
+        if (type instanceof ParameterizedType) {
+            final Class<?> rawType = TypeUtil.getRawType(type);
+            if (rawType == Provider.class) {
+                final Type actualType = ((ParameterizedType) type).getActualTypeArguments()[0];
+                // if a Provider<T> is requested, we can convert an existing Bean<T> into a Bean<Provider<T>>
+                final Optional<Bean<T>> actualExistingBean = getExistingBean(actualType, name, aliases);
+                return actualExistingBean.map(bean -> new ProviderBean<>(type, bean, context -> () -> getValue(bean, context)))
+                        .map(this::addBean)
+                        .map(TypeUtil::cast);
+            } else if (rawType == Optional.class) {
+                final Type actualType = ((ParameterizedType) type).getActualTypeArguments()[0];
+                // fake T like in Provider above
+                final Bean<Optional<T>> optionalBean = addBean(new OptionalBean<>(type, name,
+                        LazyValue.forSupplier(() -> getExistingOrProvidedBean(actualType, name, aliases)),
+                        this::getValue));
+                return Optional.of(optionalBean).map(TypeUtil::cast);
+            }
+        }
+        return Optional.empty();
+    }
+
+    private <T> Optional<Bean<T>> getExistingOrProvidedBean(final Type type, final String name, final Collection<String> aliases) {
+        final Optional<Bean<T>> existingBean = getExistingBean(type, name, aliases);
+        if (existingBean.isPresent()) {
+            return existingBean;
+        }
+        return getProvidedBean(type, name, aliases);
+    }
+
+    private <T> Optional<Bean<T>> getExistingBean(final Type type, final String name, final Collection<String> aliases) {
+        final Set<Bean<T>> beans = this.<T>beansWithType(type)
+                .filter(bean -> name.equalsIgnoreCase(bean.getName()) || aliases.stream().anyMatch(bean.getName()::equalsIgnoreCase))
+                .collect(Collectors.toSet());
+        if (beans.size() > 1) {
+            throw new AmbiguousBeanException(beans, "type " + type + ", name '" + name + "', and aliases " + aliases);
+        }
+        return beans.isEmpty() ? Optional.empty() : Optional.of(beans.iterator().next());
+    }
+
+    private <T> Optional<Bean<T>> getProvidedBean(final Type providedType, final String name, final Collection<String> aliases) {
+        // TODO: need a way to get @Plugin(name) for builder class (potential alias?)
+        final Optional<Bean<Provider<T>>> existingBean =
+                getExistingBean(TypeUtil.getParameterizedType(Provider.class, providedType), name, aliases);
+        final Optional<Bean<T>> providedBean = existingBean.map(bean ->
+                new ProvidedBean<>(providedType, bean, context -> getValue(bean, context)));
+        return providedBean.map(this::addBean);
+    }
+
+    private <T> Stream<Bean<T>> beansWithType(final Type requiredType) {
+        if (beansByType.containsKey(requiredType)) {
+            return beansByType.get(requiredType).stream().map(TypeUtil::cast);
+        }
+        if (requiredType instanceof ParameterizedType) {
+            return beansByType.getOrDefault(((ParameterizedType) requiredType).getRawType(), Collections.emptySet())
+                    .stream()
+                    .filter(bean -> bean.hasMatchingType(requiredType))
+                    .map(TypeUtil::cast);
+        }
+        return Stream.empty();
+    }
+
+    @Override
+    public InjectionPoint createFieldInjectionPoint(final Field field, final Bean<?> owner) {
+        Objects.requireNonNull(field);
+        return DefaultInjectionPoint.forField(field, owner);
+    }
+
+    @Override
+    public InjectionPoint createParameterInjectionPoint(final Executable executable, final Parameter parameter, final Bean<?> owner) {
+        Objects.requireNonNull(executable);
+        Objects.requireNonNull(parameter);
+        return DefaultInjectionPoint.forParameter(executable, parameter, owner);
+    }
+
+    private Class<? extends Annotation> getScopeType(final AnnotatedElement element) {
+        for (final Annotation annotation : element.getAnnotations()) {
+            final Class<? extends Annotation> annotationType = annotation.annotationType();
+            if (annotationType.isAnnotationPresent(ScopeType.class)) {
+                return annotationType;
+            }
+        }
+        return DependentScoped.class;
+    }
+
+    @Override
+    public <T> InitializationContext<T> createInitializationContext(final Bean<T> bean) {
+        return new DefaultInitializationContext<>(bean);
+    }
+
+    @Override
+    public <T> T getValue(final Bean<T> bean, final InitializationContext<?> parentContext) {
+        Objects.requireNonNull(bean);
+        Objects.requireNonNull(parentContext);
+        final ScopeContext context = getScopeContext(bean.getScopeType());
+        return context.getOrCreate(bean, parentContext.createDependentContext(bean));
+    }
+
+    private ScopeContext getScopeContext(final Class<? extends Annotation> scopeType) {
+        final ScopeContext scopeContext = scopes.get(scopeType);
+        if (scopeContext == null) {
+            throw new ResolutionException("No active scope context found for scope @" + scopeType.getName());
+        }
+        return scopeContext;
+    }
+
+    @Override
+    public <T> Optional<T> getInjectableValue(final InjectionPoint point, final InitializationContext<?> parentContext) {
+        final Bean<T> resolvedBean = this.<T>getBean(point.getType(), point.getName(), point.getAliases())
+                .orElseThrow(() -> new UnsatisfiedBeanException(point));
+        final Optional<T> existingValue = point.getBean()
+                .filter(bean -> !bean.equals(resolvedBean))
+                .flatMap(bean -> getExistingValue(resolvedBean, bean, parentContext));
+        if (existingValue.isPresent()) {
+            return existingValue;
+        }
+        final InitializationContext<?> context =
+                resolvedBean.isDependentScoped() ? parentContext : createInitializationContext(resolvedBean);
+        return Optional.of(getValue(resolvedBean, context));
+    }
+
+    private <T> Optional<T> getExistingValue(final Bean<T> resolvedBean, final Bean<?> pointBean,
+                                             final InitializationContext<?> parentContext) {
+        if (!pointBean.isDependentScoped() || parentContext.getNonDependentScopedDependent().isPresent()) {
+            final Optional<T> incompleteInstance = parentContext.getIncompleteInstance(resolvedBean);
+            if (incompleteInstance.isPresent()) {
+                return incompleteInstance;
+            }
+            return getScopeContext(resolvedBean.getScopeType()).getIfExists(resolvedBean);
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public void close() {
+        beansByType.clear();
+        enabledBeans.clear();
+        disposesMethods.clear();
+        // TODO: better scope closing after more scopes are supported
+        scopes.get(SingletonScoped.class).close();
+        scopes.clear();
+    }
+
+    private static class DisposesMethod {
+        private final Type type;
+        private final String name;
+        private final Collection<String> aliases;
+        private final Bean<?> declaringBean;
+        private final Method disposesMethod;
+
+        private DisposesMethod(final Type type, final String name, final Collection<String> aliases,
+                               final Bean<?> declaringBean, final Method disposesMethod) {
+            this.type = type;
+            this.name = name;
+            this.aliases = aliases;
+            this.declaringBean = declaringBean;
+            this.disposesMethod = disposesMethod;
+        }
+
+        boolean matches(final Collection<Type> types, final String name, final Bean<?> declaringBean) {
+            return Objects.equals(declaringBean, this.declaringBean) && matchesName(name) && matchesType(types);
+        }
+
+        private boolean matchesType(final Collection<Type> types) {
+            for (final Type t : types) {
+                if (TypeUtil.typesMatch(type, t)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private boolean matchesName(final String name) {
+            return this.name.equalsIgnoreCase(name) || aliases.stream().anyMatch(name::equalsIgnoreCase);
+        }
+    }
+
+}

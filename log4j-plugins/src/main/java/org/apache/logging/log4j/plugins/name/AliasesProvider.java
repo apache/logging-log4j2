@@ -14,30 +14,19 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.plugins;
 
-import org.apache.logging.log4j.plugins.name.AliasesProvider;
-import org.apache.logging.log4j.plugins.name.PluginAliasesProvider;
+package org.apache.logging.log4j.plugins.name;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * Identifies a list of aliases for an annotated plugin element. This is supported by plugin classes and other element
- * types supported by the annotations in this package.
- */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.TYPE, ElementType.FIELD, ElementType.METHOD})
-@AliasesProvider(PluginAliasesProvider.class)
-public @interface PluginAliases {
-
-    /**
-     * Aliases the annotated element can also be referred to. These aliases are case-insensitive.
-     * @return the aliases associated with the plugin.
-     */
-    String[] value();
+@Target(ElementType.ANNOTATION_TYPE)
+public @interface AliasesProvider {
+    Class<? extends AnnotatedElementAliasesProvider<? extends Annotation>> value();
 }

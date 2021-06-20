@@ -27,10 +27,8 @@ import java.lang.annotation.Target;
 /**
  * Meta annotation for making an annotation an alias for another annotation. Annotations with this annotation will be
  * interpreted as if they were implemented by the given annotation type instead. This applies to
- * {@linkplain QualifierType qualifiers}, {@linkplain ScopeType scopes}, {@link Inject}, {@link Produces},
- * {@link Disposes}, {@link PostConstruct}, and {@link PreDestroy}. Individual annotation elements are aliased to the
- * same element names from the aliased annotation unless otherwise annotated with {@link Named} which should specify
- * the aliased annotation element name.
+ * {@linkplain ScopeType scopes}, {@link Inject}, {@link Produces}, {@link Disposes}, {@link PostConstruct}, and
+ * {@link PreDestroy}.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)

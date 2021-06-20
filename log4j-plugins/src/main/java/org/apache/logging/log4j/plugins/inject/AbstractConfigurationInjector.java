@@ -19,8 +19,8 @@ package org.apache.logging.log4j.plugins.inject;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.Node;
-import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.bind.ConfigurationBinder;
+import org.apache.logging.log4j.plugins.name.AnnotatedElementAliasesProvider;
 import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -60,9 +60,9 @@ public abstract class AbstractConfigurationInjector<Ann extends Annotation, Cfg>
     public ConfigurationInjector<Ann, Cfg> withAnnotatedElement(final AnnotatedElement element) {
         this.annotatedElement = Objects.requireNonNull(element);
         withName(AnnotatedElementNameProvider.getName(element));
-        final PluginAliases aliases = element.getAnnotation(PluginAliases.class);
-        if (aliases != null) {
-            withAliases(aliases.value());
+        final Collection<String> aliases = AnnotatedElementAliasesProvider.getAliases(element);
+        if (!aliases.isEmpty()) {
+            withAliases(aliases.toArray(new String[0]));
         }
         return this;
     }
