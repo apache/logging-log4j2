@@ -45,18 +45,13 @@ public class DefaultErrorHandler implements ErrorHandler {
         this.appender = appender;
     }
 
-
     /**
      * Handle an error with a message.
      * @param msg The message.
      */
     @Override
     public void error(final String msg) {
-        final long current = System.nanoTime();
-        if (current - lastException > EXCEPTION_INTERVAL || exceptionCount++ < MAX_EXCEPTIONS) {
-            LOGGER.error(msg);
-        }
-        lastException = current;
+        handleErrorMessage(msg, null);
     }
 
     /**
@@ -66,11 +61,7 @@ public class DefaultErrorHandler implements ErrorHandler {
      */
     @Override
     public void error(final String msg, final Throwable t) {
-        final long current = System.nanoTime();
-        if (current - lastException > EXCEPTION_INTERVAL || exceptionCount++ < MAX_EXCEPTIONS) {
-            LOGGER.error(msg, t);
-        }
-        lastException = current;
+        handleErrorMessage(msg, t);
         if (!appender.ignoreExceptions() && t != null && !(t instanceof AppenderLoggingException)) {
             throw new AppenderLoggingException(msg, t);
         }
@@ -84,14 +75,21 @@ public class DefaultErrorHandler implements ErrorHandler {
      */
     @Override
     public void error(final String msg, final LogEvent event, final Throwable t) {
-        final long current = System.nanoTime();
-        if (current - lastException > EXCEPTION_INTERVAL || exceptionCount++ < MAX_EXCEPTIONS) {
-            LOGGER.error(msg, t);
-        }
-        lastException = current;
+        handleErrorMessage(msg, t);
         if (!appender.ignoreExceptions() && t != null && !(t instanceof AppenderLoggingException)) {
             throw new AppenderLoggingException(msg, t);
         }
+    }
+
+    private void handleErrorMessage(String msg, Throwable t) {
+        final long current = System.nanoTime();
+        if (exceptionCount < MAX_EXCEPTIONS) {
+            LOGGER.error(msg, t);
+            ++exceptionCount;
+        } else if (current - lastException > EXCEPTION_INTERVAL) {
+            LOGGER.error(msg, t);
+        }
+        lastException = current;
     }
 
     public Appender getAppender() {
