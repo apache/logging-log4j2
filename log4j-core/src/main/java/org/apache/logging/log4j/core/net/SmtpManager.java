@@ -49,7 +49,6 @@ import org.apache.logging.log4j.core.layout.AbstractStringLayout.Serializer;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.util.CyclicBuffer;
-import org.apache.logging.log4j.core.util.NameUtil;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -107,7 +106,7 @@ public class SmtpManager extends AbstractManager {
             protocol = "smtp";
         }
 
-        final String name = createManagerName(to, cc, bcc, from, replyTo, subject, protocol, host, username, password, isDebug, filterName);
+        final String name = createManagerName(to, cc, bcc, from, replyTo, subject, protocol, host, port, username, password, isDebug, filterName);
         final Serializer subjectSerializer = PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(subject).build();
 
         return getManager(name, FACTORY, new FactoryData(to, cc, bcc, from, replyTo, subjectSerializer,
@@ -115,7 +114,13 @@ public class SmtpManager extends AbstractManager {
 
     }
 
-    private static String createManagerName(
+    /**
+     * Creates a unique-per-configuration name for an smtp manager using the specified the parameters.<br>
+     * Using such a name allows us to maintain singletons per unique configurations.
+     *
+     * @return smtp manager name
+     */
+    static String createManagerName(
             final String to,
             final String cc,
             final String bcc,
@@ -124,6 +129,7 @@ public class SmtpManager extends AbstractManager {
             final String subject,
             final String protocol,
             final String host,
+            final int port,
             final String username,
             final String password,
             final boolean isDebug,
@@ -155,7 +161,7 @@ public class SmtpManager extends AbstractManager {
             sb.append(subject);
         }
         sb.append(':');
-        sb.append(protocol).append(':').append(host).append(':').append("port").append(':');
+        sb.append(protocol).append(':').append(host).append(':').append(port).append(':');
         if (username != null) {
             sb.append(username);
         }
@@ -166,9 +172,7 @@ public class SmtpManager extends AbstractManager {
         sb.append(isDebug ? ":debug:" : "::");
         sb.append(filterName);
 
-        final String hash = NameUtil.md5(sb.toString());
-        return "SMTP:" + hash;
-
+        return "SMTP:" + sb.toString();
     }
 
     /**
