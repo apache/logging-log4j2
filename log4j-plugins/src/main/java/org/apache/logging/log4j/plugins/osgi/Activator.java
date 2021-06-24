@@ -17,7 +17,6 @@
 
 package org.apache.logging.log4j.plugins.osgi;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.processor.PluginService;
 import org.apache.logging.log4j.plugins.util.PluginRegistry;
@@ -27,7 +26,6 @@ import org.osgi.framework.wiring.BundleWiring;
 
 import java.security.Permission;
 import java.util.Collection;
-import java.util.Hashtable;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**

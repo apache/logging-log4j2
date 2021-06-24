@@ -20,7 +20,6 @@ package org.apache.log4j.helpers;
 import org.apache.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.spi.StandardLevel;
 import org.apache.logging.log4j.util.LoaderUtil;
 
 import java.io.InterruptedIOException;

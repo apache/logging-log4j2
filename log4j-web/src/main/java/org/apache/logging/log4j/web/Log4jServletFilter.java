@@ -17,9 +17,7 @@
 package org.apache.logging.log4j.web;
 
 import java.io.IOException;
-import java.util.concurrent.Executor;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;

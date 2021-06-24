@@ -17,7 +17,6 @@
 
 package org.apache.logging.log4j.io;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;

@@ -24,7 +24,6 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.lookup.AbstractLookup;
 import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.message.MapMessage;
-import org.apache.logging.log4j.message.StringMapMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
 

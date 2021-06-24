@@ -34,7 +34,6 @@ import java.util.Properties;
 
 import static org.apache.log4j.builders.BuilderManager.CATEGORY;
 import static org.apache.log4j.xml.XmlConfiguration.*;
-import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
 
 /**
  * Build a Level match failter.

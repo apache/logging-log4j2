@@ -17,9 +17,6 @@
 package org.apache.logging.log4j.layout.template.json.util;
 
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.convert.TypeConverter;
-import org.apache.logging.log4j.plugins.convert.TypeConverters;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.jctools.queues.MpmcArrayQueue;
 
