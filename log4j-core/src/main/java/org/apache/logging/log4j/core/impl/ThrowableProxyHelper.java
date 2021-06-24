@@ -105,10 +105,9 @@ class ThrowableProxyHelper {
             } else {
                 final CacheEntry cacheEntry = map.get(className);
                 if (cacheEntry != null) {
-                    final CacheEntry entry = cacheEntry;
-                    extClassInfo = entry.element;
-                    if (entry.loader != null) {
-                        lastLoader = entry.loader;
+                    extClassInfo = cacheEntry.element;
+                    if (cacheEntry.loader != null) {
+                        lastLoader = cacheEntry.loader;
                     }
                 } else {
                     final CacheEntry entry = toCacheEntry(ThrowableProxyHelper.loadClass(lastLoader, className), false);

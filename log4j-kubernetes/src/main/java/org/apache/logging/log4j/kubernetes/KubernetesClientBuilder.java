@@ -46,7 +46,7 @@ public class KubernetesClientBuilder {
             }
         }
         KubernetesClientProperties props = new KubernetesClientProperties(base);
-        Config properties = new ConfigBuilder(base)
+        return new ConfigBuilder(base)
                 .withApiVersion(props.getApiVersion())
                 .withCaCertData(props.getCaCertData())
                 .withCaCertFile(props.getCaCertFile())
@@ -70,6 +70,5 @@ public class KubernetesClientBuilder {
                 .withTrustCerts(props.isTrustCerts())
                 .withUsername(props.getUsername())
                 .build();
-        return properties;
     }
 }

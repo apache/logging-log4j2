@@ -68,8 +68,7 @@ public class ThreadLocalVsConcurrentHashMapBenchmark {
     }
 
     private StringBuilder getNew() {
-        final StringBuilder buf = new StringBuilder();
-        return buf;
+        return new StringBuilder();
     }
 
     private StringBuilder getThreadLocal() {
