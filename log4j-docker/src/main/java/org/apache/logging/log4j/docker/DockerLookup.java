@@ -48,7 +48,7 @@ public class DockerLookup extends AbstractLookup {
     public DockerLookup() {
         String baseUri = System.getenv(DOCKER_URI);
         if (baseUri == null) {
-            PropertiesUtil props = PropertiesUtil.getProperties();
+            final PropertiesUtil props = PropertiesUtil.getProperties();
             baseUri = props.getStringProperty(DOCKER_URI);
         }
         if (baseUri == null) {
@@ -58,19 +58,19 @@ public class DockerLookup extends AbstractLookup {
         }
         Container current = null;
         try {
-            URL url= new URL(baseUri + "/containers/json");
-            String hostName = NetUtils.getLocalHostname();
-            String macAddr = NetUtils.getMacAddressString();
+            final URL url= new URL(baseUri + "/containers/json");
+            final String hostName = NetUtils.getLocalHostname();
+            final String macAddr = NetUtils.getMacAddressString();
 
             if (url.getProtocol().equals(HTTP)) {
-                ObjectMapper objectMapper = new ObjectMapper();
-                List<Container> containerList = objectMapper.readValue(url, new TypeReference<List<Container>>(){});
+                final ObjectMapper objectMapper = new ObjectMapper();
+                final List<Container> containerList = objectMapper.readValue(url, new TypeReference<List<Container>>(){});
 
-                for (Container container : containerList) {
+                for (final Container container : containerList) {
                     if (macAddr != null && container.getNetworkSettings() != null) {
-                        Map<String, Network> networks = container.getNetworkSettings().getNetworks();
+                        final Map<String, Network> networks = container.getNetworkSettings().getNetworks();
                         if (networks != null) {
-                            for (Network network: networks.values()) {
+                            for (final Network network: networks.values()) {
                                 if (macAddr.equals(network.getMacAddress())) {
                                     current = container;
                                     break;
@@ -86,14 +86,14 @@ public class DockerLookup extends AbstractLookup {
             if (current == null) {
                 LOGGER.warn("Unable to determine current container");
             }
-        } catch (IOException ioe) {
+        } catch (final IOException ioe) {
             LOGGER.warn("Unable to read container information: " + ioe.getMessage());
         }
         container = current;
     }
 
     @Override
-    public String lookup(LogEvent event, String key) {
+    public String lookup(final LogEvent event, final String key) {
         if (container == null) {
             return null;
         }

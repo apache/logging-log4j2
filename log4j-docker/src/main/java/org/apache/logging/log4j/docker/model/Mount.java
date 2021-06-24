@@ -51,7 +51,7 @@ public class Mount {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(final String type) {
         this.type = type;
     }
 
@@ -59,7 +59,7 @@ public class Mount {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -67,7 +67,7 @@ public class Mount {
         return source;
     }
 
-    public void setSource(String source) {
+    public void setSource(final String source) {
         this.source = source;
     }
 
@@ -75,7 +75,7 @@ public class Mount {
         return destination;
     }
 
-    public void setDestination(String destination) {
+    public void setDestination(final String destination) {
         this.destination = destination;
     }
 
@@ -83,7 +83,7 @@ public class Mount {
         return driver;
     }
 
-    public void setDriver(String driver) {
+    public void setDriver(final String driver) {
         this.driver = driver;
     }
 
@@ -91,7 +91,7 @@ public class Mount {
         return mode;
     }
 
-    public void setMode(String mode) {
+    public void setMode(final String mode) {
         this.mode = mode;
     }
 
@@ -99,7 +99,7 @@ public class Mount {
         return readWrite;
     }
 
-    public void setReadWrite(Boolean readWrite) {
+    public void setReadWrite(final Boolean readWrite) {
         this.readWrite = readWrite;
     }
 
@@ -107,7 +107,7 @@ public class Mount {
         return propagation;
     }
 
-    public void setPropagation(String propagation) {
+    public void setPropagation(final String propagation) {
         this.propagation = propagation;
     }
 }
