@@ -124,9 +124,7 @@ public class PluginProcessor extends AbstractProcessor {
                 packageName = calculatePackage(elementUtils, element, packageName);
             }
             final Collection<PluginEntry> entries = element.accept(pluginAliasesVisitor, plugin);
-            for (final PluginEntry pluginEntry : entries) {
-                list.add(pluginEntry);
-            }
+            list.addAll(entries);
         }
         return packageName;
     }
