@@ -63,7 +63,7 @@ public class Log4jMarker implements Marker {
 
     @Override
 	public boolean contains(final String s) {
-		return s != null ? this.marker.isInstanceOf(s) : false;
+		return s != null && this.marker.isInstanceOf(s);
 	}
 
     @Override
@@ -127,6 +127,6 @@ public class Log4jMarker implements Marker {
 
 	@Override
 	public boolean remove(final Marker marker) {
-		return marker != null ? this.marker.remove(MarkerManager.getMarker(marker.getName())) : false;
+		return marker != null && this.marker.remove(MarkerManager.getMarker(marker.getName()));
 	}
 }

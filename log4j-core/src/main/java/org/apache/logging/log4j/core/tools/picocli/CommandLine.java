@@ -2253,7 +2253,7 @@ public class CommandLine {
                         args.push(value); // we don't consume the value
                     }
                     final Boolean currentValue = (Boolean) field.get(command);
-                    value = String.valueOf(currentValue == null ? true : !currentValue); // #147 toggle existing boolean value
+                    value = String.valueOf(currentValue == null || !currentValue); // #147 toggle existing boolean value
                 }
             }
             if (noMoreValues && value == null) {
@@ -2967,10 +2967,10 @@ public class CommandLine {
                 }
                 cls = cls.getSuperclass();
             }
-            sortOptions =          (sortOptions == null)          ? true : sortOptions;
-            abbreviateSynopsis =   (abbreviateSynopsis == null)   ? false : abbreviateSynopsis;
+            sortOptions = sortOptions == null || sortOptions;
+            abbreviateSynopsis = abbreviateSynopsis != null && abbreviateSynopsis;
             requiredOptionMarker = (requiredOptionMarker == null) ? ' ' : requiredOptionMarker;
-            showDefaultValues =    (showDefaultValues == null)    ? false : showDefaultValues;
+            showDefaultValues = showDefaultValues != null && showDefaultValues;
             synopsisHeading =      (synopsisHeading == null)      ? "Usage: " : synopsisHeading;
             commandListHeading =   (commandListHeading == null)   ? "Commands:%n" : commandListHeading;
             separator =            (separator == null)            ? DEFAULT_SEPARATOR : separator;

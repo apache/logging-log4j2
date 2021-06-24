@@ -652,7 +652,7 @@ public class RollingFileManager extends FileManager {
 
                 try {
                     FileUtils.makeParentDirs(file);
-                    final boolean created = data.createOnDemand ? false : file.createNewFile();
+                    final boolean created = !data.createOnDemand && file.createNewFile();
                     LOGGER.trace("New file '{}' created = {}", name, created);
                 } catch (final IOException ioe) {
                     LOGGER.error("Unable to create file " + name, ioe);
