@@ -223,7 +223,7 @@ public class ExceptionResolver implements EventResolver {
             if (exception == null) {
                 jsonWriter.writeNull();
             } else {
-                String exceptionClassName = exception.getClass().getCanonicalName();
+                final String exceptionClassName = exception.getClass().getCanonicalName();
                 jsonWriter.writeString(exceptionClassName);
             }
         };
@@ -235,7 +235,7 @@ public class ExceptionResolver implements EventResolver {
             if (exception == null) {
                 jsonWriter.writeNull();
             } else {
-                String exceptionMessage = exception.getMessage();
+                final String exceptionMessage = exception.getMessage();
                 jsonWriter.writeString(exceptionMessage);
             }
         };

@@ -44,7 +44,7 @@ public class EventRootObjectKeyInterceptor implements EventResolverInterceptor {
     public Object processTemplateBeforeResolverInjection(
             final EventResolverContext context,
             final Object node) {
-        String eventTemplateRootObjectKey = context.getEventTemplateRootObjectKey();
+        final String eventTemplateRootObjectKey = context.getEventTemplateRootObjectKey();
         return eventTemplateRootObjectKey != null
                 ? Collections.singletonMap(eventTemplateRootObjectKey, node)
                 : node;

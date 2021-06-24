@@ -43,7 +43,7 @@ public final class TemplateResolvers {
         }
 
         @Override
-        public final boolean isResolvable(Object value) {
+        public final boolean isResolvable(final Object value) {
             return false;
         }
 
@@ -217,7 +217,7 @@ public final class TemplateResolvers {
         final List<String> fieldPrefixes = fieldNames
                 .stream()
                 .map(fieldName -> {
-                    try (JsonWriter jsonWriter = context.getJsonWriter()) {
+                    try (final JsonWriter jsonWriter = context.getJsonWriter()) {
                         jsonWriter.writeString(fieldName);
                         jsonWriter.getStringBuilder().append(':');
                         return jsonWriter.getStringBuilder().toString();

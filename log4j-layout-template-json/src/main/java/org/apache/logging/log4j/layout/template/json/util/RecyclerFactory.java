@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 @FunctionalInterface
 public interface RecyclerFactory {
 
-    default <V> Recycler<V> create(Supplier<V> supplier) {
+    default <V> Recycler<V> create(final Supplier<V> supplier) {
         return create(supplier, ignored -> {});
     }
 
