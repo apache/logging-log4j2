@@ -58,7 +58,7 @@ public final class RedisAppender extends AbstractAppender {
     private final LinkedBlockingQueue<String> logQueue;
 
     private RedisAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
-                          final boolean ignoreExceptions, boolean immediateFlush, final int queueCapacity, final RedisManager manager) {
+                          final boolean ignoreExceptions, final boolean immediateFlush, final int queueCapacity, final RedisManager manager) {
         super(name, filter, layout, ignoreExceptions);
         this.manager = Objects.requireNonNull(manager, "Redis Manager");
         this.immediateFlush = immediateFlush;
@@ -201,7 +201,7 @@ public final class RedisAppender extends AbstractAppender {
         if (event.getLoggerName() != null && AbstractLogger.getRecursionDepth() > 1) {
             LOGGER.warn("Recursive logging from [{}] for appender [{}].", event.getLoggerName(), getName());
         } else if (layout instanceof StringLayout) {
-            String serializedEvent = ((StringLayout)layout).toSerializable(event);
+            final String serializedEvent = ((StringLayout)layout).toSerializable(event);
             while (!logQueue.offer(serializedEvent)) {
                 tryFlushQueue();
             }
@@ -213,12 +213,12 @@ public final class RedisAppender extends AbstractAppender {
         }
     }
 
-    private boolean shouldFlushLogQueue(boolean endOfBatch) {
+    private boolean shouldFlushLogQueue(final boolean endOfBatch) {
         return immediateFlush || endOfBatch;
     }
 
     private void tryFlushQueue() {
-        List<String> logEvents = new ArrayList<>();
+        final List<String> logEvents = new ArrayList<>();
         logQueue.drainTo(logEvents);
         manager.sendBulk(logEvents);
     }

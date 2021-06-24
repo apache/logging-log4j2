@@ -71,7 +71,7 @@ class LoggingRedisPoolConfiguration extends JedisPoolConfig {
 
         @Override
         public LoggingRedisPoolConfiguration build() {
-            LoggingRedisPoolConfiguration poolConfig = new LoggingRedisPoolConfiguration();
+            final LoggingRedisPoolConfiguration poolConfig = new LoggingRedisPoolConfiguration();
             poolConfig.setMaxIdle(maxIdle);
             poolConfig.setMinIdle(minIdle);
             poolConfig.setTestOnBorrow(testOnBorrow);
@@ -86,7 +86,7 @@ class LoggingRedisPoolConfiguration extends JedisPoolConfig {
             return minIdle;
         }
 
-        public Builder setMinIdle(int minIdle) {
+        public Builder setMinIdle(final int minIdle) {
             this.minIdle = minIdle;
             return this;
         }
@@ -95,7 +95,7 @@ class LoggingRedisPoolConfiguration extends JedisPoolConfig {
             return maxIdle;
         }
 
-        public Builder setMaxIdle(int maxIdle) {
+        public Builder setMaxIdle(final int maxIdle) {
             this.maxIdle = maxIdle;
             return this;
         }
@@ -104,7 +104,7 @@ class LoggingRedisPoolConfiguration extends JedisPoolConfig {
             return testOnBorrow;
         }
 
-        public Builder setTestOnBorrow(boolean testOnBorrow) {
+        public Builder setTestOnBorrow(final boolean testOnBorrow) {
             this.testOnBorrow = testOnBorrow;
             return this;
         }
@@ -113,7 +113,7 @@ class LoggingRedisPoolConfiguration extends JedisPoolConfig {
             return testOnReturn;
         }
 
-        public Builder setTestOnReturn(boolean testOnReturn) {
+        public Builder setTestOnReturn(final boolean testOnReturn) {
             this.testOnReturn = testOnReturn;
             return this;
         }
@@ -122,7 +122,7 @@ class LoggingRedisPoolConfiguration extends JedisPoolConfig {
             return testWhileIdle;
         }
 
-        public Builder setTestWhileIdle(boolean testWhileIdle) {
+        public Builder setTestWhileIdle(final boolean testWhileIdle) {
             this.testWhileIdle = testWhileIdle;
             return this;
         }
@@ -131,7 +131,7 @@ class LoggingRedisPoolConfiguration extends JedisPoolConfig {
             return testsPerEvictionRun;
         }
 
-        public Builder setTestsPerEvictionRun(int testsPerEvictionRun) {
+        public Builder setTestsPerEvictionRun(final int testsPerEvictionRun) {
             this.testsPerEvictionRun = testsPerEvictionRun;
             return this;
         }
@@ -140,7 +140,7 @@ class LoggingRedisPoolConfiguration extends JedisPoolConfig {
             return timeBetweenEvicationRunsMillis;
         }
 
-        public Builder setTimeBetweenEvicationRunsMillis(long timeBetweenEvicationRunsMillis) {
+        public Builder setTimeBetweenEvicationRunsMillis(final long timeBetweenEvicationRunsMillis) {
             this.timeBetweenEvicationRunsMillis = timeBetweenEvicationRunsMillis;
             return this;
         }

@@ -43,8 +43,8 @@ class RedisManager extends AbstractManager {
     private final JedisPoolConfig poolConfiguration;
     private JedisPool jedisPool;
 
-    RedisManager(LoggerContext loggerContext, String name, String[] keys, String host, int port,
-                 SslConfiguration sslConfiguration, LoggingRedisPoolConfiguration poolConfiguration) {
+    RedisManager(final LoggerContext loggerContext, final String name, final String[] keys, final String host, final int port,
+                 final SslConfiguration sslConfiguration, final LoggingRedisPoolConfiguration poolConfiguration) {
         super(loggerContext, name);
         this.keys = keys;
         this.host = host;
@@ -53,7 +53,7 @@ class RedisManager extends AbstractManager {
         this.poolConfiguration = Objects.requireNonNullElseGet(poolConfiguration, LoggingRedisPoolConfiguration::defaultConfiguration);
     }
 
-    JedisPool createPool(String host, int port, SslConfiguration sslConfiguration) {
+    JedisPool createPool(final String host, final int port, final SslConfiguration sslConfiguration) {
         if (sslConfiguration != null) {
             return new JedisPool(
                     poolConfiguration,
@@ -72,28 +72,28 @@ class RedisManager extends AbstractManager {
         jedisPool = createPool(host, port, sslConfiguration);
     }
 
-    public void sendBulk(List<String> logEvents) {
-        try (Jedis jedis = jedisPool.getResource()) {
+    public void sendBulk(final List<String> logEvents) {
+        try (final Jedis jedis = jedisPool.getResource()) {
             if (!logEvents.isEmpty()) {
                 send(jedis, logEvents.toArray(new String[0]));
             }
-        } catch (JedisConnectionException e) {
+        } catch (final JedisConnectionException e) {
             LOGGER.error("Unable to connect to redis. Please ensure that it's running on {}:{}", host, port, e);
         }
     }
 
-    public void send(String value) {
-        try (Jedis jedis = jedisPool.getResource()) {
+    public void send(final String value) {
+        try (final Jedis jedis = jedisPool.getResource()) {
             try {
                 send(jedis, value);
-            } catch (JedisConnectionException e) {
+            } catch (final JedisConnectionException e) {
                 LOGGER.error("Unable to connect to redis. Please ensure that it's running on {}:{}", host, port, e);
             }
         }
     }
 
-    private void send(Jedis jedis, String... value) {
-        for (String key: keys) {
+    private void send(final Jedis jedis, final String... value) {
+        for (final String key: keys) {
             jedis.rpush(key, value);
         }
     }
