@@ -30,7 +30,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Bean
     public RestTemplate restTemplate() {
-        RestTemplate restTemplate = new RestTemplate();
+        final RestTemplate restTemplate = new RestTemplate();
         restTemplate.setErrorHandler(new SampleResponseErrorHandler());
         return restTemplate;
     }

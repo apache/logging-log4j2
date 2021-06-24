@@ -55,19 +55,19 @@ public class SampleController {
         String msg = "";
         if (threads == 1) {
             ThreadContext.put("requestId", UuidUtil.getTimeBasedUuid().toString());
-            Timer timer = new Timer("sample");
+            final Timer timer = new Timer("sample");
             timer.start();
             for (int n = 0; n < count; ++n) {
                 LOGGER.info("Log record " + n);
             }
             timer.stop();
-            StringBuilder sb = new StringBuilder("Elapsed time = ");
+            final StringBuilder sb = new StringBuilder("Elapsed time = ");
             timer.formatTo(sb);
             msg = sb.toString();
             ThreadContext.clearMap();
         } else {
-            ExecutorService service = Executors.newFixedThreadPool(threads);
-            Timer timer = new Timer("sample");
+            final ExecutorService service = Executors.newFixedThreadPool(threads);
+            final Timer timer = new Timer("sample");
             timer.start();
             for (int i = 0; i < threads; ++i) {
                 service.submit(new Worker(i, count));
@@ -76,10 +76,10 @@ public class SampleController {
             try {
                 service.awaitTermination(2, TimeUnit.MINUTES);
                 timer.stop();
-                StringBuilder sb = new StringBuilder("Elapsed time = ");
+                final StringBuilder sb = new StringBuilder("Elapsed time = ");
                 timer.formatTo(sb);
                 msg = sb.toString();
-            } catch (InterruptedException ex) {
+            } catch (final InterruptedException ex) {
                 msg = "Max time exceeded";
             }
         }
@@ -90,10 +90,10 @@ public class SampleController {
     @GetMapping("/exception")
     public ResponseEntity<String> exception() {
         ThreadContext.put("requestId", UuidUtil.getTimeBasedUuid().toString());
-        Throwable t = new Throwable("This is a test");
+        final Throwable t = new Throwable("This is a test");
         LOGGER.info("This is a test", t);
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        PrintStream ps = new PrintStream(os);
+        final ByteArrayOutputStream os = new ByteArrayOutputStream();
+        final PrintStream ps = new PrintStream(os);
         t.printStackTrace(ps);
         String stackTrace = os.toString();
         stackTrace = stackTrace.replaceAll("\n", "<br>");
@@ -108,13 +108,13 @@ public class SampleController {
         private final int id;
         private final int count;
 
-        public Worker(int id, int count) {
+        public Worker(final int id, final int count) {
             this.id = id;
             this.count = count;
         }
 
         public void run() {
-            String prefix = "Thread " + id + " record ";
+            final String prefix = "Thread " + id + " record ";
             ThreadContext.put("requestId", UuidUtil.getTimeBasedUuid().toString());
             for (int i = 0; i < count; ++i) {
                 LOGGER.info(prefix + i);

@@ -37,27 +37,27 @@ public class K8SController {
     @GetMapping("/k8s/pod")
     public ResponseEntity<Pod> getPod() {
         try {
-            KubernetesClient client = new KubernetesClientBuilder().createClient();
+            final KubernetesClient client = new KubernetesClientBuilder().createClient();
             if (client != null) {
-                Pod pod = getCurrentPod(client);
+                final Pod pod = getCurrentPod(client);
                 if (pod != null) {
                     LOGGER.info("Pod: {}", objectMapper.writeValueAsString(pod));
                     return new ResponseEntity<>(pod, HttpStatus.OK);
                 }
             }
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             LOGGER.error("Unable to obtain or print Pod information", ex);
         }
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    private Pod getCurrentPod(KubernetesClient kubernetesClient) {
-        String hostName = System.getenv(HOSTNAME);
+    private Pod getCurrentPod(final KubernetesClient kubernetesClient) {
+        final String hostName = System.getenv(HOSTNAME);
         try {
             if (isServiceAccount() && Strings.isNotBlank(hostName)) {
                 return kubernetesClient.pods().withName(hostName).get();
             }
-        } catch (Throwable t) {
+        } catch (final Throwable t) {
             LOGGER.debug("Unable to locate pod with name {}.", hostName);
         }
         return null;
