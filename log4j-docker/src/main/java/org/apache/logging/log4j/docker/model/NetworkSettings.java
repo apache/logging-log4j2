@@ -81,7 +81,7 @@ public class NetworkSettings {
         return networks;
     }
 
-    public void setNetworks(Map<String, Network> networks) {
+    public void setNetworks(final Map<String, Network> networks) {
         this.networks = networks;
     }
 
@@ -89,7 +89,7 @@ public class NetworkSettings {
         return bridge;
     }
 
-    public void setBridge(String bridge) {
+    public void setBridge(final String bridge) {
         this.bridge = bridge;
     }
 
@@ -97,7 +97,7 @@ public class NetworkSettings {
         return sandboxId;
     }
 
-    public void setSandboxId(String sandboxId) {
+    public void setSandboxId(final String sandboxId) {
         this.sandboxId = sandboxId;
     }
 
@@ -105,7 +105,7 @@ public class NetworkSettings {
         return hairpinMode;
     }
 
-    public void setHairpinMode(boolean hairpinMode) {
+    public void setHairpinMode(final boolean hairpinMode) {
         this.hairpinMode = hairpinMode;
     }
 
@@ -113,7 +113,7 @@ public class NetworkSettings {
         return linkLocalIPv6Address;
     }
 
-    public void setLinkLocalIPv6Address(String linkLocalIPv6Address) {
+    public void setLinkLocalIPv6Address(final String linkLocalIPv6Address) {
         this.linkLocalIPv6Address = linkLocalIPv6Address;
     }
 
@@ -121,7 +121,7 @@ public class NetworkSettings {
         return linkLocalIPv6PrefixLen;
     }
 
-    public void setLinkLocalIPv6PrefixLen(int linkLocalIPv6PrefixLen) {
+    public void setLinkLocalIPv6PrefixLen(final int linkLocalIPv6PrefixLen) {
         this.linkLocalIPv6PrefixLen = linkLocalIPv6PrefixLen;
     }
 
@@ -129,7 +129,7 @@ public class NetworkSettings {
         return ports;
     }
 
-    public void setPorts(Map<String, String> ports) {
+    public void setPorts(final Map<String, String> ports) {
         this.ports = ports;
     }
 
@@ -137,7 +137,7 @@ public class NetworkSettings {
         return sandboxKey;
     }
 
-    public void setSandboxKey(String sandboxKey) {
+    public void setSandboxKey(final String sandboxKey) {
         this.sandboxKey = sandboxKey;
     }
 
@@ -145,7 +145,7 @@ public class NetworkSettings {
         return secondaryIPaddresses;
     }
 
-    public void setSecondaryIPaddresses(String secondaryIPaddresses) {
+    public void setSecondaryIPaddresses(final String secondaryIPaddresses) {
         this.secondaryIPaddresses = secondaryIPaddresses;
     }
 
@@ -153,7 +153,7 @@ public class NetworkSettings {
         return endpointId;
     }
 
-    public void setEndpointId(String endpointId) {
+    public void setEndpointId(final String endpointId) {
         this.endpointId = endpointId;
     }
 
@@ -161,7 +161,7 @@ public class NetworkSettings {
         return gateway;
     }
 
-    public void setGateway(String gateway) {
+    public void setGateway(final String gateway) {
         this.gateway = gateway;
     }
 
@@ -169,7 +169,7 @@ public class NetworkSettings {
         return globalIPv6Address;
     }
 
-    public void setGlobalIPv6Address(String globalIPv6Address) {
+    public void setGlobalIPv6Address(final String globalIPv6Address) {
         this.globalIPv6Address = globalIPv6Address;
     }
 
@@ -177,7 +177,7 @@ public class NetworkSettings {
         return globalIPv6PrefixLen;
     }
 
-    public void setGlobalIPv6PrefixLen(int globalIPv6PrefixLen) {
+    public void setGlobalIPv6PrefixLen(final int globalIPv6PrefixLen) {
         this.globalIPv6PrefixLen = globalIPv6PrefixLen;
     }
 
@@ -185,7 +185,7 @@ public class NetworkSettings {
         return ipAddress;
     }
 
-    public void setIpAddress(String ipAddress) {
+    public void setIpAddress(final String ipAddress) {
         this.ipAddress = ipAddress;
     }
 
@@ -193,7 +193,7 @@ public class NetworkSettings {
         return ipPrefixLen;
     }
 
-    public void setIpPrefixLen(int ipPrefixLen) {
+    public void setIpPrefixLen(final int ipPrefixLen) {
         this.ipPrefixLen = ipPrefixLen;
     }
 
@@ -201,7 +201,7 @@ public class NetworkSettings {
         return ipv6Gateway;
     }
 
-    public void setIpv6Gateway(String ipv6Gateway) {
+    public void setIpv6Gateway(final String ipv6Gateway) {
         this.ipv6Gateway = ipv6Gateway;
     }
 
@@ -209,7 +209,7 @@ public class NetworkSettings {
         return macAddress;
     }
 
-    public void setMacAddress(String macAddress) {
+    public void setMacAddress(final String macAddress) {
         this.macAddress = macAddress;
     }
 }
