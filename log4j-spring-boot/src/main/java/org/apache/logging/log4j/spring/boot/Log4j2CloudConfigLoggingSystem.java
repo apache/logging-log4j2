@@ -64,7 +64,7 @@ public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
     private static final String OVERRIDE_PARAM = "override";
     private static Logger LOGGER = StatusLogger.getLogger();
 
-    public Log4j2CloudConfigLoggingSystem(ClassLoader loader) {
+    public Log4j2CloudConfigLoggingSystem(final ClassLoader loader) {
         super(loader);
     }
 
@@ -77,7 +77,7 @@ public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
      * @param logFile the log file.
      */
     @Override
-    public void initialize(LoggingInitializationContext initializationContext, String configLocation, LogFile logFile) {
+    public void initialize(final LoggingInitializationContext initializationContext, final String configLocation, final LogFile logFile) {
         getLoggerContext().putObjectIfAbsent(ENVIRONMENT_KEY, initializationContext.getEnvironment());
         super.initialize(initializationContext, configLocation, logFile);
     }
@@ -85,10 +85,10 @@ public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
     @Override
     protected String[] getStandardConfigLocations() {
         String[] locations = super.getStandardConfigLocations();
-        PropertiesUtil props = new PropertiesUtil(new Properties());
-        String location = props.getStringProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
+        final PropertiesUtil props = new PropertiesUtil(new Properties());
+        final String location = props.getStringProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         if (location != null) {
-            List<String> list = new ArrayList<>(Arrays.asList(super.getStandardConfigLocations()));
+            final List<String> list = new ArrayList<>(Arrays.asList(super.getStandardConfigLocations()));
             list.add(location);
             locations = list.toArray(new String[0]);
         }
@@ -96,7 +96,7 @@ public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
     }
 
     @Override
-    protected void loadDefaults(LoggingInitializationContext initializationContext, LogFile logFile) {
+    protected void loadDefaults(final LoggingInitializationContext initializationContext, final LogFile logFile) {
         if (logFile != null) {
             this.loadConfiguration(this.getBootPackagedConfigFile("log4j2-file.xml"), logFile);
         } else {
@@ -104,7 +104,7 @@ public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
         }
     }
 
-    private String getBootPackagedConfigFile(String fileName) {
+    private String getBootPackagedConfigFile(final String fileName) {
         String defaultPath = ClassUtils.getPackageName(Log4J2LoggingSystem.class);
         defaultPath = defaultPath.replace('.', '/');
         defaultPath = defaultPath + "/" + fileName;
@@ -113,11 +113,11 @@ public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
     }
 
     @Override
-    protected void loadConfiguration(String location, LogFile logFile) {
+    protected void loadConfiguration(final String location, final LogFile logFile) {
         Assert.notNull(location, "Location must not be null");
         try {
-            LoggerContext ctx = getLoggerContext();
-            String[] locations = parseConfigLocations(location);
+            final LoggerContext ctx = getLoggerContext();
+            final String[] locations = parseConfigLocations(location);
             if (locations.length == 1) {
                 final URL url = ResourceUtils.getURL(location);
                 final ConfigurationSource source = getConfigurationSource(url);
@@ -145,7 +145,7 @@ public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
                 }
             }
         }
-        catch (Exception ex) {
+        catch (final Exception ex) {
             throw new IllegalStateException(
                 "Could not initialize Log4J2 logging from " + location, ex);
         }
@@ -157,7 +157,7 @@ public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
         super.cleanUp();
     }
 
-    private String[] parseConfigLocations(String configLocations) {
+    private String[] parseConfigLocations(final String configLocations) {
         final String[] uris = configLocations.split("\\?");
         final List<String> locations = new ArrayList<>();
         if (uris.length > 1) {
@@ -165,31 +165,31 @@ public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
             try {
                 final URL url = new URL(configLocations);
                 final String[] pairs = url.getQuery().split("&");
-                for (String pair : pairs) {
+                for (final String pair : pairs) {
                     final int idx = pair.indexOf("=");
                     try {
                         final String key = idx > 0 ? URLDecoder.decode(pair.substring(0, idx), "UTF-8") : pair;
                         if (key.equalsIgnoreCase(OVERRIDE_PARAM)) {
                             locations.add(URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
                         }
-                    } catch (UnsupportedEncodingException ex) {
+                    } catch (final UnsupportedEncodingException ex) {
                         LOGGER.warn("Bad data in configuration string: {}", pair);
                     }
                 }
                 return locations.toArray(new String[0]);
-            } catch (MalformedURLException ex) {
+            } catch (final MalformedURLException ex) {
                 LOGGER.warn("Unable to parse configuration URL {}", configLocations);
             }
         }
         return new String[] {uris[0]};
     }
 
-    private ConfigurationSource getConfigurationSource(URL url) throws IOException, URISyntaxException {
-        URLConnection urlConnection = url.openConnection();
-        AuthorizationProvider provider = ConfigurationFactory.authorizationProvider(PropertiesUtil.getProperties());
+    private ConfigurationSource getConfigurationSource(final URL url) throws IOException, URISyntaxException {
+        final URLConnection urlConnection = url.openConnection();
+        final AuthorizationProvider provider = ConfigurationFactory.authorizationProvider(PropertiesUtil.getProperties());
         provider.addAuthorization(urlConnection);
         if (url.getProtocol().equals(HTTPS)) {
-            SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration();
+            final SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration();
             if (sslConfiguration != null) {
                 ((HttpsURLConnection) urlConnection).setSSLSocketFactory(sslConfiguration.getSslSocketFactory());
                 if (!sslConfiguration.isVerifyHostName()) {
@@ -197,14 +197,14 @@ public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
                 }
             }
         }
-        File file = FileUtils.fileFromUri(url.toURI());
+        final File file = FileUtils.fileFromUri(url.toURI());
         try {
             if (file != null) {
                 return new ConfigurationSource(urlConnection.getInputStream(), FileUtils.fileFromUri(url.toURI()));
             } else {
                 return new ConfigurationSource(urlConnection.getInputStream(), url, urlConnection.getLastModified());
             }
-        } catch (FileNotFoundException ex) {
+        } catch (final FileNotFoundException ex) {
             LOGGER.info("Unable to locate file {}, ignoring.", url.toString());
             return null;
         }
