@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.jpa.appender;
 
 import java.util.Date;
-import java.util.Map;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;

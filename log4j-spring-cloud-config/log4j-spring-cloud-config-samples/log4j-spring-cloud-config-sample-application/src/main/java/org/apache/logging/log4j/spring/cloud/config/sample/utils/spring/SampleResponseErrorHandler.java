@@ -18,7 +18,6 @@ package org.apache.logging.log4j.spring.cloud.config.sample.utils.spring;
 
 import java.io.IOException;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.web.client.ResponseErrorHandler;
 
 /**
  * Custom http client error handler which doesn't throw exception in case http code is not 2xx.

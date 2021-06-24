@@ -18,7 +18,6 @@
 package org.apache.logging.log4j.plugins.inject;
 
 import org.apache.logging.log4j.plugins.PluginAttribute;
-import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
 
