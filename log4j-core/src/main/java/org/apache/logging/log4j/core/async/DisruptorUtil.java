@@ -160,12 +160,7 @@ final class DisruptorUtil {
      * @return the thread ID of the background appender thread
      */
     public static long getExecutorThreadId(final ExecutorService executor) {
-        final Future<Long> result = executor.submit(new Callable<Long>() {
-            @Override
-            public Long call() {
-                return Thread.currentThread().getId();
-            }
-        });
+        final Future<Long> result = executor.submit(() -> Thread.currentThread().getId());
         try {
             return result.get();
         } catch (final Exception ex) {

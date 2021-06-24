@@ -78,13 +78,10 @@ public final class MdcPatternConverter extends LogEventPatternConverter {
         return new MdcPatternConverter(options);
     }
 
-    private static final TriConsumer<String, Object, StringBuilder> WRITE_KEY_VALUES_INTO = new TriConsumer<String, Object, StringBuilder>() {
-        @Override
-        public void accept(final String key, final Object value, final StringBuilder sb) {
-            sb.append(key).append('=');
-            StringBuilders.appendValue(sb, value);
-            sb.append(", ");
-        }
+    private static final TriConsumer<String, Object, StringBuilder> WRITE_KEY_VALUES_INTO = (key, value, sb) -> {
+        sb.append(key).append('=');
+        StringBuilders.appendValue(sb, value);
+        sb.append(", ");
     };
 
     /**

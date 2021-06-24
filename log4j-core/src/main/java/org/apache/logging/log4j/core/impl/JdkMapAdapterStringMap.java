@@ -33,17 +33,14 @@ import org.apache.logging.log4j.util.TriConsumer;
 public class JdkMapAdapterStringMap implements StringMap {
     private static final long serialVersionUID = -7348247784983193612L;
     private static final String FROZEN = "Frozen collection cannot be modified";
-    private static final Comparator<? super String> NULL_FIRST_COMPARATOR = new Comparator<String>() {
-        @Override
-        public int compare(final String left, final String right) {
-            if (left == null) {
-                return -1;
-            }
-            if (right == null) {
-                return 1;
-            }
-            return left.compareTo(right);
+    private static final Comparator<? super String> NULL_FIRST_COMPARATOR = (Comparator<String>) (left, right) -> {
+        if (left == null) {
+            return -1;
         }
+        if (right == null) {
+            return 1;
+        }
+        return left.compareTo(right);
     };
 
     private final Map<String, String> map;
@@ -143,12 +140,7 @@ public class JdkMapAdapterStringMap implements StringMap {
         sortedKeys = null;
     }
 
-    private static final TriConsumer<String, String, Map<String, String>> PUT_ALL = new TriConsumer<String, String, Map<String, String>>() {
-        @Override
-        public void accept(final String key, final String value, final Map<String, String> stringStringMap) {
-            stringStringMap.put(key, value);
-        }
-    };
+    private static final TriConsumer<String, String, Map<String, String>> PUT_ALL = (key, value, stringStringMap) -> stringStringMap.put(key, value);
 
     @Override
     public void putValue(final String key, final Object value) {

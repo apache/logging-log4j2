@@ -79,7 +79,7 @@ public final class StackLocator {
             return PrivateSecurityManagerStackTraceUtil.getCurrentStackTrace();
         }
         final Stack<Class<?>> stack = new Stack<Class<?>>();
-        final List<Class<?>> classes = walker.walk(s -> s.map(f -> f.getDeclaringClass()).collect(Collectors.toList()));
+        final List<Class<?>> classes = walker.walk(s -> s.map(StackWalker.StackFrame::getDeclaringClass).collect(Collectors.toList()));
         stack.addAll(classes);
         return stack;
     }
