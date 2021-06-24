@@ -404,7 +404,7 @@ public class Category {
     }
 
     public boolean getAdditivity() {
-        return isCoreAvailable ? CategoryUtil.isAdditive(logger) : false;
+        return isCoreAvailable && CategoryUtil.isAdditive(logger);
     }
 
     public void setAdditivity(final boolean additivity) {

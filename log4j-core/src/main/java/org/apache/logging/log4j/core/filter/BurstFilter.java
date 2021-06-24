@@ -272,11 +272,7 @@ public final class BurstFilter extends AbstractFilter {
 
             final LogDelay logDelay = (LogDelay) o;
 
-            if (expireTime != logDelay.expireTime) {
-                return false;
-            }
-
-            return true;
+            return expireTime == logDelay.expireTime;
         }
 
         @Override
