@@ -60,7 +60,7 @@ public final class NoGcMessagePatternConverter extends LogEventPatternConverter 
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
         final Message msg = event.getMessage();
         if (msg != null) {
-            String result;
+            final String result;
             if (msg instanceof NoGcMessage) {
                 toAppendTo.append(((NoGcMessage) msg).get());
                 return;

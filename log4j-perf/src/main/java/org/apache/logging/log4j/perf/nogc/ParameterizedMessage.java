@@ -150,7 +150,7 @@ public class ParameterizedMessage implements Message {
         argArray = new Object[resultArgCount];
         System.arraycopy(arguments, 0, argArray, 0, resultArgCount);
 
-        String[] strArgs;
+        final String[] strArgs;
         if (argsCount == 1 && throwable == null && arguments.length > 1) {
             // special case
             strArgs = new String[1];

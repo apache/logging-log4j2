@@ -173,7 +173,7 @@ public class JsonTemplateLayoutBenchmark {
             final ByteBufferDestination destination) {
         // noinspection ForLoopReplaceableByForEach (avoid iterator instantiation)
         for (int logEventIndex = 0; logEventIndex < logEvents.size(); logEventIndex++) {
-            LogEvent logEvent = logEvents.get(logEventIndex);
+            final LogEvent logEvent = logEvents.get(logEventIndex);
             layout.encode(logEvent, destination);
         }
         final ByteBuffer byteBuffer = destination.getByteBuffer();

@@ -316,7 +316,7 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
         --pos;
         final K myKeys[] = this.keys;
         for (; pos >= 0; pos--) {
-            K k;
+            final K k;
             if ((k = myKeys[pos]) != null) {
                 if (!Objects.equals(values[pos], other.getValue((String) k))) {
                     return false;
