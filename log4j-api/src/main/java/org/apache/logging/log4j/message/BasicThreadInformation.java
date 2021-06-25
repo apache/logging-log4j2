@@ -19,6 +19,8 @@ package org.apache.logging.log4j.message;
 import org.apache.logging.log4j.util.Chars;
 import org.apache.logging.log4j.util.StringBuilders;
 
+import java.util.Objects;
+
 /**
  * Generates information about the current Thread. Used internally by ThreadDumpMessage.
  */
@@ -64,7 +66,7 @@ class BasicThreadInformation implements ThreadInformation {
         if (id != that.id) {
             return false;
         }
-        return name != null ? name.equals(that.name) : that.name == null;
+        return Objects.equals(name, that.name);
     }
 
     @Override

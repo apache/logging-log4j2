@@ -730,19 +730,19 @@ public class Log4jLogEvent implements LogEvent {
         if (nanoTime != that.nanoTime) {
             return false;
         }
-        if (loggerFqcn != null ? !loggerFqcn.equals(that.loggerFqcn) : that.loggerFqcn != null) {
+        if (!Objects.equals(loggerFqcn, that.loggerFqcn)) {
             return false;
         }
-        if (level != null ? !level.equals(that.level) : that.level != null) {
+        if (!Objects.equals(level, that.level)) {
             return false;
         }
-        if (source != null ? !source.equals(that.source) : that.source != null) {
+        if (!Objects.equals(source, that.source)) {
             return false;
         }
-        if (marker != null ? !marker.equals(that.marker) : that.marker != null) {
+        if (!Objects.equals(marker, that.marker)) {
             return false;
         }
-        if (contextData != null ? !contextData.equals(that.contextData) : that.contextData != null) {
+        if (!Objects.equals(contextData, that.contextData)) {
             return false;
         }
         if (!message.equals(that.message)) {
@@ -751,13 +751,13 @@ public class Log4jLogEvent implements LogEvent {
         if (!loggerName.equals(that.loggerName)) {
             return false;
         }
-        if (contextStack != null ? !contextStack.equals(that.contextStack) : that.contextStack != null) {
+        if (!Objects.equals(contextStack, that.contextStack)) {
             return false;
         }
         if (threadId != that.threadId) {
             return false;
         }
-        if (threadName != null ? !threadName.equals(that.threadName) : that.threadName != null) {
+        if (!Objects.equals(threadName, that.threadName)) {
             return false;
         }
         if (threadPriority != that.threadPriority) {

@@ -18,6 +18,7 @@ package org.apache.logging.log4j.spi;
 
 import java.lang.ref.WeakReference;
 import java.net.URL;
+import java.util.Objects;
 import java.util.Properties;
 
 import org.apache.logging.log4j.Logger;
@@ -230,16 +231,16 @@ public class Provider {
 
         final Provider provider = (Provider) o;
 
-        if (priority != null ? !priority.equals(provider.priority) : provider.priority != null) {
+        if (!Objects.equals(priority, provider.priority)) {
             return false;
         }
-        if (className != null ? !className.equals(provider.className) : provider.className != null) {
+        if (!Objects.equals(className, provider.className)) {
             return false;
         }
-        if (loggerContextFactoryClass != null ? !loggerContextFactoryClass.equals(provider.loggerContextFactoryClass) : provider.loggerContextFactoryClass != null) {
+        if (!Objects.equals(loggerContextFactoryClass, provider.loggerContextFactoryClass)) {
             return false;
         }
-        return versions != null ? versions.equals(provider.versions) : provider.versions == null;
+        return Objects.equals(versions, provider.versions);
     }
 
     @Override

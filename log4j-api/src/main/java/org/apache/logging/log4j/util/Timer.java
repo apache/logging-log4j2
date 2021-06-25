@@ -18,6 +18,7 @@ package org.apache.logging.log4j.util;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
+import java.util.Objects;
 
 /**
  * Primarily used in unit tests, but can be used to track elapsed time for a request or portion of any other operation
@@ -260,10 +261,10 @@ public class Timer implements Serializable, StringBuilderFormattable
         if (startTime != timer.startTime) {
             return false;
         }
-        if (name != null ? !name.equals(timer.name) : timer.name != null) {
+        if (!Objects.equals(name, timer.name)) {
             return false;
         }
-        return status != null ? status.equals(timer.status) : timer.status == null;
+        return Objects.equals(status, timer.status);
     }
 
     @Override

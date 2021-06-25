@@ -423,10 +423,10 @@ public final class LoaderUtil {
 
             final UrlResource that = (UrlResource) o;
 
-            if (classLoader != null ? !classLoader.equals(that.classLoader) : that.classLoader != null) {
+            if (!Objects.equals(classLoader, that.classLoader)) {
                 return false;
             }
-            return url != null ? url.equals(that.url) : that.url == null;
+            return Objects.equals(url, that.url);
         }
 
         @Override

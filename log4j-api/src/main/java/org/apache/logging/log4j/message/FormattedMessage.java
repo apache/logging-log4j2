@@ -23,6 +23,7 @@ import java.text.Format;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
@@ -146,7 +147,7 @@ public class FormattedMessage implements Message {
 
         final FormattedMessage that = (FormattedMessage) o;
 
-        if (messagePattern != null ? !messagePattern.equals(that.messagePattern) : that.messagePattern != null) {
+        if (!Objects.equals(messagePattern, that.messagePattern)) {
             return false;
         }
         return Arrays.equals(stringArgs, that.stringArgs);

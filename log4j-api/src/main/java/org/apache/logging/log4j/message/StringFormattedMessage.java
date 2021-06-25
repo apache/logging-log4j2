@@ -22,6 +22,7 @@ import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.IllegalFormatException;
 import java.util.Locale;
+import java.util.Objects;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -132,7 +133,7 @@ public class StringFormattedMessage implements Message {
 
         final StringFormattedMessage that = (StringFormattedMessage) o;
 
-        if (messagePattern != null ? !messagePattern.equals(that.messagePattern) : that.messagePattern != null) {
+        if (!Objects.equals(messagePattern, that.messagePattern)) {
             return false;
         }
 

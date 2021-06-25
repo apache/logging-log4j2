@@ -21,6 +21,7 @@ import org.apache.logging.log4j.util.StringBuilderFormattable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Objects;
 
 /**
  * The simplest possible implementation of Message. It just returns the String given as the constructor argument.
@@ -99,7 +100,7 @@ public class SimpleMessage implements Message, StringBuilderFormattable, CharSeq
 
         final SimpleMessage that = (SimpleMessage) o;
 
-        return !(charSequence != null ? !charSequence.equals(that.charSequence) : that.charSequence != null);
+        return !(!Objects.equals(charSequence, that.charSequence));
     }
 
     @Override

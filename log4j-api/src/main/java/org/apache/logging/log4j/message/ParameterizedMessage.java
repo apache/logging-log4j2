@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.message;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
@@ -237,7 +238,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
 
         final ParameterizedMessage that = (ParameterizedMessage) o;
 
-        if (messagePattern != null ? !messagePattern.equals(that.messagePattern) : that.messagePattern != null) {
+        if (!Objects.equals(messagePattern, that.messagePattern)) {
             return false;
         }
         return Arrays.equals(this.argArray, that.argArray);
