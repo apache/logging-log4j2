@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import org.apache.logging.log4j.core.LogEvent;
+
 /**
  * A default lookup for others to extend.
  * 
@@ -26,7 +28,7 @@ public abstract class AbstractLookup implements StrLookup {
     /**
      * Calls {@code lookup(null, key)} in the super class.
      * 
-     * @see StrLookup#lookup(LogEvent, String)
+     * @see StrLookup#lookup(LogEvent, String).
      */
     @Override
     public String lookup(final String key) {

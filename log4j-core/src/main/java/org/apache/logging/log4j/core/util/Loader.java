@@ -337,7 +337,8 @@ public final class Loader {
     }
 
     /**
-     * Loads a class by name. This method respects the {@link #IGNORE_TCCL_PROPERTY} Log4j property. If this property is
+     * Loads a class by name. This method respects the {@link org.apache.logging.log4j.util.LoaderUtil#IGNORE_TCCL_PROPERTY}
+     * Log4j property. If this property is
      * specified and set to anything besides {@code false}, then the default ClassLoader will be used.
      *
      * @param className The class name.
