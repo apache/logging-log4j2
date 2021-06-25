@@ -86,7 +86,7 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
 
     private void setFields(final MapMessage<?, ?> mapMessage, final NoSqlObject<W> noSqlObject) {
         // Map without calling org.apache.logging.log4j.message.MapMessage#getData() which makes a copy of the map.
-        mapMessage.forEach((key, value) -> noSqlObject.set(key, value));
+        mapMessage.forEach(noSqlObject::set);
     }
 
     private void setFields(final LogEvent event, final NoSqlObject<W> entity) {
@@ -142,7 +142,7 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
             entity.set("contextMap", (Object) null);
         } else {
             final NoSqlObject<W> contextMapEntity = this.connection.createObject();
-            contextMap.forEach((BiConsumer<String, String>) (key, val) -> contextMapEntity.set(key, val));
+            contextMap.forEach((BiConsumer<String, String>) contextMapEntity::set);
             entity.set("contextMap", contextMapEntity);
         }
 

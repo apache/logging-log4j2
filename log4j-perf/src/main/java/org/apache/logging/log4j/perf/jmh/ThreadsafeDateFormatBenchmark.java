@@ -53,19 +53,9 @@ public class ThreadsafeDateFormatBenchmark {
     private final Date date = new Date();
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
-    private final ThreadLocal<SimpleDateFormat> threadLocalSDFormat = new ThreadLocal<SimpleDateFormat>() {
-        @Override
-        protected SimpleDateFormat initialValue() {
-            return new SimpleDateFormat("HH:mm:ss.SSS");
-        }
-    };
+    private final ThreadLocal<SimpleDateFormat> threadLocalSDFormat = ThreadLocal.withInitial(() -> new SimpleDateFormat("HH:mm:ss.SSS"));
 
-    private final ThreadLocal<FormatterSimple> threadLocalCachedSDFormat = new ThreadLocal<FormatterSimple>() {
-        @Override
-        protected FormatterSimple initialValue() {
-            return new FormatterSimple();
-        }
-    };
+    private final ThreadLocal<FormatterSimple> threadLocalCachedSDFormat = ThreadLocal.withInitial(() -> new FormatterSimple());
 
     private final FastDateFormat fastDateFormat = FastDateFormat.getInstance("HH:mm:ss.SSS");
     private final FixedDateFormat fixedDateFormat = FixedDateFormat.createIfSupported("HH:mm:ss.SSS");
@@ -113,12 +103,7 @@ public class ThreadsafeDateFormatBenchmark {
         private final FixedDateFormat customFormat = FixedDateFormat.createIfSupported("HH:mm:ss.SSS");
         private long timestamp;
         private String formatted;
-        private final ThreadLocal<char[]> reusableBuffer = new ThreadLocal<char[]>() {
-            @Override
-            protected char[] initialValue() {
-                return new char[255];
-            }
-        };
+        private final ThreadLocal<char[]> reusableBuffer = ThreadLocal.withInitial(() -> new char[255]);
 
         public FormatterFixedReuseBuffer() {
             this.timestamp = 0;

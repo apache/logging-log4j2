@@ -81,52 +81,48 @@ public class LoggingController {
         generateLog = true;
 
         for (int i = 0; i < numThreads; ++i) {
-            (new Thread() {
+            (new Thread(() -> {
+                ThreadContext.clearMap();
 
-                @Override
-                public void run() {
-                    ThreadContext.clearMap();
+                RequestContext.setSessionId("session1234");
+                RequestContext.setIpAddress("127.0.0.1");
+                RequestContext.setClientId("02121");
+                RequestContext.setProductName("IB");
+                RequestContext.setProductVersion("4.18.1");
+                RequestContext.setLocale("en_US");
+                RequestContext.setRegion("prod");
+                while (generateLog) {
+                    // Generate rand number between 1 to 10
+                    final int rand = ran.nextInt(9) + 1;
 
-                    RequestContext.setSessionId("session1234");
-                    RequestContext.setIpAddress("127.0.0.1");
-                    RequestContext.setClientId("02121");
-                    RequestContext.setProductName("IB");
-                    RequestContext.setProductVersion("4.18.1");
-                    RequestContext.setLocale("en_US");
-                    RequestContext.setRegion("prod");
-                    while (generateLog) {
-                        // Generate rand number between 1 to 10
-                        final int rand = ran.nextInt(9) + 1;
-
-                        // Sleep for rand seconds
-                        try {
-                            Thread.sleep(rand * timeBase);
-                        } catch (final InterruptedException e) {
-                            logger.warn("WARN", e);
-                        }
-
-                        // Write rand number of logs
-                        for (int i = 0; i < rand; i++) {
-                            final int eventIndex = (Math.abs(ran.nextInt())) % events.size();
-                            final AuditEvent event = events.get(eventIndex);
-                            RequestContext.setUserId(member);
-                            event.logEvent();
-
-                            if ((rand % 4) == 1) {
-                                logger.debug("DEBUG level logging.....");
-                            } else if ((rand % 4) == 2) {
-                                logger.info("INFO level logging.....");
-                            } else if ((rand % 4) == 3) {
-                                logger.warn("WARN level logging.....");
-                            } else {
-                                logger.error("ERROR level logging.....");
-                            }
-                        }
-
+                    // Sleep for rand seconds
+                    try {
+                        Thread.sleep(rand * timeBase);
+                    } catch (final InterruptedException e) {
+                        logger.warn("WARN", e);
                     }
-                    ThreadContext.cloneStack();
+
+                    // Write rand number of logs
+                    for (int i1 = 0; i1 < rand; i1++) {
+                        final int eventIndex = (Math.abs(ran.nextInt())) % events.size();
+                        final AuditEvent event = events.get(eventIndex);
+                        RequestContext.setUserId(member);
+                        event.logEvent();
+
+                        if ((rand % 4) == 1) {
+                            logger.debug("DEBUG level logging.....");
+                        } else if ((rand % 4) == 2) {
+                            logger.info("INFO level logging.....");
+                        } else if ((rand % 4) == 3) {
+                            logger.warn("WARN level logging.....");
+                        } else {
+                            logger.error("ERROR level logging.....");
+                        }
+                    }
+
                 }
-            }).start();
+                ThreadContext.cloneStack();
+            })).start();
         }
 
         return new ModelAndView("start.jsp");

@@ -38,11 +38,7 @@ public class Timer implements Serializable, StringBuilderFormattable
     private static final long NANO_PER_SECOND = 1000000000L;
     private static final long NANO_PER_MINUTE = NANO_PER_SECOND * 60;
     private static final long NANO_PER_HOUR = NANO_PER_MINUTE * 60;
-    private final ThreadLocal<Long> startTime = new ThreadLocal<Long>() {
-            @Override protected Long initialValue() {
-                return 0L;
-            }
-    };
+    private final ThreadLocal<Long> startTime = ThreadLocal.withInitial(() -> 0L);
 
 
     /**
