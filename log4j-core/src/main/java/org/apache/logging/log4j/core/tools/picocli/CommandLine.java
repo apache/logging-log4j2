@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.tools.picocli;
 
+import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.IStyle;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.Style;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.Text;
+
 import java.io.File;
 import java.io.PrintStream;
 import java.lang.annotation.ElementType;
@@ -63,10 +67,6 @@ import java.util.TreeSet;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.regex.Pattern;
-
-import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.IStyle;
-import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.Style;
-import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.Text;
 
 import static java.util.Locale.ENGLISH;
 import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column.Overflow.SPAN;
@@ -2570,13 +2570,6 @@ public class CommandLine {
                 return result;
             }
             if (type.isEnum()) {
-                return new ITypeConverter<Object>() {
-                    @Override
-                    @SuppressWarnings("unchecked")
-                    public Object convert(final String value) throws Exception {
-                        return Enum.valueOf((Class<Enum>) type, value);
-                    }
-                };
                 return (ITypeConverter<Object>) value -> Enum.valueOf((Class<Enum>) type, value);
             }
             throw new MissingTypeConverterException(CommandLine.this, "No TypeConverter registered for " + type.getName() + " of field " + field);
