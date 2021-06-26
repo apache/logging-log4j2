@@ -29,6 +29,7 @@ import org.apache.logging.log4j.plugins.di.PreDestroy;
 import org.apache.logging.log4j.plugins.util.AnnotationUtil;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -36,7 +37,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,33 +56,12 @@ class DefaultInjectionTargetFactory<T> implements InjectionTargetFactory<T> {
     public InjectionTarget<T> createInjectionTarget(final Bean<T> bean) {
         final Constructor<T> constructor = getInjectableConstructor();
         final Collection<InjectionPoint> injectionPoints =
-                new HashSet<>(beanManager.createExecutableInjectionPoints(constructor, bean));
-        for (final Field field : type.getDeclaredFields()) {
-            if (beanManager.isInjectable(field)) {
-                // TODO: if field is static, validate it's using an appropriate scope (singleton?)
-                field.setAccessible(true);
-                injectionPoints.add(beanManager.createFieldInjectionPoint(field, bean));
-            }
-        }
-        final List<Method> methods = new ArrayList<>();
-        for (final Method method : type.getDeclaredMethods()) {
-            methods.add(0, method);
-            if (!Modifier.isStatic(method.getModifiers()) && beanManager.isInjectable(method)) {
-                method.setAccessible(true);
-                injectionPoints.addAll(beanManager.createExecutableInjectionPoints(method, bean));
-            }
-        }
-        // FIXME: verify these methods are ordered properly
-        final List<Method> postConstructMethods = methods.stream()
-                .filter(method -> AnnotationUtil.isAnnotationPresent(method, PostConstruct.class))
-                .peek(method -> method.setAccessible(true))
-                .collect(Collectors.toList());
-        final List<Method> preDestroyMethods = methods.stream()
-                .filter(method -> AnnotationUtil.isAnnotationPresent(method, PreDestroy.class))
-                .peek(method -> method.setAccessible(true))
-                .collect(Collectors.toList());
+                new LinkedHashSet<>(beanManager.createExecutableInjectionPoints(constructor, bean));
+        // TODO: if field is static, validate it's using an appropriate scope (singleton?)
+        getInjectableFields().forEach(field -> injectionPoints.add(beanManager.createFieldInjectionPoint(field, bean)));
+        getInjectableMethods().forEach(method -> injectionPoints.addAll(beanManager.createExecutableInjectionPoints(method, bean)));
         return new DefaultInjectionTarget<>(injector, type, injectionPoints, constructor,
-                postConstructMethods, preDestroyMethods);
+                getPostConstructMethods(), getPreDestroyMethods());
     }
 
     private Constructor<T> getInjectableConstructor() {
@@ -120,5 +100,61 @@ class DefaultInjectionTargetFactory<T> implements InjectionTargetFactory<T> {
         } catch (final NoSuchMethodException ignored) {
             throw new DefinitionException("No candidate constructors found for " + type);
         }
+    }
+
+    private List<Field> getInjectableFields() {
+        final List<Field> injectableFields = new ArrayList<>();
+        for (Class<?> clazz = type; clazz != null; clazz = clazz.getSuperclass()) {
+            for (final Field field : clazz.getDeclaredFields()) {
+                if (beanManager.isInjectable(field)) {
+                    injectableFields.add(field);
+                }
+            }
+        }
+        final Field[] fields = injectableFields.toArray(Field[]::new);
+        AccessibleObject.setAccessible(fields, true);
+        return List.of(fields);
+    }
+
+    private List<Method> getInjectableMethods() {
+        final List<Method> injectableMethods = new ArrayList<>();
+        for (Class<?> clazz = type; clazz != null; clazz = clazz.getSuperclass()) {
+            for (final Method method : clazz.getDeclaredMethods()) {
+                if (!Modifier.isStatic(method.getModifiers()) && beanManager.isInjectable(method)) {
+                    injectableMethods.add(method);
+                }
+            }
+        }
+        final Method[] methods = injectableMethods.toArray(Method[]::new);
+        AccessibleObject.setAccessible(methods, true);
+        return List.of(methods);
+    }
+
+    private List<Method> getPostConstructMethods() {
+        final List<Method> postConstructMethods = new ArrayList<>();
+        for (Class<?> clazz = type; clazz != null; clazz = clazz.getSuperclass()) {
+            for (final Method method : clazz.getDeclaredMethods()) {
+                if (AnnotationUtil.isAnnotationPresent(method, PostConstruct.class)) {
+                    postConstructMethods.add(0, method);
+                }
+            }
+        }
+        final Method[] methods = postConstructMethods.toArray(Method[]::new);
+        AccessibleObject.setAccessible(methods, true);
+        return List.of(methods);
+    }
+
+    private List<Method> getPreDestroyMethods() {
+        final List<Method> preDestroyMethods = new ArrayList<>();
+        for (Class<?> clazz = type; clazz != null; clazz = clazz.getSuperclass()) {
+            for (final Method method : clazz.getDeclaredMethods()) {
+                if (AnnotationUtil.isAnnotationPresent(method, PreDestroy.class)) {
+                    preDestroyMethods.add(method);
+                }
+            }
+        }
+        final Method[] methods = preDestroyMethods.toArray(Method[]::new);
+        AccessibleObject.setAccessible(methods, true);
+        return List.of(methods);
     }
 }

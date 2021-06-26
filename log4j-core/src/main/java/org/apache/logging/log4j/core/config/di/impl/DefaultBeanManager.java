@@ -86,16 +86,20 @@ public class DefaultBeanManager implements BeanManager {
         for (final Class<?> beanClass : beanClasses) {
             final Bean<?> bean = isInjectable(beanClass) ? createBean(beanClass) : null;
             loadDisposerMethods(beanClass, bean);
-            for (final Method method : beanClass.getDeclaredMethods()) {
-                if (AnnotationUtil.isAnnotationPresent(method, Produces.class)) {
-                    method.setAccessible(true);
-                    loadedBeans.add(createBean(method, bean));
+            for (Class<?> clazz = beanClass; clazz != null; clazz = clazz.getSuperclass()) {
+                for (final Method method : clazz.getDeclaredMethods()) {
+                    if (AnnotationUtil.isAnnotationPresent(method, Produces.class)) {
+                        method.setAccessible(true);
+                        loadedBeans.add(createBean(method, bean));
+                    }
                 }
             }
-            for (final Field field : beanClass.getDeclaredFields()) {
-                if (AnnotationUtil.isAnnotationPresent(field, Produces.class)) {
-                    field.setAccessible(true);
-                    loadedBeans.add(createBean(field, bean));
+            for (Class<?> clazz = beanClass; clazz != null; clazz = clazz.getSuperclass()) {
+                for (final Field field : clazz.getDeclaredFields()) {
+                    if (AnnotationUtil.isAnnotationPresent(field, Produces.class)) {
+                        field.setAccessible(true);
+                        loadedBeans.add(createBean(field, bean));
+                    }
                 }
             }
             if (bean != null) {

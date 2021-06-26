@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -166,7 +167,8 @@ class BeanManagerTest {
     }
 
     static class ScopeTestingBean {
-        @Named("dep") DependentBean field;
+        @Named("dep")
+        DependentBean field;
 
         DependentBean first;
         DependentBean second;
@@ -473,7 +475,132 @@ class BeanManagerTest {
         }
     }
 
+    static class PostConstructBaseBean {
+        final int baseConstructorParameterA;
+        final int baseConstructorParameterB;
+        @Inject
+        int baseInjectedField;
+        int basePostConstructValue;
+        int baseInjectedParameterA;
+        int baseInjectedParameterB;
+        @Inject
+        IdGenerator idGenerator;
+
+        @Inject
+        PostConstructBaseBean(int baseConstructorParameterA, int baseConstructorParameterB) {
+            this.baseConstructorParameterA = baseConstructorParameterA;
+            this.baseConstructorParameterB = baseConstructorParameterB;
+        }
+
+        @PostConstruct
+        void setupBase() {
+            basePostConstructValue = idGenerator.nextId();
+        }
+
+        @Inject
+        void setValues(int e, int f) {
+            this.baseInjectedParameterA = e;
+            this.baseInjectedParameterB = f;
+        }
+    }
+
+    static class PostConstructBean extends PostConstructBaseBean {
+        final int implConstructorParameter;
+        int implPostConstructValue;
+        int implInjectedParameter;
+        @Inject
+        int implInjectedField;
+
+        @Inject
+        PostConstructBean(final int a, final int b, final int implConstructorParameter) {
+            super(a, b);
+            this.implConstructorParameter = implConstructorParameter;
+        }
+
+        @PostConstruct
+        void setupBean() {
+            implPostConstructValue = idGenerator.nextId();
+        }
+
+        @Inject
+        void setImplInjectedParameter(int implInjectedParameter) {
+            this.implInjectedParameter = implInjectedParameter;
+        }
+    }
+
+    @Test
+    void postConstructInheritanceOrdering() {
+        beanManager.loadAndValidateBeans(IdGenerator.class, PostConstructBean.class);
+        final Bean<PostConstructBean> bean = beanManager.getDefaultBean(PostConstructBean.class).orElseThrow();
+        try (final var context = beanManager.createInitializationContext(null)) {
+            final PostConstructBean value = beanManager.getValue(bean, context);
+            int[] values = {
+                    value.baseConstructorParameterA,
+                    value.baseConstructorParameterB,
+                    value.implConstructorParameter,
+                    value.implInjectedField,
+                    value.baseInjectedField,
+                    value.implInjectedParameter,
+                    value.baseInjectedParameterA,
+                    value.baseInjectedParameterB,
+                    value.basePostConstructValue,
+                    value.implPostConstructValue
+            };
+            assertAll(IntStream.range(0, values.length).mapToObj(i -> () -> assertEquals(i + 1, values[i])));
+        }
+    }
+
+    static class PreDestroyBaseBean {
+        @Inject
+        IdGenerator idGenerator;
+        int baseValue;
+
+        @PreDestroy
+        void basePreDestroy() {
+            baseValue = idGenerator.nextId();
+        }
+    }
+
+    static class PreDestroyIntermediateBean extends PreDestroyBaseBean {
+        int intermediateValue;
+
+        @PreDestroy
+        void intermediatePreDestroy() {
+            intermediateValue = idGenerator.nextId();
+        }
+    }
+
+    static class PreDestroyImplBean extends PreDestroyIntermediateBean {
+        int value;
+
+        @PreDestroy
+        void tearDown() {
+            value = idGenerator.nextId();
+        }
+    }
+
+    @Test
+    void preDestroyInheritanceOrdering() {
+        beanManager.loadAndValidateBeans(IdGenerator.class, PreDestroyImplBean.class);
+        final Bean<PreDestroyImplBean> bean = beanManager.getDefaultBean(PreDestroyImplBean.class).orElseThrow();
+        final PreDestroyImplBean value;
+        try (final var context = beanManager.createInitializationContext(bean)) {
+            value = beanManager.getValue(bean, context);
+            assertAll(
+                    () -> assertEquals(0, value.value),
+                    () -> assertEquals(0, value.intermediateValue),
+                    () -> assertEquals(0, value.baseValue)
+            );
+        }
+        assertAll(
+                () -> assertEquals(1, value.value),
+                () -> assertEquals(2, value.intermediateValue),
+                () -> assertEquals(3, value.baseValue)
+        );
+    }
+
     // TODO: add tests for other supported injection scenarios
     // TODO: add tests for hierarchical scopes
-    // TODO: add tests for @Named alias annotations like @PluginAttribute == @Named
+    // TODO: add tests for @Disposes
+    // TODO: add tests for injecting more specific types than the available ones
 }
