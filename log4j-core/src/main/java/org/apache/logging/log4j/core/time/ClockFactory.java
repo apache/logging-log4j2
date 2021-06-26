@@ -75,12 +75,12 @@ public final class ClockFactory {
 
     private static Map<String, Supplier<Clock>> aliases() {
         final Map<String, Supplier<Clock>> result = new HashMap<>();
-        result.put("SystemClock",       new Supplier<Clock>() { @Override public Clock get() { return new SystemClock(); } });
-        result.put("SystemMillisClock", new Supplier<Clock>() { @Override public Clock get() { return new SystemMillisClock(); } });
-        result.put("CachedClock",       new Supplier<Clock>() { @Override public Clock get() { return CachedClock.instance(); } });
-        result.put("CoarseCachedClock", new Supplier<Clock>() { @Override public Clock get() { return CoarseCachedClock.instance(); } });
-        result.put("org.apache.logging.log4j.core.time.internal.CachedClock", new Supplier<Clock>() { @Override public Clock get() { return CachedClock.instance(); } });
-        result.put("org.apache.logging.log4j.core.time.internal.CoarseCachedClock", new Supplier<Clock>() { @Override public Clock get() { return CoarseCachedClock.instance(); } });
+        result.put("SystemClock", SystemClock::new);
+        result.put("SystemMillisClock", SystemMillisClock::new);
+        result.put("CachedClock", CachedClock::instance);
+        result.put("CoarseCachedClock", CoarseCachedClock::instance);
+        result.put("org.apache.logging.log4j.core.time.internal.CachedClock", CachedClock::instance);
+        result.put("org.apache.logging.log4j.core.time.internal.CoarseCachedClock", CoarseCachedClock::instance);
         return result;
     }
 

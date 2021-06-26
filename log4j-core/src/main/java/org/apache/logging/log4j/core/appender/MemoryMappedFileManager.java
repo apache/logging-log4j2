@@ -214,17 +214,14 @@ public class MemoryMappedFileManager extends OutputStreamManager {
     private static void unsafeUnmap(final MappedByteBuffer mbb) throws PrivilegedActionException {
         LOGGER.debug("MMapAppender unmapping old buffer...");
         final long startNanos = System.nanoTime();
-        AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
-            @Override
-            public Object run() throws Exception {
-                final Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
-                final Field unsafeField = unsafeClass.getDeclaredField("theUnsafe");
-                unsafeField.setAccessible(true);
-                final Object unsafe = unsafeField.get(null);
-                final Method invokeCleaner = unsafeClass.getMethod("invokeCleaner", ByteBuffer.class);
-                invokeCleaner.invoke(unsafe, mbb);
-                return null;
-            }
+        AccessController.doPrivileged((PrivilegedExceptionAction<Object>) () -> {
+            final Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
+            final Field unsafeField = unsafeClass.getDeclaredField("theUnsafe");
+            unsafeField.setAccessible(true);
+            final Object unsafe = unsafeField.get(null);
+            final Method invokeCleaner = unsafeClass.getMethod("invokeCleaner", ByteBuffer.class);
+            invokeCleaner.invoke(unsafe, mbb);
+            return null;
         });
         final float millis = (float) ((System.nanoTime() - startNanos) / NANOS_PER_MILLISEC);
         LOGGER.debug("MMapAppender unmapped buffer OK in {} millis", millis);

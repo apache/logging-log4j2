@@ -30,19 +30,19 @@ public class WatchEventManager implements WatchEventService {
 	private static final ConcurrentMap<UUID, WatchManager> watchManagers = new ConcurrentHashMap<>();
 
 	public static void publishEvent() {
-		for (WatchManager manager : watchManagers.values()) {
+		for (final WatchManager manager : watchManagers.values()) {
 			manager.checkFiles();
 		}
 	}
 
 	@Override
-	public void subscribe(WatchManager manager) {
+	public void subscribe(final WatchManager manager) {
 		watchManagers.put(manager.getId(), manager);
 
 	}
 
 	@Override
-	public void unsubscribe(WatchManager manager) {
+	public void unsubscribe(final WatchManager manager) {
 		watchManagers.remove(manager.getId());
 	}
 }

@@ -427,12 +427,9 @@ public final class PropertiesUtil {
         private Environment(final PropertySource propertySource) {
             final PropertyFilePropertySource sysProps = new PropertyFilePropertySource(LOG4J_SYSTEM_PROPERTIES_FILE_NAME);
             try {
-                sysProps.forEach(new BiConsumer<String, String>() {
-                    @Override
-                    public void accept(final String key, final String value) {
-                        if (System.getProperty(key) == null) {
-                            System.setProperty(key, value);
-                        }
+                sysProps.forEach((key, value) -> {
+                    if (System.getProperty(key) == null) {
+                        System.setProperty(key, value);
                     }
                 });
             } catch (final SecurityException ex) {
@@ -459,18 +456,15 @@ public final class PropertiesUtil {
             normalized.clear();
             tokenized.clear();
             for (final PropertySource source : sources) {
-                source.forEach(new BiConsumer<String, String>() {
-                    @Override
-                    public void accept(final String key, final String value) {
-                        if (key != null && value != null) {
-                            literal.put(key, value);
-                            final List<CharSequence> tokens = PropertySource.Util.tokenize(key);
-                            if (tokens.isEmpty()) {
-                                normalized.put(source.getNormalForm(Collections.singleton(key)), value);
-                            } else {
-                                normalized.put(source.getNormalForm(tokens), value);
-                                tokenized.put(tokens, value);
-                            }
+                source.forEach((key, value) -> {
+                    if (key != null && value != null) {
+                        literal.put(key, value);
+                        final List<CharSequence> tokens = PropertySource.Util.tokenize(key);
+                        if (tokens.isEmpty()) {
+                            normalized.put(source.getNormalForm(Collections.singleton(key)), value);
+                        } else {
+                            normalized.put(source.getNormalForm(tokens), value);
+                            tokenized.put(tokens, value);
                         }
                     }
                 });

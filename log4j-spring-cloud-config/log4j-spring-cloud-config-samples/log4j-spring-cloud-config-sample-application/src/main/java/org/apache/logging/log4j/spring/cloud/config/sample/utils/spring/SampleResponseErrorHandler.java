@@ -25,12 +25,12 @@ import org.springframework.web.client.ResponseErrorHandler;
  */
 public class SampleResponseErrorHandler implements org.springframework.web.client.ResponseErrorHandler {
     @Override
-    public boolean hasError(ClientHttpResponse clientHttpResponse) throws IOException {
+    public boolean hasError(final ClientHttpResponse clientHttpResponse) throws IOException {
         return false;
     }
 
     @Override
-    public void handleError(ClientHttpResponse clientHttpResponse) throws IOException {
+    public void handleError(final ClientHttpResponse clientHttpResponse) throws IOException {
 
     }
 }

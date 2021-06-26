@@ -171,12 +171,7 @@ public class ScriptManager implements FileWatcher, Serializable {
             logger.warn("No script named {} could be found");
             return null;
         }
-        return AccessController.doPrivileged(new PrivilegedAction<Object>() {
-            @Override
-            public Object run() {
-                return scriptRunner.execute(bindings);
-            }
-        });
+        return AccessController.doPrivileged((PrivilegedAction<Object>) () -> scriptRunner.execute(bindings));
     }
 
     private interface ScriptRunner {
@@ -201,19 +196,16 @@ public class ScriptManager implements FileWatcher, Serializable {
             CompiledScript compiled = null;
             if (scriptEngine instanceof Compilable) {
                 logger.debug("Script {} is compilable", script.getName());
-                compiled = AccessController.doPrivileged(new PrivilegedAction<CompiledScript>() {
-                    @Override
-                    public CompiledScript run() {
-                        try {
-                            return ((Compilable) scriptEngine).compile(script.getScriptText());
-                        } catch (final Throwable ex) {
-                            /*
-                             * ScriptException is what really should be caught here. However, beanshell's ScriptEngine
-                             * implements Compilable but then throws Error when the compile method is called!
-                             */
-                            logger.warn("Error compiling script", ex);
-                            return null;
-                        }
+                compiled = AccessController.doPrivileged((PrivilegedAction<CompiledScript>) () -> {
+                    try {
+                        return ((Compilable) scriptEngine).compile(script.getScriptText());
+                    } catch (final Throwable ex) {
+                        /*
+                         * ScriptException is what really should be caught here. However, beanshell's ScriptEngine
+                         * implements Compilable but then throws Error when the compile method is called!
+                         */
+                        logger.warn("Error compiling script", ex);
+                        return null;
                     }
                 });
             }

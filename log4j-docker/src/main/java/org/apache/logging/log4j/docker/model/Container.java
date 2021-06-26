@@ -74,7 +74,7 @@ public class Container {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
@@ -82,7 +82,7 @@ public class Container {
         return names;
     }
 
-    public void setNames(List<String> names) {
+    public void setNames(final List<String> names) {
         this.names = names;
     }
 
@@ -90,7 +90,7 @@ public class Container {
         return image;
     }
 
-    public void setImage(String image) {
+    public void setImage(final String image) {
         this.image = image;
     }
 
@@ -98,7 +98,7 @@ public class Container {
         return imageId;
     }
 
-    public void setImageId(String imageId) {
+    public void setImageId(final String imageId) {
         this.imageId = imageId;
     }
 
@@ -106,7 +106,7 @@ public class Container {
         return command;
     }
 
-    public void setCommand(String command) {
+    public void setCommand(final String command) {
         this.command = command;
     }
 
@@ -114,7 +114,7 @@ public class Container {
         return created;
     }
 
-    public void setCreated(Long created) {
+    public void setCreated(final Long created) {
         this.created = created;
     }
 
@@ -122,7 +122,7 @@ public class Container {
         return ports;
     }
 
-    public void setPorts(List<PortDefinition> ports) {
+    public void setPorts(final List<PortDefinition> ports) {
         this.ports = ports;
     }
 
@@ -130,7 +130,7 @@ public class Container {
         return labels;
     }
 
-    public void setLabels(Map<String, String> labels) {
+    public void setLabels(final Map<String, String> labels) {
         this.labels = labels;
     }
 
@@ -138,7 +138,7 @@ public class Container {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState(final String state) {
         this.state = state;
     }
 
@@ -146,7 +146,7 @@ public class Container {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(final String status) {
         this.status = status;
     }
 
@@ -154,7 +154,7 @@ public class Container {
         return hostConfig;
     }
 
-    public void setHostConfig(HostConfig hostConfig) {
+    public void setHostConfig(final HostConfig hostConfig) {
         this.hostConfig = hostConfig;
     }
 
@@ -162,7 +162,7 @@ public class Container {
         return networkSettings;
     }
 
-    public void setNetworkSettings(NetworkSettings networkSettings) {
+    public void setNetworkSettings(final NetworkSettings networkSettings) {
         this.networkSettings = networkSettings;
     }
 
@@ -170,7 +170,7 @@ public class Container {
         return mounts;
     }
 
-    public void setMounts(List<Mount> mounts) {
+    public void setMounts(final List<Mount> mounts) {
         this.mounts = mounts;
     }
 }

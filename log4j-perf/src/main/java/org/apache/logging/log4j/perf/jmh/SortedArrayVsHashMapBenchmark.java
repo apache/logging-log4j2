@@ -145,12 +145,7 @@ public class SortedArrayVsHashMapBenchmark {
         return new HashMap(populatedMap);
     }
 
-    static TriConsumer<String, Object, int[]> COUNTER = new TriConsumer<String, Object, int[]>() {
-        @Override
-        public void accept(final String s, final Object o, final int[] result) {
-            result[0] += s.hashCode() + o.hashCode();
-        }
-    };
+    static TriConsumer<String, Object, int[]> COUNTER = (s, o, result) -> result[0] += s.hashCode() + o.hashCode();
 
     @Benchmark
     public int iterateArrayContextDataTriConsumer() {
@@ -172,12 +167,7 @@ public class SortedArrayVsHashMapBenchmark {
     public int iterateArrayContextDataBiConsumer() {
         final int[] result = {0};
 
-        populatedSortedStringArrayMap.forEach(new BiConsumer<String, Object>() {
-            @Override
-            public void accept(final String s, final Object o) {
-                result[0] += s.hashCode() + o.hashCode();
-            }
-        });
+        populatedSortedStringArrayMap.forEach((s, o) -> result[0] += s.hashCode() + o.hashCode());
         return result[0];
     }
 
@@ -185,12 +175,7 @@ public class SortedArrayVsHashMapBenchmark {
     public int iterateHashContextDataBiConsumer() {
         final int[] result = {0};
 
-        populatedOpenHashContextData.forEach(new BiConsumer<String, Object>() {
-            @Override
-            public void accept(final String s, final Object o) {
-                result[0] += s.hashCode() + o.hashCode();
-            }
-        });
+        populatedOpenHashContextData.forEach((s, o) -> result[0] += s.hashCode() + o.hashCode());
         return result[0];
     }
 

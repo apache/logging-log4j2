@@ -91,7 +91,7 @@ public class KubernetesLookup extends AbstractLookup {
                             info.masterUrl = client.getMasterUrl();
                             if (pod != null) {
                                 info.namespace = pod.getMetadata().getNamespace();
-                                namespace = namespace = client.namespaces().withName(info.namespace).get();
+                                namespace = client.namespaces().withName(info.namespace).get();
                             }
                         } else {
                             LOGGER.warn("Kubernetes is not available for access");

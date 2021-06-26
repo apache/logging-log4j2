@@ -2765,7 +2765,7 @@ would occur every 4 hours. The default value is 1.
 cause the next rollover to occur on the interval boundary. For example,
 if the item is hours, the current hour is 3 am and the interval is 4
 then the first rollover will occur at 4 am and then next ones will occur
-at 8 am, noon, 4pm, etc.
+at 8 am, noon, 4pm, etc. The default value is false.
 
 |maxRandomDelay |integer |Indicates the maximum number of seconds to
 randomly delay a rollover. By default, this is 0 which indicates no

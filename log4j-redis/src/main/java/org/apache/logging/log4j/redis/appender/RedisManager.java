@@ -27,6 +27,7 @@ import redis.clients.jedis.exceptions.JedisConnectionException;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -49,11 +50,7 @@ class RedisManager extends AbstractManager {
         this.host = host;
         this.port = port;
         this.sslConfiguration = sslConfiguration;
-        if (poolConfiguration == null) {
-            this.poolConfiguration = LoggingRedisPoolConfiguration.defaultConfiguration();
-        } else {
-            this.poolConfiguration = poolConfiguration;
-        }
+        this.poolConfiguration = Objects.requireNonNullElseGet(poolConfiguration, LoggingRedisPoolConfiguration::defaultConfiguration);
     }
 
     JedisPool createPool(String host, int port, SslConfiguration sslConfiguration) {

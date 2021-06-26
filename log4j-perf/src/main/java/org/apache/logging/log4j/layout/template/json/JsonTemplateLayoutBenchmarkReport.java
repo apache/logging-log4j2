@@ -315,9 +315,7 @@ public enum JsonTemplateLayoutBenchmarkReport {;
         filteredJmhSummaries
                 .stream()
                 .sorted(jmhSummaryComparator)
-                .forEach((final JmhSummary jmhSummary) -> {
-                    dumpJmhSummary(printStream, maxOpRate, jmhSummary);
-                });
+                .forEach((final JmhSummary jmhSummary) -> dumpJmhSummary(printStream, maxOpRate, jmhSummary));
 
         // Print footer.
         printStream.println("|===");

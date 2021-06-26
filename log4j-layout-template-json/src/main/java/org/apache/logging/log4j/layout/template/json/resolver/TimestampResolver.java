@@ -463,7 +463,7 @@ public final class TimestampResolver implements EventResolver {
                 }
             };
 
-    private static long epochNanos(Instant instant) {
+    private static long epochNanos(final Instant instant) {
         return 1_000_000_000L * instant.getEpochSecond() + instant.getNanoOfSecond();
     }
 

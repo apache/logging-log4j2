@@ -46,7 +46,7 @@ import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
 
 
 /**
- * Build an Asynch Appender
+ * Build an Async Appender
  */
 @Plugin(name = "org.apache.log4j.AsyncAppender", category = CATEGORY)
 public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBuilder {

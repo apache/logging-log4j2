@@ -37,15 +37,12 @@ public final class CachedClock implements Clock {
     private short count = 0;
 
     private CachedClock() {
-        final Thread updater = new Log4jThread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    millis = System.currentTimeMillis();
+        final Thread updater = new Log4jThread(() -> {
+            while (true) {
+                millis = System.currentTimeMillis();
 
-                    // avoid explicit dependency on sun.misc.Util
-                    LockSupport.parkNanos(1000 * 1000);
-                }
+                // avoid explicit dependency on sun.misc.Util
+                LockSupport.parkNanos(1000 * 1000);
             }
         }, "CachedClock Updater Thread");
         updater.setDaemon(true);

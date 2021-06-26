@@ -87,14 +87,11 @@ public class NestedLoggingFromThrowableMessageTest {
 
     private static Set<String> readUniqueLines(File input) throws IOException {
         Set<String> lines = new HashSet<>();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(input)));
-        try {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(input)))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 assertTrue("Read duplicate line: " + line, lines.add(line));
             }
-        } finally {
-            reader.close();
         }
         return lines;
     }

@@ -108,15 +108,21 @@ public class SmtpManager extends AbstractManager {
             protocol = "smtp";
         }
 
-        final String managerName = createManagerName(to, cc, bcc, from, replyTo, subject, protocol, host, username, password, isDebug, filterName);
+        final String name = createManagerName(to, cc, bcc, from, replyTo, subject, protocol, host, port, username, isDebug, filterName);
         final Serializer subjectSerializer = PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(subject).build();
 
-        return getManager(managerName, FACTORY, new FactoryData(to, cc, bcc, from, replyTo, subjectSerializer,
+        return getManager(name, FACTORY, new FactoryData(to, cc, bcc, from, replyTo, subjectSerializer,
             protocol, host, port, username, password, isDebug, numElements, sslConfiguration));
 
     }
 
-    private static String createManagerName(
+    /**
+     * Creates a unique-per-configuration name for an smtp manager using the specified the parameters.<br>
+     * Using such a name allows us to maintain singletons per unique configurations.
+     *
+     * @return smtp manager name
+     */
+    static String createManagerName(
             final String to,
             final String cc,
             final String bcc,
@@ -125,8 +131,8 @@ public class SmtpManager extends AbstractManager {
             final String subject,
             final String protocol,
             final String host,
+            final int port,
             final String username,
-            final String password,
             final boolean isDebug,
             final String filterName) {
 
@@ -156,20 +162,14 @@ public class SmtpManager extends AbstractManager {
             sb.append(subject);
         }
         sb.append(':');
-        sb.append(protocol).append(':').append(host).append(':').append("port").append(':');
+        sb.append(protocol).append(':').append(host).append(':').append(port).append(':');
         if (username != null) {
             sb.append(username);
-        }
-        sb.append(':');
-        if (password != null) {
-            sb.append(password);
         }
         sb.append(isDebug ? ":debug:" : "::");
         sb.append(filterName);
 
-        final String hash = NameUtil.md5(sb.toString());
-        return "SMTP:" + hash;
-
+        return "SMTP:" + sb.toString();
     }
 
     /**

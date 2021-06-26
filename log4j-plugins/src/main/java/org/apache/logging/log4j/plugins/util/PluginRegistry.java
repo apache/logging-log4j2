@@ -309,10 +309,7 @@ public class PluginRegistry {
         for (final Class<?> clazz : resolver.getClasses()) {
             final Plugin plugin = clazz.getAnnotation(Plugin.class);
             final String categoryLowerCase = plugin.category().toLowerCase();
-            List<PluginType<?>> list = newPluginsByCategory.get(categoryLowerCase);
-            if (list == null) {
-                newPluginsByCategory.put(categoryLowerCase, list = new ArrayList<>());
-            }
+            List<PluginType<?>> list = newPluginsByCategory.computeIfAbsent(categoryLowerCase, k -> new ArrayList<>());
             final PluginEntry mainEntry = new PluginEntry();
             final String mainElementName = plugin.elementType().equals(
                 Plugin.EMPTY) ? plugin.name() : plugin.elementType();

@@ -30,7 +30,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private static final Logger LOGGER = LogManager.getLogger(GlobalExceptionHandler.class);
 
 
-    private ResponseEntity<Object> getResponseEntity(Object responseMessage, HttpStatus httpStatus) {
+    private ResponseEntity<Object> getResponseEntity(final Object responseMessage, final HttpStatus httpStatus) {
         return new ResponseEntity<>(responseMessage, httpStatus);
     }
 }

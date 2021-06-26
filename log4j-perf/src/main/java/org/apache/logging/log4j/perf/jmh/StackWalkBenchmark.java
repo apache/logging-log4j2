@@ -83,22 +83,18 @@ public class StackWalkBenchmark {
 
     @Benchmark
     public void stackWalkerWalk(Blackhole bh) {
-        stackDriver.deepCall(initialDepth, callDepth, (fqcn) -> {
-            return walker.walk(
-                    s -> s.dropWhile(f -> !f.getClassName().equals(fqcn)) // drop the top frames until we reach the logger
-                            .dropWhile(f -> f.getClassName().equals(fqcn)) // drop the logger frames
-                            .findFirst())
-                    .get()
-                    .toStackTraceElement();
-        });
+        stackDriver.deepCall(initialDepth, callDepth, (fqcn) -> walker.walk(
+                s -> s.dropWhile(f -> !f.getClassName().equals(fqcn)) // drop the top frames until we reach the logger
+                        .dropWhile(f -> f.getClassName().equals(fqcn)) // drop the logger frames
+                        .findFirst())
+                .get()
+                .toStackTraceElement());
     }
 
     @Benchmark
     public void baseline(Blackhole bh)  {
 
-        stackDriver.deepCall(initialDepth, callDepth, (fqcn) -> {
-            return null;
-        });
+        stackDriver.deepCall(initialDepth, callDepth, (fqcn) -> null);
     }
 
     @Benchmark

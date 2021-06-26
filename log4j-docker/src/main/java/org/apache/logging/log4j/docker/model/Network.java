@@ -66,7 +66,7 @@ public class Network {
         return ipamConfig;
     }
 
-    public void setIpamConfig(IPAMConfig ipamConfig) {
+    public void setIpamConfig(final IPAMConfig ipamConfig) {
         this.ipamConfig = ipamConfig;
     }
 
@@ -74,7 +74,7 @@ public class Network {
         return links;
     }
 
-    public void setLinks(String links) {
+    public void setLinks(final String links) {
         this.links = links;
     }
 
@@ -82,7 +82,7 @@ public class Network {
         return aliases;
     }
 
-    public void setAliases(String[] aliases) {
+    public void setAliases(final String[] aliases) {
         this.aliases = aliases;
     }
 
@@ -90,7 +90,7 @@ public class Network {
         return networkId;
     }
 
-    public void setNetworkId(String networkId) {
+    public void setNetworkId(final String networkId) {
         this.networkId = networkId;
     }
 
@@ -98,7 +98,7 @@ public class Network {
         return endpointId;
     }
 
-    public void setEndpointId(String endpointId) {
+    public void setEndpointId(final String endpointId) {
         this.endpointId = endpointId;
     }
 
@@ -106,7 +106,7 @@ public class Network {
         return gateway;
     }
 
-    public void setGateway(String gateway) {
+    public void setGateway(final String gateway) {
         this.gateway = gateway;
     }
 
@@ -114,7 +114,7 @@ public class Network {
         return ipAddress;
     }
 
-    public void setIpAddress(String ipAddress) {
+    public void setIpAddress(final String ipAddress) {
         this.ipAddress = ipAddress;
     }
 
@@ -122,7 +122,7 @@ public class Network {
         return ipPrefixLen;
     }
 
-    public void setIpPrefixLen(Integer ipPrefixLen) {
+    public void setIpPrefixLen(final Integer ipPrefixLen) {
         this.ipPrefixLen = ipPrefixLen;
     }
 
@@ -130,7 +130,7 @@ public class Network {
         return ipv6Gateway;
     }
 
-    public void setIpv6Gateway(String ipv6Gateway) {
+    public void setIpv6Gateway(final String ipv6Gateway) {
         this.ipv6Gateway = ipv6Gateway;
     }
 
@@ -138,7 +138,7 @@ public class Network {
         return globalIPv6Address;
     }
 
-    public void setGlobalIPv6Address(String globalIPv6Address) {
+    public void setGlobalIPv6Address(final String globalIPv6Address) {
         this.globalIPv6Address = globalIPv6Address;
     }
 
@@ -146,7 +146,7 @@ public class Network {
         return globalIPv6PrefixLen;
     }
 
-    public void setGlobalIPv6PrefixLen(Integer globalIPv6PrefixLen) {
+    public void setGlobalIPv6PrefixLen(final Integer globalIPv6PrefixLen) {
         this.globalIPv6PrefixLen = globalIPv6PrefixLen;
     }
 
@@ -154,7 +154,7 @@ public class Network {
         return macAddress;
     }
 
-    public void setMacAddress(String macAddress) {
+    public void setMacAddress(final String macAddress) {
         this.macAddress = macAddress;
     }
 
@@ -162,7 +162,7 @@ public class Network {
         return driverOpts;
     }
 
-    public void setDriverOpts(String driverOpts) {
+    public void setDriverOpts(final String driverOpts) {
         this.driverOpts = driverOpts;
     }
 }

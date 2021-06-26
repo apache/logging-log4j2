@@ -50,13 +50,11 @@ public class AsyncAppenderConfigTest_LOG4J2_2032 {
         log.info("Text containing curly braces: {}", "Curly{}");
         CoreLoggerContexts.stopLoggerContext(file); // stop async thread
 
-        final BufferedReader reader = new BufferedReader(new FileReader(file));
-        try {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             final String line1 = reader.readLine();
             System.out.println(line1);
             assertTrue("line1 correct", line1.contains(" Text containing curly braces: Curly{} "));
         } finally {
-            reader.close();
             file.delete();
         }
     }
