@@ -278,7 +278,7 @@ public interface LogBuilder {
     }
 
     /**
-     * Causes all the data collected to be logged. Default implementatoin does nothing.
+     * Causes all the data collected to be logged. Default implementation does nothing.
      */
     default void log() {
     }

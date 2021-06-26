@@ -37,7 +37,7 @@ import static org.apache.log4j.xml.XmlConfiguration.*;
 import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
 
 /**
- * Build a Level match failter.
+ * Build a Level match filter.
  */
 @Plugin(name = "org.apache.log4j.varia.LevelMatchFilter", category = CATEGORY)
 public class LevelMatchFilterBuilder extends AbstractBuilder implements FilterBuilder {

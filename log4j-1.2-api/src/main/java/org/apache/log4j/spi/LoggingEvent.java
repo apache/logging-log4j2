@@ -135,7 +135,7 @@ public class LoggingEvent {
     }
 
     /**
-     Return this event's throwable's string[] representaion.
+     Return this event's throwable's string[] representation.
      @return Always returns null.
      */
     public String[] getThrowableStrRep() {

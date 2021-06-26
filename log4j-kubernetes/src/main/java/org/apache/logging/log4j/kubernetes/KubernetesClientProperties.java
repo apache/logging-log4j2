@@ -34,7 +34,7 @@ public class KubernetesClientProperties {
     private static final String CLIENT_CERT_FILE = "clientCertFile";
     private static final String CLIENT_CERT_DATA = "clientCertData";
     private static final String CLIENT_KEY_FILE = "clientKeyFile";
-    private static final String CLIENT_KEY_DATA = "cientKeyData";
+    private static final String CLIENT_KEY_DATA = "clientKeyData";
     private static final String CLIENT_KEY_ALGO = "clientKeyAlgo";
     private static final String CLIENT_KEY_PASSPHRASE = "clientKeyPassphrase";
     private static final String CONNECTION_TIMEOUT = "connectionTimeout";

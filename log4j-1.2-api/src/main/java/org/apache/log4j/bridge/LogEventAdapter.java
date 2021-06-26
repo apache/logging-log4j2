@@ -200,7 +200,7 @@ public class LogEventAdapter extends LoggingEvent {
     }
 
     /**
-     * Return this event's throwable's string[] representaion.
+     * Return this event's throwable's string[] representation.
      */
     @Override
     public String[] getThrowableStrRep() {
