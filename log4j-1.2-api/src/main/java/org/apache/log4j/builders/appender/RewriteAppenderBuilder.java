@@ -50,7 +50,7 @@ import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 
 
 /**
- * Build an Asynch Appender
+ * Build an Rewrite Appender
  */
 @Plugin(name = "org.apache.log4j.rewrite.RewriteAppender", category = CATEGORY)
 public class RewriteAppenderBuilder extends AbstractBuilder implements AppenderBuilder {

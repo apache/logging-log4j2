@@ -25,7 +25,7 @@ import org.springframework.core.env.Environment;
 public class SpringPropertySource extends SpringEnvironmentHolder implements PropertySource {
 
     /**
-     * System properties take precendence followed by properties in Log4j properties files. Spring properties
+     * System properties take precedence followed by properties in Log4j properties files. Spring properties
      * follow.
      * @return This PropertySource's priority.
      */

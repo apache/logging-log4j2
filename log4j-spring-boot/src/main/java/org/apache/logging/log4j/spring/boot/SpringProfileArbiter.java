@@ -28,7 +28,7 @@ import org.springframework.core.env.Profiles;
 import org.springframework.util.StringUtils;
 
 /**
- * An Aribter that uses the active Spring profile to determine if configuration should be included.
+ * An Arbiter that uses the active Spring profile to determine if configuration should be included.
  */
 @Plugin(name = "SpringProfile", category = Node.CATEGORY, elementType = Arbiter.ELEMENT_TYPE,
         deferChildren = true, printObject = true)

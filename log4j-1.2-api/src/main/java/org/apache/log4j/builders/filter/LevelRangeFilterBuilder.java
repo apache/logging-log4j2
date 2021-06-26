@@ -37,7 +37,7 @@ import static org.apache.log4j.builders.BuilderManager.CATEGORY;
 import static org.apache.log4j.xml.XmlConfiguration.*;
 
 /**
- * Build a Level match failter.
+ * Build a Level match filter.
  */
 @Plugin(name = "org.apache.log4j.varia.LevelRangeFilter", category = CATEGORY)
 public class LevelRangeFilterBuilder extends AbstractBuilder implements FilterBuilder {

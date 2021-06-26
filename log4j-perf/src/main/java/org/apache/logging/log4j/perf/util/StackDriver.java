@@ -20,7 +20,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
- * Facilitates creating a Call Stack for testing the performance of walkign it.
+ * Facilitates creating a Call Stack for testing the performance of walking it.
  */
 public class StackDriver {
     public StackTraceElement deepCall(int initialDepth, Integer targetDepth, Function<String, StackTraceElement> supplier) {
