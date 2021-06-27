@@ -29,7 +29,7 @@ public class IOUtils {
 
     /**
      * The default buffer size ({@value}) to use for
-     * {@link #copyLarge(InputStream, OutputStream)}
+     * {@link #copyLarge(Reader, Writer)}
      * and
      * {@link #copyLarge(Reader, Writer)}
      */
