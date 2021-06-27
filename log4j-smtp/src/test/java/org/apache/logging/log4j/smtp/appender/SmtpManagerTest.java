@@ -1,4 +1,4 @@
-package org.apache.logging.log4j.core.net;
+package org.apache.logging.log4j.smtp.appender;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
