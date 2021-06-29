@@ -187,7 +187,10 @@ attribute, `spinPolicy`, which corresponds to the `SpinPolicy` enum.
 
 |JCToolsBlockingQueue |This uses
 https://jctools.github.io/JCTools/[JCTools], specifically the MPSC
-bounded lock-free queue.
+bounded blocking consumer lock-free queue if a park wait strategy is chosen, the MPSC
+bounded lock-free queue otherwise.
+The difference between the 2 queues is that the former is optimized to coordinate producers
+to wakeup a sleeping consumer.
 
 |LinkedTransferQueue |This uses the new in Java 7 implementation
 https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/LinkedTransferQueue.html[`LinkedTransferQueue`].
