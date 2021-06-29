@@ -152,7 +152,7 @@ public class ScriptManager implements FileWatcher, Serializable {
     public void fileModified(final File file) {
         final ScriptRunner runner = scriptRunners.get(file.toString());
         if (runner == null) {
-            logger.info("{} is not a running script");
+            logger.info("{} is not a running script", file.getName());
             return;
         }
         final ScriptEngine engine = runner.getScriptEngine();
@@ -168,7 +168,7 @@ public class ScriptManager implements FileWatcher, Serializable {
     public Object execute(final String name, final Bindings bindings) {
         final ScriptRunner scriptRunner = scriptRunners.get(name);
         if (scriptRunner == null) {
-            logger.warn("No script named {} could be found");
+            logger.warn("No script named {} could be found", name);
             return null;
         }
         return AccessController.doPrivileged((PrivilegedAction<Object>) () -> scriptRunner.execute(bindings));
