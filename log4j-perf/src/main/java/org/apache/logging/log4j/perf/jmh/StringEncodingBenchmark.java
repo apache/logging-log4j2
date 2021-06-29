@@ -22,6 +22,7 @@ import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
 import org.openjdk.jmh.annotations.Benchmark;
@@ -52,11 +53,11 @@ public class StringEncodingBenchmark {
     private static final String STRING_ISO8859_1 = "ISO-8859-1";
     private static final String STRING_US_ASCII = "US-ASCII";
     private static final String STRING_SHIFT_JIS = "SHIFT_JIS";
-    private static final Charset CHARSET_ISO8859_1 = Charset.forName(STRING_ISO8859_1);
+    private static final Charset CHARSET_ISO8859_1 = StandardCharsets.ISO_8859_1;
     private static final Charset CHARSET_DEFAULT = Charset.defaultCharset();
     private static final String DEFAULT_ENCODING = CHARSET_DEFAULT.name();
     private static final Charset CHARSET_SHIFT_JIS = Charset.forName(STRING_SHIFT_JIS);
-    private static final Charset CHARSET_US_ASCII = Charset.forName(STRING_US_ASCII);
+    private static final Charset CHARSET_US_ASCII = StandardCharsets.US_ASCII;
     private static final CharsetEncoder ENCODER_SHIFT_JIS = CHARSET_SHIFT_JIS.newEncoder();
     private static final CharsetEncoder ENCODER_ISO8859_1 = CHARSET_ISO8859_1.newEncoder();
 
@@ -71,7 +72,7 @@ public class StringEncodingBenchmark {
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public byte[] iso8859_1StringGetBytesString() throws Exception {
-        return LOGMSG.getBytes(STRING_ISO8859_1);
+        return LOGMSG.getBytes(StandardCharsets.ISO_8859_1);
     }
 
     @Benchmark
@@ -85,7 +86,7 @@ public class StringEncodingBenchmark {
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public byte[] usAsciiStringGetBytesString() throws Exception {
-        return LOGMSG.getBytes(STRING_US_ASCII);
+        return LOGMSG.getBytes(StandardCharsets.US_ASCII);
     }
 
     @Benchmark
