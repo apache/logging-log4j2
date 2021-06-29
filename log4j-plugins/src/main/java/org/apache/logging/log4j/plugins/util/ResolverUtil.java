@@ -183,18 +183,19 @@ public class ResolverUtil {
 
                 LOGGER.info("Scanning for classes in '{}' matching criteria {}", urlPath , test);
                 // Check for a jar in a war in JBoss
+                final int endIndex = urlPath.length() - packageName.length() - 2;
+                final String fixedPath = urlPath.substring(0, endIndex);
                 if (VFSZIP.equals(url.getProtocol())) {
-                    final String path = urlPath.substring(0, urlPath.length() - packageName.length() - 2);
-                    final URL newURL = new URL(url.getProtocol(), url.getHost(), path);
+                    final URL newURL = new URL(url.getProtocol(), url.getHost(), fixedPath);
                     @SuppressWarnings("resource")
                     final JarInputStream stream = new JarInputStream(newURL.openStream());
                     try {
-                        loadImplementationsInJar(test, packageName, path, stream);
+                        loadImplementationsInJar(test, packageName, fixedPath, stream);
                     } finally {
                         close(stream, newURL);
                     }
                 } else if (VFS.equals(url.getProtocol())) {
-                    final String containerPath = urlPath.substring(1, urlPath.length() - packageName.length() - 2);
+                    final String containerPath = urlPath.substring(1, endIndex);
                     final File containerFile = new File(containerPath);
                     if (containerFile.exists()) {
                         if (containerFile.isDirectory()) {
@@ -205,8 +206,7 @@ public class ResolverUtil {
                     } else {
                         // fallback code for Jboss/Wildfly, if the file couldn't be found
                         // by loading the path as a file, try to read the jar as a stream
-                        final String path = urlPath.substring(0, urlPath.length() - packageName.length() - 2);
-                        final URL newURL = new URL(url.getProtocol(), url.getHost(), path);
+                        final URL newURL = new URL(url.getProtocol(), url.getHost(), fixedPath);
 
                         try (final InputStream is = newURL.openStream()) {
                             final JarInputStream jarStream;
@@ -215,7 +215,7 @@ public class ResolverUtil {
                             } else {
                                 jarStream = new JarInputStream(is);
                             }
-                            loadImplementationsInJar(test, packageName, path, jarStream);
+                            loadImplementationsInJar(test, packageName, fixedPath, jarStream);
                         }
                     }
                 } else if (BUNDLE_RESOURCE.equals(url.getProtocol())) {
