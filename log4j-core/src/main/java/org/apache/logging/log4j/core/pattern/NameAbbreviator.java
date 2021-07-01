@@ -17,10 +17,10 @@
 package org.apache.logging.log4j.core.pattern;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.logging.log4j.util.PerformanceSensitive;
-
 
 /**
  * NameAbbreviator generates abbreviated logger and class names.
@@ -55,6 +55,11 @@ public abstract class NameAbbreviator {
                 return DEFAULT;
             }
 
+            NameAbbreviator dwa = DynamicWordAbbreviator.create(trimmed);
+            if (dwa != null) {
+                return dwa;
+            }
+
             boolean isNegativeNumber;
             final String number;
 
@@ -82,7 +87,7 @@ public abstract class NameAbbreviator {
                         isNegativeNumber? MaxElementAbbreviator.Strategy.DROP : MaxElementAbbreviator.Strategy.RETAIN);
             }
 
-            final ArrayList<PatternAbbreviatorFragment> fragments = new ArrayList<>(5);
+            final List<PatternAbbreviatorFragment> fragments = new ArrayList<>(5);
             char ellipsis;
             int charCount;
             int pos = 0;
@@ -313,6 +318,12 @@ public abstract class NameAbbreviator {
             }
             return nextDot;
         }
+
+        @Override
+        public String toString() {
+            return String.format("%s[charCount=%s, ellipsis=%s]",
+                    getClass().getSimpleName(), charCount, Integer.toHexString(ellipsis));
+        }
     }
 
     /**
@@ -364,5 +375,11 @@ public abstract class NameAbbreviator {
                 }
             }
         }
+
+        @Override
+        public String toString() {
+            return String.format("%s[fragments=%s]", getClass().getSimpleName(), Arrays.toString(fragments));
+        }
     }
+
 }
