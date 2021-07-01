@@ -149,7 +149,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
             manager.initialize();
 
             return new RollingFileAppender(getName(), layout, getFilter(), manager, fileName, filePattern,
-                    isIgnoreExceptions(), isImmediateFlush(), advertise ? getConfiguration().getAdvertiser() : null);
+                    isIgnoreExceptions(), !isBufferedIo || isImmediateFlush(), advertise ? getConfiguration().getAdvertiser() : null);
         }
 
         public String getAdvertiseUri() {
