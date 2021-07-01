@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.pattern;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -58,9 +57,9 @@ public abstract class NameAbbreviator {
                 return DEFAULT;
             }
 
-            DynamicWordAbbreviator dynamicAbbreviator = DynamicWordAbbreviator.create(trimmed);
-            if (dynamicAbbreviator != null) {
-                return dynamicAbbreviator;
+            DynamicWordAbbreviator dwa = DynamicWordAbbreviator.create(trimmed);
+            if (dwa != null) {
+                return dwa;
             }
 
             boolean isNegativeNumber;
@@ -391,7 +390,7 @@ public abstract class NameAbbreviator {
     static class DynamicWordAbbreviator extends NameAbbreviator {
 
         /** Right-most number of words (at least one) that will not be abbreviated. */
-        private final int            rightWordCount;
+        private final int rightWordCount;
 
         static DynamicWordAbbreviator create(String pattern) {
             if (pattern != null) {
@@ -411,10 +410,8 @@ public abstract class NameAbbreviator {
         public void abbreviate(String original, StringBuilder destination) {
             if (original != null && destination != null) {
                 String[] words = original.split("\\.");
-                for (int i = 0; i < words.length; i++) {
-                    if (i < words.length - rightWordCount) {
-                        words[i] = words[i].substring(0, 1);
-                    }
+                for (int i = 0; i < words.length - rightWordCount; i++) {
+                    words[i] = words[i].substring(0, 1);
                 }
                 destination.append(String.join(".", words));
             }
