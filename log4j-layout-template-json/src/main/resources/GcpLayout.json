@@ -1,0 +1,64 @@
+{
+  "timestamp": {
+    "$resolver": "timestamp",
+    "pattern": {
+      "format": "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+      "timeZone": "UTC",
+      "locale": "en_US"
+    }
+  },
+  "severity": {
+    "$resolver": "pattern",
+    "pattern": "%level{WARN=WARNING, TRACE=DEBUG, FATAL=EMERGENCY}"
+  },
+  "message": {
+    "$resolver": "pattern",
+    "pattern": "%m%xEx"
+  },
+  "logging.googleapis.com/labels": {
+    "$resolver": "mdc"
+  },
+  "logging.googleapis.com/sourceLocation": {
+    "file": {
+      "$resolver": "source",
+      "field": "fileName"
+    },
+    "line": {
+      "$resolver": "source",
+      "field": "lineNumber"
+    },
+    "function": {
+      "$resolver": "pattern",
+      "pattern": "%C.%M"
+    }
+  },
+  "logging.googleapis.com/insertId": {
+    "$resolver": "pattern",
+    "pattern": "%sn"
+  },
+  "_exception": {
+    "exception_class": {
+      "$resolver": "exception",
+      "field": "className"
+    },
+    "exception_message": {
+      "$resolver": "exception",
+      "field": "message"
+    },
+    "stacktrace": {
+      "$resolver": "exception",
+      "field": "stackTrace",
+      "stackTrace": {
+        "stringified": true
+      }
+    }
+  },
+  "_thread": {
+    "$resolver": "thread",
+    "field": "name"
+  },
+  "_logger": {
+    "$resolver": "logger",
+    "field": "name"
+  }
+}
