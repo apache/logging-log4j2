@@ -17,6 +17,9 @@
 package org.apache.logging.log4j.core.pattern;
 
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
@@ -28,6 +31,11 @@ public abstract class NamePatternConverter extends LogEventPatternConverter {
      * Abbreviator.
      */
     private final NameAbbreviator abbreviator;
+
+    /**
+     * Cache of previously encountered inputs (keys) and conversion results (values).
+     */
+    private final Map<String, String> conversionCache = new ConcurrentHashMap<>();
 
     /**
      * Constructor.
@@ -54,6 +62,12 @@ public abstract class NamePatternConverter extends LogEventPatternConverter {
      * @return The abbreviated name.
      */
     protected final void abbreviate(final String original, final StringBuilder destination) {
-        abbreviator.abbreviate(original, destination);
+        // abbreviate each original only once
+        String abbr = conversionCache.computeIfAbsent(original, orig -> {
+            abbreviator.abbreviate(orig, destination);
+            return destination.toString();
+        });
+        destination.setLength(0);
+        destination.append(abbr);
     }
 }
