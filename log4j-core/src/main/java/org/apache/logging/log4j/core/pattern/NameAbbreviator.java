@@ -18,6 +18,8 @@ package org.apache.logging.log4j.core.pattern;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
@@ -53,6 +55,11 @@ public abstract class NameAbbreviator {
 
             if (trimmed.isEmpty()) {
                 return DEFAULT;
+            }
+
+            DynamicWordAbbreviator dwa = DynamicWordAbbreviator.create(trimmed);
+            if (dwa != null) {
+                return dwa;
             }
 
             boolean isNegativeNumber;
@@ -365,4 +372,51 @@ public abstract class NameAbbreviator {
             }
         }
     }
+
+    /**
+     * <p>Specialized abbreviator that shortens all words to the first char except the indicated number of rightmost words.
+     * To select this abbreviator, use pattern <code>1.n*</code> where n (&gt; 0) is the number of rightmost words to leave unchanged.</p>
+     *
+     * By example for input <code>org.apache.logging.log4j.core.pattern.NameAbbreviator</code>:
+     * <pre>
+     * 1.1*     =&gt;   o.a.l.l.c.p.NameAbbreviator
+     * 1.2*     =&gt;   o.a.l.l.c.pattern.NameAbbreviator
+     * 1.3*     =&gt;   o.a.l.l.core.pattern.NameAbbreviator
+     * ..
+     * 1.999*   =&gt;   org.apache.logging.log4j.core.pattern.NameAbbreviator
+     * </pre>
+     * @since 2.x
+     */
+    static class DynamicWordAbbreviator extends NameAbbreviator {
+
+        /** Right-most number of words (at least one) that will not be abbreviated. */
+        private final int rightWordCount;
+
+        static DynamicWordAbbreviator create(String pattern) {
+            if (pattern != null) {
+                Matcher matcher = Pattern.compile("1\\.([1-9][0-9]*)\\*").matcher(pattern);
+                if (matcher.matches()) {
+                    return new DynamicWordAbbreviator(Integer.parseInt(matcher.group(1)));
+                }
+            }
+            return null;
+        }
+
+        private DynamicWordAbbreviator(int rightWordCount) {
+            this.rightWordCount = rightWordCount;
+        }
+
+        @Override
+        public void abbreviate(String original, StringBuilder destination) {
+            if (original != null && destination != null) {
+                String[] words = original.split("\\.");
+                for (int i = 0; i < words.length - rightWordCount; i++) {
+                    words[i] = words[i].substring(0, 1);
+                }
+                destination.append(String.join(".", words));
+            }
+        }
+
+    }
+
 }
