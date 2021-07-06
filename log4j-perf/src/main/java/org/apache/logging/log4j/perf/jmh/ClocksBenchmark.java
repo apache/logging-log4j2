@@ -157,8 +157,7 @@ public class ClocksBenchmark {
         private OldCachedClock() {
             final Thread updater = new Thread(() -> {
                 while (true) {
-                    final long time = System.currentTimeMillis();
-                    millis = time;
+                    millis = System.currentTimeMillis();
 
                     // avoid explicit dependency on sun.misc.Util
                     LockSupport.parkNanos(1000 * 1000);

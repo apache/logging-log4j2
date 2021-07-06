@@ -79,8 +79,7 @@ public class Client {
 
     private Set<ObjectName> find(final String pattern) throws JMException, IOException {
         final ObjectName search = new ObjectName(String.format(pattern, "*"));
-        final Set<ObjectName> result = connection.queryNames(search, null);
-        return result;
+        return connection.queryNames(search, null);
     }
 
     /**
@@ -101,10 +100,9 @@ public class Client {
     }
 
     public LoggerContextAdminMBean getLoggerContextAdmin(final ObjectName name) {
-        final LoggerContextAdminMBean ctx = JMX.newMBeanProxy(connection, //
+        return JMX.newMBeanProxy(connection, //
                 name, //
                 LoggerContextAdminMBean.class, false);
-        return ctx;
     }
 
     /**
@@ -146,10 +144,9 @@ public class Client {
         if (result.size() > 1) {
             System.err.println("WARN: multiple status loggers found for " + contextName + ": " + result);
         }
-        final StatusLoggerAdminMBean proxy = JMX.newMBeanProxy(connection, //
+        return JMX.newMBeanProxy(connection, //
                 result.iterator().next(), //
-                StatusLoggerAdminMBean.class, true); // notificationBroadcaster
-        return proxy;
+                StatusLoggerAdminMBean.class, true);
     }
 
     /**

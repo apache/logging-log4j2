@@ -142,8 +142,7 @@ public class TextEncoderHelperBenchmark {
     //private static final ThreadLocal<StringBuilderEncoder> textEncoderHelper = new ThreadLocal<>();
     private final StringBuilderEncoder textEncoderHelper = new StringBuilderEncoder(CHARSET_DEFAULT);
     private StringBuilderEncoder getEncoder() {
-        final StringBuilderEncoder result = textEncoderHelper;
-        return result;
+        return textEncoderHelper;
     }
 
     @Benchmark
@@ -249,8 +248,7 @@ public class TextEncoderHelperBenchmark {
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public String toStringMCD() {
-        final String str = PATTERN_M_C_D.toSerializable(EVENT);
-        return str;
+        return PATTERN_M_C_D.toSerializable(EVENT);
     }
 
     @Benchmark

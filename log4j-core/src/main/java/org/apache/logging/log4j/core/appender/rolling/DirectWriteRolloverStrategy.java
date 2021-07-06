@@ -270,8 +270,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
             final StringBuilder buf = new StringBuilder(255);
             manager.getPatternProcessor().formatFileName(strSubstitutor, buf, true, fileIndex);
             final int suffixLength = suffixLength(buf.toString());
-            final String name = suffixLength > 0 ? buf.substring(0, buf.length() - suffixLength) : buf.toString();
-            currentFileName = name;
+            currentFileName = suffixLength > 0 ? buf.substring(0, buf.length() - suffixLength) : buf.toString();
         }
         return currentFileName;
     }
