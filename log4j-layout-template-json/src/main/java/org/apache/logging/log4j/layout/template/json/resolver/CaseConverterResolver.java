@@ -44,7 +44,6 @@ import java.util.function.Function;
  *                           "replace"
  *                         )
  * replacement           = "replacement" -> JSON
- *
  * </pre>
  *
  * {@code input} can be any available template value; e.g., a JSON literal,
