@@ -9,11 +9,13 @@
   },
   "severity": {
     "$resolver": "pattern",
-    "pattern": "%level{WARN=WARNING, TRACE=DEBUG, FATAL=EMERGENCY}"
+    "pattern": "%level{WARN=WARNING, TRACE=DEBUG, FATAL=EMERGENCY}",
+    "stackTraceEnabled": false
   },
   "message": {
     "$resolver": "pattern",
-    "pattern": "%m%xEx"
+    "pattern": "%m",
+    "stackTraceEnabled": true
   },
   "logging.googleapis.com/labels": {
     "$resolver": "mdc"
@@ -29,12 +31,14 @@
     },
     "function": {
       "$resolver": "pattern",
-      "pattern": "%C.%M"
+      "pattern": "%C.%M",
+      "stackTraceEnabled": false
     }
   },
   "logging.googleapis.com/insertId": {
     "$resolver": "pattern",
-    "pattern": "%sn"
+    "pattern": "%sn",
+    "stackTraceEnabled": false
   },
   "_exception": {
     "exception_class": {
