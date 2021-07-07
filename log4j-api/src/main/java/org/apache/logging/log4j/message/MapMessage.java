@@ -197,7 +197,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      * @param candidateKey The name of the data item.
      * @param value The value of the data item.
      */
-    public void put(final String candidateKey, final String value) {
+    public void put(final String candidateKey, final Object value) {
         if (value == null) {
             throw new IllegalArgumentException("No value provided for key " + candidateKey);
         }
@@ -210,8 +210,8 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      * Adds all the elements from the specified Map.
      * @param map The Map to add.
      */
-    public void putAll(final Map<String, String> map) {
-        for (final Map.Entry<String, String> entry : map.entrySet()) {
+    public void putAll(final Map<String, Object> map) {
+        for (final Map.Entry<String, Object> entry : map.entrySet()) {
             data.putValue(entry.getKey(), entry.getValue());
         }
     }
