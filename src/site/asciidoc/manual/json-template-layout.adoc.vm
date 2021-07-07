@@ -454,6 +454,67 @@ similar to the following:
 The complete list of available event template resolvers are provided below in
 detail.
 
+[#event-template-resolver-counter]
+===== `counter`
+
+[source]
+----
+config      = [ start ] , [ overflowing ] , [ stringified ]
+start       = "start" -> number
+overflowing = "overflowing" -> boolean
+stringified = "stringified" -> boolean
+----
+
+Resolves a number from an internal counter.
+
+Unless provided, `start` and `overflowing` are respectively set to zero and
+`true` by default.
+
+When `stringified` is enabled, which is set to `false by default, the resolved
+number will be converted to a string.
+
+[WARNING]
+====
+When `overflowing` is set to `true`, the internal counter is created using a
+`long`, which is subject to overflow while incrementing, though garbage-free.
+Otherwise, a `BigInteger` is used, which does not overflow, but incurs
+allocation costs.
+====
+
+====== Examples
+
+Resolves a sequence of numbers starting from 0. Once `Long.MAX_VALUE` is
+reached, counter overflows to `Long.MIN_VALUE`.
+
+[source,json]
+----
+{
+  "$resolver": "counter"
+}
+----
+
+Resolves a sequence of numbers starting from 1000. Once `Long.MAX_VALUE` is
+reached, counter overflows to `Long.MIN_VALUE`.
+
+[source,json]
+----
+{
+  "$resolver": "counter",
+  "start": 1000
+}
+----
+
+Resolves a sequence of numbers starting from 0 and keeps on doing as long as
+JVM heap allows.
+
+[source,json]
+----
+{
+  "$resolver": "counter",
+  "overflowing": false
+}
+----
+
 [#event-template-resolver-caseConverter]
 ===== `caseConverter`
 
@@ -501,8 +562,11 @@ is always expected to be of type string, using non-string ``replacement``s or
 `pass` in `errorHandlingStrategy` might result in type incompatibility issues at
 the storage level.
 
+[WARNING]
+====
 Unless the input value is ``pass``ed intact or ``replace``d, case conversion is
 not garbage-free.
+====
 
 ====== Examples
 
