@@ -17,9 +17,11 @@
 package org.apache.logging.log4j.core.pattern;
 
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
@@ -33,9 +35,9 @@ public abstract class NamePatternConverter extends LogEventPatternConverter {
     private final NameAbbreviator abbreviator;
 
     /**
-     * Cache of previously encountered inputs (keys) and conversion results (values).
+     * Optional cache of previously encountered names i.e. logger and class names (keys) and conversion results (values).
      */
-    private final Map<String, String> conversionCache = new ConcurrentHashMap<>();
+    private final Map<String, String> conversionCache = createConversionCache();
 
     /**
      * Constructor.
@@ -55,19 +57,50 @@ public abstract class NamePatternConverter extends LogEventPatternConverter {
     }
 
     /**
-     * Abbreviate name in string buffer.
+     * Abbreviate name in string buffer, with optional caching of results.
      *
      * @param original string containing name.
      * @param destination the StringBuilder to write to
      * @return The abbreviated name.
      */
     protected final void abbreviate(final String original, final StringBuilder destination) {
-        // abbreviate each original only once
-        String abbr = conversionCache.computeIfAbsent(original, orig -> {
-            abbreviator.abbreviate(orig, destination);
-            return destination.toString();
-        });
-        destination.setLength(0);
-        destination.append(abbr);
+        if (conversionCache != null) {
+            // with caching enabled, the number of abbreviations to be computed is reduced
+            String abbr = conversionCache.computeIfAbsent(original, orig -> {
+                abbreviator.abbreviate(orig, destination);
+                return destination.toString();
+            });
+            destination.setLength(0);
+            destination.append(abbr);
+        } else {
+            abbreviator.abbreviate(original, destination);
+        }
     }
+
+    /**
+     * Creates the optional conversion cache if system property {@link Constants#LOG4J_NAME_PATTERN_CONVERSION_CACHE_SIZE}
+     * is an integer greater than zero. The cache is limited to the configured size and defaults to <code>250</code>.<br>
+     * Once the size is reached, a new entry is added and the oldest entry removed.
+     * @return cache (a synchronized bounded map)
+     */
+    private Map<String, String> createConversionCache() {
+        final int defCacheSize = 250;
+        final Integer cacheSize = Integer.getInteger(Constants.LOG4J_NAME_PATTERN_CONVERSION_CACHE_SIZE, defCacheSize);
+        return cacheSize > 0 ? Collections.synchronizedMap(new BoundedLinkedHashMap(cacheSize)) : null;
+    }
+
+    private static final class BoundedLinkedHashMap extends LinkedHashMap<String, String> {
+        private final int maxSize;
+
+        private BoundedLinkedHashMap(int maxSize) {
+            super(maxSize); // argument is validated in super constructor
+            this.maxSize = maxSize;
+        }
+
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<String, String> _eldest) {
+            return size() > maxSize;
+        }
+    }
+
 }
