@@ -18,27 +18,62 @@ package org.apache.logging.log4j.layout.template.json;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.layout.template.json.util.JsonReader;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.layout.template.json.util.JsonReader;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-final class JsonTemplateLayoutAdditionalFieldTestHelpers {
+@Execution(ExecutionMode.SAME_THREAD)
+class JsonTemplateLayoutAdditionalFieldTest {
 
-    private JsonTemplateLayoutAdditionalFieldTestHelpers() {}
+    @Test
+    @LoggerContextSource("additionalFieldEnrichedJsonTemplateLayoutLogging.json")
+    void test_JSON_config_additional_fields(
+            final LoggerContext loggerContext,
+            final @Named(value = "List") ListAppender appender) {
+        assertAdditionalFields(loggerContext, appender);
+    }
 
-    static void assertAdditionalFields(
+    @Test
+    @LoggerContextSource("additionalFieldEnrichedJsonTemplateLayoutLogging.properties")
+    void test_Properties_config_additional_fields(
+            final LoggerContext loggerContext,
+            final @Named(value = "List") ListAppender appender) {
+        assertAdditionalFields(loggerContext, appender);
+    }
+
+    @Test
+    @LoggerContextSource("additionalFieldEnrichedJsonTemplateLayoutLogging.xml")
+    void test_XML_config_additional_fields(
+            final LoggerContext loggerContext,
+            final @Named(value = "List") ListAppender appender) {
+        assertAdditionalFields(loggerContext, appender);
+    }
+
+    @Test
+    @LoggerContextSource("additionalFieldEnrichedJsonTemplateLayoutLogging.yaml")
+    void test_YAML_config_additional_fields(
+            final LoggerContext loggerContext,
+            final @Named(value = "List") ListAppender appender) {
+        assertAdditionalFields(loggerContext, appender);
+    }
+
+    private static void assertAdditionalFields(
             final LoggerContext loggerContext,
             final ListAppender appender) {
 
         // Log an event.
         final Logger logger =
-                loggerContext.getLogger(
-                        JsonTemplateLayoutAdditionalFieldTestHelpers.class);
+                loggerContext.getLogger(JsonTemplateLayoutAdditionalFieldTest.class);
         logger.info("trigger");
 
         // Verify that the appender has logged the event.
