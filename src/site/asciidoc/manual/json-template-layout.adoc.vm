@@ -459,25 +459,26 @@ detail.
 
 [source]
 ----
-config      = [ start ] , [ overflow ] , [ stringified ]
+config      = [ start ] , [ overflowing ] , [ stringified ]
 start       = "start" -> number
-overflow    = "overflow" -> boolean
+overflowing = "overflowing" -> boolean
 stringified = "stringified" -> boolean
 ----
 
 Resolves a number from an internal counter.
 
-Unless provided, `start` and `overflow` are respectively set to zero and `true`
-by default.
+Unless provided, `start` and `overflowing` are respectively set to zero and
+`true` by default.
 
 When `stringified` is enabled, which is set to `false by default, the resolved
 number will be converted to a string.
 
 [WARNING]
 ====
-When `overflow` is enabled, the internal counter is created using a `long`,
-which is subject to overflow while incrementing, though garbage-free. Otherwise,
-a `BigInteger` is used, which does not overflow, but incurs allocation costs.
+When `overflowing` is set to `true`, the internal counter is created using a
+`long`, which is subject to overflow while incrementing, though garbage-free.
+Otherwise, a `BigInteger` is used, which does not overflow, but incurs
+allocation costs.
 ====
 
 ====== Examples
@@ -510,7 +511,7 @@ JVM heap allows.
 ----
 {
   "$resolver": "counter",
-  "overflow": false
+  "overflowing": false
 }
 ----
 

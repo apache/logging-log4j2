@@ -87,7 +87,7 @@ class CounterResolverTest {
     }
 
     @Test
-    void max_long_should_work_when_overflow_enabled() {
+    void max_long_should_work_when_overflowing() {
         final String eventTemplate = writeJson(asMap(
                 "$resolver", "counter",
                 "start", Long.MAX_VALUE));
@@ -95,7 +95,7 @@ class CounterResolverTest {
     }
 
     @Test
-    void max_long_should_work_when_overflow_enabled_and_stringified() {
+    void max_long_should_work_when_overflowing_and_stringified() {
         final String eventTemplate = writeJson(asMap(
                 "$resolver", "counter",
                 "start", Long.MAX_VALUE,
@@ -104,11 +104,11 @@ class CounterResolverTest {
     }
 
     @Test
-    void max_long_should_work_when_overflow_disabled() {
+    void max_long_should_work_when_not_overflowing() {
         final String eventTemplate = writeJson(asMap(
                 "$resolver", "counter",
                 "start", Long.MAX_VALUE,
-                "overflow", false));
+                "overflowing", false));
         verify(
                 eventTemplate,
                 Long.MAX_VALUE,
@@ -116,11 +116,11 @@ class CounterResolverTest {
     }
 
     @Test
-    void max_long_should_work_when_overflow_disabled_and_stringified() {
+    void max_long_should_work_when_not_overflowing_and_stringified() {
         final String eventTemplate = writeJson(asMap(
                 "$resolver", "counter",
                 "start", Long.MAX_VALUE,
-                "overflow", false,
+                "overflowing", false,
                 "stringified", true));
         verify(
                 eventTemplate,

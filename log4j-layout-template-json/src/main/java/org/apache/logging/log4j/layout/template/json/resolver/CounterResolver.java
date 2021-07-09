@@ -32,19 +32,19 @@ import java.util.function.Consumer;
  * <h3>Configuration</h3>
  *
  * <pre>
- * config      = [ start ] , [ overflow ] , [ stringified ]
+ * config      = [ start ] , [ overflowing ] , [ stringified ]
  * start       = "start" -> number
- * overflow    = "overflow" -> boolean
+ * overflowing = "overflowing" -> boolean
  * stringified = "stringified" -> boolean
  * </pre>
  *
- * Unless provided, <tt>start</tt> and <tt>overflow</tt> are respectively set to
- * zero and <tt>true</tt> by default.
+ * Unless provided, <tt>start</tt> and <tt>overflowing</tt> are respectively
+ * set to zero and <tt>true</tt> by default.
  * <p>
- * When <tt>overflow</tt> is enabled, the internal counter is created using a
- * <tt>long</tt>, which is subject to overflow while incrementing, though
- * garbage-free. Otherwise, a {@link BigInteger} is used, which does not
- * overflow, but incurs allocation costs.
+ * When <tt>overflowing</tt> is set to <tt>true</tt>, the internal counter
+ * is created using a <tt>long</tt>, which is subject to overflow while
+ * incrementing, though garbage-free. Otherwise, a {@link BigInteger} is used,
+ * which does not overflow, but incurs allocation costs.
  * <p>
  * When <tt>stringified</tt> is enabled, which is set to <tt>false</tt> by
  * default, the resolved number will be converted to a string.
@@ -76,7 +76,7 @@ import java.util.function.Consumer;
  * <pre>
  * {
  *   "$resolver": "counter",
- *   "overflow": false
+ *   "overflowing": false
  * }
  * </pre>
  */
@@ -94,16 +94,16 @@ public class CounterResolver implements EventResolver {
             final EventResolverContext context,
             final TemplateResolverConfig config) {
         final BigInteger start = readStart(config);
-        final boolean overflow = config.getBoolean("overflow", true);
+        final boolean overflowing = config.getBoolean("overflowing", true);
         final boolean stringified = config.getBoolean("stringified", false);
         if (stringified) {
             final Recycler<StringBuilder> stringBuilderRecycler =
                     createStringBuilderRecycler(context);
-            return overflow
+            return overflowing
                     ? createStringifiedLongResolver(start, stringBuilderRecycler)
                     : createStringifiedBigIntegerResolver(start, stringBuilderRecycler);
         } else {
-            return overflow
+            return overflowing
                     ? createLongResolver(start)
                     : createBigIntegerResolver(start);
         }
