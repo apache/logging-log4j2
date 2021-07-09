@@ -35,8 +35,8 @@ public class SpringPropertySource extends SpringEnvironmentHolder implements Pro
     }
 
     @Override
-    public String getProperty(String key) {
-        Environment environment = getEnvironment();
+    public String getProperty(final String key) {
+        final Environment environment = getEnvironment();
         if (environment != null) {
             return environment.getProperty(key);
         }
@@ -44,8 +44,8 @@ public class SpringPropertySource extends SpringEnvironmentHolder implements Pro
     }
 
     @Override
-    public boolean containsProperty(String key) {
-        Environment environment = getEnvironment();
+    public boolean containsProperty(final String key) {
+        final Environment environment = getEnvironment();
         if (environment != null) {
             return environment.containsProperty(key);
         }

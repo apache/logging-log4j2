@@ -43,7 +43,7 @@ public class SpringProfileArbiter extends SpringEnvironmentHolder implements Arb
 
     @Override
     public boolean isCondition() {
-        Environment environment = getEnvironment();
+        final Environment environment = getEnvironment();
         if (environment == null) {
             return false;
         }
@@ -89,7 +89,7 @@ public class SpringProfileArbiter extends SpringEnvironmentHolder implements Arb
         }
 
         public SpringProfileArbiter build() {
-            String[] profileNames = StringUtils.trimArrayElements(
+            final String[] profileNames = StringUtils.trimArrayElements(
                     StringUtils.commaDelimitedListToStringArray(configuration.getStrSubstitutor().replace(name)));
             return new SpringProfileArbiter(profileNames);
         }

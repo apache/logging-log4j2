@@ -44,10 +44,10 @@ public class SpringLookup extends SpringEnvironmentHolder implements StrLookup {
     }
 
     @Override
-    public String lookup(String key) {
-        Environment env = getEnvironment();
+    public String lookup(final String key) {
+        final Environment env = getEnvironment();
         if (env != null) {
-            String lowerKey = key.toLowerCase();
+            final String lowerKey = key.toLowerCase();
             if (lowerKey.startsWith(ACTIVE)) {
                 switch (env.getActiveProfiles().length) {
                     case 0: {
@@ -57,24 +57,24 @@ public class SpringLookup extends SpringEnvironmentHolder implements StrLookup {
                         return env.getActiveProfiles()[0];
                     }
                     default: {
-                        Matcher matcher = ACTIVE_PATTERN.matcher(key);
+                        final Matcher matcher = ACTIVE_PATTERN.matcher(key);
                         if (matcher.matches()) {
                             try {
-                                int index = Integer.parseInt(matcher.group(1));
+                                final int index = Integer.parseInt(matcher.group(1));
                                 if (index < env.getActiveProfiles().length) {
                                     return env.getActiveProfiles()[index];
                                 } else {
                                     LOGGER.warn("Index out of bounds for Spring active profiles: {}", index);
                                     return null;
                                 }
-                            } catch (Exception ex) {
+                            } catch (final Exception ex) {
                                 LOGGER.warn("Unable to parse {} as integer value", matcher.group(1));
                                 return null;
                             }
 
                         } else {
-                            StringBuilder sb = new StringBuilder();
-                            for (String profile : env.getActiveProfiles()) {
+                            final StringBuilder sb = new StringBuilder();
+                            for (final String profile : env.getActiveProfiles()) {
                                 if (sb.length() > 0) {
                                     sb.append(",");
                                 }
@@ -93,24 +93,24 @@ public class SpringLookup extends SpringEnvironmentHolder implements StrLookup {
                         return env.getDefaultProfiles()[0];
                     }
                     default: {
-                        Matcher matcher = DEFAULT_PATTERN.matcher(key);
+                        final Matcher matcher = DEFAULT_PATTERN.matcher(key);
                         if (matcher.matches()) {
                             try {
-                                int index = Integer.parseInt(matcher.group(1));
+                                final int index = Integer.parseInt(matcher.group(1));
                                 if (index < env.getDefaultProfiles().length) {
                                     return env.getDefaultProfiles()[index];
                                 } else {
                                     LOGGER.warn("Index out of bounds for Spring default profiles: {}", index);
                                     return null;
                                 }
-                            } catch (Exception ex) {
+                            } catch (final Exception ex) {
                                 LOGGER.warn("Unable to parse {} as integer value", matcher.group(1));
                                 return null;
                             }
 
                         } else {
-                            StringBuilder sb = new StringBuilder();
-                            for (String profile : env.getDefaultProfiles()) {
+                            final StringBuilder sb = new StringBuilder();
+                            for (final String profile : env.getDefaultProfiles()) {
                                 if (sb.length() > 0) {
                                     sb.append(",");
                                 }
@@ -129,7 +129,7 @@ public class SpringLookup extends SpringEnvironmentHolder implements StrLookup {
     }
 
     @Override
-    public String lookup(LogEvent event, String key) {
+    public String lookup(final LogEvent event, final String key) {
         return lookup((key));
     }
 }
