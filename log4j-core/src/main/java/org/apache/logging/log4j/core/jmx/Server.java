@@ -392,7 +392,7 @@ public final class Server {
         if (mbs.isRegistered(objectName)) {
             try {
                 mbs.unregisterMBean(objectName);
-            } catch (MBeanRegistrationException | InstanceNotFoundException _ex) {
+            } catch (MBeanRegistrationException | InstanceNotFoundException ex) {
                 LOGGER.trace("Failed to unregister MBean {}", objectName);
             }
         }
