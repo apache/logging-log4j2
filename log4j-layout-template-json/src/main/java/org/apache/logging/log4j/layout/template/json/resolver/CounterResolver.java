@@ -18,6 +18,7 @@ package org.apache.logging.log4j.layout.template.json.resolver;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
+import org.apache.logging.log4j.layout.template.json.util.Recycler;
 
 import java.math.BigInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -31,9 +32,10 @@ import java.util.function.Consumer;
  * <h3>Configuration</h3>
  *
  * <pre>
- * config   = [ start ] , [ overflow ]
- * start    = "start" -> number
- * overflow = "overflow" -> boolean
+ * config      = [ start ] , [ overflow ] , [ stringified ]
+ * start       = "start" -> number
+ * overflow    = "overflow" -> boolean
+ * stringified = "stringified" -> boolean
  * </pre>
  *
  * Unless provided, <tt>start</tt> and <tt>overflow</tt> are respectively set to
@@ -43,6 +45,9 @@ import java.util.function.Consumer;
  * <tt>long</tt>, which is subject to overflow while incrementing, though
  * garbage-free. Otherwise, a {@link BigInteger} is used, which does not
  * overflow, but incurs allocation costs.
+ * <p>
+ * When <tt>stringified</tt> is enabled, which is set to <tt>false</tt> by
+ * default, the resolved number will be converted to a string.
  *
  * <h3>Examples</h3>
  *
@@ -79,12 +84,29 @@ public class CounterResolver implements EventResolver {
 
     private final Consumer<JsonWriter> delegate;
 
-    public CounterResolver(final TemplateResolverConfig config) {
+    public CounterResolver(
+            final EventResolverContext context,
+            final TemplateResolverConfig config) {
+        this.delegate = createDelegate(context, config);
+    }
+
+    private static Consumer<JsonWriter> createDelegate(
+            final EventResolverContext context,
+            final TemplateResolverConfig config) {
         final BigInteger start = readStart(config);
         final boolean overflow = config.getBoolean("overflow", true);
-        this.delegate = overflow
-                ? createLongResolver(start)
-                : createBigIntegerResolver(start);
+        final boolean stringified = config.getBoolean("stringified", false);
+        if (stringified) {
+            final Recycler<StringBuilder> stringBuilderRecycler =
+                    createStringBuilderRecycler(context);
+            return overflow
+                    ? createStringifiedLongResolver(start, stringBuilderRecycler)
+                    : createStringifiedBigIntegerResolver(start, stringBuilderRecycler);
+        } else {
+            return overflow
+                    ? createLongResolver(start)
+                    : createBigIntegerResolver(start);
+        }
     }
 
     private static BigInteger readStart(final TemplateResolverConfig config) {
@@ -117,6 +139,62 @@ public class CounterResolver implements EventResolver {
         return jsonWriter -> {
             final BigInteger number = counter.getAndIncrement();
             jsonWriter.writeNumber(number);
+        };
+    }
+
+    private static Recycler<StringBuilder> createStringBuilderRecycler(
+            final EventResolverContext context) {
+        return context
+                .getRecyclerFactory()
+                .create(
+                        StringBuilder::new,
+                        stringBuilder -> {
+                            final int maxLength =
+                                    context.getJsonWriter().getMaxStringLength();
+                            trimStringBuilder(stringBuilder, maxLength);
+                        });
+    }
+
+    private static void trimStringBuilder(
+            final StringBuilder stringBuilder,
+            final int maxLength) {
+        if (stringBuilder.length() > maxLength) {
+            stringBuilder.setLength(maxLength);
+            stringBuilder.trimToSize();
+        }
+        stringBuilder.setLength(0);
+    }
+
+    private static Consumer<JsonWriter> createStringifiedLongResolver(
+            final BigInteger start,
+            final Recycler<StringBuilder> stringBuilderRecycler) {
+        final long effectiveStart = start.longValue();
+        final AtomicLong counter = new AtomicLong(effectiveStart);
+        return (jsonWriter) -> {
+            final long number = counter.getAndIncrement();
+            final StringBuilder stringBuilder = stringBuilderRecycler.acquire();
+            try {
+                stringBuilder.append(number);
+                jsonWriter.writeString(stringBuilder);
+            } finally {
+                stringBuilderRecycler.release(stringBuilder);
+            }
+        };
+    }
+
+    private static Consumer<JsonWriter> createStringifiedBigIntegerResolver(
+            final BigInteger start,
+            final Recycler<StringBuilder> stringBuilderRecycler) {
+        final AtomicBigInteger counter = new AtomicBigInteger(start);
+        return jsonWriter -> {
+            final BigInteger number = counter.getAndIncrement();
+            final StringBuilder stringBuilder = stringBuilderRecycler.acquire();
+            try {
+                stringBuilder.append(number);
+                jsonWriter.writeString(stringBuilder);
+            } finally {
+                stringBuilderRecycler.release(stringBuilder);
+            }
         };
     }
 

@@ -42,9 +42,9 @@ public final class CounterResolverFactory implements EventResolverFactory {
 
     @Override
     public CounterResolver create(
-            final EventResolverContext ignored,
+            final EventResolverContext context,
             final TemplateResolverConfig config) {
-        return new CounterResolver(config);
+        return new CounterResolver(context, config);
     }
 
 }

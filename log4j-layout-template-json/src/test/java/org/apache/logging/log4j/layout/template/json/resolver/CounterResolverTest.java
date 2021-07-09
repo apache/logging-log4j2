@@ -44,11 +44,29 @@ class CounterResolverTest {
     }
 
     @Test
+    void positive_start_should_work_when_stringified() {
+        final String eventTemplate = writeJson(asMap(
+                "$resolver", "counter",
+                "start", 3,
+                "stringified", true));
+        verify(eventTemplate, "3", "4");
+    }
+
+    @Test
     void negative_start_should_work() {
         final String eventTemplate = writeJson(asMap(
                 "$resolver", "counter",
                 "start", -3));
         verify(eventTemplate, -3, -2);
+    }
+
+    @Test
+    void negative_start_should_work_when_stringified() {
+        final String eventTemplate = writeJson(asMap(
+                "$resolver", "counter",
+                "start", -3,
+                "stringified", true));
+        verify(eventTemplate, "-3", "-2");
     }
 
     @Test
@@ -60,11 +78,29 @@ class CounterResolverTest {
     }
 
     @Test
+    void min_long_should_work_when_overflow_enabled_and_stringified() {
+        final String eventTemplate = writeJson(asMap(
+                "$resolver", "counter",
+                "start", Long.MIN_VALUE,
+                "stringified", true));
+        verify(eventTemplate, "" + Long.MIN_VALUE, "" + (Long.MIN_VALUE + 1L));
+    }
+
+    @Test
     void max_long_should_work_when_overflow_enabled() {
         final String eventTemplate = writeJson(asMap(
                 "$resolver", "counter",
                 "start", Long.MAX_VALUE));
         verify(eventTemplate, Long.MAX_VALUE, Long.MIN_VALUE);
+    }
+
+    @Test
+    void max_long_should_work_when_overflow_enabled_and_stringified() {
+        final String eventTemplate = writeJson(asMap(
+                "$resolver", "counter",
+                "start", Long.MAX_VALUE,
+                "stringified", true));
+        verify(eventTemplate, "" + Long.MAX_VALUE, "" + Long.MIN_VALUE);
     }
 
     @Test
@@ -79,10 +115,23 @@ class CounterResolverTest {
                 BigInteger.valueOf(Long.MAX_VALUE).add(BigInteger.ONE));
     }
 
+    @Test
+    void max_long_should_work_when_overflow_disabled_and_stringified() {
+        final String eventTemplate = writeJson(asMap(
+                "$resolver", "counter",
+                "start", Long.MAX_VALUE,
+                "overflow", false,
+                "stringified", true));
+        verify(
+                eventTemplate,
+                "" + Long.MAX_VALUE,
+                "" + BigInteger.valueOf(Long.MAX_VALUE).add(BigInteger.ONE));
+    }
+
     private static void verify(
             final String eventTemplate,
-            final Number expectedNumber1,
-            final Number expectedNumber2) {
+            final Object expectedNumber1,
+            final Object expectedNumber2) {
 
         // Create the layout.
         final JsonTemplateLayout layout = JsonTemplateLayout

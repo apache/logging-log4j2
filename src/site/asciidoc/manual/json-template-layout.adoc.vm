@@ -459,15 +459,19 @@ detail.
 
 [source]
 ----
-config   = [ start ] , [ overflow ]
-start    = "start" -> number
-overflow = "overflow" -> boolean
+config      = [ start ] , [ overflow ] , [ stringified ]
+start       = "start" -> number
+overflow    = "overflow" -> boolean
+stringified = "stringified" -> boolean
 ----
 
 Resolves a number from an internal counter.
 
 Unless provided, `start` and `overflow` are respectively set to zero and `true`
 by default.
+
+When `stringified` is enabled, which is set to `false by default, the resolved
+number will be converted to a string.
 
 [WARNING]
 ====
