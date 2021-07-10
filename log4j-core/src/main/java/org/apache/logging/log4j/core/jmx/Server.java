@@ -389,7 +389,15 @@ public final class Server {
 
     private static void register(final MBeanServer mbs, final Object mbean, final ObjectName objectName)
             throws InstanceAlreadyExistsException, MBeanRegistrationException, NotCompliantMBeanException {
+        if (mbs.isRegistered(objectName)) {
+            try {
+                mbs.unregisterMBean(objectName);
+            } catch (MBeanRegistrationException | InstanceNotFoundException ex) {
+                LOGGER.trace("Failed to unregister MBean {}", objectName);
+            }
+        }
         LOGGER.debug("Registering MBean {}", objectName);
         mbs.registerMBean(mbean, objectName);
     }
+
 }

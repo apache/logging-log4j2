@@ -75,6 +75,8 @@
         Allow a PatternSelector to be specified on GelfLayout.
       </action>
       <!-- FIXES -->
+      <action issue="LOG4J2-3121" dev="ggregory" type="fix" due-to="Markus Spann">
+          log4j2 config modified at run-time may trigger incomplete MBean re-initialization due to InstanceAlreadyExistsException.
       <action issue="LOG4J2-3107" dev="vy" type="fix" due-to="Markus Spann">
         SmtpManager.createManagerName ignores port.
       </action>
