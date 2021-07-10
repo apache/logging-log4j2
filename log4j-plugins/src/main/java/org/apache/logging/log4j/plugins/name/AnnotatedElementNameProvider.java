@@ -68,7 +68,7 @@ public interface AnnotatedElementNameProvider<A extends Annotation> {
             if (methodName.startsWith("is")) {
                 return BeanUtils.decapitalize(methodName.substring(2));
             }
-            if (methodName.startsWith("set") | methodName.startsWith("get")) {
+            if (methodName.startsWith("set") || methodName.startsWith("get")) {
                 return BeanUtils.decapitalize(methodName.substring(3));
             }
             if (methodName.startsWith("with")) {
