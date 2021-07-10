@@ -24,7 +24,55 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collection;
 
+/**
+ * Provides lifecycle and dependency injection functionality to managed classes. A bean represents an injectable class
+ * via {@link org.apache.logging.log4j.plugins.di.Inject} or a producer field or method via
+ * {@link org.apache.logging.log4j.plugins.di.Produces} along with their annotation aliases. A bean has a
+ * {@linkplain #getName() name} which can be the empty string to indicate a default bean. Beans provide a
+ * {@linkplain #getTypes() type closure} of matching generic types to allow for injecting more complex types. The
+ * {@linkplain #getScopeType() scope} of a bean controls the lifecycle of instances
+ * {@linkplain #create(InitializationContext) created} and {@linkplain #destroy(Object, InitializationContext) destroyed}
+ * by this bean. Dependencies are injected based on metadata exposed through
+ * {@linkplain #getInjectionPoints() injection points}.
+ *
+ * @param <T> type of instance being managed by this bean
+ */
 public interface Bean<T> {
+
+    /**
+     * Returns the name of this bean or an empty string to indicate a default bean.
+     */
+    String getName();
+
+    /**
+     * Returns the type closure of this bean.
+     */
+    Collection<Type> getTypes();
+
+    default boolean hasMatchingType(final Type requiredType) {
+        for (final Type type : getTypes()) {
+            if (TypeUtil.typesMatch(requiredType, type)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns the declaring class that creates this bean. For injectable classes, this returns that class. For producing
+     * methods and fields, this returns their declaring class.
+     */
+    Class<?> getDeclaringClass();
+
+    /**
+     * Returns the scope type of this bean.
+     */
+    Class<? extends Annotation> getScopeType();
+
+    default boolean isDependentScoped() {
+        return getScopeType() == DependentScoped.class;
+    }
+
     /**
      * Creates a new instance of this bean. The given {@link InitializationContext} should be used by implementations
      * to track dependent objects.
@@ -43,28 +91,8 @@ public interface Bean<T> {
      */
     void destroy(final T instance, final InitializationContext<T> context);
 
+    /**
+     * Returns the collection of injection points to inject dependencies when constructing instances of this bean.
+     */
     Collection<InjectionPoint> getInjectionPoints();
-
-    // for a managed bean: that class
-    // for a producer field or producer method: the declaring class
-    Class<?> getDeclaringClass();
-
-    Collection<Type> getTypes();
-
-    default boolean hasMatchingType(final Type requiredType) {
-        for (final Type type : getTypes()) {
-            if (TypeUtil.typesMatch(requiredType, type)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    String getName();
-
-    Class<? extends Annotation> getScopeType();
-
-    default boolean isDependentScoped() {
-        return getScopeType() == DependentScoped.class;
-    }
 }
