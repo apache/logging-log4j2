@@ -31,6 +31,12 @@
     -->
     <release version="2.15.0" date="2021-MM-DD" description="GA Release 2.15.0">
       <!-- ADDS -->
+      <action issue="LOG4J2-3067" dev="vy" type="add">
+        Add CounterResolver to JsonTemplateLayout.
+      </action>
+      <action issue="LOG4J2-3074" dev="vy" type="add">
+        Add replacement parameter to ReadOnlyStringMapResolver.
+      </action>
       <action issue="LOG4J2-3051" dev="vy" type="add">
         Add CaseConverterResolver to JsonTemplateLayout.
       </action>
@@ -71,6 +77,8 @@
       <!-- FIXES -->
       <action issue="LOG4J2-3121" dev="ggregory" type="fix" due-to="Markus Spann">
           log4j2 config modified at run-time may trigger incomplete MBean re-initialization due to InstanceAlreadyExistsException.
+      <action issue="LOG4J2-3107" dev="vy" type="fix" due-to="Markus Spann">
+        SmtpManager.createManagerName ignores port.
       </action>
       <action issue="LOG4J2-3080" dev="vy" type="fix">
         Use SimpleMessage in Log4j 1 Category whenever possible.

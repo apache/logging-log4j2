@@ -25,6 +25,7 @@ import org.apache.logging.log4j.util.TriConsumer;
 
 import java.util.Map;
 import java.util.function.Function;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -39,8 +40,9 @@ import java.util.regex.Pattern;
  * key           = "key" -> string
  * stringified   = "stringified" -> boolean
  *
- * multiAccess   = [ pattern ] , [ flatten ] , [ stringified ]
+ * multiAccess   = [ pattern ] , [ replacement ] , [ flatten ] , [ stringified ]
  * pattern       = "pattern" -> string
+ * replacement   = "replacement" -> string
  * flatten       = "flatten" -> ( boolean | flattenConfig )
  * flattenConfig = [ flattenPrefix ]
  * flattenPrefix = "prefix" -> string
@@ -54,12 +56,19 @@ import java.util.regex.Pattern;
  * Enabling <tt>stringified</tt> flag converts each value to its string
  * representation.
  * <p>
- * Regex provided in the `pattern` is used to match against the keys.
+ * Regex provided in the <tt>pattern</tt> is used to match against the keys.
+ * If provided, <tt>replacement</tt> will be used to replace the matched keys.
+ * These two are effectively equivalent to
+ * <tt>Pattern.compile(pattern).matcher(key).matches()</tt> and
+ * <tt>Pattern.compile(pattern).matcher(key).replaceAll(replacement)</tt> calls.
  *
  * <h3>Garbage Footprint</h3>
  *
  * <tt>stringified</tt> allocates a new <tt>String</tt> for values that are not
  * of type <tt>String</tt>.
+ * <p>
+ * <tt>pattern</tt> and <tt>replacement</tt> incur pattern matcher allocation
+ * costs.
  * <p>
  * Writing certain non-primitive values (e.g., <tt>BigDecimal</tt>,
  * <tt>Set</tt>, etc.) to JSON generates garbage, though most (e.g.,
@@ -72,21 +81,21 @@ import java.util.regex.Pattern;
  * defined by the actual resolver, e.g., {@link MapResolver},
  * {@link ThreadContextDataResolver}.
  * <p>
- * Resolve the value of the field keyed with <tt>userRole</tt>:
+ * Resolve the value of the field keyed with <tt>user:role</tt>:
  *
  * <pre>
  * {
  *   "$resolver": "…",
- *   "key": "userRole"
+ *   "key": "user:role"
  * }
  * </pre>
  *
- * Resolve the string representation of the <tt>userRank</tt> field value:
+ * Resolve the string representation of the <tt>user:rank</tt> field value:
  *
  * <pre>
  * {
  *   "$resolver": "…",
- *   "key": "userRank",
+ *   "key": "user:rank",
  *   "stringified": true
  * }
  * </pre>
@@ -109,14 +118,35 @@ import java.util.regex.Pattern;
  * }
  * </pre>
  *
+ * Resolve all fields whose keys match with the <tt>user:(role|rank)</tt> regex
+ * into an object:
+ *
+ * <pre>
+ * {
+ *   "$resolver": "…",
+ *   "pattern": "user:(role|rank)"
+ * }
+ * </pre>
+ *
+ * Resolve all fields whose keys match with the <tt>user:(role|rank)</tt> regex
+ * into an object after removing the <tt>user:</tt> prefix in the key:
+ *
+ * <pre>
+ * {
+ *   "$resolver": "…",
+ *   "pattern": "user:(role|rank)",
+ *   "replacement": "$1"
+ * }
+ * </pre>
+ *
  * Merge all fields whose keys are matching with the
- * <tt>user(Role|Rank)</tt> regex into the parent:
+ * <tt>user:(role|rank)</tt> regex into the parent:
  *
  * <pre>
  * {
  *   "$resolver": "…",
  *   "flatten": true,
- *   "pattern": "user(Role|Rank)"
+ *   "pattern": "user:(role|rank)"
  * }
  * </pre>
  *
@@ -162,15 +192,24 @@ class ReadOnlyStringMapResolver implements EventResolver {
         } else {
             throw new IllegalArgumentException("invalid flatten option: " + config);
         }
-        final String key = config.getString("key");
         final String prefix = config.getString(new String[] {"flatten", "prefix"});
+        final String key = config.getString("key");
+        if (key != null && flatten) {
+            throw new IllegalArgumentException(
+                    "key and flatten options cannot be combined: " + config);
+        }
         final String pattern = config.getString("pattern");
+        if (pattern != null && key != null) {
+            throw new IllegalArgumentException(
+                    "pattern and key options cannot be combined: " + config);
+        }
+        final String replacement = config.getString("replacement");
+        if (pattern == null && replacement != null) {
+            throw new IllegalArgumentException(
+                    "replacement cannot be provided without a pattern: " + config);
+        }
         final boolean stringified = config.getBoolean("stringified", false);
         if (key != null) {
-            if (flatten) {
-                throw new IllegalArgumentException(
-                        "both key and flatten options cannot be supplied: " + config);
-            }
             return createKeyResolver(key, stringified, mapAccessor);
         } else {
             final RecyclerFactory recyclerFactory = context.getRecyclerFactory();
@@ -179,6 +218,7 @@ class ReadOnlyStringMapResolver implements EventResolver {
                     flatten,
                     prefix,
                     pattern,
+                    replacement,
                     stringified,
                     mapAccessor);
         }
@@ -216,6 +256,7 @@ class ReadOnlyStringMapResolver implements EventResolver {
             final boolean flatten,
             final String prefix,
             final String pattern,
+            final String replacement,
             final boolean stringified,
             final Function<LogEvent, ReadOnlyStringMap> mapAccessor) {
 
@@ -234,6 +275,7 @@ class ReadOnlyStringMapResolver implements EventResolver {
                         loopContext.prefixedKey = new StringBuilder(prefix);
                     }
                     loopContext.pattern = compiledPattern;
+                    loopContext.replacement = replacement;
                     loopContext.stringified = stringified;
                     return loopContext;
                 });
@@ -262,7 +304,7 @@ class ReadOnlyStringMapResolver implements EventResolver {
 
             @Override
             public void resolve(final LogEvent value, final JsonWriter jsonWriter) {
-                throw new UnsupportedOperationException();
+                resolve(value, jsonWriter, false);
             }
 
             @Override
@@ -310,6 +352,8 @@ class ReadOnlyStringMapResolver implements EventResolver {
 
         private Pattern pattern;
 
+        private String replacement;
+
         private boolean stringified;
 
         private JsonWriter jsonWriter;
@@ -329,10 +373,15 @@ class ReadOnlyStringMapResolver implements EventResolver {
                 final String key,
                 final Object value,
                 final LoopContext loopContext) {
-            final boolean keyMatched =
-                    loopContext.pattern == null ||
-                            loopContext.pattern.matcher(key).matches();
+            final Matcher matcher = loopContext.pattern != null
+                    ? loopContext.pattern.matcher(key)
+                    : null;
+            final boolean keyMatched = matcher == null || matcher.matches();
             if (keyMatched) {
+                final String replacedKey =
+                        matcher != null && loopContext.replacement != null
+                                ? matcher.replaceAll(loopContext.replacement)
+                                : key;
                 final boolean succeedingEntry =
                         loopContext.succeedingEntry ||
                                 loopContext.initJsonWriterStringBuilderLength <
@@ -341,10 +390,10 @@ class ReadOnlyStringMapResolver implements EventResolver {
                     loopContext.jsonWriter.writeSeparator();
                 }
                 if (loopContext.prefix == null) {
-                    loopContext.jsonWriter.writeObjectKey(key);
+                    loopContext.jsonWriter.writeObjectKey(replacedKey);
                 } else {
                     loopContext.prefixedKey.setLength(loopContext.prefix.length());
-                    loopContext.prefixedKey.append(key);
+                    loopContext.prefixedKey.append(replacedKey);
                     loopContext.jsonWriter.writeObjectKey(loopContext.prefixedKey);
                 }
                 if (loopContext.stringified && !(value instanceof String)) {

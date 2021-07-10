@@ -454,6 +454,67 @@ similar to the following:
 The complete list of available event template resolvers are provided below in
 detail.
 
+[#event-template-resolver-counter]
+===== `counter`
+
+[source]
+----
+config      = [ start ] , [ overflowing ] , [ stringified ]
+start       = "start" -> number
+overflowing = "overflowing" -> boolean
+stringified = "stringified" -> boolean
+----
+
+Resolves a number from an internal counter.
+
+Unless provided, `start` and `overflowing` are respectively set to zero and
+`true` by default.
+
+When `stringified` is enabled, which is set to `false by default, the resolved
+number will be converted to a string.
+
+[WARNING]
+====
+When `overflowing` is set to `true`, the internal counter is created using a
+`long`, which is subject to overflow while incrementing, though garbage-free.
+Otherwise, a `BigInteger` is used, which does not overflow, but incurs
+allocation costs.
+====
+
+====== Examples
+
+Resolves a sequence of numbers starting from 0. Once `Long.MAX_VALUE` is
+reached, counter overflows to `Long.MIN_VALUE`.
+
+[source,json]
+----
+{
+  "$resolver": "counter"
+}
+----
+
+Resolves a sequence of numbers starting from 1000. Once `Long.MAX_VALUE` is
+reached, counter overflows to `Long.MIN_VALUE`.
+
+[source,json]
+----
+{
+  "$resolver": "counter",
+  "start": 1000
+}
+----
+
+Resolves a sequence of numbers starting from 0 and keeps on doing as long as
+JVM heap allows.
+
+[source,json]
+----
+{
+  "$resolver": "counter",
+  "overflowing": false
+}
+----
+
 [#event-template-resolver-caseConverter]
 ===== `caseConverter`
 
@@ -501,8 +562,11 @@ is always expected to be of type string, using non-string ``replacement``s or
 `pass` in `errorHandlingStrategy` might result in type incompatibility issues at
 the storage level.
 
+[WARNING]
+====
 Unless the input value is ``pass``ed intact or ``replace``d, case conversion is
 not garbage-free.
+====
 
 ====== Examples
 
@@ -1279,8 +1343,9 @@ singleAccess  = key , [ stringified ]
 key           = "key" -> string
 stringified   = "stringified" -> boolean
 
-multiAccess   = [ pattern ] , [ flatten ] , [ stringified ]
+multiAccess   = [ pattern ] , [ replacement ] , [ flatten ] , [ stringified ]
 pattern       = "pattern" -> string
+replacement   = "replacement" -> string
 flatten       = "flatten" -> ( boolean | flattenConfig )
 flattenConfig = [ flattenPrefix ]
 flattenPrefix = "prefix" -> string
@@ -1290,32 +1355,45 @@ flattenPrefix = "prefix" -> string
 multitude of fields. If `flatten` is provided, `multiAccess` merges the fields
 with the parent, otherwise creates a new JSON object containing the values.
 
+Enabling `stringified` flag converts each value to its string representation.
+
+Regex provided in the `pattern` is used to match against the keys. If provided,
+`replacement` will be used to replace the matched keys. These two are
+effectively equivalent to `Pattern.compile(pattern).matcher(key).matches()` and
+`Pattern.compile(pattern).matcher(key).replaceAll(replacement)` calls.
+
 [WARNING]
 ====
 Regarding garbage footprint, `stringified` flag translates to
 `String.valueOf(value)`, hence mind not-`String`-typed values.
+
+`pattern` and `replacement` incur pattern matcher allocation costs.
+
+Writing certain non-primitive values (e.g., `BigDecimal`, `Set`, etc.) to JSON
+generates garbage, though most (e.g., `int`, `long`, `String`, `List`,
+`boolean[]`, etc.) don't.
 ====
 
 `"${dollar}resolver"` is left out in the following examples, since it is to be
 defined by the actual resolver, e.g., `map`, `mdc`.
 
-Resolve the value of the field keyed with `userRole`:
+Resolve the value of the field keyed with `user:role`:
 
 [source,json]
 ----
 {
   "$resolver": "…",
-  "key": "userRole"
+  "key": "user:role"
 }
 ----
 
-Resolve the string representation of the `userRank` field value:
+Resolve the string representation of the `user:rank` field value:
 
 [source,json]
 ----
 {
   "$resolver": "…",
-  "key": "userRank",
+  "key": "user:rank",
   "stringified": true
 }
 ----
@@ -1339,7 +1417,30 @@ Resolve all fields into an object such that values are converted to string:
 }
 ----
 
-Merge all fields whose keys are matching with the `user(Role|Rank)` regex into
+Resolve all fields whose keys match with the `user:(role|rank)` regex into an
+object:
+
+[source,json]
+----
+{
+  "$resolver": "…",
+  "pattern": "user:(role|rank)"
+}
+----
+
+Resolve all fields whose keys match with the `user:(role|rank)` regex into an
+object after removing the `user:` prefix in the key:
+
+[source,json]
+----
+{
+  "$resolver": "…",
+  "pattern": "user:(role|rank)",
+  "replacement": "$1"
+}
+----
+
+Merge all fields whose keys are matching with the `user:(role|rank)` regex into
 the parent:
 
 [source,json]
@@ -1347,7 +1448,7 @@ the parent:
 {
   "$resolver": "…",
   "flatten": true,
-  "pattern": "user(Role|Rank)"
+  "pattern": "user:(role|rank)"
 }
 ----
 
