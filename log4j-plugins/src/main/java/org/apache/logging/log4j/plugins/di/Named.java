@@ -30,6 +30,7 @@ import java.lang.annotation.RetentionPolicy;
 @Documented
 @NameProvider(NamedQualifierNameProvider.class)
 @Repeatable(NamedAliases.class)
+@Qualifier
 public @interface Named {
     String value() default Strings.EMPTY;
 }

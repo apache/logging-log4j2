@@ -14,13 +14,8 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.config.plugins;
 
-import org.apache.logging.log4j.core.config.plugins.util.PluginValueNameProvider;
-import org.apache.logging.log4j.core.config.plugins.visitors.PluginValueVisitor;
-import org.apache.logging.log4j.plugins.di.Qualifier;
-import org.apache.logging.log4j.plugins.inject.InjectorStrategy;
-import org.apache.logging.log4j.plugins.name.NameProvider;
+package org.apache.logging.log4j.plugins.di;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -28,20 +23,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * Identifies a parameter as a value. These correspond with property values generally, but are meant as values to be
- * used as a placeholder value somewhere.
- *
- * @see org.apache.logging.log4j.core.config.PropertiesPlugin
- * @deprecated Exists for compatibility with Log4j 2 2.x plugins. Not used for Log4j 2 3.x plugins.
- */
-@Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.FIELD})
-@InjectorStrategy(PluginValueVisitor.class)
-@NameProvider(PluginValueNameProvider.class)
-@Qualifier
-public @interface PluginValue {
-
-    String value();
+@Target(ElementType.ANNOTATION_TYPE)
+@Documented
+public @interface Qualifier {
 }

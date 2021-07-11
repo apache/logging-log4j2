@@ -18,9 +18,9 @@
 package org.apache.logging.log4j.core.config.di;
 
 import org.apache.logging.log4j.plugins.di.Inject;
-import org.apache.logging.log4j.plugins.di.Produces;
+import org.apache.logging.log4j.plugins.di.Producer;
+import org.apache.logging.log4j.plugins.di.Qualifier;
 import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
-import org.apache.logging.log4j.plugins.name.NameProvider;
 import org.apache.logging.log4j.plugins.util.AnnotationUtil;
 import org.apache.logging.log4j.util.Strings;
 
@@ -106,7 +106,7 @@ public interface BeanManager extends AutoCloseable {
      * Checks if a class has exactly one injectable constructor. A constructor is <i>injectable</i> if:
      * <ol>
      *     <li>it is annotated with {@link Inject}; or</li>
-     *     <li>it has as least one parameter annotated with {@link Inject} or a {@linkplain NameProvider name provider annotation}; or</li>
+     *     <li>it has as least one parameter annotated with a {@linkplain Qualifier qualifier annotation}; or</li>
      *     <li>it is the lone no-arg constructor.</li>
      * </ol>
      *
@@ -114,60 +114,60 @@ public interface BeanManager extends AutoCloseable {
      * @return true if the class has exactly one injectable constructor or false otherwise
      */
     default boolean isInjectable(final Class<?> type) {
+        boolean result = false;
         int injectConstructors = 0;
         final Constructor<?>[] constructors = type.getDeclaredConstructors();
         for (final Constructor<?> constructor : constructors) {
-            if (AnnotationUtil.isAnnotationPresent(constructor, Inject.class)) {
+            if (constructor.isAnnotationPresent(Inject.class)) {
                 injectConstructors++;
             }
         }
-        if (injectConstructors > 1) {
-            return false;
-        }
-        if (injectConstructors == 1) {
-            return true;
-        }
-
-        int implicitConstructors = 0;
-        for (final Constructor<?> constructor : constructors) {
-            for (final Parameter parameter : constructor.getParameters()) {
-                if (isInjectable(parameter)) {
-                    implicitConstructors++;
-                    break;
+        if (injectConstructors <= 1) {
+            if (injectConstructors == 1) {
+                result = true;
+            } else {
+                int implicitConstructors = 0;
+                for (final Constructor<?> constructor : constructors) {
+                    for (final Parameter parameter : constructor.getParameters()) {
+                        if (AnnotatedElementNameProvider.hasName(parameter)) {
+                            implicitConstructors++;
+                            break;
+                        }
+                    }
+                }
+                if (implicitConstructors <= 1) {
+                    if (implicitConstructors == 1) {
+                        result = true;
+                    } else {
+                        try {
+                            type.getDeclaredConstructor();
+                            result = true;
+                        } catch (final NoSuchMethodException ignored) {
+                        }
+                    }
                 }
             }
         }
-        if (implicitConstructors > 1) {
-            return false;
-        }
-        if (implicitConstructors == 1) {
-            return true;
-        }
 
-        try {
-            type.getDeclaredConstructor();
-            return true;
-        } catch (final NoSuchMethodException ignored) {
-            return false;
-        }
+        return result;
     }
 
     /**
      * Checks if an element is injectable. An element is <i>injectable</i> if:
      * <ol>
      *     <li>it is annotated with {@link Inject}; or</li>
-     *     <li>it is annotated with a {@linkplain NameProvider name provider annotation} and is not annotated
-     *     with {@link Produces}.</li>
+     *     <li>it is annotated with a {@linkplain Qualifier qualifier annotation}
+     *     and is not annotated with a {@link Producer} annotation.</li>
      * </ol>
      *
      * @param element field, method, or parameter to check
      * @return true if the element is injectable or false otherwise
      */
     default boolean isInjectable(final AnnotatedElement element) {
-        if (AnnotationUtil.isAnnotationPresent(element, Inject.class)) {
+        if (element.isAnnotationPresent(Inject.class)) {
             return true;
         }
-        if (AnnotationUtil.isAnnotationPresent(element, Produces.class)) {
+        if (AnnotationUtil.isMetaAnnotationPresent(element, Producer.class)) {
             return false;
         }
         return AnnotatedElementNameProvider.hasName(element);
@@ -258,4 +258,8 @@ public interface BeanManager extends AutoCloseable {
     // TODO: integrate with TypeConverters
     // TODO: need some sort of default value strategy to bridge over @PluginAttribute and optional injected values
     // TODO: add support for injecting collections and arrays
+    // TODO: begin integrating with singleton beans in log4j-core
+    // TODO: LoggerContext scope (sort of like a singleton/application scope with each LoggerContext)
+    // TODO: configuration scope? should be similar to LoggerContext scope but can be restarted/reconfigured at runtime
+    // TODO: update annotation processor to output bean descriptors for lazy loading (attempt to provide partial type closures?)
 }

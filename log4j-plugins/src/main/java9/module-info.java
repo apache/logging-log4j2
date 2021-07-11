@@ -18,6 +18,7 @@ module org.apache.logging.log4j.plugins {
     exports org.apache.logging.log4j.plugins;
     exports org.apache.logging.log4j.plugins.convert;
     exports org.apache.logging.log4j.plugins.di;
+    exports org.apache.logging.log4j.plugins.di.spi;
     exports org.apache.logging.log4j.plugins.processor;
     exports org.apache.logging.log4j.plugins.util;
     exports org.apache.logging.log4j.plugins.validation;
@@ -27,12 +28,14 @@ module org.apache.logging.log4j.plugins {
     exports org.apache.logging.log4j.plugins.inject;
     exports org.apache.logging.log4j.plugins.name;
 
-    requires java.compiler;
-    requires org.apache.logging.log4j;
+    requires transitive java.compiler; // TODO: break out annotation processor into separate module
+    requires transitive org.apache.logging.log4j;
     requires transitive org.osgi.framework;
 
     provides org.apache.logging.log4j.plugins.processor.PluginService with org.apache.logging.log4j.plugins.convert.plugins.Log4jPlugins;
-    provides javax.annotation.processing.Processor with org.apache.logging.log4j.plugins.processor.PluginProcessor;
+    provides org.apache.logging.log4j.plugins.di.spi.BeanInfoService with org.apache.logging.log4j.plugins.convert.plugins.Log4jBeanInfo;
+    provides javax.annotation.processing.Processor with org.apache.logging.log4j.plugins.processor.PluginProcessor, org.apache.logging.log4j.plugins.processor.BeanProcessor;
 
     uses org.apache.logging.log4j.plugins.processor.PluginService;
+//    uses org.apache.logging.log4j.plugins.di.spi.BeanInfoService;
 }

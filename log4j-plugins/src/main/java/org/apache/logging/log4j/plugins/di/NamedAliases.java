@@ -32,6 +32,7 @@ import java.lang.annotation.Target;
 @Documented
 @NameProvider(NamedAliasesProvider.class)
 @AliasesProvider(NamedAliasesProvider.class)
+@Qualifier
 public @interface NamedAliases {
     Named[] value();
 }

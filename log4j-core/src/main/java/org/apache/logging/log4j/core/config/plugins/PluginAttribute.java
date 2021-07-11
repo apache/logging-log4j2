@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.config.plugins;
 
 import org.apache.logging.log4j.core.config.plugins.util.PluginAttributeNameProvider;
 import org.apache.logging.log4j.core.config.plugins.visitors.PluginAttributeVisitor;
+import org.apache.logging.log4j.plugins.di.Qualifier;
 import org.apache.logging.log4j.plugins.inject.InjectorStrategy;
 import org.apache.logging.log4j.plugins.name.NameProvider;
 import org.apache.logging.log4j.util.Strings;
@@ -41,6 +42,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.PARAMETER, ElementType.FIELD})
 @InjectorStrategy(PluginAttributeVisitor.class)
 @NameProvider(PluginAttributeNameProvider.class)
+@Qualifier
 public @interface PluginAttribute {
 
     /**

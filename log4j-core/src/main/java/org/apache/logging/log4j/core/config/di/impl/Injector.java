@@ -22,7 +22,6 @@ import org.apache.logging.log4j.core.config.di.InitializationContext;
 import org.apache.logging.log4j.core.config.di.InitializationException;
 import org.apache.logging.log4j.core.config.di.InjectionPoint;
 import org.apache.logging.log4j.plugins.di.Disposes;
-import org.apache.logging.log4j.plugins.util.AnnotationUtil;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 
 import java.lang.reflect.Constructor;
@@ -96,7 +95,7 @@ public class Injector {
         final Object[] arguments = new Object[parameters.length];
         for (int i = 0; i < parameters.length; i++) {
             final Parameter parameter = parameters[i];
-            if (AnnotationUtil.isAnnotationPresent(parameter, Disposes.class)) {
+            if (parameter.isAnnotationPresent(Disposes.class)) {
                 arguments[i] = producedInstance;
             } else {
                 final InjectionPoint injectionPoint = injectionPoints.stream()

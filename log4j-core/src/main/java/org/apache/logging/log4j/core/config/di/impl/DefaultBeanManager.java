@@ -32,7 +32,7 @@ import org.apache.logging.log4j.core.config.di.UnsatisfiedBeanException;
 import org.apache.logging.log4j.core.config.di.ValidationException;
 import org.apache.logging.log4j.plugins.di.DependentScoped;
 import org.apache.logging.log4j.plugins.di.Disposes;
-import org.apache.logging.log4j.plugins.di.Produces;
+import org.apache.logging.log4j.plugins.di.Producer;
 import org.apache.logging.log4j.plugins.di.Provider;
 import org.apache.logging.log4j.plugins.di.ScopeType;
 import org.apache.logging.log4j.plugins.di.SingletonScoped;
@@ -88,7 +88,7 @@ public class DefaultBeanManager implements BeanManager {
             loadDisposerMethods(beanClass, bean);
             for (Class<?> clazz = beanClass; clazz != null; clazz = clazz.getSuperclass()) {
                 for (final Method method : clazz.getDeclaredMethods()) {
-                    if (AnnotationUtil.isAnnotationPresent(method, Produces.class)) {
+                    if (AnnotationUtil.isMetaAnnotationPresent(method, Producer.class)) {
                         method.setAccessible(true);
                         loadedBeans.add(createBean(method, bean));
                     }
@@ -96,7 +96,7 @@ public class DefaultBeanManager implements BeanManager {
             }
             for (Class<?> clazz = beanClass; clazz != null; clazz = clazz.getSuperclass()) {
                 for (final Field field : clazz.getDeclaredFields()) {
-                    if (AnnotationUtil.isAnnotationPresent(field, Produces.class)) {
+                    if (AnnotationUtil.isMetaAnnotationPresent(field, Producer.class)) {
                         field.setAccessible(true);
                         loadedBeans.add(createBean(field, bean));
                     }
@@ -173,7 +173,7 @@ public class DefaultBeanManager implements BeanManager {
     private void loadDisposerMethods(final Class<?> beanClass, final Bean<?> bean) {
         for (final Method method : beanClass.getDeclaredMethods()) {
             for (final Parameter parameter : method.getParameters()) {
-                if (AnnotationUtil.isAnnotationPresent(parameter, Disposes.class)) {
+                if (parameter.isAnnotationPresent(Disposes.class)) {
                     final String name = AnnotatedElementNameProvider.getName(parameter);
                     final Collection<String> aliases = AnnotatedElementAliasesProvider.getAliases(parameter);
                     method.setAccessible(true);
@@ -217,7 +217,7 @@ public class DefaultBeanManager implements BeanManager {
     @Override
     public void validateInjectionPoint(final InjectionPoint point) {
         final AnnotatedElement element = point.getElement();
-        if (AnnotationUtil.isAnnotationPresent(element, Produces.class)) {
+        if (AnnotationUtil.isMetaAnnotationPresent(element, Producer.class)) {
             throw new DefinitionException("Cannot inject into a @Produces element: " + element);
         }
         final Type type = point.getType();

@@ -17,22 +17,14 @@
 
 package org.apache.logging.log4j.plugins.di;
 
-import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * Meta annotation for making an annotation an alias for another annotation. Annotations with this annotation will be
- * interpreted as if they were implemented by the given annotation type instead. This applies to
- * {@linkplain ScopeType scopes}, {@link Inject}, {@link Produces}, {@link Disposes}, {@link PostConstruct}, and
- * {@link PreDestroy}.
- */
-@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
+@Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface AnnotationAlias {
-    Class<? extends Annotation> value();
+public @interface Producer {
 }

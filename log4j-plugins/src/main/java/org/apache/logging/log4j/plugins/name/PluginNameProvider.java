@@ -15,24 +15,15 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.core.config.plugins;
+package org.apache.logging.log4j.plugins.name;
 
-import org.apache.logging.log4j.plugins.di.Produces;
+import org.apache.logging.log4j.plugins.Plugin;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.util.Optional;
 
-/**
- * Marks a method as a factory for custom Plugin builders.
- * @deprecated Exists for compatibility with Log4j 2 2.x plugins. Not used for Log4j 2 3.x plugins.
- */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-@Produces
-public @interface PluginBuilderFactory {
-    // empty
+public class PluginNameProvider implements AnnotatedElementNameProvider<Plugin> {
+    @Override
+    public Optional<String> getSpecifiedName(final Plugin annotation) {
+        return Optional.of(annotation.name());
+    }
 }

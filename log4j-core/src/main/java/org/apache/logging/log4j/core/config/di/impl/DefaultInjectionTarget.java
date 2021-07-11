@@ -23,7 +23,7 @@ import org.apache.logging.log4j.core.config.di.InjectionPoint;
 import org.apache.logging.log4j.core.config.di.InjectionTarget;
 import org.apache.logging.log4j.plugins.di.Disposes;
 import org.apache.logging.log4j.plugins.di.Inject;
-import org.apache.logging.log4j.plugins.di.Produces;
+import org.apache.logging.log4j.plugins.di.Producer;
 import org.apache.logging.log4j.plugins.util.AnnotationUtil;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 
@@ -86,8 +86,8 @@ class DefaultInjectionTarget<T> implements InjectionTarget<T> {
             final Member member = point.getMember();
             final AnnotatedElement element = point.getElement();
             if (member instanceof Method && !injectedMethods.contains(member) &&
-                    !AnnotationUtil.isAnnotationPresent(element, Produces.class) &&
-                    !AnnotationUtil.isAnnotationPresent(element, Disposes.class)) {
+                    !AnnotationUtil.isMetaAnnotationPresent(element, Producer.class) &&
+                    !element.isAnnotationPresent(Disposes.class)) {
                 final Method method = TypeUtil.cast(member);
                 final Set<InjectionPoint> methodInjectionPoints = injectionPoints.stream()
                         .filter(p -> method.equals(p.getMember()))

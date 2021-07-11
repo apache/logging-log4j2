@@ -49,6 +49,6 @@ public class NamedAliasesProvider implements AnnotatedElementNameProvider<NamedA
         for (int i = 0; i < size; i++) {
             aliases.add(named[i + 1].value());
         }
-        return aliases;
+        return Collections.unmodifiableCollection(aliases);
     }
 }

@@ -14,23 +14,40 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+package org.apache.logging.log4j.plugins.test.validation;
 
-package org.apache.logging.log4j.plugins.util;
+import java.util.Map;
+import org.apache.logging.log4j.plugins.di.Named;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
+public class ImplicitMethodBean {
+    private String alpha;
+    private int beta;
+    private Map<String, String> gamma;
 
-public final class AnnotationUtil {
-
-    public static boolean isMetaAnnotationPresent(final AnnotatedElement element, final Class<? extends Annotation> metaAnnotation) {
-        for (final Annotation annotation : element.getAnnotations()) {
-            if (annotation.annotationType().isAnnotationPresent(metaAnnotation)) {
-                return true;
-            }
-        }
-        return false;
+    public String getAlpha() {
+        return alpha;
     }
 
-    private AnnotationUtil() {
+    public ImplicitMethodBean setAlpha(@Named final String alpha) {
+        this.alpha = alpha;
+        return this;
+    }
+
+    public int getBeta() {
+        return beta;
+    }
+
+    public ImplicitMethodBean setBeta(@Named final int beta) {
+        this.beta = beta;
+        return this;
+    }
+
+    public Map<String, String> getGamma() {
+        return gamma;
+    }
+
+    public ImplicitMethodBean setGamma(@Named final Map<String, String> gamma) {
+        this.gamma = gamma;
+        return this;
     }
 }

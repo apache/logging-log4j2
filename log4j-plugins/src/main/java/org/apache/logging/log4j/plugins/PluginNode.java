@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.plugins;
 
+import org.apache.logging.log4j.plugins.di.Qualifier;
 import org.apache.logging.log4j.plugins.inject.InjectorStrategy;
 import org.apache.logging.log4j.plugins.inject.PluginNodeInjector;
 
@@ -34,6 +35,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD})
 @InjectorStrategy(PluginNodeInjector.class)
+@Qualifier
 public @interface PluginNode {
     // empty
 }

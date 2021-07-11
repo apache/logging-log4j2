@@ -14,25 +14,31 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+package org.apache.logging.log4j.plugins.test.validation;
 
-package org.apache.logging.log4j.core.config.plugins;
+import java.util.Map;
+import org.apache.logging.log4j.plugins.di.Named;
 
-import org.apache.logging.log4j.plugins.di.Produces;
+public class ImplicitBean {
+    private final String alpha;
+    private final int beta;
+    private final Map<String, String> gamma;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+    public ImplicitBean(@Named final String alpha, final int beta, final Map<String, String> gamma) {
+        this.alpha = alpha;
+        this.beta = beta;
+        this.gamma = gamma;
+    }
 
-/**
- * Marks a method as a factory for custom Plugin builders.
- * @deprecated Exists for compatibility with Log4j 2 2.x plugins. Not used for Log4j 2 3.x plugins.
- */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-@Produces
-public @interface PluginBuilderFactory {
-    // empty
+    public String getAlpha() {
+        return alpha;
+    }
+
+    public int getBeta() {
+        return beta;
+    }
+
+    public Map<String, String> getGamma() {
+        return gamma;
+    }
 }

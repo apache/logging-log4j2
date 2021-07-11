@@ -26,7 +26,7 @@ import org.apache.logging.log4j.core.config.di.InjectionTargetFactory;
 import org.apache.logging.log4j.plugins.di.Inject;
 import org.apache.logging.log4j.plugins.di.PostConstruct;
 import org.apache.logging.log4j.plugins.di.PreDestroy;
-import org.apache.logging.log4j.plugins.util.AnnotationUtil;
+import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 
 import java.lang.reflect.AccessibleObject;
@@ -67,7 +67,7 @@ class DefaultInjectionTargetFactory<T> implements InjectionTargetFactory<T> {
     private Constructor<T> getInjectableConstructor() {
         final Constructor<?>[] allConstructors = type.getDeclaredConstructors();
         final List<Constructor<?>> injectConstructors = Arrays.stream(allConstructors)
-                .filter(constructor -> AnnotationUtil.isAnnotationPresent(constructor, Inject.class))
+                .filter(constructor -> constructor.isAnnotationPresent(Inject.class))
                 .collect(Collectors.toList());
         if (injectConstructors.size() > 1) {
             throw new DefinitionException("Found more than one constructor with @Inject for " + type);
@@ -78,7 +78,7 @@ class DefaultInjectionTargetFactory<T> implements InjectionTargetFactory<T> {
             return TypeUtil.cast(constructor);
         }
         final List<Constructor<?>> injectParameterConstructors = Arrays.stream(allConstructors)
-                .filter(constructor -> Arrays.stream(constructor.getParameters()).anyMatch(beanManager::isInjectable))
+                .filter(constructor -> Arrays.stream(constructor.getParameters()).anyMatch(AnnotatedElementNameProvider::hasName))
                 .collect(Collectors.toList());
         if (injectParameterConstructors.size() > 1) {
             throw new DefinitionException("No @Inject constructors found and remaining constructors ambiguous for " + type);
@@ -134,7 +134,7 @@ class DefaultInjectionTargetFactory<T> implements InjectionTargetFactory<T> {
         final List<Method> postConstructMethods = new ArrayList<>();
         for (Class<?> clazz = type; clazz != null; clazz = clazz.getSuperclass()) {
             for (final Method method : clazz.getDeclaredMethods()) {
-                if (AnnotationUtil.isAnnotationPresent(method, PostConstruct.class)) {
+                if (method.isAnnotationPresent(PostConstruct.class)) {
                     postConstructMethods.add(0, method);
                 }
             }
@@ -148,7 +148,7 @@ class DefaultInjectionTargetFactory<T> implements InjectionTargetFactory<T> {
         final List<Method> preDestroyMethods = new ArrayList<>();
         for (Class<?> clazz = type; clazz != null; clazz = clazz.getSuperclass()) {
             for (final Method method : clazz.getDeclaredMethods()) {
-                if (AnnotationUtil.isAnnotationPresent(method, PreDestroy.class)) {
+                if (method.isAnnotationPresent(PreDestroy.class)) {
                     preDestroyMethods.add(method);
                 }
             }

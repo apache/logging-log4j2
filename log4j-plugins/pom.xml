@@ -105,6 +105,7 @@
                   <includes>
                     <include>module-info.class</include>
                     <include>**/Log4jPlugins.class</include>
+                    <include>**/Log4jBeanInfo.class</include>
                   </includes>
                 </fileset>
                 <fileset>
@@ -142,9 +143,11 @@
               <source>${maven.compiler.source}</source>
               <target>${maven.compiler.target}</target>
               <proc>only</proc>
-              <compilerArguments>
-                <processor>org.apache.logging.log4j.plugins.processor.PluginProcessor</processor>
-              </compilerArguments>
+              <annotationProcessors>
+                <annotationProcessor>org.apache.logging.log4j.plugins.processor.PluginProcessor</annotationProcessor>
+                <annotationProcessor>org.apache.logging.log4j.plugins.processor.BeanProcessor</annotationProcessor>
+              </annotationProcessors>
+              <parameters>true</parameters>
             </configuration>
           </execution>
           <execution>
@@ -160,6 +163,7 @@
               <proc>only</proc>
               <annotationProcessors>
                 <annotationProcessor>org.apache.logging.log4j.plugins.processor.PluginProcessor</annotationProcessor>
+                <annotationProcessor>org.apache.logging.log4j.plugins.processor.BeanProcessor</annotationProcessor>
               </annotationProcessors>
               <compileSourceRoots>
                 <compileSourceRoot>${project.basedir}/src/test/java-test</compileSourceRoot>
@@ -180,7 +184,11 @@
               <proc>only</proc>
               <annotationProcessors>
                 <annotationProcessor>org.apache.logging.log4j.plugins.processor.PluginProcessor</annotationProcessor>
+                <annotationProcessor>org.apache.logging.log4j.plugins.processor.BeanProcessor</annotationProcessor>
               </annotationProcessors>
+              <compilerArguments>
+                <ApluginPackage>org.apache.logging.log4j.plugins</ApluginPackage>
+              </compilerArguments>
               <compileSourceRoots>
                 <compileSourceRoot>${project.basedir}/src/test/java</compileSourceRoot>
                 <compileSourceRoot>${project.basedir}/src/test/java-test</compileSourceRoot>

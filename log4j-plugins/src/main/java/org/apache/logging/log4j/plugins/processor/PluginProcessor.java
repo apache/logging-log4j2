@@ -32,7 +32,7 @@ import javax.lang.model.element.ElementVisitor;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
-import javax.lang.model.util.SimpleElementVisitor7;
+import javax.lang.model.util.SimpleElementVisitor8;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
 import javax.tools.JavaFileObject;
@@ -95,12 +95,10 @@ public class PluginProcessor extends AbstractProcessor {
             writeClassFile(packageName, list);
             writeServiceFile(packageName);
             messager.printMessage(Kind.NOTE, "Annotations processed");
-            return true;
         } catch (final Exception ex) {
-            ex.printStackTrace();
             error(ex.getMessage());
-            return false;
         }
+        return false;
     }
 
     private void error(final CharSequence message) {
@@ -209,7 +207,7 @@ public class PluginProcessor extends AbstractProcessor {
     /**
      * ElementVisitor to scan the Plugin annotation.
      */
-    private static class PluginElementVisitor extends SimpleElementVisitor7<PluginEntry, Plugin> {
+    private static class PluginElementVisitor extends SimpleElementVisitor8<PluginEntry, Plugin> {
 
         private final Elements elements;
 
@@ -232,7 +230,7 @@ public class PluginProcessor extends AbstractProcessor {
     }
 
     private String commonPrefix(String str1, String str2) {
-        int minLength = str1.length() < str2.length() ? str1.length() : str2.length();
+        int minLength = Math.min(str1.length(), str2.length());
         for (int i = 0; i < minLength; i++) {
             if (str1.charAt(i) != str2.charAt(i)) {
                 if (i > 1 && str1.charAt(i-1) == '.') {
@@ -248,12 +246,12 @@ public class PluginProcessor extends AbstractProcessor {
     /**
      * ElementVisitor to scan the PluginAliases annotation.
      */
-    private static class PluginAliasesElementVisitor extends SimpleElementVisitor7<Collection<PluginEntry>, Plugin> {
+    private static class PluginAliasesElementVisitor extends SimpleElementVisitor8<Collection<PluginEntry>, Plugin> {
 
         private final Elements elements;
 
         private PluginAliasesElementVisitor(final Elements elements) {
-            super(Collections.<PluginEntry> emptyList());
+            super(Collections.emptyList());
             this.elements = elements;
         }
 
