@@ -336,7 +336,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
                                                     .setBasePath(compressedName)
                                                     .setFollowLinks(false)
                                                     .setMaxDepth(1)
-                                                    .setPathConditions(new PathCondition[0])
+                                                    .setPathConditions(PathCondition.EMPTY_ARRAY)
                                                     .setSubst(getStrSubstitutor())
                                                     .setFilePermissions(manager.getFilePermissions())
                                                     .setFileOwner(manager.getFileOwner())

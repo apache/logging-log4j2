@@ -20,12 +20,28 @@ package org.apache.logging.log4j.core.appender.rolling.action;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Arrays;
 
 /**
  * Filter that accepts or rejects a candidate {@code Path} for deletion.
  */
 public interface PathCondition {
+    
+    /**
+     * Empty array.
+     */
+    static final PathCondition[] EMPTY_ARRAY = {};
 
+    /**
+     * Copies the given input.
+     *
+     * @param source What to copy
+     * @return a copy, never null.
+     */
+    static PathCondition[] copy(PathCondition[] source) {
+        return source == null ? new PathCondition[0] : Arrays.copyOf(source, source.length);
+    }
+    
     /**
      * Invoked before a new {@linkplain Files#walkFileTree(Path, java.util.Set, int, java.nio.file.FileVisitor) file
      * tree walk} is started. Stateful PathConditions can reset their state when this method is called.
@@ -34,7 +50,7 @@ public interface PathCondition {
 
     /**
      * Returns {@code true} if the specified candidate path should be deleted, {@code false} otherwise.
-     * 
+     *
      * @param baseDir the directory from where to start scanning for deletion candidate files
      * @param relativePath the candidate for deletion. This path is relative to the baseDir.
      * @param attrs attributes of the candidate path
