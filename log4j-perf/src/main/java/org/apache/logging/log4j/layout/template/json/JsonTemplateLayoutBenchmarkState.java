@@ -70,7 +70,7 @@ public class JsonTemplateLayoutBenchmarkState {
         this.customJsonLayout = createCustomJsonLayout();
         this.ecsLayout = createEcsLayout();
         this.gelfLayout = createGelfLayout();
-        int logEventCount = 1_000;
+        final int logEventCount = 1_000;
         this.fullLogEvents = LogEventFixture.createFullLogEvents(logEventCount);
         this.liteLogEvents = LogEventFixture.createLiteLogEvents(logEventCount);
     }

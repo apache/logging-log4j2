@@ -62,7 +62,7 @@ public class StackWalkBenchmark {
     private int callDepth;
 
     @Benchmark
-    public void throwableSearch(Blackhole bh)  {
+    public void throwableSearch(final Blackhole bh)  {
 
         stackDriver.deepCall(initialDepth, callDepth, (fqcn) -> {
             final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
@@ -82,7 +82,7 @@ public class StackWalkBenchmark {
     }
 
     @Benchmark
-    public void stackWalkerWalk(Blackhole bh) {
+    public void stackWalkerWalk(final Blackhole bh) {
         stackDriver.deepCall(initialDepth, callDepth, (fqcn) -> walker.walk(
                 s -> s.dropWhile(f -> !f.getClassName().equals(fqcn)) // drop the top frames until we reach the logger
                         .dropWhile(f -> f.getClassName().equals(fqcn)) // drop the logger frames
@@ -92,13 +92,13 @@ public class StackWalkBenchmark {
     }
 
     @Benchmark
-    public void baseline(Blackhole bh)  {
+    public void baseline(final Blackhole bh)  {
 
         stackDriver.deepCall(initialDepth, callDepth, (fqcn) -> null);
     }
 
     @Benchmark
-    public void stackWalkerArray(Blackhole bh)  {
+    public void stackWalkerArray(final Blackhole bh)  {
 
         stackDriver.deepCall(initialDepth, callDepth, (fqcn) -> {
             FQCN.set(fqcn);
@@ -112,10 +112,10 @@ public class StackWalkBenchmark {
     static final class FqcnCallerLocator implements Function<Stream<StackWalker.StackFrame>, StackWalker.StackFrame> {
 
         @Override
-        public StackWalker.StackFrame apply(Stream<StackWalker.StackFrame> stackFrameStream) {
-            String fqcn = FQCN.get();
+        public StackWalker.StackFrame apply(final Stream<StackWalker.StackFrame> stackFrameStream) {
+            final String fqcn = FQCN.get();
             boolean foundFqcn = false;
-            Object[] frames = stackFrameStream.toArray();
+            final Object[] frames = stackFrameStream.toArray();
             for (int i = 0; i < frames.length ; ++i) {
                 final String className = ((StackWalker.StackFrame) frames[i]).getClassName();
                 if (!foundFqcn) {

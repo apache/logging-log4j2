@@ -131,17 +131,17 @@ public class FileAppenderThrowableBenchmark {
                         (proxy, method, args) -> {
                             try {
                                 return method.invoke(delegate, args);
-                            } catch (InvocationTargetException e) {
+                            } catch (final InvocationTargetException e) {
                                 throw e.getCause();
                             }
                         });
             }
-        } catch (ClassNotFoundException e) {
+        } catch (final ClassNotFoundException e) {
             throw new IllegalStateException("Failed to create stack", e);
         }
         try {
             helper.action();
-        } catch (IllegalStateException e) {
+        } catch (final IllegalStateException e) {
             return e;
         }
         throw new IllegalStateException("Failed to create throwable");
@@ -188,7 +188,7 @@ public class FileAppenderThrowableBenchmark {
             }
 
             @Override
-            void log(String message, Throwable throwable) {
+            void log(final String message, final Throwable throwable) {
                 logger.error(message, throwable);
             }
         },
@@ -210,7 +210,7 @@ public class FileAppenderThrowableBenchmark {
             }
 
             @Override
-            void log(String message, Throwable throwable) {
+            void log(final String message, final Throwable throwable) {
                 logger.error(message, throwable);
             }
         },
@@ -227,7 +227,7 @@ public class FileAppenderThrowableBenchmark {
             }
 
             @Override
-            void log(String message, Throwable throwable) {
+            void log(final String message, final Throwable throwable) {
                 logger.error(message, throwable);
             }
         },
@@ -244,7 +244,7 @@ public class FileAppenderThrowableBenchmark {
             }
 
             @Override
-            void log(String message, Throwable throwable) {
+            void log(final String message, final Throwable throwable) {
                 logger.error(message, throwable);
             }
         },
@@ -266,7 +266,7 @@ public class FileAppenderThrowableBenchmark {
             }
 
             @Override
-            void log(String message, Throwable throwable) {
+            void log(final String message, final Throwable throwable) {
                 logger.error(message, throwable);
             }
         },
@@ -283,7 +283,7 @@ public class FileAppenderThrowableBenchmark {
             }
 
             @Override
-            void log(String message, Throwable throwable) {
+            void log(final String message, final Throwable throwable) {
                 logger.error(message, throwable);
             }
         },
@@ -300,7 +300,7 @@ public class FileAppenderThrowableBenchmark {
             }
 
             @Override
-            void log(String message, Throwable throwable) {
+            void log(final String message, final Throwable throwable) {
                 logger.error(message, throwable);
             }
         },
@@ -318,7 +318,7 @@ public class FileAppenderThrowableBenchmark {
             }
 
             @Override
-            void log(String message, Throwable throwable) {
+            void log(final String message, final Throwable throwable) {
                 logger.error(message, throwable);
             }
         },
@@ -341,7 +341,7 @@ public class FileAppenderThrowableBenchmark {
             }
 
             @Override
-            void log(String message, Throwable throwable) {
+            void log(final String message, final Throwable throwable) {
                 // must specify sourceClass or JUL will look it up by walking the stack trace!
                 logger.logp(Level.SEVERE, FileAppenderThrowableBenchmark.class.getName(), "param1JulFile", message, throwable);
             }
