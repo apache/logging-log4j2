@@ -24,6 +24,7 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.IllegalFormatException;
 import java.util.Locale;
+import java.util.Objects;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -131,7 +132,7 @@ public class MessageFormatMessage implements Message {
 
         final MessageFormatMessage that = (MessageFormatMessage) o;
 
-        if (messagePattern != null ? !messagePattern.equals(that.messagePattern) : that.messagePattern != null) {
+        if (!Objects.equals(messagePattern, that.messagePattern)) {
             return false;
         }
         return Arrays.equals(serializedParameters, that.serializedParameters);

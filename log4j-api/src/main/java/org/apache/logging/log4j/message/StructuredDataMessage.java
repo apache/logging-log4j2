@@ -18,6 +18,7 @@
 package org.apache.logging.log4j.message;
 
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.logging.log4j.util.EnglishEnums;
 import org.apache.logging.log4j.util.StringBuilders;
@@ -426,13 +427,13 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
         if (!super.equals(o)) {
             return false;
         }
-        if (type != null ? !type.equals(that.type) : that.type != null) {
+        if (!Objects.equals(type, that.type)) {
             return false;
         }
-        if (id != null ? !id.equals(that.id) : that.id != null) {
+        if (!Objects.equals(id, that.id)) {
             return false;
         }
-        return message != null ? message.equals(that.message) : that.message == null;
+        return Objects.equals(message, that.message);
     }
 
     @Override

@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.logging.log4j.message.Message;
@@ -226,7 +227,7 @@ public class ParameterizedMessage implements Message {
 
         final ParameterizedMessage that = (ParameterizedMessage) o;
 
-        if (messagePattern != null ? !messagePattern.equals(that.messagePattern) : that.messagePattern != null) {
+        if (!Objects.equals(messagePattern, that.messagePattern)) {
             return false;
         }
         if (!Arrays.equals(stringArgs, that.stringArgs)) {
