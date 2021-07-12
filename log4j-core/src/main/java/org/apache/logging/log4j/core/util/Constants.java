@@ -39,6 +39,11 @@ public final class Constants {
     public static final String LOG4J_DEFAULT_STATUS_LEVEL = "Log4jDefaultStatusLevel";
 
     /**
+     * Name of the system property to set the size (int) of the optional NamePatternConverter cache.
+     */
+    public static final String LOG4J_NAME_PATTERN_CONVERSION_CACHE_SIZE = "Log4jNamePatternCacheSize";
+
+    /**
      * JNDI context name string literal.
      */
     public static final String JNDI_CONTEXT_NAME = "java:comp/env/log4j/context-name";
