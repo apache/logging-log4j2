@@ -77,6 +77,16 @@ public class FixedDateFormat {
         DATE_PERIOD("dd MMM yyyy HH:mm:ss.SSS", "dd MMM yyyy ", 0, ':', 1, '.', 1, 3, null),
 
         /**
+         * American date/time format with 2-digit year: {@code "dd/MM/yy HH:mm:ss.SSS"}.
+         */
+        US_MONTH_DAY_YEAR2_TIME("dd/MM/yy HH:mm:ss.SSS", "dd/MM/yy ", 0, ':', 1, '.', 1, 3, null),
+
+        /**
+         * American date/time format with 4-digit year: {@code "dd/MM/yyyy HH:mm:ss.SSS"}.
+         */
+        US_MONTH_DAY_YEAR4_TIME("dd/MM/yyyy HH:mm:ss.SSS", "dd/MM/yyyy ", 0, ':', 1, '.', 1, 3, null),
+
+        /**
          * DEFAULT time format: {@code "yyyy-MM-dd HH:mm:ss,SSS"}.
          */
         DEFAULT("yyyy-MM-dd HH:mm:ss,SSS", "yyyy-MM-dd ", 0, ':', 1, ',', 1, 3, null),
@@ -452,13 +462,13 @@ public class FixedDateFormat {
         }
 
         final String option0 = options[0];
-        final FixedFormat withNanos = FixedFormat.lookupIgnoringNanos(option0);
-        if (withNanos != null) {
+        final FixedFormat withoutNanos = FixedFormat.lookupIgnoringNanos(option0);
+        if (withoutNanos != null) {
             final int[] nanoRange = FixedFormat.nanoRange(option0);
             final int nanoStart = nanoRange[0];
             final int nanoEnd = nanoRange[1];
             final int secondFractionDigits = nanoEnd - nanoStart;
-            return new FixedDateFormat(withNanos, tz, secondFractionDigits);
+            return new FixedDateFormat(withoutNanos, tz, secondFractionDigits);
         }
         final FixedFormat type = FixedFormat.lookup(option0);
         return type == null ? null : new FixedDateFormat(type, tz);
