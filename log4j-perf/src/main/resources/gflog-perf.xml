@@ -1,0 +1,11 @@
+<config>
+    <appender name="defaultAppenderFactory"
+              factory="com.epam.deltix.gflog.core.appender.FileAppenderFactory"
+              file="target\testgflog.log">
+        <layout template="%d %5p [%t] %c{1} %X{transactionId} - %m%n"/>
+    </appender>
+    <logger name="defaultLogger" level="DEBUG">
+        <appender-ref ref="defaultAppenderFactory"/>
+    </logger>
+
+</config>

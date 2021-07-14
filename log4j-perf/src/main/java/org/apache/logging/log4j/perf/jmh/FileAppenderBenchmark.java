@@ -58,12 +58,14 @@ public class FileAppenderBenchmark {
     org.slf4j.Logger slf4jAsyncLogger;
     org.apache.log4j.Logger log4j1Logger;
     java.util.logging.Logger julLogger;
+    com.epam.deltix.gflog.api.Log gflog;
 
     @Setup
     public void setUp() throws Exception {
         System.setProperty("log4j.configurationFile", "log4j2-perf.xml");
         System.setProperty("log4j.configuration", "log4j12-perf.xml");
         System.setProperty("logback.configurationFile", "logback-perf.xml");
+        System.setProperty("gflog.config", "classpath:gflog-perf.xml");
 
         deleteLogFiles();
 
@@ -82,6 +84,8 @@ public class FileAppenderBenchmark {
         julLogger.setUseParentHandlers(false);
         julLogger.addHandler(julFileHandler);
         julLogger.setLevel(Level.ALL);
+
+        gflog = com.epam.deltix.gflog.api.LogFactory.getLog("defaultLogger");
     }
 
     @TearDown
@@ -106,6 +110,8 @@ public class FileAppenderBenchmark {
         log4j2File.delete();
         final File julFile = new File("target/testJulLog.log");
         julFile.delete();
+        final File gflogFile = new File("target/testgflog.log");
+        gflogFile.delete();
     }
 /*
     @BenchmarkMode(Mode.Throughput)
@@ -163,6 +169,13 @@ public class FileAppenderBenchmark {
     @Benchmark
     public void logbackFile() {
         slf4jLogger.debug(MESSAGE);
+    }
+
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    @Benchmark
+    public void gflog() {
+        gflog.debug(MESSAGE);
     }
 /*
     @BenchmarkMode(Mode.Throughput)
