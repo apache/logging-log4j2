@@ -18,20 +18,15 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.status.StatusLogger;
-
 /**
- * FileSize utility class.
+ * Utility class to parse a file size expression into a number of bytes (long value).
  */
 public final class FileSize {
-    private static final Logger LOGGER = StatusLogger.getLogger();
-
     private static final long KB = 1024;
     private static final long MB = KB * KB;
     private static final long GB = KB * MB;
@@ -46,46 +41,52 @@ public final class FileSize {
     }
 
     /**
-     * Converts a string to a number of bytes. Strings consist of a floating point value followed by
-     * K, M, or G for kilobytes, megabytes, gigabytes, respectively. The
-     * abbreviations KB, MB, and GB are also accepted. Matching is case insensitive.
+     * Converts a string to a number of bytes.<br>
+     * Strings consist of a floating-point value followed by K, M, or G
+     * for kilobytes, megabytes, gigabytes, respectively.<br>
+     * The abbreviations KB, MB, and GB are also accepted. Matching is case-insensitive.
      *
-     * @param string The string to convert
-     * @param defaultValue The default value if a problem is detected parsing.
-     * @return The Bytes value for the string
+     * @param expr the string to convert
+     * @return the file size as number of bytes parsed from the input string
      */
-    public static long parse(final String string, final long defaultValue) {
-        final Matcher matcher = VALUE_PATTERN.matcher(string);
+    public static long parse(final String expr) {
+        Objects.requireNonNull(expr, "File size expression required");
 
-        // Valid input?
-        if (matcher.matches()) {
-            try {
-                // Get double precision value
-                final long value = NumberFormat.getNumberInstance(Locale.ROOT).parse(
-                    matcher.group(1)).longValue();
+        // treat comma as decimal separator unless comma and period appear in the expression
+        final String expression = expr.contains(",") && !expr.contains(".") ? expr.replace(",", ".") : expr;
 
-                // Get units specified
-                final String units = matcher.group(3);
+        final Matcher matcher = VALUE_PATTERN.matcher(expression);
 
-                if (units.isEmpty()) {
-                    return value;
-                } else if (units.equalsIgnoreCase("K")) {
-                    return value * KB;
-                } else if (units.equalsIgnoreCase("M")) {
-                    return value * MB;
-                } else if (units.equalsIgnoreCase("G")) {
-                    return value * GB;
-                } else {
-                    LOGGER.error("FileSize units not recognized: " + string);
-                    return defaultValue;
-                }
-            } catch (final ParseException e) {
-                LOGGER.error("FileSize unable to parse numeric part: " + string, e);
-                return defaultValue;
-            }
+        if (!matcher.matches()) {
+            throw new IllegalArgumentException("Unsupported file size expression '" + expression + "'");
         }
-        LOGGER.error("FileSize unable to parse bytes: " + string);
-        return defaultValue;
+
+        double dval;
+        try {
+            // Get double precision value
+            dval = NumberFormat.getNumberInstance(Locale.ROOT).parse(matcher.group(1)).doubleValue();
+        } catch (final Exception ex) {
+            if (ex instanceof RuntimeException) {
+                throw (RuntimeException) ex;
+            }
+            throw new IllegalArgumentException("Failed to parse file size expression '" + expression + "'", ex);
+        }
+
+        // Get units specified
+        final String units = matcher.group(3).toUpperCase();
+
+        if (units.equals("K")) {
+            dval *= KB;
+        } else if (units.equals("M")) {
+            dval *= MB;
+        } else if (units.equals("G")) {
+            dval *= GB;
+        }
+        final long lval = (long) dval;
+        if (lval < 1) {
+            throw new IllegalArgumentException("File size must be > 0");
+        }
+        return lval;
     }
 
 }

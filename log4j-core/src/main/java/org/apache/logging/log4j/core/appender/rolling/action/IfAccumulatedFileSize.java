@@ -105,7 +105,7 @@ public final class IfAccumulatedFileSize implements PathCondition {
         if (size == null) {
             LOGGER.error("IfAccumulatedFileSize missing mandatory size threshold.");
         }
-        final long threshold = size == null ? Long.MAX_VALUE : FileSize.parse(size, Long.MAX_VALUE);
+        final long threshold = size == null ? Long.MAX_VALUE : FileSize.parse(size);
         return new IfAccumulatedFileSize(threshold, nestedConditions);
     }
 
