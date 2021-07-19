@@ -14,7 +14,8 @@
   },
   "message": {
     "$resolver": "pattern",
-    "pattern": "%m"
+    "pattern": "%m",
+    "stackTraceEnabled": true
   },
   "logging.googleapis.com/labels": {
     "$resolver": "mdc",
@@ -49,11 +50,8 @@
       "field": "message"
     },
     "stackTrace": {
-      "$resolver": "exception",
-      "field": "stackTrace",
-      "stackTrace": {
-        "stringified": true
-      }
+      "$resolver": "pattern",
+      "pattern": "%xEx"
     }
   },
   "_thread": {

@@ -22,8 +22,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintWriter;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -100,12 +98,18 @@ class GcpLayoutTest {
             assertThat(accessor.getString("severity")).isEqualTo(expectedSeverity);
 
             // Verify message.
-            final String expectedMessage = logEvent.getMessage().getFormattedMessage();
-            assertThat(accessor.getString("message")).contains(expectedMessage);
+            final String expectedExceptionStackTrace;
             final Throwable exception = logEvent.getThrown();
             if (exception != null) {
-                final String expectedExceptionMessage = exception.getLocalizedMessage();
-                assertThat(accessor.getString("message")).contains(expectedExceptionMessage);
+                final String actualMessage = accessor.getString("message");
+                assertThat(actualMessage)
+                        .contains(logEvent.getMessage().getFormattedMessage())
+                        .contains(exception.getLocalizedMessage())
+                        .contains("at org.apache.logging.log4j.layout.template.json")
+                        .contains("at java.util.stream.ForEachOps")
+                        .contains("at org.junit.platform.engine");
+            } else {
+                expectedExceptionStackTrace = null;
             }
 
             // Verify labels.
@@ -170,11 +174,12 @@ class GcpLayoutTest {
                         .isEqualTo(exception.getMessage());
 
                 // Verify exception stack trace.
-                final String expectedExceptionStackTrace =
-                        serializeThrowableStackTrace(exception);
                 assertThat(accessor.getString(
                         new String[]{"_exception", "stackTrace"}))
-                        .isEqualTo(expectedExceptionStackTrace);
+                        .contains(exception.getLocalizedMessage())
+                        .contains("at org.apache.logging.log4j.layout.template.json")
+                        .contains("at java.util.stream.ForEachOps")
+                        .contains("at org.junit.platform.engine");
 
             } else {
                 assertThat(accessor.getObject(
@@ -183,9 +188,9 @@ class GcpLayoutTest {
                 assertThat(accessor.getObject(
                         new String[]{"_exception", "message"}))
                         .isNull();
-                assertThat(accessor.getObject(
+                assertThat(accessor.getString(
                         new String[]{"_exception", "stackTrace"}))
-                        .isNull();
+                        .isEmpty();
             }
 
             // Verify thread name.
@@ -205,17 +210,6 @@ class GcpLayoutTest {
                 instant.getEpochSecond(),
                 instant.getNanoOfSecond()).atZone(ZoneId.of("UTC"));
         return DATE_TIME_FORMATTER.format(dateTime);
-    }
-
-    private static String serializeThrowableStackTrace(final Throwable throwable) {
-        try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-             final PrintWriter writer = new PrintWriter(outputStream)) {
-            throwable.printStackTrace(writer);
-            writer.flush();
-            return outputStream.toString(LAYOUT.getCharset().name());
-        } catch (final Exception error) {
-            throw new RuntimeException(error);
-        }
     }
 
 }
