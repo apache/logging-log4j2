@@ -581,7 +581,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
                                                         .withBasePath(compressedName)
                                                         .withFollowLinks(false)
                                                         .withMaxDepth(1)
-                                                        .withPathConditions(new PathCondition[0])
+                                                        .withPathConditions(PathCondition.EMPTY_ARRAY)
                                                         .withSubst(getStrSubstitutor())
                                                         .withFilePermissions(manager.getFilePermissions())
                                                         .withFileOwner(manager.getFileOwner())

@@ -47,8 +47,7 @@ public final class IfLastModified implements PathCondition {
 
     private IfLastModified(final Duration age, final PathCondition[] nestedConditions) {
         this.age = Objects.requireNonNull(age, "age");
-        this.nestedConditions = nestedConditions == null ? new PathCondition[0] : Arrays.copyOf(nestedConditions,
-                nestedConditions.length);
+        this.nestedConditions = PathCondition.copy(nestedConditions);
     }
 
     public Duration getAge() {

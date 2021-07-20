@@ -20,31 +20,31 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
 /**
- * {@link CaseConverterResolver} factory.
+ * {@link CounterResolver} factory.
  */
-@Plugin(name = "CaseConverterResolverFactory", category = TemplateResolverFactory.CATEGORY)
-public final class CaseConverterResolverFactory implements EventResolverFactory {
+@Plugin(name = "CounterResolverFactory", category = TemplateResolverFactory.CATEGORY)
+public final class CounterResolverFactory implements EventResolverFactory {
 
-    private static final CaseConverterResolverFactory INSTANCE =
-            new CaseConverterResolverFactory();
+    private static final CounterResolverFactory INSTANCE =
+            new CounterResolverFactory();
 
-    private CaseConverterResolverFactory() {}
+    private CounterResolverFactory() {}
 
     @PluginFactory
-    public static CaseConverterResolverFactory getInstance() {
+    public static CounterResolverFactory getInstance() {
         return INSTANCE;
     }
 
     @Override
     public String getName() {
-        return CaseConverterResolver.getName();
+        return CounterResolver.getName();
     }
 
     @Override
-    public CaseConverterResolver create(
+    public CounterResolver create(
             final EventResolverContext context,
             final TemplateResolverConfig config) {
-        return new CaseConverterResolver(context, config);
+        return new CounterResolver(context, config);
     }
 
 }

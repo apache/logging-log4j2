@@ -46,8 +46,7 @@ public final class IfAccumulatedFileSize implements PathCondition {
             throw new IllegalArgumentException("Count must be a positive integer but was " + thresholdSize);
         }
         this.thresholdBytes = thresholdSize;
-        this.nestedConditions = nestedConditions == null ? new PathCondition[0] : Arrays.copyOf(nestedConditions,
-                nestedConditions.length);
+        this.nestedConditions = PathCondition.copy(nestedConditions);
     }
 
     public long getThresholdBytes() {

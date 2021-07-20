@@ -64,8 +64,7 @@ public final class IfFileName implements PathCondition {
         }
         this.syntaxAndPattern = createSyntaxAndPatternString(glob, regex);
         this.pathMatcher = FileSystems.getDefault().getPathMatcher(syntaxAndPattern);
-        this.nestedConditions = nestedConditions == null ? new PathCondition[0] : Arrays.copyOf(nestedConditions,
-                nestedConditions.length);
+        this.nestedConditions = PathCondition.copy(nestedConditions);
     }
 
     static String createSyntaxAndPatternString(final String glob, final String regex) {
