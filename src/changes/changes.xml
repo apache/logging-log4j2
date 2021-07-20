@@ -33,6 +33,7 @@
       <!-- ADDS -->
       <action issue="LOG4J2-3116" dev="rgupta" type="add">
         Add JsonTemplateLayout for Google Cloud Platform structured logging layout.
+      </action>
       <action issue="LOG4J2-3067" dev="vy" type="add">
         Add CounterResolver to JsonTemplateLayout.
       </action>
