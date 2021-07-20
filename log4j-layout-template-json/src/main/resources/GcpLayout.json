@@ -18,7 +18,8 @@
     "stackTraceEnabled": true
   },
   "logging.googleapis.com/labels": {
-    "$resolver": "mdc"
+    "$resolver": "mdc",
+    "stringified": true
   },
   "logging.googleapis.com/sourceLocation": {
     "file": {
@@ -31,30 +32,26 @@
     },
     "function": {
       "$resolver": "pattern",
-      "pattern": "%C.%M",
+      "pattern": "%replace{%C.%M}{^\\?\\.$}{}",
       "stackTraceEnabled": false
     }
   },
   "logging.googleapis.com/insertId": {
-    "$resolver": "pattern",
-    "pattern": "%sn",
-    "stackTraceEnabled": false
+    "$resolver": "counter",
+    "stringified": true
   },
   "_exception": {
-    "exception_class": {
+    "class": {
       "$resolver": "exception",
       "field": "className"
     },
-    "exception_message": {
+    "message": {
       "$resolver": "exception",
       "field": "message"
     },
-    "stacktrace": {
-      "$resolver": "exception",
-      "field": "stackTrace",
-      "stackTrace": {
-        "stringified": true
-      }
+    "stackTrace": {
+      "$resolver": "pattern",
+      "pattern": "%xEx"
     }
   },
   "_thread": {
