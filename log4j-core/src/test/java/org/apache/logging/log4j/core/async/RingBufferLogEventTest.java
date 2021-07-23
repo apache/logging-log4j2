@@ -17,32 +17,31 @@
 
 package org.apache.logging.log4j.core.async;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
+import org.apache.logging.log4j.ThreadContext.ContextStack;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.ThrowableProxy;
+import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
+import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
+import org.apache.logging.log4j.core.time.internal.FixedPreciseClock;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.ReusableMessageFactory;
+import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.spi.MutableThreadContextStack;
+import org.apache.logging.log4j.util.FilteredObjectInputStream;
+import org.apache.logging.log4j.util.StringMap;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
-
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.MarkerManager;
-import org.apache.logging.log4j.ThreadContext.ContextStack;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
-import org.apache.logging.log4j.core.time.internal.FixedPreciseClock;
-import org.apache.logging.log4j.message.ParameterConsumer;
-import org.apache.logging.log4j.message.ReusableMessageFactory;
-import org.apache.logging.log4j.util.FilteredObjectInputStream;
-import org.apache.logging.log4j.util.StringMap;
-import org.apache.logging.log4j.core.impl.ThrowableProxy;
-import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.spi.MutableThreadContextStack;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.*;
@@ -58,7 +57,35 @@ public class RingBufferLogEventTest {
         final LogEvent logEvent = new RingBufferLogEvent();
         Assert.assertNotSame(logEvent, logEvent.toImmutable());
     }
-    
+
+    /**
+     * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-2816">LOG4J2-2816</a>
+     */
+    @Test
+    public void testIsPopulated() {
+        final RingBufferLogEvent evt = new RingBufferLogEvent();
+
+        assertFalse(evt.isPopulated());
+
+        final String loggerName = null;
+        final Marker marker = null;
+        final String fqcn = null;
+        final Level level = null;
+        final Message data = null;
+        final Throwable t = null;
+        final ContextStack contextStack = null;
+        final String threadName = null;
+        final StackTraceElement location = null;
+        evt.setValues(null, loggerName, marker, fqcn, level, data, t, (StringMap) evt.getContextData(),
+                contextStack, -1, threadName, -1, location, new FixedPreciseClock(), new DummyNanoClock(1));
+
+        assertTrue(evt.isPopulated());
+
+        evt.clear();
+
+        assertFalse(evt.isPopulated());
+    }
+
     @Test
     public void testGetLevelReturnsOffIfNullLevelSet() {
         final RingBufferLogEvent evt = new RingBufferLogEvent();
@@ -192,8 +219,8 @@ public class RingBufferLogEventTest {
         final Marker marker = MarkerManager.getMarker("marked man");
         final String fqcn = "f.q.c.n";
         final Level level = Level.TRACE;
-        ReusableMessageFactory factory = new ReusableMessageFactory();
-        Message message = factory.newMessage("Hello {}!", "World");
+        final ReusableMessageFactory factory = new ReusableMessageFactory();
+        final Message message = factory.newMessage("Hello {}!", "World");
         try {
             final Throwable t = new InternalError("not a real error");
             final ContextStack contextStack = new MutableThreadContextStack(Arrays.asList("a", "b"));
@@ -221,8 +248,8 @@ public class RingBufferLogEventTest {
         final Marker marker = MarkerManager.getMarker("marked man");
         final String fqcn = "f.q.c.n";
         final Level level = Level.TRACE;
-        ReusableMessageFactory factory = new ReusableMessageFactory();
-        Message message = factory.newMessage("Hello {}!", "World");
+        final ReusableMessageFactory factory = new ReusableMessageFactory();
+        final Message message = factory.newMessage("Hello {}!", "World");
         try {
             final Throwable t = new InternalError("not a real error");
             final ContextStack contextStack = new MutableThreadContextStack(Arrays.asList("a", "b"));
@@ -253,11 +280,6 @@ public class RingBufferLogEventTest {
     @Test
     public void testForEachParameterNothingSet() {
         final RingBufferLogEvent evt = new RingBufferLogEvent();
-        evt.forEachParameter(new ParameterConsumer<Void>() {
-            @Override
-            public void accept(Object parameter, int parameterIndex, Void state) {
-                fail("Should not have been called");
-            }
-        }, null);
+        evt.forEachParameter((parameter, parameterIndex, state) -> fail("Should not have been called"), null);
     }
 }

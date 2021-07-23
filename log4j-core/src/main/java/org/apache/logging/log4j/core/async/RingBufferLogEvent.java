@@ -63,6 +63,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         }
     }
 
+    private boolean populated;
     private int threadPriority;
     private long threadId;
     private final MutableInstant instant = new MutableInstant();
@@ -108,6 +109,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         this.contextData = mutableContextData;
         this.contextStack = aContextStack;
         this.asyncLogger = anAsyncLogger;
+        this.populated = true;
     }
 
     private void initTime(final Clock clock) {
@@ -153,6 +155,13 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
     public void execute(final boolean endOfBatch) {
         this.endOfBatch = endOfBatch;
         asyncLogger.actualAsyncLog(this);
+    }
+
+    /**
+     * @return {@code true} if this event is populated with data, {@code false} otherwise
+     */
+    public boolean isPopulated() {
+        return populated;
     }
 
     /**
@@ -384,6 +393,8 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
      * Release references held by ring buffer to allow objects to be garbage-collected.
      */
     public void clear() {
+        this.populated = false;
+
         this.asyncLogger = null;
         this.loggerName = null;
         this.marker = null;
