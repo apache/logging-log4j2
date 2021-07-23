@@ -58,6 +58,34 @@ public class RingBufferLogEventTest {
         Assert.assertNotSame(logEvent, logEvent.toImmutable());
     }
 
+    /**
+     * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-2816">LOG4J2-2816</a>
+     */
+    @Test
+    public void testIsPopulated() {
+        final RingBufferLogEvent evt = new RingBufferLogEvent();
+
+        assertFalse(evt.isPopulated());
+
+        final String loggerName = null;
+        final Marker marker = null;
+        final String fqcn = null;
+        final Level level = null;
+        final Message data = null;
+        final Throwable t = null;
+        final ContextStack contextStack = null;
+        final String threadName = null;
+        final StackTraceElement location = null;
+        evt.setValues(null, loggerName, marker, fqcn, level, data, t, (StringMap) evt.getContextData(),
+                contextStack, -1, threadName, -1, location, new FixedPreciseClock(), new DummyNanoClock(1));
+
+        assertTrue(evt.isPopulated());
+
+        evt.clear();
+
+        assertFalse(evt.isPopulated());
+    }
+
     @Test
     public void testGetLevelReturnsOffIfNullLevelSet() {
         final RingBufferLogEvent evt = new RingBufferLogEvent();
