@@ -105,7 +105,7 @@
                   <includes>
                     <include>module-info.class</include>
                     <include>**/Log4jPlugins.class</include>
-                    <include>**/Log4jBeanInfo.class</include>
+                    <include>**/Log4jModule.class</include>
                   </includes>
                 </fileset>
                 <fileset>
@@ -140,14 +140,11 @@
             </goals>
             <phase>generate-sources</phase>
             <configuration combine.self="override">
-              <source>${maven.compiler.source}</source>
-              <target>${maven.compiler.target}</target>
               <proc>only</proc>
               <annotationProcessors>
                 <annotationProcessor>org.apache.logging.log4j.plugins.processor.PluginProcessor</annotationProcessor>
                 <annotationProcessor>org.apache.logging.log4j.plugins.processor.BeanProcessor</annotationProcessor>
               </annotationProcessors>
-              <parameters>true</parameters>
             </configuration>
           </execution>
           <execution>
@@ -158,8 +155,6 @@
             </goals>
             <phase>generate-sources</phase>
             <configuration combine.self="override">
-              <source>${maven.compiler.source}</source>
-              <target>${maven.compiler.target}</target>
               <proc>only</proc>
               <annotationProcessors>
                 <annotationProcessor>org.apache.logging.log4j.plugins.processor.PluginProcessor</annotationProcessor>
@@ -168,7 +163,6 @@
               <compileSourceRoots>
                 <compileSourceRoot>${project.basedir}/src/test/java-test</compileSourceRoot>
               </compileSourceRoots>
-              <parameters>true</parameters>
             </configuration>
           </execution>
           <execution>
@@ -179,8 +173,6 @@
             </goals>
             <phase>generate-sources</phase>
             <configuration combine.self="override">
-              <source>${maven.compiler.source}</source>
-              <target>${maven.compiler.target}</target>
               <proc>only</proc>
               <annotationProcessors>
                 <annotationProcessor>org.apache.logging.log4j.plugins.processor.PluginProcessor</annotationProcessor>
@@ -195,7 +187,6 @@
               </compileSourceRoots>
               <generatedTestSourcesDirectory>${project.build.directory}/generated-test-sources/unit-test-annotations</generatedTestSourcesDirectory>
               <outputDirectory>${project.build.directory}/unit-test-classes</outputDirectory>
-              <parameters>true</parameters>
             </configuration>
           </execution>
           <execution>
@@ -205,37 +196,6 @@
               <goal>compile</goal>
             </goals>
             <configuration combine.self="override">
-              <source>${maven.compiler.source}</source>
-              <target>${maven.compiler.target}</target>
-              <release>${maven.compiler.release}</release>
-              <showDeprecation>true</showDeprecation>
-              <showWarnings>true</showWarnings>
-              <encoding>UTF-8</encoding>
-              <fork>true</fork>
-              <meminitial>256</meminitial>
-              <maxmem>1024</maxmem>
-              <compilerArgs>
-                <arg>-XDcompilePolicy=simple</arg>
-                <arg>-Xplugin:ErrorProne</arg>
-                <!--
-                https://errorprone.info/docs/installation
-                in Java 16+, https://openjdk.java.net/jeps/396 encapsulates internals that errorprone needs
-                -->
-                <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>
-                <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>
-                <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</arg>
-                <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</arg>
-                <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</arg>
-                <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>
-                <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>
-                <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>
-                <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
-                <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>
-              </compilerArgs>
-              <compilerArguments>
-                <Xmaxwarns>10000</Xmaxwarns>
-                <Xlint />
-              </compilerArguments>
               <annotationProcessorPaths>
                 <path>
                   <groupId>com.google.errorprone</groupId>
@@ -243,8 +203,6 @@
                   <version>${errorprone.version}</version>
                 </path>
               </annotationProcessorPaths>
-              <forceJavacCompilerUse>true</forceJavacCompilerUse>
-              <parameters>true</parameters>
               <compileSourceRoots>
                 <compileSourceRoot>${project.basedir}/src/main/java</compileSourceRoot>
                 <compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
@@ -259,14 +217,11 @@
             </goals>
             <phase>process-classes</phase>
             <configuration combine.self="override">
-              <source>${maven.compiler.source}</source>
-              <target>${maven.compiler.target}</target>
               <proc>none</proc>
               <compileSourceRoots>
                 <compileSourceRoot>${project.basedir}/src/test/java-test</compileSourceRoot>
                 <compileSourceRoot>${project.basedir}/src/test/java-test9</compileSourceRoot>
               </compileSourceRoots>
-              <parameters>true</parameters>
             </configuration>
           </execution>
           <execution>
@@ -276,39 +231,6 @@
               <goal>testCompile</goal>
             </goals>
             <configuration combine.self="override">
-              <source>${maven.compiler.source}</source>
-              <target>${maven.compiler.target}</target>
-              <release>${maven.compiler.release}</release>
-              <showDeprecation>true</showDeprecation>
-              <showWarnings>true</showWarnings>
-              <encoding>UTF-8</encoding>
-              <fork>true</fork>
-              <meminitial>256</meminitial>
-              <maxmem>1024</maxmem>
-              <compilerArgs>
-                <arg>-XDcompilePolicy=simple</arg>
-                <arg>-Xplugin:ErrorProne</arg>
-                <!--
-                https://errorprone.info/docs/installation
-                in Java 16+, https://openjdk.java.net/jeps/396 encapsulates internals that errorprone needs
-                -->
-                <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>
-                <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>
-                <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</arg>
-                <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</arg>
-                <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</arg>
-                <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>
-                <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>
-                <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>
-                <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
-                <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>
-              </compilerArgs>
-              <compilerArguments>
-                <Xmaxwarns>10000</Xmaxwarns>
-                <Xlint />
-              </compilerArguments>
-              <forceJavacCompilerUse>true</forceJavacCompilerUse>
-              <parameters>true</parameters>
               <annotationProcessorPaths>
                 <path>
                   <groupId>com.google.errorprone</groupId>

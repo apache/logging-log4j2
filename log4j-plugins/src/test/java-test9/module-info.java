@@ -4,5 +4,8 @@ module org.apache.logging.log4j.plugins.test {
     requires org.apache.logging.log4j;
     requires org.apache.logging.log4j.plugins;
 
-    provides org.apache.logging.log4j.plugins.processor.PluginService with org.apache.logging.log4j.plugins.test.validation.plugins.Log4jPlugins;
+    provides org.apache.logging.log4j.plugins.processor.PluginService with
+            org.apache.logging.log4j.plugins.test.validation.plugins.Log4jPlugins;
+    provides org.apache.logging.log4j.plugins.di.spi.PluginModule with
+            org.apache.logging.log4j.plugins.test.validation.plugins.Log4jModule;
 }

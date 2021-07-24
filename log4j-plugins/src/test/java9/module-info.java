@@ -23,10 +23,14 @@ open module org.apache.logging.log4j.plugins {
     requires org.junit.platform.engine;
     requires junit;
 
-    provides org.apache.logging.log4j.plugins.processor.PluginService with org.apache.logging.log4j.plugins.convert.plugins.Log4jPlugins;
-    provides org.apache.logging.log4j.plugins.di.spi.BeanInfoService with org.apache.logging.log4j.plugins.convert.plugins.Log4jBeanInfo;
-    provides javax.annotation.processing.Processor with org.apache.logging.log4j.plugins.processor.PluginProcessor, org.apache.logging.log4j.plugins.processor.BeanProcessor;
+    provides org.apache.logging.log4j.plugins.processor.PluginService with
+            org.apache.logging.log4j.plugins.convert.plugins.Log4jPlugins;
+    provides org.apache.logging.log4j.plugins.di.spi.PluginModule with
+            org.apache.logging.log4j.plugins.convert.plugins.Log4jModule;
+    provides javax.annotation.processing.Processor with
+            org.apache.logging.log4j.plugins.processor.PluginProcessor,
+            org.apache.logging.log4j.plugins.processor.BeanProcessor;
 
     uses org.apache.logging.log4j.plugins.processor.PluginService;
-    uses org.apache.logging.log4j.plugins.di.spi.BeanInfoService;
+    uses org.apache.logging.log4j.plugins.di.spi.PluginModule;
 }

@@ -21,7 +21,6 @@ import org.apache.logging.log4j.plugins.di.Disposes;
 import org.apache.logging.log4j.plugins.di.Inject;
 import org.apache.logging.log4j.plugins.di.Producer;
 import org.apache.logging.log4j.plugins.di.Qualifier;
-import org.apache.logging.log4j.util.Strings;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
@@ -35,30 +34,28 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementKindVisitor9;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.SimpleAnnotationValueVisitor9;
 import javax.lang.model.util.Types;
-import javax.tools.FileObject;
-import javax.tools.JavaFileObject;
 import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UncheckedIOException;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 // TODO: migrate to separate maven module between log4j-plugins and log4j-core
 @SupportedAnnotationTypes({"org.apache.logging.log4j.plugins.*", "org.apache.logging.log4j.core.config.plugins.*"})
 @SupportedOptions("pluginPackage")
 public class BeanProcessor extends AbstractProcessor {
-    public static final String BEAN_INFO_SERVICE_FILE = "META-INF/services/org.apache.logging.log4j.plugins.di.spi.BeanInfoService";
+    public static final String PLUGIN_MODULE_SERVICE_FILE = "META-INF/services/org.apache.logging.log4j.plugins.di.spi.PluginModule";
 
     public BeanProcessor() {
     }
@@ -214,45 +211,50 @@ public class BeanProcessor extends AbstractProcessor {
         final var pluginAnnotationVisitor = new PluginAnnotationVisitor();
         roundEnv.getElementsAnnotatedWithAny(pluginAnnotations).forEach(pluginAnnotationVisitor::visit);
 
-        final Set<ExecutableElement> producerMethods = producesAnnotationVisitor.producerMethods;
-        final Set<VariableElement> producerFields = producesAnnotationVisitor.producerFields;
-        final Set<ExecutableElement> disposesMethods = disposesAnnotationVisitor.disposesMethods;
-        final Set<TypeElement> injectableClasses = injectAnnotationVisitor.injectableClasses;
-        final Set<TypeElement> implicitInjectableClasses = qualifiedAnnotationVisitor.injectableClasses;
-        final Map<String, Set<TypeElement>> pluginCategories = pluginAnnotationVisitor.pluginCategories;
         final Set<PackageElement> packageElements = new HashSet<>();
 
         final Elements elements = processingEnv.getElementUtils();
-        final Set<CharSequence> producibleClassNames = Stream.concat(
-                producerMethods.stream()
-                        .map(e -> (TypeElement) e.getEnclosingElement())
-                        .peek(e -> packageElements.add(elements.getPackageOf(e)))
-                        .map(elements::getBinaryName),
-                producerFields.stream()
-                        .map(e -> (TypeElement) e.getEnclosingElement())
-                        .peek(e -> packageElements.add(elements.getPackageOf(e)))
-                        .map(elements::getBinaryName))
-                .collect(Collectors.toSet());
-        final Set<CharSequence> destructibleClassNames = disposesMethods.stream()
+        final Map<String, Set<String>> producerBeans = new HashMap<>();
+        for (final ExecutableElement producerMethod : producesAnnotationVisitor.producerMethods) {
+            final TypeElement declaringType = (TypeElement) producerMethod.getEnclosingElement();
+            packageElements.add(elements.getPackageOf(declaringType));
+            final String declaringClassName = elements.getBinaryName(declaringType).toString();
+            final Set<String> classNameHierarchy = getClassNameHierarchy(producerMethod.getReturnType());
+            producerBeans.put(declaringClassName, classNameHierarchy);
+        }
+        for (final VariableElement producerField : producesAnnotationVisitor.producerFields) {
+            final TypeElement declaringType = (TypeElement) producerField.getEnclosingElement();
+            packageElements.add(elements.getPackageOf(declaringType));
+            final String declaringClassName = elements.getBinaryName(declaringType).toString();
+            final Set<String> classNameHierarchy = getClassNameHierarchy(producerField.asType());
+            producerBeans.put(declaringClassName, classNameHierarchy);
+        }
+
+        final Set<CharSequence> destructibleClassNames = disposesAnnotationVisitor.disposesMethods.stream()
                 .map(e -> (TypeElement) e.getEnclosingElement())
                 .peek(e -> packageElements.add(elements.getPackageOf(e)))
                 .map(elements::getBinaryName)
                 .collect(Collectors.toSet());
-        final Set<CharSequence> injectableClassNames = Stream.concat(
-                injectableClasses.stream()
-                        .peek(e -> packageElements.add(elements.getPackageOf(e)))
-                        .map(elements::getBinaryName),
-                implicitInjectableClasses.stream()
-                        .peek(e -> packageElements.add(elements.getPackageOf(e)))
-                        .map(elements::getBinaryName))
-                .collect(Collectors.toSet());
-        final Map<String, List<CharSequence>> pluginClassNames = pluginCategories.entrySet().stream().collect(
-                Collectors.toMap(Map.Entry::getKey,
-                        entry -> entry.getValue().stream()
-                                .peek(el -> packageElements.add(elements.getPackageOf(el)))
-                                .map(elements::getBinaryName)
-                                .sorted(CharSequence::compare)
-                                .collect(Collectors.toList())));
+
+        final Map<String, Set<String>> injectionBeans = new HashMap<>();
+        final Set<TypeElement> injectionClasses = new HashSet<>(injectAnnotationVisitor.injectableClasses);
+        injectionClasses.addAll(qualifiedAnnotationVisitor.injectableClasses);
+        for (final TypeElement injectableClass : injectionClasses) {
+            packageElements.add(elements.getPackageOf(injectableClass));
+            final String declaringClassName = elements.getBinaryName(injectableClass).toString();
+            final Set<String> classNameHierarchy = getClassNameHierarchy(injectableClass.asType());
+            injectionBeans.put(declaringClassName, classNameHierarchy);
+        }
+
+        final Map<String, Set<String>> pluginBeans = pluginAnnotationVisitor.pluginCategories
+                .values()
+                .stream()
+                .flatMap(Set::stream)
+                .peek(typeElement -> packageElements.add(elements.getPackageOf(typeElement)))
+                .collect(Collectors.toMap(
+                        typeElement -> elements.getBinaryName(typeElement).toString(),
+                        typeElement -> getClassNameHierarchy(typeElement.asType())
+                ));
 
         String packageName = processingEnv.getOptions().get("pluginPackage");
         if (packageName == null) {
@@ -263,66 +265,97 @@ public class BeanProcessor extends AbstractProcessor {
                     .orElseThrow()
                     .toString();
         }
+        String className = processingEnv.getOptions().getOrDefault("pluginClassName", "Log4jModule");
         try {
-            writeBeanInfoServiceFile(packageName);
-            writeBeanInfoServiceClass(packageName, injectableClassNames, producibleClassNames, destructibleClassNames, pluginClassNames);
+            writePluginModule(packageName, className, injectionBeans, producerBeans, destructibleClassNames, pluginBeans);
             return false;
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
 
-    private void writeBeanInfoServiceFile(final String packageName) throws IOException {
-        final FileObject fileObject = processingEnv.getFiler()
-                .createResource(StandardLocation.CLASS_OUTPUT, "", BEAN_INFO_SERVICE_FILE);
-        try (PrintWriter out = new PrintWriter(fileObject.openWriter())) {
-            out.println(packageName + ".plugins.Log4jBeanInfo");
+    private void writePluginModule(final CharSequence packageName, final CharSequence className,
+                                   final Map<String, Set<String>> injectionBeans,
+                                   final Map<String, Set<String>> producerBeans,
+                                   final Set<CharSequence> destructorBeans,
+                                   final Map<String, Set<String>> pluginBeans) throws IOException {
+        try (final PrintWriter out = new PrintWriter(processingEnv.getFiler().createResource(
+                StandardLocation.CLASS_OUTPUT, "", PLUGIN_MODULE_SERVICE_FILE).openWriter())) {
+            out.println(packageName + ".plugins." + className);
         }
-    }
-
-    private void writeBeanInfoServiceClass(final String packageName, final Set<CharSequence> injectableClassNames,
-                                           final Set<CharSequence> producibleClassNames,
-                                           final Set<CharSequence> destructibleClassNames,
-                                           final Map<String, List<CharSequence>> pluginClassNames)
-            throws IOException {
-        final JavaFileObject sourceFile = processingEnv.getFiler()
-                .createSourceFile(packageName + ".plugins.Log4jBeanInfo");
-        try (final PrintWriter out = new PrintWriter(sourceFile.openWriter())) {
+        try (final PrintWriter out = new PrintWriter(processingEnv.getFiler().createSourceFile(
+                packageName + ".plugins." + className).openWriter())) {
             out.println("package " + packageName + ".plugins;");
             out.println();
-            out.println("import java.util.List;");
-            out.println("import java.util.Map;");
+            out.println("import java.util.*;");
+            out.println();
+            out.println("import org.apache.logging.log4j.plugins.di.spi.PluginModule;");
             out.println();
             out.println("@javax.annotation.processing.Generated(\"" + getClass().getName() + "\")");
-            out.println("public class Log4jBeanInfo extends org.apache.logging.log4j.plugins.di.spi.BeanInfoService {");
+            out.println("public class " + className + " extends PluginModule {");
             out.println();
-            out.println("  private static final List<String> INJECTABLE = List.of(" + getListOfNames(injectableClassNames) + ");");
+            out.println("  private static final Map<String, Set<String>> INJECT =");
+            out.println("    new TreeMap<>(Map.ofEntries(" + getEntries(injectionBeans) + "));");
             out.println();
-            out.println("  private static final List<String> PRODUCIBLE = List.of(" + getListOfNames(producibleClassNames) + ");");
+            out.println("  private static final Map<String, Set<String>> PRODUCE =");
+            out.println("    new TreeMap<>(Map.ofEntries(" + getEntries(producerBeans) + "));");
             out.println();
-            out.println("  private static final List<String> DESTRUCTIBLE = List.of(" + getListOfNames(destructibleClassNames) + ");");
+            out.println("  private static final Set<String> DESTROY = new TreeSet<>(Set.of(" + destructorBeans.stream().sorted(CharSequence::compare).collect(Collectors.joining("\",\n\"", "\n\"", "\"\n")) + "));");
             out.println();
-            out.println("  private static final Map<String, List<String>> PLUGIN_CATEGORIES = Map.of(" + getMapOfPluginNames(pluginClassNames) + ");");
+            out.println("  private static final Map<String, Set<String>> PLUGINS =");
+            out.println("    new TreeMap<>(Map.ofEntries(" + getEntries(pluginBeans) + "));");
             out.println();
-            out.println("  public Log4jBeanInfo() {");
-            out.println("    super(INJECTABLE, PRODUCIBLE, DESTRUCTIBLE, PLUGIN_CATEGORIES);");
+            out.println("  public " + className + "() {");
+            out.println("    super(INJECT, PRODUCE, DESTROY, PLUGINS);");
             out.println("  }");
             out.println();
             out.println("}");
         }
     }
 
-    private static String getListOfNames(final Set<CharSequence> names) {
-        return names.isEmpty() ? Strings.EMPTY : names.stream().sorted(CharSequence::compare).collect(
-                Collectors.joining("\",\n    \"", "\n    \"", "\"\n  "));
+    private static String getEntries(final Map<String, Set<String>> beans) {
+        return beans.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(e -> "Map.entry(\"" + e.getKey() + "\", new TreeSet<>(Set.of(" + e.getValue().stream().sorted().collect(Collectors.joining("\", \"", "\"", "\"")) + ")))")
+                .collect(Collectors.joining(",\n", "\n", "\n"));
     }
 
-    private static String getMapOfPluginNames(final Map<String, List<CharSequence>> pluginClassNames) {
-        return pluginClassNames.isEmpty() ? Strings.EMPTY : pluginClassNames.entrySet()
-                .stream()
-                .sorted(Map.Entry.comparingByKey())
-                .map(e -> '"' + e.getKey() + "\", List.of(" + e.getValue().stream().collect(Collectors.joining("\",\n      \"", "\n      \"", "\"\n    ")) + ')')
-                .collect(Collectors.joining(",\n    ", "\n    ", "\n  "));
+    private Set<String> getClassNameHierarchy(final TypeMirror base) {
+        final Set<String> hierarchy = new TreeSet<>();
+        walkClassHierarchy(base, hierarchy);
+        return hierarchy;
+    }
+
+    private void walkClassHierarchy(final TypeMirror base, final Set<String> encountered) {
+        final Types types = processingEnv.getTypeUtils();
+        final Elements elements = processingEnv.getElementUtils();
+        final Element element = types.asElement(base);
+        if (element != null) {
+            element.accept(new ElementKindVisitor9<Void, Void>() {
+                @Override
+                public Void visitTypeAsClass(final TypeElement e, final Void unused) {
+                    if (!elements.getPackageOf(e).getQualifiedName().contentEquals("java.lang")) {
+                        encountered.add(elements.getBinaryName(e).toString());
+                    }
+                    return null;
+                }
+
+                @Override
+                public Void visitTypeAsEnum(final TypeElement e, final Void unused) {
+                    encountered.add(elements.getBinaryName(e).toString());
+                    return null;
+                }
+
+                @Override
+                public Void visitTypeAsInterface(final TypeElement e, final Void unused) {
+                    encountered.add(elements.getBinaryName(e).toString());
+                    return null;
+                }
+            }, null);
+        }
+        for (final TypeMirror directSupertype : types.directSupertypes(base)) {
+            walkClassHierarchy(directSupertype, encountered);
+        }
     }
 
     private static CharSequence commonPrefix(final CharSequence str1, final CharSequence str2) {

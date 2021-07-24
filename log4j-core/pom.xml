@@ -330,7 +330,7 @@
                   <includes>
                     <include>module-info.class</include>
                     <include>**/Log4jPlugins.class</include>
-                    <include>**/Log4jBeanInfo.class</include>
+                    <include>**/Log4jModule.class</include>
                   </includes>
                 </fileset>
                 <fileset>
@@ -353,13 +353,6 @@
               <goal>compile</goal>
             </goals>
             <phase>compile</phase>
-            <configuration combine.self="override">
-              <source>${maven.compiler.source}</source>
-              <target>${maven.compiler.target}</target>
-              <release>${maven.compiler.release}</release>
-              <forceJavacCompilerUse>true</forceJavacCompilerUse>
-              <parameters>true</parameters>
-            </configuration>
           </execution>
           <execution>
             <!-- compile the module-info.java -->
@@ -369,11 +362,6 @@
             </goals>
             <phase>compile</phase>
             <configuration combine.self="override">
-              <source>${maven.compiler.source}</source>
-              <target>${maven.compiler.target}</target>
-              <release>${maven.compiler.release}</release>
-              <forceJavacCompilerUse>true</forceJavacCompilerUse>
-              <parameters>true</parameters>
               <compileSourceRoots>
                 <compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
               </compileSourceRoots>
@@ -387,15 +375,10 @@
             </goals>
             <phase>compile</phase>
             <configuration>
-              <source>${maven.compiler.source}</source>
-              <target>${maven.compiler.target}</target>
-              <release>${maven.compiler.release}</release>
               <compileSourceRoots>
                 <compileSourceRoot>${project.basedir}/src/test/java-test</compileSourceRoot>
                 <compileSourceRoot>${project.basedir}/src/test/java-test9</compileSourceRoot>
               </compileSourceRoots>
-              <forceJavacCompilerUse>true</forceJavacCompilerUse>
-              <parameters>true</parameters>
             </configuration>
           </execution>
           <execution>
@@ -406,14 +389,9 @@
             </goals>
             <phase>process-test-sources</phase>
             <configuration>
-              <source>${maven.compiler.source}</source>
-              <target>${maven.compiler.target}</target>
-              <release>${maven.compiler.release}</release>
-              <forceJavacCompilerUse>true</forceJavacCompilerUse>
-              <parameters>true</parameters>
-              <compilerArgs>
-                <arg>-ApluginPackage=org.apache.logging.log4j.core.test</arg>
-              </compilerArgs>
+              <compilerArguments>
+                <ApluginPackage>org.apache.logging.log4j.core.test</ApluginPackage>
+              </compilerArguments>
               <compileSourceRoots>
                 <compileSourceRoot>${project.basedir}/src/test/java</compileSourceRoot>
                 <compileSourceRoot>${project.basedir}/src/test/java-test</compileSourceRoot>
@@ -427,11 +405,6 @@
               <goal>testCompile</goal>
             </goals>
             <configuration>
-              <source>${maven.compiler.source}</source>
-              <target>${maven.compiler.target}</target>
-              <release>${maven.compiler.release}</release>
-              <forceJavacCompilerUse>true</forceJavacCompilerUse>
-              <parameters>true</parameters>
               <compileSourceRoots>
                 <compileSourceRoot>${project.basedir}/src/test/java9</compileSourceRoot>
               </compileSourceRoots>

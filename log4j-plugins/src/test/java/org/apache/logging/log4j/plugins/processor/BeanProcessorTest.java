@@ -17,38 +17,25 @@
 
 package org.apache.logging.log4j.plugins.processor;
 
-import org.apache.logging.log4j.plugins.di.spi.BeanInfoService;
+import org.apache.logging.log4j.plugins.di.spi.PluginModule;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.ServiceLoader;
 
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BeanProcessorTest {
     @Test
-    void canLoadTestCategory() {
-        final BeanInfoService service = ServiceLoader.load(BeanInfoService.class, getClass().getClassLoader())
-                .findFirst()
-                .orElseThrow();
-        final List<String> testPlugins = service.getPluginCategories().get("Test");
-        assertNotNull(testPlugins);
-        assertNotEquals(0, testPlugins.size());
-        assertTrue(testPlugins.stream().anyMatch(name -> name.equals(FakePlugin.class.getName())));
-    }
-
-    @Test
     void smokeTests() {
-        final BeanInfoService service = ServiceLoader.load(BeanInfoService.class, getClass().getClassLoader())
+        final PluginModule service = ServiceLoader.load(PluginModule.class, getClass().getClassLoader())
                 .findFirst()
                 .orElseThrow();
-        assertTrue(service.getInjectableClassNames().stream().anyMatch(name -> name.equals("org.apache.logging.log4j.plugins.test.validation.ExampleBean")));
-        assertTrue(service.getInjectableClassNames().stream().anyMatch(name -> name.equals("org.apache.logging.log4j.plugins.test.validation.ImplicitBean")));
-        assertTrue(service.getInjectableClassNames().stream().anyMatch(name -> name.equals("org.apache.logging.log4j.plugins.test.validation.ImplicitMethodBean")));
-        assertTrue(service.getInjectableClassNames().stream().anyMatch(name -> name.equals("org.apache.logging.log4j.plugins.test.validation.ProductionBean$Builder")));
-        assertTrue(service.getProducibleClassNames().stream().anyMatch(name -> name.equals("org.apache.logging.log4j.plugins.test.validation.ProductionBean")));
-        assertTrue(service.getDestructibleClassNames().stream().anyMatch(name -> name.equals("org.apache.logging.log4j.plugins.test.validation.ProductionBean")));
+        assertTrue(service.getInjectionBeans().containsKey("org.apache.logging.log4j.plugins.test.validation.ExampleBean"));
+        assertTrue(service.getInjectionBeans().containsKey("org.apache.logging.log4j.plugins.test.validation.ImplicitBean"));
+        assertTrue(service.getInjectionBeans().containsKey("org.apache.logging.log4j.plugins.test.validation.ImplicitMethodBean"));
+        assertTrue(service.getInjectionBeans().containsKey("org.apache.logging.log4j.plugins.test.validation.ProductionBean$Builder"));
+        assertTrue(service.getProducerBeans().containsKey("org.apache.logging.log4j.plugins.test.validation.ProductionBean"));
+        assertTrue(service.getDestructorBeans().contains("org.apache.logging.log4j.plugins.test.validation.ProductionBean"));
+        assertTrue(service.getPluginBeans().containsKey(FakePlugin.class.getName()));
     }
 }
