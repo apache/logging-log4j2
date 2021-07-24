@@ -56,6 +56,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -69,10 +70,10 @@ public class DefaultBeanManager implements BeanManager {
 
     private final Injector injector = new Injector(this);
 
-    private final Collection<Bean<?>> enabledBeans = ConcurrentHashMap.newKeySet();
+    private final Collection<Bean<?>> enabledBeans = new HashSet<>();
     private final Map<Type, Collection<Bean<?>>> beansByType = new ConcurrentHashMap<>();
-    private final Collection<DisposesMethod> disposesMethods = Collections.synchronizedCollection(new ArrayList<>());
-    private final Map<Class<? extends Annotation>, ScopeContext> scopes = new ConcurrentHashMap<>();
+    private final Collection<DisposesMethod> disposesMethods = new ArrayList<>();
+    private final Map<Class<? extends Annotation>, ScopeContext> scopes = new LinkedHashMap<>();
 
     public DefaultBeanManager() {
         // TODO: need a better way to register scope contexts
@@ -409,9 +410,11 @@ public class DefaultBeanManager implements BeanManager {
         beansByType.clear();
         enabledBeans.clear();
         disposesMethods.clear();
-        // TODO: better scope closing after more scopes are supported
-        scopes.get(SingletonScoped.class).close();
-        scopes.clear();
+        final List<Class<? extends Annotation>> scopeTypes = new ArrayList<>(scopes.keySet());
+        Collections.reverse(scopeTypes);
+        for (final Class<? extends Annotation> scopeType : scopeTypes) {
+            scopes.get(scopeType).close();
+        }
     }
 
     private static class DisposesMethod {
