@@ -59,7 +59,6 @@ class BeanManagerTest {
 
     @Produces
     @Named
-    @SingletonScoped
     static SingletonBean getSingleton() {
         return new SingletonBean();
     }

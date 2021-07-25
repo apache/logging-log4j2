@@ -353,6 +353,12 @@ public class DefaultBeanManager implements BeanManager {
                 return annotationType;
             }
         }
+        if (element instanceof Field) {
+            return getScopeType(((Field) element).getType());
+        }
+        if (element instanceof Method) {
+            return getScopeType(((Method) element).getReturnType());
+        }
         return DependentScoped.class;
     }
 
