@@ -45,7 +45,7 @@ import java.lang.annotation.Target;
  * @see <a href="https://docs.jboss.org/cdi/api/2.0/javax/enterprise/inject/Produces.html">CDI @Produces API Docs</a>
  * @see <a href="https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/annotation/Bean.html">Spring @Bean API Docs</a>
  */
-@Target({ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE})
+@Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Producer
