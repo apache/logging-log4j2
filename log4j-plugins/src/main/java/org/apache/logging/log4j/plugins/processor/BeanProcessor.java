@@ -17,10 +17,12 @@
 
 package org.apache.logging.log4j.plugins.processor;
 
+import org.apache.logging.log4j.plugins.di.DependentScoped;
 import org.apache.logging.log4j.plugins.di.Disposes;
 import org.apache.logging.log4j.plugins.di.Inject;
 import org.apache.logging.log4j.plugins.di.Producer;
 import org.apache.logging.log4j.plugins.di.Qualifier;
+import org.apache.logging.log4j.plugins.di.ScopeType;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
@@ -31,31 +33,36 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.Name;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementKindVisitor9;
 import javax.lang.model.util.Elements;
-import javax.lang.model.util.SimpleAnnotationValueVisitor9;
+import javax.lang.model.util.SimpleTypeVisitor9;
 import javax.lang.model.util.Types;
 import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UncheckedIOException;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 // TODO: migrate to separate maven module between log4j-plugins and log4j-core
 @SupportedAnnotationTypes({"org.apache.logging.log4j.plugins.*", "org.apache.logging.log4j.core.config.plugins.*"})
-@SupportedOptions("pluginPackage")
+@SupportedOptions({"pluginPackage", "pluginClassName"})
 public class BeanProcessor extends AbstractProcessor {
-    public static final String PLUGIN_MODULE_SERVICE_FILE = "META-INF/services/org.apache.logging.log4j.plugins.di.spi.PluginModule";
+    public static final String PLUGIN_MODULE_SERVICE_FILE = "META-INF/services/org.apache.logging.log4j.plugins.di.model.PluginModule";
 
     public BeanProcessor() {
     }
@@ -66,57 +73,57 @@ public class BeanProcessor extends AbstractProcessor {
     }
 
     private static class ProducerAnnotationVisitor extends ElementKindVisitor9<Void, Void> {
-        private final Set<ExecutableElement> producerMethods = new HashSet<>();
-        private final Set<VariableElement> producerFields = new HashSet<>();
+        private final List<ProducerMethodMirror> producerMethods = new ArrayList<>();
+        private final List<ProducerFieldMirror> producerFields = new ArrayList<>();
 
         @Override
         public Void visitVariableAsField(final VariableElement e, final Void unused) {
-            producerFields.add(e);
+            producerFields.add(new ProducerFieldMirror(e));
             return null;
         }
 
         @Override
         public Void visitExecutableAsMethod(final ExecutableElement e, final Void unused) {
-            producerMethods.add(e);
+            producerMethods.add(new ProducerMethodMirror(e));
             return null;
         }
     }
 
     private static class DisposesAnnotationVisitor extends ElementKindVisitor9<Void, Void> {
-        private final Set<ExecutableElement> disposesMethods = new HashSet<>();
+        private final List<DisposesMirror> disposesParameters = new ArrayList<>();
 
         @Override
         public Void visitVariableAsParameter(final VariableElement e, final Void unused) {
-            disposesMethods.add((ExecutableElement) e.getEnclosingElement());
+            disposesParameters.add(new DisposesMirror(e));
             return null;
         }
     }
 
     private static class InjectAnnotationVisitor extends ElementKindVisitor9<Void, Void> {
-        private final Set<TypeElement> injectableClasses = new HashSet<>();
+        private final List<InjectionTargetMirror> injectableClasses = new ArrayList<>();
 
         @Override
         public Void visitVariableAsField(final VariableElement e, final Void unused) {
-            injectableClasses.add((TypeElement) e.getEnclosingElement());
+            injectableClasses.add(new InjectionTargetMirror(((TypeElement) e.getEnclosingElement())));
             return null;
         }
 
         @Override
         public Void visitExecutableAsConstructor(final ExecutableElement e, final Void unused) {
-            injectableClasses.add((TypeElement) e.getEnclosingElement());
+            injectableClasses.add(new InjectionTargetMirror((TypeElement) e.getEnclosingElement()));
             return null;
         }
 
         @Override
         public Void visitExecutableAsMethod(final ExecutableElement e, final Void unused) {
-            injectableClasses.add((TypeElement) e.getEnclosingElement());
+            injectableClasses.add(new InjectionTargetMirror((TypeElement) e.getEnclosingElement()));
             return null;
         }
     }
 
     private static class QualifiedAnnotationVisitor extends ElementKindVisitor9<Void, Void> {
         private final Predicate<AnnotationMirror> isProducerAnnotation;
-        private final Set<TypeElement> injectableClasses = new HashSet<>();
+        private final List<InjectionTargetMirror> injectableClasses = new ArrayList<>();
 
         private QualifiedAnnotationVisitor(final Predicate<AnnotationMirror> isProducerAnnotation) {
             this.isProducerAnnotation = isProducerAnnotation;
@@ -125,7 +132,7 @@ public class BeanProcessor extends AbstractProcessor {
         @Override
         public Void visitVariableAsField(final VariableElement e, final Void unused) {
             if (e.getAnnotationMirrors().stream().noneMatch(isProducerAnnotation)) {
-                injectableClasses.add((TypeElement) e.getEnclosingElement());
+                injectableClasses.add(new InjectionTargetMirror((TypeElement) e.getEnclosingElement()));
             }
             return null;
         }
@@ -136,40 +143,179 @@ public class BeanProcessor extends AbstractProcessor {
             final TypeElement typeElement = (TypeElement) enclosingExecutable.getEnclosingElement();
             if (enclosingExecutable.getKind() == ElementKind.CONSTRUCTOR ||
                     enclosingExecutable.getAnnotationMirrors().stream().noneMatch(isProducerAnnotation)) {
-                injectableClasses.add(typeElement);
+                injectableClasses.add(new InjectionTargetMirror(typeElement));
             }
             return null;
         }
     }
 
     private static class PluginAnnotationVisitor extends ElementKindVisitor9<Void, Void> {
-        private final Map<String, Set<TypeElement>> pluginCategories = new HashMap<>();
+        private final List<GenericPluginMirror> plugins = new ArrayList<>();
 
         @Override
         public Void visitTypeAsClass(final TypeElement e, final Void unused) {
-            final AnnotationMirror pluginAnnotation = e.getAnnotationMirrors()
-                    .stream()
-                    .filter(ann -> ann.getAnnotationType().asElement().getSimpleName().contentEquals("Plugin"))
-                    .findAny()
-                    .orElseThrow();
-            final ExecutableElement categoryKey = pluginAnnotation.getElementValues()
-                    .keySet()
-                    .stream()
-                    .filter(element -> element.getSimpleName().contentEquals("category"))
-                    .findAny()
-                    .orElseThrow();
-
-            final String category = pluginAnnotation.getElementValues()
-                    .get(categoryKey)
-                    .accept(new SimpleAnnotationValueVisitor9<String, Void>() {
-                        @Override
-                        public String visitString(final String s, final Void unused1) {
-                            return s;
-                        }
-                    }, null);
-            pluginCategories.computeIfAbsent(category, ignored -> new HashSet<>()).add(e);
-
+            plugins.add(new GenericPluginMirror(e));
             return null;
+        }
+    }
+
+    private static class ScopeTypeVisitor extends ElementKindVisitor9<TypeElement, Types> {
+        protected ScopeTypeVisitor(final TypeElement defaultValue) {
+            super(defaultValue);
+        }
+
+        @Override
+        public TypeElement visitType(final TypeElement e, final Types types) {
+            for (final AnnotationMirror annotationMirror : e.getAnnotationMirrors()) {
+                final DeclaredType annotationType = annotationMirror.getAnnotationType();
+                if (annotationType.getAnnotation(ScopeType.class) != null) {
+                    return (TypeElement) annotationType.asElement();
+                }
+            }
+            return super.visitType(e, types);
+        }
+
+        @Override
+        public TypeElement visitVariableAsField(final VariableElement e, final Types types) {
+            return Stream.concat(e.getAnnotationMirrors().stream(), e.asType().getAnnotationMirrors().stream())
+                    .map(AnnotationMirror::getAnnotationType)
+                    .filter(type -> type.getAnnotation(ScopeType.class) != null)
+                    .findFirst()
+                    .map(type -> (TypeElement) type.asElement())
+                    .orElse(super.DEFAULT_VALUE);
+        }
+
+        @Override
+        public TypeElement visitExecutableAsMethod(final ExecutableElement e, final Types types) {
+            return Stream.concat(e.getAnnotationMirrors().stream(), e.getReturnType().getAnnotationMirrors().stream())
+                    .map(AnnotationMirror::getAnnotationType)
+                    .filter(type -> type.getAnnotation(ScopeType.class) != null)
+                    .findFirst()
+                    .map(type -> (TypeElement) type.asElement())
+                    .orElse(super.DEFAULT_VALUE);
+        }
+    }
+
+    interface PluginSourceMirror<E extends Element> {
+        E getElement();
+
+        TypeElement getDeclaringElement();
+
+        TypeMirror getType();
+    }
+
+    static class ProducerMethodMirror implements PluginSourceMirror<ExecutableElement> {
+        private final ExecutableElement element;
+
+        ProducerMethodMirror(final ExecutableElement element) {
+            this.element = element;
+        }
+
+        @Override
+        public ExecutableElement getElement() {
+            return element;
+        }
+
+        @Override
+        public TypeElement getDeclaringElement() {
+            return (TypeElement) element.getEnclosingElement();
+        }
+
+        @Override
+        public TypeMirror getType() {
+            return element.getReturnType();
+        }
+    }
+
+    static class ProducerFieldMirror implements PluginSourceMirror<VariableElement> {
+        private final VariableElement element;
+
+        ProducerFieldMirror(final VariableElement element) {
+            this.element = element;
+        }
+
+        @Override
+        public VariableElement getElement() {
+            return element;
+        }
+
+        @Override
+        public TypeElement getDeclaringElement() {
+            return (TypeElement) element.getEnclosingElement();
+        }
+
+        @Override
+        public TypeMirror getType() {
+            return element.asType();
+        }
+    }
+
+    static class InjectionTargetMirror implements PluginSourceMirror<TypeElement> {
+        private final TypeElement element;
+
+        InjectionTargetMirror(final TypeElement element) {
+            this.element = element;
+        }
+
+        @Override
+        public TypeElement getElement() {
+            return element;
+        }
+
+        @Override
+        public TypeElement getDeclaringElement() {
+            return element;
+        }
+
+        @Override
+        public TypeMirror getType() {
+            return element.asType();
+        }
+    }
+
+    static class DisposesMirror implements PluginSourceMirror<VariableElement> {
+        private final VariableElement element;
+
+        DisposesMirror(final VariableElement element) {
+            this.element = element;
+        }
+
+        @Override
+        public VariableElement getElement() {
+            return element;
+        }
+
+        @Override
+        public TypeElement getDeclaringElement() {
+            return (TypeElement) element.getEnclosingElement().getEnclosingElement();
+        }
+
+        @Override
+        public TypeMirror getType() {
+            return element.asType();
+        }
+    }
+
+    static class GenericPluginMirror implements PluginSourceMirror<TypeElement> {
+        private final TypeElement element;
+
+        GenericPluginMirror(final TypeElement element) {
+            this.element = element;
+        }
+
+        @Override
+        public TypeElement getElement() {
+            return element;
+        }
+
+        @Override
+        public TypeElement getDeclaringElement() {
+            return element;
+        }
+
+        @Override
+        public TypeMirror getType() {
+            return element.asType();
         }
     }
 
@@ -212,49 +358,33 @@ public class BeanProcessor extends AbstractProcessor {
         roundEnv.getElementsAnnotatedWithAny(pluginAnnotations).forEach(pluginAnnotationVisitor::visit);
 
         final Set<PackageElement> packageElements = new HashSet<>();
+        final Set<TypeElement> declaringTypes = new HashSet<>();
 
         final Elements elements = processingEnv.getElementUtils();
-        final Map<String, Set<String>> producerBeans = new HashMap<>();
-        for (final ExecutableElement producerMethod : producesAnnotationVisitor.producerMethods) {
-            final TypeElement declaringType = (TypeElement) producerMethod.getEnclosingElement();
-            packageElements.add(elements.getPackageOf(declaringType));
-            final String declaringClassName = elements.getBinaryName(declaringType).toString();
-            final Set<String> classNameHierarchy = getClassNameHierarchy(producerMethod.getReturnType());
-            producerBeans.put(declaringClassName, classNameHierarchy);
-        }
-        for (final VariableElement producerField : producesAnnotationVisitor.producerFields) {
-            final TypeElement declaringType = (TypeElement) producerField.getEnclosingElement();
-            packageElements.add(elements.getPackageOf(declaringType));
-            final String declaringClassName = elements.getBinaryName(declaringType).toString();
-            final Set<String> classNameHierarchy = getClassNameHierarchy(producerField.asType());
-            producerBeans.put(declaringClassName, classNameHierarchy);
-        }
+        final List<PluginSourceMirror<?>> mirrors = new ArrayList<>(producesAnnotationVisitor.producerMethods);
+        mirrors.addAll(producesAnnotationVisitor.producerFields);
+        mirrors.addAll(injectAnnotationVisitor.injectableClasses);
+        mirrors.addAll(disposesAnnotationVisitor.disposesParameters);
+        mirrors.forEach(mirror -> {
+            declaringTypes.add(mirror.getDeclaringElement());
+            packageElements.add(elements.getPackageOf(mirror.getDeclaringElement()));
+        });
 
-        final Set<CharSequence> destructibleClassNames = disposesAnnotationVisitor.disposesMethods.stream()
-                .map(e -> (TypeElement) e.getEnclosingElement())
-                .peek(e -> packageElements.add(elements.getPackageOf(e)))
-                .map(elements::getBinaryName)
-                .collect(Collectors.toSet());
+        qualifiedAnnotationVisitor.injectableClasses.stream()
+                .filter(mirror -> !declaringTypes.contains(mirror.getDeclaringElement()))
+                .forEach(mirror -> {
+                    mirrors.add(mirror);
+                    declaringTypes.add(mirror.getDeclaringElement());
+                    packageElements.add(elements.getPackageOf(mirror.getDeclaringElement()));
+                });
 
-        final Map<String, Set<String>> injectionBeans = new HashMap<>();
-        final Set<TypeElement> injectionClasses = new HashSet<>(injectAnnotationVisitor.injectableClasses);
-        injectionClasses.addAll(qualifiedAnnotationVisitor.injectableClasses);
-        for (final TypeElement injectableClass : injectionClasses) {
-            packageElements.add(elements.getPackageOf(injectableClass));
-            final String declaringClassName = elements.getBinaryName(injectableClass).toString();
-            final Set<String> classNameHierarchy = getClassNameHierarchy(injectableClass.asType());
-            injectionBeans.put(declaringClassName, classNameHierarchy);
-        }
-
-        final Map<String, Set<String>> pluginBeans = pluginAnnotationVisitor.pluginCategories
-                .values()
-                .stream()
-                .flatMap(Set::stream)
-                .peek(typeElement -> packageElements.add(elements.getPackageOf(typeElement)))
-                .collect(Collectors.toMap(
-                        typeElement -> elements.getBinaryName(typeElement).toString(),
-                        typeElement -> getClassNameHierarchy(typeElement.asType())
-                ));
+        pluginAnnotationVisitor.plugins.stream()
+                .filter(mirror -> !declaringTypes.contains(mirror.getDeclaringElement()))
+                .forEach(mirror -> {
+                    mirrors.add(mirror);
+                    declaringTypes.add(mirror.getDeclaringElement());
+                    packageElements.add(elements.getPackageOf(mirror.getDeclaringElement()));
+                });
 
         String packageName = processingEnv.getOptions().get("pluginPackage");
         if (packageName == null) {
@@ -267,7 +397,7 @@ public class BeanProcessor extends AbstractProcessor {
         }
         String className = processingEnv.getOptions().getOrDefault("pluginClassName", "Log4jModule");
         try {
-            writePluginModule(packageName, className, injectionBeans, producerBeans, destructibleClassNames, pluginBeans);
+            writePluginModule(packageName, className, mirrors);
             return false;
         } catch (IOException e) {
             throw new UncheckedIOException(e);
@@ -275,10 +405,7 @@ public class BeanProcessor extends AbstractProcessor {
     }
 
     private void writePluginModule(final CharSequence packageName, final CharSequence className,
-                                   final Map<String, Set<String>> injectionBeans,
-                                   final Map<String, Set<String>> producerBeans,
-                                   final Set<CharSequence> destructorBeans,
-                                   final Map<String, Set<String>> pluginBeans) throws IOException {
+                                   final List<PluginSourceMirror<?>> mirrors) throws IOException {
         try (final PrintWriter out = new PrintWriter(processingEnv.getFiler().createResource(
                 StandardLocation.CLASS_OUTPUT, "", PLUGIN_MODULE_SERVICE_FILE).openWriter())) {
             out.println(packageName + ".plugins." + className);
@@ -287,75 +414,91 @@ public class BeanProcessor extends AbstractProcessor {
                 packageName + ".plugins." + className).openWriter())) {
             out.println("package " + packageName + ".plugins;");
             out.println();
-            out.println("import java.util.*;");
+            out.println("import org.apache.logging.log4j.plugins.di.model.*;");
             out.println();
-            out.println("import org.apache.logging.log4j.plugins.di.spi.PluginModule;");
+            out.println("import java.util.List;");
+            out.println("import java.util.Set;");
             out.println();
             out.println("@javax.annotation.processing.Generated(\"" + getClass().getName() + "\")");
             out.println("public class " + className + " extends PluginModule {");
             out.println();
-            out.println("  private static final Map<String, Set<String>> INJECT =");
-            out.println("    new TreeMap<>(Map.ofEntries(" + getEntries(injectionBeans) + "));");
-            out.println();
-            out.println("  private static final Map<String, Set<String>> PRODUCE =");
-            out.println("    new TreeMap<>(Map.ofEntries(" + getEntries(producerBeans) + "));");
-            out.println();
-            out.println("  private static final Set<String> DESTROY = new TreeSet<>(Set.of(" + destructorBeans.stream().sorted(CharSequence::compare).collect(Collectors.joining("\",\n\"", "\n\"", "\"\n")) + "));");
-            out.println();
-            out.println("  private static final Map<String, Set<String>> PLUGINS =");
-            out.println("    new TreeMap<>(Map.ofEntries(" + getEntries(pluginBeans) + "));");
+            out.println("  private static final List<PluginSource> PLUGINS = List.of(" + javaListOfPlugins(mirrors) + ");");
             out.println();
             out.println("  public " + className + "() {");
-            out.println("    super(INJECT, PRODUCE, DESTROY, PLUGINS);");
+            out.println("    super(PLUGINS);");
             out.println("  }");
             out.println();
             out.println("}");
         }
     }
 
-    private static String getEntries(final Map<String, Set<String>> beans) {
-        return beans.entrySet().stream()
-                .sorted(Map.Entry.comparingByKey())
-                .map(e -> "Map.entry(\"" + e.getKey() + "\", new TreeSet<>(Set.of(" + e.getValue().stream().sorted().collect(Collectors.joining("\", \"", "\"", "\"")) + ")))")
+    private String javaListOfPlugins(final List<PluginSourceMirror<?>> mirrors) {
+        final Elements elements = processingEnv.getElementUtils();
+        final Types types = processingEnv.getTypeUtils();
+        final var scopeTypeVisitor = new ScopeTypeVisitor(elements.getTypeElement(DependentScoped.class.getCanonicalName()));
+        return mirrors.stream()
+                .sorted(Comparator.<PluginSourceMirror<?>, String>comparing(m -> m.getClass().getName())
+                        .thenComparing(m -> elements.getBinaryName(m.getDeclaringElement()), CharSequence::compare))
+                .map(mirror -> {
+                    final String declaringClassName = '"' + elements.getBinaryName(mirror.getDeclaringElement()).toString() + '"';
+                    final String setOfImplementedInterfaces = javaSetOfImplementedInterfaces(mirror.getType());
+                    final String scopeTypeClassReference = mirror.getElement().accept(scopeTypeVisitor, types).getQualifiedName() + ".class";
+                    if (mirror instanceof ProducerMethodMirror) {
+                        return "new ProducerMethod(" + declaringClassName + ", \"" +
+                                mirror.getType().toString() + "\", \"" +
+                                mirror.getElement().getSimpleName() + "\", " +
+                                setOfImplementedInterfaces + ", " +
+                                scopeTypeClassReference + ")";
+                    } else if (mirror instanceof ProducerFieldMirror) {
+                        return "new ProducerField(" + declaringClassName + ", \"" +
+                                mirror.getElement().getSimpleName() + "\", " +
+                                setOfImplementedInterfaces + ", " +
+                                scopeTypeClassReference + ")";
+                    } else if (mirror instanceof InjectionTargetMirror) {
+                        return "new InjectionTarget(" + declaringClassName + ", " +
+                                setOfImplementedInterfaces + ", " +
+                                scopeTypeClassReference + ")";
+                    } else if (mirror instanceof DisposesMirror) {
+                        return "new DisposesMethod(" + declaringClassName + ", \"" +
+                                elements.getBinaryName((TypeElement) types.asElement(mirror.getElement().asType())) + "\")";
+                    } else if (mirror instanceof GenericPluginMirror) {
+                        return "new GenericPlugin(" + declaringClassName + ", " + setOfImplementedInterfaces + ")";
+                    } else {
+                        throw new UnsupportedOperationException(mirror.getClass().getName());
+                    }
+                })
                 .collect(Collectors.joining(",\n", "\n", "\n"));
     }
 
-    private Set<String> getClassNameHierarchy(final TypeMirror base) {
-        final Set<String> hierarchy = new TreeSet<>();
-        walkClassHierarchy(base, hierarchy);
-        return hierarchy;
+    private String javaSetOfImplementedInterfaces(final TypeMirror base) {
+        final Set<Name> implementedInterfaces = getImplementedInterfaces(base);
+        return implementedInterfaces.isEmpty() ? "Set.of()" : "Set.of(" +
+                implementedInterfaces.stream().map(name -> name + ".class").collect(Collectors.joining(", ")) +
+                ")";
     }
 
-    private void walkClassHierarchy(final TypeMirror base, final Set<String> encountered) {
+    private Set<Name> getImplementedInterfaces(final TypeMirror base) {
+        final Set<Name> implementedInterfaces = new LinkedHashSet<>();
         final Types types = processingEnv.getTypeUtils();
-        final Elements elements = processingEnv.getElementUtils();
-        final Element element = types.asElement(base);
-        if (element != null) {
-            element.accept(new ElementKindVisitor9<Void, Void>() {
-                @Override
-                public Void visitTypeAsClass(final TypeElement e, final Void unused) {
-                    if (!elements.getPackageOf(e).getQualifiedName().contentEquals("java.lang")) {
-                        encountered.add(elements.getBinaryName(e).toString());
+        base.accept(new SimpleTypeVisitor9<Void, Void>() {
+            @Override
+            public Void visitDeclared(final DeclaredType t, final Void unused) {
+                for (final TypeMirror directSupertype : types.directSupertypes(t)) {
+                    directSupertype.accept(this, null);
+                }
+                t.asElement().accept(new ElementKindVisitor9<Void, Void>() {
+                    @Override
+                    public Void visitTypeAsInterface(final TypeElement e, final Void unused) {
+                        if (e.getModifiers().contains(Modifier.PUBLIC)) {
+                            implementedInterfaces.add(e.getQualifiedName());
+                        }
+                        return null;
                     }
-                    return null;
-                }
-
-                @Override
-                public Void visitTypeAsEnum(final TypeElement e, final Void unused) {
-                    encountered.add(elements.getBinaryName(e).toString());
-                    return null;
-                }
-
-                @Override
-                public Void visitTypeAsInterface(final TypeElement e, final Void unused) {
-                    encountered.add(elements.getBinaryName(e).toString());
-                    return null;
-                }
-            }, null);
-        }
-        for (final TypeMirror directSupertype : types.directSupertypes(base)) {
-            walkClassHierarchy(directSupertype, encountered);
-        }
+                }, null);
+                return null;
+            }
+        }, null);
+        return implementedInterfaces;
     }
 
     private static CharSequence commonPrefix(final CharSequence str1, final CharSequence str2) {

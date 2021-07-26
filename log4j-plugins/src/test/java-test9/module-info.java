@@ -6,6 +6,6 @@ module org.apache.logging.log4j.plugins.test {
 
     provides org.apache.logging.log4j.plugins.processor.PluginService with
             org.apache.logging.log4j.plugins.test.validation.plugins.Log4jPlugins;
-    provides org.apache.logging.log4j.plugins.di.spi.PluginModule with
+    provides org.apache.logging.log4j.plugins.di.model.PluginModule with
             org.apache.logging.log4j.plugins.test.validation.plugins.Log4jModule;
 }
