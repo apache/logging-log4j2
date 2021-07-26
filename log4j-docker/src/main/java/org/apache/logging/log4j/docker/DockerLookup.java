@@ -59,7 +59,6 @@ public class DockerLookup extends AbstractLookup {
         Container current = null;
         try {
             URL url= new URL(baseUri + "/containers/json");
-            String hostName = NetUtils.getLocalHostname();
             String macAddr = NetUtils.getMacAddressString();
 
             if (url.getProtocol().equals(HTTP)) {
