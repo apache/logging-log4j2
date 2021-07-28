@@ -126,22 +126,38 @@
       </action>
       <!-- UPDATES -->
       <action dev="ggregory" type="update">
-        - org.eclipse.persistence:javax.persistence ............. 2.1.1 -> 2.2.1
-        - org.eclipse.persistence:org.eclipse.persistence.jpa ... 2.6.5 -> 2.6.9
-        - org.fusesource.jansi:jansi ............................ 2.3.1 -> 2.3.2
-        - net.javacrumbs.json-unit:json-unit .................. 2.24.0 -> 2.25.0
-        - org.liquibase:liquibase-core .......................... 3.5.3 -> 3.5.5
-        - org.springframework:spring-aop ........................ 5.3.3 -> 5.3.5
-        - org.springframework:spring-beans ...................... 5.3.3 -> 5.3.5
-        - org.springframework:spring-context .................... 5.3.3 -> 5.3.5
-        - org.springframework:spring-context-support ............ 5.3.3 -> 5.3.5
-        - org.springframework:spring-core ....................... 5.3.3 -> 5.3.5
-        - org.springframework:spring-expression ................. 5.3.3 -> 5.3.5
-        - org.springframework:spring-oxm ........................ 5.3.3 -> 5.3.5
-        - org.springframework:spring-test ....................... 5.3.3 -> 5.3.5
-        - org.springframework:spring-web ........................ 5.3.3 -> 5.3.5
-        - org.springframework:spring-webmvc ..................... 5.3.3 -> 5.3.5
-        - org.tukaani:xz ............................................ 1.8 -> 1.9
+        - com.fasterxml.jackson.core:jackson-annotations ................. 2.12.2 -> 2.12.4
+        - com.fasterxml.jackson.core:jackson-core ........................ 2.12.2 -> 2.12.4
+        - com.fasterxml.jackson.core:jackson-databind .................... 2.12.2 -> 2.12.4
+        - com.fasterxml.jackson.dataformat:jackson-dataformat-xml ........ 2.12.2 -> 2.12.4
+        - com.fasterxml.jackson.dataformat:jackson-dataformat-yaml ....... 2.12.2 -> 2.12.4
+        - com.fasterxml.jackson.module:jackson-module-jaxb-annotations ... 2.12.2 -> 2.12.4
+        - commons-io:commons-io .......................................... 2.8.0 -> 2.11.0
+        - net.javacrumbs.json-unit:json-unit ............................. 2.24.0 -> 2.25.0
+        - org.apache.activemq:activemq-broker ............................ 5.16.1 -> 5.16.2
+        - org.apache.commons:commons-compress ............................ 1.20 -> 1.21
+        - org.apache.commons:commons-pool2 ............................... 2.9.0 -> 2.10.0
+        - org.codehaus.groovy:groovy-dateutil ............................ 3.0.7 -> 3.0.8
+        - org.codehaus.groovy:groovy-jsr223 .............................. 3.0.7 -> 3.0.8
+        - org.eclipse.persistence:javax.persistence ...................... 2.1.1 -> 2.2.1
+        - org.eclipse.persistence:org.eclipse.persistence.jpa ............ 2.6.5 -> 2.6.9
+        - org.fusesource.jansi:jansi ..................................... 2.3.1 -> 2.3.2
+        - org.junit.jupiter:junit-jupiter-engine ......................... 5.7.1 -> 5.7.2
+        - org.junit.jupiter:junit-jupiter-migrationsupport ............... 5.7.1 -> 5.7.2
+        - org.junit.jupiter:junit-jupiter-params ......................... 5.7.1 -> 5.7.2
+        - org.junit.vintage:junit-vintage-engine ......................... 5.7.1 -> 5.7.2
+        - org.liquibase:liquibase-core ................................... 3.5.3 -> 3.5.5
+        - org.springframework:spring-aop ................................. 5.3.3 -> 5.3.9
+        - org.springframework:spring-beans ............................... 5.3.3 -> 5.3.9
+        - org.springframework:spring-context ............................. 5.3.3 -> 5.3.9
+        - org.springframework:spring-context-support ..................... 5.3.3 -> 5.3.9
+        - org.springframework:spring-core ................................ 5.3.3 -> 5.3.9
+        - org.springframework:spring-expression .......................... 5.3.3 -> 5.3.9
+        - org.springframework:spring-oxm ................................. 5.3.3 -> 5.3.9
+        - org.springframework:spring-test ................................ 5.3.3 -> 5.3.9
+        - org.springframework:spring-web ................................. 5.3.3 -> 5.3.9
+        - org.springframework:spring-webmvc .............................. 5.3.3 -> 5.3.9
+        - org.tukaani:xz ................................................. 1.8 -> 1.9        
       </action>
     </release>
     <release version="2.14.1" date="2021-03-06" description="GA Release 2.14.1">
