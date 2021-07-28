@@ -35,8 +35,6 @@ import java.util.Stack;
  */
 class ThrowableProxyHelper {
 
-    static final ThrowableProxy[] EMPTY_THROWABLE_PROXY_ARRAY = new ThrowableProxy[0];
-
     private ThrowableProxyHelper() {
         // Utility Class
     }
@@ -128,7 +126,7 @@ class ThrowableProxyHelper {
         try {
             final Throwable[] suppressed = thrown.getSuppressed();
             if (suppressed == null || suppressed.length == 0) {
-                return EMPTY_THROWABLE_PROXY_ARRAY;
+                return ThrowableProxy.EMPTY_ARRAY;
             }
             final List<ThrowableProxy> proxies = new ArrayList<>(suppressed.length);
             if (suppressedVisited == null) {
