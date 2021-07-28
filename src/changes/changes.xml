@@ -214,6 +214,9 @@
       <action issue="LOG4J2-3014" dev="ggregory" type="fix" due-to="Lee Breisacher, Gary Gregory">
         Log4j1ConfigurationConverter on Windows produces "&#xd;" at end of every line.
       </action>
+      <action issue="LOG4J2-3131" dev="ggregory" type="fix" due-to="Adam Long, Gary Gregory">
+        Attempting to call getExtendedStackTraceAsString() after deserializing JSON LogEvent results in a NPE.
+      </action>
       <!-- ADDS -->
       <action issue="LOG4J2-2962" dev="vy" type="add">
         Enrich "map" resolver by unifying its backend with "mdc" resolver.

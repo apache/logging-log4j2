@@ -35,6 +35,8 @@ import org.apache.logging.log4j.core.pattern.TextRenderer;
  */
 public final class ExtendedStackTraceElement implements Serializable {
 
+    static final ExtendedStackTraceElement[] EMPTY_ARRAY = {};
+
     private static final long serialVersionUID = -2171069569241280505L;
 
     private final ExtendedClassInfo extraClassInfo;
