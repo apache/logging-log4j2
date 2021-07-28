@@ -32,6 +32,11 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  */
 public class AppenderControl extends AbstractFilterable {
 
+    /**
+     * The empty array.
+     */
+    static final AppenderControl[] EMPTY_ARRAY = {};
+
     private final ThreadLocal<AppenderControl> recursive = new ThreadLocal<>();
     private final Appender appender;
     private final Level level;

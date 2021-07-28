@@ -139,7 +139,7 @@ public class JsonTemplateLayout implements StringLayout {
         final EventTemplateAdditionalField[] eventTemplateAdditionalFields =
                 builder.eventTemplateAdditionalFields != null
                         ? builder.eventTemplateAdditionalFields
-                        : new EventTemplateAdditionalField[0];
+                        : EventTemplateAdditionalField.EMPTY_ARRAY;
 
         // Create the resolver context.
         final EventResolverContext resolverContext = EventResolverContext
@@ -534,6 +534,8 @@ public class JsonTemplateLayout implements StringLayout {
             category = Node.CATEGORY,
             printObject = true)
     public static final class EventTemplateAdditionalField {
+
+        static final EventTemplateAdditionalField[] EMPTY_ARRAY = {};
 
         public enum Format { STRING, JSON }
 

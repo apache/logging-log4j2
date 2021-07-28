@@ -39,6 +39,7 @@ import org.apache.logging.log4j.core.appender.rolling.action.Duration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.util.CronExpression;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
@@ -109,7 +110,7 @@ public final class TypeConverters {
         public byte[] convert(final String value) {
             byte[] bytes;
             if (value == null || value.isEmpty()) {
-                bytes = new byte[0];
+                bytes = Constants.EMPTY_BYTE_ARRAY;
             } else if (value.startsWith(PREFIX_BASE64)) {
                 final String lexicalXSDBase64Binary = value.substring(PREFIX_BASE64.length());
                 bytes = Base64Converter.parseBase64Binary(lexicalXSDBase64Binary);

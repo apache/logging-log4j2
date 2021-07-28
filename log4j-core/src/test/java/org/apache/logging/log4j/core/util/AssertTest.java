@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AssertTest {
 
@@ -32,7 +32,7 @@ public class AssertTest {
             // value, isEmpty
             {null, true},
             {"", true},
-            {new Object[0], true},
+            {org.apache.logging.log4j.util.Constants.EMPTY_OBJECT_ARRAY, true},
             {new ArrayList<>(), true},
             {new HashMap<>(), true},
             {0, false},

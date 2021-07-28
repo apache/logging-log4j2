@@ -30,6 +30,7 @@ import org.apache.logging.log4j.core.appender.AsyncAppender;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
 import org.w3c.dom.Element;
 
 import java.util.ArrayList;
@@ -121,7 +122,7 @@ public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBui
                 }
             }
         });
-        return createAppender(name, level.get(), appenderRefs.get().toArray(new String[0]), blocking.get(),
+        return createAppender(name, level.get(), appenderRefs.get().toArray(Strings.EMPTY_ARRAY), blocking.get(),
                 bufferSize.get(), includeLocation.get(), config);
     }
 

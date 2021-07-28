@@ -16,9 +16,12 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.apache.logging.log4j.util.Constants;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests ReusableSimpleMessage.
@@ -66,16 +69,16 @@ public class ReusableSimpleMessageTest {
 
     @Test
     public void testGetParameters_InitiallyReturnsEmptyArray() throws Exception {
-        assertArrayEquals(new Object[0], new ReusableSimpleMessage().getParameters());
+        assertArrayEquals(Constants.EMPTY_OBJECT_ARRAY, new ReusableSimpleMessage().getParameters());
     }
 
     @Test
     public void testGetParameters_ReturnsEmptyArrayAfterMessageSet() throws Exception {
         final ReusableSimpleMessage msg = new ReusableSimpleMessage();
         msg.set("abc");
-        assertArrayEquals(new Object[0], msg.getParameters());
+        assertArrayEquals(Constants.EMPTY_OBJECT_ARRAY, msg.getParameters());
         msg.set("def");
-        assertArrayEquals(new Object[0], msg.getParameters());
+        assertArrayEquals(Constants.EMPTY_OBJECT_ARRAY, msg.getParameters());
     }
 
     @Test

@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.logging.log4j.util.Strings;
+
 /**
  * Container for a complete SMTP message - headers and message body.
  */
@@ -84,7 +86,7 @@ public class SmtpMessage {
     public String[] getHeaderValues(final String name) {
         final List<String> values = headers.get(name);
         if (values == null) {
-            return new String[0];
+            return Strings.EMPTY_ARRAY;
         }
         return values.toArray(new String[values.size()]);
     }

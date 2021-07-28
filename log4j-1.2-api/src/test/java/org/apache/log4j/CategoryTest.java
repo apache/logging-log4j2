@@ -17,6 +17,16 @@
 
 package org.apache.log4j;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
+
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -27,21 +37,12 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests of Category.
@@ -133,7 +134,7 @@ public class CategoryTest {
         final Logger logger = Logger.getLogger("org.example.foo");
         logger.setLevel(Level.ERROR);
         final Priority debug = Level.DEBUG;
-        logger.l7dlog(debug, "Hello, World", new Object[0], null);
+        logger.l7dlog(debug, "Hello, World", Constants.EMPTY_OBJECT_ARRAY, null);
         assertTrue(appender.getEvents().isEmpty());
     }
 
@@ -152,7 +153,7 @@ public class CategoryTest {
         final Priority debug = Level.DEBUG;
         // the next line will throw an exception if the LogManager loggers
         // aren't supported by 1.2 Logger/Category
-        logger.l7dlog(debug, "Hello, World", new Object[0], null);
+        logger.l7dlog(debug, "Hello, World", Constants.EMPTY_OBJECT_ARRAY, null);
         assertTrue(appender.getEvents().isEmpty());
     }
 

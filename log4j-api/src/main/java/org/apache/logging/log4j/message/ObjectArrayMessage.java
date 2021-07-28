@@ -21,6 +21,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
+import org.apache.logging.log4j.util.Constants;
+
 /**
  * Handles messages that contain an Object[].
  * <p>
@@ -34,8 +36,6 @@ import java.util.Arrays;
  */
 public final class ObjectArrayMessage implements Message {
 
-    private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
-
     private static final long serialVersionUID = -5903272448334166185L;
 
     private transient Object[] array;
@@ -48,7 +48,7 @@ public final class ObjectArrayMessage implements Message {
      *            The Object to format.
      */
     public ObjectArrayMessage(final Object... obj) {
-        this.array = obj == null ? EMPTY_OBJECT_ARRAY : obj;
+        this.array = obj == null ? Constants.EMPTY_OBJECT_ARRAY : obj;
     }
 
     private boolean equalObjectsOrStrings(final Object[] left, final Object[] right) {

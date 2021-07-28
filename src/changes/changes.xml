@@ -217,6 +217,9 @@
       <action issue="LOG4J2-3131" dev="ggregory" type="fix" due-to="Adam Long, Gary Gregory">
         Attempting to call getExtendedStackTraceAsString() after deserializing JSON LogEvent results in a NPE.
       </action>
+      <action issue="LOG4J2-3131" dev="ggregory" type="fix" due-to="Gary Gregory">
+        NoGcLayout allocates empty bytes arrays for its header and footer.
+      </action>
       <!-- ADDS -->
       <action issue="LOG4J2-2962" dev="vy" type="add">
         Enrich "map" resolver by unifying its backend with "mdc" resolver.

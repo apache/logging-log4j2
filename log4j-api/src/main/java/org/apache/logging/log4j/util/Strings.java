@@ -35,6 +35,11 @@ public final class Strings {
     public static final String EMPTY = "";
     
     /**
+     * The empty array.
+     */
+    public static final String[] EMPTY_ARRAY = {};
+    
+    /**
      * OS-dependent line separator, defaults to {@code "\n"} if the system property {@code ""line.separator"} cannot be
      * read.
      */

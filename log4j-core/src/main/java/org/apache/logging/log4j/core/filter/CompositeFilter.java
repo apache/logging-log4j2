@@ -44,15 +44,14 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 @PerformanceSensitive("allocation")
 public final class CompositeFilter extends AbstractLifeCycle implements Iterable<Filter>, Filter {
 
-    private static final Filter[] EMPTY_FILTERS = new Filter[0];
     private final Filter[] filters;
 
     private CompositeFilter() {
-        this.filters = EMPTY_FILTERS;
+        this.filters = Filter.EMPTY_ARRAY;
     }
 
     private CompositeFilter(final Filter[] filters) {
-        this.filters = filters == null ? EMPTY_FILTERS : filters;
+        this.filters = filters == null ? Filter.EMPTY_ARRAY : filters;
     }
 
     public CompositeFilter addFilter(final Filter filter) {

@@ -319,7 +319,7 @@ public class DatePatternConverterTest {
 
     @Test
     public void testGetPatternReturnsDefaultForEmptyOptionsArray() {
-        assertEquals(DEFAULT_PATTERN, DatePatternConverter.newInstance(new String[0]).getPattern());
+        assertEquals(DEFAULT_PATTERN, DatePatternConverter.newInstance(Strings.EMPTY_ARRAY).getPattern());
     }
 
     @Test

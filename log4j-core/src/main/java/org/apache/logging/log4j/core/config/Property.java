@@ -35,7 +35,7 @@ public final class Property {
     /**
      * @since 2.11.2
      */
-    public static final Property[] EMPTY_ARRAY = new Property[0];
+    public static final Property[] EMPTY_ARRAY = {};
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 

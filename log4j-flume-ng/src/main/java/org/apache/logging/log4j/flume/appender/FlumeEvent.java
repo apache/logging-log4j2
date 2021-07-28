@@ -39,6 +39,7 @@ import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataId;
 import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.Strings;
 
@@ -188,7 +189,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
     @Override
     public void setBody(final byte[] body) {
         if (body == null || body.length == 0) {
-            super.setBody(new byte[0]);
+            super.setBody(Constants.EMPTY_BYTE_ARRAY);
             return;
         }
         if (compress) {

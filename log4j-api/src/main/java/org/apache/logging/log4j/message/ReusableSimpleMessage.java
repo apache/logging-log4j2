@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.message;
 
+import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
@@ -25,7 +26,6 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 @PerformanceSensitive("allocation")
 public class ReusableSimpleMessage implements ReusableMessage, CharSequence, ParameterVisitable, Clearable {
     private static final long serialVersionUID = -9199974506498249809L;
-    private static Object[] EMPTY_PARAMS = new Object[0];
     private CharSequence charSequence;
 
     public void set(final String message) {
@@ -48,7 +48,7 @@ public class ReusableSimpleMessage implements ReusableMessage, CharSequence, Par
 
     @Override
     public Object[] getParameters() {
-        return EMPTY_PARAMS;
+        return Constants.EMPTY_OBJECT_ARRAY;
     }
 
     @Override

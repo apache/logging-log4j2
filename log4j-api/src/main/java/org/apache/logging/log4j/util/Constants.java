@@ -83,6 +83,16 @@ public final class Constants {
     }
 
     /**
+     * The empty array.
+     */
+    public static final Object[] EMPTY_OBJECT_ARRAY = {};
+
+    /**
+     * The empty array.
+     */
+    public static final byte[] EMPTY_BYTE_ARRAY = {};
+
+    /**
      * Prevent class instantiation.
      */
     private Constants() {

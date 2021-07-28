@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.junit.Assert.assertTrue;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.GarbageCollectionHelper;
@@ -27,11 +32,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
-import static org.junit.Assert.assertTrue;
 
 @Category(AsyncLoggers.class)
 public class AsyncLoggerTestArgumentFreedOnError {
@@ -88,12 +88,12 @@ public class AsyncLoggerTestArgumentFreedOnError {
 
         @Override
         public String getFormat() {
-            return "";
+            return Strings.EMPTY;
         }
 
         @Override
         public Object[] getParameters() {
-            return new Object[0];
+            return org.apache.logging.log4j.util.Constants.EMPTY_OBJECT_ARRAY;
         }
 
         @Override

@@ -46,6 +46,7 @@ import org.apache.logging.log4j.core.util.AuthorizationProvider;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.boot.logging.LogFile;
 import org.springframework.boot.logging.LoggingInitializationContext;
 import org.springframework.boot.logging.log4j2.Log4J2LoggingSystem;
@@ -88,7 +89,7 @@ public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
         if (location != null) {
             List<String> list = new ArrayList<>(Arrays.asList(super.getStandardConfigLocations()));
             list.add(location);
-            locations = list.toArray(new String[0]);
+            locations = list.toArray(Strings.EMPTY_ARRAY);
         }
         return locations;
     }
@@ -174,7 +175,7 @@ public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
                         LOGGER.warn("Bad data in configuration string: {}", pair);
                     }
                 }
-                return locations.toArray(new String[0]);
+                return locations.toArray(Strings.EMPTY_ARRAY);
             } catch (MalformedURLException ex) {
                 LOGGER.warn("Unable to parse configuration URL {}", configLocations);
             }

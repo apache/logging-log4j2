@@ -20,6 +20,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import org.apache.logging.log4j.util.Strings;
+
 /**
  * Class Description goes here.
  */
@@ -52,7 +54,7 @@ public class ThrowableInformation implements java.io.Serializable {
                 @SuppressWarnings("unchecked")
                 List<String> elements = (List<String>) toStringList.invoke(null, throwable);
                 if (elements != null) {
-                    return elements.toArray(new String[0]);
+                    return elements.toArray(Strings.EMPTY_ARRAY);
                 }
             } catch (IllegalAccessException | InvocationTargetException ex) {
                 // Ignore the exception.

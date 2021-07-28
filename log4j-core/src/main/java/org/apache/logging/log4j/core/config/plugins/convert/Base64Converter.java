@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
@@ -67,6 +68,6 @@ public class Base64Converter {
                 LOGGER.error("Error decoding string - " + ex.getMessage());
             }
         }
-        return new byte[0];
+        return Constants.EMPTY_BYTE_ARRAY;
     }
 }

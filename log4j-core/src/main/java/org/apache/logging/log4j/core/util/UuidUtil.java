@@ -31,6 +31,9 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * less than 10,000 IDs are generated per millisecond on the same device (as identified by its MAC address).
  */
 public final class UuidUtil {
+
+    private static final long[] EMPTY_LONG_ARRAY = {};
+
     /**
      * System property that may be used to seed the UUID generation with an integer value.
      */
@@ -88,7 +91,7 @@ public final class UuidUtil {
         String assigned = PropertiesUtil.getProperties().getStringProperty(ASSIGNED_SEQUENCES);
         long[] sequences;
         if (assigned == null) {
-            sequences = new long[0];
+            sequences = EMPTY_LONG_ARRAY;
         } else {
             final String[] array = assigned.split(Patterns.COMMA_SEPARATOR);
             sequences = new long[array.length];

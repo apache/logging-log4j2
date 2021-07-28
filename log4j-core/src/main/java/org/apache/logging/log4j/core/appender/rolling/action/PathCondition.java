@@ -28,7 +28,7 @@ import java.util.Arrays;
 public interface PathCondition {
     
     /**
-     * Empty array.
+     * The empty array.
      */
     static final PathCondition[] EMPTY_ARRAY = {};
 
@@ -39,7 +39,7 @@ public interface PathCondition {
      * @return a copy, never null.
      */
     static PathCondition[] copy(PathCondition[] source) {
-        return source == null ? new PathCondition[0] : Arrays.copyOf(source, source.length);
+        return source == null ? EMPTY_ARRAY : Arrays.copyOf(source, source.length);
     }
     
     /**

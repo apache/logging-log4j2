@@ -32,7 +32,7 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  */
 @PerformanceSensitive
 public class AppenderControlArraySet {
-    private final AtomicReference<AppenderControl[]> appenderArray = new AtomicReference<>(new AppenderControl[0]);
+    private final AtomicReference<AppenderControl[]> appenderArray = new AtomicReference<>(AppenderControl.EMPTY_ARRAY);
 
     /**
      * Adds an AppenderControl to this set. If this set already contains the element, the call leaves the set unchanged
@@ -108,7 +108,7 @@ public class AppenderControlArraySet {
      * @return the contents before this collection was cleared.
      */
     public AppenderControl[] clear() {
-        return appenderArray.getAndSet(new AppenderControl[0]);
+        return appenderArray.getAndSet(AppenderControl.EMPTY_ARRAY);
     }
 
     public boolean isEmpty() {

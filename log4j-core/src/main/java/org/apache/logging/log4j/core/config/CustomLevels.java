@@ -47,7 +47,7 @@ public final class CustomLevels {
     @PluginFactory
     public static CustomLevels createCustomLevels(//
             @PluginElement("CustomLevels") final CustomLevelConfig[] customLevels) {
-        return new CustomLevels(customLevels == null ? new CustomLevelConfig[0] : customLevels);
+        return new CustomLevels(customLevels == null ? CustomLevelConfig.EMPTY_ARRAY : customLevels);
     }
 
     /**

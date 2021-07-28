@@ -261,7 +261,7 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
     private static ResolvableKeyValuePair[] prepareAdditionalFields(final Configuration config, final KeyValuePair[] additionalFields) {
         if (additionalFields == null || additionalFields.length == 0) {
             // No fields set
-            return new ResolvableKeyValuePair[0];
+            return ResolvableKeyValuePair.EMPTY_ARRAY;
         }
 
         // Convert to specific class which already determines whether values needs lookup during serialization
@@ -374,6 +374,11 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
     }
 
     protected static class ResolvableKeyValuePair {
+        
+        /**
+         * The empty array.
+         */
+        static final ResolvableKeyValuePair[] EMPTY_ARRAY = {};
 
         final String key;
         final String value;

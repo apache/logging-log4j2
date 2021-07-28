@@ -609,7 +609,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                         LOGGER.warn("Invalid query parameter in {}", configLocations);
                     }
                 }
-                return locations.toArray(new String[0]);
+                return locations.toArray(Strings.EMPTY_ARRAY);
             }
             return new String[] {uris[0]};
         }

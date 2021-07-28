@@ -31,6 +31,11 @@ import org.apache.logging.log4j.status.StatusLogger;
 @Plugin(name = "CustomLevel", category = Core.CATEGORY_NAME, printObject = true)
 public final class CustomLevelConfig {
 
+    /**
+     * The empty array.
+     */
+    static final CustomLevelConfig[] EMPTY_ARRAY = {};
+
     private final String levelName;
     private final int intLevel;
 

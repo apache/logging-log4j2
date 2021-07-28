@@ -51,7 +51,7 @@ public class AppenderAdapter {
                     filters.add(new FilterAdapter(filter));
                     filter = filter.getNext();
                 }
-                appenderFilter = CompositeFilter.createFilters(filters.toArray(new Filter[0]));
+                appenderFilter = CompositeFilter.createFilters(filters.toArray(Filter.EMPTY_ARRAY));
             } else {
                 appenderFilter = new FilterAdapter(appender.getFilter());
             }

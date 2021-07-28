@@ -455,7 +455,7 @@ public final class GelfLayout extends AbstractStringLayout {
             final String mapPrefix) {
         super(config, StandardCharsets.UTF_8, null, null);
         this.host = host != null ? host : NetUtils.getLocalHostname();
-        this.additionalFields = additionalFields != null ? additionalFields : new KeyValuePair[0];
+        this.additionalFields = additionalFields != null ? additionalFields : KeyValuePair.EMPTY_ARRAY;
         if (config == null) {
             for (final KeyValuePair additionalField : this.additionalFields) {
                 if (valueNeedsLookup(additionalField.getValue())) {

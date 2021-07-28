@@ -19,6 +19,7 @@ package org.apache.logging.log4j.simple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextFactoryExtension;
+import org.apache.logging.log4j.util.Constants;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -46,7 +47,7 @@ public class SimpleLoggerTest {
 
     @Test
     public void testEmptyObjectArray() {
-        logger.error(new Object[0]);
+        logger.error(Constants.EMPTY_OBJECT_ARRAY);
     }
 
     /**
@@ -54,7 +55,7 @@ public class SimpleLoggerTest {
      */
     @Test
     public void testMessageWithEmptyObjectArray() {
-        logger.error("Logging with an empty Object[] {} {}", new Object[0]);
+        logger.error("Logging with an empty Object[] {} {}", Constants.EMPTY_BYTE_ARRAY);
     }
 
     /**

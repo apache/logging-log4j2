@@ -31,6 +31,7 @@ import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
 
 /**
@@ -62,7 +63,7 @@ public class FixedDateFormatTest {
 
     @Test
     public void testCreateIfSupported_defaultIfOptionsArrayEmpty() {
-        final FixedDateFormat fmt = FixedDateFormat.createIfSupported(new String[0]);
+        final FixedDateFormat fmt = FixedDateFormat.createIfSupported(Strings.EMPTY_ARRAY);
         assertEquals(DEFAULT.getPattern(), fmt.getFormat());
     }
 

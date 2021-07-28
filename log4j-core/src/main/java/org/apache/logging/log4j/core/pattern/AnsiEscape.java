@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.util.EnglishEnums;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Converts text into ANSI escape sequences.
@@ -289,7 +290,7 @@ public enum AnsiEscape {
      * @return a new map
      */
     public static Map<String, String> createMap(final String[] values, final String[] dontEscapeKeys) {
-        final String[] sortedIgnoreKeys = dontEscapeKeys != null ? dontEscapeKeys.clone() : new String[0];
+        final String[] sortedIgnoreKeys = dontEscapeKeys != null ? dontEscapeKeys.clone() : Strings.EMPTY_ARRAY;
         Arrays.sort(sortedIgnoreKeys);
         final Map<String, String> map = new HashMap<>();
         for (final String string : values) {

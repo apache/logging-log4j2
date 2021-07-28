@@ -32,6 +32,11 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 @Plugin(name = "KeyValuePair", category = Node.CATEGORY, printObject = true)
 public final class KeyValuePair {
 
+    /**
+     * The empty array.
+     */
+    public static final KeyValuePair[] EMPTY_ARRAY = {};
+
     private final String key;
     private final String value;
 

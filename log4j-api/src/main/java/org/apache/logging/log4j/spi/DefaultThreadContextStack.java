@@ -259,7 +259,7 @@ public class DefaultThreadContextStack implements ThreadContextStack, StringBuil
     public Object[] toArray() {
         final MutableThreadContextStack result = STACK.get();
         if (result == null) {
-            return new String[0];
+            return Strings.EMPTY_ARRAY;
         }
         return result.toArray(new Object[result.size()]);
     }

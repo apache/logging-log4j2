@@ -33,6 +33,7 @@ import org.apache.logging.log4j.core.appender.rewrite.RewriteAppender;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
 import org.w3c.dom.Element;
 
 import java.util.ArrayList;
@@ -104,7 +105,7 @@ public class RewriteAppenderBuilder extends AbstractBuilder implements AppenderB
                 }
             }
         });
-        return createAppender(name, level.get(), appenderRefs.get().toArray(new String[0]), rewritePolicyHolder.get(),
+        return createAppender(name, level.get(), appenderRefs.get().toArray(Strings.EMPTY_ARRAY), rewritePolicyHolder.get(),
                 filter.get(), config);
     }
 

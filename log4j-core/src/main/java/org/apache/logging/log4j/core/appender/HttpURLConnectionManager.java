@@ -65,7 +65,7 @@ public class HttpURLConnectionManager extends HttpManager {
         this.method = Objects.requireNonNull(method, "method");
         this.connectTimeoutMillis = connectTimeoutMillis;
         this.readTimeoutMillis = readTimeoutMillis;
-        this.headers = headers != null ? headers : new Property[0];
+        this.headers = headers != null ? headers : Property.EMPTY_ARRAY;
         this.sslConfiguration = sslConfiguration;
         if (this.sslConfiguration != null && !isHttps) {
             throw new ConfigurationException("SSL configuration can only be specified with URL scheme https");

@@ -37,6 +37,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.NullOutputStream;
+import org.apache.logging.log4j.util.Constants;
 
 //Lines too long...
 //CHECKSTYLE:OFF
@@ -76,7 +77,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
     protected MemoryMappedFileManager(final RandomAccessFile file, final String fileName, final OutputStream os,
             final boolean immediateFlush, final long position, final int regionLength, final String advertiseURI,
             final Layout<? extends Serializable> layout, final boolean writeHeader) throws IOException {
-        super(os, fileName, layout, writeHeader, ByteBuffer.wrap(new byte[0]));
+        super(os, fileName, layout, writeHeader, ByteBuffer.wrap(Constants.EMPTY_BYTE_ARRAY));
         this.immediateFlush = immediateFlush;
         this.randomAccessFile = Objects.requireNonNull(file, "RandomAccessFile");
         this.regionLength = regionLength;

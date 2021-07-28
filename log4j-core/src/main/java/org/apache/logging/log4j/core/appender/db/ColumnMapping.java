@@ -44,6 +44,11 @@ import org.apache.logging.log4j.util.ReadOnlyStringMap;
 public class ColumnMapping {
 
     /**
+     * The empty array.
+     */
+    public static final ColumnMapping[] EMPTY_ARRAY = {};
+
+    /**
      * Builder for {@link ColumnMapping}.
      */
     public static class Builder implements org.apache.logging.log4j.core.util.Builder<ColumnMapping> {

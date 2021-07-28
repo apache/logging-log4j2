@@ -16,6 +16,16 @@
  */
 package org.apache.logging.log4j;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import java.util.List;
+
 import org.apache.logging.log4j.junit.StatusLoggerLevel;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
@@ -26,16 +36,11 @@ import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.MessageFactory2Adapter;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.Supplier;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
-
-import java.util.List;
-
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @StatusLoggerLevel("WARN")
 @ResourceLock("log4j2.MarkerManager")
@@ -935,7 +940,7 @@ public class AbstractLoggerTest {
 
         @Override
         public Object[] getParameters() {
-            return new Object[0];
+            return Constants.EMPTY_OBJECT_ARRAY;
         }
 
         @Override
@@ -1293,7 +1298,7 @@ public class AbstractLoggerTest {
 
         @Override
         public Object[] getParameters() {
-            return new Object[0];
+            return Constants.EMPTY_OBJECT_ARRAY;
         }
 
         @Override

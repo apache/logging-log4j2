@@ -17,7 +17,6 @@
 
 package org.apache.logging.log4j.core.config;
 
-import javax.net.ssl.HttpsURLConnection;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -32,6 +31,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Objects;
 
+import javax.net.ssl.HttpsURLConnection;
+
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
 import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
@@ -40,6 +41,7 @@ import org.apache.logging.log4j.core.util.AuthorizationProvider;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Source;
+import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
@@ -48,18 +50,15 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  */
 public class ConfigurationSource {
 
-    /** Empty byte array singleton. */
-    private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
-
     /**
      * ConfigurationSource to use with Configurations that do not require a "real" configuration source.
      */
-    public static final ConfigurationSource NULL_SOURCE = new ConfigurationSource(EMPTY_BYTE_ARRAY, null, 0);
+    public static final ConfigurationSource NULL_SOURCE = new ConfigurationSource(Constants.EMPTY_BYTE_ARRAY, null, 0);
 
     /**
      * ConfigurationSource to use with {@link org.apache.logging.log4j.core.config.composite.CompositeConfiguration}.
      */
-    public static final ConfigurationSource COMPOSITE_SOURCE = new ConfigurationSource(EMPTY_BYTE_ARRAY, null, 0);
+    public static final ConfigurationSource COMPOSITE_SOURCE = new ConfigurationSource(Constants.EMPTY_BYTE_ARRAY, null, 0);
     private static final String HTTPS = "https";
 
     private final File file;

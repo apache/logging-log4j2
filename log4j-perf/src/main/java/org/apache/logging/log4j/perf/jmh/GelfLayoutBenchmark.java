@@ -50,7 +50,7 @@ public class GelfLayoutBenchmark {
     private static final CharSequence MESSAGE =
             "This is rather long and chatty log message with quite some interesting information and a bit of fun in it which is suitable here";
     private static final LogEvent EVENT = createLogEvent();
-    private static final KeyValuePair[] ADDITIONAL_FIELDS = new KeyValuePair[0];
+    private static final KeyValuePair[] ADDITIONAL_FIELDS = KeyValuePair.EMPTY_ARRAY;
 
     private static LogEvent createLogEvent() {
         final Marker marker = null;

@@ -396,7 +396,7 @@ public final class PatternLayout extends AbstractStringLayout {
                     final PatternParser parser = createPatternParser(configuration);
                     final List<PatternFormatter> list = parser.parse(pattern == null ? defaultPattern : pattern,
                             alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi);
-                    final PatternFormatter[] formatters = list.toArray(new PatternFormatter[0]);
+                    final PatternFormatter[] formatters = list.toArray(PatternFormatter.EMPTY_ARRAY);
                     return new PatternSerializer(formatters, replace);
                 } catch (final RuntimeException ex) {
                     throw new IllegalArgumentException("Cannot parse pattern '" + pattern + "'", ex);

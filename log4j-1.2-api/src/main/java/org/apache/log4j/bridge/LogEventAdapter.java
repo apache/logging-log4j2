@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.spi.StandardLevel;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -204,7 +205,7 @@ public class LogEventAdapter extends LoggingEvent {
     @Override
     public String[] getThrowableStrRep() {
         if (event.getThrown() != null) {
-            return Throwables.toStringList(event.getThrown()).toArray(new String[0]);
+            return Throwables.toStringList(event.getThrown()).toArray(Strings.EMPTY_ARRAY);
         }
         return null;
     }
