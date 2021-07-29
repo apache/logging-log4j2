@@ -188,9 +188,9 @@
     <slf4jVersion>1.7.30</slf4jVersion>
     <logbackVersion>1.2.3</logbackVersion>
     <jackson1Version>1.9.13</jackson1Version>
-    <jackson2Version>2.12.3</jackson2Version>
+    <jackson2Version>2.12.4</jackson2Version>
     <spring-boot.version>2.3.6.RELEASE</spring-boot.version>
-    <springVersion>5.3.2</springVersion>
+    <springVersion>5.3.9</springVersion>
     <kubernetes-client.version>4.6.1</kubernetes-client.version>
     <flumeVersion>1.9.0</flumeVersion>
     <disruptorVersion>3.4.4</disruptorVersion>
@@ -240,12 +240,12 @@
     <commonsLoggingVersion>1.2</commonsLoggingVersion>
     <javax.persistence>2.2.1</javax.persistence>
     <osgi.api.version>1.10.0</osgi.api.version>
-    <activemq.version>5.15.9</activemq.version>
+    <activemq.version>5.16.2</activemq.version>
     <!-- Allow Clirr severity to be overriden by the command-line option -DminSeverity=level -->
     <minSeverity>info</minSeverity>
     <jctoolsVersion>3.3.0</jctoolsVersion>
-    <junitVersion>4.13.1</junitVersion>
-    <junitJupiterVersion>5.7.0</junitJupiterVersion>
+    <junitVersion>4.13.2</junitVersion>
+    <junitJupiterVersion>5.7.2</junitJupiterVersion>
     <mockitoVersion>3.9.0</mockitoVersion>
     <byteBuddyVersion>1.11.0</byteBuddyVersion>
     <argLine>-Xms256m -Xmx1024m</argLine>
@@ -309,12 +309,12 @@
       <dependency>
         <groupId>commons-codec</groupId>
         <artifactId>commons-codec</artifactId>
-        <version>1.12</version>
+        <version>1.15</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.9</version>
+        <version>3.12.0</version>
       </dependency>
       <dependency>
         <groupId>ch.qos.logback</groupId>
@@ -904,7 +904,7 @@
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
-        <version>2.7</version>
+        <version>2.11.0</version>
         <scope>test</scope>
       </dependency>
       <!-- Used for testing JsonTemplateLayout -->
@@ -935,19 +935,19 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-compress</artifactId>
-        <version>1.20</version>
+        <version>1.21</version>
       </dependency>
       <dependency>
         <groupId>org.tukaani</groupId>
         <artifactId>xz</artifactId>
-        <version>1.8</version>
+        <version>1.9</version>
         <scope>test</scope>
       </dependency>
       <!-- Used for the CSV layout -->
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-csv</artifactId>
-        <version>1.6</version>
+        <version>1.8</version>
       </dependency>
       <!-- GC-free -->
       <dependency>
