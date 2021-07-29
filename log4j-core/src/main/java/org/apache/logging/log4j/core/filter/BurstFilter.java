@@ -46,9 +46,9 @@ import java.util.concurrent.TimeUnit;
  * <code>
  * &lt;Console name="console"&gt;<br>
  * &nbsp;&lt;PatternLayout pattern="%-5p %d{dd-MMM-yyyy HH:mm:ss} %x %t %m%n"/&gt;<br>
- * &nbsp;&lt;filters&gt;<br>
- * &nbsp;&nbsp;&lt;Burst level="INFO" rate="16" maxBurst="100"/&gt;<br>
- * &nbsp;&lt;/filters&gt;<br>
+ * &nbsp;&lt;Filters&gt;<br>
+ * &nbsp;&nbsp;&lt;BurstFilter level="INFO" rate="16" maxBurst="100"/&gt;<br>
+ * &nbsp;&lt;/Filters&gt;<br>
  * &lt;/Console&gt;<br>
  * </code><br>
  */
