@@ -21,7 +21,7 @@ import org.apache.logging.log4j.core.LogEvent;
 
 /**
  * Provides the {@link LogEvent#getNanoTime() high-resolution time stamp} used in log events.
- * 
+ *
  * @since 2.11
  */
 public interface NanoClock {

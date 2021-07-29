@@ -42,15 +42,15 @@ import org.apache.logging.log4j.core.util.Integers;
 public abstract class AbstractAppender extends AbstractFilterable implements Appender {
 
     /**
-     * Subclasses can extend this abstract Builder. 
-     * 
+     * Subclasses can extend this abstract Builder.
+     *
      * @param <B> The type to build.
      */
     public abstract static class Builder<B extends Builder<B>> extends AbstractFilterable.Builder<B> {
 
         @PluginBuilderAttribute
         private boolean ignoreExceptions = true;
-        
+
         @PluginElement("Layout")
         private Layout<? extends Serializable> layout;
 
@@ -94,7 +94,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
             }
             return layout;
         }
-        
+
         public Layout<? extends Serializable> getOrCreateLayout(final Charset charset) {
             if (layout == null) {
                 return PatternLayout.newBuilder().setCharset(charset).build();
@@ -110,9 +110,9 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
         public Configuration getConfiguration() {
             return configuration;
         }
-        
+
     }
-    
+
     private final String name;
     private final boolean ignoreExceptions;
     private final Layout<? extends Serializable> layout;
@@ -120,7 +120,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
 
     /**
      * Constructor.
-     * 
+     *
      * @param name The Appender name.
      * @param filter The Filter to associate with the Appender.
      * @param layout The layout to use to format the event.
@@ -181,7 +181,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
 
     /**
      * Handle an error with a message using the {@link ErrorHandler} configured for this Appender.
-     * 
+     *
      * @param msg The message.
      */
     public void error(final String msg) {
@@ -191,7 +191,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
     /**
      * Handle an error with a message, exception, and a logging event, using the {@link ErrorHandler} configured for
      * this Appender.
-     * 
+     *
      * @param msg The message.
      * @param event The LogEvent.
      * @param t The Throwable.
@@ -202,7 +202,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
 
     /**
      * Handle an error with a message and an exception using the {@link ErrorHandler} configured for this Appender.
-     * 
+     *
      * @param msg The message.
      * @param t The Throwable.
      */
@@ -212,7 +212,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
 
     /**
      * Returns the ErrorHandler, if any.
-     * 
+     *
      * @return The ErrorHandler.
      */
     @Override
@@ -222,7 +222,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
 
     /**
      * Returns the Layout for the appender.
-     * 
+     *
      * @return The Layout used to format the event.
      */
     @Override
@@ -232,7 +232,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
 
     /**
      * Returns the name of the Appender.
-     * 
+     *
      * @return The name of the Appender.
      */
     @Override
@@ -253,7 +253,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
 
     /**
      * The handler must be set before the appender is started.
-     * 
+     *
      * @param handler The ErrorHandler to use.
      */
     @Override
@@ -271,7 +271,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
 
     /**
      * Serializes the given event using the appender's layout if present.
-     * 
+     *
      * @param event
      *            the event to serialize.
      * @return the serialized event or null if no layout is present.

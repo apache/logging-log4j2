@@ -31,7 +31,7 @@ import org.apache.logging.log4j.core.appender.ManagerFactory;
  * Manager that allows database appenders to have their configuration reloaded without losing events.
  */
 public abstract class AbstractDatabaseManager extends AbstractManager implements Flushable {
-    
+
     /**
      * Implementations should extend this class for passing data between the getManager method and the manager factory
      * class.
@@ -62,7 +62,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
 
         /**
          * Gets the layout.
-         * 
+         *
          * @return the layout.
          */
         public Layout<? extends Serializable> getLayout() {

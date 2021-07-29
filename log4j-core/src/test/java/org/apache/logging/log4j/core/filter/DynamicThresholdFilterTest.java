@@ -73,7 +73,7 @@ public class DynamicThresholdFilterTest {
         assertSame(Filter.Result.ACCEPT, filter.filter(null, Level.DEBUG, null, "some test message", "one", "two", "three"));
         ThreadContext.clearMap();
     }
-    
+
     @Test
     @LoggerContextSource("log4j2-dynamicfilter.xml")
     public void testConfig(final Configuration config) {

@@ -760,7 +760,7 @@ public class LoggerContext extends AbstractLifeCycle
         }
     }
 
-    private void initApiModule() {        
+    private void initApiModule() {
         ThreadContextMapFactory.init(); // Or make public and call ThreadContext.init() which calls ThreadContextMapFactory.init().
     }
 

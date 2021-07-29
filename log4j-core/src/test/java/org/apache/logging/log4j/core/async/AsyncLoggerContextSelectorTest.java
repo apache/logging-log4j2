@@ -27,7 +27,7 @@ import static org.junit.Assert.*;
 
 @Category(AsyncLoggers.class)
 public class AsyncLoggerContextSelectorTest {
-    
+
     private static final String FQCN = AsyncLoggerContextSelectorTest.class.getName();
 
     @Test

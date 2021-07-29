@@ -49,7 +49,7 @@ public class CsvLogEventLayoutTest {
     static ConfigurationFactory cf = new BasicConfigurationFactory();
 
     @Rule
-    public final ThreadContextRule threadContextRule = new ThreadContextRule(); 
+    public final ThreadContextRule threadContextRule = new ThreadContextRule();
 
     @AfterClass
     public static void cleanupClass() {
@@ -127,7 +127,7 @@ public class CsvLogEventLayoutTest {
         final String quote = del == ',' ? "\"" : "";
         Assert.assertTrue(event0, event0.contains(del + quote + "one=1, two=2, three=3" + quote + del));
         Assert.assertTrue(event1, event1.contains(del + "INFO" + del));
-        
+
         if (hasHeaderSerializer && header == null) {
             Assert.fail();
         }

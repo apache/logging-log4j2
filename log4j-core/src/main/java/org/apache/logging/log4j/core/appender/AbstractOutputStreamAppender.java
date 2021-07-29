@@ -34,12 +34,12 @@ import org.apache.logging.log4j.core.util.Constants;
 public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager> extends AbstractAppender {
 
     /**
-     * Subclasses can extend this abstract Builder. 
-     * 
+     * Subclasses can extend this abstract Builder.
+     *
      * @param <B> The type to build.
      */
     public abstract static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B> {
-    
+
         @PluginBuilderAttribute
         private boolean bufferedIo = true;
 
@@ -60,12 +60,12 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
         public boolean isImmediateFlush() {
             return immediateFlush;
         }
-        
+
         public B setImmediateFlush(final boolean immediateFlush) {
             this.immediateFlush = immediateFlush;
             return asBuilder();
         }
-        
+
         public B setBufferedIo(final boolean bufferedIo) {
             this.bufferedIo = bufferedIo;
             return asBuilder();
@@ -77,7 +77,7 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
         }
 
     }
-    
+
     /**
      * Immediate flush means that the underlying writer or output stream will be flushed at the end of each append
      * operation. Immediate flush is slower but ensures that each append request is actually written. If

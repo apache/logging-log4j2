@@ -58,7 +58,7 @@ public final class IfAccumulatedFileCount implements PathCondition {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.logging.log4j.core.appender.rolling.action.PathCondition#accept(java.nio.file.Path,
      * java.nio.file.Path, java.nio.file.attribute.BasicFileAttributes)
      */
@@ -77,7 +77,7 @@ public final class IfAccumulatedFileCount implements PathCondition {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.logging.log4j.core.appender.rolling.action.PathCondition#beforeFileTreeWalk()
      */
     @Override
@@ -88,12 +88,12 @@ public final class IfAccumulatedFileCount implements PathCondition {
 
     /**
      * Create an IfAccumulatedFileCount condition.
-     * 
+     *
      * @param threshold The threshold count from which files will be deleted.
      * @return An IfAccumulatedFileCount condition.
      */
     @PluginFactory
-    public static IfAccumulatedFileCount createFileCountCondition( 
+    public static IfAccumulatedFileCount createFileCountCondition(
             // @formatter:off
             @PluginAttribute(value = "exceeds", defaultInt = Integer.MAX_VALUE) final int threshold,
             @PluginElement("PathConditions") final PathCondition... nestedConditions) {

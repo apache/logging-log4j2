@@ -39,7 +39,7 @@ public class PluginManager {
 
     /**
      * Constructs a PluginManager for the plugin category name given.
-     * 
+     *
      * @param category The plugin category name.
      */
     public PluginManager(final String category) {
@@ -48,7 +48,7 @@ public class PluginManager {
 
     /**
      * Adds a package name to be scanned for plugins. Must be invoked prior to plugins being collected.
-     * 
+     *
      * @param p The package name. Ignored if {@code null} or empty.
      */
     public static void addPackage(final String p) {
@@ -73,7 +73,7 @@ public class PluginManager {
 
     /**
      * Returns the type of a specified plugin.
-     * 
+     *
      * @param name The name of the plugin.
      * @return The plugin's type.
      */
@@ -83,7 +83,7 @@ public class PluginManager {
 
     /**
      * Returns all the matching plugins.
-     * 
+     *
      * @return A Map containing the name of the plugin and its type.
      */
     public Map<String, PluginType<?>> getPlugins() {

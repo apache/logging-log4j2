@@ -55,7 +55,7 @@ public class JndiManager extends AbstractManager {
 
     /**
      * Gets a named JndiManager using the default {@link javax.naming.InitialContext}.
-     * 
+     *
      * @param name the name of the JndiManager instance to create or use if available
      * @return a default JndiManager
      */
@@ -89,7 +89,7 @@ public class JndiManager extends AbstractManager {
 
     /**
      * Gets a JndiManager with the provided configuration information.
-     * 
+     *
      * @param properties JNDI properties, usually created by calling {@link #createProperties(String, String, String, String, String, Properties)}.
      * @return the JndiManager for the provided parameters.
      * @see #createProperties(String, String, String, String, String, Properties)

@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link MarkerLookup}.
- * 
+ *
  * @since 2.4
  */
 public class MarkerLookupTest {

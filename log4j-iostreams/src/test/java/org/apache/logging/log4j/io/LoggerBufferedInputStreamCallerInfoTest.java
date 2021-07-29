@@ -34,7 +34,7 @@ public class LoggerBufferedInputStreamCallerInfoTest extends IoBuilderCallerInfo
         this.logIn.close();
         assertMessages("after close", 4, "close");
     }
-    
+
     @Test
     public void read() throws Exception {
         this.logIn.read();

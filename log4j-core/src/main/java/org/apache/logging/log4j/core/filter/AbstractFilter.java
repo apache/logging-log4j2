@@ -69,21 +69,21 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
 
         /**
          * Sets the Result to return when the filter does not match. The default is Result.DENY.
-         * @param onMismatch the Result to return when the filter does not match. 
+         * @param onMismatch the Result to return when the filter does not match.
          * @return this
          */
         public B setOnMismatch(final Result onMismatch) {
             this.onMismatch = onMismatch;
             return asBuilder();
         }
-        
+
         @SuppressWarnings("unchecked")
         public B asBuilder() {
             return (B) this;
         }
 
     }
-    
+
     /**
      * The onMatch Result.
      */

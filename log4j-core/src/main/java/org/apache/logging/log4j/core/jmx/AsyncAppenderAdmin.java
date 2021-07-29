@@ -91,7 +91,7 @@ public class AsyncAppenderAdmin implements AsyncAppenderAdminMBean {
     public String[] getAppenderRefs() {
         return asyncAppender.getAppenderRefStrings();
     }
-    
+
     /**
      * Returns {@code true} if this AsyncAppender will take a snapshot of the stack with
      * every log event to determine the class and method where the logging call
@@ -102,7 +102,7 @@ public class AsyncAppenderAdmin implements AsyncAppenderAdminMBean {
     public boolean isIncludeLocation() {
         return asyncAppender.isIncludeLocation();
     }
-    
+
     /**
      * Returns {@code true} if this AsyncAppender will block when the queue is full,
      * or {@code false} if events are dropped when the queue is full.
@@ -112,7 +112,7 @@ public class AsyncAppenderAdmin implements AsyncAppenderAdminMBean {
     public boolean isBlocking() {
         return asyncAppender.isBlocking();
     }
-    
+
     /**
      * Returns the name of the appender that any errors are logged to or {@code null}.
      * @return the name of the appender that any errors are logged to or {@code null}
@@ -121,12 +121,12 @@ public class AsyncAppenderAdmin implements AsyncAppenderAdminMBean {
     public String getErrorRef() {
         return asyncAppender.getErrorRef();
     }
-    
+
     @Override
     public int getQueueCapacity() {
         return asyncAppender.getQueueCapacity();
     }
-    
+
     @Override
     public int getQueueRemainingCapacity() {
         return asyncAppender.getQueueRemainingCapacity();

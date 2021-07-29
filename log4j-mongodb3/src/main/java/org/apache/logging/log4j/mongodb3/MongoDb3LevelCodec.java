@@ -35,7 +35,7 @@ public class MongoDb3LevelCodec implements Codec<Level> {
      * @since 2.14.0
      */
     public static final MongoDb3LevelCodec INSTANCE = new MongoDb3LevelCodec();
-    
+
     @Override
     public Level decode(final BsonReader reader, final DecoderContext decoderContext) {
         return Level.getLevel(reader.readString());

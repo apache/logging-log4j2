@@ -73,7 +73,7 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
      * May be null.
      */
     private volatile Filter filter;
-    
+
     private final Property[] propertyArray;
 
     protected AbstractFilterable() {

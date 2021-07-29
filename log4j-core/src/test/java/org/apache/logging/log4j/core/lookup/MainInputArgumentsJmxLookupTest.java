@@ -22,9 +22,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link JmxRuntimeInputArgumentsLookup} from the command line, not a JUnit test.
- * 
+ *
  * From an IDE or CLI: --file foo.txt
- * 
+ *
  * @since 2.1
  */
 public class MainInputArgumentsJmxLookupTest {

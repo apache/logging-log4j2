@@ -69,7 +69,7 @@ import org.apache.logging.log4j.core.util.Throwables;
 public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implements ConfigurationBuilder<T> {
 
     private static final String INDENT = "  ";
-    
+
     private final Component root = new Component();
     private final Component loggers;
     private final Component appenders;

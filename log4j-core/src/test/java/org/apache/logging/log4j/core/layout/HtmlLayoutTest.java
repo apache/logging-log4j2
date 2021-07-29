@@ -246,7 +246,7 @@ public class HtmlLayoutTest {
             }
         }
     }
-    
+
     private String getDateLine(String logEventString) {
         return logEventString.split(System.lineSeparator())[2];
     }

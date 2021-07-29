@@ -49,21 +49,21 @@ public class ScriptPatternSelector implements PatternSelector {
      */
     public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<ScriptPatternSelector> {
 
-        @PluginElement("Script") 
+        @PluginElement("Script")
         private AbstractScript script;
-        
-        @PluginElement("PatternMatch") 
+
+        @PluginElement("PatternMatch")
         private PatternMatch[] properties;
-        
-        @PluginBuilderAttribute("defaultPattern") 
+
+        @PluginBuilderAttribute("defaultPattern")
         private String defaultPattern;
-        
-        @PluginBuilderAttribute("alwaysWriteExceptions") 
+
+        @PluginBuilderAttribute("alwaysWriteExceptions")
         private boolean alwaysWriteExceptions = true;
-        
+
         @PluginBuilderAttribute("disableAnsi")
         private boolean disableAnsi;
-        
+
         @PluginBuilderAttribute("noConsoleNoAnsi")
         private boolean noConsoleNoAnsi;
 
@@ -132,7 +132,7 @@ public class ScriptPatternSelector implements PatternSelector {
             return this;
         }
     }
-    
+
     private final Map<String, PatternFormatter[]> formatterMap = new HashMap<>();
 
     private final Map<String, String> patternMap = new HashMap<>();

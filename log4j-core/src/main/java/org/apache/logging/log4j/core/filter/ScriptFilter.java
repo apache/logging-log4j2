@@ -123,11 +123,11 @@ public final class ScriptFilter extends AbstractFilter {
 
     /**
      * Creates the ScriptFilter.
-     * @param script The script to run. The script must return a boolean value. Either script or scriptFile must be 
+     * @param script The script to run. The script must return a boolean value. Either script or scriptFile must be
      *      provided.
      * @param onMatch The action to take if a match occurs.
      * @param onMismatch The action to take if no match occurs.
-     * @param configuration the configuration 
+     * @param configuration the configuration
      * @return A ScriptFilter.
      */
     // TODO Consider refactoring to use AbstractFilter.AbstractFilterBuilder

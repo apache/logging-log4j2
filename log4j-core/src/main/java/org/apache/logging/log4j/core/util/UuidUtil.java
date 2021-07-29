@@ -64,7 +64,7 @@ public final class UuidUtil {
 
     /**
      * Initializes this class
-     * 
+     *
      * @param mac MAC address
      * @return Least
      */

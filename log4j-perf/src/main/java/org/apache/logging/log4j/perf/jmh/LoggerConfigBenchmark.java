@@ -164,7 +164,7 @@ public class LoggerConfigBenchmark {
             processLogEvent(event);
         }
     }
-    
+
     volatile LoggerConfigBenchmark loggerConfig = this;
 
     /**
@@ -186,7 +186,7 @@ public class LoggerConfigBenchmark {
 
     /**
      * Determine if the LogEvent should be processed or ignored.
-     * 
+     *
      * @param event The LogEvent.
      * @return true if the LogEvent should be processed.
      */

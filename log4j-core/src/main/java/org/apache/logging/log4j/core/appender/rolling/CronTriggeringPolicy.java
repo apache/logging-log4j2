@@ -57,7 +57,7 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
 
     /**
      * Initializes the policy.
-     * 
+     *
      * @param aManager
      *            The RollingFileManager.
      */
@@ -92,7 +92,7 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
 
     /**
      * Determines whether a rollover should occur.
-     * 
+     *
      * @param event
      *            A reference to the currently event.
      * @return true if a rollover should occur.
@@ -108,7 +108,7 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
 
     /**
      * Creates a ScheduledTriggeringPolicy.
-     * 
+     *
      * @param configuration
      *            the Configuration.
      * @param evaluateOnStartup

@@ -36,7 +36,7 @@ public class ConsoleAppenderBuilderTest {
 
     /**
      * Tests https://issues.apache.org/jira/browse/LOG4J2-1636
-     * 
+     *
      * Tested with Oracle 7 and 8 and IBM Java 8.
      */
     @Test

@@ -26,7 +26,7 @@ import org.eclipse.jetty.util.log.Logger;
 
 /**
  * Provides a native Apache Log4j 2 logger for Eclipse Jetty logging.
- * 
+ *
  * <p>
  * To direct Jetty to use this class, set the system property {{org.eclipse.jetty.util.log.class}} to this class name.
  * </p>

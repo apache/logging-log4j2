@@ -43,7 +43,7 @@ public final class KafkaAppender extends AbstractAppender {
 
     /**
      * Builds KafkaAppender instances.
-     * 
+     *
      * @param <B>
      *            The type to build
      */
@@ -128,7 +128,7 @@ public final class KafkaAppender extends AbstractAppender {
 
     /**
      * Creates a builder for a KafkaAppender.
-     * 
+     *
      * @return a builder for a KafkaAppender.
      */
     @PluginFactory

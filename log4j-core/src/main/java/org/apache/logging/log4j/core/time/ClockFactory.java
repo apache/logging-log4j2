@@ -30,7 +30,7 @@ import java.util.Map;
 
 /**
  * Factory for {@code Clock} objects.
- * 
+ *
  * @since 2.11
  */
 public final class ClockFactory {

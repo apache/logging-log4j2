@@ -53,52 +53,52 @@ public class SyslogAppender extends SocketAppender {
 
         @PluginBuilderAttribute("id")
         private String id;
-        
+
         @PluginBuilderAttribute(value = "enterpriseNumber")
         private int enterpriseNumber = Rfc5424Layout.DEFAULT_ENTERPRISE_NUMBER;
-        
+
         @PluginBuilderAttribute(value = "includeMdc")
         private boolean includeMdc = true;
-        
+
         @PluginBuilderAttribute("mdcId")
         private String mdcId;
-        
+
         @PluginBuilderAttribute("mdcPrefix")
         private String mdcPrefix;
-        
+
         @PluginBuilderAttribute("eventPrefix")
         private String eventPrefix;
-        
+
         @PluginBuilderAttribute(value = "newLine")
         private boolean newLine;
-        
+
         @PluginBuilderAttribute("newLineEscape")
         private String escapeNL;
-        
+
         @PluginBuilderAttribute("appName")
         private String appName;
-        
+
         @PluginBuilderAttribute("messageId")
         private String msgId;
-        
+
         @PluginBuilderAttribute("mdcExcludes")
         private String excludes;
-        
+
         @PluginBuilderAttribute("mdcIncludes")
         private String includes;
-        
+
         @PluginBuilderAttribute("mdcRequired")
         private String required;
-        
+
         @PluginBuilderAttribute("format")
         private String format;
-        
+
         @PluginBuilderAttribute("charset")
         private Charset charsetName = StandardCharsets.UTF_8;
-        
+
         @PluginBuilderAttribute("exceptionPattern")
         private String exceptionPattern;
-        
+
         @PluginElement("LoggerFields")
         private LoggerFields[] loggerFields;
 
@@ -299,7 +299,7 @@ public class SyslogAppender extends SocketAppender {
             return asBuilder();
         }
     }
-    
+
     protected static final String RFC5424 = "RFC5424";
 
     protected SyslogAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,

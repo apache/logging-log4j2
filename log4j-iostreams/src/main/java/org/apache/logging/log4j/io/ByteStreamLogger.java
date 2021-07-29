@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**
- * 
+ *
  * @since 2.1
  */
 public class ByteStreamLogger {
@@ -114,7 +114,7 @@ public class ByteStreamLogger {
         this.logger.logIfEnabled(fqcn, this.level, this.marker, this.msg.toString());
         this.msg.setLength(0);
     }
-    
+
     private void logEnd(final String fqcn) {
         if (this.msg.length() > 0) {
             log(fqcn);

@@ -43,7 +43,7 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
     public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B> {
         // empty for now.
     }
-    
+
     public static final int DEFAULT_RECONNECT_INTERVAL_MILLIS = 5000;
 
     private final ReadWriteLock lock = new ReentrantReadWriteLock();

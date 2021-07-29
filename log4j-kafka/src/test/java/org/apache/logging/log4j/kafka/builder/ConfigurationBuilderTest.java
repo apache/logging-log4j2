@@ -117,7 +117,7 @@ public class ConfigurationBuilderTest {
         final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
         addTestFixtures("config name", builder);
         final String xmlConfiguration = builder.toXmlConfiguration();
-        
+
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
         dbf.setCoalescing(true);

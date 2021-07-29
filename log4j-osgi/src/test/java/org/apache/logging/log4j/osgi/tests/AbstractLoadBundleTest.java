@@ -47,7 +47,7 @@ public abstract class AbstractLoadBundleTest extends AbstractOsgiTest {
         final Path corePath = getHere().resolveSibling("log4j-core").resolve("target").resolve(getBundleTestInfo().buildJarFileName("log4j-core"));
         return getBundleContext().installBundle(corePath.toUri().toString());
     }
-    
+
     private Bundle getDummyBundle() throws BundleException {
         final Path dumyPath = getHere().resolveSibling("log4j-samples").resolve("log4j-samples-configuration").resolve("target").resolve(getBundleTestInfo().buildJarFileName("log4j-samples-configuration"));
         return getBundleContext().installBundle(dumyPath.toUri().toString());
@@ -58,7 +58,7 @@ public abstract class AbstractLoadBundleTest extends AbstractOsgiTest {
         return getBundleContext().installBundle(apiPath.toUri().toString());
     }
 
-    
+
     private void log(final Bundle dummy) throws ReflectiveOperationException {
         // use reflection to log in the context of the dummy bundle
 
@@ -102,7 +102,7 @@ public abstract class AbstractLoadBundleTest extends AbstractOsgiTest {
         api.start();
         plugins.start();
         core.start();
-        dummy.start();        
+        dummy.start();
     }
 
     private void stop(final Bundle api, final Bundle plugins, final Bundle core, final Bundle dummy) throws BundleException {
@@ -111,7 +111,7 @@ public abstract class AbstractLoadBundleTest extends AbstractOsgiTest {
         plugins.stop();
         api.stop();
     }
-    
+
     private void uninstall(final Bundle api, final Bundle plugins, final Bundle core, final Bundle dummy) throws BundleException {
         dummy.uninstall();
         core.uninstall();
@@ -128,7 +128,7 @@ public abstract class AbstractLoadBundleTest extends AbstractOsgiTest {
         final Bundle api = getApiBundle();
         final Bundle plugins = getPluginsBundle();
         final Bundle core = getCoreBundle();
-        
+
         Assert.assertEquals("api is not in INSTALLED state", Bundle.INSTALLED, api.getState());
         Assert.assertEquals("plugins is not in INSTALLED state", Bundle.INSTALLED, plugins.getState());
         Assert.assertEquals("core is not in INSTALLED state", Bundle.INSTALLED, core.getState());
@@ -136,15 +136,15 @@ public abstract class AbstractLoadBundleTest extends AbstractOsgiTest {
         api.start();
         plugins.start();
         core.start();
-        
+
         Assert.assertEquals("api is not in ACTIVE state", Bundle.ACTIVE, api.getState());
         Assert.assertEquals("plugins is not in ACTIVE state", Bundle.ACTIVE, plugins.getState());
-        Assert.assertEquals("core is not in ACTIVE state", Bundle.ACTIVE, core.getState());        
-        
+        Assert.assertEquals("core is not in ACTIVE state", Bundle.ACTIVE, core.getState());
+
         core.stop();
         plugins.stop();
         api.stop();
-        
+
         Assert.assertEquals("api is not in RESOLVED state", Bundle.RESOLVED, api.getState());
         Assert.assertEquals("plugins is not in RESOLVED state", Bundle.RESOLVED, plugins.getState());
         Assert.assertEquals("core is not in RESOLVED state", Bundle.RESOLVED, core.getState());
@@ -164,11 +164,11 @@ public abstract class AbstractLoadBundleTest extends AbstractOsgiTest {
         Assert.assertEquals("api is not in RESOLVED state", Bundle.RESOLVED, api.getState());
         Assert.assertEquals("plugins is not in RESOLVED state", Bundle.RESOLVED, plugins.getState());
         Assert.assertEquals("core is not in RESOLVED state", Bundle.RESOLVED, core.getState());
-        
+
         core.uninstall();
         plugins.uninstall();
         api.uninstall();
-        
+
         Assert.assertEquals("api is not in UNINSTALLED state", Bundle.UNINSTALLED, api.getState());
         Assert.assertEquals("plugins is not in UNINSTALLED state", Bundle.UNINSTALLED, plugins.getState());
         Assert.assertEquals("core is not in UNINSTALLED state", Bundle.UNINSTALLED, core.getState());
@@ -211,7 +211,7 @@ public abstract class AbstractLoadBundleTest extends AbstractOsgiTest {
         core.stop();
         plugins.stop();
         api.stop();
-        
+
         core.uninstall();
         plugins.uninstall();
         api.uninstall();
@@ -283,7 +283,7 @@ public abstract class AbstractLoadBundleTest extends AbstractOsgiTest {
 
 
     /**
-     * Tests the loading of the 1.2 Compatibility API bundle, its classes should be loadable from the Core bundle, 
+     * Tests the loading of the 1.2 Compatibility API bundle, its classes should be loadable from the Core bundle,
      * and the class loader should be the same between a class from core and a class from compat
      */
     @Test
@@ -297,7 +297,7 @@ public abstract class AbstractLoadBundleTest extends AbstractOsgiTest {
         api.start();
         plugins.start();
         core.start();
-        
+
         final Class<?> coreClassFromCore = core.loadClass("org.apache.logging.log4j.core.Core");
         final Class<?> levelClassFrom12API = core.loadClass("org.apache.log4j.Level");
         final Class<?> levelClassFromAPI = core.loadClass("org.apache.logging.log4j.Level");

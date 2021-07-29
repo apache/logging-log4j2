@@ -28,7 +28,7 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
 
 public abstract class AbstractLoggerOutputStreamTest extends AbstractStreamTest {
-    
+
     protected OutputStream out;
     protected ByteArrayOutputStream wrapped;
     protected abstract ByteArrayOutputStream createOutputStream();

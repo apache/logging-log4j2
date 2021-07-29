@@ -77,7 +77,7 @@ public class RollingAppenderDeleteNestedTest {
             System.out.println(file + " (" + file.length() + "B) "
                     + FixedDateFormat.create(FixedFormat.ABSOLUTE).format(file.lastModified()));
         }
-        
+
         final List<String> expected = Arrays.asList("my-1.log", "my-2.log", "my-3.log", "my-4.log", "my-5.log");
         assertEquals(Arrays.toString(files), expected.size() + 3, files.length);
         for (final File file : files) {

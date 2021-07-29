@@ -43,14 +43,14 @@ import java.util.regex.Pattern;
  * <p>FastDateParser is a fast and thread-safe version of
  * {@link java.text.SimpleDateFormat}.</p>
  *
- * <p>To obtain a proxy to a FastDateParser, use {@link FastDateFormat#getInstance(String, TimeZone, Locale)} 
+ * <p>To obtain a proxy to a FastDateParser, use {@link FastDateFormat#getInstance(String, TimeZone, Locale)}
  * or another variation of the factory methods of {@link FastDateFormat}.</p>
- * 
+ *
  * <p>Since FastDateParser is thread safe, you can use a static member instance:</p>
  * <code>
  *     private static final DateParser DATE_PARSER = FastDateFormat.getInstance("yyyy-MM-dd");
  * </code>
- * 
+ *
  * <p>This class can be used as a direct replacement for
  * <code>SimpleDateFormat</code> in most parsing situations.
  * This class is especially useful in multi-threaded server environments.
@@ -66,11 +66,11 @@ import java.util.regex.Pattern;
  *
  * <p>Timing tests indicate this class is as about as fast as SimpleDateFormat
  * in single thread applications and about 25% faster in multi-thread applications.</p>
- * 
+ *
  * <p>
  * Copied and modified from <a href="https://commons.apache.org/proper/commons-lang/">Apache Commons Lang</a>.
  * </p>
- * 
+ *
  * @since Apache Commons Lang 3.2
  * @see FastDatePrinter
  */
@@ -102,8 +102,8 @@ public class FastDateParser implements DateParser, Serializable {
 
     /**
      * <p>Constructs a new FastDateParser.</p>
-     * 
-     * Use {@link FastDateFormat#getInstance(String, TimeZone, Locale)} or another variation of the 
+     *
+     * Use {@link FastDateFormat#getInstance(String, TimeZone, Locale)} or another variation of the
      * factory methods of {@link FastDateFormat} to get a cached FastDateParser instance.
      *
      * @param pattern non-null {@link java.text.SimpleDateFormat} compatible
@@ -380,8 +380,8 @@ public class FastDateParser implements DateParser, Serializable {
 
     /**
      * This implementation updates the ParsePosition if the parse succeeds.
-     * However, it sets the error index to the position before the failed field unlike 
-     * the method {@link java.text.SimpleDateFormat#parse(String, ParsePosition)} which sets 
+     * However, it sets the error index to the position before the failed field unlike
+     * the method {@link java.text.SimpleDateFormat#parse(String, ParsePosition)} which sets
      * the error index to after the failed field.
      * <p>
      * To determine if the parse has succeeded, the caller must check if the current parse position
@@ -404,7 +404,7 @@ public class FastDateParser implements DateParser, Serializable {
      * Upon success, the ParsePosition index is updated to indicate how much of the source text was consumed.
      * Not all source text needs to be consumed.  Upon parse failure, ParsePosition error index is updated to
      * the offset of the source text which does not match the supplied format.
-     * 
+     *
      * @param source The text to parse.
      * @param pos On input, the position in the source to start parsing, on output, updated position.
      * @param calendar The calendar into which to set parsed fields.
@@ -565,7 +565,7 @@ public class FastDateParser implements DateParser, Serializable {
             return getLocaleSpecificStrategy(Calendar.ERA, definingCalendar);
         case 'H':  // Hour in day (0-23)
             return HOUR_OF_DAY_STRATEGY;
-        case 'K':  // Hour in am/pm (0-11) 
+        case 'K':  // Hour in am/pm (0-11)
             return HOUR_STRATEGY;
         case 'M':
             return width >= 3 ? getLocaleSpecificStrategy(Calendar.MONTH, definingCalendar) : NUMBER_MONTH_STRATEGY;
@@ -631,7 +631,7 @@ public class FastDateParser implements DateParser, Serializable {
         final ConcurrentMap<Locale, Strategy> cache = getCache(field);
         Strategy strategy = cache.get(locale);
         if (strategy == null) {
-            strategy = field == Calendar.ZONE_OFFSET 
+            strategy = field == Calendar.ZONE_OFFSET
                     ? new TimeZoneStrategy(locale)
                     : new CaseInsensitiveTextStrategy(field, definingCalendar, locale);
             final Strategy inCache = cache.putIfAbsent(locale, strategy);
@@ -700,7 +700,7 @@ public class FastDateParser implements DateParser, Serializable {
         CaseInsensitiveTextStrategy(final int field, final Calendar definingCalendar, final Locale locale) {
             this.field = field;
             this.locale = locale;
-            
+
             final StringBuilder regex = new StringBuilder();
             regex.append("((?iu)");
             lKeyValues = appendDisplayNames(definingCalendar, locale, field, regex);
@@ -900,9 +900,9 @@ public class FastDateParser implements DateParser, Serializable {
             }
         }
     }
-    
+
     private static class ISO8601TimeZoneStrategy extends PatternStrategy {
-        // Z, +hh, -hh, +hhmm, -hhmm, +hh:mm or -hh:mm 
+        // Z, +hh, -hh, +hhmm, -hhmm, +hh:mm or -hh:mm
 
         /**
          * Construct a Strategy that parses a TimeZone
@@ -911,7 +911,7 @@ public class FastDateParser implements DateParser, Serializable {
         ISO8601TimeZoneStrategy(final String pattern) {
             createPattern(pattern);
         }
-        
+
         /**
          * {@inheritDoc}
          */
@@ -923,14 +923,14 @@ public class FastDateParser implements DateParser, Serializable {
                 cal.setTimeZone(TimeZone.getTimeZone("GMT" + value));
             }
         }
-        
+
         private static final Strategy ISO_8601_1_STRATEGY = new ISO8601TimeZoneStrategy("(Z|(?:[+-]\\d{2}))");
         private static final Strategy ISO_8601_2_STRATEGY = new ISO8601TimeZoneStrategy("(Z|(?:[+-]\\d{2}\\d{2}))");
         private static final Strategy ISO_8601_3_STRATEGY = new ISO8601TimeZoneStrategy("(Z|(?:[+-]\\d{2}(?::)\\d{2}))");
 
         /**
          * Factory method for ISO8601TimeZoneStrategies.
-         * 
+         *
          * @param tokenLen a token indicating the length of the TimeZone String to be formatted.
          * @return a ISO8601TimeZoneStrategy that can format TimeZone String of length {@code tokenLen}. If no such
          *          strategy exists, an IllegalArgumentException will be thrown.

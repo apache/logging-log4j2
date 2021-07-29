@@ -22,7 +22,7 @@ import org.apache.logging.log4j.core.LogEvent;
 
 /**
  * Interface implemented by Classes that allow filtering to occur.
- * 
+ *
  * <p>
  * Extends {@link LifeCycle} since filters have a life cycle.
  * </p>

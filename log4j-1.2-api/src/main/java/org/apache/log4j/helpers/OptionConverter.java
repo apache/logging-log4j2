@@ -31,7 +31,7 @@ import java.util.Properties;
  * A convenience class to convert property values to specific types.
  */
 public class OptionConverter {
-    
+
     static String DELIM_START = "${";
     static char DELIM_STOP = '}';
     static int DELIM_START_LEN = 2;
@@ -45,7 +45,7 @@ public class OptionConverter {
         new CharMap('\b', '\b'),
         new CharMap('\"', '\"'),
         new CharMap('\'', '\''),
-        new CharMap('\\', '\\')    
+        new CharMap('\\', '\\')
     };
 
     /**
@@ -413,11 +413,11 @@ public class OptionConverter {
             return value;
         }
     }
-    
+
     private static class CharMap {
         final char key;
         final char replacement;
-        
+
         public CharMap(char key, char replacement) {
             this.key = key;
             this.replacement = replacement;

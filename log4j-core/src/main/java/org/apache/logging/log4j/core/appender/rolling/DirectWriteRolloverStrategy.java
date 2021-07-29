@@ -58,7 +58,7 @@ import java.util.zip.Deflater;
 public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implements DirectFileRolloverStrategy {
 
     private static final int DEFAULT_MAX_FILES = 7;
-    
+
     /**
      * Builds DirectWriteRolloverStrategy instances.
      */
@@ -179,7 +179,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
 
         /**
          * Defines configuration.
-         * 
+         *
          * @param config The Configuration.
          * @return This builder for chaining convenience
          */
@@ -307,7 +307,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
         nextIndex = fileIndex + 1;
         final FileExtension fileExtension = manager.getFileExtension();
         if (fileExtension != null) {
-            compressedName += fileExtension.getExtension();            
+            compressedName += fileExtension.getExtension();
             if (tempCompressedFilePattern != null) {
                 final StringBuilder buf = new StringBuilder();
                 tempCompressedFilePattern.formatFileName(strSubstitutor, buf, fileIndex);

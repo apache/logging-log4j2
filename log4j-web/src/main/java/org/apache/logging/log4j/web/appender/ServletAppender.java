@@ -67,7 +67,7 @@ public class ServletAppender extends AbstractAppender {
 
         /**
          * Logs with {@link ServletContext#log(String, Throwable)} if true and with {@link ServletContext#log(String)} if false.
-         * 
+         *
          * @return whether to log a Throwable with the servlet context.
          */
         public boolean isLogThrowables() {
@@ -82,7 +82,7 @@ public class ServletAppender extends AbstractAppender {
         }
 
 	}
-    
+
     @PluginFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
@@ -90,7 +90,7 @@ public class ServletAppender extends AbstractAppender {
 
     private final ServletContext servletContext;
     private final boolean logThrowables;
-    
+
     private ServletAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
             final ServletContext servletContext, final boolean ignoreExceptions, final boolean logThrowables,
             Property[] properties) {

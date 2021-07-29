@@ -56,7 +56,7 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
 
         @Override
         public OutputStreamAppender build() {
-            
+
             return new OutputStreamAppender(getName(), layout, getFilter(), getManager(target, follow, layout), isIgnoreExceptions(), getPropertyArray());
         }
 
@@ -80,7 +80,7 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
 
         /**
          * Builds instances.
-         * 
+         *
          * @param os
          *            The OutputStream.
          * @param type
@@ -102,7 +102,7 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
 
         /**
          * Creates an OutputStreamManager.
-         * 
+         *
          * @param name
          *            The name of the entity to manage.
          * @param data
@@ -119,7 +119,7 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
 
     /**
      * Creates an OutputStream Appender.
-     * 
+     *
      * @param layout
      *            The layout to use or null to get the default layout.
      * @param filter

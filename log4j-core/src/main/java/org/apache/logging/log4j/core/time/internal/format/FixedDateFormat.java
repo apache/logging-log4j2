@@ -302,7 +302,7 @@ public class FixedDateFormat {
     /**
      * Fixed time zone formats. The enum names are symbols from Java's <a href=
      * "https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html">DateTimeFormatter</a>.
-     * 
+     *
      * @see <a href=
      * "https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html">DateTimeFormatter</a>
      */

@@ -26,29 +26,29 @@ import java.io.OutputStream;
  * This output stream has no destination (file/socket etc.) and all bytes written to it are ignored and lost.
  * </p>
  * Originally from Apache Commons IO.
- * 
+ *
  * @since 2.3
  */
 public class NullOutputStream extends OutputStream {
 
     private static final NullOutputStream INSTANCE = new NullOutputStream();
-    
+
     /**
      * Gets the singleton instance.
-     * 
+     *
      * @return the singleton instance.
      */
     public static NullOutputStream getInstance() {
         return INSTANCE;
     }
-    
+
     private NullOutputStream() {
         // do nothing
     }
-    
+
     /**
      * Does nothing - output to <code>/dev/null</code>.
-     * 
+     *
      * @param b
      *        The bytes to write
      * @param off
@@ -63,7 +63,7 @@ public class NullOutputStream extends OutputStream {
 
     /**
      * Does nothing - output to <code>/dev/null</code>.
-     * 
+     *
      * @param b
      *        The byte to write
      */
@@ -74,7 +74,7 @@ public class NullOutputStream extends OutputStream {
 
     /**
      * Does nothing - output to <code>/dev/null</code>.
-     * 
+     *
      * @param b
      *        The bytes to write
      * @throws IOException

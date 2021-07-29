@@ -49,7 +49,7 @@ public class Priority {
     private static int toPriority(final Facility aFacility, final Severity aSeverity) {
         return (aFacility.getCode() << 3) + aSeverity.getCode();
     }
-    
+
     /**
      * Returns the Facility.
      * @return the Facility.

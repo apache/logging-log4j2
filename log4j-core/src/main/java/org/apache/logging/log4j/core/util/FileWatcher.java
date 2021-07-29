@@ -20,14 +20,14 @@ import java.io.File;
 
 /**
  * Watches for changes in a {@link File} and performs an action when the file is modified.
- * 
+ *
  * @see WatchManager
  */
 public interface FileWatcher {
 
     /**
      * Called when a {@link WatchManager} detects that the given {@link File} changed.
-     * 
+     *
      * @param file
      *            the file that changed.
      * @see WatchManager

@@ -36,7 +36,7 @@ public class JdbcAppenderStringSubstitutionTest {
     public static void afterClass() {
         System.getProperties().remove(KEY);
     }
-    
+
     @Rule
 	public final LoggerContextRule rule = new LoggerContextRule("org/apache/logging/log4j/jdbc/appender/log4j2-jdbc-string-substitution.xml");
 

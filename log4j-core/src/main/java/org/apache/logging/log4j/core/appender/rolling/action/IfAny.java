@@ -70,12 +70,12 @@ public final class IfAny implements PathCondition {
 
     /**
      * Create a Composite PathCondition: accepts if any of the nested conditions accepts.
-     * 
+     *
      * @param components The component conditions.
      * @return A Composite PathCondition.
      */
     @PluginFactory
-    public static IfAny createOrCondition( 
+    public static IfAny createOrCondition(
             @PluginElement("PathConditions") final PathCondition... components) {
         return new IfAny(components);
     }

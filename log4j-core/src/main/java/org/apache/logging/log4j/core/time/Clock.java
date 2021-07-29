@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.time;
 
 /**
  * Provides the time stamp used in log events.
- * 
+ *
  * @since 2.11
  */
 public interface Clock {

@@ -278,7 +278,7 @@ public class FlumePersistentAppenderTest {
                 fields[i]);
         }
     }
-    
+
     @Test
     public void testRFC5424Layout() throws IOException {
 
@@ -346,7 +346,7 @@ public class FlumePersistentAppenderTest {
             }
         }
     }
-    
+
     @Test
     public void testLogInterrupted() {
     	final ExecutorService executor = Executors.newSingleThreadExecutor();

@@ -50,7 +50,7 @@ public class AppenderSet {
         public AppenderSet build() {
             if (configuration == null) {
                 LOGGER.error("Configuration is missing from AppenderSet {}", this);
-                return null;                
+                return null;
             }
             if (node == null) {
                 LOGGER.error("No node in AppenderSet {}", this);

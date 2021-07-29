@@ -68,7 +68,7 @@ public class SslConfiguration {
             this.trustStoreConfig.clearSecrets();
         }
     }
-    
+
     public SSLSocketFactory getSslSocketFactory() {
         return sslContext.getSocketFactory();
     }
@@ -221,7 +221,7 @@ public class SslConfiguration {
 
     /**
      * Creates an SslConfiguration from a KeyStoreConfiguration and a TrustStoreConfiguration.
-     * 
+     *
      * @param protocol The protocol, see http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#SSLContext
      * @param keyStoreConfig The KeyStoreConfiguration.
      * @param trustStoreConfig The TrustStoreConfiguration.

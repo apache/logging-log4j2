@@ -60,7 +60,7 @@ public class PatternLayoutBenchmark {
     private static final String DEFAULT_ENCODING = CHARSET_DEFAULT.name();
     private static final String STRING_SHIFT_JIS = "SHIFT_JIS";
     private static final Charset CHARSET_SHIFT_JIS = Charset.forName(STRING_SHIFT_JIS);
-    
+
     private final PatternLayout PATTERN_M = PatternLayout.newBuilder()
             .setPattern((String) "%m%n")
             .setPatternSelector(null)
@@ -72,7 +72,7 @@ public class PatternLayoutBenchmark {
             .setHeader(null)
             .setFooter(null)
             .build();
-    
+
     private final PatternLayout PATTERN_SPACE = PatternLayout.newBuilder()
             .setPattern((String) " ")
             .setPatternSelector(null)
@@ -84,7 +84,7 @@ public class PatternLayoutBenchmark {
             .setHeader(null)
             .setFooter(null)
             .build();
-    
+
     private final PatternLayout PATTERN_M_C = PatternLayout.newBuilder()
             .setPattern((String) "%c %m%n")
             .setPatternSelector(null)
@@ -96,7 +96,7 @@ public class PatternLayoutBenchmark {
             .setHeader(null)
             .setFooter(null)
             .build();
-    
+
     private final PatternLayout PATTERN_M_C_D = PatternLayout.newBuilder()
             .setPattern((String) "%d %c %m%n")
             .setPatternSelector(null)
@@ -108,7 +108,7 @@ public class PatternLayoutBenchmark {
             .setHeader(null)
             .setFooter(null)
             .build();
-    
+
     private final PatternLayout PATTERN_M_D = PatternLayout.newBuilder()
             .setPattern((String) "%d %m%n")
             .setPatternSelector(null)
@@ -120,7 +120,7 @@ public class PatternLayoutBenchmark {
             .setHeader(null)
             .setFooter(null)
             .build();
-    
+
     private final PatternLayout PATTERN_C = PatternLayout.newBuilder()
             .setPattern((String) "%c%n")
             .setPatternSelector(null)
@@ -132,7 +132,7 @@ public class PatternLayoutBenchmark {
             .setHeader(null)
             .setFooter(null)
             .build();
-    
+
     private final PatternLayout PATTERN_D = PatternLayout.newBuilder()
             .setPattern((String) "%d%n")
             .setPatternSelector(null)
@@ -144,7 +144,7 @@ public class PatternLayoutBenchmark {
             .setHeader(null)
             .setFooter(null)
             .build();
-    
+
     private final PatternLayout PATTERN_M_D_NOSPACE = PatternLayout.newBuilder()
             .setPattern((String) "%d%m%n")
             .setPatternSelector(null)
@@ -156,7 +156,7 @@ public class PatternLayoutBenchmark {
             .setHeader(null)
             .setFooter(null)
             .build();
-    
+
     private final PatternLayout PATTERN_M_C_NOSPACE = PatternLayout.newBuilder()
             .setPattern((String) "%c%m%n")
             .setPatternSelector(null)
@@ -168,7 +168,7 @@ public class PatternLayoutBenchmark {
             .setHeader(null)
             .setFooter(null)
             .build();
-    
+
     private final PatternLayout PATTERN_M_EX = PatternLayout.newBuilder()
             .setPattern((String) "%m %ex%n")
             .setPatternSelector(null)
@@ -180,7 +180,7 @@ public class PatternLayoutBenchmark {
             .setHeader(null)
             .setFooter(null)
             .build();
-    
+
     private final PatternLayout PATTERN_M_D_EX = PatternLayout.newBuilder()
             .setPattern((String) "%d %m%ex%n")
             .setPatternSelector(null)
@@ -192,7 +192,7 @@ public class PatternLayoutBenchmark {
             .setHeader(null)
             .setFooter(null)
             .build();
-    
+
     private final PatternLayout PATTERN_M_C_D_EX = PatternLayout.newBuilder()
             .setPattern((String) "%d %c %m%ex%n")
             .setPatternSelector(null)

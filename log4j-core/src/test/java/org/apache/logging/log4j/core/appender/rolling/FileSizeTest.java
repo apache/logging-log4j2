@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FileSizeTest {
 
     private final static long EXPECTED = 10 * 1024;
-    
+
     @Test
     public void testFileSize() {
         long value = FileSize.parse("10KB", 0);

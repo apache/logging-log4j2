@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.time;
 
 /**
  * Implementation of the {@code NanoClock} interface that returns the system nano time.
- * 
+ *
  * @since 2.11
  */
 public final class SystemNanoClock implements NanoClock {

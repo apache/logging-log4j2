@@ -206,10 +206,10 @@ public class PerfTestDriver {
 
     public static void main(final String[] args) throws Exception {
         final long start = System.nanoTime();
-        
+
         final List<Setup> tests = selectTests();
         runPerfTests(args, tests);
-        
+
         System.out.printf("Done. Total duration: %.1f minutes%n", (System.nanoTime() - start)
                 / (60.0 * 1000.0 * 1000.0 * 1000.0));
 
@@ -218,7 +218,7 @@ public class PerfTestDriver {
 
     private static List<Setup> selectTests() throws IOException {
         final List<Setup> tests = new ArrayList<>();
-        
+
         // final String CACHEDCLOCK = "-Dlog4j.Clock=CachedClock";
         final String SYSCLOCK = "-Dlog4j.Clock=SystemClock";
         final String ALL_ASYNC = "-DLog4jContextSelector=" + AsyncLoggerContextSelector.class.getName();

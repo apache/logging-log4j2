@@ -45,7 +45,7 @@ public class LateConfigTest {
     public static void tearDownClass() {
         Configurator.shutdown(context);
         StatusLogger.getLogger().reset();
-    }    
+    }
 
     @Test
     public void testReconfiguration() throws Exception {

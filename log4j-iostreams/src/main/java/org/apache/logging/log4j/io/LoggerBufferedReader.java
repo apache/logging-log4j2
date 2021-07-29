@@ -28,7 +28,7 @@ import org.apache.logging.log4j.io.internal.InternalBufferedReader;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**
- * 
+ *
  * @since 2.1
  */
 public class LoggerBufferedReader extends BufferedReader {
@@ -46,32 +46,32 @@ public class LoggerBufferedReader extends BufferedReader {
         super(reader);
         this.reader = new InternalBufferedReader(reader, size, logger, fqcn == null ? FQCN : fqcn, level, marker);
     }
-    
+
     @Override
     public void close() throws IOException {
         reader.close();
     }
-    
+
     @Override
     public int read() throws IOException {
         return reader.read();
     }
-    
+
     @Override
     public int read(final char[] cbuf) throws IOException {
         return reader.read(cbuf);
     }
-    
+
     @Override
     public int read(final char[] cbuf, final int off, final int len) throws IOException {
         return reader.read(cbuf, off, len);
     }
-    
+
     @Override
     public int read(final CharBuffer target) throws IOException {
         return reader.read(target);
     }
-    
+
     @Override
     public String readLine() throws IOException {
         return reader.readLine();

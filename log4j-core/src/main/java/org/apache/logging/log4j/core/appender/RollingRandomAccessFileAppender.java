@@ -190,7 +190,7 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
         }
 
     }
-    
+
     private final String fileName;
     private final String filePattern;
     private final Object advertisement;

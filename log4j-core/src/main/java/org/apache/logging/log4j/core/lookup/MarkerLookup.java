@@ -24,7 +24,7 @@ import org.apache.logging.log4j.plugins.Plugin;
 
 /**
  * Looks-up markers.
- * 
+ *
  * @since 2.4
  */
 @Plugin(name = "marker", category = StrLookup.CATEGORY)

@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.util;
 
 /**
  * Pattern strings used throughout Log4j.
- * 
+ *
  * @see java.util.regex.Pattern
  */
 public final class Patterns {
@@ -38,7 +38,7 @@ public final class Patterns {
 
     /**
      * Creates a pattern string for {@code separator} surrounded by whitespace.
-     * 
+     *
      * @param separator The separator.
      * @return a pattern for {@code separator} surrounded by whitespace.
      */

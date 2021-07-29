@@ -29,7 +29,7 @@ import org.apache.logging.log4j.io.internal.InternalInputStream;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**
- * 
+ *
  * @since 2.1
  */
 public class LoggerBufferedInputStream extends BufferedInputStream {
@@ -53,17 +53,17 @@ public class LoggerBufferedInputStream extends BufferedInputStream {
     public void close() throws IOException {
         stream.close();
     }
-    
+
     @Override
     public synchronized int read() throws IOException {
         return stream.read();
     }
-    
+
     @Override
     public int read(final byte[] b) throws IOException {
         return stream.read(b);
     }
-    
+
     @Override
     public synchronized int read(final byte[] b, final int off, final int len) throws IOException {
         return stream.read(b, off, len);

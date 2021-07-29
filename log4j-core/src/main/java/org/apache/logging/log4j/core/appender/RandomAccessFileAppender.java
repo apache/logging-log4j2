@@ -39,7 +39,7 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
 
     /**
      * Builds RandomAccessFileAppender instances.
-     * 
+     *
      * @param <B>
      *            The type to build
      */
@@ -103,7 +103,7 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
         }
 
     }
-    
+
     private final String fileName;
     private Object advertisement;
     private final Advertiser advertiser;

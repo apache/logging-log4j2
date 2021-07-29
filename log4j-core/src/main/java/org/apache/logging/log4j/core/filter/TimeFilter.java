@@ -67,7 +67,7 @@ public final class TimeFilter extends AbstractFilter {
     private final LocalTime endTime;
 
     private final long duration;
-    
+
     /**
      * Timezone.
      */

@@ -53,7 +53,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class GenerateCustomLoggerTest {
 
     private static final String TEST_SOURCE = "target/test-classes/org/apache/logging/log4j/core/MyCustomLogger.java";
-    
+
     @BeforeAll
     public static void beforeClass() {
         System.setProperty("log4j2.loggerContextFactory", "org.apache.logging.log4j.test.TestLoggerContextFactory");

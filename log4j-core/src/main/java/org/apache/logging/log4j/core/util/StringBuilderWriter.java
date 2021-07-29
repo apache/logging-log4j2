@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache license, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,7 +27,7 @@ import java.io.Writer;
  * (i.e. for use in a single thread) implementation for better performance.
  * For safe usage with multiple {@link Thread}s then
  * <code>java.io.StringWriter</code> should be used.
- * 
+ *
  * <h3>History</h3>
  * <ol>
  * <li>Copied from Apache Commons IO revision 1681000.</li>
@@ -57,7 +57,7 @@ public class StringBuilderWriter extends Writer implements Serializable {
 
     /**
      * Constructs a new instance with the specified {@link StringBuilder}.
-     * 
+     *
      * <p>If {@code builder} is null a new instance with default capacity will be created.</p>
      *
      * @param builder The String builder. May be null.
@@ -105,7 +105,7 @@ public class StringBuilderWriter extends Writer implements Serializable {
     }
 
     /**
-     * Closing this writer has no effect. 
+     * Closing this writer has no effect.
      */
     @Override
     public void close() {
@@ -113,7 +113,7 @@ public class StringBuilderWriter extends Writer implements Serializable {
     }
 
     /**
-     * Flushing this writer has no effect. 
+     * Flushing this writer has no effect.
      */
     @Override
     public void flush() {
@@ -123,7 +123,7 @@ public class StringBuilderWriter extends Writer implements Serializable {
 
     /**
      * Writes a String to the {@link StringBuilder}.
-     * 
+     *
      * @param value The value to write
      */
     @Override

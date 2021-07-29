@@ -45,7 +45,7 @@ public abstract class AbstractPathAction extends AbstractAction {
 
     /**
      * Creates a new AbstractPathAction that starts scanning for files to process from the specified base path.
-     * 
+     *
      * @param basePath base path from where to start scanning for files to process.
      * @param followSymbolicLinks whether to follow symbolic links. Default is false.
      * @param maxDepth The maxDepth parameter is the maximum number of levels of directories to visit. A value of 0
@@ -57,7 +57,7 @@ public abstract class AbstractPathAction extends AbstractAction {
     protected AbstractPathAction(final String basePath, final boolean followSymbolicLinks, final int maxDepth,
             final PathCondition[] pathFilters, final StrSubstitutor subst) {
         this.basePathString = basePath;
-        this.options = followSymbolicLinks ? EnumSet.of(FileVisitOption.FOLLOW_LINKS) 
+        this.options = followSymbolicLinks ? EnumSet.of(FileVisitOption.FOLLOW_LINKS)
                 : Collections.<FileVisitOption> emptySet();
         this.maxDepth = maxDepth;
         this.pathConditions = Arrays.asList(Arrays.copyOf(pathFilters, pathFilters.length));
@@ -87,7 +87,7 @@ public abstract class AbstractPathAction extends AbstractAction {
      * method when the {@link #execute()} method is invoked.
      * <p>
      * The visitor is responsible for processing the files it encounters that are accepted by all filters.
-     * 
+     *
      * @param visitorBaseDir base dir from where to start scanning for files to process
      * @param conditions filters that determine if a file should be processed
      * @return a new {@code FileVisitor<Path>}
@@ -99,7 +99,7 @@ public abstract class AbstractPathAction extends AbstractAction {
      * Returns the base path from where to start scanning for files to delete. Lookups are resolved, so if the
      * configuration was <code>&lt;Delete basePath="${sys:user.home}/abc" /&gt;</code> then this method returns a path
      * to the "abc" file or directory in the user's home directory.
-     * 
+     *
      * @return the base path (all lookups resolved)
      */
     public Path getBasePath() {
@@ -108,7 +108,7 @@ public abstract class AbstractPathAction extends AbstractAction {
 
     /**
      * Returns the base path as it was specified in the configuration. Lookups are not resolved.
-     * 
+     *
      * @return the base path as it was specified in the configuration
      */
     public String getBasePathString() {
@@ -121,16 +121,16 @@ public abstract class AbstractPathAction extends AbstractAction {
 
     /**
      * Returns whether to follow symbolic links or not.
-     * 
+     *
      * @return the options
      */
     public Set<FileVisitOption> getOptions() {
         return Collections.unmodifiableSet(options);
     }
-    
+
     /**
      * Returns whether to follow symbolic links or not.
-     * 
+     *
      * @return whether to follow symbolic links or not
      */
     public boolean isFollowSymbolicLinks() {
@@ -139,7 +139,7 @@ public abstract class AbstractPathAction extends AbstractAction {
 
     /**
      * Returns the maximum number of directory levels to visit.
-     * 
+     *
      * @return the maxDepth
      */
     public int getMaxDepth() {
@@ -148,7 +148,7 @@ public abstract class AbstractPathAction extends AbstractAction {
 
     /**
      * Returns the list of PathCondition objects.
-     * 
+     *
      * @return the pathFilters
      */
     public List<PathCondition> getPathConditions() {

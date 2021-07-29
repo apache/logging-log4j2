@@ -34,7 +34,7 @@ public class DummyFileAttributes implements BasicFileAttributes {
     public boolean isOther;
     public long size;
     public Object fileKey;
-    
+
     public DummyFileAttributes() {
     }
 

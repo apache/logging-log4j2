@@ -33,7 +33,7 @@ public class ServerTest {
         final String ctx = "WebAppClassLoader=1320771902@4eb9613e"; // LOG4J2-492
         final String ctxName = Server.escape(ctx);
         assertEquals("\"WebAppClassLoader=1320771902@4eb9613e\"", ctxName);
-        new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName)); 
+        new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName));
         // no MalformedObjectNameException = success
     }
 
@@ -42,7 +42,7 @@ public class ServerTest {
         final String ctx = "a,b,c";
         final String ctxName = Server.escape(ctx);
         assertEquals("\"a,b,c\"", ctxName);
-        new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName)); 
+        new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName));
         // no MalformedObjectNameException = success
     }
 
@@ -51,7 +51,7 @@ public class ServerTest {
         final String ctx = "a:b:c";
         final String ctxName = Server.escape(ctx);
         assertEquals("\"a:b:c\"", ctxName);
-        new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName)); 
+        new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName));
         // no MalformedObjectNameException = success
     }
 
@@ -60,7 +60,7 @@ public class ServerTest {
         final String ctx = "a?c";
         final String ctxName = Server.escape(ctx);
         assertEquals("\"a\\?c\"", ctxName);
-        new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName)); 
+        new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName));
         // no MalformedObjectNameException = success
     }
 
@@ -69,7 +69,7 @@ public class ServerTest {
         final String ctx = "a*c";
         final String ctxName = Server.escape(ctx);
         assertEquals("\"a\\*c\"", ctxName);
-        new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName)); 
+        new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName));
         // no MalformedObjectNameException = success
     }
 
@@ -78,7 +78,7 @@ public class ServerTest {
         final String ctx = "a\\c";
         final String ctxName = Server.escape(ctx);
         assertEquals("\"a\\\\c\"", ctxName);
-        new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName)); 
+        new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName));
         // no MalformedObjectNameException = success
     }
 
@@ -87,7 +87,7 @@ public class ServerTest {
         final String ctx = "a\"c";
         final String ctxName = Server.escape(ctx);
         assertEquals("\"a\\\"c\"", ctxName);
-        new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName)); 
+        new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName));
         // no MalformedObjectNameException = success
     }
 
@@ -96,7 +96,7 @@ public class ServerTest {
         final String ctx = "a c";
         final String ctxName = Server.escape(ctx);
         assertEquals("a c", ctxName);
-        new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName)); 
+        new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName));
         // no MalformedObjectNameException = success
     }
 
@@ -105,7 +105,7 @@ public class ServerTest {
         final String ctx = "a\rc";
         final String ctxName = Server.escape(ctx);
         assertEquals("ac", ctxName);
-        new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName)); 
+        new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName));
         // no MalformedObjectNameException = success
     }
 
@@ -114,7 +114,7 @@ public class ServerTest {
         final String ctx = "a\nc";
         final String ctxName = Server.escape(ctx);
         assertEquals("\"a\\nc\"", ctxName);
-        new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName)); 
+        new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName));
         // no MalformedObjectNameException = success
     }
 }

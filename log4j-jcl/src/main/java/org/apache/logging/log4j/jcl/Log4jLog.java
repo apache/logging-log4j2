@@ -26,7 +26,7 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
  *
  */
 public class Log4jLog implements Log, Serializable {
-    
+
     private static final long serialVersionUID = 1L;
     private static final String FQCN = Log4jLog.class.getName();
 

@@ -45,7 +45,7 @@ public class DeleteAction extends AbstractPathAction {
 
     /**
      * Creates a new DeleteAction that starts scanning for files to delete from the specified base path.
-     * 
+     *
      * @param basePath base path from where to start scanning for files to delete.
      * @param followSymbolicLinks whether to follow symbolic links. Default is false.
      * @param maxDepth The maxDepth parameter is the maximum number of levels of directories to visit. A value of 0
@@ -74,7 +74,7 @@ public class DeleteAction extends AbstractPathAction {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.logging.log4j.core.appender.rolling.action.AbstractPathAction#execute()
      */
     @Override
@@ -112,7 +112,7 @@ public class DeleteAction extends AbstractPathAction {
 
     /**
      * Deletes the specified file.
-     * 
+     *
      * @param path the file to delete
      * @throws IOException if a problem occurred deleting the file
      */
@@ -123,7 +123,7 @@ public class DeleteAction extends AbstractPathAction {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.logging.log4j.core.appender.rolling.action.AbstractPathAction#execute(FileVisitor)
      */
     @Override
@@ -152,7 +152,7 @@ public class DeleteAction extends AbstractPathAction {
 
     /**
      * Returns a sorted list of all files up to maxDepth under the basePath.
-     * 
+     *
      * @return a sorted list of files
      * @throws IOException
      */
@@ -164,7 +164,7 @@ public class DeleteAction extends AbstractPathAction {
 
     /**
      * Returns {@code true} if files are not deleted even when all conditions accept a path, {@code false} otherwise.
-     * 
+     *
      * @return {@code true} if files are not deleted even when all conditions accept a path, {@code false} otherwise
      */
     public boolean isTestMode() {
@@ -178,7 +178,7 @@ public class DeleteAction extends AbstractPathAction {
 
     /**
      * Create a DeleteAction.
-     * 
+     *
      * @param basePath base path from where to start scanning for files to delete.
      * @param followLinks whether to follow symbolic links. Default is false.
      * @param maxDepth The maxDepth parameter is the maximum number of levels of directories to visit. A value of 0

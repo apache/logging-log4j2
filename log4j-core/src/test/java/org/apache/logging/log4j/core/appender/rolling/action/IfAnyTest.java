@@ -35,12 +35,12 @@ public class IfAnyTest {
         assertTrue(IfAny.createOrCondition(TRUE, FALSE).accept(null, null, null));
         assertFalse(IfAny.createOrCondition(FALSE, FALSE).accept(null, null, null));
     }
-    
+
     @Test
     public void testEmptyIsFalse() {
         assertFalse(IfAny.createOrCondition().accept(null, null, null));
     }
-    
+
     @Test
     public void testBeforeTreeWalk() {
         final CountingCondition counter = new CountingCondition(true);

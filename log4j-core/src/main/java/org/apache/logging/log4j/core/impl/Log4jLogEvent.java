@@ -687,7 +687,7 @@ public class Log4jLogEvent implements LogEvent {
     public static LogEvent createMemento(final LogEvent logEvent) {
         return new Log4jLogEvent.Builder(logEvent).build();
     }
-    
+
     /**
      * Creates and returns a new immutable copy of this {@code Log4jLogEvent}.
      *

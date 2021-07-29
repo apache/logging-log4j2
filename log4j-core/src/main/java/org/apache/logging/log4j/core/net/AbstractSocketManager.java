@@ -34,12 +34,12 @@ public abstract class AbstractSocketManager extends OutputStreamManager {
      * The Internet address of the host.
      */
     protected final InetAddress inetAddress;
-    
+
     /**
      * The name of the host.
      */
     protected final String host;
-    
+
     /**
      * The port on the host.
      */
@@ -55,7 +55,7 @@ public abstract class AbstractSocketManager extends OutputStreamManager {
      * @param bufferSize The buffer size.
      */
     public AbstractSocketManager(final String name, final OutputStream os, final InetAddress inetAddress,
-            final String host, final int port, final Layout<? extends Serializable> layout, final boolean writeHeader, 
+            final String host, final int port, final Layout<? extends Serializable> layout, final boolean writeHeader,
             final int bufferSize) {
         super(os, name, layout, writeHeader, bufferSize);
         this.inetAddress = inetAddress;
@@ -69,7 +69,7 @@ public abstract class AbstractSocketManager extends OutputStreamManager {
      * <li>Key: "port" Value: provided "port" param</li>
      * <li>Key: "address" Value: provided "address" param</li>
      * </ul>
-     * 
+     *
      * @return Map of content format keys supporting AbstractSocketManager
      */
     @Override

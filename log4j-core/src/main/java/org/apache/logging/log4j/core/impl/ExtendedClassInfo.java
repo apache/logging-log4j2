@@ -36,7 +36,7 @@ public final class ExtendedClassInfo implements Serializable {
 
     /**
      * Constructs a new instance.
-     * 
+     *
      * @param exact
      * @param location
      * @param version

@@ -29,7 +29,7 @@ public class DefaultKafkaProducerFactory implements KafkaProducerFactory {
 
     /**
      * Creates a new Kafka Producer from the given configuration properties.
-     * 
+     *
      * @param config
      *            <a href="https://kafka.apache.org/documentation.html#producerconfigs">Kafka Producer configuration
      *            properties.</a>

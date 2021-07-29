@@ -35,7 +35,7 @@ public interface RingBufferAdminMBean {
      * </pre>
      */
     String PATTERN_ASYNC_LOGGER = Server.DOMAIN + ":type=%s,component=AsyncLoggerRingBuffer";
-    
+
     /**
      * ObjectName pattern ({@value}) for RingBufferAdmin MBeans that instrument
      * {@code AsyncLoggerConfig} ring buffers.
@@ -56,7 +56,7 @@ public interface RingBufferAdminMBean {
      * Returns the number of slots that the ring buffer was configured with.
      * Disruptor ring buffers are bounded-size data structures, this number does
      * not change during the life of the ring buffer.
-     * 
+     *
      * @return the number of slots that the ring buffer was configured with
      */
     long getBufferSize();
@@ -64,7 +64,7 @@ public interface RingBufferAdminMBean {
     /**
      * Returns the number of available slots in the ring buffer. May vary wildly
      * between invocations.
-     * 
+     *
      * @return the number of available slots in the ring buffer
      */
     long getRemainingCapacity();

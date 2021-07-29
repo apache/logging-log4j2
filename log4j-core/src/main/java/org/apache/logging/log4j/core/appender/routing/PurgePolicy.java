@@ -28,9 +28,9 @@ public interface PurgePolicy {
 	 * this method themselves.
 	 */
 	void purge();
-	
+
 	/**
-	 * 
+	 *
 	 * @param key routed appender key
 	 * @param event
 	 */
@@ -38,7 +38,7 @@ public interface PurgePolicy {
 
 	/**
 	 * Initializes with routing appender
-	 * 
+	 *
 	 * @param routingAppender
 	 */
 	void initialize(RoutingAppender routingAppender);

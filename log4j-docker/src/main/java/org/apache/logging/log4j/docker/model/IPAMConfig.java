@@ -22,13 +22,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  */
 public class IPAMConfig {
-    
+
     @JsonProperty("Subnet")
     private String subnet;
-    
+
     @JsonProperty("IPRange")
     private String ipRange;
-    
+
     @JsonProperty("Gateway")
     private String gateway;
 

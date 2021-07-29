@@ -32,7 +32,7 @@ public class ContextSelectorAdmin implements ContextSelectorAdminMBean {
 
     /**
      * Constructs a new {@code ContextSelectorAdmin}.
-     * 
+     *
      * @param contextName name of the LoggerContext under which to register this
      *            ContextSelectorAdmin. Note that the ContextSelector may be
      *            registered multiple times, once for each LoggerContext. In web
@@ -55,7 +55,7 @@ public class ContextSelectorAdmin implements ContextSelectorAdminMBean {
 
     /**
      * Returns the {@code ObjectName} of this mbean.
-     * 
+     *
      * @return the {@code ObjectName}
      * @see ContextSelectorAdminMBean#PATTERN
      */

@@ -40,7 +40,7 @@ public class ConfigurationFactoryData {
 
     /**
      * Gets the LoggerContext from the Configuration or null.
-     * 
+     *
      * @return the LoggerContext from the Configuration or null.
      */
     public LoggerContext getLoggerContext() {

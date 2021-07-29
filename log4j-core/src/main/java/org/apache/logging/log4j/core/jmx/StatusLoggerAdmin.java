@@ -44,7 +44,7 @@ public class StatusLoggerAdmin extends NotificationBroadcasterSupport implements
     /**
      * Constructs a new {@code StatusLoggerAdmin} with the {@code Executor} to
      * be used for sending {@code Notification}s asynchronously to listeners.
-     * 
+     *
      * @param contextName name of the LoggerContext under which to register this
      *            StatusLoggerAdmin. Note that the StatusLogger may be
      *            registered multiple times, once for each LoggerContext. In web
@@ -132,7 +132,7 @@ public class StatusLoggerAdmin extends NotificationBroadcasterSupport implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.apache.logging.log4j.status.StatusListener#log(org.apache.logging
      * .log4j.status.StatusData)
@@ -150,7 +150,7 @@ public class StatusLoggerAdmin extends NotificationBroadcasterSupport implements
 
     /**
      * Returns the {@code ObjectName} of this mbean.
-     * 
+     *
      * @return the {@code ObjectName}
      * @see StatusLoggerAdminMBean#PATTERN
      */

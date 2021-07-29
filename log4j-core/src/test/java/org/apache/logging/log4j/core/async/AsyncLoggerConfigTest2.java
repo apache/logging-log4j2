@@ -40,7 +40,7 @@ public class AsyncLoggerConfigTest2 {
                 "AsyncLoggerConfigTest2.xml");
         final File file = new File("target", "AsyncLoggerConfigTest2.log");
         assertTrue("Deleted old file before test", !file.exists() || file.delete());
-        
+
         final Logger log = LogManager.getLogger("com.foo.Bar");
         final String msg = "Message before reconfig";
         log.info(msg);
@@ -48,7 +48,7 @@ public class AsyncLoggerConfigTest2 {
         final LoggerContext ctx = LoggerContext.getContext(false);
         ctx.reconfigure();
         ctx.reconfigure();
-        
+
         final String msg2 = "Message after reconfig";
         log.info(msg2);
         CoreLoggerContexts.stopLoggerContext(file); // stop async thread

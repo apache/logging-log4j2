@@ -48,7 +48,7 @@ public class JmsAppender extends AbstractAppender {
 
     public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
             implements org.apache.logging.log4j.plugins.util.Builder<JmsAppender> {
-        
+
         public static final int DEFAULT_RECONNECT_INTERVAL_MILLIS = 5000;
 
         @PluginBuilderAttribute

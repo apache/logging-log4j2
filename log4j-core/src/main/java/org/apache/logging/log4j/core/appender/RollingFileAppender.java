@@ -50,7 +50,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
 
     /**
      * Builds FileAppender instances.
-     * 
+     *
      * @param <B>
      *            The type to build
      * @since 2.7
@@ -71,11 +71,11 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
         @PluginBuilderAttribute
         private boolean locking;
 
-        @PluginElement("Policy") 
+        @PluginElement("Policy")
         @Required
         private TriggeringPolicy policy;
-        
-        @PluginElement("Strategy") 
+
+        @PluginElement("Strategy")
         private RolloverStrategy strategy;
 
         @PluginBuilderAttribute
@@ -261,7 +261,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
         }
 
     }
-    
+
     private final String fileName;
     private final String filePattern;
     private Object advertisement;
@@ -331,7 +331,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
 
     /**
      * Creates a new Builder.
-     * 
+     *
      * @return a new Builder.
      * @since 2.7
      */

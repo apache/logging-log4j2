@@ -36,7 +36,7 @@ public final class ThrowableFormatOptionsTest {
 
     /**
      * Runs a given test comparing against the expected values.
-     * 
+     *
      * @param options
      *            The list of options to parse.
      * @param expectedLines

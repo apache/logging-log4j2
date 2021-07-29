@@ -42,7 +42,7 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
 
     /**
      * Builds FileAppender instances.
-     * 
+     *
      * @param <B>
      *            The type to build
      */
@@ -182,12 +182,12 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
         }
 
     }
-    
+
     @PluginFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
     }
-    
+
     private final String fileName;
 
     private final Advertiser advertiser;

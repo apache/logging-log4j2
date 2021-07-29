@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests {@link MarkerLookup} with a configuration file.
- * 
+ *
  * @since 2.4
  */
 @LoggerContextSource("log4j-marker-lookup.yaml")

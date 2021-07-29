@@ -43,7 +43,7 @@ import de.flapdoodle.embed.process.runtime.Network;
 
 /**
  * A JUnit test rule to manage a MongoDB embedded instance.
- * 
+ *
  * TODO Move this class to Apache Commons Testing.
  */
 public class MongoDb3TestRule implements TestRule {

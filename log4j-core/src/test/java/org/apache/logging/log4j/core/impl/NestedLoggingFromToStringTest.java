@@ -50,7 +50,7 @@ public class NestedLoggingFromToStringTest {
     public static void beforeClass() {
         System.setProperty("log4j2.is.webapp", "false");
     }
-    
+
     @Rule
     public LoggerContextRule context = new LoggerContextRule("log4j-sync-to-list.xml");
     private ListAppender listAppender;

@@ -40,7 +40,7 @@ public class AppenderControl extends AbstractFilterable {
 
     /**
      * Constructor.
-     * 
+     *
      * @param appender The target Appender.
      * @param level the Level to filter on.
      * @param filter the Filter(s) to apply.
@@ -56,7 +56,7 @@ public class AppenderControl extends AbstractFilterable {
 
     /**
      * Returns the name the appender had when this AppenderControl was constructed.
-     * 
+     *
      * @return the appender name
      */
     public String getAppenderName() {
@@ -65,7 +65,7 @@ public class AppenderControl extends AbstractFilterable {
 
     /**
      * Returns the Appender.
-     * 
+     *
      * @return the Appender.
      */
     public Appender getAppender() {
@@ -74,7 +74,7 @@ public class AppenderControl extends AbstractFilterable {
 
     /**
      * Call the appender.
-     * 
+     *
      * @param event The event to process.
      */
     public void callAppender(final LogEvent event) {

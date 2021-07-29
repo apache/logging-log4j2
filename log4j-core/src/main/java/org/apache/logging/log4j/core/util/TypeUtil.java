@@ -39,13 +39,13 @@ import java.util.Objects;
  * @since 2.1
  */
 public final class TypeUtil {
-    
+
     private TypeUtil() {
     }
 
     /**
      * Gets all declared fields for the given class (including superclasses).
-     * 
+     *
      * @param cls the class to examine
      * @return all declared fields for the given class (including superclasses).
      * @see Class#getDeclaredFields()

@@ -43,7 +43,7 @@ public interface LogEvent extends Serializable {
 
     /**
      * Returns an immutable version of this log event, which MAY BE a copy of this event.
-     *  
+     *
      * @return an immutable version of this log event
      */
     LogEvent toImmutable();

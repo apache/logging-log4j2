@@ -37,7 +37,7 @@ public class PathSortByModificationTime implements PathSorter, Serializable {
 
     /**
      * Constructs a new SortByModificationTime sorter.
-     * 
+     *
      * @param recentFirst if true, most recently modified paths should come first
      */
     public PathSortByModificationTime(final boolean recentFirst) {
@@ -47,19 +47,19 @@ public class PathSortByModificationTime implements PathSorter, Serializable {
 
     /**
      * Create a PathSorter that sorts by lastModified time.
-     * 
+     *
      * @param recentFirst if true, most recently modified paths should come first.
      * @return A PathSorter.
      */
     @PluginFactory
-    public static PathSorter createSorter( 
+    public static PathSorter createSorter(
             @PluginAttribute(defaultBoolean = true) final boolean recentFirst) {
         return new PathSortByModificationTime(recentFirst);
     }
 
     /**
      * Returns whether this sorter sorts recent files first.
-     * 
+     *
      * @return whether this sorter sorts recent files first
      */
     public boolean isRecentFirst() {
@@ -68,7 +68,7 @@ public class PathSortByModificationTime implements PathSorter, Serializable {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
      */
     @Override

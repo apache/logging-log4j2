@@ -98,7 +98,7 @@ public class LogEventTest {
 
         final ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         final ObjectInputStream ois = new FilteredObjectInputStream(bais);
-        
+
         final LogEvent actual = (LogEvent) ois.readObject();
         assertNotEquals(copy, actual, "Different event: nanoTime");
         assertNotEquals(copy.getNanoTime(), actual.getNanoTime(), "Different nanoTime");
@@ -126,7 +126,7 @@ public class LogEventTest {
 
         final ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         final ObjectInputStream ois = new FilteredObjectInputStream(bais);
-        
+
         final LogEvent actual = (LogEvent) ois.readObject();
         assertEquals(event2, actual, "both zero nanoTime");
     }

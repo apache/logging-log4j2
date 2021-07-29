@@ -31,18 +31,18 @@ import java.util.concurrent.TimeUnit;
 @Plugin(name = "TimeBasedTriggeringPolicy", category = Core.CATEGORY_NAME, printObject = true)
 public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
 
-    
+
     public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<TimeBasedTriggeringPolicy> {
 
         @PluginBuilderAttribute
         private int interval = 1;
-        
+
         @PluginBuilderAttribute
         private boolean modulate = false;
-        
+
         @PluginBuilderAttribute
         private int maxRandomDelay = 0;
-        
+
         @Override
         public TimeBasedTriggeringPolicy build() {
             final long maxRandomDelayMillis = TimeUnit.SECONDS.toMillis(maxRandomDelay);
@@ -60,17 +60,17 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
         public int getMaxRandomDelay() {
             return maxRandomDelay;
         }
-        
+
         public Builder setInterval(final int interval){
             this.interval = interval;
             return this;
         }
-        
+
         public Builder setModulate(final boolean modulate){
             this.modulate = modulate;
             return this;
         }
-        
+
         public Builder setMaxRandomDelay(final int maxRandomDelay){
             this.maxRandomDelay = maxRandomDelay;
             return this;

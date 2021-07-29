@@ -60,7 +60,7 @@ public class ArrayUtils {
      */
     public static boolean isEmpty(final byte[] array) {
         return getLength(array) == 0;
-    }    
+    }
 
     /**
      * <p>Removes the element at the specified position from the specified array.

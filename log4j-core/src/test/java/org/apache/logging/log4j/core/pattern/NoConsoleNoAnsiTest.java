@@ -55,5 +55,5 @@ public class NoConsoleNoAnsiTest {
         assertTrue(msgs.get(0).endsWith(EXPECTED),
                 "Replacement failed - expected ending " + EXPECTED + ", actual " + msgs.get(0));
     }
-    
+
 }

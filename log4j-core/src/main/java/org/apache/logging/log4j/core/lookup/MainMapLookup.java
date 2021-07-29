@@ -23,9 +23,9 @@ import org.apache.logging.log4j.plugins.Plugin;
 
 /**
  * A map-based lookup for main arguments.
- * 
+ *
  * See {@link #setMainArguments(String[])}.
- * 
+ *
  * @since 2.4
  */
 @Plugin(name = "main", category = StrLookup.CATEGORY)

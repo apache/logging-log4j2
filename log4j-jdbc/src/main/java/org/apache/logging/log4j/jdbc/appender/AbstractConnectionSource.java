@@ -20,7 +20,7 @@ package org.apache.logging.log4j.jdbc.appender;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 
 public abstract class AbstractConnectionSource extends AbstractLifeCycle implements ConnectionSource {
-    
+
     // nothing yet
 
 }

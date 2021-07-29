@@ -34,7 +34,7 @@ public class PoolingDriverConnectionSourceTest {
             source.stop();
         }
     }
-    
+
     @Test
     public void testH2Properties() throws SQLException {
         final Property[] properties = new Property[] {

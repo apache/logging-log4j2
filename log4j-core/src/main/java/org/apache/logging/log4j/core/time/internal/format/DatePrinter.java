@@ -23,18 +23,18 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 /**
- * DatePrinter is the "missing" interface for the format methods of 
+ * DatePrinter is the "missing" interface for the format methods of
  * {@link java.text.DateFormat}. You can obtain an object implementing this
  * interface by using one of the FastDateFormat factory methods.
  * <p>
  * Warning: Since binary compatible methods may be added to this interface in any
  * release, developers are not expected to implement this interface.
  * </p>
- * 
+ *
  * <p>
  * Copied and modified from <a href="https://commons.apache.org/proper/commons-lang/">Apache Commons Lang</a>.
  * </p>
- * 
+ *
  * @since Apache Commons Lang 3.2
  */
 public interface DatePrinter {

@@ -176,7 +176,7 @@ public final class GzCompressAction extends AbstractAction {
 
     @Override
     public String toString() {
-        return GzCompressAction.class.getSimpleName() + '[' + source + " to " + destination 
+        return GzCompressAction.class.getSimpleName() + '[' + source + " to " + destination
                 + ", deleteSource=" + deleteSource + ']';
     }
 

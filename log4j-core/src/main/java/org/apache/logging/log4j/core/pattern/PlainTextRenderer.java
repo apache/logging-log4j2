@@ -20,7 +20,7 @@ package org.apache.logging.log4j.core.pattern;
  Renders input unchanged.
  */
 public final class PlainTextRenderer implements TextRenderer {
-    
+
     private static final PlainTextRenderer INSTANCE = new PlainTextRenderer();
 
     public static PlainTextRenderer getInstance() {

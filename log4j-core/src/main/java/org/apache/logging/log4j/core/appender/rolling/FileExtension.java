@@ -121,5 +121,5 @@ public enum FileExtension {
 
     File target(final String fileName) {
         return new File(fileName);
-    } 
+    }
 }

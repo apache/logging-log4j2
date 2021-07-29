@@ -210,7 +210,7 @@ public class DatePatternConverterTest {
         final String expected = "2011-12-30T10:56:35,987";
         assertEquals(expected, sb.toString());
     }
-    
+
     @Test
     public void testFormatLogEventStringBuilderIso8601TimezoneJST() {
         final LogEvent event = new MyLogEvent();

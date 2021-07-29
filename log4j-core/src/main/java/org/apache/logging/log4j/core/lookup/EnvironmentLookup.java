@@ -27,7 +27,7 @@ public class EnvironmentLookup extends AbstractLookup {
 
     /**
      * Looks up the value of the given environment variable.
-     * 
+     *
      * @param event
      *            The current LogEvent (ignored by this StrLookup).
      * @param key

@@ -41,7 +41,7 @@ public class PathWithAttributes {
 
     /**
      * Returns the path.
-     * 
+     *
      * @return the path
      */
     public Path getPath() {
@@ -50,7 +50,7 @@ public class PathWithAttributes {
 
     /**
      * Returns the attributes.
-     * 
+     *
      * @return the attributes
      */
     public BasicFileAttributes getAttributes() {

@@ -39,7 +39,7 @@ public final class DummyNanoClock implements NanoClock {
 
     /**
      * Returns the constructor value.
-     * 
+     *
      * @return the constructor value
      */
     @Override

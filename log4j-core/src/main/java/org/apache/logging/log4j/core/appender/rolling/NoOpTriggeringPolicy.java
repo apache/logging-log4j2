@@ -24,14 +24,14 @@ import org.apache.logging.log4j.plugins.PluginFactory;
 
 /*
  * Never triggers and is handy for edge-cases in tests for example.
- * 
+ *
  * @since 2.11.1
  */
 @Plugin(name = "NoOpTriggeringPolicy", category = Core.CATEGORY_NAME, printObject = true)
 public class NoOpTriggeringPolicy extends AbstractTriggeringPolicy {
 
     public static final NoOpTriggeringPolicy INSTANCE = new NoOpTriggeringPolicy();
-    
+
     @PluginFactory
     public static NoOpTriggeringPolicy createPolicy() {
         return INSTANCE;

@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests {@link LoggerNameLevelRewritePolicy}.
- * 
+ *
  * @since 2.4
  */
 public class LoggerNameLevelRewritePolicyTest {

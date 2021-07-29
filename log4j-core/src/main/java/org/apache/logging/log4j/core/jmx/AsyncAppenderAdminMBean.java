@@ -27,7 +27,7 @@ public interface AsyncAppenderAdminMBean {
      * <p>
      * You can find all registered AsyncAppenderAdmin MBeans like this:
      * </p>
-     * 
+     *
      * <pre>
      * MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
      * String pattern = String.format(AsyncAppenderAdminMBean.PATTERN, &quot;*&quot;, &quot;*&quot;);
@@ -38,21 +38,21 @@ public interface AsyncAppenderAdminMBean {
      * and appender name may be quoted. When AsyncAppenderAdmin MBeans are
      * registered, their ObjectNames are created using this pattern as follows:
      * </p>
-     * 
+     *
      * <pre>
      * String ctxName = Server.escape(loggerContext.getName());
      * String appenderName = Server.escape(appender.getName());
      * String name = String.format(PATTERN, ctxName, appenderName);
      * ObjectName objectName = new ObjectName(name);
      * </pre>
-     * 
+     *
      * @see Server#escape(String)
      */
     String PATTERN = Server.DOMAIN + ":type=%s,component=AsyncAppenders,name=%s";
 
     /**
      * Returns the name of the instrumented {@code AsyncAppender}.
-     * 
+     *
      * @return the name of the AsyncAppender
      */
     String getName();
@@ -60,7 +60,7 @@ public interface AsyncAppenderAdminMBean {
     /**
      * Returns the result of calling {@code toString} on the {@code Layout}
      * object of the instrumented {@code AsyncAppender}.
-     * 
+     *
      * @return the {@code Layout} of the instrumented {@code AsyncAppender} as a
      *         string
      */
@@ -69,7 +69,7 @@ public interface AsyncAppenderAdminMBean {
     /**
      * Returns how exceptions thrown on the instrumented {@code AsyncAppender}
      * are handled.
-     * 
+     *
      * @return {@code true} if any exceptions thrown by the AsyncAppender will
      *         be logged or {@code false} if such exceptions are re-thrown.
      */
@@ -78,7 +78,7 @@ public interface AsyncAppenderAdminMBean {
     /**
      * Returns the result of calling {@code toString} on the error handler of
      * this appender, or {@code "null"} if no error handler was set.
-     * 
+     *
      * @return result of calling {@code toString} on the error handler of this
      *         appender, or {@code "null"}
      */
@@ -87,7 +87,7 @@ public interface AsyncAppenderAdminMBean {
     /**
      * Returns a string description of all filters configured for the
      * instrumented {@code AsyncAppender}.
-     * 
+     *
      * @return a string description of all configured filters for this appender
      */
     String getFilter();
@@ -95,7 +95,7 @@ public interface AsyncAppenderAdminMBean {
     /**
      * Returns a String array with the appender refs configured for the
      * instrumented {@code AsyncAppender}.
-     * 
+     *
      * @return the appender refs for the instrumented {@code AsyncAppender}.
      */
     String[] getAppenderRefs();
@@ -104,7 +104,7 @@ public interface AsyncAppenderAdminMBean {
      * Returns {@code true} if this AsyncAppender will take a snapshot of the
      * stack with every log event to determine the class and method where the
      * logging call was made.
-     * 
+     *
      * @return {@code true} if location is included with every event,
      *         {@code false} otherwise
      */
@@ -113,19 +113,19 @@ public interface AsyncAppenderAdminMBean {
     /**
      * Returns {@code true} if this AsyncAppender will block when the queue is
      * full, or {@code false} if events are dropped when the queue is full.
-     * 
+     *
      * @return whether this AsyncAppender will block or drop events when the
      *         queue is full.
      */
     boolean isBlocking();
-    
+
     /**
      * Returns the name of the appender that any errors are logged to or {@code null}.
      * @return the name of the appender that any errors are logged to or {@code null}
      */
     String getErrorRef();
-    
+
     int getQueueCapacity();
-    
+
     int getQueueRemainingCapacity();
 }

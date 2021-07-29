@@ -39,7 +39,7 @@ public final class ReliabilityStrategyFactory {
      * <p>
      * Users may also use this system property to specify the fully qualified class name of a class that implements the
      * {@code ReliabilityStrategy} and has a constructor that accepts a single {@code LoggerConfig} argument.
-     * 
+     *
      * @param loggerConfig the LoggerConfig the resulting {@code ReliabilityStrategy} is associated with
      * @return a ReliabilityStrategy that helps the specified LoggerConfig to log events reliably during or after a
      *         configuration change

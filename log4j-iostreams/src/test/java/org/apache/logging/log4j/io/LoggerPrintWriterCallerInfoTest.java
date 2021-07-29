@@ -26,7 +26,7 @@ import org.junit.Test;
 public class LoggerPrintWriterCallerInfoTest extends IoBuilderCallerInfoTesting {
 
     private PrintWriter logOut;
-    
+
     @Test
     public void close() throws Exception {
         this.logOut.print("a\nb");
@@ -34,7 +34,7 @@ public class LoggerPrintWriterCallerInfoTest extends IoBuilderCallerInfoTesting 
         this.logOut.close();
         assertMessages("after close size", 2, "close");
     }
-    
+
     @Test
     public void print_boolean() throws Exception {
         this.logOut.print(true);
@@ -42,7 +42,7 @@ public class LoggerPrintWriterCallerInfoTest extends IoBuilderCallerInfoTesting 
         this.logOut.println(true);
         assertMessages("println", 1, "print_boolean");
     }
-    
+
     @Test
     public void print_char() throws Exception {
         this.logOut.print('a');
@@ -50,7 +50,7 @@ public class LoggerPrintWriterCallerInfoTest extends IoBuilderCallerInfoTesting 
         this.logOut.println('b');
         assertMessages("println", 1, "print_char");
     }
-    
+
     @Test
     public void print_chararray() throws Exception {
         this.logOut.print("a".toCharArray());
@@ -58,7 +58,7 @@ public class LoggerPrintWriterCallerInfoTest extends IoBuilderCallerInfoTesting 
         this.logOut.println("b".toCharArray());
         assertMessages("println", 1, "print_chararray");
     }
-    
+
     @Test
     public void print_double() throws Exception {
         this.logOut.print(1D);
@@ -66,7 +66,7 @@ public class LoggerPrintWriterCallerInfoTest extends IoBuilderCallerInfoTesting 
         this.logOut.println(2D);
         assertMessages("println", 1, "print_double");
     }
-    
+
     @Test
     public void print_float() throws Exception {
         this.logOut.print(1f);
@@ -74,7 +74,7 @@ public class LoggerPrintWriterCallerInfoTest extends IoBuilderCallerInfoTesting 
         this.logOut.println(2f);
         assertMessages("println", 1, "print_float");
     }
-    
+
     @Test
     public void print_int() throws Exception {
         this.logOut.print(1);
@@ -82,7 +82,7 @@ public class LoggerPrintWriterCallerInfoTest extends IoBuilderCallerInfoTesting 
         this.logOut.println(2);
         assertMessages("println", 1, "print_int");
     }
-    
+
     @Test
     public void print_long() throws Exception {
         this.logOut.print(1L);
@@ -90,7 +90,7 @@ public class LoggerPrintWriterCallerInfoTest extends IoBuilderCallerInfoTesting 
         this.logOut.println(2L);
         assertMessages("println", 1, "print_long");
     }
-    
+
     @Test
     public void print_object() throws Exception {
         this.logOut.print((Object) 'a');
@@ -98,19 +98,19 @@ public class LoggerPrintWriterCallerInfoTest extends IoBuilderCallerInfoTesting 
         this.logOut.println((Object) 'b');
         assertMessages("println", 1, "print_object");
     }
-    
+
     @Test
     public void print_printf() throws Exception {
         this.logOut.printf("a\n");
         assertMessages("println", 1, "print_printf");
     }
-    
+
     @Test
     public void print_printf_locale() throws Exception {
         this.logOut.printf(Locale.getDefault(), "a\n");
         assertMessages("println", 1, "print_printf_locale");
     }
-    
+
     @Test
     public void print_string() throws Exception {
         this.logOut.print("a");
@@ -118,26 +118,26 @@ public class LoggerPrintWriterCallerInfoTest extends IoBuilderCallerInfoTesting 
         this.logOut.println("b");
         assertMessages("println", 1, "print_string");
     }
-    
+
     @Before
     public void setupStreams() {
         this.logOut = IoBuilder.forLogger(getLogger())
             .setLevel(Level.WARN)
             .buildPrintWriter();
     }
-    
+
     @Test
     public void write_bytes() throws Exception {
         this.logOut.write("b\n".toCharArray());
         assertMessages("write", 1, "write_bytes");
     }
-    
+
     @Test
     public void write_bytes_offset() throws Exception {
         this.logOut.write("c\n".toCharArray(), 0, 2);
         assertMessages("write", 1, "write_bytes_offset");
     }
-    
+
     @Test
     public void write_int() throws Exception {
         this.logOut.write('a');

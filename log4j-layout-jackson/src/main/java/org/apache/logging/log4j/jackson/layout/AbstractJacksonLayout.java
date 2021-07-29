@@ -302,7 +302,7 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
         this(config, objectWriter, charset, compact, complete, eventEol, null,
                 headerSerializer, footerSerializer, includeNullDelimiter, additionalFields);
     }
-    
+
 
     protected AbstractJacksonLayout(final Configuration config, final ObjectWriter objectWriter, final Charset charset,
             final boolean compact, final boolean complete, final boolean eventEol, String endOfLine,
