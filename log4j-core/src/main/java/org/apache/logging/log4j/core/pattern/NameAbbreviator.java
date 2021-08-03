@@ -257,7 +257,7 @@ public abstract class NameAbbreviator {
     /**
      * Fragment of an pattern abbreviator.
      */
-    private static class PatternAbbreviatorFragment {
+    private static final class PatternAbbreviatorFragment {
         /**
          * Count of initial characters of element to output.
          */
@@ -276,7 +276,7 @@ public abstract class NameAbbreviator {
          * @param ellipsis  character to represent elimination of characters,
          *                  '\0' if no ellipsis is desired.
          */
-        public PatternAbbreviatorFragment(
+        PatternAbbreviatorFragment(
             final int charCount, final char ellipsis) {
             this.charCount = charCount;
             this.ellipsis = ellipsis;
@@ -285,40 +285,40 @@ public abstract class NameAbbreviator {
         /**
          * Abbreviate element of name.
          *
-         * @param buf      buffer to receive element.
-         * @param startPos starting index of name element.
-         * @return starting index of next element.
+         * @param input      input string which is being written to the output {@code buf}.
+         * @param inputIndex starting index of name element in the {@code input} string.
+         * @param buf        buffer to receive element.
+         * @return starting  index of next element.
          */
-        public int abbreviate(final StringBuilder buf, final int startPos) {
-            final int start = (startPos < 0) ? 0 : startPos;
-            final int max = buf.length();
-            int nextDot = -1;
-            for (int i = start; i < max; i++) {
-                if (buf.charAt(i) == '.') {
-                    nextDot = i;
-                    break;
-                }
+        int abbreviate(final String input, final int inputIndex, final StringBuilder buf) {
+            // ckozak: indexOf with a string is intentional. indexOf(String, int) appears to
+            // have optimizations that don't apply to indexOf(char, int)
+            // which result in a >10% performance improvement in some
+            // NamePatternConverterBenchmark cases. This should be re-evaluated with
+            // future java releases.
+            int nextDot = input.indexOf(".", inputIndex);
+            if (nextDot < 0) {
+                buf.append(input, inputIndex, input.length());
+                return nextDot;
             }
-            if (nextDot != -1) {
-                if (nextDot - startPos > charCount) {
-                    buf.delete(startPos + charCount, nextDot);
-                    nextDot = startPos + charCount;
-
-                    if (ellipsis != '\0') {
-                        buf.insert(nextDot, ellipsis);
-                        nextDot++;
-                    }
+            if (nextDot - inputIndex > charCount) {
+                buf.append(input, inputIndex, inputIndex + charCount);
+                if (ellipsis != '\0') {
+                    buf.append(ellipsis);
                 }
-                nextDot++;
+                buf.append('.');
+            } else {
+                // Include the period to reduce interactions with the buffer
+                buf.append(input, inputIndex, nextDot + 1);
             }
-            return nextDot;
+            return nextDot + 1;
         }
     }
 
     /**
      * Pattern abbreviator.
      */
-    private static class PatternAbbreviator extends NameAbbreviator {
+    private static final class PatternAbbreviator extends NameAbbreviator {
         /**
          * Element abbreviation patterns.
          */
@@ -329,14 +329,13 @@ public abstract class NameAbbreviator {
          *
          * @param fragments element abbreviation patterns.
          */
-        public PatternAbbreviator(final List<PatternAbbreviatorFragment> fragments) {
+        PatternAbbreviator(final List<PatternAbbreviatorFragment> fragments) {
             if (fragments.isEmpty()) {
                 throw new IllegalArgumentException(
                     "fragments must have at least one element");
             }
 
-            this.fragments = new PatternAbbreviatorFragment[fragments.size()];
-            fragments.toArray(this.fragments);
+            this.fragments = fragments.toArray(new PatternAbbreviatorFragment[0]);
         }
 
         /**
@@ -347,22 +346,17 @@ public abstract class NameAbbreviator {
          */
         @Override
         public void abbreviate(final String original, final StringBuilder destination) {
-            //
-            //  all non-terminal patterns are executed once
-            //
-            int pos = destination.length();
-            final int max = pos + original.length();
-
-            destination.append(original);
-
-            int fragmentIndex = 0;
-            while (pos < max && pos >= 0) {
-                pos = fragments[fragmentIndex].abbreviate(destination, pos);
-                // last pattern in executed repeatedly
-                if (fragmentIndex < fragments.length - 1) {
-                    fragmentIndex++;
-                }
+            // non-terminal patterns are executed once
+            int originalIndex = 0;
+            int iteration = 0;
+            int originalLength = original.length();
+            while (originalIndex >= 0 && originalIndex < originalLength) {
+                originalIndex = fragment(iteration++).abbreviate(original, originalIndex, destination);
             }
+        }
+
+        PatternAbbreviatorFragment fragment(int index) {
+            return fragments[Math.min(index, fragments.length - 1)];
         }
     }
 }
