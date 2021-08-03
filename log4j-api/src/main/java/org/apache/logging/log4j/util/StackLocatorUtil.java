@@ -20,6 +20,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 
 import java.util.NoSuchElementException;
 import java.util.Stack;
+import java.util.function.Predicate;
 
 /**
  * <em>Consider this class private.</em> Provides various methods to determine the caller class. <h3>Background</h3>
@@ -76,6 +77,18 @@ public final class StackLocatorUtil {
     @PerformanceSensitive
     public static Class<?> getCallerClass(final String fqcn, final String pkg, final int skipDepth) {
         return stackLocator.getCallerClass(fqcn, pkg, skipDepth);
+    }
+
+    /**
+     * Search for a calling class.
+     *
+     * @param sentinelClass Sentinel class at which to begin searching
+     * @param callerPredicate Predicate checked after the sentinelClass is found
+     * @return the first matching class after <code>sentinelClass</code> is found.
+     */
+    @PerformanceSensitive
+    public static Class<?> getCallerClass(final Class<?> sentinelClass, final Predicate<Class<?>> callerPredicate) {
+        return stackLocator.getCallerClass(sentinelClass, callerPredicate);
     }
 
     // added for use in LoggerAdapter implementations mainly
