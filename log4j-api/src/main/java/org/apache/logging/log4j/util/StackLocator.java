@@ -19,6 +19,7 @@ package org.apache.logging.log4j.util;
 import java.util.List;
 import java.util.Stack;
 import java.util.stream.Collectors;
+import java.util.function.Predicate;
 
 /**
  * <em>Consider this class private.</em> Determines the caller's class.
@@ -36,6 +37,23 @@ public final class StackLocator {
     }
 
     private StackLocator() {
+    }
+
+    @PerformanceSensitive
+    public Class<?> getCallerClass(final Class<?> sentinelClass, final Predicate<Class<?>> callerPredicate) {
+        if (sentinelClass == null) {
+            throw new IllegalArgumentException("sentinelClass cannot be null");
+        }
+        if (callerPredicate == null) {
+            throw new IllegalArgumentException("callerPredicate cannot be null");
+        }
+        return walker.walk(s -> s
+                .map(StackWalker.StackFrame::getDeclaringClass)
+                // Skip until the sentinel class is found
+                .dropWhile(clazz -> !sentinelClass.equals(clazz))
+                // Skip until the predicate evaluates to true, also ignoring recurrences of the sentinel
+                .dropWhile(clazz -> sentinelClass.equals(clazz) || !callerPredicate.test(clazz))
+                .findFirst().orElse(null));
     }
 
     @PerformanceSensitive
