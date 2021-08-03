@@ -63,16 +63,10 @@ public final class StackLocator {
 
     @PerformanceSensitive
     public Class<?> getCallerClass(final String fqcn, final String pkg) {
-        return getCallerClass(fqcn, pkg, 0);
-    }
-
-    @PerformanceSensitive
-    public Class<?> getCallerClass(final String fqcn, final String pkg, final int skipDepth) {
         return walker.walk(s -> s
                 .dropWhile(f -> !f.getClassName().equals(fqcn))
                 .dropWhile(f -> f.getClassName().equals(fqcn))
                 .dropWhile(f -> !f.getClassName().startsWith(pkg))
-                .skip(skipDepth)
                 .findFirst())
                 .map(StackWalker.StackFrame::getDeclaringClass)
                 .orElse(null);
