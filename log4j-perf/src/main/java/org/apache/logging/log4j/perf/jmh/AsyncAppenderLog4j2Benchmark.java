@@ -66,8 +66,8 @@ import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.two;
 //
 @State(Scope.Benchmark)
 @Fork(1)
-@Warmup(iterations = 10)
-@Measurement(iterations = 20)
+@Warmup(iterations = 4, time = 4)
+@Measurement(iterations = 4, time = 4)
 @Threads(1)
 public class AsyncAppenderLog4j2Benchmark {
     Logger logger;
@@ -76,6 +76,7 @@ public class AsyncAppenderLog4j2Benchmark {
         "perf5AsyncApndNoLoc-noOpAppender.xml",
         "perf5AsyncApndDsrptrNoLoc-noOpAppender.xml",
         "perf5AsyncApndMpscQNoLoc-noOpAppender.xml",
+        "perf5AsyncApndMpscParkQNoLoc-noOpAppender.xml",
         "perf5AsyncApndXferQNoLoc-noOpAppender.xml"
     })
     public String configFileName;
