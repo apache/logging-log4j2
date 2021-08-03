@@ -81,6 +81,10 @@
         Allow a PatternSelector to be specified on GelfLayout.
       </action>
       <!-- FIXES -->
+      <action issue="LOG4J2-3083" dev="ckozak" type="fix">
+        log4j-slf4j-impl and log4j-slf4j18-impl correctly detect the calling class using both LoggerFactory.getLogger
+        methods as well as LoggerFactory.getILoggerFactory().getLogger.
+      </action>
       <action issue="LOG4J2-2816" dev="vy" type="fix" due-to="Jacob Shields">
         Handle Disruptor event translation exceptions.
       </action>

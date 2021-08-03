@@ -20,19 +20,25 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.spi.AbstractLoggerAdapter;
 import org.apache.logging.log4j.spi.LoggerContext;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
+
+import java.util.function.Predicate;
 
 /**
  * Log4j implementation of SLF4J ILoggerFactory interface.
  */
 public class Log4jLoggerFactory extends AbstractLoggerAdapter<Logger> implements ILoggerFactory {
 
-    private static final String FQCN = Log4jLoggerFactory.class.getName();
-    private static final String PACKAGE = "org.slf4j";
-    private final Log4jMarkerFactory markerFactory;
+    private static final StatusLogger LOGGER = StatusLogger.getLogger();
+    private static final String SLF4J_PACKAGE = "org.slf4j";
+    private static final Predicate<Class<?>> CALLER_PREDICATE = clazz ->
+            !AbstractLoggerAdapter.class.equals(clazz) && !clazz.getName().startsWith(SLF4J_PACKAGE);
     private static final String TO_SLF4J_CONTEXT = "org.apache.logging.slf4j.SLF4JLoggerContext";
+
+    private final Log4jMarkerFactory markerFactory;
 
     public Log4jLoggerFactory(final Log4jMarkerFactory markerFactory) {
         this.markerFactory = markerFactory;
@@ -48,8 +54,9 @@ public class Log4jLoggerFactory extends AbstractLoggerAdapter<Logger> implements
     @Override
     protected LoggerContext getContext() {
         final Class<?> anchor = LogManager.getFactory().isClassLoaderDependent()
-                ? StackLocatorUtil.getCallerClass(FQCN, PACKAGE, 1)
+                ? StackLocatorUtil.getCallerClass(Log4jLoggerFactory.class, CALLER_PREDICATE)
                 : null;
+        LOGGER.trace("Log4jLoggerFactory.getContext() found anchor {}", anchor);
         return anchor == null
                 ? LogManager.getContext(false)
                 : getContext(anchor);
