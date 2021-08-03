@@ -18,6 +18,7 @@ package org.apache.logging.log4j.util;
 
 import java.lang.reflect.Method;
 import java.util.Stack;
+import java.util.function.Predicate;
 
 /**
  * <em>Consider this class private.</em> Provides various methods to determine the caller class. <h3>Background</h3>
@@ -95,6 +96,26 @@ public final class StackLocator {
 
     // TODO: return Object.class instead of null (though it will have a null ClassLoader)
     // (MS) I believe this would work without any modifications elsewhere, but I could be wrong
+
+    @PerformanceSensitive
+    public Class<?> getCallerClass(final Class<?> sentinelClass, final Predicate<Class<?>> callerPredicate) {
+        if (sentinelClass == null) {
+            throw new IllegalArgumentException("sentinelClass cannot be null");
+        }
+        if (callerPredicate == null) {
+            throw new IllegalArgumentException("callerPredicate cannot be null");
+        }
+        boolean foundSentinel = false;
+        Class<?> clazz;
+        for (int i = 2; null != (clazz = getCallerClass(i)); i++) {
+            if (sentinelClass.equals(clazz)) {
+                foundSentinel = true;
+            } else if (foundSentinel && callerPredicate.test(clazz)) {
+                return clazz;
+            }
+        }
+        return null;
+    }
 
     // migrated from ReflectiveCallerClassUtility
     @PerformanceSensitive
