@@ -31,6 +31,9 @@
     -->
     <release version="2.15.0" date="2021-MM-DD" description="GA Release 2.15.0">
       <!-- ADDS -->
+      <action issue="LOG4J2-2885" dev="vy" type="add" due-to="Markus Spann">
+        Add support for US-style date patterns and micro/nano seconds to FixedDateTime.
+      </action>
       <action issue="LOG4J2-3116" dev="rgupta" type="add">
         Add JsonTemplateLayout for Google Cloud Platform structured logging layout.
       </action>
