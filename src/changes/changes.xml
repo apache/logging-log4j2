@@ -31,6 +31,11 @@
     -->
     <release version="2.15.0" date="2021-MM-DD" description="GA Release 2.15.0">
       <!-- ADDS -->
+      <action issue="LOG4J2-3133" dev="ckozak" type="add">
+        Add missing slf4j-api singleton accessors to log4j-slf4j-impl (1.7) StaticMarkerBinder and StaticMDCBinder.
+        This doesn't impact behavior or correctness, but avoids throwing and catching NoSuchMethodErrors when slf4j
+        is initialized and avoids linkage linting warnings.
+      </action>
       <action issue="LOG4J2-2885" dev="vy" type="add" due-to="Markus Spann">
         Add support for US-style date patterns and micro/nano seconds to FixedDateTime.
       </action>

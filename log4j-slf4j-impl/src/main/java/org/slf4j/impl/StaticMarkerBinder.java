@@ -33,6 +33,15 @@ public class StaticMarkerBinder implements MarkerFactoryBinder {
 
     private final IMarkerFactory markerFactory = new Log4jMarkerFactory();
 
+    /**
+     * Returns the {@link #SINGLETON} {@link StaticMarkerBinder}.
+     * Added to slf4j-api 1.7.14 via https://github.com/qos-ch/slf4j/commit/ea3cca72cd5a9329a06b788317a17e806ee8acd0
+     * @return the singleton instance
+     */
+    public static StaticMarkerBinder getSingleton() {
+        return SINGLETON;
+    }
+
     @Override
     public IMarkerFactory getMarkerFactory() {
         return markerFactory;
