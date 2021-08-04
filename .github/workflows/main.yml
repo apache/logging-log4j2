@@ -63,6 +63,9 @@ jobs:
         run: ./mvnw -V -B --no-transfer-progress -e -DtrimStackTrace=false -Dmaven.test.failure.ignore=true -Dsurefire.rerunFailingTestsCount=1 verify
 
       - name: Publish Test Results
+        # If the CI run is not initiated from the primary repository, it is highly likely that this is a PR from a user who doesn't have commit rights.
+        # Hence, skip this step to avoid permission failures.
+        if: github.repository == 'apache/logging-log4j2'
         uses: scacap/action-surefire-report@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
