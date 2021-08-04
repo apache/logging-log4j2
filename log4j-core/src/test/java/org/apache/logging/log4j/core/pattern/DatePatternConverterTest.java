@@ -102,7 +102,7 @@ public class DatePatternConverterTest {
         field.setBoolean(null, threadLocalEnabled.booleanValue());
     }
 
-    private Date date(final int year, final int month, final int date) {
+    private static Date date(final int year, final int month, final int date) {
         final Calendar cal = Calendar.getInstance();
         cal.set(year, month, date, 14, 15, 16);
         cal.set(Calendar.MILLISECOND, 123);
@@ -119,12 +119,7 @@ public class DatePatternConverterTest {
 
     @Test
     public void testFormatDateStringBuilderDefaultPattern() {
-        final DatePatternConverter converter = DatePatternConverter.newInstance(null);
-        final StringBuilder sb = new StringBuilder();
-        converter.format(date(2001, 1, 1), sb);
-
-        final String expected = "2001-02-01 14:15:16,123";
-        assertEquals(expected, sb.toString());
+        assertDatePattern(null, date(2001, 1, 1), "2001-02-01 14:15:16,123");
     }
 
     @Test
@@ -139,24 +134,12 @@ public class DatePatternConverterTest {
 
     @Test
     public void testFormatDateStringBuilderIso8601BasicWithPeriod() {
-        final String[] pattern = {FixedDateFormat.FixedFormat.ISO8601_BASIC_PERIOD.name()};
-        final DatePatternConverter converter = DatePatternConverter.newInstance(pattern);
-        final StringBuilder sb = new StringBuilder();
-        converter.format(date(2001, 1, 1), sb);
-
-        final String expected = "20010201T141516.123";
-        assertEquals(expected, sb.toString());
+        assertDatePattern(FixedDateFormat.FixedFormat.ISO8601_BASIC_PERIOD.name(), date(2001, 1, 1), "20010201T141516.123");
     }
 
     @Test
     public void testFormatDateStringBuilderIso8601WithPeriod() {
-        final String[] pattern = {FixedDateFormat.FixedFormat.ISO8601_PERIOD.name()};
-        final DatePatternConverter converter = DatePatternConverter.newInstance(pattern);
-        final StringBuilder sb = new StringBuilder();
-        converter.format(date(2001, 1, 1), sb);
-
-        final String expected = "2001-02-01T14:15:16.123";
-        assertEquals(expected, sb.toString());
+        assertDatePattern(FixedDateFormat.FixedFormat.ISO8601_PERIOD.name(), date(2001, 1, 1), "2001-02-01T14:15:16.123");
     }
 
     @Test
@@ -177,13 +160,7 @@ public class DatePatternConverterTest {
 
     @Test
     public void testFormatDateStringBuilderOriginalPattern() {
-        final String[] pattern = {"yyyy/MM/dd HH-mm-ss.SSS"};
-        final DatePatternConverter converter = DatePatternConverter.newInstance(pattern);
-        final StringBuilder sb = new StringBuilder();
-        converter.format(date(2001, 1, 1), sb);
-
-        final String expected = "2001/02/01 14-15-16.123";
-        assertEquals(expected, sb.toString());
+        assertDatePattern("yyyy/MM/dd HH-mm-ss.SSS", date(2001, 1, 1), "2001/02/01 14-15-16.123");
     }
 
     @Test
@@ -205,6 +182,25 @@ public class DatePatternConverterTest {
         converter.format(event, sb);
 
         final String expected = "2011-12-30T10:56:35,987";
+        assertEquals(expected, sb.toString());
+    }
+
+    @Test
+    public void testFormatAmericanPatterns() {
+        Date date = date(2011, 2, 11);
+        assertDatePattern("US_MONTH_DAY_YEAR4_TIME", date, "11/03/2011 14:15:16.123");
+        assertDatePattern("US_MONTH_DAY_YEAR2_TIME", date, "11/03/11 14:15:16.123");
+        assertDatePattern("dd/MM/yyyy HH:mm:ss.SSS", date, "11/03/2011 14:15:16.123");
+        assertDatePattern("dd/MM/yyyy HH:mm:ss.nnnnnn", date, "11/03/2011 14:15:16.123000");
+        assertDatePattern("dd/MM/yy HH:mm:ss.SSS", date, "11/03/11 14:15:16.123");
+        assertDatePattern("dd/MM/yy HH:mm:ss.nnnnnn", date, "11/03/11 14:15:16.123000");
+    }
+
+    private static void assertDatePattern(final String format, final Date date, final String expected) {
+        DatePatternConverter converter = DatePatternConverter.newInstance(new String[] {format});
+        StringBuilder sb = new StringBuilder();
+        converter.format(date, sb);
+
         assertEquals(expected, sb.toString());
     }
 
