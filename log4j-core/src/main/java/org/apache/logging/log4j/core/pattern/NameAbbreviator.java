@@ -291,12 +291,13 @@ public abstract class NameAbbreviator {
          * @return starting  index of next element.
          */
         int abbreviate(final String input, final int inputIndex, final StringBuilder buf) {
-            // ckozak: indexOf with a string is intentional. indexOf(String, int) appears to
-            // have optimizations that don't apply to indexOf(char, int)
-            // which result in a >10% performance improvement in some
-            // NamePatternConverterBenchmark cases. This should be re-evaluated with
-            // future java releases.
-            int nextDot = input.indexOf(".", inputIndex);
+            // Note that indexOf(char) performs worse than indexOf(String) on pre-16 JREs
+            // due to missing intrinsics for the character implementation. The difference
+            // is a few nanoseconds in most cases, so we opt to give the jre as much
+            // information as possible for best performance on new runtimes, with the
+            // possibility that such optimizations may be back-ported.
+            // See https://bugs.openjdk.java.net/browse/JDK-8173585
+            int nextDot = input.indexOf('.', inputIndex);
             if (nextDot < 0) {
                 buf.append(input, inputIndex, input.length());
                 return nextDot;
