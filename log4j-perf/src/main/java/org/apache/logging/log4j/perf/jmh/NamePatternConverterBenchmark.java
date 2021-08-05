@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
 @Fork(1)
 @Threads(1)
 @Warmup(iterations = 3, time = 3)
-@Measurement(iterations = 3, time = 3)
+@Measurement(iterations = 4, time = 3)
 public class NamePatternConverterBenchmark {
 
     @State(Scope.Benchmark)
