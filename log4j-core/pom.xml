@@ -171,7 +171,7 @@
     <dependency>
       <groupId>org.jmdns</groupId>
       <artifactId>jmdns</artifactId>
-      <version>3.5.3</version>
+      <version>3.5.7</version>
       <scope>test</scope>
     </dependency>
     <!-- Log4j 1.2 tests -->
