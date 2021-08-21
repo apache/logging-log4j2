@@ -56,7 +56,44 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
 
         @Override
         public MongoDb4Provider build() {
-            return new MongoDb4Provider(connection, capped, collectionSize);
+            ConnectionString connectionString;
+            MongoClient mongoClient = null;
+            MongoDatabase mongoDatabase;
+
+            LOGGER.debug("Creating ConnectionString {}...", connection);
+            connectionString = new ConnectionString(connection);
+            LOGGER.debug("Created ConnectionString {}", connectionString);
+            LOGGER.debug("Creating MongoClientSettings...");
+            // @formatter:off
+            final MongoClientSettings settings = MongoClientSettings.builder()
+                    .applyConnectionString(connectionString)
+                    .codecRegistry(CODEC_REGISTRIES)
+                    .build();
+            // @formatter:on
+            LOGGER.debug("Created MongoClientSettings {}", settings);
+            LOGGER.debug("Creating MongoClient {}...", settings);
+            mongoClient = MongoClients.create(settings);
+            LOGGER.debug("Created MongoClient {}", mongoClient);
+            String databaseName = connectionString.getDatabase();
+            LOGGER.debug("Getting MongoDatabase {}...", databaseName);
+            mongoDatabase = mongoClient.getDatabase(databaseName);
+            LOGGER.debug("Got MongoDatabase {}", mongoDatabase);
+            try {
+                mongoDatabase.listCollectionNames().first(); // Check if the database actually requires authentication
+            } catch (final Exception e) {
+                LOGGER.error(
+                        "The database is not up, or you are not authenticated, try supplying a username and password to the MongoDB provider.",
+                        e);
+                close(mongoClient);
+                return null;
+            }
+            return new MongoDb4Provider(connectionString, mongoClient, mongoDatabase, capped, collectionSize);
+        }
+
+        private void close(final MongoClient mongoClient) {
+            if (mongoClient != null) {
+                mongoClient.close();
+            }
         }
 
         public B setCapped(final boolean isCapped) {
@@ -92,26 +129,11 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
     private final MongoDatabase mongoDatabase;
     private final ConnectionString connectionString;
 
-    private MongoDb4Provider(final String connectionStringSource, final boolean isCapped,
-            final Integer collectionSize) {
-        LOGGER.debug("Creating ConnectionString {}...", connectionStringSource);
-        this.connectionString = new ConnectionString(connectionStringSource);
-        LOGGER.debug("Created ConnectionString {}", connectionString);
-        LOGGER.debug("Creating MongoClientSettings...");
-        // @formatter:off
-        final MongoClientSettings settings = MongoClientSettings.builder()
-                .applyConnectionString(this.connectionString)
-                .codecRegistry(CODEC_REGISTRIES)
-                .build();
-        // @formatter:on
-        LOGGER.debug("Created MongoClientSettings {}", settings);
-        LOGGER.debug("Creating MongoClient {}...", settings);
-        this.mongoClient = MongoClients.create(settings);
-        LOGGER.debug("Created MongoClient {}", mongoClient);
-        String databaseName = this.connectionString.getDatabase();
-        LOGGER.debug("Getting MongoDatabase {}...", databaseName);
-        this.mongoDatabase = this.mongoClient.getDatabase(databaseName);
-        LOGGER.debug("Got MongoDatabase {}", mongoDatabase);
+    private MongoDb4Provider(final ConnectionString connectionString, final MongoClient mongoClient,
+            final MongoDatabase mongoDatabase, final boolean isCapped, final Integer collectionSize) {
+        this.connectionString = connectionString;
+        this.mongoClient = mongoClient;
+        this.mongoDatabase = mongoDatabase;
         this.isCapped = isCapped;
         this.collectionSize = collectionSize;
     }
