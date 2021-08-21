@@ -90,7 +90,7 @@ see [Snapshot builds](https://logging.apache.org/log4j/2.x/maven-artifacts.html#
 Issues, bugs, and feature requests should be submitted to the 
 [JIRA issue tracking system for this project](https://issues.apache.org/jira/browse/LOG4J2).
 
-Pull request on GitHub are welcome, but please open a ticket in the JIRA issue tracker first, and mention the 
+Pull requests on GitHub are welcome, but please open a ticket in the JIRA issue tracker first, and mention the 
 JIRA issue in the Pull Request.
 
 ## Building From Source
