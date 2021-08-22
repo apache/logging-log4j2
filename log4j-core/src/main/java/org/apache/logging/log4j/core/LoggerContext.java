@@ -609,7 +609,8 @@ public class LoggerContext extends AbstractLifeCycle
             final ConcurrentMap<String, String> map = config.getComponent(Configuration.CONTEXT_PROPERTIES);
 
             try { // LOG4J2-719 network access may throw android.os.NetworkOnMainThreadException
-                map.putIfAbsent("hostName", NetUtils.getLocalHostname());
+                // LOG4J2-2808 don't block unless necessary
+                map.computeIfAbsent("hostName", s -> NetUtils.getLocalHostname());
             } catch (final Exception ex) {
                 LOGGER.debug("Ignoring {}, setting hostName to 'unknown'", ex.toString());
                 map.putIfAbsent("hostName", "unknown");
