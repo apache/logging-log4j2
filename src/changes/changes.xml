@@ -95,6 +95,9 @@
 	based on performance improvements in modern Java releases.
       </action>
       <!-- FIXES -->
+      <action issue="LOG4J2-2808" dev="ckozak" type="fix" due-to="Asapha Halifa">
+        LoggerContext skips resolving localhost when hostName is configured.
+      </action>
       <action issue="LOG4J2-3150" dev="ckozak" type="fix">
         RandomAccessFile appender uses the correct default buffer size of 256 kB
         rather than the default appender buffer size of 8 kB.
