@@ -31,6 +31,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Function;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -609,7 +610,13 @@ public class LoggerContext extends AbstractLifeCycle
             final ConcurrentMap<String, String> map = config.getComponent(Configuration.CONTEXT_PROPERTIES);
 
             try { // LOG4J2-719 network access may throw android.os.NetworkOnMainThreadException
-                map.putIfAbsent("hostName", NetUtils.getLocalHostname());
+                // LOG4J2-2808 don't block unless necessary
+                map.computeIfAbsent("hostName", new Function<String, String>() {
+                    @Override
+                    public String apply(String s) {
+                        return NetUtils.getLocalHostname();
+                    }
+                });
             } catch (final Exception ex) {
                 LOGGER.debug("Ignoring {}, setting hostName to 'unknown'", ex.toString());
                 map.putIfAbsent("hostName", "unknown");
