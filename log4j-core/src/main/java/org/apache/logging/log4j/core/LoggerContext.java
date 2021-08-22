@@ -611,12 +611,7 @@ public class LoggerContext extends AbstractLifeCycle
 
             try { // LOG4J2-719 network access may throw android.os.NetworkOnMainThreadException
                 // LOG4J2-2808 don't block unless necessary
-                map.computeIfAbsent("hostName", new Function<String, String>() {
-                    @Override
-                    public String apply(String s) {
-                        return NetUtils.getLocalHostname();
-                    }
-                });
+                map.computeIfAbsent("hostName", s -> NetUtils.getLocalHostname());
             } catch (final Exception ex) {
                 LOGGER.debug("Ignoring {}, setting hostName to 'unknown'", ex.toString());
                 map.putIfAbsent("hostName", "unknown");
