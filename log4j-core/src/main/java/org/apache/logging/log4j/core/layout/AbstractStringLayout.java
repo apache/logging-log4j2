@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
@@ -41,10 +40,6 @@ import org.apache.logging.log4j.util.Strings;
  * Since 2.4.1, this class has custom logic to convert ISO-8859-1 or US-ASCII Strings to byte[] arrays to improve
  * performance: all characters are simply cast to bytes.
  * </p>
- */
-/*
- * Implementation note: prefer String.getBytes(String) to String.getBytes(Charset) for performance reasons. See
- * https://issues.apache.org/jira/browse/LOG4J2-935 for details.
  */
 public abstract class AbstractStringLayout extends AbstractLayout<String> implements StringLayout, LocationAware {
 
@@ -141,11 +136,6 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
         return result;
     }
 
-    // LOG4J2-1151: If the built-in JDK 8 encoders are available we should use them.
-    private static boolean isPreJava8() {
-        return org.apache.logging.log4j.util.Constants.JAVA_MAJOR_VERSION < 8;
-    }
-
     private static int size(final String property, final int defaultValue) {
         return PropertiesUtil.getProperties().getIntegerProperty(property, defaultValue);
     }
@@ -158,16 +148,11 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
     /**
      * The charset for the formatted message.
      */
-    // LOG4J2-1099: Charset cannot be final due to serialization needs, so we serialize as Charset name instead
-    private transient Charset charset;
-
-    private final String charsetName;
+    private final Charset charset;
 
     private final Serializer footerSerializer;
 
     private final Serializer headerSerializer;
-
-    private final boolean useCustomEncoding;
 
     protected AbstractStringLayout(final Charset charset) {
         this(charset, (byte[]) null, (byte[]) null);
@@ -185,9 +170,6 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
         this.headerSerializer = null;
         this.footerSerializer = null;
         this.charset = aCharset == null ? StandardCharsets.UTF_8 : aCharset;
-        this.charsetName = this.charset.name();
-        useCustomEncoding = isPreJava8()
-                && (StandardCharsets.ISO_8859_1.equals(aCharset) || StandardCharsets.US_ASCII.equals(aCharset));
         textEncoder = Constants.ENABLE_DIRECT_ENCODERS ? new StringBuilderEncoder(charset) : null;
     }
 
@@ -205,21 +187,11 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
         this.headerSerializer = headerSerializer;
         this.footerSerializer = footerSerializer;
         this.charset = aCharset == null ? StandardCharsets.UTF_8 : aCharset;
-        this.charsetName = this.charset.name();
-        useCustomEncoding = isPreJava8()
-                && (StandardCharsets.ISO_8859_1.equals(aCharset) || StandardCharsets.US_ASCII.equals(aCharset));
         textEncoder = Constants.ENABLE_DIRECT_ENCODERS ? new StringBuilderEncoder(charset) : null;
     }
 
     protected byte[] getBytes(final String s) {
-        if (useCustomEncoding) { // rely on branch prediction to eliminate this check if false
-            return StringEncoder.encodeSingleByteChars(s);
-        }
-        try { // LOG4J2-935: String.getBytes(String) gives better performance
-            return s.getBytes(charsetName);
-        } catch (final UnsupportedEncodingException e) {
-            return s.getBytes(charset);
-        }
+        return s.getBytes(charset);
     }
 
     @Override
