@@ -91,6 +91,10 @@
         The methods on LogEvent are preferred.
       </action>
       <!-- FIXES -->
+      <action issue="LOG4J2-3142" dev="ckozak" type="fix" due-to="John Meikle">
+        log4j-1.2-api implements LogEventAdapter.getTimestamp() based on the original event timestamp
+        instead of returning zero.
+      </action>
       <action issue="LOG4J2-3083" dev="ckozak" type="fix">
         log4j-slf4j-impl and log4j-slf4j18-impl correctly detect the calling class using both LoggerFactory.getLogger
         methods as well as LoggerFactory.getILoggerFactory().getLogger.

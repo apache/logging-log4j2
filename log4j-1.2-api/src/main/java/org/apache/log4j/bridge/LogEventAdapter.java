@@ -129,6 +129,11 @@ public class LogEventAdapter extends LoggingEvent {
         return event.getLoggerName();
     }
 
+    @Override
+    public long getTimeStamp() {
+        return event.getTimeMillis();
+    }
+
     /**
      * Gets the logger of the event.
      */

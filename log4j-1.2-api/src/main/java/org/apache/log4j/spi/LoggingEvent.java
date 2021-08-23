@@ -60,7 +60,7 @@ public class LoggingEvent {
         return null;
     }
 
-    public final long getTimeStamp() {
+    public long getTimeStamp() {
         return 0;
     }
 
