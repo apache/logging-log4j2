@@ -43,7 +43,6 @@ public class RandomAccessFileManager extends OutputStreamManager {
 
     private final String advertiseURI;
     private final RandomAccessFile randomAccessFile;
-    private final ThreadLocal<Boolean> isEndOfBatch = new ThreadLocal<>();
 
     protected RandomAccessFileManager(final LoggerContext loggerContext, final RandomAccessFile file, final String fileName,
             final OutputStream os, final int bufferSize, final String advertiseURI,
@@ -51,7 +50,6 @@ public class RandomAccessFileManager extends OutputStreamManager {
         super(loggerContext, os, fileName, false, layout, writeHeader, ByteBuffer.wrap(new byte[bufferSize]));
         this.randomAccessFile = file;
         this.advertiseURI = advertiseURI;
-        this.isEndOfBatch.set(Boolean.FALSE);
     }
 
     /**
@@ -75,12 +73,23 @@ public class RandomAccessFileManager extends OutputStreamManager {
 				new FactoryData(append, immediateFlush, bufferSize, advertiseURI, layout, configuration), FACTORY));
 	}
 
+    /**
+     * No longer used, the {@link org.apache.logging.log4j.core.LogEvent#isEndOfBatch()} attribute is used instead.
+     * @return {@link Boolean#FALSE}.
+     * @deprecated end-of-batch on the event is used instead.
+     */
+	@Deprecated
     public Boolean isEndOfBatch() {
-        return isEndOfBatch.get();
+        return Boolean.FALSE;
     }
 
-    public void setEndOfBatch(final boolean endOfBatch) {
-        this.isEndOfBatch.set(Boolean.valueOf(endOfBatch));
+    /**
+     * No longer used, the {@link org.apache.logging.log4j.core.LogEvent#isEndOfBatch()} attribute is used instead.
+     * This method is a no-op.
+     * @deprecated end-of-batch on the event is used instead.
+     */
+    @Deprecated
+    public void setEndOfBatch(@SuppressWarnings("unused") final boolean endOfBatch) {
     }
 
     @Override
