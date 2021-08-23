@@ -85,6 +85,11 @@
       <action issue="LOG4J2-3041" dev="rgoers" type="add">
         Allow a PatternSelector to be specified on GelfLayout.
       </action>
+      <action issue="LOG4J2-3141" dev="ckozak" type="add">
+        Avoid ThreadLocal overhead in RandomAccessFileAppender, RollingRandomAccessFileManager,
+        and MemoryMappedFileManager due to the unused setEndOfBatch and isEndOfBatch methods.
+        The methods on LogEvent are preferred.
+      </action>
       <!-- FIXES -->
       <action issue="LOG4J2-3083" dev="ckozak" type="fix">
         log4j-slf4j-impl and log4j-slf4j18-impl correctly detect the calling class using both LoggerFactory.getLogger
