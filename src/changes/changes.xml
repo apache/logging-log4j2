@@ -229,6 +229,10 @@
         and MemoryMappedFileManager due to the unused setEndOfBatch and isEndOfBatch methods.
         The methods on LogEvent are preferred.
       </action>
+      <action issue="LOG4J2-1151" dev="ckozak" type="add">
+        Prefer string.getBytes(Charset) over string.getBytes(String)
+	based on performance improvements in modern Java releases.
+      </action>
       <!-- FIXES -->
       <action issue="LOG4J2-3142" dev="ckozak" type="fix" due-to="John Meikle">
         log4j-1.2-api implements LogEventAdapter.getTimestamp() based on the original event timestamp
