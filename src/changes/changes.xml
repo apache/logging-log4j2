@@ -229,7 +229,7 @@
         and MemoryMappedFileManager due to the unused setEndOfBatch and isEndOfBatch methods.
         The methods on LogEvent are preferred.
       </action>
-      <action issue="LOG4J2-1151" dev="ckozak" type="add">
+      <action issue="LOG4J2-3144" dev="ckozak" type="add">
         Prefer string.getBytes(Charset) over string.getBytes(String)
 	based on performance improvements in modern Java releases.
       </action>
