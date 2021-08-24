@@ -57,6 +57,7 @@ public class RewriteAppenderTest {
         Logger logger = LogManager.getLogger("test");
         ThreadContext.put("key1", "This is a test");
         ThreadContext.put("hello", "world");
+        long logTime = System.currentTimeMillis();
         logger.debug("Say hello");
         LoggerContext context = (LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
         Configuration configuration = context.getConfiguration();
@@ -73,24 +74,6 @@ public class RewriteAppenderTest {
         assertNotNull("No properties in the event", events.get(0).getProperties());
         assertTrue("Key was not inserted", events.get(0).getProperties().containsKey("key2"));
         assertEquals("Key value is incorrect", "Log4j", events.get(0).getProperties().get("key2"));
-    }
-
-    @Test
-    public void testTimeStamp() {
-        Logger logger = LogManager.getLogger("test");
-        long logTime = System.currentTimeMillis();
-        logger.debug("hello, world");
-        LoggerContext context = (LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
-        Configuration configuration = context.getConfiguration();
-        Map<String, Appender> appenders = configuration.getAppenders();
-        ListAppender eventAppender = null;
-        for (Map.Entry<String, Appender> entry : appenders.entrySet()) {
-            if (entry.getKey().equals("events")) {
-                eventAppender = (ListAppender) ((AppenderAdapter.Adapter) entry.getValue()).getAppender();
-            }
-        }
-        assertNotNull("No Event Appender", eventAppender);
-        List<LoggingEvent> events = eventAppender.getEvents();
         assertTrue("Timestamp is before point of logging", events.get(0).getTimeStamp() >= logTime);
     }
 }
