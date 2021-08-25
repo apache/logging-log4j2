@@ -57,7 +57,8 @@ public class KubernetesLookup extends AbstractLookup {
     private static volatile KubernetesInfo kubernetesInfo;
     private static final Lock initLock = new ReentrantLock();
     private static final boolean isSpringIncluded =
-            LoaderUtil.isClassAvailable("org.apache.logging.log4j.spring.cloud.config.client.SpringEnvironmentHolder");
+            LoaderUtil.isClassAvailable("org.apache.logging.log4j.spring.cloud.config.client.SpringEnvironmentHolder")
+                    || LoaderUtil.isClassAvailable("org.apache.logging.log4j.spring.boot.SpringEnvironmentHolder");
     private Pod pod;
     private Namespace namespace;
     private URL masterUrl;
