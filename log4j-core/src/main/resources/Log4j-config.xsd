@@ -509,6 +509,9 @@
       <attribute name="locationInfo" type="tns:BooleanType" />
       <attribute name="properties" type="tns:BooleanType" />
       <attribute name="stacktraceAsString" type="tns:BooleanType" />
+      <attribute name="propertiesAsList" type="tns:BooleanType" />
+      <attribute name="includeTimeMillis" type="tns:BooleanType" />
+      <attribute name="objectMessageAsJsonObject" type="tns:BooleanType" />
    </complexType>
 
    <complexType name="JCsvParameterLayoutType">
