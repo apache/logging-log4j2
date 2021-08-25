@@ -95,6 +95,10 @@
 	based on performance improvements in modern Java releases.
       </action>
       <!-- FIXES -->
+      <action issue="LOG4J2-3150" dev="ckozak" type="fix">
+        RandomAccessFile appender uses the correct default buffer size of 256 kB
+        rather than the default appender buffer size of 8 kB.
+      </action>
       <action issue="LOG4J2-3142" dev="ckozak" type="fix" due-to="John Meikle">
         log4j-1.2-api implements LogEventAdapter.getTimestamp() based on the original event timestamp
         instead of returning zero.
