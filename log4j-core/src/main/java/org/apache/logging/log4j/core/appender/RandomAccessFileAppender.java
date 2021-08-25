@@ -58,16 +58,20 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
         @PluginBuilderAttribute("advertiseURI")
         private String advertiseURI;
 
+        public Builder() {
+            this.withBufferSize(RandomAccessFileManager.DEFAULT_BUFFER_SIZE);
+        }
+
         @Override
         public RandomAccessFileAppender build() {
             final String name = getName();
             if (name == null) {
-                LOGGER.error("No name provided for FileAppender");
+                LOGGER.error("No name provided for RandomAccessFileAppender");
                 return null;
             }
 
             if (fileName == null) {
-                LOGGER.error("No filename provided for FileAppender with name " + name);
+                LOGGER.error("No filename provided for RandomAccessFileAppender with name {}", name);
                 return null;
             }
             final Layout<? extends Serializable> layout = getOrCreateLayout();
