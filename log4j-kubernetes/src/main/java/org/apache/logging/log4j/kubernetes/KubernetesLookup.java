@@ -55,9 +55,10 @@ public class KubernetesLookup extends AbstractLookup {
     private static final String SPRING_ENVIRONMENT_KEY = "SpringEnvironment";
 
     private static volatile KubernetesInfo kubernetesInfo;
-    private static Lock initLock = new ReentrantLock();
-    private static boolean isSpringIncluded =
-            LoaderUtil.isClassAvailable("org.apache.logging.log4j.spring.cloud.config.client.SpringEnvironmentHolder");
+    private static final Lock initLock = new ReentrantLock();
+    private static final boolean isSpringIncluded =
+            LoaderUtil.isClassAvailable("org.apache.logging.log4j.spring.cloud.config.client.SpringEnvironmentHolder")
+                    || LoaderUtil.isClassAvailable("org.apache.logging.log4j.spring.boot.SpringEnvironmentHolder");
     private Pod pod;
     private Namespace namespace;
     private URL masterUrl;
@@ -91,7 +92,7 @@ public class KubernetesLookup extends AbstractLookup {
                             info.masterUrl = client.getMasterUrl();
                             if (pod != null) {
                                 info.namespace = pod.getMetadata().getNamespace();
-                                namespace = namespace = client.namespaces().withName(info.namespace).get();
+                                namespace = client.namespaces().withName(info.namespace).get();
                             }
                         } else {
                             LOGGER.warn("Kubernetes is not available for access");
