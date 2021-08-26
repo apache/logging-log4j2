@@ -16,8 +16,10 @@
  limitations under the License.
 
 -->
-<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://logging.apache.org/log4j/2.0/config"
-   targetNamespace="http://logging.apache.org/log4j/2.0/config" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        xmlns:tns="http://logging.apache.org/log4j/2.0/config"
+        targetNamespace="http://logging.apache.org/log4j/2.0/config"
+        elementFormDefault="qualified">
 
    <!--
     ================================================================================================================================
@@ -27,7 +29,7 @@
    <element name="Configuration">
       <complexType>
          <sequence>
-            <choice minOccurs="0" maxOccurs="1">
+            <choice minOccurs="0">
                <element name="CustomLevels" type="tns:CustomLevelsType">
                   <unique name="UniqueCustomLevelName">
                      <selector xpath="tns:CustomLevel" />
@@ -63,7 +65,7 @@
                </complexType>
             </element>
 
-            <group ref="tns:FilterChoiceGroup" minOccurs="0" maxOccurs="1" />
+            <group ref="tns:FilterChoiceGroup" minOccurs="0" />
 
             <element name="Appenders" type="tns:AppendersType" minOccurs="0" />
 
@@ -359,8 +361,8 @@
                      <attribute name="language" type="string" />
                   </complexType>
                </element>
-               <element name="ScriptFile"></element>
-               <element name="ScriptRef"></element>
+               <element name="ScriptFile" />
+               <element name="ScriptRef" />
             </choice>
          </extension>
       </complexContent>
@@ -509,9 +511,6 @@
       <attribute name="locationInfo" type="tns:BooleanType" />
       <attribute name="properties" type="tns:BooleanType" />
       <attribute name="stacktraceAsString" type="tns:BooleanType" />
-      <attribute name="propertiesAsList" type="tns:BooleanType" />
-      <attribute name="includeTimeMillis" type="tns:BooleanType" />
-      <attribute name="objectMessageAsJsonObject" type="tns:BooleanType" />
    </complexType>
 
    <complexType name="JCsvParameterLayoutType">
@@ -576,24 +575,26 @@
       <attribute name="messagePattern" type="string" />
       <attribute name="threadContextExcludes" type="string" />
       <attribute name="threadContextIncludes" type="string" />
-      <attribute name="threadContextPrefix" type="string"/>
+      <attribute name="threadContextPrefix" type="string" />
       <attribute name="mapMessageExcludes" type="string" />
       <attribute name="mapMessageIncludes" type="string" />
-      <attribute name="mapPrefix" type="string"/>
-      <attribute name="omitEmptyFields" type="tns:BooleanType"/>
+      <attribute name="mapPrefix" type="string" />
+      <attribute name="omitEmptyFields" type="tns:BooleanType" />
    </complexType>
 
    <complexType name="JsonLayoutType">
       <complexContent>
          <extension base="tns:AbstractJsonLayoutType">
             <attribute name="propertiesAsList" type="tns:BooleanType" />
+            <attribute name="includeTimeMillis" type="tns:BooleanType" />
+            <attribute name="objectMessageAsJsonObject" type="tns:BooleanType" />
          </extension>
       </complexContent>
    </complexType>
 
    <complexType name="XmlLayoutType">
       <complexContent>
-         <extension base="tns:AbstractJsonLayoutType"></extension>
+         <extension base="tns:AbstractJsonLayoutType" />
       </complexContent>
    </complexType>
 
@@ -668,7 +669,7 @@
             <element name="PatternLayout" type="tns:PatternLayoutType" />
             <element name="XmlLayout" type="tns:XmlLayoutType" />
          </choice>
-         <group ref="tns:FilterChoiceGroup" minOccurs="0" maxOccurs="1" />
+         <group ref="tns:FilterChoiceGroup" minOccurs="0" />
       </sequence>
       <attribute name="name" type="string" use="required">
          <annotation>
@@ -710,7 +711,7 @@
          <extension base="tns:AbstractAppenderType">
             <sequence>
                <element name="AppenderRef" type="tns:AppenderRefType" minOccurs="0" />
-               <choice minOccurs="0" maxOccurs="1">
+               <choice minOccurs="0">
                   <element name="ArrayBlockingQueue">
                      <complexType />
                   </element>
@@ -773,7 +774,7 @@
       <complexContent>
          <extension base="tns:AbstractAppenderType">
             <sequence>
-               <element name="Agent" minOccurs="1" maxOccurs="unbounded">
+               <element name="Agent" maxOccurs="unbounded">
                   <complexType>
                      <attribute name="host" type="string" />
                      <attribute name="port" type="tns:IntegerType" />
@@ -1002,7 +1003,7 @@
       <complexContent>
          <extension base="tns:FileAppenderType">
             <sequence>
-               <group ref="tns:TriggeringPolicyChoiceGroup" minOccurs="0" maxOccurs="1" />
+               <group ref="tns:TriggeringPolicyChoiceGroup" minOccurs="0" />
                <choice minOccurs="0">
                   <element name="DefaultRolloverStrategy" type="tns:DefaultRolloverStrategyType" />
                   <element name="DirectWriteRolloverStrategy" type="tns:DirectWriteRolloverStrategy" />
@@ -1024,7 +1025,7 @@
    <complexType name="RollingRandomAccessFileAppenderType">
       <!-- https://logging.apache.org/log4j/2.x/manual/appenders.html#RollingFileAppender -->
       <complexContent>
-         <extension base="tns:RollingFileAppenderType"></extension>
+         <extension base="tns:RollingFileAppenderType" />
       </complexContent>
    </complexType>
 
@@ -1260,7 +1261,7 @@
 
    <complexType name="LoggerType">
       <sequence>
-         <group ref="tns:FilterChoiceGroup" minOccurs="0" maxOccurs="1" />
+         <group ref="tns:FilterChoiceGroup" minOccurs="0" />
          <choice minOccurs="0" maxOccurs="unbounded">
             <element name="Property" type="tns:PropertyType" />
             <element name="AppenderRef" type="tns:AppenderRefType" />
@@ -1274,7 +1275,7 @@
 
    <complexType name="AsyncLoggerType">
       <complexContent>
-         <extension base="tns:LoggerType"></extension>
+         <extension base="tns:LoggerType" />
       </complexContent>
    </complexType>
 
@@ -1290,12 +1291,12 @@
 
    <complexType name="AsyncRootType">
       <complexContent>
-         <extension base="tns:RootType"></extension>
+         <extension base="tns:RootType" />
       </complexContent>
    </complexType>
 
    <complexType name="AppenderRefType">
-      <group ref="tns:FilterChoiceGroup" minOccurs="0" maxOccurs="1" />
+      <group ref="tns:FilterChoiceGroup" minOccurs="0" />
       <attribute name="level" type="string" />
       <attribute name="ref" type="string" use="required" />
    </complexType>
@@ -1341,4 +1342,5 @@
          <pattern value="-?([0-9]+|\$\{[^{}]+\})" />
       </restriction>
    </simpleType>
+
 </schema>
