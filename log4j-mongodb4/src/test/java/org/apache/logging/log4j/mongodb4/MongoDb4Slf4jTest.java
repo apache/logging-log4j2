@@ -41,7 +41,7 @@ import com.mongodb.client.MongoDatabase;
  */
 @Category(Appenders.MongoDb.class)
 public class MongoDb4Slf4jTest {
-	
+
     private static final SystemOutRule systemOutRule = new SystemOutRule().enableLog();
 
     private static LoggerContextRule loggerContextTestRule = new LoggerContextRule("log4j2-mongodb-slf4j.xml");
