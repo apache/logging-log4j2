@@ -104,7 +104,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         void formatToBuffer(final Instant instant, final StringBuilder destination) {
             final long epochSecond = instant.getEpochSecond();
             final int nanoOfSecond = instant.getNanoOfSecond();
-            if (previousTime != epochSecond || nanos != nanoOfSecond) {
+            if (!fixedDateFormat.isEquivalent(previousTime, nanos, epochSecond, nanoOfSecond)) {
                 length = fixedDateFormat.formatInstant(instant, cachedBuffer, 0);
                 previousTime = epochSecond;
                 nanos = nanoOfSecond;

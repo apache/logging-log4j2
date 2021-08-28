@@ -234,6 +234,10 @@
 	based on performance improvements in modern Java releases.
       </action>
       <!-- FIXES -->
+      <action issue="LOG4J2-3153" dev="ckozak" type="fix">
+        DatePatternConverter performance is not impacted by microsecond-precision clocks when such precision isn't
+        required.
+      </action>
       <action issue="LOG4J2-2808" dev="ckozak" type="fix" due-to="Asapha Halifa">
         LoggerContext skips resolving localhost when hostName is configured.
       </action>
