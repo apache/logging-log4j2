@@ -25,7 +25,6 @@ import org.bson.Document;
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
-import org.junit.contrib.java.lang.system.SystemOutRule;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.RuleChain;
 import org.slf4j.Logger;
@@ -42,12 +41,12 @@ import com.mongodb.client.MongoDatabase;
 @Category(Appenders.MongoDb.class)
 public class MongoDb4Slf4jTest {
 
-    private static final SystemOutRule systemOutRule = new SystemOutRule().enableLog();
+    private static final SystemOutTestRule systemOutTestRule = new SystemOutTestRule();
 
     private static LoggerContextRule loggerContextTestRule = new LoggerContextRule("log4j2-mongodb-slf4j.xml");
 
     @ClassRule
-    public static RuleChain ruleChain = RuleChainFactory.create(systemOutRule, loggerContextTestRule);
+    public static RuleChain ruleChain = RuleChainFactory.create(systemOutTestRule, loggerContextTestRule);
 
     @Test
     public void test() {
@@ -62,7 +61,7 @@ public class MongoDb4Slf4jTest {
             Assert.assertNotNull(first);
             Assert.assertEquals(first.toJson(), "Hello log", first.getString("message"));
             Assert.assertEquals(first.toJson(), "INFO", first.getString("level"));
-            Assert.assertTrue(!systemOutRule.getLog().contains("Recursive call to appender "));
+            Assert.assertTrue(!systemOutTestRule.toString().contains("Recursive call to appender "));
         }
     }
 }
