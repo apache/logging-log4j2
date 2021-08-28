@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
@@ -45,14 +44,21 @@ public class MongoDb4Slf4jTest {
 
     private static LoggerContextRule loggerContextTestRule = new LoggerContextRule("log4j2-mongodb-slf4j.xml");
 
+    private static final AvailablePortSystemPropertyTestRule mongoDbPortTestRule = AvailablePortSystemPropertyTestRule
+            .create(MongoDb4TestConstants.SYS_PROP_NAME_PORT);
+
+    private static final MongoDb4TestRule mongoDbTestRule = new MongoDb4TestRule(mongoDbPortTestRule.getName(),
+            MongoDb4Slf4jTest.class, LoggingTarget.NULL);
+
     @ClassRule
-    public static RuleChain ruleChain = RuleChainFactory.create(systemOutTestRule, loggerContextTestRule);
+    public static RuleChain ruleChain = RuleChainFactory.create(systemOutTestRule, mongoDbPortTestRule, mongoDbTestRule,
+            loggerContextTestRule);
 
     @Test
     public void test() {
         final Logger logger = LoggerFactory.getLogger(MongoDb4Slf4jTest.class);
         logger.info("Hello log");
-        try (final MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017")) {
+        try (final MongoClient mongoClient = mongoDbTestRule.getMongoClient()) {
             final MongoDatabase database = mongoClient.getDatabase("testDb");
             Assert.assertNotNull(database);
             final MongoCollection<Document> collection = database.getCollection("testCollection");
