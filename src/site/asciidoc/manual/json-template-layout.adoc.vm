@@ -22,8 +22,8 @@ Volkan Yazıcı <vy@apache.org>
 generating layout. It encodes ``LogEvent``s according to the structure described
 by the JSON template provided. In a nutshell, it shines with its
 
-* Customizable JSON structure (see `eventTemplate[Uri]` and
-  `stackTraceElementTemplate[Uri]` xref:layout-config[layout configuration] parameters)
+* Customizable JSON structure (see `eventTemplateUri` and
+  `stackTraceElementTemplateUri` xref:layout-config[layout configuration] parameters)
 
 * Customizable timestamp formatting (see xref:event-template-resolver-timestamp[]
   event template resolver)
@@ -382,16 +382,16 @@ See <<extending-recycler>> for details on how to introduce custom
 Templates are configured by means of the following `JsonTemplateLayout`
 parameters:
 
-- `eventTemplate[Uri]` (for serializing ``LogEvent``s)
-- `stackTraceElementTemplate[Uri]` (for serializing ``StackStraceElement``s)
+- `eventTemplateUri` (for serializing ``LogEvent``s)
+- `stackTraceElementTemplateUri` (for serializing ``StackStraceElement``s)
 - `eventTemplateAdditionalField` (for extending the used event template)
 
 [#event-templates]
 === Event Templates
 
-`eventTemplate[Uri]` describes the JSON structure `JsonTemplateLayout` uses to
+`eventTemplateUri` describes the JSON structure `JsonTemplateLayout` uses to
 serialize ``LogEvent``s. The default configuration (accessible by
-`log4j.layout.jsonTemplate.eventTemplate[Uri]` property) is set to
+`log4j.layout.jsonTemplate.eventTemplateUri` property) is set to
 `classpath:EcsLayout.json` provided by the `log4j-layout-template-json`
 artifact, which contains the following predefined event templates:
 
@@ -711,7 +711,7 @@ resolving the `StackTraceElement` array. If `stringified` is set to `true`,
 `elementTemplate` will be discarded. By default, `elementTemplate` is set to
 `null` and rather populated from the layout configuration. That is, the stack
 trace element template can also be provided using
-`stackTraceElementTemplate[Uri]` layout configuration parameters. The template
+`stackTraceElementTemplateUri` layout configuration parameters. The template
 to be employed is determined in the following order:
 
 . `elementTemplate` provided in the resolver configuration
@@ -1486,7 +1486,7 @@ infrastructure is used again.
 
 `stackTraceElement[Uri]` describes the JSON structure `JsonTemplateLayout` uses
 to format ``StackTraceElement``s. The default configuration (accessible by
-`log4j.layout.jsonTemplate.stackTraceElementTemplate[Uri]` property) is set to
+`log4j.layout.jsonTemplate.stackTraceElementTemplateUri` property) is set to
 `classpath:StackTraceElementLayout.json` provided by the
 `log4j-layout-template-json` artifact:
 
