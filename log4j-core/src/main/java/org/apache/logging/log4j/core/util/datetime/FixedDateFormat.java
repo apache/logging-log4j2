@@ -709,4 +709,19 @@ public class FixedDateFormat {
     private int daylightSavingTime(final int hourOfDay) {
         return hourOfDay > 23 ? dstOffsets[23] : dstOffsets[hourOfDay];
     }
+
+    /**
+     * Returns {@code true} if the old and new date values will result in the same formatted output, {@code false}
+     * if results <i>may</i> differ.
+     */
+    public final boolean isEquivalent(long oldEpochSecond, int oldNanoOfSecond, long epochSecond, int nanoOfSecond) {
+        if (oldEpochSecond == epochSecond) {
+            if (secondFractionDigits <= 3) {
+                // Convert nanos to milliseconds for comparison if the format only requires milliseconds.
+                return (oldNanoOfSecond / 1000_000L) == (nanoOfSecond / 1000_000L);
+            }
+            return oldNanoOfSecond == nanoOfSecond;
+        }
+        return false;
+    }
 }
