@@ -101,9 +101,6 @@ public class MessagePatternConverter extends LogEventPatternConverter {
         return results.toArray(new String[0]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
         throw new UnsupportedOperationException();
@@ -173,5 +170,6 @@ public class MessagePatternConverter extends LogEventPatternConverter {
             delegate.format(event, workingBuilder);
             textRenderer.render(workingBuilder, toAppendTo);
         }
+
     }
 }

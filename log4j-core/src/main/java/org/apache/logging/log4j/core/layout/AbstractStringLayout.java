@@ -82,13 +82,14 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
 
     }
 
-    public interface Serializer {
+    public interface Serializer extends Serializer2 {
         String toSerializable(final LogEvent event);
 
         default boolean requiresLocation() {
             return false;
         }
 
+        @Override
         default StringBuilder toSerializable(final LogEvent event, final StringBuilder builder) {
             builder.append(toSerializable(event));
             return builder;

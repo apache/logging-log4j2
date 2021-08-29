@@ -362,7 +362,7 @@ public class PatternParserTest {
         assertNotNull(formatters);
         assertEquals(2, formatters.size());
 
-        validateConverter(formatters, 0, "Literal");
+        validateConverter(formatters, 0, "SimpleLiteral");
         validateConverter(formatters, 1, "Date");
     }
 

@@ -379,6 +379,9 @@
         Prefer string.getBytes(Charset) over string.getBytes(String)
 	based on performance improvements in modern Java releases.
       </action>
+      <action issue="LOG4J2-3171" dev="ckozak" type="add">
+        Improve PatternLayout performance by reducing unnecessary indirection and branching.
+      </action>
       <!-- FIXES -->
       <action issue="LOG4J2-3166" dev="rgoers">
         Fix Log Event Level vs Logger Config Level table.
