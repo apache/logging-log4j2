@@ -88,9 +88,10 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
         return false;
     }
 
-    public interface Serializer {
+    public interface Serializer extends Serializer2 {
         String toSerializable(final LogEvent event);
 
+        @Override
         default StringBuilder toSerializable(final LogEvent event, final StringBuilder builder) {
             builder.append(toSerializable(event));
             return builder;
