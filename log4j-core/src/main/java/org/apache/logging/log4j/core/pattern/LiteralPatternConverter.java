@@ -49,7 +49,11 @@ public final class LiteralPatternConverter extends LogEventPatternConverter impl
         super("Literal", "literal");
         this.literal = convertBackslashes ? OptionConverter.convertSpecialChars(literal) : literal; // LOG4J2-829
         this.config = config;
-        substitute = config != null && literal.contains("${");
+        substitute = config != null && containsSubstitutionSequence(literal);
+    }
+
+    static boolean containsSubstitutionSequence(final String literal) {
+        return literal != null && literal.contains("${");
     }
 
     /**

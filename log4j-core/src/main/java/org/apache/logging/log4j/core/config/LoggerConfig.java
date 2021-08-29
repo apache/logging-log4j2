@@ -381,37 +381,20 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
     @PerformanceSensitive("allocation")
     public void log(final String loggerName, final String fqcn, final Marker marker, final Level level,
             final Message data, final Throwable t) {
-        List<Property> props = null;
-        if (!propertiesRequireLookup) {
-            props = properties;
-        } else if (properties != null) {
-            props = new ArrayList<>(properties.size());
-            final LogEvent event = Log4jLogEvent.newBuilder()
-                    .setMessage(data)
-                    .setMarker(marker)
-                    .setLevel(level)
-                    .setLoggerName(loggerName)
-                    .setLoggerFqcn(fqcn)
-                    .setThrown(t)
-                    .build();
-            for (int i = 0; i < properties.size(); i++) {
-                final Property prop = properties.get(i);
-                final String value = prop.isValueNeedsLookup() // since LOG4J2-1575
-                        ? config.getStrSubstitutor().replace(event, prop.getValue()) //
-                        : prop.getValue();
-                props.add(Property.createProperty(prop.getName(), value));
-            }
-        }
-        final LogEvent logEvent = logEventFactory instanceof LocationAwareLogEventFactory ?
-            ((LocationAwareLogEventFactory) logEventFactory).createEvent(loggerName, marker, fqcn, requiresLocation() ?
-                StackLocatorUtil.calcLocation(fqcn) : null, level, data, props, t) :
-            logEventFactory.createEvent(loggerName, marker, fqcn, level, data, props, t);
+        final List<Property> props = getProperties(loggerName, fqcn, marker, level, data, t);
+        final LogEvent logEvent = logEventFactory.createEvent(
+                loggerName, marker, fqcn, location(fqcn), level, data, props, t);
         try {
             log(logEvent, LoggerConfigPredicate.ALL);
         } finally {
             // LOG4J2-1583 prevent scrambled logs when logging calls are nested (logging in toString())
             ReusableLogEventFactory.release(logEvent);
         }
+    }
+
+    private StackTraceElement location(String fqcn) {
+        return requiresLocation() ?
+                StackLocatorUtil.calcLocation(fqcn) : null;
     }
 
     /**
@@ -428,12 +411,40 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
     @PerformanceSensitive("allocation")
     public void log(final String loggerName, final String fqcn, final StackTraceElement location, final Marker marker,
         final Level level, final Message data, final Throwable t) {
-        List<Property> props = null;
-        if (!propertiesRequireLookup) {
-            props = properties;
-        } else if (properties != null) {
-            props = new ArrayList<>(properties.size());
-            final LogEvent event = Log4jLogEvent.newBuilder()
+        final List<Property> props = getProperties(loggerName, fqcn, marker, level, data, t);
+        final LogEvent logEvent = logEventFactory.createEvent(loggerName, marker, fqcn, location, level, data, props, t);
+        try {
+            log(logEvent, LoggerConfigPredicate.ALL);
+        } finally {
+            // LOG4J2-1583 prevent scrambled logs when logging calls are nested (logging in toString())
+            ReusableLogEventFactory.release(logEvent);
+        }
+    }
+
+    private List<Property> getProperties(
+            final String loggerName,
+            final String fqcn,
+            final Marker marker,
+            final Level level,
+            final Message data,
+            final Throwable t) {
+        List<Property> snapshot = properties;
+        if (snapshot == null || !propertiesRequireLookup) {
+            return snapshot;
+        }
+        return getPropertiesWithLookups(loggerName, fqcn, marker, level, data, t, snapshot);
+    }
+
+    private List<Property> getPropertiesWithLookups(
+            final String loggerName,
+            final String fqcn,
+            final Marker marker,
+            final Level level,
+            final Message data,
+            final Throwable t,
+            final List<Property> props) {
+        List<Property> results = new ArrayList<>(props.size());
+        final LogEvent event = Log4jLogEvent.newBuilder()
                 .setMessage(data)
                 .setMarker(marker)
                 .setLevel(level)
@@ -441,23 +452,14 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 .setLoggerFqcn(fqcn)
                 .setThrown(t)
                 .build();
-            for (int i = 0; i < properties.size(); i++) {
-                final Property prop = properties.get(i);
-                final String value = prop.isValueNeedsLookup() // since LOG4J2-1575
+        for (int i = 0; i < props.size(); i++) {
+            final Property prop = props.get(i);
+            final String value = prop.isValueNeedsLookup() // since LOG4J2-1575
                     ? config.getStrSubstitutor().replace(event, prop.getValue()) //
                     : prop.getValue();
-                props.add(Property.createProperty(prop.getName(), value));
-            }
+            results.add(Property.createProperty(prop.getName(), value));
         }
-        final LogEvent logEvent = logEventFactory instanceof LocationAwareLogEventFactory ?
-            ((LocationAwareLogEventFactory) logEventFactory).createEvent(loggerName, marker, fqcn, location, level,
-                data, props, t) : logEventFactory.createEvent(loggerName, marker, fqcn, level, data, props, t);
-        try {
-            log(logEvent, LoggerConfigPredicate.ALL);
-        } finally {
-            // LOG4J2-1583 prevent scrambled logs when logging calls are nested (logging in toString())
-            ReusableLogEventFactory.release(logEvent);
-        }
+        return results;
     }
 
     /**

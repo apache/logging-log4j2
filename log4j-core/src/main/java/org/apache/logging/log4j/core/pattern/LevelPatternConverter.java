@@ -32,23 +32,20 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 @Plugin(name = "LevelPatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "p", "level" })
 @PerformanceSensitive("allocation")
-public final class LevelPatternConverter extends LogEventPatternConverter {
+public class LevelPatternConverter extends LogEventPatternConverter {
     private static final String OPTION_LENGTH = "length";
     private static final String OPTION_LOWER = "lowerCase";
 
     /**
      * Singleton.
      */
-    private static final LevelPatternConverter INSTANCE = new LevelPatternConverter(null);
-
-    private final Map<Level, String> levelMap;
+    private static final LevelPatternConverter INSTANCE = new SimpleLevelPatternConverter();
 
     /**
      * Private constructor.
      */
-    private LevelPatternConverter(final Map<Level, String> map) {
+    private LevelPatternConverter() {
         super("Level", "level");
-        this.levelMap = map;
     }
 
     /**
@@ -97,7 +94,7 @@ public final class LevelPatternConverter extends LogEventPatternConverter {
                 levelMap.put(level, lowerCase ? left.toLowerCase(Locale.US) : left);
             }
         }
-        return new LevelPatternConverter(levelMap);
+        return new LevelMapLevelPatternConverter(levelMap);
     }
 
     /**
@@ -123,7 +120,7 @@ public final class LevelPatternConverter extends LogEventPatternConverter {
      */
     @Override
     public void format(final LogEvent event, final StringBuilder output) {
-        output.append(levelMap == null ? event.getLevel().toString() : levelMap.get(event.getLevel()));
+        throw new UnsupportedOperationException("Overridden by subclasses");
     }
 
     /**
@@ -136,5 +133,33 @@ public final class LevelPatternConverter extends LogEventPatternConverter {
         }
 
         return "level";
+    }
+
+    private static final class SimpleLevelPatternConverter extends LevelPatternConverter {
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void format(final LogEvent event, final StringBuilder output) {
+            output.append(event.getLevel());
+        }
+    }
+
+    private static final class LevelMapLevelPatternConverter extends LevelPatternConverter {
+
+        private final Map<Level, String> levelMap;
+
+        private LevelMapLevelPatternConverter(final Map<Level, String> levelMap) {
+            this.levelMap = levelMap;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void format(final LogEvent event, final StringBuilder output) {
+            output.append(levelMap.get(event.getLevel()));
+        }
     }
 }

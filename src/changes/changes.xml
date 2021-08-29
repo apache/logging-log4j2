@@ -97,6 +97,9 @@
         Prefer string.getBytes(Charset) over string.getBytes(String)
 	based on performance improvements in modern Java releases.
       </action>
+      <action issue="LOG4J2-3171" dev="ckozak" type="add">
+        Improve PatternLayout performance by reducing unnecessary indirection and branching.
+      </action>
       <!-- FIXES -->
       <action issue="LOG4J2-3160" dev="vy" type="fix" due-to="Lars Bohl">
         Fix documentation on how to toggle log4j2.debug system property.
