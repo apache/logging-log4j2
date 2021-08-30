@@ -724,7 +724,7 @@ public class FixedDateFormat {
      * Returns {@code true} if the old and new date values will result in the same formatted output, {@code false}
      * if results <i>may</i> differ.
      */
-    public final boolean isEquivalent(long oldEpochSecond, int oldNanoOfSecond, long epochSecond, int nanoOfSecond) {
+    public boolean isEquivalent(long oldEpochSecond, int oldNanoOfSecond, long epochSecond, int nanoOfSecond) {
         if (oldEpochSecond == epochSecond) {
             if (secondFractionDigits <= 3) {
                 // Convert nanos to milliseconds for comparison if the format only requires milliseconds.
