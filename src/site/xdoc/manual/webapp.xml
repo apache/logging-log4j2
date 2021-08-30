@@ -37,9 +37,9 @@
         <a href="#Servlet-2.5">Servlet 2.5</a> web application.
       </p>
       <p>
-		Due to the namespace change from <code>javax</code> to <code>jakarta</code> you need to use 
-		<code>log4j-jakarta-web</code> instead of <code>log4j-web</code> for <a href="#Servlet-5.0">Servlet 5.0 or newer</a>.
-	  </p>
+        Due to the namespace change from <code>javax</code> to <code>jakarta</code> you need to use 
+        <code>log4j-jakarta-web</code> instead of <code>log4j-web</code> for <a href="#Servlet-5.0">Servlet 5.0 or newer</a>.
+      </p>
       <p>
         In either case, you'll need to add the <code>log4j-web</code> module to your deployment as detailed in the
         <a href="../maven-artifacts.html">Maven, Ivy, and Gradle Artifacts</a> manual page.
