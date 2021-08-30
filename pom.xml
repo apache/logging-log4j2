@@ -442,6 +442,11 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-jakarta-web</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
         <groupId>com.sleepycat</groupId>
         <artifactId>je</artifactId>
         <version>5.0.73</version>
@@ -1510,6 +1515,7 @@
     <module>log4j-mongodb4</module>
     <module>log4j-cassandra</module>
     <module>log4j-web</module>
+	<module>log4j-jakarta-web</module>
     <module>log4j-perf</module>
     <module>log4j-iostreams</module>
     <module>log4j-jul</module>

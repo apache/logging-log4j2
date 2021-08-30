@@ -28,7 +28,7 @@ public final class Constants {
      * is present in the classpath.
      */
     public static final boolean IS_WEB_APP = PropertiesUtil.getProperties().getBooleanProperty(
-            "log4j2.is.webapp", isClassAvailable("javax.servlet.Servlet"));
+            "log4j2.is.webapp", isClassAvailable("javax.servlet.Servlet") || isClassAvailable("jakarta.servlet.Servlet"));
 
     /**
      * Kill switch for object pooling in ThreadLocals that enables much of the LOG4J2-1270 no-GC behaviour.
