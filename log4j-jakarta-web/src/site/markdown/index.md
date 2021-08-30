@@ -26,5 +26,5 @@ for details on using Log4j 2 in Web Applications.
 
 ## Requirements
 
-The Web module requires Servlet 2.5 at minimum and is dependent on the Log4j 2 API and implementation.
+The Web module requires Servlet 5.0 at minimum and is dependent on the Log4j 2 API and implementation.
 For more information, see [Runtime Dependencies](../runtime-dependencies.html).
