@@ -95,6 +95,9 @@
 	based on performance improvements in modern Java releases.
       </action>
       <!-- FIXES -->
+      <action issue="LOG4J2-3159" dev="ckozak" type="fix">
+        Fixed an unlikely race condition in Log4jMarker.getParents() volatile access.
+      </action>
       <action issue="LOG4J2-3153" dev="ckozak" type="fix">
         DatePatternConverter performance is not impacted by microsecond-precision clocks when such precision isn't
         required.
