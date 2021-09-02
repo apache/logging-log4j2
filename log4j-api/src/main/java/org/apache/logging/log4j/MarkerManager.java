@@ -199,10 +199,11 @@ public final class MarkerManager {
 
         @Override
         public Marker[] getParents() {
-            if (this.parents == null) {
+            Marker[] parentsSnapshot = parents;
+            if (parentsSnapshot == null) {
                 return null;
             }
-            return Arrays.copyOf(this.parents, this.parents.length);
+            return Arrays.copyOf(parentsSnapshot, parentsSnapshot.length);
         }
 
         @Override
