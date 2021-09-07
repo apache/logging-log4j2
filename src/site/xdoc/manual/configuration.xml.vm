@@ -1531,7 +1531,7 @@ rootLogger.appenderRef.stdout.ref = STDOUT
             <td>
             <b>Troubleshooting tip for the impatient:</b>
               <p>From log4j-2.9 onward, log4j2 will print all internal logging to the console if system property
-                <tt>log4j2.debug</tt> is defined (with any or no value).</p>
+                <tt>log4j2.debug</tt> is either defined empty or its value equals to <tt>true</tt> (ignoring case).</p>
               <p>Prior to log4j-2.9, there are two places where internal logging can be controlled:</p>
             <ul>
               <li>Before a configuration is found, status logger level can be controlled with system
@@ -1875,7 +1875,7 @@ public class AwesomeTest {
     <td>&nbsp;</td>
     <td>
       Log4j2 will print all internal logging to the console if system property
-      <tt>log4j2.debug</tt> is defined (with any or no value).
+      <tt>log4j2.debug</tt> is either defined empty or its value equals to <tt>true</tt> (ignoring case).
     </td>
   </tr>
   <tr>

@@ -95,6 +95,9 @@
 	based on performance improvements in modern Java releases.
       </action>
       <!-- FIXES -->
+      <action issue="LOG4J2-3160" dev="vy" type="fix" due-to="Lars Bohl">
+        Fix documentation on how to toggle log4j2.debug system property.
+      </action>
       <action issue="LOG4J2-3159" dev="ckozak" type="fix">
         Fixed an unlikely race condition in Log4jMarker.getParents() volatile access.
       </action>

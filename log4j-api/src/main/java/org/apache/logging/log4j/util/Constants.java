@@ -56,7 +56,7 @@ public final class Constants {
     /**
      * Name of the system property that will turn on TRACE level internal log4j2 status logging.
      * <p>
-     * If system property {@value} is defined, regardless of the property value, all internal log4j2 logging will be
+     * If system property {@value} is either defined empty or its value equals to {@code true} (ignoring case), all internal log4j2 logging will be
      * printed to the console. The presence of this system property overrides any value set in the configuration's
      * {@code <Configuration status="<level>" ...>} status attribute, as well as any value set for
      * system property {@code org.apache.logging.log4j.simplelog.StatusLogger.level}.
