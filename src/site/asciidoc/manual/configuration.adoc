@@ -1600,8 +1600,8 @@ parent Appender reference is kept or discarded.
 *Troubleshooting tip for the impatient:*
 
 From log4j-2.9 onward, log4j2 will print all internal logging to the
-console if system property `log4j2.debug` is defined (with any or no
-value).
+console if system property `log4j2.debug` is either defined empty or its value
+equals to `true` (ignoring case).
 
 Prior to log4j-2.9, there are two places where internal logging can be
 controlled:
@@ -1864,8 +1864,8 @@ configuration file locations.
 |LOG4J_DEBUG
 | 
 |Log4j2 will print all
-internal logging to the console if system property `log4j2.debug` is
-defined (with any or no value).
+internal logging to the console if system property `log4j2.debug` is either
+defined empty or its value equals to `true` (ignoring case).
 
 |[[mergeStrategy]]log4j2.mergeStrategy +
 ([[log4j.mergeStrategy]]log4j.mergeStrategy)
