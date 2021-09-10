@@ -2106,11 +2106,11 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     private static void incrementRecursionDepth() {
         getRecursionDepthHolder()[0]++;
     }
+
     private static void decrementRecursionDepth() {
-        final int[] depth = getRecursionDepthHolder();
-        depth[0]--;
-        if (depth[0] < 0) {
-            throw new IllegalStateException("Recursion depth became negative: " + depth[0]);
+        int newDepth = --getRecursionDepthHolder()[0];
+        if (newDepth < 0) {
+            throw new IllegalStateException("Recursion depth became negative: " + newDepth);
         }
     }
 
@@ -2150,12 +2150,16 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     // LOG4J2-1990 Log4j2 suppresses all exceptions that occur once application called the logger
     // TODO Configuration setting to propagate exceptions back to the caller *if requested*
-    private void handleLogMessageException(final Exception exception, final String fqcn, final Message msg) {
+    private void handleLogMessageException(final Exception exception, final String fqcn, final Message message) {
         if (exception instanceof LoggingException) {
             throw (LoggingException) exception;
         }
-        StatusLogger.getLogger().warn("{} caught {} logging {}: {}", fqcn, exception.getClass().getName(),
-                msg.getClass().getSimpleName(), msg.getFormat(), exception);
+        StatusLogger.getLogger().warn("{} caught {} logging {}: {}",
+                fqcn,
+                exception.getClass().getName(),
+                message.getClass().getSimpleName(),
+                message.getFormat(),
+                exception);
     }
 
     @Override
