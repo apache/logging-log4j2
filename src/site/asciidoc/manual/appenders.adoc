@@ -505,6 +505,12 @@ This will guarantee that the data is passed to the operating system for writing;
 it does not guarantee that the data is actually written to a physical device
 such as a disk drive.
 
+Note that if this flag is set to false, and the logging activity is sparse,
+there may be an indefinite delay in the data eventually making it to the
+operating system, because it is held up in a buffer.
+This can cause surprising effects such as the logs not
+appearing in the tail output of a file immediately after writing to the log.
+
 Flushing after every write is only useful when using this appender with
 synchronous loggers. Asynchronous loggers and appenders will
 automatically flush at the end of a batch of events, even if
@@ -2228,6 +2234,12 @@ This will guarantee that the data is passed to the operating system for writing;
 it does not guarantee that the data is actually written to a physical device
 such as a disk drive.
 
+Note that if this flag is set to false, and the logging activity is sparse,
+there may be an indefinite delay in the data eventually making it to the
+operating system, because it is held up in a buffer.
+This can cause surprising effects such as the logs not
+appearing in the tail output of a file immediately after writing to the log.
+
 Flushing after every write is only useful when using this appender with
 synchronous loggers. Asynchronous loggers and appenders will
 automatically flush at the end of a batch of events, even if
@@ -2610,6 +2622,12 @@ When set to true - the default, each write will be followed by a flush.
 This will guarantee that the data is passed to the operating system for writing;
 it does not guarantee that the data is actually written to a physical device
 such as a disk drive.
+
+Note that if this flag is set to false, and the logging activity is sparse,
+there may be an indefinite delay in the data eventually making it to the
+operating system, because it is held up in a buffer.
+This can cause surprising effects such as the logs not
+appearing in the tail output of a file immediately after writing to the log.
 
 Flushing after every write is only useful when using this appender with
 synchronous loggers. Asynchronous loggers and appenders will
