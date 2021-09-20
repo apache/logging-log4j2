@@ -910,8 +910,9 @@
                <annotation>
                   <documentation>
                      When set to true, each write will be followed by a flush.
-                     This will guarantee the data is written to disk but could impact
-                     performance.
+                     This will guarantee that the data is passed to the operating system for writing;
+                     it does not guarantee that the data is actually written to a physical device
+                     such as a disk drive.
                   </documentation>
                </annotation>
             </attribute>

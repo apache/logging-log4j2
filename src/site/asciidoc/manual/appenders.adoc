@@ -501,14 +501,21 @@ of its parent directories, do not exist, they will be created.
 
 |immediateFlush |boolean a|
 When set to true - the default, each write will be followed by a flush.
-This will guarantee the data is written to disk but could impact
-performance.
+This will guarantee that the data is passed to the operating system for writing;
+it does not guarantee that the data is actually written to a physical device
+such as a disk drive.
+
+Note that if this flag is set to false, and the logging activity is sparse,
+there may be an indefinite delay in the data eventually making it to the
+operating system, because it is held up in a buffer.
+This can cause surprising effects such as the logs not
+appearing in the tail output of a file immediately after writing to the log.
 
 Flushing after every write is only useful when using this appender with
 synchronous loggers. Asynchronous loggers and appenders will
 automatically flush at the end of a batch of events, even if
-immediateFlush is set to false. This also guarantees the data is written
-to disk but is more efficient.
+immediateFlush is set to false. This also guarantees the data is passed
+to the operating system but is more efficient.
 
 |layout |Layout |The Layout to use to format the LogEvent. If no layout
 is supplied the default pattern layout of "%m%n" will be used.
@@ -2223,14 +2230,21 @@ CompositeFilter.
 
 |immediateFlush |boolean a|
 When set to true - the default, each write will be followed by a flush.
-This will guarantee the data is written to disk but could impact
-performance.
+This will guarantee that the data is passed to the operating system for writing;
+it does not guarantee that the data is actually written to a physical device
+such as a disk drive.
+
+Note that if this flag is set to false, and the logging activity is sparse,
+there may be an indefinite delay in the data eventually making it to the
+operating system, because it is held up in a buffer.
+This can cause surprising effects such as the logs not
+appearing in the tail output of a file immediately after writing to the log.
 
 Flushing after every write is only useful when using this appender with
 synchronous loggers. Asynchronous loggers and appenders will
 automatically flush at the end of a batch of events, even if
-immediateFlush is set to false. This also guarantees the data is written
-to disk but is more efficient.
+immediateFlush is set to false. This also guarantees the data is passed
+to the operating system but is more efficient.
 
 |bufferSize |int |The buffer size, defaults to 262,144 bytes (256 *
 1024).
@@ -2605,14 +2619,21 @@ pattern.
 
 |immediateFlush |boolean a|
 When set to true - the default, each write will be followed by a flush.
-This will guarantee the data is written to disk but could impact
-performance.
+This will guarantee that the data is passed to the operating system for writing;
+it does not guarantee that the data is actually written to a physical device
+such as a disk drive.
+
+Note that if this flag is set to false, and the logging activity is sparse,
+there may be an indefinite delay in the data eventually making it to the
+operating system, because it is held up in a buffer.
+This can cause surprising effects such as the logs not
+appearing in the tail output of a file immediately after writing to the log.
 
 Flushing after every write is only useful when using this appender with
 synchronous loggers. Asynchronous loggers and appenders will
 automatically flush at the end of a batch of events, even if
-immediateFlush is set to false. This also guarantees the data is written
-to disk but is more efficient.
+immediateFlush is set to false. This also guarantees the data is passed
+to the operating system but is more efficient.
 
 |layout |Layout |The Layout to use to format the LogEvent. If no layout
 is supplied the default pattern layout of "%m%n" will be used.
