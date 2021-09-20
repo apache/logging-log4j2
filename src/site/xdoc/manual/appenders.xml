@@ -619,14 +619,27 @@ CREATE TABLE logs (
             <tr>
               <td>immediateFlush</td>
               <td>boolean</td>
-              <td><p>When set to true - the default, each write will be followed by a flush.
-                This will guarantee the data is written
-                to disk but could impact performance.</p>
-                <p>Flushing after every write is only useful when using this
-				appender with synchronous loggers. Asynchronous loggers and
-				appenders will automatically flush at the end of a batch of events,
-				even if immediateFlush is set to false. This also guarantees
-				the data is written to disk but is more efficient.</p>
+              <td>
+                <p>
+                  When set to true - the default, each write will be followed by a flush.
+                  This will guarantee that the data is passed to the operating system for writing;
+                  it does not guarantee that the data is actually written to a physical device
+                  such as a disk drive.
+                </p>
+                <p>
+                  Note that if this flag is set to false, and the logging activity is sparse,
+                  there may be an indefinite delay in the data eventually making it to the
+                  operating system, because it is held up in a buffer.
+                  This can cause surprising effects such as the logs not
+                  appearing in the tail output of a file immediately after writing to the log.
+                </p>
+                <p>
+                  Flushing after every write is only useful when using this appender with
+                  synchronous loggers. Asynchronous loggers and appenders will
+                  automatically flush at the end of a batch of events, even if
+                  immediateFlush is set to false. This also guarantees the data is passed
+                  to the operating system but is more efficient.
+                </p>
               </td>
             </tr>
             <tr>
@@ -2709,15 +2722,23 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 		                <td>
                           <p>
                             When set to true - the default, each write will be followed by a flush.
-		                    This will guarantee the data is written
-		                    to disk but could impact performance.
+                            This will guarantee that the data is passed to the operating system for writing;
+                            it does not guarantee that the data is actually written to a physical device
+                            such as a disk drive.
+                          </p>
+                          <p>
+                            Note that if this flag is set to false, and the logging activity is sparse,
+                            there may be an indefinite delay in the data eventually making it to the
+                            operating system, because it is held up in a buffer.
+                            This can cause surprising effects such as the logs not
+                            appearing in the tail output of a file immediately after writing to the log.
                           </p>
 		                  <p>
-                            Flushing after every write is only useful when using this
-						    appender with synchronous loggers. Asynchronous loggers and
-						    appenders will automatically flush at the end of a batch of events,
-						    even if immediateFlush is set to false. This also guarantees
-						    the data is written to disk but is more efficient.
+                            Flushing after every write is only useful when using this appender with
+                            synchronous loggers. Asynchronous loggers and appenders will
+                            automatically flush at the end of a batch of events, even if
+                            immediateFlush is set to false. This also guarantees the data is passed
+                            to the operating system but is more efficient.
                           </p>
 		                </td>
 					</tr>
@@ -3038,14 +3059,27 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>immediateFlush</td>
               <td>boolean</td>
-              <td><p>When set to true - the default, each write will be followed by a flush.
-                This will guarantee the data is written
-                to disk but could impact performance.</p>
-                <p>Flushing after every write is only useful when using this
-				appender with synchronous loggers. Asynchronous loggers and
-				appenders will automatically flush at the end of a batch of events,
-				even if immediateFlush is set to false. This also guarantees
-				the data is written to disk but is more efficient.</p>
+              <td>
+                <p>
+                  When set to true - the default, each write will be followed by a flush.
+                  This will guarantee that the data is passed to the operating system for writing;
+                  it does not guarantee that the data is actually written to a physical device
+                  such as a disk drive.
+                </p>
+                <p>
+                  Note that if this flag is set to false, and the logging activity is sparse,
+                  there may be an indefinite delay in the data eventually making it to the
+                  operating system, because it is held up in a buffer.
+                  This can cause surprising effects such as the logs not
+                  appearing in the tail output of a file immediately after writing to the log.
+                </p>
+                <p>
+                  Flushing after every write is only useful when using this appender with
+                  synchronous loggers. Asynchronous loggers and appenders will
+                  automatically flush at the end of a batch of events, even if
+                  immediateFlush is set to false. This also guarantees the data is passed
+                  to the operating system but is more efficient.
+                </p>
               </td>
             </tr>
             <tr>
