@@ -59,7 +59,7 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
         private String advertiseURI;
 
         public Builder() {
-            this.withBufferSize(RandomAccessFileManager.DEFAULT_BUFFER_SIZE);
+            setBufferSize(RandomAccessFileManager.DEFAULT_BUFFER_SIZE);
         }
 
         @Override
