@@ -31,6 +31,9 @@
     -->
     <release version="2.15.0" date="2021-MM-DD" description="GA Release 2.15.0">
       <!-- ADDS -->
+      <action issue="LOG4J2-3170" dev="vy" type="add" due-to="Gareth Smith">
+        Make CRLF/HTML encoding run in O(n) worst-case time, rather than O(n^2).
+      </action>
       <action issue="LOG4J2-3133" dev="ckozak" type="add">
         Add missing slf4j-api singleton accessors to log4j-slf4j-impl (1.7) StaticMarkerBinder and StaticMDCBinder.
         This doesn't impact behavior or correctness, but avoids throwing and catching NoSuchMethodErrors when slf4j
