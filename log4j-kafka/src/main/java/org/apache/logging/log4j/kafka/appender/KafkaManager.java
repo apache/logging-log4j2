@@ -160,6 +160,7 @@ public class KafkaManager extends AbstractManager {
             final boolean syncSend, final boolean sendTimestamp, final Property[] properties, final String key,
             final String retryCount) {
         StringBuilder sb = new StringBuilder(name);
+        sb.append(" ").append(topic).append(" ").append(syncSend + "");
         for (Property prop: properties) {
             sb.append(" ").append(prop.getName()).append("=").append(prop.getValue());
         }
