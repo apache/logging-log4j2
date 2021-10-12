@@ -15,34 +15,22 @@
 
 name: benchmark
 
-on: [workflow_dispatch]
+on: [ workflow_dispatch ]
 
 jobs:
 
-  run:
+  build:
 
     if: github.repository == 'apache/logging-log4j2'
 
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
-        jdk: [8, 11, 17]
-        concurrency: [1, 8]
+    runs-on: ubuntu-latest
 
     steps:
 
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up Maven caching
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-maven-
-
+      # JDK 11 is needed for the build.
       - name: Set up JDK 11
         uses: actions/setup-java@v2.3.1
         with:
@@ -52,8 +40,8 @@ jobs:
           architecture: x64
           cache: maven
 
-      # JDK 8 needs to be set up after 11, so that JAVA_HOME used by Maven during build will point to 8.
-      # Running Maven with JDK 11 causes build to fail.
+      # JDK 8 is needed for the build, and it is the primary bytecode target.
+      # Hence, JDK 8 is set up after 11, so that JAVA_HOME used by Maven during build will point to 8.
       - name: Set up JDK 8
         uses: actions/setup-java@v2.3.1
         with:
@@ -62,6 +50,13 @@ jobs:
           java-package: jdk
           architecture: x64
           cache: maven
+
+      - name: Set up Maven caching
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
 
       - name: Build with Maven
         shell: bash
@@ -74,8 +69,37 @@ jobs:
             --also-make \
             package
 
-      # Even though we have set up JDK 8 and 11, we still need this step to set up JAVA_HOME before running benchmarks.
-      # Otherwise, benchmarks will always run with the last set up JDK, that is, 11.
+      - name: Upload built sources
+        uses: actions/upload-artifact@v2
+        with:
+          name: benchmarks.jar
+          path: log4j-perf/target/benchmarks.jar
+
+  run:
+
+    needs: build
+
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ macos-latest, ubuntu-latest, windows-latest ]
+        jdk: [ 11, 17 ]
+        concurrency: [ 1, 8 ]
+        jmhCommand:
+          - "-t $CONCURRENCY -f 2 -wi 3 -w 20s -i 5 -r 30s -prof gc -rf json -rff results-layout-jtl.json '.*JsonTemplateLayoutBenchmark.*'"
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Download built sources
+        uses: actions/download-artifact@v2
+        with:
+          name: benchmarks.jar
+          path: log4j-perf/target
+
       - name: Set up JDK ${{ matrix.jdk }}
         uses: actions/setup-java@v2.3.1
         with:
@@ -85,35 +109,14 @@ jobs:
           architecture: x64
           cache: maven
 
-      # ------------------------------------------------------------------------
-      # BEGIN: Individual Benchmark Runs
-      #
-      # Add your benchmarks below.
-      # Make sure that your benchmark job
-      #
-      # - has a decent `timeout-minutes` property.
-      # - uses `bash` for shell.
-      #   `pwsh`, the default shell on Windows, hijacks certain keywords and results in unexpected ways.
-      # - generates a JSON-formatted result output to `log4j-perf/target/results-<name>.json`.
-      #   In `<name>`, prefer hierarchical and bash-friendly names.
-      #   For instance, `layout-pattern`, `layout-jtl`, `appender-file`, etc.
-
-      - name: Run JSON Template Layout benchmarks
+      - name: Run benchmarks
         timeout-minutes: 60
-        if: ${{ matrix.concurrency == 1 }}
         shell: bash
         run: |
+          export CONCURRENCY=${{ matrix.concurrency }}
           java \
             -jar log4j-perf/target/benchmarks.jar \
-            -f 2 \
-            -wi 3 -w 20s \
-            -i 5 -r 30s \
-            -prof gc \
-            -rf json -rff log4j-perf/target/results-layout-jtl.json \
-            ".*JsonTemplateLayoutBenchmark.*"
-
-      # END: Individual Benchmark Runs
-      # ------------------------------------------------------------------------
+            ${{ matrix.jmhCommand }}
 
       - name: Stage benchmark results for commit
         shell: bash
