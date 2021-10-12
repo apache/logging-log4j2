@@ -153,9 +153,9 @@ public class JsonTemplateLayoutBenchmarkState {
         final Charset layoutCharset = layout.getCharset();
         // Note that EcsLayout doesn't support charset configuration, though it
         // uses UTF-8 internally.
-        if (CHARSET.equals(layoutCharset)) {
+        if (!CHARSET.equals(layoutCharset)) {
             throw new IllegalArgumentException(
-                    "invalid EcsLayout charset: " + layoutCharset);
+                    "was expecting EcsLayout charset to be: " + CHARSET + ", found: " + layoutCharset);
         }
         return layout;
     }
