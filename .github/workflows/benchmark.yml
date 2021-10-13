@@ -140,7 +140,7 @@ jobs:
           export RUN_ID=$(printf "%020d" "$GITHUB_RUN_ID")
 
           # Move and stage the result files.
-          for SRC_FILEPATH in log4j-perf/target/results-*.json; do
+          for SRC_FILEPATH in results-*.json; do
             export BENCHMARK_NAME=$(basename "$SRC_FILEPATH" | sed -r 's/results-(.+)\.json$/\1/')
             export DST_FILEPATH="benchmark/results/$REVISION/$BRANCH_NAME-$INSTANT-$RUN_ID/$BENCHMARK_NAME-O$OS_NAME-J${{ matrix.jdk }}-C${{ matrix.concurrency }}.json"
             mkdir -v -p $(dirname "$DST_FILEPATH")
