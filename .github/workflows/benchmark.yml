@@ -87,7 +87,7 @@ jobs:
         jdk: [ 11, 17 ]
         concurrency: [ 1, 8 ]
         jmhCommand:
-          - "-t $CONCURRENCY -f 2 -wi 2 -w 10s -i 3 -r 15s -prof gc -rf json -rff results-layout-jtl.json '.*JsonTemplateLayoutBenchmark.*'"
+          - "-t $CONCURRENCY -f 1 -wi 0 -w 10s -i 1 -r 10s -prof gc -rf json -rff results-layout-jtl.json '.*JsonTemplateLayoutBenchmark.*'"
 
     steps:
 
