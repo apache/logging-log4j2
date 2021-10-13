@@ -141,7 +141,7 @@ jobs:
 
           # Move and stage the result files.
           for SRC_FILEPATH in results-*.json; do
-            export BENCHMARK_NAME=$(basename "$SRC_FILEPATH" | sed -r 's/results-(.+)\.json$/\1/')
+            export BENCHMARK_NAME=$(basename "$SRC_FILEPATH" | sed 's/^results-//g' | sed 's/\.json$//g')
             export DST_FILEPATH="benchmark/results/$REVISION/$BRANCH_NAME-$INSTANT-$RUN_ID/$BENCHMARK_NAME-O$OS_NAME-J${{ matrix.jdk }}-C${{ matrix.concurrency }}.json"
             mkdir -v -p $(dirname "$DST_FILEPATH")
             mv -v "$SRC_FILEPATH" "$DST_FILEPATH"
