@@ -217,6 +217,7 @@ jobs:
 
           # Push changes in a loop to allow concurrent repository modifications.
           export RETRY=0
+          export INDEX_FILEPATH=benchmark/results/index.json
           while [ 1 ]; do
 
             # Generate the index file.
@@ -227,11 +228,14 @@ jobs:
                       for filename in filenames]; \
               filepaths.remove("index.json"); \
               print(json.dumps(filepaths))' \
-            >benchmark/results/index.json
+            >"$INDEX_FILEPATH"
+
+            # Exit if there are no changes, that is, a concurrent job has indexed all results.
+            git diff --exit-code "$INDEX_FILEPATH" && exit 0
 
             # Commit the index file.
-            git add benchmark/results/index.json
-            git commit benchmark/results/index.json -m "Update benchmark results index."
+            git add "$INDEX_FILEPATH"
+            git commit "$INDEX_FILEPATH" -m "Update benchmark results index."
 
             # Push the index file.
             set +e
