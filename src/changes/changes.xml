@@ -101,6 +101,9 @@
         Improve PatternLayout performance by reducing unnecessary indirection and branching.
       </action>
       <!-- FIXES -->
+      <action issue="LOG4J2-3175" dev="vy" type="fix" due-to="wuqian0808">
+        Avoid KafkaManager override when topics differ.
+      </action>
       <action issue="LOG4J2-3160" dev="vy" type="fix" due-to="Lars Bohl">
         Fix documentation on how to toggle log4j2.debug system property.
       </action>
@@ -5452,9 +5455,6 @@
       <action issue="LOG4J2-50" dev="rgoers" type="fix" due-to="John Vasileff">
         Make sure all application facing log methods use their own FQCN. This patch
         resolves a unit test failure for the %C pattern when using the Category logger.
-      </action>
-      <action issue="LOG4J2-2978" dev="vy" type="fix" due-to="wuqian0808">
-        Avoid KafkaManager override when topics differ.
       </action>
     </release>
   </body>
