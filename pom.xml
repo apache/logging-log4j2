@@ -127,6 +127,15 @@
       </roles>
       <timezone>America/New York</timezone>
     </developer>
+    <developer>
+      <id>vy</id>
+      <name>Volkan Yazıcı</name>
+      <email>vy@apache.org</email>
+      <roles>
+        <role>PMC Member</role>
+      </roles>
+      <timezone>Europe/Amsterdam</timezone>
+    </developer>
   </developers>
   <!-- Contributors -->
   <contributors>
