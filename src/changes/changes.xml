@@ -5450,6 +5450,9 @@
         Make sure all application facing log methods use their own FQCN. This patch
         resolves a unit test failure for the %C pattern when using the Category logger.
       </action>
+      <action issue="LOG4J2-2978" dev="vy" type="fix" due-to="wuqian0808">
+        Avoid kafka with new topic configuration get overried by the old one.
+      </action>
     </release>
   </body>
 </document>
