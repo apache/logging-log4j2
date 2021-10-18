@@ -143,6 +143,7 @@ public class KafkaManager extends AbstractManager {
 	public static KafkaManager getManager(final LoggerContext loggerContext, final String name, final String topic,
 			final boolean syncSend, final Property[] properties, final String key) {
 		StringBuilder sb = new StringBuilder(name);
+		sb.append(" ").append(topic).append(" ").append(syncSend + "");
 		for (Property prop : properties) {
 			sb.append(" ").append(prop.getName()).append("=").append(prop.getValue());
 		}
