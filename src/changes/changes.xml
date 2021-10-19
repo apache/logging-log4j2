@@ -178,6 +178,9 @@
       <action issue="LOG4J2-3095" dev="ggregory" type="fix" due-to="Kenny MacLeod, Gary Gregory">
         Category.setLevel should accept null value.
       </action>
+      <action issue="LOG4J2-3174" dev="vy" type="fix" due-to="romainmoreau">
+        Wrong subject on mail when it depends on the LogEvent
+      </action>
       <!-- UPDATES -->
       <action dev="ggregory" type="update">
        - com.fasterxml.jackson.core:jackson-annotations ................. 2.12.2 -> 2.12.4
