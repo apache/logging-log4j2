@@ -189,7 +189,9 @@ public class SmtpManager extends AbstractManager {
             final InternetHeaders headers = getHeaders(contentType, encoding);
             final MimeMultipart mp = getMimeMultipart(encodedBytes, headers);
 
-            sendMultipartMessage(message, mp);
+            final String subject = data.subject.toSerializable(appendEvent);
+
+            sendMultipartMessage(message, mp, subject);
         } catch (final MessagingException | IOException | RuntimeException e) {
             logError("Caught exception while sending e-mail notification.", e);
             throw new LoggingException("Error occurred while sending email", e);
@@ -274,10 +276,23 @@ public class SmtpManager extends AbstractManager {
         return mp;
     }
 
+    /**
+     * @deprecated Please use the {@link #sendMultipartMessage(MimeMessage, MimeMultipart, String)} method instead.
+     */
+    @Deprecated
     protected void sendMultipartMessage(final MimeMessage msg, final MimeMultipart mp) throws MessagingException {
         synchronized (msg) {
             msg.setContent(mp);
             msg.setSentDate(new Date());
+            Transport.send(msg);
+        }
+    }
+
+    protected void sendMultipartMessage(final MimeMessage msg, final MimeMultipart mp, final String subject) throws MessagingException {
+        synchronized (msg) {
+            msg.setContent(mp);
+            msg.setSentDate(new Date());
+            msg.setSubject(subject);
             Transport.send(msg);
         }
     }
