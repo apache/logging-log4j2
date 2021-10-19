@@ -237,6 +237,9 @@
 	based on performance improvements in modern Java releases.
       </action>
       <!-- FIXES -->
+      <action issue="LOG4J2-3172" dev="vy" type="fix" due-to="Barry Fleming">
+        Buffer immutable log events in the SmtpManager.
+      </action>
       <action issue="LOG4J2-3175" dev="vy" type="fix" due-to="wuqian0808">
         Avoid KafkaManager override when topics differ.
       </action>
