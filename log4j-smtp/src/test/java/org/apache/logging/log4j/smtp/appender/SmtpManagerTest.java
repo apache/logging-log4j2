@@ -10,6 +10,8 @@ import org.apache.logging.log4j.core.async.RingBufferLogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.MementoMessage;
 import org.apache.logging.log4j.core.impl.MutableLogEvent;
+import org.apache.logging.log4j.core.time.ClockFactory;
+import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.ReusableSimpleMessage;
 import org.junit.jupiter.api.Test;
