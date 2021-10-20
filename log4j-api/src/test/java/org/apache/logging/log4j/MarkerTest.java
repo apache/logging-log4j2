@@ -58,11 +58,36 @@ public class MarkerTest {
     
     @Test
     public void testMarker() {
+        // root (level 1)
         final Marker parent = MarkerManager.getMarker("PARENT");
+        // level 2
         final Marker test1 = MarkerManager.getMarker("TEST1").setParents(parent);
         final Marker test2 = MarkerManager.getMarker("TEST2").addParents(parent);
         assertTrue(test1.isInstanceOf(parent), "TEST1 is not an instance of PARENT");
         assertTrue(test2.isInstanceOf(parent), "TEST2 is not an instance of PARENT");
+        assertFalse(parent.isInstanceOf(test1));
+        assertFalse(parent.isInstanceOf(test2));
+        // level 3
+        final Marker test3 = MarkerManager.getMarker("TEST3").addParents(test2);
+        assertTrue(test3.isInstanceOf(test2));
+        assertTrue(test3.isInstanceOf("TEST2"));
+        assertTrue(test3.isInstanceOf("PARENT"));
+        assertTrue(test2.isInstanceOf("PARENT"));
+        assertFalse(parent.isInstanceOf(test3));
+        assertFalse(parent.isInstanceOf(test3));
+    }
+
+    @Test
+    public void testMarkerSharedIntermediaryMarker() {
+        final Marker parent1 = MarkerManager.getMarker("PARENT1");
+        final Marker parent2 = MarkerManager.getMarker("PARENT2");
+        final Marker test1 = MarkerManager.getMarker("TEST1").setParents(parent1, parent2);
+        assertTrue(test1.isInstanceOf(parent1));
+        // Leaf
+        final Marker leaf = MarkerManager.getMarker("LEAF").setParents(test1);
+        assertTrue(leaf.isInstanceOf("TEST1"));
+        assertTrue(leaf.isInstanceOf("PARENT1"));
+        assertTrue(leaf.isInstanceOf("PARENT2"));
     }
 
     @Test
@@ -72,9 +97,13 @@ public class MarkerTest {
         final Marker test1 = MarkerManager.getMarker("TEST1").setParents(parent1, parent2);
         final Marker test2 = MarkerManager.getMarker("TEST2").addParents(parent1, parent2);
         assertTrue(test1.isInstanceOf(parent1), "TEST1 is not an instance of PARENT1");
+        assertTrue(test1.isInstanceOf("PARENT1"), "TEST1 is not an instance of PARENT1");
         assertTrue(test1.isInstanceOf(parent2), "TEST1 is not an instance of PARENT2");
+        assertTrue(test1.isInstanceOf("PARENT2"), "TEST1 is not an instance of PARENT2");
         assertTrue(test2.isInstanceOf(parent1), "TEST2 is not an instance of PARENT1");
+        assertTrue(test2.isInstanceOf("PARENT1"), "TEST2 is not an instance of PARENT1");
         assertTrue(test2.isInstanceOf(parent2), "TEST2 is not an instance of PARENT2");
+        assertTrue(test2.isInstanceOf("PARENT2"), "TEST2 is not an instance of PARENT2");
     }
 
     @Test
@@ -84,7 +113,9 @@ public class MarkerTest {
         final Marker test1 = MarkerManager.getMarker("TEST1").setParents(existing);
         test1.addParents(parent);
         assertTrue(test1.isInstanceOf(parent), "TEST1 is not an instance of PARENT");
+        assertTrue(test1.isInstanceOf("PARENT"), "TEST1 is not an instance of PARENT");
         assertTrue(test1.isInstanceOf(existing), "TEST1 is not an instance of EXISTING");
+        assertTrue(test1.isInstanceOf("EXISTING"), "TEST1 is not an instance of EXISTING");
     }
 
 
@@ -100,6 +131,8 @@ public class MarkerTest {
         test1.addParents(existing, MarkerManager.getMarker("EXTRA"));
         assertEquals(parents.length + 1, test1.getParents().length, "incorrect add");
         assertTrue(test1.isInstanceOf(parent), "TEST1 is not an instance of PARENT");
+        assertTrue(test1.isInstanceOf("PARENT"), "TEST1 is not an instance of PARENT");
         assertTrue(test1.isInstanceOf(existing), "TEST1 is not an instance of EXISTING");
+        assertTrue(test1.isInstanceOf("EXISTING"), "TEST1 is not an instance of EXISTING");
     }
 }
