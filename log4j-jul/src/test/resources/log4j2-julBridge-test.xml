@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Log4jBridgeHandlerTest TEST execution config -->
+<Configuration status="info">
+    <Appenders>
+        <Console name="STDOUT" target="SYSTEM_ERR" follow="true">    <!-- syserr + follow !! -->
+            <PatternLayout pattern="log4j2:  %d{HH:mm:ss.SSS} %5level - [%thread][%logger: %class/%method/%line]  -  %message%n" />
+        </Console>
+    </Appenders>
+
+    <Loggers>
+        <Root level="DEBUG">
+            <AppenderRef ref="STDOUT" />
+        </Root>
+
+        <!-- needs to be set to a lower level: -->
+        <Logger name="org.apache.logging.log4j.jul.Log4jBridgeHandlerTest" level="TRACE" />
+        <!-- some test configs: -->
+        <Logger name="log4j.Log4jBridgeHandlerTest.propagate1" level="DEBUG" />
+        <Logger name="log4j.Log4jBridgeHandlerTest.propagate1.nested1" level="TRACE" />
+        <Logger name="log4j.Log4jBridgeHandlerTest.propagate1.nested2.deeplyNested" level="WARN" />
+        <Logger name="log4j.Log4jBridgeHandlerTest.propagate2" level="ALL" />
+        <Logger name="log4j.Log4jBridgeHandlerTest.propagate2.nested.deeplyNested" level="INFO" />
+    </Loggers>
+</Configuration>
