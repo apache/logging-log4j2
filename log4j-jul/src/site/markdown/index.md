@@ -16,6 +16,11 @@
     limitations under the License.
 -->
 
+There are two possibilities:
+- Logging Adapter as complete replacement (preferred, but requires JVM start option)
+- Bridge Handler, transfering JDK output to log4j, e.g. useful for webapps
+
+
 # Log4j JDK Logging Adapter
 
 The JDK Logging Adapter is a custom implementation of
@@ -74,3 +79,41 @@ Java Level | Log4j Level
 [`FINER`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#FINER) | `TRACE`
 [`FINEST`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#FINEST) | [`FINEST`](apidocs/org/apache/logging/log4j/jul/LevelTranslator.html#FINEST)
 [`ALL`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#ALL) | `ALL`
+
+
+# Log4j JDK Logging Bridge Handler
+
+The LogManager is not always useable because you have to set a JVM wide effective system
+property - e.g. in web servers this is not possible if you are not the administrator.
+
+The [`Log4jBridgeHandler`](apidocs/org/apache/logging/log4j/jul/Log4jBridgeHandler.html) is an
+alternative that can be declaratively used via `logging.properties`.
+
+It is less performant than the LogManager but still okay to use: the LogManager replaces the JDK
+implementation, so your logging code (using JDK syntax) effectively directly uses log4j.
+When using the BridgeHandler the original JDK implementation along with its configuration
+(e.g. log levels) is still fully working but the log events are "written" via this handler to log4j
+as if you would have called log4j.Logger.debug() etc.; it is like a FileHandler but instead of
+writing to a file, it "writes" to log4j Loggers - thus there is some overhead compared to using
+LogManager.
+
+## Usage
+
+The JUL configuration file `logging.properties` needs the line<br>
+`handlers = org.apache.logging.log4j.jul.Log4jBridgeHandler`<br>
+and JUL logs go to log4j2. Additionally, you typically want to use to following:<br>
+`org.apache.logging.log4j.jul.Log4jBridgeHandler.propagateLevels = true`
+
+In a webapp on Tomcat (and maybe other servers, too), you may simply create a
+`WEB-INF/classes/logging.properties` file with above content.
+The bridge and the log levels defined in this file are only valid for your webapp and
+do *not* have any impact on the other webapps on the same Tomcat instance.
+
+Alternatively you may call `Log4jBridgeHandler.install()` inside your webapp's initialization code,
+e.g. inside `ServletContextListener` or a `ServletFilter` static-class-init. or `contextInitialized()`.
+
+**Important:** Log levels of JDK should match the ones of log4j. You may do this manually or use the
+automatic level propagation via `Log4jBridgeHandler.propagateLevels = true`.
+
+Please, read the [JavaDoc](apidocs/org/apache/logging/log4j/jul/Log4jBridgeHandler.html) for detailed
+configuration and limitation information!

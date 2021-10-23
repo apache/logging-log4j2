@@ -182,6 +182,9 @@
         Wrong subject on mail when it depends on the LogEvent
       </action>
       <!-- UPDATES -->
+      <action issue="LOG4J2-2025" dev="rgoers" type="update">
+        Provide support for overriding the Tomcat Log class in Tomcat 8.5+.
+      </action>
       <action dev="ggregory" type="update">
        - com.fasterxml.jackson.core:jackson-annotations ................. 2.12.2 -> 2.12.4
         - com.fasterxml.jackson.core:jackson-core ........................ 2.12.2 -> 2.12.4
@@ -199,8 +202,8 @@
         - org.apache.commons:commons-csv ................................. 1.8 -> 1.9.0
         - org.apache.commons:commons-dbcp2 ............................... 2.8.0 -> 2.9.0
         - org.apache.commons:commons-pool2 ............................... 2.9.0 -> 2.11.1
-        - org.apache.maven.plugins:maven-failsafe-plugin ................. 2.22.2 -> 3.0.0-M5 
-        - org.apache.maven.plugins:maven-surefire-plugin ................. 2.22.2 -> 3.0.0-M5 
+        - org.apache.maven.plugins:maven-failsafe-plugin ................. 2.22.2 -> 3.0.0-M5
+        - org.apache.maven.plugins:maven-surefire-plugin ................. 2.22.2 -> 3.0.0-M5
         - org.apache.rat:apache-rat-plugin ............................... 0.12 -> 0.13
         - org.assertj:assertj-core ....................................... 3.19.0 -> 3.20.2
         - org.codehaus.groovy:groovy-dateutil ............................ 3.0.7 -> 3.0.8
@@ -257,13 +260,13 @@
         Directly create a thread instead of using the common ForkJoin pool when initializing ThreadContextDataInjector"
       </action>
       <action issue="LOG4J2-2624" dev="mattsicker" type="fix" due-to="Tim Perry">
-        Allow auto-shutdown of log4j in log4j-web to be turned off and provide a 
+        Allow auto-shutdown of log4j in log4j-web to be turned off and provide a
         ServletContextListener "Log4jShutdownOnContextDestroyedListener" to stop log4j.
         Register the listener at the top of web.xml to ensure the shutdown happens last.
       </action>
       <action issue="LOG4J2-1606" dev="mattsicker" type="fix" due-to="Tim Perry">
-        Allow auto-shutdown of log4j in log4j-web to be turned off and provide a 
-        ServletContextListener "Log4jShutdownOnContextDestroyedListener" to stop log4j. 
+        Allow auto-shutdown of log4j in log4j-web to be turned off and provide a
+        ServletContextListener "Log4jShutdownOnContextDestroyedListener" to stop log4j.
         Register the listener at the top of web.xml to ensure the shutdown happens last.
       </action>
       <action issue="LOG4J2-2998" dev="vy" type="fix">
@@ -420,7 +423,7 @@
       </action>
       <action dev="ggregory" type="update">
         Update Woodstox 5.0.3 -> 6.2.3 to match Jackson 2.12.1.
-      </action>  
+      </action>
       <action dev="ggregory" type="update">
         Update org.apache.activemq:* 5.16.0 -> 5.16.1.
       </action>
