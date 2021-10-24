@@ -101,6 +101,9 @@
         Improve PatternLayout performance by reducing unnecessary indirection and branching.
       </action>
       <!-- FIXES -->
+      <action issue="LOG4J2-2829" dev="vy" type="fix">
+        SocketAppender should propagate failures when reconnection fails.
+      </action>
       <action issue="LOG4J2-3172" dev="vy" type="fix" due-to="Barry Fleming">
         Buffer immutable log events in the SmtpManager.
       </action>
