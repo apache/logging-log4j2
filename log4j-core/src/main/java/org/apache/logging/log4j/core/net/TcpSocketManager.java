@@ -157,8 +157,8 @@ public class TcpSocketManager extends AbstractSocketManager {
             try {
                 writeAndFlush(bytes, offset, length, immediateFlush);
             } catch (final IOException causeEx) {
+                final String config = inetAddress + ":" + port;
                 if (retry && reconnector == null) {
-                    final String config = inetAddress + ":" + port;
                     reconnector = createReconnector();
                     try {
                         reconnector.reconnect();
@@ -177,7 +177,10 @@ public class TcpSocketManager extends AbstractSocketManager {
                                         config),
                                 causeEx);
                     }
+                    return;
                 }
+                final String message = String.format("Error writing to %s for connection %s", getName(), config);
+                throw new AppenderLoggingException(message, causeEx);
             }
         }
     }

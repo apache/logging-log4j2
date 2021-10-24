@@ -287,6 +287,11 @@
       <artifactId>HdrHistogram</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.awaitility</groupId>
+      <artifactId>awaitility</artifactId>
+      <scope>test</scope>
+    </dependency>
     <!-- For testing log4j 2 2.x plugins -->
     <dependency>
       <groupId>com.vlkan.log4j2</groupId>
