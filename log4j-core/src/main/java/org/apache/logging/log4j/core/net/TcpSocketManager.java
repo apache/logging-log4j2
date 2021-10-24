@@ -241,7 +241,7 @@ public class TcpSocketManager extends AbstractSocketManager {
                     return;
                 }
                 final String message = String.format("Error writing to %s for connection %s", getName(), config);
-                throw new AppenderLoggingException(message);
+                throw new AppenderLoggingException(message, causeEx);
             }
         }
     }
