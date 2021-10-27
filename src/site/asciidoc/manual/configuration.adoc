@@ -39,6 +39,13 @@ file. Information on programmatically configuring Log4j can be found at
 link:extending.html[Extending Log4j 2] and
 link:customconfig.html[Programmatic Log4j Configuration].
 
+All available formats are functionally equivalent. For example, a
+configuration file in XML can be rewritten using the properties format
+(and the opposite) without any loss of functionality. However, the
+hierarchical nature of a Log4j configuration can be captured better in
+formats which naturally support nesting so XML, JSON, and YAML files,
+are usually easier to use.
+
 Note that unlike Log4j 1.x, the public Log4j 2 API does not expose
 methods to add, modify or remove appenders and filters or manipulate the
 configuration in any way.
