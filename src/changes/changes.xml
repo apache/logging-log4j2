@@ -237,6 +237,9 @@
 	based on performance improvements in modern Java releases.
       </action>
       <!-- FIXES -->
+      <action issue="LOG4J2-3183" dev="vy" type="fix">
+        Avoid using MutableInstant of the event as a cache key in JsonTemplateLayout.
+      </action>
       <action issue="LOG4J2-2829" dev="vy" type="fix">
         SocketAppender should propagate failures when reconnection fails.
       </action>

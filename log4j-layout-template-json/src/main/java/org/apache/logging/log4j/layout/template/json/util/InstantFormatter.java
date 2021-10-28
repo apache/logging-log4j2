@@ -222,9 +222,7 @@ public final class InstantFormatter {
         private void formatInstant(
                 final Instant instant,
                 final StringBuilder stringBuilder) {
-            mutableInstant.initFromEpochSecond(
-                    instant.getEpochSecond(),
-                    instant.getNanoOfSecond());
+            mutableInstant.initFrom(instant);
             formatMutableInstant(mutableInstant, stringBuilder);
         }
 
