@@ -18,6 +18,7 @@ package org.apache.logging.log4j.layout.template.json.resolver;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.time.Instant;
+import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults;
 import org.apache.logging.log4j.layout.template.json.util.InstantFormatter;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
@@ -217,7 +218,7 @@ public final class TimestampResolver implements EventResolver {
 
         private final StringBuilder lastFormattedInstantBuffer = new StringBuilder();
 
-        private Instant lastFormattedInstant;
+        private final MutableInstant lastFormattedInstant = new MutableInstant();
 
         private PatternResolverContext(
                 final String pattern,
@@ -229,6 +230,7 @@ public final class TimestampResolver implements EventResolver {
                     .setTimeZone(timeZone)
                     .setLocale(locale)
                     .build();
+            lastFormattedInstant.initFromEpochSecond(-1, 0);
         }
 
         private static PatternResolverContext fromConfig(
@@ -281,14 +283,14 @@ public final class TimestampResolver implements EventResolver {
                 final JsonWriter jsonWriter) {
 
             // Format timestamp if it doesn't match the last cached one.
-            if (patternResolverContext.lastFormattedInstant == null ||
-                    !patternResolverContext.formatter.isInstantMatching(
-                            patternResolverContext.lastFormattedInstant,
-                            logEvent.getInstant())) {
+            final boolean instantMatching = patternResolverContext.formatter.isInstantMatching(
+                    patternResolverContext.lastFormattedInstant,
+                    logEvent.getInstant());
+            if (!instantMatching) {
 
                 // Format the timestamp.
                 patternResolverContext.lastFormattedInstantBuffer.setLength(0);
-                patternResolverContext.lastFormattedInstant = logEvent.getInstant();
+                patternResolverContext.lastFormattedInstant.initFrom(logEvent.getInstant());
                 patternResolverContext.formatter.format(
                         patternResolverContext.lastFormattedInstant,
                         patternResolverContext.lastFormattedInstantBuffer);
@@ -352,7 +354,7 @@ public final class TimestampResolver implements EventResolver {
         private static final int MAX_LONG_LENGTH =
                 String.valueOf(Long.MAX_VALUE).length();
 
-        private Instant instant;
+        private final MutableInstant instant = new MutableInstant();
 
         private final char[] resolution = new char[
                 /* integral: */ MAX_LONG_LENGTH +
@@ -361,7 +363,9 @@ public final class TimestampResolver implements EventResolver {
 
         private int resolutionLength;
 
-        private EpochResolutionRecord() {}
+        private EpochResolutionRecord() {
+            instant.initFromEpochSecond(-1, 0);
+        }
 
     }
 
@@ -381,7 +385,7 @@ public final class TimestampResolver implements EventResolver {
                         0,
                         resolutionRecord.resolutionLength);
             } else {
-                resolutionRecord.instant = logEventInstant;
+                resolutionRecord.instant.initFrom(logEventInstant);
                 final StringBuilder stringBuilder = jsonWriter.getStringBuilder();
                 final int startIndex = stringBuilder.length();
                 resolve(logEventInstant, jsonWriter);
@@ -463,8 +467,9 @@ public final class TimestampResolver implements EventResolver {
                 }
             };
 
-    private static long epochNanos(Instant instant) {
-        return 1_000_000_000L * instant.getEpochSecond() + instant.getNanoOfSecond();
+    private static long epochNanos(final Instant instant) {
+        final long nanos = Math.multiplyExact(1_000_000_000L, instant.getEpochSecond());
+        return Math.addExact(nanos, instant.getNanoOfSecond());
     }
 
     static String getName() {
