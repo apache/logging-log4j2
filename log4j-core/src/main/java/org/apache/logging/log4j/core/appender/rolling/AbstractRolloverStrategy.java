@@ -121,11 +121,16 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
         final Path dir = parent.toPath();
         String fileName = file.getName();
         final int suffixLength = suffixLength(fileName);
+        // use Pattern.quote to treat all initial parts of the fileName as literal
+        // this fixes issues with filenames containing 'magic' regex characters
         if (suffixLength > 0) {
-            fileName = fileName.substring(0, fileName.length() - suffixLength) + ".*";
+            fileName = Pattern.quote(fileName.substring(0, fileName.length() - suffixLength)) + ".*";
+        } else {
+            fileName = Pattern.quote(fileName);
         }
-        // TODO need to quote filename so '+' characters (or other chars that cause trouble with regex) can be dealt with
-        final String filePattern = fileName.replaceFirst("0?\\u0000", "(0?\\\\d+)");
+        // since we insert a pattern inside a regex escaped string,
+        // surround it with quote characters so that (\d) is treated as a pattern and not a literal
+        final String filePattern = fileName.replaceFirst("0?\\u0000", "\\\\E(0?\\\\d+)\\\\Q");
         final Pattern pattern = Pattern.compile(filePattern);
         final Path current = currentFile.length() > 0 ? new File(currentFile).toPath() : null;
         LOGGER.debug("Current file: {}", currentFile);
