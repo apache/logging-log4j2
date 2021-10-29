@@ -38,6 +38,15 @@ public class EligibleFilesTest {
         assertEquals(30, files.size(), "Incorrect number of files found. Should be 30, was " + files.size());
     }
 
+    @Test
+    public void runTestWithPlusCharacter() throws Exception {
+        final String path = "target/test-classes/rolloverPath/log4j.20211028T194500+0200." + NotANumber.VALUE + ".log.gz";
+        final TestRolloverStrategy strategy = new TestRolloverStrategy();
+        final Map<Integer, Path> files = strategy.findFilesWithPlusInPath(path);
+        assertTrue(files.size() > 0, "No files found");
+        assertEquals(30, files.size(), "Incorrect number of files found. Should be 30, was " + files.size());
+    }
+
     private static class TestRolloverStrategy extends AbstractRolloverStrategy {
 
         public TestRolloverStrategy() {
@@ -51,6 +60,11 @@ public class EligibleFilesTest {
 
         public Map<Integer, Path> findFilesInPath(final String path) {
             return getEligibleFiles(path, "log4j.txt.%d{yyyyMMdd}-%i.gz");
+        }
+
+        public Map<Integer, Path> findFilesWithPlusInPath(final String path) {
+            // timezone might expand to "+0200", because of '+' we have to be careful when working with regex
+            return getEligibleFiles(path, "log4j.txt.%d{yyyyMMdd'T'HHmmssZ}.%i.log.gz");
         }
     }
 }

@@ -124,6 +124,7 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
         if (suffixLength > 0) {
             fileName = fileName.substring(0, fileName.length() - suffixLength) + ".*";
         }
+        // TODO need to quote filename so '+' characters (or other chars that cause trouble with regex) can be dealt with
         final String filePattern = fileName.replaceFirst("0?\\u0000", "(0?\\\\d+)");
         final Pattern pattern = Pattern.compile(filePattern);
         final Path current = currentFile.length() > 0 ? new File(currentFile).toPath() : null;
