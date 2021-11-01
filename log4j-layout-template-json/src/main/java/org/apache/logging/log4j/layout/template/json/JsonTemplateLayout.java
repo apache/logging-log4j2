@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.layout.Encoder;
 import org.apache.logging.log4j.core.layout.LockingStringBuilderEncoder;
+import org.apache.logging.log4j.core.layout.StringBuilderEncoder;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.StringEncoder;
 import org.apache.logging.log4j.layout.template.json.resolver.EventResolverContext;
@@ -203,10 +204,14 @@ public class JsonTemplateLayout implements StringLayout {
             final JsonWriter jsonWriter) {
         return () -> {
             final JsonWriter clonedJsonWriter = jsonWriter.clone();
-            final Encoder<StringBuilder> encoder =
-                    Constants.ENABLE_DIRECT_ENCODERS
-                            ? new LockingStringBuilderEncoder(charset)
-                            : null;
+            final Encoder<StringBuilder> encoder;
+            if (Constants.ENABLE_DIRECT_ENCODERS) {
+                encoder = Constants.ENABLE_THREADLOCALS
+                        ? new StringBuilderEncoder(charset)
+                        : new LockingStringBuilderEncoder(charset);
+            } else {
+                encoder = null;
+            }
             return new Context(clonedJsonWriter, encoder);
         };
     }
