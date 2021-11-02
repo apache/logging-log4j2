@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFact
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.net.TcpSocketManager.HostResolver;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
@@ -188,13 +189,7 @@ class SocketAppenderReconnectTest {
             final String message = expectedMessages.get(messageIndex);
             // Due to socket initialization, the first write() might need some extra effort.
             if (messageIndex == 0) {
-                await()
-                        .pollInterval(100, TimeUnit.MILLISECONDS)
-                        .atMost(2, TimeUnit.SECONDS)
-                        .until(() -> {
-                            logger.info(message);
-                            return true;
-                        });
+                awaitUntilSucceeds(() -> logger.info(message));
             } else {
                 logger.info(message);
             }
@@ -202,6 +197,29 @@ class SocketAppenderReconnectTest {
         expectedMessages.forEach(logger::info);
         final List<String> actualMessages = server.pollLines(messageCount);
         assertEquals(expectedMessages, actualMessages);
+    }
+
+    private static void awaitUntilSucceeds(final Runnable runnable) {
+        final long pollIntervalMillis;
+        final long timeoutSeconds;
+        final boolean osWindows = PropertiesUtil.getProperties().isOsWindows();
+        if (osWindows) {
+            // Windows-specific non-sense values.
+            // These figures are collected by trial-and-error on a friend's laptop which has Windows installed.
+            pollIntervalMillis = 1_000L;
+            timeoutSeconds = 15;
+        } else {
+            // Universally sensible values.
+            pollIntervalMillis = 100;
+            timeoutSeconds = 3;
+        }
+        await()
+                .pollInterval(pollIntervalMillis, TimeUnit.MILLISECONDS)
+                .atMost(timeoutSeconds, TimeUnit.SECONDS)
+                .until(() -> {
+                    runnable.run();
+                    return true;
+                });
     }
 
     private static void verifyLoggingFailure() {
