@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration status="WARN" packages="org.apache.logging.log4j.core.pattern" monitorInterval="3">
+    <properties>
+        <property name="PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} |-%-5level [%thread] %c [%L] -| %msg%n</property>
+    </properties>
+
+    <appenders>
+        <Console name="CONSOLE" target="system_out">
+            <PatternLayout pattern="${PATTERN}" />
+        </Console>
+
+        <Kafka name="KafkaLog" topic="acm">
+            <PatternLayout pattern="%msg"/>
+            <Property name="bootstrap.servers">10.20.10.111111:9092</Property>
+        </Kafka>
+
+        <Async name="AsyncKafkaLog" blocking="false">
+            <AppenderRef ref="KafkaLog" />
+        </Async>
+
+        <Async name="AsyncCONSOLE">
+            <AppenderRef ref="CONSOLE" />
+        </Async>
+    </appenders>
+
+    <loggers>
+        <root level="info">
+            <AppenderRef ref="AsyncCONSOLE" />
+            <AppenderRef ref="AsyncKafkaLog" />
+        </root>
+    </loggers>
+
+</configuration>
