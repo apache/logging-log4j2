@@ -2,7 +2,6 @@ package org.apache.logging.log4j.core.config;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -10,23 +9,23 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.util.Set;
 
-@LoggerContextSource("log4j2-3182.xml")
 public class LoggerContextChangeTest {
-    private String targetFileName = "log4j2-3182.xml";
-    private String targetErrorFileName = "log4j2-3182-error.xml";
-    private String tmpFileName = "log4j2-3182-tmp.xml";
+    private static String targetFileName = "log4j2-3182.xml";
+    private static String targetErrorFileName = "log4j2-3182-error.xml";
+    private static String tmpFileName = "log4j2-3182-tmp.xml";
+    private static String destDir = "target/test-classes/";
 
     @BeforeAll
     public static void beforeClass() {
-        System.setProperty("log4j2.configurationFile", "classpath:log4j2-3182.xml");
+        System.setProperty("log4j2.configurationFile", "classpath:" + targetFileName);
     }
 
 
     @Test
     public void onChangeTest() {
-        String errorFileName = "target/test-classes/" + targetErrorFileName;
-        String originFileName = "target/test-classes/" + targetFileName;
-        String tmpFile = "target/test-classes/" + tmpFileName;
+        String errorFileName = destDir + targetErrorFileName;
+        String originFileName = destDir + targetFileName;
+        String tmpFile = destDir + tmpFileName;
         wait(10);
         updateConfigFileModTime(originFileName, errorFileName, tmpFile);
         wait(30);
