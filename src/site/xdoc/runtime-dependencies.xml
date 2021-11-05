@@ -236,7 +236,7 @@
         </tr>
         <tr>
           <td>Async Loggers</td>
-          <td><a href="http://lmax-exchange.github.io/disruptor/">LMAX Disruptor</a></td>
+          <td><a href="https://lmax-exchange.github.io/disruptor/">LMAX Disruptor</a></td>
         </tr>
         <tr>
           <td>Kafka Appender</td>
