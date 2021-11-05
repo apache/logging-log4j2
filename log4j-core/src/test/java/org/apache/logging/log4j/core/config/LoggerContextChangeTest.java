@@ -55,9 +55,7 @@ public class LoggerContextChangeTest {
         }
     }
 
-    /**
-     * 将原始文件改为目的文件
-     */
+
     private void updateConfigFileModTime(String originFileName, String destFileName, String tmpFileName) {
         File originFile = new File(originFileName);
         if (originFile.exists()) {
