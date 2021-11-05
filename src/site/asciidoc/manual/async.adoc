@@ -664,7 +664,7 @@ image:../images/ResponseTimeAsyncLogging16Threads@8kEachLog4j2Only-labeled.png[i
 == Under The Hood
 
 Asynchronous Loggers are implemented using the
-http://lmax-exchange.github.com/disruptor/[LMAX Disruptor] inter-thread
+https://lmax-exchange.github.io/disruptor/[LMAX Disruptor] inter-thread
 messaging library. From the LMAX web site:
 
 ____
