@@ -126,7 +126,7 @@ business logic very quickly.
 
 It turns out that the choice of queue is extremely important for peak
 throughput. Log4j 2's Async Loggers use a
-http://lmax-exchange.github.com/disruptor/[lock-free data structure],
+https://lmax-exchange.github.io/disruptor/[lock-free data structure],
 whereas Logback, Log4j 1.2 and Log4j 2's Asynchronous Appenders use an
 ArrayBlockingQueue. With a blocking queue, multi-threaded applications
 often experience lock contention when trying to enqueue the log event.
