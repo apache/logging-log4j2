@@ -237,6 +237,12 @@
 	based on performance improvements in modern Java releases.
       </action>
       <!-- FIXES -->
+      <action issue="LOG4J2-3060" dev="vy" type="fix" due-to=" Nikita Mikhailov">
+        Fix thread-safety issues in DefaultErrorHandler.
+      </action>
+      <action issue="LOG4J2-3185" dev="vy" type="fix" due-to="mzbonnt">
+        Fix thread-safety issues in DefaultErrorHandler.
+      </action>
       <action issue="LOG4J2-3183" dev="vy" type="fix">
         Avoid using MutableInstant of the event as a cache key in JsonTemplateLayout.
       </action>
