@@ -204,16 +204,19 @@ public class JsonTemplateLayout implements StringLayout {
             final JsonWriter jsonWriter) {
         return () -> {
             final JsonWriter clonedJsonWriter = jsonWriter.clone();
-            final Encoder<StringBuilder> encoder;
-            if (Constants.ENABLE_DIRECT_ENCODERS) {
-                encoder = Constants.ENABLE_THREADLOCALS
-                        ? new StringBuilderEncoder(charset)
-                        : new LockingStringBuilderEncoder(charset);
-            } else {
-                encoder = null;
-            }
+            final Encoder<StringBuilder> encoder = createStringBuilderEncoder(charset);
             return new Context(clonedJsonWriter, encoder);
         };
+    }
+
+    private static Encoder<StringBuilder> createStringBuilderEncoder(
+            final Charset charset) {
+        if (Constants.ENABLE_DIRECT_ENCODERS) {
+            return Constants.ENABLE_THREADLOCALS
+                    ? new StringBuilderEncoder(charset)
+                    : new LockingStringBuilderEncoder(charset);
+        }
+        return null;
     }
 
     @Override
