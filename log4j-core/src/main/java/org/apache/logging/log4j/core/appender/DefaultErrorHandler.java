@@ -40,9 +40,9 @@ public class DefaultErrorHandler implements ErrorHandler {
 
     private static final long EXCEPTION_INTERVAL_NANOS = TimeUnit.MINUTES.toNanos(5);
 
-    private volatile int exceptionCount = 0;
+    private int exceptionCount = 0;
 
-    private volatile long lastExceptionInstantNanos = System.nanoTime() - EXCEPTION_INTERVAL_NANOS - 1;
+    private long lastExceptionInstantNanos = System.nanoTime() - EXCEPTION_INTERVAL_NANOS - 1;
 
     private final Appender appender;
 
