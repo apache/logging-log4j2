@@ -126,7 +126,9 @@ public final class AsyncAppender extends AbstractAppender {
         super.stop(timeout, timeUnit, false);
         LOGGER.trace("AsyncAppender stopping. Queue still has {} events.", queue.size());
         try {
-            dispatcher.stop(shutdownTimeout);
+            if (null != dispatcher) {
+                dispatcher.stop(shutdownTimeout);
+            }
         } catch (final InterruptedException ignored) {
             // Restore the interrupted flag cleared when the exception is caught.
             Thread.currentThread().interrupt();
