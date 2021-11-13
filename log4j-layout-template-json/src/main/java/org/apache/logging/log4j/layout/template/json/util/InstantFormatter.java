@@ -222,9 +222,7 @@ public final class InstantFormatter {
         private void formatInstant(
                 final Instant instant,
                 final StringBuilder stringBuilder) {
-            mutableInstant.initFromEpochSecond(
-                    instant.getEpochSecond(),
-                    instant.getNanoOfSecond());
+            mutableInstant.initFrom(instant);
             formatMutableInstant(mutableInstant, stringBuilder);
         }
 
@@ -309,20 +307,13 @@ public final class InstantFormatter {
 
     private static final class Log4jFixedFormatter implements Formatter {
 
-        @SuppressWarnings("OptionalGetWithoutIsPresent")
-        private static final int MAX_FORMATTED_INSTANT_LENGTH = Arrays
-                .stream(FixedDateFormat.FixedFormat.values())
-                .mapToInt(format -> format.getPattern().length())
-                .max()
-                .getAsInt();
-
         private final FixedDateFormat formatter;
 
         private final char[] buffer;
 
         private Log4jFixedFormatter(final FixedDateFormat formatter) {
             this.formatter = formatter;
-            this.buffer = new char[MAX_FORMATTED_INSTANT_LENGTH];
+            this.buffer = new char[formatter.getFormat().length()];
         }
 
         @Override
@@ -340,7 +331,11 @@ public final class InstantFormatter {
 
         @Override
         public boolean isInstantMatching(final Instant instant1, final Instant instant2) {
-            return instant1.getEpochMillisecond() == instant2.getEpochMillisecond();
+            return formatter.isEquivalent(
+                    instant1.getEpochSecond(),
+                    instant1.getNanoOfSecond(),
+                    instant2.getEpochSecond(),
+                    instant2.getNanoOfSecond());
         }
 
     }

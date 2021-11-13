@@ -284,7 +284,7 @@ for a configuration file named `log4j2.xml` on the classpath. Note the "2" in th
 **From log4j-2.9 onward**
 
 From log4j-2.9 onward, log4j2 will print all internal logging to the console if system property `log4j2.debug`
-is defined (with any or no value).
+is either defined empty or its value equals to `true` (ignoring case).
 
 **Prior to log4j-2.9**
 

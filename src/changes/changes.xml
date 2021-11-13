@@ -33,6 +33,8 @@
       <!-- ADDS -->
       <action issue="LOG4J2-2978" dev="vy" type="add" due-to="Michael Seele">
         Add support for Jakarta EE 9 (Tomcat 10 / Jetty 11)
+      <action issue="LOG4J2-3170" dev="vy" type="add" due-to="Gareth Smith">
+        Make CRLF/HTML encoding run in O(n) worst-case time, rather than O(n^2).
       </action>
       <action issue="LOG4J2-3133" dev="ckozak" type="add">
         Add missing slf4j-api singleton accessors to log4j-slf4j-impl (1.7) StaticMarkerBinder and StaticMDCBinder.
@@ -97,7 +99,38 @@
         Prefer string.getBytes(Charset) over string.getBytes(String)
 	based on performance improvements in modern Java releases.
       </action>
+      <action issue="LOG4J2-3171" dev="ckozak" type="add">
+        Improve PatternLayout performance by reducing unnecessary indirection and branching.
+      </action>
       <!-- FIXES -->
+      <action issue="LOG4J2-3060" dev="vy" type="fix" due-to=" Nikita Mikhailov">
+        Fix thread-safety issues in DefaultErrorHandler.
+      </action>
+      <action issue="LOG4J2-3185" dev="vy" type="fix" due-to="mzbonnt">
+        Fix thread-safety issues in DefaultErrorHandler.
+      </action>
+      <action issue="LOG4J2-3183" dev="vy" type="fix">
+        Avoid using MutableInstant of the event as a cache key in JsonTemplateLayout.
+      </action>
+      <action issue="LOG4J2-2829" dev="vy" type="fix">
+        SocketAppender should propagate failures when reconnection fails.
+      </action>
+      <action issue="LOG4J2-3172" dev="vy" type="fix" due-to="Barry Fleming">
+        Buffer immutable log events in the SmtpManager.
+      </action>
+      <action issue="LOG4J2-3175" dev="vy" type="fix" due-to="wuqian0808">
+        Avoid KafkaManager override when topics differ.
+      </action>
+      <action issue="LOG4J2-3160" dev="vy" type="fix" due-to="Lars Bohl">
+        Fix documentation on how to toggle log4j2.debug system property.
+      </action>
+      <action issue="LOG4J2-3159" dev="ckozak" type="fix">
+        Fixed an unlikely race condition in Log4jMarker.getParents() volatile access.
+      </action>
+      <action issue="LOG4J2-3153" dev="ckozak" type="fix">
+        DatePatternConverter performance is not impacted by microsecond-precision clocks when such precision isn't
+        required.
+      </action>
       <action issue="LOG4J2-2808" dev="ckozak" type="fix" due-to="Asapha Halifa">
         LoggerContext skips resolving localhost when hostName is configured.
       </action>
@@ -159,7 +192,13 @@
       <action issue="LOG4J2-3095" dev="ggregory" type="fix" due-to="Kenny MacLeod, Gary Gregory">
         Category.setLevel should accept null value.
       </action>
+      <action issue="LOG4J2-3174" dev="vy" type="fix" due-to="romainmoreau">
+        Wrong subject on mail when it depends on the LogEvent
+      </action>
       <!-- UPDATES -->
+      <action issue="LOG4J2-2025" dev="rgoers" type="update">
+        Provide support for overriding the Tomcat Log class in Tomcat 8.5+.
+      </action>
       <action dev="ggregory" type="update">
        - com.fasterxml.jackson.core:jackson-annotations ................. 2.12.2 -> 2.12.4
         - com.fasterxml.jackson.core:jackson-core ........................ 2.12.2 -> 2.12.4
@@ -177,8 +216,8 @@
         - org.apache.commons:commons-csv ................................. 1.8 -> 1.9.0
         - org.apache.commons:commons-dbcp2 ............................... 2.8.0 -> 2.9.0
         - org.apache.commons:commons-pool2 ............................... 2.9.0 -> 2.11.1
-        - org.apache.maven.plugins:maven-failsafe-plugin ................. 2.22.2 -> 3.0.0-M5 
-        - org.apache.maven.plugins:maven-surefire-plugin ................. 2.22.2 -> 3.0.0-M5 
+        - org.apache.maven.plugins:maven-failsafe-plugin ................. 2.22.2 -> 3.0.0-M5
+        - org.apache.maven.plugins:maven-surefire-plugin ................. 2.22.2 -> 3.0.0-M5
         - org.apache.rat:apache-rat-plugin ............................... 0.12 -> 0.13
         - org.assertj:assertj-core ....................................... 3.19.0 -> 3.20.2
         - org.codehaus.groovy:groovy-dateutil ............................ 3.0.7 -> 3.0.8
@@ -235,13 +274,13 @@
         Directly create a thread instead of using the common ForkJoin pool when initializing ThreadContextDataInjector"
       </action>
       <action issue="LOG4J2-2624" dev="mattsicker" type="fix" due-to="Tim Perry">
-        Allow auto-shutdown of log4j in log4j-web to be turned off and provide a 
+        Allow auto-shutdown of log4j in log4j-web to be turned off and provide a
         ServletContextListener "Log4jShutdownOnContextDestroyedListener" to stop log4j.
         Register the listener at the top of web.xml to ensure the shutdown happens last.
       </action>
       <action issue="LOG4J2-1606" dev="mattsicker" type="fix" due-to="Tim Perry">
-        Allow auto-shutdown of log4j in log4j-web to be turned off and provide a 
-        ServletContextListener "Log4jShutdownOnContextDestroyedListener" to stop log4j. 
+        Allow auto-shutdown of log4j in log4j-web to be turned off and provide a
+        ServletContextListener "Log4jShutdownOnContextDestroyedListener" to stop log4j.
         Register the listener at the top of web.xml to ensure the shutdown happens last.
       </action>
       <action issue="LOG4J2-2998" dev="vy" type="fix">
@@ -398,7 +437,7 @@
       </action>
       <action dev="ggregory" type="update">
         Update Woodstox 5.0.3 -> 6.2.3 to match Jackson 2.12.1.
-      </action>  
+      </action>
       <action dev="ggregory" type="update">
         Update org.apache.activemq:* 5.16.0 -> 5.16.1.
       </action>

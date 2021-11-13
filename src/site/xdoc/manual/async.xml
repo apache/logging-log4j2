@@ -917,7 +917,7 @@ or
       <subsection name="Under The Hood">
         <p>
           Asynchronous Loggers are implemented using the
-          <a href="http://lmax-exchange.github.com/disruptor/">LMAX Disruptor</a>
+          <a href="https://lmax-exchange.github.io/disruptor/">LMAX Disruptor</a>
           inter-thread messaging library. From the LMAX web site:
         </p>
         <blockquote>

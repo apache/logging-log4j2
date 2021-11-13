@@ -28,8 +28,21 @@ import org.apache.logging.log4j.message.Message;
 /**
  *
  */
-public interface LogEventFactory {
+public interface LogEventFactory extends LocationAwareLogEventFactory {
 
     LogEvent createEvent(String loggerName, Marker marker, String fqcn, Level level, Message data,
                          List<Property> properties, Throwable t);
+
+    @Override
+    default LogEvent createEvent(
+            String loggerName,
+            Marker marker,
+            String fqcn,
+            @SuppressWarnings("unused") StackTraceElement location,
+            Level level,
+            Message data,
+            List<Property> properties,
+            Throwable t) {
+        return createEvent(loggerName, marker, fqcn, level, data, properties, t);
+    }
 }

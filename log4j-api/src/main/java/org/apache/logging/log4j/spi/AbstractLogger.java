@@ -110,7 +110,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     protected final String name;
     private final MessageFactory2 messageFactory;
     private final FlowMessageFactory flowMessageFactory;
-    private static ThreadLocal<int[]> recursionDepthHolder = new ThreadLocal<>(); // LOG4J2-1518, LOG4J2-2031
+    private static final ThreadLocal<int[]> recursionDepthHolder = new ThreadLocal<>(); // LOG4J2-1518, LOG4J2-2031
     protected final transient ThreadLocal<DefaultLogBuilder> logBuilder;
 
     /**
@@ -2174,11 +2174,11 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     private static void incrementRecursionDepth() {
         getRecursionDepthHolder()[0]++;
     }
+
     private static void decrementRecursionDepth() {
-        final int[] depth = getRecursionDepthHolder();
-        depth[0]--;
-        if (depth[0] < 0) {
-            throw new IllegalStateException("Recursion depth became negative: " + depth[0]);
+        int newDepth = --getRecursionDepthHolder()[0];
+        if (newDepth < 0) {
+            throw new IllegalStateException("Recursion depth became negative: " + newDepth);
         }
     }
 
@@ -2222,17 +2222,12 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         if (exception instanceof LoggingException) {
             throw (LoggingException) exception;
         }
-        final String format = message.getFormat();
-        final int formatLength = format == null ? 4 : format.length();
-        final StringBuilder sb = new StringBuilder(formatLength + 100);
-        sb.append(fqcn);
-        sb.append(" caught ");
-        sb.append(exception.getClass().getName());
-        sb.append(" logging ");
-        sb.append(message.getClass().getSimpleName());
-        sb.append(": ");
-        sb.append(format);
-        StatusLogger.getLogger().warn(sb.toString(), exception);
+        StatusLogger.getLogger().warn("{} caught {} logging {}: {}",
+                fqcn,
+                exception.getClass().getName(),
+                message.getClass().getSimpleName(),
+                message.getFormat(),
+                exception);
     }
 
     @Override
