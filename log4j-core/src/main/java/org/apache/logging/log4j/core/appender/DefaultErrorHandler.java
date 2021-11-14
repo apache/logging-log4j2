@@ -71,7 +71,10 @@ public class DefaultErrorHandler implements ErrorHandler {
     @Override
     public void error(final String msg, final Throwable error) {
         final boolean allowed = acquirePermit();
-        if (allowed && !appender.ignoreExceptions() && error != null && !(error instanceof AppenderLoggingException)) {
+        if (allowed) {
+            LOGGER.error(msg, error);
+        }
+        if (!appender.ignoreExceptions() && error != null && !(error instanceof AppenderLoggingException)) {
             throw new AppenderLoggingException(msg, error);
         }
     }
@@ -86,7 +89,10 @@ public class DefaultErrorHandler implements ErrorHandler {
     @Override
     public void error(final String msg, final LogEvent event, final Throwable error) {
         final boolean allowed = acquirePermit();
-        if (allowed && !appender.ignoreExceptions() && error != null && !(error instanceof AppenderLoggingException)) {
+        if (allowed) {
+            LOGGER.error(msg, error);
+        }
+        if (!appender.ignoreExceptions() && error != null && !(error instanceof AppenderLoggingException)) {
             throw new AppenderLoggingException(msg, error);
         }
     }
