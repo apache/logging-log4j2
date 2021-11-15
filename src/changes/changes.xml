@@ -33,6 +33,8 @@
       <!-- ADDS -->
       <action issue="LOG4J2-2978" dev="vy" type="add" due-to="Michael Seele">
         Add support for Jakarta EE 9 (Tomcat 10 / Jetty 11)
+      <action issue="LOG4J2-3189" dev="ckozak" type="add">
+        Improve NameAbbreviator worst-case performance.
       <action issue="LOG4J2-3170" dev="vy" type="add" due-to="Gareth Smith">
         Make CRLF/HTML encoding run in O(n) worst-case time, rather than O(n^2).
       </action>
