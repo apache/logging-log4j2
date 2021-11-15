@@ -18,8 +18,7 @@
 
 There are two possibilities:
 - Logging Adapter as complete replacement (preferred, but requires JVM start option)
-- Bridge Handler, transferring JDK output to log4j, e.g. useful for webapps
-
+- Bridge Handler, transfering JDK output to log4j, e.g. useful for webapps
 
 # Log4j JDK Logging Adapter
 
@@ -83,7 +82,7 @@ Java Level | Log4j Level
 
 # Log4j JDK Logging Bridge Handler
 
-The LogManager is not always usable because you have to set a JVM wide effective system
+The LogManager is not always useable because you have to set a JVM wide effective system
 property - e.g. in web servers this is not possible if you are not the administrator.
 
 The [`Log4jBridgeHandler`](apidocs/org/apache/logging/log4j/jul/Log4jBridgeHandler.html) is an
@@ -99,9 +98,12 @@ LogManager.
 
 ## Usage
 
-The JUL configuration file `logging.properties` needs the line<br/>
-`handlers = org.apache.logging.log4j.jul.Log4jBridgeHandler`<br/>
-and JUL logs go to log4j2. Additionally, you typically want to use to following:<br/>
+The JUL configuration file `logging.properties` needs the line
+
+`handlers = org.apache.logging.log4j.jul.Log4jBridgeHandler`
+
+and JUL logs go to log4j2. Additionally, you typically want to use to following:
+
 `org.apache.logging.log4j.jul.Log4jBridgeHandler.propagateLevels = true`
 
 In a webapp on Tomcat (and maybe other servers, too), you may simply create a
