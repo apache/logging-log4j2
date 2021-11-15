@@ -210,7 +210,7 @@ class SocketAppenderReconnectTest {
             timeoutSeconds = 15;
         } else {
             // Universally sensible values.
-            pollIntervalMillis = 100;
+            pollIntervalMillis = 1000;
             timeoutSeconds = 3;
         }
         await()
