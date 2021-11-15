@@ -64,7 +64,7 @@ Note that any approach that bypasses Docker's logging drivers requires Log4j's
 ### Logging to the Standard Output Stream
 
 As discussed above, this is the recommended 12-Factor approach for applications running in a docker container.
-The Log4j team does not recommend this approach if exceptions will be logged by the Java application.
+The Log4j team does not recommend this approach for performance reasons.
 
 ![Stdout](../images/DockerStdout.png "Application Logging to the Standard Output Stream")
 
@@ -127,6 +127,7 @@ events first to Logstash and then to Elasticsearch.
 
 ### Log4j Configuration
 
+### JsonTemplateLayout
 Log4j provides a multitude of JSON generating layouts. In particular, [JSON
 Template Layout](layouts.html#JSONTemplateLayout) allows full schema
 customization and bundles ELK-specific layouts by default, which makes it a
@@ -160,8 +161,10 @@ will be formatted without newlines.
       </JsonTemplateLayout>
     </Socket>
 
-The JsonTemplateLayout can also be used to generate JSON that matches the GELF specification which can     
-format the message attribute using a pattern in accordance with the PatternLayout. For example, the following
+#### Gelft Template
+
+The JsonTemplateLayout can also be used to generate JSON that matches the GELF specification which can format 
+the message attribute using a pattern in accordance with the PatternLayout. For example, the following
 template, named EnhancedGelf.json, can be used to generate GELF-compliant data that can be passed to Logstash. 
 With this template the message attribute will include the thread id, level, specific ThreadContext attributes, 
 the class name, method name, and line number as well as the message. If an exception is included it will also 
@@ -241,9 +244,87 @@ The logging configuration to use this template would be
 The significant difference with this configuration from the first example is that it references the 
 custom template and it specifies an event delimiter of a null character ('\0');   
     
-Note: The level being passed with the above template does not strictly conform to the GELF spec as the
+**Note**: The level being passed with the above template does not strictly conform to the GELF spec as the
 Level being passed is the Log4j Level NOT the Level defined in the GELF spec. However, testing has shown 
-that Logstash, Elk, and Kibana are pretty tolerant of whatever data is passed to it.    
+that Logstash, Elk, and Kibana are pretty tolerant of whatever data is passed to it.
+
+#### Custom Template
+
+Another option is to use a custom template, possibly based on one of the standard templates. The template 
+below is loosely based on ECS but a) adds the spring boot application name, b) formats the message
+using PatternLayout, formats Map Messages as event.data attributes while setting the event action based on
+any Marker included in the event, includes all the ThreadContext attributes. 
+
+**Note**: The Json Template Layout escapes control sequences so messages that contain '\n' will have those 
+control sequences copied as "\n" into the text rather than converted to a newline character. This bypasses 
+many problems that occur with Log Forwarders such as Filebeat and FluentBit/Fluentd. Kibana will correctly
+interpret these squences as newlines and display them correctly. Also note that the message pattern does
+not contain a timestamp. Kibana will display the timestamp field in its own column so placing it in the 
+message would be redundant.
+
+    {
+      "@timestamp": {
+        "$resolver": "timestamp",
+        "pattern": {
+          "format": "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+          "timeZone": "UTC"
+        }
+      },
+      "ecs.version": "1.11.0",
+      "log.level": {
+        "$resolver": "level",
+        "field": "name"
+      },
+      "application": "\${lower:\${spring:spring.application.name}}",
+      "short_message": {
+        "$resolver": "message",
+        "stringified": true
+      },
+      "message": {
+        "$resolver": "pattern",
+        "pattern": "[%t] %X{requestId, sessionId, loginId, userId, ipAddress, accountNumber} %C{1.}.%M:%L - %m%n"
+      },
+      "process.thread.name": {
+        "$resolver": "thread",
+        "field": "name"
+      },
+      "log.logger": {
+        "$resolver": "logger",
+        "field": "name"
+      },
+      "event.action": {
+        "$resolver": "marker",
+        "field": "name"
+      },
+      "event.data": {
+        "$resolver": "map",
+        "stringified": true
+      },
+      "labels": {
+        "$resolver": "mdc",
+        "flatten": true,
+        "stringified": true
+      },
+      "tags": {
+        "$resolver": "ndc"
+      },
+      "error.type": {
+        "$resolver": "exception",
+        "field": "className"
+      },
+      "error.message": {
+        "$resolver": "exception",
+        "field": "message"
+      },
+      "error.stack_trace": {
+        "$resolver": "exception",
+        "field": "stackTrace",
+        "stackTrace": {
+          "stringified": true
+        }
+      }
+    }
+
     
 Finally, the GelfLayout can be used to generate GELF compliant output. Unlike the JsonTemplateLayout it 
 adheres closely to the GELF spec.    
@@ -272,7 +353,7 @@ adheres closely to the GELF spec.
       </GelfLayout>
     </Socket>
 
-### Logstash Configuration
+#### Logstash Configuration with Gelf
 
 We will configure Logstash to listen on TCP port 12345 for payloads of type JSON
 and then forward these to (either console and/or) an Elasticsearch server.
@@ -296,7 +377,9 @@ and then forward these to (either console and/or) an Elasticsearch server.
       }
 
     }
-    
+
+#### Logstash Configuration with JsonTemplateLayout    
+
 When one of the GELF compliant formats is used Logstash should be configured as 
 
    gelf {
@@ -335,12 +418,24 @@ When one of the GELF compliant formats is used Logstash should be configured as
            index => "app-%{application}-%{+YYYY.MM.dd}"
          }
        }
+#### Filebeat configuration with JsonTemplateLayout
+
+When using a JsonTemplateLayout that complies with ECS (or is similar to the custom template previously shown)
+the configuration of filebeat is straightforward.
+
+    filebeat.inputs:
+    - type: log
+      enabled: true
+      json.keys_under_root: true
+      paths:
+        - /var/log/apps/*.log
+
 
 ### Kibana
-Using the EnhancedGelf template or the GelfLayout the above configurations the message field will contain a fully 
-formatted log event just as it would  appear in a file Appender. The ThreadContext attributes, custome fields, 
-thread name, etc. will all be available as attributes on each log event that can be used for filtering.
-The result will resemble
+Using the EnhancedGelf template, the GelfLayout or the custom template the above configurations the message 
+field will contain a fully formatted log event just as it would  appear in a file Appender. The ThreadContext 
+attributes, custome fields, thread name, etc. will all be available as attributes on each log event that can 
+be used for filtering. The result will resemble
 ![](../images/kibana.png)
 
 ## Managing Logging Configuration
