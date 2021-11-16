@@ -1,73 +1,85 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- ~ Licensed to the Apache Software Foundation (ASF) under one or more ~ contributor license agreements. See the NOTICE 
-  file distributed with ~ this work for additional information regarding copyright ownership. ~ The ASF licenses this file 
-  to You under the Apache License, Version 2.0 ~ (the "License"); you may not use this file except in compliance with ~ the 
-  License. You may obtain a copy of the License at ~ ~ http://www.apache.org/licenses/LICENSE-2.0 ~ ~ Unless required by applicable 
-  law or agreed to in writing, software ~ distributed under the License is distributed on an "AS IS" BASIS, ~ WITHOUT WARRANTIES 
-  OR CONDITIONS OF ANY KIND, either express or implied. ~ See the License for the specific language governing permissions and 
-  ~ limitations under the License. -->
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one or more
+  ~ contributor license agreements.  See the NOTICE file distributed with
+  ~ this work for additional information regarding copyright ownership.
+  ~ The ASF licenses this file to You under the Apache License, Version 2.0
+  ~ (the "License"); you may not use this file except in compliance with
+  ~ the License.  You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+    <groupId>org.apache.logging.log4j</groupId>
+    <version>2.15.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>log4j-smtp</artifactId>
-  <name>Apache Log4j SMTP</name>
-  <description>
-    Apache Log4j Simple Mail Transfer Protocol (SMTP) Appender.
-  </description>
+  <artifactId>log4j-jakarta-web</artifactId>
+  <packaging>jar</packaging>
+  <name>Apache Log4j Jakarta Web</name>
+  <description>The Apache Log4j support for Jakarta EE 9+ web servlet containers</description>
+
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
-    <docLabel>Log4j SMTP Appender Documentation</docLabel>
-    <projectDir>/log4j-smtp</projectDir>
-    <module.name>org.apache.logging.log4j.smtp</module.name>
+    <docLabel>Web Documentation</docLabel>
+    <projectDir>/log4j-jakarta-web</projectDir>
+    <module.name>org.apache.logging.log4j.web</module.name>
     <maven.doap.skip>true</maven.doap.skip>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core</artifactId>
     </dependency>
-    <!-- Required for SMTPAppender -->
     <dependency>
-      <groupId>com.sun.mail</groupId>
-      <artifactId>javax.mail</artifactId>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
+      <version>5.0.0</version>
+      <scope>provided</scope>
     </dependency>
-    <!-- Test Dependencies -->
+
+    <!-- Test dependencies -->
     <dependency>
-      <groupId>org.junit.vintage</groupId>
-      <artifactId>junit-vintage-engine</artifactId>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+    	<groupId>org.hamcrest</groupId>
+    	<artifactId>hamcrest</artifactId>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest</artifactId>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+	</dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-api</artifactId>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.lmax</groupId>
-      <artifactId>disruptor</artifactId>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -79,8 +91,10 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Fragment-Host>org.apache.logging.log4j.core.appender.mom.jeromq</Fragment-Host>
-            <Export-Package>*</Export-Package>
+            <!-- we require 5.0 minimum -->
+            <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
+            <Import-Package>jakarta.servlet;version="[5.0,4)",*</Import-Package>
+            <Export-Package>org.apache.logging.log4j.web</Export-Package>
           </instructions>
         </configuration>
       </plugin>
@@ -125,10 +139,13 @@
           <bottom><![CDATA[<p align="center">Copyright &#169; {inceptionYear}-{currentYear} {organizationName}. All Rights Reserved.<br />
             Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, the Apache Logging project logo,
             and the Apache Log4j logo are trademarks of The Apache Software Foundation.</p>]]></bottom>
-          <!-- module link generation is completely broken in the javadoc plugin for a multi-module non-aggregating project -->
+          <!-- module link generation is completely broken in the javadoc plugin for a multi-module non-aggregating
+               project -->
           <detectOfflineLinks>false</detectOfflineLinks>
           <linksource>true</linksource>
-          <source>8</source>
+          <links>
+            <link>http://docs.oracle.com/javaee/6/api/</link>
+          </links>
         </configuration>
         <reportSets>
           <reportSet>

@@ -30,6 +30,11 @@ when the web application undeploys. How this works varies depending on
 whether your application is a link:#Servlet-3.0[Servlet 3.0 or newer] or
 link:#Servlet-2.5[Servlet 2.5] web application.
 
+
+Due to the namespace change from `javax` to `jakarta` you need to use
+`log4j-jakarta-web` instead of `log4j-web` for Servlet 5.0 or newer.
+
+
 In either case, you'll need to add the `log4j-web` module to your
 deployment as detailed in the link:../maven-artifacts.html[Maven, Ivy,
 and Gradle Artifacts] manual page.
