@@ -107,6 +107,9 @@
         Improve PatternLayout performance by reducing unnecessary indirection and branching.
       </action>
       <!-- FIXES -->
+      <action issue="LOG4J2-3168" dev="rgoers" type="fix" due-to="Benjamin Wöster">
+       Fix bug when file names contain regex characters.
+      </action>
       <action issue="LOG4J2-3110" dev="rgoers" type="fix" due-to="Arturo Bernal">
         Fix the number of {}-placeholders in the string literal argument does not match the number of other arguments
         to the logging call.
