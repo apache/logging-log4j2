@@ -255,7 +255,7 @@
     <junitVersion>4.13.2</junitVersion>
     <junitJupiterVersion>5.7.2</junitJupiterVersion>
     <mockitoVersion>3.11.2</mockitoVersion>
-    <xmlunitVersion>2.8.2</xmlunitVersion>
+    <xmlunitVersion>2.8.3</xmlunitVersion>
     <argLine>-Xms256m -Xmx1024m</argLine>
     <javaTargetVersion>1.8</javaTargetVersion>
     <module.name />
