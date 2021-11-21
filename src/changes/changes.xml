@@ -107,6 +107,9 @@
         Improve PatternLayout performance by reducing unnecessary indirection and branching.
       </action>
       <!-- FIXES -->
+      <action issue="LOG4J2-3114" dev="rgoers" type="fix" due-to="Barnabas Bodnar">
+        Enable immediate flush on RollingFileAppender when buffered i/o is not enabled.
+      </action>
       <action issue="LOG4J2-3168" dev="rgoers" type="fix" due-to="Benjamin Wöster">
        Fix bug when file names contain regex characters.
       </action>
