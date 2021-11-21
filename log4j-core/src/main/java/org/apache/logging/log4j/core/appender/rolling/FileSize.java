@@ -61,20 +61,20 @@ public final class FileSize {
         if (matcher.matches()) {
             try {
                 // Get double precision value
-                final long value = NumberFormat.getNumberInstance(Locale.ROOT).parse(
-                    matcher.group(1)).longValue();
+                final double value = NumberFormat.getNumberInstance(Locale.ROOT).parse(
+                        matcher.group(1)).doubleValue();
 
                 // Get units specified
                 final String units = matcher.group(3);
 
                 if (units.isEmpty()) {
-                    return value;
+                    return (long) value;
                 } else if (units.equalsIgnoreCase("K")) {
-                    return value * KB;
+                    return (long) (value * KB);
                 } else if (units.equalsIgnoreCase("M")) {
-                    return value * MB;
+                    return (long) (value * MB);
                 } else if (units.equalsIgnoreCase("G")) {
-                    return value * GB;
+                    return (long) (value * GB);
                 } else {
                     LOGGER.error("FileSize units not recognized: " + string);
                     return defaultValue;

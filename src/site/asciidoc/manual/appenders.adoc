@@ -2761,6 +2761,8 @@ SizeBased Triggering Policy
 
 The `SizeBasedTriggeringPolicy` causes a rollover once the file has reached the specified size. The size can be
 specified in bytes, with the suffix KB, MB or GB, for example `20MB`.
+size.The size may also contain a fractional value such as `1.5 MB`. The size is evaluated
+using the Java root Locale so a period must always be used for the fractional unit.
 When combined with a time based triggering policy the file pattern must contain a `%i`
 otherwise the target file will be overwritten on every rollover as the SizeBased Triggering Policy
 will not cause the timestamp value in the file name to change. When used without a time based
