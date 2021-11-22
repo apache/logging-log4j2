@@ -213,6 +213,9 @@
         Wrong subject on mail when it depends on the LogEvent
       </action>
       <!-- UPDATES -->
+      <action dev="rgoers" type="update">
+        Update Spring framework to 5.3.13, Spring Boot to 2.5.7, and Spring Cloud to 2020.0.4.
+      </action>
       <action issue="LOG4J2-2025" dev="rgoers" type="update">
         Provide support for overriding the Tomcat Log class in Tomcat 8.5+.
       </action>
