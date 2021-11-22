@@ -480,6 +480,9 @@ public final class PropertiesUtil {
         }
 
         private String get(final String key) {
+            if (tokenized.containsKey(PropertySource.Util.tokenize(key))) {
+                return tokenized.get(PropertySource.Util.tokenize(key));
+            }
             if (normalized.containsKey(key)) {
                 return normalized.get(key);
             }
@@ -494,7 +497,7 @@ public final class PropertiesUtil {
                     return source.getProperty(key);
                 }
             }
-            return tokenized.get(PropertySource.Util.tokenize(key));
+            return null;
         }
 
         private boolean containsKey(final String key) {

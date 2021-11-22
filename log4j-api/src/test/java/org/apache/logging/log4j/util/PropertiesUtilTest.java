@@ -17,18 +17,20 @@
 
 package org.apache.logging.log4j.util;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.ResourceAccessMode;
-import org.junit.jupiter.api.parallel.ResourceLock;
-import org.junit.jupiter.api.parallel.Resources;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Properties;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceAccessMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 
 public class PropertiesUtilTest {
 
@@ -119,4 +121,20 @@ public class PropertiesUtilTest {
         assertNotNull(value, "System property was not published");
         assertEquals("Log4j", value);
     }
+
+	@Test
+	public void testGetStringPropertyFindsCamelCaseForUnderscores() {
+		final Properties props = new Properties();
+		props.setProperty("log4j.configurationFile", "abc");
+		final PropertiesUtil util = new PropertiesUtil(props);
+		assertNotNull(util.getStringProperty("LOG4J_CONFIGURATION_FILE"));
+	}
+
+	@Test
+	public void testGetStringPropertyFindsUnderscoresForCamelCase() {
+		final Properties props = new Properties();
+		props.setProperty("LOG4J_CONFIGURATION_FILE", "abc");
+		final PropertiesUtil util = new PropertiesUtil(props);
+		assertNotNull(util.getStringProperty("log4j.configurationFile"));
+	}
 }
