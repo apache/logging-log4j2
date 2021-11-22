@@ -342,6 +342,9 @@
         Fixed a deadlock between the AsyncLoggerContextSelector and java.util.logging.LogManager by updating Disruptor to 3.4.4.
       </action>
       <!-- UPDATES -->
+      <action dev="rgoers" type="update">
+        Update Spring framework to 5.3.13, Spring Boot to 2.5.7, and Spring Cloud to 2020.0.4.
+      </action>
       <action dev="ggregory" type="update">
         - org.eclipse.persistence:javax.persistence ............. 2.1.1 -> 2.2.1
         - org.eclipse.persistence:org.eclipse.persistence.jpa ... 2.6.5 -> 2.6.9
