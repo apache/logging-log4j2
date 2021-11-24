@@ -198,7 +198,7 @@
     <logbackVersion>1.2.3</logbackVersion>
     <jackson1Version>1.9.13</jackson1Version>
     <jackson2Version>2.12.4</jackson2Version>
-    <spring-boot.version>2.5.7</spring-boot.version>
+    <spring-boot.version>2.6.0</spring-boot.version>
     <springVersion>5.3.13</springVersion>
     <kubernetes-client.version>4.6.1</kubernetes-client.version>
     <flumeVersion>1.9.0</flumeVersion>
