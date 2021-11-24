@@ -4463,8 +4463,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
   <Appenders>
     <Routing name="Routing">
       <Script name="RoutingInit" language="JavaScript"><![CDATA[
-        importPackage(java.lang);
-        System.getProperty("os.name").search("Windows") > -1 ? "ServiceWindows" : "ServiceOther";]]]]><![CDATA[>
+        java.lang.System.getProperty("os.name").search("Windows") > -1 ? "ServiceWindows" : "ServiceOther";]]]]><![CDATA[>
       </Script>
       <Routes>
         <Route key="ServiceOther">
@@ -4780,8 +4779,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
   <Appenders>
     <ScriptAppenderSelector name="SelectIt">
       <Script language="JavaScript"><![CDATA[
-        importPackage(java.lang);
-        System.getProperty("os.name").search("Windows") > -1 ? "MyCustomWindowsAppender" : "MySyslogAppender";]]]]><![CDATA[>
+        java.lang.System.getProperty("os.name").search("Windows") > -1 ? "MyCustomWindowsAppender" : "MySyslogAppender";]]]]><![CDATA[>
       </Script>
       <AppenderSet>
         <MyCustomWindowsAppender name="MyAppender" ... />
