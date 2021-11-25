@@ -204,7 +204,7 @@
     <flumeVersion>1.9.0</flumeVersion>
     <disruptorVersion>3.4.4</disruptorVersion>
     <conversantDisruptorVersion>1.2.19</conversantDisruptorVersion>
-    <elastic.version>7.6.2</elastic.version>
+    <elastic.version>7.15.2</elastic.version>
     <mongodb3.version>3.12.4</mongodb3.version>
     <mongodb4.version>4.0.3</mongodb4.version>
     <groovy.version>2.5.6</groovy.version>
