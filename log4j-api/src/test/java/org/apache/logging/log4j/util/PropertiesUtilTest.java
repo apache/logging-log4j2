@@ -122,19 +122,19 @@ public class PropertiesUtilTest {
         assertEquals("Log4j", value);
     }
 
-	@Test
-	public void testGetStringPropertyFindsCamelCaseForUnderscores() {
-		final Properties props = new Properties();
-		props.setProperty("log4j.configurationFile", "abc");
-		final PropertiesUtil util = new PropertiesUtil(props);
-		assertNotNull(util.getStringProperty("LOG4J_CONFIGURATION_FILE"));
-	}
+    @Test
+    public void testGetStringPropertyFindsCamelCaseForUnderscores() {
+        final Properties props = new Properties();
+        props.setProperty("log4j.configurationFile", "abc");
+        final PropertiesUtil util = new PropertiesUtil(props);
+        assertNotNull(util.getStringProperty("LOG4J_CONFIGURATION_FILE"));
+    }
 
-	@Test
-	public void testGetStringPropertyFindsUnderscoresForCamelCase() {
-		final Properties props = new Properties();
-		props.setProperty("LOG4J_CONFIGURATION_FILE", "abc");
-		final PropertiesUtil util = new PropertiesUtil(props);
-		assertNotNull(util.getStringProperty("log4j.configurationFile"));
-	}
+    @Test
+    public void testGetStringPropertyFindsUnderscoresForCamelCase() {
+        final Properties props = new Properties();
+        props.setProperty("LOG4J_CONFIGURATION_FILE", "abc");
+        final PropertiesUtil util = new PropertiesUtil(props);
+        assertNotNull(util.getStringProperty("log4j.configurationFile"));
+    }
 }

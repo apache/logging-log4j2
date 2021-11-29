@@ -81,22 +81,22 @@ public interface PropertySource {
     }
 
     /**
-	 * Comparator for ordering PropertySource instances by priority.
-	 * Specifically, this Comparator will sort by Priority (int) in
-	 * <i>reverse</i> numerical order because a source with priority -100 has a
-	 * <i>higher</i> priority (can override values from) a source with priority
-	 * 100.
-	 *
-	 * @since 2.10.0
-	 */
+     * Comparator for ordering PropertySource instances by priority.
+     * Specifically, this Comparator will sort by Priority (int) in
+     * <i>reverse</i> numerical order because a source with priority -100 has a
+     * <i>higher</i> priority (can override values from) a source with priority
+     * 100.
+     *
+     * @since 2.10.0
+     */
     class Comparator implements java.util.Comparator<PropertySource>, Serializable {
         private static final long serialVersionUID = 1L;
 
         @Override
         public int compare(final PropertySource o1, final PropertySource o2) {
-			// arguments below are reversed compared to this method's input
-			// arguments in order to reverse sorting order (see javadoc)
-			return Integer.compare(Objects.requireNonNull(o2).getPriority(), Objects.requireNonNull(o1).getPriority());
+            // arguments below are reversed compared to this method's input
+            // arguments in order to reverse sorting order (see javadoc)
+            return Integer.compare(Objects.requireNonNull(o2).getPriority(), Objects.requireNonNull(o1).getPriority());
         }
     }
 

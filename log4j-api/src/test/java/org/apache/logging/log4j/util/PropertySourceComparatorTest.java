@@ -26,19 +26,19 @@ import org.junit.jupiter.api.Test;
 
 public class PropertySourceComparatorTest {
 
-	@Test
+    @Test
     public void testPriorityOrder() {
-		List<PropertySource> sources = new ArrayList<>();
-		sources.add(new EnvironmentPropertySource());
-		sources.add(new PropertiesPropertySource(new Properties()));
-		sources.add(new SystemPropertiesPropertySource());
-		
-		sources.sort(new PropertySource.Comparator());
-		
-		// When sources are applied, higher (later) priority sources override
-		// lower (earlier) priority sources.
-		assertTrue(sources.get(0) instanceof SystemPropertiesPropertySource);
-		assertTrue(sources.get(1) instanceof PropertiesPropertySource);
-		assertTrue(sources.get(2) instanceof EnvironmentPropertySource);
+        List<PropertySource> sources = new ArrayList<>();
+        sources.add(new EnvironmentPropertySource());
+        sources.add(new PropertiesPropertySource(new Properties()));
+        sources.add(new SystemPropertiesPropertySource());
+
+        sources.sort(new PropertySource.Comparator());
+
+        // When sources are applied, higher (later) priority sources override
+        // lower (earlier) priority sources.
+        assertTrue(sources.get(0) instanceof SystemPropertiesPropertySource);
+        assertTrue(sources.get(1) instanceof PropertiesPropertySource);
+        assertTrue(sources.get(2) instanceof EnvironmentPropertySource);
     }
 }
