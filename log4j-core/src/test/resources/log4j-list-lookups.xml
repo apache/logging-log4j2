@@ -18,7 +18,7 @@
 <Configuration status="WARN">
   <Appenders>
     <List name="List">
-      <PatternLayout pattern="[%-5level] %c{1.} %msg{ansi}{nolookups}%n" />
+      <PatternLayout pattern="[%-5level] %c{1.} %msg{ansi}{lookups}%n" />
     </List>
   </Appenders>
   <Loggers>

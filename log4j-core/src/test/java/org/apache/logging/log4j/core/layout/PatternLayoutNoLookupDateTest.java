@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 /**
  * See (LOG4J2-905) Ability to disable (date) lookup completely, compatibility issues with other libraries like camel.
  */
-@LoggerContextSource("log4j-list-nolookups.xml")
+@LoggerContextSource("log4j-list.xml")
 public class PatternLayoutNoLookupDateTest {
 
     @Test

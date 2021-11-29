@@ -1264,14 +1264,13 @@ rootLogger.appenderRef.stdout.ref = STDOUT
             <code>app.properties</code> would be used as the default value.
           </p>
         </subsection>
-        <a name="DisablingMessagePatternLookups"/>
-        <subsection name="Disables Message Pattern Lookups">
+        <a name="EnablingMessagePatternLookups"/>
+        <subsection name="Enabling Message Pattern Lookups">
         <p>
-          A message is processed (by default) by lookups, for example if you defined
+          A message is processed (by default) without using lookups, for example if you defined
           <code> &lt;Property name="foo.bar">FOO_BAR &lt;/Property></code>, then <code>logger.info("${foo.bar}")</code>
-          will output <code>FOO_BAR</code> instead of <code>${dollar}{foo.bar}</code>. You could disable message pattern
-          lookups globally by setting system property <code>log4j2.formatMsgNoLookups</code> to true,
-          or defining message pattern using %m{nolookups}.
+          will output <code>${dollar}{foo.bar}</code> instead of <code>FOO_BAR</code>. You could enable message pattern
+          lookups by defining message pattern using %m{lookups}.
         </p>
         </subsection>
         <a name="RuntimeLookup"/>
@@ -2645,16 +2644,6 @@ public class AwesomeTest {
     <td>false</td>
     <td>Prints a stacktrace to the <a href="#StatusMessages">status logger</a> at DEBUG level
     when the LoggerContext is started. For debug purposes.</td>
-  </tr>
-  <tr>
-      <td><a name="formatMsgNoLookups"/>log4j2.formatMsgNoLookups
-        <br />
-        (<a name="log4j2.formatMsgNoLookups" />log4j2.formatMsgNoLookups)
-      </td>
-      <td>FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS</td>
-      <td>false</td>
-      <td>Disables message pattern lookups globally when set to <tt>true</tt>.
-          This is equivalent to defining all message patterns using <tt>%m{nolookups}</tt>.</td>
   </tr>
   <tr>
     <td><a name="log4j2.trustStoreLocation "/>log4j2.trustStoreLocation</td>
