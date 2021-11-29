@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.util.ArrayUtils;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MultiformatMessage;
@@ -39,17 +39,18 @@ import org.apache.logging.log4j.util.StringBuilderFormattable;
 @PerformanceSensitive("allocation")
 public class MessagePatternConverter extends LogEventPatternConverter {
 
+    private static final String LOOKUPS = "lookups";
     private static final String NOLOOKUPS = "nolookups";
 
     private MessagePatternConverter() {
         super("Message", "message");
     }
 
-    private static int loadNoLookups(final String[] options) {
+    private static int loadLookups(final String[] options) {
         if (options != null) {
             for (int i = 0; i < options.length; i++) {
                 final String option = options[i];
-                if (NOLOOKUPS.equalsIgnoreCase(option)) {
+                if (LOOKUPS.equalsIgnoreCase(option)) {
                     return i;
                 }
             }
@@ -86,20 +87,32 @@ public class MessagePatternConverter extends LogEventPatternConverter {
      * @return instance of pattern converter.
      */
     public static MessagePatternConverter newInstance(final Configuration config, final String[] options) {
-        int noLookupsIdx = loadNoLookups(options);
-        boolean noLookups = Constants.FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS || noLookupsIdx >= 0;
-        String[] formats = noLookupsIdx >= 0 ? ArrayUtils.remove(options, noLookupsIdx) : options;
-        TextRenderer textRenderer = loadMessageRenderer(noLookupsIdx >= 0 ? ArrayUtils.remove(options, noLookupsIdx) : options);
+        boolean lookups = loadLookups(options) >= 0;
+        String[] formats = withoutLookupOptions(options);
+        TextRenderer textRenderer = loadMessageRenderer(formats);
         MessagePatternConverter result = formats == null || formats.length == 0
                 ? SimpleMessagePatternConverter.INSTANCE
                 : new FormattedMessagePatternConverter(formats);
-        if (!noLookups && config != null) {
+        if (lookups && config != null) {
             result = new LookupMessagePatternConverter(result, config);
         }
         if (textRenderer != null) {
             result = new RenderingPatternConverter(result, textRenderer);
         }
         return result;
+    }
+
+    private static String[] withoutLookupOptions(final String[] options) {
+        if (options == null || options.length == 0) {
+            return options;
+        }
+        List<String> results = new ArrayList<>(options.length);
+        for (String option : options) {
+            if (!LOOKUPS.equalsIgnoreCase(option) && !NOLOOKUPS.equalsIgnoreCase(option)) {
+                results.add(option);
+            }
+        }
+        return results.toArray(new String[0]);
     }
 
     @Override

@@ -21,12 +21,12 @@
     <List name="List">
        <PatternLayout>
          <replace regex="\." replacement="/"/>
-         <Pattern>%logger %msg%n</Pattern>
+         <Pattern>%logger %msg{lookups}%n</Pattern>
       </PatternLayout>
     </List>
     <List name="List2">
        <PatternLayout>
-         <Pattern>%replace{%logger %C{1.} %msg%n}{\.}{/}</Pattern>
+         <Pattern>%replace{%logger %C{1.} %msg{lookups}%n}{\.}{/}</Pattern>
       </PatternLayout>
     </List>
   </Appenders>
