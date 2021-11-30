@@ -17,31 +17,76 @@
 
 package org.apache.logging.log4j.core.net;
 
+import java.io.Serializable;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import javax.naming.Context;
-import javax.naming.InitialContext;
+import javax.naming.NameClassPair;
+import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
+import javax.naming.Referenceable;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.DirContext;
+import javax.naming.directory.InitialDirContext;
 
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.util.JndiCloser;
+import org.apache.logging.log4j.core.util.NetUtils;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
- * Manages a JNDI {@link javax.naming.Context}.
+ * Manages a JNDI {@link javax.naming.directory.DirContext}.
  *
  * @since 2.1
  */
 public class JndiManager extends AbstractManager {
 
+    public static final String ALLOWED_HOSTS = "allowedLdapHosts";
+    public static final String ALLOWED_CLASSES = "allowedLdapClasses";
+
     private static final JndiManagerFactory FACTORY = new JndiManagerFactory();
+    private static final String PREFIX = "log4j2.";
+    private static final List<String> permanentAllowedHosts = new ArrayList<>();
+    private static final List<String> permanentAllowedClasses = new ArrayList<>();
+    private static final String LDAP = "ldap";
+    private static final String SERIALIZED_DATA = "javaserializeddata";
+    private static final String CLASS_NAME = "javaclassname";
+    private static final String REFERENCE_ADDRESS = "javareferenceaddress";
+    private static final String OBJECT_FACTORY = "javafactory";
+    private final List<String> allowedHosts;
+    private final List<String> allowedClasses;
 
-    private final Context context;
+    static {
+        permanentAllowedHosts.addAll(NetUtils.getLocalIps());
+        permanentAllowedClasses.add(Boolean.class.getName());
+        permanentAllowedClasses.add(Byte.class.getName());
+        permanentAllowedClasses.add(Character.class.getName());
+        permanentAllowedClasses.add(Double.class.getName());
+        permanentAllowedClasses.add(Float.class.getName());
+        permanentAllowedClasses.add(Integer.class.getName());
+        permanentAllowedClasses.add(Long.class.getName());
+        permanentAllowedClasses.add(Number.class.getName());
+        permanentAllowedClasses.add(Short.class.getName());
+        permanentAllowedClasses.add(String.class.getName());
+    }
 
-    private JndiManager(final String name, final Context context) {
+
+    private final DirContext context;
+
+    private JndiManager(final String name, final DirContext context, final List<String> allowedHosts,
+            final List<String> allowedClasses) {
         super(null, name);
         this.context = context;
+        this.allowedHosts = allowedHosts;
+        this.allowedClasses = allowedClasses;
     }
 
     /**
@@ -168,7 +213,37 @@ public class JndiManager extends AbstractManager {
      * @throws  NamingException if a naming exception is encountered
      */
     @SuppressWarnings("unchecked")
-    public <T> T lookup(final String name) throws NamingException {
+    public synchronized <T> T lookup(final String name) throws NamingException {
+        try {
+            URI uri = new URI(name);
+            if (LDAP.equalsIgnoreCase(uri.getScheme())) {
+                if (!allowedHosts.contains(uri.getHost())) {
+                    LOGGER.warn("Attempt to access ldap server not in allowed list");
+                    return null;
+                }
+                Attributes attributes = this.context.getAttributes(name);
+                if (attributes != null) {
+                    Attribute classNameAttr = attributes.get(CLASS_NAME);
+                    if (attributes.get(SERIALIZED_DATA) != null) {
+                        if (classNameAttr != null) {
+                            String className = classNameAttr.get().toString();
+                            if (!allowedClasses.contains(className)) {
+                                LOGGER.warn("Deserialization of {} is not allowed", className);
+                                return null;
+                            }
+                        } else {
+                            LOGGER.warn("No class name provided for {}", name);
+                            return null;
+                        }
+                    } else if (attributes.get(REFERENCE_ADDRESS) != null || attributes.get(OBJECT_FACTORY) != null){
+                        LOGGER.warn("Referenceable class is not allowed for {}", name);
+                        return null;
+                    }
+                }
+            }
+        } catch (URISyntaxException ex) {
+            // This is OK.
+        }
         return (T) this.context.lookup(name);
     }
 
@@ -176,12 +251,31 @@ public class JndiManager extends AbstractManager {
 
         @Override
         public JndiManager createManager(final String name, final Properties data) {
+            String hosts = data != null ? data.getProperty(ALLOWED_HOSTS) : null;
+            String classes = data != null ? data.getProperty(ALLOWED_CLASSES) : null;
+            List<String> allowedHosts = new ArrayList<>();
+            List<String> allowedClasses = new ArrayList<>();
+            addAll(hosts, allowedHosts, permanentAllowedHosts, ALLOWED_HOSTS, data);
+            addAll(classes, allowedClasses, permanentAllowedClasses, ALLOWED_CLASSES, data);
             try {
-                return new JndiManager(name, new InitialContext(data));
+                return new JndiManager(name, new InitialDirContext(data), allowedHosts, allowedClasses);
             } catch (final NamingException e) {
                 LOGGER.error("Error creating JNDI InitialContext.", e);
                 return null;
             }
+        }
+
+        private void addAll(String toSplit, List<String> list, List<String> permanentList, String propertyName,
+                Properties data) {
+            if (toSplit != null) {
+                list.addAll(Arrays.asList(toSplit.split("\\s*,\\s*")));
+                data.remove(propertyName);
+            }
+            toSplit = PropertiesUtil.getProperties().getStringProperty(PREFIX + propertyName);
+            if (toSplit != null) {
+                list.addAll(Arrays.asList(toSplit.split("\\s*,\\s*")));
+            }
+            list.addAll(permanentList);
         }
     }
 
