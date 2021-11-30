@@ -57,7 +57,7 @@ LoggerConfig if there are no ancestors between itself and the
 descendant LoggerConfig.
 
 For example, the LoggerConfig named `"com.foo"` is a parent of the
-LoggerConfig named`"com.foo.Bar"`. Similarly, `"java"` is a parent of
+LoggerConfig named `"com.foo.Bar"`. Similarly, `"java"` is a parent of
 `"java.util"` and an ancestor of `"java.util.Vector"`. This naming
 scheme should be familiar to most developers.
 
