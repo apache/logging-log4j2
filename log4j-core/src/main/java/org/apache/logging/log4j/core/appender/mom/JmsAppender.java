@@ -94,6 +94,9 @@ public class JmsAppender extends AbstractAppender {
         @PluginBuilderAttribute
         private String allowedLdapHosts;
 
+        @PluginBuilderAttribute
+        private String allowedJndiProtocols;
+
         // Programmatic access only for now.
         private JmsManager jmsManager;
 
@@ -114,6 +117,9 @@ public class JmsAppender extends AbstractAppender {
                     }
                     if (allowedLdapClasses != null) {
                         additionalProperties.put(JndiManager.ALLOWED_CLASSES, allowedLdapClasses);
+                    }
+                    if (allowedJndiProtocols != null) {
+                        additionalProperties.put(JndiManager.ALLOWED_PROTOCOLS, allowedJndiProtocols);
                     }
                 }
                 final Properties jndiProperties = JndiManager.createProperties(factoryName, providerUrl, urlPkgPrefixes,
@@ -228,6 +234,11 @@ public class JmsAppender extends AbstractAppender {
             return this;
         }
 
+        public Builder setAllowedJndiProtocols(final String allowedJndiProtocols) {
+            this.allowedJndiProtocols = allowedJndiProtocols;
+            return this;
+        }
+
         /**
          * Does not include the password.
          */
@@ -239,7 +250,7 @@ public class JmsAppender extends AbstractAppender {
                     + ", destinationBindingName=" + destinationBindingName + ", username=" + userName + ", layout="
                     + getLayout() + ", filter=" + getFilter() + ", ignoreExceptions=" + isIgnoreExceptions()
                     + ", jmsManager=" + jmsManager + ", allowedLdapClasses=" + allowedLdapClasses
-                    + ", allowedLdapHosts=" + allowedLdapHosts + "]";
+                    + ", allowedLdapHosts=" + allowedLdapHosts + ", allowedJndiProtocols=" + allowedJndiProtocols + "]";
         }
 
     }

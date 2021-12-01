@@ -17,20 +17,17 @@
 
 package org.apache.logging.log4j.core.net;
 
-import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import javax.naming.Context;
-import javax.naming.NameClassPair;
-import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
-import javax.naming.Referenceable;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
@@ -51,42 +48,36 @@ public class JndiManager extends AbstractManager {
 
     public static final String ALLOWED_HOSTS = "allowedLdapHosts";
     public static final String ALLOWED_CLASSES = "allowedLdapClasses";
+    public static final String ALLOWED_PROTOCOLS = "allowedJndiProtocols";
 
     private static final JndiManagerFactory FACTORY = new JndiManagerFactory();
     private static final String PREFIX = "log4j2.";
-    private static final List<String> permanentAllowedHosts = new ArrayList<>();
-    private static final List<String> permanentAllowedClasses = new ArrayList<>();
     private static final String LDAP = "ldap";
+    private static final String LDAPS = "ldaps";
+    private static final String JAVA = "java";
+    private static final List<String> permanentAllowedHosts = NetUtils.getLocalIps();
+    private static final List<String> permanentAllowedClasses = Arrays.asList(Boolean.class.getName(),
+            Byte.class.getName(), Character.class.getName(), Double.class.getName(), Float.class.getName(),
+            Integer.class.getName(), Long.class.getName(), Number.class.getName(), Short.class.getName(),
+            String.class.getName());
+    private static final List<String> permanentAllowedProtocols = Arrays.asList(JAVA, LDAP, LDAPS);
     private static final String SERIALIZED_DATA = "javaserializeddata";
     private static final String CLASS_NAME = "javaclassname";
     private static final String REFERENCE_ADDRESS = "javareferenceaddress";
     private static final String OBJECT_FACTORY = "javafactory";
     private final List<String> allowedHosts;
     private final List<String> allowedClasses;
-
-    static {
-        permanentAllowedHosts.addAll(NetUtils.getLocalIps());
-        permanentAllowedClasses.add(Boolean.class.getName());
-        permanentAllowedClasses.add(Byte.class.getName());
-        permanentAllowedClasses.add(Character.class.getName());
-        permanentAllowedClasses.add(Double.class.getName());
-        permanentAllowedClasses.add(Float.class.getName());
-        permanentAllowedClasses.add(Integer.class.getName());
-        permanentAllowedClasses.add(Long.class.getName());
-        permanentAllowedClasses.add(Number.class.getName());
-        permanentAllowedClasses.add(Short.class.getName());
-        permanentAllowedClasses.add(String.class.getName());
-    }
-
+    private final List<String> allowedProtocols;
 
     private final DirContext context;
 
     private JndiManager(final String name, final DirContext context, final List<String> allowedHosts,
-            final List<String> allowedClasses) {
+            final List<String> allowedClasses, final List<String> allowedProtocols) {
         super(null, name);
         this.context = context;
         this.allowedHosts = allowedHosts;
         this.allowedClasses = allowedClasses;
+        this.allowedProtocols = allowedProtocols;
     }
 
     /**
@@ -216,7 +207,11 @@ public class JndiManager extends AbstractManager {
     public synchronized <T> T lookup(final String name) throws NamingException {
         try {
             URI uri = new URI(name);
-            if (LDAP.equalsIgnoreCase(uri.getScheme())) {
+            if (!allowedProtocols.contains(uri.getScheme().toLowerCase(Locale.ROOT))) {
+                LOGGER.warn("Log4j JNDI does not allow protocol {}", uri.getScheme());
+                return null;
+            }
+            if (LDAP.equalsIgnoreCase(uri.getScheme()) || LDAPS.equalsIgnoreCase(uri.getScheme())) {
                 if (!allowedHosts.contains(uri.getHost())) {
                     LOGGER.warn("Attempt to access ldap server not in allowed list");
                     return null;
@@ -253,12 +248,16 @@ public class JndiManager extends AbstractManager {
         public JndiManager createManager(final String name, final Properties data) {
             String hosts = data != null ? data.getProperty(ALLOWED_HOSTS) : null;
             String classes = data != null ? data.getProperty(ALLOWED_CLASSES) : null;
+            String protocols = data != null ? data.getProperty(ALLOWED_PROTOCOLS) : null;
             List<String> allowedHosts = new ArrayList<>();
             List<String> allowedClasses = new ArrayList<>();
+            List<String> allowedProtocols = new ArrayList<>();
             addAll(hosts, allowedHosts, permanentAllowedHosts, ALLOWED_HOSTS, data);
             addAll(classes, allowedClasses, permanentAllowedClasses, ALLOWED_CLASSES, data);
+            addAll(protocols, allowedProtocols, permanentAllowedProtocols, ALLOWED_PROTOCOLS, data);
             try {
-                return new JndiManager(name, new InitialDirContext(data), allowedHosts, allowedClasses);
+                return new JndiManager(name, new InitialDirContext(data), allowedHosts, allowedClasses,
+                        allowedProtocols);
             } catch (final NamingException e) {
                 LOGGER.error("Error creating JNDI InitialContext.", e);
                 return null;

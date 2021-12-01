@@ -43,7 +43,8 @@ public class JndiLdapLookupTest {
     private static final String TEST_STRING = "TestString";
     private static final String TEST_MESSAGE = "TestMessage";
     private static final String LEVEL = "TestLevel";
-    public static final String DOMAIN_DSN = "dc=apache,dc=org";
+    private static final String DOMAIN_DSN = "dc=apache,dc=org";
+    private static final String DOMAIN = "apache.org";
 
     @Rule
     public EmbeddedLdapRule embeddedLdapRule = EmbeddedLdapRuleBuilder.newInstance().usingDomainDsn(DOMAIN_DSN)
@@ -52,6 +53,7 @@ public class JndiLdapLookupTest {
     @BeforeClass
     public static void beforeClass() {
         System.setProperty("log4j2.allowedLdapClasses", Level.class.getName());
+        System.setProperty("log4j2.allowedJndiProtocols", "dns");
     }
 
     @Test
@@ -102,6 +104,24 @@ public class JndiLdapLookupTest {
             fail("Lookup failed to return the level");
         }
         assertEquals("Incorrect level returned", Level.ERROR.toString(), result);
+    }
+
+    @Test
+    public void testDnsLookup() throws Exception {
+        final StrLookup lookup = new JndiLookup();
+        String result = lookup.lookup("dns:/" + DOMAIN);
+        if (result == null) {
+            fail("No DNS data returned");
+        }
+    }
+
+    @Test
+    public void testNisLookup() throws Exception {
+        final StrLookup lookup = new JndiLookup();
+        String result = lookup.lookup("nis:/" + DOMAIN);
+        if (result != null) {
+            fail("NIS information should not have been returned");
+        }
     }
 
     class Fruit implements Referenceable {
