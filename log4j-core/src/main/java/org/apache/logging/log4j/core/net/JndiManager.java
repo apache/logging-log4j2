@@ -21,12 +21,15 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import javax.naming.Context;
+import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
@@ -58,13 +61,12 @@ public class JndiManager extends AbstractManager {
     private static final List<String> permanentAllowedHosts = NetUtils.getLocalIps();
     private static final List<String> permanentAllowedClasses = Arrays.asList(Boolean.class.getName(),
             Byte.class.getName(), Character.class.getName(), Double.class.getName(), Float.class.getName(),
-            Integer.class.getName(), Long.class.getName(), Number.class.getName(), Short.class.getName(),
-            String.class.getName());
+            Integer.class.getName(), Long.class.getName(), Short.class.getName(), String.class.getName());
     private static final List<String> permanentAllowedProtocols = Arrays.asList(JAVA, LDAP, LDAPS);
-    private static final String SERIALIZED_DATA = "javaserializeddata";
-    private static final String CLASS_NAME = "javaclassname";
-    private static final String REFERENCE_ADDRESS = "javareferenceaddress";
-    private static final String OBJECT_FACTORY = "javafactory";
+    private static final String SERIALIZED_DATA = "javaSerializedData";
+    private static final String CLASS_NAME = "javaClassName";
+    private static final String REFERENCE_ADDRESS = "javaReferenceAddress";
+    private static final String OBJECT_FACTORY = "javaFactory";
     private final List<String> allowedHosts;
     private final List<String> allowedClasses;
     private final List<String> allowedProtocols;
@@ -218,8 +220,18 @@ public class JndiManager extends AbstractManager {
                 }
                 Attributes attributes = this.context.getAttributes(name);
                 if (attributes != null) {
-                    Attribute classNameAttr = attributes.get(CLASS_NAME);
-                    if (attributes.get(SERIALIZED_DATA) != null) {
+                    // In testing the "key" for attributes seems to be lowercase while the attribute id is
+                    // camelcase, but that may just be true for the test LDAP used here. This copies the Attributes
+                    // to a Map ignoring the "key" and using the Attribute's id as the key in the Map so it matches
+                    // the Java schema.
+                    Map<String, Attribute> attributeMap = new HashMap<>();
+                    NamingEnumeration<? extends Attribute> enumeration = attributes.getAll();
+                    while (enumeration.hasMore()) {
+                        Attribute attribute = enumeration.next();
+                        attributeMap.put(attribute.getID(), attribute);
+                    }
+                    Attribute classNameAttr = attributeMap.get(CLASS_NAME);
+                    if (attributeMap.get(SERIALIZED_DATA) != null) {
                         if (classNameAttr != null) {
                             String className = classNameAttr.get().toString();
                             if (!allowedClasses.contains(className)) {
@@ -230,7 +242,8 @@ public class JndiManager extends AbstractManager {
                             LOGGER.warn("No class name provided for {}", name);
                             return null;
                         }
-                    } else if (attributes.get(REFERENCE_ADDRESS) != null || attributes.get(OBJECT_FACTORY) != null){
+                    } else if (attributeMap.get(REFERENCE_ADDRESS) != null
+                            || attributeMap.get(OBJECT_FACTORY) != null) {
                         LOGGER.warn("Referenceable class is not allowed for {}", name);
                         return null;
                     }

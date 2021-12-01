@@ -36,7 +36,7 @@ import static org.junit.Assert.fail;
 /**
  * JndiLookupTest
  */
-public class JndiLdapLookupTest {
+public class JndiRestrictedLookupTest {
 
     private static final String LDAP_URL = "ldap://127.0.0.1:";
     private static final String RESOURCE = "JndiExploit";
@@ -48,7 +48,7 @@ public class JndiLdapLookupTest {
 
     @Rule
     public EmbeddedLdapRule embeddedLdapRule = EmbeddedLdapRuleBuilder.newInstance().usingDomainDsn(DOMAIN_DSN)
-            .importingLdifs("java-import.ldif").build();
+            .importingLdifs("JndiRestrictedLookup.ldif").build();
 
     @BeforeClass
     public static void beforeClass() {
