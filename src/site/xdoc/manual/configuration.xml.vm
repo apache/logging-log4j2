@@ -597,9 +597,9 @@ public class Bar {
               <tr>
                 <td>status</td>
                 <td><p>The level of internal Log4j events that should be logged to the console.
-                Valid values for this attribute are "trace", "debug", "info", "warn", "error" and "fatal".
-                Log4j will log details about initialization, rollover and other internal actions to the status logger.
-                Setting <tt>status="trace"</tt> is one of the first tools available to you if you need to
+                Valid values for this attribute are "off", "trace", "debug", "info", "warn", "error", "fatal", and
+                  "all". Log4j will log details about initialization, rollover and other internal actions to the status
+                  logger. Setting <tt>status="trace"</tt> is one of the first tools available to you if you need to
                 troubleshoot log4j.
                 </p><p>
                   (Alternatively, setting system property <tt>log4j2.debug</tt> will also print internal Log4j2 logging

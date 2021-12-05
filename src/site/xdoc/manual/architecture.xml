@@ -174,10 +174,15 @@ Logger y = LogManager.getLogger("wombat");
         <h5>Log Levels</h5>
         <p>LoggerConfigs will be assigned a Log
           <a href="../log4j-api/apidocs/org/apache/logging/log4j/Level.html">Level</a>. The set of built-in
-          levels includes TRACE, DEBUG, INFO, WARN, ERROR, and FATAL. Log4j 2 also supports
+          levels includes ALL, TRACE, DEBUG, INFO, WARN, ERROR, FATAL, and OFF. Log4j 2 also supports
           <a href="customloglevels.html">custom log levels</a>.
           Another mechanism for getting more granularity is to use
           <a href="../log4j-api/api.html#Markers">Markers</a> instead.
+          The OFF and ALL levels are not intended to be used on calls to the logging API. Specifying OFF in the
+          configuration implies no logging events should match while specifying ALL would mean all events match,
+          including custom events. However, OFF can be used on logging API calls in special cases where the event
+          should always be logged regardless of the configuration. However, it is generally recommended that a Marker
+          with a corresponding global Marker Filter be used instead.
         </p>
         <p>
           <a href="http://logging.apache.org/log4j/1.2/manual.html">Log4j 1.x</a>
