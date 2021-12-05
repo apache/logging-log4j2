@@ -5335,12 +5335,12 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
   <Appenders>
-    <TLSSyslog name="bsd" host="localhost" port="6514">
+    <Syslog name="bsd" host="localhost" port="6514" protocol="SSL">
       <SSL>
         <KeyStore   location="log4j2-keystore.jks" passwordEnvironmentVariable="KEYSTORE_PASSWORD"/>
         <TrustStore location="truststore.jks"      passwordFile="${sys:user.home}/truststore.pwd"/>
       </SSL>
-    </TLSSyslog>
+    </Syslog>
   </Appenders>
   <Loggers>
     <Root level="error">
