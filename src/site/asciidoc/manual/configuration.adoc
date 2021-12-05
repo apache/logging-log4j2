@@ -605,8 +605,8 @@ java.util.concurrent.TimeUnit)]. (Not used if `shutdownHook` is set to
 
 |status
 |The level of internal Log4j events that should be logged to the console.
-Valid values for this attribute are "trace", "debug", "info", "warn",
-"error" and "fatal". Log4j will log details about initialization,
+Valid values for this attribute are "off", "trace", "debug", "info", "warn",
+"error", "fatal", and "all". Log4j will log details about initialization,
 rollover and other internal actions to the status logger. Setting
 `status="trace"` is one of the first tools available to you if you need
 to troubleshoot log4j.

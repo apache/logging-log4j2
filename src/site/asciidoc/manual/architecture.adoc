@@ -164,10 +164,17 @@ process the event.
 
 LoggerConfigs will be assigned a Log
 link:../log4j-api/apidocs/org/apache/logging/log4j/Level.html[`Level`].
-The set of built-in levels includes TRACE, DEBUG, INFO, WARN, ERROR, and
-FATAL. Log4j 2 also supports link:customloglevels.html[custom log
+The set of built-in levels includes ALL, TRACE, DEBUG, INFO, WARN, ERROR,
+FATAL, and OFF. Log4j 2 also supports link:customloglevels.html[custom log
 levels]. Another mechanism for getting more granularity is to use
-link:../log4j-api/api.html#Markers[Markers] instead.
+link:../log4j-api/api.html#Markers[Markers] instead. The OFF and ALL
+levels are not intended to be used on calls to the logging API.
+Specifying OFF in the configuration implies no logging events should
+match while specifying ALL would mean all events match, including custom
+events. However, OFF can be used on logging API calls in special cases
+where the event should always be logged regardless of the configuration.
+However, it is generally recommended that a Marker with a corresponding
+global Marker Filter be used instead.
 
 http://logging.apache.org/log4j/1.2/manual.html[Log4j 1.x] and
 http://logback.qos.ch/manual/architecture.html#effectiveLevel[Logback]
