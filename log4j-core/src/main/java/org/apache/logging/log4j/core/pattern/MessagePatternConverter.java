@@ -46,16 +46,15 @@ public class MessagePatternConverter extends LogEventPatternConverter {
         super("Message", "message");
     }
 
-    private static int loadLookups(final String[] options) {
+    private static boolean loadLookups(final String[] options) {
         if (options != null) {
-            for (int i = 0; i < options.length; i++) {
-                final String option = options[i];
+            for (final String option : options) {
                 if (LOOKUPS.equalsIgnoreCase(option)) {
-                    return i;
+                    return true;
                 }
             }
         }
-        return -1;
+        return false;
     }
 
     private static TextRenderer loadMessageRenderer(final String[] options) {
@@ -87,7 +86,7 @@ public class MessagePatternConverter extends LogEventPatternConverter {
      * @return instance of pattern converter.
      */
     public static MessagePatternConverter newInstance(final Configuration config, final String[] options) {
-        boolean lookups = loadLookups(options) >= 0;
+        boolean lookups = loadLookups(options);
         String[] formats = withoutLookupOptions(options);
         TextRenderer textRenderer = loadMessageRenderer(formats);
         MessagePatternConverter result = formats == null || formats.length == 0
