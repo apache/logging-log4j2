@@ -84,7 +84,10 @@ link:../log4j-core/apidocs/org/apache/logging/log4j/core/selector/ClassLoaderCon
   Associates LoggerContexts with the ClassLoader that created the caller
   of the getLogger(...) call. This is the default ContextSelector.
 link:../log4j-core/apidocs/org/apache/logging/log4j/core/selector/JndiContextSelector.html[`JndiContextSelector`]::
-  Locates the LoggerContext by querying JNDI.
+  Locates the LoggerContext by querying JNDI. Please see link:../manual/configuration.html#allowedJndiProtocols[log4j2.allowedJndiProtocols],
+link:../manual/configuration.html#allowedLdapClasses[log4j2.allowedLdapClasses], and
+link:../manual/configuration.html#allowedLdapHosts[log4j2.allowedLdapHosts] for restrictions on using JNDI
+with Log4j.
 link:../log4j-core/apidocs/org/apache/logging/log4j/core/async/AsyncLoggerContextSelector.html[`AsyncLoggerContextSelector`]::
   Creates a LoggerContext that ensures that all loggers are
   AsyncLoggers.

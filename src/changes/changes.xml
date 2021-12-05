@@ -246,6 +246,9 @@
 	based on performance improvements in modern Java releases.
       </action>
       <!-- FIXES -->
+      <action issue="LOG4J2-3201" dev="rgoers" type="fix">
+        Limit the protocols JNDI can use by default. Limit the servers and classes that can be accessed via LDAP.
+      </action>
       <action issue="LOG4J2-3114" dev="rgoers" type="fix" due-to="Barnabas Bodnar">
         Enable immediate flush on RollingFileAppender when buffered i/o is not enabled.
       </action>
