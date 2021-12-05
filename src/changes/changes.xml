@@ -116,6 +116,9 @@
         Improve PatternLayout performance by reducing unnecessary indirection and branching.
       </action>
       <!-- FIXES -->
+      <action issue="LOG4J2-2541" dev="rgoers" due-to="Gerold Broser">
+        Minor documentation corrections in the configuration section.
+      </action>
       <action issue="LOG4J2-2553" dev="rgoers">
         Correct documentation for SyslogAppender when using TLS.
       </action>

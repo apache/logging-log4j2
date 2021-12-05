@@ -617,9 +617,12 @@ public class Bar {
             </table>
           <a name="XML"/><h3>Configuration with XML</h3>
           <p>
-            Log4j can be configured using two XML flavors; concise and strict. The concise format makes
-            configuration very easy as the element names match the components they represent however it
-            cannot be validated with an XML schema. For example, the ConsoleAppender is configured by
+            Log4j can be configured using two XML flavors; concise and strict.
+
+            <h5>Concise Syntax</h5>
+
+            The concise format makes configuration very easy as the element names match the components they represent
+            however it cannot be validated with an XML schema. For example, the ConsoleAppender is configured by
             declaring an XML element named Console under its parent appenders element. However, element
             and attribute names are are not case sensitive. In addition, attributes can either be specified
             as an XML attribute or as an XML element that has no attributes and has a text value. So
@@ -671,7 +674,7 @@ public class Bar {
             In addition to the concise XML format above, Log4j allows configurations to be specified in a
             more "normal" XML manner that can be validated using an XML Schema. This is accomplished by
             replacing the friendly element names above with their object type as shown below. For example,
-            instead of the ConsoleAppender being configuerd using an element named Console it is instead
+            instead of the ConsoleAppender being configured using an element named Console it is instead
             configured as an appender element with a type attribute containing "Console".
           </p>
           <pre class="prettyprint linenums"><![CDATA[
