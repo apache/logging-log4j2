@@ -116,6 +116,9 @@
         Improve PatternLayout performance by reducing unnecessary indirection and branching.
       </action>
       <!-- FIXES -->
+      <action issue="LOG4J2-2951" dev="rgoers">
+        Log4j 1.x properties were not being substituted.
+      </action>
       <action issue="LOG4J2-3201" dev="rgoers" type="fix">
         Limit the protocols JNDI can use by default. Limit the servers and classes that can be accessed via LDAP.
       </action>

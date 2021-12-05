@@ -24,10 +24,13 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -46,31 +49,37 @@ public abstract class AbstractBuilder {
 
     private final String prefix;
     private final Properties props;
+    private final StrSubstitutor strSubstitutor;
 
     public AbstractBuilder() {
         this.prefix = null;
         this.props = new Properties();
+        strSubstitutor = new StrSubstitutor(System.getProperties());
     }
 
     public AbstractBuilder(String prefix, Properties props) {
         this.prefix = prefix + ".";
         this.props = props;
+        Map<String, String> map = new HashMap<>();
+        System.getProperties().forEach((k, v) -> map.put(k.toString(), v.toString()));
+        props.forEach((k, v) -> map.put(k.toString(), v.toString()));
+        strSubstitutor = new StrSubstitutor(map);
     }
 
     public String getProperty(String key) {
-        return props.getProperty(prefix + key);
+        return strSubstitutor.replace(props.getProperty(prefix + key));
     }
 
     public String getProperty(String key, String defaultValue) {
-        return props.getProperty(prefix + key, defaultValue);
+        return strSubstitutor.replace(props.getProperty(prefix + key, defaultValue));
     }
 
     public boolean getBooleanProperty(String key) {
-        return Boolean.parseBoolean(props.getProperty(prefix + key, Boolean.FALSE.toString()));
+        return Boolean.parseBoolean(strSubstitutor.replace(props.getProperty(prefix + key, Boolean.FALSE.toString())));
     }
 
     public int getIntegerProperty(String key, int defaultValue) {
-        String value = props.getProperty(key);
+        String value = getProperty(key);
         try {
             if (value != null) {
                 return Integer.parseInt(value);
