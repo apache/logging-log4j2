@@ -626,8 +626,11 @@ configurations.
 [[XML]]
 === Configuration with XML
 
-Log4j can be configured using two XML flavors; concise and strict. The
-concise format makes configuration very easy as the element names match
+Log4j can be configured using two XML flavors; concise and strict.
+
+=== Concise Syntax
+
+The concise format makes configuration very easy as the element names match
 the components they represent however it cannot be validated with an XML
 schema. For example, the ConsoleAppender is configured by declaring an
 XML element named Console under its parent appenders element. However,
