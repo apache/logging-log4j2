@@ -209,43 +209,45 @@ public class JndiManager extends AbstractManager {
     public synchronized <T> T lookup(final String name) throws NamingException {
         try {
             URI uri = new URI(name);
-            if (!allowedProtocols.contains(uri.getScheme().toLowerCase(Locale.ROOT))) {
-                LOGGER.warn("Log4j JNDI does not allow protocol {}", uri.getScheme());
-                return null;
-            }
-            if (LDAP.equalsIgnoreCase(uri.getScheme()) || LDAPS.equalsIgnoreCase(uri.getScheme())) {
-                if (!allowedHosts.contains(uri.getHost())) {
-                    LOGGER.warn("Attempt to access ldap server not in allowed list");
+            if (uri.getScheme() != null) {
+                if (!allowedProtocols.contains(uri.getScheme().toLowerCase(Locale.ROOT))) {
+                    LOGGER.warn("Log4j JNDI does not allow protocol {}", uri.getScheme());
                     return null;
                 }
-                Attributes attributes = this.context.getAttributes(name);
-                if (attributes != null) {
-                    // In testing the "key" for attributes seems to be lowercase while the attribute id is
-                    // camelcase, but that may just be true for the test LDAP used here. This copies the Attributes
-                    // to a Map ignoring the "key" and using the Attribute's id as the key in the Map so it matches
-                    // the Java schema.
-                    Map<String, Attribute> attributeMap = new HashMap<>();
-                    NamingEnumeration<? extends Attribute> enumeration = attributes.getAll();
-                    while (enumeration.hasMore()) {
-                        Attribute attribute = enumeration.next();
-                        attributeMap.put(attribute.getID(), attribute);
+                if (LDAP.equalsIgnoreCase(uri.getScheme()) || LDAPS.equalsIgnoreCase(uri.getScheme())) {
+                    if (!allowedHosts.contains(uri.getHost())) {
+                        LOGGER.warn("Attempt to access ldap server not in allowed list");
+                        return null;
                     }
-                    Attribute classNameAttr = attributeMap.get(CLASS_NAME);
-                    if (attributeMap.get(SERIALIZED_DATA) != null) {
-                        if (classNameAttr != null) {
-                            String className = classNameAttr.get().toString();
-                            if (!allowedClasses.contains(className)) {
-                                LOGGER.warn("Deserialization of {} is not allowed", className);
+                    Attributes attributes = this.context.getAttributes(name);
+                    if (attributes != null) {
+                        // In testing the "key" for attributes seems to be lowercase while the attribute id is
+                        // camelcase, but that may just be true for the test LDAP used here. This copies the Attributes
+                        // to a Map ignoring the "key" and using the Attribute's id as the key in the Map so it matches
+                        // the Java schema.
+                        Map<String, Attribute> attributeMap = new HashMap<>();
+                        NamingEnumeration<? extends Attribute> enumeration = attributes.getAll();
+                        while (enumeration.hasMore()) {
+                            Attribute attribute = enumeration.next();
+                            attributeMap.put(attribute.getID(), attribute);
+                        }
+                        Attribute classNameAttr = attributeMap.get(CLASS_NAME);
+                        if (attributeMap.get(SERIALIZED_DATA) != null) {
+                            if (classNameAttr != null) {
+                                String className = classNameAttr.get().toString();
+                                if (!allowedClasses.contains(className)) {
+                                    LOGGER.warn("Deserialization of {} is not allowed", className);
+                                    return null;
+                                }
+                            } else {
+                                LOGGER.warn("No class name provided for {}", name);
                                 return null;
                             }
-                        } else {
-                            LOGGER.warn("No class name provided for {}", name);
+                        } else if (attributeMap.get(REFERENCE_ADDRESS) != null
+                                || attributeMap.get(OBJECT_FACTORY) != null) {
+                            LOGGER.warn("Referenceable class is not allowed for {}", name);
                             return null;
                         }
-                    } else if (attributeMap.get(REFERENCE_ADDRESS) != null
-                            || attributeMap.get(OBJECT_FACTORY) != null) {
-                        LOGGER.warn("Referenceable class is not allowed for {}", name);
-                        return null;
                     }
                 }
             }

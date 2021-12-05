@@ -84,6 +84,10 @@ public final class NetUtils {
         }
     }
 
+    /**
+     * Returns all the local host names and ip addresses.
+     * @return The local host names and ip addresses.
+     */
     public static List<String> getLocalIps() {
         List<String> localIps = new ArrayList<>();
         localIps.add("localhost");
