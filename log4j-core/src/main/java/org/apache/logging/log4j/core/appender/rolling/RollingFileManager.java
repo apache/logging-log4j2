@@ -382,13 +382,25 @@ public class RollingFileManager extends FileManager {
                 }
             }
         }
-        if (rollover(rolloverStrategy)) {
-            try {
-                size = 0;
-                initialTime = System.currentTimeMillis();
-                createFileAfterRollover();
-            } catch (final IOException e) {
-                logError("Failed to create file after rollover", e);
+
+        boolean interrupted = Thread.interrupted(); // clear interrupted state
+        try {
+            if (interrupted) {
+                LOGGER.warn("RollingFileManager cleared thread interrupted state, continue to rollover");
+            }
+
+            if (rollover(rolloverStrategy)) {
+                try {
+                    size = 0;
+                    initialTime = System.currentTimeMillis();
+                    createFileAfterRollover();
+                } catch (final IOException e) {
+                    logError("Failed to create file after rollover", e);
+                }
+            }
+        } finally {
+            if (interrupted) { // restore interrupted state
+                Thread.currentThread().interrupt();
             }
         }
         if (rolloverListeners.size() > 0) {

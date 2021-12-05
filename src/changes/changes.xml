@@ -116,6 +116,9 @@
         Improve PatternLayout performance by reducing unnecessary indirection and branching.
       </action>
       <!-- FIXES -->
+      <action issue="LOG4J2-1798" dev="rgoers" due-to="Viacheslav Zhivaev">
+        Handle interrupted exceptions that occur during rollover.
+      </action>
       <action issue="LOG4J2-2951" dev="rgoers">
         Log4j 1.x properties were not being substituted.
       </action>
