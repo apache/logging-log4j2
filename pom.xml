@@ -954,6 +954,13 @@
         <version>3.0.0</version>
         <scope>test</scope>
       </dependency>
+      <!-- Testing LDAP -->
+      <dependency>
+        <groupId>org.zapodot</groupId>
+        <artifactId>embedded-ldap-junit</artifactId>
+        <version>0.8.1</version>
+        <scope>test</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <build>

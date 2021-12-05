@@ -1,0 +1,4 @@
+dn: dc=apache,dc=org
+objectClass: domain
+objectClass: top
+dc: apache
