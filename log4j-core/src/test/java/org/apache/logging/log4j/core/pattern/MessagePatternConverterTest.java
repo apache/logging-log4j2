@@ -76,12 +76,7 @@ public class MessagePatternConverterTest {
     }
 
     @Test
-    public void testLookupEnabledByDefault() {
-        assertFalse(Constants.FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS, "Expected lookups to be enabled");
-    }
-
-    @Test
-    public void testLookup() {
+    public void testDefaultDisabledLookup() {
         final Configuration config = new DefaultConfigurationBuilder()
                 .addProperty("foo", "bar")
                 .build(true);
@@ -93,7 +88,7 @@ public class MessagePatternConverterTest {
                 .setMessage(msg).build();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
-        assertEquals("bar", sb.toString(), "Unexpected result");
+        assertEquals("${foo}", sb.toString(), "Unexpected result");
     }
 
     @Test
@@ -111,6 +106,23 @@ public class MessagePatternConverterTest {
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         assertEquals("${foo}", sb.toString(), "Expected the raw pattern string without lookup");
+    }
+
+    @Test
+    public void testLookup() {
+        final Configuration config = new DefaultConfigurationBuilder()
+                .addProperty("foo", "bar")
+                .build(true);
+        final MessagePatternConverter converter =
+                MessagePatternConverter.newInstance(config, new String[] {"lookups"});
+        final Message msg = new ParameterizedMessage("${foo}");
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("MyLogger") //
+                .setLevel(Level.DEBUG) //
+                .setMessage(msg).build();
+        final StringBuilder sb = new StringBuilder();
+        converter.format(event, sb);
+        assertEquals("bar", sb.toString(), "Unexpected result");
     }
 
     @Test

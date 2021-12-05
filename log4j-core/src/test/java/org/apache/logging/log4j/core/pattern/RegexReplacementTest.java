@@ -55,10 +55,13 @@ public class RegexReplacementTest {
         assertEquals(1, msgs.size(), "Incorrect number of messages. Should be 1 is " + msgs.size());
         assertTrue(
                 msgs.get(0).endsWith(EXPECTED), "Replacement failed - expected ending " + EXPECTED + " Actual " + msgs.get(0));
-        app.clear();
+    }
+
+    @Test
+    public void testMessageReplacement() {
         ThreadContext.put("MyKey", "Apache");
         logger.error("This is a test for ${ctx:MyKey}");
-        msgs = app.getMessages();
+        List<String> msgs = app.getMessages();
         assertNotNull(msgs);
         assertEquals(1, msgs.size(), "Incorrect number of messages. Should be 1 is " + msgs.size());
         assertEquals("LoggerTest This is a test for Apache" + Strings.LINE_SEPARATOR, msgs.get(0));

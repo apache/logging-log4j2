@@ -1234,9 +1234,9 @@ Generating line number information (link:#LocationInformation[location
 information]) is an expensive operation and may impact performance. Use
 with caution.
 
-|[[PatternMessage]] *m*{nolookups}{ansi} +
-*msg*{nolookups}{ansi} +
-*message*{nolookups}{ansi}
+|[[PatternMessage]] *m*{lookups}{ansi} +
+*msg*{lookups}{ansi} +
+*message{lookups}{ansi}
 |Outputs the application supplied message associated with the logging
 event.
 
@@ -1280,11 +1280,11 @@ The call site can look like this:
 logger.info("@\|KeyStyle {}\|@ = @\|ValueStyle {}\|@", entry.getKey(), entry.getValue());
 ....
 
-Use `{nolookups}` to log messages like `"${date:YYYY-MM-dd}"` without
-using any lookups. Normally calling
-`logger.info("Try ${date:YYYY-MM-dd}")` would replace the date template
-`${date:YYYY-MM-dd}` with an actual date. Using `nolookups` disables
-this feature and logs the message string untouched.
+Use `{lookups}` to log messages like `"${date:YYYY-MM-dd}"` using lookups.
+using any lookups. This will replace the date template `{date:YYYY-MM-dd}`
+with an actual date. This can be confusing in many cases, and it's often both easier and
+more obvious to handle the lookup in code.
+This feature is disabled by default and the message string is logged untouched.
 
 |[[PatternMethod]] *M* +
 *method*

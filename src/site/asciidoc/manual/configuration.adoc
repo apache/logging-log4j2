@@ -1312,12 +1312,11 @@ included, such as ``${main:\--file:-app.properties}`. This would use the
 `MainMapLookup` for a key named `--file`. If the key is not found then
 <code>app.properties</code> would be used as the default value.
 
-[#DisablingMessagePatternLookups]
-== Disables Message Pattern Lookups
-A message is processed (by default) by lookups, for example if you defined
-`<Property name="foo.bar">FOO_BAR</Property>`, then `logger.info("${foo.bar}")` will output `FOO_BAR` instead of `${foo.bar}`.
-You could disable message pattern lookups globally by setting system property `log4j2.formatMsgNoLookups` to true,
-or defining message pattern using %m{nolookups}.
+[#EnablingMessagePatternLookups]
+== Enabling Message Pattern Lookups
+A message is processed (by default) without using lookups, for example if you defined
+`<Property name="foo.bar">FOO_BAR</Property>`, then `logger.info("${foo.bar}")` will output `${foo.bar}` instead of `FOO_BAR`.
+You could enable message pattern lookups by defining the message pattern using %m{lookups}.
 
 [#RuntimeLookup]
 == Lookup Variables with Multiple Leading '$' Characters

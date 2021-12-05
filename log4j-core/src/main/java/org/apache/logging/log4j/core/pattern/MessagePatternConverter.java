@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.logging.log4j.core.LogEvent;
@@ -37,43 +39,27 @@ import org.apache.logging.log4j.util.StringBuilderFormattable;
 @Plugin(name = "MessagePatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({ "m", "msg", "message" })
 @PerformanceSensitive("allocation")
-public final class MessagePatternConverter extends LogEventPatternConverter {
+public class MessagePatternConverter extends LogEventPatternConverter {
 
+    private static final String LOOKUPS = "lookups";
     private static final String NOLOOKUPS = "nolookups";
 
-    private final String[] formats;
-    private final Configuration config;
-    private final TextRenderer textRenderer;
-    private final boolean noLookups;
-
-    /**
-     * Private constructor.
-     *
-     * @param options
-     *            options, may be null.
-     */
-    private MessagePatternConverter(final Configuration config, final String[] options) {
+    private MessagePatternConverter() {
         super("Message", "message");
-        this.formats = options;
-        this.config = config;
-        final int noLookupsIdx = loadNoLookups(options);
-        this.noLookups = Constants.FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS || noLookupsIdx >= 0;
-        this.textRenderer = loadMessageRenderer(noLookupsIdx >= 0 ? ArrayUtils.remove(options, noLookupsIdx) : options);
     }
 
-    private int loadNoLookups(final String[] options) {
+    private static boolean loadLookups(final String[] options) {
         if (options != null) {
-            for (int i = 0; i < options.length; i++) {
-                final String option = options[i];
-                if (NOLOOKUPS.equalsIgnoreCase(option)) {
-                    return i;
+            for (final String option : options) {
+                if (LOOKUPS.equalsIgnoreCase(option)) {
+                    return true;
                 }
             }
         }
-        return -1;
+        return false;
     }
 
-    private TextRenderer loadMessageRenderer(final String[] options) {
+    private static TextRenderer loadMessageRenderer(final String[] options) {
         if (options != null) {
             for (final String option : options) {
                 switch (option.toUpperCase(Locale.ROOT)) {
@@ -102,7 +88,32 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
      * @return instance of pattern converter.
      */
     public static MessagePatternConverter newInstance(final Configuration config, final String[] options) {
-        return new MessagePatternConverter(config, options);
+        boolean lookups = loadLookups(options);
+        String[] formats = withoutLookupOptions(options);
+        TextRenderer textRenderer = loadMessageRenderer(formats);
+        MessagePatternConverter result = formats == null || formats.length == 0
+                ? SimpleMessagePatternConverter.INSTANCE
+                : new FormattedMessagePatternConverter(formats);
+        if (lookups && config != null) {
+            result = new LookupMessagePatternConverter(result, config);
+        }
+        if (textRenderer != null) {
+            result = new RenderingPatternConverter(result, textRenderer);
+        }
+        return result;
+    }
+
+    private static String[] withoutLookupOptions(final String[] options) {
+        if (options == null || options.length == 0) {
+            return options;
+        }
+        List<String> results = new ArrayList<>(options.length);
+        for (String option : options) {
+            if (!LOOKUPS.equalsIgnoreCase(option) && !NOLOOKUPS.equalsIgnoreCase(option)) {
+                results.add(option);
+            }
+        }
+        return results.toArray(new String[0]);
     }
 
     /**
@@ -110,47 +121,96 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        final Message msg = event.getMessage();
-        if (msg instanceof StringBuilderFormattable) {
+        throw new UnsupportedOperationException();
+    }
 
-            final boolean doRender = textRenderer != null;
-            final StringBuilder workingBuilder = doRender ? new StringBuilder(80) : toAppendTo;
+    private static final class SimpleMessagePatternConverter extends MessagePatternConverter {
+        private static final MessagePatternConverter INSTANCE = new SimpleMessagePatternConverter();
 
-            final int offset = workingBuilder.length();
-            if (msg instanceof MultiFormatStringBuilderFormattable) {
-                ((MultiFormatStringBuilderFormattable) msg).formatTo(formats, workingBuilder);
-            } else {
-                ((StringBuilderFormattable) msg).formatTo(workingBuilder);
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void format(final LogEvent event, final StringBuilder toAppendTo) {
+            Message msg = event.getMessage();
+            if (msg instanceof StringBuilderFormattable) {
+                ((StringBuilderFormattable) msg).formatTo(toAppendTo);
+            } else if (msg != null) {
+                toAppendTo.append(msg.getFormattedMessage());
             }
-
-            // TODO can we optimize this?
-            if (config != null && !noLookups) {
-                for (int i = offset; i < workingBuilder.length() - 1; i++) {
-                    if (workingBuilder.charAt(i) == '$' && workingBuilder.charAt(i + 1) == '{') {
-                        final String value = workingBuilder.substring(offset, workingBuilder.length());
-                        workingBuilder.setLength(offset);
-                        workingBuilder.append(config.getStrSubstitutor().replace(event, value));
-                    }
-                }
-            }
-            if (doRender) {
-                textRenderer.render(workingBuilder, toAppendTo);
-            }
-            return;
         }
-        if (msg != null) {
-            final String result;
-            if (msg instanceof MultiformatMessage) {
-                result = ((MultiformatMessage) msg).getFormattedMessage(formats);
-            } else {
-                result = msg.getFormattedMessage();
+    }
+
+    private static final class FormattedMessagePatternConverter extends MessagePatternConverter {
+
+        private final String[] formats;
+
+        FormattedMessagePatternConverter(final String[] formats) {
+            this.formats = formats;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void format(final LogEvent event, final StringBuilder toAppendTo) {
+            Message msg = event.getMessage();
+            if (msg instanceof StringBuilderFormattable) {
+                if (msg instanceof MultiFormatStringBuilderFormattable) {
+                    ((MultiFormatStringBuilderFormattable) msg).formatTo(formats, toAppendTo);
+                } else {
+                    ((StringBuilderFormattable) msg).formatTo(toAppendTo);
+                }
+            } else if (msg != null) {
+                toAppendTo.append(msg instanceof MultiformatMessage
+                        ? ((MultiformatMessage) msg).getFormattedMessage(formats)
+                        : msg.getFormattedMessage());
             }
-            if (result != null) {
-                toAppendTo.append(config != null && result.contains("${")
-                        ? config.getStrSubstitutor().replace(event, result) : result);
-            } else {
-                toAppendTo.append("null");
+        }
+    }
+
+    private static final class LookupMessagePatternConverter extends MessagePatternConverter {
+        private final MessagePatternConverter delegate;
+        private final Configuration config;
+
+        LookupMessagePatternConverter(final MessagePatternConverter delegate, final Configuration config) {
+            this.delegate = delegate;
+            this.config = config;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void format(final LogEvent event, final StringBuilder toAppendTo) {
+            int start = toAppendTo.length();
+            delegate.format(event, toAppendTo);
+            int indexOfSubstitution = toAppendTo.indexOf("${", start);
+            if (indexOfSubstitution >= 0) {
+                config.getStrSubstitutor()
+                        .replaceIn(event, toAppendTo, indexOfSubstitution, toAppendTo.length() - indexOfSubstitution);
             }
+        }
+    }
+
+    private static final class RenderingPatternConverter extends MessagePatternConverter {
+
+        private final MessagePatternConverter delegate;
+        private final TextRenderer textRenderer;
+
+        RenderingPatternConverter(final MessagePatternConverter delegate, final TextRenderer textRenderer) {
+            this.delegate = delegate;
+            this.textRenderer = textRenderer;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void format(final LogEvent event, final StringBuilder toAppendTo) {
+            StringBuilder workingBuilder = new StringBuilder(80);
+            delegate.format(event, workingBuilder);
+            textRenderer.render(workingBuilder, toAppendTo);
         }
     }
 }

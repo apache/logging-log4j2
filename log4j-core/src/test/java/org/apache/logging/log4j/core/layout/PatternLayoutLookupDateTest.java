@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
  *
  * This shows the behavior this user wants to disable.
  */
-@LoggerContextSource("log4j-list.xml")
+@LoggerContextSource("log4j-list-lookups.xml")
 public class PatternLayoutLookupDateTest {
 
     @Test
