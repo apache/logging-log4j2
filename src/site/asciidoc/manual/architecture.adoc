@@ -292,7 +292,7 @@ for further processing (Yes) or discarded (No).
 
 |  |`TRACE` |`DEBUG` |`INFO` |`WARN` |`ERROR` |`FATAL` |`OFF`
 
-|`ALL` |✅ |✅ |✅ |✅ |✅ |✅ |❌
+|`ALL` |❌ |❌ |❌ |❌ |❌ |❌ |❌
 
 |`TRACE` |✅ |❌ |❌ |❌ |❌ |❌ |❌
 
@@ -306,7 +306,7 @@ for further processing (Yes) or discarded (No).
 
 |`FATAL` |✅ |✅ |✅ |✅ |✅ |✅ |❌
 
-|`OFF` |❌ |❌ |❌ |❌ |❌ |❌ |❌
+|`OFF` |✅ |✅ |✅ |✅ |✅ |✅ |✅
 |===
 
 === Filter
