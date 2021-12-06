@@ -29,7 +29,7 @@
          - "update" - Change
          - "remove" - Removed
     -->
-    <release version="2.15.0" date="2021-MM-DD" description="GA Release 2.15.0">
+    <release version="2.15.0" date="2021-12-06" description="GA Release 2.15.0">
       <!-- ADDS -->
       <action issue="LOG4J2-3198" dev="ckozak" type="add">
         Pattern layout no longer enables lookups within message text by default for cleaner API boundaries and reduced
@@ -240,14 +240,16 @@
         Wrong subject on mail when it depends on the LogEvent
       </action>
       <!-- UPDATES -->
-      <action dev="rgoers" type="update">
+      <action dev="rgoers" issue="" type="update">
         Update Spring framework to 5.3.13, Spring Boot to 2.5.7, and Spring Cloud to 2020.0.4.
       </action>
       <action issue="LOG4J2-2025" dev="rgoers" type="update">
         Provide support for overriding the Tomcat Log class in Tomcat 8.5+.
       </action>
-      <action dev="ggregory" type="update">
-       - com.fasterxml.jackson.core:jackson-annotations ................. 2.12.2 -> 2.12.4
+      <action dev="ggregory" issue="" type="update">
+        Updated dependencies.
+
+        - com.fasterxml.jackson.core:jackson-annotations ................. 2.12.2 -> 2.12.4
         - com.fasterxml.jackson.core:jackson-core ........................ 2.12.2 -> 2.12.4
         - com.fasterxml.jackson.core:jackson-databind .................... 2.12.2 -> 2.12.4
         - com.fasterxml.jackson.dataformat:jackson-dataformat-xml ........ 2.12.2 -> 2.12.4

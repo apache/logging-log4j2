@@ -69,7 +69,25 @@ This release contains a number of bug fixes and minor enhancements which are lis
 
 Due to a break in compatibility in the SLF4J binding, Log4j now ships with two versions of the SLF4J to Log4j adapters.
 log4j-slf4j-impl should be used with SLF4J 1.7.x and earlier and log4j-slf4j18-impl should be used with SLF4J 1.8.x and
-later. SLF4J-2.0.0 alpha releases are not fully supported. See https://issues.apache.org/jira/browse/LOG4J2-2975.
+later. SLF4J-2.0.0 alpha releases are not fully supported. See https://issues.apache.org/jira/browse/LOG4J2-2975 and
+https://jira.qos.ch/browse/SLF4J-511.
+
+Some of the new features in Log4j 2.15.0 include:
+
+* Support for Arbiters, which are conditionals that can enable sections of the logging configuration
+for inclusion or exclusion. In particular, SpringProfile, SystemProperty, Script, and Class Arbiters have been
+provided that use the Spring profile, System property, the result of a script, or the presence of a class respectively
+to determine whether a section of configuration should be included.
+* Support for Jakarta EE 9. This is functionally equivalent to Log4j's log4j-web module but uses the Jakarta project.
+* Various performance improvements.
+
+Key changes to note:
+
+* Prior to this release Log4j would automatically resolve Lookups contained in the message or its parameters in the
+Pattern Layout. Thisbehavior is no longer the default and must be enabled by specifying %msg{lookup}.
+* The JNDI Lookup has been restricted to only support the java, ldap, and ldaps protocols by default. LDAP also no
+longer supports classes that implement the Referenceable interface and restricts the Serializable classes to the
+Java primative classes by default and requires an allow list to be specified to access remote LDAP servers.
 
 The Log4j ${relVersion} API, as well as many core components, maintains binary compatibility with previous releases.
 
@@ -114,7 +132,7 @@ $h3 Removed
 ---
 
 Apache Log4j ${relVersion} requires a minimum of Java 8 to build and run. Log4j 2.12.1 is the last release to support
-Java 7.
+Java 7. Java 7 is not longer supported by the Log4j team.
 
 For complete information on ${project.name}, including instructions on how to submit bug
 reports, patches, or suggestions for improvement, see the Apache ${project.name} website:

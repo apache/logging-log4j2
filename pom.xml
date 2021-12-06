@@ -1352,6 +1352,7 @@
             <exclude>**/README.md</exclude>
             <exclude>RELEASE-NOTES.md</exclude>
             <exclude>SECURITY.md</exclude>
+            <exclude>.java-version</exclude>
             <exclude>**/*.yml</exclude>
             <exclude>**/*.yaml</exclude>
             <exclude>**/*.json</exclude>
@@ -1494,6 +1495,7 @@
             <exclude>**/fluent-bit.conf</exclude>
             <exclude>**/rabbitmq.config</exclude>
             <exclude>**/MANIFEST.MF</exclude>
+            <exclude>.java-version</exclude>
           </excludes>
         </configuration>
       </plugin>
@@ -1668,6 +1670,7 @@
                 <exclude>**/fluent-bit.conf</exclude>
                 <exclude>**/rabbitmq.config</exclude>
                 <exclude>**/MANIFEST.MF</exclude>
+                <exclude>.java-version</exclude>
               </excludes>
             </configuration>
             <executions>
