@@ -42,6 +42,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Note: The JsonLayout should be considered to be deprecated. Please use JsonTemplateLayout instead.
+ *
  * Appends a series of JSON events as strings serialized as bytes.
  *
  * <h3>Complete well-formed JSON vs. fragment JSON</h3>

@@ -49,6 +49,37 @@ to be specified in the Spring Configuration. However, some properties that are o
 during the first Log4j initialization, such as the property Log4j uses to allow the default 
 Log4j implementation to be chosen, would not be available.
 
+### Spring Profile Arbiter
+
+New with Log4j 2.15.0 are "Arbiters" which are conditionals that can cause a portion of the Log4j configuration to
+be included or excluded. log4j-spring-boot provides an Arbiter that allows a Spring profile value to be used for
+this purpose. Below is an example:
+```
+<Configuration name="ConfigTest" status="ERROR" monitorInterval="5">
+  <Appenders>
+
+    <SpringProfile name="dev | staging">
+      <Console name="Out">
+        <PatternLayout pattern="%m%n"/>
+      </Console>
+    </SpringProfile>
+    <SpringProfile name="prod">
+      <List name="Out">
+      </List>
+    </SpringProfile>
+
+  </Appenders>
+  <Loggers>
+    <Logger name="org.apache.test" level="trace" additivity="false">
+      <AppenderRef ref="Out"/>
+    </Logger>
+    <Root level="error">
+      <AppenderRef ref="Out"/>
+    </Root>
+  </Loggers>
+</Configuration>
+```
+
 ## Requirements
 
 The Log4j 2 Spring Cloud Configuration integration has a dependency on Log4j 2 API, Log4j 2 Core, and 

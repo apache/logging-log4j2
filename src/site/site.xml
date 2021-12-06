@@ -328,6 +328,7 @@
       <item name="Log4j Liquibase Binding" href="log4j-liquibase/index.html"/>
       <item name="Log4j Docker Support" href="log4j-docker/index.html"/>
       <item name="Lob4j Kubernetes Support" href="log4j-kubernetes/index.html"/>
+      <item name="Log4j Spring Boot" href="log4j-spring-boot/index.html"/>
       <item name="Log4j Spring Cloud Config Client" href="log4j-spring-cloud-config/log4j-spring-cloud-config-client/index.html"/>
     </menu>
 

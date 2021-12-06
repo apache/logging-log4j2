@@ -25,7 +25,7 @@
   <artifactId>log4j-spring-boot</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4j Spring Boot Support</name>
-  <description>Apache Log4j Spring iBoot Support</description>
+  <description>Apache Log4j Spring Boot Support</description>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j Spring Boot Documentation</docLabel>

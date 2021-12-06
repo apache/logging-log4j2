@@ -375,6 +375,9 @@ Configure as follows to use dataPattern and timezone in HtmlLayout:
 [#JSONLayout]
 == JSON Layout
 
+**Note:** JsonTemplate is considered deprecated. JsonTemplateLayout provides more capabilitites and
+should be used instead.
+
 Appends a series of JSON events as strings serialized as bytes.
 
 === Complete well-formed JSON vs. fragment JSON
