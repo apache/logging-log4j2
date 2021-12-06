@@ -190,7 +190,7 @@
 </Configuration>
 ]]></pre>
           <p>
-            Natively Log4j contains the SystemProperty Arbister that can evaluate whether to include elements based on
+            Natively Log4j contains the SystemProperty Arbiter that can evaluate whether to include elements based on
             whether a SystemProperty is non-null or has a specific value, a ClassArbiter that makes its decision
             based on whether the specified class is present, and a ScriptArbiter that makes its decision based
             on the result of the script configured with it.

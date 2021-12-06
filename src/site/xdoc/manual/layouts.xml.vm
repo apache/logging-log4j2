@@ -429,6 +429,11 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
         <a name="JSONLayout"/>
         <subsection name="JSON Layout">
           <p>
+            <b>Note:</b> JsonTemplate is considered deprecated. JsonTemplateLayout provides more capabilitites and
+            should be used instead.
+          </p>
+
+          <p>
           Appends a series of JSON events as strings serialized as bytes.
           </p>
           <h4>Complete well-formed JSON vs. fragment JSON</h4>

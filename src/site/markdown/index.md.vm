@@ -131,8 +131,9 @@ The Log4j 2 User's Guide is available on this [site](manual/index.html) or as a 
 
 $h2 Requirements
 
-Log4j 2.13.0 and greater require Java 8. Version 2.4 through 2.12.1 required Java 7. Some features require optional
-dependencies; the documentation for these features will specify the required dependencies.
+Log4j 2.13.0 and greater require Java 8. Version 2.4 through 2.12.1 required Java 7 (the Log4j team no longer supports
+Java 7). Some features require optional dependencies; the documentation for these features will specify the required
+dependencies.
 
 $h2 News
 
@@ -144,10 +145,13 @@ Log4j $Log4jReleaseVersion is the latest release of Log4j. As of Log4j 2.13.0 Lo
 runtime. This release contains new features and fixes which can be found
 in the latest [changes report](changes-report.html#a$Log4jReleaseVersion).
 
-Log4j 2.14.0 contains a new Layout, [JsonTemplateLayout](manual/json-template-layout.html), that is intended to
-ultimately replace JsonLayout. As its name suggests it uses a template to define the elements to include in the JSON.
-This Layout was contributed by the author of the log4j2-logstash-layout at GitHub, and who is now a member of the Log4j community.
+Some of the new features in Log4j 2.15.0 include:
 
-Log4j 2.14.0 adds support for MongoDB 4 and removes support for MongoDB 2.
+* Support for Arbiters, which are conditionals that can enable sections of the logging configuration
+for inclusion or exclusion. In particular, SpringProfile, SystemProperty, Script, and Class Arbiters have been
+provided that use the Spring profile, System property, the result of a script, or the presence of a class respectively
+to determine whether a section of configuration should be included.
+* Support for Jakarta EE 9. This is functionally equivalent to Log4j's log4j-web module but uses the Jakarta project.
+* Various performance improvements.
 
 Log4j $Log4jReleaseVersion maintains binary compatibility with previous releases.
