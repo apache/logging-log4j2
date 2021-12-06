@@ -116,6 +116,9 @@
         Improve PatternLayout performance by reducing unnecessary indirection and branching.
       </action>
       <!-- FIXES -->
+      <action issue="LOG4J2-3166" dev="rgoers">
+        Fix Log Event Level vs Logger Config Level table.
+      </action>
       <action issue="LOG4J2-2540" dev="rgoers">
         Minor documentation correctsion regarding log levels.
       </action>

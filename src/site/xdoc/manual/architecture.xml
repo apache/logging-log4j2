@@ -474,12 +474,12 @@ Logger y = LogManager.getLogger("wombat");
           </tr>
           <tr>
             <th>ALL</th>
-            <td class="big-red">YES</td>
-            <td class="big-red">YES</td>
-            <td class="big-red">YES</td>
-            <td class="big-red">YES</td>
-            <td class="big-red">YES</td>
-            <td class="big-red">YES</td>
+            <td class="big-red">NO</td>
+            <td class="big-red">NO</td>
+            <td class="big-red">NO</td>
+            <td class="big-red">NO</td>
+            <td class="big-red">NO</td>
+            <td class="big-red">NO</td>
             <td class="big-red">NO</td>
           </tr>
           <tr>
@@ -544,13 +544,13 @@ Logger y = LogManager.getLogger("wombat");
           </tr>
           <tr>
             <th>OFF</th>
-            <td class="big-red">NO</td>
-            <td class="big-red">NO</td>
-            <td class="big-red">NO</td>
-            <td class="big-red">NO</td>
-            <td class="big-red">NO</td>
-            <td class="big-red">NO</td>
-            <td class="big-red">NO</td>
+            <td class="big-red">YES</td>
+            <td class="big-red">YES</td>
+            <td class="big-red">YES</td>
+            <td class="big-red">YES</td>
+            <td class="big-red">YES</td>
+            <td class="big-red">YES</td>
+            <td class="big-red">YES</td>
           </tr>
         </table>
 
