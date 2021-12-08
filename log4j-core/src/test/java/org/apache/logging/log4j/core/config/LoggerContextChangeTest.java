@@ -43,9 +43,9 @@ public class LoggerContextChangeTest {
         String errorFileName = destDir + targetErrorFileName;
         String originFileName = destDir + targetFileName;
         String tmpFile = destDir + tmpFileName;
-        wait(3);
+        wait(1);
         updateConfigFileModTime(originFileName, errorFileName, tmpFile);
-        wait(3);
+        wait(5);
         Set<Thread> allThreads = Thread.getAllStackTraces().keySet();
         Integer kafkaThreads = 0;
         Integer consoleThreads = 0;
@@ -80,6 +80,7 @@ public class LoggerContextChangeTest {
         }
         File destFile = new File(destFileName);
         if (destFile.exists()) {
+            destFile.setLastModified(System.currentTimeMillis());
             destFile.renameTo(new File(originFileName));
         }
     }
