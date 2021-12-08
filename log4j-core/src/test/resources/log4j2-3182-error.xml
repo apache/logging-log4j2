@@ -16,7 +16,7 @@
   limitations under the License.
 
 -->
-<configuration status="WARN" packages="org.apache.logging.log4j.core.pattern" monitorInterval="1">
+<configuration status="WARN" packages="org.apache.logging.log4j.core.pattern" monitorInterval="2">
     <properties>
         <property name="PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} |-%-5level [%thread] %c [%L] -| %msg%n</property>
     </properties>
