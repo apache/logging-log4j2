@@ -252,7 +252,8 @@ public class JndiManager extends AbstractManager {
                 }
             }
         } catch (URISyntaxException ex) {
-            // This is OK.
+            LOGGER.warn("Invalid JNDI URI - {}", name);
+            return null;
         }
         return (T) this.context.lookup(name);
     }
