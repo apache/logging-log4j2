@@ -57,6 +57,19 @@ public class JndiRestrictedLookupTest {
     }
 
     @Test
+    public void testBadUriLookup() throws Exception {
+        int port = embeddedLdapRule.embeddedServerPort();
+        Context context = embeddedLdapRule.context();
+        context.bind(   "cn=" + RESOURCE +"," + DOMAIN_DSN, new Fruit("Test Message"));
+        final StrLookup lookup = new JndiLookup();
+        String result = lookup.lookup(LDAP_URL + port + "/" + "cn=" + RESOURCE + "," + DOMAIN_DSN
+                + "?Type=A Type&Name=1100110&Char=!");
+        if (result != null) {
+            fail("Lookup returned an object");
+        }
+    }
+
+    @Test
     public void testReferenceLookup() throws Exception {
         int port = embeddedLdapRule.embeddedServerPort();
         Context context = embeddedLdapRule.context();
