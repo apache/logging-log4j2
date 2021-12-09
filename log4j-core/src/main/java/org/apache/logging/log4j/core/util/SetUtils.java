@@ -16,30 +16,32 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import java.util.HashSet;
 import java.util.Set;
 
 /**
  * Set-related convenience methods.
  */
 public final class SetUtils {
-    private SetUtils() {
-    }
+
+    private static final String[] EMPTY_STRINGS = new String[0];
+
+    private SetUtils() {}
 
     /**
-     * Extracts the Strings from a Set that start with a given prefix.
+     * Collects strings starting with the given {@code prefix} from the given {@code set}.
      *
-     * @param set a Set of Strings (assumed to all be non-{@code null})
-     * @param prefix the prefix to look for in the string set
+     * @param set a (nullable) set of strings
+     * @param prefix a prefix to look for in the string set
      * @return an array of the matching strings from the given set
      */
     public static String[] prefixSet(final Set<String> set, final String prefix) {
-        final Set<String> prefixSet = new HashSet<>();
-        for (final String str : set) {
-            if (str.startsWith(prefix)) {
-                prefixSet.add(str);
-            }
+        if (set == null) {
+            return EMPTY_STRINGS;
         }
-        return prefixSet.toArray(new String[prefixSet.size()]);
+        return set
+                .stream()
+                .filter(string -> string.startsWith(prefix))
+                .toArray(String[]::new);
     }
+
 }
