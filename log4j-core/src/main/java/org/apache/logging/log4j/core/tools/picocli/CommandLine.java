@@ -2896,14 +2896,14 @@ public class CommandLine {
         /** Optional heading preceding the footer section. Initialized from {@link Command#footerHeading()}, or null. */
         public String footerHeading;
 
-        /** Constructs a new {@code Help} instance with a default color scheme, initialized from annotatations
+        /** Constructs a new {@code Help} instance with a default color scheme, initialized from annotations
          * on the specified class and superclasses.
          * @param command the annotated object to create usage help for */
         public Help(final Object command) {
             this(command, Ansi.AUTO);
         }
 
-        /** Constructs a new {@code Help} instance with a default color scheme, initialized from annotatations
+        /** Constructs a new {@code Help} instance with a default color scheme, initialized from annotations
          * on the specified class and superclasses.
          * @param command the annotated object to create usage help for
          * @param ansi whether to emit ANSI escape codes or not */
@@ -2911,7 +2911,7 @@ public class CommandLine {
             this(command, defaultColorScheme(ansi));
         }
 
-        /** Constructs a new {@code Help} instance with the specified color scheme, initialized from annotatations
+        /** Constructs a new {@code Help} instance with the specified color scheme, initialized from annotations
          * on the specified class and superclasses.
          * @param command the annotated object to create usage help for
          * @param colorScheme the color scheme to use */
