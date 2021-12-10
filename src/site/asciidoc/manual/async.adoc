@@ -392,7 +392,7 @@ at first use and will never grow or shrink during the life of the
 system.
 
 When the application is logging faster than the underlying appender can
-keep up with for a long enough time to fill up the queue, the behavious
+keep up with for a long enough time to fill up the queue, the behaviour
 is determined by the
 link:../log4j-core/apidocs/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html[AsyncQueueFullPolicy].
 
