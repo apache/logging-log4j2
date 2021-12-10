@@ -186,7 +186,7 @@ public class DefaultThreadContextMapTest {
     }
 
     @Test
-    public void testGetImmutableMapCopyNotAffectdByContextMapChanges() {
+    public void testGetImmutableMapCopyNotAffectedByContextMapChanges() {
         final DefaultThreadContextMap map = new DefaultThreadContextMap(true);
         map.put("key1", "value1");
         assertFalse(map.isEmpty());
