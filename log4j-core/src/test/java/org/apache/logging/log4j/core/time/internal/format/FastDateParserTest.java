@@ -426,7 +426,7 @@ public class FastDateParserTest {
         testSdfAndFdp("''''yyyyMMdd'A''B'HHmmssSSS''", "''20030210A'B153320989'", false); // OK
         testSdfAndFdp("'$\\Ed'" ,"$\\Ed", false); // OK
 
-        // quoted charaters are case sensitive
+        // quoted characters are case sensitive
         testSdfAndFdp("'QED'", "QED", false);
         testSdfAndFdp("'QED'", "qed", true);
         // case sensitive after insensitive Month field
