@@ -176,10 +176,10 @@ public class TypeConvertersTest {
                 { "\t", Object.class, Object.class.getName(), Class.class },
                 { "\n", null, null, Class.class },
                 // JRE URL
-                { "http://locahost", new URL("http://locahost"), null, URL.class },
+                { "http://localhost", new URL("http://localhost"), null, URL.class },
                 { "\n", null, null, URL.class },
                 // JRE URI
-                { "http://locahost", new URI("http://locahost"), null, URI.class },
+                { "http://localhost", new URI("http://localhost"), null, URI.class },
                 { "\n", null, null, URI.class },
                 // JRE BigInteger
                 { "9223372036854775817000", new BigInteger("9223372036854775817000"), null, BigInteger.class },
