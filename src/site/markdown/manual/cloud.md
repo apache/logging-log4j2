@@ -487,7 +487,7 @@ Log4j's Docker support may also be found at [Log4j-Docker](../log4j-docker/index
 ## Integration with Kubernetes
 
 Applications managed by Kubernetes can bypass the Docker/Kubernetes logging infrastructure and log directly to 
-either a sidecar forwarder or a logging aggragator cluster while still including all the kubernetes 
+either a sidecar forwarder or a logging aggregator cluster while still including all the kubernetes 
 attributes by using the Log4j 2 [Kubernetes Lookup](lookups.html#KubernetesLookup). More information on
 Log4j's Kubernetes support may also be found at [Log4j-Kubernetes](../log4j-kubernetes/index.html). 
 
