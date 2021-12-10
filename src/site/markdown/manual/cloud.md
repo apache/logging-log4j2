@@ -434,7 +434,7 @@ the configuration of filebeat is straightforward.
 ### Kibana
 Using the EnhancedGelf template, the GelfLayout or the custom template the above configurations the message 
 field will contain a fully formatted log event just as it would  appear in a file Appender. The ThreadContext 
-attributes, custome fields, thread name, etc. will all be available as attributes on each log event that can 
+attributes, custom fields, thread name, etc. will all be available as attributes on each log event that can 
 be used for filtering. The result will resemble
 ![](../images/kibana.png)
 
