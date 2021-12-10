@@ -63,7 +63,7 @@ public class JdbcAppenderBenchmark {
     public void setup() throws Exception {
         connectionHSQLDB = getConnectionHSQLDB();
         connectionH2 = getConnectionH2();
-        createTable(connectionHSQLDB, toCreateTableSqlStringHQLDB("fmLogEntry"));
+        createTable(connectionHSQLDB, toCreateTableSqlStringHSQLDB("fmLogEntry"));
         createTable(connectionH2, toCreateTableSqlStringH2("fmLogEntry"));
 
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "log4j2-jdbc-appender.xml");
@@ -177,7 +177,7 @@ public class JdbcAppenderBenchmark {
                 + "logger NVARCHAR(255), message VARCHAR(1024), exception NCLOB" + " )";
     }
 
-    private String toCreateTableSqlStringHQLDB(final String tableName) {
+    private String toCreateTableSqlStringHSQLDB(final String tableName) {
         return "CREATE TABLE " + tableName + " ( "
                 + "id INTEGER IDENTITY, eventDate DATETIME, literalColumn VARCHAR(255), level VARCHAR(10), "
                 + "logger VARCHAR(255), message VARCHAR(1024), exception CLOB" + " )";
