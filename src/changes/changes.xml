@@ -994,7 +994,7 @@
         RollingRandomAccessFileAppender error message referenced incorrect class name.
       </action>
       <action issue="LOG4J2-2622" dev="rgoers" type="fix">
-        StructuredDataId was ignoring maxLength atribute.
+        StructuredDataId was ignoring maxLength attribute.
       </action>
       <action issue="LOG4J2-2636" dev="rgoers" type="fix">
         RFC5424Layout was not properly setting default Structured Element id for the MDC
