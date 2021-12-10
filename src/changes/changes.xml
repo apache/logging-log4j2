@@ -757,7 +757,7 @@
         Allow the file size action to parse the value without being sensitive to the current locale.
       </action>
       <action issue="LOG4J2-2815" dev="rgoers" type="update">
-        Allow Spring Boot applications to use composite configuratons.
+        Allow Spring Boot applications to use composite configurations.
       </action>
       <action issue="LOG4J2-1360" dev="rgoers" type="add" due-to="Kevin Leturc">
         Provide a Log4j implementation of System.Logger.
