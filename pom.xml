@@ -1453,7 +1453,7 @@
             <exclude>**/*.yml</exclude>
             <exclude>**/*.yaml</exclude>
             <exclude>**/*.json</exclude>
-            <excllude>**/images/*.drawio</excllude>
+            <exclude>**/images/*.drawio</exclude>
             <exclude>**/fluent-bit.conf</exclude>
             <exclude>**/rabbitmq.config</exclude>
             <exclude>**/MANIFEST.MF</exclude>
@@ -1646,7 +1646,7 @@
             <exclude>**/*.yml</exclude>
             <exclude>**/*.yaml</exclude>
             <exclude>**/*.json</exclude>
-            <excllude>**/images/*.drawio</excllude>
+            <exclude>**/images/*.drawio</exclude>
             <exclude>**/fluent-bit.conf</exclude>
             <exclude>**/rabbitmq.config</exclude>
             <exclude>**/MANIFEST.MF</exclude>
@@ -1843,7 +1843,7 @@
                 <exclude>**/*.yml</exclude>
                 <exclude>**/*.yaml</exclude>
                 <exclude>**/*.json</exclude>
-                <excllude>**/images/*.drawio</excllude>
+                <exclude>**/images/*.drawio</exclude>
                 <exclude>**/fluent-bit.conf</exclude>
                 <exclude>**/rabbitmq.config</exclude>
                 <exclude>**/MANIFEST.MF</exclude>
