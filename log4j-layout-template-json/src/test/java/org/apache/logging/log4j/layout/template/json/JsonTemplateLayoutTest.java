@@ -523,7 +523,7 @@ class JsonTemplateLayoutTest {
 
         // Check the serialized event.
         final String serializedLogEvent = layout.toSerializable(logEvent);
-        final String assertionCaption = String.format("testing lineSeperator (prettyPrintEnabled=%s)", prettyPrintEnabled);
+        final String assertionCaption = String.format("testing lineSeparator (prettyPrintEnabled=%s)", prettyPrintEnabled);
         assertThat(serializedLogEvent).as(assertionCaption).endsWith("}" + System.lineSeparator());
 
     }
