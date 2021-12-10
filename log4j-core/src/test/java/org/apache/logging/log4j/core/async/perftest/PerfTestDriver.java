@@ -187,7 +187,7 @@ public class PerfTestDriver {
             return String.format(fmt, averageOpsPerSec, //
                     average / latencyRowCount, // mean latency
                     pct99 / latencyRowCount, // 99% observations less than
-                    pct99_99 / latencyRowCount,// 99.99% observs less than
+                    pct99_99 / latencyRowCount,// 99.99% observes less than
                     count);
         }
     }
