@@ -42,7 +42,7 @@ other Kubernetes environments.
 
 ### Prerequisites
 Note: This guide assumes you already have Docker and Kubernetes installed. Since the same container is used for 
-Kubernetes as with Docker, Java 11 is also required. This implmentation uses an ELK stack which is expected to
+Kubernetes as with Docker, Java 11 is also required. This implementation uses an ELK stack which is expected to
 be installed. They can be downloaded individually and started as local applications on the development 
 machine for testing. Logstash should be configured as shown in 
 [Logging in the Cloud](http://logging.apache.org/log4j/2.x/manual/cloud.html).

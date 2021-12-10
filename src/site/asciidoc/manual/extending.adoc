@@ -590,7 +590,7 @@ uses `java.util.ServiceLoader` to locate and load `ContextDataProvider` instance
 Log4j itself adds the ThreadContext data to the LogEvent using 
 `org.apache.logging.log4j.core.impl.ThreadContextDataProvider`. Custom implementations
 should implement the `org.apache.logging.log4j.core.util.ContextDataProvider` interface and 
-declare it as a service by defining the implmentation class in a file named
+declare it as a service by defining the implementation class in a file named
 `META-INF/services/org.apache.logging.log4j.core.util.ContextDataProvider`.
 
 == Custom ThreadContextMap implementations
