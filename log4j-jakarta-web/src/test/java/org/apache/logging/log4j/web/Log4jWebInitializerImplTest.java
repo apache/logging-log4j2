@@ -46,7 +46,7 @@ import static org.mockito.BDDMockito.then;
 @ExtendWith(MockitoExtension.class)
 public class Log4jWebInitializerImplTest {
 	/* Marking servletContext lenient because otherwise testCompositeLocationParameterWithEmptyUriListSetsDefaultConfiguration fails
-	 * when null is passed in as the initial param because Mockito deciced null isn't a String rather than the absence of a string.
+	 * when null is passed in as the initial param because Mockito decided null isn't a String rather than the absence of a string.
 	 */
 	@Mock(lenient = true)
 	private ServletContext servletContext;
