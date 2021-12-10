@@ -156,7 +156,7 @@
         Remove deprecated code.
       </action>
       <action issue="LOG4J2-2545" dev="ckozak" type="fix">
-        RoutingAppender.BuilderlsetPurgePolicy fluently returns the builder instance.
+        RoutingAppender.Builder.setPurgePolicy fluently returns the builder instance.
       </action>
       <action issue="LOG4J2-2571" dev="ggregory" type="update">
         Update conversant disruptor from 1.2.13 to 1.2.15.
