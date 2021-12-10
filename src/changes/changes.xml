@@ -838,7 +838,7 @@
         NullPointerException when using a custom DirectFileRolloverStrategy without a file name.
       </action>
       <action issue="LOG4J2-2768" dev="rgoers" type="fix" due-to="Marius Volkhart">
-        Add mulit-parameter overloads to LogBuilder.
+        Add multi-parameter overloads to LogBuilder.
       </action>
       <action issue="LOG4J2-2770" dev="rgoers" type="fix" due-to="Bill Kuker">
         Fixed NullPointerException after reconfiguring via JMX.
