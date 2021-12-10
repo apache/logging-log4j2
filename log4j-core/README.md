@@ -3,7 +3,7 @@
 Log4j 2 supports the Java Platform Module System. JPMS has requirements that conflict with several things 
 Log4j also tries to support:
 1. OSGi - OSGi frameworks are not packaged as OSGi modules. Including an OSGi implementation will cause
-compiler errors while resolving the JPMS module inforation.
+compiler errors while resolving the JPMS module information.
 2. Garbage Free - The Google tool Log4j uses to verify that Log4j core is garbage free violates JPMS rules. The test 
 compilations fail when it is included as a dependency.
 3. Compiler bugs - When compiling with module-info.java included the classes in the appender, layout, and filter 
