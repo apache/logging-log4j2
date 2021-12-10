@@ -97,7 +97,7 @@ pruned.
 
 Arbiters may occur anywhere an element is allowed in the configuration. So an Arbiter could encapsulate
 something as simple as a single property declaration or a whole set of Appenders or Loggers. Arbiters
-may also be nested although Arbiters that are the descendant of another arbiter will only be evalued if the
+may also be nested although Arbiters that are the descendant of another arbiter will only be evaluated if the
 ancestor returned true. The child elements of an Arbiter must be valid elements for whatever element is
 the parent of the Arbiter.
 
