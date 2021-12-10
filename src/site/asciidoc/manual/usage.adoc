@@ -95,7 +95,7 @@ may be set to either the parent or the child.
   */
   public class Child extends Parent {
 
-      // The name of this Logge will be "org.apache.logging.Child"
+      // The name of this Logger will be "org.apache.logging.Child"
       public Logger childLogger = LogManager.getLogger();
 
       public void childLog(Marker marker) {
