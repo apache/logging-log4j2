@@ -80,7 +80,7 @@ Log4j 2.12.1 was the last 2.x release to support Java 7 while Log4j 2.3 was the 
 Java 6. The Log4j team no longer provides support for Java 6 or 7.
 
 All previous releases of Apache log4j can be found in the
-https://archive.apache.org/dist/logging/log4j/[ASF archive repository]. Of course, all releases are availble for
+https://archive.apache.org/dist/logging/log4j/[ASF archive repository]. Of course, all releases are available for
 use as dependencies from the https://search.maven.org/search?q=org.apache.logging.log4j[Maven Central Repository]
 
 == Using Log4j on your classpath
