@@ -613,7 +613,7 @@ while "type" would have to be an item in the Map in a MapMessage.
 
 
 The Spring Boot Lookup retrieves the values of Spring properties from the Spring configuration as well as
-values of the active and default profiles. Specifying a key of `profiles.active` will reutrn the active
+values of the active and default profiles. Specifying a key of `profiles.active` will return the active
 profiles while a key of `profiles.default` will return the default profiles. The default and active
 profiles can be an array. If more than one profile is present they will be returned as a comma separated
 list. To retrieve a single item from the array append `[{index}]` to the key. For example, to return the
