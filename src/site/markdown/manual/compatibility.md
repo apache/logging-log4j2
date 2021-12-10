@@ -82,7 +82,7 @@ files must have a file extension of either ".properties" or ".xml".
 * JMSAppender 
 * SMTPAppender
 * SocketAppender (Requires the use of the SerializedLayout which is a security risk)
-* SocketHubAppender (Requires the use of the SerializedLayout which is a securiy risk)
+* SocketHubAppender (Requires the use of the SerializedLayout which is a security risk)
 * TelnetAppender (Security risk)
 
 ## Rewrite Policies
