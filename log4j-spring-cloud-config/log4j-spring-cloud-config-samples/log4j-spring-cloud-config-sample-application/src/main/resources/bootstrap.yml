@@ -1,5 +1,5 @@
 #Spring Cloud (Hystrix) config goes here.
 hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 30000
 logging:
-  config: http://host.docker.internal:8888/ConfigService/samppleapp/default/master/log4j2.xml
+  config: http://host.docker.internal:8888/ConfigService/sampleapp/default/master/log4j2.xml
 
