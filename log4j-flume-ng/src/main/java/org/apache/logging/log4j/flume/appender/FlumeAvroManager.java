@@ -301,7 +301,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
         private final int batchSize;
         private final int delayMillis;
         private final int retries;
-        private final int conntectTimeoutMillis;
+        private final int connectTimeoutMillis;
         private final int requestTimeoutMillis;
 
         /**
@@ -317,7 +317,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
             this.batchSize = batchSize;
             this.delayMillis = delayMillis;
             this.retries = retries;
-            this.conntectTimeoutMillis = connectTimeoutMillis;
+            this.connectTimeoutMillis = connectTimeoutMillis;
             this.requestTimeoutMillis = requestTimeoutMillis;
         }
     }
@@ -338,7 +338,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
             try {
 
                 return new FlumeAvroManager(name, data.name, data.agents, data.batchSize, data.delayMillis,
-                        data.retries, data.conntectTimeoutMillis, data.requestTimeoutMillis);
+                        data.retries, data.connectTimeoutMillis, data.requestTimeoutMillis);
             } catch (final Exception ex) {
                 LOGGER.error("Could not create FlumeAvroManager", ex);
             }
