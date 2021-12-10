@@ -907,7 +907,7 @@
         Add ThreadContext.putIfNotNull method.
       </action>
       <action issue="LOG4J2-2731" dev="rgoers" type="add">
-        Add a Level Patttern Selector.
+        Add a Level Pattern Selector.
       </action>
       <action issue="LOG4J2-2727" dev="rogers" type="fix" due-to="Clément Mathieu">
         Add setKey method to Kafka Appender Builder.
