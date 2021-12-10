@@ -67,7 +67,7 @@ $h2 Configuration
 Much of the configuration needed to access the Kubernetes API server is provided automatically by Kubernetes.
 However, it is not uncommon to need to provide the url required to access the Kubernetes API server or the
 namespace the application is assigned to. The properties below may either be configured using the Log4j
-variable names and located by Log4j's normal property resolution mechansim or Log4j will resolve the
+variable names and located by Log4j's normal property resolution mechanism or Log4j will resolve the
 spring properties when the application is running in Spring Boot and the Spring Environment has been created.
 Note that Spring Boot initializes logging 3 times and only the last will have a Spring Environment present.
 
