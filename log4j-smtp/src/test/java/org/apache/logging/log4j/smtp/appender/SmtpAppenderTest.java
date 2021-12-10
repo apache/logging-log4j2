@@ -150,7 +150,7 @@ public class SmtpAppenderTest {
         assertEquals("to@example.com", email.getHeaderValue("To"));
         assertEquals("cc@example.com", email.getHeaderValue("Cc"));
         // assertEquals("bcc@example.com", email.getHeaderValue("Bcc")); // BCC
-        // can't be tested with Dumpster 1.6
+        // can't be tested with Dumbster 1.6
         assertEquals("from@example.com", email.getHeaderValue("From"));
         assertEquals("replyTo@example.com", email.getHeaderValue("Reply-To"));
         assertEquals("Subject Pattern " + subjectValue +" Error with", email.getHeaderValue("Subject"));
