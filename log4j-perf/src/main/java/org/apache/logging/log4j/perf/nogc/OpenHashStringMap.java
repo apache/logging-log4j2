@@ -655,7 +655,7 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
      * Rehashes the map.
      *
      * <P>
-     * This method implements the basic rehashing strategy, and may be overriden
+     * This method implements the basic rehashing strategy, and may be overridden
      * by subclasses implementing different rehashing strategies (e.g.,
      * disk-based rehashing). However, you should not override this method
      * unless you understand the internal workings of this class.
