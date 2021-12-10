@@ -1381,7 +1381,7 @@
         logged throwable and provided varargs array.
       </action>
       <action issue="LOG4J2-2368" dev="ckozak" type="fix">
-        Nested logging doesn't clobber AbstractStringLayout cached StringBuidlers
+        Nested logging doesn't clobber AbstractStringLayout cached StringBuilders
       </action>
       <action issue="LOG4J2-2373" dev="ckozak" type="fix" due-to="Kevin Meurer">
         StringBuilders.escapeJson implementation runs in linear time. Escaping large JSON strings
