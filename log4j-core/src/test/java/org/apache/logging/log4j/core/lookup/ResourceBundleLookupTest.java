@@ -40,7 +40,7 @@ public class ResourceBundleLookupTest {
     @Test
     public void testMissingKey() {
         final StrLookup lookup = new ResourceBundleLookup();
-        assertNull(lookup.lookup("org.apache.logging.log4j.core.lookup.resource-bundle:KeyUnkown"));
+        assertNull(lookup.lookup("org.apache.logging.log4j.core.lookup.resource-bundle:KeyUnknown"));
     }
 
     @Test
