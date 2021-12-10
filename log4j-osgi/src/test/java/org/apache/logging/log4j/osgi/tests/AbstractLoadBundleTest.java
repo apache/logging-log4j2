@@ -49,8 +49,8 @@ public abstract class AbstractLoadBundleTest extends AbstractOsgiTest {
     }
 
     private Bundle getDummyBundle() throws BundleException {
-        final Path dumyPath = getHere().resolveSibling("log4j-samples").resolve("log4j-samples-configuration").resolve("target").resolve(getBundleTestInfo().buildJarFileName("log4j-samples-configuration"));
-        return getBundleContext().installBundle(dumyPath.toUri().toString());
+        final Path dummyPath = getHere().resolveSibling("log4j-samples").resolve("log4j-samples-configuration").resolve("target").resolve(getBundleTestInfo().buildJarFileName("log4j-samples-configuration"));
+        return getBundleContext().installBundle(dummyPath.toUri().toString());
     }
 
     private Bundle get12ApiBundle() throws BundleException {
