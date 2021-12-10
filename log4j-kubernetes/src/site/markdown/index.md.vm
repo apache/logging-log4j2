@@ -87,7 +87,7 @@ Note that Spring Boot initializes logging 3 times and only the last will have a 
 | log4j2.kubernetes.client.httpsProxy | spring.cloud.kubernetes.client.https-proxy | | |
 | log4j2.kubernetes.client.loggingInterval | spring.cloud.kubernetes.client.loggingInterval | 20s | Logging interval |
 | log4j2.kubernetes.client.masterUrl | spring.cloud.kubernetes.client.masterUrl | kubernetes.default.svc | Kubernetes API Master Node URL |
-| log4j2.kubernetes.client.namespacce | spring.cloud.kubernetes.client.namespace | default | Kubernetes Namespace |
+| log4j2.kubernetes.client.namespace | spring.cloud.kubernetes.client.namespace | default | Kubernetes Namespace |
 | log4j2.kubernetes.client.noProxy | spring.cloud.kubernetes.client.noProxy | | |
 | log4j2.kubernetes.client.password | spring.cloud.kubernetes.client.password | | Kubernetes API Password |
 | log4j2.kubernetes.client.proxyPassword | spring.cloud.kubernetes.client.proxyPassword | | |
