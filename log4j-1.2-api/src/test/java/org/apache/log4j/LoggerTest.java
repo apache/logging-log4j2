@@ -119,23 +119,23 @@ public class LoggerTest {
     public void testAdditivity1() {
         final Logger loggerA = Logger.getLogger("a");
         final Logger loggerAB = Logger.getLogger("a.b");
-        final CountingAppender coutingAppender = new CountingAppender();
-        coutingAppender.start();
+        final CountingAppender countingAppender = new CountingAppender();
+        countingAppender.start();
         try {
-            ((org.apache.logging.log4j.core.Logger) loggerA.getLogger()).addAppender(coutingAppender);
+            ((org.apache.logging.log4j.core.Logger) loggerA.getLogger()).addAppender(countingAppender);
 
-            assertEquals(0, coutingAppender.counter);
+            assertEquals(0, countingAppender.counter);
             loggerAB.debug(MSG);
-            assertEquals(1, coutingAppender.counter);
+            assertEquals(1, countingAppender.counter);
             loggerAB.info(MSG);
-            assertEquals(2, coutingAppender.counter);
+            assertEquals(2, countingAppender.counter);
             loggerAB.warn(MSG);
-            assertEquals(3, coutingAppender.counter);
+            assertEquals(3, countingAppender.counter);
             loggerAB.error(MSG);
-            assertEquals(4, coutingAppender.counter);
-            coutingAppender.stop();
+            assertEquals(4, countingAppender.counter);
+            countingAppender.stop();
         } finally {
-            ((org.apache.logging.log4j.core.Logger) loggerA.getLogger()).removeAppender(coutingAppender);
+            ((org.apache.logging.log4j.core.Logger) loggerA.getLogger()).removeAppender(countingAppender);
         }
     }
 
