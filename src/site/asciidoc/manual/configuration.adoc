@@ -56,7 +56,7 @@ configuration in any way.
 In part because support for XML was added first, Log4j's configuration is reflected as a tree structure.
 In fact every configuration dialect, including the ConfigurationBuilder, generates a Node for every
 configuration element. A node is a fairly simple structure that contains a set of attributes, a set of
-child nodes and a PluginType. It is important to note that every Node must have a corresponding plugn,
+child nodes and a PluginType. It is important to note that every Node must have a corresponding plugin,
 as the plugin is the component that actually performs the work represented by the node.
 
 Every document type supported by Log4j has a ConfigurationFactory. The factory itself is a Log4j plugin
