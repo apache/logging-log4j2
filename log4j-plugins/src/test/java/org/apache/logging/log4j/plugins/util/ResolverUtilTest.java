@@ -234,7 +234,7 @@ public class ResolverUtilTest {
             }
         }
         if (!errors.isEmpty()) {
-            System.err.println("Compilatoin of " + f.getAbsolutePath() + " failed");
+            System.err.println("Compilation of " + f.getAbsolutePath() + " failed");
         }
         assertTrue(errors.toString(), errors.isEmpty());
     }
