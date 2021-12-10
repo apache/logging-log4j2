@@ -256,7 +256,7 @@
         Fix Log Event Level vs Logger Config Level table.
       </action>
       <action issue="LOG4J2-2540" dev="rgoers">
-        Minor documentation correctsion regarding log levels.
+        Minor documentation correction regarding log levels.
       </action>
       <action issue="LOG4J2-2541" dev="rgoers" due-to="Gerold Broser">
         Minor documentation corrections in the configuration section.
