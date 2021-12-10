@@ -354,7 +354,7 @@ public class LoggerContext extends AbstractLifeCycle
      * Log4j can start threads to perform certain actions like file rollovers, calling this method with a positive timeout will
      * block until the rollover thread is done.
      *
-     * @param timeout the maximum time to wait, or 0 which mean that each apppender uses its default timeout, and don't wait for background
+     * @param timeout the maximum time to wait, or 0 which mean that each appender uses its default timeout, and don't wait for background
     tasks
      * @param timeUnit
      *            the time unit of the timeout argument
