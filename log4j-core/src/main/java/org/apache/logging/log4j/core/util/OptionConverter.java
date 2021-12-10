@@ -362,7 +362,7 @@ public final class OptionConverter {
                 if (i == 0) { // this is a simple string
                     return val;
                 }
-                // add the tail string which contails no variables and return the result.
+                // add the tail string which contains no variables and return the result.
                 sbuf.append(val.substring(i, val.length()));
                 return sbuf.toString();
             }
