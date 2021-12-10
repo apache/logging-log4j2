@@ -67,7 +67,7 @@ class LoggingRedisPoolConfiguration extends JedisPoolConfig {
         int testsPerEvictionRun = JedisPoolConfig.DEFAULT_NUM_TESTS_PER_EVICTION_RUN;
 
         @PluginBuilderAttribute("timeBetweenEvictionRunsMillis")
-        long timeBetweenEvicationRunsMillis = JedisPoolConfig.DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS;
+        long timeBetweenEvictionRunsMillis = JedisPoolConfig.DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS;
 
         @Override
         public LoggingRedisPoolConfiguration build() {
@@ -78,7 +78,7 @@ class LoggingRedisPoolConfiguration extends JedisPoolConfig {
             poolConfig.setTestOnReturn(testOnReturn);
             poolConfig.setTestWhileIdle(testWhileIdle);
             poolConfig.setNumTestsPerEvictionRun(testsPerEvictionRun);
-            poolConfig.setTimeBetweenEvictionRunsMillis(timeBetweenEvicationRunsMillis);
+            poolConfig.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
             return poolConfig;
         }
 
@@ -136,12 +136,12 @@ class LoggingRedisPoolConfiguration extends JedisPoolConfig {
             return this;
         }
 
-        public long getTimeBetweenEvicationRunsMillis() {
-            return timeBetweenEvicationRunsMillis;
+        public long getTimeBetweenEvictionRunsMillis() {
+            return timeBetweenEvictionRunsMillis;
         }
 
-        public Builder setTimeBetweenEvicationRunsMillis(long timeBetweenEvicationRunsMillis) {
-            this.timeBetweenEvicationRunsMillis = timeBetweenEvicationRunsMillis;
+        public Builder setTimeBetweenEvictionRunsMillis(long timeBetweenEvictionRunsMillis) {
+            this.timeBetweenEvictionRunsMillis = timeBetweenEvictionRunsMillis;
             return this;
         }
     }
