@@ -816,7 +816,7 @@
         Allow Lookup keys with leading dashes by using a slash as an escape character.
       </action>
       <action issue="LOG4J2-2782" dev="rgoers" type="update">
-        Use LinkedBlockingQueue instead of synchronized collction in StatusConfiguration.
+        Use LinkedBlockingQueue instead of synchronized collection in StatusConfiguration.
       </action>
       <action issue="LOG4J2-2781" dev="rgoers" type="fix" due-to="qxo">
         ServletContainerInitializer was obtaining the StatusLogger too soon.
