@@ -144,7 +144,7 @@ public final class Loader {
      * </ol>
      * @param resource The resource to load.
      * @param defaultLoader The default ClassLoader.
-     * @return An InputStream to read the resouce.
+     * @return An InputStream to read the resource.
      */
     public static InputStream getResourceAsStream(final String resource, final ClassLoader defaultLoader) {
         try {
