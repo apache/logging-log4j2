@@ -271,7 +271,7 @@ The JndiLookup allows variables to be retrieved via JNDI. By default the
 key will be prefixed with java:comp/env/, however if the key contains a
 ":" no prefix will be added.
 
-By default the JDNI Lookup only supports the java, ldap, and ldaps protocols or no protocol. Additional
+By default the JNDI Lookup only supports the java, ldap, and ldaps protocols or no protocol. Additional
 protocols may be supported by specifying them on the ``log4j2.allowedJndiProtocols`` property.
 When using LDAP Java classes that implement the Referenceable interface are not supported for security
 reasons. Only the Java primative classes are supported by default as well as any classes specified by the
