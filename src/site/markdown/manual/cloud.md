@@ -258,7 +258,7 @@ any Marker included in the event, includes all the ThreadContext attributes.
 **Note**: The Json Template Layout escapes control sequences so messages that contain '\n' will have those 
 control sequences copied as "\n" into the text rather than converted to a newline character. This bypasses 
 many problems that occur with Log Forwarders such as Filebeat and FluentBit/Fluentd. Kibana will correctly
-interpret these squences as newlines and display them correctly. Also note that the message pattern does
+interpret these sequences as newlines and display them correctly. Also note that the message pattern does
 not contain a timestamp. Kibana will display the timestamp field in its own column so placing it in the 
 message would be redundant.
 
