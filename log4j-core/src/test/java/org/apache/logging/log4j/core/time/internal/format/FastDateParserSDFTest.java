@@ -227,7 +227,7 @@ public class FastDateParserSDFTest {
             assertEquals(locale.toString()+" "+formattedDate +"\n", expectedTime, actualTime);
         } else {
             assertNotEquals("Test data error: expected FDF parse to fail, but got " + actualTime, -1, fdferrorIndex);
-            assertTrue("FDF error index ("+ fdferrorIndex + ") should approxiamate SDF index (" + sdferrorIndex + ")",
+            assertTrue("FDF error index ("+ fdferrorIndex + ") should approximate SDF index (" + sdferrorIndex + ")",
                     sdferrorIndex - fdferrorIndex <= 4);
         }
     }
