@@ -74,7 +74,7 @@ need to convert the syntax into a Node tree the Java properties syntax used by L
 follow a naming pattern that made the tree structure clear. As a consequence, the Java Properties format
 tends to be more verbose than using a different document type.
 
-Once the Node tree is created control is delegated to AbstractConfiguration, which convertes the Nodes into
+Once the Node tree is created control is delegated to AbstractConfiguration, which converts the Nodes into
 their respective Java objects using Log4j's Plugin system and provides all the common functionality.
 
 [#Arbiters]
