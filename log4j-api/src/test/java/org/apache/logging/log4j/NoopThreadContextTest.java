@@ -31,20 +31,20 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class NoopThreadContextTest {
 
     private static final String TRUE = "true";
-    private static final String PROPERY_KEY_ALL = "disableThreadContext";
-    private static final String PROPERY_KEY_MAP = "disableThreadContextMap";
+    private static final String PROPERTY_KEY_ALL = "disableThreadContext";
+    private static final String PROPERTY_KEY_MAP = "disableThreadContextMap";
 
     @BeforeAll
     public static void before() {
-        System.setProperty(PROPERY_KEY_ALL, TRUE);
-        System.setProperty(PROPERY_KEY_MAP, TRUE);
+        System.setProperty(PROPERTY_KEY_ALL, TRUE);
+        System.setProperty(PROPERTY_KEY_MAP, TRUE);
         ThreadContext.init();
     }
 
     @AfterAll
     public static void after() {
-        System.clearProperty(PROPERY_KEY_ALL);
-        System.clearProperty(PROPERY_KEY_MAP);
+        System.clearProperty(PROPERTY_KEY_ALL);
+        System.clearProperty(PROPERTY_KEY_MAP);
         ThreadContext.init();
     }
 
