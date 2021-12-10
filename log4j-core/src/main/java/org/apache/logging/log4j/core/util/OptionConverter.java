@@ -312,7 +312,7 @@ public final class OptionConverter {
 
     /**
      * Perform variable substitution in string <code>val</code> from the
-     * values of keys found in the system propeties.
+     * values of keys found in the system properties.
      *
      * <p>The variable substitution delimiters are <b>${</b> and <b>}</b>.</p>
      *
