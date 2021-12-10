@@ -89,7 +89,7 @@ public class RoutingAppenderWithPurgingTest {
         EventLogger.logEvent(msg);
         // '2' is a referenced list appender
         final String[] files = {IDLE_LOG_FILE1, IDLE_LOG_FILE3, MANUAL_LOG_FILE1, MANUAL_LOG_FILE3};
-        assertFileExistance(files);
+        assertFileExistence(files);
         Set<String> expectedAppenderKeys = new HashSet<>(2);
         expectedAppenderKeys.add("1");
         expectedAppenderKeys.add("3");
@@ -130,7 +130,7 @@ public class RoutingAppenderWithPurgingTest {
     }
 
 
-    private void assertFileExistance(final String... files) {
+    private void assertFileExistence(final String... files) {
         for (final String file : files) {
             assertTrue("File should exist - " + file + " file ", new File(file).exists());
         }
