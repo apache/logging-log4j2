@@ -2375,7 +2375,7 @@ appender] and/or set syncSend to `false` to log asynchronously (as in the first 
 
 In a logging context, Redis may play a similar role to Kafka, serving as a message broker
 in logging pipelines. In general, Redis may be preferred to Kafka in situations where
-an in-memory queue is desired. A fairly simple breakdown of the diffferent approaches can be found
+an in-memory queue is desired. A fairly simple breakdown of the different approaches can be found
 https://stackoverflow.com/questions/37990784/difference-between-redis-and-kafka[on StackOverflow here].
 
 If you prefer to use Kafka, please refer to the supported <<KafkaAppender>>.
