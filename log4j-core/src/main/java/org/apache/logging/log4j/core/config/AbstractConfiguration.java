@@ -253,9 +253,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 watchManager.setIntervalSeconds(monitorIntervalSeconds);
                 if (configSource.getFile() != null) {
                     final Source cfgSource = new Source(configSource);
-                    final long lastModifeid = configSource.getFile().lastModified();
+                    final long lastModified = configSource.getFile().lastModified();
                     final ConfigurationFileWatcher watcher = new ConfigurationFileWatcher(this, reconfigurable,
-                            listeners, lastModifeid);
+                            listeners, lastModified);
                     watchManager.watch(cfgSource, watcher);
                 } else {
                     if (configSource.getURL() != null) {
