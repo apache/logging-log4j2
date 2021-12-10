@@ -177,7 +177,7 @@
         using '%m{lookups}'.
       </action>
       <action issue="LOG4J2-3194" dev="rgoers" type="add" due-to="markuss">
-        Allow fractional attributes for size attribute of SizeBsaedTriggeringPolicy.
+        Allow fractional attributes for size attribute of SizeBasedTriggeringPolicy.
       </action>
       <action issue="LOG4J2-3189" dev="ckozak" type="add">
         Improve NameAbbreviator worst-case performance.
