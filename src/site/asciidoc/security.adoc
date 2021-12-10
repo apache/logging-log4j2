@@ -55,7 +55,7 @@ CVSS Base Score: 3.7 (Low) CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N
 
 Versions Affected: all versions from 2.0-alpha1 to 2.13.1
 
-Descripton: Improper validation of certificate with host mismatch in
+Description: Improper validation of certificate with host mismatch in
 Log4j2 SMTP appender. This could allow an SMTPS connection to be
 intercepted by a man-in-the-middle attack which could leak any log
 messages sent through that appender.
