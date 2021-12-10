@@ -1882,7 +1882,7 @@ the pattern specified on that PatternMatch element will be used.
 [#ScriptPatternSelector]
 ==== ScriptPatternSelector
 
-The ScriptPatternSelector executes a script as descibed in the
+The ScriptPatternSelector executes a script as described in the
 link:../configuration.html#Scripts[Scripts] section of the Configuration
 chapter. The script is passed all the properties configured in the
 Properties section of the configuration, the StrSubstitutor used by the
