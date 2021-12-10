@@ -730,7 +730,7 @@
         Add option to restore printing timeMillis in the JsonLayout.
       </action>
       <action issue="LOG4J2-2766" dev="rgoers" type="fix">
-        Initialize pattern processor before triggering policy during reconriguration.
+        Initialize pattern processor before triggering policy during reconfiguration.
       </action>
       <action issue="LOG4J2-2457" dev="rgoers" type="update">
         Allow the file extension in the file pattern to be modified during reconfiguration.
