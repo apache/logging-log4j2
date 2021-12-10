@@ -141,10 +141,10 @@ public class FileRenameAction extends AbstractAction {
                                     result = true;
                                     LOGGER.trace("Renamed file {} to {} with copy and truncation",
                                             source.getAbsolutePath(), destination.getAbsolutePath());
-                                } catch (final IOException exOwerwrite) {
+                                } catch (final IOException exOverwrite) {
                                     LOGGER.error("Unable to overwrite file {}: {} {}",
-                                            source.getAbsolutePath(), exOwerwrite.getClass().getName(),
-                                            exOwerwrite.getMessage());
+                                            source.getAbsolutePath(), exOverwrite.getClass().getName(),
+                                            exOverwrite.getMessage());
                                 }
                             }
                         } catch (final IOException exCopy) {
