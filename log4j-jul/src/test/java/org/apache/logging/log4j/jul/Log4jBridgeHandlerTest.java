@@ -372,7 +372,7 @@ public class Log4jBridgeHandlerTest {
 
 ////////////////
 ////////////////   INTERNAL DEVELOPER TESTS follow
-////////////////   (these are NOT neccessary for unit test but source is kept here for reference and info)
+////////////////   (these are NOT necessary for unit test but source is kept here for reference and info)
 
 
     static {
