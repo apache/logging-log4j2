@@ -59,7 +59,7 @@ public class SmtpState {
      */
     public static final SmtpState CONNECT = new SmtpState(CONNECT_BYTE);
     /**
-     * GREET state: wating for a ELHO message.
+     * GREET state: waiting for a ELHO message.
      */
     public static final SmtpState GREET = new SmtpState(GREET_BYTE);
     /**
