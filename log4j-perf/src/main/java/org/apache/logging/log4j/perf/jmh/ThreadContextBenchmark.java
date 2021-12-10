@@ -87,7 +87,7 @@ public class ThreadContextBenchmark {
     }
 
     @Param({ "Default", "CopyOpenHash", "CopySortedArray", "NoGcOpenHash", "NoGcSortedArray"})
-    //@Param({ "Default", }) // for legecyInject benchmarks
+    //@Param({ "Default", }) // for legacyInject benchmarks
     public String threadContextMapAlias;
 
     @Param({"5", "50", "500"})
