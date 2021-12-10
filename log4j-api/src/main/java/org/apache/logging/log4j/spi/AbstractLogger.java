@@ -581,8 +581,8 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
             if (i > 0) {
                 sb.append(", ");
             }
-            final Object parm = params[i];
-            sb.append(parm instanceof Message ? ((Message) parm).getFormattedMessage() : String.valueOf(parm));
+            final Object param = params[i];
+            sb.append(param instanceof Message ? ((Message) param).getFormattedMessage() : String.valueOf(param));
         }
         sb.append(')');
         return flowMessageFactory.newEntryMessage(new SimpleMessage(sb));

@@ -195,13 +195,13 @@ above.
 19:08:07.056 TRACE com.test.TestService 19 retrieveMessage -  entry
 19:08:07.060 TRACE com.test.TestService 46 getKey -  entry
 19:08:07.060 TRACE com.test.TestService 48 getKey -  exit with (0)
-19:08:07.060 TRACE com.test.TestService 38 getMessage -  entry parms(0)
+19:08:07.060 TRACE com.test.TestService 38 getMessage -  entry params(0)
 19:08:07.060 TRACE com.test.TestService 42 getMessage -  exit with (Hello, World)
 19:08:07.060 TRACE com.test.TestService 23 retrieveMessage -  exit with (Hello, World)
 19:08:07.061 TRACE com.test.TestService 19 retrieveMessage -  entry
 19:08:07.061 TRACE com.test.TestService 46 getKey -  entry
 19:08:07.061 TRACE com.test.TestService 48 getKey -  exit with (1)
-19:08:07.061 TRACE com.test.TestService 38 getMessage -  entry parms(1)
+19:08:07.061 TRACE com.test.TestService 38 getMessage -  entry params(1)
 19:08:07.061 TRACE com.test.TestService 42 getMessage -  exit with (Goodbye Cruel World)
 19:08:07.061 TRACE com.test.TestService 23 retrieveMessage -  exit with (Goodbye Cruel World)
 19:08:07.062 TRACE com.test.TestService 27 exampleException -  entry

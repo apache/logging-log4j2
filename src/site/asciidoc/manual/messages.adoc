@@ -160,7 +160,7 @@ public class MyApp {
     public String doUpdate(String table, Map<String, String> params) {
         logger.entry(param);
 
-        logger.debug(UPDATE_MARKER, new SQLMessage(SQLMessage.SQLType.UPDATE, table, parmas);
+        logger.debug(UPDATE_MARKER, new SQLMessage(SQLMessage.SQLType.UPDATE, table, params);
 
         return logger.exit();
     }

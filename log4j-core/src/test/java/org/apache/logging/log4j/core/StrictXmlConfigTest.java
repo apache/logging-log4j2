@@ -99,7 +99,7 @@ public class StrictXmlConfigTest {
     }
 
     @Test
-    public void debugWithParms() {
+    public void debugWithParams() {
         logger.debug("Hello, {}", "World");
         final List<LogEvent> events = app.getEvents();
         assertEquals(1, events.size(), "Incorrect number of events. Expected 1, actual " + events.size());

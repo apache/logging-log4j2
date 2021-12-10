@@ -562,18 +562,18 @@ public final class PatternParser {
             return null;
         }
 
-        final Class<?>[] parmTypes = newInstanceMethod.getParameterTypes();
-        final Object[] parms = parmTypes.length > 0 ? new Object[parmTypes.length] : null;
+        final Class<?>[] paramTypes = newInstanceMethod.getParameterTypes();
+        final Object[] params = paramTypes.length > 0 ? new Object[paramTypes.length] : null;
 
-        if (parms != null) {
+        if (params != null) {
             int i = 0;
             boolean errors = false;
-            for (final Class<?> clazz : parmTypes) {
+            for (final Class<?> clazz : paramTypes) {
                 if (clazz.isArray() && clazz.getName().equals("[Ljava.lang.String;")) {
                     final String[] optionsArray = options.toArray(new String[options.size()]);
-                    parms[i] = optionsArray;
+                    params[i] = optionsArray;
                 } else if (clazz.isAssignableFrom(Configuration.class)) {
-                    parms[i] = config;
+                    params[i] = config;
                 } else {
                     LOGGER.error("Unknown parameter type " + clazz.getName() + " for static newInstance method of "
                             + converterClass.getName());
@@ -587,7 +587,7 @@ public final class PatternParser {
         }
 
         try {
-            final Object newObj = newInstanceMethod.invoke(null, parms);
+            final Object newObj = newInstanceMethod.invoke(null, params);
 
             if (newObj instanceof PatternConverter) {
                 currentLiteral.delete(0, currentLiteral.length() - (converterId.length() - converterName.length()));

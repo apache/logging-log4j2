@@ -257,9 +257,9 @@ public class PluginBuilder implements Builder<Object> {
         return binder.invoke();
     }
 
-    private static String[] extractPluginAliases(final Annotation... parmTypes) {
+    private static String[] extractPluginAliases(final Annotation... paramTypes) {
         String[] aliases = {};
-        for (final Annotation a : parmTypes) {
+        for (final Annotation a : paramTypes) {
             if (a instanceof PluginAliases) {
                 aliases = ((PluginAliases) a).value();
             } else if (a instanceof org.apache.logging.log4j.core.config.plugins.PluginAliases) {
