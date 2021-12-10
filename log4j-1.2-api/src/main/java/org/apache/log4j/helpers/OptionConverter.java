@@ -260,7 +260,7 @@ public class OptionConverter {
      * Perform variable substitution in string <code>val</code> from the
      * values of keys found in the system propeties.
      *
-     * <p>The variable substitution delimeters are <b>${</b> and <b>}</b>.
+     * <p>The variable substitution delimiters are <b>${</b> and <b>}</b>.
      *
      * <p>For example, if the System properties contains "key=value", then
      * the call
@@ -283,8 +283,8 @@ public class OptionConverter {
      * will set <code>s</code> to "Value of inexistentKey is []"
      *
      * <p>An {@link IllegalArgumentException} is thrown if
-     * <code>val</code> contains a start delimeter "${" which is not
-     * balanced by a stop delimeter "}". </p>
+     * <code>val</code> contains a start delimiter "${" which is not
+     * balanced by a stop delimiter "}". </p>
      *
      * <p><b>Author</b> Avy Sharell</p>
      *

@@ -338,8 +338,8 @@ public final class OptionConverter {
      * will set <code>s</code> to "Value of inexistentKey is []"
      * </p>
      * <p>An {@link java.lang.IllegalArgumentException} is thrown if
-     * <code>val</code> contains a start delimeter "${" which is not
-     * balanced by a stop delimeter "}". </p>
+     * <code>val</code> contains a start delimiter "${" which is not
+     * balanced by a stop delimiter "}". </p>
      *
      * @param val The string on which variable substitution is performed.
      * @param props The properties to use for substitution.
