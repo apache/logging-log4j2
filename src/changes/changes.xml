@@ -3774,7 +3774,7 @@
         Allow JSON layout to create one compact log record per line.
       </action>
       <action issue="LOG4J2-933" dev="ggregory" type="add" due-to="ppiman at gmail.com">
-        HTML layout should not use attribute minimalization for hr noshade.
+        HTML layout should not use attribute minimization for hr noshade.
       </action>
       <action issue="LOG4J2-895" dev="ggregory" type="add">
         Specify the SyslogAppender connect timeout value as part of the configuration.
