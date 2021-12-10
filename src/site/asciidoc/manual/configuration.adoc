@@ -63,7 +63,7 @@ Every document type supported by Log4j has a ConfigurationFactory. The factory i
 that declares what file extensions it supports and what its priority is. Properties have the highest
 precedence with a value of 8, followed by yaml, json and xml. When autoconfiguration is performed Log4j
 will call each of these factories in order to determine which, if any, support the specified configuration
-file format. If one is found that factory will create the corresponding Configuratoin object and pass the
+file format. If one is found that factory will create the corresponding Configuration object and pass the
 reference to the configuration data to it.
 
 Every configuration implementation, such as XMLConfiguration, YamlConfiguration, JsonConfiguration, etc.

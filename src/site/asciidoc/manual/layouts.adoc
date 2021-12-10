@@ -1886,7 +1886,7 @@ The ScriptPatternSelector executes a script as descibed in the
 link:../configuration.html#Scripts[Scripts] section of the Configuration
 chapter. The script is passed all the properties configured in the
 Properties section of the configuration, the StrSubstitutor used by the
-Confguration in the "substitutor" variables, and the log event in the
+Configuration in the "substitutor" variables, and the log event in the
 "logEvent" variable, and is expected to return the value of the
 PatternMatch key that should be used, or null if the default pattern
 should be used.
