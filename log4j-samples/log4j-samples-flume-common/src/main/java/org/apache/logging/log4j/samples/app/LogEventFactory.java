@@ -33,22 +33,22 @@ import org.apache.logging.log4j.samples.util.NamingUtils;
 public class LogEventFactory {
 
     @SuppressWarnings("unchecked")
-    public static <T extends AuditEvent> T getEvent(final Class<T> intrface) {
+    public static <T extends AuditEvent> T getEvent(final Class<T> iface) {
 
-        final String eventId = NamingUtils.lowerFirst(intrface.getSimpleName());
+        final String eventId = NamingUtils.lowerFirst(iface.getSimpleName());
         final StructuredDataMessage msg = new StructuredDataMessage(eventId, null, "Audit");
-        return (T)Proxy.newProxyInstance(intrface
-            .getClassLoader(), new Class<?>[]{intrface}, new AuditProxy(msg, intrface));
+        return (T)Proxy.newProxyInstance(iface
+            .getClassLoader(), new Class<?>[]{iface}, new AuditProxy(msg, iface));
     }
 
     private static class AuditProxy implements InvocationHandler {
 
         private final StructuredDataMessage msg;
-        private final Class<?> intrface;
+        private final Class<?> iface;
 
-        public AuditProxy(final StructuredDataMessage msg, final Class<?> intrface) {
+        public AuditProxy(final StructuredDataMessage msg, final Class<?> iface) {
             this.msg = msg;
-            this.intrface = intrface;
+            this.iface = iface;
         }
 
         @Override
@@ -58,7 +58,7 @@ public class LogEventFactory {
 
                 final StringBuilder missing = new StringBuilder();
 
-                final Method[] methods = intrface.getMethods();
+                final Method[] methods = iface.getMethods();
 
                 for (final Method _method : methods) {
                     final String name = NamingUtils.lowerFirst(NamingUtils
