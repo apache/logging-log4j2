@@ -95,7 +95,7 @@ before it the tree is processed. All an arbiter really does is provide a method 
 result that determines whether the child nodes of the arbiter should remain in the configuration or be
 pruned.
 
-Arbiters may occur anywhere an element is allowed in the configuration. So an Aribiter could encapsulate
+Arbiters may occur anywhere an element is allowed in the configuration. So an Arbiter could encapsulate
 something as simple as a single property declaration or a whole set of Appenders or Loggers. Arbiters
 may also be nested although Arbiters that are the descendant of another arbiter will only be evalued if the
 ancestor returned true. The child elements of an Arbiter must be valid elements for whatever element is
@@ -135,7 +135,7 @@ Normally Arbiters act in isolation from other Arbiters. That is, the outcome of 
 impact any other Arbiters. This can be cumbersome when you simply want to use one of a set of choices. A
 special plugin named "Select" can be used in this case. Each element under the Select is required to be
 an Arbiter. The first Arbiter that returns a true value will be the one used while others are ignored.
-If no Arbiter returns true a DefaultAtrbiter may be configured with the default configuration elements.
+If no Arbiter returns true a DefaultArbiter may be configured with the default configuration elements.
 The DefaultArbiter is an Arbiter that always returns true, so using it outside of a Select would result in
 its configured elements always being included just as if it hadn't been present.
 
