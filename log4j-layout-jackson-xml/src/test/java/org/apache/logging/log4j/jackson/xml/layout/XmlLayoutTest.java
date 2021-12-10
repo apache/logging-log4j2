@@ -99,8 +99,8 @@ public class XmlLayoutTest {
 
     private void checkContains(final String expected, final List<String> list) {
         for (final String string : list) {
-            final String trimedLine = string.trim();
-            if (trimedLine.contains(expected)) {
+            final String trimmedLine = string.trim();
+            if (trimmedLine.contains(expected)) {
                 return;
             }
         }
