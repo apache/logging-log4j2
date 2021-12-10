@@ -224,7 +224,7 @@
         Allow MapMessage and ThreadContext attributes to be prefixed.
       </action>
       <action issue="LOG4J2=3048" dev="rgoers" type="add">
-        Add improved MapMessge support to GelfLayout.
+        Add improved MapMessage support to GelfLayout.
       </action>
       <action issue="LOG4J2-3044" dev="rgoers" type="add">
         Add RepeatPatternConverter.
@@ -822,7 +822,7 @@
         ServletContainerInitializer was obtaining the StatusLogger too soon.
       </action>
       <action issue="LOG4J2-2703" dev="goers" type="fix" due-to="Volkan Yazici">
-        MapMessage.getFormattedMesssage() would incorrectly format objects.
+        MapMessage.getFormattedMessage() would incorrectly format objects.
       </action>
       <action issue="LOG4J2-2760" dev="rgoers" type="fix" due-to="Christoph Kaser">
         Always write header on a new OutputStream.

@@ -124,7 +124,7 @@ public class JmsAppenderTest {
 
     private Log4jLogEvent createMapMessageLogEvent() {
         final StringMapMessage mapMessage = new StringMapMessage();
-        return createLogEvent(mapMessage.with("testMesage", LOG_MESSAGE));
+        return createLogEvent(mapMessage.with("testMessage", LOG_MESSAGE));
     }
 
     @Before
