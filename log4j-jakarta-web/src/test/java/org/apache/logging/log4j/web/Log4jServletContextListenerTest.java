@@ -79,7 +79,7 @@ public class Log4jServletContextListenerTest {
     }
 
     @Test
-    public void initializingLog4jServletContextListenerShouldFaileWhenAutoShutdownIsTrue() throws Exception {
+    public void initializingLog4jServletContextListenerShouldFailWhenAutoShutdownIsTrue() throws Exception {
         given(servletContext.getInitParameter(eq(Log4jWebSupport.IS_LOG4J_AUTO_SHUTDOWN_DISABLED)))
                 .willReturn("true");
         ensureInitializingFailsWhenAuthShutdownIsEnabled();
