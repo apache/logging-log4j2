@@ -57,7 +57,7 @@ import org.apache.logging.log4j.core.util.Loader;
  * comparison.
  * </li>
  * <li>DO measure response time / latency behaviors across a spectrum of attempted load levels (e.g. at attempted loads
- * between 2% to 100%+ of max established thoughout).</li>
+ * between 2% to 100%+ of max established throughout).</li>
  * <li>DO measure the response time / latency spectrum for each tested load (even for max throughout, for which response
  * time should linearly grow with test length, or the test is wrong). HdrHistogram is one good way to capture this
  * information.</li>
