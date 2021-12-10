@@ -177,7 +177,7 @@ Flume Embedded Appender into an application.
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-ext</artifactId>
     </dependency>
-    <!-- Commson Logging to Log4j 2 binding -->
+    <!-- Common Logging to Log4j 2 binding -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-jcl</artifactId>
