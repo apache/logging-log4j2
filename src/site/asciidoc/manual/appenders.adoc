@@ -1270,12 +1270,12 @@ new `<JMS/>` configuration element.
 [cols=",,,",options="header",]
 |=======================================================================
 |Parameter Name |Type |Default |Description
-|allowdLdapClasses|String|null|A comma separated list of fully qualified class names that may be accessed by LDAP.
+|allowedLdapClasses|String|null|A comma separated list of fully qualified class names that may be accessed by LDAP.
 The classes must implement Serializable. Only applies when the JMS Appender By default only Java primative classes
 are allowed.
-|allowdLdapHosts|String|null|A comma separated list of host names or ip addresses that may be accessed by LDAP.
+|allowedLdapHosts|String|null|A comma separated list of host names or ip addresses that may be accessed by LDAP.
 By default only the local host names and ip addresses are allowed.
-|allowdJndiProtocols|String|null|A comma separated list of protocol names that JNDI will allow. By default only java,
+|allowedJndiProtocols|String|null|A comma separated list of protocol names that JNDI will allow. By default only java,
 ldap, and ldaps are the only allowed protocols.
 |factoryBindingName |String |_Required_ |The name to locate in the
 Context that provides the
