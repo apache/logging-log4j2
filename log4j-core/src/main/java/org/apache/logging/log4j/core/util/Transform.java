@@ -27,7 +27,7 @@ public final class Transform {
     private static final String CDATA_START = "<![CDATA[";
     private static final String CDATA_END = "]]>";
     private static final String CDATA_PSEUDO_END = "]]&gt;";
-    private static final String CDATA_EMBEDED_END = CDATA_END + CDATA_PSEUDO_END + CDATA_START;
+    private static final String CDATA_EMBEDDED_END = CDATA_END + CDATA_PSEUDO_END + CDATA_START;
     private static final int CDATA_END_LEN = CDATA_END.length();
 
     private Transform() {
@@ -97,7 +97,7 @@ public final class Transform {
                 int start = 0;
                 while (end > -1) {
                     buf.append(str.substring(start, end));
-                    buf.append(CDATA_EMBEDED_END);
+                    buf.append(CDATA_EMBEDDED_END);
                     start = end + CDATA_END_LEN;
                     if (start < str.length()) {
                         end = str.indexOf(CDATA_END, start);
