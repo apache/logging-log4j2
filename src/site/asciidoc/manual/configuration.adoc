@@ -69,7 +69,7 @@ reference to the configuration data to it.
 Every configuration implementation, such as XMLConfiguration, YamlConfiguration, JsonConfiguration, etc.
 has the primary task of converting the configuration text into the Node tree, typically by parsing the
 text with whatever tool is available for that document type. It should be noted that while most of the
-supported document types are inherintly tree structured, the Java properties syntax is not. Because of the
+supported document types are inherently tree structured, the Java properties syntax is not. Because of the
 need to convert the syntax into a Node tree the Java properties syntax used by Log4j required all properties
 follow a naming pattern that made the tree structure clear. As a consequence, the Java Properties format
 tends to be more verbose than using a different document type.
