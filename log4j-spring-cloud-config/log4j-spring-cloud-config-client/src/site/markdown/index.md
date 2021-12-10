@@ -73,7 +73,7 @@ log4j2.configurationUserName=guest
 log4j2.configurationPassword=guest
 ```
 As noted above, Log4j supports accessing logging configuration from bootstrap.yml. As an example, to configure reading 
-from a Spring Cloud Configuration service using basic authoriztion you can do:
+from a Spring Cloud Configuration service using basic authorization you can do:
 ```
 spring:
   application:
