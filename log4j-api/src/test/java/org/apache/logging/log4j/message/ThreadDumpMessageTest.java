@@ -61,7 +61,7 @@ public class ThreadDumpMessageTest {
         assertTrue(message.contains("RUNNABLE"), "No RUNNABLE");
         assertTrue(message.contains("ThreadDumpMessage"), "No ThreadDumpMessage");
         //assertTrue("No Locks", message.contains("waiting on"));
-        //assertTrue("No syncronizers", message.contains("locked syncrhonizers"));
+        //assertTrue("No synchronizers", message.contains("locked synchronizers"));
     }
 
     @Test
