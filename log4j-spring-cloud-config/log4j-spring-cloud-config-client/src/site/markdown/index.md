@@ -44,7 +44,7 @@ log4j.configurationFile=http://host.docker.internal:8888/ConfigService/sampleapp
 
 Log4j also supports Composite Configurations. The standard way to do that is to concatenate the paths to the files in
 a comma separated string. Unfortunately, Spring validates the URL being provided and commas are not allowed. 
-Therefore, additional configurations must be supplied as "override" query parametes.
+Therefore, additional configurations must be supplied as "override" query parameters.
 
 ```
 log4j.configurationFile=http://host.docker.internal:8888/ConfigService/sampleapp/default/master/log4j2.xml
