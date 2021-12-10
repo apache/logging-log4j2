@@ -82,7 +82,7 @@ public final class JAnsiTextRenderer implements TextRenderer {
 
     public static final Map<String, Code[]> DefaultExceptionStyleMap;
     static final Map<String, Code[]> DefaultMessageStyleMap;
-    private static final Map<String, Map<String, Code[]>> PrefedinedStyleMaps;
+    private static final Map<String, Map<String, Code[]>> PredefinedStyleMaps;
 
     private static void put(final Map<String, Code[]> map, final String name, final Code... codes) {
         map.put(name, codes);
@@ -160,7 +160,7 @@ public final class JAnsiTextRenderer implements TextRenderer {
             // TODO
             DefaultMessageStyleMap = Collections.unmodifiableMap(temp);
         }
-        PrefedinedStyleMaps = Collections.unmodifiableMap(tempPreDefs);
+        PredefinedStyleMaps = Collections.unmodifiableMap(tempPreDefs);
     }
 
     private final String beginToken;
@@ -202,7 +202,7 @@ public final class JAnsiTextRenderer implements TextRenderer {
                             break;
                         case "StyleMapName":
                             final String predefinedMapName = codeNames[0];
-                            final Map<String, Code[]> predefinedMap = PrefedinedStyleMaps.get(predefinedMapName);
+                            final Map<String, Code[]> predefinedMap = PredefinedStyleMaps.get(predefinedMapName);
                             if (predefinedMap != null) {
                                 map.putAll(predefinedMap);
                             } else {
