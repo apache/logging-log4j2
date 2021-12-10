@@ -94,7 +94,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
                 // and asynchronous execution paths until encountering an
                 // AsyncLoggerConfig with appenders.
                 hasAppenders()) {
-            // This is the first AsnycLoggerConfig encountered by this LogEvent
+            // This is the first AsyncLoggerConfig encountered by this LogEvent
             ASYNC_LOGGER_ENTERED.set(Boolean.TRUE);
             try {
                 // Detect the first time we encounter an AsyncLoggerConfig. We must log
