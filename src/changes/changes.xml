@@ -791,7 +791,7 @@
       <action issue="LOG4J2-2717" dev="rgoers" type="fix">
         Slow initialization on Windows due to accessing network interfaces.
       </action>
-      <action issue="LOG4J2-2789" dev="rgeors" type="update" due-to="Marius Volkhart">
+      <action issue="LOG4J2-2789" dev="rgoers" type="update" due-to="Marius Volkhart">
         Conditionally perform status logging calculations in PluginRegistry.
       </action>
       <action issue="LOG4J2-2756" dev="rgoers" type="fix">
