@@ -664,7 +664,7 @@
         size based rollover after a time based rollover had occurred.
       </action>
       <action issue="LOG4J2-2875" dev="rgoers" type="fix">
-        Rollover was failing to create directories when using a DirectFileeRolloverStrategy.
+        Rollover was failing to create directories when using a DirectFileRolloverStrategy.
       </action>
       <action issue="LOG4J2-2859" dev="rgoers" type="fix" due-to="Yanming Zhou">
         Fixed typos where mergeFactory should be mergeStrategy.
