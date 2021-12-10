@@ -103,7 +103,7 @@
       <item name="Scala API" href="/manual/scala-api.html"/>
 
       <item name="Configuration" href="/manual/configuration.html" collapse="true">
-        <item name="Configuration Archtecture" href="/manual/configuration.html#Architecture"/>
+        <item name="Configuration Architecture" href="/manual/configuration.html#Architecture"/>
         <item name="Arbiters" href="/manual/configuration.html#Arbiters"/>
         <item name="Automatic Configuration" href="/manual/configuration.html#AutomaticConfiguration"/>
         <item name="Additivity" href="/manual/configuration.html#Additivity"/>
