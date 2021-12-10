@@ -232,7 +232,7 @@ public class StringBuilderEncoderTest {
     }
 
     @Test
-    public void testCopyCopiesAllDataIfSuffientRemainingSpace() throws Exception {
+    public void testCopyCopiesAllDataIfSufficientRemainingSpace() throws Exception {
         final CharBuffer buff = CharBuffer.wrap(new char[16]);
         final StringBuilder text = createText(15);
         final int length = TextEncoderHelper.copy(text, 0, buff);
