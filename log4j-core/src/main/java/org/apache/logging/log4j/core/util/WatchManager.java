@@ -143,7 +143,7 @@ public class WatchManager extends AbstractLifeCycle {
 
 
     /**
-     * Return the ConfigurationWaatchers.
+     * Return the ConfigurationWatchers.
      *
      * @return the ConfigurationWatchers.
      * @since 2.11.2
