@@ -1736,14 +1736,14 @@ the status set to error and the logger declaration is:
 [source,xml]
 ----
 <logger name="EventLogger" level="info" additivity="false">
-  <AppenderRef ref="Routng"/>
+  <AppenderRef ref="Routing"/>
 </logger>
 ----
 
 the following error message will be produced.
 
 ....
-2011-11-24 23:21:25,517 ERROR Unable to locate appender Routng for logger EventLogger
+2011-11-24 23:21:25,517 ERROR Unable to locate appender Routing for logger EventLogger
 ....
 
 Applications may wish to direct the status output to some other
