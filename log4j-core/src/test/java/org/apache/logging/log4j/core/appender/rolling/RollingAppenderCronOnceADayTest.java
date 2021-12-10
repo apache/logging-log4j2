@@ -94,7 +94,7 @@ public class RollingAppenderCronOnceADayTest {
         assertNotNull("No triggering policy", policy);
         assertTrue("Incorrect policy type", policy instanceof CronTriggeringPolicy);
         final CronExpression expression = ((CronTriggeringPolicy) policy).getCronExpression();
-        assertEquals("Incorrect cron expresion", cronExpression, expression.getCronExpression());
+        assertEquals("Incorrect cron expression", cronExpression, expression.getCronExpression());
         logger.debug("Cron expression will be {}", expression.getCronExpression());
 
         // force a reconfiguration
