@@ -57,7 +57,7 @@ public final class RoutingAppender extends AbstractAppender {
     public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
             implements org.apache.logging.log4j.plugins.util.Builder<RoutingAppender> {
 
-        // Does not work unless the element is called "Script", I wanted "DefaultRounteScript"...
+        // Does not work unless the element is called "Script", I wanted "DefaultRouteScript"...
         @PluginElement("Script")
         private AbstractScript defaultRouteScript;
 
