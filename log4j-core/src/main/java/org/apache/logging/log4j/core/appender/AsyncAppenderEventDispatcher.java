@@ -112,7 +112,7 @@ class AsyncAppenderEventDispatcher extends Log4jThread {
 
         // Dispatch the event to all registered appenders.
         boolean succeeded = false;
-        // noinspection ForLoopReplaceableByForEach (avoid iterator instantion)
+        // noinspection ForLoopReplaceableByForEach (avoid iterator instantiation)
         for (int appenderIndex = 0; appenderIndex < appenders.size(); appenderIndex++) {
             final AppenderControl control = appenders.get(appenderIndex);
             try {
