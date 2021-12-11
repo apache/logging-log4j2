@@ -24,6 +24,7 @@ import java.util.Map;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.ConfigurationAware;
+import org.apache.logging.log4j.core.net.JndiManager;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.util.ReflectionUtil;
 import org.apache.logging.log4j.plugins.util.PluginManager;
@@ -77,7 +78,9 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         for (final Map.Entry<String, PluginType<?>> entry : plugins.entrySet()) {
             try {
                 final Class<? extends StrLookup> clazz = entry.getValue().getPluginClass().asSubclass(StrLookup.class);
-                strLookupMap.put(entry.getKey().toLowerCase(), ReflectionUtil.instantiate(clazz));
+                if (!clazz.getName().equals(JndiLookup.class.getName()) || JndiManager.isIsJndiEnabled()) {
+                    strLookupMap.put(entry.getKey().toLowerCase(), ReflectionUtil.instantiate(clazz));
+                }
             } catch (final Throwable t) {
                 handleError(entry.getKey(), t);
             }
@@ -107,12 +110,14 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         strLookupMap.put("lower", new LowerLookup());
         strLookupMap.put("upper", new UpperLookup());
         // JNDI
-        try {
-            // [LOG4J2-703] We might be on Android
-            strLookupMap.put(LOOKUP_KEY_JNDI,
-                Loader.newCheckedInstanceOf("org.apache.logging.log4j.core.lookup.JndiLookup", StrLookup.class));
-        } catch (final LinkageError | Exception e) {
-            handleError(LOOKUP_KEY_JNDI, e);
+        if (JndiManager.isIsJndiEnabled()) {
+            try {
+                // [LOG4J2-703] We might be on Android
+                strLookupMap.put(LOOKUP_KEY_JNDI,
+                        Loader.newCheckedInstanceOf("org.apache.logging.log4j.core.lookup.JndiLookup", StrLookup.class));
+            } catch (final LinkageError | Exception e) {
+                handleError(LOOKUP_KEY_JNDI, e);
+            }
         }
         // JMX input args
         try {

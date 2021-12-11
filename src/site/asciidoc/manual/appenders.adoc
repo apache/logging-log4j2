@@ -1259,6 +1259,10 @@ As of Log4j 2.11.0, JPA support has moved from the existing module
 
 The JMS Appender sends the formatted log event to a JMS Destination.
 
+The JMS Appender requires JNDI support so as of release 2.15.1 this appender will not function unless
+`log4j2.enableJndi=true` is configured as a system property or environment variable. See the
+link:./configuration.html#enableJndi[log4j2.enableJndi] system property.
+
 Note that in Log4j 2.0, this appender was split into a JMSQueueAppender
 and a JMSTopicAppender. Starting in Log4j 2.1, these appenders were
 combined into the JMS Appender which makes no distinction between queues

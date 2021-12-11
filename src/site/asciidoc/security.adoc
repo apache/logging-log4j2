@@ -63,7 +63,7 @@ substitution is enabled. From log4j 2.15.0, this behavior has been disabled by d
 Mitigation: In releases &gt;= 2.10, this behavior can be mitigated by setting either the system property
 `log4j2.formatMsgNoLookups` or the environment variable `LOG4J_FORMAT_MSG_NO_LOOKUPS` to `true`.
 For releases from 2.7 through 2.14.1 all PatternLayout patterns can be modified to specify the message converter as
-`%m{nnolookups}` instead of just `%m`.
+`%m{nolookups}` instead of just `%m`.
 For releases from 2.0-beta9 to 2.7, the only mitigation is to remove the `JndiLookup` class from the classpath:
 `zip -q -d log4j-core-*.jar org/apache/logging/log4j/core/lookup/JndiLookup.class`.
 

@@ -54,6 +54,7 @@ public class JndiRestrictedLookupTest {
     public static void beforeClass() {
         System.setProperty("log4j2.allowedLdapClasses", Level.class.getName());
         System.setProperty("log4j2.allowedJndiProtocols", "dns");
+        System.setProperty("log4j2.enableJndi", "true");
     }
 
     @Test
