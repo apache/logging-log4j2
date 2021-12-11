@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.appender.routing;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.Map;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -29,6 +30,7 @@ import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -47,8 +49,12 @@ public class RoutingAppenderWithJndiTest {
     public static LoggerContextRule loggerContextRule = new LoggerContextRule("log4j-routing-by-jndi.xml");
 
     @ClassRule
-    public static RuleChain rules = RuleChain.outerRule(new JndiRule(Collections.<String, Object>emptyMap()))
-        .around(loggerContextRule);
+    public static RuleChain rules = RuleChain.outerRule(new JndiRule(initBindings())).around(loggerContextRule);
+
+    private static Map<String, Object> initBindings() {
+        System.setProperty("log4j2.enableJndi", "true");
+        return Collections.emptyMap();
+    }
 
     @Before
     public void before() throws NamingException {

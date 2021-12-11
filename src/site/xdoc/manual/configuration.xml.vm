@@ -2149,6 +2149,14 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
+    <td><a name="enableJndi"/>log4j2.enableJndi</td>
+    <td>LOG4J_ENABLE_JNDI</td>
+    <td>false</td>
+    <td>
+      When true, Log4j components that use JNDI are enabled. When false, the default, they are disabled.
+    </td>
+  </tr>
+  <tr>
     <td><a name="allowedLdapClasses"/>log4j2.allowedLdapClasses</td>
     <td>LOG4J_ALLOWED_LDAP_CLASSES</td>
     <td>&nbsp;</td>

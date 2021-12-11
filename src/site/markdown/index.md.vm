@@ -142,7 +142,7 @@ The Log4j team has been made aware of a security vulnerability, CVE-2021-44228, 
 
 Log4j’s JNDI support has not restricted what names could be resolved. Some protocols are unsafe or can allow remote code
 execution. Log4j now limits the protocols by default to only java, ldap, and ldaps and limits the ldap protocols to only
-accessing Java primitive objects by default served on the local host.</p>
+accessing Java primitive objects by default served on the local host.
 
 One vector that allowed exposure to this vulnerability was Log4j’s allowance of Lookups to appear in log messages. As of
 Log4j 2.15.0 this feature is now disabled by default. While an option has been provided to enable Lookups in this fashion,

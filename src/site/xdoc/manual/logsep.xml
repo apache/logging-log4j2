@@ -111,6 +111,9 @@
                   to use JNDI to locate each web application's <code>LoggerContext</code>. Be sure to set the
                   <code>isLog4jContextSelectorNamed</code> context parameter to <kbd>true</kbd> and also set the
                   <code>log4jContextName</code> and <code>log4jConfiguration</code> context parameters.
+                  Note that the JndiContextSelector will not work unless <code>log4j2.enableJndi=true</code> is set as a
+                  system property or environment variable. See the
+                  <a href="./configuration.html#enableJndi">enableJndi</a> system property.
                 </li>
               </ol>
             <p>

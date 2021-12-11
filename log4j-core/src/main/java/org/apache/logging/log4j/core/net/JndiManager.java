@@ -73,6 +73,10 @@ public class JndiManager extends AbstractManager {
 
     private final DirContext context;
 
+    public static boolean isIsJndiEnabled() {
+        return PropertiesUtil.getProperties().getBooleanProperty("log4j2.enableJndi", false);
+    }
+
     private JndiManager(final String name, final DirContext context, final List<String> allowedHosts,
             final List<String> allowedClasses, final List<String> allowedProtocols) {
         super(null, name);
@@ -80,6 +84,14 @@ public class JndiManager extends AbstractManager {
         this.allowedHosts = allowedHosts;
         this.allowedClasses = allowedClasses;
         this.allowedProtocols = allowedProtocols;
+    }
+
+    private JndiManager(final String name) {
+        super(null, name);
+        this.context = null;
+        this.allowedProtocols = null;
+        this.allowedClasses = null;
+        this.allowedHosts = null;
     }
 
     /**
@@ -194,7 +206,10 @@ public class JndiManager extends AbstractManager {
 
     @Override
     protected boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
-        return JndiCloser.closeSilently(this.context);
+        if (context != null) {
+            return JndiCloser.closeSilently(this.context);
+        }
+        return true;
     }
 
     /**
@@ -207,6 +222,9 @@ public class JndiManager extends AbstractManager {
      */
     @SuppressWarnings("unchecked")
     public synchronized <T> T lookup(final String name) throws NamingException {
+        if (context == null) {
+            return null;
+        }
         try {
             URI uri = new URI(name);
             if (uri.getScheme() != null) {
@@ -262,21 +280,25 @@ public class JndiManager extends AbstractManager {
 
         @Override
         public JndiManager createManager(final String name, final Properties data) {
-            String hosts = data != null ? data.getProperty(ALLOWED_HOSTS) : null;
-            String classes = data != null ? data.getProperty(ALLOWED_CLASSES) : null;
-            String protocols = data != null ? data.getProperty(ALLOWED_PROTOCOLS) : null;
-            List<String> allowedHosts = new ArrayList<>();
-            List<String> allowedClasses = new ArrayList<>();
-            List<String> allowedProtocols = new ArrayList<>();
-            addAll(hosts, allowedHosts, permanentAllowedHosts, ALLOWED_HOSTS, data);
-            addAll(classes, allowedClasses, permanentAllowedClasses, ALLOWED_CLASSES, data);
-            addAll(protocols, allowedProtocols, permanentAllowedProtocols, ALLOWED_PROTOCOLS, data);
-            try {
-                return new JndiManager(name, new InitialDirContext(data), allowedHosts, allowedClasses,
-                        allowedProtocols);
-            } catch (final NamingException e) {
-                LOGGER.error("Error creating JNDI InitialContext.", e);
-                return null;
+            if (isIsJndiEnabled()) {
+                String hosts = data != null ? data.getProperty(ALLOWED_HOSTS) : null;
+                String classes = data != null ? data.getProperty(ALLOWED_CLASSES) : null;
+                String protocols = data != null ? data.getProperty(ALLOWED_PROTOCOLS) : null;
+                List<String> allowedHosts = new ArrayList<>();
+                List<String> allowedClasses = new ArrayList<>();
+                List<String> allowedProtocols = new ArrayList<>();
+                addAll(hosts, allowedHosts, permanentAllowedHosts, ALLOWED_HOSTS, data);
+                addAll(classes, allowedClasses, permanentAllowedClasses, ALLOWED_CLASSES, data);
+                addAll(protocols, allowedProtocols, permanentAllowedProtocols, ALLOWED_PROTOCOLS, data);
+                try {
+                    return new JndiManager(name, new InitialDirContext(data), allowedHosts, allowedClasses,
+                            allowedProtocols);
+                } catch (final NamingException e) {
+                    LOGGER.error("Error creating JNDI InitialContext.", e);
+                    return null;
+                }
+            } else {
+                return new JndiManager(name);
             }
         }
 

@@ -26,12 +26,15 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
- * JndiLookupTest
+ * JndiDisabledLookupTest
+ *
+ * Verifies the Lookups are disabled without the log4j2.enableJndi property set to true.
  */
-public class JndiLookupTest {
+public class JndiDisabledLookupTest {
 
     private static final String TEST_CONTEXT_RESOURCE_NAME = "logging/context-name";
     private static final String TEST_CONTEXT_NAME = "app-1";
@@ -42,11 +45,6 @@ public class JndiLookupTest {
 
     @Rule
     public JndiRule jndiRule = new JndiRule(createBindings());
-
-    @BeforeClass
-    public static void beforeClass() {
-        System.setProperty("log4j2.enableJndi", "true");
-    }
 
     private Map<String, Object> createBindings() {
         final Map<String, Object> map = new HashMap<>();
@@ -61,22 +59,6 @@ public class JndiLookupTest {
         final StrLookup lookup = new JndiLookup();
 
         String contextName = lookup.lookup(TEST_CONTEXT_RESOURCE_NAME);
-        assertEquals(TEST_CONTEXT_NAME, contextName);
-
-        contextName = lookup.lookup(JndiLookup.CONTAINER_JNDI_RESOURCE_PATH_PREFIX + TEST_CONTEXT_RESOURCE_NAME);
-        assertEquals(TEST_CONTEXT_NAME, contextName);
-
-        final String nonExistingResource = lookup.lookup("logging/non-existing-resource");
-        assertNull(nonExistingResource);
-    }
-
-    @Test
-    public void testNonStringLookup() throws Exception {
-        // LOG4J2-1310
-        final StrLookup lookup = new JndiLookup();
-        final String integralValue = lookup.lookup(TEST_INTEGRAL_NAME);
-        assertEquals(String.valueOf(TEST_INTEGRAL_VALUE), integralValue);
-        final String collectionValue = lookup.lookup(TEST_STRINGS_NAME);
-        assertEquals(String.valueOf(TEST_STRINGS_COLLECTION), collectionValue);
+        assertNull(contextName);
     }
 }
