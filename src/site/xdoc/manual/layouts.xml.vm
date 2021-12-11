@@ -1460,7 +1460,7 @@ WARN  [main]: Message 2</pre>
             <tr>
               <td align="center">
                 <a name="PatternMessage"/>
-                <b>m</b>{ookups}{ansi}<br />
+                <b>m</b>{lookups}{ansi}<br />
                 <b>msg</b>{lookups}{ansi}<br />
                 <b>message</b>{lookups}{ansi}
               </td>
@@ -1503,6 +1503,11 @@ WARN  [main]: Message 2</pre>
                   with an actual date. This can be confusing in many cases, and it's often both easier and
                   more obvious to handle the lookup in code.
                   This feature is disabled by default and the message string is logged untouched.
+                </p>
+                <p>
+                  <b>Note: </b>Users are <b>STRONGLY</b> discouraged from using the lookups option. Doing so may allow uncontrolled user input
+                  containing lookups to take unintended actions. In almost all cases the software developer can accomplish the same tasks
+                  lookups perform directly in the application code.
                 </p>
               </td>
             </tr>

@@ -136,6 +136,25 @@ Java 7). Some features require optional dependencies; the documentation for thes
 dependencies.
 
 $h2 News
+$h3 CVE-2021-44228
+
+The Log4j team has been made aware of a security vulnerability, CVE-2021-44228, that has been addressed in Log4j 2.15.0.
+
+Log4j’s JNDI support has not restricted what names could be resolved. Some protocols are unsafe or can allow remote code
+execution. Log4j now limits the protocols by default to only java, ldap, and ldaps and limits the ldap protocols to only
+accessing Java primitive objects by default served on the local host.</p>
+
+One vector that allowed exposure to this vulnerability was Log4j’s allowance of Lookups to appear in log messages. As of
+Log4j 2.15.0 this feature is now disabled by default. While an option has been provided to enable Lookups in this fashion,
+users are strongly discouraged from enabling it.
+
+For those who cannot upgrade to 2.15.0, in releases >=2.10, this vulnerability can be mitigated by setting either the
+system property `log4j2.formatMsgNoLookups` or the environment variable `LOG4J_FORMAT_MSG_NO_LOOKUPS` to `true`. For
+releases from 2.7 through 2.14.1 all PatternLayout patterns can be modified to specify the message converter as
+`%m{nnolookups}` instead of just `%m`. For releases from 2.0-beta9 to 2.10.0, the mitigation is to remove the
+`JndiLookup` class from the classpath:`zip -q -d log4j-core-*.jar org/apache/logging/log4j/core/lookup/JndiLookup.class`
+
+$h 3Other News
 
 Log4j $Log4jReleaseVersion is now available for production. The API for Log4j 2 is not compatible with Log4j 1.x, however an adapter is
 available to allow applications to continue to use the Log4j 1.x API. Adapters are also available for Apache Commons

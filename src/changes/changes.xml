@@ -29,6 +29,8 @@
          - "update" - Change
          - "remove" - Removed
     -->
+    <release version="2.15.0" date="2021-12-XX" description="GA Release 2.15.1">
+    </release>
     <release version="2.15.0" date="2021-12-06" description="GA Release 2.15.0">
       <!-- ADDS -->
       <action issue="LOG4J2-3198" dev="ckozak" type="add">
