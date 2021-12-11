@@ -23,8 +23,10 @@ import java.util.Set;
  * Set-related convenience methods.
  */
 public final class SetUtils {
-    private SetUtils() {
-    }
+
+    private static final String[] EMPTY_STRINGS = new String[0];
+
+    private SetUtils() {}
 
     /**
      * Extracts the Strings from a Set that start with a given prefix.
@@ -34,6 +36,9 @@ public final class SetUtils {
      * @return an array of the matching strings from the given set
      */
     public static String[] prefixSet(final Set<String> set, final String prefix) {
+        if (set == null) {
+            return EMPTY_STRINGS;
+        }
         final Set<String> prefixSet = new HashSet<>();
         for (final String str : set) {
             if (str.startsWith(prefix)) {

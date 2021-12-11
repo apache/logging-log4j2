@@ -17,31 +17,69 @@
 
 package org.apache.logging.log4j.core.net;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import javax.naming.Context;
-import javax.naming.InitialContext;
+import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.DirContext;
+import javax.naming.directory.InitialDirContext;
 
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.util.JndiCloser;
+import org.apache.logging.log4j.core.util.NetUtils;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
- * Manages a JNDI {@link javax.naming.Context}.
+ * Manages a JNDI {@link javax.naming.directory.DirContext}.
  *
  * @since 2.1
  */
 public class JndiManager extends AbstractManager {
 
+    public static final String ALLOWED_HOSTS = "allowedLdapHosts";
+    public static final String ALLOWED_CLASSES = "allowedLdapClasses";
+    public static final String ALLOWED_PROTOCOLS = "allowedJndiProtocols";
+
     private static final JndiManagerFactory FACTORY = new JndiManagerFactory();
+    private static final String PREFIX = "log4j2.";
+    private static final String LDAP = "ldap";
+    private static final String LDAPS = "ldaps";
+    private static final String JAVA = "java";
+    private static final List<String> permanentAllowedHosts = NetUtils.getLocalIps();
+    private static final List<String> permanentAllowedClasses = Arrays.asList(Boolean.class.getName(),
+            Byte.class.getName(), Character.class.getName(), Double.class.getName(), Float.class.getName(),
+            Integer.class.getName(), Long.class.getName(), Short.class.getName(), String.class.getName());
+    private static final List<String> permanentAllowedProtocols = Arrays.asList(JAVA, LDAP, LDAPS);
+    private static final String SERIALIZED_DATA = "javaSerializedData";
+    private static final String CLASS_NAME = "javaClassName";
+    private static final String REFERENCE_ADDRESS = "javaReferenceAddress";
+    private static final String OBJECT_FACTORY = "javaFactory";
+    private final List<String> allowedHosts;
+    private final List<String> allowedClasses;
+    private final List<String> allowedProtocols;
 
-    private final Context context;
+    private final DirContext context;
 
-    private JndiManager(final String name, final Context context) {
+    private JndiManager(final String name, final DirContext context, final List<String> allowedHosts,
+                        final List<String> allowedClasses, final List<String> allowedProtocols) {
         super(null, name);
         this.context = context;
+        this.allowedHosts = allowedHosts;
+        this.allowedClasses = allowedClasses;
+        this.allowedProtocols = allowedProtocols;
     }
 
     /**
@@ -77,11 +115,11 @@ public class JndiManager extends AbstractManager {
      * @return the JndiManager for the provided parameters.
      */
     public static JndiManager getJndiManager(final String initialContextFactoryName,
-            final String providerURL,
-            final String urlPkgPrefixes,
-            final String securityPrincipal,
-            final String securityCredentials,
-            final Properties additionalProperties) {
+                                             final String providerURL,
+                                             final String urlPkgPrefixes,
+                                             final String securityPrincipal,
+                                             final String securityCredentials,
+                                             final Properties additionalProperties) {
         final Properties properties = createProperties(initialContextFactoryName, providerURL, urlPkgPrefixes,
                 securityPrincipal, securityCredentials, additionalProperties);
         return getManager(createManagerName(), FACTORY, properties);
@@ -123,8 +161,8 @@ public class JndiManager extends AbstractManager {
      * @since 2.9
      */
     public static Properties createProperties(final String initialContextFactoryName, final String providerURL,
-            final String urlPkgPrefixes, final String securityPrincipal, final String securityCredentials,
-            final Properties additionalProperties) {
+                                              final String urlPkgPrefixes, final String securityPrincipal, final String securityCredentials,
+                                              final Properties additionalProperties) {
         if (initialContextFactoryName == null) {
             return null;
         }
@@ -168,7 +206,55 @@ public class JndiManager extends AbstractManager {
      * @throws  NamingException if a naming exception is encountered
      */
     @SuppressWarnings("unchecked")
-    public <T> T lookup(final String name) throws NamingException {
+    public synchronized <T> T lookup(final String name) throws NamingException {
+        try {
+            URI uri = new URI(name);
+            if (uri.getScheme() != null) {
+                if (!allowedProtocols.contains(uri.getScheme().toLowerCase(Locale.ROOT))) {
+                    LOGGER.warn("Log4j JNDI does not allow protocol {}", uri.getScheme());
+                    return null;
+                }
+                if (LDAP.equalsIgnoreCase(uri.getScheme()) || LDAPS.equalsIgnoreCase(uri.getScheme())) {
+                    if (!allowedHosts.contains(uri.getHost())) {
+                        LOGGER.warn("Attempt to access ldap server not in allowed list");
+                        return null;
+                    }
+                    Attributes attributes = this.context.getAttributes(name);
+                    if (attributes != null) {
+                        // In testing the "key" for attributes seems to be lowercase while the attribute id is
+                        // camelcase, but that may just be true for the test LDAP used here. This copies the Attributes
+                        // to a Map ignoring the "key" and using the Attribute's id as the key in the Map so it matches
+                        // the Java schema.
+                        Map<String, Attribute> attributeMap = new HashMap<>();
+                        NamingEnumeration<? extends Attribute> enumeration = attributes.getAll();
+                        while (enumeration.hasMore()) {
+                            Attribute attribute = enumeration.next();
+                            attributeMap.put(attribute.getID(), attribute);
+                        }
+                        Attribute classNameAttr = attributeMap.get(CLASS_NAME);
+                        if (attributeMap.get(SERIALIZED_DATA) != null) {
+                            if (classNameAttr != null) {
+                                String className = classNameAttr.get().toString();
+                                if (!allowedClasses.contains(className)) {
+                                    LOGGER.warn("Deserialization of {} is not allowed", className);
+                                    return null;
+                                }
+                            } else {
+                                LOGGER.warn("No class name provided for {}", name);
+                                return null;
+                            }
+                        } else if (attributeMap.get(REFERENCE_ADDRESS) != null
+                                || attributeMap.get(OBJECT_FACTORY) != null) {
+                            LOGGER.warn("Referenceable class is not allowed for {}", name);
+                            return null;
+                        }
+                    }
+                }
+            }
+        } catch (URISyntaxException ex) {
+            LOGGER.warn("Invalid JNDI URI - {}", name);
+            return null;
+        }
         return (T) this.context.lookup(name);
     }
 
@@ -176,12 +262,35 @@ public class JndiManager extends AbstractManager {
 
         @Override
         public JndiManager createManager(final String name, final Properties data) {
+            String hosts = data != null ? data.getProperty(ALLOWED_HOSTS) : null;
+            String classes = data != null ? data.getProperty(ALLOWED_CLASSES) : null;
+            String protocols = data != null ? data.getProperty(ALLOWED_PROTOCOLS) : null;
+            List<String> allowedHosts = new ArrayList<>();
+            List<String> allowedClasses = new ArrayList<>();
+            List<String> allowedProtocols = new ArrayList<>();
+            addAll(hosts, allowedHosts, permanentAllowedHosts, ALLOWED_HOSTS, data);
+            addAll(classes, allowedClasses, permanentAllowedClasses, ALLOWED_CLASSES, data);
+            addAll(protocols, allowedProtocols, permanentAllowedProtocols, ALLOWED_PROTOCOLS, data);
             try {
-                return new JndiManager(name, new InitialContext(data));
+                return new JndiManager(name, new InitialDirContext(data), allowedHosts, allowedClasses,
+                        allowedProtocols);
             } catch (final NamingException e) {
                 LOGGER.error("Error creating JNDI InitialContext.", e);
                 return null;
             }
+        }
+
+        private void addAll(String toSplit, List<String> list, List<String> permanentList, String propertyName,
+                            Properties data) {
+            if (toSplit != null) {
+                list.addAll(Arrays.asList(toSplit.split("\\s*,\\s*")));
+                data.remove(propertyName);
+            }
+            toSplit = PropertiesUtil.getProperties().getStringProperty(PREFIX + propertyName);
+            if (toSplit != null) {
+                list.addAll(Arrays.asList(toSplit.split("\\s*,\\s*")));
+            }
+            list.addAll(permanentList);
         }
     }
 

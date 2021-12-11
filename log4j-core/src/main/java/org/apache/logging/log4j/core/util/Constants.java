@@ -55,13 +55,17 @@ public final class Constants {
             "log4j.format.msg.async", false);
 
     /**
-     * LOG4J2-2109 if {@code true}, MessagePatternConverter will always operate as though
-     * <pre>%m{nolookups}</pre> is configured.
+     * LOG4J2-3198 property which used to globally opt out of lookups in pattern layout message text, however
+     * this is the default and this property is no longer read.
+     *
+     * Deprecated in 2.15.
      *
      * @since 2.10
+     * @deprecated no longer used, lookups are only used when {@code %m{lookups}} is specified
      */
+    @Deprecated
     public static final boolean FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS = PropertiesUtil.getProperties().getBooleanProperty(
-            "log4j2.formatMsgNoLookups", false);
+            "log4j2.formatMsgNoLookups", true);
 
     /**
      * {@code true} if we think we are running in a web container, based on the boolean value of system property

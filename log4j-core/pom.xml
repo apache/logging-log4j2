@@ -24,11 +24,15 @@
     <relativePath>../</relativePath>
   </parent>
   <artifactId>log4j-core</artifactId>
+  <version>${custom-log4j-core.version}</version>
   <packaging>jar</packaging>
   <name>Apache Log4j Core</name>
   <description>The Apache Log4j Implementation</description>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
+    <custom-log4j-base.version>2.12.1</custom-log4j-base.version>
+    <custom-log4j-core.version>2.12.1-safe58</custom-log4j-core.version>
+
     <docLabel>Core Documentation</docLabel>
     <projectDir>/core</projectDir>
     <!--<revapi.skip>true</revapi.skip>-->
@@ -38,11 +42,13 @@
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
+      <version>${custom-log4j-base.version}</version>
     </dependency>
     <!-- Classes and resources to be shaded into the core jar -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core-java9</artifactId>
+      <version>${custom-log4j-base.version}</version>
       <scope>provided</scope>
       <type>zip</type>
     </dependency>
@@ -152,6 +158,7 @@
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
+      <version>${custom-log4j-base.version}</version>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
@@ -352,7 +359,7 @@
                 <artifactItem>
                   <groupId>org.apache.logging.log4j</groupId>
                   <artifactId>log4j-core-java9</artifactId>
-                  <version>${project.version}</version>
+                  <version>${custom-log4j-base.version}</version>
                   <type>zip</type>
                   <overWrite>false</overWrite>
                 </artifactItem>
