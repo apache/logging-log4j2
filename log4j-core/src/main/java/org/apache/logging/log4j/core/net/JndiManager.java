@@ -73,7 +73,7 @@ public class JndiManager extends AbstractManager {
 
     private final DirContext context;
 
-    public static boolean isIsJndiEnabled() {
+    public static boolean isJndiEnabled() {
         return PropertiesUtil.getProperties().getBooleanProperty("log4j2.enableJndi", false);
     }
 
@@ -280,7 +280,7 @@ public class JndiManager extends AbstractManager {
 
         @Override
         public JndiManager createManager(final String name, final Properties data) {
-            if (isIsJndiEnabled()) {
+            if (isJndiEnabled()) {
                 String hosts = data != null ? data.getProperty(ALLOWED_HOSTS) : null;
                 String classes = data != null ? data.getProperty(ALLOWED_CLASSES) : null;
                 String protocols = data != null ? data.getProperty(ALLOWED_PROTOCOLS) : null;

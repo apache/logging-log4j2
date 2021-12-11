@@ -124,7 +124,7 @@ public class JmsManager extends AbstractManager {
 
         @Override
         public JmsManager createManager(final String name, final JmsManagerConfiguration data) {
-            if (JndiManager.isIsJndiEnabled()) {
+            if (JndiManager.isJndiEnabled()) {
                 try {
                     return new JmsManager(name, data);
                 } catch (final Exception e) {
