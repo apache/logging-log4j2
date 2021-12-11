@@ -1289,6 +1289,10 @@ with an actual date. This can be confusing in many cases, and it's often both ea
 more obvious to handle the lookup in code.
 This feature is disabled by default and the message string is logged untouched.
 
+*Note:* Users are *STRONGLY* discouraged from using the lookups option. Doing so may allow uncontrolled user input
+containing lookups to take unintended actions. In almost all cases the software developer can accomplish the same tasks
+lookups perform directly in the application code.
+
 |[[PatternMethod]] *M* +
 *method*
 |Outputs the method name where the logging request was issued.

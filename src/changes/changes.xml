@@ -168,7 +168,9 @@
 		    Fixes incorrect constructor call in LocalizedMessageFactory.
       </action>
     </release>
-    <release version="2.15.0" date="2021-MM-DD" description="GA Release 2.15.0">
+    <release version="2.15.1" date="2021-12-XX" description="GA Release 2.15.0">
+    </release>
+    <release version="2.15.0" date="2021-12-06" description="GA Release 2.15.0">
       <!-- ADDS -->
       <action issue="LOG4J2-3198" dev="ckozak" type="add">
         Pattern layout no longer enables lookups within message text by default for cleaner API boundaries and reduced

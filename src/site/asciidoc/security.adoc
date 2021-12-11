@@ -44,6 +44,34 @@ If you have encountered an unlisted security vulnerability or other unexpected b
 that has security impact, or if the descriptions here are incomplete, please report them
 privately to the mailto:private@logging.apache.org[Log4j Security Team]. Thank you.
 
+### Fixed in Log4j 2.15.0
+
+https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44228[CVE-2021-4422]:  Apache Log4j2 JNDI
+features do not protect against attacker controlled LDAP and other JNDI related endpoints.
+
+Severity: Critical
+
+Base CVSS Score: 10.0 CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H
+
+Versions Affected: all versions from 2.0-beta9 to 2.14.1
+
+Descripton: Apache Log4j2 &lt;= 2.14.1 JNDI features used in configuration, log messages, and parameters do not
+protect against attacker controlled LDAP and other JNDI related endpoints. An attacker who can control log
+messages or log message parameters can execute arbitrary code loaded from LDAP servers when message lookup
+substitution is enabled. From log4j 2.15.0, this behavior has been disabled by default.
+
+Mitigation: In releases &gt;= 2.10, this behavior can be mitigated by setting either the system property
+`log4j2.formatMsgNoLookups` or the environment variable `LOG4J_FORMAT_MSG_NO_LOOKUPS` to `true`.
+For releases from 2.7 through 2.14.1 all PatternLayout patterns can be modified to specify the message converter as
+`%m{nnolookups}` instead of just `%m`.
+For releases from 2.0-beta9 to 2.7, the only mitigation is to remove the `JndiLookup` class from the classpath:
+`zip -q -d log4j-core-*.jar org/apache/logging/log4j/core/lookup/JndiLookup.class`.
+
+Credit: This issue was discovered by Chen Zhaojun of Alibaba Cloud Security Team.
+
+References: https://issues.apache.org/jira/browse/LOG4J2-3201[https://issues.apache.org/jira/browse/LOG4J2-3201]
+and https://issues.apache.org/jira/browse/LOG4J2-3198[https://issues.apache.org/jira/browse/LOG4J2-3198].
+
 ### Fixed in Log4j 2.13.2
 
 https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-9488[CVE-2020-9488]:
