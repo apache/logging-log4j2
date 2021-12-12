@@ -136,6 +136,11 @@ Java 7). Some features require optional dependencies; the documentation for thes
 dependencies.
 
 $h2 News
+
+Log4j 2.15.1 has been released solely to disable access to JNDI by default. The CVE noted below was fixed in the 2.15.0
+release. 2.15.1 is NOT a required upgrade but users may choose to use it to have confidence that JNDI will not be
+abused.
+
 $h3 CVE-2021-44228
 
 The Log4j team has been made aware of a security vulnerability, CVE-2021-44228, that has been addressed in Log4j 2.15.0.
@@ -164,7 +169,7 @@ Log4j $Log4jReleaseVersion is the latest release of Log4j. As of Log4j 2.13.0 Lo
 runtime. This release contains new features and fixes which can be found
 in the latest [changes report](changes-report.html#a$Log4jReleaseVersion).
 
-Some of the changes in Log4j 2.15.1 include:
+The only change in Log4j 2.15.1 is:
 
 * Disabling JNDI functionality by default.
 
