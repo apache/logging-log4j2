@@ -17,10 +17,6 @@
 
 package org.apache.logging.log4j.core.net;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectStreamClass;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -31,7 +27,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
@@ -46,6 +41,8 @@ import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.util.JndiCloser;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.util.PropertiesUtil;
+
+import static org.apache.logging.log4j.core.net.SerializationHelper.extractClassName;
 
 /**
  *  Manages a JNDI {@link javax.naming.directory.DirContext}.
@@ -261,9 +258,17 @@ public class JndiManager extends AbstractManager {
                                 if (!allowedClasses.contains(className)) {
                                     LOGGER.warn("Deserialization of {} is not allowed", className);
                                     return null;
-                                } else if (!checkClassNameMatches(attributeMap)) {
-                                    LOGGER.warn("Attack!");
-                                    return null;
+                                } else {
+                                    byte[] serializedData = (byte []) attributeMap.get(SERIALIZED_DATA).get();
+                                    // This isn't strictly correct, since according to RFC 2713:
+                                    //   "[javaClassName] may be the object's most
+                                    //   derived class's name, but does not have to be; that of a superclass
+                                    //   or interface in some cases might be most appropriate."
+                                    // However, to do this properly would require loading the class.
+                                    if (!(className.equals(extractClassName(serializedData)))) {
+                                        LOGGER.warn("Class name does not match class of serialized object");
+                                        return null;
+                                    }
                                 }
                             } else {
                                 LOGGER.warn("No class name provided for {}", name);
@@ -282,46 +287,6 @@ public class JndiManager extends AbstractManager {
             return null;
         }
         return (T) this.context.lookup(name);
-    }
-
-    // Return true only if the class name in the javaClassName attribute exactly matches the class name in
-    // javaSerializedData attribute.
-    private boolean checkClassNameMatches(Map<String, Attribute> attributeMap) throws NamingException {
-        try {
-            Attribute classNameAttr = attributeMap.get(CLASS_NAME);
-            String className = (String) classNameAttr.get();
-            Attribute serializedDataAttr = attributeMap.get(SERIALIZED_DATA);
-            byte[] serializedData = (byte[]) serializedDataAttr.get();
-            AtomicBoolean javaClassNameMatchesSerializedClassName = new AtomicBoolean(false);
-            ByteArrayInputStream baos = new ByteArrayInputStream(serializedData);
-            ObjectInputStream ois = new ObjectInputStream(baos) {
-                @Override
-                protected Class<?> resolveClass(final ObjectStreamClass desc) throws ClassNotFoundException {
-                    String name = desc.getName();
-                    // This isn't strictly correct, since according to RFC 2713:
-                    //   "[javaClassName] may be the object's most
-                    //   derived class's name, but does not have to be; that of a superclass
-                    //   or interface in some cases might be most appropriate."
-                    // However, to do this properly would require loading the class, which it would be nice not to do.
-                    if (name.equals(className)) {
-                        javaClassNameMatchesSerializedClassName.set(true);
-                    }
-                    throw new ClassNotFoundException();
-                }
-            };
-            try {
-                // Start deserializing the object just to force a call to the above resolveClass method, which will
-                // throw ClassNotFoundException regardless, short-circuiting any actual (and potentially unsafe)
-                // deserialization.
-                ois.readObject();
-            } catch (ClassNotFoundException e) {
-                // ignore
-            }
-            return javaClassNameMatchesSerializedClassName.get();
-        } catch (IOException e) {
-            // Shouldn;t happen with a ByteArrayOutputStream
-            return false;
-        }
     }
 
     private static class JndiManagerFactory implements ManagerFactory<JndiManager, Properties> {
