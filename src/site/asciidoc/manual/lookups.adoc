@@ -267,7 +267,7 @@ For example:
 [#JndiLookup]
 == JNDI Lookup
 
-As of Log4j 2.15.1 JNDI operations require that `log4j2.enableJndi=tru`e be set as a system property or the
+As of Log4j 2.15.1 JNDI operations require that `log4j2.enableJndi=true` be set as a system property or the
 corresponding environment variable for this lookup to function. See the
 link:./configuration.html#enableJndi[log4j2.enableJndi] system property.
 
