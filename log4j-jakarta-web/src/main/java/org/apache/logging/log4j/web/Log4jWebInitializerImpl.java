@@ -16,19 +16,7 @@
  */
 package org.apache.logging.log4j.web;
 
-import java.net.URI;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-
 import jakarta.servlet.ServletContext;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -42,9 +30,16 @@ import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.selector.NamedContextSelector;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NetUtils;
-import org.apache.logging.log4j.core.util.SetUtils;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.Strings;
+
+import java.net.URI;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class initializes and deinitializes Log4j no matter how the initialization occurs.
@@ -193,7 +188,7 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
         try {
             String configLocation = location;
             if (configLocation == null) {
-                final String[] paths = SetUtils.prefixSet(servletContext.getResourcePaths(WEB_INF), WEB_INF + "log4j2");
+                final String[] paths = prefixSet(servletContext.getResourcePaths(WEB_INF), WEB_INF + "log4j2");
                 LOGGER.debug("getConfigURI found resource paths {} in servletContext at [{}]", Arrays.toString(paths), WEB_INF);
                 if (paths.length == 1) {
                     configLocation = paths[0];
@@ -233,6 +228,24 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
             }
         }
         return null;
+    }
+
+    /**
+     * Collects strings starting with the given {@code prefix} from the given {@code set}.
+     *
+     * @param set a (nullable) set of strings
+     * @param prefix a prefix to look for in the string set
+     * @return an array of the matching strings from the given set
+     */
+    @SuppressWarnings("SameParameterValue")
+    private static String[] prefixSet(final Set<String> set, final String prefix) {
+        if (set == null) {
+            return Strings.EMPTY_ARRAY;
+        }
+        return set
+                .stream()
+                .filter(string -> string.startsWith(prefix))
+                .toArray(String[]::new);
     }
 
     @Override
