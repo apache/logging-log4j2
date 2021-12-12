@@ -39,6 +39,8 @@ import static org.junit.Assert.fail;
 public class JndiRestrictedLookupTest {
 
     private static final String LDAP_URL = "ldap://127.0.0.1:";
+    private static final String LDAP_BADV6_URL = "ldap://[2001:db8:1f70::999:de8:7648:6e8]@127.0.0.1:";
+    private static final String LDAP_V6_URL = "ldap://[2001:db8:1f70::999:de8:7648:6e8]:";
     private static final String RESOURCE = "JndiExploit";
     private static final String TEST_STRING = "TestString";
     private static final String TEST_MESSAGE = "TestMessage";
@@ -65,6 +67,30 @@ public class JndiRestrictedLookupTest {
         final StrLookup lookup = new JndiLookup();
         String result = lookup.lookup(LDAP_URL + port + "/" + "cn=" + RESOURCE + "," + DOMAIN_DSN
             + "?Type=A Type&Name=1100110&Char=!");
+        if (result != null) {
+            fail("Lookup returned an object");
+        }
+    }
+
+    @Test
+    public void testBadV6Lookup() throws Exception {
+        int port = embeddedLdapRule.embeddedServerPort();
+        Context context = embeddedLdapRule.context();
+        context.bind(   "cn=" + RESOURCE +"," + DOMAIN_DSN, new Fruit("Test Message"));
+        final StrLookup lookup = new JndiLookup();
+        String result = lookup.lookup(LDAP_BADV6_URL + port + "/" + "cn=" + RESOURCE + "," + DOMAIN_DSN);
+        if (result != null) {
+            fail("Lookup returned an object");
+        }
+    }
+
+    @Test
+    public void testV6Lookup() throws Exception {
+        int port = embeddedLdapRule.embeddedServerPort();
+        Context context = embeddedLdapRule.context();
+        context.bind(   "cn=" + RESOURCE +"," + DOMAIN_DSN, new Fruit("Test Message"));
+        final StrLookup lookup = new JndiLookup();
+        String result = lookup.lookup(LDAP_V6_URL + port + "/" + "cn=" + RESOURCE + "," + DOMAIN_DSN);
         if (result != null) {
             fail("Lookup returned an object");
         }
