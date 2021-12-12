@@ -2506,7 +2506,7 @@ LoggerContext is started. For debug purposes.
 |[[formatMsgNoLookups]]log4j2.formatMsgNoLookups +
 ([[log4j2.formatMsgNoLookups]]log4j2.formatMsgNoLookups)
 |LOG4J_FORMAT_MSG_NO_LOOKUPS
-|false
+|true
 |Disables message
 pattern lookups globally when set to `true`. This is equivalent to
 defining all message patterns using `%m{nolookups}`.
