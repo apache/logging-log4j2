@@ -72,25 +72,13 @@ log4j-slf4j-impl should be used with SLF4J 1.7.x and earlier and log4j-slf4j18-i
 later. SLF4J-2.0.0 alpha releases are not fully supported. See https://issues.apache.org/jira/browse/LOG4J2-2975 and
 https://jira.qos.ch/browse/SLF4J-511.
 
-Some of the new features in Log4j 2.15.1 include:
+Some of the changes in Log4j 2.15.1 include:
 
-* Support for Arbiters, which are conditionals that can enable sections of the logging configuration
-for inclusion or exclusion. In particular, SpringProfile, SystemProperty, Script, and Class Arbiters have been
-provided that use the Spring profile, System property, the result of a script, or the presence of a class respectively
-to determine whether a section of configuration should be included.
-* Support for Jakarta EE 9. This is functionally equivalent to Log4j's log4j-web module but uses the Jakarta project.
-* Various performance improvements.
-
-Key changes to note:
-
-* Prior to version 2.15.0, Log4j would automatically resolve Lookups contained in the message or its parameters in the
-Pattern Layout. This behavior is no longer the default and must be enabled by specifying %msg{lookup}.
 * Starting in version 2.15.1, JNDI functionality is disabled by default and can be re-enabled via the
 `log4j2.enableJndi` system property. Use of JNDI in an unprotected context is a large security risk and
 should be treated as such in both this library and all other Java libraries using JNDI.
-* The JNDI Lookup has been restricted to only support the java, ldap, and ldaps protocols by default. LDAP also no
-longer supports classes that implement the Referenceable interface and restricts the Serializable classes to the
-Java primative classes by default and requires an allow list to be specified to access remote LDAP servers.
+* Prior to version 2.15.0, Log4j would automatically resolve Lookups contained in the message or its parameters in the
+Pattern Layout. This behavior is no longer the default and must be enabled by specifying %msg{lookup}.
 
 The Log4j ${relVersion} API, as well as many core components, maintains binary compatibility with previous releases.
 
