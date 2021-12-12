@@ -27,7 +27,7 @@ temporary objects) while logging. In addition, Log4j 2 will not lose events whil
 
 The artifacts may be downloaded from https://logging.apache.org/log4j/2.x/download.html.
 
-This release contains a number of bug fixes and minor enhancements which are listed below.
+This release contains one change which is noted below.
 
 Due to a break in compatibility in the SLF4J binding, Log4j now ships with two versions of the SLF4J to Log4j adapters.
 log4j-slf4j-impl should be used with SLF4J 1.7.x and earlier and log4j-slf4j18-impl should be used with SLF4J 1.8.x and
@@ -36,7 +36,9 @@ https://jira.qos.ch/browse/SLF4J-511.
 
 Some of the changes in Log4j 2.15.1 include:
 
-* Starting in version 2.15.1, JNDI functionality is disabled by default and can be re-enabled via the
+* While release 2.15.0 removed the ability to resolve Lookups and log messages and addressed issues with how JNDI
+is accessed, the Log4j team feels that having JNDI enabled by default introduces an undue risk for our users.
+Starting in version 2.15.1, JNDI functionality is disabled by default and can be re-enabled via the
 `log4j2.enableJndi` system property. Use of JNDI in an unprotected context is a large security risk and
 should be treated as such in both this library and all other Java libraries using JNDI.
 * Prior to version 2.15.0, Log4j would automatically resolve Lookups contained in the message or its parameters in the
