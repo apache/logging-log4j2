@@ -152,6 +152,11 @@
         "old": "class org.apache.logging.log4j.core.time.MutableInstant",
         "new": "class org.apache.logging.log4j.core.time.MutableInstant",
         "justification": "LOG4J2-3075 MutableInstant extends from TemporalAccessor"
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.util.SetUtils",
+        "justification": "only used by web modules"
       }
     ]
   }
