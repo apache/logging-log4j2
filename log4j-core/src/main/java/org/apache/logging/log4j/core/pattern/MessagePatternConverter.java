@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -39,6 +40,7 @@ import org.apache.logging.log4j.util.StringBuilderFormattable;
 @PerformanceSensitive("allocation")
 public class MessagePatternConverter extends LogEventPatternConverter {
 
+    private static final Logger LOGGER = StatusLogger.getLogger();
     private static final String LOOKUPS = "lookups";
     private static final String NOLOOKUPS = "nolookups";
 
@@ -92,7 +94,9 @@ public class MessagePatternConverter extends LogEventPatternConverter {
         }
         List<String> results = new ArrayList<>(options.length);
         for (String option : options) {
-            if (!LOOKUPS.equalsIgnoreCase(option) && !NOLOOKUPS.equalsIgnoreCase(option)) {
+            if (LOOKUPS.equalsIgnoreCase(option) || NOLOOKUPS.equalsIgnoreCase(option)) {
+                LOGGER.warn("The {} option will be ignored. Message Lookups are no longer supported.", option);
+            } else {
                 results.add(option);
             }
         }
