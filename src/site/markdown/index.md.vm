@@ -159,7 +159,7 @@ releases from 2.7 through 2.14.1 all PatternLayout patterns can be modified to s
 `%m{nnolookups}` instead of just `%m`. For releases from 2.0-beta9 to 2.10.0, the mitigation is to remove the
 `JndiLookup` class from the classpath:`zip -q -d log4j-core-*.jar org/apache/logging/log4j/core/lookup/JndiLookup.class`
 
-$h 3Other News
+$h3 Other News
 
 Log4j $Log4jReleaseVersion is now available for production. The API for Log4j 2 is not compatible with Log4j 1.x, however an adapter is
 available to allow applications to continue to use the Log4j 1.x API. Adapters are also available for Apache Commons
@@ -169,8 +169,9 @@ Log4j $Log4jReleaseVersion is the latest release of Log4j. As of Log4j 2.13.0 Lo
 runtime. This release contains new features and fixes which can be found
 in the latest [changes report](changes-report.html#a$Log4jReleaseVersion).
 
-The only change in Log4j 2.15.1 is:
+The changes in Log4j 2.16.0 are:
 
 * Disabling JNDI functionality by default.
+* Removing Message Lookups.
 
 Log4j $Log4jReleaseVersion maintains binary compatibility with previous releases.
