@@ -1468,6 +1468,11 @@ WARN  [main]: Message 2</pre>
                 <p>
                   Outputs the application supplied message associated with the logging event.
                 </p>
+                <p>
+                  From Log4j 2.16.0, support for lookups in log messages has been removed for security reasons.
+                  Both the<code>{lookups}</code> and the <code>{nolookups}</code> options on the %m, %msg and %message
+                  pattern are now ignored. If either is specified a message will be logged.
+                </p>
                 <!-- Copied and tweaked from Javadoc for org.apache.logging.log4j.core.pattern.JAnsiMessageRenderer -->
                 <p>
                   Add <code>{ansi}</code> to render messages with ANSI escape codes (requires JAnsi,

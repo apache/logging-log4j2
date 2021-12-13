@@ -95,7 +95,7 @@ public class MessagePatternConverter extends LogEventPatternConverter {
         List<String> results = new ArrayList<>(options.length);
         for (String option : options) {
             if (LOOKUPS.equalsIgnoreCase(option) || NOLOOKUPS.equalsIgnoreCase(option)) {
-                LOGGER.warn("The {} option will be ignored. Message Lookups are no longer supported.", option);
+                LOGGER.info("The {} option will be ignored. Message Lookups are no longer supported.", option);
             } else {
                 results.add(option);
             }
