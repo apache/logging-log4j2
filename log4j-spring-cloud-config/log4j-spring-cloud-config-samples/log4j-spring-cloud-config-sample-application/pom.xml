@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.apache.logging.log4j.samples</groupId>
     <artifactId>log4j-spring-cloud-config-samples</artifactId>
-    <version>2.16.0-SNAPSHOT</version>
+    <version>2.16.0</version>
     <relativePath>..</relativePath>
   </parent>
 
