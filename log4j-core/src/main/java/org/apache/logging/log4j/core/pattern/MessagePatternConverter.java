@@ -39,8 +39,7 @@ import org.apache.logging.log4j.util.StringBuilderFormattable;
 @ConverterKeys({ "m", "msg", "message" })
 @PerformanceSensitive("allocation")
 public class MessagePatternConverter extends LogEventPatternConverter {
-
-    private static final Logger LOGGER = StatusLogger.getLogger();
+    
     private static final String LOOKUPS = "lookups";
     private static final String NOLOOKUPS = "nolookups";
 
