@@ -46,5 +46,5 @@ projects, we cannot recommend any particular individual for any specific issue.
 
 * [Gary Gregory](https://github.com/garydgregory)
 * [Ralph Goers](https://github.com/rgoers)
- 
+* [Matt Sicker](https://github.com/jvz)
 
