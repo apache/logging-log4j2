@@ -22,7 +22,7 @@ import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * See (LOG4J2-905) Ability to disable (date) lookup completely, compatibility issues with other libraries like camel.
@@ -38,7 +38,7 @@ public class PatternLayoutLookupDateTest {
         final String template = "${date:YYYY-MM-dd}";
         context.getLogger(PatternLayoutLookupDateTest.class.getName()).info(template);
         final String string = listAppender.getMessages().get(0);
-        assertFalse(string.contains(template), string);
+        assertTrue(string.contains(template), string);
     }
 
 }
