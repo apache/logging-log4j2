@@ -46,16 +46,6 @@ public class MessagePatternConverter extends LogEventPatternConverter {
         super("Message", "message");
     }
 
-    private static boolean loadLookups(final String[] options) {
-        if (options != null) {
-            for (final String option : options) {
-                if (LOOKUPS.equalsIgnoreCase(option)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
     private static TextRenderer loadMessageRenderer(final String[] options) {
         if (options != null) {
@@ -86,15 +76,11 @@ public class MessagePatternConverter extends LogEventPatternConverter {
      * @return instance of pattern converter.
      */
     public static MessagePatternConverter newInstance(final Configuration config, final String[] options) {
-        boolean lookups = loadLookups(options);
         String[] formats = withoutLookupOptions(options);
         TextRenderer textRenderer = loadMessageRenderer(formats);
         MessagePatternConverter result = formats == null || formats.length == 0
                 ? SimpleMessagePatternConverter.INSTANCE
                 : new FormattedMessagePatternConverter(formats);
-        if (lookups && config != null) {
-            result = new LookupMessagePatternConverter(result, config);
-        }
         if (textRenderer != null) {
             result = new RenderingPatternConverter(result, textRenderer);
         }
@@ -107,7 +93,9 @@ public class MessagePatternConverter extends LogEventPatternConverter {
         }
         List<String> results = new ArrayList<>(options.length);
         for (String option : options) {
-            if (!LOOKUPS.equalsIgnoreCase(option) && !NOLOOKUPS.equalsIgnoreCase(option)) {
+            if (LOOKUPS.equalsIgnoreCase(option) || NOLOOKUPS.equalsIgnoreCase(option)) {
+                LOGGER.info("The {} option will be ignored. Message Lookups are no longer supported.", option);
+            } else {
                 results.add(option);
             }
         }
@@ -160,30 +148,6 @@ public class MessagePatternConverter extends LogEventPatternConverter {
                 toAppendTo.append(msg instanceof MultiformatMessage
                         ? ((MultiformatMessage) msg).getFormattedMessage(formats)
                         : msg.getFormattedMessage());
-            }
-        }
-    }
-
-    private static final class LookupMessagePatternConverter extends MessagePatternConverter {
-        private final MessagePatternConverter delegate;
-        private final Configuration config;
-
-        LookupMessagePatternConverter(final MessagePatternConverter delegate, final Configuration config) {
-            this.delegate = delegate;
-            this.config = config;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void format(final LogEvent event, final StringBuilder toAppendTo) {
-            int start = toAppendTo.length();
-            delegate.format(event, toAppendTo);
-            int indexOfSubstitution = toAppendTo.indexOf("${", start);
-            if (indexOfSubstitution >= 0) {
-                config.getStrSubstitutor()
-                        .replaceIn(event, toAppendTo, indexOfSubstitution, toAppendTo.length() - indexOfSubstitution);
             }
         }
     }
