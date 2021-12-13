@@ -35,6 +35,7 @@ public final class JndiCloser {
      *
      * @param context the JNDI Context to close, may be {@code null}
      * @throws NamingException if a problem occurred closing the specified JNDI Context
+     * @see Context#close()
      */
     public static void close(final Context context) throws NamingException {
         if (context != null) {
@@ -46,6 +47,8 @@ public final class JndiCloser {
      * Closes the specified {@code Context}, ignoring any exceptions thrown by the close operation.
      *
      * @param context the JNDI Context to close, may be {@code null}
+     * @return Whether closing succeeded
+     * @see Context#close()
      */
     public static boolean closeSilently(final Context context) {
         try {
