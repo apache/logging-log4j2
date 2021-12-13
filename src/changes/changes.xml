@@ -169,6 +169,9 @@
       </action>
     </release>
     <release version="2.15.1" date="2021-12-XX" description="GA Release 2.15.1">
+      <action issue="LOG4J2-3215" dev="quapka">
+        Update the documentation instructions on using Log4j in a Gradle build.
+      </action>
       <action issue="LOG4J2-3208" dev="rgoers" type="fix">
         Disable JNDI by default. Require log4j2.enableJndi to be set to true to allow JNDI.
       </action>
