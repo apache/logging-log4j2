@@ -41,7 +41,7 @@ public final class IfAccumulatedFileSize implements PathCondition {
     private long accumulatedSize;
     private final PathCondition[] nestedConditions;
 
-    private IfAccumulatedFileSize(final long thresholdSize, final PathCondition[] nestedConditions) {
+    private IfAccumulatedFileSize(final long thresholdSize, final PathCondition... nestedConditions) {
         if (thresholdSize <= 0) {
             throw new IllegalArgumentException("Count must be a positive integer but was " + thresholdSize);
         }
