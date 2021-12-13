@@ -28,6 +28,8 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterizedMessage;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -36,10 +38,19 @@ import static org.junit.Assert.*;
 @Category(AsyncLoggers.class)
 public class AsyncLoggerConfigTest3 {
 
-    @Test
-    public void testNoConcurrentModificationException() throws Exception {
+    @BeforeClass
+    public static void beforeClass() {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
                 "AsyncLoggerConfigTest2.xml");
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
+    }
+
+    @Test
+    public void testNoConcurrentModificationException() throws Exception {
         final File file = new File("target", "AsyncLoggerConfigTest2.log");
         assertTrue("Deleted old file before test", !file.exists() || file.delete());
 

@@ -25,6 +25,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -38,6 +39,11 @@ public class AsyncLoggerConfigAutoFlushTest {
     public static void beforeClass() {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
                 "AsyncLoggerConfigAutoFlushTest.xml");
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
     }
 
     @Test

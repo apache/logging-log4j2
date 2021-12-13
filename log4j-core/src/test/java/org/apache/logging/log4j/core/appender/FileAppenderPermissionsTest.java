@@ -28,6 +28,7 @@ import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.ExtendedLogger;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -58,6 +59,11 @@ public class FileAppenderPermissionsTest {
     public static void beforeClass() {
         System.setProperty("log4j2.debug", "true");
         assumeTrue(FileUtils.isFilePosixAttributeViewSupported());
+    }
+
+    @AfterAll
+    public static void afterClass() {
+        System.clearProperty("log4j2.debug");
     }
 
     @ParameterizedTest

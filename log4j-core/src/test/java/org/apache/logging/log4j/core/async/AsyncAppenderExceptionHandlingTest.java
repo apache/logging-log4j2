@@ -90,7 +90,7 @@ class AsyncAppenderExceptionHandlingTest {
             Assertions.assertEquals(Collections.singletonList(lastLogMessage), accumulatedMessages);
 
         } finally {
-            System.setProperty(throwableClassNamePropertyName, Strings.EMPTY);
+            System.clearProperty(throwableClassNamePropertyName);
         }
 
     }

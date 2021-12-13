@@ -43,10 +43,14 @@ public class XmlConfigurationPropsTest {
     @Test
     public void testNoProps() {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        final LoggerContext ctx = LoggerContext.getContext();
-        ctx.reconfigure();
-        final Configuration config = ctx.getConfiguration();
-        assertThat(config, instanceOf(XmlConfiguration.class));
+        try {
+            final LoggerContext ctx = LoggerContext.getContext();
+            ctx.reconfigure();
+            final Configuration config = ctx.getConfiguration();
+            assertThat(config, instanceOf(XmlConfiguration.class));
+        } finally {
+            System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
+        }
     }
 
     @Test
@@ -59,6 +63,7 @@ public class XmlConfigurationPropsTest {
             final Configuration config = ctx.getConfiguration();
             assertThat(config, instanceOf(XmlConfiguration.class));
         } finally {
+            System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
             System.clearProperty(Constants.LOG4J_DEFAULT_STATUS_LEVEL);
         }
     }
@@ -73,6 +78,7 @@ public class XmlConfigurationPropsTest {
             final Configuration config = ctx.getConfiguration();
             assertThat(config, instanceOf(XmlConfiguration.class));
         } finally {
+            System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
             System.clearProperty("log4j.level");
         }
     }
@@ -88,6 +94,7 @@ public class XmlConfigurationPropsTest {
             final Configuration config = ctx.getConfiguration();
             assertThat(config, instanceOf(XmlConfiguration.class));
         } finally {
+            System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
             System.clearProperty("log4j.level");
             System.clearProperty("log.level");
         }

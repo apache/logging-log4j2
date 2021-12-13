@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.util.Strings;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -38,6 +39,11 @@ public class StyleConverterTest {
     @BeforeAll
     public static void beforeClass() {
         System.setProperty("log4j.skipJansi", "false"); // LOG4J2-2087: explicitly enable
+    }
+
+    @AfterAll
+    public static void afterClass() {
+        System.clearProperty("log4j.skipJansi");
     }
 
     @Test

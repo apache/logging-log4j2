@@ -47,7 +47,7 @@ public class Log4jLogEventNanoTimeTest {
 
     @AfterAll
     public static void afterClass() {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, Strings.EMPTY);
+        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
     }
 
     @Test

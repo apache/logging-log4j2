@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.ParameterizedMessage;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -46,6 +47,11 @@ public class QueueFullAsyncAppenderTest extends QueueFullAbstractTest {
     public static void beforeClass() {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
                 "log4j2-queueFullAsyncAppender.xml");
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
     }
 
     @Rule

@@ -58,7 +58,7 @@ public class ConfigurationAssemblerTest {
                 validate(configuration);
             }
         } finally {
-            System.getProperties().remove(Constants.LOG4J_CONTEXT_SELECTOR);
+            System.clearProperty(Constants.LOG4J_CONTEXT_SELECTOR);
         }
     }
 
@@ -72,8 +72,8 @@ public class ConfigurationAssemblerTest {
             final Configuration config = ((LoggerContext) LogManager.getContext(false)).getConfiguration();
             validate(config);
         } finally {
-            System.getProperties().remove(Constants.LOG4J_CONTEXT_SELECTOR);
-            System.getProperties().remove(ConfigurationFactory.CONFIGURATION_FACTORY_PROPERTY);
+            System.clearProperty(Constants.LOG4J_CONTEXT_SELECTOR);
+            System.clearProperty(ConfigurationFactory.CONFIGURATION_FACTORY_PROPERTY);
         }
     }
 

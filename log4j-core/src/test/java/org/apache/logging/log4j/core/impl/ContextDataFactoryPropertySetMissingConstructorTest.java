@@ -29,9 +29,12 @@ public class ContextDataFactoryPropertySetMissingConstructorTest {
     @Test
     public void intArgReturnsSortedArrayStringMapIfPropertySpecifiedButMissingIntConstructor() throws Exception {
         System.setProperty("log4j2.ContextData", FactoryTestStringMapWithoutIntConstructor.class.getName());
-        assertTrue(ContextDataFactory.createContextData(2) instanceof SortedArrayStringMap);
-        final SortedArrayStringMap actual = (SortedArrayStringMap) ContextDataFactory.createContextData(2);
-        assertEquals(2, actual.getThreshold());
-        System.clearProperty("log4j2.ContextData");
+        try {
+            assertTrue(ContextDataFactory.createContextData(2) instanceof SortedArrayStringMap);
+            final SortedArrayStringMap actual = (SortedArrayStringMap) ContextDataFactory.createContextData(2);
+            assertEquals(2, actual.getThreshold());
+        } finally {
+            System.clearProperty("log4j2.ContextData");
+        }
     }
 }

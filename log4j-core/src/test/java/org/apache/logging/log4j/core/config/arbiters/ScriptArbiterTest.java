@@ -42,6 +42,7 @@ public class ScriptArbiterTest {
     public void after() {
         loggerContext.stop();
         loggerContext = null;
+        System.clearProperty("env");
     }
 
     @Test

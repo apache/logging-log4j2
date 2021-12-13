@@ -33,6 +33,7 @@ import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -43,6 +44,11 @@ public class AsyncLoggerConfigTest {
     @BeforeClass
     public static void beforeClass() {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "AsyncLoggerConfigTest.xml");
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
     }
 
     @Test
@@ -71,17 +77,17 @@ public class AsyncLoggerConfigTest {
 
     @Test
     public void testIncludeLocationDefaultsToFalse() {
-    	final LoggerConfig rootLoggerConfig =
-    			AsyncLoggerConfig.RootLogger.createLogger(
-    					null, Level.INFO, null, new AppenderRef[0], null, new DefaultConfiguration(), null);
-	assertFalse("Include location should default to false for async loggers",
-    			    rootLoggerConfig.isIncludeLocation());
+        final LoggerConfig rootLoggerConfig =
+                AsyncLoggerConfig.RootLogger.createLogger(
+                        null, Level.INFO, null, new AppenderRef[0], null, new DefaultConfiguration(), null);
+        assertFalse("Include location should default to false for async loggers",
+                    rootLoggerConfig.isIncludeLocation());
 
-    	final LoggerConfig loggerConfig =
-    	        AsyncLoggerConfig.createLogger(
-    	                false, Level.INFO, "com.foo.Bar", null, new AppenderRef[0], null, new DefaultConfiguration(),
-    	        		null);
-	assertFalse("Include location should default to false for async loggers",
-    			    loggerConfig.isIncludeLocation());
+        final LoggerConfig loggerConfig =
+                AsyncLoggerConfig.createLogger(
+                        false, Level.INFO, "com.foo.Bar", null, new AppenderRef[0], null, new DefaultConfiguration(),
+                        null);
+        assertFalse("Include location should default to false for async loggers",
+                    loggerConfig.isIncludeLocation());
     }
 }

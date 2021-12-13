@@ -24,6 +24,7 @@ import javax.naming.StringRefAddr;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -55,6 +56,13 @@ public class JndiRestrictedLookupTest {
         System.setProperty("log4j2.allowedLdapClasses", Level.class.getName());
         System.setProperty("log4j2.allowedJndiProtocols", "dns");
         System.setProperty("log4j2.enableJndi", "true");
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        System.clearProperty("log4j2.allowedLdapClasses");
+        System.clearProperty("log4j2.allowedJndiProtocols");
+        System.clearProperty("log4j2.enableJndi");
     }
 
     @Test
@@ -144,12 +152,14 @@ public class JndiRestrictedLookupTest {
             fruit = f;
         }
 
+        @Override
         public Reference getReference() throws NamingException {
 
             return new Reference(Fruit.class.getName(), new StringRefAddr("fruit",
                     fruit), JndiExploit.class.getName(), null); // factory location
         }
 
+        @Override
         public String toString() {
             return fruit;
         }

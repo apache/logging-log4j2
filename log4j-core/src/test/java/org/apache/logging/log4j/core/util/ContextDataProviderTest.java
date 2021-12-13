@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.ThreadContextDataInjector;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -47,6 +48,11 @@ public class ContextDataProviderTest {
         logger = loggerContext.getLogger(ContextDataProviderTest.class.getName());
         appender = loggerContext.getConfiguration().getAppender("List");
         assertNotNull(appender, "No List appender");
+    }
+
+    @AfterAll
+    public static void afterClass() {
+        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
     }
 
     @Test

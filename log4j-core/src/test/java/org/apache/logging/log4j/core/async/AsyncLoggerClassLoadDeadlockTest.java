@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -37,6 +38,13 @@ public class AsyncLoggerClassLoadDeadlockTest {
         System.setProperty("Log4jContextSelector", "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
         System.setProperty("AsyncLogger.RingBufferSize", String.valueOf(RING_BUFFER_SIZE));
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "AsyncLoggerConsoleTest.xml");
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        System.clearProperty("Log4jContextSelector");
+        System.clearProperty("AsyncLogger.RingBufferSize");
+        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
     }
 
     @Test(timeout = 30000)

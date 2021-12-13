@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -46,6 +47,13 @@ public class QueueFullAsyncLoggerConfigTest2 extends QueueFullAbstractTest {
         System.setProperty("AsyncLoggerConfig.RingBufferSize", "128"); // minimum ringbuffer size
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
                 "log4j2-queueFullAsyncLoggerConfig.xml");
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        System.clearProperty("log4j.format.msg.async");
+        System.clearProperty("AsyncLoggerConfig.RingBufferSize");
+        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
     }
 
     @Rule

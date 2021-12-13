@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -39,6 +40,13 @@ public class AsyncAppenderConfigTest_LOG4J2_2032 {
         System.setProperty("Log4jLogEventFactory", "org.apache.logging.log4j.core.impl.ReusableLogEventFactory");
         System.setProperty("log4j2.messageFactory", "org.apache.logging.log4j.message.ReusableMessageFactory");
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "AsyncAppenderConfigTest-LOG4J2-2032.xml");
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        System.clearProperty("Log4jLogEventFactory");
+        System.clearProperty("log4j2.messageFactory");
+        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
     }
 
     @Test

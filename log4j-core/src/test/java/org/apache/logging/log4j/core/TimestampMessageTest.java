@@ -61,7 +61,6 @@ public class TimestampMessageTest {
 
     @AfterAll
     public static void afterClass() throws IllegalAccessException {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, Strings.EMPTY);
         ClockFactoryTest.resetClocks();
     }
 

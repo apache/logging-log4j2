@@ -178,18 +178,22 @@ public class TestConfigurator {
     @Test
     public void testFromClassPathProperty() throws Exception {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "classpath:log4j2-config.xml");
-        ctx = Configurator.initialize("Test1", null);
-        LogManager.getLogger("org.apache.test.TestConfigurator");
-        Configuration config = ctx.getConfiguration();
-        assertNotNull(config, "No configuration");
-        assertEquals(CONFIG_NAME, config.getName(), "Incorrect Configuration.");
-        final Map<String, Appender> map = config.getAppenders();
-        assertNotNull(map, "Appenders map should not be null.");
-        assertThat(map, hasSize(greaterThan(0)));
-        assertThat("Wrong configuration", map, hasKey("List"));
-        Configurator.shutdown(ctx);
-        config = ctx.getConfiguration();
-        assertEquals(NullConfiguration.NULL_NAME, config.getName(), "Unexpected Configuration.");
+        try {
+            ctx = Configurator.initialize("Test1", null);
+            LogManager.getLogger("org.apache.test.TestConfigurator");
+            Configuration config = ctx.getConfiguration();
+            assertNotNull(config, "No configuration");
+            assertEquals(CONFIG_NAME, config.getName(), "Incorrect Configuration.");
+            final Map<String, Appender> map = config.getAppenders();
+            assertNotNull(map, "Appenders map should not be null.");
+            assertThat(map, hasSize(greaterThan(0)));
+            assertThat("Wrong configuration", map, hasKey("List"));
+            Configurator.shutdown(ctx);
+            config = ctx.getConfiguration();
+            assertEquals(NullConfiguration.NULL_NAME, config.getName(), "Unexpected Configuration.");
+        } finally {
+            System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
+        }
     }
 
     @Test
@@ -367,12 +371,16 @@ public class TestConfigurator {
         }
         final String value = FILESEP.equals("/") ? dir.toString() + "/test.log" : "1:/target/bad:file.log";
         System.setProperty("testfile", value);
-        ctx = Configurator.initialize("Test1", "bad/log4j-badfilename.xml");
-        LogManager.getLogger("org.apache.test.TestConfigurator");
-        final Configuration config = ctx.getConfiguration();
-        assertNotNull(config, "No configuration");
-        assertEquals("XMLConfigTest", config.getName(), "Unexpected Configuration");
-        assertThat(config.getAppenders(), hasSize(equalTo(2)));
+        try {
+            ctx = Configurator.initialize("Test1", "bad/log4j-badfilename.xml");
+            LogManager.getLogger("org.apache.test.TestConfigurator");
+            final Configuration config = ctx.getConfiguration();
+            assertNotNull(config, "No configuration");
+            assertEquals("XMLConfigTest", config.getName(), "Unexpected Configuration");
+            assertThat(config.getAppenders(), hasSize(equalTo(2)));
+        } finally {
+            System.clearProperty("testfile");
+        }
     }
 
     @Test

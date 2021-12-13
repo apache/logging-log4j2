@@ -52,6 +52,7 @@ public class AsyncLoggerConfigErrorOnFormat {
     @AfterClass
     public static void afterClass() {
         System.clearProperty("log4j2.is.webapp");
+        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         System.clearProperty("log4j2.logEventFactory");
     }
 

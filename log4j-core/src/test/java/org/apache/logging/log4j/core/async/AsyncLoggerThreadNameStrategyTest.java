@@ -26,13 +26,9 @@ import static org.junit.Assert.*;
 
 @Category(AsyncLoggers.class)
 public class AsyncLoggerThreadNameStrategyTest {
-    @After
-    public void after() {
-        System.clearProperty("AsyncLogger.ThreadNameStrategy");
-    }
-
     @Before
-    public void before() {
+    @After
+    public void resetProperties() {
         System.clearProperty("AsyncLogger.ThreadNameStrategy");
     }
 

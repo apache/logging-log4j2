@@ -54,7 +54,7 @@ public class Log4j2Jira1688Test {
 
     @AfterClass
     public static void afterClass() {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, Strings.EMPTY);
+        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
     }
 
     @Rule

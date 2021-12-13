@@ -48,7 +48,11 @@ public class AsyncLoggerTestArgumentFreedOnError {
 
     @AfterClass
     public static void afterClass() {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, Strings.EMPTY);
+        System.clearProperty("log4j2.enable.threadlocals");
+        System.clearProperty("log4j2.enable.direct.encoders");
+        System.clearProperty("log4j2.is.webapp");
+        System.clearProperty("log4j.format.msg.async");
+        System.clearProperty(Constants.LOG4J_CONTEXT_SELECTOR);
     }
 
     // LOG4J2-2725: events are cleared even after failure

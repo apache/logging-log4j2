@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.config;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -29,6 +30,11 @@ public class CompositeConfigurationMissingTest {
     @BeforeAll
     public static void beforeClass() {
         System.setProperty("log4j2.configurationFile", "classpath:log4j-comp-logger-root.xml,log4j-does-not-exist.json");
+    }
+
+    @AfterAll
+    public static void afterClass() {
+        System.clearProperty("log4j2.configurationFile");
     }
 
     @Test

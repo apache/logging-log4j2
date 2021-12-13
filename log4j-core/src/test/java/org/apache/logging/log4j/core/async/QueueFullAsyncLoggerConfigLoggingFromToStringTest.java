@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -53,6 +54,14 @@ public class QueueFullAsyncLoggerConfigLoggingFromToStringTest extends QueueFull
         System.setProperty("AsyncLoggerConfig.RingBufferSize", "128");
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
                 "log4j2-queueFullAsyncLoggerConfig.xml");
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        System.clearProperty("log4j2.enable.threadlocals");
+        System.clearProperty("log4j2.is.webapp");
+        System.clearProperty("AsyncLoggerConfig.RingBufferSize");
+        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
     }
 
     @Rule

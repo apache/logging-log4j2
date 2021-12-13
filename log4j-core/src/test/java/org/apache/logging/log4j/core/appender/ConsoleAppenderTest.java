@@ -63,7 +63,6 @@ public class ConsoleAppenderTest {
 
     @BeforeEach
     public void before() {
-        System.setProperty(LOG4J_SKIP_JANSI, "true");
         baos = new ByteArrayOutputStream();
     }
 

@@ -49,6 +49,7 @@ public class AsyncLoggerConfigWithAsyncEnabledTest {
     public static void afterClass() {
         System.clearProperty("log4j2.is.webapp");
         System.clearProperty("Log4jContextSelector");
+        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
     }
 
     @Test

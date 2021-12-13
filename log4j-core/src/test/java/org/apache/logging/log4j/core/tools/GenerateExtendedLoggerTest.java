@@ -62,6 +62,8 @@ public class GenerateExtendedLoggerTest {
 
     @AfterAll
     public static void afterClass() {
+        System.clearProperty("log4j2.loggerContextFactory");
+
         File file = new File(TEST_SOURCE);
         File parent = file.getParentFile();
         if (file.exists()) {

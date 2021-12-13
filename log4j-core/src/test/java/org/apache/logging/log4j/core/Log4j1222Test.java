@@ -34,8 +34,13 @@ public class Log4j1222Test
 	@Test
 	public void homepageRendersSuccessfully()
 	{
-        System.setProperty("log4j.configurationFile", "log4j2-console.xml");
-		Runtime.getRuntime().addShutdownHook(new ShutdownHook());
+		System.setProperty("log4j.configurationFile", "log4j2-console.xml");
+		try {
+			// TODO: Does not work correctly; when shutdown hook fails test has already finished successfully
+			Runtime.getRuntime().addShutdownHook(new ShutdownHook());
+		} finally {
+			System.clearProperty("log4j.configurationFile");
+		}
 	}
 
 	private static class ShutdownHook extends Thread {

@@ -20,6 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -51,6 +52,13 @@ public class NestedLoggingFromThrowableMessageTest {
         System.setProperty("log4j2.is.webapp", "false");
     }
 
+    @AfterClass
+    public static void afterClass() {
+        System.clearProperty("log4j2.is.webapp");
+        file1.delete();
+        file2.delete();
+    }
+
     @Rule
     public LoggerContextRule context = new LoggerContextRule("log4j-nested-logging-throwable-message.xml");
     private Logger logger;
@@ -60,6 +68,7 @@ public class NestedLoggingFromThrowableMessageTest {
         logger = LogManager.getLogger(NestedLoggingFromThrowableMessageTest.class);
     }
 
+    @SuppressWarnings("serial")
     class ThrowableLogsInGetMessage extends RuntimeException {
 
         @Override

@@ -22,6 +22,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -49,6 +50,11 @@ public class NestedLoggingFromToStringTest {
     @BeforeClass
     public static void beforeClass() {
         System.setProperty("log4j2.is.webapp", "false");
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        System.clearProperty("log4j2.is.webapp");
     }
 
     @Rule

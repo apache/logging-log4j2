@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,18 +26,21 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class ContextDataFactoryPropertySetTest {
 
+    @AfterEach
+    public void afterEach() {
+        System.clearProperty("log4j2.ContextData");
+    }
+
     @Test
     public void noArgReturnsSpecifiedImplIfPropertySpecified() throws Exception {
         System.setProperty("log4j2.ContextData", FactoryTestStringMap.class.getName());
         assertTrue(ContextDataFactory.createContextData() instanceof FactoryTestStringMap);
-        System.clearProperty("log4j2.ContextData");
     }
 
     @Test
     public void intArgReturnsSpecifiedImplIfPropertySpecified() throws Exception {
         System.setProperty("log4j2.ContextData", FactoryTestStringMap.class.getName());
         assertTrue(ContextDataFactory.createContextData(2) instanceof FactoryTestStringMap);
-        System.clearProperty("log4j2.ContextData");
     }
 
     @Test
@@ -44,6 +48,5 @@ public class ContextDataFactoryPropertySetTest {
         System.setProperty("log4j2.ContextData", FactoryTestStringMap.class.getName());
         final FactoryTestStringMap actual = (FactoryTestStringMap) ContextDataFactory.createContextData(2);
         assertEquals(2, actual.initialCapacity);
-        System.clearProperty("log4j2.ContextData");
     }
 }

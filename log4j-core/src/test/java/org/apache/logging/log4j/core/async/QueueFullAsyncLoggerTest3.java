@@ -59,7 +59,10 @@ public class QueueFullAsyncLoggerTest3 extends QueueFullAbstractTest {
 
     @AfterClass
     public static void afterClass() {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, Strings.EMPTY);
+        System.clearProperty("log4j.format.msg.async");
+        System.clearProperty("log4j2.asyncQueueFullPolicy");
+        System.clearProperty("AsyncLogger.RingBufferSize");
+        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
     }
 
     @Rule

@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.time.internal.CachedClock;
 import org.apache.logging.log4j.core.time.internal.CoarseCachedClock;
 import org.apache.logging.log4j.core.time.internal.SystemClock;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnJre;
@@ -48,7 +49,8 @@ public class ClockFactoryTest {
     }
 
     @BeforeEach
-    public void setUp() throws Exception {
+    @AfterEach
+    public void cleanUpClocks() throws Exception {
         resetClocks();
     }
 

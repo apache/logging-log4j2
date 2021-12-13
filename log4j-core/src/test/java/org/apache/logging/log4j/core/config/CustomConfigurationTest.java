@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -52,6 +53,12 @@ public class CustomConfigurationTest {
     public static void before() {
         System.setProperty("log4j.level", "info");
         System.setProperty("log.level", "info");
+    }
+
+    @AfterAll
+    public static void after() {
+        System.clearProperty("log4j.level");
+        System.clearProperty("log.level");
     }
 
     @Test

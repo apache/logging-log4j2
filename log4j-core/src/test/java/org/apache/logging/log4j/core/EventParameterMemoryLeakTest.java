@@ -20,6 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -43,6 +44,14 @@ public class EventParameterMemoryLeakTest {
         System.setProperty("log4j2.enable.direct.encoders", "true");
         System.setProperty("log4j2.is.webapp", "false");
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "EventParameterMemoryLeakTest.xml");
+    }
+
+    @AfterAll
+    public static void afterClass() {
+        System.clearProperty("log4j2.enable.threadlocals");
+        System.clearProperty("log4j2.enable.direct.encoders");
+        System.clearProperty("log4j2.is.webapp");
+        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
     }
 
     @Test
@@ -99,6 +108,7 @@ public class EventParameterMemoryLeakTest {
         }
     }
 
+    @SuppressWarnings("serial")
     private static final class ObjectThrowable extends RuntimeException {
         private final Object object;
 
