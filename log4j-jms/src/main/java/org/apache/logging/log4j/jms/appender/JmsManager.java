@@ -40,7 +40,6 @@ import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.net.JndiManager;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.BiConsumer;
 
 /**
  * Consider this class <b>private</b>; it is only <b>public</b> for access by integration tests.
@@ -125,7 +124,7 @@ public class JmsManager extends AbstractManager {
 
         @Override
         public JmsManager createManager(final String name, final JmsManagerConfiguration data) {
-            if (JndiManager.isIsJndiEnabled()) {
+            if (JndiManager.isJndiEnabled()) {
                 try {
                     return new JmsManager(name, data);
                 } catch (final Exception e) {

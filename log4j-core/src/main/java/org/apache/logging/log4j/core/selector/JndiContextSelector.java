@@ -94,7 +94,7 @@ public class JndiContextSelector implements NamedContextSelector {
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     public JndiContextSelector() {
-        if (!JndiManager.isIsJndiEnabled()) {
+        if (!JndiManager.isJndiEnabled()) {
             throw new IllegalStateException("JNDI must be enabled by setting log4j2.enableJndi=true");
         }
     }
