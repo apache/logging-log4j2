@@ -45,6 +45,6 @@ projects, we cannot recommend any particular individual for any specific issue.
 #### Committers who accept GitHub Sponsorship
 
 * [Gary Gregory](https://github.com/garydgregory)
-* [Ralph Goers](https://github.com/rgoers)
 * [Matt Sicker](https://github.com/jvz)
-
+* [Ralph Goers](https://github.com/rgoers)
+* [Volkan Yazıcı](https://github.com/vy)
