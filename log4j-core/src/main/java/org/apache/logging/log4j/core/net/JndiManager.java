@@ -54,7 +54,6 @@ public class JndiManager extends AbstractManager {
     public static final String ALLOWED_PROTOCOLS = "allowedJndiProtocols";
 
     private static final JndiManagerFactory FACTORY = new JndiManagerFactory();
-    private static final String PREFIX = "log4j2.";
     private static final String LDAP = "ldap";
     private static final String LDAPS = "ldaps";
     private static final String JAVA = "java";
@@ -73,7 +72,7 @@ public class JndiManager extends AbstractManager {
 
     private final DirContext context;
 
-    public static boolean isIsJndiEnabled() {
+    public static boolean isJndiEnabled() {
         return PropertiesUtil.getProperties().getBooleanProperty("log4j2.enableJndi", false);
     }
 
@@ -280,7 +279,7 @@ public class JndiManager extends AbstractManager {
 
         @Override
         public JndiManager createManager(final String name, final Properties data) {
-            if (isIsJndiEnabled()) {
+            if (isJndiEnabled()) {
                 String hosts = data != null ? data.getProperty(ALLOWED_HOSTS) : null;
                 String classes = data != null ? data.getProperty(ALLOWED_CLASSES) : null;
                 String protocols = data != null ? data.getProperty(ALLOWED_PROTOCOLS) : null;
