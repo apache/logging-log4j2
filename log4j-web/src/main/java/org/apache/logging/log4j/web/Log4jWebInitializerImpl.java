@@ -31,6 +31,7 @@ import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.Strings;
 
 import javax.servlet.ServletContext;
 import java.net.URI;
@@ -239,7 +240,7 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
     @SuppressWarnings("SameParameterValue")
     private static String[] prefixSet(final Set<String> set, final String prefix) {
         if (set == null) {
-            return new String[0];
+            return Strings.EMPTY_ARRAY;
         }
         return set
                 .stream()
