@@ -59,7 +59,7 @@
 ```
 dependencies {
 #foreach($artifactId in $artifactIds)
-  compile group: 'org.apache.logging.log4j', name: '${artifactId}', version: '${version}'
+  implementation 'org.apache.logging.log4j:${artifactId}:${version}'
 #end
 }
 ```
