@@ -67,7 +67,7 @@ public class RegexReplacementTest {
         List<String> msgs = app.getMessages();
         assertNotNull(msgs);
         assertEquals(1, msgs.size(), "Incorrect number of messages. Should be 1 is " + msgs.size());
-        assertEquals("LoggerTest This is a test for Apache" + Strings.LINE_SEPARATOR, msgs.get(0));
+        assertEquals("LoggerTest This is a test for ${ctx:MyKey}" + Strings.LINE_SEPARATOR, msgs.get(0));
     }
 
     @Test

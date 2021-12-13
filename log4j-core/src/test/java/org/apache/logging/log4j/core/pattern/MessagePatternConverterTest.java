@@ -121,7 +121,7 @@ public class MessagePatternConverterTest {
                 .setMessage(msg).build();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
-        assertEquals("bar", sb.toString(), "Unexpected result");
+        assertEquals("${foo}", sb.toString(), "Unexpected result");
     }
 
     @Test
