@@ -40,7 +40,7 @@ public final class IfAccumulatedFileCount implements PathCondition {
     private int count;
     private final PathCondition[] nestedConditions;
 
-    private IfAccumulatedFileCount(final int thresholdParam, final PathCondition[] nestedConditions) {
+    private IfAccumulatedFileCount(final int thresholdParam, final PathCondition... nestedConditions) {
         if (thresholdParam <= 0) {
             throw new IllegalArgumentException("Count must be a positive integer but was " + thresholdParam);
         }
