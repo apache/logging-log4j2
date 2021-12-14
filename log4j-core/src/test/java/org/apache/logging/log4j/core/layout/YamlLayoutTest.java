@@ -309,13 +309,13 @@ public class YamlLayoutTest {
                 .setIncludeStacktrace(false)
                 .setAdditionalFields(new KeyValuePair[] {
                     new KeyValuePair("KEY1", "VALUE1"),
-                    new KeyValuePair("KEY2", "${java:runtime}"), })
+                    new KeyValuePair("KEY2", "${java:hw}"), })
                 .setCharset(StandardCharsets.UTF_8)
                 .setConfiguration(ctx.getConfiguration())
                 .build();
         final String str = layout.toSerializable(LogEventFixtures.createLogEvent());
         assertTrue(str, str.contains("KEY1: \"VALUE1\""));
-        assertTrue(str, str.contains("KEY2: \"" + new JavaLookup().getRuntime() + "\""));
+        assertTrue(str, str.contains("KEY2: \"" + new JavaLookup().getHardware() + "\""));
     }
 
     @Test
