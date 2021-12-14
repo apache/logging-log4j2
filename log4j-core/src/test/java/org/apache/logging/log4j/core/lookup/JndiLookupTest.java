@@ -43,11 +43,7 @@ public class JndiLookupTest {
     public JndiRule jndiRule = new JndiRule(createBindings());
 
     private Map<String, Object> createBindings() {
-        final Map<String, Object> map = new HashMap<>();
-        map.put(JndiLookup.CONTAINER_JNDI_RESOURCE_PATH_PREFIX + TEST_CONTEXT_RESOURCE_NAME, TEST_CONTEXT_NAME);
-        map.put(JndiLookup.CONTAINER_JNDI_RESOURCE_PATH_PREFIX + TEST_INTEGRAL_NAME, TEST_INTEGRAL_VALUE);
-        map.put(JndiLookup.CONTAINER_JNDI_RESOURCE_PATH_PREFIX + TEST_STRINGS_NAME, TEST_STRINGS_COLLECTION);
-        return map;
+        return new HashMap<>();
     }
 
     @Test
@@ -55,22 +51,6 @@ public class JndiLookupTest {
         final StrLookup lookup = new JndiLookup();
 
         String contextName = lookup.lookup(TEST_CONTEXT_RESOURCE_NAME);
-        assertEquals(TEST_CONTEXT_NAME, contextName);
-
-        contextName = lookup.lookup(JndiLookup.CONTAINER_JNDI_RESOURCE_PATH_PREFIX + TEST_CONTEXT_RESOURCE_NAME);
-        assertEquals(TEST_CONTEXT_NAME, contextName);
-
-        final String nonExistingResource = lookup.lookup("logging/non-existing-resource");
-        assertNull(nonExistingResource);
-    }
-
-    @Test
-    public void testNonStringLookup() throws Exception {
-        // LOG4J2-1310
-        final StrLookup lookup = new JndiLookup();
-        final String integralValue = lookup.lookup(TEST_INTEGRAL_NAME);
-        assertEquals(String.valueOf(TEST_INTEGRAL_VALUE), integralValue);
-        final String collectionValue = lookup.lookup(TEST_STRINGS_NAME);
-        assertEquals(String.valueOf(TEST_STRINGS_COLLECTION), collectionValue);
+        assertEquals("JNDI is not supported", contextName);
     }
 }

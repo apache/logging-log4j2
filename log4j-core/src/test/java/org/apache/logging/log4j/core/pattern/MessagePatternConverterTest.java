@@ -80,27 +80,6 @@ public class MessagePatternConverterTest {
     }
 
     @Test
-    public void testLookupEnabledByDefault() {
-        assertFalse("Expected lookups to be enabled", Constants.FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS);
-    }
-
-    @Test
-    public void testLookup() {
-        final Configuration config = new DefaultConfigurationBuilder()
-                .addProperty("foo", "bar")
-                .build(true);
-        final MessagePatternConverter converter = MessagePatternConverter.newInstance(config, null);
-        final Message msg = new ParameterizedMessage("${foo}");
-        final LogEvent event = Log4jLogEvent.newBuilder() //
-                .setLoggerName("MyLogger") //
-                .setLevel(Level.DEBUG) //
-                .setMessage(msg).build();
-        final StringBuilder sb = new StringBuilder();
-        converter.format(event, sb);
-        assertEquals("Unexpected result", "bar", sb.toString());
-    }
-
-    @Test
     public void testDisabledLookup() {
         final Configuration config = new DefaultConfigurationBuilder()
                 .addProperty("foo", "bar")

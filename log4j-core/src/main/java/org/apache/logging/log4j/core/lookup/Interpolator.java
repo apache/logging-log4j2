@@ -73,7 +73,9 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         for (final Map.Entry<String, PluginType<?>> entry : plugins.entrySet()) {
             try {
                 final Class<? extends StrLookup> clazz = entry.getValue().getPluginClass().asSubclass(StrLookup.class);
-                strLookupMap.put(entry.getKey().toLowerCase(), ReflectionUtil.instantiate(clazz));
+                if (!clazz.getName().equals("org.apache.logging.log4j.core.lookup.JndiLookup")) {
+                    strLookupMap.put(entry.getKey().toLowerCase(), ReflectionUtil.instantiate(clazz));
+                }
             } catch (final Throwable t) {
                 handleError(entry.getKey(), t);
             }
@@ -99,14 +101,6 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         strLookupMap.put("main", MainMapLookup.MAIN_SINGLETON);
         strLookupMap.put("marker", new MarkerLookup());
         strLookupMap.put("java", new JavaLookup());
-        // JNDI
-        try {
-            // [LOG4J2-703] We might be on Android
-            strLookupMap.put(LOOKUP_KEY_JNDI,
-                Loader.newCheckedInstanceOf("org.apache.logging.log4j.core.lookup.JndiLookup", StrLookup.class));
-        } catch (final LinkageError | Exception e) {
-            handleError(LOOKUP_KEY_JNDI, e);
-        }
         // JMX input args
         try {
             // We might be on Android

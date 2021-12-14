@@ -38,7 +38,7 @@ public class PatternLayoutLookupDateTest {
         context.getLogger(PatternLayoutLookupDateTest.class.getName()).info(template);
         final ListAppender listAppender = context.getListAppender("List");
         final String string = listAppender.getMessages().get(0);
-        Assert.assertFalse(string, string.contains(template));
+        Assert.assertTrue(string, string.contains(template));
     }
 
 }
