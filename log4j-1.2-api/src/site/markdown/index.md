@@ -36,7 +36,7 @@ the Log4j 2 Core module is included then when it is not:
 | BasicConfigurator.configure() | NoOp               | Reconfigures Log4j 2                 |
 
 If log4j-core is not present location information will not be accurate in calls using the Log4j 1.2 API. The config
-package which attempts tp convert Log4j 1.x configurations to Log4j 2 is not supported without Log4j 2.    
+package which attempts to convert Log4j 1.x configurations to Log4j 2 is not supported without Log4j 2.    
 
 For more information, see [Runtime Dependencies](../runtime-dependencies.html).
 
