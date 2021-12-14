@@ -29,6 +29,12 @@
          - "update" - Change
          - "remove" - Removed
     -->
+    <release version="2.12.2" date="2021-12-14" description="GA Release 2.12.2">
+      <action issue="LOG4J-3220" dev="rgoers" type="fix">
+        Disable JNDI by default, remove JNDI Lookup, Remove Message Lookups. When enabled JNDI only supports the
+        java protocol.
+      </action>
+    </release>
     <release version="2.12.1" date="2019-08-06" description="GA Release 2.12.1">
       <action issue="LOG4J2-1946" dev="rgoers" type="fix" due-to="Igor Perelyotov">
         Allow file renames to work when files are missing from the sequence.

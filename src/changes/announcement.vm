@@ -71,12 +71,8 @@ Due to a break in compatibility in the SLF4J binding, Log4j now ships with two v
 log4j-slf4j-impl should be used with SLF4J 1.7.x and earlier and log4j-slf4j18-impl should be used with SLF4J 1.8.x and
 later.
 
-This release improves the performance of capturing location information, makes log4j-core optional in the log4j 1.2
-bridge, and explicitly removes LoggerContext references from compoents that keep track of them when the LoggerContext
-is shut down. More details on the new features and fixes are itemized below.
-
-Note that the XML, JSON and YAML formats changed in the 2.11.0 release: they no longer have the "timeMillis" attribute
-and instead have an "Instant" element with "epochSecond" and "nanoOfSecond" attributes.
+This release addresses CVE-2021-44228 for users still using Java 7 by disabling JNDI by default, only allowing the java
+protocol when JNDI is enabled, making the JNDI Lookup inoperable, and removing the message lookup capability.
 
 The Log4j ${relVersion} API, as well as many core components, maintains binary compatibility with previous releases.
 
