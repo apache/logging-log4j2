@@ -1,0 +1,67 @@
+<!-- vim: set syn=markdown : -->
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+#set($h1='#')
+#set($h2='##')
+
+$h1 Download Apache Log4j 2.12.2
+
+Apache Log4j 2 is distributed under the [Apache License, version 2.0](https://www.apache.org/licenses/LICENSE-2.0.html).
+
+There is no documentation for the 2.12.2 release. Please refer to the [Log4j 2.12.1 manual](http://logging.apache.org/log4j/log4j-2.12.1).
+
+The link in the Mirrors column should display a list of available mirrors with a default selection based on your
+inferred location. If you do not see that page, try a different browser. The checksum and signature are links to
+the originals on the main distribution server.
+
+| Distribution                   | Mirrors                                                  | Checksum                                                        | Signature                                                       |
+| ------------------------------ | -------------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------- |
+| Apache Log4j 2 binary (tar.gz) | [apache-log4j-2.12.2-bin.tar.gz][bintar] | [apache-log4j-2.12.2-bin.tar.gz.sha512][bintarsha512] | [apache-log4j-2.12.2-bin.tar.gz.asc][bintarasc] |
+| Apache Log4j 2 binary (zip)    | [apache-log4j-2.12.2-bin.zip][binzip]    | [apache-log4j-2.12.2-bin.zip.sha512][binzipsha512]    | [apache-log4j-2.12.2-bin.zip.asc][binzipasc]    |
+| Apache Log4j 2 source (tar.gz) | [apache-log4j-2.12.2-src.tar.gz][srctar] | [apache-log4j-2.12.2-src.tar.gz.sha512][srctarsha512] | [apache-log4j-2.12.2-src.tar.gz.asc][srctarasc] |
+| Apache Log4j 2 source (zip)    | [apache-log4j-2.12.2-src.zip][srczip]    | [apache-log4j-2.12.2-src.zip.sha512][srczipsha512]    | [apache-log4j-2.12.2-src.zip.asc][srczipasc]    |
+
+[bintar]: https://www.apache.org/dyn/closer.lua/logging/log4j/2.12.2/apache-log4j-2.12.2-bin.tar.gz
+[bintarsha512]: https://www.apache.org/dist/logging/log4j/2.12.2/apache-log4j-2.12.2-bin.tar.gz.sha512
+[bintarasc]: https://www.apache.org/dist/logging/log4j/2.12.2/apache-log4j-2.12.2-bin.tar.gz.asc
+[binzip]: https://www.apache.org/dyn/closer.lua/logging/log4j/2.12.2/apache-log4j-2.12.2-bin.zip
+[binzipsha512]: https://www.apache.org/dist/logging/log4j/2.12.2/apache-log4j-2.12.2-bin.zip.sha512
+[binzipasc]: https://www.apache.org/dist/logging/log4j/2.12.2/apache-log4j-2.12.2-bin.zip.asc
+[srctar]: https://www.apache.org/dyn/closer.lua/logging/log4j/2.12.2/apache-log4j-2.12.2-src.tar.gz
+[srctarsha512]: https://www.apache.org/dist/logging/log4j/2.12.2/apache-log4j-2.12.2-src.tar.gz.sha512
+[srctarasc]: https://www.apache.org/dist/logging/log4j/2.12.2/apache-log4j-2.12.2-src.tar.gz.asc
+[srczip]: https://www.apache.org/dyn/closer.lua/logging/log4j/2.12.2/apache-log4j-2.12.2-src.zip
+[srczipsha512]: https://www.apache.org/dist/logging/log4j/2.12.2/apache-log4j-2.12.2-src.zip.sha512
+[srczipasc]: https://www.apache.org/dist/logging/log4j/2.12.2/apache-log4j-2.12.2-src.zip.asc
+
+It is essential that you verify the integrity of the downloaded files using the PGP and SHA512 signatures.
+Please read [Verifying Apache HTTP Server Releases](https://httpd.apache.org/dev/verification.html) for more
+information on why you should verify our releases.
+
+The PGP signatures can be verified using PGP or GPG. First download the
+[KEYS](https://www.apache.org/dist/logging/KEYS) as well as the asc signature file for the relevant distribution.
+Make sure you get these files from the [main distribution directory](https://www.apache.org/dist/logging/), rather
+than from a mirror. Then verify the signatures using
+
+    gpg --import KEYS
+    gpg --verify apache-log4j-2.12.2-bin.tar.gz.asc
+
+Apache Log4j 2.12.2 is signed by Ralph Goers (B3D8E1BA)
+
+Alternatively, you can verify the SHA512 signature on the files. A unix program called sha or sha512sum is included
+in many unix distributions.
+
