@@ -60,8 +60,8 @@ Base CVSS Score: 10.0 CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H
 Versions Affected: all versions from 2.0-beta9 to 2.14.1
 
 #### Description 
-Apache Log4j2 <=2.14.1 JNDI features used in configuration, log messages, and parameters do not 
-protect against attacker controlled LDAP and other JNDI related endpoints. An attacker who can control log 
+In Apache Log4j2 2.14.1, the JNDI features used in configurations, log messages, and parameters do not 
+protect against an attacker-controlled LDAP and other JNDI related endpoints. An attacker who can control log 
 messages or log message parameters can execute arbitrary code loaded from LDAP servers when message lookup 
 substitution is enabled. 
 
@@ -74,8 +74,8 @@ Log4j 1.x configurations without JMSAppender are not impacted by this vulnerabil
 
 **Log4j 2.x mitigation**: Implement one of the mitigation techniques below.
 
-* Upgrade to release 2.15.0 or later (2.16.0 is recommended) - requires Java 8 or later.
-* Users requiring Java 7, upgrade to release 2.12.2.
+* Java 8 (or later) users should upgrade to release 2.15.0 or later, 2.16.0 is recommended.
+* Java 7 users should upgrade to release 2.12.2.
 * Otherwise, remove the JndiLookup class from the classpath: `zip -q -d log4j-core-*.jar org/apache/logging/log4j/core/lookup/JndiLookup.class`
 
 Note that only the log4j-core JAR file is impacted by this vulnerability.
