@@ -45,7 +45,7 @@ Changes in this version include:
 
 ### Fixed Bugs
 * [LOG4J-3220](https://issues.apache.org/jira/browse/LOG4J-3220):
-Disable JNDI by default, remove JNDI Lookup, Remove Message Lookups. When enabled JNDI only supports the
+Disable JNDI by default, remove JNDI Lookup, remove message lookups. When enabled JNDI only supports the
         java protocol.
 
 
