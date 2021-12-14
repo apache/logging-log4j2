@@ -17,6 +17,8 @@
 
 package org.apache.logging.log4j.core.net;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
@@ -27,6 +29,7 @@ import javax.naming.NamingException;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.util.JndiCloser;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Manages a JNDI {@link javax.naming.Context}.
@@ -38,6 +41,10 @@ public class JndiManager extends AbstractManager {
     private static final JndiManagerFactory FACTORY = new JndiManagerFactory();
 
     private final Context context;
+
+    public static boolean isJndiEnabled() {
+        return PropertiesUtil.getProperties().getBooleanProperty("log4j2.enableJndi", false);
+    }
 
     private JndiManager(final String name, final Context context) {
         super(null, name);
@@ -169,20 +176,37 @@ public class JndiManager extends AbstractManager {
      */
     @SuppressWarnings("unchecked")
     public <T> T lookup(final String name) throws NamingException {
-        return (T) this.context.lookup(name);
+        if (context == null) {
+            return null;
+        }
+        try {
+            URI uri = new URI(name);
+            if (uri.getScheme() == null || uri.getScheme().equals("java")) {
+                return (T) this.context.lookup(name);
+            }
+            LOGGER.warn("Unsupported JNDI URI - {}", name);
+        } catch (URISyntaxException ex) {
+            LOGGER.warn("Invalid  JNDI URI - {}", name);
+        }
+        return null;
     }
 
     private static class JndiManagerFactory implements ManagerFactory<JndiManager, Properties> {
 
         @Override
         public JndiManager createManager(final String name, final Properties data) {
-            try {
-                return new JndiManager(name, new InitialContext(data));
-            } catch (final NamingException e) {
-                LOGGER.error("Error creating JNDI InitialContext.", e);
-                return null;
+            if (isJndiEnabled()) {
+                try {
+                    return new JndiManager(name, new InitialContext(data));
+                } catch (final NamingException e) {
+                    LOGGER.error("Error creating JNDI InitialContext.", e);
+                    return null;
+                }
+            } else {
+                return new JndiManager(name, null);
             }
         }
+
     }
 
     @Override
