@@ -70,7 +70,7 @@ substitution is enabled.
 **Log4j 1.x mitigation**: Log4j 1.x does not have Lookups so the risk is lower.
 Applications using Log4j 1.x are only vulnerable to this attack when they use JNDI in their configuration.
 A separate CVE (CVE-2021-4104) has been filed for this vulnerability.
-To mitigate: audit your logging configuration to ensure it has no JMSAppender configured. 
+To mitigate: Audit your logging configuration to ensure it has no JMSAppender configured. 
 Log4j 1.x configurations without JMSAppender are not impacted by this vulnerability.
 
 **Log4j 2.x mitigation**: Implement one of the mitigation techniques below.
