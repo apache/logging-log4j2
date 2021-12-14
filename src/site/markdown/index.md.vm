@@ -26,6 +26,33 @@ Apache Log4j 2 is an upgrade to Log4j that provides significant improvements ove
 provides many of the improvements available in Logback while fixing some inherent problems in Logback's architecture.
 
 
+<a name="CVE-2021-45046"/>
+$h2 Important: Security Vulnerability CVE-2021-45046
+
+The Log4j team has been made aware of a security vulnerability, CVE-2021-45046, that has been addressed in Log4j 2.16.0.
+
+Summary: Apache Log4j2 Thread Context Message Pattern and Context Lookup Pattern vulnerable to a denial of service attack.
+
+$h4 Details
+It was found that the fix to address CVE-2021-44228 in Apache Log4j 2.15.0 was incomplete in certain non-default
+configurations. This could allows attackers with control over Thread Context Map (MDC) input data when the logging
+configuration uses a Pattern Layout with either a Context Lookup (for example, \$\$\{ctx:loginId\}) or a
+Thread Context Map pattern (%X, %mdc, or %MDC) to craft malicious input data using a JNDI Lookup pattern
+resulting in a denial of service (DOS) attack. Log4j 2.15.0 restricts JNDI LDAP lookups to localhost by default.
+
+Note that previous mitigations involving configuration such as setting the system property `log4j2.noFormatMsgLookup`
+to `true` do NOT mitigate this specific vulnerability.
+
+$h4 Mitigation
+From version 2.16.0, Log4j disables access to JNDI by default. JNDI lookups in configuration now need to be enabled explicitly.
+Also, Log4j now limits the protocols by default to only java, ldap, and ldaps and limits the ldap
+protocols to only accessing Java primitive objects. Hosts other than the local host need to be explicitly allowed.
+The message lookups feature has been completely removed.
+
+$h4 Reference
+Please refer to the [Security page](security.html#CVE-2021-45046) for details and mitigation measures for older versions of Log4j.
+
+
 <a name="CVE-2021-44228"/>
 $h2 Important: Security Vulnerability CVE-2021-44228
 

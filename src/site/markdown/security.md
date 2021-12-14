@@ -45,9 +45,71 @@ If you have encountered an unlisted security vulnerability or other unexpected b
 that has security impact, or if the descriptions here are incomplete, please report them 
 privately to the [Log4j Security Team](mailto:private@logging.apache.org). Thank you.
 
+
+<a name="CVE-2021-45046"/>
+<a name="cve-2021-45046"/>
+### Fixed in Log4j 2.16.0
+
+#### CVE-2021-45046
+[CVE-2021-45046](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45046):  Apache Log4j2
+Thread Context Message Pattern and Context Lookup Pattern vulnerable to a denial of service attack.
+
+Severity: Moderate
+
+Base CVSS Score: 3.7 (AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L)
+
+Versions Affected: all versions from 2.0-beta9 to 2.15.0
+
+#### Description
+It was found that the fix to address CVE-2021-44228 in Apache Log4j 2.15.0 was incomplete in certain non-default configurations. This could allows attackers with control over Thread Context Map (MDC) input data when the logging configuration uses a non-default Pattern Layout with either a Context Lookup (for example, $${ctx:loginId}) or a Thread Context Map pattern (%X, %mdc, or %MDC) to craft malicious input data using a JNDI Lookup pattern resulting in a denial of service (DOS) attack. Log4j 2.15.0 restricts JNDI LDAP lookups to localhost by default. Note that previous mitigations involving configuration such as to set the system property `log4j2.noFormatMsgLookup` to `true` do NOT mitigate this specific vulnerability.
+
+
+#### Mitigation
+**Log4j 1.x mitigation**: Log4j 1.x is not impacted by this vulnerability.
+
+**Log4j 2.x mitigation**: Implement one of the mitigation techniques below.
+
+* Java 8 (or later) users should upgrade to release 2.16.0.
+* Users requiring Java 7 should upgrade to release 2.12.2 when it becomes available (work in progress, expected to be available soon).
+* Otherwise, remove the JndiLookup class from the classpath: `zip -q -d log4j-core-*.jar org/apache/logging/log4j/core/lookup/JndiLookup.class`
+
+Note that only the log4j-core JAR file is impacted by this vulnerability.
+Applications using only the log4j-api JAR file without the log4j-core JAR file are not impacted by this vulnerability.
+
+#### History
+**Older (discredited) mitigation measures**
+
+This page previously mentioned other mitigation measures, but we discovered that these measures only limit exposure while leaving some attack vectors open.
+
+Other insufficient mitigation measures are: setting system property `log4j2.formatMsgNoLookups` or environment variable `LOG4J_FORMAT_MSG_NO_LOOKUPS` to `true` for releases &gt;= 2.10, or modifying the logging configuration to disable message lookups with `%m{nolookups}`, `%msg{nolookups}` or `%message{nolookups}` for releases &gt;= 2.7 and &lt;= 2.14.1.
+
+The reason these measures are insufficient is that, in addition to the Thread Context
+attack vector mentioned above, there are still code paths in Log4j where message lookups could occur:
+known examples are applications that use `Logger.printf("%s", userInput)`, or applications that use a custom message factory,
+where the resulting messages do not implement `StringBuilderFormattable`. There may be other attack vectors.
+
+The safest thing to do is to upgrade Log4j to a safe version, or remove the JndiLookup class from the log4j-core jar.
+
+**Release Details**
+
+From version 2.16.0, the message lookups feature has been completely removed. Lookups in configuration still work.
+Furthermore, Log4j now disables access to JNDI by default. JNDI lookups in configuration now need to be enabled explicitly.
+Also, Log4j now limits the protocols by default to only java, ldap, and ldaps and limits the ldap
+protocols to only accessing Java primitive objects. Hosts other than the local host need to be explicitly allowed.
+
+#### Work in progress
+The Log4j team will continue to actively update this page as more information becomes known.
+
+#### Credit
+This issue was discovered by Kai Mindermann of iC Consult.
+
+#### References
+https://issues.apache.org/jira/browse/LOG4J2-3221
+
+
 <a name="CVE-2021-44228"/>
 <a name="cve-2021-44228"/>
-### Fixed in Log4j 2.16.0
+### Fixed in Log4j 2.15.0
 
 #### CVE-2021-44228
 [CVE-2021-44228](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44228):  Apache Log4j2 JNDI 
@@ -93,6 +155,8 @@ or a Thread Context Map pattern `%X`, `%mdc` or `%MDC`.
 When an attacker can control Thread Context values, they may inject a JNDI Lookup pattern, which will be evaluated and result in a JNDI connection.
 Log4j 2.15.0 restricts JNDI connections to localhost by default, but this may still result in DOS (Denial of Service) attacks, or worse.
 
+A new CVE (CVE-2021-45046, see above) was raised for this. 
+
 Other insufficient mitigation measures are: setting system property `log4j2.formatMsgNoLookups` or environment variable `LOG4J_FORMAT_MSG_NO_LOOKUPS` to `true` for releases &gt;= 2.10, or modifying the logging configuration to disable message lookups with `%m{nolookups}`, `%msg{nolookups}` or `%message{nolookups}` for releases &gt;= 2.7 and &lt;= 2.14.1.
 
 The reason these measures are insufficient is that, in addition to the Thread Context
@@ -118,8 +182,6 @@ The Log4j team will continue to actively update this page as more information be
 
 #### Credit 
 This issue was discovered by Chen Zhaojun of Alibaba Cloud Security Team.
-
-The ThreadContext attack vector was first discovered by Kai Mindermann of iC Consult.
 
 #### References
 [https://issues.apache.org/jira/browse/LOG4J2-3201](https://issues.apache.org/jira/browse/LOG4J2-3201)
