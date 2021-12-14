@@ -84,7 +84,7 @@ Applications using only the log4j-api JAR file without the log4j-core JAR file a
 #### History
 **Older (discredited) mitigation measures**
 
-We strongly recommend upgrading Log4j to a safe version, or removing the JndiLookup class from the log4j-core class.
+We strongly recommend upgrading Log4j to a safe version, or removing the JndiLookup class from the log4j-core jar.
 
 This page previously had other mitigation measures, but we discovered that these measures only limit exposure while leaving some attack vectors open.
 
