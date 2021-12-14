@@ -18,11 +18,49 @@
 #set($h1='#')
 #set($h2='##')
 #set($h3='###')
+#set($h4='####')
 
 $h1 Apache Log4j 2
 
 Apache Log4j 2 is an upgrade to Log4j that provides significant improvements over its predecessor, Log4j 1.x, and
 provides many of the improvements available in Logback while fixing some inherent problems in Logback's architecture.
+
+
+<a name="CVE-2021-44228">
+$h2 Important: Security Vulnerability CVE-2021-44228
+
+The Log4j team has been made aware of a security vulnerability, CVE-2021-44228, that has been addressed in Log4j 2.15.0
+and 2.16.0.
+
+$h4 Summary
+Log4j’s JNDI support has not restricted what names could be resolved. Some protocols are unsafe or can allow remote code
+execution.
+
+$h4 Details
+One vector that allowed exposure to this vulnerability was Log4j’s allowance of Lookups to appear in log messages.
+This meant that when user input is logged, and that user input contained a JNDI Lookup pointing to a malicious server,
+then Log4j would resolve that JNDI Lookup, connect to that server, and potentially download serialized Java code from
+that remote server. This in turn could execute any code during deserialization.
+This is known as a RCE (Remote Code Execution) attack.
+
+$h4 Mitigation
+As of Log4j 2.15.0 the message lookups feature was disabled by default. Lookups in configuration still work.
+While Log4j 2.15.0 has an option to enable Lookups in this fashion, users are strongly discouraged from enabling it.
+
+From version 2.16.0, the message lookups feature has been completely removed. Lookups in configuration still work.
+Furthermore, Log4j now disables access to JNDI by default. JNDI lookups in configuration now need to be enabled explicitly.
+Also, Log4j now limits the protocols by default to only java, ldap, and ldaps and limits the ldap
+protocols to only accessing Java primitive objects. Hosts other than the local host need to be explicitly allowed.
+
+A version 2.12.2 has been released for users who cannot upgrade to 2.16.0 because they require Java 7.
+This release is based on Log4j 2.12.1, with the same security changes as 2.16.0:
+it removes the message lookups feature completely, disables JNDI by default,
+and only allows access to Java primitive objects.
+It is actually even stricter than 2.16.0, in that it allows only the java protocol (ldap and ldaps protocols will not work).
+
+$h4 Reference
+Please refer to the [Security page](security.html#CVE-2021-44228) for mitigation measures for older versions of Log4j.
+
 
 $h2 Features
 
@@ -137,27 +175,9 @@ dependencies.
 
 $h2 News
 
-Log4j 2.16.0 has been released solely to disable access to JNDI by default. The CVE noted below was fixed in the 2.15.0
-release. 2.16.0 is NOT a required upgrade but users may choose to use it to have confidence that JNDI will not be
-abused.
-
-$h3 CVE-2021-44228
-
-The Log4j team has been made aware of a security vulnerability, CVE-2021-44228, that has been addressed in Log4j 2.15.0.
-
-Log4j’s JNDI support has not restricted what names could be resolved. Some protocols are unsafe or can allow remote code
-execution. Log4j now limits the protocols by default to only java, ldap, and ldaps and limits the ldap protocols to only
-accessing Java primitive objects by default served on the local host.
-
-One vector that allowed exposure to this vulnerability was Log4j’s allowance of Lookups to appear in log messages. As of
-Log4j 2.15.0 this feature is now disabled by default. While an option has been provided to enable Lookups in this fashion,
-users are strongly discouraged from enabling it.
-
-For those who cannot upgrade to 2.15.0, in releases >=2.10, this vulnerability can be mitigated by setting either the
-system property `log4j2.formatMsgNoLookups` or the environment variable `LOG4J_FORMAT_MSG_NO_LOOKUPS` to `true`. For
-releases from 2.7 through 2.14.1 all PatternLayout patterns can be modified to specify the message converter as
-`%m{nnolookups}` instead of just `%m`. For releases from 2.0-beta9 to 2.10.0, the mitigation is to remove the
-`JndiLookup` class from the classpath:`zip -q -d log4j-core-*.jar org/apache/logging/log4j/core/lookup/JndiLookup.class`
+Log4j 2.16.0 has been released solely to disable access to JNDI by default and completely remove the ability to use Lookups in messages.
+The CVE noted below was fixed in the 2.15.0 release.
+2.16.0 is a recommended upgrade to ensure that JNDI will not be abused and that message Lookups are no longer possible.
 
 $h3 Other News
 
