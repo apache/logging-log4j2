@@ -113,8 +113,13 @@ Furthermore, Log4j now disables access to JNDI by default. JNDI lookups in confi
 Also, Log4j now limits the protocols by default to only java, ldap, and ldaps and limits the ldap
 protocols to only accessing Java primitive objects. Hosts other than the local host need to be explicitly allowed.
 
+#### Work in progress
+The Log4j team will continue to actively update this page as more information becomes known.
+
 #### Credit 
 This issue was discovered by Chen Zhaojun of Alibaba Cloud Security Team.
+
+The ThreadContext attack vector was first discovered by Kai Mindermann of iC Consult.
 
 #### References
 [https://issues.apache.org/jira/browse/LOG4J2-3201](https://issues.apache.org/jira/browse/LOG4J2-3201)
