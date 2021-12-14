@@ -47,7 +47,7 @@ privately to the [Log4j Security Team](mailto:private@logging.apache.org). Thank
 
 <a name="CVE-2021-44228"/>
 <a name="cve-2021-44228"/>
-### Fixed in Log4j 2.15.0 and 2.16.0
+### Fixed in Log4j 2.16.0
 
 #### CVE-2021-44228
 [CVE-2021-44228](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44228):  Apache Log4j2 JNDI 

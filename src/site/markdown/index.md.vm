@@ -29,8 +29,7 @@ provides many of the improvements available in Logback while fixing some inheren
 <a name="CVE-2021-44228"/>
 $h2 Important: Security Vulnerability CVE-2021-44228
 
-The Log4j team has been made aware of a security vulnerability, CVE-2021-44228, that has been addressed in Log4j 2.15.0
-and 2.16.0.
+The Log4j team has been made aware of a security vulnerability, CVE-2021-44228, that has been addressed in Log4j 2.16.0.
 
 $h4 Summary
 Log4j’s JNDI support has not restricted what names could be resolved. Some protocols are unsafe or can allow remote code
