@@ -59,7 +59,9 @@ public final class Constants {
      * <pre>%m{nolookups}</pre> is configured.
      *
      * @since 2.10
+     * @deprecated Since 2.12.2
      */
+    @Deprecated
     public static final boolean FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS = PropertiesUtil.getProperties().getBooleanProperty(
             "log4j2.formatMsgNoLookups", false);
 
