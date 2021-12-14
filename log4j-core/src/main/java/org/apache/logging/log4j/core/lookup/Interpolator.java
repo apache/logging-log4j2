@@ -78,7 +78,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         for (final Map.Entry<String, PluginType<?>> entry : plugins.entrySet()) {
             try {
                 final Class<? extends StrLookup> clazz = entry.getValue().getPluginClass().asSubclass(StrLookup.class);
-                if (!clazz.getName().equals(JndiLookup.class.getName()) || JndiManager.isJndiEnabled()) {
+                if (!clazz.getName().equals("org.apache.logging.log4j.core.lookup.JndiLookup") || JndiManager.isJndiEnabled()) {
                     strLookupMap.put(entry.getKey().toLowerCase(), ReflectionUtil.instantiate(clazz));
                 }
             } catch (final Throwable t) {
