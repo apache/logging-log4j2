@@ -137,8 +137,8 @@ dependencies.
 
 $h2 News
 
-Log4j 2.15.1 has been released solely to disable access to JNDI by default. The CVE noted below was fixed in the 2.15.0
-release. 2.15.1 is NOT a required upgrade but users may choose to use it to have confidence that JNDI will not be
+Log4j 2.16.0 has been released solely to disable access to JNDI by default. The CVE noted below was fixed in the 2.15.0
+release. 2.16.0 is NOT a required upgrade but users may choose to use it to have confidence that JNDI will not be
 abused.
 
 $h3 CVE-2021-44228
