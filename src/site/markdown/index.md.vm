@@ -44,19 +44,10 @@ that remote server. This in turn could execute any code during deserialization.
 This is known as a RCE (Remote Code Execution) attack.
 
 $h4 Mitigation
-As of Log4j 2.15.0 the message lookups feature was disabled by default. Lookups in configuration still work.
-While Log4j 2.15.0 has an option to enable Lookups in this fashion, users are strongly discouraged from enabling it.
-
 From version 2.16.0, the message lookups feature has been completely removed. Lookups in configuration still work.
 Furthermore, Log4j now disables access to JNDI by default. JNDI lookups in configuration now need to be enabled explicitly.
 Also, Log4j now limits the protocols by default to only java, ldap, and ldaps and limits the ldap
 protocols to only accessing Java primitive objects. Hosts other than the local host need to be explicitly allowed.
-
-A version 2.12.2 has been released for users who cannot upgrade to 2.16.0 because they require Java 7.
-This release is based on Log4j 2.12.1, with the same security changes as 2.16.0:
-it removes the message lookups feature completely, disables JNDI by default,
-and only allows access to Java primitive objects.
-It is actually even stricter than 2.16.0, in that it allows only the java protocol (ldap and ldaps protocols will not work).
 
 $h4 Reference
 Please refer to the [Security page](security.html#CVE-2021-44228) for mitigation measures for older versions of Log4j.
