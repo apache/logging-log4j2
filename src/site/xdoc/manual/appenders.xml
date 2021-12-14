@@ -1564,7 +1564,7 @@ public class ConnectionFactory {
               <td>null</td>
               <td>
                 A comma separated list of fully qualified class names that may be accessed by LDAP. The classes
-                must implement Serializable. Only applies when the JMS Appender By default only Java primative classes are allowed.
+                must implement Serializable. Only applies when the JMS Appender By default only Java primitive classes are allowed.
               </td>
             </tr>
             <tr>

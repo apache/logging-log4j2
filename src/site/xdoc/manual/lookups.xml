@@ -278,7 +278,7 @@
           <p>By default the JDNI Lookup only supports the java, ldap, and ldaps protocols or no protocol. Additional
             protocols may be supported by specifying them on the <code>log4j2.allowedJndiProtocols</code> property.
             When using LDAP Java classes that implement the Referenceable interface are not supported for security
-            reasons. Only the Java primative classes are supported by default as well as any classes specified by the
+            reasons. Only the Java primitive classes are supported by default as well as any classes specified by the
             <code>log4j2.allowedLdapClasses</code> property. When using LDAP only references to the local host name
             or ip address are supported along with any hosts or ip addresses listed in the
             <code>log4j2.allowedLdapHosts</code> property.</p>

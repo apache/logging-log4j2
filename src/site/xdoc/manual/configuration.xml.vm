@@ -2162,7 +2162,7 @@ public class AwesomeTest {
     <td>&nbsp;</td>
     <td>
       System property that specifies fully qualified class names that may be accessed by LDAP. The classes
-      must implement Serializable. By default only Java primative classes are allowed.
+      must implement Serializable. By default only Java primitive classes are allowed.
     </td>
   </tr>
   <tr>
