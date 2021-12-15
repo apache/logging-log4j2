@@ -29,6 +29,12 @@
          - "update" - Change
          - "remove" - Removed
     -->
+    <release version="2.16.1" date="2021-MM-dd" description="GA Release 2.16.1">
+      <action issue="LOG4J2-3241" dev="rgoers" type="fix">
+        Do not declare log4j-api-java9 and log4j-core-java9 as depdendencies as it causes problems with the
+        Maven enforcer plugin.
+      </action>
+    </release>
     <release version="2.16.0" date="2021-12-13" description="GA Release 2.16.0">
       <action issue="LOG4J2-3208" dev="rgoers" type="fix">
         Disable JNDI by default. Require log4j2.enableJndi to be set to true to allow JNDI.
