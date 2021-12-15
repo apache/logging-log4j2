@@ -60,8 +60,8 @@ than from a mirror. Then verify the signatures using
 
 Apache Log4j ${Log4jReleaseVersion} is signed by ${Log4jReleaseManager} (${Log4jReleaseKey})
 
-Alternatively, you can verify the SHA512 signature on the files. A unix program called sha or sha512sum is included
-in many unix distributions.
+Alternatively, you can verify the SHA512 signature on the files. A Unix program called sha or sha512sum is included
+in many Unix distributions.
 
 $h2 Previous Releases
 
@@ -69,7 +69,7 @@ Log4j 2.12.2 was the last 2.x release to support Java 7 while Log4j 2.3 was the 
 Java 6. The Log4j team no longer provides support for Java 6 or 7.
 
 All previous releases of Apache log4j can be found in the
-[ASF archive repository](https://archive.apache.org/dist/logging/log4j/). Of course, all releases are availble for
+[ASF archive repository](https://archive.apache.org/dist/logging/log4j/). Of course, all releases are available for
 use as dependencies from the [Maven Central Repository](https://search.maven.org/search?q=org.apache.logging.log4j)
 
 $h2 Using Log4j on your classpath
