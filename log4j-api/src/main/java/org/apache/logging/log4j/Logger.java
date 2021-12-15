@@ -97,7 +97,7 @@ public interface Logger {
      * Logs a message with the specific Marker at the {@link Level#DEBUG DEBUG} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param msg the message string to be logged
+     * @param msg the Message string to be logged
      */
     void debug(Marker marker, Message msg);
 
@@ -105,7 +105,7 @@ public interface Logger {
      * Logs a message with the specific Marker at the {@link Level#DEBUG DEBUG} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param msg the message string to be logged
+     * @param msg the Message string to be logged
      * @param t A Throwable or null.
      */
     void debug(Marker marker, Message msg, Throwable t);
@@ -137,7 +137,7 @@ public interface Logger {
      * Logs a message CharSequence with the {@link Level#DEBUG DEBUG} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message CharSequence to log.
+     * @param message the message CharSequence to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void debug(Marker marker, CharSequence message);
 
@@ -146,7 +146,7 @@ public interface Logger {
      * {@link Throwable} <code>t</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message CharSequence to log.
+     * @param message the message CharSequence to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void debug(Marker marker, CharSequence message, Throwable t);
@@ -155,7 +155,7 @@ public interface Logger {
      * Logs a message object with the {@link Level#DEBUG DEBUG} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void debug(Marker marker, Object message);
 
@@ -164,7 +164,7 @@ public interface Logger {
      * <code>t</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log.
+     * @param message the message to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void debug(Marker marker, Object message, Throwable t);
@@ -173,7 +173,7 @@ public interface Logger {
      * Logs a message object with the {@link Level#DEBUG DEBUG} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void debug(Marker marker, String message);
 
@@ -181,7 +181,7 @@ public interface Logger {
      * Logs a message with parameters at the {@link Level#DEBUG DEBUG} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param params parameters to the message.
      * @see #getMessageFactory()
      */
@@ -192,7 +192,7 @@ public interface Logger {
      * DEBUG} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
@@ -203,7 +203,7 @@ public interface Logger {
      * <code>t</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log.
+     * @param message the message to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void debug(Marker marker, String message, Throwable t);
@@ -234,14 +234,14 @@ public interface Logger {
     /**
      * Logs a message with the specific Marker at the {@link Level#DEBUG DEBUG} level.
      *
-     * @param msg the message string to be logged
+     * @param msg the Message string to be logged
      */
     void debug(Message msg);
 
     /**
      * Logs a message with the specific Marker at the {@link Level#DEBUG DEBUG} level.
      *
-     * @param msg the message string to be logged
+     * @param msg the Message string to be logged
      * @param t A Throwable or null.
      */
     void debug(Message msg, Throwable t);
@@ -269,7 +269,7 @@ public interface Logger {
     /**
      * Logs a message CharSequence with the {@link Level#DEBUG DEBUG} level.
      *
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void debug(CharSequence message);
 
@@ -277,7 +277,7 @@ public interface Logger {
      * Logs a CharSequence at the {@link Level#DEBUG DEBUG} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
      *
-     * @param message the message CharSequence to log.
+     * @param message the message CharSequence to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void debug(CharSequence message, Throwable t);
@@ -285,7 +285,7 @@ public interface Logger {
     /**
      * Logs a message object with the {@link Level#DEBUG DEBUG} level.
      *
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void debug(Object message);
 
@@ -293,7 +293,7 @@ public interface Logger {
      * Logs a message at the {@link Level#DEBUG DEBUG} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
      *
-     * @param message the message to log.
+     * @param message the message to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void debug(Object message, Throwable t);
@@ -301,14 +301,14 @@ public interface Logger {
     /**
      * Logs a message object with the {@link Level#DEBUG DEBUG} level.
      *
-     * @param message the message string to log.
+     * @param message the Message string to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void debug(String message);
 
     /**
      * Logs a message with parameters at the {@link Level#DEBUG DEBUG} level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param params parameters to the message.
      * @see #getMessageFactory()
      */
@@ -318,7 +318,7 @@ public interface Logger {
      * Logs a message with parameters which are only to be constructed if the logging level is the {@link Level#DEBUG
      * DEBUG} level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
@@ -328,7 +328,7 @@ public interface Logger {
      * Logs a message at the {@link Level#DEBUG DEBUG} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
      *
-     * @param message the message to log.
+     * @param message the message to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void debug(String message, Throwable t);
@@ -357,7 +357,7 @@ public interface Logger {
      * Logs a message with parameters at debug level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      */
     void debug(Marker marker, String message, Object p0);
@@ -366,7 +366,7 @@ public interface Logger {
      * Logs a message with parameters at debug level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      */
@@ -376,7 +376,7 @@ public interface Logger {
      * Logs a message with parameters at debug level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -387,7 +387,7 @@ public interface Logger {
      * Logs a message with parameters at debug level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -399,7 +399,7 @@ public interface Logger {
      * Logs a message with parameters at debug level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -412,7 +412,7 @@ public interface Logger {
      * Logs a message with parameters at debug level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -426,7 +426,7 @@ public interface Logger {
      * Logs a message with parameters at debug level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -442,7 +442,7 @@ public interface Logger {
      * Logs a message with parameters at debug level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -459,7 +459,7 @@ public interface Logger {
      * Logs a message with parameters at debug level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -477,7 +477,7 @@ public interface Logger {
      * Logs a message with parameters at debug level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -495,7 +495,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at debug level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      */
     void debug(String message, Object p0);
@@ -503,7 +503,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at debug level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      */
@@ -512,7 +512,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at debug level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -522,7 +522,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at debug level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -533,7 +533,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at debug level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -545,7 +545,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at debug level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -558,7 +558,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at debug level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -572,7 +572,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at debug level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -587,7 +587,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at debug level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -604,7 +604,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at debug level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -623,7 +623,7 @@ public interface Logger {
      * Logs a message with the specific Marker at the {@link Level#ERROR ERROR} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param msg the message string to be logged
+     * @param msg the Message string to be logged
      */
     void error(Marker marker, Message msg);
 
@@ -631,7 +631,7 @@ public interface Logger {
      * Logs a message with the specific Marker at the {@link Level#ERROR ERROR} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param msg the message string to be logged
+     * @param msg the Message string to be logged
      * @param t A Throwable or null.
      */
     void error(Marker marker, Message msg, Throwable t);
@@ -663,7 +663,7 @@ public interface Logger {
      * Logs a message CharSequence with the {@link Level#ERROR ERROR} level.
      *
      * @param marker the marker data specific to this log statement.
-     * @param message the message CharSequence to log.
+     * @param message the message CharSequence to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void error(Marker marker, CharSequence message);
 
@@ -672,7 +672,7 @@ public interface Logger {
      * <code>t</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement.
-     * @param message the message CharSequence to log.
+     * @param message the message CharSequence to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void error(Marker marker, CharSequence message, Throwable t);
@@ -681,7 +681,7 @@ public interface Logger {
      * Logs a message object with the {@link Level#ERROR ERROR} level.
      *
      * @param marker the marker data specific to this log statement.
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void error(Marker marker, Object message);
 
@@ -690,7 +690,7 @@ public interface Logger {
      * <code>t</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement.
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void error(Marker marker, Object message, Throwable t);
@@ -699,7 +699,7 @@ public interface Logger {
      * Logs a message object with the {@link Level#ERROR ERROR} level.
      *
      * @param marker the marker data specific to this log statement.
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void error(Marker marker, String message);
 
@@ -707,7 +707,7 @@ public interface Logger {
      * Logs a message with parameters at the {@link Level#ERROR ERROR} level.
      *
      * @param marker the marker data specific to this log statement.
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param params parameters to the message.
      * @see #getMessageFactory()
      */
@@ -718,7 +718,7 @@ public interface Logger {
      * ERROR} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
@@ -729,7 +729,7 @@ public interface Logger {
      * <code>t</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement.
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void error(Marker marker, String message, Throwable t);
@@ -760,14 +760,14 @@ public interface Logger {
     /**
      * Logs a message with the specific Marker at the {@link Level#ERROR ERROR} level.
      *
-     * @param msg the message string to be logged
+     * @param msg the Message string to be logged
      */
     void error(Message msg);
 
     /**
      * Logs a message with the specific Marker at the {@link Level#ERROR ERROR} level.
      *
-     * @param msg the message string to be logged
+     * @param msg the Message string to be logged
      * @param t A Throwable or null.
      */
     void error(Message msg, Throwable t);
@@ -795,7 +795,7 @@ public interface Logger {
     /**
      * Logs a message CharSequence with the {@link Level#ERROR ERROR} level.
      *
-     * @param message the message CharSequence to log.
+     * @param message the message CharSequence to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void error(CharSequence message);
 
@@ -803,7 +803,7 @@ public interface Logger {
      * Logs a CharSequence at the {@link Level#ERROR ERROR} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
      *
-     * @param message the message CharSequence to log.
+     * @param message the message CharSequence to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void error(CharSequence message, Throwable t);
@@ -811,7 +811,7 @@ public interface Logger {
     /**
      * Logs a message object with the {@link Level#ERROR ERROR} level.
      *
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void error(Object message);
 
@@ -819,7 +819,7 @@ public interface Logger {
      * Logs a message at the {@link Level#ERROR ERROR} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
      *
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void error(Object message, Throwable t);
@@ -827,14 +827,14 @@ public interface Logger {
     /**
      * Logs a message object with the {@link Level#ERROR ERROR} level.
      *
-     * @param message the message string to log.
+     * @param message the Message string to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void error(String message);
 
     /**
      * Logs a message with parameters at the {@link Level#ERROR ERROR} level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param params parameters to the message.
      * @see #getMessageFactory()
      */
@@ -844,7 +844,7 @@ public interface Logger {
      * Logs a message with parameters which are only to be constructed if the logging level is the {@link Level#ERROR
      * ERROR} level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
@@ -854,7 +854,7 @@ public interface Logger {
      * Logs a message at the {@link Level#ERROR ERROR} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
      *
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void error(String message, Throwable t);
@@ -883,7 +883,7 @@ public interface Logger {
      * Logs a message with parameters at error level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      */
     void error(Marker marker, String message, Object p0);
@@ -892,7 +892,7 @@ public interface Logger {
      * Logs a message with parameters at error level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      */
@@ -902,7 +902,7 @@ public interface Logger {
      * Logs a message with parameters at error level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -913,7 +913,7 @@ public interface Logger {
      * Logs a message with parameters at error level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -925,7 +925,7 @@ public interface Logger {
      * Logs a message with parameters at error level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -938,7 +938,7 @@ public interface Logger {
      * Logs a message with parameters at error level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -952,7 +952,7 @@ public interface Logger {
      * Logs a message with parameters at error level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -968,7 +968,7 @@ public interface Logger {
      * Logs a message with parameters at error level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -985,7 +985,7 @@ public interface Logger {
      * Logs a message with parameters at error level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -1003,7 +1003,7 @@ public interface Logger {
      * Logs a message with parameters at error level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -1021,7 +1021,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at error level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      */
     void error(String message, Object p0);
@@ -1029,7 +1029,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at error level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      */
@@ -1038,7 +1038,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at error level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -1048,7 +1048,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at error level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -1059,7 +1059,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at error level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -1071,7 +1071,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at error level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -1084,7 +1084,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at error level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -1098,7 +1098,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at error level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -1113,7 +1113,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at error level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -1130,7 +1130,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at error level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -1149,7 +1149,7 @@ public interface Logger {
      * Logs a message with the specific Marker at the {@link Level#FATAL FATAL} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param msg the message string to be logged
+     * @param msg the Message string to be logged
      */
     void fatal(Marker marker, Message msg);
 
@@ -1157,7 +1157,7 @@ public interface Logger {
      * Logs a message with the specific Marker at the {@link Level#FATAL FATAL} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param msg the message string to be logged
+     * @param msg the Message string to be logged
      * @param t A Throwable or null.
      */
     void fatal(Marker marker, Message msg, Throwable t);
@@ -1189,7 +1189,7 @@ public interface Logger {
      * Logs a message CharSequence with the {@link Level#FATAL FATAL} level.
      *
      * @param marker The marker data specific to this log statement.
-     * @param message the message CharSequence to log.
+     * @param message the message CharSequence to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void fatal(Marker marker, CharSequence message);
 
@@ -1198,7 +1198,7 @@ public interface Logger {
      * <code>t</code> passed as parameter.
      *
      * @param marker The marker data specific to this log statement.
-     * @param message the message CharSequence to log.
+     * @param message the message CharSequence to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void fatal(Marker marker, CharSequence message, Throwable t);
@@ -1207,7 +1207,7 @@ public interface Logger {
      * Logs a message object with the {@link Level#FATAL FATAL} level.
      *
      * @param marker The marker data specific to this log statement.
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void fatal(Marker marker, Object message);
 
@@ -1216,7 +1216,7 @@ public interface Logger {
      * <code>t</code> passed as parameter.
      *
      * @param marker The marker data specific to this log statement.
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void fatal(Marker marker, Object message, Throwable t);
@@ -1225,7 +1225,7 @@ public interface Logger {
      * Logs a message object with the {@link Level#FATAL FATAL} level.
      *
      * @param marker The marker data specific to this log statement.
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void fatal(Marker marker, String message);
 
@@ -1233,7 +1233,7 @@ public interface Logger {
      * Logs a message with parameters at the {@link Level#FATAL FATAL} level.
      *
      * @param marker The marker data specific to this log statement.
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param params parameters to the message.
      * @see #getMessageFactory()
      */
@@ -1244,7 +1244,7 @@ public interface Logger {
      * FATAL} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
@@ -1255,7 +1255,7 @@ public interface Logger {
      * <code>t</code> passed as parameter.
      *
      * @param marker The marker data specific to this log statement.
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void fatal(Marker marker, String message, Throwable t);
@@ -1321,7 +1321,7 @@ public interface Logger {
     /**
      * Logs a message CharSequence with the {@link Level#FATAL FATAL} level.
      *
-     * @param message the message CharSequence to log.
+     * @param message the message CharSequence to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void fatal(CharSequence message);
 
@@ -1329,7 +1329,7 @@ public interface Logger {
      * Logs a CharSequence at the {@link Level#FATAL FATAL} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
      *
-     * @param message the message CharSequence to log.
+     * @param message the message CharSequence to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void fatal(CharSequence message, Throwable t);
@@ -1337,7 +1337,7 @@ public interface Logger {
     /**
      * Logs a message object with the {@link Level#FATAL FATAL} level.
      *
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void fatal(Object message);
 
@@ -1345,7 +1345,7 @@ public interface Logger {
      * Logs a message at the {@link Level#FATAL FATAL} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
      *
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void fatal(Object message, Throwable t);
@@ -1353,14 +1353,14 @@ public interface Logger {
     /**
      * Logs a message object with the {@link Level#FATAL FATAL} level.
      *
-     * @param message the message string to log.
+     * @param message the message string to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void fatal(String message);
 
     /**
      * Logs a message with parameters at the {@link Level#FATAL FATAL} level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param params parameters to the message.
      * @see #getMessageFactory()
      */
@@ -1370,7 +1370,7 @@ public interface Logger {
      * Logs a message with parameters which are only to be constructed if the logging level is the {@link Level#FATAL
      * FATAL} level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
@@ -1380,7 +1380,7 @@ public interface Logger {
      * Logs a message at the {@link Level#FATAL FATAL} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
      *
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void fatal(String message, Throwable t);
@@ -1409,7 +1409,7 @@ public interface Logger {
      * Logs a message with parameters at fatal level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      */
     void fatal(Marker marker, String message, Object p0);
@@ -1418,7 +1418,7 @@ public interface Logger {
      * Logs a message with parameters at fatal level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      */
@@ -1428,7 +1428,7 @@ public interface Logger {
      * Logs a message with parameters at fatal level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -1439,7 +1439,7 @@ public interface Logger {
      * Logs a message with parameters at fatal level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -1451,7 +1451,7 @@ public interface Logger {
      * Logs a message with parameters at fatal level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -1464,7 +1464,7 @@ public interface Logger {
      * Logs a message with parameters at fatal level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -1478,7 +1478,7 @@ public interface Logger {
      * Logs a message with parameters at fatal level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -1494,7 +1494,7 @@ public interface Logger {
      * Logs a message with parameters at fatal level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -1511,7 +1511,7 @@ public interface Logger {
      * Logs a message with parameters at fatal level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -1529,7 +1529,7 @@ public interface Logger {
      * Logs a message with parameters at fatal level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -1547,7 +1547,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at fatal level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      */
     void fatal(String message, Object p0);
@@ -1555,7 +1555,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at fatal level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      */
@@ -1564,7 +1564,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at fatal level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -1574,7 +1574,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at fatal level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -1585,7 +1585,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at fatal level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -1597,7 +1597,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at fatal level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -1610,7 +1610,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at fatal level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -1624,7 +1624,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at fatal level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -1639,7 +1639,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at fatal level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -1656,7 +1656,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at fatal level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -1737,7 +1737,7 @@ public interface Logger {
      * Logs a message CharSequence with the {@link Level#INFO INFO} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message CharSequence to log.
+     * @param message the message CharSequence to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void info(Marker marker, CharSequence message);
 
@@ -1746,7 +1746,7 @@ public interface Logger {
      * <code>t</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message CharSequence to log.
+     * @param message the message CharSequence to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void info(Marker marker, CharSequence message, Throwable t);
@@ -1755,7 +1755,7 @@ public interface Logger {
      * Logs a message object with the {@link Level#INFO INFO} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void info(Marker marker, Object message);
 
@@ -1764,7 +1764,7 @@ public interface Logger {
      * <code>t</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void info(Marker marker, Object message, Throwable t);
@@ -1773,7 +1773,7 @@ public interface Logger {
      * Logs a message object with the {@link Level#INFO INFO} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void info(Marker marker, String message);
 
@@ -1781,7 +1781,7 @@ public interface Logger {
      * Logs a message with parameters at the {@link Level#INFO INFO} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param params parameters to the message.
      * @see #getMessageFactory()
      */
@@ -1792,7 +1792,7 @@ public interface Logger {
      * INFO} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
@@ -1803,7 +1803,7 @@ public interface Logger {
      * <code>t</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void info(Marker marker, String message, Throwable t);
@@ -1869,7 +1869,7 @@ public interface Logger {
     /**
      * Logs a message CharSequence with the {@link Level#INFO INFO} level.
      *
-     * @param message the message CharSequence to log.
+     * @param message the message CharSequence to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void info(CharSequence message);
 
@@ -1877,7 +1877,7 @@ public interface Logger {
      * Logs a CharSequence at the {@link Level#INFO INFO} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
      *
-     * @param message the message CharSequence to log.
+     * @param message the message CharSequence to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void info(CharSequence message, Throwable t);
@@ -1885,7 +1885,7 @@ public interface Logger {
     /**
      * Logs a message object with the {@link Level#INFO INFO} level.
      *
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void info(Object message);
 
@@ -1893,7 +1893,7 @@ public interface Logger {
      * Logs a message at the {@link Level#INFO INFO} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
      *
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void info(Object message, Throwable t);
@@ -1901,14 +1901,14 @@ public interface Logger {
     /**
      * Logs a message object with the {@link Level#INFO INFO} level.
      *
-     * @param message the message string to log.
+     * @param message the message string to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void info(String message);
 
     /**
      * Logs a message with parameters at the {@link Level#INFO INFO} level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param params parameters to the message.
      * @see #getMessageFactory()
      */
@@ -1918,7 +1918,7 @@ public interface Logger {
      * Logs a message with parameters which are only to be constructed if the logging level is the {@link Level#INFO
      * INFO} level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
@@ -1928,7 +1928,7 @@ public interface Logger {
      * Logs a message at the {@link Level#INFO INFO} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
      *
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void info(String message, Throwable t);
@@ -1957,7 +1957,7 @@ public interface Logger {
      * Logs a message with parameters at info level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      */
     void info(Marker marker, String message, Object p0);
@@ -1966,7 +1966,7 @@ public interface Logger {
      * Logs a message with parameters at info level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      */
@@ -1976,7 +1976,7 @@ public interface Logger {
      * Logs a message with parameters at info level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -1987,7 +1987,7 @@ public interface Logger {
      * Logs a message with parameters at info level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -1999,7 +1999,7 @@ public interface Logger {
      * Logs a message with parameters at info level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -2012,7 +2012,7 @@ public interface Logger {
      * Logs a message with parameters at info level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -2026,7 +2026,7 @@ public interface Logger {
      * Logs a message with parameters at info level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -2042,7 +2042,7 @@ public interface Logger {
      * Logs a message with parameters at info level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -2059,7 +2059,7 @@ public interface Logger {
      * Logs a message with parameters at info level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -2077,7 +2077,7 @@ public interface Logger {
      * Logs a message with parameters at info level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -2095,7 +2095,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at info level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      */
     void info(String message, Object p0);
@@ -2103,7 +2103,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at info level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      */
@@ -2112,7 +2112,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at info level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -2122,7 +2122,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at info level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -2133,7 +2133,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at info level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -2145,7 +2145,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at info level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -2158,7 +2158,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at info level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -2172,7 +2172,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at info level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -2187,7 +2187,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at info level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -2204,7 +2204,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at info level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -2384,7 +2384,7 @@ public interface Logger {
      *
      * @param level the logging level
      * @param marker the marker data specific to this log statement
-     * @param message the message CharSequence to log.
+     * @param message the message CharSequence to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void log(Level level, Marker marker, CharSequence message);
 
@@ -2394,7 +2394,7 @@ public interface Logger {
      *
      * @param level the logging level
      * @param marker the marker data specific to this log statement
-     * @param message the message CharSequence to log.
+     * @param message the message CharSequence to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void log(Level level, Marker marker, CharSequence message, Throwable t);
@@ -2404,7 +2404,7 @@ public interface Logger {
      *
      * @param level the logging level
      * @param marker the marker data specific to this log statement
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void log(Level level, Marker marker, Object message);
 
@@ -2414,7 +2414,7 @@ public interface Logger {
      *
      * @param level the logging level
      * @param marker the marker data specific to this log statement
-     * @param message the message to log.
+     * @param message the message to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void log(Level level, Marker marker, Object message, Throwable t);
@@ -2424,7 +2424,7 @@ public interface Logger {
      *
      * @param level the logging level
      * @param marker the marker data specific to this log statement
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void log(Level level, Marker marker, String message);
 
@@ -2433,7 +2433,7 @@ public interface Logger {
      *
      * @param level the logging level
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param params parameters to the message.
      * @see #getMessageFactory()
      */
@@ -2444,7 +2444,7 @@ public interface Logger {
      *
      * @param level the logging level
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
@@ -2456,7 +2456,7 @@ public interface Logger {
      *
      * @param level the logging level
      * @param marker the marker data specific to this log statement
-     * @param message the message to log.
+     * @param message the message to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void log(Level level, Marker marker, String message, Throwable t);
@@ -2528,7 +2528,7 @@ public interface Logger {
      * Logs a message CharSequence with the given level.
      *
      * @param level the logging level
-     * @param message the message CharSequence to log.
+     * @param message the message CharSequence to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void log(Level level, CharSequence message);
 
@@ -2537,7 +2537,7 @@ public interface Logger {
      * parameter.
      *
      * @param level the logging level
-     * @param message the message CharSequence to log.
+     * @param message the message CharSequence to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void log(Level level, CharSequence message, Throwable t);
@@ -2546,7 +2546,7 @@ public interface Logger {
      * Logs a message object with the given level.
      *
      * @param level the logging level
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void log(Level level, Object message);
 
@@ -2555,7 +2555,7 @@ public interface Logger {
      * parameter.
      *
      * @param level the logging level
-     * @param message the message to log.
+     * @param message the message to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void log(Level level, Object message, Throwable t);
@@ -2564,7 +2564,7 @@ public interface Logger {
      * Logs a message object with the given level.
      *
      * @param level the logging level
-     * @param message the message string to log.
+     * @param message the message string to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void log(Level level, String message);
 
@@ -2572,7 +2572,7 @@ public interface Logger {
      * Logs a message with parameters at the given level.
      *
      * @param level the logging level
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param params parameters to the message.
      * @see #getMessageFactory()
      */
@@ -2582,7 +2582,7 @@ public interface Logger {
      * Logs a message with parameters which are only to be constructed if the logging level is the specified level.
      *
      * @param level the logging level
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
@@ -2593,7 +2593,7 @@ public interface Logger {
      * parameter.
      *
      * @param level the logging level
-     * @param message the message to log.
+     * @param message the message to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void log(Level level, String message, Throwable t);
@@ -2625,7 +2625,7 @@ public interface Logger {
      *
      * @param level the logging level
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      */
     void log(Level level, Marker marker, String message, Object p0);
@@ -2635,7 +2635,7 @@ public interface Logger {
      *
      * @param level the logging level
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      */
@@ -2646,7 +2646,7 @@ public interface Logger {
      *
      * @param level the logging level
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -2658,7 +2658,7 @@ public interface Logger {
      *
      * @param level the logging level
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -2671,7 +2671,7 @@ public interface Logger {
      *
      * @param level the logging level
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -2685,7 +2685,7 @@ public interface Logger {
      *
      * @param level the logging level
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -2700,7 +2700,7 @@ public interface Logger {
      *
      * @param level the logging level
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -2717,7 +2717,7 @@ public interface Logger {
      *
      * @param level the logging level
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -2735,7 +2735,7 @@ public interface Logger {
      *
      * @param level the logging level
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -2754,7 +2754,7 @@ public interface Logger {
      *
      * @param level the logging level
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -2773,7 +2773,7 @@ public interface Logger {
      * Logs a message with parameters at the specified level.
      *
      * @param level the logging level
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      */
     void log(Level level, String message, Object p0);
@@ -2782,7 +2782,7 @@ public interface Logger {
      * Logs a message with parameters at the specified level.
      *
      * @param level the logging level
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      */
@@ -2792,7 +2792,7 @@ public interface Logger {
      * Logs a message with parameters at the specified level.
      *
      * @param level the logging level
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -2803,7 +2803,7 @@ public interface Logger {
      * Logs a message with parameters at the specified level.
      *
      * @param level the logging level
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -2815,7 +2815,7 @@ public interface Logger {
      * Logs a message with parameters at the specified level.
      *
      * @param level the logging level
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -2828,7 +2828,7 @@ public interface Logger {
      * Logs a message with parameters at the specified level.
      *
      * @param level the logging level
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -2842,7 +2842,7 @@ public interface Logger {
      * Logs a message with parameters at the specified level.
      *
      * @param level the logging level
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -2857,7 +2857,7 @@ public interface Logger {
      * Logs a message with parameters at the specified level.
      *
      * @param level the logging level
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -2873,7 +2873,7 @@ public interface Logger {
      * Logs a message with parameters at the specified level.
      *
      * @param level the logging level
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -2891,7 +2891,7 @@ public interface Logger {
      * Logs a message with parameters at the specified level.
      *
      * @param level the logging level
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -2996,7 +2996,7 @@ public interface Logger {
      * Logs a message CharSequence with the {@link Level#TRACE TRACE} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message CharSequence to log.
+     * @param message the message CharSequence to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void trace(Marker marker, CharSequence message);
 
@@ -3005,7 +3005,7 @@ public interface Logger {
      * <code>t</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message CharSequence to log.
+     * @param message the message CharSequence to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      * @see #debug(String)
      */
@@ -3015,7 +3015,7 @@ public interface Logger {
      * Logs a message object with the {@link Level#TRACE TRACE} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void trace(Marker marker, Object message);
 
@@ -3024,7 +3024,7 @@ public interface Logger {
      * <code>t</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      * @see #debug(String)
      */
@@ -3034,7 +3034,7 @@ public interface Logger {
      * Logs a message object with the {@link Level#TRACE TRACE} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message string to log.
+     * @param message the message string to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void trace(Marker marker, String message);
 
@@ -3042,7 +3042,7 @@ public interface Logger {
      * Logs a message with parameters at the {@link Level#TRACE TRACE} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param params parameters to the message.
      * @see #getMessageFactory()
      */
@@ -3053,7 +3053,7 @@ public interface Logger {
      * TRACE} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
@@ -3064,7 +3064,7 @@ public interface Logger {
      * <code>t</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      * @see #debug(String)
      */
@@ -3131,7 +3131,7 @@ public interface Logger {
     /**
      * Logs a message CharSequence with the {@link Level#TRACE TRACE} level.
      *
-     * @param message the message CharSequence to log.
+     * @param message the message CharSequence to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void trace(CharSequence message);
 
@@ -3139,7 +3139,7 @@ public interface Logger {
      * Logs a CharSequence at the {@link Level#TRACE TRACE} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
      *
-     * @param message the message CharSequence to log.
+     * @param message the message CharSequence to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      * @see #debug(String)
      */
@@ -3148,7 +3148,7 @@ public interface Logger {
     /**
      * Logs a message object with the {@link Level#TRACE TRACE} level.
      *
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void trace(Object message);
 
@@ -3156,7 +3156,7 @@ public interface Logger {
      * Logs a message at the {@link Level#TRACE TRACE} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
      *
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      * @see #debug(String)
      */
@@ -3165,14 +3165,14 @@ public interface Logger {
     /**
      * Logs a message object with the {@link Level#TRACE TRACE} level.
      *
-     * @param message the message string to log.
+     * @param message the message string to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void trace(String message);
 
     /**
      * Logs a message with parameters at the {@link Level#TRACE TRACE} level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param params parameters to the message.
      * @see #getMessageFactory()
      */
@@ -3182,7 +3182,7 @@ public interface Logger {
      * Logs a message with parameters which are only to be constructed if the logging level is the {@link Level#TRACE
      * TRACE} level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
@@ -3192,7 +3192,7 @@ public interface Logger {
      * Logs a message at the {@link Level#TRACE TRACE} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
      *
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      * @see #debug(String)
      */
@@ -3222,7 +3222,7 @@ public interface Logger {
      * Logs a message with parameters at trace level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      */
     void trace(Marker marker, String message, Object p0);
@@ -3231,7 +3231,7 @@ public interface Logger {
      * Logs a message with parameters at trace level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      */
@@ -3241,7 +3241,7 @@ public interface Logger {
      * Logs a message with parameters at trace level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -3252,7 +3252,7 @@ public interface Logger {
      * Logs a message with parameters at trace level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -3264,7 +3264,7 @@ public interface Logger {
      * Logs a message with parameters at trace level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -3277,7 +3277,7 @@ public interface Logger {
      * Logs a message with parameters at trace level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -3291,7 +3291,7 @@ public interface Logger {
      * Logs a message with parameters at trace level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -3307,7 +3307,7 @@ public interface Logger {
      * Logs a message with parameters at trace level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -3324,7 +3324,7 @@ public interface Logger {
      * Logs a message with parameters at trace level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -3342,7 +3342,7 @@ public interface Logger {
      * Logs a message with parameters at trace level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -3360,7 +3360,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at trace level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      */
     void trace(String message, Object p0);
@@ -3368,7 +3368,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at trace level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      */
@@ -3377,7 +3377,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at trace level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -3387,7 +3387,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at trace level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -3398,7 +3398,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at trace level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -3410,7 +3410,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at trace level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -3423,7 +3423,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at trace level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -3437,7 +3437,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at trace level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -3452,7 +3452,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at trace level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -3469,7 +3469,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at trace level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -3573,7 +3573,7 @@ public interface Logger {
      * the logger before the returned {@code EntryMessage} is fully processed.
      * </p>
      *
-     * @param message The message. Avoid specifying a ReusableMessage, use immutable messages instead.
+     * @param message The message. Avoid specifying a ReusableMessage, use immutable messages instead. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @return the built message
      *
      * @since 2.6
@@ -3629,7 +3629,7 @@ public interface Logger {
      *    return LOGGER.traceExit(m);
      * }
      * </code></pre>
-     * @param message The Message containing the formatted result.
+     * @param message The Message containing the formatted result. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      *
      * @since 2.6
      */
@@ -3645,7 +3645,7 @@ public interface Logger {
      *    return LOGGER.traceExit(m, myResult);
      * }
      * </code></pre>
-     * @param message The Message containing the formatted result.
+     * @param message The Message containing the formatted result. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param result The result being returned from the method call.
      *
      * @param <R> The type of the parameter and object being returned.
@@ -3661,7 +3661,7 @@ public interface Logger {
      * <pre><code>
      * return LOGGER.traceExit(new JsonMessage(myResult), myResult);
      * </code></pre>
-     * @param message The Message containing the formatted result.
+     * @param message The Message containing the formatted result. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param result The result being returned from the method call.
      *
      * @param <R> The type of the parameter and object being returned.
@@ -3715,7 +3715,7 @@ public interface Logger {
      * Logs a message CharSequence with the {@link Level#WARN WARN} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message CharSequence to log.
+     * @param message the message CharSequence to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void warn(Marker marker, CharSequence message);
 
@@ -3724,7 +3724,7 @@ public interface Logger {
      * <code>t</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message CharSequence to log.
+     * @param message the message CharSequence to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void warn(Marker marker, CharSequence message, Throwable t);
@@ -3733,7 +3733,7 @@ public interface Logger {
      * Logs a message object with the {@link Level#WARN WARN} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void warn(Marker marker, Object message);
 
@@ -3742,7 +3742,7 @@ public interface Logger {
      * <code>t</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void warn(Marker marker, Object message, Throwable t);
@@ -3751,7 +3751,7 @@ public interface Logger {
      * Logs a message object with the {@link Level#WARN WARN} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void warn(Marker marker, String message);
 
@@ -3759,7 +3759,7 @@ public interface Logger {
      * Logs a message with parameters at the {@link Level#WARN WARN} level.
      *
      * @param marker the marker data specific to this log statement.
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param params parameters to the message.
      * @see #getMessageFactory()
      */
@@ -3770,7 +3770,7 @@ public interface Logger {
      * WARN} level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
@@ -3781,7 +3781,7 @@ public interface Logger {
      * <code>t</code> passed as parameter.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void warn(Marker marker, String message, Throwable t);
@@ -3847,7 +3847,7 @@ public interface Logger {
     /**
      * Logs a message CharSequence with the {@link Level#WARN WARN} level.
      *
-     * @param message the message CharSequence to log.
+     * @param message the message CharSequence to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void warn(CharSequence message);
 
@@ -3855,7 +3855,7 @@ public interface Logger {
      * Logs a CharSequence at the {@link Level#WARN WARN} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
      *
-     * @param message the message CharSequence to log.
+     * @param message the message CharSequence to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void warn(CharSequence message, Throwable t);
@@ -3863,7 +3863,7 @@ public interface Logger {
     /**
      * Logs a message object with the {@link Level#WARN WARN} level.
      *
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void warn(Object message);
 
@@ -3871,7 +3871,7 @@ public interface Logger {
      * Logs a message at the {@link Level#WARN WARN} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
      *
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void warn(Object message, Throwable t);
@@ -3879,14 +3879,14 @@ public interface Logger {
     /**
      * Logs a message object with the {@link Level#WARN WARN} level.
      *
-     * @param message the message string to log.
+     * @param message the message string to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      */
     void warn(String message);
 
     /**
      * Logs a message with parameters at the {@link Level#WARN WARN} level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param params parameters to the message.
      * @see #getMessageFactory()
      */
@@ -3896,7 +3896,7 @@ public interface Logger {
      * Logs a message with parameters which are only to be constructed if the logging level is the {@link Level#WARN
      * WARN} level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      * @since 2.4
      */
@@ -3906,7 +3906,7 @@ public interface Logger {
      * Logs a message at the {@link Level#WARN WARN} level including the stack trace of the {@link Throwable}
      * <code>t</code> passed as parameter.
      *
-     * @param message the message object to log.
+     * @param message the message object to log. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param t the exception to log, including its stack trace.
      */
     void warn(String message, Throwable t);
@@ -3935,7 +3935,7 @@ public interface Logger {
      * Logs a message with parameters at warn level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      */
     void warn(Marker marker, String message, Object p0);
@@ -3944,7 +3944,7 @@ public interface Logger {
      * Logs a message with parameters at warn level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      */
@@ -3954,7 +3954,7 @@ public interface Logger {
      * Logs a message with parameters at warn level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -3965,7 +3965,7 @@ public interface Logger {
      * Logs a message with parameters at warn level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -3977,7 +3977,7 @@ public interface Logger {
      * Logs a message with parameters at warn level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -3990,7 +3990,7 @@ public interface Logger {
      * Logs a message with parameters at warn level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -4004,7 +4004,7 @@ public interface Logger {
      * Logs a message with parameters at warn level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -4020,7 +4020,7 @@ public interface Logger {
      * Logs a message with parameters at warn level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -4037,7 +4037,7 @@ public interface Logger {
      * Logs a message with parameters at warn level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -4055,7 +4055,7 @@ public interface Logger {
      * Logs a message with parameters at warn level.
      *
      * @param marker the marker data specific to this log statement
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -4073,7 +4073,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at warn level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      */
     void warn(String message, Object p0);
@@ -4081,7 +4081,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at warn level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      */
@@ -4090,7 +4090,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at warn level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -4100,7 +4100,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at warn level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -4111,7 +4111,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at warn level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -4123,7 +4123,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at warn level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -4136,7 +4136,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at warn level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -4150,7 +4150,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at warn level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -4165,7 +4165,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at warn level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -4182,7 +4182,7 @@ public interface Logger {
     /**
      * Logs a message with parameters at warn level.
      *
-     * @param message the message to log; the format depends on the message factory.
+     * @param message the message to log; the format depends on the message factory. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param p0 parameter to the message.
      * @param p1 parameter to the message.
      * @param p2 parameter to the message.
@@ -4204,7 +4204,7 @@ public interface Logger {
      * @param fqcn The fully qualified class name of the logger entry point, used to determine the caller class and
      *            method when location information needs to be logged.
      * @param location The location of the caller.
-     * @param message The message format.
+     * @param message The message format. THIS MAY OR MAY NOT BE INTERPRETED AS A MESSAGE OBJECT
      * @param throwable the exception to log, including its stack trace.
      * @since 2.13.0
      */
