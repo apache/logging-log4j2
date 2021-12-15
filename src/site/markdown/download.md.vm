@@ -65,7 +65,7 @@ in many unix distributions.
 
 $h2 Previous Releases
 
-Log4j 2.12.1 was the last 2.x release to support Java 7 while Log4j 2.3 was the last 2.x release to support
+Log4j 2.12.2 was the last 2.x release to support Java 7 while Log4j 2.3 was the last 2.x release to support
 Java 6. The Log4j team no longer provides support for Java 6 or 7.
 
 All previous releases of Apache log4j can be found in the
