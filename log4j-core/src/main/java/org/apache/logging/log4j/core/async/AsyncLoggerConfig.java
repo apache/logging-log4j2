@@ -37,7 +37,7 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.plugins.validation.constraints.NotNull;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.Strings;
 
@@ -209,7 +209,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
     public static LoggerConfig createLogger(
             @PluginAttribute(defaultBoolean = true) final boolean additivity,
             @PluginAttribute final Level level,
-            @Required(message = "Loggers cannot be configured without a name") @PluginAttribute("name") final String loggerName,
+            @NotNull(message = "Loggers cannot be configured without a name") @PluginAttribute("name") final String loggerName,
             @PluginAttribute final String includeLocation,
             @PluginElement final AppenderRef[] refs,
             @PluginElement final Property[] properties,
