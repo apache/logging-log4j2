@@ -54,7 +54,7 @@ public class DateLookup implements StrLookup {
      */
     @Override
     public String lookup(final LogEvent event, final String key) {
-        return formatDate(event.getTimeMillis(), key);
+        return event == null ? lookup(key) : formatDate(event.getTimeMillis(), key);
     }
 
     private String formatDate(final long date, final String format) {

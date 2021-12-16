@@ -2089,8 +2089,8 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         try {
             incrementRecursionDepth();
             log(level, marker, fqcn, location, message, throwable);
-        } catch (Exception ex) {
-            handleLogMessageException(ex, fqcn, message);
+        } catch (Throwable t) {
+            handleLogMessageException(t, fqcn, message);
         } finally {
             decrementRecursionDepth();
             ReusableMessageFactory.release(message);
@@ -2188,9 +2188,9 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
                                final Throwable throwable) {
         try {
             log(level, marker, fqcn, location, msg, throwable);
-        } catch (final Exception e) {
+        } catch (final Throwable t) {
             // LOG4J2-1990 Log4j2 suppresses all exceptions that occur once application called the logger
-            handleLogMessageException(e, fqcn, msg);
+            handleLogMessageException(t, fqcn, msg);
         }
     }
 
@@ -2203,7 +2203,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
 
     // LOG4J2-1990 Log4j2 suppresses all exceptions that occur once application called the logger
     // TODO Configuration setting to propagate exceptions back to the caller *if requested*
-    private void handleLogMessageException(final Exception exception, final String fqcn, final Message msg) {
+    private void handleLogMessageException(final Throwable exception, final String fqcn, final Message msg) {
         if (exception instanceof LoggingException) {
             throw (LoggingException) exception;
         }
