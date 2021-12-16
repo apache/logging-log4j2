@@ -157,6 +157,36 @@
         "code": "java.class.removed",
         "old": "class org.apache.logging.log4j.core.util.SetUtils",
         "justification": "only used by web modules"
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B>>>::setAllowedJndiProtocols(java.lang.String)",
+        "justification": "Removed allowing additional protocols to be added"
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B>>>::setAllowedLdapClasses(java.lang.String)",
+        "justification": "Removed LDAP support"
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B extends org.apache.logging.log4j.core.appender.mom.JmsAppender.Builder<B>>>::setAllowedLdapHosts(java.lang.String)",
+        "justification": "Removed LDAP support"
+      },
+      {
+        "code": "java.field.removedWithConstant",
+        "old": "field org.apache.logging.log4j.core.net.JndiManager.ALLOWED_CLASSES",
+        "justification": "Removed LDAP support"
+      },
+      {
+        "code": "java.field.removedWithConstant",
+        "old": "field org.apache.logging.log4j.core.net.JndiManager.ALLOWED_HOSTS",
+        "justification": "Removed LDAP support"
+      },
+      {
+        "code": "java.field.removedWithConstant",
+        "old": "field org.apache.logging.log4j.core.net.JndiManager.ALLOWED_PROTOCOLS",
+        "justification": "Removed allowing additional protocols"
       }
     ]
   }
