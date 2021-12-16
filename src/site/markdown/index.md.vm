@@ -40,7 +40,7 @@ configuration uses a Pattern Layout with either a Context Lookup (for example, \
 Thread Context Map pattern (%X, %mdc, or %MDC) to craft malicious input data using a JNDI Lookup pattern
 resulting in a denial of service (DOS) attack. Log4j 2.15.0 restricts JNDI LDAP lookups to localhost by default.
 
-Note that previous mitigations involving configuration such as setting the system property `log4j2.noFormatMsgLookup`
+Note that previous mitigations involving configuration such as setting the system property `log4j2.formatMsgNoLookups`
 to `true` do NOT mitigate this specific vulnerability.
 
 $h4 Mitigation
