@@ -104,7 +104,7 @@ protocols to only accessing Java primitive objects. Hosts other than the local h
 The Log4j team will continue to actively update this page as more information becomes known.
 
 ### Credit
-This issue was discovered by Kai Mindermann of iC Consult.
+This issue was discovered by Kai Mindermann of iC Consult and separately by 4ra1n.
 
 ### References
 - [CVE-2021-45046](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45046)
