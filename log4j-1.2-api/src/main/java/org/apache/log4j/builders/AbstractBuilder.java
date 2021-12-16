@@ -24,6 +24,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
+import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -54,7 +55,7 @@ public abstract class AbstractBuilder {
     public AbstractBuilder() {
         this.prefix = null;
         this.props = new Properties();
-        strSubstitutor = new StrSubstitutor(System.getProperties());
+        strSubstitutor = new ConfigurationStrSubstitutor(System.getProperties());
     }
 
     public AbstractBuilder(String prefix, Properties props) {
@@ -63,7 +64,7 @@ public abstract class AbstractBuilder {
         Map<String, String> map = new HashMap<>();
         System.getProperties().forEach((k, v) -> map.put(k.toString(), v.toString()));
         props.forEach((k, v) -> map.put(k.toString(), v.toString()));
-        strSubstitutor = new StrSubstitutor(map);
+        strSubstitutor = new ConfigurationStrSubstitutor(map);
     }
 
     public String getProperty(String key) {

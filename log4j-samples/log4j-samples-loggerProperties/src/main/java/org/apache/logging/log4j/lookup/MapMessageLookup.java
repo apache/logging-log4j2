@@ -51,6 +51,9 @@ public class MapMessageLookup extends AbstractLookup {
      */
     @Override
     public String lookup(final LogEvent event, final String key) {
+        if (event == null) {
+            return null;
+        }
         final Message msg = event.getMessage();
         if (msg instanceof MapMessage) {
             try {

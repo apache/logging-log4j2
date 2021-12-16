@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFact
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
+import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
 import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
@@ -141,7 +142,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
 
     private static ConfigurationFactory configFactory = new Factory();
 
-    protected final StrSubstitutor substitutor = new StrSubstitutor(new Interpolator());
+    protected final StrSubstitutor substitutor = new ConfigurationStrSubstitutor(new Interpolator());
 
     private static final Lock LOCK = new ReentrantLock();
 

@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.async.AsyncLoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
+import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
 import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.selector.ContextSelector;
@@ -57,7 +58,7 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
     }
 
     private final Map<String, String> map = new ConcurrentHashMap<>();
-    private final StrSubstitutor substitutor = new StrSubstitutor(new Interpolator(map));
+    private final StrSubstitutor substitutor = new ConfigurationStrSubstitutor(new Interpolator(map));
     private final ServletContext servletContext;
 
     private String name;
