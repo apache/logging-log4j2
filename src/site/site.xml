@@ -302,8 +302,7 @@
     <menu name="Legacy Sites" inherit="top" img="img/glyphicons/link.png">
       <item name="Log4j 1.2 - End of Life" href="http://logging.apache.org/log4j/1.2/"/>
       <item name="Log4j 2.3 - Java 6" href="http://logging.apache.org/log4j/log4j-2.3/"/>
-      <!--TODO Should link to a log4j-2.12.2 not log4j-2.12.1 folder -->
-      <item name="Log4j 2.12.2 - Java 7" href="http://logging.apache.org/log4j/log4j-2.12.1"/>
+      <item name="Log4j 2.12.2 - Java 7" href="http://logging.apache.org/log4j/log4j-2.12.2"/>
     </menu>
 
     <menu name="Components" inherit="top" img="img/glyphicons/cog.png">
