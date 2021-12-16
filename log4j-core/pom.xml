@@ -40,13 +40,6 @@
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
     </dependency>
-    <!-- Classes and resources to be shaded into the core jar -->
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core-java9</artifactId>
-      <scope>provided</scope>
-      <type>zip</type>
-    </dependency>
     <!-- Used for OSGi bundle support -->
     <dependency>
       <groupId>org.osgi</groupId>

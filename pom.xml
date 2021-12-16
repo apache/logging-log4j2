@@ -189,6 +189,8 @@
     <!-- make sure to update these for each release! -->
     <log4jParentDir>${basedir}</log4jParentDir>
     <Log4jReleaseVersion>2.16.0</Log4jReleaseVersion>
+    <Log4jReleaseVersionJava7>2.12.2</Log4jReleaseVersionJava7>
+    <Log4jReleaseVersionJava6>2.3</Log4jReleaseVersionJava6>
     <!--Log4jReleaseManager>Ralph Goers</Log4jReleaseManager-->
     <!--Log4jReleaseKey>B3D8E1BA</Log4jReleaseKey-->
     <Log4jReleaseManager>Matt Sicker</Log4jReleaseManager>
@@ -213,7 +215,7 @@
     <compiler.plugin.version>3.8.1</compiler.plugin.version>
     <pmd.plugin.version>3.10.0</pmd.plugin.version>
     <changes.plugin.version>2.12.1</changes.plugin.version>
-    <javadoc.plugin.version>3.0.1</javadoc.plugin.version>
+    <javadoc.plugin.version>3.3.1</javadoc.plugin.version>
     <!-- surefire.plugin.version 2.18 yields http://jira.codehaus.org/browse/SUREFIRE-1121, which is fixed in 2.18.1 -->
     <!-- surefire.plugin.version 2.19 yields https://issues.apache.org/jira/browse/SUREFIRE-1193. -->
     <!-- all versions after 2.13 yield https://issues.apache.org/jira/browse/SUREFIRE-720 -->
@@ -240,7 +242,7 @@
     <manifestfile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestfile>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <maven.doap.skip>true</maven.doap.skip>
+    <maven.doap.skip>false</maven.doap.skip>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <docLabel>Site Documentation</docLabel>
     <projectDir />
@@ -1368,6 +1370,14 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-doap-plugin</artifactId>
         <version>1.2</version>
+        <dependencies>
+          <!-- Fix java.lang.IllegalArgumentException: Invalid version number: Version number may be negative or greater than 255 -->
+          <dependency>
+            <groupId>com.ibm.icu</groupId>
+            <artifactId>icu4j</artifactId>
+            <version>4.6.1</version>
+          </dependency>
+        </dependencies>
         <configuration>
           <doapOptions>
             <programmingLanguage>Java</programmingLanguage>

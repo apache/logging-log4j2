@@ -14,30 +14,20 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.lookup;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+package org.apache.logging.log4j.core.net;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
+import org.junit.jupiter.api.Test;
 
 /**
- * JndiLookupTest
+ * Tests {@link JndiManager}.
  */
-public class JndiRestrictedLookupTest {
-
-    private static final String DOMAIN = "apache.org";
-
-    @BeforeClass
-    public static void beforeClass() {
-        System.setProperty("log4j2.enableJndi", "true");
-    }
+public class JndiManagerTest {
 
     @Test
-    public void testDnsLookup() throws Exception {
-        final StrLookup lookup = new JndiLookup();
-        String result = lookup.lookup("dns:/" + DOMAIN);
-        assertNull("DNS data returend", result);
-
+    public void testIsJndiEnabled() {
+        assertFalse(JndiManager.isJndiEnabled());
     }
 }

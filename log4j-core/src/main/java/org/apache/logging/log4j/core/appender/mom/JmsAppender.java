@@ -88,15 +88,6 @@ public class JmsAppender extends AbstractAppender {
         @PluginBuilderAttribute
         private boolean immediateFail;
 
-        @PluginBuilderAttribute
-        private String allowedLdapClasses;
-
-        @PluginBuilderAttribute
-        private String allowedLdapHosts;
-
-        @PluginBuilderAttribute
-        private String allowedJndiProtocols;
-
         // Programmatic access only for now.
         private JmsManager jmsManager;
 
@@ -109,21 +100,8 @@ public class JmsAppender extends AbstractAppender {
             JmsManager actualJmsManager = jmsManager;
             JmsManagerConfiguration configuration = null;
             if (actualJmsManager == null) {
-                Properties additionalProperties = null;
-                if (allowedLdapClasses != null || allowedLdapHosts != null) {
-                    additionalProperties = new Properties();
-                    if (allowedLdapHosts != null) {
-                        additionalProperties.put(JndiManager.ALLOWED_HOSTS, allowedLdapHosts);
-                    }
-                    if (allowedLdapClasses != null) {
-                        additionalProperties.put(JndiManager.ALLOWED_CLASSES, allowedLdapClasses);
-                    }
-                    if (allowedJndiProtocols != null) {
-                        additionalProperties.put(JndiManager.ALLOWED_PROTOCOLS, allowedJndiProtocols);
-                    }
-                }
                 final Properties jndiProperties = JndiManager.createProperties(factoryName, providerUrl, urlPkgPrefixes,
-                        securityPrincipalName, securityCredentials, additionalProperties);
+                        securityPrincipalName, securityCredentials, null);
                 configuration = new JmsManagerConfiguration(jndiProperties, factoryBindingName, destinationBindingName,
                         userName, password, false, reconnectIntervalMillis);
                 actualJmsManager = AbstractManager.getManager(getName(), JmsManager.FACTORY, configuration);
@@ -224,21 +202,6 @@ public class JmsAppender extends AbstractAppender {
             return this;
         }
 
-        public Builder setAllowedLdapClasses(final String allowedLdapClasses) {
-            this.allowedLdapClasses = allowedLdapClasses;
-            return this;
-        }
-
-        public Builder setAllowedLdapHosts(final String allowedLdapHosts) {
-            this.allowedLdapHosts = allowedLdapHosts;
-            return this;
-        }
-
-        public Builder setAllowedJndiProtocols(final String allowedJndiProtocols) {
-            this.allowedJndiProtocols = allowedJndiProtocols;
-            return this;
-        }
-
         /**
          * Does not include the password.
          */
@@ -249,8 +212,7 @@ public class JmsAppender extends AbstractAppender {
                     + ", securityCredentials=" + securityCredentials + ", factoryBindingName=" + factoryBindingName
                     + ", destinationBindingName=" + destinationBindingName + ", username=" + userName + ", layout="
                     + getLayout() + ", filter=" + getFilter() + ", ignoreExceptions=" + isIgnoreExceptions()
-                    + ", jmsManager=" + jmsManager + ", allowedLdapClasses=" + allowedLdapClasses
-                    + ", allowedLdapHosts=" + allowedLdapHosts + ", allowedJndiProtocols=" + allowedJndiProtocols + "]";
+                    + ", jmsManager=" + jmsManager + "]";
         }
 
     }
