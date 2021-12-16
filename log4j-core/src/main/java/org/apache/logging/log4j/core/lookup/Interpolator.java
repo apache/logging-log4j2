@@ -109,16 +109,6 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         strLookupMap.put("base64", new Base64StrLookup());
         strLookupMap.put("lower", new LowerLookup());
         strLookupMap.put("upper", new UpperLookup());
-        // JNDI
-        if (JndiManager.isJndiEnabled()) {
-            try {
-                // [LOG4J2-703] We might be on Android
-                strLookupMap.put(LOOKUP_KEY_JNDI,
-                        Loader.newCheckedInstanceOf("org.apache.logging.log4j.core.lookup.JndiLookup", StrLookup.class));
-            } catch (final LinkageError | Exception e) {
-                handleError(LOOKUP_KEY_JNDI, e);
-            }
-        }
         // JMX input args
         try {
             // We might be on Android
