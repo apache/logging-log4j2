@@ -526,7 +526,7 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
         // name-value pairs associated to that filter
         int fIdx = filterPrefix.length();
         SortedMap<String, List<NameValue>> filters = new TreeMap<>();
-        Enumeration e = props.keys();
+        Enumeration<?> e = props.keys();
         String name = "";
         while (e.hasMoreElements()) {
             String key = (String) e.nextElement();
