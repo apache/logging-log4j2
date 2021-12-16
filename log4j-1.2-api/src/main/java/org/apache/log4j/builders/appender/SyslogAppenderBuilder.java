@@ -28,6 +28,7 @@ import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.xml.XmlConfiguration;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.appender.SocketAppender;
 import org.apache.logging.log4j.core.appender.SyslogAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.SyslogLayout;
@@ -36,6 +37,7 @@ import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
 
+import java.io.Serializable;
 import java.util.Properties;
 
 import static org.apache.log4j.builders.BuilderManager.CATEGORY;
@@ -53,10 +55,13 @@ import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 @Plugin(name = "org.apache.log4j.net.SyslogAppender", category = CATEGORY)
 public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBuilder {
 
+    private static final String DEFAULT_HOST = "localhost";
+    private static int DEFAULT_PORT = 514;
+    private static final String DEFAULT_FACILITY = "LOCAL0";
+
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final String FACILITY_PARAM = "Facility";
     private static final String SYSLOG_HOST_PARAM = "SyslogHost";
-    private static int SYSLOG_PORT = 512;
 
     public SyslogAppenderBuilder() {
     }
@@ -115,8 +120,8 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
         Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
         Layout layout = configuration.parseLayout(layoutPrefix, name, props);
         String level = getProperty(THRESHOLD_PARAM);
-        String facility = getProperty(FACILITY_PARAM, "LOCAL0");
-        String syslogHost = getProperty(SYSLOG_HOST_PARAM, "localhost:514");
+        String facility = getProperty(FACILITY_PARAM, DEFAULT_FACILITY);
+        String syslogHost = getProperty(SYSLOG_HOST_PARAM, DEFAULT_HOST + ":" + DEFAULT_PORT);
 
         return createAppender(name, configuration, layout, facility, filter, syslogHost, level);
     }
@@ -126,7 +131,7 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
         Holder<String> host = new Holder<>();
         Holder<Integer> port = new Holder<>();
         resolveSyslogHost(syslogHost, host, port);
-        org.apache.logging.log4j.core.Layout appenderLayout;
+        org.apache.logging.log4j.core.Layout<? extends Serializable> appenderLayout;
         if (layout instanceof LayoutWrapper) {
             appenderLayout = ((LayoutWrapper) layout).getLayout();
         } else if (layout != null) {
@@ -139,7 +144,7 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
         }
 
         org.apache.logging.log4j.core.Filter fileFilter = buildFilters(level, filter);
-        return new AppenderWrapper(SyslogAppender.newBuilder()
+        return new AppenderWrapper(SocketAppender.newBuilder()
                 .setName(name)
                 .setConfiguration(configuration)
                 .setLayout(appenderLayout)
@@ -151,8 +156,6 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
     }
 
     private void resolveSyslogHost(String syslogHost, Holder<String> host, Holder<Integer> port) {
-        int urlPort = -1;
-
         //
         //  If not an unbracketed IPv6 address then
         //      parse as a URL
@@ -160,14 +163,14 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
         String[] parts = syslogHost.split(":");
         if (parts.length == 1) {
             host.set(parts[0]);
-            port.set(SYSLOG_PORT);
+            port.set(DEFAULT_PORT);
         } else if (parts.length == 2) {
             host.set(parts[0]);
             port.set(Integer.parseInt(parts[1]));
         } else {
-            LOGGER.warn("Invalid syslogHost setting: {}. Using default", syslogHost);
-            host.set("localhost");
-            port.set(SYSLOG_PORT);
+            LOGGER.warn("Invalid {} setting: {}. Using default.", SYSLOG_HOST_PARAM, syslogHost);
+            host.set(DEFAULT_HOST);
+            port.set(DEFAULT_PORT);
         }
     }
 }

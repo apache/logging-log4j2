@@ -40,6 +40,9 @@
       <action issue="LOG4J2-3247" dev="ggregory" type="fix">
         PropertiesConfiguration.parseAppenderFilters NPE when parsing properties file filters.
       </action>
+      <action issue="LOG4J2-3249" dev="ggregory" type="fix">
+        Log4j 1.2 bridge for Syslog Appender defaults to port 512 instead of 514.
+      </action>
     </release>
     <release version="2.16.0" date="2021-12-13" description="GA Release 2.16.0">
       <action issue="LOG4J2-3208" dev="rgoers" type="fix">
