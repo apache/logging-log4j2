@@ -31,6 +31,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
+import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -54,7 +55,7 @@ public abstract class AbstractBuilder {
 
     public AbstractBuilder() {
         this.prefix = null;
-        this.strSubstitutor = new StrSubstitutor(System.getProperties());
+        this.strSubstitutor = new ConfigurationStrSubstitutor(System.getProperties());
         this.properties = new Properties();
     }
 
@@ -67,7 +68,7 @@ public abstract class AbstractBuilder {
         // normalize keys to lower case for case-insensitive access.
         props.forEach((k, v) -> map.put(toLowerCase(k.toString()), v.toString()));
         props.entrySet().forEach(e -> this.properties.put(toLowerCase(e.getKey().toString()), e.getValue()));
-        this.strSubstitutor = new StrSubstitutor(map);
+        this.strSubstitutor = new ConfigurationStrSubstitutor(map);
     }
 
     public String getProperty(String key) {

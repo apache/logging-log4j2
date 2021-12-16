@@ -69,7 +69,7 @@ public class RollingFileManagerTest {
                     .setFilePattern("FilePattern")
                     .setName("RollingFileAppender")
                     .setConfiguration(config)
-                    .setStrategy(new CustomDirectFileRolloverStrategy(file, config.getStrSubstitutor()))
+                    .setStrategy(new CustomDirectFileRolloverStrategy(file, config.getConfigurationStrSubstitutor()))
                     .setPolicy(new SizeBasedTriggeringPolicy(100))
                     .build();
 

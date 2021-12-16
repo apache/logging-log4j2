@@ -274,6 +274,10 @@
         Limit JNDI to the java protocol only. JNDI will remain disabled by default. Rename JNDI enablement property from
         'log4j2.enableJndi' to 'log4j2.enableJndiLookup', 'log4j2.enableJndiJms', and 'log4j2.enableJndiContextSelector'.
       </action>
+      <action issue="LOG4J2-3242" dev="rgoers" type="fix">
+        Limit JNDI to the java protocol only. JNDI will remain disabled by default. The enablement
+        property has been renamed to 'log4j2.enableJndiJava'
+      </action>
       <action issue="LOG4J2-3241" dev="rgoers" type="fix">
         Do not declare log4j-api-java9 and log4j-core-java9 as dependencies as it causes problems with the
         Maven enforcer plugin.

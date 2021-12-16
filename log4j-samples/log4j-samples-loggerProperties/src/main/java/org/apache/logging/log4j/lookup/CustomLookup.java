@@ -50,6 +50,9 @@ public class CustomLookup extends AbstractLookup {
      */
     @Override
     public String lookup(final LogEvent event, final String key) {
+        if (event == null) {
+            return null;
+        }
         try {
             final Map<String, String> properties = loggerProperties.get(event.getLoggerName());
             if (properties == null) {

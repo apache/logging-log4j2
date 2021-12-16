@@ -55,8 +55,10 @@ import org.apache.logging.log4j.core.config.arbiters.SelectArbiter;
 import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
 import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.MapLookup;
+import org.apache.logging.log4j.core.lookup.RuntimeStrSubstitutor;
 import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.net.Advertiser;
@@ -131,7 +133,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private List<CustomLevelConfig> customLevels = Collections.emptyList();
     private final ConcurrentMap<String, String> properties = new ConcurrentHashMap<>();
     private final StrLookup tempLookup = new Interpolator(properties);
-    private final StrSubstitutor subst = new StrSubstitutor(tempLookup);
+    private final StrSubstitutor subst = new RuntimeStrSubstitutor(tempLookup);
+    private final StrSubstitutor configurationStrSubstitutor = new ConfigurationStrSubstitutor(subst);
     private LoggerConfig root = new LoggerConfig();
     private final ConcurrentMap<String, Object> componentMap = new ConcurrentHashMap<>();
     private final ConfigurationSource configurationSource;
@@ -219,6 +222,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     public void initialize() {
         LOGGER.debug(Version.getProductString() + " initializing configuration {}", this);
         subst.setConfiguration(this);
+        configurationStrSubstitutor.setConfiguration(this);
         try {
             ServiceLoaderUtil.loadServices(ScriptManagerFactory.class,
                             (layer) -> ServiceLoader.load(layer, ScriptManagerFactory.class),
@@ -623,12 +627,16 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             final Node first = rootNode.getChildren().get(0);
             createConfiguration(first, null);
             if (first.getObject() != null) {
-                subst.setVariableResolver((StrLookup) first.getObject());
+                StrLookup lookup = (StrLookup) first.getObject();
+                subst.setVariableResolver(lookup);
+                configurationStrSubstitutor.setVariableResolver(lookup);
             }
         } else {
             final Map<String, String> map = this.getComponent(CONTEXT_PROPERTIES);
             final StrLookup lookup = map == null ? null : new MapLookup(map);
-            subst.setVariableResolver(new Interpolator(lookup, pluginPackages));
+            Interpolator interpolator = new Interpolator(lookup, pluginPackages);
+            subst.setVariableResolver(interpolator);
+            configurationStrSubstitutor.setVariableResolver(interpolator);
         }
 
         boolean setLoggers = false;
@@ -797,6 +805,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @Override
     public StrSubstitutor getStrSubstitutor() {
         return subst;
+    }
+
+    @Override
+    public StrSubstitutor getConfigurationStrSubstitutor() {
+        return configurationStrSubstitutor;
     }
 
     @Override

@@ -2036,7 +2036,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         try {
             incrementRecursionDepth();
             log(level, marker, fqcn, location, message, throwable);
-        } catch (final Exception ex) {
+        } catch (Throwable ex) {
             handleLogMessageException(ex, fqcn, message);
         } finally {
             decrementRecursionDepth();
@@ -2131,13 +2131,13 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
                                final StackTraceElement location,
                                final Level level,
                                final Marker marker,
-                               final Message msg,
+                               final Message message,
                                final Throwable throwable) {
         try {
-            log(level, marker, fqcn, location, msg, throwable);
-        } catch (final Exception e) {
+            log(level, marker, fqcn, location, message, throwable);
+        } catch (final Throwable t) {
             // LOG4J2-1990 Log4j2 suppresses all exceptions that occur once application called the logger
-            handleLogMessageException(e, fqcn, msg);
+            handleLogMessageException(t, fqcn, message);
         }
     }
 
@@ -2150,16 +2150,16 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     // LOG4J2-1990 Log4j2 suppresses all exceptions that occur once application called the logger
     // TODO Configuration setting to propagate exceptions back to the caller *if requested*
-    private void handleLogMessageException(final Exception exception, final String fqcn, final Message message) {
-        if (exception instanceof LoggingException) {
-            throw (LoggingException) exception;
+    private void handleLogMessageException(final Throwable throwable, final String fqcn, final Message message) {
+        if (throwable instanceof LoggingException) {
+            throw (LoggingException) throwable;
         }
         StatusLogger.getLogger().warn("{} caught {} logging {}: {}",
                 fqcn,
-                exception.getClass().getName(),
+                throwable.getClass().getName(),
                 message.getClass().getSimpleName(),
                 message.getFormat(),
-                exception);
+                throwable);
     }
 
     @Override

@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.LogEvent;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -73,5 +74,137 @@ public class StrSubstitutorTest {
         //String value = subst.replace("${sys:TestKey1:-${ctx:TestKey}}");
         final String value = subst.replace("${sys:TestKey1:-${ctx:TestKey}}");
         assertEquals("TestValue", value);
+    }
+
+    @Test
+    public void testDefaultReferencesLookupValue() {
+        final Map<String, String> map = new HashMap<>();
+        map.put(TESTKEY, "${java:version}");
+        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrSubstitutor subst = new StrSubstitutor(lookup);
+        subst.setRecursiveEvaluationAllowed(false);
+        final String value = subst.replace("${sys:TestKey1:-${ctx:TestKey}}");
+        assertEquals("${java:version}", value);
+    }
+
+    @Test
+    public void testInfiniteSubstitutionOnString() {
+        final StrLookup lookup = new Interpolator(new MapLookup(new HashMap<>()));
+        final StrSubstitutor subst = new StrSubstitutor(lookup);
+        subst.setRecursiveEvaluationAllowed(true);
+        String infiniteSubstitution = "${${::-${::-$${::-j}}}}";
+        assertEquals(infiniteSubstitution, subst.replace(infiniteSubstitution));
+    }
+
+    @Test
+    public void testInfiniteSubstitutionOnStringBuilder() {
+        final StrLookup lookup = new Interpolator(new MapLookup(new HashMap<>()));
+        final StrSubstitutor subst = new StrSubstitutor(lookup);
+        subst.setRecursiveEvaluationAllowed(true);
+        String infiniteSubstitution = "${${::-${::-$${::-j}}}}";
+        assertEquals(infiniteSubstitution, subst.replace(null, new StringBuilder(infiniteSubstitution)));
+    }
+
+    @Test
+    public void testRecursiveSubstitution() {
+        final Map<String, String> map = new HashMap<>();
+        map.put("first", "${ctx:first}");
+        map.put("second", "secondValue");
+        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrSubstitutor subst = new StrSubstitutor(lookup);
+        subst.setRecursiveEvaluationAllowed(true);
+        assertEquals("${ctx:first} and secondValue", subst.replace("${ctx:first} and ${ctx:second}"));
+    }
+
+    @Test
+    public void testRecursiveWithDefault() {
+        final Map<String, String> map = new HashMap<>();
+        map.put("first", "${ctx:first:-default}");
+        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrSubstitutor subst = new StrSubstitutor(lookup);
+        subst.setRecursiveEvaluationAllowed(true);
+        assertEquals("default", subst.replace("${ctx:first}"));
+    }
+
+    @Test
+    public void testRecursiveWithRecursiveDefault() {
+        final Map<String, String> map = new HashMap<>();
+        map.put("first", "${ctx:first:-${ctx:first}}");
+        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrSubstitutor subst = new StrSubstitutor(lookup);
+        subst.setRecursiveEvaluationAllowed(true);
+        assertEquals("${ctx:first}", subst.replace("${ctx:first}"));
+    }
+
+    @Test
+    public void testNestedSelfReferenceWithRecursiveEvaluation() {
+        final Map<String, String> map = new HashMap<>();
+        map.put("first", "${${ctx:first}}");
+        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrSubstitutor subst = new StrSubstitutor(lookup);
+        subst.setRecursiveEvaluationAllowed(true);
+        assertEquals("${${ctx:first}}", subst.replace("${ctx:first}"));
+    }
+
+    @Test
+    public void testRandomWithRecursiveDefault() {
+        final Map<String, String> map = new HashMap<>();
+        map.put("first", "${env:RANDOM:-${ctx:first}}");
+        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrSubstitutor subst = new StrSubstitutor(lookup);
+        subst.setRecursiveEvaluationAllowed(true);
+        assertEquals("${ctx:first}", subst.replace("${ctx:first}"));
+    }
+
+    @Test
+    public void testNoRecursiveEvaluationWithDefault() {
+        final Map<String, String> map = new HashMap<>();
+        map.put("first", "${java:version}");
+        map.put("second", "${java:runtime}");
+        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrSubstitutor subst = new StrSubstitutor(lookup);
+        subst.setRecursiveEvaluationAllowed(false);
+        assertEquals("${java:version}", subst.replace("${ctx:first:-${ctx:second}}"));
+    }
+
+    @Test
+    public void testNoRecursiveEvaluationWithDepthOne() {
+        final Map<String, String> map = new HashMap<>();
+        map.put("first", "${java:version}");
+        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrSubstitutor subst = new StrSubstitutor(lookup);
+        subst.setRecursiveEvaluationAllowed(false);
+        assertEquals("${java:version}", subst.replace("${ctx:first}"));
+    }
+
+    @Test
+    public void testLookupsNestedWithoutRecursiveEvaluation() {
+        final Map<String, String> map = new HashMap<>();
+        map.put("first", "${java:version}");
+        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrSubstitutor subst = new StrSubstitutor(lookup);
+        subst.setRecursiveEvaluationAllowed(false);
+        assertEquals("${java:version}", subst.replace("${${lower:C}t${lower:X}:first}"));
+    }
+
+    @Test
+    public void testLookupThrows() {
+        final StrSubstitutor subst = new StrSubstitutor(new Interpolator(new StrLookup() {
+
+            @Override
+            public String lookup(String key) {
+                if ("throw".equals(key)) {
+                    throw new RuntimeException();
+                }
+                return "success";
+            }
+
+            @Override
+            public String lookup(LogEvent event, String key) {
+                return lookup(key);
+            }
+        }));
+        subst.setRecursiveEvaluationAllowed(false);
+        assertEquals("success ${foo:throw} success", subst.replace("${foo:a} ${foo:throw} ${foo:c}"));
     }
 }

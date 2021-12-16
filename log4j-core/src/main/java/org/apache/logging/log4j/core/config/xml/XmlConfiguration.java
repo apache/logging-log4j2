@@ -110,7 +110,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             int monitorIntervalSeconds = 0;
             for (final Map.Entry<String, String> entry : attrs.entrySet()) {
                 final String key = entry.getKey();
-                final String value = getStrSubstitutor().replace(entry.getValue());
+                final String value = getConfigurationStrSubstitutor().replace(entry.getValue());
                 if ("status".equalsIgnoreCase(key)) {
                     statusConfig.setStatus(value);
                 } else if ("dest".equalsIgnoreCase(key)) {

@@ -315,7 +315,9 @@ public class PluginBuilder implements Builder<Object> {
 
         Substitutor(final LogEvent event) {
             this.event = event;
-            this.strSubstitutor = configuration.getStrSubstitutor();
+            this.strSubstitutor = event == null
+                    ? configuration.getConfigurationStrSubstitutor()
+                    : configuration.getStrSubstitutor();
         }
 
         @Override

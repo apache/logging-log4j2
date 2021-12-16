@@ -71,7 +71,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
             int monitorIntervalSeconds = 0;
             for (final Map.Entry<String, String> entry : rootNode.getAttributes().entrySet()) {
                 final String key = entry.getKey();
-                final String value = getStrSubstitutor().replace(entry.getValue());
+                final String value = getConfigurationStrSubstitutor().replace(entry.getValue());
                 // TODO: this duplicates a lot of the XmlConfiguration constructor
                 if ("status".equalsIgnoreCase(key)) {
                     statusConfig.setStatus(value);

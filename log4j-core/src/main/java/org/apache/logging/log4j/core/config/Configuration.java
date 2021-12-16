@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfigDelegate;
 import org.apache.logging.log4j.core.filter.Filterable;
+import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.script.ScriptManager;
@@ -115,6 +116,14 @@ public interface Configuration extends Filterable {
     void removeListener(ConfigurationListener listener);
 
     StrSubstitutor getStrSubstitutor();
+
+    default StrSubstitutor getConfigurationStrSubstitutor() {
+        StrSubstitutor defaultSubstitutor = getStrSubstitutor();
+        if (defaultSubstitutor == null) {
+            return new ConfigurationStrSubstitutor();
+        }
+        return new ConfigurationStrSubstitutor(defaultSubstitutor);
+    }
 
     void createConfiguration(Node node, LogEvent event);
 
