@@ -16,14 +16,24 @@
  */
 package org.apache.log4j.xml;
 
+import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.function.Consumer;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.FactoryConfigurationError;
+
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
 import org.apache.log4j.bridge.AppenderAdapter;
 import org.apache.log4j.bridge.AppenderWrapper;
 import org.apache.log4j.config.Log4j1Configuration;
-import org.apache.log4j.config.PropertiesConfiguration;
-import org.apache.log4j.config.PropertiesConfigurationFactory;
 import org.apache.log4j.config.PropertySetter;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.rewrite.RewritePolicy;
@@ -45,17 +55,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.FactoryConfigurationError;
-import java.io.IOException;
-import java.io.InterruptedIOException;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.function.Consumer;
 
 /**
  * Class Description goes here.
