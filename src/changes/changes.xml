@@ -37,6 +37,9 @@
         Do not declare log4j-api-java9 and log4j-core-java9 as depdendencies as it causes problems with the
         Maven enforcer plugin.
       </action>
+      <action issue="LOG4J2-3247" dev="ggregory" type="fix">
+        PropertiesConfiguration.parseAppenderFilters NPE when parsing properties file filters.
+      </action>
     </release>
     <release version="2.16.0" date="2021-12-13" description="GA Release 2.16.0">
       <action issue="LOG4J2-3208" dev="rgoers" type="fix">

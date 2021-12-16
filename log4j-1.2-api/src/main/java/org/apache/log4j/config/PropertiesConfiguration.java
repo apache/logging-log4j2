@@ -558,7 +558,7 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
                 }
             }
             if (filter != null) {
-                if (head != null) {
+                if (head == null) {
                     head = filter;
                 } else {
                     next.setNext(filter);

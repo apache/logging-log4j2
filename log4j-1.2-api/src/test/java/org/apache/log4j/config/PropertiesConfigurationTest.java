@@ -16,6 +16,15 @@
  */
 package org.apache.log4j.config;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.log4j.ListAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -27,15 +36,6 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.Test;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Test configuration from Properties.
@@ -91,6 +91,13 @@ public class PropertiesConfigurationTest {
         assertNotNull("No configuration created", configuration);
         Configurator.reconfigure(configuration);
         return context;
+    }
+    
+    @Test
+    public void testFilter() throws Exception {
+        try (LoggerContext loggerContext = configure("target/test-classes/LOG4J2-3247.properties")) {
+            // configure() not thrown an NPE.
+        }
     }
 
 }
