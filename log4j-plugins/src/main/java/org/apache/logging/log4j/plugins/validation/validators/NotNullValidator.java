@@ -19,12 +19,10 @@ package org.apache.logging.log4j.plugins.validation.validators;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.validation.ConstraintValidator;
 import org.apache.logging.log4j.plugins.validation.constraints.NotNull;
-import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Assert;
 
 /**
- * Validator that checks an object for emptiness. Emptiness is defined here as:
+ * Validator that checks an object for not null
  * <ul>
  * <li>The value {@code null}</li>
  * </ul>
@@ -35,16 +33,16 @@ public class NotNullValidator implements ConstraintValidator<NotNull> {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private Required annotation;
+    private NotNull annotation;
 
     @Override
-    public void initialize(final Required anAnnotation) {
+    public void initialize(final NotNull anAnnotation) {
         this.annotation = anAnnotation;
     }
 
     @Override
     public boolean isValid(final String name, final Object value) {
-        return Assert.isNonEmpty(value) || err(name);
+        return value != null || err(name);
     }
 
     private boolean err(final String name) {
