@@ -243,18 +243,6 @@ features do not protect against attacker controlled LDAP and other JNDI related 
 
 See [above](#log4j-2.15.0) for details.
 
-<a name="CVE-2021-45046"/><a name="cve-2021-45046"/>
-[CVE-2021-45046](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45046):  Apache Log4j2
-Thread Context Message Pattern and Context Lookup Pattern vulnerable to a Denial of Service attack.
-
-| [CVE-2021-45046](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45046) | Denial of Service |
-| ---------------   | -------- |
-| Severity          | Moderate |
-| Base CVSS Score   | 3.7 (AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L) |
-| Versions Affected | All versions from 2.0-beta9 to 2.15.0 |
-
-See [above](#log4j-2.16.0) for details.
-
 ### References
 - [LOG4J2-3220](https://issues.apache.org/jira/browse/LOG4J2-3220)
 
