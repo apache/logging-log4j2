@@ -59,7 +59,7 @@ Thread Context Message Pattern and Context Lookup Pattern vulnerable to a Denial
 | Versions Affected | All versions from 2.0-beta9 to 2.15.0 |
 
 ### Description
-It was found that the fix to address CVE-2021-44228 in Apache Log4j 2.15.0 was incomplete in certain non-default configurations. This could allows attackers with control over Thread Context Map (MDC) input data when the logging configuration uses a non-default Pattern Layout with either a Context Lookup (for example, ``$${ctx:loginId})`` or a Thread Context Map pattern (`%X`, `%mdc`, or `%MDC`) to craft malicious input data using a JNDI Lookup pattern resulting in a denial of service (DOS) attack. Log4j 2.15.0 restricts JNDI LDAP lookups to localhost by default. Note that previous mitigations involving configuration such as to set the system property `log4j2.formatMsgNoLookups` to `true` do NOT mitigate this specific vulnerability.
+It was found that the fix to address [CVE-2021-44228](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44228) in Apache Log4j 2.15.0 was incomplete in certain non-default configurations. This could allows attackers with control over Thread Context Map (MDC) input data when the logging configuration uses a non-default Pattern Layout with either a Context Lookup (for example, ``$${ctx:loginId})`` or a Thread Context Map pattern (`%X`, `%mdc`, or `%MDC`) to craft malicious input data using a JNDI Lookup pattern resulting in a denial of service (DOS) attack. Log4j 2.15.0 restricts JNDI LDAP lookups to localhost by default. Note that previous mitigations involving configuration such as to set the system property `log4j2.formatMsgNoLookups` to `true` do NOT mitigate this specific vulnerability.
 
 
 ### Mitigation
@@ -117,8 +117,8 @@ This issue was discovered by Kai Mindermann of iC Consult.
 [CVE-2021-44228](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44228):  Apache Log4j2 JNDI
 features do not protect against attacker controlled LDAP and other JNDI related endpoints.
 
-|[CVE-2021-44228](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44228)||
-| ---------------   ||
+|[CVE-2021-44228](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44228) | |
+| ----------------- | -------- |
 | Severity          | Critical |
 | Base CVSS Score   | 10.0 CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H |
 | Versions Affected | All versions from 2.0-beta9 to 2.14.1 |
@@ -199,7 +199,7 @@ This issue was discovered by Chen Zhaojun of Alibaba Cloud Security Team.
 [CVE-2020-9488](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-9488):  Improper validation of certificate with host mismatch in Apache Log4j SMTP appender.
 
 | [CVE-2020-9488](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-9488) | |
-| ----------------- | |
+| ----------------- | --- |
 | Severity          | Low |
 | CVSS Base Score   | 3.7 (Low) CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N |
 | Versions Affected | All versions from 2.0-alpha1 to 2.13.1 |
@@ -235,8 +235,8 @@ This issues was discovered by Peter Stöckli.
 [CVE-2021-44228](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44228):  Apache Log4j2 JNDI
 features do not protect against attacker controlled LDAP and other JNDI related endpoints.
 
-|[CVE-2021-44228](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44228)||
-| ---------------   ||
+|[CVE-2021-44228](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44228) | |
+| ---------------   | -------- |
 | Severity          | Critical |
 | Base CVSS Score   | 10.0 CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H |
 | Versions Affected | All versions from 2.0-beta9 to 2.14.1 |
@@ -263,7 +263,7 @@ See [above](#log4j-2.16.0) for details.
 [CVE-2017-5645](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-5645): Apache Log4j socket receiver deserialization vulnerability.
 
 | [CVE-2017-5645](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-5645) | |
-| ----------------- | |
+| ----------------- | -------- |
 | Severity          | Moderate |
 | CVSS Base Score   | 7.5 (AV:N/AC:L/Au:N/C:P/I:P/A:P) |
 | Versions Affected | All versions from 2.0-alpha1 to 2.8.1 |
