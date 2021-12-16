@@ -91,4 +91,4 @@ files must have a file extension of either ".properties" or ".xml".
 * Custom rewrite policies since LoggingEvent is currently a no-op.
 
 ### Renderers
-Log4j 2 currently will ignore renderers.
+Log4j 2 currently ignores renderers.
