@@ -187,6 +187,11 @@
         "code": "java.field.removedWithConstant",
         "old": "field org.apache.logging.log4j.core.net.JndiManager.ALLOWED_PROTOCOLS",
         "justification": "Removed allowing additional protocols"
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.apache.logging.log4j.core.lookup.JndiLookup",
+        "justification": "potential security vulnerability"
       }
     ]
   }
