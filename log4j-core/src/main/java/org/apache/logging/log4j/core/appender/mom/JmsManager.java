@@ -132,7 +132,7 @@ public class JmsManager extends AbstractManager {
                     return null;
                 }
             } else {
-                logger().error("JNDI has not been enabled. The log4j2.enableJndi property must be set to true");
+                logger().error("JNDI has not been enabled. The log4j2.enableJndiJava property must be set to true");
                 return null;
             }
         }

@@ -52,7 +52,7 @@ public class RoutingAppenderWithJndiTest {
     public static RuleChain rules = RuleChain.outerRule(new JndiRule(initBindings())).around(loggerContextRule);
 
     private static Map<String, Object> initBindings() {
-        System.setProperty("log4j2.enableJndi", "true");
+        System.setProperty("log4j2.enableJndiJava", "true");
         return Collections.emptyMap();
     }
 
