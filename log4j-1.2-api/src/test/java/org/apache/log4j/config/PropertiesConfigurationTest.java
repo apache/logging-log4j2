@@ -44,15 +44,16 @@ public class PropertiesConfigurationTest {
 
     @Test
     public void testProperties() throws Exception {
-        configure("target/test-classes/log4j1-file.properties");
-        Logger logger = LogManager.getLogger("test");
-        logger.debug("This is a test of the root logger");
-        File file = new File("target/temp.A1");
-        assertTrue("File A1 was not created", file.exists());
-        assertTrue("File A1 is empty", file.length() > 0);
-        file = new File("target/temp.A2");
-        assertTrue("File A2 was not created", file.exists());
-        assertTrue("File A2 is empty", file.length() > 0);
+        try (LoggerContext loggerContext = configure("target/test-classes/log4j1-file.properties")) {
+            Logger logger = LogManager.getLogger("test");
+            logger.debug("This is a test of the root logger");
+            File file = new File("target/temp.A1");
+            assertTrue("File A1 was not created", file.exists());
+            assertTrue("File A1 is empty", file.length() > 0);
+            file = new File("target/temp.A2");
+            assertTrue("File A2 was not created", file.exists());
+            assertTrue("File A2 is empty", file.length() > 0);
+        }
     }
 
     @Test
@@ -79,6 +80,7 @@ public class PropertiesConfigurationTest {
         assertTrue("No messages", messages != null && messages.size() > 0);
     }
 
+    @SuppressWarnings("resource")
     private LoggerContext configure(String configLocation) throws Exception {
         File file = new File(configLocation);
         InputStream is = new FileInputStream(file);
