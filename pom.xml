@@ -240,7 +240,7 @@
     <manifestfile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestfile>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <maven.doap.skip>true</maven.doap.skip>
+    <maven.doap.skip>false</maven.doap.skip>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <docLabel>Site Documentation</docLabel>
     <projectDir />
@@ -1368,6 +1368,14 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-doap-plugin</artifactId>
         <version>1.2</version>
+        <dependencies>
+          <!-- Fix java.lang.IllegalArgumentException: Invalid version number: Version number may be negative or greater than 255 -->
+          <dependency>
+            <groupId>com.ibm.icu</groupId>
+            <artifactId>icu4j</artifactId>
+            <version>4.6.1</version>
+          </dependency>
+        </dependencies>
         <configuration>
           <doapOptions>
             <programmingLanguage>Java</programmingLanguage>
