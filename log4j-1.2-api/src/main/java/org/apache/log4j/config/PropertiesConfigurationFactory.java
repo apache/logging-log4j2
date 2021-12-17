@@ -32,6 +32,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 @Order(2)
 public class PropertiesConfigurationFactory extends ConfigurationFactory {
 
+    static final String FILE_EXTENSION = ".properties";
 
     /**
      * File name prefix for test configurations.
@@ -48,7 +49,7 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
         if (!PropertiesUtil.getProperties().getBooleanProperty(ConfigurationFactory.LOG4J1_EXPERIMENTAL, Boolean.FALSE)) {
             return null;
         }
-        return new String[] {".properties"};
+        return new String[] { FILE_EXTENSION };
     }
 
     @Override
