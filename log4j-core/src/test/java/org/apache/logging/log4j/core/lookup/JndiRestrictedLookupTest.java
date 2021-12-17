@@ -30,7 +30,7 @@ public class JndiRestrictedLookupTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty("log4j2.enableJndi", "true");
+        System.setProperty("log4j2.enableJndiJava", "true");
     }
 
     @Test

@@ -32,7 +32,7 @@ import static org.junit.Assert.assertNull;
 /**
  * JndiDisabledLookupTest
  *
- * Verifies the Lookups are disabled without the log4j2.enableJndi property set to true.
+ * Verifies the Lookups are disabled without the log4j2.enableJndiJava property set to true.
  */
 public class JndiDisabledLookupTest {
 

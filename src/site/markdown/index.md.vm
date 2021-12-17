@@ -44,7 +44,11 @@ Note that previous mitigations involving configuration such as setting the syste
 to `true` do NOT mitigate this specific vulnerability.
 
 $h4 Mitigation
-From version 2.16.0, Log4j disables access to JNDI by default. JNDI lookups in configuration now need to be enabled explicitly.
+In version 2.12.2 (for Java 7), Log4j disables access to JNDI by default. Usage of JNDI in configuration now need to be enabled explicitly.
+Calls to the JndiLookup will now return a constant string. Also, Log4j now limits the protocols by default to only java.
+The message lookups feature has been completely removed.
+
+From version 2.16.0 (for Java 8), Log4j disables access to JNDI by default. JNDI lookups in configuration now need to be enabled explicitly.
 Also, Log4j now limits the protocols by default to only java, ldap, and ldaps and limits the ldap
 protocols to only accessing Java primitive objects. Hosts other than the local host need to be explicitly allowed.
 The message lookups feature has been completely removed.
@@ -70,7 +74,11 @@ that remote server. This in turn could execute any code during deserialization.
 This is known as a RCE (Remote Code Execution) attack.
 
 $h4 Mitigation
-From version 2.16.0, the message lookups feature has been completely removed. Lookups in configuration still work.
+In version 2.12.2 (for Java 7), Log4j disables access to JNDI by default. Usage of JNDI in configuration now need to be enabled explicitly.
+Calls to the JndiLookup will now return a constant string. Also, Log4j now limits the protocols by default to only java.
+The message lookups feature has been completely removed.
+
+From version 2.16.0 (for Java 8), the message lookups feature has been completely removed. Lookups in configuration still work.
 Furthermore, Log4j now disables access to JNDI by default. JNDI lookups in configuration now need to be enabled explicitly.
 Also, Log4j now limits the protocols by default to only java, ldap, and ldaps and limits the ldap
 protocols to only accessing Java primitive objects. Hosts other than the local host need to be explicitly allowed.

@@ -86,7 +86,7 @@ public class JmsAppenderTest {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
-        System.setProperty("log4j2.enableJndi", "true");
+        System.setProperty("log4j2.enableJndiJava", "true");
     }
 
     public JmsAppenderTest() throws Exception {

@@ -45,7 +45,7 @@ public class JndiManager extends AbstractManager {
     private final InitialContext context;
 
     public static boolean isJndiEnabled() {
-        return PropertiesUtil.getProperties().getBooleanProperty("log4j2.enableJndi", false);
+        return PropertiesUtil.getProperties().getBooleanProperty("log4j2.enableJndiJava", false);
     }
 
     private JndiManager(final String name, final InitialContext context) {
