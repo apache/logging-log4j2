@@ -235,22 +235,6 @@ This issues was discovered by Peter Stöckli.
 - [CVE-2020-9488](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-9488)
 - [LOG4J2-2819](https://issues.apache.org/jira/browse/LOG4J2-2819)
 
-## <a name="log4j-2.12.2"/> Fixed in Log4j 2.12.2 (Java 7)
-
-<a name="CVE-2021-44228"/><a name="cve-2021-44228"/>
-[CVE-2021-44228](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44228):  Apache Log4j2 JNDI
-features do not protect against attacker controlled LDAP and other JNDI related endpoints.
-
-|[CVE-2021-44228](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44228) | |
-| ---------------   | -------- |
-| Severity          | Critical |
-| Base CVSS Score   | 10.0 CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H |
-| Versions Affected | All versions from 2.0-beta9 to 2.14.1 |
-
-See [above](#log4j-2.15.0) for details.
-
-### References
-- [LOG4J2-3220](https://issues.apache.org/jira/browse/LOG4J2-3220)
 
 ## <a name="log4j-2.8.2"/> Fixed in Log4j 2.8.2 (Java 7)
 <a name="CVE-2017-5645"/><a name="cve-2017-5645"/>
