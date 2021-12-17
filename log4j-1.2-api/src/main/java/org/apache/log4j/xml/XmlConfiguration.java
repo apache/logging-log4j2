@@ -651,12 +651,12 @@ public class XmlConfiguration extends Log4j1Configuration {
                     Method toLevelMethod = clazz.getMethod("toLevel", ONE_STRING_PARAM);
                     Level pri = (Level) toLevelMethod.invoke(null, priStr);
                     logger.setLevel(OptionConverter.convertLevel(pri));
-                } catch (Exception oops) {
-                    if (oops instanceof InterruptedException || oops instanceof InterruptedIOException) {
+                } catch (Exception e) {
+                    if (e instanceof InterruptedException || e instanceof InterruptedIOException) {
                         Thread.currentThread().interrupt();
                     }
                     LOGGER.error("Could not create level [" + priStr +
-                            "]. Reported error follows.", oops);
+                            "]. Reported error follows.", e);
                     return;
                 }
             }
@@ -716,7 +716,8 @@ public class XmlConfiguration extends Log4j1Configuration {
 
         forEachElement(element.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
-                case CATEGORY: case LOGGER_ELEMENT:
+                case CATEGORY: 
+                case LOGGER_ELEMENT:
                     parseCategory(currentElement);
                     break;
                 case ROOT_TAG:
@@ -728,7 +729,8 @@ public class XmlConfiguration extends Log4j1Configuration {
                 case THROWABLE_RENDERER_TAG:
                     LOGGER.warn("Throwable Renderers are not supported by Log4j 2 and will be ignored.");
                     break;
-                case CATEGORY_FACTORY_TAG: case LOGGER_FACTORY_TAG:
+                case CATEGORY_FACTORY_TAG: 
+                case LOGGER_FACTORY_TAG:
                     LOGGER.warn("Log4j 1 Logger factories are not supported by Log4j 2 and will be ignored.");
                     break;
                 case APPENDER_TAG:
