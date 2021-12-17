@@ -74,7 +74,7 @@ Implement one of the following mitigation techniques:
 
 * Java 8 (or later) users should upgrade to release 2.16.0.
 * Java 7 users should upgrade to release 2.12.2.
-* Otherwise, remove the `JndiLookup` class from the classpath: `zip -q -d log4j-core-*.jar org/apache/logging/log4j/core/lookup/JndiLookup.class`
+* Otherwise, in any release other than 2.16.0, remove the `JndiLookup` class from the classpath: `zip -q -d log4j-core-*.jar org/apache/logging/log4j/core/lookup/JndiLookup.class`
 
 Note that only the log4j-core JAR file is impacted by this vulnerability.
 Applications using only the log4j-api JAR file without the log4j-core JAR file are not impacted by this vulnerability.
@@ -149,7 +149,7 @@ Implement one of the following mitigation techniques:
 
 * Java 8 (or later) users should upgrade to release 2.16.0.
 * Java 7 users should upgrade to release 2.12.2.
-* Otherwise, remove the `JndiLookup` class from the classpath: `zip -q -d log4j-core-*.jar org/apache/logging/log4j/core/lookup/JndiLookup.class`
+* Otherwise, in any release other than 2.16.0, remove the `JndiLookup` class from the classpath: `zip -q -d log4j-core-*.jar org/apache/logging/log4j/core/lookup/JndiLookup.class`
 
 Note that only the log4j-core JAR file is impacted by this vulnerability.
 Applications using only the log4j-api JAR file without the log4j-core JAR file are not impacted by this vulnerability.
