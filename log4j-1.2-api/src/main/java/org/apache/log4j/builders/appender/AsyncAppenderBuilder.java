@@ -16,11 +16,23 @@
  */
 package org.apache.log4j.builders.appender;
 
+import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.config.Log4j1Configuration.APPENDER_REF_TAG;
+import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
+import static org.apache.log4j.xml.XmlConfiguration.NAME_ATTR;
+import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
+import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.apache.log4j.Appender;
 import org.apache.log4j.bridge.AppenderWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
-import org.apache.log4j.builders.BooleanHolder;
-import org.apache.log4j.builders.Holder;
 import org.apache.log4j.config.Log4j1Configuration;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.helpers.OptionConverter;
@@ -32,18 +44,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 import org.w3c.dom.Element;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.xml.XmlConfiguration.NAME_ATTR;
-import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
-import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
-import static org.apache.log4j.config.Log4j1Configuration.APPENDER_REF_TAG;
-import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
 
 
 /**
@@ -66,11 +66,11 @@ public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBui
     @Override
     public Appender parseAppender(final Element appenderElement, final XmlConfiguration config) {
         String name = appenderElement.getAttribute(NAME_ATTR);
-        Holder<List<String>> appenderRefs = new Holder<>(new ArrayList<>());
-        Holder<Boolean> blocking = new BooleanHolder();
-        Holder<Boolean> includeLocation = new BooleanHolder();
-        Holder<String> level = new Holder<>("trace");
-        Holder<Integer> bufferSize = new Holder<>(1024);
+        AtomicReference<List<String>> appenderRefs = new AtomicReference<>(new ArrayList<>());
+        AtomicBoolean blocking = new AtomicBoolean();
+        AtomicBoolean includeLocation = new AtomicBoolean();
+        AtomicReference<String> level = new AtomicReference<>("trace");
+        AtomicReference<Integer> bufferSize = new AtomicReference<>(1024);
         forEachElement(appenderElement.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
                 case APPENDER_REF_TAG:

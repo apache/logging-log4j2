@@ -16,10 +16,17 @@
  */
 package org.apache.log4j.builders.filter;
 
+import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.xml.XmlConfiguration.NAME_ATTR;
+import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
+import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
+
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.apache.log4j.bridge.FilterWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
-import org.apache.log4j.builders.BooleanHolder;
-import org.apache.log4j.builders.Holder;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.xml.XmlConfiguration;
@@ -29,12 +36,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.filter.LevelMatchFilter;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
-
-import java.util.Properties;
-
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.xml.XmlConfiguration.*;
-import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
 
 /**
  * Build a Level match failter.
@@ -55,8 +56,8 @@ public class LevelMatchFilterBuilder extends AbstractBuilder implements FilterBu
 
     @Override
     public Filter parseFilter(Element filterElement, XmlConfiguration config) {
-        final Holder<String> level = new Holder<>();
-        final Holder<Boolean> acceptOnMatch = new BooleanHolder();
+        final AtomicReference<String> level = new AtomicReference<>();
+        final AtomicBoolean acceptOnMatch = new AtomicBoolean();
         forEachElement(filterElement.getElementsByTagName("param"), currentElement -> {
             if (currentElement.getTagName().equals("param")) {
                 switch (currentElement.getAttribute(NAME_ATTR)) {

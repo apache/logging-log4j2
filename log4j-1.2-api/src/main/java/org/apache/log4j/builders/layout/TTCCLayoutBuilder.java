@@ -16,11 +16,19 @@
  */
 package org.apache.log4j.builders.layout;
 
+import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.xml.XmlConfiguration.NAME_ATTR;
+import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
+import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
+
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.LayoutWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
-import org.apache.log4j.builders.BooleanHolder;
-import org.apache.log4j.builders.Holder;
 import org.apache.log4j.config.Log4j1Configuration;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.xml.XmlConfiguration;
@@ -29,11 +37,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
-
-import java.util.Properties;
-
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.xml.XmlConfiguration.*;
 
 /**
  * Build a Pattern Layout
@@ -58,11 +61,11 @@ public class TTCCLayoutBuilder extends AbstractBuilder implements LayoutBuilder 
 
     @Override
     public Layout parseLayout(Element layoutElement, XmlConfiguration config) {
-        final Holder<Boolean> threadPrinting = new BooleanHolder();
-        final Holder<Boolean> categoryPrefixing = new BooleanHolder();
-        final Holder<Boolean> contextPrinting = new BooleanHolder();
-        final Holder<String> dateFormat = new Holder<>();
-        final Holder<String> timezone = new Holder<>();
+        final AtomicBoolean threadPrinting = new AtomicBoolean();
+        final AtomicBoolean categoryPrefixing = new AtomicBoolean();
+        final AtomicBoolean contextPrinting = new AtomicBoolean();
+        final AtomicReference<String> dateFormat = new AtomicReference<>();
+        final AtomicReference<String> timezone = new AtomicReference<>();
         forEachElement(layoutElement.getElementsByTagName("param"), currentElement -> {
             if (currentElement.getTagName().equals(PARAM_TAG)) {
                 switch (currentElement.getAttribute(NAME_ATTR)) {

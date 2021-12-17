@@ -16,11 +16,16 @@
  */
 package org.apache.log4j.builders.layout;
 
+import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
+
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.LayoutWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
-import org.apache.log4j.builders.BooleanHolder;
-import org.apache.log4j.builders.Holder;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.xml.XmlConfiguration;
 import org.apache.logging.log4j.Logger;
@@ -28,12 +33,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.XmlLayout;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
-
-import java.util.Properties;
-
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 
 /**
  * Build an XML Layout
@@ -56,8 +55,8 @@ public class XmlLayoutBuilder extends AbstractBuilder implements LayoutBuilder {
 
     @Override
     public Layout parseLayout(Element layoutElement, XmlConfiguration config) {
-        final Holder<Boolean> properties = new BooleanHolder();
-        final Holder<Boolean> locationInfo = new BooleanHolder();
+        final AtomicBoolean properties = new AtomicBoolean();
+        final AtomicBoolean locationInfo = new AtomicBoolean();
         forEachElement(layoutElement.getElementsByTagName(PARAM_TAG), currentElement -> {
             if (PROPERTIES.equalsIgnoreCase(currentElement.getAttribute("name"))) {
                 properties.set(Boolean.parseBoolean(currentElement.getAttribute("value")));

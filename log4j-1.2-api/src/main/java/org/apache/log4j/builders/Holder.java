@@ -16,24 +16,30 @@
  */
 package org.apache.log4j.builders;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
  * Provides a place to hold values generated inside of a Lambda expression.
+ *
+ * @param <V> The type of object referred to by this reference.
+ * @deprecated Use {@link AtomicReference}.
  */
-public class Holder<T> {
-    private T value;
+@Deprecated
+public class Holder<V> {
+    private V value;
 
     public Holder() {
     }
 
-    public Holder(T defaultValue) {
+    public Holder(V defaultValue) {
         this.value = defaultValue;
     }
 
-    public void set(T value) {
+    public void set(V value) {
         this.value = value;
     }
 
-    public T get() {
+    public V get() {
         return value;
     }
 }

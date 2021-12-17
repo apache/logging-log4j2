@@ -16,9 +16,14 @@
  */
 package org.apache.log4j.builders;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
  * Holds Boolean values created inside of a Lambda expression.
+ *
+ * @deprecated Use {@link AtomicReference}.
  */
+@Deprecated
 public class BooleanHolder extends Holder<Boolean> {
 
     public BooleanHolder() {

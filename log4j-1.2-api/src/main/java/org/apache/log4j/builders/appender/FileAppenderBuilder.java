@@ -16,14 +16,26 @@
  */
 package org.apache.log4j.builders.appender;
 
+import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
+import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.LAYOUT_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.NAME_ATTR;
+import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
+import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
+
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.AppenderWrapper;
 import org.apache.log4j.bridge.LayoutAdapter;
 import org.apache.log4j.bridge.LayoutWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
-import org.apache.log4j.builders.BooleanHolder;
-import org.apache.log4j.builders.Holder;
 import org.apache.log4j.config.Log4j1Configuration;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.spi.Filter;
@@ -33,17 +45,6 @@ import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
-
-import java.util.Properties;
-
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
-import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.LAYOUT_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
-import static org.apache.log4j.xml.XmlConfiguration.NAME_ATTR;
-import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
 
 /**
  * Build a File Appender
@@ -63,14 +64,14 @@ public class FileAppenderBuilder extends AbstractBuilder implements AppenderBuil
     @Override
     public Appender parseAppender(Element appenderElement, XmlConfiguration config) {
         String name = appenderElement.getAttribute(NAME_ATTR);
-        Holder<Layout> layout = new Holder<>();
-        Holder<Filter> filter = new Holder<>();
-        Holder<String> fileName = new Holder<>();
-        Holder<String> level = new Holder<>();
-        Holder<Boolean> immediateFlush = new BooleanHolder();
-        Holder<Boolean> append = new BooleanHolder();
-        Holder<Boolean> bufferedIo = new BooleanHolder();
-        Holder<Integer> bufferSize = new Holder<>(8192);
+        AtomicReference<Layout> layout = new AtomicReference<>();
+        AtomicReference<Filter> filter = new AtomicReference<>();
+        AtomicReference<String> fileName = new AtomicReference<>();
+        AtomicReference<String> level = new AtomicReference<>();
+        AtomicBoolean immediateFlush = new AtomicBoolean();
+        AtomicBoolean append = new AtomicBoolean();
+        AtomicBoolean bufferedIo = new AtomicBoolean();
+        AtomicInteger bufferSize = new AtomicInteger(8192);
         forEachElement(appenderElement.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
                 case LAYOUT_TAG:
