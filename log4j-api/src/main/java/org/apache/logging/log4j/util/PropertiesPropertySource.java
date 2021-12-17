@@ -29,15 +29,21 @@ public class PropertiesPropertySource implements PropertySource {
 
     private static final String PREFIX = "log4j2.";
 
+    private static final String KEY_PRIORITY = "log4j2.properties_load_priority";
+
+    private final int priority;
+
     private final Properties properties;
 
     public PropertiesPropertySource(final Properties properties) {
         this.properties = properties;
+        final String order = (String)properties.get(KEY_PRIORITY);
+        priority = order == null ? 0 : Integer.parseInt(order);
     }
 
     @Override
     public int getPriority() {
-        return 0;
+        return priority;
     }
 
     @Override
