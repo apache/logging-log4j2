@@ -18,6 +18,9 @@
 package org.apache.logging.log4j.core.net;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.Properties;
 
 import org.junit.jupiter.api.Test;
 
@@ -30,4 +33,32 @@ public class JndiManagerTest {
     public void testIsJndiEnabled() {
         assertFalse(JndiManager.isJndiEnabled());
     }
+
+    @Test
+    public void testIsJndiContextSelectorEnabled() {
+        assertFalse(JndiManager.isJndiContextSelectorEnabled());
+    }
+
+    @Test
+    public void testIsJndiJmsEnabled() {
+        assertFalse(JndiManager.isJndiJmsEnabled());
+    }
+
+    @Test
+    public void testIsJndiLookupEnabled() {
+        assertFalse(JndiManager.isJndiLookupEnabled());
+    }
+    
+    @Test
+    public void testNoInstanceByDefault() {
+        assertThrows(IllegalStateException.class, () -> JndiManager.getDefaultManager());
+        assertThrows(IllegalStateException.class, () -> JndiManager.getDefaultManager(null));
+        assertThrows(IllegalStateException.class, () -> JndiManager.getDefaultManager("A"));
+        assertThrows(IllegalStateException.class, () -> JndiManager.getJndiManager(null));
+        assertThrows(IllegalStateException.class, () -> JndiManager.getJndiManager(new Properties()));
+        assertThrows(IllegalStateException.class, () -> JndiManager.getJndiManager(null, null, null, null, null, null));
+        assertThrows(IllegalStateException.class, () -> JndiManager.getJndiManager("A", "A", "A", "A", "A", new Properties()));
+    }
+    
+    
 }

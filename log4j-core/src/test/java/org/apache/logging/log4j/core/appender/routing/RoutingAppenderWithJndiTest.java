@@ -52,7 +52,9 @@ public class RoutingAppenderWithJndiTest {
     public static RuleChain rules = RuleChain.outerRule(new JndiRule(initBindings())).around(loggerContextRule);
 
     private static Map<String, Object> initBindings() {
-        System.setProperty("log4j2.enableJndiJava", "true");
+        System.setProperty("log4j2.enableJndiLookup", "true");
+        //System.setProperty("log4j2.enableJndiJms", "true");
+        //System.setProperty("log4j2.enableJndiContextSelector", "true");
         return Collections.emptyMap();
     }
 
@@ -64,8 +66,12 @@ public class RoutingAppenderWithJndiTest {
 
     @After
     public void after() {
-        listAppender1.clear();
-        listAppender2.clear();
+        if (listAppender1 != null) {
+            listAppender1.clear();
+        }
+        if (listAppender2 != null) {
+            listAppender2.clear();
+        }
     }
 
     @Test

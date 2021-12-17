@@ -78,7 +78,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         for (final Map.Entry<String, PluginType<?>> entry : plugins.entrySet()) {
             try {
                 final Class<? extends StrLookup> clazz = entry.getValue().getPluginClass().asSubclass(StrLookup.class);
-                if (!clazz.getName().equals("org.apache.logging.log4j.core.lookup.JndiLookup") || JndiManager.isJndiEnabled()) {
+                if (!clazz.getName().equals("org.apache.logging.log4j.core.lookup.JndiLookup") || JndiManager.isJndiLookupEnabled()) {
                     strLookupMap.put(entry.getKey().toLowerCase(), ReflectionUtil.instantiate(clazz));
                 }
             } catch (final Throwable t) {
@@ -109,7 +109,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         strLookupMap.put("lower", new LowerLookup());
         strLookupMap.put("upper", new UpperLookup());
         // JNDI
-        if (JndiManager.isJndiEnabled()) {
+        if (JndiManager.isJndiLookupEnabled()) {
             try {
                 // [LOG4J2-703] We might be on Android
                 strLookupMap.put(LOOKUP_KEY_JNDI,
