@@ -29,7 +29,6 @@ import org.apache.logging.log4j.core.net.mock.MockSyslogServer;
 import org.apache.logging.log4j.core.net.mock.MockSyslogServerFactory;
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -50,10 +49,6 @@ public class SyslogAppenderTest {
     @AfterClass
     public static void afterClass() {
         System.clearProperty(Log4j1Constants.DEFAULT_CONFIGURATION_KEY);
-    }
-
-    @Before
-    public void setUp() {
     }
 
     @After
