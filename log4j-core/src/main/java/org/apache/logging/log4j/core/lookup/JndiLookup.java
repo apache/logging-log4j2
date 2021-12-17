@@ -16,16 +16,9 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import java.util.Objects;
-
-import javax.naming.NamingException;
-
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.net.JndiManager;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
