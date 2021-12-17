@@ -54,8 +54,8 @@ Apache Log4j2 does not always protect from infinite recursion in lookup evaluati
 
 | [CVE-2021-45105](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45105) | Denial of Service |
 | ---------------   | -------- |
-| Severity          | XXXXX |
-| Base CVSS Score   | X.X (XXXX) |
+| Severity          | High |
+| Base CVSS Score   | 7.5 (AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H) |
 | Versions Affected | All versions from 2.0-beta9 to 2.16.0 |
 
 ### Description
@@ -63,13 +63,6 @@ Apache Log4j2 versions 2.0-alpha1 through 2.16.0 did not protect from uncontroll
 When the logging configuration uses a non-default Pattern Layout with a Context Lookup (for example, ``${dollar}${dollar}{ctx:loginId}``),
 attackers with control over Thread Context Map (MDC) input data can craft malicious input data that contains a recursive lookup,
 resulting in a StackOverflowError that will terminate the process. This is also known as a DOS (Denial of Service) attack.
-
-$h4 Mitigation
-From version 2.17.0 (for Java 8), only lookup strings in configuration are expanded recursively;
-in any other usage, only the top-level lookup is resolved, and any nested lookups are not resolved.
-Furthermore, error handling has been made more extensive, to catch all Throwables that arise in logging code instead of only Exceptions.
-Finally, when JNDI is enabled, it will only support the `java` protocol.
-The property to enable JNDI has been renamed to `log4j2.enableJndiJava` from `log4j2.enableJndi`.
 
 
 ### Mitigation
@@ -83,7 +76,10 @@ Log4j 1.x is not impacted by this vulnerability.
 Implement one of the following mitigation techniques:
 
 * Java 8 (or later) users should upgrade to release 2.17.0.
-* Replace Context Lookups like `$${ctx:loginId}` with Thread Context Map patterns (%X, %mdc, or %MDC) in the logging configuration.
+* Replace Context Lookups like `$${ctx:loginId}` in PatternLayout with Thread Context Map patterns (%X, %mdc, or %MDC) 
+in the logging configuration.
+* Remove refrences to Context Lookups like `$${ctx:loginId}` in the configuration where they originate 
+from sources external to the application such as HTTP headers or user input.
 
 Note that only the log4j-core JAR file is impacted by this vulnerability.
 Applications using only the log4j-api JAR file without the log4j-core JAR file are not impacted by this vulnerability.

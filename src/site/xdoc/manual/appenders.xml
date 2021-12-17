@@ -1559,33 +1559,6 @@ public class ConnectionFactory {
               <th>Description</th>
             </tr>
             <tr>
-              <td>allowdLdapClasses</td>
-              <td>String</td>
-              <td>null</td>
-              <td>
-                A comma separated list of fully qualified class names that may be accessed by LDAP. The classes
-                must implement Serializable. Only applies when the JMS Appender By default only Java primitive classes are allowed.
-              </td>
-            </tr>
-            <tr>
-              <td>allowdLdapHosts</td>
-              <td>String</td>
-              <td>null</td>
-              <td>
-                A comma separated list of host names or ip addresses that may be accessed by LDAP. By default only
-                the local host names and ip addresses are allowed.
-              </td>
-            </tr>
-            <tr>
-              <td>allowdJndiProtocols</td>
-              <td>String</td>
-              <td>null</td>
-              <td>
-                A comma separated list of protocol names that JNDI will allow. By default only java, ldap, and ldaps
-                are the only allowed protocols.
-              </td>
-            </tr>
-            <tr>
               <td>factoryBindingName</td>
               <td>String</td>
               <td><em>Required</em></td>

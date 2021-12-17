@@ -2173,32 +2173,6 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td><a name="allowedLdapClasses"/>log4j2.allowedLdapClasses</td>
-    <td>LOG4J_ALLOWED_LDAP_CLASSES</td>
-    <td>&nbsp;</td>
-    <td>
-      System property that specifies fully qualified class names that may be accessed by LDAP. The classes
-      must implement Serializable. By default only Java primitive classes are allowed.
-    </td>
-  </tr>
-  <tr>
-    <td><a name="allowedLdapHosts"/>log4j2.allowedLdapHosts</td>
-    <td>LOG4J_ALLOWED_LDAP_HOSTS</td>
-    <td>&nbsp;</td>
-    <td>
-      System property that adds host names or ip addresses that may be access by LDAP. By default it only allows
-      the local host names and ip addresses.
-    </td>
-  </tr>
-  <tr>
-    <td><a name="allowedJndiProtocols"/>log4j2.allowedJndiProtocols</td>
-    <td>LOG4J_ALLOWED_JNDI_PROTOCOLS</td>
-    <td>&nbsp;</td>
-    <td>
-      System property that adds protocol names that JNDI will allow. By default it only allows java, ldap, and ldaps.
-    </td>
-  </tr>
-  <tr>
     <td><a name="uuidSequence"/>log4j2.uuidSequence
       <br />
       (<a name="org.apache.logging.log4j.uuidSequence"/>org.apache.logging.log4j.uuidSequence)

@@ -188,13 +188,13 @@
   <properties>
     <!-- make sure to update these for each release! -->
     <log4jParentDir>${basedir}</log4jParentDir>
-    <Log4jReleaseVersion>2.16.0</Log4jReleaseVersion>
+    <Log4jReleaseVersion>2.17.0</Log4jReleaseVersion>
     <Log4jReleaseVersionJava7>2.12.2</Log4jReleaseVersionJava7>
     <Log4jReleaseVersionJava6>2.3</Log4jReleaseVersionJava6>
     <!--Log4jReleaseManager>Ralph Goers</Log4jReleaseManager-->
     <!--Log4jReleaseKey>B3D8E1BA</Log4jReleaseKey-->
-    <Log4jReleaseManager>Matt Sicker</Log4jReleaseManager>
-    <Log4jReleaseKey>748F15B2CF9BA8F024155E6ED7C92B70FA1C814D</Log4jReleaseKey>
+    <Log4jReleaseManager>Ralph Goers</Log4jReleaseManager>
+    <Log4jReleaseKey>B3D8E1BA</Log4jReleaseKey>
     <!-- note that any properties you want available in velocity templates must not use periods! -->
     <slf4jVersion>1.7.25</slf4jVersion>
     <logbackVersion>1.2.3</logbackVersion>
