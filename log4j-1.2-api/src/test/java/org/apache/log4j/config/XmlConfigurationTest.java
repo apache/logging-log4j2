@@ -31,8 +31,11 @@ import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -44,29 +47,28 @@ import static org.junit.Assert.assertTrue;
  */
 public class XmlConfigurationTest {
 
-    @Test
-    public void testXML() throws Exception {
-        configure("target/test-classes/log4j1-file.xml");
-        Logger logger = LogManager.getLogger("test");
-        logger.debug("This is a test of the root logger");
-        File file = new File("target/temp.A1");
-        assertTrue("File A1 was not created", file.exists());
-        assertTrue("File A1 is empty", file.length() > 0);
-        file = new File("target/temp.A2");
-        assertTrue("File A2 was not created", file.exists());
-        assertTrue("File A2 is empty", file.length() > 0);
+    static LoggerContext configureXml(final String configLocation) throws IOException {
+        final Path path = Paths.get(configLocation);
+        final InputStream is = Files.newInputStream(path);
+        final ConfigurationSource source = new ConfigurationSource(is, path.toFile());
+        final LoggerContextFactory factory = org.apache.logging.log4j.LogManager.getFactory();
+        final LoggerContext context = (LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
+        final Configuration configuration = new XmlConfigurationFactory().getConfiguration(context, source);
+        assertNotNull("No configuration created", configuration);
+        Configurator.reconfigure(configuration);
+        return context;
     }
 
     @Test
     public void testListAppender() throws Exception {
-        LoggerContext loggerContext = configure("target/test-classes/log4j1-list.xml");
-        Logger logger = LogManager.getLogger("test");
+        final LoggerContext loggerContext = configureXml("target/test-classes/log4j1-list.xml");
+        final Logger logger = LogManager.getLogger("test");
         logger.debug("This is a test of the root logger");
-        Configuration configuration = loggerContext.getConfiguration();
-        Map<String, Appender> appenders = configuration.getAppenders();
+        final Configuration configuration = loggerContext.getConfiguration();
+        final Map<String, Appender> appenders = configuration.getAppenders();
         ListAppender eventAppender = null;
         ListAppender messageAppender = null;
-        for (Map.Entry<String, Appender> entry : appenders.entrySet()) {
+        for (final Map.Entry<String, Appender> entry : appenders.entrySet()) {
             if (entry.getKey().equals("list")) {
                 messageAppender = (ListAppender) ((AppenderAdapter.Adapter) entry.getValue()).getAppender();
             } else if (entry.getKey().equals("events")) {
@@ -75,22 +77,23 @@ public class XmlConfigurationTest {
         }
         assertNotNull("No Event Appender", eventAppender);
         assertNotNull("No Message Appender", messageAppender);
-        List<LoggingEvent> events = eventAppender.getEvents();
+        final List<LoggingEvent> events = eventAppender.getEvents();
         assertTrue("No events", events != null && events.size() > 0);
-        List<String> messages = messageAppender.getMessages();
+        final List<String> messages = messageAppender.getMessages();
         assertTrue("No messages", messages != null && messages.size() > 0);
     }
 
-    private LoggerContext configure(String configLocation) throws Exception {
-        File file = new File(configLocation);
-        InputStream is = new FileInputStream(file);
-        ConfigurationSource source = new ConfigurationSource(is, file);
-        LoggerContextFactory factory = org.apache.logging.log4j.LogManager.getFactory();
-        LoggerContext context = (LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
-        Configuration configuration = new XmlConfigurationFactory().getConfiguration(context, source);
-        assertNotNull("No configuration created", configuration);
-        Configurator.reconfigure(configuration);
-        return context;
+    @Test
+    public void testXML() throws Exception {
+        configureXml("target/test-classes/log4j1-file.xml");
+        final Logger logger = LogManager.getLogger("test");
+        logger.debug("This is a test of the root logger");
+        File file = new File("target/temp.A1");
+        assertTrue("File A1 was not created", file.exists());
+        assertTrue("File A1 is empty", file.length() > 0);
+        file = new File("target/temp.A2");
+        assertTrue("File A2 was not created", file.exists());
+        assertTrue("File A2 is empty", file.length() > 0);
     }
 
 }
