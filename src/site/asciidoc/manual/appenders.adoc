@@ -3290,7 +3290,7 @@ and are 60 days old or older are deleted at rollover time.
       <DefaultRolloverStrategy>
         <Delete basePath="${baseDir}" maxDepth="2">
           <IfFileName glob="*/app-*.log.gz" />
-          <IfLastModified age="60d" />
+          <IfLastModified age="P60D" />
         </Delete>
       </DefaultRolloverStrategy>
     </RollingFile>
@@ -3334,7 +3334,7 @@ comes first.
         -->
         <Delete basePath="${baseDir}" maxDepth="2">
           <IfFileName glob="*/app-*.log.gz">
-            <IfLastModified age="30d">
+            <IfLastModified age="P30D">
               <IfAny>
                 <IfAccumulatedFileSize exceeds="100 GB" />
                 <IfAccumulatedFileCount exceeds="10" />
