@@ -46,7 +46,7 @@ that has security impact, or if the descriptions here are incomplete, please rep
 privately to the [Log4j Security Team](mailto:private@logging.apache.org). Thank you.
 
 
-## <a name="log4j-2.16.0"/> Fixed in Log4j 2.16.0 (Java 8)
+## <a name="log4j-2.16.0"/> Fixed in Log4j 2.12.2 (Java 7) and Log4j 2.16.0 (Java 8)
 
 <a name="CVE-2021-45046"/><a name="cve-2021-45046"/>
 [CVE-2021-45046](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45046):  Apache Log4j2
@@ -78,6 +78,9 @@ Implement one of the following mitigation techniques:
 
 Note that only the log4j-core JAR file is impacted by this vulnerability.
 Applications using only the log4j-api JAR file without the log4j-core JAR file are not impacted by this vulnerability.
+
+Also note that Apache Log4j is the only Logging Services subproject affected by this vulnerability.
+Other projects like Log4net and Log4cxx are not impacted by this.
 
 ### History
 **Older (discredited) mitigation measures**
@@ -124,11 +127,11 @@ features do not protect against attacker controlled LDAP and other JNDI related 
 | Versions Affected | All versions from 2.0-beta9 to 2.14.1 |
 
 ### Description
-In Apache Log4j2 versions up to and including 2.14.1,
+In Apache Log4j2 versions up to and including 2.14.1 (excluding security release 2.12.2),
 the JNDI features used in configurations, log messages, and parameters do not
-protect against attacker-controlled LDAP and other JNDI related endpoints. An attacker who can control log
-messages or log message parameters can execute arbitrary code loaded from LDAP servers when message lookup
-substitution is enabled.
+protect against attacker-controlled LDAP and other JNDI related endpoints.
+An attacker who can control log messages or log message parameters can execute
+arbitrary code loaded from LDAP servers when message lookup substitution is enabled.
 
 ### Mitigation
 
@@ -150,6 +153,9 @@ Implement one of the following mitigation techniques:
 
 Note that only the log4j-core JAR file is impacted by this vulnerability.
 Applications using only the log4j-api JAR file without the log4j-core JAR file are not impacted by this vulnerability.
+
+Also note that Apache Log4j is the only Logging Services subproject affected by this vulnerability.
+Other projects like Log4net and Log4cxx are not impacted by this.
 
 ### History
 #### Older (discredited) mitigation measures
