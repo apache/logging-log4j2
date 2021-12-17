@@ -76,9 +76,11 @@ Log4j 1.x is not impacted by this vulnerability.
 Implement one of the following mitigation techniques:
 
 * Java 8 (or later) users should upgrade to release 2.17.0.
-* Replace Context Lookups like `$${ctx:loginId}` in PatternLayout with Thread Context Map patterns (%X, %mdc, or %MDC) 
-in the logging configuration.
-* Remove refrences to Context Lookups like `$${ctx:loginId}` in the configuration where they originate 
+
+Alternatively, this can be mitigated in configuration:
+
+* In PatternLayout in the logging configuration, replace Context Lookups like `${ctx:loginId}` or `$${ctx:loginId}` with Thread Context Map patterns (%X, %mdc, or %MDC).
+* Otherwise, in the configuration, remove references to Context Lookups like `${ctx:loginId}` or `$${ctx:loginId}` where they originate 
 from sources external to the application such as HTTP headers or user input.
 
 Note that only the log4j-core JAR file is impacted by this vulnerability.
