@@ -27,6 +27,28 @@ Apache Log4j 2 is an upgrade to Log4j that provides significant improvements ove
 provides many of the improvements available in Logback while fixing some inherent problems in Logback's architecture.
 
 
+<a name="CVE-2021-45105"/>
+$h2 Important: Security Vulnerability CVE-2021-45105
+
+The Log4j team has been made aware of a security vulnerability, CVE-2021-45105, that has been addressed in
+Log4j 2.17.0 for Java 8 and up.
+
+Summary: Apache Log4j2 does not always protect from infinite recursion in lookup evaluation.
+
+$h4 Details
+Apache Log4j2 versions 2.0-alpha1 through 2.16.0 did not protect from uncontrolled recursion from self-referential lookups.
+When the logging configuration uses a non-default Pattern Layout with a Context Lookup (for example, ``${dollar}${dollar}{ctx:loginId}``),
+attackers with control over Thread Context Map (MDC) input data can craft malicious input data that contains a recursive lookup,
+resulting in a StackOverflowError that will terminate the process. This is also known as a DOS (Denial of Service) attack.
+
+$h4 Mitigation
+From version 2.17.0 (for Java 8), only lookup strings in configuration are expanded recursively;
+in any other usage, only the top-level lookup is resolved, and any nested lookups are not resolved.
+
+$h4 Reference
+Please refer to the [Security page](security.html#CVE-2021-45105) for details and mitigation measures for older versions of Log4j.
+
+
 <a name="CVE-2021-45046"/>
 $h2 Important: Security Vulnerability CVE-2021-45046
 
@@ -111,9 +133,9 @@ in front of other logging implementations such as Logback. The Log4j API has sev
 2. The Log4j API supports lambda expressions.
 3. The Log4j API provides many more logging methods than SLF4J.
 4. In addition to the "parameterized logging" format supported by SLF4J, the Log4j API also supports events using
-the java.text.MessageFormat syntax as well printf-style messages.
+   the java.text.MessageFormat syntax as well printf-style messages.
 5. The Log4j API provides a LogManager.shutdown() method. The underlying logging implementation must implement the
-Terminable interface for the method to have effect.
+   Terminable interface for the method to have effect.
 6. Other constructs such as Markers, log Levels, and ThreadContext (aka MDC) are fully supported.
 
 $h3 Improved Performance

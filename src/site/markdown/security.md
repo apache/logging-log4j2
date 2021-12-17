@@ -46,6 +46,65 @@ that has security impact, or if the descriptions here are incomplete, please rep
 privately to the [Log4j Security Team](mailto:private@logging.apache.org). Thank you.
 
 
+<a name="CVE-2021-45105"/><a name="cve-2021-45046"/>
+## <a name="log4j-2.17.0"/> Fixed in Log4j 2.17.0 (Java 8)
+
+[CVE-2021-45105](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45105):  
+Apache Log4j2 does not always protect from infinite recursion in lookup evaluation
+
+| [CVE-2021-45105](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45105) | Denial of Service |
+| ---------------   | -------- |
+| Severity          | XXXXX |
+| Base CVSS Score   | X.X (XXXX) |
+| Versions Affected | All versions from 2.0-beta9 to 2.16.0 |
+
+### Description
+Apache Log4j2 versions 2.0-alpha1 through 2.16.0 did not protect from uncontrolled recursion from self-referential lookups.
+When the logging configuration uses a non-default Pattern Layout with a Context Lookup (for example, ``${dollar}${dollar}{ctx:loginId}``),
+attackers with control over Thread Context Map (MDC) input data can craft malicious input data that contains a recursive lookup,
+resulting in a StackOverflowError that will terminate the process. This is also known as a DOS (Denial of Service) attack.
+
+$h4 Mitigation
+From version 2.17.0 (for Java 8), only lookup strings in configuration are expanded recursively;
+in any other usage, only the top-level lookup is resolved, and any nested lookups are not resolved.
+Furthermore, error handling has been made more extensive, to catch all Throwables that arise in logging code instead of only Exceptions.
+Finally, when JNDI is enabled, it will only support the `java` protocol.
+The property to enable JNDI has been renamed to `log4j2.enableJndiJava` from `log4j2.enableJndi`.
+
+
+### Mitigation
+
+#### Log4j 1.x mitigation
+
+Log4j 1.x is not impacted by this vulnerability.
+
+#### Log4j 2.x mitigation
+
+Implement one of the following mitigation techniques:
+
+* Java 8 (or later) users should upgrade to release 2.17.0.
+* Replace Context Lookups like `$${ctx:loginId}` with Thread Context Map patterns (%X, %mdc, or %MDC) in the logging configuration.
+
+Note that only the log4j-core JAR file is impacted by this vulnerability.
+Applications using only the log4j-api JAR file without the log4j-core JAR file are not impacted by this vulnerability.
+
+Also note that Apache Log4j is the only Logging Services subproject affected by this vulnerability.
+Other projects like Log4net and Log4cxx are not impacted by this.
+
+### Work in progress
+The Log4j team will continue to actively update this page as more information becomes known.
+
+### Credit
+This issue was discovered by Hideki Okamoto of Akamai Technologies and another anonymous vulnerability researcher.
+
+### References
+- [CVE-2021-45105](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45105)
+- [LOG4J2-3230](https://issues.apache.org/jira/browse/LOG4J2-3230)
+
+
+
+
+
 <a name="CVE-2021-45046"/><a name="cve-2021-45046"/>
 ## <a name="log4j-2.16.0"/> Fixed in Log4j 2.12.2 (Java 7) and Log4j 2.16.0 (Java 8)
 
