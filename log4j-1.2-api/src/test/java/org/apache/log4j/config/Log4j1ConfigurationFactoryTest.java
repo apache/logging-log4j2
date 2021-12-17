@@ -52,6 +52,15 @@ import org.junit.Test;
 
 public class Log4j1ConfigurationFactoryTest {
 
+    static Configuration getConfiguration(final String configResource) throws URISyntaxException {
+        final URL configLocation = ClassLoader.getSystemResource(configResource);
+        assertNotNull(configResource, configLocation);
+        final Configuration configuration = new Log4j1ConfigurationFactory().getConfiguration(null, "test",
+                configLocation.toURI());
+        assertNotNull(configuration);
+        return configuration;
+    }
+
     private Layout<?> testConsole(final String configResource) throws Exception {
         final Configuration configuration = getConfiguration(configResource);
         final String name = "Console";
@@ -80,15 +89,6 @@ public class Log4j1ConfigurationFactoryTest {
 		configuration.start();
 		configuration.stop();
 		return appender.getLayout();
-	}
-
-	private Configuration getConfiguration(final String configResource) throws URISyntaxException {
-		final URL configLocation = ClassLoader.getSystemResource(configResource);
-		assertNotNull(configResource, configLocation);
-		final Configuration configuration = new Log4j1ConfigurationFactory().getConfiguration(null, "test",
-				configLocation.toURI());
-		assertNotNull(configuration);
-		return configuration;
 	}
 
 	@Test

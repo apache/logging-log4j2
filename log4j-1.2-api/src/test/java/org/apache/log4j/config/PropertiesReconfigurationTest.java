@@ -16,9 +16,11 @@
  */
 package org.apache.log4j.config;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -27,15 +29,8 @@ import org.apache.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationListener;
-import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.Reconfigurable;
-import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.junit.Test;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  * Test reconfiguring with an XML configuration.
@@ -54,7 +49,7 @@ public class PropertiesReconfigurationTest {
         assertNotNull("No Config file", file);
         long configMillis = file.lastModified();
         assertTrue("Unable to modified file time", file.setLastModified(configMillis - FIVE_MINUTES));
-        LoggerContext context = configure(file);
+        LoggerContext context = TestConfigurator.configure(file.toString());
         Logger logger = LogManager.getLogger("test");
         logger.info("Hello");
         Configuration original = context.getConfiguration();
@@ -80,16 +75,5 @@ public class PropertiesReconfigurationTest {
             toggle.countDown();
         }
 
-    }
-
-    private LoggerContext configure(File configFile) throws Exception {
-        InputStream is = new FileInputStream(configFile);
-        ConfigurationSource source = new ConfigurationSource(is, configFile);
-        LoggerContextFactory factory = org.apache.logging.log4j.LogManager.getFactory();
-        LoggerContext context = (LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
-        Configuration configuration = new PropertiesConfigurationFactory().getConfiguration(context, source);
-        assertNotNull("No configuration created", configuration);
-        Configurator.reconfigure(configuration);
-        return context;
     }
 }

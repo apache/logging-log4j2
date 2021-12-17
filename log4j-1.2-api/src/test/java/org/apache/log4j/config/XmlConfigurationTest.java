@@ -16,52 +16,31 @@
  */
 package org.apache.log4j.config;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.log4j.ListAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.bridge.AppenderAdapter;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.xml.XmlConfigurationFactory;
 import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.spi.LoggerContextFactory;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.junit.Test;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Test configuration from XML.
  */
 public class XmlConfigurationTest {
 
-    static LoggerContext configureXml(final String configLocation) throws IOException {
-        final Path path = Paths.get(configLocation);
-        final InputStream is = Files.newInputStream(path);
-        final ConfigurationSource source = new ConfigurationSource(is, path.toFile());
-        final LoggerContextFactory factory = org.apache.logging.log4j.LogManager.getFactory();
-        final LoggerContext context = (LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
-        final Configuration configuration = new XmlConfigurationFactory().getConfiguration(context, source);
-        assertNotNull("No configuration created", configuration);
-        Configurator.reconfigure(configuration);
-        return context;
-    }
-
     @Test
     public void testListAppender() throws Exception {
-        final LoggerContext loggerContext = configureXml("target/test-classes/log4j1-list.xml");
+        final LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/log4j1-list.xml");
         final Logger logger = LogManager.getLogger("test");
         logger.debug("This is a test of the root logger");
         final Configuration configuration = loggerContext.getConfiguration();
@@ -85,7 +64,7 @@ public class XmlConfigurationTest {
 
     @Test
     public void testXML() throws Exception {
-        configureXml("target/test-classes/log4j1-file.xml");
+        TestConfigurator.configure("target/test-classes/log4j1-file.xml");
         final Logger logger = LogManager.getLogger("test");
         logger.debug("This is a test of the root logger");
         File file = new File("target/temp.A1");

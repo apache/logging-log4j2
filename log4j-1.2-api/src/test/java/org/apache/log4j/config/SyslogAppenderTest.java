@@ -22,9 +22,9 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.log4j.Log4j1Constants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.net.mock.MockSyslogServer;
 import org.apache.logging.log4j.core.net.mock.MockSyslogServerFactory;
 import org.junit.After;
@@ -43,12 +43,12 @@ public class SyslogAppenderTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(Log4j1Constants.DEFAULT_CONFIGURATION_KEY, "target/test-classes/log4j1-syslog.xml");
+        System.setProperty(ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY, "target/test-classes/log4j1-syslog.xml");
     }
 
     @AfterClass
     public static void afterClass() {
-        System.clearProperty(Log4j1Constants.DEFAULT_CONFIGURATION_KEY);
+        System.clearProperty(ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY);
     }
 
     @After

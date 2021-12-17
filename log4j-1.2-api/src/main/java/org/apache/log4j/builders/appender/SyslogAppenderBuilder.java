@@ -62,6 +62,8 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final String FACILITY_PARAM = "Facility";
     private static final String SYSLOG_HOST_PARAM = "SyslogHost";
+    private static final String PROTOCOL_PARAM = "protocol";
+
 
     public SyslogAppenderBuilder() {
     }
@@ -78,6 +80,7 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
         AtomicReference<String> facility = new AtomicReference<>();
         AtomicReference<String> level = new AtomicReference<>();
         AtomicReference<String> host = new AtomicReference<>();
+        AtomicReference<Protocol> protocol = new AtomicReference<>();
         forEachElement(appenderElement.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
                 case LAYOUT_TAG:
@@ -104,13 +107,16 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
                             }
                             break;
                         }
+                        case PROTOCOL_PARAM:
+                            protocol.set(Protocol.valueOf(currentElement.getAttribute(VALUE_ATTR)));
+                            break;
                     }
                     break;
                 }
             }
         });
 
-        return createAppender(name, config, layout.get(), facility.get(), filter.get(), host.get(), level.get());
+        return createAppender(name, config, layout.get(), facility.get(), filter.get(), host.get(), level.get(), protocol.get());
     }
 
 
@@ -122,12 +128,13 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
         String level = getProperty(THRESHOLD_PARAM);
         String facility = getProperty(FACILITY_PARAM, DEFAULT_FACILITY);
         String syslogHost = getProperty(SYSLOG_HOST_PARAM, DEFAULT_HOST + ":" + DEFAULT_PORT);
+        String protocol = getProperty(PROTOCOL_PARAM, Protocol.TCP.name());
 
-        return createAppender(name, configuration, layout, facility, filter, syslogHost, level);
+        return createAppender(name, configuration, layout, facility, filter, syslogHost, level, Protocol.valueOf(protocol));
     }
 
     private Appender createAppender(final String name, final Log4j1Configuration configuration, Layout layout,
-            String facility, final Filter filter, final String syslogHost, final String level) {
+            String facility, final Filter filter, final String syslogHost, final String level, final Protocol protocol) {
         AtomicReference<String> host = new AtomicReference<>();
         AtomicInteger port = new AtomicInteger();
         resolveSyslogHost(syslogHost, host, port);
@@ -150,7 +157,7 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
                 .setLayout(appenderLayout)
                 .setFilter(fileFilter)
                 .withPort(port.get())
-                .withProtocol(Protocol.TCP)
+                .withProtocol(protocol)
                 .withHost(host.get())
                 .build());
     }

@@ -16,15 +16,15 @@
  */
 package org.apache.log4j.config;
 
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.io.File;
-
-import static org.junit.Assert.assertTrue;
 
 /**
  * Test configuration from Properties.

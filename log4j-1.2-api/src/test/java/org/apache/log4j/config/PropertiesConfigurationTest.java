@@ -20,8 +20,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -33,8 +31,6 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.Test;
 
 /**
@@ -43,22 +39,15 @@ import org.junit.Test;
 public class PropertiesConfigurationTest {
 
     @Test
-    public void testProperties() throws Exception {
-        try (LoggerContext loggerContext = configure("target/test-classes/log4j1-file.properties")) {
-            Logger logger = LogManager.getLogger("test");
-            logger.debug("This is a test of the root logger");
-            File file = new File("target/temp.A1");
-            assertTrue("File A1 was not created", file.exists());
-            assertTrue("File A1 is empty", file.length() > 0);
-            file = new File("target/temp.A2");
-            assertTrue("File A2 was not created", file.exists());
-            assertTrue("File A2 is empty", file.length() > 0);
+    public void testFilter() throws Exception {
+        try (LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/LOG4J2-3247.properties")) {
+            // [LOG4J2-3247] configure() should not throw an NPE.
         }
     }
 
     @Test
     public void testListAppender() throws Exception {
-        try (LoggerContext loggerContext = configure("target/test-classes/log4j1-list.properties")) {
+        try (LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/log4j1-list.properties")) {
             Logger logger = LogManager.getLogger("test");
             logger.debug("This is a test of the root logger");
             Configuration configuration = loggerContext.getConfiguration();
@@ -81,22 +70,17 @@ public class PropertiesConfigurationTest {
         }
     }
 
-    @SuppressWarnings("resource")
-    private LoggerContext configure(String configLocation) throws Exception {
-        File file = new File(configLocation);
-        InputStream is = new FileInputStream(file);
-        ConfigurationSource source = new ConfigurationSource(is, file);
-        LoggerContext context = (LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
-        Configuration configuration = new PropertiesConfigurationFactory().getConfiguration(context, source);
-        assertNotNull("No configuration created", configuration);
-        Configurator.reconfigure(configuration);
-        return context;
-    }
-    
     @Test
-    public void testFilter() throws Exception {
-        try (LoggerContext loggerContext = configure("target/test-classes/LOG4J2-3247.properties")) {
-            // configure() not thrown an NPE.
+    public void testProperties() throws Exception {
+        try (LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/log4j1-file.properties")) {
+            Logger logger = LogManager.getLogger("test");
+            logger.debug("This is a test of the root logger");
+            File file = new File("target/temp.A1");
+            assertTrue("File A1 was not created", file.exists());
+            assertTrue("File A1 is empty", file.length() > 0);
+            file = new File("target/temp.A2");
+            assertTrue("File A2 was not created", file.exists());
+            assertTrue("File A2 is empty", file.length() > 0);
         }
     }
 
