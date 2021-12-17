@@ -27,6 +27,7 @@ import java.util.Properties;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationAware;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -200,7 +201,7 @@ public class StrSubstitutor implements ConfigurationAware {
     /**
      * The flag whether substitution in variable names is enabled.
      */
-    private boolean enableSubstitutionInVariables = true;
+    private boolean enableSubstitutionInVariables = FeatureSubstitutionInVariables.ON;
 
     /**
      * The currently active Configuration for use by ConfigurationAware StrLookup implementations.
@@ -1044,7 +1045,10 @@ public class StrSubstitutor implements ConfigurationAware {
                                     final int varLen = varValue.length();
                                     buf.replace(startPos, endPos, varValue);
                                     altered = true;
-                                    int change = substitute(event, buf, startPos, varLen, priorVariables);
+                                    int change = 0;
+                                    if (substitutionInVariablesEnabled) {
+                                        change = substitute(event, buf, startPos, varLen, priorVariables);
+                                    }
                                     change = change + (varLen - (endPos - startPos));
                                     pos += change;
                                     bufEnd += change;
@@ -1441,5 +1445,10 @@ public class StrSubstitutor implements ConfigurationAware {
         if (this.variableResolver instanceof ConfigurationAware) {
             ((ConfigurationAware) this.variableResolver).setConfiguration(this.configuration);
         }
+    }
+
+    private static final class FeatureSubstitutionInVariables {
+        static final boolean ON = 
+                PropertiesUtil.getProperties().getBooleanProperty("log4j2.enableSubstitutionInVariables", true);
     }
 }
