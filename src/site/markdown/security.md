@@ -60,7 +60,7 @@ Apache Log4j2 does not always protect from infinite recursion in lookup evaluati
 
 ### Description
 Apache Log4j2 versions 2.0-alpha1 through 2.16.0 did not protect from uncontrolled recursion from self-referential lookups.
-When the logging configuration uses a non-default Pattern Layout with a Context Lookup (for example, ``${dollar}${dollar}{ctx:loginId}``),
+When the logging configuration uses a non-default Pattern Layout with a Context Lookup (for example, ``$${ctx:loginId}``),
 attackers with control over Thread Context Map (MDC) input data can craft malicious input data that contains a recursive lookup,
 resulting in a StackOverflowError that will terminate the process. This is also known as a DOS (Denial of Service) attack.
 
