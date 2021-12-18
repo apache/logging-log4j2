@@ -69,7 +69,7 @@ Changes in this version include:
 
 ---
 
-Apache Log4j 2.17.0 requires a minimum of Java 8 to build and run. Log4j 2.12.1 is the last release to support
+Apache Log4j 2.17.0 requires a minimum of Java 8 to build and run. Log4j 2.12.2 is the last release to support
 Java 7. Java 7 is not longer supported by the Log4j team.
 
 For complete information on Apache Log4j 2, including instructions on how to submit bug
