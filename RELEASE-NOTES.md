@@ -40,7 +40,7 @@ https://jira.qos.ch/browse/SLF4J-511.
 
 Some of the changes in Log4j 2.17.0 include:
 
-* Disable recursive evaluation of Lookups during log event processing. Recursive evaluation is still allwoed while
+* Disable recursive evaluation of Lookups during log event processing. Recursive evaluation is still allowed while
 generating the configuration.
 * The JndiLookup, JndiContextSelector, and JMSAppender now require individual system properties to be enabled.
 * Removed support for the LDAP and LDAPS protocols via JNDI.
@@ -57,8 +57,6 @@ Changes in this version include:
     Fix string substitution recursion.
 * [LOG4J2-3242](https://issues.apache.org/jira/browse/LOG4J2-3242):
     Limit JNDI to the java protocol only. JNDI will remain disabled by default. Rename JNDI enablement property from 'log4j2.enableJndi' to 'log4j2.enableJndiLookup', 'log4j2.enableJndiJms', and 'log4j2.enableJndiContextSelector'.
-* [LOG4J2-3242](https://issues.apache.org/jira/browse/LOG4J2-3242):
-    Limit JNDI to the java protocol only. JNDI will remain disabled by default. The enablement property has been renamed to 'log4j2.enableJndiJava'
 * [LOG4J2-3241](https://issues.apache.org/jira/browse/LOG4J2-3241):
     Do not declare log4j-api-java9 and log4j-core-java9 as dependencies as it causes problems with the Maven enforcer plugin.
 * [LOG4J2-3247](https://issues.apache.org/jira/browse/LOG4J2-3247):
