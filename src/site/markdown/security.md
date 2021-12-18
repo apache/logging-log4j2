@@ -93,7 +93,7 @@ Other projects like Log4net and Log4cxx are not impacted by this.
 The Log4j team will continue to actively update this page as more information becomes known.
 
 ### Credit
-This issue was discovered by Hideki Okamoto of Akamai Technologies and another anonymous vulnerability researcher.
+Independently discovered by Hideki Okamoto of Akamai Technologies, Guy Lederfein of Trend Micro Research working with Trend Micro’s Zero Day Initiative, and another anonymous vulnerability researcher.
 
 ### References
 - [CVE-2021-45105](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45105)
@@ -191,7 +191,7 @@ The Log4j team will continue to actively update this page as more information be
 ### Credit
 This issue was discovered by Kai Mindermann of iC Consult and separately by 4ra1n.
 
-Additional vulnerability details discovered independently by Ash Fox of Google, Anthony Weems of Praetorian, and RyotaK
+Additional vulnerability details discovered independently by Ash Fox of Google, Alvaro Muñoz and Tony Torralba from GitHub, Anthony Weems of Praetorian, and RyotaK (@ryotkak).
 
 ### References
 - [CVE-2021-45046](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45046)
