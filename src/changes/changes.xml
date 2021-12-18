@@ -33,7 +33,7 @@
       <action issue="LOG4J2-3230" dev="ckozak" type="fix">
         Fix string substitution recursion.
       </action>
-      <action issue="LOG4J2-3242" dev="rgoers, ggregory" type="fix">
+      <action issue="LOG4J2-3242" dev="rgoers" type="fix">
         Limit JNDI to the java protocol only. JNDI will remain disabled by default. Rename JNDI enablement property from
         'log4j2.enableJndi' to 'log4j2.enableJndiLookup', 'log4j2.enableJndiJms', and 'log4j2.enableJndiContextSelector'.
       </action>
