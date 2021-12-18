@@ -3825,7 +3825,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
       <DefaultRolloverStrategy>
         <Delete basePath="${baseDir}" maxDepth="2">
           <IfFileName glob="*/app-*.log.gz" />
-          <IfLastModified age="60d" />
+          <IfLastModified age="P60D" />
         </Delete>
       </DefaultRolloverStrategy>
     </RollingFile>
@@ -3867,7 +3867,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         -->
         <Delete basePath="${baseDir}" maxDepth="2">
           <IfFileName glob="*/app-*.log.gz">
-            <IfLastModified age="30d">
+            <IfLastModified age="P30D">
               <IfAny>
                 <IfAccumulatedFileSize exceeds="100 GB" />
                 <IfAccumulatedFileCount exceeds="10" />
