@@ -46,6 +46,7 @@ From version 2.17.0 (for Java 8), only lookup strings in configuration are expan
 in any other usage, only the top-level lookup is resolved, and any nested lookups are not resolved.
 
 In prior releases this issue can be mitigated by ensuring your logging configuration does the following:
+
 * In PatternLayout in the logging configuration, replace Context Lookups like `${dollar}{ctx:loginId}`or `${dollar}${dollar}{ctx:loginId}` with Thread Context Map patterns (%X, %mdc, or %MDC).
 * Otherwise, in the configuration, remove references to Context Lookups like `${dollar}{ctx:loginId}` or `${dollar}${dollar}{ctx:loginId}` where they originate from sources external to the application such as HTTP headers or user input.
 
