@@ -10,9 +10,9 @@ and provides many of the improvements available in Logback while fixing some inh
 
 ## Pull Requests on Github
 
-By sending a pull request you grant the Apache Software Foundation sufficient rights to use and release the submitted 
-work under the Apache license. You grant the same rights (copyright license, patent license, etc.) to the 
-Apache Software Foundation as if you have signed a Contributor License Agreement. For contributions that are 
+By sending a pull request you grant the Apache Software Foundation sufficient rights to use and release the submitted
+work under the Apache license. You grant the same rights (copyright license, patent license, etc.) to the
+Apache Software Foundation as if you have signed a Contributor License Agreement. For contributions that are
 judged to be non-trivial, you will be asked to actually signing a Contributor License Agreement.
 
 ## Usage
@@ -69,8 +69,10 @@ The Log4j 2 User's Guide is available [here](https://logging.apache.org/log4j/2.
 
 ## Requirements
 
-Log4j 2.4 and greater requires Java 7, versions 2.0-alpha1 to 2.3 required Java 6.
-Some features require optional dependencies; the documentation for these features specifies the dependencies.
+* Java 8 users should use 2.17.0 or greater.
+* Java 7 users should use 2.12.2.
+* Java 6 users should use 2.3.
+* Some features require optional dependencies; the documentation for these features specifies the dependencies.
 
 ## License
 
@@ -80,15 +82,15 @@ Apache Log4j 2 is distributed under the [Apache License, version 2.0](http://www
 
 [How to download Log4j](http://logging.apache.org/log4j/2.x/download.html),
 and [how to use it from Maven, Ivy and Gradle](http://logging.apache.org/log4j/2.x/maven-artifacts.html).
-You can access the latest development snapshot by using the Maven repository `https://repository.apache.org/snapshots`, 
+You can access the latest development snapshot by using the Maven repository `https://repository.apache.org/snapshots`,
 see [Snapshot builds](https://logging.apache.org/log4j/2.x/maven-artifacts.html#Snapshot_builds).
 
 ## Issue Tracking
 
-Issues, bugs, and feature requests should be submitted to the 
+Issues, bugs, and feature requests should be submitted to the
 [JIRA issue tracking system for this project](https://issues.apache.org/jira/browse/LOG4J2).
 
-Pull request on GitHub are welcome, but please open a ticket in the JIRA issue tracker first, and mention the 
+Pull request on GitHub are welcome, but please open a ticket in the JIRA issue tracker first, and mention the
 JIRA issue in the Pull Request.
 
 ## Building From Source
