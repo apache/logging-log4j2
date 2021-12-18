@@ -146,7 +146,9 @@ public final class KafkaAppender extends AbstractAppender {
 
     @Override
     public void append(final LogEvent event) {
-        if (event.getLoggerName() != null && event.getLoggerName().startsWith("org.apache.kafka")) {
+        if (event.getLoggerName() != null &&
+            (event.getLoggerName().startsWith("org.apache.kafka.common") ||
+                event.getLoggerName().startsWith("org.apache.kafka.clients"))) {
             LOGGER.warn("Recursive logging from [{}] for appender [{}].", event.getLoggerName(), getName());
         } else {
             try {
