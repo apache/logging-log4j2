@@ -53,22 +53,19 @@ Changes in this version include:
 
 
 ### Fixed Bugs
-                * [LOG4J2-3230](https://issues.apache.org/jira/browse/LOG4J2-3230):
+* [LOG4J2-3230](https://issues.apache.org/jira/browse/LOG4J2-3230):
     Fix string substitution recursion.
-                * [LOG4J2-3242](https://issues.apache.org/jira/browse/LOG4J2-3242):
-    Limit JNDI to the java protocol only. JNDI will remain disabled by default. Rename JNDI enablement property from
-        'log4j2.enableJndi' to 'log4j2.enableJndiLookup', 'log4j2.enableJndiJms', and 'log4j2.enableJndiContextSelector'.
-                * [LOG4J2-3242](https://issues.apache.org/jira/browse/LOG4J2-3242):
-    Limit JNDI to the java protocol only. JNDI will remain disabled by default. The enablement
-        property has been renamed to 'log4j2.enableJndiJava'
-                * [LOG4J2-3241](https://issues.apache.org/jira/browse/LOG4J2-3241):
-    Do not declare log4j-api-java9 and log4j-core-java9 as dependencies as it causes problems with the
-        Maven enforcer plugin.
-                * [LOG4J2-3247](https://issues.apache.org/jira/browse/LOG4J2-3247):
+* [LOG4J2-3242](https://issues.apache.org/jira/browse/LOG4J2-3242):
+    Limit JNDI to the java protocol only. JNDI will remain disabled by default. Rename JNDI enablement property from 'log4j2.enableJndi' to 'log4j2.enableJndiLookup', 'log4j2.enableJndiJms', and 'log4j2.enableJndiContextSelector'.
+* [LOG4J2-3242](https://issues.apache.org/jira/browse/LOG4J2-3242):
+    Limit JNDI to the java protocol only. JNDI will remain disabled by default. The enablement property has been renamed to 'log4j2.enableJndiJava'
+* [LOG4J2-3241](https://issues.apache.org/jira/browse/LOG4J2-3241):
+    Do not declare log4j-api-java9 and log4j-core-java9 as dependencies as it causes problems with the Maven enforcer plugin.
+* [LOG4J2-3247](https://issues.apache.org/jira/browse/LOG4J2-3247):
     PropertiesConfiguration.parseAppenderFilters NPE when parsing properties file filters.
-                * [LOG4J2-3249](https://issues.apache.org/jira/browse/LOG4J2-3249):
+* [LOG4J2-3249](https://issues.apache.org/jira/browse/LOG4J2-3249):
     Log4j 1.2 bridge for Syslog Appender defaults to port 512 instead of 514.
-                * [LOG4J2-3237](https://issues.apache.org/jira/browse/LOG4J2-3237):
+* [LOG4J2-3237](https://issues.apache.org/jira/browse/LOG4J2-3237):
     Log4j 1.2 bridge API hard codes the Syslog protocol to TCP.
 
 
