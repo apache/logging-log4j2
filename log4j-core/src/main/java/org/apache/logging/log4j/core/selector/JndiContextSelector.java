@@ -41,6 +41,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * context to look up the value of the entry. The logging context of the web-application will depend on the value the
  * env-entry. The JNDI context which is looked up by this class is <code>java:comp/env/log4j/context-name</code>.
  *
+ * <p>For security reasons, JNDI must be enabled by setting system property <code>log4j2.enableJndiContextSelector=true</code>.</p>
  * <p>
  * Here is an example of an <code>env-entry</code>:
  * </p>
