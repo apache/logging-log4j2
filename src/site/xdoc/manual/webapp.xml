@@ -245,6 +245,7 @@
           Note that in this case you must also set the "Log4jContextSelector" system property to
           "<kbd>org.apache.logging.log4j.core.selector.JndiContextSelector</kbd>".
         </p>
+        <p>For security reasons, from Log4j 2.17.0, JNDI must be enabled by setting system property <code>log4j2.enableJndiContextSelector=true</code>.</p>
       </subsection>
       <subsection name="Using Web Application Information During the Configuration">
         <a name="WebLookup" />
