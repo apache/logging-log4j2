@@ -1216,7 +1216,7 @@ rootLogger.appenderRef.stdout.ref = STDOUT
               </tr>
               <tr>
                 <td>jndi</td>
-                <td>A value set in the default JNDI Context.</td>
+                <td>A value set in the default JNDI Context. (Requires system property <code>log4j2.enableJndiLookup</code> to be set to <code>true</code>.)</td>
               </tr>
               <tr>
                 <td>jvmrunargs</td>
