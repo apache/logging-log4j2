@@ -1611,6 +1611,7 @@ public class ConnectionFactory {
               <td><em>Required</em></td>
               <td>The URL of the provider to use as defined by
                 <a class="javadoc" href="http://download.oracle.com/javase/7/docs/api/javax/naming/Context.html#PROVIDER_URL">PROVIDER_URL</a>.
+                From Log4j 2.17, only the <code>java:</code> protocol is supported.
               </td>
             </tr>
             <tr>
