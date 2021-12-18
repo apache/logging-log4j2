@@ -237,11 +237,13 @@ dependencies.
 
 $h2 News
 
-Log4j 2.16.0 has been released solely to disable access to JNDI by default and completely remove the ability to use Lookups in messages.
-The CVE noted below was fixed in the 2.15.0 release.
-2.16.0 is a recommended upgrade to ensure that JNDI will not be abused and that message Lookups are no longer possible.
+Log4j 2.17.0 has been released solely to:
 
-$h3 Other News
+* Address CVE-2021-45105.
+* Require components that use JNDI to be enabled individually via system properties.
+* Remove LDAP and LDAPS as supported protocols from JNDI.
+
+2.17.0 is a recommended upgrade to ensure that recursive lookups do not cause services to fail.
 
 Log4j $Log4jReleaseVersion is now available for production. The API for Log4j 2 is not compatible with Log4j 1.x, however an adapter is
 available to allow applications to continue to use the Log4j 1.x API. Adapters are also available for Apache Commons
@@ -250,10 +252,5 @@ Logging, SLF4J, and java.util.logging.
 Log4j $Log4jReleaseVersion is the latest release of Log4j. As of Log4j 2.13.0 Log4j 2 requires Java 8 or greater at
 runtime. This release contains new features and fixes which can be found
 in the latest [changes report](changes-report.html#a$Log4jReleaseVersion).
-
-The changes in Log4j 2.16.0 are:
-
-* Disabling JNDI functionality by default.
-* Removing Message Lookups.
 
 Log4j $Log4jReleaseVersion maintains binary compatibility with previous releases.
