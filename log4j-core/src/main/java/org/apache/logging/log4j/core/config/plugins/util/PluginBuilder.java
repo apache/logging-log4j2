@@ -40,6 +40,7 @@ import org.apache.logging.log4j.core.config.plugins.validation.ConstraintValidat
 import org.apache.logging.log4j.core.config.plugins.validation.ConstraintValidators;
 import org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitor;
 import org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitors;
+import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
 import org.apache.logging.log4j.core.util.Builder;
 import org.apache.logging.log4j.core.util.ReflectionUtil;
 import org.apache.logging.log4j.core.util.TypeUtil;
@@ -124,20 +125,20 @@ public class PluginBuilder implements Builder<Object> {
         } catch (final ConfigurationException e) { // LOG4J2-1908
             LOGGER.error("Could not create plugin of type {} for element {}", this.clazz, node.getName(), e);
             return null; // no point in trying the factory method
-        } catch (final Exception e) {
+        } catch (final Throwable t) {
             LOGGER.error("Could not create plugin of type {} for element {}: {}",
                     this.clazz, node.getName(),
-                    (e instanceof InvocationTargetException ? ((InvocationTargetException) e).getCause() : e).toString(), e);
+                    (t instanceof InvocationTargetException ? ((InvocationTargetException) t).getCause() : t).toString(), t);
         }
         // or fall back to factory method if no builder class is available
         try {
             final Method factory = findFactoryMethod(this.clazz);
             final Object[] params = generateParameters(factory);
             return factory.invoke(null, params);
-        } catch (final Exception e) {
+        } catch (final Throwable t) {
             LOGGER.error("Unable to invoke factory method in {} for element {}: {}",
                     this.clazz, this.node.getName(),
-                    (e instanceof InvocationTargetException ? ((InvocationTargetException) e).getCause() : e).toString(), e);
+                    (t instanceof InvocationTargetException ? ((InvocationTargetException) t).getCause() : t).toString(), t);
             return null;
         }
     }
@@ -180,7 +181,9 @@ public class PluginBuilder implements Builder<Object> {
                     final Object value = visitor.setAliases(aliases)
                         .setAnnotation(a)
                         .setConversionType(field.getType())
-                        .setStrSubstitutor(configuration.getStrSubstitutor())
+                        .setStrSubstitutor(event == null
+                                ? new ConfigurationStrSubstitutor(configuration.getStrSubstitutor())
+                                : configuration.getStrSubstitutor())
                         .setMember(field)
                         .visit(configuration, node, event, log);
                     // don't overwrite default values if the visitor gives us no value to inject
@@ -253,7 +256,9 @@ public class PluginBuilder implements Builder<Object> {
                     final Object value = visitor.setAliases(aliases)
                         .setAnnotation(a)
                         .setConversionType(types[i])
-                        .setStrSubstitutor(configuration.getStrSubstitutor())
+                        .setStrSubstitutor(event == null
+                                ? new ConfigurationStrSubstitutor(configuration.getStrSubstitutor())
+                                : configuration.getStrSubstitutor())
                         .setMember(factory)
                         .visit(configuration, node, event, log);
                     // don't overwrite existing values if the visitor gives us no value to inject

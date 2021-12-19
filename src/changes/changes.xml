@@ -30,6 +30,9 @@
          - "remove" - Removed
     -->
     <release version="2.12.3" date="2021-12-dd" description="GA Release 2.12.3">
+      <action issue="LOG4J2-3230" dev="ckozak" type="fix">
+        Fix string substitution recursion.
+      </action>
       <action issue="LOG4J2-2819" dev="mattsicker" type="update">
         Add support for specifying an SSL configuration for SmtpAppender.
       </action>

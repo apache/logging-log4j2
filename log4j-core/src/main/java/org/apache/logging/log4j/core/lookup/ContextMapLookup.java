@@ -55,6 +55,6 @@ public class ContextMapLookup implements StrLookup {
      */
     @Override
     public String lookup(final LogEvent event, final String key) {
-        return event.getContextData().getValue(key);
+        return event == null ? null : event.getContextData().<String>getValue(key);
     }
 }

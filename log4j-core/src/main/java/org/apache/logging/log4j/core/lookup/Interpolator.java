@@ -47,7 +47,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     /** Constant for the prefix separator. */
-    private static final char PREFIX_SEPARATOR = ':';
+    static final char PREFIX_SEPARATOR = ':';
 
     private final Map<String, StrLookup> strLookupMap = new HashMap<>();
 

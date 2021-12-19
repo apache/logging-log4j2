@@ -17,10 +17,6 @@
 
 -->
 <Configuration status="OFF" name="RoutingTest">
-  <Properties>
-    <Property name="filename-idle">target/routing-purge-idle/routingtest-$${sd:id}.log</Property>
-    <Property name="filename-manual">target/routing-purge-manual/routingtest-$${sd:id}.log</Property>
-  </Properties>
   <ThresholdFilter level="debug"/>
 
   <Appenders>
@@ -34,7 +30,7 @@
     <Routing name="RoutingPurgeIdle">
       <Routes pattern="$${sd:id}">
         <Route>
-          <File name="Routing-${sd:id}" fileName="${filename-idle}">
+          <File name="Routing-${sd:id}" fileName="target/routing-purge-idle/routingtest-${sd:id}.log">
             <PatternLayout>
               <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
             </PatternLayout>
@@ -58,7 +54,7 @@
     <Routing name="RoutingPurgeManual">
       <Routes pattern="$${sd:id}">
         <Route>
-          <File name="Routing-${sd:id}" fileName="${filename-manual}">
+          <File name="Routing-${sd:id}" fileName="target/routing-purge-manual/routingtest-${sd:id}.log">
             <PatternLayout>
               <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
             </PatternLayout>

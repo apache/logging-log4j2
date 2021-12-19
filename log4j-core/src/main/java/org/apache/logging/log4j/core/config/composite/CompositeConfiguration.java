@@ -79,7 +79,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
                 .withStatus(getDefaultStatus());
         for (final Map.Entry<String, String> entry : rootNode.getAttributes().entrySet()) {
             final String key = entry.getKey();
-            final String value = getStrSubstitutor().replace(entry.getValue());
+            final String value = getConfigurationStrSubstitutor().replace(entry.getValue());
             if ("status".equalsIgnoreCase(key)) {
                 statusConfig.withStatus(value.toUpperCase());
             } else if ("dest".equalsIgnoreCase(key)) {

@@ -39,6 +39,7 @@ import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
+import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
@@ -89,8 +90,8 @@ public class Log4j1ConfigurationParser {
             throws IOException {
         try {
             properties.load(input);
-            strSubstitutorProperties = new StrSubstitutor(properties);
-            strSubstitutorSystem = new StrSubstitutor(System.getProperties());
+            strSubstitutorProperties = new ConfigurationStrSubstitutor(properties);
+            strSubstitutorSystem = new ConfigurationStrSubstitutor(System.getProperties());
             final String rootCategoryValue = getLog4jValue(ROOTCATEGORY);
             final String rootLoggerValue = getLog4jValue(ROOTLOGGER);
             if (rootCategoryValue == null && rootLoggerValue == null) {
