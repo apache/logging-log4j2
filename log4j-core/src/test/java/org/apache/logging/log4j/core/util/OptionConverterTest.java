@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 public class OptionConverterTest {
 
     @Test
-    public void testReplace() {
+    public void testSubstVars() {
         Properties props = new Properties();
         props.setProperty("key", "${key}");
         assertEquals("Value of key is ${key}.", OptionConverter.substVars("Value of key is ${key}.", props));
