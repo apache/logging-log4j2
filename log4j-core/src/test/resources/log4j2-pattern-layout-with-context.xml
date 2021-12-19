@@ -18,7 +18,7 @@
 -->
 <Configuration status="DEBUG" packages="">
 	<Properties>
-		<Property name="pattern">%p %c $${ctx:user} $${event:Message}</Property>
+		<Property name="pattern">%p %c $${ctx:user} $${marker:any}</Property>
 	</Properties>
 	<Appenders>
 		<List name="list">

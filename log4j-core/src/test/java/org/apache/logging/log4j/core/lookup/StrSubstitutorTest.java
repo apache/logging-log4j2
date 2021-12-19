@@ -178,16 +178,6 @@ public class StrSubstitutorTest {
     }
 
     @Test
-    public void testLookupsNestedWithoutRecursiveEvaluation() {
-        final Map<String, String> map = new HashMap<String, String>();
-        map.put("first", "${java:version}");
-        final StrLookup lookup = new Interpolator(new MapLookup(map));
-        final StrSubstitutor subst = new StrSubstitutor(lookup);
-        subst.setRecursiveEvaluationAllowed(false);
-        assertEquals("${java:version}", subst.replace("${${lower:C}t${lower:X}:first}"));
-    }
-
-    @Test
     public void testLookupThrows() {
         final StrSubstitutor subst = new StrSubstitutor(new Interpolator(new StrLookup() {
 

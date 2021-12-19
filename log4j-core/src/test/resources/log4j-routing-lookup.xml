@@ -19,7 +19,7 @@
 <Configuration status="OFF" name="RoutingAppenderKeyLookupEvaluationTest">
   <Appenders>
     <List name="List">
-      <PatternLayout pattern="%p $${ctx:user} $${event:Message}"/>
+      <PatternLayout pattern="%p $${ctx:user} %m"/>
     </List>
     <Routing name="Routing">
       <Routes pattern="$${ctx:user:-none}">

@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core;
 
+import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
@@ -47,7 +48,7 @@ public class PatternResolverDoesNotEvaluateThreadContextTest {
     @Test
     public void testNoUserSet() {
         Logger logger = context.getLogger(getClass());
-        logger.info("This is a test");
+        logger.info(MarkerManager.getMarker("This is a test"), "msg");
         List<String> messages = listAppender.getMessages();
         assertTrue("No messages returned", messages != null && messages.size() > 0);
         String message = messages.get(0);
@@ -58,7 +59,7 @@ public class PatternResolverDoesNotEvaluateThreadContextTest {
     @Test
     public void testMessageIsNotLookedUp() {
         Logger logger = context.getLogger(getClass());
-        logger.info("This is a ${upper:test}");
+        logger.info(MarkerManager.getMarker("This is a ${upper:test}"), "msg");
         List<String> messages = listAppender.getMessages();
         assertTrue("No messages returned", messages != null && messages.size() > 0);
         String message = messages.get(0);
@@ -71,7 +72,7 @@ public class PatternResolverDoesNotEvaluateThreadContextTest {
         Logger logger = context.getLogger(getClass());
         ThreadContext.put(PARAMETER, "123");
         try {
-            logger.info("This is a test");
+            logger.info(MarkerManager.getMarker("This is a test"), "msg");
         } finally {
             ThreadContext.remove(PARAMETER);
         }
@@ -87,7 +88,7 @@ public class PatternResolverDoesNotEvaluateThreadContextTest {
         Logger logger = context.getLogger(getClass());
         ThreadContext.put(PARAMETER, "${java:version}");
         try {
-            logger.info("This is a test");
+            logger.info(MarkerManager.getMarker("This is a test"), "msg");
         } finally {
             ThreadContext.remove(PARAMETER);
         }
@@ -103,7 +104,7 @@ public class PatternResolverDoesNotEvaluateThreadContextTest {
         Logger logger = context.getLogger(getClass());
         ThreadContext.put(PARAMETER, "user${java:version}name");
         try {
-            logger.info("This is a test");
+            logger.info(MarkerManager.getMarker("This is a test"), "msg");
         } finally {
             ThreadContext.remove(PARAMETER);
         }
