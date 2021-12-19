@@ -162,10 +162,9 @@ public final class OptionConverter {
         if (hashIndex == -1) {
             if("NULL".equalsIgnoreCase(value)) {
                 return null;
-            } else {
-                // no class name specified : use standard Level class
-                return Level.toLevel(value, defaultValue);
             }
+            // no class name specified : use standard Level class
+            return Level.toLevel(value, defaultValue);
         }
 
         Level result = defaultValue;
