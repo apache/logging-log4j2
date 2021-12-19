@@ -39,12 +39,12 @@ import org.apache.logging.log4j.core.config.plugins.validation.ConstraintValidat
 import org.apache.logging.log4j.core.config.plugins.validation.ConstraintValidators;
 import org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitor;
 import org.apache.logging.log4j.core.config.plugins.visitors.PluginVisitors;
+import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
 import org.apache.logging.log4j.core.util.Assert;
 import org.apache.logging.log4j.core.util.Builder;
 import org.apache.logging.log4j.core.util.ReflectionUtil;
 import org.apache.logging.log4j.core.util.TypeUtil;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Chars;
 import org.apache.logging.log4j.util.StringBuilders;
 
 /**
@@ -186,7 +186,9 @@ public class PluginBuilder implements Builder<Object> {
                     final Object value = visitor.setAliases(aliases)
                         .setAnnotation(a)
                         .setConversionType(field.getType())
-                        .setStrSubstitutor(configuration.getStrSubstitutor())
+                        .setStrSubstitutor(event == null
+                                ? new ConfigurationStrSubstitutor(configuration.getStrSubstitutor())
+                                : configuration.getStrSubstitutor())
                         .setMember(field)
                         .visit(configuration, node, event, log);
                     // don't overwrite default values if the visitor gives us no value to inject
@@ -247,7 +249,9 @@ public class PluginBuilder implements Builder<Object> {
                     final Object value = visitor.setAliases(aliases)
                         .setAnnotation(a)
                         .setConversionType(types[i])
-                        .setStrSubstitutor(configuration.getStrSubstitutor())
+                        .setStrSubstitutor(event == null
+                                ? new ConfigurationStrSubstitutor(configuration.getStrSubstitutor())
+                                : configuration.getStrSubstitutor())
                         .setMember(factory)
                         .visit(configuration, node, event, log);
                     // don't overwrite existing values if the visitor gives us no value to inject

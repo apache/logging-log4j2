@@ -37,6 +37,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
+import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
 import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.FileUtils;
@@ -117,7 +118,7 @@ public abstract class ConfigurationFactory {
 
     private static ConfigurationFactory configFactory = new Factory();
 
-    protected final StrSubstitutor substitutor = new StrSubstitutor(new Interpolator());
+    protected final StrSubstitutor substitutor = new ConfigurationStrSubstitutor(new Interpolator());
 
     private static final Lock LOCK = new ReentrantLock();
 

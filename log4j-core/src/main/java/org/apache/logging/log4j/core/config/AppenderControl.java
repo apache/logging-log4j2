@@ -102,10 +102,10 @@ public class AppenderControl extends AbstractFilterable {
                 if (!appender.ignoreExceptions()) {
                     throw ex;
                 }
-            } catch (final Exception ex) {
-                appender.getHandler().error("An exception occurred processing Appender " + appender.getName(), ex);
+            } catch (final Throwable t) {
+                appender.getHandler().error("An exception occurred processing Appender " + appender.getName(), t);
                 if (!appender.ignoreExceptions()) {
-                    throw new AppenderLoggingException(ex);
+                    throw new AppenderLoggingException(t);
                 }
             }
         } finally {
