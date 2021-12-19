@@ -32,6 +32,5 @@ public class OptionConverterTest {
         Properties props = new Properties();
         props.setProperty("key", "${key}");
         assertEquals("Value of key is ${key}.", OptionConverter.substVars("Value of key is ${key}.", props));
-
     }
 }
