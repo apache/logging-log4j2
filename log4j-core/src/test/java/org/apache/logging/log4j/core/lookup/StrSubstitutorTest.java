@@ -26,6 +26,7 @@ import java.util.Properties;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.junit.jupiter.api.AfterAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -218,5 +219,36 @@ public class StrSubstitutorTest {
         assertNull(StrSubstitutor.replace((String) null, (Properties) null));
         assertEquals("A", StrSubstitutor.replace("${a}", properties));
         assertEquals("${a}", StrSubstitutor.replace("${a}", (Properties) null));
+    }
+
+    @Test
+    public void testRecursionLimit() {
+        final Map<String, String> map = new HashMap<>();
+        for (int i = 0; i < 15; i++) {
+            int next = i + 1;
+            map.put("key" + i, "${key" + next +"}");
+        }
+        map.put("key15", "finalVal");
+        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrSubstitutor subst = new StrSubstitutor(lookup);
+        subst.setRecursiveEvaluationAllowed(true);
+        assertEquals("finalVal", subst.replace("${key10}"));
+        assertEquals("${key0}", subst.replace("${key0}"));
+    }
+    
+    @Test
+    public void testRecursionLimitWhenResolvingVariableNames() {
+        final Map<String, String> map = new HashMap<>();
+        for (int i = 0; i < 15; i++) {
+            int next = i + 1;
+            map.put("key" + i, "${key" + next +"}");
+        }
+        map.put("key15", "16");
+        map.put("key16", "finalVal");
+        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrSubstitutor subst = new StrSubstitutor(lookup);
+        subst.setRecursiveEvaluationAllowed(true);
+        assertEquals("finalVal", subst.replace("${key${key10}}"));
+        assertEquals("${key${key0}}", subst.replace("${key${key0}}"));
     }
 }

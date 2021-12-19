@@ -169,6 +169,11 @@ public class StrSubstitutor implements ConfigurationAware {
     private static final int BUF_SIZE = 256;
 
     /**
+     * The maximum number of recursions performed during substitution.
+     */
+    private static final int MAX_SUBSTITUTION_RECURSIONS = 10;
+
+    /**
      * Stores the escape character.
      */
     private char escapeChar;
@@ -974,7 +979,7 @@ public class StrSubstitutor implements ConfigurationAware {
      * @return true if altered
      */
     protected boolean substitute(final LogEvent event, final StringBuilder buf, final int offset, final int length) {
-        return substitute(event, buf, offset, length, null) > 0;
+        return substitute(event, buf, offset, length, 0, null) > 0;
     }
 
     /**
@@ -986,12 +991,15 @@ public class StrSubstitutor implements ConfigurationAware {
      * @param buf  the string builder to substitute into, not null
      * @param offset  the start offset within the builder, must be valid
      * @param length  the length within the builder to be processed, must be valid
+     * @param recursionCount the current recursion count, strings exceeding MAX_SUBSTITUTION_RECURSIONS recursions
+     *  will cause an exception to be thrown.
      * @param priorVariables  the stack keeping track of the replaced variables, may be null
      * @return the length change that occurs, unless priorVariables is null when the int
      *  represents a boolean flag as to whether any change occurred.
      */
     private int substitute(final LogEvent event, final StringBuilder buf, final int offset, final int length,
-                           List<String> priorVariables) {
+                           final int recursionCount, List<String> priorVariables) {
+        checkRecursionLimitNotExceeded(recursionCount, buf);
         final StrMatcher prefixMatcher = getVariablePrefixMatcher();
         final StrMatcher suffixMatcher = getVariableSuffixMatcher();
         final char escape = getEscapeChar();
@@ -1044,7 +1052,7 @@ public class StrSubstitutor implements ConfigurationAware {
                                     priorVariables = new ArrayList<>();
                                 }
                                 final StringBuilder bufName = new StringBuilder(varNameExpr);
-                                substitute(event, bufName, 0, bufName.length(), priorVariables);
+                                substitute(event, bufName, 0, bufName.length(), recursionCount + 1, priorVariables);
                                 varNameExpr = bufName.toString();
                             }
                             pos += endMatchLen;
@@ -1108,7 +1116,7 @@ public class StrSubstitutor implements ConfigurationAware {
                                 buf.replace(startPos, endPos, varValue);
                                 altered = true;
                                 int change = isRecursiveEvaluationAllowed()
-                                        ? substitute(event, buf, startPos, varLen, priorVariables)
+                                        ? substitute(event, buf, startPos, varLen, recursionCount + 1, priorVariables)
                                         : 0;
                                 change = change + (varLen - (endPos - startPos));
                                 pos += change;
@@ -1133,6 +1141,13 @@ public class StrSubstitutor implements ConfigurationAware {
             return altered ? 1 : 0;
         }
         return lengthChange;
+    }
+
+    private void checkRecursionLimitNotExceeded(final int currentRecursionCount, final StringBuilder buf) {
+        if (currentRecursionCount >= MAX_SUBSTITUTION_RECURSIONS) {
+            throw new IllegalArgumentException("Property interpolation exceeded limit of " + MAX_SUBSTITUTION_RECURSIONS
+                    + " recursions while processing '" + buf.toString() + "'");
+        }
     }
 
     /**
