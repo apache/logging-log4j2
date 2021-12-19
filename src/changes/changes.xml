@@ -30,7 +30,7 @@
          - "remove" - Removed
     -->
     <release version="2.17.1" date="2021-MM-dd" description="GA Release 2.17.1">
-      <action issue="LOG4J2-3230" dev="ggregory" type="fix">
+      <action dev="ggregory" type="fix">
         Fix NPE when input is null in StrSubstitutor.replace(String, Properties).
       </action>
     </release>
