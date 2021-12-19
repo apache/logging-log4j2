@@ -16,16 +16,18 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class StrSubstitutorTest {
 
@@ -206,5 +208,15 @@ public class StrSubstitutorTest {
         final StrSubstitutor subst = new StrSubstitutor(lookup);
         subst.setRecursiveEvaluationAllowed(true);
         assertEquals("${ctx:first}", subst.replace("${ctx:first}"));
+    }
+
+    @Test
+    public void testReplaceProperties() {
+        Properties properties = new Properties();
+        properties.put("a", "A");
+        assertNull(StrSubstitutor.replace((String) null, properties));
+        assertNull(StrSubstitutor.replace((String) null, (Properties) null));
+        assertEquals("A", StrSubstitutor.replace("${a}", properties));
+        assertEquals("${a}", StrSubstitutor.replace("${a}", (Properties) null));
     }
 }

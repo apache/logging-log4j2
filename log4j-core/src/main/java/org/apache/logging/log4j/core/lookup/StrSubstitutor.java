@@ -437,7 +437,7 @@ public class StrSubstitutor implements ConfigurationAware {
      */
     public static String replace(final Object source, final Properties valueProperties) {
         if (valueProperties == null) {
-            return source.toString();
+            return Objects.toString(source, null);
         }
         final Map<String, String> valueMap = new HashMap<>();
         final Enumeration<?> propNames = valueProperties.propertyNames();
