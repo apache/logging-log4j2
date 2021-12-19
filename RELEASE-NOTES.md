@@ -1,3 +1,5 @@
+Look also at the [Release History](https://logging.apache.org/log4j/2.x/changes-report.html).
+
 # Apache Log4j 2.11.0 Release Notes
 
 ## List of Binary Compatibility Breaking Changes in log4j-core
