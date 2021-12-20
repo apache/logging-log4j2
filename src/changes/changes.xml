@@ -36,6 +36,11 @@
       <action issue="LOG4J2-2819" dev="mattsicker" type="update">
         Add support for specifying an SSL configuration for SmtpAppender.
       </action>
+      <action issue="LOG4J2-3242" dev="ggregory" type="update">
+        Rename JNDI enablement property from 'log4j2.enableJndi'
+        to 'log4j2.enableJndiLookup', 'log4j2.enableJndiJms', and
+        'log4j2.enableJndiContextSelector'.
+      </action>
     </release>
     <release version="2.12.2" date="2021-12-14" description="GA Release 2.12.2">
       <action issue="LOG4J-3220" dev="rgoers" type="fix">
