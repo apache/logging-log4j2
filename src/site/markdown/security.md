@@ -47,7 +47,7 @@ privately to the [Log4j Security Team](mailto:private@logging.apache.org). Thank
 
 
 <a name="CVE-2021-45105"/><a name="cve-2021-45046"/>
-## <a name="log4j-2.17.0"/> Fixed in Log4j 2.17.0 (Java 8)
+## <a name="log4j-2.17.0"/> Fixed in Log4j 2.17.0 (Java 8) and 2.12.3 (Java 7)
 
 [CVE-2021-45105](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45105):  
 Apache Log4j2 does not always protect from infinite recursion in lookup evaluation
@@ -56,10 +56,10 @@ Apache Log4j2 does not always protect from infinite recursion in lookup evaluati
 | ---------------   | -------- |
 | Severity          | High |
 | Base CVSS Score   | 7.5 (AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H) |
-| Versions Affected | All versions from 2.0-beta9 to 2.16.0 |
+| Versions Affected | All versions from 2.0-beta9 to 2.16.0, excluding 2.12.3 |
 
 ### Description
-Apache Log4j2 versions 2.0-alpha1 through 2.16.0 did not protect from uncontrolled recursion from self-referential lookups.
+Apache Log4j2 versions 2.0-alpha1 through 2.16.0, excluding 2.12.3, did not protect from uncontrolled recursion from self-referential lookups.
 When the logging configuration uses a non-default Pattern Layout with a Context Lookup (for example, ``$${ctx:loginId}``),
 attackers with control over Thread Context Map (MDC) input data can craft malicious input data that contains a recursive lookup,
 resulting in a StackOverflowError that will terminate the process. This is also known as a DOS (Denial of Service) attack.
@@ -76,6 +76,7 @@ Log4j 1.x is not impacted by this vulnerability.
 Implement one of the following mitigation techniques:
 
 * Java 8 (or later) users should upgrade to release 2.17.0.
+* Java 7 users should upgrade to release 2.12.3.
 
 Alternatively, this can be mitigated in configuration:
 
