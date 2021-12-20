@@ -1527,6 +1527,10 @@ public class ConnectionFactory {
         <a name="JMSTopicAppender"/>
         <subsection name="JMS Appender">
           <p>The JMS Appender sends the formatted log event to a JMS Destination.</p>
+          <p>The JMS Appender requires JNDI support so as of release 2.3.1 this appender will not function unless
+            <code>log4j2.enableJndiJms=true</code> is configured as a system property or environment
+            variable. See the <a href="./configuration.html#enableJndiJms">enableJndiJms</a> system property.</p>
+          <p>
           <p>
             Note that in Log4j 2.0, this appender was split into a JMSQueueAppender and a JMSTopicAppender. Starting
             in Log4j 2.1, these appenders were combined into the JMS Appender which makes no distinction between queues

@@ -137,6 +137,34 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-doap-plugin</artifactId>
+        <version>1.2</version>
+        <configuration>
+          <doapOptions>
+            <programmingLanguage>Java</programmingLanguage>
+            <category>library</category>
+          </doapOptions>
+          <asfExtOptions>
+            <charter>
+              The Apache Logging Services Project creates and maintains open-source software related to the logging of
+              application behavior and released at no charge to the public.
+            </charter>
+            <pmc>https://logging.apache.org</pmc>
+          </asfExtOptions>
+          <skip>true</skip>
+        </configuration>
+        <executions>
+          <execution>
+            <id>site</id>
+            <phase>site</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
         <version>${site.plugin.version}</version>
         <configuration>

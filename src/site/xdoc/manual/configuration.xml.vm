@@ -1794,6 +1794,30 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
+    <td><a name="enableJndiContextSelector"/>log4j2.enableJndiContextSelector</td>
+    <td>LOG4J_ENABLE_JNDI_CONTEXT_SELECTOR</td>
+    <td>false</td>
+    <td>
+      When true, the Log4j context selector that uses the JNDI java protocol is enabled. When false, the default, they are disabled.
+    </td>
+  </tr>
+  <tr>
+    <td><a name="enableJndiJms"/>log4j2.enableJndiJms</td>
+    <td>LOG4J_ENABLE_JNDI_JMS</td>
+    <td>false</td>
+    <td>
+      When true, the Log4j JMS Appender that uses JNDI's java protocol is enabled. When false, the default, they are disabled.
+    </td>
+  </tr>
+  <tr>
+    <td><a name="enableJndiLookup"/>log4j2.enableJndiLookup</td>
+    <td>LOG4J_ENABLE_JNDI_LOOKUP</td>
+    <td>false</td>
+    <td>
+      When true, the Log4j lookup that uses JNDI's java protocol is enabled. When false, the default, they are disabled.
+    </td>
+  </tr>
+  <tr>
     <td><a name="level"/>log4j2.level
       <br />
       (<a name="org.apache.logging.log4j.level"/>org.apache.logging.log4j.level)
