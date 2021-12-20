@@ -49,7 +49,7 @@ public class InterpolatorTest {
     @BeforeClass
     public static void before() throws NamingException {
         System.setProperty(TESTKEY, TESTVAL);
-
+        System.setProperty("log4j2.enableJndiLookup", "true");
         MockContextFactory.setAsInitial();
         context = new InitialContext();
         context.bind(JndiLookup.CONTAINER_JNDI_RESOURCE_PATH_PREFIX + TEST_CONTEXT_RESOURCE_NAME, TEST_CONTEXT_NAME);
@@ -62,7 +62,7 @@ public class InterpolatorTest {
         } catch (final NamingException ignored) {
         }
         MockContextFactory.revertSetAsInitial();
-
+        System.clearProperty("log4j2.enableJndiLookup");
         System.clearProperty(TESTKEY);
     }
 

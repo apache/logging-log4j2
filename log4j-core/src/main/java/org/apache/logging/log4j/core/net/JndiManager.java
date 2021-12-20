@@ -17,6 +17,8 @@
 
 package org.apache.logging.log4j.core.net;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Properties;
 
 import javax.naming.Context;
@@ -26,6 +28,7 @@ import javax.naming.NamingException;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.util.JndiCloser;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * JNDI {@link javax.naming.Context} manager.
@@ -35,8 +38,30 @@ import org.apache.logging.log4j.core.util.JndiCloser;
 public class JndiManager extends AbstractManager {
 
     private static final JndiManagerFactory FACTORY = new JndiManagerFactory();
+    private static final String PREFIX = "log4j2.enableJndi";
+    private static final String JAVA_SCHEME = "java";
 
     private final Context context;
+
+    private static boolean isJndiEnabled(final String subKey) {
+        return PropertiesUtil.getProperties().getBooleanProperty(PREFIX + subKey, false);
+    }
+
+    public static boolean isJndiEnabled() {
+        return isJndiContextSelectorEnabled() || isJndiJmsEnabled() || isJndiLookupEnabled();
+    }
+
+    public static boolean isJndiContextSelectorEnabled() {
+        return isJndiEnabled("ContextSelector");
+    }
+
+    public static boolean isJndiJmsEnabled() {
+        return isJndiEnabled("Jms");
+    }
+
+    public static boolean isJndiLookupEnabled() {
+        return isJndiEnabled("Lookup");
+    }
 
     private JndiManager(final String name, final Context context) {
         super(name);
@@ -125,13 +150,28 @@ public class JndiManager extends AbstractManager {
      */
     @SuppressWarnings("unchecked")
     public <T> T lookup(final String name) throws NamingException {
-        return (T) this.context.lookup(name);
+        if (context == null) {
+            return null;
+        }
+        try {
+            URI uri = new URI(name);
+            if (uri.getScheme() == null || uri.getScheme().equals(JAVA_SCHEME)) {
+                return (T) this.context.lookup(name);
+            }
+            LOGGER.warn("Unsupported JNDI URI - {}", name);
+        } catch (URISyntaxException ex) {
+            LOGGER.warn("Invalid  JNDI URI - {}", name);
+        }
+        return null;
     }
 
     private static class JndiManagerFactory implements ManagerFactory<JndiManager, Properties> {
 
         @Override
         public JndiManager createManager(final String name, final Properties data) {
+            if (!isJndiEnabled()) {
+                throw new IllegalStateException(String.format("JNDI must be enabled by setting one of the %s* properties to true", PREFIX));
+            }
             try {
                 return new JndiManager(name, new InitialContext(data));
             } catch (final NamingException e) {

@@ -39,6 +39,15 @@ public class JndiLookup extends AbstractLookup {
     static final String CONTAINER_JNDI_RESOURCE_PATH_PREFIX = "java:comp/env/";
 
     /**
+     * Constructs a new instance or throw IllegalStateException if this feature is disabled.
+     */
+    public JndiLookup() {
+        if (!JndiManager.isJndiLookupEnabled()) {
+            throw new IllegalStateException("JNDI must be enabled by setting log4j2.enableJndiLookup=true");
+        }
+    }
+
+    /**
      * Looks up the value of the JNDI resource.
      * @param event The current LogEvent (is ignored by this StrLookup).
      * @param key  the JNDI resource name to be looked up, may be null

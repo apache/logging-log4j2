@@ -63,6 +63,9 @@ public abstract class AbstractManager {
      */
     public static <M extends AbstractManager, T> M getManager(final String name, final ManagerFactory<M, T> factory,
                                                               final T data) {
+        if (factory == null) {
+            throw new IllegalArgumentException("factory cannot be null");
+        }
         LOCK.lock();
         try {
             @SuppressWarnings("unchecked")

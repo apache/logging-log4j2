@@ -24,6 +24,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
+import org.apache.logging.log4j.core.net.JndiManager;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.ReflectionUtil;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -62,7 +63,10 @@ public class Interpolator extends AbstractLookup {
         for (final Map.Entry<String, PluginType<?>> entry : plugins.entrySet()) {
             try {
                 final Class<? extends StrLookup> clazz = entry.getValue().getPluginClass().asSubclass(StrLookup.class);
-                lookups.put(entry.getKey(), ReflectionUtil.instantiate(clazz));
+                if (!clazz.getName().equals("org.apache.logging.log4j.core.lookup.JndiLookup")
+                    || JndiManager.isJndiLookupEnabled()) {
+                    lookups.put(entry.getKey().toLowerCase(), ReflectionUtil.instantiate(clazz));
+                }
             } catch (final Exception ex) {
                 LOGGER.error("Unable to create Lookup for {}", entry.getKey(), ex);
             }
@@ -87,15 +91,16 @@ public class Interpolator extends AbstractLookup {
         lookups.put("main", MapLookup.MAIN_SINGLETON);
         lookups.put("java", new JavaLookup());
         // JNDI
-        try {
-            // [LOG4J2-703] We might be on Android
-            lookups.put("jndi",
-                Loader.newCheckedInstanceOf("org.apache.logging.log4j.core.lookup.JndiLookup", StrLookup.class));
-        } catch (final Throwable e) {
-            // java.lang.VerifyError: org/apache/logging/log4j/core/lookup/JndiLookup
-            LOGGER.warn(
+        if (JndiManager.isJndiLookupEnabled()) {
+            try {
+                // [LOG4J2-703] We might be on Android
+                lookups.put("jndi", Loader.newCheckedInstanceOf("org.apache.logging.log4j.core.lookup.JndiLookup", StrLookup.class));
+            } catch (final Throwable e) {
+                // java.lang.VerifyError: org/apache/logging/log4j/core/lookup/JndiLookup
+                LOGGER.warn(
                     "JNDI lookup class is not available because this JRE does not support JNDI. JNDI string lookups will not be available, continuing configuration.",
                     e);
+            }
         }
         // JMX input args
         try {

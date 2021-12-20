@@ -59,6 +59,7 @@ public class JmsAppenderTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        System.setProperty("log4j2.enableJndiJms", "true");
         MockContextFactory.setAsInitial();
         context = new InitialContext();
         context.rebind(CONNECTION_FACTORY_NAME, new QueueConnectionFactoryImpl());

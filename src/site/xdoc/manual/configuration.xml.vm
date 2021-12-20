@@ -1375,7 +1375,56 @@ public class AwesomeTest {
       could not successfully create a configuration (e.g. no log4j2.xml file was found).
     </td>
   </tr>
-
+  <tr>
+    <td><a name="enableJndiContextSelector"/>log4j2.enableJndiContextSelector</td>
+    <td>false</td>
+    <td>
+        When true, the Log4j context selector that uses the JNDI java protocol is enabled. When false, the default, they are disabled.
+    </td>
+  </tr>
+  <tr>
+    <td><a name="enableJndiJms"/>log4j2.enableJndiJms
+    </td>
+    <td>false</td>
+    <td>
+      When true, the Log4j JMS Appender that uses JNDI's java protocol is enabled. When false, the default, they are
+      disabled.
+    </td>
+  </tr>
+  <tr>
+    <td><a name="enableJndiLookup"/>log4j2.enableJndiLookup
+    </td>
+    <td>false</td>
+    <td>
+      When true, the Log4j lookup that uses JNDI's java protocol is enabled. When false, the default, they are disabled.
+    </td>
+  </tr>
+  <tr>
+    <td><a name="allowedLdapClasses"/>log4j2.allowedLdapClasses
+    </td>
+    <td>&nbsp;</td>
+    <td>
+      System property that specifies fully qualified class names that may be accessed by LDAP. The classes
+      must implement Serializable. By default only Java primitive classes are allowed.
+    </td>
+  </tr>
+  <tr>
+    <td><a name="allowedLdapHosts"/>log4j2.allowedLdapHosts
+    </td>
+    <td>&nbsp;</td>
+    <td>
+      System property that adds host names or ip addresses that may be access by LDAP. By default it only allows
+      the local host names and ip addresses.
+    </td>
+  </tr>
+  <tr>
+    <td><a name="allowedJndiProtocols"/>log4j2.allowedJndiProtocols
+    </td>
+    <td>&nbsp;</td>
+    <td>
+      System property that adds protocol names that JNDI will allow. By default it only allows java, ldap, and ldaps.
+    </td>
+  </tr>
   <tr>
     <td>disableThreadContext</td>
     <td>false</td>

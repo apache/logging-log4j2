@@ -28,6 +28,7 @@ import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockejb.jndi.MockContextFactory;
@@ -45,6 +46,11 @@ public class RoutingAppenderWithJndiTest {
 
     @Rule
     public InitialLoggerContext init = new InitialLoggerContext("log4j-routing-by-jndi.xml");
+
+    @BeforeClass
+    public static void beforeClass() {
+        System.setProperty("log4j2.enableJndiLookup", "true");
+    }
 
     @Before
     public void before() throws NamingException {

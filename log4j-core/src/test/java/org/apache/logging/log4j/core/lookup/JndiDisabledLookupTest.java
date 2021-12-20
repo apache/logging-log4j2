@@ -27,27 +27,18 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockejb.jndi.MockContextFactory;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * JndiLookupTest
  */
-public class JndiLookupTest {
+public class JndiDisabledLookupTest {
 
     private static final String TEST_CONTEXT_RESOURCE_NAME = "logging/context-name";
     private static final String TEST_CONTEXT_NAME = "app-1";
 
     private Context context;
-
-    @AfterClass
-    public static void afterClass() {
-        System.clearProperty("log4j2.enableJndiLookup");
-    }
-
-    @BeforeClass
-    public static void beforeClass() {
-        System.setProperty("log4j2.enableJndiLookup", "true");
-    }
 
     @Before
     public void before() throws NamingException {
@@ -65,17 +56,8 @@ public class JndiLookupTest {
         MockContextFactory.revertSetAsInitial();
     }
 
-    @Test
+    @Test(expected = IllegalStateException.class)
     public void testLookup() {
         final StrLookup lookup = new JndiLookup();
-
-        String contextName = lookup.lookup(TEST_CONTEXT_RESOURCE_NAME);
-        assertEquals(TEST_CONTEXT_NAME, contextName);
-
-        contextName = lookup.lookup(JndiLookup.CONTAINER_JNDI_RESOURCE_PATH_PREFIX + TEST_CONTEXT_RESOURCE_NAME);
-        assertEquals(TEST_CONTEXT_NAME, contextName);
-
-        final String nonExistingResource = lookup.lookup("logging/non-existing-resource");
-        assertNull(nonExistingResource);
     }
 }
