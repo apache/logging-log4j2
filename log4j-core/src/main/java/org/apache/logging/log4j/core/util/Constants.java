@@ -54,7 +54,6 @@ public final class Constants {
     
     /**
      * Equivalent to StandardCharsets.UTF_8.
-     * @ToDo - Initialize with StandardCharsets.UTF_8 when Java 7 is the minimum version.
      */
     public static final Charset UTF_8 = Charset.forName("UTF-8");
 

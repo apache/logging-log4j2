@@ -365,8 +365,8 @@
           <detectOfflineLinks>false</detectOfflineLinks>
           <linksource>true</linksource>
           <links>
-            <link>http://docs.oracle.com/javaee/6/api/</link>
-            <link>http://www.osgi.org/javadoc/r4v43/core/</link>
+            <link>https://docs.oracle.com/javaee/6/api/</link>
+            <link>https://docs.osgi.org/javadoc/r4v43/core/</link>
           </links>
           <groups>
             <group>
