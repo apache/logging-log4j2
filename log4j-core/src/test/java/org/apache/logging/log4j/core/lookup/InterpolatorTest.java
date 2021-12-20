@@ -44,12 +44,14 @@ public class InterpolatorTest {
         protected void before() throws Throwable {
             System.setProperty(TESTKEY, TESTVAL);
             System.setProperty(TESTKEY2, TESTVAL);
+            System.setProperty("log4j2.enableJndiLookup", "true");
         }
 
         @Override
         protected void after() {
             System.clearProperty(TESTKEY);
             System.clearProperty(TESTKEY2);
+            System.clearProperty("log4j2.enableJndiLookup");
         }
     });
 

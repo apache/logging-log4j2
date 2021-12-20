@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.ConfigurationAware;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
+import org.apache.logging.log4j.core.net.JndiManager;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.ReflectionUtil;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -73,7 +74,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         for (final Map.Entry<String, PluginType<?>> entry : plugins.entrySet()) {
             try {
                 final Class<? extends StrLookup> clazz = entry.getValue().getPluginClass().asSubclass(StrLookup.class);
-                if (!clazz.getName().equals("org.apache.logging.log4j.core.lookup.JndiLookup")) {
+                if (!clazz.getName().equals("org.apache.logging.log4j.core.lookup.JndiLookup") || JndiManager.isJndiLookupEnabled()) {
                     strLookupMap.put(entry.getKey().toLowerCase(), ReflectionUtil.instantiate(clazz));
                 }
             } catch (final Throwable t) {
@@ -101,6 +102,16 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         strLookupMap.put("main", MainMapLookup.MAIN_SINGLETON);
         strLookupMap.put("marker", new MarkerLookup());
         strLookupMap.put("java", new JavaLookup());
+        // JNDI
+        if (JndiManager.isJndiLookupEnabled()) {
+            try {
+                // [LOG4J2-703] We might be on Android
+                strLookupMap.put(LOOKUP_KEY_JNDI,
+                        Loader.newCheckedInstanceOf("org.apache.logging.log4j.core.lookup.JndiLookup", StrLookup.class));
+            } catch (final LinkageError | Exception e) {
+                handleError(LOOKUP_KEY_JNDI, e);
+            }
+        }
         // JMX input args
         try {
             // We might be on Android

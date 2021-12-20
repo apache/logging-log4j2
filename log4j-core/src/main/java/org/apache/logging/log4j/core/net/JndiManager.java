@@ -39,11 +39,29 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 public class JndiManager extends AbstractManager {
 
     private static final JndiManagerFactory FACTORY = new JndiManagerFactory();
+    private static final String PREFIX = "log4j2.enableJndi";
+    private static final String JAVA_SCHEME = "java";
 
     private final Context context;
 
+    private static boolean isJndiEnabled(final String subKey) {
+        return PropertiesUtil.getProperties().getBooleanProperty(PREFIX + subKey, false);
+    }
+
     public static boolean isJndiEnabled() {
-        return PropertiesUtil.getProperties().getBooleanProperty("log4j2.enableJndi", false);
+        return isJndiContextSelectorEnabled() || isJndiJmsEnabled() || isJndiLookupEnabled();
+    }
+
+    public static boolean isJndiContextSelectorEnabled() {
+        return isJndiEnabled("ContextSelector");
+    }
+
+    public static boolean isJndiJmsEnabled() {
+        return isJndiEnabled("Jms");
+    }
+
+    public static boolean isJndiLookupEnabled() {
+        return isJndiEnabled("Lookup");
     }
 
     private JndiManager(final String name, final Context context) {
@@ -181,7 +199,7 @@ public class JndiManager extends AbstractManager {
         }
         try {
             URI uri = new URI(name);
-            if (uri.getScheme() == null || uri.getScheme().equals("java")) {
+            if (uri.getScheme() == null || uri.getScheme().equals(JAVA_SCHEME)) {
                 return (T) this.context.lookup(name);
             }
             LOGGER.warn("Unsupported JNDI URI - {}", name);
@@ -195,15 +213,14 @@ public class JndiManager extends AbstractManager {
 
         @Override
         public JndiManager createManager(final String name, final Properties data) {
-            if (isJndiEnabled()) {
-                try {
-                    return new JndiManager(name, new InitialContext(data));
-                } catch (final NamingException e) {
-                    LOGGER.error("Error creating JNDI InitialContext.", e);
-                    return null;
-                }
-            } else {
-                return new JndiManager(name, null);
+            if (!isJndiEnabled()) {
+                throw new IllegalStateException(String.format("JNDI must be enabled by setting one of the %s* properties to true", PREFIX));
+            }
+            try {
+                return new JndiManager(name, new InitialContext(data));
+            } catch (final NamingException e) {
+                LOGGER.error("Error creating JNDI InitialContext for '{}'.", name, e);
+                return null;
             }
         }
 
