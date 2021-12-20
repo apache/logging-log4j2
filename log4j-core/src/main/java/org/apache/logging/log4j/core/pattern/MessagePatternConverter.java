@@ -68,8 +68,7 @@ public final class MessagePatternConverter extends LogEventPatternConverter {
                 result = msg.getFormattedMessage();
             }
             if (result != null) {
-                toAppendTo.append(config != null && result.contains("${") ?
-                    config.getStrSubstitutor().replace(event, result) : result);
+                toAppendTo.append(result);
             } else {
                 toAppendTo.append("null");
             }
