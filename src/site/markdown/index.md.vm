@@ -15,14 +15,114 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
+#set($dollar = '$')
 #set($h1='#')
 #set($h2='##')
 #set($h3='###')
+#set($h4='####')
 
 $h1 Apache Log4j 2
 
 Apache Log4j 2 is an upgrade to Log4j that provides significant improvements over its predecessor, Log4j 1.x, and
 provides many of the improvements available in Logback while fixing some inherent problems in Logback's architecture.
+
+
+<a name="CVE-2021-45105"/>
+$h2 Important: Security Vulnerability CVE-2021-45105
+
+The Log4j team has been made aware of a security vulnerability, CVE-2021-45105, that has been addressed in
+Log4j 2.17.0 for Java 8 and up, and in Log4j 2.12.3 for Java 7.
+
+Summary: Apache Log4j2 does not always protect from infinite recursion in lookup evaluation.
+
+$h4 Details
+Apache Log4j2 versions 2.0-alpha1 through 2.16.0 did not protect from uncontrolled recursion from self-referential lookups.
+When the logging configuration uses a non-default Pattern Layout with a Context Lookup (for example, ``${dollar}${dollar}{ctx:loginId}``),
+attackers with control over Thread Context Map (MDC) input data can craft malicious input data that contains a recursive lookup,
+resulting in a StackOverflowError that will terminate the process. This is also known as a DOS (Denial of Service) attack.
+
+$h4 Mitigation
+From version 2.17.0 (for Java 8) and 2.12.3 (for Java 7), only lookup strings in configuration are expanded recursively;
+in any other usage, only the top-level lookup is resolved, and any nested lookups are not resolved.
+
+In prior releases this issue can be mitigated by ensuring your logging configuration does the following:
+
+* In PatternLayout in the logging configuration, replace Context Lookups like `${dollar}{ctx:loginId}`or `${dollar}${dollar}{ctx:loginId}` with Thread Context Map patterns (%X, %mdc, or %MDC).
+* Otherwise, in the configuration, remove references to Context Lookups like `${dollar}{ctx:loginId}` or `${dollar}${dollar}{ctx:loginId}` where they originate from sources external to the application such as HTTP headers or user input.
+
+$h4 Reference
+Please refer to the [Security page](https://logging.apache.org/log4j/2.x/security.html#CVE-2021-45105) for details and mitigation measures for older versions of Log4j.
+
+
+<a name="CVE-2021-45046"/>
+$h2 Important: Security Vulnerability CVE-2021-45046
+
+The Log4j team has been made aware of a security vulnerability, CVE-2021-45046, that has been addressed in
+Log4j 2.12.2 for Java 7 and 2.16.0 for Java 8 and up.
+
+Summary: Apache Log4j2 Thread Context Lookup Pattern vulnerable to remote code execution in certain non-default configurations.
+
+$h4 Details
+It was found that the fix to address CVE-2021-44228 in Apache Log4j 2.15.0 was incomplete in certain non-default configurations.
+When the logging configuration uses a non-default Pattern Layout with a Context Lookup (for example, ``${dollar}${dollar}{ctx:loginId}``),
+attackers with control over Thread Context Map (MDC) input data can craft malicious input data using a JNDI Lookup pattern,
+resulting in an information leak and remote code execution in some environments and local code execution in all environments;
+remote code execution has been demonstrated on macOS but no other tested environments.
+
+Note that previous mitigations involving configuration such as setting the system property `log4j2.formatMsgNoLookups`
+to `true` do NOT mitigate this specific vulnerability.
+
+$h4 Mitigation
+In version 2.12.2 (for Java 7), Log4j disables access to JNDI by default.
+Usage of JNDI in configuration now needs to be enabled explicitly.
+Calls to the JndiLookup will now return a constant string.
+Also, Log4j now limits the protocols by default to only java.
+The message lookups feature has been completely removed. Lookups in configuration still work.
+
+From version 2.16.0 (for Java 8), the message lookups feature has been completely removed.
+Lookups in configuration still work.
+Furthermore, Log4j now disables access to JNDI by default.
+Users are advised not to enable JNDI in Log4j 2.16.0.
+If the JMS Appender is required, use Log4j 2.12.2.
+
+
+$h4 Reference
+Please refer to the [Security page](https://logging.apache.org/log4j/2.x/security.html#CVE-2021-45046) for details and mitigation measures for older versions of Log4j.
+
+
+<a name="CVE-2021-44228"/>
+$h2 Important: Security Vulnerability CVE-2021-44228
+
+The Log4j team has been made aware of a security vulnerability, CVE-2021-44228, that has been addressed
+in Log4j 2.12.2 and Log4j 2.16.0.
+
+$h4 Summary
+Log4j’s JNDI support has not restricted what names could be resolved. Some protocols are unsafe or can allow remote code
+execution.
+
+$h4 Details
+One vector that allowed exposure to this vulnerability was Log4j’s allowance of Lookups to appear in log messages.
+This meant that when user input is logged, and that user input contained a JNDI Lookup pointing to a malicious server,
+then Log4j would resolve that JNDI Lookup, connect to that server, and potentially download serialized Java code from
+that remote server. This in turn could execute any code during deserialization.
+This is known as a RCE (Remote Code Execution) attack.
+
+$h4 Mitigation
+In version 2.12.2 (for Java 7), Log4j disables access to JNDI by default.
+Usage of JNDI in configuration now needs to be enabled explicitly.
+Calls to the JndiLookup will now return a constant string.
+Also, Log4j now limits the protocols by default to only java.
+The message lookups feature has been completely removed. Lookups in configuration still work.
+
+From version 2.16.0 (for Java 8), the message lookups feature has been completely removed.
+Lookups in configuration still work.
+Furthermore, Log4j now disables access to JNDI by default.
+Users are advised not to enable JNDI in Log4j 2.16.0.
+If the JMS Appender is required, use Log4j 2.12.2.
+
+$h4 Reference
+Please refer to the [Security page](https://logging.apache.org/log4j/2.x/security.html#CVE-2021-44228) for mitigation measures for older versions of Log4j.
+
 
 $h2 Features
 
@@ -38,9 +138,9 @@ in front of other logging implementations such as Logback. The Log4j API has sev
 2. The Log4j API supports lambda expressions.
 3. The Log4j API provides many more logging methods than SLF4J.
 4. In addition to the "parameterized logging" format supported by SLF4J, the Log4j API also supports events using
-the java.text.MessageFormat syntax as well printf-sytle messages.
+   the java.text.MessageFormat syntax as well printf-style messages.
 5. The Log4j API provides a LogManager.shutdown() method. The underlying logging implementation must implement the
-Terminable interface for the method to have effect.
+   Terminable interface for the method to have effect.
 6. Other constructs such as Markers, log Levels, and ThreadContext (aka MDC) are fully supported.
 
 $h3 Improved Performance
@@ -105,12 +205,12 @@ garbage in web applications. This reduces pressure on the garbage collector and 
 
 $h3 Integrating with Application Servers
 
-Version 2.10.0 introduces a the module log4j-appserver to improve integration with Apache Tomcat and Eclipse Jetty.
+Version 2.10.0 added the module log4j-appserver to improve integration with Apache Tomcat and Eclipse Jetty.
 
 $h3 Cloud Enabled
 
-Version 2.12.0 introduces support for accessing Dcoker container information via a Lookup and for accessing
-and updating the Log4j configuration through Spring Clooud Configuration. See [Logging in the Cloud](manual/cloud.html)
+Version 2.12.0 introduced support for accessing Docker container information via a Lookup and for accessing
+and updating the Log4j configuration through Spring Cloud Configuration. See [Logging in the Cloud](manual/cloud.html)
 for details.
 
 $h2 Documentation
@@ -124,6 +224,13 @@ Log4j 2.4 and greater requires Java 7, versions 2.0-alpha1 to 2.3 required Java 
 dependencies; the documentation for these features specifies the dependencies.
 
 $h2 News
+
+Log4j 2.12.3 has been released solely to:
+
+* Address CVE-2021-45105.
+* Require components that use JNDI to be enabled individually via system properties.
+
+2.12.3 is a recommended upgrade to ensure that recursive lookups do not cause services to fail.
 
 Log4j $Log4jReleaseVersion is now available for production. The API for Log4j 2 is not compatible with Log4j 1.x, however an adapter is
 available to allow applications to continue to use the Log4j 1.x API. Adapters are also available for Apache Commons
