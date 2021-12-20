@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.appender;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -110,7 +111,7 @@ public abstract class AbstractManager implements AutoCloseable {
             @SuppressWarnings("unchecked")
             M manager = (M) MAP.get(name);
             if (manager == null) {
-                manager = factory.createManager(name, data);
+                manager = Objects.requireNonNull(factory, "factory").createManager(name, data);
                 if (manager == null) {
                     throw new IllegalStateException("ManagerFactory [" + factory + "] unable to create manager for ["
                             + name + "] with data [" + data + "]");
