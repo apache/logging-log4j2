@@ -31,7 +31,7 @@ provides many of the improvements available in Logback while fixing some inheren
 $h2 Important: Security Vulnerability CVE-2021-45105
 
 The Log4j team has been made aware of a security vulnerability, CVE-2021-45105, that has been addressed in
-Log4j 2.17.0 for Java 8 and up.
+Log4j 2.17.0 for Java 8 and up, and in Log4j 2.12.3 for Java 7.
 
 Summary: Apache Log4j2 does not always protect from infinite recursion in lookup evaluation.
 
@@ -42,7 +42,7 @@ attackers with control over Thread Context Map (MDC) input data can craft malici
 resulting in a StackOverflowError that will terminate the process. This is also known as a DOS (Denial of Service) attack.
 
 $h4 Mitigation
-From version 2.17.0 (for Java 8), only lookup strings in configuration are expanded recursively;
+From version 2.17.0 (for Java 8) and 2.12.3 (for Java 7), only lookup strings in configuration are expanded recursively;
 in any other usage, only the top-level lookup is resolved, and any nested lookups are not resolved.
 
 In prior releases this issue can be mitigated by ensuring your logging configuration does the following:
@@ -237,13 +237,13 @@ dependencies.
 
 $h2 News
 
-Log4j 2.17.0 has been released solely to:
+Log4j 2.17.0 and 2.12.3 have been released solely to:
 
 * Address CVE-2021-45105.
 * Require components that use JNDI to be enabled individually via system properties.
 * Remove LDAP and LDAPS as supported protocols from JNDI.
 
-2.17.0 is a recommended upgrade to ensure that recursive lookups do not cause services to fail.
+2.17.0 (for Java 8) and 2.12.3 (for Java 7) are recommended upgrades to ensure that recursive lookups do not cause services to fail.
 
 Log4j $Log4jReleaseVersion is now available for production. The API for Log4j 2 is not compatible with Log4j 1.x, however an adapter is
 available to allow applications to continue to use the Log4j 1.x API. Adapters are also available for Apache Commons
