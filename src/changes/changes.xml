@@ -23,7 +23,7 @@
     <title>Changes</title>
   </properties>
   <body>
-    <release version="2.3.1" date="2021-12-xx" description="GA Release 2.3.1">
+    <release version="2.3.1" date="2021-12-20" description="GA Release 2.3.1">
       <action issue="LOG4J2-3242" dev="rgoers, ggregory" type="fix">
         Limit JNDI to the java protocol only. JNDI will remain disabled by default. Rename JNDI enablement property from
         'log4j2.enableJndi' to 'log4j2.enableJndiLookup', 'log4j2.enableJndiJms', and 'log4j2.enableJndiContextSelector'.

@@ -1,56 +1,38 @@
 
-              Apache Log4j 2.3 RELEASE NOTES
+              Apache Log4j 2.3.1 RELEASE NOTES
 
-The Apache Log4j 2 team is pleased to announce the Log4j 2.3 release!
+The Apache Log4j 2 team is pleased to announce the Log4j 2.3.1 release!
 
 Apache log4j is a well known framework for logging application behavior. Log4j 2 is an upgrade to
 Log4j that provides significant improvements over its predecessor, Log4j 1.x, and provides
 many other modern features such as support for Markers, property substitution using Lookups, and asynchronous
 Loggers. In addition, Log4j 2 will not lose events while reconfiguring.
 
-This is the sixth GA release. It contains several bugfixes and new features.
+The major changes contained in this release include:
 
-GA Release 2.3
+* Address CVE-2021-45046 and CVE-2021-45105 by disabling recursive evaluation of Lookups during log event processing. Recursive evaluation is still allowed while generating the configuration.
+* Adddress CVE-2021-44882 by removing processing of Lookups in the Message Pattern Converter of the Pattern Layout and
+preventing JNDI operations to use any protocols other than java.
+* The JndiLookup, JndiContextSelector, and JMSAppender now require individual system properties to be enabled.
+
+The JNDI components are now disabled by default and may separately be enabled with three individual properties; log4j2.enableJndiContextSelector, log4j2.enableJndiJms, and log4j2.enableJndiLookup.
+
+GA Release 2.3.1
 
 Changes in this version include:
 
 New features:
-o LOG4J2-984:  PatternLayout %highlight to support noConsoleNoAnsi like %style. Thanks to Jonas Höpfner. 
-o LOG4J2-926:  Truncate from the end of text format modifier. Thanks to David Ohana. 
+o LOG4J2-3198:  Pattern layout no longer enables lookups within message text. 
 
 Fixed Bugs:
-o LOG4J2-1009:  Incorrectly defined compressionType parameter to GelfLayout. Thanks to Mikael Ståldal. 
-o LOG4J2-1008:  org.apache.logging.log4j.core.config.plugins.util.ResolverUtil.extractPath(URL) incorrectly converts '+' characters to spaces. Thanks to Ralph Goers, Gary Gregory. 
-o LOG4J2-1007:  org.apache.logging.log4j.core.util#fileFromUri(URI uri) incorrectly converts '+' characters to spaces. Thanks to Ralph Goers, Gary Gregory. 
-o LOG4J2-1003:  JUL Logger.throwing is mis-mapped to ERROR when it should be TRACE. Thanks to Dan Armbrust. 
-o LOG4J2-965:  System.out no longer works after the Console appender and JANSI are initialized. Thanks to Khotyn Huang. 
-o LOG4J2-993:  Deadlock would occur if appender thread creates a new Logger during reconfiguration. 
-o LOG4J2-991:  Async root logger config should default includeLocation to false. Thanks to Ryan Rupp. 
-o LOG4J2-985:  AbstractFilter should not implement equals() and hashCode(). Thanks to Sean Dawson. 
-o LOG4J2-980:  Numerical overflow in BurstFilter not handled correctly. Thanks to Mikhail Mazurskiy. 
-o LOG4J2-981:  Incorrect unlock in ProviderUtil. Thanks to Mikhail Mazurskiy. 
-o LOG4J2-966:  KeyStoreConfiguration.createKeyStoreConfiguration() ignores keyManagerFactoryAlgorithm. Thanks to Gary Gregory. 
-o LOG4J2-976:  Using monitorInterval with YAML config file format causes JSONParseException. Thanks to Matt Quinn. 
-o LOG4J2-964:  StringFormattedMessage serialization is incorrect. Thanks to Jonne Jyrylä. 
-o LOG4J2-947:  A new StatusLoggerAdmin listener is added to StatusLogger every time the log is reconfigured. Thanks to Stefan Wehner. 
-o LOG4J2-968:  SyslogLayout contains extra space. Thanks to Paul D Johe. 
-o LOG4J2-967:  log4j2.component.properties not read for all properties. Thanks to Stefan Wehner. 
-o LOG4J2-971:  Another bad priority in Syslog messages. Thanks to Paul D Johe. 
-o LOG4J2-972:  org.apache.logging.log4j.core.net.ssl.TlsSyslogInputStreamReader does not need to create temp Integer objects. Thanks to Gary Gregory. 
-o LOG4J2-974:  Typo in EventLogger documentation. Thanks to Daniel Galán y Martins. 
-
-Changes:
-o LOG4J2-998:  Make org.apache.logging.log4j.core.Logger#updateConfiguration protected. Thanks to Mariano Gonzalez. 
-o LOG4J2-995:  Move UTF-8 constant from Charsets to Constants class. Remove Charsets class. 
-o LOG4J2-988:  Update LMAX Disruptor from 3.3.0 to 3.3.2. Thanks to Gary Gregory. 
-o LOG4J2-987:  Migrate tests from Logback 1.1.2 to 1.1.3. Thanks to Gary Gregory. 
-o LOG4J2-988:  Update tests to use ActiveMQ from 5.10 to 5.11.1. Thanks to Gary Gregory. 
-o LOG4J2-1004:  Update Jackson from 2.5.1 to 2.5.3. 
-o LOG4J2-1005:  Update Slf4j from 1.7.7 to 1.7.12. 
+o LOG4J2-3242:  Limit JNDI to the java protocol only. JNDI will remain disabled by default. Rename JNDI enablement property from
+        'log4j2.enableJndi' to 'log4j2.enableJndiLookup', 'log4j2.enableJndiJms', and 'log4j2.enableJndiContextSelector'. 
+o LOG4J2-3230:  Fix string substitution recursion. 
 
 
-Apache Log4j 2.3 requires a minimum of Java 6 to build and run. This will be the last release of Log4j 2 to
-support Java 6. Future releases will require a minimum of Java 7.
+
+Apache Log4j 2.3.1 requires a minimum of Java 6 to build and run. It is not expected that any future Java 6
+releases will be provided.
 
 Basic compatibility with Log4j 1.x is provided through the log4j-1.2-api component, however it does not implement some of the
 very implementation specific classes and methods. The package names and Maven groupId have been changed to
