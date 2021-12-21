@@ -1531,7 +1531,6 @@ public class ConnectionFactory {
             <code>log4j2.enableJndiJms=true</code> is configured as a system property or environment
             variable. See the <a href="./configuration.html#enableJndiJms">enableJndiJms</a> system property.</p>
           <p>
-          <p>
             Note that in Log4j 2.0, this appender was split into a JMSQueueAppender and a JMSTopicAppender. Starting
             in Log4j 2.1, these appenders were combined into the JMS Appender which makes no distinction between queues
             and topics. However, configurations written for 2.0 which use the <code>&lt;JMSQueue/&gt;</code> or
