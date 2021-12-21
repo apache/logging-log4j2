@@ -43,7 +43,7 @@ public class MapLookup implements StrLookup {
     }
 
     /**
-     * Creates a new instance backed by a Map. Used by the default lookup.
+     * Creates a new instance backed by a Map.
      *
      * @param map
      *        the map of keys to values, may be null
@@ -146,7 +146,7 @@ public class MapLookup implements StrLookup {
      */
     @Override
     public String lookup(final String key) {
-        if (map == null) {
+        if (key == null || map == null) {
             return null;
         }
         return map.get(key);
