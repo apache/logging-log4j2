@@ -64,8 +64,9 @@ Alternatively, you can verify the SHA512 signature on the files. A unix program 
 in many unix distributions.
 
 $h2 Previous Releases
+#set($log4jJdk6ReleaseVersion='2.3.1')
 
-Log4j 2.3 was the last 2.x release to support Java 6. Those artifacts can be found at:
+Log4j ${log4jJdk6ReleaseVersion} was the last 2.x release to support Java 6. Those artifacts can be found at:
 
 | Distribution                   | Mirrors                                    | Checksum                                          | Signature                                         |
 | ------------------------------ | ------------------------------------------ | ------------------------------------------------- | ------------------------------------------------- |
@@ -74,18 +75,18 @@ Log4j 2.3 was the last 2.x release to support Java 6. Those artifacts can be fou
 | Apache Log4j 2 source (tar.gz) | [apache-log4j-2.3-src.tar.gz][srctar-jdk6] | [apache-log4j-2.3-src.tar.gz.md5][srctarmd5-jdk6] | [apache-log4j-2.3-src.tar.gz.asc][srctarasc-jdk6] |
 | Apache Log4j 2 source (zip)    | [apache-log4j-2.3-src.zip][srczip-jdk6]    | [apache-log4j-2.3-src.zip.md5][srczipmd5-jdk6]    | [apache-log4j-2.3-src.zip.asc][srczipasc-jdk6]    |
 
-[bintar-jdk6]: https://www.apache.org/dyn/closer.lua/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.tar.gz
-[bintarmd5-jdk6]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.md5
-[bintarasc-jdk6]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.asc
-[binzip-jdk6]: https://www.apache.org/dyn/closer.lua/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.zip
-[binzipmd5-jdk6]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.zip.md5
-[binzipasc-jdk6]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.zip.asc
-[srctar-jdk6]: https://www.apache.org/dyn/closer.lua/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.tar.gz
-[srctarmd5-jdk6]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.tar.gz.md5
-[srctarasc-jdk6]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.tar.gz.asc
-[srczip-jdk6]: https://www.apache.org/dyn/closer.lua/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.zip
-[srczipmd5-jdk6]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.zip.md5
-[srczipasc-jdk6]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.zip.asc
+[bintar-jdk6]: https://www.apache.org/dyn/closer.lua/logging/log4j/${log4jJdk6ReleaseVersion}/apache-log4j-${log4jJdk6ReleaseVersion}-bin.tar.gz
+[bintarmd5-jdk6]: https://www.apache.org/dist/logging/log4j/${log4jJdk6ReleaseVersion}/apache-log4j-${log4jJdk6ReleaseVersion}-bin.tar.gz.md5
+[bintarasc-jdk6]: https://www.apache.org/dist/logging/log4j/${log4jJdk6ReleaseVersion}/apache-log4j-${log4jJdk6ReleaseVersion}-bin.tar.gz.asc
+[binzip-jdk6]: https://www.apache.org/dyn/closer.lua/logging/log4j/${log4jJdk6ReleaseVersion}/apache-log4j-${log4jJdk6ReleaseVersion}-bin.zip
+[binzipmd5-jdk6]: https://www.apache.org/dist/logging/log4j/${log4jJdk6ReleaseVersion}/apache-log4j-${log4jJdk6ReleaseVersion}-bin.zip.md5
+[binzipasc-jdk6]: https://www.apache.org/dist/logging/log4j/${log4jJdk6ReleaseVersion}/apache-log4j-${log4jJdk6ReleaseVersion}-bin.zip.asc
+[srctar-jdk6]: https://www.apache.org/dyn/closer.lua/logging/log4j/${log4jJdk6ReleaseVersion}/apache-log4j-${log4jJdk6ReleaseVersion}-src.tar.gz
+[srctarmd5-jdk6]: https://www.apache.org/dist/logging/log4j/${log4jJdk6ReleaseVersion}/apache-log4j-${log4jJdk6ReleaseVersion}-src.tar.gz.md5
+[srctarasc-jdk6]: https://www.apache.org/dist/logging/log4j/${log4jJdk6ReleaseVersion}/apache-log4j-${log4jJdk6ReleaseVersion}-src.tar.gz.asc
+[srczip-jdk6]: https://www.apache.org/dyn/closer.lua/logging/log4j/${log4jJdk6ReleaseVersion}/apache-log4j-${log4jJdk6ReleaseVersion}-src.zip
+[srczipmd5-jdk6]: https://www.apache.org/dist/logging/log4j/${log4jJdk6ReleaseVersion}/apache-log4j-${log4jJdk6ReleaseVersion}-src.zip.md5
+[srczipasc-jdk6]: https://www.apache.org/dist/logging/log4j/${log4jJdk6ReleaseVersion}/apache-log4j-${log4jJdk6ReleaseVersion}-src.zip.asc
 
 All previous releases of Apache log4j can be found in the
 [archive repository](https://archive.apache.org/dist/logging/log4j/).
