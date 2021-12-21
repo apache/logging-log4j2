@@ -155,6 +155,6 @@ public class InterpolatorTest {
                 .setLevel(Level.INFO)
                 .setMessage(new StringMapMessage(map))
                 .build();
-        assertEquals("configProperties", interpolator.lookup(event, "map:key"));
+        assertEquals("mapMessage", interpolator.lookup(event, "map:key"));
     }
 }
