@@ -71,7 +71,7 @@ public class RegexReplacementTest {
         msgs = app.getMessages();
         assertNotNull(msgs);
         assertEquals("Incorrect number of messages. Should be 1 is " + msgs.size(), 1, msgs.size());
-        assertEquals("LoggerTest This is a test for ${ctx:MyKey}\n", msgs.get(0));
+        assertEquals("LoggerTest This is a test for ${ctx:MyKey}", msgs.get(0).trim());
     }
      @Test
     public void testConverter() {
