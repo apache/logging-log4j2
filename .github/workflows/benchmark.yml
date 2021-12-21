@@ -51,13 +51,6 @@ jobs:
           architecture: x64
           cache: maven
 
-      - name: Set up Maven caching
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-maven-
-
       - name: Build with Maven
         shell: bash
         run: |
