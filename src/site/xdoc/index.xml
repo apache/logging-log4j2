@@ -68,7 +68,7 @@
       <p>Upgrade to Log4j 2.3.1 (for Java 6), 2.12.3 (for Java 7), or 2.17.0 (for Java 8).</p>
 
       <h4>Reference</h4>
-      <p>Please refer to the <a href="https://logging.apache.org/log4j/2.x/security.html#CVE-2021-45105">Security page</a> for details and mitigation measures for older versions of Log4j.</p>
+      <p>Please refer to the <a href="https://logging.apache.org/log4j/2.x/security.html#CVE-2021-45046">Security page</a> for details and mitigation measures for older versions of Log4j.</p>
 
 
       <a name="CVE-2021-44228"/>
@@ -89,7 +89,7 @@
       <p>Upgrade to Log4j 2.3.1 (for Java 6), 2.12.3 (for Java 7), or 2.17.0 (for Java 8).</p>
 
       <h4>Reference</h4>
-      <p>Please refer to the <a href="https://logging.apache.org/log4j/2.x/security.html#CVE-2021-45105">Security page</a> for details and mitigation measures for older versions of Log4j.</p>
+      <p>Please refer to the <a href="https://logging.apache.org/log4j/2.x/security.html#CVE-2021-44228">Security page</a> for details and mitigation measures for older versions of Log4j.</p>
 
       <section name="Apache Log4j 2">
 
