@@ -310,6 +310,56 @@
           </execution> -->
         </executions>
       </plugin>
+        <!-- calculate checksums of source release for Apache dist area -->
+        <plugin>
+            <groupId>net.nicoulaj.maven.plugins</groupId>
+            <artifactId>checksum-maven-plugin</artifactId>
+            <version>1.11</version>
+            <executions>
+                <execution>
+                    <id>calculate-checksums</id>
+                    <goals>
+                        <goal>files</goal>
+                    </goals>
+                    <!-- execute prior to maven-gpg-plugin:sign due to https://github.com/nicoulaj/checksum-maven-plugin/issues/112 -->
+                    <phase>post-integration-test</phase>
+                    <configuration>
+                        <algorithms>
+                            <algorithm>SHA-256</algorithm>
+                            <algorithm>SHA-512</algorithm>
+                        </algorithms>
+                        <!-- https://maven.apache.org/apache-resource-bundles/#source-release-assembly-descriptor -->
+                        <fileSets>
+                            <fileSet>
+                                <directory>${project.build.directory}</directory>
+                                <includes>
+                                    <include>apache-log4j-${project.version}-src.zip</include>
+                                    <include>apache-log4j-${project.version}-src.tar.gz</include>
+                                    <include>apache-log4j-${project.version}-bin.zip</include>
+                                    <include>apache-log4j-${project.version}-bin.tar.gz</include>
+                                </includes>
+                            </fileSet>
+                        </fileSets>
+                        <csvSummary>false</csvSummary>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>sign-release-artifacts</id>
+                    <goals>
+                        <goal>sign</goal>
+                    </goals>
+                    <configuration>
+                        <keyname>${Log4jSigningUserName}</keyname>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
