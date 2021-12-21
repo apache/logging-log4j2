@@ -36,6 +36,9 @@
       <action dev="ggregory" type="fix">
         Fix NPE when input is null in StrSubstitutor.replace(String, Properties).
       </action>
+      <action issue="LOG4J2-3270" dev="ckozak" type="fix">
+        Lookups with no prefix only read values from the configuration properties as expected.
+      </action>
     </release>
     <release version="2.17.0" date="2021-12-17" description="GA Release 2.17.0">
       <action issue="LOG4J2-3230" dev="ckozak" type="fix">

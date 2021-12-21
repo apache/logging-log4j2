@@ -16,8 +16,8 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -218,5 +218,35 @@ public class StrSubstitutorTest {
         assertNull(StrSubstitutor.replace((String) null, (Properties) null));
         assertEquals("A", StrSubstitutor.replace("${a}", properties));
         assertEquals("${a}", StrSubstitutor.replace("${a}", (Properties) null));
+    }
+
+    @Test
+    public void testTopLevelLookupsWithoutRecursiveEvaluation() {
+        final Map<String, String> map = new HashMap<>();
+        map.put("key", "VaLuE");
+        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrSubstitutor subst = new StrSubstitutor(lookup);
+        subst.setRecursiveEvaluationAllowed(false);
+        assertEquals("value", subst.replace("${lower:${ctx:key}}"));
+    }
+
+    @Test
+    public void testTopLevelLookupsWithoutRecursiveEvaluation_doubleLower() {
+        final Map<String, String> map = new HashMap<>();
+        map.put("key", "VaLuE");
+        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrSubstitutor subst = new StrSubstitutor(lookup);
+        subst.setRecursiveEvaluationAllowed(false);
+        assertEquals("value", subst.replace("${lower:${lower:${ctx:key}}}"));
+    }
+
+    @Test
+    public void testTopLevelLookupsWithoutRecursiveEvaluationAndDefaultValueLookup() {
+        final Map<String, String> map = new HashMap<>();
+        map.put("key2", "TWO");
+        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrSubstitutor subst = new StrSubstitutor(lookup);
+        subst.setRecursiveEvaluationAllowed(false);
+        assertEquals("two", subst.replace("${lower:${ctx:key1:-${ctx:key2}}}"));
     }
 }

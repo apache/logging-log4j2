@@ -493,7 +493,6 @@ public static void main(String args[]) {
             <ol>
               <li>Provide the base for Properties declared in the configuration file.</li>
               <li>Retrieve values from MapMessages in LogEvents.</li>
-              <li>Retrieve values set with <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/MapLookup.html#setMainArguments%28java.lang.String[]%29">MapLookup.setMainArguments(String[])</a></li>
             </ol>
           <p>
             The first item simply means that the MapLookup is used to substitute properties that are defined
@@ -511,7 +510,7 @@ public static void main(String args[]) {
 <Routing name="Routing">
   <Routes pattern="$${map:type}">
     <Route>
-      <RollingFile name="Rolling-${map:type}" fileName="${filename}"
+      <RollingFile name="Rolling-${map:type}" fileName="target/rolling1/test1-${map:type}.log"
                    filePattern="target/rolling1/test1-${map:type}.%i.log.gz">
         <PatternLayout>
           <pattern>%d %p %c{1.} [%t] %m%n</pattern>
