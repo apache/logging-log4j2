@@ -29,9 +29,9 @@ the originals on the main distribution server.
 | Distribution                   | Mirrors                                                  | Checksum                                                        | Signature                                                       |
 | ------------------------------ | -------------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------- |
 | Apache Log4j 2 binary (tar.gz) | [apache-log4j-${Log4jReleaseVersion}-bin.tar.gz][bintar] | [apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.sha512][bintarsha512] | [apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.asc][bintarasc] |
-| Apache Log4j 2 binary (zip)    | [apache-log4j-${Log4jReleaseVersion}-bin.zip][binzip]    | [apache-log4j-${Log4jReleaseVersion}-bin.zip.sha1][binzipsha512]    | [apache-log4j-${Log4jReleaseVersion}-bin.zip.asc][binzipasc]    |
-| Apache Log4j 2 source (tar.gz) | [apache-log4j-${Log4jReleaseVersion}-src.tar.gz][srctar] | [apache-log4j-${Log4jReleaseVersion}-src.tar.gz.sha1][srctarsha512] | [apache-log4j-${Log4jReleaseVersion}-src.tar.gz.asc][srctarasc] |
-| Apache Log4j 2 source (zip)    | [apache-log4j-${Log4jReleaseVersion}-src.zip][srczip]    | [apache-log4j-${Log4jReleaseVersion}-src.zip.sha1][srczipsha512]    | [apache-log4j-${Log4jReleaseVersion}-src.zip.asc][srczipasc]    |
+| Apache Log4j 2 binary (zip)    | [apache-log4j-${Log4jReleaseVersion}-bin.zip][binzip]    | [apache-log4j-${Log4jReleaseVersion}-bin.zip.sha512][binzipsha512]    | [apache-log4j-${Log4jReleaseVersion}-bin.zip.asc][binzipasc]    |
+| Apache Log4j 2 source (tar.gz) | [apache-log4j-${Log4jReleaseVersion}-src.tar.gz][srctar] | [apache-log4j-${Log4jReleaseVersion}-src.tar.gz.sha512][srctarsha512] | [apache-log4j-${Log4jReleaseVersion}-src.tar.gz.asc][srctarasc] |
+| Apache Log4j 2 source (zip)    | [apache-log4j-${Log4jReleaseVersion}-src.zip][srczip]    | [apache-log4j-${Log4jReleaseVersion}-src.zip.sha512][srczipsha512]    | [apache-log4j-${Log4jReleaseVersion}-src.zip.asc][srczipasc]    |
 
 [bintar]: https://www.apache.org/dyn/closer.lua/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.tar.gz
 [bintarsha512]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.sha512
