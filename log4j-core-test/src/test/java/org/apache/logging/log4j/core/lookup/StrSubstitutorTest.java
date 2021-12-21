@@ -25,7 +25,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class StrSubstitutorTest {
 
@@ -42,7 +42,6 @@ public class StrSubstitutorTest {
     public static void after() {
         System.clearProperty(TESTKEY);
     }
-
 
     @Test
     public void testLookup() {
@@ -206,5 +205,35 @@ public class StrSubstitutorTest {
         }));
         subst.setRecursiveEvaluationAllowed(false);
         assertEquals("success ${foo:throw} success", subst.replace("${foo:a} ${foo:throw} ${foo:c}"));
+    }
+
+    @Test
+    public void testTopLevelLookupsWithoutRecursiveEvaluation() {
+        final Map<String, String> map = new HashMap<>();
+        map.put("key", "VaLuE");
+        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrSubstitutor subst = new StrSubstitutor(lookup);
+        subst.setRecursiveEvaluationAllowed(false);
+        assertEquals("value", subst.replace("${lower:${ctx:key}}"));
+    }
+
+    @Test
+    public void testTopLevelLookupsWithoutRecursiveEvaluation_doubleLower() {
+        final Map<String, String> map = new HashMap<>();
+        map.put("key", "VaLuE");
+        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrSubstitutor subst = new StrSubstitutor(lookup);
+        subst.setRecursiveEvaluationAllowed(false);
+        assertEquals("value", subst.replace("${lower:${lower:${ctx:key}}}"));
+    }
+
+    @Test
+    public void testTopLevelLookupsWithoutRecursiveEvaluationAndDefaultValueLookup() {
+        final Map<String, String> map = new HashMap<>();
+        map.put("key2", "TWO");
+        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrSubstitutor subst = new StrSubstitutor(lookup);
+        subst.setRecursiveEvaluationAllowed(false);
+        assertEquals("two", subst.replace("${lower:${ctx:key1:-${ctx:key2}}}"));
     }
 }

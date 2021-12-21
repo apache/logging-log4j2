@@ -17,16 +17,25 @@
 package org.apache.logging.log4j.core.lookup;
 
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.message.StringMapMessage;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  *
@@ -40,13 +49,13 @@ public class InterpolatorTest {
     private static final String TEST_CONTEXT_RESOURCE_NAME = "logging/context-name";
     private static final String TEST_CONTEXT_NAME = "app-1";
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         System.setProperty(TESTKEY, TESTVAL);
         System.setProperty(TESTKEY2, TESTVAL);
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         System.clearProperty(TESTKEY);
         System.clearProperty(TESTKEY2);
@@ -98,5 +107,54 @@ public class InterpolatorTest {
         assertLookupNotEmpty(lookup, "java:os");
         assertLookupNotEmpty(lookup, "java:locale");
         assertLookupNotEmpty(lookup, "java:hw");
+    }
+
+
+    @Test
+    public void testInterpolatorMapMessageWithNoPrefix() {
+        final HashMap<String, String> configProperties = new HashMap<>();
+        configProperties.put("key", "configProperties");
+        Interpolator interpolator = new Interpolator(configProperties);
+        final HashMap<String, String> map = new HashMap<>();
+        map.put("key", "mapMessage");
+        LogEvent event = Log4jLogEvent.newBuilder()
+                .setLoggerName(getClass().getName())
+                .setLoggerFqcn(Logger.class.getName())
+                .setLevel(Level.INFO)
+                .setMessage(new StringMapMessage(map))
+                .build();
+        assertEquals("configProperties", interpolator.lookup(event, "key"));
+    }
+
+    @Test
+    public void testInterpolatorMapMessageWithNoPrefixConfigDoesntMatch() {
+        Interpolator interpolator = new Interpolator(Collections.emptyMap());
+        final HashMap<String, String> map = new HashMap<>();
+        map.put("key", "mapMessage");
+        LogEvent event = Log4jLogEvent.newBuilder()
+                .setLoggerName(getClass().getName())
+                .setLoggerFqcn(Logger.class.getName())
+                .setLevel(Level.INFO)
+                .setMessage(new StringMapMessage(map))
+                .build();
+        assertNull(
+                interpolator.lookup(event, "key"),
+                "Values without a map prefix should not match MapMessages");
+    }
+
+    @Test
+    public void testInterpolatorMapMessageWithMapPrefix() {
+        final HashMap<String, String> configProperties = new HashMap<>();
+        configProperties.put("key", "configProperties");
+        Interpolator interpolator = new Interpolator(configProperties);
+        final HashMap<String, String> map = new HashMap<>();
+        map.put("key", "mapMessage");
+        LogEvent event = Log4jLogEvent.newBuilder()
+                .setLoggerName(getClass().getName())
+                .setLoggerFqcn(Logger.class.getName())
+                .setLevel(Level.INFO)
+                .setMessage(new StringMapMessage(map))
+                .build();
+        assertEquals("configProperties", interpolator.lookup(event, "map:key"));
     }
 }

@@ -76,7 +76,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
      * @since 2.1
      */
     public Interpolator(final StrLookup defaultLookup, final List<String> pluginPackages) {
-        this.defaultLookup = defaultLookup == null ? new MapLookup(new HashMap<String, String>()) : defaultLookup;
+        this.defaultLookup = defaultLookup == null ? new PropertiesLookup(new HashMap<String, String>()) : defaultLookup;
         final PluginManager manager = new PluginManager(CATEGORY);
         manager.collectPlugins(pluginPackages);
         final Map<String, PluginType<?>> plugins = manager.getPlugins();
@@ -104,12 +104,13 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
      * Creates the Interpolator using only Lookups that work without an event and initial properties.
      */
     public Interpolator(final Map<String, String> properties) {
-        this.defaultLookup = new MapLookup(properties == null ? new HashMap<String, String>() : properties);
+        this.defaultLookup = new PropertiesLookup(properties);
         // TODO: this ought to use the PluginManager
         strLookupMap.put("log4j", new Log4jLookup());
         strLookupMap.put("sys", new SystemPropertiesLookup());
         strLookupMap.put("env", new EnvironmentLookup());
         strLookupMap.put("main", MainMapLookup.MAIN_SINGLETON);
+        strLookupMap.put("map", new MapLookup(properties));
         strLookupMap.put("marker", new MarkerLookup());
         strLookupMap.put("java", new JavaLookup());
         strLookupMap.put("base64", new Base64StrLookup());
