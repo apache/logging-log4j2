@@ -177,7 +177,7 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
             final Filter filter, final boolean bufferedIo, boolean immediateFlush, final String fileName,
             final String level, final String maxSize, final String maxBackups) {
         org.apache.logging.log4j.core.Layout<?> fileLayout = null;
-        if (bufferedIo) {
+        if (!bufferedIo) {
             immediateFlush = true;
         }
         if (layout instanceof LayoutWrapper) {
