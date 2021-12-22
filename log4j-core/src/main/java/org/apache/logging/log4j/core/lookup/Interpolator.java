@@ -78,7 +78,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         for (final Map.Entry<String, PluginType<?>> entry : plugins.entrySet()) {
             try {
                 final Class<? extends StrLookup> clazz = entry.getValue().getPluginClass().asSubclass(StrLookup.class);
-                if (!clazz.getName().equals(JndiLookup.class.getName()) || JndiManager.isJndiEnabled()) {
+                if (!isJndiLookupClass(clazz) || JndiManager.isJndiEnabled()) {
                     strLookupMap.put(entry.getKey().toLowerCase(), ReflectionUtil.instantiate(clazz));
                 }
             } catch (final Throwable t) {
@@ -162,6 +162,24 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
 
     public Map<String, StrLookup> getStrLookupMap() {
         return strLookupMap;
+    }
+    
+    private final isJndiLookupClass(Class<? extends StrLookup> clazz) {
+        if (clazz == null) {
+            return false;
+        }
+        
+        try {
+            // regular check
+            return clazz.getName().equals(JndiLookup.class.getName());
+        } catch (final Throwable t) {            
+            // fallback check: in case the JndiLookup class was removed from the classpath, for security reasons.
+            // with additional safetyguard for future refactors, and/or repackaged dependencies:
+            return clazz.getName().contains(".log4j.") && clazz.getName().endsWith(".JndiLookup");
+            
+            // N.B.: consider the following unsafe in case of repackaged dependencies:
+            // return clazz.getName().equals("org.apache.logging.log4j.core.lookup.JndiLookup");
+        }
     }
 
     private void handleError(final String lookupKey, final Throwable t) {
