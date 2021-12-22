@@ -78,7 +78,7 @@ Upgrade to Log4j 2.3.1 (for Java 6), 2.12.3 (for Java 7), or 2.17.0 (for Java 8 
 Alternatively, this infinite recursion issue can be mitigated in configuration:
 
 * In PatternLayout in the logging configuration, replace Context Lookups like `${ctx:loginId}` or `$${ctx:loginId}` with Thread Context Map patterns (%X, %mdc, or %MDC).
-* Otherwise, in the configuration, remove references to Context Lookups like `${ctx:loginId}` or `$${ctx:loginId}` where they originate 
+* Otherwise, in the configuration, remove references to Context Lookups like `${ctx:loginId}` or `$${ctx:loginId}` where they originate
 from sources external to the application such as HTTP headers or user input.
 
 Note that only the log4j-core JAR file is impacted by this vulnerability.
@@ -317,7 +317,7 @@ This issue was discovered by Chen Zhaojun of Alibaba Cloud Security Team.
 - [https://issues.apache.org/jira/browse/LOG4J2-3201](https://issues.apache.org/jira/browse/LOG4J2-3201)
 - [https://issues.apache.org/jira/browse/LOG4J2-3198](https://issues.apache.org/jira/browse/LOG4J2-3198).
 
-## <a name="log4j-2.13.2"/> Fixed in Log4j 2.13.2 (Java 8)
+## <a name="log4j-2.12.3"/> Fixed in Log4j 2.12.3 (Java 7)
 <a name="CVE-2020-9488"/><a name="cve-2020-9488"/>
 [CVE-2020-9488](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-9488):  Improper validation of certificate with host mismatch in Apache Log4j SMTP appender.
 
