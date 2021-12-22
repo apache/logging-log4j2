@@ -44,7 +44,7 @@ $h4 Mitigation
 Upgrade to Log4j 2.3.1 (for Java 6), 2.12.3 (for Java 7), or 2.17.0 (for Java 8 and later).
 
 $h4 Reference
-Please refer to the [Security page](https://logging.apache.org/log4j/2.x/security.html#CVE-2021-45105) for details and mitigation measures for older versions of Log4j.
+Please refer to the [Security page](security.html#CVE-2021-45105) for details and mitigation measures for older versions of Log4j.
 
 
 <a name="CVE-2021-45046"/>
@@ -63,7 +63,7 @@ $h4 Mitigation
 Upgrade to Log4j 2.3.1 (for Java 6), 2.12.3 (for Java 7), or 2.17.0 (for Java 8 and later).
 
 $h4 Reference
-Please refer to the [Security page](https://logging.apache.org/log4j/2.x/security.html#CVE-2021-45046) for details and mitigation measures for older versions of Log4j.
+Please refer to the [Security page](security.html#CVE-2021-45046) for details and mitigation measures for older versions of Log4j.
 
 
 <a name="CVE-2021-44228"/>
@@ -84,7 +84,7 @@ $h4 Mitigation
 Upgrade to Log4j 2.3.1 (for Java 6), 2.12.3 (for Java 7), or 2.17.0 (for Java 8 and later).
 
 $h4 Reference
-Please refer to the [Security page](https://logging.apache.org/log4j/2.x/security.html#CVE-2021-44228) for details and mitigation measures for older versions of Log4j.
+Please refer to the [Security page](security.html#CVE-2021-44228) for details and mitigation measures for older versions of Log4j.
 
 
 $h2 Features
