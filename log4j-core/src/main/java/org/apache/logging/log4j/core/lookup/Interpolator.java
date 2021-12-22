@@ -164,7 +164,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         return strLookupMap;
     }
     
-    private final isJndiLookupClass(Class<? extends StrLookup> clazz) {
+    private final boolean isJndiLookupClass(Class<? extends StrLookup> clazz) {
         if (clazz == null) {
             return false;
         }
