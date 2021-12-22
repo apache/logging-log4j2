@@ -35,8 +35,6 @@ guide for up-to-date and detailed information on how to configure and use Log4j 
 (September 3, 2015)
 * [Apache Log4j 2.0值得升级吗](http://www.infoq.com/cn/news/2014/08/apache-log4j2)
 (August 5, 2014)
-* [Log4j2架构分析与实战](http://www.importnew.com/19467.html)
-(January 15, 2013)
 * [log4j2 使用详解](http://blog.csdn.net/lrenjun/article/details/8178875)
 (November 13, 2012)
 * [Log4j2配置文件详解](https://my.oschina.net/xianggao/blog/523401)
