@@ -30,6 +30,9 @@
          - "remove" - Removed
     -->
     <release version="2.17.1" date="2021-MM-dd" description="GA Release 2.17.1">
+      <action issue="LOG4J2-3284" dev="ckozak" type="fix" due-to="Michael Vorburger">
+        log4j-to-slf4j takes the provided MessageFactory into account
+      </action>
       <action issue="LOG4J2-3264" dev="ckozak" type="fix" due-to="Yanming Zhou">
         Fix MapLookup to lookup MapMessage before DefaultMap
       </action>
