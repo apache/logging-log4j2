@@ -317,7 +317,7 @@ This issue was discovered by Chen Zhaojun of Alibaba Cloud Security Team.
 - [https://issues.apache.org/jira/browse/LOG4J2-3201](https://issues.apache.org/jira/browse/LOG4J2-3201)
 - [https://issues.apache.org/jira/browse/LOG4J2-3198](https://issues.apache.org/jira/browse/LOG4J2-3198).
 
-## <a name="log4j-2.12.3"/> Fixed in Log4j 2.12.3 (Java 7)
+## <a name="log4j-2.13.2"/> Fixed in Log4j 2.13.2 (Java 8) and 2.12.3 (Java 7)
 <a name="CVE-2020-9488"/><a name="cve-2020-9488"/>
 [CVE-2020-9488](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-9488):  Improper validation of certificate with host mismatch in Apache Log4j SMTP appender.
 
