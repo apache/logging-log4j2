@@ -22,7 +22,7 @@ import org.apache.log4j.spi.LoggingEvent;
 /**
  * A test fixture used by {@code src/test/resources/LOG4J2-3247.properties}.
  */
-public class ZeroFilterFixture extends Filter {
+public class NeutralFilterFixture extends Filter {
 
     @Override
     public int decide(LoggingEvent event) {
