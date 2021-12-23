@@ -4267,7 +4267,7 @@ public interface Logger {
      */
     default void logMessage(Level level, Marker marker, String fqcn, StackTraceElement location, Message message,
         Throwable throwable) {
-
+        // noop
     }
 
     /**
@@ -4335,6 +4335,7 @@ public interface Logger {
 
     /**
      * Construct a log event.
+     * @param level Any level (ignoreed here).
      * @return a LogBuilder.
      * @since 2.13.0
      */
