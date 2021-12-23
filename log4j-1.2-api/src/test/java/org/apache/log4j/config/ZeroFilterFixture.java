@@ -19,6 +19,9 @@ package org.apache.log4j.config;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggingEvent;
 
+/**
+ * A test fixture used by {@code src/test/resources/LOG4J2-3247.properties}.
+ */
 public class ZeroFilterFixture extends Filter {
 
     @Override
