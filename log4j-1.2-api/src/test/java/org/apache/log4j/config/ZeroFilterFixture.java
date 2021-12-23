@@ -26,7 +26,7 @@ public class ZeroFilterFixture extends Filter {
 
     @Override
     public int decide(LoggingEvent event) {
-        return 0;
+        return NEUTRAL;
     }
 
 }
