@@ -175,6 +175,9 @@
       <action issue="LOG4J2-3289" dev="ckozak" type="fix">
         log4j-to-slf4j no longer re-interpolates formatted message contents.
       </action>
+      <action issue="LOG4J2-3284" dev="ckozak" type="fix" due-to="Michael Vorburger">
+        log4j-to-slf4j takes the provided MessageFactory into account
+      </action>
       <action issue="LOG4J2-3270" dev="ggregory" type="fix" due-to="Lee Dongjin">
         Reduce ignored package scope of KafkaAppender.
       </action>
