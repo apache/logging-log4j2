@@ -38,9 +38,6 @@ import org.slf4j.MDC;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-/**
- *
- */
 public class LoggerTest {
 
     private static final String CONFIG = "target/test-classes/logback-slf4j.xml";

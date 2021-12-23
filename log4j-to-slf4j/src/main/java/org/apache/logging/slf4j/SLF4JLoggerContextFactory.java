@@ -23,9 +23,6 @@ import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 
-/**
- *
- */
 public class SLF4JLoggerContextFactory implements LoggerContextFactory {
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
     private static final LoggerContext context = new SLF4JLoggerContext();
