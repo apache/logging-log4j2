@@ -29,7 +29,7 @@ public class PropertiesPropertySource implements PropertySource {
 
     private static final String PREFIX = "log4j2.";
 
-    private static final String KEY_PRIORITY = "log4j2.properties_load_priority";
+    private static final String KEY_PRIORITY = "log4j2.propertySourcePriority";
 
     private final int priority;
 
