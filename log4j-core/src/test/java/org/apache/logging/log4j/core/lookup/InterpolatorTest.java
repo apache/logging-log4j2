@@ -168,4 +168,14 @@ public class InterpolatorTest {
                 .build();
         assertEquals("mapMessage", interpolator.lookup(event, "map:key"));
     }
+
+    @Test
+    public void testDefaultLookups() {
+        Interpolator noPluginInterpolator = new Interpolator(Collections.emptyMap());
+        Interpolator pluginBasedInterpolator = new Interpolator(null, Collections.emptyList());
+        assertEquals(
+                pluginBasedInterpolator.getStrLookupMap().keySet(),
+                noPluginInterpolator.getStrLookupMap().keySet(),
+                "Plugin and non-plugin Interpolator constructors should support the same features");
+    }
 }
