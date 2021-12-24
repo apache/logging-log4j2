@@ -15,7 +15,7 @@
 * See the license for the specific language governing permissions and
 * limitations under the license.
 */
-package org.apache.logging.tojul;
+package org.apache.logging.log4j.tojul;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.tojul.JULLogger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -66,7 +67,7 @@ public class LoggerTest {
     }
 
     @Test public void infoNoLevel() {
-        // Note: We're not setting any level
+        // Note: We're not setting any level.
         log4jLogger.info("hello, world");
     }
 }
