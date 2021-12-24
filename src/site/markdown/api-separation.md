@@ -127,7 +127,7 @@ import org.slf4j.LoggerFactory;
 
 public class Log4j2Test {
 
-    protected static final Logger logger = LoggerFactory.getLogger(Log4j2Test.class);
+    private static final Logger logger = LoggerFactory.getLogger(Log4j2Test.class);
 
     public Log4j2Test(){
         logger.info( "Hello World!" );
@@ -168,7 +168,7 @@ import java.util.logging.Logger;
 
 public class Log4j2Test {
 
-    protected static final Logger logger = Logger.getLogger(Log4j2Test.class.getName());
+    private static final Logger logger = Logger.getLogger(Log4j2Test.class.getName());
 
     public Log4j2Test(){
         logger.info( "Hello World!" );
@@ -194,6 +194,44 @@ In order to route these messages to Log4j2, your dependencies would look like th
     <version>2.17.0</version>
 </dependency>
 ```
+
+## Using Log4j2 as a backend for Log4j1
+
+Some software may still depend on Log4j1, and in that case it may be infeasible
+to upgrade to Log4j2.  Assuming that our code looks like the following:
+
+```java
+import org.apache.log4j.Logger;
+
+public class Log4j2Test {
+
+    private static final Logger logger = Logger.getLogger(Log4j2Test.class);
+
+    public Log4j2Test(){
+        logger.info( "Hello World!" );
+    }
+}
+```
+
+we can then quickly and easily configure these messages to use Log4j2
+as the logging implementation by depending on the log4j-1.2-api like so:
+
+```
+<dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-1.2-api</artifactId>
+    <version>2.17.0</version>
+</dependency>
+<dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-core</artifactId>
+    <version>2.17.0</version>
+</dependency>
+```
+
+There are some limitations to this, but it is expected to work for the
+majority of common cases.  See the (manual)[https://logging.apache.org/log4j/2.x/manual/compatibility.html]
+for more information on this feature.
 
 # Conclusion
 
