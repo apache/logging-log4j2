@@ -133,3 +133,6 @@ reports, patches, or suggestions for improvement, see the Apache ${project.name}
 
 ${project.url}
 
+---
+
+Earlier release notes are accessible in [Release History](${project.url}changes-report.html).
