@@ -15,6 +15,9 @@
  * limitations under the license.
  */
 /**
- * SLF4J support.
+ * Java JDK java.util.logging (JUL) bridge.
+ * This sends all Log4j logs to JUL (not the other way around, there is another module for the opposite direction).
+ *
+ * @author <a href="http://www.vorburger.ch">Michael Vorburger.ch</a> for Google
  */
 package org.apache.logging.tojul;

@@ -17,31 +17,33 @@
 package org.apache.logging.tojul;
 
 import java.net.URI;
-
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
+ * Implementation of Log4j {@link LoggerContextFactory} SPI. This is a factory to produce the (one and only) {@link JULLoggerContext} instance.
  *
+ * @author <a href="http://www.vorburger.ch">Michael Vorburger.ch</a> for Google
  */
-public class SLF4JLoggerContextFactory implements LoggerContextFactory {
+public class JULLoggerContextFactory implements LoggerContextFactory {
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
-    private static final LoggerContext context = new SLF4JLoggerContext();
+    private static final LoggerContext context = new JULLoggerContext();
 
-    public SLF4JLoggerContextFactory() {
-        // LOG4J2-230, LOG4J2-204 (improve error reporting when misconfigured)
+    // This implementation is strongly inspired by org.apache.logging.slf4j.SLF4JLoggerContextFactory
+
+    public JULLoggerContextFactory() {
         boolean misconfigured = false;
         try {
-            LoaderUtil.loadClass("org.slf4j.helpers.Log4jLoggerFactory");
+            LoaderUtil.loadClass("org.apache.logging.log4j.jul.LogManager");
             misconfigured = true;
         } catch (final ClassNotFoundException classNotFoundIsGood) {
-            LOGGER.debug("org.slf4j.helpers.Log4jLoggerFactory is not on classpath. Good!");
+            LOGGER.debug("org.apache.logging.log4j.jul.LogManager is not on classpath. Good!");
         }
         if (misconfigured) {
-            throw new IllegalStateException("slf4j-impl jar is mutually exclusive with log4j-to-slf4j jar "
-                    + "(the first routes calls from SLF4J to Log4j, the second from Log4j to SLF4J)");
+            throw new IllegalStateException("log4j-jul JAR is mutually exclusive with the log4j-to-jul JAR"
+                    + "(the first routes calls from Log4j to JUL, the second from Log4j to JUL)");
         }
     }
 

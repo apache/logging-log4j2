@@ -19,10 +19,12 @@ package org.apache.logging.tojul;
 import org.apache.logging.log4j.spi.Provider;
 
 /**
- * Bind the Log4j API to SLF4J.
+ * Bind the Log4j API to JUL.
+ *
+ * @author <a href="http://www.vorburger.ch">Michael Vorburger.ch</a> for Google
  */
-public class SLF4JProvider extends Provider {
-    public SLF4JProvider() {
-        super(15, "2.6.0", SLF4JLoggerContextFactory.class, MDCContextMap.class);
+public class JULProvider extends Provider {
+    public JULProvider() {
+        super(15, "2.6.0", JULLoggerContextFactory.class, null);
     }
 }

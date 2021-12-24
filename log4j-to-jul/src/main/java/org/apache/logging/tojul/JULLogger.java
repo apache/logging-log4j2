@@ -16,94 +16,134 @@
  */
 package org.apache.logging.tojul;
 
+import static java.util.Objects.requireNonNull;
+
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.message.LoggerNameAwareMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
-import org.slf4j.MarkerFactory;
-import org.slf4j.spi.LocationAwareLogger;
 
 /**
+ * Implementation of {@link org.apache.logging.log4j.Logger} that's backed by a {@link Logger}.
  *
+ * This implementation currently ignores {@link Marker}.
+ *
+ * @author <a href="http://www.vorburger.ch">Michael Vorburger.ch</a> for Google
  */
-public class SLF4JLogger extends AbstractLogger {
-
+public class JULLogger extends AbstractLogger {
     private static final long serialVersionUID = 1L;
-    private final org.slf4j.Logger logger;
-    private final LocationAwareLogger locationAwareLogger;
 
-    public SLF4JLogger(final String name, final MessageFactory messageFactory, final org.slf4j.Logger logger) {
+    // @VisibleForTesting
+    final Logger logger;
+
+    // This implementation is inspired by org.apache.logging.slf4j.SLF4JLogger
+
+    public JULLogger(final String name, final MessageFactory messageFactory, final Logger logger) {
         super(name, messageFactory);
-        this.logger = logger;
-        this.locationAwareLogger = logger instanceof LocationAwareLogger ? (LocationAwareLogger) logger : null;
+        this.logger = requireNonNull(logger, "logger");
     }
 
-    public SLF4JLogger(final String name, final org.slf4j.Logger logger) {
+    public JULLogger(final String name, final Logger logger) {
         super(name);
-        this.logger = logger;
-        this.locationAwareLogger = logger instanceof LocationAwareLogger ? (LocationAwareLogger) logger : null;
-    }
-
-    private int convertLevel(final Level level) {
-        switch (level.getStandardLevel()) {
-            case DEBUG :
-                return LocationAwareLogger.DEBUG_INT;
-            case TRACE :
-                return LocationAwareLogger.TRACE_INT;
-            case INFO :
-                return LocationAwareLogger.INFO_INT;
-            case WARN :
-                return LocationAwareLogger.WARN_INT;
-            case ERROR :
-                return LocationAwareLogger.ERROR_INT;
-            default :
-                return LocationAwareLogger.ERROR_INT;
-        }
+        this.logger = requireNonNull(logger, "logger");
     }
 
     @Override
+    public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message, final Throwable t) {
+        java.util.logging.Level julLevel = convertLevel(level);
+        if (!logger.isLoggable(julLevel)) {
+            return;
+        }
+        LogRecord record = new LogRecord(julLevel, message.getFormattedMessage()); // TODO getFormat() or getFormattedMessage() ?
+        record.setLoggerName(getName()); // TODO getName() or fqcn parameter? What's that?
+        record.setParameters(message.getParameters());
+        record.setThrown(message.getThrowable());
+        logger.log(record);
+    }
+
+    // Convert Level in Log4j scale to JUL scale.
+    // See getLevel() for the mapping. Note that JUL's FINEST & CONFIG are never returned because Log4j has no such levels, and
+    // that Log4j's FATAL is simply mapped to JUL's SEVERE as is Log4j's ERROR because JUL does not distinguish between ERROR and FATAL.
+    private java.util.logging.Level convertLevel(final Level level) {
+        switch (level.getStandardLevel()) {
+            // Test in logical order of likely frequency of use
+            case ALL:
+                return java.util.logging.Level.ALL;
+            case TRACE:
+                return java.util.logging.Level.FINER;
+            case DEBUG:
+                return java.util.logging.Level.FINE;
+            case INFO:
+                return java.util.logging.Level.INFO;
+            case WARN:
+                return java.util.logging.Level.WARNING;
+            case ERROR:
+                return java.util.logging.Level.SEVERE;
+            case FATAL:
+                return java.util.logging.Level.SEVERE;
+            case OFF:
+                return java.util.logging.Level.OFF;
+            default:
+                // This is tempting: throw new IllegalStateException("Impossible Log4j Level encountered: " + level.intLevel());
+                // But it's not a great idea, security wise. If an attacker *SOMEHOW* managed to create a Log4j Level instance
+                // with an unexpected level (through JVM de-serialization, despite readResolve() { return Level.valueOf(this.name); },
+                // or whatever other means), then we would blow up in a very unexpected place and way. Let us therefore instead just
+                // return SEVERE for unexpected values, because that's more likely to be noticed than a FINER.
+                // Greetings, Michael Vorburger.ch <http://www.vorburger.ch>, for Google, on 2021.12.24.
+                return java.util.logging.Level.SEVERE;
+        }
+    }
+
+    /**
+     * Level in Log4j scale.
+     * JUL Levels are mapped as follows:
+     * <ul>
+     * <li>OFF => OFF
+     * <li>SEVERE => ERROR
+     * <li>WARNING => WARN
+     * <li>INFO => INFO
+     * <li>CONFIG => INFO
+     * <li>FINE => DEBUG
+     * <li>FINER => TRACE
+     * <li>FINEST => TRACE
+     * <li>ALL => ALL
+     * </ul>
+     *
+     * Numeric JUL Levels that don't match the known levels are matched to the closest one.
+     * For example, anything between OFF (Integer.MAX_VALUE) and SEVERE (1000) is returned as a Log4j FATAL.
+     */
+    @Override
     public Level getLevel() {
-        if (logger.isTraceEnabled()) {
+        int julLevel = logger.getLevel().intValue();
+        // Test in logical order of likely frequency of use
+        if (julLevel == java.util.logging.Level.ALL.intValue()) {
+            return Level.ALL;
+        }
+        if (julLevel <= java.util.logging.Level.FINER.intValue()) { // includes FINEST
             return Level.TRACE;
         }
-        if (logger.isDebugEnabled()) {
+        if (julLevel <= java.util.logging.Level.FINE.intValue()) {
             return Level.DEBUG;
         }
-        if (logger.isInfoEnabled()) {
+        if (julLevel <= java.util.logging.Level.INFO.intValue()) { // includes CONFIG
             return Level.INFO;
         }
-        if (logger.isWarnEnabled()) {
+        if (julLevel <= java.util.logging.Level.WARNING.intValue()) {
             return Level.WARN;
         }
-        if (logger.isErrorEnabled()) {
+        if (julLevel <= java.util.logging.Level.SEVERE.intValue()) {
             return Level.ERROR;
         }
-        // Option: throw new IllegalStateException("Unknown SLF4JLevel");
-        // Option: return Level.ALL;
         return Level.OFF;
     }
 
-    public org.slf4j.Logger getLogger() {
-        return locationAwareLogger != null ? locationAwareLogger : logger;
-    }
-
-    private org.slf4j.Marker getMarker(final Marker marker) {
-        if (marker == null) {
-            return null;
-        }
-        final org.slf4j.Marker slf4jMarker = MarkerFactory.getMarker(marker.getName());
-        final Marker[] parents = marker.getParents();
-        if (parents != null) {
-            for (final Marker parent : parents) {
-                final org.slf4j.Marker slf4jParent = getMarker(parent);
-                if (!slf4jMarker.contains(slf4jParent)) {
-                    slf4jMarker.add(slf4jParent);
-                }
-            }
-        }
-        return slf4jMarker;
+    private boolean isEnabledFor(final Level level, final Marker marker) {
+        // E.g. we're logging WARN and more, so getLevel() is 300, if we're asked if we're
+        // enabled for level ERROR which is 200, isLessSpecificThan() tests for >= so return true.
+        return getLevel().isLessSpecificThan(level);
     }
 
     @Override
@@ -203,56 +243,4 @@ public class SLF4JLogger extends AbstractLogger {
     public boolean isEnabled(final Level level, final Marker marker, final String data, final Throwable t) {
         return isEnabledFor(level, marker);
     }
-
-    private boolean isEnabledFor(final Level level, final Marker marker) {
-        final org.slf4j.Marker slf4jMarker = getMarker(marker);
-        switch (level.getStandardLevel()) {
-            case DEBUG :
-                return logger.isDebugEnabled(slf4jMarker);
-            case TRACE :
-                return logger.isTraceEnabled(slf4jMarker);
-            case INFO :
-                return logger.isInfoEnabled(slf4jMarker);
-            case WARN :
-                return logger.isWarnEnabled(slf4jMarker);
-            case ERROR :
-                return logger.isErrorEnabled(slf4jMarker);
-            default :
-                return logger.isErrorEnabled(slf4jMarker);
-
-        }
-    }
-
-    @Override
-    public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message, final Throwable t) {
-        if (locationAwareLogger != null) {
-            if (message instanceof LoggerNameAwareMessage) {
-                ((LoggerNameAwareMessage) message).setLoggerName(getName());
-            }
-            locationAwareLogger.log(getMarker(marker), fqcn, convertLevel(level), message.getFormattedMessage(),
-                    message.getParameters(), t);
-        } else {
-            switch (level.getStandardLevel()) {
-                case DEBUG :
-                    logger.debug(getMarker(marker), message.getFormattedMessage(), message.getParameters(), t);
-                    break;
-                case TRACE :
-                    logger.trace(getMarker(marker), message.getFormattedMessage(), message.getParameters(), t);
-                    break;
-                case INFO :
-                    logger.info(getMarker(marker), message.getFormattedMessage(), message.getParameters(), t);
-                    break;
-                case WARN :
-                    logger.warn(getMarker(marker), message.getFormattedMessage(), message.getParameters(), t);
-                    break;
-                case ERROR :
-                    logger.error(getMarker(marker), message.getFormattedMessage(), message.getParameters(), t);
-                    break;
-                default :
-                    logger.error(getMarker(marker), message.getFormattedMessage(), message.getParameters(), t);
-                    break;
-            }
-        }
-    }
-
 }

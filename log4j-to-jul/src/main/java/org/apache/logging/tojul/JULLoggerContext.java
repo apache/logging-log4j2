@@ -16,17 +16,21 @@
  */
 package org.apache.logging.tojul;
 
+import java.util.logging.Logger;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerRegistry;
-import org.slf4j.LoggerFactory;
 
 /**
+ * Implementation of Log4j {@link LoggerContext} SPI. This is a factory to produce {@link JULLogger} instances.
  *
+ * @author <a href="http://www.vorburger.ch">Michael Vorburger.ch</a> for Google
  */
-public class SLF4JLoggerContext implements LoggerContext {
+public class JULLoggerContext implements LoggerContext {
     private final LoggerRegistry<ExtendedLogger> loggerRegistry = new LoggerRegistry<>();
+
+    // This implementation is strongly inspired by org.apache.logging.slf4j.SLF4JLoggerContext
 
     @Override
     public Object getExternalContext() {
@@ -36,24 +40,18 @@ public class SLF4JLoggerContext implements LoggerContext {
     @Override
     public ExtendedLogger getLogger(final String name) {
         if (!loggerRegistry.hasLogger(name)) {
-            loggerRegistry.putIfAbsent(name, null, new SLF4JLogger(name, LoggerFactory.getLogger(name)));
+            loggerRegistry.putIfAbsent(name, null, new JULLogger(name, Logger.getLogger(name)));
         }
         return loggerRegistry.getLogger(name);
     }
 
     @Override
     public ExtendedLogger getLogger(final String name, final MessageFactory messageFactory) {
-        // FIXME according to LOG4J2-1180, the below line should be:
-        // FIXME if (!loggerRegistry.hasLogger(name, messageFactory)) {
-        if (!loggerRegistry.hasLogger(name)) {
-            // FIXME: should be loggerRegistry.putIfAbsent(name, messageFactory,
-            loggerRegistry.putIfAbsent(name, null,
-                    new SLF4JLogger(name, messageFactory, LoggerFactory.getLogger(name)));
+        if (!loggerRegistry.hasLogger(name, messageFactory)) {
+            loggerRegistry.putIfAbsent(name, messageFactory,
+                    new JULLogger(name, messageFactory, Logger.getLogger(name)));
         }
-        // FIXME should be return loggerRegistry.getLogger(name, messageFactory);
-        return loggerRegistry.getLogger(name);
-
-        // TODO applying the above fixes causes (log4j-to-slf4j) LoggerTest to fail
+        return loggerRegistry.getLogger(name, messageFactory);
     }
 
     @Override

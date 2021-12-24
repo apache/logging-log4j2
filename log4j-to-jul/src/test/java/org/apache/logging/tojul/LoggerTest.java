@@ -36,22 +36,23 @@ public class LoggerTest {
     // https://javadoc.io/doc/com.google.guava/guava-testlib/latest/com/google/common/testing/TestLogHandler.html
     private TestLogHandler handler;
 
-    @Before
-    public void setupLogCapture() {
+    @Before public void setupLogCapture() {
         handler = new TestLogHandler();
+        // Beware, the order here should not be changed!
+        // Let the bridge do whatever it does BEFORE we create a JUL Logger (which SHOULD be the same)
         log4jLogger = LogManager.getLogger(LoggerTest.class);
+        assertThat(log4jLogger).isInstanceOf(JULLogger.class);
         julLogger = java.util.logging.Logger.getLogger(LoggerTest.class.getName());
+        assertThat(julLogger).isSameInstanceAs(((JULLogger)log4jLogger).logger);
         julLogger.addHandler(handler);
     }
 
-    @After
-    public void clearLogs() {
+    @After public void clearLogs() {
         julLogger.removeHandler(handler);
     }
 
-    @Test
-    public void info() {
-        // TODO Programmatically enable INFO level logging in JUL?
+    @Test public void infoAtLevel() {
+        julLogger.setLevel(Level.INFO);
         log4jLogger.info("hello, world");
 
         List<LogRecord> logs = handler.getStoredLogRecords();
@@ -62,5 +63,10 @@ public class LoggerTest {
         assertThat(log1.getMessage()).isEqualTo("hello, world");
         assertThat(log1.getParameters()).isEmpty();
         assertThat(log1.getThrown()).isNull();
+    }
+
+    @Test public void infoNoLevel() {
+        // Note: We're not setting any level
+        log4jLogger.info("hello, world");
     }
 }
