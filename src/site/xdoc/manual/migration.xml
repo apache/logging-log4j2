@@ -25,65 +25,108 @@
     </properties>
 
     <body>
-        <section name="Migrating from Log4j 1.x">
+        <section name="Migrating from Log4j 1.x to 2.x">
+          <p>
+            This page explains how to migrate applications or libraries currently using the Log4j 1.x API
+            to use Log4j v2 as their main logging framework.
+          </p>
           <a name="Log4j1.2Bridge"/>
-          <subsection name="When to use this the Log4j 1.x bridge">
+          <subsection name="Option 1: use the Log4j 1.x bridge (log4j-1.2-api)">
             <p>
-              This bridge is useful as a dependency of an "application" which would like to use Log4j v2 as its main logging framework, if either that application itself hasn't been changed from using the Log4j 1.x API to the 1.x API, or if such an application depends on one or several (perhaps old) libraries that are "out of your control", and which themselves still contain code and thus a compile dependency on Log 1.x only.
+              You may be able to convert an application to Log4j 2 <em>without any code changes</em>
+              by replacing the Log4j 1.x jar file with Log4j 2's <code>log4j-1.2-api.jar</code>.
             </p>
             <p>
-              Once you have migrated all of your own application &amp; library code under your control, you may not need this bridge.
-              Note that when you use a library/framework that can be configured to use several logging frameworks, then you typically don't need this bridge either anymore, as you may be able to directly configure it to use Log4j v2 instead v1.
-              Some libraries/frameworks even auto-detect the presence of certain logging framework implementations on their classpath, and automagically switch their internal logging delegation accordingly; try simple removing the Log4j v1 dependency instead of replacing it with this bridge, and test if logging from all of your dependencies still work.
+              The Log4j 1.x bridge is useful when:
+            </p>
+            <ul>
+              <li>the application itself is (maybe partly) still using the Log4j 1.x API, or if
+              </li>
+              <li>the application depends on a library which depends on the Log 1.x API, or</li>
+              <li>
+                the application needs to support logging configurations in the old Log4j 1.x format.
+              </li>
+            </ul>
+            <p>
+              To use this option, applications need to use the following three jar files:
+              the Log4j 2 API jar (<code>log4j-api.jar</code>),
+              the Log4j 2 implementation jar (<code>log4j-core.jar</code>) and
+              the Log4j 1.x bridge jar (<code>log4j-1.2-api.jar</code>).
             </p>
             <p>
-              If you own or can contribute open source to the library you depend on, then you likely would prefer replacing its use of the Log4j v1 Logging API with the v2 API.
-              (It typically does not make sense for libraries to depend on this bridge and support both the v1 and v2 Log4j API, because end-users of such a library would still have to replace their Log4j configuration v1 with a different v2 config anyway; see below.)
+              For most applications this is sufficient.
+              This is a low-effort way to migrate, and may also allow for migration to proceed gradually over time.
+            </p>
+
+            <h4>Limitations of the Log4j 1.x bridge</h4>
+            <p>
+              Applications can migrate by just using the bridge without further code changes,
+              if they meet the following requirements:
+            </p>
+            <ol>
+              <li>They must not access methods and classes internal to the Log4j 1.x implementation such
+                as <code>Appender</code>s, <code>LoggerRepository</code> or <code>Category</code>'s
+                <code>callAppenders</code> method.</li>
+              <li>They must not programmatically configure Log4j.</li>
+              <li>They must not configure by calling the Log4j 1.x classes <code>DOMConfigurator</code> or
+                <code>PropertyConfigurator</code>.</li>
+            </ol>
+
+            <h4>When to stop using the Log4j 1.x bridge</h4>
+            <p>
+              Once you have migrated all of your own application and library code under your control, you may not need the bridge any more.
+              Note that when you use a library/framework that can be configured to use several logging frameworks,
+              then you typically don't need the log4j-1.2-api bridge either,
+              as you may be able to directly configure it to use Log4j v2 instead v1.
+              Some libraries/frameworks even auto-detect the presence of certain logging framework implementations on their classpath,
+              and automagically switch their internal logging delegation accordingly;
+              try simple removing the Log4j v1 dependency instead of replacing it with this bridge,
+              and test if logging from all of your dependencies still work.
+            </p>
+            <p>
+              If you own or can contribute open source to the library you depend on, consider replacing its use of the Log4j v1 API with the v2 API.
+            </p>
+            <p>
+              While the Log4j 1.x bridge supports logging configurations that use the Log4j 1.x properties or XML format,
+              migrating to the new 2.x format is not difficult.
+              The Log4j 2 web site contains extensive documentation on the 2.x configuration format.
+              Examples for migrating logging configurations from the v1 format to the v2 format are below.
             </p>
           </subsection>
-          <subsection name="Using the Log4j 1.x bridge">
-            <p>
-              Perhaps the simplest way to convert to using Log4j 2 is to replace the log4j 1.x jar file with
-              Log4j 2's <code>log4j-1.2-api.jar</code>. However, to use this successfully applications must meet the
-              following requirements:
-            </p>
-              <ol>
-                <li>They must not access methods and classes internal to the Log4j 1.x implementation such
-                  as <code>Appender</code>s, <code>LoggerRepository</code> or <code>Category</code>'s
-                  <code>callAppenders</code> method.</li>
-                <li>They must not programmatically configure Log4j.</li>
-                <li>They must not configure by calling the classes <code>DOMConfigurator</code> or
-                  <code>PropertyConfigurator</code>.</li>
-              </ol>
-          </subsection>
-          <subsection name="Converting to the Log4j 2 API">
+          <subsection name="Option 2: convert your application to the Log4j 2 API (log4j-api)">
             <p>For the most part, converting from the Log4j 1.x API to Log4j 2 should be fairly simple. Many
               of the log statements will require no modification. However, where necessary the following changes must be
               made.</p>
-              <ol>
-                <li>
-                  The main package in version 1 is <code>org.apache.log4j</code>, in version 2 it is
-                  <code>org.apache.logging.log4j</code>
-                </li>
-                <li>
-                  Calls to <code>org.apache.log4j.Logger.getLogger()</code> must be modified to
-                  <code>org.apache.logging.log4j.LogManager.getLogger()</code>.
-                </li>
-                <li>
-                  Calls to <code>org.apache.log4j.Logger.getRootLogger()</code> or
-                  <code>org.apache.log4j.LogManager.getRootLogger()</code> must be replaced with
-                  <code>org.apache.logging.log4j.LogManager.getRootLogger()</code>.</li>
-                <li>
-                  Calls to <code>org.apache.log4j.Logger.getLogger</code> that accept a <code>LoggerFactory</code> must
-                  remove the <code>org.apache.log4j.spi.LoggerFactory</code> and use one of Log4j 2's other extension
-                  mechanisms.
-                </li>
-                <li>
-                  Replace calls to <code>org.apache.log4j.Logger.getEffectiveLevel()</code> with
-                  <code>org.apache.logging.log4j.Logger.getLevel()</code>.
-                </li>
-                <li>
-                  Remove calls to <code>org.apache.log4j.LogManager.shutdown()</code>, they are not needed in version 2
+            <table width="100%">
+              <tr>
+                <th>Log4j 1.x</th>
+                <th>Log4j 2.x</th>
+              </tr>
+              <tr>
+                <td>Package name: <code>org.apache.log4j</code></td>
+                <td><code>org.apache.logging.log4j</code></td>
+              </tr>
+              <tr>
+                <td>Calls to <code>org.apache.log4j.Logger.getLogger()</code></td>
+                <td><code>org.apache.logging.log4j.LogManager.getLogger()</code></td>
+              </tr>
+              <tr>
+                <td>Calls to <code>org.apache.log4j.Logger.getRootLogger()</code> or
+                  <code>org.apache.log4j.LogManager.getRootLogger()</code></td>
+                <td> <code>org.apache.logging.log4j.LogManager.getRootLogger()</code></td>
+              </tr>
+              <tr>
+                <td>Calls to <code>org.apache.log4j.Logger.getLogger</code> that accept a <code>LoggerFactory</code></td>
+                <td> Remove the <code>org.apache.log4j.spi.LoggerFactory</code> and use one of Log4j 2's other extension
+                  mechanisms</td>
+              </tr>
+              <tr>
+                <td>Calls to <code>org.apache.log4j.Logger.getEffectiveLevel()</code></td>
+                <td><code>org.apache.logging.log4j.Logger.getLevel()</code></td>
+              </tr>
+              <tr>
+                <td>Calls to <code>org.apache.log4j.LogManager.shutdown()</code></td>
+                <td>Not needed in version 2
                   because the Log4j Core now automatically adds a JVM shutdown hook on start up to perform any Core
                   clean ups.
                   <ol>
@@ -97,29 +140,33 @@
                       to initiate shutdown manually.
                     </li>
                   </ol>
-                </li>
-                <li>
-                  Calls to <code>org.apache.log4j.Logger.setLevel()</code> or similar methods are not supported in the API.
-                  Applications should remove these. Equivalent functionality is provided in the Log4j 2 implementation
-                  classes, see <code>org.apache.logging.log4j.core.config.Configurator.setLevel()</code>, but may leave 
-                  the application susceptible to changes in Log4j 2 internals.                   
-                </li>
-                <li>
-                  Where appropriate, applications should convert to use parameterized messages instead of String
-                  concatenation.
-                </li>
-                <li>
-                  <a href="http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/MDC.html"><code>org.apache.log4j.MDC</code></a> and
+                </td>
+              </tr>
+              <tr>
+                <td>Calls to <code>org.apache.log4j.Logger.setLevel()</code> or similar methods
+                </td>
+                <td>Not supported at API level. Equivalent functionality is provided in the Log4j 2 implementation
+                  classes, see <code>org.apache.logging.log4j.core.config.Configurator.setLevel()</code>, but may leave
+                  the application susceptible to changes in Log4j 2 internals.</td>
+              </tr>
+              <tr>
+                <td>String concatenation like <code>logger.info("hi " + userName)</code></td>
+                <td>Parameterized messages like <code>logger.info("hi {}", userName)</code></td>
+              </tr>
+              <tr>
+                <td><a href="http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/MDC.html"><code>org.apache.log4j.MDC</code></a> and
                   <a href="http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/NDC.html"><code>org.apache.log4j.NDC</code></a>
-                  have been replaced by the <a href="thread-context.html">Thread Context</a>.
-                </li>
-              </ol>
+                </td>
+                <td><a href="thread-context.html">Thread Context</a></td>
+              </tr>
+            </table>
           </subsection>
-          <subsection name="Configuring Log4j 2">
+          <subsection name="Migrating logging configurations to the Log4j 2 format">
             <p>
               Although the Log4j 2 configuration syntax is different than that of Log4j 1.x, most, if not all, of
               the same functionality is available.
             </p>
+            <h4>Interpolation</h4>
             <p>
               Note that system property interpolation via the <code>${foo}</code> syntax has been extended to allow
               property lookups from many different sources. See the <a href="lookups.html">Lookups</a> documentation
@@ -127,10 +174,15 @@
               in Log4j 1.x, the syntax would be <code>${catalina.base}</code>. In Log4j 2, the syntax would be
               <code>${sys:catalina.base}</code>.
             </p>
+            <h4>Layouts</h4>
             <p>
-              Log4j 1.x has a XMLLayout which is different from the XmlLayout in Log4j 2, the log4j-1.2-api module
-              contains a <code>Log4j1XmlLayout</code> which produce output in the format as in Log4j 1.x.
+              Log4j 1.x has a XMLLayout which is different from the XmlLayout in Log4j 2. The log4j-1.2-api module
+              contains a <code>Log4j1XmlLayout</code> that produces output in the Log4j 1.x format.
+            </p>
+            <p>
               The Log4j 1.x <code>SimpleLayout</code> can be emulated with PatternLayout "%level - %m%n".
+            </p>
+            <p>
               The Log4j 1.x <code>TTCCLayout</code> can be emulated with PatternLayout "%r [%t] %p %c %notEmpty{%ndc }- %m%n".
             </p>
             <p>
@@ -139,10 +191,10 @@
               can be used to emulate "%x" and "%X" in Log4j 1.x PatternLayout ("%x" and %X" in Log4j 2 have a slightly different format).
             </p>
             <p>
-              Below are the example configurations for Log4j 1.x and their counterparts in Log4j 2.
+              Below are some example configurations for Log4j 1.x and their counterparts in Log4j 2.
             </p>
 
-            <h4>Sample 1 - Simple configuration using a Console Appender</h4>
+            <h4>Sample 1 - Migrating a simple Console Appender configuration</h4>
             <p>Log4j 1.x XML configuration</p>
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd">
@@ -176,7 +228,7 @@
   </Loggers>
 </Configuration>]]></pre>
 
-            <h4>Sample 2 - Simple configuration using a File Appender, XMLLayout and SimpleLayout</h4>
+            <h4>Sample 2 - Migrating a simple File Appender, XMLLayout and SimpleLayout configuration</h4>
             <p>Log4j 1.x XML configuration</p>
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd">
@@ -220,7 +272,7 @@
   </Loggers>
 </Configuration>]]></pre>
 
-            <h4>Sample 3 - SocketAppender</h4>
+            <h4>Sample 3 - Migrating a SocketAppender configuration</h4>
             <p>Log4j 1.x XML configuration. This example from Log4j 1.x is misleading. The SocketAppender does not
               actually use a Layout. Configuring one will have no effect.</p>
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -270,7 +322,7 @@
   </Loggers>
 </Configuration>]]></pre>
 
-            <h4>Sample 4 - AsyncAppender and TTCCLayout</h4>
+            <h4>Sample 4 - Migrating an AsyncAppender and TTCCLayout configuration</h4>
             <p>Log4j 1.x XML configuration using the AsyncAppender.</p>
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd">
@@ -311,7 +363,7 @@
 </Configuration>]]></pre>
 
 
-            <h4>Sample 5 - AsyncAppender with Console and File</h4>
+            <h4>Sample 5 - Migrating a configuration using AsyncAppender with Console and File</h4>
             <p>Log4j 1.x XML configuration using the AsyncAppender.</p>
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd">
