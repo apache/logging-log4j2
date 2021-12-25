@@ -43,6 +43,7 @@ the Log4j 1.x bridge jar (<code>log4j-1.2-api.jar</code>).
 For most applications this is sufficient.
 This is a low-effort way to migrate, and may also allow for migration to proceed gradually over time.
 
+<a name="EnablingLog4j1.2Bridge"/>
 #### Enabling the Log4j 1.x bridge
 
 Enable the Log4j 1.x bridge via one of the following steps:
@@ -53,6 +54,7 @@ Enable the Log4j 1.x bridge via one of the following steps:
 2. Set the Log4j 1 system property "log4j.configuration" to the location of the log4j 1 configuration file. The
    files must have a file extension of either ".properties" or ".xml".
 
+<a name="APICompatibility"/>
 #### API Compatibility
 
 Log4j 2 provides support for the Log4j 1 logging methods by providing alternate implementations
@@ -60,6 +62,7 @@ of the classes containing those methods. These classes may be found in the log4j
 distributed with the project. All calls to perform logging will result in the data passed to the logging methods
 to be forwarded to the Log4j2 API where they can be processed by implementations of the Log4j 2 API.
 
+<a name="ConfigurationCompatibility"/>
 #### Configuration Compatibility
 
 Log4j 2 provides support for Log4j 1 configuration files. Configuration of the Appenders, Layouts

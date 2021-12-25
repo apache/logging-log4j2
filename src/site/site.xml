@@ -88,8 +88,16 @@
     <menu name="Manual" inherit="top" img="img/glyphicons/book.png">
       <item name="Introduction" href="/manual/index.html"/>
       <item name="Architecture" href="/manual/architecture.html"/>
-      <item name="Log4j 1.x Compatibility" href="manual/compatibility.html"/>
-      <item name="Log4j 1.x Migration" href="manual/migration.html"/>
+
+      <item name="Log4j 1.x Migration" href="manual/migration.html" collapse="true">
+        <item name="Log4j 1.x Bridge" href="manual/migration.html#Log4j1.2Bridge"/>
+        <item name="Enabling the Bridge" href="manual/migration.html#EnablingLog4j1.2Bridge"/>
+        <item name="API Compatibility" href="manual/migration.html#APICompatibility"/>
+        <item name="Configuration Compatibility" href="manual/migration.html#ConfigurationCompatibility"/>
+        <item name="Bridge Limitations" href="manual/migration.html#Log4j1.2BridgeLimitations"/>
+        <item name="Migrating to the Log4j 2 API" href="manual/migration.html#Log4j2API"/>
+        <item name="Migrating to the Log4j 2 Configuration" href="manual/migration.html#Log4j2ConfigurationFormat"/>
+      </item>
 
       <item name="Java API" href="/manual/api.html" collapse="true">
         <item name="Log Builder" href="manual/logbuilder.html"/>
