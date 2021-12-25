@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.appender.routing;
+package org.apache.logging.log4j.jndi.appender.routing;
 
 import java.io.File;
 import java.util.Collections;
@@ -45,16 +45,16 @@ public class RoutingAppenderWithJndiTest {
     private ListAppender listAppender1;
     private ListAppender listAppender2;
 
-    public static LoggerContextRule loggerContextRule = new LoggerContextRule("log4j-routing-by-jndi.xml");
+    public static LoggerContextRule loggerContextRule = new LoggerContextRule(getLocation());
+
+    private static String getLocation() {
+        System.setProperty("log4j2.enableJndiLookup", "true");
+        return "log4j-routing-by-jndi.xml";
+    }
 
     @ClassRule
-    public static RuleChain rules = RuleChain.outerRule(new JndiRule(initBindings()))
+    public static RuleChain rules = RuleChain.outerRule(new JndiRule(Collections.emptyMap()))
         .around(loggerContextRule);
-
-    private static Map<String, Object> initBindings() {
-        System.setProperty("log4j2.enableJndi", "true");
-        return Collections.emptyMap();
-    }
 
     @Before
     public void before() throws NamingException {

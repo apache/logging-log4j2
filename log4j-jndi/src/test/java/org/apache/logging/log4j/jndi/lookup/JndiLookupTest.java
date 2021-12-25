@@ -14,13 +14,14 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.lookup;
+package org.apache.logging.log4j.jndi.lookup;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.core.test.junit.JndiRule;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -45,7 +46,7 @@ public class JndiLookupTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty("log4j2.enableJndi", "true");
+        System.setProperty("log4j2.enableJndiLookup", "true");
     }
 
     private Map<String, Object> createBindings() {

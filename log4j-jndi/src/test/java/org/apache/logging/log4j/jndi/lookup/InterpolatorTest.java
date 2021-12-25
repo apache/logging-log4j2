@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.lookup;
+package org.apache.logging.log4j.jndi.lookup;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -22,6 +22,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.lookup.Interpolator;
+import org.apache.logging.log4j.core.lookup.MapLookup;
+import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.core.test.junit.JndiRule;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -30,7 +33,10 @@ import org.junit.Test;
 import org.junit.rules.ExternalResource;
 import org.junit.rules.RuleChain;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 /**
  *
@@ -44,18 +50,23 @@ public class InterpolatorTest {
     private static final String TEST_CONTEXT_RESOURCE_NAME = "logging/context-name";
     private static final String TEST_CONTEXT_NAME = "app-1";
 
-    @BeforeClass
-    public static void beforeClass() {
-        System.setProperty(TESTKEY, TESTVAL);
-        System.setProperty(TESTKEY2, TESTVAL);
-        System.setProperty("log4j2.enableJndi", "true");
-    }
+    @ClassRule
+    public static RuleChain rules = RuleChain.outerRule(new ExternalResource() {
+        @Override
+        protected void before() throws Throwable {
+            System.setProperty(TESTKEY, TESTVAL);
+            System.setProperty(TESTKEY2, TESTVAL);
+            System.setProperty("log4j2.enableJndiLookup", "true");
+        }
 
-    @AfterClass
-    public static void afterClass() {
-        System.clearProperty(TESTKEY);
-        System.clearProperty(TESTKEY2);
-    }
+        @Override
+        protected void after() {
+            System.clearProperty(TESTKEY);
+            System.clearProperty(TESTKEY2);
+            System.clearProperty("log4j2.enableJndiLookup");
+        }
+    }).around(new JndiRule(
+            JndiLookup.CONTAINER_JNDI_RESOURCE_PATH_PREFIX + TEST_CONTEXT_RESOURCE_NAME, TEST_CONTEXT_NAME));
 
     @Test
     public void testLookup() {
@@ -76,6 +87,8 @@ public class InterpolatorTest {
         ThreadContext.clearMap();
         value = lookup.lookup("ctx:" + TESTKEY);
         assertEquals(TESTVAL, value);
+        value = lookup.lookup("jndi:" + TEST_CONTEXT_RESOURCE_NAME);
+        assertEquals(TEST_CONTEXT_NAME, value);
     }
 
     private void assertLookupNotEmpty(final StrLookup lookup, final String key) {

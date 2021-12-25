@@ -434,6 +434,11 @@
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-jndi</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-jul</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -1692,6 +1697,7 @@
     <module>log4j-slf4j18-impl</module>
     <module>log4j-to-slf4j</module>
     <module>log4j-jcl</module>
+    <module>log4j-jndi</module>
     <module>log4j-csv</module>
     <module>log4j-flume-ng</module>
     <module>log4j-taglib</module>
