@@ -95,7 +95,10 @@
             </p>
           </subsection>
           <subsection name="Option 2: convert your application to the Log4j 2 API (log4j-api)">
-            <p>For the most part, converting from the Log4j 1.x API to Log4j 2 should be fairly simple. Many
+            <p>
+              The other migration option involves changing your application code to use
+              the Log4j 2 API.
+              For the most part, converting from the Log4j 1.x API to Log4j 2 should be fairly simple. Many
               of the log statements will require no modification. However, where necessary the following changes must be
               made.</p>
             <p><img src="../images/whichjar-log4j-api.png" alt="Using log4j 2 via the log4j 2.x API" /></p>
@@ -165,8 +168,6 @@
           </subsection>
           <subsection name="Migrating logging configurations to the Log4j 2 format">
             <p>
-              The other migration option involves changing your application code to use
-              the Log4j 2 API.
               Although the Log4j 2 configuration syntax is different than that of Log4j 1.x, most, if not all, of
               the same functionality is available.
             </p>
