@@ -30,8 +30,27 @@
          - "remove" - Removed
     -->
     <release version="2.17.1" date="2021-MM-dd" description="GA Release 2.17.1">
+      <!-- FIXES -->
+      <action issue="LOG4J2-3288" dev="ckozak" type="fix">
+        Interpolator non-plugin constructor registers all lookups from log4j-core, previously it was missing event, sd, and bundle.
+      </action>
+      <action issue="LOG4J2-3204" dev="vy" type="fix" due-to="Francis-FY">
+        Correct SpringLookup package name in Interpolator.
+      </action>
+      <action issue="LOG4J2-3284" dev="ckozak" type="fix" due-to="Michael Vorburger">
+        log4j-to-slf4j takes the provided MessageFactory into account
+      </action>
+      <action issue="LOG4J2-3264" dev="ckozak" type="fix" due-to="Yanming Zhou">
+        Fix MapLookup to lookup MapMessage before DefaultMap
+      </action>
+      <action issue="LOG4J2-3274" dev="rgoers" type="fix" due-to="Faisal Khan Thayub Khan">
+        Buffered I/O checked had inverted logic in RollingFileAppenderBuidler.
+      </action>
       <action dev="ggregory" type="fix">
         Fix NPE when input is null in StrSubstitutor.replace(String, Properties).
+      </action>
+      <action issue="LOG4J2-3270" dev="ckozak" type="fix">
+        Lookups with no prefix only read values from the configuration properties as expected.
       </action>
     </release>
     <release version="2.17.0" date="2021-12-17" description="GA Release 2.17.0">
@@ -41,10 +60,6 @@
       <action issue="LOG4J2-3242" dev="rgoers" type="fix">
         Limit JNDI to the java protocol only. JNDI will remain disabled by default. Rename JNDI enablement property from
         'log4j2.enableJndi' to 'log4j2.enableJndiLookup', 'log4j2.enableJndiJms', and 'log4j2.enableJndiContextSelector'.
-      </action>
-      <action issue="LOG4J2-3242" dev="rgoers" type="fix">
-        Limit JNDI to the java protocol only. JNDI will remain disabled by default. The enablement
-        property has been renamed to 'log4j2.enableJndiJava'
       </action>
       <action issue="LOG4J2-3241" dev="rgoers" type="fix">
         Do not declare log4j-api-java9 and log4j-core-java9 as dependencies as it causes problems with the
@@ -61,6 +76,7 @@
       </action>
     </release>
     <release version="2.16.0" date="2021-12-13" description="GA Release 2.16.0">
+      <!-- FIXES -->
       <action issue="LOG4J2-3208" dev="rgoers" type="fix">
         Disable JNDI by default. Require log4j2.enableJndi to be set to true to allow JNDI.
       </action>

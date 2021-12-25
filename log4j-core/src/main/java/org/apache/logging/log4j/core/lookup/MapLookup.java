@@ -43,7 +43,7 @@ public class MapLookup implements StrLookup {
     }
 
     /**
-     * Creates a new instance backed by a Map. Used by the default lookup.
+     * Creates a new instance backed by a Map.
      *
      * @param map
      *        the map of keys to values, may be null
@@ -119,17 +119,14 @@ public class MapLookup implements StrLookup {
     @Override
     public String lookup(final LogEvent event, final String key) {
         final boolean isMapMessage = event != null && event.getMessage() instanceof MapMessage;
-        if (map == null && !isMapMessage) {
-            return null;
-        }
-        if (map != null && map.containsKey(key)) {
-            final String obj = map.get(key);
+        if (isMapMessage) {
+            final String obj = ((MapMessage) event.getMessage()).get(key);
             if (obj != null) {
                 return obj;
             }
         }
-        if (isMapMessage) {
-            return ((MapMessage) event.getMessage()).get(key);
+        if (map != null) {
+            return map.get(key);
         }
         return null;
     }
@@ -146,7 +143,7 @@ public class MapLookup implements StrLookup {
      */
     @Override
     public String lookup(final String key) {
-        if (map == null) {
+        if (key == null || map == null) {
             return null;
         }
         return map.get(key);

@@ -58,7 +58,7 @@ import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
 import org.apache.logging.log4j.core.lookup.Interpolator;
-import org.apache.logging.log4j.core.lookup.MapLookup;
+import org.apache.logging.log4j.core.lookup.PropertiesLookup;
 import org.apache.logging.log4j.core.lookup.RuntimeStrSubstitutor;
 import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
@@ -633,7 +633,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             }
         } else {
             final Map<String, String> map = this.getComponent(CONTEXT_PROPERTIES);
-            final StrLookup lookup = map == null ? null : new MapLookup(map);
+            final StrLookup lookup = map == null ? null : new PropertiesLookup(map);
             Interpolator interpolator = new Interpolator(lookup, pluginPackages);
             subst.setVariableResolver(interpolator);
             configurationStrSubstitutor.setVariableResolver(interpolator);

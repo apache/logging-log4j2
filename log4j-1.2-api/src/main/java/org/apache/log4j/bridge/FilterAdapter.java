@@ -33,11 +33,6 @@ public class FilterAdapter extends AbstractFilter {
     }
 
     @Override
-    public void start() {
-        filter.activateOptions();
-    }
-
-    @Override
     public Result filter(LogEvent event) {
         LoggingEvent loggingEvent = new LogEventAdapter(event);
         Filter next = filter;
@@ -52,5 +47,20 @@ public class FilterAdapter extends AbstractFilter {
             next = filter.getNext();
         }
         return Result.NEUTRAL;
+    }
+
+    /**
+     * Gets the actual filter.
+     *
+     * @return the actual filter.
+     * @since 2.17.1
+     */
+    public Filter getFilter() {
+        return filter;
+    }
+
+    @Override
+    public void start() {
+        filter.activateOptions();
     }
 }

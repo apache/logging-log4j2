@@ -38,9 +38,6 @@ import org.slf4j.MDC;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-/**
- *
- */
 public class LoggerTest {
 
     private static final String CONFIG = "target/test-classes/logback-slf4j.xml";
@@ -125,7 +122,7 @@ public class LoggerTest {
 
     @Test
     public void getLogger_String_MessageFactoryMismatchNull() {
-        final Logger testLogger =  testMessageFactoryMismatch("getLogger_String_MessageFactoryMismatchNull",
+        final Logger testLogger = testMessageFactoryMismatch("getLogger_String_MessageFactoryMismatchNull",
             StringFormatterMessageFactory.INSTANCE, null);
         testLogger.debug("%,d", Integer.MAX_VALUE);
         assertThat(list.strList, hasSize(1));
@@ -137,7 +134,7 @@ public class LoggerTest {
         assertThat(testLogger, is(notNullValue()));
         checkMessageFactory(messageFactory1, testLogger);
         final Logger testLogger2 = LogManager.getLogger(name, messageFactory2);
-        checkMessageFactory(messageFactory1, testLogger2);
+        checkMessageFactory(messageFactory2, testLogger2);
         return testLogger;
     }
 

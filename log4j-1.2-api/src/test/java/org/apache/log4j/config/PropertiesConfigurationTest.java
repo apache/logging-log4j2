@@ -27,10 +27,12 @@ import org.apache.log4j.ListAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.bridge.AppenderAdapter;
+import org.apache.log4j.bridge.FilterAdapter;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.filter.Filterable;
 import org.junit.Test;
 
 /**
@@ -39,9 +41,28 @@ import org.junit.Test;
 public class PropertiesConfigurationTest {
 
     @Test
-    public void testFilter() throws Exception {
+    public void testConfigureNullPointerException() throws Exception {
         try (LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/LOG4J2-3247.properties")) {
             // [LOG4J2-3247] configure() should not throw an NPE.
+            Configuration configuration = loggerContext.getConfiguration();
+            assertNotNull(configuration);
+            Appender appender = configuration.getAppender("CONSOLE");
+            assertNotNull(appender);
+        }
+    }
+
+    @Test
+    public void testFilter() throws Exception {
+        try (LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/LOG4J2-3247.properties")) {
+            // LOG4J2-3281 PropertiesConfiguration.buildAppender not adding filters to appender
+            Configuration configuration = loggerContext.getConfiguration();
+            assertNotNull(configuration);
+            Appender appender = configuration.getAppender("CONSOLE");
+            assertNotNull(appender);
+            Filterable filterable = (Filterable) appender;
+            FilterAdapter filter = (FilterAdapter) filterable.getFilter();
+            assertNotNull(filter);
+            assertTrue(filter.getFilter() instanceof NeutralFilterFixture);
         }
     }
 

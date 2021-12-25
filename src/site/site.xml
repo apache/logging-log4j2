@@ -38,7 +38,6 @@
       <item name="Logging Wiki" href="https://cwiki.apache.org/confluence/display/LOGGING/Log4j"/>
       <item name="Apache" href="https://www.apache.org/"/>
       <item name="Logging Services" href="https://logging.apache.org/"/>
-      <item name="Sonar" href="https://analysis.apache.org/dashboard/index/org.apache.logging.log4j:log4j"/>
       <item name="GitHub" href="https://github.com/apache/logging-log4j2"/>
     </links>
 
@@ -301,8 +300,8 @@
 
     <menu name="Legacy Sites" inherit="top" img="img/glyphicons/link.png">
       <item name="Log4j 1.2 - End of Life" href="http://logging.apache.org/log4j/1.2/"/>
-      <item name="Log4j 2.3 - Java 6" href="http://logging.apache.org/log4j/log4j-2.3/"/>
-      <item name="Log4j 2.12.2 - Java 7" href="http://logging.apache.org/log4j/log4j-2.12.2"/>
+      <item name="Log4j 2.3.1 - Java 6" href="http://logging.apache.org/log4j/log4j-2.3.1/"/>
+      <item name="Log4j 2.12.3 - Java 7" href="http://logging.apache.org/log4j/log4j-2.12.3/"/>
     </menu>
 
     <menu name="Components" inherit="top" img="img/glyphicons/cog.png">

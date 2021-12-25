@@ -232,7 +232,7 @@ public class StrSubstitutor implements ConfigurationAware {
      * @param valueMap  the map with the variables' values, may be null
      */
     public StrSubstitutor(final Map<String, String> valueMap) {
-        this(new MapLookup(valueMap), DEFAULT_PREFIX, DEFAULT_SUFFIX, DEFAULT_ESCAPE);
+        this(new PropertiesLookup(valueMap), DEFAULT_PREFIX, DEFAULT_SUFFIX, DEFAULT_ESCAPE);
     }
 
     /**
@@ -244,7 +244,7 @@ public class StrSubstitutor implements ConfigurationAware {
      * @throws IllegalArgumentException if the prefix or suffix is null
      */
     public StrSubstitutor(final Map<String, String> valueMap, final String prefix, final String suffix) {
-        this(new MapLookup(valueMap), prefix, suffix, DEFAULT_ESCAPE);
+        this(new PropertiesLookup(valueMap), prefix, suffix, DEFAULT_ESCAPE);
     }
 
     /**
@@ -258,7 +258,7 @@ public class StrSubstitutor implements ConfigurationAware {
      */
     public StrSubstitutor(final Map<String, String> valueMap, final String prefix, final String suffix,
                           final char escape) {
-        this(new MapLookup(valueMap), prefix, suffix, escape);
+        this(new PropertiesLookup(valueMap), prefix, suffix, escape);
     }
 
     /**
@@ -273,7 +273,7 @@ public class StrSubstitutor implements ConfigurationAware {
      */
     public StrSubstitutor(final Map<String, String> valueMap, final String prefix, final String suffix,
                               final char escape, final String valueDelimiter) {
-        this(new MapLookup(valueMap), prefix, suffix, escape, valueDelimiter);
+        this(new PropertiesLookup(valueMap), prefix, suffix, escape, valueDelimiter);
     }
 
     /**

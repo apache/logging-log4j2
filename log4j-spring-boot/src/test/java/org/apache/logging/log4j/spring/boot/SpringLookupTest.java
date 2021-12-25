@@ -18,6 +18,8 @@ package org.apache.logging.log4j.spring.boot;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.lookup.Interpolator;
+import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.junit.Test;
 import org.springframework.mock.env.MockEnvironment;
 
@@ -54,6 +56,24 @@ public class SpringLookupTest {
         result = lookup.lookup("profiles.default[2]");
         assertNull("Did not get index out of bounds", result);
         result = lookup.lookup("app.property");
+        assertNotNull("Did not find property", result);
+        assertEquals("Incorrect property value", "test", result);
+    }
+
+    @Test
+    public void testSpringLookupWithDefaultInterpolator() {
+        MockEnvironment env = new MockEnvironment();
+        env.setActiveProfiles("test");
+        env.setProperty("app.property", "test");
+        LoggerContext context = (LoggerContext) LogManager.getContext(false);
+        context.putObject(Log4j2CloudConfigLoggingSystem.ENVIRONMENT_KEY, env);
+
+        StrLookup lookup = new Interpolator();
+        String result = lookup.lookup("spring:profiles.active");
+        assertNotNull("No active profiles", result);
+        assertEquals("Incorrect active profile", "test", result);
+
+        result = lookup.lookup("spring:app.property");
         assertNotNull("Did not find property", result);
         assertEquals("Incorrect property value", "test", result);
     }

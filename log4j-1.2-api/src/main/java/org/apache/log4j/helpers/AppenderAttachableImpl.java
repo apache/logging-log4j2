@@ -40,7 +40,7 @@ public class AppenderAttachableImpl implements AppenderAttachable {
     }
 
     @Override
-    public Enumeration getAllAppenders() {
+    public Enumeration<Appender> getAllAppenders() {
         return Collections.enumeration(appenders.values());
     }
 
