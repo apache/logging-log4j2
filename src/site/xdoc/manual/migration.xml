@@ -163,6 +163,8 @@
           </subsection>
           <subsection name="Migrating logging configurations to the Log4j 2 format">
             <p>
+              The other migration option involves changing your application code to use
+              the Log4j 2 API.
               Although the Log4j 2 configuration syntax is different than that of Log4j 1.x, most, if not all, of
               the same functionality is available.
             </p>
