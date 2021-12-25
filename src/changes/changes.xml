@@ -172,6 +172,9 @@
       </action>
     </release>
     <release version="2.17.1" date="2021-MM-DD" description="GA Release 2.17.1">
+      <action issue="LOG4J2-3289" dev="ckozak" type="fix">
+        log4j-to-slf4j no longer re-interpolates formatted message contents.
+      </action>
       <action issue="LOG4J2-3270" dev="ggregory" type="fix" due-to="Lee Dongjin">
         Reduce ignored package scope of KafkaAppender.
       </action>
