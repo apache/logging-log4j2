@@ -53,6 +53,7 @@
               the Log4j 2 implementation jar (<code>log4j-core.jar</code>) and
               the Log4j 1.x bridge jar (<code>log4j-1.2-api.jar</code>).
             </p>
+            <p><img src="../images/whichjar-log4j-1.2-api.png" alt="Using log4j 2 via the log4j 1.x API" /></p>
             <p>
               For most applications this is sufficient.
               This is a low-effort way to migrate, and may also allow for migration to proceed gradually over time.
@@ -97,6 +98,7 @@
             <p>For the most part, converting from the Log4j 1.x API to Log4j 2 should be fairly simple. Many
               of the log statements will require no modification. However, where necessary the following changes must be
               made.</p>
+            <p><img src="../images/whichjar-log4j-api.png" alt="Using log4j 2 via the log4j 2.x API" /></p>
             <table width="100%">
               <tr>
                 <th>Log4j 1.x</th>
