@@ -277,6 +277,24 @@ public class StrSubstitutorTest {
         map.put("key16", "finalVal");
         final StrLookup lookup = new Interpolator(new MapLookup(map));
         final StrSubstitutor subst = new StrSubstitutor(lookup);
+        subst.setRecursiveEvaluationAllowed(false);
+        subst.setEnableSubstitutionInVariables(true);
+        assertEquals("finalVal", subst.replace("${key${key15}}"));
+        assertEquals("${key${key14}}", subst.replace("${key${key14}}"));
+        assertEquals("${key${key0}}", subst.replace("${key${key0}}"));
+    }
+
+    @Test
+    public void testRecursionLimitWhenRecursingInBothVariableNamesAndFullString() {
+        final Map<String, String> map = new HashMap<>();
+        for (int i = 0; i < 15; i++) {
+            int next = i + 1;
+            map.put("key" + i, "${key" + next +"}");
+        }
+        map.put("key15", "16");
+        map.put("key16", "finalVal");
+        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrSubstitutor subst = new StrSubstitutor(lookup);
         subst.setRecursiveEvaluationAllowed(true);
         subst.setEnableSubstitutionInVariables(true);
         assertEquals("finalVal", subst.replace("${key${key10}}"));
