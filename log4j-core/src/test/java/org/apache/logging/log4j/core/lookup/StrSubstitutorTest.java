@@ -261,8 +261,9 @@ public class StrSubstitutorTest {
         final StrLookup lookup = new Interpolator(new MapLookup(map));
         final StrSubstitutor subst = new StrSubstitutor(lookup);
         subst.setRecursiveEvaluationAllowed(true);
+        subst.setEnableSubstitutionInVariables(false);
         assertEquals("finalVal", subst.replace("${key10}"));
-        assertEquals("${key0}", subst.replace("${key0}"));
+        assertEquals("${key10}", subst.replace("${key0}"));
     }
 
     @Test
@@ -277,6 +278,7 @@ public class StrSubstitutorTest {
         final StrLookup lookup = new Interpolator(new MapLookup(map));
         final StrSubstitutor subst = new StrSubstitutor(lookup);
         subst.setRecursiveEvaluationAllowed(true);
+        subst.setEnableSubstitutionInVariables(true);
         assertEquals("finalVal", subst.replace("${key${key10}}"));
         assertEquals("${key${key0}}", subst.replace("${key${key0}}"));
     }
