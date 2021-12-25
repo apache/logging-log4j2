@@ -136,6 +136,18 @@ public final class KafkaAppender extends AbstractAppender {
         return new Builder<B>().asBuilder();
     }
 
+    private static final String[] KAFKA_CLIENT_PACKAGES = new String[] { "org.apache.kafka.common", "org.apache.kafka.clients" };
+
+    private static boolean isRecursiveLogging(final LogEvent event) {
+        for (final String prefix : KAFKA_CLIENT_PACKAGES) {
+            if (event.getLoggerName().startsWith(prefix)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private final KafkaManager manager;
 
     private KafkaAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
@@ -146,9 +158,7 @@ public final class KafkaAppender extends AbstractAppender {
 
     @Override
     public void append(final LogEvent event) {
-        if (event.getLoggerName() != null &&
-            (event.getLoggerName().startsWith("org.apache.kafka.common") ||
-                event.getLoggerName().startsWith("org.apache.kafka.clients"))) {
+        if (event.getLoggerName() != null && isRecursiveLogging(event)) {
             LOGGER.warn("Recursive logging from [{}] for appender [{}].", event.getLoggerName(), getName());
         } else {
             try {
