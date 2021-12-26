@@ -176,7 +176,7 @@ public class Log4j2Test {
 ```
 
 We can then also route these messages to the Log4j2 core by adding in the JUL bridge,
-and setting the java.util.logging.manager property in the JVM(see the documentation on
+and setting `-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager` on the JVM (see the documentation on
 [the JUL adapter](https://logging.apache.org/log4j/2.x/log4j-jul/index.html) for
 more information as to how this works).
 
