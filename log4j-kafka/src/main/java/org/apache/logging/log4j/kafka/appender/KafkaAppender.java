@@ -78,38 +78,6 @@ public final class KafkaAppender extends AbstractAppender {
             return new KafkaAppender(getName(), layout, getFilter(), isIgnoreExceptions(), getPropertyArray(), kafkaManager);
         }
 
-        public String getTopic() {
-            return topic;
-        }
-
-        public boolean isSyncSend() {
-            return syncSend;
-        }
-
-        public boolean isSendEventTimestamp() {
-            return sendEventTimestamp;
-        }
-
-        public B setTopic(final String topic) {
-            this.topic = topic;
-            return asBuilder();
-        }
-
-        public B setKey(final String key) {
-            this.key = key;
-            return asBuilder();
-        }
-
-        public B setSyncSend(final boolean syncSend) {
-            this.syncSend = syncSend;
-            return asBuilder();
-        }
-
-        public B setSendEventTimestamp(boolean sendEventTimestamp) {
-            this.sendEventTimestamp = sendEventTimestamp;
-            return asBuilder();
-        }
-
         public Integer getRetryCount() {
             Integer intRetryCount = null;
             try {
@@ -120,8 +88,40 @@ public final class KafkaAppender extends AbstractAppender {
             return intRetryCount;
         }
 
+        public String getTopic() {
+            return topic;
+        }
+
+        public boolean isSendEventTimestamp() {
+            return sendEventTimestamp;
+        }
+
+        public boolean isSyncSend() {
+            return syncSend;
+        }
+
+        public B setKey(final String key) {
+            this.key = key;
+            return asBuilder();
+        }
+
         public B setRetryCount(final String retryCount) {
             this.retryCount = retryCount;
+            return asBuilder();
+        }
+
+        public B setSendEventTimestamp(boolean sendEventTimestamp) {
+            this.sendEventTimestamp = sendEventTimestamp;
+            return asBuilder();
+        }
+
+        public B setSyncSend(final boolean syncSend) {
+            this.syncSend = syncSend;
+            return asBuilder();
+        }
+
+        public B setTopic(final String topic) {
+            this.topic = topic;
             return asBuilder();
         }
     }
@@ -157,16 +157,6 @@ public final class KafkaAppender extends AbstractAppender {
         }
     }
 
-    private void tryAppend(final LogEvent event) throws ExecutionException, InterruptedException, TimeoutException {
-        final Layout<? extends Serializable> layout = getLayout();
-        byte[] data;
-        Long eventTimestamp;
-
-        data = layout.toByteArray(event);
-        eventTimestamp = event.getTimeMillis();
-        manager.send(data, eventTimestamp);
-    }
-
     @Override
     public void start() {
         super.start();
@@ -185,5 +175,15 @@ public final class KafkaAppender extends AbstractAppender {
     @Override
     public String toString() {
         return "KafkaAppender{" + "name=" + getName() + ", state=" + getState() + ", topic=" + manager.getTopic() + '}';
+    }
+
+    private void tryAppend(final LogEvent event) throws ExecutionException, InterruptedException, TimeoutException {
+        final Layout<? extends Serializable> layout = getLayout();
+        byte[] data;
+        Long eventTimestamp;
+
+        data = layout.toByteArray(event);
+        eventTimestamp = event.getTimeMillis();
+        manager.send(data, eventTimestamp);
     }
 }
