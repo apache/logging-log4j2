@@ -62,7 +62,7 @@ In this case, it is appropriate to start the first line of a commit with '(doc)'
 
 + [Project Guidelines](https://logging.apache.org/log4j/2.x/guidelines.html)
 + [Code Style Guide](https://logging.apache.org/log4j/2.x/javastyle.html)
-+ [Apache Log4j 2 JIRA project page](https://issues.apache.org/jira/projects/LOG4J2/)
++ [Apache Log4j 2 JIRA project page](https://issues.apache.org/jira/projects/LOG4J2/issues)
 + [Contributor License Agreement][cla]
 + [General GitHub documentation](https://docs.github.com/)
 + [GitHub pull request documentation](https://docs.github.com/en/pull-requests)
