@@ -1455,7 +1455,7 @@
           <webAccessUrl>${project.scm.url}</webAccessUrl>
           <anonymousConnection>${project.scm.connection}</anonymousConnection>
           <developerConnection>${project.scm.developerConnection}</developerConnection>
-          <scmTag>log4j-${Log4jReleaseVersion}</scmTag>
+          <scmTag>rel/${Log4jReleaseVersion}</scmTag>
         </configuration>
       </plugin>
       <!-- Surefire report -->
