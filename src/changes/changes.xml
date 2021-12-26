@@ -171,6 +171,11 @@
 		    Fixes incorrect constructor call in LocalizedMessageFactory.
       </action>
     </release>
+    <release version="2.17.1" date="2021-MM-DD" description="GA Release 2.17.1">
+      <action issue="LOG4J2-3270" dev="ggregory" type="fix" due-to="Lee Dongjin">
+        Reduce ignored package scope of KafkaAppender.
+      </action>
+    </release>
     <release version="2.17.0" date="2021-12-17" description="GA Release 2.17.0">
       <action issue="LOG4J2-3230" dev="ckozak" type="fix">
         Fix string substitution recursion.
