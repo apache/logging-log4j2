@@ -22,6 +22,7 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Appender;
@@ -43,7 +44,7 @@ import org.apache.logging.log4j.core.layout.SerializedLayout;
 @Plugin(name = "Kafka", category = Node.CATEGORY, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class KafkaAppender extends AbstractAppender {
 
-	/**
+    /**
 	 * Builds KafkaAppender instances.
 	 * 
 	 * @param <B> The type to build
@@ -113,6 +114,8 @@ public final class KafkaAppender extends AbstractAppender {
 
 	}
 
+    private static final String[] KAFKA_CLIENT_PACKAGES = new String[] { "org.apache.kafka.common", "org.apache.kafka.clients" };
+
 	@Deprecated
 	public static KafkaAppender createAppender(final Layout<? extends Serializable> layout, final Filter filter,
 			final String name, final boolean ignoreExceptions, final String topic, final Property[] properties,
@@ -127,6 +130,16 @@ public final class KafkaAppender extends AbstractAppender {
 				properties, key);
 		return new KafkaAppender(name, layout, filter, ignoreExceptions, kafkaManager, null, null);
 	}
+
+	/**
+	 * Tests if the given log event is from a Kafka Producer implementation.
+	 *
+	 * @param event The event to test.
+	 * @return true to avoid recursion and skip logging, false to log.
+	 */
+	private static boolean isRecursive(final LogEvent event) {
+	    return Stream.of(KAFKA_CLIENT_PACKAGES).anyMatch(prefix -> event.getLoggerName().startsWith(prefix));
+    }
 
 	/**
 	 * Creates a builder for a KafkaAppender.
@@ -152,7 +165,7 @@ public final class KafkaAppender extends AbstractAppender {
 
 	@Override
 	public void append(final LogEvent event) {
-		if (event.getLoggerName() != null && event.getLoggerName().startsWith("org.apache.kafka")) {
+		if (event.getLoggerName() != null && isRecursive(event)) {
 			LOGGER.warn("Recursive logging from [{}] for appender [{}].", event.getLoggerName(), getName());
 		} else {
 			try {
