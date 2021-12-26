@@ -55,7 +55,7 @@
       <action issue="LOG4J2-3270" dev="ckozak" type="fix">
         Lookups with no prefix only read values from the configuration properties as expected.
       </action>
-      <action issue="LOG4J2-3270" dev="ggregory" type="fix" due-to="Lee Dongjin">
+      <action issue="LOG4J2-3256" dev="ggregory" type="fix" due-to="Lee Dongjin">
         Reduce ignored package scope of KafkaAppender.
       </action>
     </release>
