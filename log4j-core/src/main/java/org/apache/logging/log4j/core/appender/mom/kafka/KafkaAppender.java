@@ -43,8 +43,6 @@ import org.apache.logging.log4j.core.layout.SerializedLayout;
 @Plugin(name = "Kafka", category = Node.CATEGORY, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class KafkaAppender extends AbstractAppender {
 
-	private final Integer retryCount;
-
 	/**
 	 * Builds KafkaAppender instances.
 	 * 
@@ -79,29 +77,6 @@ public final class KafkaAppender extends AbstractAppender {
 					getPropertyArray(), getRetryCount());
 		}
 
-		public String getTopic() {
-			return topic;
-		}
-
-		public boolean isSyncSend() {
-			return syncSend;
-		}
-
-		public B setTopic(final String topic) {
-			this.topic = topic;
-			return asBuilder();
-		}
-
-		public B setSyncSend(final boolean syncSend) {
-			this.syncSend = syncSend;
-			return asBuilder();
-		}
-
-		public B setKey(final String key) {
-			this.key = key;
-			return asBuilder();
-		}
-
 		public Integer getRetryCount() {
 			Integer intRetryCount = null;
 			try {
@@ -111,6 +86,29 @@ public final class KafkaAppender extends AbstractAppender {
 			}
 			return intRetryCount;
 
+		}
+
+		public String getTopic() {
+			return topic;
+		}
+
+		public boolean isSyncSend() {
+			return syncSend;
+		}
+
+		public B setKey(final String key) {
+			this.key = key;
+			return asBuilder();
+		}
+
+		public B setSyncSend(final boolean syncSend) {
+			this.syncSend = syncSend;
+			return asBuilder();
+		}
+
+		public B setTopic(final String topic) {
+			this.topic = topic;
+			return asBuilder();
 		}
 
 	}
@@ -139,6 +137,8 @@ public final class KafkaAppender extends AbstractAppender {
 	public static <B extends Builder<B>> B newBuilder() {
 		return new Builder<B>().asBuilder();
 	}
+
+	private final Integer retryCount;
 
 	private final KafkaManager manager;
 
@@ -176,21 +176,6 @@ public final class KafkaAppender extends AbstractAppender {
 		}
 	}
 
-	private void tryAppend(final LogEvent event) throws ExecutionException, InterruptedException, TimeoutException {
-		final Layout<? extends Serializable> layout = getLayout();
-		byte[] data;
-		if (layout instanceof SerializedLayout) {
-			final byte[] header = layout.getHeader();
-			final byte[] body = layout.toByteArray(event);
-			data = new byte[header.length + body.length];
-			System.arraycopy(header, 0, data, 0, header.length);
-			System.arraycopy(body, 0, data, header.length, body.length);
-		} else {
-			data = layout.toByteArray(event);
-		}
-		manager.send(data);
-	}
-
 	@Override
 	public void start() {
 		super.start();
@@ -209,5 +194,20 @@ public final class KafkaAppender extends AbstractAppender {
 	@Override
 	public String toString() {
 		return "KafkaAppender{" + "name=" + getName() + ", state=" + getState() + ", topic=" + manager.getTopic() + '}';
+	}
+
+	private void tryAppend(final LogEvent event) throws ExecutionException, InterruptedException, TimeoutException {
+		final Layout<? extends Serializable> layout = getLayout();
+		byte[] data;
+		if (layout instanceof SerializedLayout) {
+			final byte[] header = layout.getHeader();
+			final byte[] body = layout.toByteArray(event);
+			data = new byte[header.length + body.length];
+			System.arraycopy(header, 0, data, 0, header.length);
+			System.arraycopy(body, 0, data, header.length, body.length);
+		} else {
+			data = layout.toByteArray(event);
+		}
+		manager.send(data);
 	}
 }
