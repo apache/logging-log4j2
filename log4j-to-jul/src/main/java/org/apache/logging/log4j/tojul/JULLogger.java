@@ -71,6 +71,7 @@ public final class JULLogger extends AbstractLogger {
     private java.util.logging.Level convertLevel(final Level level) {
         switch (level.getStandardLevel()) {
             // Test in logical order of likely frequency of use
+            // Must be kept in sync with #getLevel()
             case ALL:
                 return java.util.logging.Level.ALL;
             case TRACE:
@@ -108,7 +109,7 @@ public final class JULLogger extends AbstractLogger {
      * <li>INFO => INFO
      * <li>CONFIG => INFO
      * <li>FINE => DEBUG
-     * <li>FINER => TRACE
+     * <li>FINER => DEBUG (inspired by https://github.com/qos-ch/slf4j/blob/6e784e4ca3a5ae9c5dc421fcd01a417af5bf5ace/jul-to-slf4j/src/main/java/org/slf4j/bridge/SLF4JBridgeHandler.java)
      * <li>FINEST => TRACE
      * <li>ALL => ALL
      * </ul>
@@ -120,13 +121,14 @@ public final class JULLogger extends AbstractLogger {
     public Level getLevel() {
         int julLevel = logger.getLevel().intValue();
         // Test in logical order of likely frequency of use
+        // Must be kept in sync with #convertLevel()
         if (julLevel == java.util.logging.Level.ALL.intValue()) {
             return Level.ALL;
         }
-        if (julLevel <= java.util.logging.Level.FINER.intValue()) { // includes FINEST
+        if (julLevel <= java.util.logging.Level.FINEST.intValue()) {
             return Level.TRACE;
         }
-        if (julLevel <= java.util.logging.Level.FINE.intValue()) {
+        if (julLevel <= java.util.logging.Level.FINE.intValue()) {  // includes FINER
             return Level.DEBUG;
         }
         if (julLevel <= java.util.logging.Level.INFO.intValue()) { // includes CONFIG
