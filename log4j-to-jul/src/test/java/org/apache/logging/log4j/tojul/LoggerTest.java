@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.tojul.JULLogger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,7 +61,7 @@ public class LoggerTest {
         assertThat(log1.getLoggerName()).isEqualTo(LoggerTest.class.getName());
         assertThat(log1.getLevel()).isEqualTo(Level.INFO);
         assertThat(log1.getMessage()).isEqualTo("hello, world");
-        assertThat(log1.getParameters()).isEmpty();
+        assertThat(log1.getParameters()).isNull();
         assertThat(log1.getThrown()).isNull();
     }
 

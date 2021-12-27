@@ -57,9 +57,10 @@ public final class JULLogger extends AbstractLogger {
         if (!logger.isLoggable(julLevel)) {
             return;
         }
-        LogRecord record = new LogRecord(julLevel, message.getFormattedMessage()); // TODO getFormat() or getFormattedMessage() ?
-        record.setLoggerName(getName()); // TODO getName() or fqcn parameter? What's that?
-        record.setParameters(message.getParameters());
+        LogRecord record = new LogRecord(julLevel, message.getFormattedMessage()); // NOT getFormat()
+        // NOT record.setParameters(message.getParameters()); BECAUSE getFormattedMessage() NOT getFormat()
+        record.setLoggerName(getName());
+        // TODO Use fqcn parameter for record.setSourceClassName() + record.setSourceMethodName(), perhaps with a LogRecord subclass to lazily evaluate the call-site when it's requested given the compute cost of StackWalker/etc.
         record.setThrown(t == null ? message.getThrowable() : t);
         logger.log(record);
     }
