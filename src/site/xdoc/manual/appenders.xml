@@ -995,9 +995,13 @@ CREATE TABLE logs (
         </subsection>
         <a name="JDBCAppender"/>
         <subsection name="JDBCAppender">
-          <p>The JDBCAppender writes log events to a relational database table using standard JDBC. It can be configured
-            to obtain JDBC connections using a JNDI <code>DataSource</code> or a custom factory method. Whichever
-            approach you take, it <strong><em>must</em></strong> be backed by a connection pool. Otherwise, logging
+          <p>The JDBC Appender writes log events to a relational database table using standard JDBC. It can be configured
+            to obtain JDBC connections using a JNDI <code>DataSource</code> or a custom factory method.</p>
+          <p>The JDBC Appender configured with a <code>DataSource</code> requires JNDI support so as of release 2.17.1 
+            this appender will not function unless <code>log4j2.enableJndiJdbc=true</code> is configured as a system property 
+            or environment variable. See the <a href="./configuration.html#enableJndiJdbc">enableJndiJdbc</a> system property.</p>
+          <p>
+            Whichever approach you take, it <strong><em>must</em></strong> be backed by a connection pool. Otherwise, logging
             performance will suffer greatly. If batch statements are supported by the configured JDBC driver and a
             <code>bufferSize</code> is configured to be a positive number, then log events will be batched. Note that as
             of Log4j 2.8, there are two ways to configure log event to column mappings: the original <code>ColumnConfig</code>

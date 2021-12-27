@@ -97,9 +97,10 @@ public class MapLookupTest {
     }
 
     @Test
-    public void testLookupDefaultMapIsCheckedBeforeMapMessage() {
+    public void testLookupMapMessageIsCheckedBeforeDefaultMap() {
         final HashMap<String, String> map = new HashMap<>();
         map.put("A", "ADefault");
+        map.put("B", "BDefault");
         final HashMap<String, Object> eventMap = new HashMap<>();
         eventMap.put("A", "AEvent");
         final MapMessage message = new MapMessage<>(eventMap);
@@ -107,7 +108,8 @@ public class MapLookupTest {
                 .setMessage(message)
                 .build();
         final MapLookup lookup = new MapLookup(map);
-        assertEquals("ADefault", lookup.lookup(event, "A"));
+        assertEquals("AEvent", lookup.lookup(event, "A"));
+        assertEquals("BDefault", lookup.lookup(event, "B"));
     }
 
     @Test

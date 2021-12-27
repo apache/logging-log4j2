@@ -14,16 +14,26 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.log4j.config;
+package org.apache.logging.log4j.core.appender.db.jdbc;
 
-import org.apache.log4j.spi.Filter;
-import org.apache.log4j.spi.LoggingEvent;
+import javax.sql.DataSource;
 
-public class ZeroFilterFixture extends Filter {
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
-    @Override
-    public int decide(LoggingEvent event) {
-        return 0;
+/**
+ * Abstract unit test for JDBC using a {@link DataSource} configuration.
+ */
+public abstract class AbstractJdbcDataSourceTest {
+
+    @AfterClass
+    public static void afterClass() throws Exception {
+        System.clearProperty("log4j2.enableJndiJdbc");
+    }
+
+    @BeforeClass
+    public static void beforeClass() throws Exception {
+        System.setProperty("log4j2.enableJndiJdbc", "true");
     }
 
 }

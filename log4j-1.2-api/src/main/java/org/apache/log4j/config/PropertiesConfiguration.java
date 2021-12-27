@@ -24,6 +24,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.SortedMap;
 import java.util.StringTokenizer;
@@ -330,9 +331,9 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
      * Parse non-root elements, such non-root categories and renderers.
      */
     private void parseLoggers(Properties props) {
-        Enumeration enumeration = props.propertyNames();
+        Enumeration<?> enumeration = props.propertyNames();
         while (enumeration.hasMoreElements()) {
-            String key = (String) enumeration.nextElement();
+            String key = Objects.toString(enumeration.nextElement(), null);
             if (key.startsWith(CATEGORY_PREFIX) || key.startsWith(LOGGER_PREFIX)) {
                 String loggerName = null;
                 if (key.startsWith(CATEGORY_PREFIX)) {

@@ -109,6 +109,9 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         strLookupMap.put("java", new JavaLookup());
         strLookupMap.put("lower", new LowerLookup());
         strLookupMap.put("upper", new UpperLookup());
+        strLookupMap.put("bundle", new ResourceBundleLookup());
+        strLookupMap.put("event", new EventLookup());
+        strLookupMap.put("sd", new StructuredDataLookup());
         // JNDI
         if (JndiManager.isJndiLookupEnabled()) {
             try {
@@ -148,7 +151,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         }
         try {
             strLookupMap.put(LOOKUP_KEY_SPRING,
-                    Loader.newCheckedInstanceOf("org.apache.logging.log4j.spring.cloud.config.client.SpringLookup", StrLookup.class));
+                    Loader.newCheckedInstanceOf("org.apache.logging.log4j.spring.boot.SpringLookup", StrLookup.class));
         } catch (final Exception ignored) {
             handleError(LOOKUP_KEY_SPRING, ignored);
         }

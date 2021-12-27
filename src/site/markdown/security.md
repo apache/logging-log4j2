@@ -49,13 +49,13 @@ privately to the [Log4j Security Team](mailto:private@logging.apache.org). Thank
 <a name="CVE-2021-45105"/><a name="cve-2021-45046"/>
 ## <a name="log4j-2.17.0"/> Fixed in Log4j 2.17.0 (Java 8), 2.12.3 (Java 7) and 2.3.1 (Java 6)
 
-[CVE-2021-45105](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45105):  
+[CVE-2021-45105](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45105):
 Apache Log4j2 does not always protect from infinite recursion in lookup evaluation
 
 | [CVE-2021-45105](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45105) | Denial of Service |
 | ---------------   | -------- |
-| Severity          | High |
-| Base CVSS Score   | 7.5 (AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H) |
+| Severity          | Moderate |
+| Base CVSS Score   | 5.9 (AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H) |
 | Versions Affected | All versions from 2.0-beta9 to 2.16.0, excluding 2.12.3 |
 
 ### Description
@@ -116,7 +116,7 @@ Independently discovered by Hideki Okamoto of Akamai Technologies, Guy Lederfein
 <a name="CVE-2021-45046"/><a name="cve-2021-45046"/>
 ## <a name="log4j-2.16.0"/> Fixed in Log4j 2.16.0 (Java 8) and Log4j 2.12.2 (Java 7)
 
-[CVE-2021-45046](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45046):  
+[CVE-2021-45046](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45046):
 Apache Log4j2 Thread Context Lookup Pattern vulnerable to remote code execution in certain non-default configurations
 
 | [CVE-2021-45046](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45046) | Remote Code Execution |
@@ -397,24 +397,35 @@ need to read the security advisories to find out more about the flaw.
 
 We use the following descriptions to decide on the impact rating to give each vulnerability:
 
+| Severity | CVSS v3 Score Range |
+| -------- | ------------------- |
+| Critical | 9.0 - 10.0          |
+| High     | 7.0 - 8.9           |
+| Moderate | 4.0 - 6.9           |
+| Low      | 0.1 - 3.9           |
+
 ### Critical
 A vulnerability rated with a Critical impact is one which could potentially be exploited by
 a remote attacker to get Log4j to execute arbitrary code (either as the user the server is
 running as, or root). These are the sorts of vulnerabilities that could be exploited automatically
-by worms.
+by worms. Critical vulnerabilities score between 9.0 and 10.0 on the
+[CVSS v3 calculator](https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator).
 
-### Important
-A vulnerability rated as Important impact is one which could result in the compromise of data
+### High
+A vulnerability rated as High impact is one which could result in the compromise of data
 or availability of the server. For Log4j this includes issues that allow an easy remote denial
 of service (something that is out of proportion to the attack or with a lasting consequence),
 access to arbitrary files outside of the context root, or access to files that should be otherwise
-prevented by limits or authentication.
+prevented by limits or authentication. High vulnerabilities score between 7.0 and 8.9 on the
+[CVSS v3 calculator](https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator).
 
 ### Moderate
 A vulnerability is likely to be rated as Moderate if there is significant mitigation to make the
 issue less of an impact. This might be because the flaw does not affect likely configurations, or
-it is a configuration that isn't widely used.
+it is a configuration that isn't widely used. Moderate vulnerabilities score between 4.0 and 6.9 on the
+[CVSS v3 calculator](https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator).
 
 ### Low
 All other security flaws are classed as a Low impact. This rating is used for issues that are believed
-to be extremely hard to exploit, or where an exploit gives minimal consequences.
+to be extremely hard to exploit, or where an exploit gives minimal consequences. Low vulnerabilities
+score between 0.1 and 3.9 on the [CVSS v3 calculator](https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator).

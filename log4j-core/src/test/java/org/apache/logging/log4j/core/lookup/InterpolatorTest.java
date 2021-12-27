@@ -166,6 +166,16 @@ public class InterpolatorTest {
                 .setLevel(Level.INFO)
                 .setMessage(new StringMapMessage(map))
                 .build();
-        assertEquals("configProperties", interpolator.lookup(event, "map:key"));
+        assertEquals("mapMessage", interpolator.lookup(event, "map:key"));
+    }
+
+    @Test
+    public void testDefaultLookups() {
+        Interpolator noPluginInterpolator = new Interpolator(Collections.emptyMap());
+        Interpolator pluginBasedInterpolator = new Interpolator(null, Collections.emptyList());
+        assertEquals(
+                pluginBasedInterpolator.getStrLookupMap().keySet(),
+                noPluginInterpolator.getStrLookupMap().keySet(),
+                "Plugin and non-plugin Interpolator constructors should support the same features");
     }
 }

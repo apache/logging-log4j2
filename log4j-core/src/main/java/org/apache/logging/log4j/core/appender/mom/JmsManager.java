@@ -131,10 +131,9 @@ public class JmsManager extends AbstractManager {
                     logger().error("Error creating JmsManager using JmsManagerConfiguration [{}]", data, e);
                     return null;
                 }
-            } else {
-                logger().error("JNDI must be enabled by setting log4j2.enableJndiJms=true");
-                return null;
             }
+            logger().error("JNDI must be enabled by setting log4j2.enableJndiJms=true");
+            return null;
         }
     }
 
@@ -353,7 +352,7 @@ public class JmsManager extends AbstractManager {
      * @param object
      *            The LogEvent or String message to wrap.
      * @return A new JMS message containing the provided object.
-     * @throws JMSException
+     * @throws JMSException if the JMS provider fails to create this message due to some internal error.
      */
     public Message createMessage(final Serializable object) throws JMSException {
         if (object instanceof String) {
@@ -374,7 +373,7 @@ public class JmsManager extends AbstractManager {
      * Creates a MessageConsumer on this Destination using the current Session.
      *
      * @return A MessageConsumer on this Destination.
-     * @throws JMSException
+     * @throws JMSException if the session fails to create a consumer due to some internal error.
      */
     public MessageConsumer createMessageConsumer() throws JMSException {
         return this.session.createConsumer(this.destination);
@@ -388,7 +387,7 @@ public class JmsManager extends AbstractManager {
      * @param destination
      *            The JMS Destination for the MessageProducer
      * @return A MessageProducer on this Destination.
-     * @throws JMSException
+     * @throws JMSException if the session fails to create a MessageProducer due to some internal error.
      */
     public MessageProducer createMessageProducer(final Session session, final Destination destination)
             throws JMSException {
