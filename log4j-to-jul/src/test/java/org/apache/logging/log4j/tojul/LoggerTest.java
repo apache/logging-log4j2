@@ -81,6 +81,12 @@ public class LoggerTest {
         assertThat(log1.getThrown()).isNull();
     }
 
+    @Test public void infoAtInfoWithLogBuilder() {
+        julLogger.setLevel(Level.INFO);
+        log4jLogger.atInfo().log("hello, world");
+        assertThat(handler.getStoredLogRecords()).hasSize(1);
+    }
+
     @Test public void infoAtInfoOnParent() {
         julLogger.getParent().setLevel(Level.INFO);
         log4jLogger.info("hello, world");
@@ -91,5 +97,80 @@ public class LoggerTest {
         // We're not setting any level.
         log4jLogger.info("hello, world");
         assertThat(handler.getStoredLogRecords()).hasSize(1);
+    }
+
+    @Test public void debugAtInfo() {
+        julLogger.setLevel(Level.INFO);
+        log4jLogger.debug("hello, world");
+        assertThat(handler.getStoredLogRecords()).isEmpty();
+    }
+
+    @Test public void debugAtFiner() {
+        julLogger.setLevel(Level.FINER);
+        log4jLogger.debug("hello, world");
+        assertThat(handler.getStoredLogRecords()).hasSize(1);
+    }
+
+    @Test public void traceAtFine() {
+        julLogger.setLevel(Level.FINE);
+        log4jLogger.trace("hello, world");
+        assertThat(handler.getStoredLogRecords()).isEmpty();
+    }
+
+    @Test public void traceAtAllOnParent() {
+        julLogger.getParent().setLevel(Level.ALL);
+        log4jLogger.trace("hello, world");
+        assertThat(handler.getStoredLogRecords()).hasSize(1);
+    }
+
+    @Test public void fatalAtOff() {
+        julLogger.getParent().setLevel(Level.OFF);
+        log4jLogger.fatal("hello, world");
+        assertThat(handler.getStoredLogRecords()).isEmpty();
+    }
+
+    @Test public void fatalAtSevere() {
+        julLogger.getParent().setLevel(Level.SEVERE);
+        log4jLogger.atFatal().log("hello, world");
+        assertThat(handler.getStoredLogRecords()).hasSize(1);
+    }
+
+    @Test public void warnAtFatal() {
+        julLogger.getParent().setLevel(Level.SEVERE);
+        log4jLogger.atWarn().log("hello, world");
+        assertThat(handler.getStoredLogRecords()).isEmpty();
+    }
+
+    @Test public void customLevelJustUnderWarning() {
+        julLogger.getParent().setLevel(new CustomLevel("Just under Warning", Level.WARNING.intValue() - 1));
+
+        log4jLogger.info("hello, world");
+        assertThat(handler.getStoredLogRecords()).isEmpty();
+
+        log4jLogger.warn("hello, world");
+        assertThat(handler.getStoredLogRecords()).hasSize(1);
+
+        log4jLogger.error("hello, world");
+        assertThat(handler.getStoredLogRecords()).hasSize(2);
+    }
+
+    @Test public void customLevelJustAboveWarning() {
+        julLogger.getParent().setLevel(new CustomLevel("Just above Warning", Level.WARNING.intValue() + 1));
+
+        log4jLogger.info("hello, world");
+        assertThat(handler.getStoredLogRecords()).isEmpty();
+
+        log4jLogger.warn("hello, world");
+        assertThat(handler.getStoredLogRecords()).isEmpty();
+
+        log4jLogger.error("hello, world");
+        assertThat(handler.getStoredLogRecords()).hasSize(1);
+    }
+
+    @SuppressWarnings("serial")
+    private static class CustomLevel extends Level {
+        CustomLevel(String name, int value) {
+            super(name, value);
+        }
     }
 }
