@@ -60,7 +60,7 @@ public class JULLogger extends AbstractLogger {
         LogRecord record = new LogRecord(julLevel, message.getFormattedMessage()); // TODO getFormat() or getFormattedMessage() ?
         record.setLoggerName(getName()); // TODO getName() or fqcn parameter? What's that?
         record.setParameters(message.getParameters());
-        record.setThrown(message.getThrowable());
+        record.setThrown(t == null ? message.getThrowable() : t);
         logger.log(record);
     }
 
