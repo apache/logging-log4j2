@@ -35,12 +35,13 @@ public final class FileSize {
     private static final long KB = 1024;
     private static final long MB = KB * KB;
     private static final long GB = KB * MB;
+    private static final long TB = KB * GB;
 
     /**
      * Pattern for string parsing.
      */
     private static final Pattern VALUE_PATTERN =
-        Pattern.compile("([0-9]+([\\.,][0-9]+)?)\\s*(|K|M|G)B?", Pattern.CASE_INSENSITIVE);
+        Pattern.compile("([0-9]+([\\.,][0-9]+)?)\\s*(|K|M|G|T)B?", Pattern.CASE_INSENSITIVE);
 
     private FileSize() {
     }
@@ -75,6 +76,8 @@ public final class FileSize {
                     return (long) (value * MB);
                 } else if (units.equalsIgnoreCase("G")) {
                     return (long) (value * GB);
+                } else if (units.equalsIgnoreCase("T")) {
+                    return (long) (value * TB);
                 } else {
                     LOGGER.error("FileSize units not recognized: " + string);
                     return defaultValue;

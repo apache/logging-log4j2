@@ -55,7 +55,7 @@ public class IfAccumulatedFileSizeTest {
 
     @Test
     public void testAcceptIfExceedThreshold() {
-        final String[] sizes = {"2KB", "3MB", "4GB"};
+        final String[] sizes = {"2KB", "3MB", "4GB", "1TB"};
         for (final String size : sizes) {
             final IfAccumulatedFileSize condition = IfAccumulatedFileSize.createFileSizeCondition(size);
             final DummyFileAttributes attribs = new DummyFileAttributes();
