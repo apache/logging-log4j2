@@ -16,7 +16,7 @@
 */
 package org.apache.logging.log4j.tojul;
 
-import static com.google.common.truth.Truth.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.common.testing.TestLogHandler;
 import java.io.IOException;
@@ -51,7 +51,7 @@ public class LoggerTest {
         log4jLogger = LogManager.getLogger(getClass());
         assertThat(log4jLogger).isInstanceOf(JULLogger.class);
         julLogger = java.util.logging.Logger.getLogger(getClass().getName());
-        assertThat(julLogger).isSameInstanceAs(((JULLogger)log4jLogger).logger);
+        assertThat(julLogger).isSameAs(((JULLogger)log4jLogger).logger);
         julLogger.addHandler(handler);
 
         julLoggerDefaultLevel = julLogger.getLevel();
