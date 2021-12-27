@@ -130,7 +130,7 @@ It was found that the fix to address [CVE-2021-44228](https://cve.mitre.org/cgi-
 When the logging configuration uses a non-default Pattern Layout with a Context Lookup (for example, $${ctx:loginId}),
 attackers with control over Thread Context Map (MDC) input data can craft malicious input data using a JNDI Lookup pattern,
 resulting in an information leak and remote code execution in some environments and local code execution in all environments;
-remote code execution has been demonstrated on macOS but no other tested environments.
+remote code execution has been demonstrated on MacOS, Fedora, Arch Linux, and Alpine Linux.
 
 ### Mitigation
 
