@@ -51,7 +51,10 @@ public class FileSizeTest {
             "10.75 MB:11272192",
             "1,000 KB:1024000",
             "1 GB:1073741824",
-            "0.51 GB:547608330"
+            "0.51 GB:547608330",
+            "1,000 TB:1099511627776000",
+            "1 TB:1099511627776",
+            "0.51 TB:560750930165"
     })
     void testValidFileSizes(String expr, long expected) {
         assertEquals(expected, FileSize.parse(expr, 0));
