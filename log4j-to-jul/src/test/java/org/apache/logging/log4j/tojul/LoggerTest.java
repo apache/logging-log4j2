@@ -1,4 +1,3 @@
-
 /*
 * Licensed to the Apache Software Foundation (ASF) under one or more
 * contributor license agreements. See the NOTICE file distributed with
@@ -30,11 +29,19 @@ import org.junit.Test;
 
 public class LoggerTest {
 
+    // Save levels so that we can reset them @After clearLogs()
+    private static final java.util.logging.Logger globalLogger = java.util.logging.Logger.getGlobal();
+    private static final java.util.logging.Logger rootLogger = java.util.logging.Logger.getLogger("");
+    private static final Level globalLevel = globalLogger.getLevel();
+    private static final Level rootLevel = rootLogger.getLevel();
+
     private org.apache.logging.log4j.Logger log4jLogger;
     private java.util.logging.Logger julLogger;
+    private Level julLoggerDefaultLevel;
 
     // https://javadoc.io/doc/com.google.guava/guava-testlib/latest/com/google/common/testing/TestLogHandler.html
     private TestLogHandler handler;
+
 
     @Before public void setupLogCapture() {
         handler = new TestLogHandler();
@@ -45,13 +52,22 @@ public class LoggerTest {
         julLogger = java.util.logging.Logger.getLogger(LoggerTest.class.getName());
         assertThat(julLogger).isSameInstanceAs(((JULLogger)log4jLogger).logger);
         julLogger.addHandler(handler);
+
+        julLoggerDefaultLevel = julLogger.getLevel();
+
+        // Check that there is no configuration file which invalidates our assumption that the root logger is the parent of our julLogger
+        assertThat(julLogger.getParent()).isEqualTo(rootLogger);
     }
 
     @After public void clearLogs() {
         julLogger.removeHandler(handler);
+        // Reset all Levels what any tests set anymore
+        julLogger.setLevel(julLoggerDefaultLevel);
+        rootLogger.setLevel(rootLevel);
+        globalLogger.setLevel(globalLevel);
     }
 
-    @Test public void infoAtLevel() {
+    @Test public void infoAtInfo() {
         julLogger.setLevel(Level.INFO);
         log4jLogger.info("hello, world");
 
@@ -59,14 +75,21 @@ public class LoggerTest {
         assertThat(logs).hasSize(1);
         LogRecord log1 = logs.get(0);
         assertThat(log1.getLoggerName()).isEqualTo(LoggerTest.class.getName());
-        assertThat(log1.getLevel()).isEqualTo(Level.INFO);
+        assertThat(log1.getLevel()).isEqualTo(java.util.logging.Level.INFO);
         assertThat(log1.getMessage()).isEqualTo("hello, world");
         assertThat(log1.getParameters()).isNull();
         assertThat(log1.getThrown()).isNull();
     }
 
-    @Test public void infoNoLevel() {
-        // Note: We're not setting any level.
+    @Test public void infoAtInfoOnParent() {
+        julLogger.getParent().setLevel(Level.INFO);
         log4jLogger.info("hello, world");
+        assertThat(handler.getStoredLogRecords()).hasSize(1);
+    }
+
+    @Test public void infoWithoutAnyLevel() {
+        // We're not setting any level.
+        log4jLogger.info("hello, world");
+        assertThat(handler.getStoredLogRecords()).hasSize(1);
     }
 }

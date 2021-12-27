@@ -119,7 +119,7 @@ public final class JULLogger extends AbstractLogger {
      */
     @Override
     public Level getLevel() {
-        int julLevel = logger.getLevel().intValue();
+        int julLevel = getEffectiveJULLevel().intValue();
         // Test in logical order of likely frequency of use
         // Must be kept in sync with #convertLevel()
         if (julLevel == java.util.logging.Level.ALL.intValue()) {
@@ -141,6 +141,18 @@ public final class JULLogger extends AbstractLogger {
             return Level.ERROR;
         }
         return Level.OFF;
+    }
+
+    private java.util.logging.Level getEffectiveJULLevel() {
+        Logger current = logger;
+        while (current.getLevel() == null && current.getParent() != null) {
+            current = current.getParent();
+        }
+        if (current.getLevel() != null) {
+            return current.getLevel();
+        }
+        // This is a safety fallback that is typically never reached, because usually the root Logger.getLogger("") has a Level.
+        return Logger.getGlobal().getLevel();
     }
 
     private boolean isEnabledFor(final Level level, final Marker marker) {
