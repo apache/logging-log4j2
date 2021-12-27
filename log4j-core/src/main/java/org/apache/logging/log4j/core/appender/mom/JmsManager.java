@@ -131,10 +131,9 @@ public class JmsManager extends AbstractManager {
                     logger().error("Error creating JmsManager using JmsManagerConfiguration [{}]", data, e);
                     return null;
                 }
-            } else {
-                logger().error("JNDI must be enabled by setting log4j2.enableJndiJms=true");
-                return null;
             }
+            logger().error("JNDI must be enabled by setting log4j2.enableJndiJms=true");
+            return null;
         }
     }
 
