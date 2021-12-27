@@ -37,9 +37,6 @@
       <action issue="LOG4J2-3289" dev="ckozak" type="fix">
         log4j-to-slf4j no longer re-interpolates formatted message contents.
       </action>
-      <action issue="LOG4J2-3288" dev="ckozak" type="fix">
-        Interpolator non-plugin constructor registers all lookups from log4j-core, previously it was missing event, sd, and bundle.
-      </action>
       <action issue="LOG4J2-3204" dev="vy" type="fix" due-to="Francis-FY">
         Correct SpringLookup package name in Interpolator.
       </action>

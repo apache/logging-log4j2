@@ -109,9 +109,6 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         strLookupMap.put("java", new JavaLookup());
         strLookupMap.put("lower", new LowerLookup());
         strLookupMap.put("upper", new UpperLookup());
-        strLookupMap.put("bundle", new ResourceBundleLookup());
-        strLookupMap.put("event", new EventLookup());
-        strLookupMap.put("sd", new StructuredDataLookup());
         // JNDI
         if (JndiManager.isJndiLookupEnabled()) {
             try {
