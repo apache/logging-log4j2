@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="3.0.0" date="2021-MM-DD" description="GA Release 3.0.0">
+      <action issue="LOG4J2-3242" dev="rgoers" type="fix">
+        Move JNDI to its own module.
+      </action>
       <action issue="LOG4J2-2400" dev="rgoers" type="add" due-to="Natalie Meurer">
         Add Redis Appender.
       </action>
@@ -168,9 +171,45 @@
 		    Fixes incorrect constructor call in LocalizedMessageFactory.
       </action>
     </release>
-    <release version="2.15.1" date="2021-12-XX" description="GA Release 2.15.1">
+    <release version="2.17.1" date="2021-MM-DD" description="GA Release 2.17.1">
+      <action issue="LOG4J2-3289" dev="ckozak" type="fix">
+        log4j-to-slf4j no longer re-interpolates formatted message contents.
+      </action>
+      <action issue="LOG4J2-3284" dev="ckozak" type="fix" due-to="Michael Vorburger">
+        log4j-to-slf4j takes the provided MessageFactory into account
+      </action>
+      <action issue="LOG4J2-3270" dev="ggregory" type="fix" due-to="Lee Dongjin">
+        Reduce ignored package scope of KafkaAppender.
+      </action>
+    </release>
+    <release version="2.17.0" date="2021-12-17" description="GA Release 2.17.0">
+      <action issue="LOG4J2-3230" dev="ckozak" type="fix">
+        Fix string substitution recursion.
+      </action>
+      <action issue="LOG4J2-3242" dev="rgoers" type="fix">
+        Limit JNDI to the java protocol only. JNDI will remain disabled by default. Rename JNDI enablement property from
+        'log4j2.enableJndi' to 'log4j2.enableJndiLookup', 'log4j2.enableJndiJms', and 'log4j2.enableJndiContextSelector'.
+      </action>
+      <action issue="LOG4J2-3241" dev="rgoers" type="fix">
+        Do not declare log4j-api-java9 and log4j-core-java9 as dependencies as it causes problems with the
+        Maven enforcer plugin.
+      </action>
+      <action issue="LOG4J2-3247" dev="ggregory" type="fix">
+        PropertiesConfiguration.parseAppenderFilters NPE when parsing properties file filters.
+      </action>
+      <action issue="LOG4J2-3249" dev="ggregory" type="fix">
+        Log4j 1.2 bridge for Syslog Appender defaults to port 512 instead of 514.
+      </action>
+      <action issue="LOG4J2-3237" dev="ggregory" type="fix">
+        Log4j 1.2 bridge API hard codes the Syslog protocol to TCP.
+      </action>
+    </release>
+    <release version="2.16.0" date="2021-12-13" description="GA Release 2.16.0">
       <action issue="LOG4J2-3208" dev="rgoers" type="fix">
         Disable JNDI by default. Require log4j2.enableJndi to be set to true to allow JNDI.
+      </action>
+      <action issue="LOG4J2-3211" dev="rgoers" type="fix">
+        Completely remove support for Message Lookups.
       </action>
     </release>
     <release version="2.15.0" date="2021-12-06" description="GA Release 2.15.0">

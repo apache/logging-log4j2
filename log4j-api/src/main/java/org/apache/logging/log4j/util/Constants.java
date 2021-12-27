@@ -22,6 +22,9 @@ package org.apache.logging.log4j.util;
  * @since 2.6.2
  */
 public final class Constants {
+
+    public static final String JNDI_PREFIX = "log4j2.enableJndi";
+    private static final String JNDI_MANAGER_CLASS = "org.apache.logging.log4j.jndi.JndiManager";
     /**
      * {@code true} if we think we are running in a web container, based on the boolean value of system property
      * "log4j2.is.webapp", or (if this system property is not set) whether the  {@code javax.servlet.Servlet} class
@@ -30,6 +33,22 @@ public final class Constants {
     public static final boolean IS_WEB_APP = PropertiesUtil.getProperties().getBooleanProperty(
             "log4j2.is.webapp", isClassAvailable("javax.servlet.Servlet")
                     || isClassAvailable("jakarta.servlet.Servlet"));
+
+    /**
+     * Check to determine if the JNDI feature is available.
+     * @param subKey The feature to check.
+     * @return true if the feature is available.
+     */
+    private static boolean isJndiEnabled(final String subKey) {
+        return PropertiesUtil.getProperties().getBooleanProperty(JNDI_PREFIX + subKey, false)
+                && isClassAvailable(JNDI_MANAGER_CLASS);
+    }
+
+    public static boolean JNDI_CONTEXT_SELECTOR_ENABLED = isJndiEnabled("ContextSelector");
+
+    public static boolean JNDI_JMS_ENABLED = isJndiEnabled("Jms");
+
+    public static boolean JNDI_LOOKUP_ENABLED = isJndiEnabled("Lookup");
 
     /**
      * Kill switch for object pooling in ThreadLocals that enables much of the LOG4J2-1270 no-GC behaviour.

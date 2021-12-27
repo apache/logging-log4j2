@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.lookup;
+package org.apache.logging.log4j.jndi.lookup;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
@@ -23,6 +23,7 @@ import javax.naming.Referenceable;
 import javax.naming.StringRefAddr;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -52,9 +53,7 @@ public class JndiRestrictedLookupTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty("log4j2.allowedLdapClasses", Level.class.getName());
-        System.setProperty("log4j2.allowedJndiProtocols", "dns");
-        System.setProperty("log4j2.enableJndi", "true");
+        System.setProperty("log4j2.enableJndiLookup", "true");
     }
 
     @Test
@@ -89,10 +88,9 @@ public class JndiRestrictedLookupTest {
         context.bind(   "cn=" + TEST_STRING +"," + DOMAIN_DSN, "Test Message");
         final StrLookup lookup = new JndiLookup();
         String result = lookup.lookup(LDAP_URL + port + "/" + "cn=" + TEST_STRING + "," + DOMAIN_DSN);
-        if (result == null) {
-            fail("Lookup failed to return the test string");
+        if (result != null) {
+            fail("LDAP is enabled");
         }
-        assertEquals("Incorrect message returned", "Test Message", result);
     }
 
     @Test
@@ -108,33 +106,11 @@ public class JndiRestrictedLookupTest {
     }
 
     @Test
-    public void testSpecialSerializableLookup() throws Exception {
-        int port = embeddedLdapRule.embeddedServerPort();
-        Context context = embeddedLdapRule.context();
-        context.bind(   "cn=" + LEVEL +"," + DOMAIN_DSN, Level.ERROR);
-        final StrLookup lookup = new JndiLookup();
-        String result = lookup.lookup(LDAP_URL + port + "/" + "cn=" + LEVEL + "," + DOMAIN_DSN);
-        if (result == null) {
-            fail("Lookup failed to return the level");
-        }
-        assertEquals("Incorrect level returned", Level.ERROR.toString(), result);
-    }
-
-    @Test
     public void testDnsLookup() throws Exception {
         final StrLookup lookup = new JndiLookup();
         String result = lookup.lookup("dns:/" + DOMAIN);
-        if (result == null) {
-            fail("No DNS data returned");
-        }
-    }
-
-    @Test
-    public void testNisLookup() throws Exception {
-        final StrLookup lookup = new JndiLookup();
-        String result = lookup.lookup("nis:/" + DOMAIN);
         if (result != null) {
-            fail("NIS information should not have been returned");
+            fail("No DNS data returned");
         }
     }
 

@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.selector;
+package org.apache.logging.log4j.jndi.selector;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -28,8 +28,10 @@ import javax.naming.NamingException;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
-import org.apache.logging.log4j.core.net.JndiManager;
+import org.apache.logging.log4j.core.selector.ContextSelector;
+import org.apache.logging.log4j.core.selector.NamedContextSelector;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.jndi.JndiManager;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -109,7 +111,7 @@ public class JndiContextSelector implements NamedContextSelector {
             }
         }
         if (ctx != null) {
-            ctx.stop(DEFAULT_STOP_TIMEOUT, TimeUnit.MILLISECONDS);
+            ctx.stop(ContextSelector.DEFAULT_STOP_TIMEOUT, TimeUnit.MILLISECONDS);
         }
     }
 

@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.lookup;
+package org.apache.logging.log4j.jndi.lookup;
 
 import java.util.Objects;
 
@@ -24,8 +24,10 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.lookup.AbstractLookup;
+import org.apache.logging.log4j.core.lookup.StrLookup;
+import org.apache.logging.log4j.jndi.JndiManager;
 import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.core.net.JndiManager;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -39,6 +41,15 @@ public class JndiLookup extends AbstractLookup {
 
     /** JNDI resource path prefix used in a J2EE container */
     static final String CONTAINER_JNDI_RESOURCE_PATH_PREFIX = "java:comp/env/";
+
+    /**
+     * Constructs a new instance or throw IllegalStateException if this feature is disabled.
+     */
+    public JndiLookup() {
+        if (!JndiManager.isJndiLookupEnabled()) {
+            throw new IllegalStateException("JNDI must be enabled by setting log4j2.enableJndiLookup=true");
+        }
+    }
 
     /**
      * Looks up the value of the JNDI resource.

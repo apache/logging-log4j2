@@ -28,7 +28,6 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFact
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.net.TcpSocketManager.HostResolver;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
@@ -200,19 +199,9 @@ class SocketAppenderReconnectTest {
     }
 
     private static void awaitUntilSucceeds(final Runnable runnable) {
-        final long pollIntervalMillis;
-        final long timeoutSeconds;
-        final boolean osWindows = PropertiesUtil.getProperties().isOsWindows();
-        if (osWindows) {
-            // Windows-specific non-sense values.
-            // These figures are collected by trial-and-error on a friend's laptop which has Windows installed.
-            pollIntervalMillis = 1_000L;
-            timeoutSeconds = 15;
-        } else {
-            // Universally sensible values.
-            pollIntervalMillis = 1000;
-            timeoutSeconds = 3;
-        }
+        // These figures are collected via trial-and-error; nothing scientific to look for here.
+        final long pollIntervalMillis = 1_000L;
+        final long timeoutSeconds = 15L;
         await()
                 .pollInterval(pollIntervalMillis, TimeUnit.MILLISECONDS)
                 .atMost(timeoutSeconds, TimeUnit.SECONDS)

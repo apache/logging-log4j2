@@ -37,7 +37,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
-import org.apache.logging.log4j.core.net.JndiManager;
+import org.apache.logging.log4j.jndi.JndiManager;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.status.StatusLogger;
 

@@ -17,6 +17,13 @@
 
 package org.apache.logging.log4j.kafka.appender;
 
+import java.io.Serializable;
+import java.util.Objects;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.stream.Stream;
+
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -28,12 +35,6 @@ import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
-
-import java.io.Serializable;
-import java.util.Objects;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 /**
  * Sends log events to an Apache Kafka topic.
@@ -78,38 +79,6 @@ public final class KafkaAppender extends AbstractAppender {
             return new KafkaAppender(getName(), layout, getFilter(), isIgnoreExceptions(), getPropertyArray(), kafkaManager);
         }
 
-        public String getTopic() {
-            return topic;
-        }
-
-        public boolean isSyncSend() {
-            return syncSend;
-        }
-
-        public boolean isSendEventTimestamp() {
-            return sendEventTimestamp;
-        }
-
-        public B setTopic(final String topic) {
-            this.topic = topic;
-            return asBuilder();
-        }
-
-        public B setKey(final String key) {
-            this.key = key;
-            return asBuilder();
-        }
-
-        public B setSyncSend(final boolean syncSend) {
-            this.syncSend = syncSend;
-            return asBuilder();
-        }
-
-        public B setSendEventTimestamp(boolean sendEventTimestamp) {
-            this.sendEventTimestamp = sendEventTimestamp;
-            return asBuilder();
-        }
-
         public Integer getRetryCount() {
             Integer intRetryCount = null;
             try {
@@ -120,10 +89,54 @@ public final class KafkaAppender extends AbstractAppender {
             return intRetryCount;
         }
 
+        public String getTopic() {
+            return topic;
+        }
+
+        public boolean isSendEventTimestamp() {
+            return sendEventTimestamp;
+        }
+
+        public boolean isSyncSend() {
+            return syncSend;
+        }
+
+        public B setKey(final String key) {
+            this.key = key;
+            return asBuilder();
+        }
+
         public B setRetryCount(final String retryCount) {
             this.retryCount = retryCount;
             return asBuilder();
         }
+
+        public B setSendEventTimestamp(boolean sendEventTimestamp) {
+            this.sendEventTimestamp = sendEventTimestamp;
+            return asBuilder();
+        }
+
+        public B setSyncSend(final boolean syncSend) {
+            this.syncSend = syncSend;
+            return asBuilder();
+        }
+
+        public B setTopic(final String topic) {
+            this.topic = topic;
+            return asBuilder();
+        }
+    }
+
+    private static final String[] KAFKA_CLIENT_PACKAGES = new String[] { "org.apache.kafka.common", "org.apache.kafka.clients" };
+
+    /**
+     * Tests if the given log event is from a Kafka Producer implementation.
+     *
+     * @param event The event to test.
+     * @return true to avoid recursion and skip logging, false to log.
+     */
+    private static boolean isRecursive(final LogEvent event) {
+        return Stream.of(KAFKA_CLIENT_PACKAGES).anyMatch(prefix -> event.getLoggerName().startsWith(prefix));
     }
 
     /**
@@ -146,7 +159,7 @@ public final class KafkaAppender extends AbstractAppender {
 
     @Override
     public void append(final LogEvent event) {
-        if (event.getLoggerName() != null && event.getLoggerName().startsWith("org.apache.kafka")) {
+        if (event.getLoggerName() != null && isRecursive(event)) {
             LOGGER.warn("Recursive logging from [{}] for appender [{}].", event.getLoggerName(), getName());
         } else {
             try {
@@ -155,16 +168,6 @@ public final class KafkaAppender extends AbstractAppender {
                 error("Unable to write to Kafka in appender [" + getName() + "]", event, e);
             }
         }
-    }
-
-    private void tryAppend(final LogEvent event) throws ExecutionException, InterruptedException, TimeoutException {
-        final Layout<? extends Serializable> layout = getLayout();
-        byte[] data;
-        Long eventTimestamp;
-
-        data = layout.toByteArray(event);
-        eventTimestamp = event.getTimeMillis();
-        manager.send(data, eventTimestamp);
     }
 
     @Override
@@ -185,5 +188,15 @@ public final class KafkaAppender extends AbstractAppender {
     @Override
     public String toString() {
         return "KafkaAppender{" + "name=" + getName() + ", state=" + getState() + ", topic=" + manager.getTopic() + '}';
+    }
+
+    private void tryAppend(final LogEvent event) throws ExecutionException, InterruptedException, TimeoutException {
+        final Layout<? extends Serializable> layout = getLayout();
+        byte[] data;
+        Long eventTimestamp;
+
+        data = layout.toByteArray(event);
+        eventTimestamp = event.getTimeMillis();
+        manager.send(data, eventTimestamp);
     }
 }
