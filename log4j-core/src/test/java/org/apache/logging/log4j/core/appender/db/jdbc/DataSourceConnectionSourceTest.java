@@ -37,7 +37,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
-public class DataSourceConnectionSourceTest {
+public class DataSourceConnectionSourceTest extends AbstractJdbcDataSourceTest {
 
     @Parameterized.Parameters(name = "{0}")
     public static Object[][] data() {

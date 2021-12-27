@@ -30,13 +30,18 @@ import org.junit.Test;
 public class JndiManagerTest {
 
     @Test
+    public void testIsJndiContextSelectorEnabled() {
+        assertFalse(JndiManager.isJndiContextSelectorEnabled());
+    }
+
+    @Test
     public void testIsJndiEnabled() {
         assertFalse(JndiManager.isJndiEnabled());
     }
 
     @Test
-    public void testIsJndiContextSelectorEnabled() {
-        assertFalse(JndiManager.isJndiContextSelectorEnabled());
+    public void testIsJndiJdbcEnabled() {
+        assertFalse(JndiManager.isJndiJdbcEnabled());
     }
 
     @Test

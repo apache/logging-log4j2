@@ -42,29 +42,38 @@ public class JndiManager extends AbstractManager {
     private static final String PREFIX = "log4j2.enableJndi";
     private static final String JAVA_SCHEME = "java";
 
-    private final Context context;
+    private static final boolean JNDI_CONTEXT_SELECTOR_ENABLED = isJndiEnabled("ContextSelector");
+    private static final boolean JNDI_JDBC_ENABLED = isJndiEnabled("Jdbc");
+    private static final boolean JNDI_JMS_ENABLED = isJndiEnabled("Jms");
+    private static final boolean JNDI_LOOKUP_ENABLED = isJndiEnabled("Lookup");
+
+    private final InitialContext context;
 
     private static boolean isJndiEnabled(final String subKey) {
         return PropertiesUtil.getProperties().getBooleanProperty(PREFIX + subKey, false);
     }
 
     public static boolean isJndiEnabled() {
-        return isJndiContextSelectorEnabled() || isJndiJmsEnabled() || isJndiLookupEnabled();
+        return isJndiContextSelectorEnabled() || isJndiJdbcEnabled() || isJndiJmsEnabled() || isJndiLookupEnabled();
     }
 
     public static boolean isJndiContextSelectorEnabled() {
-        return isJndiEnabled("ContextSelector");
+        return JNDI_CONTEXT_SELECTOR_ENABLED;
+    }
+
+    public static boolean isJndiJdbcEnabled() {
+        return JNDI_JDBC_ENABLED;
     }
 
     public static boolean isJndiJmsEnabled() {
-        return isJndiEnabled("Jms");
+        return JNDI_JMS_ENABLED;
     }
 
     public static boolean isJndiLookupEnabled() {
-        return isJndiEnabled("Lookup");
+        return JNDI_LOOKUP_ENABLED;
     }
 
-    private JndiManager(final String name, final Context context) {
+    private JndiManager(final String name, final InitialContext context) {
         super(null, name);
         this.context = context;
     }
@@ -204,7 +213,7 @@ public class JndiManager extends AbstractManager {
             }
             LOGGER.warn("Unsupported JNDI URI - {}", name);
         } catch (URISyntaxException ex) {
-            LOGGER.warn("Invalid  JNDI URI - {}", name);
+            LOGGER.warn("Invalid JNDI URI - {}", name);
         }
         return null;
     }

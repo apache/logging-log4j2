@@ -48,7 +48,7 @@ import org.mockito.stubbing.Answer;
 /**
  * Unit tests {@link MapMessage}s for JdbcAppender using a {@link DataSource} configuration.
  */
-public class JdbcAppenderMapMessageDataSourceTest {
+public class JdbcAppenderMapMessageDataSourceTest extends AbstractJdbcDataSourceTest {
 
     @Rule
     public final RuleChain rules;
