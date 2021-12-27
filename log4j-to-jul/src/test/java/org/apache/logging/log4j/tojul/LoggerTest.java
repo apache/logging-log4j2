@@ -48,9 +48,9 @@ public class LoggerTest {
         handler = new TestLogHandler();
         // Beware, the order here should not be changed!
         // Let the bridge do whatever it does BEFORE we create a JUL Logger (which SHOULD be the same)
-        log4jLogger = LogManager.getLogger(LoggerTest.class);
+        log4jLogger = LogManager.getLogger(getClass());
         assertThat(log4jLogger).isInstanceOf(JULLogger.class);
-        julLogger = java.util.logging.Logger.getLogger(LoggerTest.class.getName());
+        julLogger = java.util.logging.Logger.getLogger(getClass().getName());
         assertThat(julLogger).isSameInstanceAs(((JULLogger)log4jLogger).logger);
         julLogger.addHandler(handler);
 
@@ -75,11 +75,14 @@ public class LoggerTest {
         List<LogRecord> logs = handler.getStoredLogRecords();
         assertThat(logs).hasSize(1);
         LogRecord log1 = logs.get(0);
-        assertThat(log1.getLoggerName()).isEqualTo(LoggerTest.class.getName());
+        assertThat(log1.getLoggerName()).isEqualTo(getClass().getName());
         assertThat(log1.getLevel()).isEqualTo(java.util.logging.Level.INFO);
         assertThat(log1.getMessage()).isEqualTo("hello, world");
         assertThat(log1.getParameters()).isNull();
         assertThat(log1.getThrown()).isNull();
+        // TODO Correctly implement this, it does not work as expected, yet
+        assertThat(log1.getSourceClassName()).isEqualTo(getClass().getName());
+        assertThat(log1.getSourceMethodName()).isEqualTo("infoAtInfo()");
     }
 
     @Test public void infoAtInfoWithParameters() {
