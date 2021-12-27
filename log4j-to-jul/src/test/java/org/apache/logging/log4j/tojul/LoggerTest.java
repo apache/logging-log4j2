@@ -19,6 +19,7 @@ package org.apache.logging.log4j.tojul;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.testing.TestLogHandler;
+import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -79,6 +80,30 @@ public class LoggerTest {
         assertThat(log1.getMessage()).isEqualTo("hello, world");
         assertThat(log1.getParameters()).isNull();
         assertThat(log1.getThrown()).isNull();
+    }
+
+    @Test public void infoAtInfoWithParameters() {
+        julLogger.setLevel(Level.INFO);
+        log4jLogger.info("hello, {}", "world");
+
+        List<LogRecord> logs = handler.getStoredLogRecords();
+        assertThat(logs).hasSize(1);
+        LogRecord log1 = logs.get(0);
+        assertThat(log1.getMessage()).isEqualTo("hello, world");
+        assertThat(log1.getParameters()).isNull();
+        assertThat(log1.getThrown()).isNull();
+    }
+
+    @Test public void errorAtSevereWithException() {
+        julLogger.setLevel(Level.SEVERE);
+        log4jLogger.error("hello, {}", "world", new IOException("Testing, testing"));
+
+        List<LogRecord> logs = handler.getStoredLogRecords();
+        assertThat(logs).hasSize(1);
+        LogRecord log1 = logs.get(0);
+        assertThat(log1.getMessage()).isEqualTo("hello, world");
+        assertThat(log1.getParameters()).isNull();
+        assertThat(log1.getThrown()).isInstanceOf(IOException.class);
     }
 
     @Test public void infoAtInfoWithLogBuilder() {
