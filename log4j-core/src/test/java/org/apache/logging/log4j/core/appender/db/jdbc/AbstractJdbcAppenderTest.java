@@ -44,7 +44,7 @@ import static org.easymock.EasyMock.*;
 
 import static org.junit.Assert.*;
 
-public abstract class AbstractJdbcAppenderTest {
+public abstract class AbstractJdbcAppenderTest extends AbstractJdbcDataSourceTest {
     private final String databaseType;
     private Connection connection;
 

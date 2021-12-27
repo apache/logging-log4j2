@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -120,6 +121,18 @@ public final class Closer {
             close(statement);
         } catch (final Exception ignored) {
             // ignored
+        }
+    }
+
+    /**
+     * Closes the specified {@code ResultSet}.
+     *
+     * @param resultSet the resource to close, may be {@code null}
+     * @throws SQLException if a problem occurred closing the specified resource
+     */
+    public static void close(final ResultSet resultSet) throws SQLException {
+        if (resultSet != null) {
+            resultSet.close();
         }
     }
 

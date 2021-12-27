@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
+import java.util.Objects;
+
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseAppender;
@@ -75,7 +77,9 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
             @PluginAttribute("bufferSize") final String bufferSize,
             @PluginAttribute("tableName") final String tableName,
             @PluginElement("ColumnConfigs") final ColumnConfig[] columnConfigs) {
-
+        if (connectionSource == null) {
+            throw new NullPointerException("connectionSource");
+        }
         final int bufferSizeInt = AbstractAppender.parseInt(bufferSize, 0);
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
 

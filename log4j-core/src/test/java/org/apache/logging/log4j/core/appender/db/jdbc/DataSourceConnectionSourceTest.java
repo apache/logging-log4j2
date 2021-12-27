@@ -43,7 +43,7 @@ import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
-public class DataSourceConnectionSourceTest {
+public class DataSourceConnectionSourceTest extends AbstractJdbcDataSourceTest {
 
     @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> data() {
@@ -123,12 +123,10 @@ public class DataSourceConnectionSourceTest {
 
         this.context.bind(this.jndiURL, dataSource);
 
-        DataSourceConnectionSource source = DataSourceConnectionSource
-                .createConnectionSource(this.jndiURL);
+        DataSourceConnectionSource source = DataSourceConnectionSource.createConnectionSource(this.jndiURL);
 
-        assertNotNull("The connection source should not be null.", source);
-        assertEquals("The toString value is not correct.", "dataSource{ name=" + jndiURL + ", value="
-                + dataSource + " }", source.toString());
+        assertNotNull("The connection source should not be null for " + this.jndiURL, source);
+        assertEquals("The toString value is not correct.", "dataSource{ name=" + jndiURL + ", value=" + dataSource + " }", source.toString());
         assertSame("The connection is not correct (1).", connection1, source.getConnection());
         assertSame("The connection is not correct (2).", connection2, source.getConnection());
 

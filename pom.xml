@@ -193,6 +193,7 @@
     <commonsLoggingVersion>1.2</commonsLoggingVersion>
     <osgi.api.version>4.3.1</osgi.api.version>
     <activemq.version>5.11.1</activemq.version>
+    <mockitoVersion>2.25.1</mockitoVersion>
     <!-- Allow Clirr severity to be overriden by the command-line option -DminSeverity=level -->
     <minSeverity>info</minSeverity>
   </properties>
@@ -634,6 +635,11 @@
         <version>${springVersion}</version>
       </dependency>
       <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-test</artifactId>
+        <version>${springVersion}</version>
+      </dependency>
+      <dependency>
         <groupId>org.hsqldb</groupId>
         <artifactId>hsqldb</artifactId>
         <version>2.3.2</version>
@@ -674,6 +680,12 @@
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
         <version>2.4</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>${mockitoVersion}</version>
         <scope>test</scope>
       </dependency>
     </dependencies>

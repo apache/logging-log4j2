@@ -55,11 +55,6 @@ public class FactoryMethodConnectionSourceTest {
         holder = null;
     }
 
-    @Before
-    public void setUp() {
-
-    }
-
     @After
     public void tearDown() {
         holder.remove();
