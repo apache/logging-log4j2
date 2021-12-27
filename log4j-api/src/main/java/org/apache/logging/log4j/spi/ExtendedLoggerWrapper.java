@@ -218,7 +218,8 @@ public class ExtendedLoggerWrapper extends AbstractLogger {
         if (logger instanceof LocationAwareLogger && requiresLocation()) {
             ((LocationAwareLogger) logger).logMessage(level, marker, fqcn, StackLocatorUtil.calcLocation(fqcn),
                 message, t);
+        } else {
+            logger.logMessage(fqcn, level, marker, message, t);
         }
-        logger.logMessage(fqcn, level, marker, message, t);
     }
 }
