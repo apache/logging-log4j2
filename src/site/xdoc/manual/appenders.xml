@@ -2919,7 +2919,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
   <Appenders>
     <Socket name="socket" host="localhost" port="9500">
       <SerializedLayout />
-      <SSL>
+      <SSL verifyHostName="true">
         <KeyStore location="log4j2-keystore.jks" password="changeme"/>
         <TrustStore location="truststore.jks" password="changeme"/>
       </SSL>
@@ -3143,7 +3143,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 <Configuration status="warn" name="MyApp" packages="">
   <Appenders>
     <TLSSyslog name="bsd" host="localhost" port="6514">
-      <SSL>
+      <SSL verifyHostName="true">
         <KeyStore location="log4j2-keystore.jks" password="changeme"/>
         <TrustStore location="truststore.jks" password="changeme"/>
       </SSL>

@@ -23,6 +23,12 @@
     <title>Changes</title>
   </properties>
   <body>
+    <release version="2.3.2" date="2021-12-xx" description="GA Release 2.3.2">
+      <action issue="LOG4J2-2819" dev="mattsicker" type="fix">
+        Add support for specifying an SSL configuration for SmtpAppender.
+        Backport fix for CVE-2020-9488 to allow SSL/TLS hostname verification.
+      </action>
+    </release>
     <release version="2.3.1" date="2021-12-20" description="GA Release 2.3.1">
       <action issue="LOG4J2-3242" dev="rgoers, ggregory" type="fix">
         Limit JNDI to the java protocol only. JNDI will remain disabled by default. Rename JNDI enablement property from

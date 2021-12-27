@@ -39,8 +39,6 @@ import static org.junit.Assert.*;
 public class SmtpAppenderTest {
 
     private static final String HOST = "localhost";
-    private static final int PORTNUM = AvailablePortFinder.getNextAvailable();
-    private static final String PORT = String.valueOf(PORTNUM);
 
     @Test
     public void testMessageFactorySetFrom() throws MessagingException {
@@ -131,10 +129,19 @@ public class SmtpAppenderTest {
 
     @Test
     public void testDelivery() {
-        final SmtpAppender appender = SmtpAppender.createAppender("Test",
-                "to@example.com", "cc@example.com", "bcc@example.com",
-                "from@example.com", "replyTo@example.com", "Subject", null,
-                HOST, PORT, null, null, "false", "3", null, null, "true");
+        int smtpPort = AvailablePortFinder.getNextAvailable();
+        final SmtpAppender appender = SmtpAppender.newBuilder()
+                .setName("Test")
+                .setTo("to@example.com")
+                .setCc("cc@example.com")
+                .setBcc("bcc@example.com")
+                .setFrom("from@example.com")
+                .setReplyTo("replyTo@example.com")
+                .setSubject("Subject")
+                .setSmtpHost(HOST)
+                .setSmtpPort(smtpPort)
+                .setBufferSize(3)
+                .build();
         appender.start();
 
         final LoggerContext context = (LoggerContext) LogManager.getContext();
@@ -143,7 +150,7 @@ public class SmtpAppenderTest {
         root.setAdditive(false);
         root.setLevel(Level.DEBUG);
 
-        final SimpleSmtpServer server = SimpleSmtpServer.start(PORTNUM);
+        final SimpleSmtpServer server = SimpleSmtpServer.start(smtpPort);
 
         root.debug("Debug message #1");
         root.debug("Debug message #2");

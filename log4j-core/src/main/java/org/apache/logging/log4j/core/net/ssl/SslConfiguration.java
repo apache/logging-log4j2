@@ -16,10 +16,11 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.status.StatusLogger;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
@@ -28,12 +29,10 @@ import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
-
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.status.StatusLogger;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
 
 /**
  *  SSL Configuration
@@ -45,12 +44,15 @@ public class SslConfiguration {
     private final TrustStoreConfiguration trustStoreConfig;
     private final SSLContext sslContext;
     private final String protocol;
+    private final boolean verifyHostName;
 
-    private SslConfiguration(final String protocol, final KeyStoreConfiguration keyStoreConfig,
-            final TrustStoreConfiguration trustStoreConfig) {
+    private SslConfiguration(
+            final String protocol, final KeyStoreConfiguration keyStoreConfig,
+            final TrustStoreConfiguration trustStoreConfig, final boolean verifyHostName) {
         this.keyStoreConfig = keyStoreConfig;
         this.trustStoreConfig = trustStoreConfig;
         this.protocol = protocol == null ? SslConfigurationDefaults.PROTOCOL : protocol;
+        this.verifyHostName = verifyHostName;
         this.sslContext = this.createSslContext();
     }
 
@@ -60,6 +62,10 @@ public class SslConfiguration {
 
     public SSLServerSocketFactory getSslServerSocketFactory() {
         return sslContext.getServerSocketFactory();
+    }
+
+    public boolean isVerifyHostName() {
+        return verifyHostName;
     }
 
     private SSLContext createSslContext() {
@@ -224,7 +230,16 @@ public class SslConfiguration {
             trustStoreEquals = trustStoreConfig == config.trustStoreConfig;
         }
 
-        return keyStoreEquals && trustStoreEquals;
+        return keyStoreEquals && trustStoreEquals && verifyHostName == config.verifyHostName;
+    }
+
+    /**
+     * @deprecated use {@link #createSSLConfiguration(String, KeyStoreConfiguration, TrustStoreConfiguration, boolean)}
+     */
+    @Deprecated
+    public static SslConfiguration createSSLConfiguration(
+            final String protocol, final KeyStoreConfiguration keyStoreConfig, final TrustStoreConfiguration trustStoreConfig) {
+        return createSSLConfiguration(protocol, keyStoreConfig, trustStoreConfig, false);
     }
 
     /**
@@ -232,15 +247,17 @@ public class SslConfiguration {
      * @param protocol The protocol, see http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#SSLContext
      * @param keyStoreConfig The KeyStoreConfiguration.
      * @param trustStoreConfig The TrustStoreConfiguration.
+     * @param verifyHostName Whether to enable TLS hostname verification
      * @return a new SslConfiguration
      */
     @PluginFactory
     public static SslConfiguration createSSLConfiguration(
             // @formatter:off
             @PluginAttribute("protocol") final String protocol,
-            @PluginElement("KeyStore") final KeyStoreConfiguration keyStoreConfig, 
-            @PluginElement("TrustStore") final TrustStoreConfiguration trustStoreConfig) {
+            @PluginElement("KeyStore") final KeyStoreConfiguration keyStoreConfig,
+            @PluginElement("TrustStore") final TrustStoreConfiguration trustStoreConfig,
+            @PluginAttribute("verifyHostName") final boolean verifyHostName) {
             // @formatter:on
-        return new SslConfiguration(protocol, keyStoreConfig, trustStoreConfig);
+        return new SslConfiguration(protocol, keyStoreConfig, trustStoreConfig, verifyHostName);
     }
 }
