@@ -131,7 +131,6 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
             handleError(LOOKUP_KEY_JVMRUNARGS, e);
         }
         strLookupMap.put("date", new DateLookup());
-        strLookupMap.put("ctx", new ContextMapLookup());
         if (Constants.IS_WEB_APP) {
             try {
                 strLookupMap.put(LOOKUP_KEY_WEB, Loader.newCheckedInstanceOf(WEB_LOOKUP, StrLookup.class));
