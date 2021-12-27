@@ -459,7 +459,7 @@
             <documentation>The character set to use when converting the syslog String to a byte array.</documentation>
          </annotation>
       </attribute>
-      <attribute name="disableAnsi" type="tns:BooleanType" default="false">
+      <attribute name="disableAnsi" type="tns:BooleanType" default="true">
          <annotation>
             <documentation>If true, do not output ANSI escape codes.</documentation>
          </annotation>
