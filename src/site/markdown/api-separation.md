@@ -24,7 +24,7 @@ example, library code that you depend on may use slf4j, while other libraries
 may simply use java.util.logging.  All of these can be routed to the log4j
 core in order to be logged.
 
-If however you want to use a different logging implementation(such as logback),
+If however you want to use a different logging implementation (such as logback),
 it is possible to route messages from the Log4j API to logback, ensuring that
 your application is not tied to a specific logging framework.
 
@@ -47,7 +47,7 @@ In order to use the API portion of Log4j2, we only need to provide a single
 dependency, log4j-api.  Using Maven, you would add the following to your
 dependencies:
 
-```
+```xml
 <dependency>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j-api</artifactId>
@@ -57,21 +57,21 @@ dependencies:
 
 ## Using Log4j2 API and Core
 
-Using the Log4j2 API and Core together means that log messages will be routed
-through the Log4j2 Core.  The Log4j2 core is responsible for the
-following(note: this is not an exhaustive list):
+Using the Log4j2 API and the implementation (Core) together means that log messages will be routed
+through the Log4j2 Core.  The Log4j2 core implementation is responsible for the
+following (note: this is not an exhaustive list):
 
-* Configuration of the system(via an XML file for example)
-* Routing messages to appenders
-* Opening files and other resources for logs(e.g. network sockets)
+* Configuration of the system (via an XML file for example)
+* Routing messages to Appenders
+* Opening files and other resources for logging (e.g. network sockets)
 
-When using the Log4j2 core, this means that your config file must match the
-[configuration](manual/configuration.html) used by Log4j2.
+The [configuration](manual/configuration.html) page in the manual describes
+the configuration format supported by the Log4j2 core implementation.
 
-To use both the API and the core, you would add the following to your
-dependencies(assuming that you are using Maven):
+To use both the API and the core implementation, you would add the following to your
+dependencies (assuming that you are using Maven):
 
-```
+```xml
 <dependency>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j-api</artifactId>
@@ -85,8 +85,8 @@ dependencies(assuming that you are using Maven):
 ```
 
 Note that having two different versions of log4j-api and log4j-core on your
-classpath is not guaranteed to work correctly(e.g. 2.15 of log4j-api and 
-2.17 of log4j-core).
+classpath is not guaranteed to work correctly (e.g., log4j-api version 2.15 and 
+ log4j-core version 2.17 are not guaranteed to work correctly together).
 
 ##  Using Log4j2 API with Logback
 
@@ -95,10 +95,10 @@ and then have Logback do the actual logging of the messages.  This means
 that you can write your code tied to the Log4j2 API, but users of your
 code do not need to use the Log4j2 core if they are already using Logback.
 
-To switch to using Logback, you will need to add the following to your
-dependencies(assumging that you are using Maven):
+To switch to using Logback as your logging backend, you will need to add the following to your
+dependencies (assuming that you are using Maven):
 
-```
+```xml
 <dependency>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j-api</artifactId>
@@ -137,7 +137,7 @@ public class Log4j2Test {
 
 We can then route the messages to Log4j2 using the log4j-slf4j-impl like the following:
 
-```
+```xml
 <dependency>
     <groupId>org.slf4j</groupId>
     <artifactId>slf4j-api</artifactId>
@@ -170,9 +170,10 @@ public class Log4j2Test {
 
     private static final Logger logger = Logger.getLogger(Log4j2Test.class.getName());
 
-    public Log4j2Test(){
-        logger.info( "Hello World!" );
+    public Log4j2Test() {
+        logger.info("Hello World!");
     }
+}
 ```
 
 We can then also route these messages to the Log4j2 core by adding in the JUL bridge,
@@ -182,7 +183,7 @@ more information as to how this works).
 
 In order to route these messages to Log4j2, your dependencies would look like the following:
 
-```
+```xml
 <dependency>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j-jul</artifactId>
@@ -197,8 +198,12 @@ In order to route these messages to Log4j2, your dependencies would look like th
 
 ## Using Log4j2 as a backend for Log4j1
 
-Some software may still depend on Log4j1, and in that case it may be infeasible
-to upgrade to Log4j2.  Assuming that our code looks like the following:
+Some software may still depend on Log4j1, and in some cases it may be infeasible
+to modify this software to migrate it to Log4j2.
+
+However, it may be possible to start using Log4j2 without modifying the application.
+
+Assuming that our code looks like the following:
 
 ```java
 import org.apache.log4j.Logger;
@@ -214,9 +219,9 @@ public class Log4j2Test {
 ```
 
 we can then quickly and easily configure these messages to use Log4j2
-as the logging implementation by depending on the log4j-1.2-api like so:
+as the logging implementation by depending on the `log4j-1.2-api` bridge, like so:
 
-```
+```xml
 <dependency>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j-1.2-api</artifactId>
@@ -229,13 +234,12 @@ as the logging implementation by depending on the log4j-1.2-api like so:
 </dependency>
 ```
 
-There are some limitations to this, but it is expected to work for the
-majority of common cases.  See the (manual)[https://logging.apache.org/log4j/2.x/manual/compatibility.html]
-for more information on this feature.
+There are some limitations to this, but it is expected to work for the majority of common cases.
+See the (manual)[https://logging.apache.org/log4j/2.x/manual/migration.html] for more information on this feature.
 
 # Conclusion
 
-With the API separation that Lo4j2 provides, it is possible to use multiple
+With the API separation that Log4j2 provides, it is possible to use multiple
 logging APIs and implementations in the same project.  This allows for greater
-flexiblity, ensuring that you are not tied to a single API or implementation.
+flexibility, ensuring that you are not tied to a single API or implementation.
 
