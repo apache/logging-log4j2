@@ -1353,6 +1353,7 @@
             <!-- Other -->
             <exclude>felix-cache/**</exclude>
             <exclude>**/README.md</exclude>
+            <exclude>docs/**/*.md</exclude>
             <exclude>RELEASE-NOTES.md</exclude>
             <exclude>SECURITY.md</exclude>
             <exclude>.java-version</exclude>
