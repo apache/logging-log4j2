@@ -29,21 +29,13 @@ The artifacts may be downloaded from https://logging.apache.org/log4j/2.x/downlo
 
 This release contains the changes noted below:
 
-* Address CVE-2021-45105.
-* Require components that use JNDI to be enabled individually via system properties.
-* Remove LDAP and LDAPS as supported protocols from JNDI.
+* Address CVE-2021-44832.
+* Other minor fixes.
 
 Due to a break in compatibility in the SLF4J binding, Log4j now ships with two versions of the SLF4J to Log4j adapters.
 log4j-slf4j-impl should be used with SLF4J 1.7.x and earlier and log4j-slf4j18-impl should be used with SLF4J 1.8.x and
 later. SLF4J-2.0.0 alpha releases are not fully supported. See https://issues.apache.org/jira/browse/LOG4J2-2975 and
 https://jira.qos.ch/browse/SLF4J-511.
-
-Some of the changes in Log4j 2.17.1 include:
-
-* Disable recursive evaluation of Lookups during log event processing. Recursive evaluation is still allwoed while
-generating the configuration.
-* The JndiLookup, JndiContextSelector, and JMSAppender now require individual system properties to be enabled.
-* Removed support for the LDAP and LDAPS protocols via JNDI.
 
 The Log4j 2.17.1 API, as well as many core components, maintains binary compatibility with previous releases.
 
@@ -53,26 +45,29 @@ Changes in this version include:
 
 
 ### Fixed Bugs
-                * [LOG4J2-3290](https://issues.apache.org/jira/browse/LOG4J2-3290):
-    Remove unused method.
-                * [LOG4J2-3292](https://issues.apache.org/jira/browse/LOG4J2-3292):
-    ExtendedLoggerWrapper.logMessage no longer double-logs when location is requested.
-                * [LOG4J2-3289](https://issues.apache.org/jira/browse/LOG4J2-3289):
-    log4j-to-slf4j no longer re-interpolates formatted message contents.
-                * [LOG4J2-3204](https://issues.apache.org/jira/browse/LOG4J2-3204):
-    Correct SpringLookup package name in Interpolator. Thanks to Francis-FY.
-                * [LOG4J2-3284](https://issues.apache.org/jira/browse/LOG4J2-3284):
-    log4j-to-slf4j takes the provided MessageFactory into account Thanks to Michael Vorburger.
-                * [LOG4J2-3264](https://issues.apache.org/jira/browse/LOG4J2-3264):
-    Fix MapLookup to lookup MapMessage before DefaultMap Thanks to Yanming Zhou.
-                * [LOG4J2-3274](https://issues.apache.org/jira/browse/LOG4J2-3274):
-    Buffered I/O checked had inverted logic in RollingFileAppenderBuidler. Thanks to Faisal Khan Thayub Khan.
-                * [](https://issues.apache.org/jira/browse/LOG4J2-3274):
-    Fix NPE when input is null in StrSubstitutor.replace(String, Properties).
-                * [LOG4J2-3270](https://issues.apache.org/jira/browse/LOG4J2-3270):
-    Lookups with no prefix only read values from the configuration properties as expected.
-                * [LOG4J2-3256](https://issues.apache.org/jira/browse/LOG4J2-3256):
-    Reduce ignored package scope of KafkaAppender. Thanks to Lee Dongjin.
+* [LOG4J2-3293](https://issues.apache.org/jira/browse/LOG4J2-3293):
+JdbcAppender now uses JndiManager to access JNDI resources. JNDI is only enabled when system property
+        log4j2.enableJndiJdbc is set to true.
+* [LOG4J2-3290](https://issues.apache.org/jira/browse/LOG4J2-3290):
+Remove unused method.
+* [LOG4J2-3292](https://issues.apache.org/jira/browse/LOG4J2-3292):
+ExtendedLoggerWrapper.logMessage no longer double-logs when location is requested.
+* [LOG4J2-3289](https://issues.apache.org/jira/browse/LOG4J2-3289):
+log4j-to-slf4j no longer re-interpolates formatted message contents.
+* [LOG4J2-3204](https://issues.apache.org/jira/browse/LOG4J2-3204):
+Correct SpringLookup package name in Interpolator. Thanks to Francis-FY.
+* [LOG4J2-3284](https://issues.apache.org/jira/browse/LOG4J2-3284):
+log4j-to-slf4j takes the provided MessageFactory into account Thanks to Michael Vorburger.
+* [LOG4J2-3264](https://issues.apache.org/jira/browse/LOG4J2-3264):
+Fix MapLookup to lookup MapMessage before DefaultMap Thanks to Yanming Zhou.
+* [LOG4J2-3274](https://issues.apache.org/jira/browse/LOG4J2-3274):
+Buffered I/O checked had inverted logic in RollingFileAppenderBuidler. Thanks to Faisal Khan Thayub Khan.
+* [](https://issues.apache.org/jira/browse/LOG4J2-3274):
+Fix NPE when input is null in StrSubstitutor.replace(String, Properties).
+* [LOG4J2-3270](https://issues.apache.org/jira/browse/LOG4J2-3270):
+Lookups with no prefix only read values from the configuration properties as expected.
+* [LOG4J2-3256](https://issues.apache.org/jira/browse/LOG4J2-3256):
+Reduce ignored package scope of KafkaAppender. Thanks to Lee Dongjin.
 
 
 ---

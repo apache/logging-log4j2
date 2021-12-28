@@ -20,19 +20,19 @@
 #set($relVersion=$announceParameters.releaseVersion)
 #set($relCount=$announceParameters.releaseCount)
 #macro(formatAction $item)
-    ## Use replaceAll to fix up LF-only line ends on Windows.
-    ## Also replace < and > with entity versions to avoid HTML being misinterpreted.
-    #set($action=$item.action.replaceAll("\n","
+## Use replaceAll to fix up LF-only line ends on Windows.
+## Also replace < and > with entity versions to avoid HTML being misinterpreted.
+#set($action=$item.action.replaceAll("\n","
 ").replaceAll("<", "&lt;").replaceAll(">", "&gt;"))
-    #if($item.issue)
-        #set($issue = $item.issue)
-        #set($url = "https://issues.apache.org/jira/browse/$issue")
-    #else
-        #set($issue = "")
-    #end
+#if($item.issue)
+#set($issue = $item.issue)
+#set($url = "https://issues.apache.org/jira/browse/$issue")
+#else
+#set($issue = "")
+#end
 * #if($issue)[$issue]($url):#end
 
-    ${action}#if($item.dueTo) Thanks to ${item.dueTo}.#end
+${action}#if($item.dueTo) Thanks to ${item.dueTo}.#end
 
 #end
 ## -----------------------------------------
@@ -67,21 +67,13 @@ The artifacts may be downloaded from https://logging.apache.org/log4j/2.x/downlo
 
 This release contains the changes noted below:
 
-* Address CVE-2021-45105.
-* Require components that use JNDI to be enabled individually via system properties.
-* Remove LDAP and LDAPS as supported protocols from JNDI.
+* Address CVE-2021-44832.
+* Other minor fixes.
 
 Due to a break in compatibility in the SLF4J binding, Log4j now ships with two versions of the SLF4J to Log4j adapters.
 log4j-slf4j-impl should be used with SLF4J 1.7.x and earlier and log4j-slf4j18-impl should be used with SLF4J 1.8.x and
 later. SLF4J-2.0.0 alpha releases are not fully supported. See https://issues.apache.org/jira/browse/LOG4J2-2975 and
 https://jira.qos.ch/browse/SLF4J-511.
-
-Some of the changes in Log4j ${relVersion} include:
-
-* Disable recursive evaluation of Lookups during log event processing. Recursive evaluation is still allwoed while
-generating the configuration.
-* The JndiLookup, JndiContextSelector, and JMSAppender now require individual system properties to be enabled.
-* Removed support for the LDAP and LDAPS protocols via JNDI.
 
 The Log4j ${relVersion} API, as well as many core components, maintains binary compatibility with previous releases.
 
