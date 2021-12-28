@@ -1,6 +1,6 @@
-/.project
+**/.project
 /.idea
 **/*.iml
 **/target
 /target/
-/.settings
+**/.settings
