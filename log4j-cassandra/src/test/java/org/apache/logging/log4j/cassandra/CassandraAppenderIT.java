@@ -16,31 +16,41 @@
  */
 package org.apache.logging.log4j.cassandra;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.categories.Appenders;
 import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.junit.Assume;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.RuleChain;
 
-import static org.junit.Assert.*;
+import com.datastax.driver.core.Row;
+import com.datastax.driver.core.Session;
 
 /**
  * Integration test for CassandraAppender.
  */
 @Category(Appenders.Cassandra.class)
 public class CassandraAppenderIT {
+
+    @BeforeClass
+    public static void disbaleOnAarch64() {
+        Assume.assumeFalse(SystemUtils.OS_ARCH.equalsIgnoreCase("aarch64"));
+    }
 
     private static final String DDL = "CREATE TABLE logs (" +
         "id timeuuid PRIMARY KEY," +
