@@ -65,7 +65,7 @@ following (note: this is not an exhaustive list):
 * Routing messages to Appenders
 * Opening files and other resources for logging (e.g. network sockets)
 
-The [configuration](manual/configuration.html) page in the manual describes
+The [configuration](configuration.html) page in the manual describes
 the configuration format supported by the Log4j2 core implementation.
 
 To use both the API and the core implementation, you would add the following to your
@@ -178,7 +178,7 @@ public class Log4j2Test {
 
 We can then also route these messages to the Log4j2 core by adding in the JUL bridge,
 and setting `-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager` on the JVM (see the documentation on
-[the JUL adapter](log4j-jul/index.html) for
+[the JUL adapter](../log4j-jul/index.html) for
 more information as to how this works).
 
 In order to route these messages to Log4j2, your dependencies would look like the following:
@@ -235,7 +235,7 @@ as the logging implementation by depending on the `log4j-1.2-api` bridge, like s
 ```
 
 There are some limitations to this, but it is expected to work for the majority of common cases.
-See the [manual](manual/migration.html) for more information on this feature.
+See the [manual page on migration](migration.html) for more information on this feature.
 
 # Conclusion
 

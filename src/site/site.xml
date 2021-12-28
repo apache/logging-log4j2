@@ -88,6 +88,7 @@
     <menu name="Manual" inherit="top" img="img/glyphicons/book.png">
       <item name="Introduction" href="/manual/index.html"/>
       <item name="Architecture" href="/manual/architecture.html"/>
+      <item name="API Separation" href="/manual/api-separation.html"/>
 
       <item name="Log4j 1.x Migration" href="manual/migration.html" collapse="true">
         <item name="Log4j 1.x Bridge" href="manual/migration.html#Log4j1.2Bridge"/>
