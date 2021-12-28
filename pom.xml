@@ -1337,6 +1337,7 @@
             <exclude>src/main/resources/META-INF/services/**/*</exclude>
             <!-- IntelliJ files -->
             <exclude>.idea/**/*</exclude>
+            <exclude>**/*.iml</exclude>
             <exclude>src/test/resources/**/*</exclude>
             <!-- IDE settings imports -->
             <exclude>src/ide/**</exclude>
