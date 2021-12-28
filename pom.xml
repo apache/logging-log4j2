@@ -207,7 +207,7 @@
     <elastic.version>7.15.2</elastic.version>
     <mongodb3.version>3.12.4</mongodb3.version>
     <mongodb4.version>4.0.3</mongodb4.version>
-    <groovy.version>2.5.6</groovy.version>
+    <groovy.version>2.5.15</groovy.version>
     <compiler.plugin.version>3.8.1</compiler.plugin.version>
     <pmd.plugin.version>3.13.0</pmd.plugin.version>
     <spotbugs.plugin.version>4.0.4</spotbugs.plugin.version>
@@ -356,22 +356,23 @@
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-plugin-processor</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-1.2-api</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-plugins</artifactId>
+        <artifactId>log4j-plugins-test</artifactId>
         <version>${project.version}</version>
-        <type>test-jar</type>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-api</artifactId>
+        <artifactId>log4j-jndi-test</artifactId>
         <version>${project.version}</version>
-        <type>test-jar</type>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -385,10 +386,8 @@
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-core</artifactId>
+        <artifactId>log4j-core-test</artifactId>
         <version>${project.version}</version>
-        <type>test-jar</type>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -715,28 +714,24 @@
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-engine</artifactId>
         <version>${junitJupiterVersion}</version>
-        <scope>test</scope>
       </dependency>
       <!-- JUnit 4 to 5 migration support -->
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-migrationsupport</artifactId>
         <version>${junitJupiterVersion}</version>
-        <scope>test</scope>
       </dependency>
       <!-- JUnit 5 parameterized test support -->
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-params</artifactId>
         <version>${junitJupiterVersion}</version>
-        <scope>test</scope>
       </dependency>
       <!-- JUnit 4 API dependency -->
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>${junitVersion}</version>
-        <scope>test</scope>
         <exclusions>
           <exclusion>
             <groupId>org.hamcrest</groupId>
@@ -749,19 +744,16 @@
         <groupId>org.junit.vintage</groupId>
         <artifactId>junit-vintage-engine</artifactId>
         <version>${junitJupiterVersion}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.assertj</groupId>
         <artifactId>assertj-core</artifactId>
-        <version>3.17.1</version>
-        <scope>test</scope>
+        <version>3.21.0</version>
       </dependency>
       <dependency>
         <groupId>org.hamcrest</groupId>
         <artifactId>hamcrest</artifactId>
         <version>2.2</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.awaitility</groupId>
@@ -993,14 +985,23 @@
       </dependency>
       <dependency>
         <groupId>org.codehaus.groovy</groupId>
+        <artifactId>groovy</artifactId>
+        <version>${groovy.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.groovy</groupId>
         <artifactId>groovy-jsr223</artifactId>
         <version>${groovy.version}</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.codehaus.groovy</groupId>
         <artifactId>groovy-dateutil</artifactId>
         <version>${groovy.version}</version>
+        <scope>test</scope>
       </dependency>
+
       <dependency>
         <!-- Testing MongoDB -->
         <groupId>de.flapdoodle.embed</groupId>
@@ -1120,7 +1121,7 @@
             <annotationProcessorPaths>
               <path>
                 <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-plugins</artifactId>
+                <artifactId>log4j-plugin-processor</artifactId>
                 <version>${project.version}</version>
               </path>
               <path>
@@ -1243,7 +1244,6 @@
                     <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
                     <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
                     <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
-                    <Automatic-Module-Name>${module.name}</Automatic-Module-Name>
                   </manifestEntries>
                 </archive>
               </configuration>
@@ -1683,8 +1683,12 @@
   </distributionManagement>
   <modules>
     <module>log4j-api</module>
+    <module>log4j-api-test</module>
     <module>log4j-plugins</module>
+    <module>log4j-plugin-processor</module>
+    <module>log4j-plugins-test</module>
     <module>log4j-core</module>
+    <module>log4j-core-test</module>
     <module>log4j-gctests</module>
     <module>log4j-layout-jackson</module>
     <module>log4j-layout-jackson-json</module>
@@ -1698,6 +1702,7 @@
     <module>log4j-to-slf4j</module>
     <module>log4j-jcl</module>
     <module>log4j-jndi</module>
+    <module>log4j-jndi-test</module>
     <module>log4j-csv</module>
     <module>log4j-flume-ng</module>
     <module>log4j-taglib</module>

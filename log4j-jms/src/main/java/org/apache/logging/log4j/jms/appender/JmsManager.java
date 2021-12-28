@@ -21,7 +21,6 @@ import java.io.Serializable;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
@@ -37,8 +36,8 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
-import org.apache.logging.log4j.jndi.JndiManager;
 import org.apache.logging.log4j.core.util.Log4jThread;
+import org.apache.logging.log4j.jndi.JndiManager;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -124,18 +123,37 @@ public class JmsManager extends AbstractManager {
 
         @Override
         public JmsManager createManager(final String name, final JmsManagerConfiguration data) {
-            if (JndiManager.isJndiEnabled()) {
-                try {
-                    return new JmsManager(name, data);
-                } catch (final Exception e) {
-                    logger().error("Error creating JmsManager using JmsManagerConfiguration [{}]", data, e);
-                    return null;
-                }
-            } else {
-                logger().error("JNDI has not been enabled. The log4j2.enableJndi property must be set to true");
+            try {
+                return new JmsManager(name, data);
+            } catch (final Exception e) {
+                logger().error("Error creating JmsManager using JmsManagerConfiguration [{}]", data, e);
                 return null;
             }
         }
+    }
+
+    /**
+     * Creates the JNDI properties. Keeps caller from being dependent on JndiManager.
+     * @param factoryName
+     *            Fully qualified class name of an implementation of {@link javax.naming.spi.InitialContextFactory}.
+     * @param providerUrl
+     *            The provider URL to use for the JNDI connection (specific to the above factory).
+     * @param urlPkgPrefixes
+     *            A colon-separated list of package prefixes for the class name of the factory class that will create a
+     *            URL context factory
+     * @param securityPrincipal
+     *            The name of the identity of the Principal.
+     * @param securityCredentials
+     *            The security credentials of the Principal.
+     * @param additionalProperties
+     *            Any additional JNDI environment properties to set or {@code null} for none.
+     * @return the Properties for the provided parameters.
+     */
+    public static Properties createJndiProperties(final String factoryName, final String providerUrl,
+            final String urlPkgPrefixes, final String securityPrincipal, final String securityCredentials,
+            final Properties additionalProperties) {
+        return JndiManager.createProperties(factoryName, providerUrl, urlPkgPrefixes,
+                securityPrincipal, securityCredentials, additionalProperties);
     }
 
     /**

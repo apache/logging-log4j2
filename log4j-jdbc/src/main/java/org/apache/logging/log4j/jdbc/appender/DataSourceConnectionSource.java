@@ -18,13 +18,12 @@ package org.apache.logging.log4j.jdbc.appender;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
+import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.jdbc.appender.util.JndiUtil;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -65,23 +64,20 @@ public final class DataSourceConnectionSource extends AbstractConnectionSource {
      */
     @PluginFactory
     public static DataSourceConnectionSource createConnectionSource(@PluginAttribute final String jndiName) {
+        if (!Constants.JNDI_JDBC_ENABLED) {
+            LOGGER.error("JNDI must be enabled by setting log4j2.enableJndiJdbc=true");
+            return null;
+        }
         if (Strings.isEmpty(jndiName)) {
             LOGGER.error("No JNDI name provided.");
             return null;
         }
 
-        try {
-            final InitialContext context = new InitialContext();
-            final DataSource dataSource = (DataSource) context.lookup(jndiName);
-            if (dataSource == null) {
-                LOGGER.error("No data source found with JNDI name [" + jndiName + "].");
-                return null;
-            }
-
-            return new DataSourceConnectionSource(jndiName, dataSource);
-        } catch (final NamingException e) {
-            LOGGER.error(e.getMessage(), e);
+        final DataSource dataSource = JndiUtil.getDataSource(jndiName);
+        if (dataSource == null) {
             return null;
         }
+
+        return new DataSourceConnectionSource(jndiName, dataSource);
     }
 }

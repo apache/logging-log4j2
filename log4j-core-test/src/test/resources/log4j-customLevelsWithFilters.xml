@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" verbose="true">
+  <CustomLevels>
+    <CustomLevel name="INFOM1" intLevel="399" />
+    <CustomLevel name="INFOP1" intLevel="401" />
+  </CustomLevels>
+  <Appenders>
+    <File name="info" fileName="target/info.log">
+      <PatternLayout>
+        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+      </PatternLayout>
+      <Filters>
+        <ThresholdFilter level="INFOM1" onMatch="DENY" onMismatch="NEUTRAL" />
+        <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY" />
+      </Filters>
+    </File>
+  </Appenders>
+  <Loggers>
+    <Logger name="HelloWorld" level="ALL">
+      <AppenderRef ref="info" />
+    </Logger>
+    <Root>
+    </Root>
+  </Loggers>
+</Configuration>

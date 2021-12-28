@@ -28,8 +28,9 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import org.apache.logging.log4j.core.test.junit.JndiRule;
+
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.jndi.test.junit.JndiRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -41,6 +42,7 @@ public class DataSourceConnectionSourceTest {
 
     @Parameterized.Parameters(name = "{0}")
     public static Object[][] data() {
+        System.setProperty("log4j2.enableJndiJdbc", "true");
         return new Object[][]{
             {"java:/comp/env/jdbc/Logging01"},
             {"java:/comp/env/jdbc/Logging02"}

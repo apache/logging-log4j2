@@ -24,12 +24,12 @@ import java.util.Map;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.ConfigurationAware;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.util.ReflectionUtil;
 import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Constants;
 
 /**
  * Proxies other {@link StrLookup}s using a keys within ${} markers.
@@ -57,7 +57,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
     private static final String JNDI_LOOKUP = "org.apache.logging.log4j.jndi.lookup.JndiLookup";
     private static final String WEB_LOOKUP = "org.apache.logging.log4j.web.WebLookup";
     private static final String DOCKER_LOOKUP = "org.apache.logging.log4j.docker.DockerLookup";
-    private static final String SPRING_LOOKUP = "org.apache.logging.log4j.spring.cloud.config.client.SpringLookup";
+    private static final String SPRING_LOOKUP = "org.apache.logging.log4j.spring.boot.SpringLookup";
     private static final String KUBERNETES_LOOKUP = "org.apache.logging.log4j.kubernetes.KubernetesLookup";
 
     private final Map<String, StrLookup> strLookupMap = new HashMap<>();

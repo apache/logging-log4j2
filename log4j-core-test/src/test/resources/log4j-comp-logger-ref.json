@@ -1,0 +1,18 @@
+{
+    "Configuration" : {
+        "name": "LoggerConfigTest",
+        "Loggers" : {
+            "logger" : [
+                {
+                    "name" : "cat1",
+                    "level" : "debug",
+                    "additivity" : false,
+                    "AppenderRef" : {
+                        "ref" : "STDOUT",
+                        "RegexFilter": {"regex" : "TEST", "onMatch": "deny", "onMismatch": "accept"}
+                    }
+                }
+            ]
+        }
+    }
+}

@@ -48,9 +48,8 @@
 
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>
+      <artifactId>log4j-core-test</artifactId>
       <version>${project.version}</version>
-      <type>test-jar</type>
       <scope>test</scope>
     </dependency>
 
@@ -130,114 +129,83 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${compiler.plugin.version}</version>
+        <configuration>
+          <source>${maven.compiler.source}</source>
+          <target>${maven.compiler.target}</target>
+          <release>${maven.compiler.release}</release>
+          <showDeprecation>true</showDeprecation>
+          <showWarnings>true</showWarnings>
+          <verbose>false</verbose>
+          <encoding>UTF-8</encoding>
+          <fork>true</fork>
+          <meminitial>256</meminitial>
+          <maxmem>1024</maxmem>
+          <compilerArgs>
+            <arg>-XDcompilePolicy=simple</arg>
+            <arg>-Xplugin:ErrorProne</arg>
+            <!--
+            https://errorprone.info/docs/installation
+            in Java 16+, https://openjdk.java.net/jeps/396 encapsulates internals that errorprone needs
+            -->
+            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>
+            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>
+            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</arg>
+            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</arg>
+            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</arg>
+            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>
+            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>
+            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>
+            <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
+            <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>
+          </compilerArgs>
+          <compilerArguments>
+            <Xmaxwarns>10000</Xmaxwarns>
+            <Xlint />
+          </compilerArguments>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>org.apache.logging.log4j</groupId>
+              <artifactId>log4j-plugin-processor</artifactId>
+              <version>${project.version}</version>
+            </path>
+            <path>
+              <groupId>com.google.errorprone</groupId>
+              <artifactId>error_prone_core</artifactId>
+              <version>${errorprone.version}</version>
+            </path>
+          </annotationProcessorPaths>
+          <forceJavacCompilerUse>true</forceJavacCompilerUse>
+          <parameters>true</parameters>
+        </configuration>
         <executions>
           <execution>
             <id>default-compile</id>
-            <goals>
-              <goal>compile</goal>
-            </goals>
             <configuration>
-              <source>${maven.compiler.source}</source>
-              <target>${maven.compiler.target}</target>
-              <release>${maven.compiler.release}</release>
-              <showDeprecation>true</showDeprecation>
-              <showWarnings>true</showWarnings>
-              <encoding>UTF-8</encoding>
-              <fork>true</fork>
-              <meminitial>256</meminitial>
-              <maxmem>1024</maxmem>
               <compilerArgs>
-                <arg>-XDcompilePolicy=simple</arg>
-                <arg>-Xplugin:ErrorProne</arg>
-                <!--
-                https://errorprone.info/docs/installation
-                in Java 16+, https://openjdk.java.net/jeps/396 encapsulates internals that errorprone needs
-                -->
-                <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>
-                <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>
-                <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</arg>
-                <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</arg>
-                <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</arg>
-                <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>
-                <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>
-                <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>
-                <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
-                <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>
+                <arg>-ApluginPackage=org.apache.logging.log4j.layout.template.json</arg>
               </compilerArgs>
-              <compilerArguments>
-                <Xmaxwarns>10000</Xmaxwarns>
-                <Xlint />
-              </compilerArguments>
-              <annotationProcessorPaths>
-                <path>
-                  <groupId>com.google.errorprone</groupId>
-                  <artifactId>error_prone_core</artifactId>
-                  <version>${errorprone.version}</version>
-                </path>
-                <path>
-                  <groupId>org.apache.logging.log4j</groupId>
-                  <artifactId>log4j-plugins</artifactId>
-                  <version>${project.version}</version>
-                </path>
-              </annotationProcessorPaths>
-              <forceJavacCompilerUse>true</forceJavacCompilerUse>
-              <parameters>true</parameters>
             </configuration>
           </execution>
           <execution>
             <id>default-testCompile</id>
-            <goals>
-              <goal>testCompile</goal>
-            </goals>
             <configuration>
-              <source>${maven.compiler.source}</source>
-              <target>${maven.compiler.target}</target>
-              <release>${maven.compiler.release}</release>
-              <showDeprecation>true</showDeprecation>
-              <showWarnings>true</showWarnings>
-              <encoding>UTF-8</encoding>
-              <fork>true</fork>
-              <meminitial>256</meminitial>
-              <maxmem>1024</maxmem>
               <compilerArgs>
-                <arg>-XDcompilePolicy=simple</arg>
-                <arg>-Xplugin:ErrorProne</arg>
-                <arg>-ApluginPackage=org.apache.logging.log4j.layout.template.json.plugins.test</arg>
-                <!--
-                https://errorprone.info/docs/installation
-                in Java 16+, https://openjdk.java.net/jeps/396 encapsulates internals that errorprone needs
-                -->
-                <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>
-                <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>
-                <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</arg>
-                <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</arg>
-                <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</arg>
-                <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>
-                <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>
-                <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>
-                <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
-                <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>
+                <arg>-ApluginPackage=org.apache.logging.log4j.layout.template.json.test</arg>
               </compilerArgs>
-              <compilerArguments>
-                <Xmaxwarns>10000</Xmaxwarns>
-                <Xlint />
-              </compilerArguments>
-              <annotationProcessorPaths>
-                <path>
-                  <groupId>com.google.errorprone</groupId>
-                  <artifactId>error_prone_core</artifactId>
-                  <version>${errorprone.version}</version>
-                </path>
-                <path>
-                  <groupId>org.apache.logging.log4j</groupId>
-                  <artifactId>log4j-plugins</artifactId>
-                  <version>${project.version}</version>
-                </path>
-              </annotationProcessorPaths>
-              <forceJavacCompilerUse>true</forceJavacCompilerUse>
-              <parameters>true</parameters>
             </configuration>
           </execution>
+          <!--<execution>
+            <id>compile-module-info</id>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <phase>prepare-package</phase>
+            <configuration>
+              <compileSourceRoots>
+                <compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
+              </compileSourceRoots>
+            </configuration>
+          </execution>-->
         </executions>
       </plugin>
       <plugin>

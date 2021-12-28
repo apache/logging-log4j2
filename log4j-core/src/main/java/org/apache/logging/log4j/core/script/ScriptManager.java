@@ -93,14 +93,20 @@ public class ScriptManager implements FileWatcher, Serializable {
                     }
                     names.append(name);
                 }
-                if (sb.length() > 0) {
-                    sb.append(", ");
+                boolean compiled = false;
+                try {
+                    compiled = factory.getScriptEngine() instanceof Compilable;
+                    logger.debug("{} version: {}, language: {}, threading: {}, compile: {}, names: {}, factory class: {}",
+                            factory.getEngineName(), factory.getEngineVersion(), factory.getLanguageName(), threading,
+                            compiled, languageNames, factory.getClass().getName());
+                    if (sb.length() > 0) {
+                        sb.append(", ");
+                    }
+                    sb.append(names);
+                } catch (RuntimeException ex) {
+                    logger.warn("Error accessing scriptEngine for {}: {}", factory.getEngineName(), ex.getMessage());
                 }
-                sb.append(names);
-                final boolean compiled = factory.getScriptEngine() instanceof Compilable;
-                logger.debug("{} version: {}, language: {}, threading: {}, compile: {}, names: {}, factory class: {}",
-                        factory.getEngineName(), factory.getEngineVersion(), factory.getLanguageName(), threading,
-                        compiled, languageNames, factory.getClass().getName());
+
             }
             languages = sb.toString();
         } else {

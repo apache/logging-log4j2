@@ -34,10 +34,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Throwables;
-import org.apache.logging.log4j.core.test.junit.JndiRule;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.jndi.test.junit.JndiRule;
 import org.apache.logging.log4j.message.MapMessage;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -52,6 +53,11 @@ public class JdbcAppenderMapMessageDataSourceTest {
     @Rule
     public final RuleChain rules;
     private final JdbcRule jdbcRule;
+
+    @BeforeClass
+    public static void beforeClass() {
+        System.setProperty("log4j2.enableJndiJdbc", "true");
+    }
 
     public JdbcAppenderMapMessageDataSourceTest() {
         this(new JdbcRule(JdbcH2TestHelper.TEST_CONFIGURATION_SOURCE_MEM,

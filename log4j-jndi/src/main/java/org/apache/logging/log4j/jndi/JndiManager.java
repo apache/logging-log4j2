@@ -28,8 +28,8 @@ import javax.naming.NamingException;
 
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.jndi.util.JndiCloser;
-import org.apache.logging.log4j.util.Constants;
 
 /**
  * Manages a JNDI {@link javax.naming.Context}.
@@ -44,7 +44,7 @@ public class JndiManager extends AbstractManager {
     private final Context context;
 
     public static boolean isJndiEnabled() {
-        return isJndiContextSelectorEnabled() || isJndiJmsEnabled() || isJndiLookupEnabled();
+        return isJndiContextSelectorEnabled() || isJndiJdbcEnabled() || isJndiJmsEnabled() || isJndiLookupEnabled();
     }
 
     public static boolean isJndiContextSelectorEnabled() {
@@ -57,6 +57,10 @@ public class JndiManager extends AbstractManager {
 
     public static boolean isJndiLookupEnabled() {
         return Constants.JNDI_LOOKUP_ENABLED;
+    }
+
+    public static boolean isJndiJdbcEnabled() {
+        return Constants.JNDI_JDBC_ENABLED;
     }
 
     private JndiManager(final String name, final Context context) {

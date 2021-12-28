@@ -29,6 +29,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class PluginManager {
 
+    /**
+     * The location of the plugin cache data file. This file is written to by this processor, and read from by
+     * {@link org.apache.logging.log4j.plugins.util.PluginManager}.
+     */
+    public static final String PLUGIN_CACHE_FILE =
+            "META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat";
     private static final CopyOnWriteArrayList<String> PACKAGES = new CopyOnWriteArrayList<>();
     private static final String LOG4J_PACKAGES = "org.apache.logging.log4j.core";
 

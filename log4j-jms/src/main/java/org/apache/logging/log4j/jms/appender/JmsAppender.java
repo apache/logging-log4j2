@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.jndi.JndiManager;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.jms.appender.JmsManager.JmsManagerConfiguration;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
@@ -96,12 +96,16 @@ public class JmsAppender extends AbstractAppender {
         @SuppressWarnings("resource") // actualJmsManager and jndiManager are managed by the JmsAppender
         @Override
         public JmsAppender build() {
+            if (!Constants.JNDI_JMS_ENABLED) {
+                LOGGER.error("JNDI has not been enabled. The log4j2.enableJndi property must be set to true");
+                return null;
+            }
             JmsManager actualJmsManager = jmsManager;
             JmsManagerConfiguration configuration = null;
             if (actualJmsManager == null) {
                 Properties additionalProperties = null;
-                final Properties jndiProperties = JndiManager.createProperties(factoryName, providerUrl, urlPkgPrefixes,
-                        securityPrincipalName, securityCredentials, additionalProperties);
+                final Properties jndiProperties = JmsManager.createJndiProperties(factoryName, providerUrl,
+                        urlPkgPrefixes, securityPrincipalName, securityCredentials, additionalProperties);
                 configuration = new JmsManagerConfiguration(jndiProperties, factoryBindingName, destinationBindingName,
                         userName, password, false, reconnectIntervalMillis);
                 actualJmsManager = AbstractManager.getManager(getName(), JmsManager.FACTORY, configuration);

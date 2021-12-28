@@ -84,7 +84,7 @@ that provides the fully qualified name of the implemented class or
 .. adding another compiler pass to the build process that
 only handles annotation processing using the Log4j 2 annotation
 processor class,
-`org.apache.logging.log4j.plugins.processor.PluginProcessor`.
+`org.apache.logging.log4j.plugin.processor.PluginProcessor`.
 To do this using Apache Maven, add the following execution to your
 _maven-compiler-plugin_ (version 2.2 or higher) build plugin:
 
@@ -104,7 +104,7 @@ _maven-compiler-plugin_ (version 2.2 or higher) build plugin:
       <configuration>
         <proc>only</proc>
         <annotationProcessors>
-          <annotationProcessor>org.apache.logging.log4j.plugins.processor.PluginProcessor</annotationProcessor>
+          <annotationProcessor>org.apache.logging.log4j.plugin.processor.PluginProcessor</annotationProcessor>
         </annotationProcessors>
       </configuration>
     </execution>

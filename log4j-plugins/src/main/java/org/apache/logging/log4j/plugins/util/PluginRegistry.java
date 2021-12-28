@@ -22,7 +22,6 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.processor.PluginCache;
 import org.apache.logging.log4j.plugins.processor.PluginEntry;
-import org.apache.logging.log4j.plugins.processor.PluginProcessor;
 import org.apache.logging.log4j.plugins.processor.PluginService;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
@@ -244,7 +243,7 @@ public class PluginRegistry {
         final long startTime = System.nanoTime();
         final PluginCache cache = new PluginCache();
         try {
-            final Enumeration<URL> resources = loader.getResources(PluginProcessor.PLUGIN_CACHE_FILE);
+            final Enumeration<URL> resources = loader.getResources(PluginManager.PLUGIN_CACHE_FILE);
             if (resources == null) {
                 LOGGER.info("Plugin preloads not available from class loader {}", loader);
             } else {

@@ -16,12 +16,34 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Log4j Constants.
  */
 public final class Constants {
+
+    public static final String JNDI_PREFIX = "log4j2.enableJndi";
+    private static final String JNDI_MANAGER_CLASS = "org.apache.logging.log4j.jndi.JndiManager";
+
+    /**
+     * Check to determine if the JNDI feature is available.
+     * @param subKey The feature to check.
+     * @return true if the feature is available.
+     */
+    private static boolean isJndiEnabled(final String subKey) {
+        return PropertiesUtil.getProperties().getBooleanProperty(JNDI_PREFIX + subKey, false)
+                && isClassAvailable(JNDI_MANAGER_CLASS);
+    }
+
+    public static boolean JNDI_CONTEXT_SELECTOR_ENABLED = isJndiEnabled("ContextSelector");
+
+    public static boolean JNDI_JMS_ENABLED = isJndiEnabled("Jms");
+
+    public static boolean JNDI_LOOKUP_ENABLED = isJndiEnabled("Lookup");
+
+    public static boolean JNDI_JDBC_ENABLED = isJndiEnabled("Jdbc");
 
     /**
      * Name of the system property to use to identify the LogEvent factory.
@@ -142,6 +164,20 @@ public final class Constants {
 
     private static int size(final String property, final int defaultValue) {
         return PropertiesUtil.getProperties().getIntegerProperty(property, defaultValue);
+    }
+
+    /**
+     * Determines if a named Class can be loaded or not.
+     *
+     * @param className The class name.
+     * @return {@code true} if the class could be found or {@code false} otherwise.
+     */
+    private static boolean isClassAvailable(final String className) {
+        try {
+            return LoaderUtil.loadClass(className) != null;
+        } catch (final Throwable e) {
+            return false;
+        }
     }
 
     /**
