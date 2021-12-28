@@ -45,6 +45,65 @@ If you have encountered an unlisted security vulnerability or other unexpected b
 that has security impact, or if the descriptions here are incomplete, please report them
 privately to the [Log4j Security Team](mailto:private@logging.apache.org). Thank you.
 
+<a name="CVE-2021-44832"/><a name="cve-2021-44832"/>
+## <a name="log4j-2.17.1"/> Fixed in Log4j 2.17.1 (Java 8), 2.12.4 (Java 7) and 2.3.2 (Java 6)
+
+[CVE-2021-44832](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44832):
+Apache Log4j2 vulnerable to RCE via JDBC Appender when attacker controls configuration.
+
+| [CVE-2021-44832](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44832) | Remote Code Execution |
+| ---------------   | -------- |
+| Severity          | Moderate |
+| Base CVSS Score   | 6.6 (AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H) |
+| Versions Affected | All versions from 2.0-alpha7 to 2.17.0, excluding 2.3.2 and 2.12.4 |
+
+### Description
+Apache Log4j2 versions 2.0-beta7 through 2.17.0 (excluding security fix releases 2.3.2 and 2.12.4) are vulnerable to
+a remote code execution (RCE) attack where an attacker with permission to modify the logging configuration file can
+construct a malicious configuration using a JDBC Appender with a data source referencing a JNDI URI which can execute
+remote code. This issue is fixed by limiting JNDI data source names to the java protocol in Log4j2 versions 2.17.1,
+2.12.4, and 2.3.2.
+
+
+### Mitigation
+
+#### Log4j 1.x mitigation
+
+Log4j 1.x is not impacted by this vulnerability.
+
+#### Log4j 2.x mitigation
+
+Upgrade to Log4j 2.3.2 (for Java 6), 2.12.4 (for Java 7), or 2.17.1 (for Java 8 and later).
+
+In prior releases confirm that if the JDBC Appender is being used it is not configured to use any protocol
+other than Java.
+
+Note that only the log4j-core JAR file is impacted by this vulnerability.
+Applications using only the log4j-api JAR file without the log4j-core JAR file are not impacted by this vulnerability.
+
+Also note that Apache Log4j is the only Logging Services subproject affected by this vulnerability.
+Other projects like Log4net and Log4cxx are not impacted by this.
+
+### Release Details
+From version 2.17.1, (and 2.12.4 and 2.3.2 for Java 7 and Java 6),
+the JDBC Appender will use JndiManager and will require the `log4j2.enableJndiJdbc` system property to contain
+a value of true for JNDI to be enabled.
+
+The property to enable JNDI has been renamed from 'log4j2.enableJndi'
+to three separate properties: `log4j2.enableJndiLookup`, `log4j2.enableJndiJms`, and `log4j2.enableJndiContextSelector`.
+
+JNDI functionality has been hardened in these versions: 2.3.1, 2.12.2, 2.12.3 or 2.17.0:
+from these versions onwards, support for the LDAP protocol has been removed and only the JAVA protocol is supported in JNDI connections.
+
+
+### Work in progress
+The Log4j team will continue to actively update this page as more information becomes known.
+
+### Credit
+No credit is being awarded for this issue.
+
+### References
+- [CVE-2021-44832](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44832)
 
 <a name="CVE-2021-45105"/><a name="cve-2021-45046"/>
 ## <a name="log4j-2.17.0"/> Fixed in Log4j 2.17.0 (Java 8), 2.12.3 (Java 7) and 2.3.1 (Java 6)

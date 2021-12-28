@@ -31,6 +31,10 @@
     -->
     <release version="2.17.1" date="2021-12-27" description="GA Release 2.17.1">
       <!-- FIXES -->
+      <action issue="LOG4J2-3293" dev="ggregory" type="fix">
+        JdbcAppender now uses JndiManager to access JNDI resources. JNDI is only enabled when system property
+        log4j2.enableJndiJdbc is set to true.
+      </action>
       <action issue="LOG4J2-3290" dev="rogers" type="fix">
         Remove unused method.
       </action>
