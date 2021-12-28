@@ -29,6 +29,12 @@
          - "update" - Change
          - "remove" - Removed
     -->
+    <release version="2.12.4" date="2021-12-28" description="GA Release 2.12.4">
+      <action issue="LOG4J2-3293" dev="ggregory" type="fix">
+        JdbcAppender now uses JndiManager to access JNDI resources. JNDI is only enabled when system property
+        log4j2.enableJndiJdbc is set to true.
+      </action>
+    </release>
     <release version="2.12.3" date="2021-12-dd" description="GA Release 2.12.3">
       <action issue="LOG4J2-3230" dev="ckozak" type="fix">
         Fix string substitution recursion.
