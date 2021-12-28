@@ -137,16 +137,8 @@ public final class KafkaAppender extends AbstractAppender {
 	 * @param event The event to test.
 	 * @return true to avoid recursion and skip logging, false to log.
 	 */
-	@SuppressWarnings("ForLoopReplaceableByForEach")	// avoid iterator allocation
 	private static boolean isRecursive(final LogEvent event) {
-		final String loggerName = event.getLoggerName();
-		for (int clientPackageIndex = 0; clientPackageIndex < KAFKA_CLIENT_PACKAGES.length; clientPackageIndex++) {
-			final String clientPackage = KAFKA_CLIENT_PACKAGES[clientPackageIndex];
-			if (loggerName.startsWith(clientPackage)) {
-				return true;
-			}
-		}
-		return false;
+	    return Stream.of(KAFKA_CLIENT_PACKAGES).anyMatch(prefix -> event.getLoggerName().startsWith(prefix));
     }
 
 	/**
