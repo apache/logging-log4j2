@@ -72,8 +72,10 @@ Reduce ignored package scope of KafkaAppender. Thanks to Lee Dongjin.
 
 ---
 
-Apache Log4j 2.17.1 requires a minimum of Java 8 to build and run. Log4j 2.12.1 is the last release to support
-Java 7. Java 7 is not longer supported by the Log4j team.
+Apache Log4j 2.17.1 requires a minimum of Java 8 to build and run.
+Log4j 2.12.3 is the last release to support Java 7.
+Log4j 2.3.1 is the last release to support Java 6.
+Java 6 and Java 7 are no longer supported by the Log4j team.
 
 For complete information on Apache Log4j 2, including instructions on how to submit bug
 reports, patches, or suggestions for improvement, see the Apache Apache Log4j 2 website:
