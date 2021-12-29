@@ -1,7 +1,7 @@
 
-              Apache Log4j 2.3.1 RELEASE NOTES
+              Apache Log4j 2.3.2 RELEASE NOTES
 
-The Apache Log4j 2 team is pleased to announce the Log4j 2.3.1 release!
+The Apache Log4j 2 team is pleased to announce the Log4j 2.3.2 release!
 
 Apache log4j is a well known framework for logging application behavior. Log4j 2 is an upgrade to
 Log4j that provides significant improvements over its predecessor, Log4j 1.x, and provides
@@ -17,21 +17,20 @@ preventing JNDI operations to use any protocols other than java.
 
 The JNDI components are now disabled by default and may separately be enabled with three individual properties; log4j2.enableJndiContextSelector, log4j2.enableJndiJms, and log4j2.enableJndiLookup.
 
-GA Release 2.3.1
+GA Release 2.3.2
 
 Changes in this version include:
 
-New features:
-o LOG4J2-3198:  Pattern layout no longer enables lookups within message text. 
 
 Fixed Bugs:
-o LOG4J2-3242:  Limit JNDI to the java protocol only. JNDI will remain disabled by default. Rename JNDI enablement property from
-        'log4j2.enableJndi' to 'log4j2.enableJndiLookup', 'log4j2.enableJndiJms', and 'log4j2.enableJndiContextSelector'. 
-o LOG4J2-3230:  Fix string substitution recursion. 
+o LOG4J2-3293:  JDBC Appender should use JNDI Manager and JNDI access should be limited.
+        Backport fix for CVE-2021-44832. 
+o LOG4J2-2819:  Add support for specifying an SSL configuration for SmtpAppender.
+        Backport fix for CVE-2020-9488 to allow SSL/TLS hostname verification. 
 
 
 
-Apache Log4j 2.3.1 requires a minimum of Java 6 to build and run. It is not expected that any future Java 6
+Apache Log4j 2.3.2 requires a minimum of Java 6 to build and run. It is not expected that any future Java 6
 releases will be provided.
 
 Basic compatibility with Log4j 1.x is provided through the log4j-1.2-api component, however it does not implement some of the
