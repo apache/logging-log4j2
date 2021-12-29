@@ -28,68 +28,31 @@
 
     <body>
 
+      <a name="CVE-2021-44832"/>
+      <h2>Important: Security Vulnerability CVE-2021-44832</h2>
+
+      Summary: Apache Log4j2 vulnerable to RCE via JDBC Appender when attacker controls configuration.
+
+      <h4>Details</h4>
+
+      Apache Log4j2 versions 2.0-beta7 through 2.17.0 (excluding security fix releases 2.3.2 and 2.12.4) are vulnerable to
+      a remote code execution (RCE) attack where an attacker with permission to modify the logging configuration file can
+      construct a malicious configuration using a JDBC Appender with a data source referencing a JNDI URI which can execute
+      remote code. This issue is fixed by limiting JNDI data source names to the java protocol in Log4j2 versions 2.17.1,
+      2.12.4, and 2.3.2.
+
+      <h4>Mitigation</h4>
+      Upgrade to Log4j 2.3.2 (for Java 6), 2.12.4 (for Java 7), or 2.17.1 (for Java 8 and later)
+
+      <h4>Reference</h4>
+      Please refer to the <a href="https://logging.apache.org/log4j/2.x/security.html#CVE-2021-44832">Security Page</a>
+      for details and mitigation measures for older versions of Log4j.
+
       <a name="CVE-2021-45105"/>
       <h2>Important: Security Vulnerabilities CVE-2021-45105, CVE-2021-45046 and CVE-2021-44228</h2>
 
-      <p>The Log4j team has been made aware of multiple security vulnerabilities, CVE-2021-45105, CVE-2021-45046 and CVE-2021-44228,
-        that have been addressed in Log4j 2.3.1 for Java 6.
-        The same vulnerabilities have been addressed in Log4j 2.12.3 for Java 7, and in
-        Log4j 2.17.0 for Java 8 and up.</p>
-
-      <h3>CVE-2021-45105</h3>
-      <p>Summary: Apache Log4j2 does not always protect from infinite recursion in lookup evaluation.</p>
-
-      <h4>Details</h4>
-      <p>Apache Log4j2 versions 2.0-alpha1 through 2.16.0 did not protect from uncontrolled recursion from self-referential lookups.
-        When the logging configuration uses a non-default Pattern Layout with a Context Lookup (for example, <code>$${ctx:loginId}</code>),
-        attackers with control over Thread Context Map (MDC) input data can craft malicious input data that contains a recursive lookup,
-        resulting in a StackOverflowError that will terminate the process. This is also known as a DOS (Denial of Service) attack.</p>
-
-      <h4>Mitigation</h4>
-      <p>Upgrade to Log4j 2.3.1 (for Java 6), 2.12.3 (for Java 7), or 2.17.0 (for Java 8).</p>
-
-      <h4>Reference</h4>
-      <p>Please refer to the <a href="https://logging.apache.org/log4j/2.x/security.html#CVE-2021-45105">Security page</a> for details and mitigation measures for older versions of Log4j.</p>
-
-
-      <a name="CVE-2021-45046"/>
-      <h3>CVE-2021-45046</h3>
-
-      <p>Summary: Apache Log4j2 Thread Context Lookup Pattern vulnerable to remote code execution in certain non-default configurations.</p>
-
-      <h4>Details</h4>
-      <p>It was found that the fix to address CVE-2021-44228 in Apache Log4j 2.15.0 was incomplete in certain non-default configurations.
-        When the logging configuration uses a non-default Pattern Layout with a Context Lookup (for example, <code>$${ctx:loginId}</code>),
-        attackers with control over Thread Context Map (MDC) input data can craft malicious input data using a JNDI Lookup pattern,
-        resulting in an information leak and remote code execution in some environments and local code execution in all environments;
-        remote code execution has been demonstrated on macOS but no other tested environments.</p>
-
-      <h4>Mitigation</h4>
-      <p>Upgrade to Log4j 2.3.1 (for Java 6), 2.12.3 (for Java 7), or 2.17.0 (for Java 8).</p>
-
-      <h4>Reference</h4>
-      <p>Please refer to the <a href="https://logging.apache.org/log4j/2.x/security.html#CVE-2021-45046">Security page</a> for details and mitigation measures for older versions of Log4j.</p>
-
-
-      <a name="CVE-2021-44228"/>
-      <h3>CVE-2021-44228</h3>
-
-      <p>Summary:
-        Log4j’s JNDI support has not restricted what names could be resolved. Some protocols are unsafe or can allow remote code
-        execution.</p>
-
-      <h4>Details</h4>
-      <p>One vector that allowed exposure to this vulnerability was Log4j’s allowance of Lookups to appear in log messages.
-        This meant that when user input is logged, and that user input contained a JNDI Lookup pointing to a malicious server,
-        then Log4j would resolve that JNDI Lookup, connect to that server, and potentially download serialized Java code from
-        that remote server. This in turn could execute any code during deserialization.
-        This is known as a RCE (Remote Code Execution) attack.</p>
-
-      <h4>Mitigation</h4>
-      <p>Upgrade to Log4j 2.3.1 (for Java 6), 2.12.3 (for Java 7), or 2.17.0 (for Java 8).</p>
-
-      <h4>Reference</h4>
-      <p>Please refer to the <a href="https://logging.apache.org/log4j/2.x/security.html#CVE-2021-44228">Security page</a> for details and mitigation measures for older versions of Log4j.</p>
+      Please refer to the <a href="https://logging.apache.org/log4j/2.x/security.html">Security Page</a> for details
+      and mitigation measures for these security issues.
 
       <section name="Apache Log4j 2">
 
