@@ -20,7 +20,7 @@
   <parent>
     <artifactId>log4j-samples</artifactId>
     <groupId>org.apache.logging.log4j.samples</groupId>
-    <version>2.12.4-SNAPSHOT</version>
+    <version>n.2.12.5-SNAPSHOT</version>
   </parent>
   <artifactId>log4j-samples-flume-embedded</artifactId>
   <packaging>war</packaging>

@@ -65,14 +65,11 @@ temporary objects) while logging. In addition, Log4j 2 will not lose events whil
 
 The artifacts may be downloaded from https://logging.apache.org/log4j/2.x/download.html.
 
-This release contains bugfixes and minor enhancements.
+This release contains the changes noted below:
 
-Due to a break in compatibility in the SLF4J binding, Log4j now ships with two versions of the SLF4J to Log4j adapters.
-log4j-slf4j-impl should be used with SLF4J 1.7.x and earlier and log4j-slf4j18-impl should be used with SLF4J 1.8.x and
-later.
+* Address CVE-2021-44832.
 
-This release addresses CVE-2021-44228 for users still using Java 7 by disabling JNDI by default, only allowing the java
-protocol when JNDI is enabled, making the JNDI Lookup inoperable, and removing the message lookup capability.
+This release addresses CVE-2021-44832 for users still using Java 7.
 
 The Log4j ${relVersion} API, as well as many core components, maintains binary compatibility with previous releases.
 

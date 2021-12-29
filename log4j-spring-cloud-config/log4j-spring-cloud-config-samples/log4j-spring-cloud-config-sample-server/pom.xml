@@ -21,7 +21,7 @@
   <groupId>org.apache.logging.log4j.samples</groupId>
   <artifactId>log4j-spring-cloud-config-sample-server</artifactId>
   <packaging>jar</packaging>
-  <version>2.12.4-SNAPSHOT</version>
+  <version>n.2.12.5-SNAPSHOT</version>
 
   <name>Log4j Sample Configuration Service</name>
   <description>Sample Cloud Config Server</description>
