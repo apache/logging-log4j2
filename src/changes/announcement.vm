@@ -63,7 +63,7 @@ property substitution using Lookups, multiple patterns on a PatternLayout and as
 Loggers. Another notable Log4j 2 feature is the ability to be "garbage-free" (avoid allocating
 temporary objects) while logging. In addition, Log4j 2 will not lose events while reconfiguring.
 
-The artifacts may be downloaded from https://logging.apache.org/log4j/2.x/download.html.
+The artifacts may be downloaded from https://logging.apache.org/log4j/log4j-${relVersion}/download.html.
 
 This release contains the changes noted below:
 
@@ -124,4 +124,4 @@ with log4j 1.x.
 For complete information on ${project.name}, including instructions on how to submit bug
 reports, patches, or suggestions for improvement, see the Apache ${project.name} website:
 
-${project.url}
+https://logging.apache.org/log4j/log4j-${relVersion}/index.html
