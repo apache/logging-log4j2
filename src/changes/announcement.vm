@@ -26,6 +26,8 @@ Log4j that provides significant improvements over its predecessor, Log4j 1.x, an
 many other modern features such as support for Markers, property substitution using Lookups, and asynchronous
 Loggers. In addition, Log4j 2 will not lose events while reconfiguring.
 
+The artifacts may be downloaded from https://logging.apache.org/log4j/log4j-$relVersion}/download.html.
+
 The major changes contained in this release include:
 
 * Address CVE-2021-45046 and CVE-2021-45105 by disabling recursive evaluation of Lookups during log event processing. Recursive evaluation is still allowed while generating the configuration.
