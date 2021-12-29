@@ -18,6 +18,7 @@ package org.apache.logging.log4j;
 
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.test.TestLogger;
+import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
@@ -28,6 +29,7 @@ import java.util.Locale;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ResourceLock("log4j2.TestLogger")
+@UsingThreadContextMap
 public class EventLoggerTest {
 
     TestLogger logger = (TestLogger) LogManager.getLogger("EventLogger");

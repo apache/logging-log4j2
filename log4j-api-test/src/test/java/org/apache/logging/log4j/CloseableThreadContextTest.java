@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j;
 
+import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,6 +36,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @since 2.6
  */
 @ResourceLock(value = Resources.SYSTEM_PROPERTIES, mode = ResourceAccessMode.READ)
+@UsingAnyThreadContext
 public class CloseableThreadContextTest {
 
     private final String key = "key";
