@@ -30,7 +30,5 @@ module org.apache.logging.log4j.plugins {
     requires org.apache.logging.log4j;
     requires transitive org.osgi.framework;
 
-    provides org.apache.logging.log4j.plugins.processor.PluginService with org.apache.logging.log4j.plugins.convert.plugins.Log4jPlugins;
-
     uses org.apache.logging.log4j.plugins.processor.PluginService;
 }

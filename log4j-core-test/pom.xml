@@ -30,7 +30,7 @@
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Core Documentation</docLabel>
-    <projectDir>/core</projectDir>
+    <projectDir>/log4j-core-test</projectDir>
     <log4j2-logstash-layout.version>0.18</log4j2-logstash-layout.version>
     <maven.doap.skip>true</maven.doap.skip>
     <graalvm.version>21.3.0</graalvm.version>
