@@ -19,7 +19,7 @@
 ## Migrating from Log4j 1.x to 2.x
 [Log4j 1.x](http://logging.apache.org/log4j/1.2/) has
 [reached End of Life](https://blogs.apache.org/foundation/entry/apache_logging_services_project_announces)
-and is no longer supported.
+in 2015 and is no longer supported.
 
 This page explains how to migrate applications or libraries currently using the Log4j 1.x API
 to use Log4j v2 as their main logging framework.

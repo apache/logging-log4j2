@@ -30,9 +30,9 @@ reported against Log4j or where Log4j provides a workaround are listed at the en
 
 Please note that [Log4j 1.x](http://logging.apache.org/log4j/1.2/) has 
 [reached End of Life](https://blogs.apache.org/foundation/entry/apache_logging_services_project_announces)
-and is no longer supported.
+in 2015 and is no longer supported.
 Vulnerabilities reported after August 2015 against Log4j 1.x were not checked and will not be fixed.
-Users should upgrade to Log4j 2 to obtain security fixes.
+Users should [upgrade to Log4j 2](manual/migration.html) to obtain security fixes.
 
 Please note that binary patches are never provided. If you need to apply a source code patch,
 use the building instructions for the Apache Log4j version that you are using.
