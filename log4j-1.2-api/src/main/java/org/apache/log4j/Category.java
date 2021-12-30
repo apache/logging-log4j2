@@ -29,6 +29,7 @@ import org.apache.log4j.or.ObjectRenderer;
 import org.apache.log4j.or.RendererSupport;
 import org.apache.log4j.spi.AppenderAttachable;
 import org.apache.log4j.spi.LoggerFactory;
+import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
@@ -194,6 +195,18 @@ public class Category implements AppenderAttachable {
     @Deprecated
     public static Enumeration getCurrentCategories() {
         return LogManager.getCurrentLoggers();
+    }
+
+    /**
+     * Gets the default LoggerRepository instance.
+     *
+     * @return the default LoggerRepository instance.
+     * @deprecated Please use {@link LogManager#getLoggerRepository()} instead.
+     * @since 1.0
+     */
+    @Deprecated
+    public static LoggerRepository getDefaultHierarchy() {
+        return LogManager.getLoggerRepository();
     }
 
     public final Level getEffectiveLevel() {
