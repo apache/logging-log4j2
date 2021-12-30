@@ -2781,6 +2781,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     public  LogBuilder atTrace() {
         return atLevel(Level.TRACE);
     }
+
     /**
      * Construct a debug log event.
      * @return a LogBuilder.
@@ -2790,6 +2791,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     public LogBuilder atDebug() {
         return atLevel(Level.DEBUG);
     }
+    
     /**
      * Construct an informational log event.
      * @return a LogBuilder.
@@ -2799,6 +2801,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     public LogBuilder atInfo() {
         return atLevel(Level.INFO);
     }
+    
     /**
      * Construct a warning log event.
      * @return a LogBuilder.
@@ -2808,6 +2811,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     public LogBuilder atWarn() {
         return atLevel(Level.WARN);
     }
+    
     /**
      * Construct an error log event.
      * @return a LogBuilder.
@@ -2817,6 +2821,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     public LogBuilder atError() {
         return atLevel(Level.ERROR);
     }
+    
     /**
      * Construct a fatal log event.
      * @return a LogBuilder.
@@ -2826,6 +2831,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     public LogBuilder atFatal() {
         return atLevel(Level.FATAL);
     }
+    
     /**
      * Construct a log event that will always be logged.
      * @return a LogBuilder.
@@ -2839,6 +2845,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         }
         return builder.reset(Level.OFF);
     }
+    
     /**
      * Construct a log event.
      * @return a LogBuilder.
