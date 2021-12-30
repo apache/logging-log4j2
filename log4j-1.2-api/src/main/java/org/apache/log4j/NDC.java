@@ -19,7 +19,7 @@ package org.apache.log4j;
 import java.util.Stack;
 
 /**
- *
+ * <em>This class does not use generics to provide better source compatibility.</em>
  */
 public final class NDC {
 
@@ -52,7 +52,7 @@ public final class NDC {
      * The child thread uses the {@link #inherit inherit} method to
      * inherit the parent's diagnostic context.
      * </p>
-     * @return Stack A clone of the current thread's  diagnostic context.
+     * @return Stack A clone of the current thread's diagnostic context, Stack of Strings.
      */
     @SuppressWarnings("rawtypes")
     public static Stack cloneStack() {
@@ -65,7 +65,7 @@ public final class NDC {
 
 
     /**
-     * Inherit the diagnostic context of another thread.
+     * Inherit the diagnostic context of another thread, a Stack of Strings.
      * <p>
      * The parent thread can obtain a reference to its diagnostic
      * context using the {@link #cloneStack} method.  It should
@@ -83,9 +83,10 @@ public final class NDC {
      * there is no client-transparent way of inheriting diagnostic
      * contexts. Do you know any solution to this problem?
      * </p>
-     * @param stack The diagnostic context of the parent thread.
+     * @param stack The diagnostic context of the parent thread, a Stack of Strings.
      */
-    public static void inherit(final Stack<String> stack) {
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public static void inherit(final Stack stack) {
         org.apache.logging.log4j.ThreadContext.setStack(stack);
     }
 
