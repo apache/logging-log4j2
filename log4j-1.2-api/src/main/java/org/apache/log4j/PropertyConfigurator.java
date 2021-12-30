@@ -28,13 +28,11 @@ import org.apache.log4j.spi.LoggerRepository;
 public class PropertyConfigurator {
 
     /**
-     * Read configuration options from configuration file.
+     * Reads configuration options from an InputStream.
      *
-     * @param configFileName The configuration file
-     * @param hierarchy The hierarchy
+     * @param inputStream The input stream
      */
-    public void doConfigure(final String configFileName, final LoggerRepository hierarchy) {
-
+    public static void configure(final InputStream inputStream) {
     }
 
     /**
@@ -43,27 +41,8 @@ public class PropertyConfigurator {
      * See {@link #doConfigure(String, LoggerRepository)} for the expected format.
      *
      * @param properties The properties
-     * @param hierarchy The hierarchy
      */
-    public void doConfigure(final Properties properties, final LoggerRepository hierarchy) {
-    }
-
-    /**
-     * Read configuration options from an InputStream.
-     *
-     * @param inputStream The input stream
-     * @param hierarchy The hierarchy
-     */
-    public void doConfigure(final InputStream inputStream, final LoggerRepository hierarchy) {
-    }
-
-    /**
-     * Read configuration options from url <code>configURL</code>.
-     *
-     * @param configURL The configuration URL
-     * @param hierarchy The hierarchy
-     */
-    public void doConfigure(final URL configURL, final LoggerRepository hierarchy) {
+    public static void configure(final Properties properties) {
     }
 
     /**
@@ -80,24 +59,6 @@ public class PropertyConfigurator {
      * @param configURL The configuration URL
      */
     public static void configure(final URL configURL) {
-    }
-
-    /**
-     * Reads configuration options from an InputStream.
-     *
-     * @param inputStream The input stream
-     */
-    public static void configure(final InputStream inputStream) {
-    }
-
-    /**
-     * Read configuration options from <code>properties</code>.
-     *
-     * See {@link #doConfigure(String, LoggerRepository)} for the expected format.
-     *
-     * @param properties The properties
-     */
-    public static void configure(final Properties properties) {
     }
 
     /**
@@ -122,5 +83,44 @@ public class PropertyConfigurator {
      * @param delay The delay in milliseconds to wait between each check.
      */
     public static void configureAndWatch(final String configFilename, final long delay) {
+    }
+
+    /**
+     * Read configuration options from an InputStream.
+     *
+     * @param inputStream The input stream
+     * @param hierarchy The hierarchy
+     */
+    public void doConfigure(final InputStream inputStream, final LoggerRepository hierarchy) {
+    }
+
+    /**
+     * Read configuration options from <code>properties</code>.
+     *
+     * See {@link #doConfigure(String, LoggerRepository)} for the expected format.
+     *
+     * @param properties The properties
+     * @param hierarchy The hierarchy
+     */
+    public void doConfigure(final Properties properties, final LoggerRepository hierarchy) {
+    }
+
+    /**
+     * Read configuration options from configuration file.
+     *
+     * @param configFileName The configuration file
+     * @param hierarchy The hierarchy
+     */
+    public void doConfigure(final String configFileName, final LoggerRepository hierarchy) {
+
+    }
+
+    /**
+     * Read configuration options from url <code>configURL</code>.
+     *
+     * @param configURL The configuration URL
+     * @param hierarchy The hierarchy
+     */
+    public void doConfigure(final URL configURL, final LoggerRepository hierarchy) {
     }
 }
