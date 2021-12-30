@@ -201,7 +201,19 @@
         Log4j 1.2 bridge method org.apache.log4j.Category.getDefaultHierarchy() is missing.
       </action>
       <action dev="ggregory" type="fix">
-        Log4j 1.2 bridge LogManager class default constructor should be public.
+        Log4j 1.2 bridge methods missing in org.apache.log4j.Category: getDefaultHierarchy(), getHierarchy(), getLoggerRepository().
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge class LogManager default constructor should be public.
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge interface org.apache.log4j.spi.RendererSupport was in the wrong package and incomplete.
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge interfaces missing from package org.apache.log4j.spi: ThrowableRenderer, ThrowableRendererSupport, TriggeringEventEvaluator.
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge missing class org.apache.log4j.or.RendererMap.
       </action>
     </release>
     <release version="2.17.1" date="2021-MM-DD" description="GA Release 2.17.1">
