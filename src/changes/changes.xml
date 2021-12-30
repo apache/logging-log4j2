@@ -32,7 +32,10 @@
     <release version="2.17.2" date="20YY-MM-DD" description="GA Release 2.17.2">
       <!-- FIXES -->
       <action dev="ggregory" type="fix">
-		Log4j 1.2 bridge class ConsoleAppender should extend WriterAppender and provide better compatibility with custom appenders.
+        Log4j 1.2 bridge class ConsoleAppender should extend WriterAppender and provide better compatibility with custom appenders.
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge method NDC.inherit(Stack) should not use generics to provide source compatibility.
       </action>
 	</release>
     <release version="2.17.1" date="2021-12-27" description="GA Release 2.17.1">
