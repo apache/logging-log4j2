@@ -182,6 +182,12 @@
       <action dev="ggregory" type="fix">
         Log4j 1.2 bridge class PatternLayout is missing constants DEFAULT_CONVERSION_PATTERN and TTCC_CONVERSION_PATTERN.
       </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge class PropertyConfigurator should implement Configurator.
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge interface Configurator doConfigure() methods should use LoggerRepository, not LoggerContext.
+      </action>
     </release>
     <release version="2.17.1" date="2021-MM-DD" description="GA Release 2.17.1">
       <action issue="LOG4J2-3292" dev="ckozak" type="fix">
