@@ -37,6 +37,9 @@
       <action dev="ggregory" type="fix">
         Log4j 1.2 bridge method NDC.inherit(Stack) should not use generics to provide source compatibility.
       </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge class PatternLayout is missing constants DEFAULT_CONVERSION_PATTERN and TTCC_CONVERSION_PATTERN.
+      </action>
 	</release>
     <release version="2.17.1" date="2021-12-27" description="GA Release 2.17.1">
       <!-- FIXES -->
