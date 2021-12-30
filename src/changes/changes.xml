@@ -30,6 +30,9 @@
          - "remove" - Removed
     -->
     <release version="2.17.2" date="20YY-MM-DD" description="GA Release 2.17.2">
+      <action issue="LOG4J2-3267" dev="rpopma" type="update">
+        Change modifier of method org.apache.logging.log4j.core.tools.Generate#generate to public (was package private) to facilitate automated code generation.
+      </action>
       <!-- FIXES -->
       <action dev="ggregory" type="fix">
         Log4j 1.2 bridge class ConsoleAppender should extend WriterAppender and provide better compatibility with custom appenders.
