@@ -17,6 +17,7 @@
 package org.apache.log4j;
 
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Placeholder for Log4j 1.2 Console Appender.
@@ -133,8 +134,8 @@ public class ConsoleAppender extends WriterAppender {
     }
 
     void targetWarn(final String val) {
-//        LogLog.warn("["+val+"] should be System.out or System.err.");
-//        LogLog.warn("Using previously set target, System.out by default.");
+        StatusLogger.getLogger().warn("[" + val + "] should be System.out or System.err.");
+        StatusLogger.getLogger().warn("Using previously set target, System.out by default.");
     }
 
 }
