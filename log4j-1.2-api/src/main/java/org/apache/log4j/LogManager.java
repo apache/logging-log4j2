@@ -82,9 +82,6 @@ public final class LogManager {
         isLog4jCore = core;
     }
 
-    private LogManager() {
-    }
-
     public static Logger getRootLogger() {
         return Category.getInstance(PrivateManager.getContext(), Strings.EMPTY);
     }
