@@ -191,6 +191,9 @@
       <action dev="ggregory" type="fix">
         Log4j 1.2 bridge class OptionConverter is missing selectAndConfigure() methods.
       </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge class Category should implement AppenderAttachable.
+      </action>
     </release>
     <release version="2.17.1" date="2021-MM-DD" description="GA Release 2.17.1">
       <action issue="LOG4J2-3292" dev="ckozak" type="fix">
