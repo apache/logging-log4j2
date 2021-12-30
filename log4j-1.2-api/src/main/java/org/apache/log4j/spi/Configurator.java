@@ -40,24 +40,22 @@ public interface Configurator {
 
 
     /**
-     Interpret a resource pointed by a InputStream and set up log4j accordingly.
-
-     The configuration is done relative to the <code>hierarchy</code>
-     parameter.
-
-     @param inputStream The InputStream to parse
-
-     @since 1.2.17
+     * Interpret a resource pointed by a InputStream and set up log4j accordingly.
+     * 
+     * The configuration is done relative to the <code>hierarchy</code> parameter.
+     * 
+     * @param inputStream The InputStream to parse
+     * 
+     * @since 1.2.17
      */
     void doConfigure(InputStream inputStream, final LoggerContext loggerContext);
 
     /**
-     Interpret a resource pointed by a URL and set up log4j accordingly.
-
-     The configuration is done relative to the <code>hierarchy</code>
-     parameter.
-
-     @param url The URL to parse
+     * Interpret a resource pointed by a URL and set up log4j accordingly.
+     * 
+     * The configuration is done relative to the <code>hierarchy</code> parameter.
+     * 
+     * @param url The URL to parse
      */
     void doConfigure(URL url, final LoggerContext loggerContext);
 }
