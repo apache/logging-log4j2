@@ -176,6 +176,9 @@
       <action dev="ggregory" type="fix">
         Log4j 1.2 bridge class ConsoleAppender should extend WriterAppender and provide better compatibility with custom appenders.
       </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge method NDC.inherit(Stack) should not use generics to provide source compatibility.
+      </action>
     </release>
     <release version="2.17.1" date="2021-MM-DD" description="GA Release 2.17.1">
       <action issue="LOG4J2-3292" dev="ckozak" type="fix">
