@@ -16,33 +16,35 @@
  */
 package org.apache.log4j;
 
-import java.util.Stack;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.apache.logging.log4j.util.Strings;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class NDCTest {
+/**
+ * Used to test Log4j 1 support.
+ */
+public class ConsoleAppenderTest {
 
-    @Test
-    public void testPopEmpty() {
-        NDC.clear();
-        Assert.assertEquals(Strings.EMPTY, NDC.pop());
+    private ConsoleAppender consoleAppender;
+
+    @BeforeEach
+    public void beforeEach() {
+        consoleAppender = new ConsoleAppender();
     }
 
     @Test
-    public void testPeekEmpty() {
-        NDC.clear();
-        Assert.assertEquals(Strings.EMPTY, NDC.peek());
+    public void testFollow() {
+        // Only really care that it compiles, behavior is secondary at this level.
+        consoleAppender.setFollow(true);
+        assertTrue(consoleAppender.getFollow());
     }
-    
-    @SuppressWarnings({"rawtypes"})
+
     @Test
-    public void testCompileCloneToInherit() {
-        NDC.inherit(NDC.cloneStack());
-        final Stack stackRaw = NDC.cloneStack();
-        NDC.inherit(stackRaw);
-        final Stack<?> stackAny = NDC.cloneStack();
-        NDC.inherit(stackAny);
+    public void testTarget() {
+        // Only really care that it compiles, behavior is secondary at this level.
+        consoleAppender.setTarget(ConsoleAppender.SYSTEM_OUT);
+        assertEquals(ConsoleAppender.SYSTEM_OUT, consoleAppender.getTarget());
     }
 }

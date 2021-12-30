@@ -189,8 +189,8 @@
     <!-- make sure to update these for each release! -->
     <log4jParentDir>${basedir}</log4jParentDir>
     <Log4jReleaseVersion>2.17.1</Log4jReleaseVersion>
-    <Log4jReleaseVersionJava7>2.12.3</Log4jReleaseVersionJava7>
-    <Log4jReleaseVersionJava6>2.3.1</Log4jReleaseVersionJava6>
+    <Log4jReleaseVersionJava7>2.12.4</Log4jReleaseVersionJava7>
+    <Log4jReleaseVersionJava6>2.3.2</Log4jReleaseVersionJava6>
     <Log4jReleaseManager>Matt Sicker</Log4jReleaseManager>
     <Log4jReleaseKey>D7C92B70FA1C814D</Log4jReleaseKey>
     <Log4jSigningUserName>mattsicker@apache.org</Log4jSigningUserName>
@@ -1366,6 +1366,14 @@
             <exclude>**/MANIFEST.MF</exclude>
           </excludes>
         </configuration>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <!-- DOAP (RDF) metadata generation -->
       <plugin>

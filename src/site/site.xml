@@ -112,7 +112,7 @@
       <item name="Scala API" href="/manual/scala-api.html"/>
 
       <item name="Configuration" href="/manual/configuration.html" collapse="true">
-        <item name="Configuration Archtecture" href="/manual/configuration.html#Architecture"/>
+        <item name="Configuration Architecture" href="/manual/configuration.html#Architecture"/>
         <item name="Arbiters" href="/manual/configuration.html#Arbiters"/>
         <item name="Automatic Configuration" href="/manual/configuration.html#AutomaticConfiguration"/>
         <item name="Additivity" href="/manual/configuration.html#Additivity"/>
@@ -309,8 +309,8 @@
 
     <menu name="Legacy Sites" inherit="top" img="img/glyphicons/link.png">
       <item name="Log4j 1.2 - End of Life" href="http://logging.apache.org/log4j/1.2/"/>
-      <item name="Log4j 2.3.1 - Java 6" href="http://logging.apache.org/log4j/log4j-2.3.1/"/>
-      <item name="Log4j 2.12.3 - Java 7" href="http://logging.apache.org/log4j/log4j-2.12.3/"/>
+      <item name="Log4j 2.3.2 - Java 6" href="http://logging.apache.org/log4j/log4j-2.3.2/"/>
+      <item name="Log4j 2.12.4 - Java 7" href="http://logging.apache.org/log4j/log4j-2.12.4/"/>
     </menu>
 
     <menu name="Components" inherit="top" img="img/glyphicons/cog.png">

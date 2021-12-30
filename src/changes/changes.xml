@@ -29,6 +29,48 @@
          - "update" - Change
          - "remove" - Removed
     -->
+    <release version="2.17.2" date="20YY-MM-DD" description="GA Release 2.17.2">
+      <!-- FIXES -->
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge class ConsoleAppender should extend WriterAppender and provide better compatibility with custom appenders.
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge method NDC.inherit(Stack) should not use generics to provide source compatibility.
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge class PatternLayout is missing constants DEFAULT_CONVERSION_PATTERN and TTCC_CONVERSION_PATTERN.
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge class PropertyConfigurator should implement Configurator.
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge interface Configurator doConfigure() methods should use LoggerRepository, not LoggerContext.
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge class OptionConverter is missing selectAndConfigure() methods.
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge class Category should implement AppenderAttachable.
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge method Category.exists(String) should be static.
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge methods missing in org.apache.log4j.Category: getDefaultHierarchy(), getHierarchy(), getLoggerRepository().
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge class LogManager default constructor should be public.
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge interface org.apache.log4j.spi.RendererSupport was in the wrong package and incomplete.
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge interfaces missing from package org.apache.log4j.spi: ThrowableRenderer, ThrowableRendererSupport, TriggeringEventEvaluator.
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge missing class org.apache.log4j.or.RendererMap.
+      </action>
+	</release>
     <release version="2.17.1" date="2021-12-27" description="GA Release 2.17.1">
       <!-- FIXES -->
       <action issue="LOG4J2-3293" dev="ggregory" type="fix">

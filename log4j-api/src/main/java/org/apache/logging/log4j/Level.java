@@ -51,7 +51,7 @@ public final class Level implements Comparable<Level>, Serializable {
     public static final Level OFF;
 
     /**
-     * A severe error that will prevent the application from continuing.
+     * A fatal event that will prevent the application from continuing.
      */
     public static final Level FATAL;
 
