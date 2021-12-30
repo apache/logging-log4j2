@@ -26,21 +26,21 @@ import java.util.concurrent.ConcurrentMap;
 import org.apache.log4j.helpers.NullEnumeration;
 import org.apache.log4j.legacy.core.CategoryUtil;
 import org.apache.log4j.or.ObjectRenderer;
-import org.apache.log4j.or.RendererSupport;
+import org.apache.log4j.or.RendererMap;
 import org.apache.log4j.spi.AppenderAttachable;
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.logging.log4j.message.MapMessage;
-import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.spi.ExtendedLogger;
-import org.apache.logging.log4j.spi.LoggerContext;
+import org.apache.log4j.spi.RendererSupport;
 import org.apache.logging.log4j.message.LocalizedMessage;
+import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
+import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLoggerAdapter;
+import org.apache.logging.log4j.spi.ExtendedLogger;
+import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.util.Strings;
-
 
 /**
  * Implementation of the Category class for compatibility, despite it having been deprecated a long, long time ago.
@@ -56,7 +56,7 @@ public class Category implements AppenderAttachable {
 
     private static final boolean isCoreAvailable;
 
-    private final Map<Class<?>, ObjectRenderer> rendererMap;
+    private final RendererMap rendererMap;
 
     static {
         boolean available;
@@ -76,14 +76,18 @@ public class Category implements AppenderAttachable {
 
     private final org.apache.logging.log4j.Logger logger;
 
+    /** Categories need to know what Hierarchy they are in. */
+    protected LoggerRepository repository;
+
     /**
      * Constructor used by Logger to specify a LoggerContext.
      * @param context The LoggerContext.
      * @param name The name of the Logger.
      */
     protected Category(final LoggerContext context, final String name) {
-        this.logger = context.getLogger(name);
-        rendererMap = ((RendererSupport) LogManager.getLoggerRepository()).getRendererMap();
+        logger = context.getLogger(name);
+        repository = LogManager.getLoggerRepository();
+        rendererMap = ((RendererSupport) repository).getRendererMap();
     }
 
     /**
@@ -226,6 +230,26 @@ public class Category implements AppenderAttachable {
             // TODO Should this be an IllegalStateException?
             return Level.OFF;
         }
+    }
+
+    /**
+     * Gets the the {@link LoggerRepository} where this <code>Category</code> instance is attached.
+     * 
+     * @deprecated Please use {@link #getLoggerRepository()} instead.
+     * @since 1.1
+     */
+    @Deprecated
+    public LoggerRepository getHierarchy() {
+        return repository;
+    }
+
+    /**
+     * Gets the the {@link LoggerRepository} where this <code>Category</code> is attached.
+     * 
+     * @since 1.2
+     */
+    public LoggerRepository getLoggerRepository() {
+        return repository;
     }
 
     public final Priority getChainedPriority() {
@@ -442,6 +466,13 @@ public class Category implements AppenderAttachable {
         if (isCoreAvailable) {
             CategoryUtil.setAdditivity(logger, additivity);
         }
+    }
+
+    /**
+     * Only the Hiearchy class can set the hiearchy of a category. Default package access is MANDATORY here.
+     */
+    final void setHierarchy(LoggerRepository repository) {
+        this.repository = repository;
     }
 
     public void setResourceBundle(final ResourceBundle bundle) {
