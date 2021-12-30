@@ -20,7 +20,7 @@
 
 This page lists all the security vulnerabilities fixed in released versions of Apache Log4j 2.
 Each vulnerability is given a [security impact rating](#Security_Impact_Levels)
-by the [Apache Logging security team](mailto:private@logging.apache.org).
+by the [Apache Logging security team](mailto:security@logging.apache.org).
 please note that this rating may vary from platform to platform. We also list the versions
 of Apache Log4j the flaw is known to affect, and where a flaw has not been verified list
 the version with a question mark.
@@ -28,22 +28,25 @@ the version with a question mark.
 Note: Vulnerabilities that are not Log4j vulnerabilities but have either been incorrectly
 reported against Log4j or where Log4j provides a workaround are listed at the end of this page.
 
-Please note that Log4j 1.x has reached end of life and is no longer supported. Vulnerabilities
-reported after August 2015 against Log4j 1.x were not checked and will not be fixed. Users should
-upgrade to Log4j 2 to obtain security fixes.
+Please note that [Log4j 1.x](http://logging.apache.org/log4j/1.2/) has 
+[reached End of Life](https://blogs.apache.org/foundation/entry/apache_logging_services_project_announces)
+and is no longer supported.
+Vulnerabilities reported after August 2015 against Log4j 1.x were not checked and will not be fixed.
+Users should upgrade to Log4j 2 to obtain security fixes.
 
 Please note that binary patches are never provided. If you need to apply a source code patch,
-use the building instructions for the Apache Log4j version that you are using. For
-Log4j 2 this is BUILDING.md. This file can be found in the
-root subdirectory of a source distributive.
+use the building instructions for the Apache Log4j version that you are using.
+For Log4j 2 this is BUILDING.md.
+This file can be found in the root subdirectory of a source distributive.
 
 If you need help on building or configuring Log4j or other help on following the instructions
-to mitigate the known vulnerabilities listed here, please send your questions to the public
-Log4j Users mailing list
+to mitigate the known vulnerabilities listed here, please
+[subscribe to](mailto:log4j-user-subscribe@logging.apache.org), and send your questions to the public
+Log4j [Users mailing list](mail-lists.html).
 
 If you have encountered an unlisted security vulnerability or other unexpected behaviour
 that has security impact, or if the descriptions here are incomplete, please report them
-privately to the [Log4j Security Team](mailto:private@logging.apache.org). Thank you.
+privately to the [Log4j Security Team](mailto:security@logging.apache.org). Thank you.
 
 <a name="CVE-2021-44832"/><a name="cve-2021-44832"/>
 ## <a name="log4j-2.17.1"/> Fixed in Log4j 2.17.1 (Java 8), 2.12.4 (Java 7) and 2.3.2 (Java 6)
