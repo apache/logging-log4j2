@@ -27,6 +27,7 @@ import org.apache.log4j.helpers.NullEnumeration;
 import org.apache.log4j.legacy.core.CategoryUtil;
 import org.apache.log4j.or.ObjectRenderer;
 import org.apache.log4j.or.RendererSupport;
+import org.apache.log4j.spi.AppenderAttachable;
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.logging.log4j.message.MapMessage;
@@ -43,7 +44,7 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Implementation of the Category class for compatibility, despite it having been deprecated a long, long time ago.
  */
-public class Category {
+public class Category implements AppenderAttachable {
 
     private static final PrivateAdapter adapter = new PrivateAdapter();
 
@@ -325,6 +326,7 @@ public class Category {
      * No-op implementation.
      * @param appender The Appender to add.
      */
+    @Override
     public void addAppender(final Appender appender) {
     }
 
@@ -335,6 +337,7 @@ public class Category {
     public void callAppenders(final LoggingEvent event) {
     }
 
+    @Override
     @SuppressWarnings("rawtypes")
     public Enumeration getAllAppenders() {
         return NullEnumeration.getInstance();
@@ -345,6 +348,7 @@ public class Category {
      * @param name The name of the Appender.
      * @return null.
      */
+    @Override
     public Appender getAppender(final String name) {
         return null;
     }
@@ -354,6 +358,7 @@ public class Category {
      * @param appender The Appender to add.
      * @return true if the appender is attached.
      */
+    @Override
     public boolean isAttached(final Appender appender) {
         return false;
     }
@@ -361,6 +366,7 @@ public class Category {
     /**
      * No-op implementation.
      */
+    @Override
     public void removeAllAppenders() {
     }
 
@@ -368,6 +374,7 @@ public class Category {
      * No-op implementation.
      * @param appender The Appender to remove.
      */
+    @Override
     public void removeAppender(final Appender appender) {
     }
 
@@ -375,6 +382,7 @@ public class Category {
      * No-op implementation.
      * @param name The Appender to remove.
      */
+    @Override
     public void removeAppender(final String name) {
     }
 
