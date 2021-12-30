@@ -1465,6 +1465,14 @@
             <exclude>**/MANIFEST.MF</exclude>
           </excludes>
         </configuration>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <!-- DOAP (RDF) metadata generation -->
       <plugin>
