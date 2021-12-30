@@ -18,13 +18,18 @@
 package org.apache.log4j.helpers;
 
 import org.apache.log4j.Level;
+import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.spi.Configurator;
+import org.apache.log4j.spi.LoggerRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.spi.StandardLevel;
 import org.apache.logging.log4j.util.LoaderUtil;
 
+import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 import java.util.Properties;
 
 /**
@@ -390,6 +395,79 @@ public class OptionConverter {
             default:
                 return Level.ERROR;
         }
+    }
+
+    /**
+     * Configure log4j given an {@link InputStream}.
+     * <p>
+     * The InputStream will be interpreted by a new instance of a log4j configurator.
+     * </p>
+     * <p>
+     * All configurations steps are taken on the <code>hierarchy</code> passed as a parameter.
+     * </p>
+     * 
+     * @param inputStream The configuration input stream.
+     * @param clazz The class name, of the log4j configurator which will parse the <code>inputStream</code>. This must be a
+     *        subclass of {@link Configurator}, or null. If this value is null then a default configurator of
+     *        {@link PropertyConfigurator} is used.
+     * @param hierarchy The {@link LoggerRepository} to act on.
+     * @since 1.2.17
+     */
+    static public void selectAndConfigure(InputStream inputStream, String clazz, LoggerRepository hierarchy) {
+        Configurator configurator = null;
+
+        if (clazz != null) {
+            LOGGER.debug("Preferred configurator class: " + clazz);
+            configurator = (Configurator) instantiateByClassName(clazz, Configurator.class, null);
+            if (configurator == null) {
+                LOGGER.error("Could not instantiate configurator [" + clazz + "].");
+                return;
+            }
+        } else {
+            configurator = new PropertyConfigurator();
+        }
+
+        configurator.doConfigure(inputStream, hierarchy);
+    }
+
+    /**
+     * Configure log4j given a URL.
+     * <p>
+     * The url must point to a file or resource which will be interpreted by a new instance of a log4j configurator.
+     * </p>
+     * <p>
+     * All configurations steps are taken on the <code>hierarchy</code> passed as a parameter.
+     * </p>
+     * 
+     * @param url The location of the configuration file or resource.
+     * @param clazz The classname, of the log4j configurator which will parse the file or resource at <code>url</code>. This
+     *        must be a subclass of {@link Configurator}, or null. If this value is null then a default configurator of
+     *        {@link PropertyConfigurator} is used, unless the filename pointed to by <code>url</code> ends in '.xml', in
+     *        which case {@link org.apache.log4j.xml.DOMConfigurator} is used.
+     * @param hierarchy The {@link LoggerRepository} to act on.
+     * 
+     * @since 1.1.4
+     */
+    static public void selectAndConfigure(URL url, String clazz, LoggerRepository hierarchy) {
+        Configurator configurator = null;
+        String filename = url.getFile();
+
+        if (clazz == null && filename != null && filename.endsWith(".xml")) {
+            clazz = "org.apache.log4j.xml.DOMConfigurator";
+        }
+
+        if (clazz != null) {
+            LOGGER.debug("Preferred configurator class: " + clazz);
+            configurator = (Configurator) instantiateByClassName(clazz, Configurator.class, null);
+            if (configurator == null) {
+                LOGGER.error("Could not instantiate configurator [" + clazz + "].");
+                return;
+            }
+        } else {
+            configurator = new PropertyConfigurator();
+        }
+
+        configurator.doConfigure(url, hierarchy);
     }
 
     /**
