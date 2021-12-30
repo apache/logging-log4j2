@@ -122,8 +122,8 @@ public class LogManager {
                         + "Please add log4j-core to the classpath. Using SimpleLogger to log to the console...");
                 factory = new SimpleLoggerContextFactory();
             }
-            LogManagerStatus.setInitialized(true);
         }
+        LogManagerStatus.setInitialized(true);
     }
 
     /**
