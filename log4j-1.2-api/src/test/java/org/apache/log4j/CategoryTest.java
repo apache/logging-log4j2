@@ -70,6 +70,11 @@ public class CategoryTest {
         appender.clear();
     }
 
+    @Test
+    public void testExist() throws Exception {
+        assertFalse(Category.exists("Does not exist for sure"));
+    }
+
     /**
      * Tests Category.forcedLog.
      */
