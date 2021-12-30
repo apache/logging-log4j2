@@ -26,8 +26,16 @@ import org.apache.logging.log4j.core.LoggerContext;
  */
 public interface Configurator {
 
+    /**
+     * Special level value signifying inherited behavior. The current value of this string constant is <b>inherited</b>.
+     * {@link #NULL} is a synonym.
+     */
     public static final String INHERITED = "inherited";
 
+    /**
+     * Special level signifying inherited behavior, same as {@link #INHERITED}. The current value of this string constant
+     * is <b>null</b>.
+     */
     public static final String NULL = "null";
 
 
