@@ -410,7 +410,17 @@ public class Category implements AppenderAttachable {
         }
     }
 
-    public boolean exists(final String name) {
+    /**
+     * Tests if the named category exists (in the default hierarchy).
+     * 
+     * @param name The name to test.
+     * @return Whether the name exists.
+     * 
+     * @deprecated Please use {@link LogManager#exists(String)} instead.
+     * @since 0.8.5
+     */
+    @Deprecated
+    public static boolean exists(final String name) {
         return PrivateManager.getContext().hasLogger(name);
     }
 
