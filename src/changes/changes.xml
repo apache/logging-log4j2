@@ -46,6 +46,9 @@
       <action dev="ggregory" type="fix">
         Log4j 1.2 bridge interface Configurator doConfigure() methods should use LoggerRepository, not LoggerContext.
       </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge class OptionConverter is missing selectAndConfigure() methods.
+      </action>
 	</release>
     <release version="2.17.1" date="2021-12-27" description="GA Release 2.17.1">
       <!-- FIXES -->
