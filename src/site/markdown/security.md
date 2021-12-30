@@ -49,7 +49,7 @@ privately to the [Log4j Security Team](mailto:private@logging.apache.org). Thank
 ## <a name="log4j-2.17.1"/> Fixed in Log4j 2.17.1 (Java 8), 2.12.4 (Java 7) and 2.3.2 (Java 6)
 
 [CVE-2021-44832](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44832):
-Apache Log4j2 vulnerable to RCE via JDBC Appender when attacker controls configuration.
+Apache Log4j2 vulnerable to RCE via JDBC Appender when attacker controls configuration server.
 
 | [CVE-2021-44832](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44832) | Remote Code Execution |
 | ---------------   | -------- |
@@ -59,11 +59,9 @@ Apache Log4j2 vulnerable to RCE via JDBC Appender when attacker controls configu
 
 ### Description
 Apache Log4j2 versions 2.0-beta7 through 2.17.0 (excluding security fix releases 2.3.2 and 2.12.4) are vulnerable to
-a remote code execution (RCE) attack where an attacker with permission to modify the logging configuration file can
-construct a malicious configuration using a JDBC Appender with a data source referencing a JNDI URI which can execute
-remote code. This issue is fixed by limiting JNDI data source names to the java protocol in Log4j2 versions 2.17.1,
-2.12.4, and 2.3.2.
-
+a remote code execution (RCE) attack when a configuration uses a JDBC Appender with a JNDI LDAP data source URI when
+an attacker has control of the target LDAP server. This issue is fixed by limiting JNDI data source names to the java
+protocol in Log4j2 versions 2.17.1, 2.12.4, and 2.3.2.
 
 ### Mitigation
 
