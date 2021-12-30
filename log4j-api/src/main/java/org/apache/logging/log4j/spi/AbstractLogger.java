@@ -2895,7 +2895,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         return atLevel(Level.FATAL);
     }
     /**
-     * Construct a fatal log event.
+     * Construct a log event that will always be logged.
      * @return a LogBuilder.
      * @since 2.13.0
      */
