@@ -20,12 +20,13 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
 
+import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.spi.LoggerRepository;
 
 /**
  * A configurator for properties.
  */
-public class PropertyConfigurator {
+public class PropertyConfigurator implements Configurator {
 
     /**
      * Reads configuration options from an InputStream.
@@ -91,6 +92,7 @@ public class PropertyConfigurator {
      * @param inputStream The input stream
      * @param hierarchy The hierarchy
      */
+    @Override
     public void doConfigure(final InputStream inputStream, final LoggerRepository hierarchy) {
     }
 
@@ -121,6 +123,7 @@ public class PropertyConfigurator {
      * @param configURL The configuration URL
      * @param hierarchy The hierarchy
      */
+    @Override
     public void doConfigure(final URL configURL, final LoggerRepository hierarchy) {
     }
 }
