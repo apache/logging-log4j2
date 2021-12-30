@@ -197,6 +197,9 @@
       <action dev="ggregory" type="fix">
         Log4j 1.2 bridge method Category.exists(String) should be static.
       </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge method org.apache.log4j.Category.getDefaultHierarchy() is missing.
+      </action>
     </release>
     <release version="2.17.1" date="2021-MM-DD" description="GA Release 2.17.1">
       <action issue="LOG4J2-3292" dev="ckozak" type="fix">
