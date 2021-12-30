@@ -97,14 +97,13 @@ public class ConsoleAppender extends WriterAppender {
         return target;
     }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean requiresLayout()
-  {
-    return false;
-  }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean requiresLayout() {
+        return false;
+    }
 
     /**
      * Sets whether the appender honors reassignments of System.out or System.err made after configuration.
