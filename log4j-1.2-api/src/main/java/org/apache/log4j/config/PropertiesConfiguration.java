@@ -455,8 +455,10 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
                 appender.setErrorHandler(eh);
             }
         }
-        appender.addFilter(parseAppenderFilters(props, filterPrefix, appenderName));
-        String[] keys = new String[] { layoutPrefix };
+        parseAppenderFilters(props, filterPrefix, appenderName);
+        String[] keys = new String[] {
+                layoutPrefix,
+        };
         addProperties(appender, keys, props, prefix);
         if (appender instanceof AppenderWrapper) {
             addAppender(((AppenderWrapper) appender).getAppender());
