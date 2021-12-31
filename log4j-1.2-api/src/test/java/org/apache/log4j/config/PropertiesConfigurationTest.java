@@ -16,17 +16,8 @@
  */
 package org.apache.log4j.config;
 
-import org.apache.log4j.ListAppender;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.apache.log4j.bridge.AppenderAdapter;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.Configurator;
-import org.junit.Test;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,8 +25,19 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import org.apache.log4j.ListAppender;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.bridge.AppenderAdapter;
+import org.apache.log4j.bridge.FilterAdapter;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.filter.Filterable;
+import org.junit.Test;
 
 /**
  * Test configuration from Properties.
@@ -53,6 +55,47 @@ public class PropertiesConfigurationTest {
         file = new File("target/temp.A2");
         assertTrue("File A2 was not created", file.exists());
         assertTrue("File A2 is empty", file.length() > 0);
+    }
+
+    @Test
+    public void testConfigureNullPointerException() throws Exception {
+        try (LoggerContext loggerContext = configure("target/test-classes/LOG4J2-3247.properties")) {
+            // [LOG4J2-3247] configure() should not throw an NPE.
+            Configuration configuration = loggerContext.getConfiguration();
+            assertNotNull(configuration);
+            Appender appender = configuration.getAppender("CONSOLE");
+            assertNotNull(appender);
+        }
+    }
+
+    @Test
+    public void testConsoleAppenderFilter() throws Exception {
+        try (LoggerContext loggerContext = configure("target/test-classes/LOG4J2-3247.properties")) {
+            // LOG4J2-3281 PropertiesConfiguration.buildAppender not adding filters to appender
+            Configuration configuration = loggerContext.getConfiguration();
+            assertNotNull(configuration);
+            Appender appender = configuration.getAppender("CONSOLE");
+            assertNotNull(appender);
+            Filterable filterable = (Filterable) appender;
+            FilterAdapter filter = (FilterAdapter) filterable.getFilter();
+            assertNotNull(filter);
+            assertTrue(filter.getFilter() instanceof NeutralFilterFixture);
+        }
+    }
+
+    @Test
+    public void testCustomAppenderFilter() throws Exception {
+        try (LoggerContext loggerContext = configure("target/test-classes/LOG4J2-3281.properties")) {
+            // LOG4J2-3281 PropertiesConfiguration.buildAppender not adding filters to appender
+            Configuration configuration = loggerContext.getConfiguration();
+            assertNotNull(configuration);
+            Appender appender = configuration.getAppender("CUSTOM");
+            assertNotNull(appender);
+            Filterable filterable = (Filterable) appender;
+            FilterAdapter filter = (FilterAdapter) filterable.getFilter();
+            assertNotNull(filter);
+            assertTrue(filter.getFilter() instanceof NeutralFilterFixture);
+        }
     }
 
     @Test

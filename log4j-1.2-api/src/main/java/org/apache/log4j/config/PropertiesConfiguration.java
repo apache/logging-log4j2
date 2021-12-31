@@ -16,6 +16,20 @@
  */
 package org.apache.log4j.config;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Properties;
+import java.util.SortedMap;
+import java.util.StringTokenizer;
+import java.util.TreeMap;
+
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.LogManager;
@@ -80,6 +94,7 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
         registry = new HashMap<>();
     }
 
+    @Override
     public void doConfigure() {
         InputStream is = getConfigurationSource().getInputStream();
         Properties props = new Properties();
@@ -331,9 +346,9 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
      * Parse non-root elements, such non-root categories and renderers.
      */
     private void parseLoggers(Properties props) {
-        Enumeration enumeration = props.propertyNames();
+        Enumeration<?> enumeration = props.propertyNames();
         while (enumeration.hasMoreElements()) {
-            String key = (String) enumeration.nextElement();
+            String key = Objects.toString(enumeration.nextElement(), null);
             if (key.startsWith(CATEGORY_PREFIX) || key.startsWith(LOGGER_PREFIX)) {
                 String loggerName = null;
                 if (key.startsWith(CATEGORY_PREFIX)) {
@@ -455,10 +470,8 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
                 appender.setErrorHandler(eh);
             }
         }
-        parseAppenderFilters(props, filterPrefix, appenderName);
-        String[] keys = new String[] {
-                layoutPrefix,
-        };
+        appender.addFilter(parseAppenderFilters(props, filterPrefix, appenderName));
+        String[] keys = new String[] { layoutPrefix };
         addProperties(appender, keys, props, prefix);
         if (appender instanceof AppenderWrapper) {
             addAppender(((AppenderWrapper) appender).getAppender());
@@ -506,7 +519,7 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
 
     public void addProperties(final Object obj, final String[] keys, final Properties props, final String prefix) {
         final Properties edited = new Properties();
-        props.stringPropertyNames().stream().filter((name) -> {
+        props.stringPropertyNames().stream().filter(name -> {
             if (name.startsWith(prefix)) {
                 for (String key : keys) {
                     if (name.equals(key)) {
@@ -516,7 +529,7 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
                 return true;
             }
             return false;
-        }).forEach((name) -> edited.put(name, props.getProperty(name)));
+        }).forEach(name -> edited.put(name, props.getProperty(name)));
         PropertySetter.setProperties(obj, edited, prefix + ".");
     }
 
@@ -527,7 +540,7 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
         // name-value pairs associated to that filter
         int fIdx = filterPrefix.length();
         SortedMap<String, List<NameValue>> filters = new TreeMap<>();
-        Enumeration e = props.keys();
+        Enumeration<?> e = props.keys();
         String name = "";
         while (e.hasMoreElements()) {
             String key = (String) e.nextElement();
@@ -559,13 +572,12 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
                 }
             }
             if (filter != null) {
-                if (head != null) {
+                if (head == null) {
                     head = filter;
-                    next = filter;
                 } else {
                     next.setNext(filter);
-                    next = filter;
                 }
+                next = filter;
             }
         }
         return head;
@@ -603,6 +615,7 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
             this.value = value;
         }
 
+        @Override
         public String toString() {
             return key + "=" + value;
         }

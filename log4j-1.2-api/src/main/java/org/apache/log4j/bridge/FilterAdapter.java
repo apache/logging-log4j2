@@ -32,6 +32,10 @@ public class FilterAdapter extends AbstractFilter {
         this.filter = filter;
     }
 
+    public Filter getFilter() {
+        return filter;
+    }
+
     @Override
     public void start() {
         filter.activateOptions();
@@ -53,4 +57,5 @@ public class FilterAdapter extends AbstractFilter {
         }
         return Result.NEUTRAL;
     }
+
 }
