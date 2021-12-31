@@ -1,1 +1,0 @@
-Revapi requires something in the target/classes directory.

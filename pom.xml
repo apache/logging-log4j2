@@ -1455,7 +1455,7 @@
             <exclude>velocity.log</exclude>
             <!-- Other -->
             <exclude>felix-cache/**</exclude>
-            <exclude>RELEASE-NOTES.md</exclude>
+            <exclude>**/*.md</exclude>
             <exclude>**/*.yml</exclude>
             <exclude>**/*.yaml</exclude>
             <exclude>**/*.json</exclude>
@@ -1658,7 +1658,7 @@
             <exclude>velocity.log</exclude>
             <!-- Other -->
             <exclude>felix-cache/**</exclude>
-            <exclude>RELEASE-NOTES.txt</exclude>
+            <exclude>**/*.md</exclude>
             <exclude>**/*.yml</exclude>
             <exclude>**/*.yaml</exclude>
             <exclude>**/*.json</exclude>
@@ -1861,7 +1861,7 @@
                 <exclude>velocity.log</exclude>
                 <!-- Other -->
                 <exclude>felix-cache/**</exclude>
-                <exclude>RELEASE-NOTES.md</exclude>
+                <exclude>**/*.md</exclude>
                 <exclude>**/*.yml</exclude>
                 <exclude>**/*.yaml</exclude>
                 <exclude>**/*.json</exclude>
