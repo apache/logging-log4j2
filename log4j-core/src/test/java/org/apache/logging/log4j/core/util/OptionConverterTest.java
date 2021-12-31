@@ -31,6 +31,40 @@ public class OptionConverterTest {
     public void testSubstVars() {
         Properties props = new Properties();
         props.setProperty("key", "${key}");
+        props.setProperty("testKey", "Log4j");
         assertEquals("Value of key is ${key}.", OptionConverter.substVars("Value of key is ${key}.", props));
+        assertEquals("Value of key is .", OptionConverter.substVars("Value of key is ${key2}.", props));
+        assertEquals("Value of testKey:testKey is Log4j:Log4j",
+                OptionConverter.substVars("Value of testKey:testKey is ${testKey}:${testKey}", props));
+    }
+
+    @Test
+    public void testRecursion() {
+        Properties props = new RecursiveProperties();
+        props.setProperty("name", "Neo");
+        props.setProperty("greeting", "Hello ${name}");
+
+        String s = props.getProperty("greeting");
+        System.out.println("greeting = '"+s+"'");
+    }
+
+    private static class RecursiveProperties extends Properties {
+        @Override
+        public String getProperty(String key)
+        {
+            System.out.println("getProperty for "+key);
+            try
+            {
+                String val = super.getProperty(key);
+                // The following call works for log4j 2.17.0 and causes StackOverflowError for 2.17.1
+                // This is because substVars change implementation in 2.17.1 to call StrSubstitutor.replace(val, props)
+                // which calls props.getProperty() for EVERY property making it recursive
+                return OptionConverter.substVars(val, this);
+            }
+            catch (Exception e)
+            {
+                return super.getProperty(key);
+            }
+        }
     }
 }
