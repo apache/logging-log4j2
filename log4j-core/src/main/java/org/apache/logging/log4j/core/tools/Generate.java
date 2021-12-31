@@ -1061,7 +1061,7 @@ public final class Generate {
         generate(args, type, System.out);
     }
 
-    public static void generate(final String[] args, final Type type, final PrintStream printStream) {
+    static void generate(final String[] args, final Type type, final PrintStream printStream) {
         if (!validate(args)) {
             usage(printStream, type.generator());
             System.exit(-1);
