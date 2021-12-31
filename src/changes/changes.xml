@@ -73,6 +73,9 @@
       <action dev="ggregory" type="fix">
         Log4j 1.2 bridge missing class org.apache.log4j.or.RendererMap.
       </action>
+      <action dev="ggregory" type="fix" issue="LOG4J2-3281">
+       PropertiesConfiguration.buildAppender not adding filters to custom appender.
+      </action>
 	</release>
     <release version="2.17.1" date="2021-12-27" description="GA Release 2.17.1">
       <!-- FIXES -->
