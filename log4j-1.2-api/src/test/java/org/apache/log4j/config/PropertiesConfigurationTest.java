@@ -52,12 +52,27 @@ public class PropertiesConfigurationTest {
     }
 
     @Test
-    public void testFilter() throws Exception {
+    public void testConsoleAppenderFilter() throws Exception {
         try (LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/LOG4J2-3247.properties")) {
             // LOG4J2-3281 PropertiesConfiguration.buildAppender not adding filters to appender
             Configuration configuration = loggerContext.getConfiguration();
             assertNotNull(configuration);
             Appender appender = configuration.getAppender("CONSOLE");
+            assertNotNull(appender);
+            Filterable filterable = (Filterable) appender;
+            FilterAdapter filter = (FilterAdapter) filterable.getFilter();
+            assertNotNull(filter);
+            assertTrue(filter.getFilter() instanceof NeutralFilterFixture);
+        }
+    }
+
+    @Test
+    public void testCustomAppenderFilter() throws Exception {
+        try (LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/LOG4J2-3281.properties")) {
+            // LOG4J2-3281 PropertiesConfiguration.buildAppender not adding filters to appender
+            Configuration configuration = loggerContext.getConfiguration();
+            assertNotNull(configuration);
+            Appender appender = configuration.getAppender("CUSTOM");
             assertNotNull(appender);
             Filterable filterable = (Filterable) appender;
             FilterAdapter filter = (FilterAdapter) filterable.getFilter();
