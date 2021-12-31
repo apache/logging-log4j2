@@ -38,6 +38,31 @@ public class OptionConverterTest {
                 OptionConverter.substVars("Value of testKey:testKey is ${testKey}:${testKey}", props));
     }
 
+    /**
+     * StrSubstitutor would resolve ${key} to Key, append the result to "test" and then resolve ${testKey}.
+     * Verify that substVars doesn't construct dynamic keys.
+     */
+    @Test
+    public void testAppend() {
+        Properties props = new Properties();
+        props.setProperty("key", "Key");
+        props.setProperty("testKey", "Hello");
+        assertEquals("Value of testKey is }",
+                OptionConverter.substVars("Value of testKey is ${test${key}}", props));
+    }
+
+    /**
+     * StrSubstitutor would resolve ${key}, append the result to "test" and then resolve ${testKey}.
+     * Verify that substVars will treat the second expression up to the first '}' as part of the key.
+     */
+    @Test
+    public void testAppend2() {
+        Properties props = new Properties();
+        props.setProperty("test${key", "Hello");
+        assertEquals("Value of testKey is Hello}",
+                OptionConverter.substVars("Value of testKey is ${test${key}}", props));
+    }
+
     @Test
     public void testRecursion() {
         Properties props = new RecursiveProperties();
