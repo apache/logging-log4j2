@@ -45,8 +45,8 @@ public class BuilderManager {
 
     public static final String CATEGORY = "Log4j Builder";
     private static final Logger LOGGER = StatusLogger.getLogger();
+    private static Class<?>[] CONSTRUCTOR_PARAMS = new Class[] { String.class, Properties.class };
     private final Map<String, PluginType<?>> plugins;
-    private static Class<?>[] constructorParams = new Class[] { String.class, Properties.class};
 
     public BuilderManager() {
         final PluginManager manager = new PluginManager(CATEGORY);
@@ -155,7 +155,7 @@ public class BuilderManager {
             if (AbstractBuilder.class.isAssignableFrom(clazz)) {
                 @SuppressWarnings("unchecked")
                 Constructor<T> constructor =
-                        (Constructor<T>) clazz.getConstructor(constructorParams);
+                        (Constructor<T>) clazz.getConstructor(CONSTRUCTOR_PARAMS);
                 return constructor.newInstance(prefix, props);
             }
             @SuppressWarnings("unchecked")
