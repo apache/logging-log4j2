@@ -36,7 +36,7 @@ import com.lmax.disruptor.dsl.Disruptor;
  * Tests queue full scenarios abstract superclass.
  */
 public abstract class QueueFullAbstractTest {
-    protected static boolean TRACE = false;
+    protected static boolean TRACE = Boolean.getBoolean(QueueFullAbstractTest.class.getSimpleName() + ".TRACE");
     protected BlockingAppender blockingAppender;
     protected Unlocker unlocker;
 
