@@ -304,7 +304,13 @@
     </menu>
 
     <menu name="Related Projects" inherit="top" img="img/glyphicons/tag.png">
-      <item name="Log4j-Scala" href="http://logging.apache.org/log4j/scala/index.html"/>
+      <!-- In AB order for simplicity -->
+      <item name="Chainsaw" href="https://logging.apache.org/chainsaw/2.x/index.html"/>
+      <item name="Log4Cxx" href="https://logging.apache.org/log4cxx/latest_stable/index.html"/>
+      <item name="Log4j Audit" href="https://logging.apache.org/log4j-audit/latest/index.html"/>
+      <item name="Log4j Kotlin" href="https://logging.apache.org/log4j/kotlin/index.html"/>
+      <item name="Log4j Scala" href="http://logging.apache.org/log4j/scala/index.html"/>
+      <item name="Log4Net" href="https://logging.apache.org/log4net/index.html"/>
     </menu>
 
     <menu name="Legacy Sites" inherit="top" img="img/glyphicons/link.png">
