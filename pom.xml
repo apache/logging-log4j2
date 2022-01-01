@@ -1452,6 +1452,7 @@
             <exclude>log4j-distribution/target/**/*</exclude>
             <exclude>log4j-distribution/.project</exclude>
             <exclude>log4j-distribution/.settings/**</exclude>
+            <exclude>**/.toDelete</exclude>
             <exclude>velocity.log</exclude>
             <!-- Other -->
             <exclude>felix-cache/**</exclude>
@@ -1655,6 +1656,7 @@
             <exclude>log4j-distribution/target/**/*</exclude>
             <exclude>log4j-distribution/.project</exclude>
             <exclude>log4j-distribution/.settings/**</exclude>
+            <exclude>**/.toDelete</exclude>
             <exclude>velocity.log</exclude>
             <!-- Other -->
             <exclude>felix-cache/**</exclude>
@@ -1858,6 +1860,7 @@
                 <exclude>log4j-distribution/target/**/*</exclude>
                 <exclude>log4j-distribution/.project</exclude>
                 <exclude>log4j-distribution/.settings/**</exclude>
+                <exclude>**/.toDelete</exclude>
                 <exclude>velocity.log</exclude>
                 <!-- Other -->
                 <exclude>felix-cache/**</exclude>
@@ -1865,7 +1868,7 @@
                 <exclude>**/*.yml</exclude>
                 <exclude>**/*.yaml</exclude>
                 <exclude>**/*.json</exclude>
-                <excllude>**/images/*.drawio</excllude>
+                <exclude>**/images/*.drawio</exclude>
                 <exclude>**/fluent-bit.conf</exclude>
                 <exclude>**/rabbitmq.config</exclude>
                 <exclude>**/MANIFEST.MF</exclude>
