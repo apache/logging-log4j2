@@ -17,65 +17,18 @@
 
 package org.apache.logging.log4j.test;
 
-import org.junit.rules.TestRule;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
-
 /**
  * A JUnit TestRule to discover an available port and save it in a system property. Useful for setting up tests using
  * Apache Active MQ.
  */
-public class AvailablePortSystemPropertyTestRule implements TestRule {
+public class AvailablePortSystemPropertyTestRule extends SystemPropertyTestRule {
 
     public static AvailablePortSystemPropertyTestRule create(final String name) {
         return new AvailablePortSystemPropertyTestRule(name);
     }
 
-    protected final String name;
-    protected int port;
-
     protected AvailablePortSystemPropertyTestRule(final String name) {
-        this.name = name;
-    }
-
-    @Override
-    public Statement apply(final Statement base, final Description description) {
-        return new Statement() {
-
-            @Override
-            public void evaluate() throws Throwable {
-                final String oldValue = System.getProperty(name);
-                try {
-                    port = AvailablePortFinder.getNextAvailable();
-                    System.setProperty(name, Integer.toString(port));
-                    base.evaluate();
-                } finally {
-                    // Restore if previously set
-                    if (oldValue != null) {
-                        System.setProperty(name, oldValue);
-                    }
-                }
-            }
-        };
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("AvailablePortSystemPropertyRule [name=");
-        builder.append(name);
-        builder.append(", port=");
-        builder.append(port);
-        builder.append("]");
-        return builder.toString();
+        super(name, () -> Integer.toString(AvailablePortFinder.getNextAvailable()));
     }
 
 }
