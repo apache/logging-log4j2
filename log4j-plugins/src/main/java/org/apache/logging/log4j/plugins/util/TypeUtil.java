@@ -62,7 +62,6 @@ public final class TypeUtil {
         final List<Field> fields = new ArrayList<>();
         while (cls != null) {
             final Field[] declaredFields = cls.getDeclaredFields();
-            AccessibleObject.setAccessible(declaredFields, true);
             fields.addAll(Arrays.asList(declaredFields));
             cls = cls.getSuperclass();
         }
