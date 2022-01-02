@@ -22,7 +22,7 @@ module org.apache.logging.log4j {
     exports org.apache.logging.log4j.status;
     exports org.apache.logging.log4j.util;
 
-    requires transitive org.osgi.framework;
+    requires static org.osgi.framework;
     uses org.apache.logging.log4j.spi.Provider;
     uses org.apache.logging.log4j.util.PropertySource;
     uses org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory;

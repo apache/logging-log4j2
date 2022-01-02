@@ -17,7 +17,11 @@
 package org.apache.logging.log4j.plugins.util;
 
 
+import java.util.Collection;
+
 import org.apache.logging.log4j.plugins.processor.PluginEntry;
+import org.apache.logging.log4j.plugins.validation.ConstraintValidator;
+import org.apache.logging.log4j.plugins.validation.ConstraintValidators;
 
 /**
  * Plugin Descriptor. This is a memento object for Plugin annotations paired to their annotated classes.

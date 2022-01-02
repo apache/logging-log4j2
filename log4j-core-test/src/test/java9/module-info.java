@@ -60,7 +60,6 @@ open module org.apache.logging.log4j.core {
     requires transitive java.management;
     requires transitive java.sql;
     requires transitive java.rmi;
-    requires transitive java.scripting;
     requires transitive java.xml;
     requires transitive org.apache.logging.log4j;
     requires transitive org.apache.logging.log4j.test;

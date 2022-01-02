@@ -31,6 +31,9 @@
          - "remove" - Removed
     -->
     <release version="3.0.0" date="2021-MM-DD" description="GA Release 3.0.0">
+      <action issue="LOG4J2-3307" dev="rgoers" type="update">
+        Move Scripting to its own module.
+      </action>
       <action issue="LOG4J2-3242" dev="rgoers" type="fix">
         Move JNDI to its own module.
       </action>

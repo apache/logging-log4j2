@@ -17,6 +17,7 @@
 module org.apache.logging.log4j.core.test {
     exports org.apache.logging.log4j.core.test;
     exports org.apache.logging.log4j.core.test.appender;
+    exports org.apache.logging.log4j.core.test.appender.rolling.action;
     exports org.apache.logging.log4j.core.test.categories;
     exports org.apache.logging.log4j.core.test.hamcrest;
     exports org.apache.logging.log4j.core.test.junit;

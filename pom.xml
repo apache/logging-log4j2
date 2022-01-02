@@ -1740,6 +1740,7 @@
     <module>log4j-jpl</module>
     <module>log4j-liquibase</module>
     <module>log4j-appserver</module>
+    <module>log4j-script</module>
     <module>log4j-smtp</module>
     <module>log4j-osgi</module>
     <module>log4j-docker</module>

@@ -16,47 +16,14 @@
  */
 package org.apache.logging.log4j.core.script;
 
-import org.apache.logging.log4j.plugins.Node;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginAttribute;
-import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.plugins.PluginValue;
-
 /**
- * Container for the language and body of a script.
+ * Represents int
  */
-@Plugin(name = Script.PLUGIN_NAME, category = Node.CATEGORY, printObject = true)
-public class Script extends AbstractScript {
+public interface Script {
 
-    private static final String ATTR_LANGUAGE = "language";
-    private static final String ATTR_SCRIPT_TEXT = "scriptText";
-    static final String PLUGIN_NAME = "Script";
+    String getLanguage();
 
-    public Script(final String name, final String language, final String scriptText) {
-        super(name, language, scriptText);
-    }
+    String getScriptText();
 
-    @PluginFactory
-    public static Script createScript(
-            // @formatter:off
-            @PluginAttribute final String name,
-            @PluginAttribute String language,
-            @PluginValue final String scriptText) {
-            // @formatter:on
-        if (language == null) {
-            LOGGER.error("No '{}' attribute provided for {} plugin '{}'", ATTR_LANGUAGE, PLUGIN_NAME, name);
-            language = DEFAULT_LANGUAGE;
-        }
-        if (scriptText == null) {
-            LOGGER.error("No '{}' attribute provided for {} plugin '{}'", ATTR_SCRIPT_TEXT, PLUGIN_NAME, name);
-            return null;
-        }
-        return new Script(name, language, scriptText);
-
-    }
-
-    @Override
-    public String toString() {
-        return getName() != null ? getName() : super.toString();
-    }
+    String getName();
 }

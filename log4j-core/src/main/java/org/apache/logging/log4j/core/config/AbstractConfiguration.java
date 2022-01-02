@@ -30,6 +30,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -59,9 +60,8 @@ import org.apache.logging.log4j.core.lookup.MapLookup;
 import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.net.Advertiser;
-import org.apache.logging.log4j.core.script.AbstractScript;
 import org.apache.logging.log4j.core.script.ScriptManager;
-import org.apache.logging.log4j.core.script.ScriptRef;
+import org.apache.logging.log4j.core.script.ScriptManagerFactory;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.apache.logging.log4j.core.util.Loader;
@@ -75,6 +75,7 @@ import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.ServiceLoaderUtil;
 
 /**
  * The base Configuration. Many configuration implementations will extend this class.
@@ -219,7 +220,10 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         LOGGER.debug(Version.getProductString() + " initializing configuration {}", this);
         subst.setConfiguration(this);
         try {
-            scriptManager = new ScriptManager(this, watchManager);
+            ServiceLoaderUtil.loadServices(ScriptManagerFactory.class,
+                            (layer) -> ServiceLoader.load(layer, ScriptManagerFactory.class),
+                            null).stream().findFirst().ifPresent(scriptManagerFactory ->
+                    scriptManager = scriptManagerFactory.createScriptManager(this, watchManager));
         } catch (final LinkageError | Exception e) {
             // LOG4J2-1920 ScriptEngineManager is not available in Android
             LOGGER.info("Cannot initialize scripting support because this JRE does not support it.", e);
@@ -641,14 +645,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 continue;
             }
             if (child.getName().equalsIgnoreCase("Scripts")) {
-                for (final AbstractScript script : child.getObject(AbstractScript[].class)) {
-                    if (script instanceof ScriptRef) {
-                        LOGGER.error("Script reference to {} not added. Scripts definition cannot contain script references",
-                                script.getName());
-                    } else {
-                        if (scriptManager != null) {
-                            scriptManager.addScript(script);
-                        }}
+                if (scriptManager != null) {
+                    scriptManager.addScripts(child);
                 }
             } else if (child.getName().equalsIgnoreCase("Appenders")) {
                 appenders = child.getObject();

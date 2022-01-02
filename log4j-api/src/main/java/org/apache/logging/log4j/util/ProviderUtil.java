@@ -62,13 +62,9 @@ public final class ProviderUtil {
     private static volatile ProviderUtil instance;
 
     private ProviderUtil() {
-        for (final ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
-            try {
-                loadProviders(classLoader);
-            } catch (final Throwable ex) {
-                LOGGER.debug("Unable to retrieve provider from ClassLoader {}", classLoader, ex);
-            }
-        }
+        PROVIDERS.addAll(ServiceLoaderUtil.loadServices(Provider.class,
+                (layer) -> ServiceLoader.load(layer, Provider.class),
+                (provider) -> validVersion(provider.getVersions())));
         for (final LoaderUtil.UrlResource resource : LoaderUtil.findUrlResources(PROVIDER_RESOURCE)) {
             loadProvider(resource.getUrl(), resource.getClassLoader());
         }
@@ -96,19 +92,6 @@ public final class ProviderUtil {
             }
         } catch (final IOException e) {
             LOGGER.error("Unable to open {}", url, e);
-        }
-    }
-
-    /**
-     * 
-     * @param classLoader null can be used to mark the bootstrap class loader.
-     */
-    protected static void loadProviders(final ClassLoader classLoader) {
-        final ServiceLoader<Provider> serviceLoader = ServiceLoader.load(Provider.class, classLoader);
-        for (final Provider provider : serviceLoader) {
-            if (validVersion(provider.getVersions()) && !PROVIDERS.contains(provider)) {
-                PROVIDERS.add(provider);
-            }
         }
     }
 

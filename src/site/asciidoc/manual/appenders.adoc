@@ -4107,7 +4107,7 @@ Appender in a link:#FailoverAppender[FailoverAppender].
 == ScriptAppenderSelector
 
 When the configuration is built, the `ScriptAppenderSelector` appender
-calls a `Script` to compute an appender name. Log4j then creates one of
+calls a `ScriptPlugin` to compute an appender name. Log4j then creates one of
 the appender named listed under `AppenderSet` using the name of the
 `ScriptAppenderSelector`. After configuration, Log4j ignores the
 `ScriptAppenderSelector`. Log4j only builds the one selected appender

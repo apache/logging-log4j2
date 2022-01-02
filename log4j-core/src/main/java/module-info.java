@@ -60,27 +60,28 @@ module org.apache.logging.log4j.core {
     exports org.apache.logging.log4j.core.util;
     exports org.apache.logging.log4j.core.util.datetime;
 
-    requires transitive java.desktop;
-    requires transitive java.management;
-    requires transitive java.naming;
-    requires transitive java.sql;
-    requires transitive java.rmi;
-    requires transitive java.scripting;
-    requires transitive java.xml;
+    // Required Dependenceis
     requires transitive org.apache.logging.log4j;
     requires transitive org.apache.logging.log4j.plugins;
-    requires transitive com.lmax.disruptor;
-    requires transitive org.jctools.core;
-    requires transitive org.osgi.framework;
-    requires transitive com.conversantmedia.disruptor;
-    requires transitive com.fasterxml.jackson.core;
-    requires transitive com.fasterxml.jackson.databind;
-    requires transitive com.fasterxml.jackson.dataformat.xml;
-    requires transitive com.fasterxml.jackson.dataformat.yaml;
-    requires transitive org.apache.commons.compress;
-    requires transitive org.fusesource.jansi;
+    // Optional Despendencies
+    requires static java.desktop;
+    requires static java.management;
+    requires static java.sql;
+    requires static java.rmi;
+    requires static java.xml;
+    requires static com.lmax.disruptor;
+    requires static org.jctools.core;
+    requires static org.osgi.framework;
+    requires static com.conversantmedia.disruptor;
+    requires static com.fasterxml.jackson.core;
+    requires static com.fasterxml.jackson.databind;
+    requires static com.fasterxml.jackson.dataformat.xml;
+    requires static com.fasterxml.jackson.dataformat.yaml;
+    requires static org.apache.commons.compress;
+    requires static org.fusesource.jansi;
     uses org.apache.logging.log4j.core.util.ContextDataProvider;
     uses org.apache.logging.log4j.core.util.WatchEventService;
+    uses org.apache.logging.log4j.core.script.ScriptManagerFactory;
     provides org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory with org.apache.logging.log4j.core.message.ExtendedThreadInfoFactory;
     provides org.apache.logging.log4j.core.util.ContextDataProvider with org.apache.logging.log4j.core.impl.ThreadContextDataProvider;
     provides org.apache.logging.log4j.spi.Provider with org.apache.logging.log4j.core.impl.Log4jProvider;

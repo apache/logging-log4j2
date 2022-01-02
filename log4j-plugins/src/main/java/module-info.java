@@ -29,8 +29,9 @@ module org.apache.logging.log4j.plugins {
     exports org.apache.logging.log4j.plugins.name;
 
     requires org.apache.logging.log4j;
-    requires transitive org.osgi.framework;
+    requires static org.osgi.framework;
 
     uses org.apache.logging.log4j.plugins.processor.PluginService;
     provides org.apache.logging.log4j.plugins.processor.PluginService with org.apache.logging.log4j.plugins.convert.plugins.Log4jPlugins;
+
 }

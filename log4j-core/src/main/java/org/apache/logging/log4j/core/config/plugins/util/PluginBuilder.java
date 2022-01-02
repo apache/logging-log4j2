@@ -31,6 +31,7 @@ import org.apache.logging.log4j.plugins.inject.ConfigurationInjector;
 import org.apache.logging.log4j.plugins.util.Builder;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
+import org.apache.logging.log4j.plugins.validation.PluginValidator;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.ReflectionUtil;
 import org.apache.logging.log4j.util.StringBuilders;
@@ -116,8 +117,14 @@ public class PluginBuilder implements Builder<Object> {
     @Override
     public Object build() {
         verify();
+        Class<?> pluginClass = pluginType.getPluginClass();
+        if (!PluginValidator.validatePlugin(pluginClass, pluginType.getElementName())) {
+            LOGGER.error("Could not create plugin builder for plugin {} due to constraint violations",
+                    pluginType.getElementName());
+            return null;
+        }
         LOGGER.debug("Building Plugin[name={}, class={}].", pluginType.getElementName(),
-                pluginType.getPluginClass().getName());
+                pluginClass.getName());
         substitutor = new Substitutor(event);
         // first try to use a builder class if one is available
         try {

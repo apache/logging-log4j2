@@ -195,12 +195,22 @@ public class PluginRegistry {
      * @since 3.0
      */
     public void loadPlugins(Map<String, List<PluginType<?>>> map) {
+        Throwable throwable = null;
+        ClassLoader errorClassLoader = null;
+        boolean allFail = true;
         for (ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
             try {
                 loadPlugins(classLoader, map);
+                allFail = false;
             } catch (Throwable ex) {
-                LOGGER.debug("Unable to retrieve provider from ClassLoader {}", classLoader, ex);
+                if (throwable == null) {
+                    throwable = ex;
+                    errorClassLoader = classLoader;
+                }
             }
+        }
+        if (allFail && throwable != null) {
+            LOGGER.debug("Unable to retrieve provider from ClassLoader {}", errorClassLoader, throwable);
         }
     }
 
