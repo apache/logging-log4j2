@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j;
 
+import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
  * Tests {@link ThreadContext}.
  */
 @ResourceLock(Resources.SYSTEM_PROPERTIES)
+@UsingThreadContextMap
 public class NoopThreadContextTest {
 
     private static final String TRUE = "true";

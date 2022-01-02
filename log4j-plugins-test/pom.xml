@@ -149,6 +149,14 @@
               </compileSourceRoots>
             </configuration>
           </execution>
+          <execution>
+            <id>default-testCompile</id>
+            <configuration>
+              <compilerArgs>
+                <arg>-ApluginPackage=org.apache.logging.log4j.plugins.convert.test</arg>
+              </compilerArgs>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
       <plugin>

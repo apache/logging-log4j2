@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.plugins;
 
+import org.apache.logging.log4j.plugins.di.Qualifier;
 import org.apache.logging.log4j.plugins.inject.InjectorStrategy;
 import org.apache.logging.log4j.plugins.inject.PluginElementInjector;
 import org.apache.logging.log4j.plugins.name.NameProvider;
@@ -38,6 +39,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD})
 @InjectorStrategy(PluginElementInjector.class)
 @NameProvider(PluginElementNameProvider.class)
+@Qualifier
 public @interface PluginElement {
 
     /**

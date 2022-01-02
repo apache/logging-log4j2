@@ -17,7 +17,13 @@
 
 package org.apache.logging.log4j.core.config.plugins;
 
-import java.lang.annotation.*;
+import org.apache.logging.log4j.plugins.di.Producer;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Marks a method as a factory for custom Plugin builders.
@@ -26,6 +32,7 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
+@Producer
 public @interface PluginBuilderFactory {
     // empty
 }

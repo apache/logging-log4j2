@@ -19,9 +19,10 @@ package org.apache.logging.log4j.plugin.processor;
 
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
-import org.apache.logging.log4j.plugins.processor.FakePlugin;
 import org.apache.logging.log4j.plugins.processor.PluginEntry;
 import org.apache.logging.log4j.plugins.processor.PluginService;
+import org.apache.logging.log4j.plugins.test.validation.FakePlugin;
+import org.apache.logging.log4j.plugins.test.validation.plugins.Log4jPlugins;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -40,10 +41,8 @@ public class PluginProcessorTest {
     private final Plugin p = FakePlugin.class.getAnnotation(Plugin.class);
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
-        Class<?> clazz = PluginProcessor.class.getClassLoader().loadClass("org.apache.logging.log4j.plugins.plugins.Log4jPlugins");
-        assertNotNull("Could not locate plugins class", clazz);
-        pluginService = (PluginService) clazz.getDeclaredConstructor().newInstance();;
+    public static void setUpClass() {
+        pluginService = new Log4jPlugins();
     }
 
     @Test

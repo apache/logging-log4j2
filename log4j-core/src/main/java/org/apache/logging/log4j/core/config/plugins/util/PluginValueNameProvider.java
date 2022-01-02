@@ -15,19 +15,17 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.processor;
+package org.apache.logging.log4j.core.config.plugins.util;
 
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginAliases;
+import org.apache.logging.log4j.core.config.plugins.PluginValue;
+import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
+import org.apache.logging.log4j.util.Strings;
 
-/**
- * Test plugin class for unit tests.
- */
-@Plugin(name = "Fake", category = "Test")
-@PluginAliases({"AnotherFake", "StillFake"})
-public class FakePlugin {
+import java.util.Optional;
 
-    @Plugin(name = "Nested", category = "Test")
-    public static class Nested {
+public class PluginValueNameProvider implements AnnotatedElementNameProvider<PluginValue> {
+    @Override
+    public Optional<String> getSpecifiedName(final PluginValue annotation) {
+        return Strings.trimToOptional(annotation.value());
     }
 }

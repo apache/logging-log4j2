@@ -17,16 +17,18 @@
 package org.apache.logging.log4j.plugins.convert;
 
 import org.apache.logging.log4j.plugins.Plugin;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TypeConverterRegistryTest {
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testFindNullConverter() {
-        TypeConverterRegistry.getInstance().findCompatibleConverter(null);
+        assertThrows(NullPointerException.class,
+                () -> TypeConverterRegistry.getInstance().findCompatibleConverter(null));
     }
 
     @Test

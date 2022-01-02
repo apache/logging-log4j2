@@ -18,9 +18,9 @@ package org.apache.logging.log4j.plugins.processor;
 
 import org.apache.logging.log4j.plugins.util.PluginType;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +35,7 @@ public abstract class PluginService {
         PluginEntry[] entries = getEntries();
         for (PluginEntry entry : entries) {
             String category = entry.getCategory().toLowerCase();
-            List<PluginType<?>> list = categories.computeIfAbsent(category, ignored -> new LinkedList<>());
+            List<PluginType<?>> list = categories.computeIfAbsent(category, ignored -> new ArrayList<>());
             PluginType<?> type = new PluginType<>(entry, this.getClass().getClassLoader());
             list.add(type);
         }

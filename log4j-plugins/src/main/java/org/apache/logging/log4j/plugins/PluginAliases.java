@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.plugins;
 
+import org.apache.logging.log4j.plugins.di.Qualifier;
+import org.apache.logging.log4j.plugins.name.AliasesProvider;
+import org.apache.logging.log4j.plugins.name.PluginAliasesProvider;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -29,6 +33,8 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.TYPE, ElementType.FIELD, ElementType.METHOD})
+@AliasesProvider(PluginAliasesProvider.class)
+@Qualifier
 public @interface PluginAliases {
 
     /**
