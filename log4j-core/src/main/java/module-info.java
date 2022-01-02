@@ -29,8 +29,6 @@ module org.apache.logging.log4j.core {
     exports org.apache.logging.log4j.core.config.builder.api;
     exports org.apache.logging.log4j.core.config.builder.impl;
     exports org.apache.logging.log4j.core.config.composite;
-    exports org.apache.logging.log4j.core.config.di;
-    exports org.apache.logging.log4j.core.config.di.impl;
     exports org.apache.logging.log4j.core.config.json;
     exports org.apache.logging.log4j.core.config.plugins;
     exports org.apache.logging.log4j.core.config.plugins.convert;
@@ -60,10 +58,10 @@ module org.apache.logging.log4j.core {
     exports org.apache.logging.log4j.core.util;
     exports org.apache.logging.log4j.core.util.datetime;
 
-    // Required Dependenceis
+    // Required Dependencies
     requires transitive org.apache.logging.log4j;
     requires transitive org.apache.logging.log4j.plugins;
-    // Optional Despendencies
+    // Optional Dependencies
     requires static java.desktop;
     requires static java.management;
     requires static java.sql;
@@ -86,4 +84,5 @@ module org.apache.logging.log4j.core {
     provides org.apache.logging.log4j.core.util.ContextDataProvider with org.apache.logging.log4j.core.impl.ThreadContextDataProvider;
     provides org.apache.logging.log4j.spi.Provider with org.apache.logging.log4j.core.impl.Log4jProvider;
     provides org.apache.logging.log4j.plugins.processor.PluginService with org.apache.logging.log4j.core.plugins.Log4jPlugins;
+    provides org.apache.logging.log4j.plugins.di.model.PluginModule with org.apache.logging.log4j.core.plugins.Log4jModule;
 }

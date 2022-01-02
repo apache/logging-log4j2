@@ -28,7 +28,6 @@ open module org.apache.logging.log4j.core {
     exports org.apache.logging.log4j.core.config.arbiters;
     exports org.apache.logging.log4j.core.config.builder;
     exports org.apache.logging.log4j.core.config.di;
-    exports org.apache.logging.log4j.core.config.di.impl;
     exports org.apache.logging.log4j.core.config.plugins;
     exports org.apache.logging.log4j.core.config.plugins.convert;
     exports org.apache.logging.log4j.core.config.plugins.util;
