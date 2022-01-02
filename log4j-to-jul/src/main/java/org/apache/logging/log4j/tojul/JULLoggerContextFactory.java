@@ -23,7 +23,8 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
- * Implementation of Log4j {@link LoggerContextFactory} SPI. This is a factory to produce the (one and only) {@link JULLoggerContext} instance.
+ * Implementation of Log4j {@link LoggerContextFactory} SPI.
+ * This is a factory to produce the (one and only) {@link JULLoggerContext} instance.
  *
  * @author <a href="http://www.vorburger.ch">Michael Vorburger.ch</a> for Google
  */

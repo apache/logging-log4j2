@@ -36,19 +36,24 @@ import org.apache.logging.log4j.spi.AbstractLogger;
 public final class JULLogger extends AbstractLogger {
     private static final long serialVersionUID = 1L;
 
-    // @VisibleForTesting
-    final Logger logger;
+    private final Logger logger;
 
     // This implementation is inspired by org.apache.logging.slf4j.SLF4JLogger
 
     public JULLogger(final String name, final MessageFactory messageFactory, final Logger logger) {
         super(name, messageFactory);
         this.logger = requireNonNull(logger, "logger");
+        System.setProperty("jdk.logger.packages", getClass().getPackageName() + "," + getClass().getSuperclass().getPackageName());
     }
 
     public JULLogger(final String name, final Logger logger) {
         super(name);
         this.logger = requireNonNull(logger, "logger");
+        System.setProperty("jdk.logger.packages", getClass().getPackageName() + "," + getClass().getSuperclass().getPackageName());
+    }
+
+    public Logger getWrappedLogger() {
+        return logger;
     }
 
     @Override
@@ -60,9 +65,9 @@ public final class JULLogger extends AbstractLogger {
         LogRecord record = new LogRecord(julLevel, message.getFormattedMessage()); // NOT getFormat()
         // NOT record.setParameters(message.getParameters()); BECAUSE getFormattedMessage() NOT getFormat()
         record.setLoggerName(getName());
-        // TODO Use fqcn parameter for record.setSourceClassName() + record.setSourceMethodName(), perhaps with a LogRecord subclass to lazily evaluate the call-site when it's requested given the compute cost of StackWalker/etc.
         record.setThrown(t == null ? message.getThrowable() : t);
         logger.log(record);
+        // fqcn is un-used
     }
 
     // Convert Level in Log4j scale to JUL scale.

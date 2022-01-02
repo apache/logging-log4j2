@@ -23,7 +23,8 @@ import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerRegistry;
 
 /**
- * Implementation of Log4j {@link LoggerContext} SPI. This is a factory to produce {@link JULLogger} instances.
+ * Implementation of Log4j {@link LoggerContext} SPI.
+ * This is a factory to produce {@link JULLogger} instances.
  *
  * @author <a href="http://www.vorburger.ch">Michael Vorburger.ch</a> for Google
  */

@@ -14,7 +14,10 @@
 * See the license for the specific language governing permissions and
 * limitations under the license.
 */
-package org.apache.logging.log4j.tojul;
+
+// Cannot use package org.apache.logging.log4j.tojul (or even org.apache.logging.log4j.tojul.test)
+// because that breaks getSourceClassName() and getSourceMethodName().
+package test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,6 +27,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.tojul.JULLogger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,7 +55,7 @@ public class LoggerTest {
         log4jLogger = LogManager.getLogger(getClass());
         assertThat(log4jLogger).isInstanceOf(JULLogger.class);
         julLogger = java.util.logging.Logger.getLogger(getClass().getName());
-        assertThat(julLogger).isSameAs(((JULLogger)log4jLogger).logger);
+        assertThat(julLogger).isSameAs(((JULLogger)log4jLogger).getWrappedLogger());
         julLogger.addHandler(handler);
 
         julLoggerDefaultLevel = julLogger.getLevel();
@@ -80,9 +84,8 @@ public class LoggerTest {
         assertThat(log1.getMessage()).isEqualTo("hello, world");
         assertThat(log1.getParameters()).isNull();
         assertThat(log1.getThrown()).isNull();
-        // TODO Correctly implement this, it does not work as expected, yet
         assertThat(log1.getSourceClassName()).isEqualTo(getClass().getName());
-        assertThat(log1.getSourceMethodName()).isEqualTo("infoAtInfo()");
+        assertThat(log1.getSourceMethodName()).isEqualTo("infoAtInfo");
     }
 
     @Test public void infoAtInfoWithParameters() {
@@ -199,6 +202,29 @@ public class LoggerTest {
     private static class CustomLevel extends Level {
         CustomLevel(String name, int value) {
             super(name, value);
+        }
+    }
+
+    /**
+     * Test that the {@link LogRecord#getSourceClassName()}, which we already tested above in infoAtInfo()
+     * also works as expected if the logging happened in a class that we have called (indirect), not in the test method itself.
+     */
+    @Test public void indirectSource() {
+        java.util.logging.Logger.getLogger(Another.class.getName()).setLevel(Level.INFO);
+        new Another(handler);
+        List<LogRecord> logs = handler.getStoredLogRecords();
+        assertThat(logs).hasSize(1);
+        LogRecord log1 = logs.get(0);
+        assertThat(log1.getSourceClassName()).isEqualTo(Another.class.getName());
+        assertThat(log1.getSourceMethodName()).isEqualTo("<init>");
+    }
+
+    static class Another {
+        org.apache.logging.log4j.Logger anotherLog4jLogger = LogManager.getLogger(getClass());
+        java.util.logging.Logger anotherJULLogger = java.util.logging.Logger.getLogger(getClass().getName());
+        Another(TestLogHandler handler) {
+            anotherJULLogger.addHandler(handler);
+            anotherLog4jLogger.info("hello, another world");
         }
     }
 }
