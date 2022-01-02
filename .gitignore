@@ -26,5 +26,5 @@ target/
 .factorypath
 velocity.log
 felix-cache/
-bin/
 /.metadata/
+.DS_Store

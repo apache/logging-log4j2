@@ -29,7 +29,82 @@
          - "update" - Change
          - "remove" - Removed
     -->
-    <release version="2.17.1" date="2021-MM-dd" description="GA Release 2.17.1">
+    <release version="2.17.2" date="20YY-MM-DD" description="GA Release 2.17.2">
+
+      <action issue="LOG4J2-3267" dev="rpopma" type="update">
+        Change modifier of method org.apache.logging.log4j.core.tools.Generate#generate to public (was package private) to facilitate automated code generation.
+      </action>
+      <!-- FIXES -->
+      <action issue="LOG4J2-3301" dev="rgoers" type="fix">
+        OptionConverter could cause a StackOverflowError.
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge class ConsoleAppender should extend WriterAppender and provide better compatibility with custom appenders.
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge method NDC.inherit(Stack) should not use generics to provide source compatibility.
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge class PatternLayout is missing constants DEFAULT_CONVERSION_PATTERN and TTCC_CONVERSION_PATTERN.
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge class PropertyConfigurator should implement Configurator.
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge interface Configurator doConfigure() methods should use LoggerRepository, not LoggerContext.
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge class OptionConverter is missing selectAndConfigure() methods.
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge class Category should implement AppenderAttachable.
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge method Category.exists(String) should be static.
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge methods missing in org.apache.log4j.Category: getDefaultHierarchy(), getHierarchy(), getLoggerRepository().
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge class LogManager default constructor should be public.
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge interface org.apache.log4j.spi.RendererSupport was in the wrong package and incomplete.
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge interfaces missing from package org.apache.log4j.spi: ThrowableRenderer, ThrowableRendererSupport, TriggeringEventEvaluator.
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge missing class org.apache.log4j.or.RendererMap.
+      </action>
+      <action dev="ggregory" type="fix" issue="LOG4J2-3281">
+       PropertiesConfiguration.buildAppender not adding filters to custom appender.
+      </action>
+	</release>
+    <release version="2.17.1" date="2021-12-27" description="GA Release 2.17.1">
+      <!-- FIXES -->
+      <action issue="LOG4J2-3293" dev="ggregory" type="fix">
+        JdbcAppender now uses JndiManager to access JNDI resources. JNDI is only enabled when system property
+        log4j2.enableJndiJdbc is set to true.
+      </action>
+      <action issue="LOG4J2-3290" dev="rogers" type="fix">
+        Remove unused method.
+      </action>
+      <action issue="LOG4J2-3292" dev="ckozak" type="fix">
+        ExtendedLoggerWrapper.logMessage no longer double-logs when location is requested.
+      </action>
+      <action issue="LOG4J2-3289" dev="ckozak" type="fix">
+        log4j-to-slf4j no longer re-interpolates formatted message contents.
+      </action>
+      <action issue="LOG4J2-3204" dev="vy" type="fix" due-to="Francis-FY">
+        Correct SpringLookup package name in Interpolator.
+      </action>
+      <action issue="LOG4J2-3284" dev="ckozak" type="fix" due-to="Michael Vorburger">
+        log4j-to-slf4j takes the provided MessageFactory into account
+      </action>
+      <action issue="LOG4J2-3264" dev="ckozak" type="fix" due-to="Yanming Zhou">
+        Fix MapLookup to lookup MapMessage before DefaultMap
+      </action>
       <action issue="LOG4J2-3274" dev="rgoers" type="fix" due-to="Faisal Khan Thayub Khan">
         Buffered I/O checked had inverted logic in RollingFileAppenderBuidler.
       </action>
@@ -38,6 +113,9 @@
       </action>
       <action issue="LOG4J2-3270" dev="ckozak" type="fix">
         Lookups with no prefix only read values from the configuration properties as expected.
+      </action>
+      <action issue="LOG4J2-3256" dev="ggregory" type="fix" due-to="Lee Dongjin">
+        Reduce ignored package scope of KafkaAppender.
       </action>
     </release>
     <release version="2.17.0" date="2021-12-17" description="GA Release 2.17.0">
@@ -63,6 +141,7 @@
       </action>
     </release>
     <release version="2.16.0" date="2021-12-13" description="GA Release 2.16.0">
+      <!-- FIXES -->
       <action issue="LOG4J2-3208" dev="rgoers" type="fix">
         Disable JNDI by default. Require log4j2.enableJndi to be set to true to allow JNDI.
       </action>

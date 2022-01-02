@@ -18,13 +18,22 @@
 package org.apache.log4j.helpers;
 
 import org.apache.log4j.Level;
+import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.spi.Configurator;
+import org.apache.log4j.spi.LoggerRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.Strings;
 
+import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -291,7 +300,64 @@ public class OptionConverter {
      * @throws IllegalArgumentException if <code>val</code> is malformed.
      */
     public static String substVars(String val, Properties props) throws IllegalArgumentException {
-        return StrSubstitutor.replace(val, props);
+        return substVars(val, props, new ArrayList<>());
+    }
+
+    private static String substVars(final String val, final Properties props, List<String> keys)
+            throws IllegalArgumentException {
+
+        final StringBuilder sbuf = new StringBuilder();
+
+        int i = 0;
+        int j;
+        int k;
+
+        while (true) {
+            j = val.indexOf(DELIM_START, i);
+            if (j == -1) {
+                // no more variables
+                if (i == 0) { // this is a simple string
+                    return val;
+                }
+                // add the tail string which contails no variables and return the result.
+                sbuf.append(val.substring(i, val.length()));
+                return sbuf.toString();
+            }
+            sbuf.append(val.substring(i, j));
+            k = val.indexOf(DELIM_STOP, j);
+            if (k == -1) {
+                throw new IllegalArgumentException(Strings.dquote(val)
+                        + " has no closing brace. Opening brace at position " + j
+                        + '.');
+            }
+            j += DELIM_START_LEN;
+            final String key = val.substring(j, k);
+            // first try in System properties
+            String replacement = PropertiesUtil.getProperties().getStringProperty(key, null);
+            // then try props parameter
+            if (replacement == null && props != null) {
+                replacement = props.getProperty(key);
+            }
+
+            if (replacement != null) {
+
+                // Do variable substitution on the replacement string
+                // such that we can solve "Hello ${x2}" as "Hello p1"
+                // the where the properties are
+                // x1=p1
+                // x2=${x1}
+                if (!keys.contains(key)) {
+                    List<String> usedKeys = new ArrayList<>(keys);
+                    usedKeys.add(key);
+                    final String recursiveReplacement = substVars(replacement, props, usedKeys);
+                    sbuf.append(recursiveReplacement);
+                } else {
+                    sbuf.append(replacement);
+                }
+
+            }
+            i = k + DELIM_STOP_LEN;
+        }
     }
 
     public static org.apache.logging.log4j.Level convertLevel(String level,
@@ -342,6 +408,79 @@ public class OptionConverter {
             default:
                 return Level.ERROR;
         }
+    }
+
+    /**
+     * Configure log4j given an {@link InputStream}.
+     * <p>
+     * The InputStream will be interpreted by a new instance of a log4j configurator.
+     * </p>
+     * <p>
+     * All configurations steps are taken on the <code>hierarchy</code> passed as a parameter.
+     * </p>
+     * 
+     * @param inputStream The configuration input stream.
+     * @param clazz The class name, of the log4j configurator which will parse the <code>inputStream</code>. This must be a
+     *        subclass of {@link Configurator}, or null. If this value is null then a default configurator of
+     *        {@link PropertyConfigurator} is used.
+     * @param hierarchy The {@link LoggerRepository} to act on.
+     * @since 1.2.17
+     */
+    static public void selectAndConfigure(InputStream inputStream, String clazz, LoggerRepository hierarchy) {
+        Configurator configurator = null;
+
+        if (clazz != null) {
+            LOGGER.debug("Preferred configurator class: " + clazz);
+            configurator = (Configurator) instantiateByClassName(clazz, Configurator.class, null);
+            if (configurator == null) {
+                LOGGER.error("Could not instantiate configurator [" + clazz + "].");
+                return;
+            }
+        } else {
+            configurator = new PropertyConfigurator();
+        }
+
+        configurator.doConfigure(inputStream, hierarchy);
+    }
+
+    /**
+     * Configure log4j given a URL.
+     * <p>
+     * The url must point to a file or resource which will be interpreted by a new instance of a log4j configurator.
+     * </p>
+     * <p>
+     * All configurations steps are taken on the <code>hierarchy</code> passed as a parameter.
+     * </p>
+     * 
+     * @param url The location of the configuration file or resource.
+     * @param clazz The classname, of the log4j configurator which will parse the file or resource at <code>url</code>. This
+     *        must be a subclass of {@link Configurator}, or null. If this value is null then a default configurator of
+     *        {@link PropertyConfigurator} is used, unless the filename pointed to by <code>url</code> ends in '.xml', in
+     *        which case {@link org.apache.log4j.xml.DOMConfigurator} is used.
+     * @param hierarchy The {@link LoggerRepository} to act on.
+     * 
+     * @since 1.1.4
+     */
+    static public void selectAndConfigure(URL url, String clazz, LoggerRepository hierarchy) {
+        Configurator configurator = null;
+        String filename = url.getFile();
+
+        if (clazz == null && filename != null && filename.endsWith(".xml")) {
+            clazz = "org.apache.log4j.xml.DOMConfigurator";
+        }
+
+        if (clazz != null) {
+            LOGGER.debug("Preferred configurator class: " + clazz);
+            configurator = (Configurator) instantiateByClassName(clazz, Configurator.class, null);
+            if (configurator == null) {
+                LOGGER.error("Could not instantiate configurator [" + clazz + "].");
+                return;
+            }
+        } else {
+            configurator = new PropertyConfigurator();
+        }
+
+        configurator.doConfigure(url, hierarchy);
     }
 
     /**

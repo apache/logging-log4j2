@@ -20,7 +20,7 @@
   <artifactId>log4j</artifactId>
   <packaging>pom</packaging>
   <name>Apache Log4j 2</name>
-  <version>2.17.1-SNAPSHOT</version>
+  <version>2.17.2-SNAPSHOT</version>
   <parent>
     <groupId>org.apache.logging</groupId>
     <artifactId>logging-parent</artifactId>
@@ -52,12 +52,17 @@
     <developer>
       <id>ggregory</id>
       <name>Gary Gregory</name>
-      <email>ggregory@apache.org</email>
-      <organization>Rocket Software</organization>
+      <email>ggregory at apache.org</email>
+      <url>https://www.garygregory.com</url>
+      <organization>The Apache Software Foundation</organization>
+      <organizationUrl>https://www.apache.org/</organizationUrl>      
       <roles>
         <role>PMC Member</role>
       </roles>
-      <timezone>America/Denver</timezone>
+      <timezone>America/New_York</timezone>
+      <properties>
+        <picUrl>https://people.apache.org/~ggregory/img/garydgregory80.png</picUrl>
+      </properties>
     </developer>
     <developer>
       <id>sdeboy</id>
@@ -188,14 +193,12 @@
   <properties>
     <!-- make sure to update these for each release! -->
     <log4jParentDir>${basedir}</log4jParentDir>
-    <Log4jReleaseVersion>2.17.0</Log4jReleaseVersion>
-    <Log4jReleaseVersionJava7>2.12.3</Log4jReleaseVersionJava7>
-    <Log4jReleaseVersionJava6>2.3.1</Log4jReleaseVersionJava6>
-    <!--Log4jReleaseManager>Ralph Goers</Log4jReleaseManager-->
-    <!--Log4jReleaseKey>B3D8E1BA</Log4jReleaseKey-->
-    <Log4jReleaseManager>Ralph Goers</Log4jReleaseManager>
-    <Log4jReleaseKey>B3D8E1BA</Log4jReleaseKey>
-    <Log4jSigningUserName>rgoers@apache.org</Log4jSigningUserName>
+    <Log4jReleaseVersion>2.17.1</Log4jReleaseVersion>
+    <Log4jReleaseVersionJava7>2.12.4</Log4jReleaseVersionJava7>
+    <Log4jReleaseVersionJava6>2.3.2</Log4jReleaseVersionJava6>
+    <Log4jReleaseManager>Matt Sicker</Log4jReleaseManager>
+    <Log4jReleaseKey>D7C92B70FA1C814D</Log4jReleaseKey>
+    <Log4jSigningUserName>mattsicker@apache.org</Log4jSigningUserName>
     <!-- note that any properties you want available in velocity templates must not use periods! -->
     <slf4jVersion>1.7.25</slf4jVersion>
     <logbackVersion>1.2.3</logbackVersion>
@@ -245,6 +248,8 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.doap.skip>false</maven.doap.skip>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- See https://maven.apache.org/guides/mini/guide-reproducible-builds.html -->
+    <project.build.outputTimestamp>10</project.build.outputTimestamp>
     <docLabel>Site Documentation</docLabel>
     <projectDir />
     <commonsLoggingVersion>1.2</commonsLoggingVersion>
@@ -1350,6 +1355,7 @@
             <exclude>src/main/resources/META-INF/services/**/*</exclude>
             <!-- IntelliJ files -->
             <exclude>.idea/**/*</exclude>
+            <exclude>**/*.iml</exclude>
             <exclude>src/test/resources/**/*</exclude>
             <!-- IDE settings imports -->
             <exclude>src/ide/**</exclude>
@@ -1362,6 +1368,7 @@
             <exclude>log4j-distribution/target/**/*</exclude>
             <exclude>log4j-distribution/.project</exclude>
             <exclude>log4j-distribution/.settings/**</exclude>
+            <exclude>**/.toDelete</exclude>
             <exclude>velocity.log</exclude>
             <!-- Other -->
             <exclude>felix-cache/**</exclude>
@@ -1378,6 +1385,14 @@
             <exclude>**/MANIFEST.MF</exclude>
           </excludes>
         </configuration>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <!-- DOAP (RDF) metadata generation -->
       <plugin>
@@ -1466,7 +1481,7 @@
           <webAccessUrl>${project.scm.url}</webAccessUrl>
           <anonymousConnection>${project.scm.connection}</anonymousConnection>
           <developerConnection>${project.scm.developerConnection}</developerConnection>
-          <scmTag>log4j-${Log4jReleaseVersion}</scmTag>
+          <scmTag>rel/${Log4jReleaseVersion}</scmTag>
         </configuration>
       </plugin>
       <!-- Surefire report -->
@@ -1506,6 +1521,7 @@
             <exclude>log4j-distribution/target/**/*</exclude>
             <exclude>log4j-distribution/.project</exclude>
             <exclude>log4j-distribution/.settings/**</exclude>
+            <exclude>**/.toDelete</exclude>
             <exclude>velocity.log</exclude>
             <!-- Other -->
             <exclude>felix-cache/**</exclude>
@@ -1681,6 +1697,7 @@
                 <exclude>log4j-distribution/target/**/*</exclude>
                 <exclude>log4j-distribution/.project</exclude>
                 <exclude>log4j-distribution/.settings/**</exclude>
+                <exclude>**/.toDelete</exclude>
                 <exclude>velocity.log</exclude>
                 <!-- Other -->
                 <exclude>felix-cache/**</exclude>
@@ -1690,7 +1707,7 @@
                 <exclude>**/*.yml</exclude>
                 <exclude>**/*.yaml</exclude>
                 <exclude>**/*.json</exclude>
-                <excllude>**/images/*.drawio</excllude>
+                <exclude>**/images/*.drawio</exclude>
                 <exclude>**/fluent-bit.conf</exclude>
                 <exclude>**/rabbitmq.config</exclude>
                 <exclude>**/MANIFEST.MF</exclude>

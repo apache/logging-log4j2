@@ -14,9 +14,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-# Apache Log4j 2.17.0 Release Notes
+# Apache Log4j 2.17.1 Release Notes
 
-The Apache Log4j 2 team is pleased to announce the Log4j 2.17.0 release!
+The Apache Log4j 2 team is pleased to announce the Log4j 2.17.1 release!
 
 Apache Log4j is a well known framework for logging application behavior. Log4j 2 is an upgrade
 to Log4j that provides significant improvements over its predecessor, Log4j 1.x, and provides
@@ -29,51 +29,59 @@ The artifacts may be downloaded from https://logging.apache.org/log4j/2.x/downlo
 
 This release contains the changes noted below:
 
-* Address CVE-2021-45105.
-* Require components that use JNDI to be enabled individually via system properties.
-* Remove LDAP and LDAPS as supported protocols from JNDI.
+* Address CVE-2021-44832.
+* Other minor fixes.
 
 Due to a break in compatibility in the SLF4J binding, Log4j now ships with two versions of the SLF4J to Log4j adapters.
 log4j-slf4j-impl should be used with SLF4J 1.7.x and earlier and log4j-slf4j18-impl should be used with SLF4J 1.8.x and
 later. SLF4J-2.0.0 alpha releases are not fully supported. See https://issues.apache.org/jira/browse/LOG4J2-2975 and
 https://jira.qos.ch/browse/SLF4J-511.
 
-Some of the changes in Log4j 2.17.0 include:
+The Log4j 2.17.1 API, as well as many core components, maintains binary compatibility with previous releases.
 
-* Disable recursive evaluation of Lookups during log event processing. Recursive evaluation is still allowed while
-generating the configuration.
-* The JndiLookup, JndiContextSelector, and JMSAppender now require individual system properties to be enabled.
-* Removed support for the LDAP and LDAPS protocols via JNDI.
-
-The Log4j 2.17.0 API, as well as many core components, maintains binary compatibility with previous releases.
-
-## GA Release 2.17.0
+## GA Release 2.17.1
 
 Changes in this version include:
 
 
 ### Fixed Bugs
-* [LOG4J2-3230](https://issues.apache.org/jira/browse/LOG4J2-3230):
-    Fix string substitution recursion.
-* [LOG4J2-3242](https://issues.apache.org/jira/browse/LOG4J2-3242):
-    Limit JNDI to the java protocol only. JNDI will remain disabled by default. Rename JNDI enablement property from 'log4j2.enableJndi' to 'log4j2.enableJndiLookup', 'log4j2.enableJndiJms', and 'log4j2.enableJndiContextSelector'.
-* [LOG4J2-3241](https://issues.apache.org/jira/browse/LOG4J2-3241):
-    Do not declare log4j-api-java9 and log4j-core-java9 as dependencies as it causes problems with the Maven enforcer plugin.
-* [LOG4J2-3247](https://issues.apache.org/jira/browse/LOG4J2-3247):
-    PropertiesConfiguration.parseAppenderFilters NPE when parsing properties file filters.
-* [LOG4J2-3249](https://issues.apache.org/jira/browse/LOG4J2-3249):
-    Log4j 1.2 bridge for Syslog Appender defaults to port 512 instead of 514.
-* [LOG4J2-3237](https://issues.apache.org/jira/browse/LOG4J2-3237):
-    Log4j 1.2 bridge API hard codes the Syslog protocol to TCP.
+* [LOG4J2-3293](https://issues.apache.org/jira/browse/LOG4J2-3293):
+JdbcAppender now uses JndiManager to access JNDI resources. JNDI is only enabled when system property
+        log4j2.enableJndiJdbc is set to true.
+* [LOG4J2-3290](https://issues.apache.org/jira/browse/LOG4J2-3290):
+Remove unused method.
+* [LOG4J2-3292](https://issues.apache.org/jira/browse/LOG4J2-3292):
+ExtendedLoggerWrapper.logMessage no longer double-logs when location is requested.
+* [LOG4J2-3289](https://issues.apache.org/jira/browse/LOG4J2-3289):
+log4j-to-slf4j no longer re-interpolates formatted message contents.
+* [LOG4J2-3204](https://issues.apache.org/jira/browse/LOG4J2-3204):
+Correct SpringLookup package name in Interpolator. Thanks to Francis-FY.
+* [LOG4J2-3284](https://issues.apache.org/jira/browse/LOG4J2-3284):
+log4j-to-slf4j takes the provided MessageFactory into account Thanks to Michael Vorburger.
+* [LOG4J2-3264](https://issues.apache.org/jira/browse/LOG4J2-3264):
+Fix MapLookup to lookup MapMessage before DefaultMap Thanks to Yanming Zhou.
+* [LOG4J2-3274](https://issues.apache.org/jira/browse/LOG4J2-3274):
+Buffered I/O checked had inverted logic in RollingFileAppenderBuidler. Thanks to Faisal Khan Thayub Khan.
+* [](https://issues.apache.org/jira/browse/LOG4J2-3274):
+Fix NPE when input is null in StrSubstitutor.replace(String, Properties).
+* [LOG4J2-3270](https://issues.apache.org/jira/browse/LOG4J2-3270):
+Lookups with no prefix only read values from the configuration properties as expected.
+* [LOG4J2-3256](https://issues.apache.org/jira/browse/LOG4J2-3256):
+Reduce ignored package scope of KafkaAppender. Thanks to Lee Dongjin.
 
 
 ---
 
-Apache Log4j 2.17.0 requires a minimum of Java 8 to build and run. Log4j 2.12.2 is the last release to support
-Java 7. Java 7 is not longer supported by the Log4j team.
+Apache Log4j 2.17.1 requires a minimum of Java 8 to build and run.
+Log4j 2.12.3 is the last release to support Java 7.
+Log4j 2.3.1 is the last release to support Java 6.
+Java 6 and Java 7 are no longer supported by the Log4j team.
 
 For complete information on Apache Log4j 2, including instructions on how to submit bug
 reports, patches, or suggestions for improvement, see the Apache Apache Log4j 2 website:
 
 https://logging.apache.org/log4j/2.x/
 
+---
+
+Earlier release notes are accessible in [Release History](https://logging.apache.org/log4j/2.x/changes-report.html).

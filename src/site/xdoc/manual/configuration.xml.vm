@@ -2157,11 +2157,19 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
+    <td><a name="enableJndiJdbc"/>log4j2.enableJndiJdbc</td>
+    <td>LOG4J_ENABLE_JNDI_JDBC</td>
+    <td>false</td>
+    <td>
+      When true, a Log4j JDBC Appender configured with a <code>DataSource</code> which uses JNDI's java protocol is enabled. When false, the default, they are disabled.
+    </td>
+  </tr>
+  <tr>
     <td><a name="enableJndiJms"/>log4j2.enableJndiJms</td>
     <td>LOG4J_ENABLE_JNDI_JMS</td>
     <td>false</td>
     <td>
-      When true, the Log4j JMS Appender that uses JNDI's java protocol is enabled. When false, the default, they are disabled.
+      When true, a Log4j JMS Appender that uses JNDI's java protocol is enabled. When false, the default, they are disabled.
     </td>
   </tr>
   <tr>
@@ -2169,7 +2177,7 @@ public class AwesomeTest {
     <td>LOG4J_ENABLE_JNDI_LOOKUP</td>
     <td>false</td>
     <td>
-      When true, the Log4j lookup that uses JNDI's java protocol is enabled. When false, the default, they are disabled.
+      When true, a Log4j lookup that uses JNDI's java protocol is enabled. When false, the default, they are disabled.
     </td>
   </tr>
   <tr>

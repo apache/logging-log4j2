@@ -22,6 +22,7 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Appender;
@@ -43,9 +44,7 @@ import org.apache.logging.log4j.core.layout.SerializedLayout;
 @Plugin(name = "Kafka", category = Node.CATEGORY, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class KafkaAppender extends AbstractAppender {
 
-	private final Integer retryCount;
-
-	/**
+    /**
 	 * Builds KafkaAppender instances.
 	 * 
 	 * @param <B> The type to build
@@ -79,29 +78,6 @@ public final class KafkaAppender extends AbstractAppender {
 					getPropertyArray(), getRetryCount());
 		}
 
-		public String getTopic() {
-			return topic;
-		}
-
-		public boolean isSyncSend() {
-			return syncSend;
-		}
-
-		public B setTopic(final String topic) {
-			this.topic = topic;
-			return asBuilder();
-		}
-
-		public B setSyncSend(final boolean syncSend) {
-			this.syncSend = syncSend;
-			return asBuilder();
-		}
-
-		public B setKey(final String key) {
-			this.key = key;
-			return asBuilder();
-		}
-
 		public Integer getRetryCount() {
 			Integer intRetryCount = null;
 			try {
@@ -113,7 +89,32 @@ public final class KafkaAppender extends AbstractAppender {
 
 		}
 
+		public String getTopic() {
+			return topic;
+		}
+
+		public boolean isSyncSend() {
+			return syncSend;
+		}
+
+		public B setKey(final String key) {
+			this.key = key;
+			return asBuilder();
+		}
+
+		public B setSyncSend(final boolean syncSend) {
+			this.syncSend = syncSend;
+			return asBuilder();
+		}
+
+		public B setTopic(final String topic) {
+			this.topic = topic;
+			return asBuilder();
+		}
+
 	}
+
+    private static final String[] KAFKA_CLIENT_PACKAGES = new String[] { "org.apache.kafka.common", "org.apache.kafka.clients" };
 
 	@Deprecated
 	public static KafkaAppender createAppender(final Layout<? extends Serializable> layout, final Filter filter,
@@ -131,6 +132,16 @@ public final class KafkaAppender extends AbstractAppender {
 	}
 
 	/**
+	 * Tests if the given log event is from a Kafka Producer implementation.
+	 *
+	 * @param event The event to test.
+	 * @return true to avoid recursion and skip logging, false to log.
+	 */
+	private static boolean isRecursive(final LogEvent event) {
+	    return Stream.of(KAFKA_CLIENT_PACKAGES).anyMatch(prefix -> event.getLoggerName().startsWith(prefix));
+    }
+
+	/**
 	 * Creates a builder for a KafkaAppender.
 	 * 
 	 * @return a builder for a KafkaAppender.
@@ -139,6 +150,8 @@ public final class KafkaAppender extends AbstractAppender {
 	public static <B extends Builder<B>> B newBuilder() {
 		return new Builder<B>().asBuilder();
 	}
+
+	private final Integer retryCount;
 
 	private final KafkaManager manager;
 
@@ -152,7 +165,7 @@ public final class KafkaAppender extends AbstractAppender {
 
 	@Override
 	public void append(final LogEvent event) {
-		if (event.getLoggerName() != null && event.getLoggerName().startsWith("org.apache.kafka")) {
+		if (event.getLoggerName() != null && isRecursive(event)) {
 			LOGGER.warn("Recursive logging from [{}] for appender [{}].", event.getLoggerName(), getName());
 		} else {
 			try {
@@ -176,21 +189,6 @@ public final class KafkaAppender extends AbstractAppender {
 		}
 	}
 
-	private void tryAppend(final LogEvent event) throws ExecutionException, InterruptedException, TimeoutException {
-		final Layout<? extends Serializable> layout = getLayout();
-		byte[] data;
-		if (layout instanceof SerializedLayout) {
-			final byte[] header = layout.getHeader();
-			final byte[] body = layout.toByteArray(event);
-			data = new byte[header.length + body.length];
-			System.arraycopy(header, 0, data, 0, header.length);
-			System.arraycopy(body, 0, data, header.length, body.length);
-		} else {
-			data = layout.toByteArray(event);
-		}
-		manager.send(data);
-	}
-
 	@Override
 	public void start() {
 		super.start();
@@ -209,5 +207,20 @@ public final class KafkaAppender extends AbstractAppender {
 	@Override
 	public String toString() {
 		return "KafkaAppender{" + "name=" + getName() + ", state=" + getState() + ", topic=" + manager.getTopic() + '}';
+	}
+
+	private void tryAppend(final LogEvent event) throws ExecutionException, InterruptedException, TimeoutException {
+		final Layout<? extends Serializable> layout = getLayout();
+		byte[] data;
+		if (layout instanceof SerializedLayout) {
+			final byte[] header = layout.getHeader();
+			final byte[] body = layout.toByteArray(event);
+			data = new byte[header.length + body.length];
+			System.arraycopy(header, 0, data, 0, header.length);
+			System.arraycopy(body, 0, data, header.length, body.length);
+		} else {
+			data = layout.toByteArray(event);
+		}
+		manager.send(data);
 	}
 }

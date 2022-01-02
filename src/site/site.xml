@@ -38,7 +38,6 @@
       <item name="Logging Wiki" href="https://cwiki.apache.org/confluence/display/LOGGING/Log4j"/>
       <item name="Apache" href="https://www.apache.org/"/>
       <item name="Logging Services" href="https://logging.apache.org/"/>
-      <item name="Sonar" href="https://analysis.apache.org/dashboard/index/org.apache.logging.log4j:log4j"/>
       <item name="GitHub" href="https://github.com/apache/logging-log4j2"/>
     </links>
 
@@ -89,8 +88,17 @@
     <menu name="Manual" inherit="top" img="img/glyphicons/book.png">
       <item name="Introduction" href="/manual/index.html"/>
       <item name="Architecture" href="/manual/architecture.html"/>
-      <item name="Log4j 1.x Compatibility" href="manual/compatibility.html"/>
-      <item name="Log4j 1.x Migration" href="manual/migration.html"/>
+      <item name="API Separation" href="/manual/api-separation.html"/>
+
+      <item name="Log4j 1.x Migration" href="manual/migration.html" collapse="true">
+        <item name="Log4j 1.x Bridge" href="manual/migration.html#Log4j1.2Bridge"/>
+        <item name="Enabling the Bridge" href="manual/migration.html#EnablingLog4j1.2Bridge"/>
+        <item name="API Compatibility" href="manual/migration.html#APICompatibility"/>
+        <item name="Configuration Compatibility" href="manual/migration.html#ConfigurationCompatibility"/>
+        <item name="Bridge Limitations" href="manual/migration.html#Log4j1.2BridgeLimitations"/>
+        <item name="Migrating to the Log4j 2 API" href="manual/migration.html#Log4j2API"/>
+        <item name="Migrating to the Log4j 2 Configuration" href="manual/migration.html#Log4j2ConfigurationFormat"/>
+      </item>
 
       <item name="Java API" href="/manual/api.html" collapse="true">
         <item name="Log Builder" href="manual/logbuilder.html"/>
@@ -104,7 +112,7 @@
       <item name="Scala API" href="/manual/scala-api.html"/>
 
       <item name="Configuration" href="/manual/configuration.html" collapse="true">
-        <item name="Configuration Archtecture" href="/manual/configuration.html#Architecture"/>
+        <item name="Configuration Architecture" href="/manual/configuration.html#Architecture"/>
         <item name="Arbiters" href="/manual/configuration.html#Arbiters"/>
         <item name="Automatic Configuration" href="/manual/configuration.html#AutomaticConfiguration"/>
         <item name="Additivity" href="/manual/configuration.html#Additivity"/>
@@ -296,13 +304,19 @@
     </menu>
 
     <menu name="Related Projects" inherit="top" img="img/glyphicons/tag.png">
-      <item name="Log4j-Scala" href="http://logging.apache.org/log4j/scala/index.html"/>
+      <!-- In AB order for simplicity -->
+      <item name="Chainsaw" href="https://logging.apache.org/chainsaw/2.x/index.html"/>
+      <item name="Log4Cxx" href="https://logging.apache.org/log4cxx/latest_stable/index.html"/>
+      <item name="Log4j Audit" href="https://logging.apache.org/log4j-audit/latest/index.html"/>
+      <item name="Log4j Kotlin" href="https://logging.apache.org/log4j/kotlin/index.html"/>
+      <item name="Log4j Scala" href="http://logging.apache.org/log4j/scala/index.html"/>
+      <item name="Log4Net" href="https://logging.apache.org/log4net/index.html"/>
     </menu>
 
     <menu name="Legacy Sites" inherit="top" img="img/glyphicons/link.png">
       <item name="Log4j 1.2 - End of Life" href="http://logging.apache.org/log4j/1.2/"/>
-      <item name="Log4j 2.3.1 - Java 6" href="http://logging.apache.org/log4j/log4j-2.3.1/"/>
-      <item name="Log4j 2.12.3 - Java 7" href="http://logging.apache.org/log4j/log4j-2.12.3/"/>
+      <item name="Log4j 2.3.2 - Java 6" href="http://logging.apache.org/log4j/log4j-2.3.2/"/>
+      <item name="Log4j 2.12.4 - Java 7" href="http://logging.apache.org/log4j/log4j-2.12.4/"/>
     </menu>
 
     <menu name="Components" inherit="top" img="img/glyphicons/cog.png">

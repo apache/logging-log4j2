@@ -14,13 +14,26 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.log4j.or;
+package org.apache.logging.log4j.core.appender.db.jdbc;
 
-import java.util.Map;
+import javax.sql.DataSource;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
 /**
- * Interface that indicates the Renderer Map is available. This interface differs
+ * Abstract unit test for JDBC using a {@link DataSource} configuration.
  */
-public interface RendererSupport {
-    Map<Class<?>, ObjectRenderer> getRendererMap();
+public abstract class AbstractJdbcDataSourceTest {
+
+    @AfterClass
+    public static void afterClass() throws Exception {
+        System.clearProperty("log4j2.enableJndiJdbc");
+    }
+
+    @BeforeClass
+    public static void beforeClass() throws Exception {
+        System.setProperty("log4j2.enableJndiJdbc", "true");
+    }
+
 }

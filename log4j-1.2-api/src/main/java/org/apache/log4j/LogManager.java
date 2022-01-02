@@ -23,10 +23,11 @@ import java.util.Map;
 import org.apache.log4j.helpers.NullEnumeration;
 import org.apache.log4j.legacy.core.ContextUtil;
 import org.apache.log4j.or.ObjectRenderer;
-import org.apache.log4j.or.RendererSupport;
+import org.apache.log4j.or.RendererMap;
 import org.apache.log4j.spi.HierarchyEventListener;
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.spi.RendererSupport;
 import org.apache.log4j.spi.RepositorySelector;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.util.Strings;
@@ -80,9 +81,6 @@ public final class LogManager {
             // Ignore the exception;
         }
         isLog4jCore = core;
-    }
-
-    private LogManager() {
     }
 
     public static Logger getRootLogger() {
@@ -152,10 +150,10 @@ public final class LogManager {
      */
     private static class Repository implements LoggerRepository, RendererSupport {
 
-        private final Map<Class<?>, ObjectRenderer> rendererMap = new HashMap<>();
+        private final RendererMap rendererMap = new RendererMap();
 
         @Override
-        public Map<Class<?>, ObjectRenderer> getRendererMap() {
+        public RendererMap getRendererMap() {
             return rendererMap;
         }
 
@@ -231,6 +229,11 @@ public final class LogManager {
 
         @Override
         public void resetConfiguration() {
+        }
+
+        @Override
+        public void setRenderer(Class renderedClass, ObjectRenderer renderer) {
+            rendererMap.put(renderedClass, renderer);
         }
     }
 

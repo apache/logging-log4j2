@@ -129,7 +129,6 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
             handleError(LOOKUP_KEY_JVMRUNARGS, e);
         }
         strLookupMap.put("date", new DateLookup());
-        strLookupMap.put("ctx", new ContextMapLookup());
         if (Constants.IS_WEB_APP) {
             try {
                 strLookupMap.put(LOOKUP_KEY_WEB,
@@ -148,7 +147,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         }
         try {
             strLookupMap.put(LOOKUP_KEY_SPRING,
-                    Loader.newCheckedInstanceOf("org.apache.logging.log4j.spring.cloud.config.client.SpringLookup", StrLookup.class));
+                    Loader.newCheckedInstanceOf("org.apache.logging.log4j.spring.boot.SpringLookup", StrLookup.class));
         } catch (final Exception ignored) {
             handleError(LOOKUP_KEY_SPRING, ignored);
         }
