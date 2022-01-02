@@ -27,6 +27,7 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.apache.logging.log4j.message.ThreadDumpMessage;
 import org.apache.logging.log4j.test.TestLogger;
+import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.apache.logging.log4j.util.Supplier;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,6 +46,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @ResourceLock(Resources.LOCALE)
 @ResourceLock("log4j2.TestLogger")
+@UsingThreadContextMap
 public class LoggerSupplierTest {
 
     private final TestLogger logger = (TestLogger) LogManager.getLogger("LoggerTest");
