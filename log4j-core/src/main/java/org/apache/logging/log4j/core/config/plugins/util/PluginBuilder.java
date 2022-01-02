@@ -36,7 +36,6 @@ import org.apache.logging.log4j.util.ReflectionUtil;
 import org.apache.logging.log4j.util.StringBuilders;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -171,7 +170,6 @@ public class PluginBuilder implements Builder<Object> {
     private Object injectBuilder(final Builder<?> builder) {
         final Object target = builder instanceof BuilderWrapper ? ((BuilderWrapper) builder).getBuilder() : builder;
         final List<Field> fields = TypeUtil.getAllDeclaredFields(target.getClass());
-        AccessibleObject.setAccessible(fields.toArray(new Field[0]), true);
         final StringBuilder log = new StringBuilder();
         // TODO: collect OptionBindingExceptions into a composite error message (ConfigurationException?)
         for (final Field field : fields) {
