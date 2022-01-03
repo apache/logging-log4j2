@@ -59,12 +59,10 @@ class InjectionTargetBean<T> extends AbstractBean<T> {
 
     @Override
     public void destroy(final T instance, final InitializationContext<T> context) {
-        try {
+        try (context) {
             if (isDependentScoped()) {
                 injectionTarget.preDestroy(instance);
             }
-        } finally {
-            context.close();
         }
     }
 
