@@ -35,7 +35,7 @@
         Change modifier of method org.apache.logging.log4j.core.tools.Generate#generate to public (was package private) to facilitate automated code generation.
       </action>
       <!-- FIXES -->
-      <action issue="LOG4J2-3301" dev="rgoers" type="fix">
+      <action issue="LOG4J2-3306" dev="rgoers" type="fix">
         OptionConverter could cause a StackOverflowError.
       </action>
       <action dev="ggregory" type="fix">
