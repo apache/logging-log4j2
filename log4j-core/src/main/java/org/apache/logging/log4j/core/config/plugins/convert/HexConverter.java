@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.plugins.convert;
+package org.apache.logging.log4j.core.config.plugins.convert;
 
 /**
  * Converts Strings to hex. This is used in place of java.xml.bind.DataTypeConverter which is not available by

@@ -14,72 +14,16 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
 package org.apache.logging.log4j.plugins.convert;
 
 import org.apache.logging.log4j.plugins.Plugin;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.jupiter.api.Assertions.*;
 
-public class TypeConverterRegistryTest {
-
-    @Test
-    public void testFindNullConverter() {
-        assertThrows(NullPointerException.class,
-                () -> TypeConverterRegistry.getInstance().findCompatibleConverter(null));
-    }
-
-    @Test
-    public void testFindBooleanConverter() throws Exception {
-        final TypeConverter<?> converter = TypeConverterRegistry.getInstance().findCompatibleConverter(Boolean.class);
-        assertNotNull(converter);
-        assertTrue((Boolean) converter.convert("TRUE"));
-    }
-
-    @Test
-    public void testFindPrimitiveBooleanConverter() throws Exception {
-        final TypeConverter<?> converter = TypeConverterRegistry.getInstance().findCompatibleConverter(Boolean.TYPE);
-        assertNotNull(converter);
-        assertTrue((Boolean) converter.convert("tRUe"));
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testFindCharSequenceConverterUsingStringConverter() throws Exception {
-        final TypeConverter<CharSequence> converter = (TypeConverter<CharSequence>)
-            TypeConverterRegistry.getInstance().findCompatibleConverter(CharSequence.class);
-        assertNotNull(converter);
-        assertThat(converter, instanceOf(TypeConverters.StringConverter.class));
-        final CharSequence expected = "This is a test sequence of characters";
-        final CharSequence actual = converter.convert(expected.toString());
-        assertEquals(expected, actual);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testFindNumberConverter() throws Exception {
-        final TypeConverter<Number> numberTypeConverter = (TypeConverter<Number>)
-            TypeConverterRegistry.getInstance().findCompatibleConverter(Number.class);
-        assertNotNull(numberTypeConverter);
-        // TODO: is there a specific converter this should return?
-    }
-
-    public enum Foo {
-        I, PITY, THE
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testFindEnumConverter() throws Exception {
-        final TypeConverter<Foo> fooTypeConverter = (TypeConverter<Foo>)
-            TypeConverterRegistry.getInstance().findCompatibleConverter(Foo.class);
-        assertNotNull(fooTypeConverter);
-        assertEquals(Foo.I, fooTypeConverter.convert("i"));
-        assertEquals(Foo.PITY, fooTypeConverter.convert("pity"));
-        assertEquals(Foo.THE, fooTypeConverter.convert("THE"));
-    }
+class TypeConverterRegistryTest {
 
     public static final class CustomTestClass1 {
 
