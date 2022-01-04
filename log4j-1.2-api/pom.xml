@@ -44,6 +44,12 @@
       <artifactId>junit-jupiter-engine</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Place Felix before Equinox because Felix is signed. -->
+    <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest</artifactId>
       <scope>test</scope>

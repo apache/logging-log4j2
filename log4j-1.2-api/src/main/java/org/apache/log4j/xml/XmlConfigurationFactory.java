@@ -33,6 +33,9 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 @Plugin(name = "Log4j1XmlConfigurationFactory", category = ConfigurationFactory.CATEGORY)
 @Order(2)
 public class XmlConfigurationFactory extends ConfigurationFactory {
+
+    public static final String FILE_EXTENSION = ".xml";
+
     private static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
 
     /**
@@ -50,7 +53,7 @@ public class XmlConfigurationFactory extends ConfigurationFactory {
         if (!PropertiesUtil.getProperties().getBooleanProperty(ConfigurationFactory.LOG4J1_EXPERIMENTAL, Boolean.FALSE)) {
             return null;
         }
-        return new String[] {".xml"};
+        return new String[] { FILE_EXTENSION };
     }
 
     @Override
