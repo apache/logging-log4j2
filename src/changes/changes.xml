@@ -79,6 +79,9 @@
       <action dev="ggregory" type="fix" issue="LOG4J2-3281">
        Log4j 1.2 bridge PropertiesConfiguration.buildAppender not adding filters to custom appender.
       </action>
+      <action dev="ggregory" type="fix" issue="LOG4J2-3316">
+       Log4j 1.2 bridge should ignore case in properties file keys.
+      </action>
       <!-- ADD -->
       <!-- UPDATES -->
 	</release>
