@@ -46,6 +46,7 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
+      <scope>test</scope>
     </dependency>
     <!-- Place Felix before Equinox because Felix is signed. -->
     <dependency>
