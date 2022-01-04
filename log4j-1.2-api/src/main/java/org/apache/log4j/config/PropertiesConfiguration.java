@@ -65,7 +65,7 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
 
     private static final String INTERNAL_ROOT_NAME = "root";
 
-    private final Map<String, Appender> registry;
+    private final Map<String, Appender> registry = new HashMap<>();
 
     /**
      * Constructor.
@@ -76,7 +76,6 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
     public PropertiesConfiguration(final LoggerContext loggerContext, final ConfigurationSource source,
             int monitorIntervalSeconds) {
         super(loggerContext, source, monitorIntervalSeconds);
-        registry = new HashMap<>();
     }
 
     @Override

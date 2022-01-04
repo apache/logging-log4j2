@@ -43,6 +43,10 @@
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
     <!-- Place Felix before Equinox because Felix is signed. -->
     <dependency>
       <groupId>org.apache.felix</groupId>
