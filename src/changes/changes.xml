@@ -227,6 +227,9 @@
       <action dev="ggregory" type="fix">
        Log4j 1.2 bridge adds org.apache.log4j.component.helpers.Constants.
       </action>
+      <action dev="ggregory" type="fix">
+       Log4j 1.2 bridge adds org.apache.log4j.helpers.LogLog.
+      </action>
     </release>
     <release version="2.17.1" date="2021-MM-DD" description="GA Release 2.17.1">
       <action issue="LOG4J2-3292" dev="ckozak" type="fix">
