@@ -30,12 +30,11 @@
          - "remove" - Removed
     -->
     <release version="2.17.2" date="20YY-MM-DD" description="GA Release 2.17.2">
-
+      <!-- FIXES -->
       <action issue="LOG4J2-3267" dev="rpopma" type="update">
         Change modifier of method org.apache.logging.log4j.core.tools.Generate#generate to public (was package private) to facilitate automated code generation.
       </action>
-      <!-- FIXES -->
-      <action issue="LOG4J2-3301" dev="rgoers" type="fix">
+      <action issue="LOG4J2-3306" dev="rgoers" type="fix">
         OptionConverter could cause a StackOverflowError.
       </action>
       <action dev="ggregory" type="fix">
@@ -78,8 +77,22 @@
         Log4j 1.2 bridge missing class org.apache.log4j.or.RendererMap.
       </action>
       <action dev="ggregory" type="fix" issue="LOG4J2-3281">
-       PropertiesConfiguration.buildAppender not adding filters to custom appender.
+        Log4j 1.2 bridge PropertiesConfiguration.buildAppender not adding filters to custom appender.
       </action>
+      <action dev="ggregory" type="fix" issue="LOG4J2-3316">
+        Log4j 1.2 bridge should ignore case in properties file keys.
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge adds org.apache.log4j.component.helpers.Constants.
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge adds org.apache.log4j.helpers.LogLog.
+      </action>      
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge adds org.apache.log4j.helpers.Loader.
+      </action>      
+      <!-- ADD -->
+      <!-- UPDATES -->
 	</release>
     <release version="2.17.1" date="2021-12-27" description="GA Release 2.17.1">
       <!-- FIXES -->

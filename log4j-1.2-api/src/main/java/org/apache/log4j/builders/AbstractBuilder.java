@@ -16,6 +16,13 @@
  */
 package org.apache.log4j.builders;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
+
 import org.apache.log4j.bridge.FilterAdapter;
 import org.apache.log4j.bridge.FilterWrapper;
 import org.apache.log4j.helpers.OptionConverter;
@@ -27,12 +34,6 @@ import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 
 /**
  * Base class for Log4j 1 component builders.
@@ -49,39 +50,46 @@ public abstract class AbstractBuilder {
     protected static final String RELATIVE = "RELATIVE";
 
     private final String prefix;
-    private final Properties props;
+    private final Properties properties;
     private final StrSubstitutor strSubstitutor;
 
     public AbstractBuilder() {
         this.prefix = null;
-        this.props = new Properties();
-        strSubstitutor = new ConfigurationStrSubstitutor(System.getProperties());
+        this.properties = new Properties();
+        this.strSubstitutor = new ConfigurationStrSubstitutor(System.getProperties());
     }
 
     public AbstractBuilder(String prefix, Properties props) {
         this.prefix = prefix + ".";
-        this.props = props;
+        this.properties = (Properties) props.clone();
         Map<String, String> map = new HashMap<>();
         System.getProperties().forEach((k, v) -> map.put(k.toString(), v.toString()));
         props.forEach((k, v) -> map.put(k.toString(), v.toString()));
-        strSubstitutor = new ConfigurationStrSubstitutor(map);
+        // normalize keys to lower case for case-insensitive access.
+        props.forEach((k, v) -> map.put(toLowerCase(k.toString()), v.toString()));
+        props.entrySet().forEach(e -> this.properties.put(toLowerCase(e.getKey().toString()), e.getValue()));
+        this.strSubstitutor = new ConfigurationStrSubstitutor(map);
     }
 
     public String getProperty(String key) {
-        return strSubstitutor.replace(props.getProperty(prefix + key));
+        return getProperty(key, null);
     }
 
     public String getProperty(String key, String defaultValue) {
-        return strSubstitutor.replace(props.getProperty(prefix + key, defaultValue));
+        String fullKey = prefix + key;
+        String value = properties.getProperty(fullKey);
+        value = value != null ? value : properties.getProperty(toLowerCase(fullKey), defaultValue);
+        return strSubstitutor.replace(value);
     }
 
     public boolean getBooleanProperty(String key) {
-        return Boolean.parseBoolean(strSubstitutor.replace(props.getProperty(prefix + key, Boolean.FALSE.toString())));
+        return Boolean.parseBoolean(getProperty(key, Boolean.FALSE.toString()));
     }
 
     public int getIntegerProperty(String key, int defaultValue) {
-        String value = getProperty(key);
+        String value = null;
         try {
+            value = getProperty(key);
             if (value != null) {
                 return Integer.parseInt(value);
             }
@@ -92,7 +100,7 @@ public abstract class AbstractBuilder {
     }
 
     public Properties getProperties() {
-        return props;
+        return properties;
     }
 
 
@@ -126,4 +134,9 @@ public abstract class AbstractBuilder {
         }
         return null;
     }
+
+    String toLowerCase(final String value) {
+        return value == null ? null : value.toLowerCase(Locale.ROOT);
+    }
+
 }

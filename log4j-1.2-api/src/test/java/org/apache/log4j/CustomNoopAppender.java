@@ -15,25 +15,25 @@
  * limitations under the license.
  */
 
-package org.apache.log4j.config;
+package org.apache.log4j;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.List;
+import org.apache.log4j.spi.LoggingEvent;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+public class CustomNoopAppender extends AppenderSkeleton {
 
-@RunWith(Parameterized.class)
-public class Log4j1ConfigurationConverterHadoopTest extends AbstractLog4j1ConfigurationConverterTest {
-
-    @Parameterized.Parameters(name = "{0}")
-    public static List<Path> data() throws IOException {
-        return getPaths("src/test/resources/config-1.2/hadoop");
+    @Override
+    public void close() {
+        // Noop
     }
 
-    public Log4j1ConfigurationConverterHadoopTest(final Path path) {
-        super(path);
+    @Override
+    public boolean requiresLayout() {
+        return false;
+    }
+
+    @Override
+    protected void append(LoggingEvent event) {
+        // Noop
     }
 
 }
