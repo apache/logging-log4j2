@@ -85,6 +85,9 @@
       <action dev="ggregory" type="fix" issue="LOG4J2-3316">
        Log4j 1.2 bridge adds org.apache.log4j.component.helpers.Constants.
       </action>
+      <action dev="ggregory" type="fix" issue="LOG4J2-3316">
+       Log4j 1.2 bridge adds org.apache.log4j.helpers.LogLog.
+      </action>      
       <!-- ADD -->
       <!-- UPDATES -->
 	</release>
