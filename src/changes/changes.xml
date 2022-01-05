@@ -77,16 +77,16 @@
         Log4j 1.2 bridge missing class org.apache.log4j.or.RendererMap.
       </action>
       <action dev="ggregory" type="fix" issue="LOG4J2-3281">
-       Log4j 1.2 bridge PropertiesConfiguration.buildAppender not adding filters to custom appender.
+        Log4j 1.2 bridge PropertiesConfiguration.buildAppender not adding filters to custom appender.
       </action>
       <action dev="ggregory" type="fix" issue="LOG4J2-3316">
-       Log4j 1.2 bridge should ignore case in properties file keys.
+        Log4j 1.2 bridge should ignore case in properties file keys.
       </action>
       <action dev="ggregory" type="fix" issue="LOG4J2-3316">
-       Log4j 1.2 bridge adds org.apache.log4j.component.helpers.Constants.
+        Log4j 1.2 bridge adds org.apache.log4j.component.helpers.Constants.
       </action>
       <action dev="ggregory" type="fix" issue="LOG4J2-3316">
-       Log4j 1.2 bridge adds org.apache.log4j.helpers.LogLog.
+        Log4j 1.2 bridge adds org.apache.log4j.helpers.LogLog.
       </action>      
       <!-- ADD -->
       <!-- UPDATES -->
