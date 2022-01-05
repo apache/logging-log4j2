@@ -90,7 +90,10 @@
       </action>      
       <action dev="ggregory" type="fix">
         Log4j 1.2 bridge adds org.apache.log4j.helpers.Loader.
-      </action>      
+      </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge adds org.apache.log4j.spi.RootLogger.
+      </action>
       <!-- ADD -->
       <!-- UPDATES -->
 	</release>
