@@ -252,7 +252,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
             final int enterpriseNumber = Rfc5424Layout.DEFAULT_ENTERPRISE_NUMBER;
             layout = Rfc5424Layout.createLayout(Facility.LOCAL0, null, enterpriseNumber, true, Rfc5424Layout.DEFAULT_MDCID,
                     mdcPrefix, eventPrefix, false, null, null, null, excludes, includes, required, null, false, null,
-                    null);
+                    null, null);
         }
 
         if (name == null) {

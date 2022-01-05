@@ -149,7 +149,17 @@ public class FixedDateFormat {
         /**
          * American date/time format with 4-digit year: {@code "dd/MM/yyyy HH:mm:ss.SSS"}.
          */
-        US_MONTH_DAY_YEAR4_TIME("dd/MM/yyyy HH:mm:ss.SSS", "dd/MM/yyyy ", 0, ':', 1, '.', 1, 3, null);
+        US_MONTH_DAY_YEAR4_TIME("dd/MM/yyyy HH:mm:ss.SSS", "dd/MM/yyyy ", 0, ':', 1, '.', 1, 3, null),
+
+        /**
+         * ISO8601 time format: {@code "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"} with a time zone like {@code -07:00}.
+         */
+        ISO8601_OFFSET_DATE_TIME_HHCMM_PERIOD("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", "yyyy-MM-dd'T'", 2, ':', 1, '.', 1, 3, FixedTimeZoneFormat.HHCMM),
+
+        /**
+         * ISO8601 time format: {@code "yyyy-MM-dd'T'HH:mm:ss.nnnnnnXXX"} with a time zone like {@code -07:00}.
+         */
+        ISO8601_OFFSET_DATE_TIME_HHCMM_PERIOD_MICRO("yyyy-MM-dd'T'HH:mm:ss.nnnnnnXXX", "yyyy-MM-dd'T'", 2, ':', 1, '.', 1, 6, FixedTimeZoneFormat.HHCMM);
 
         private static final String DEFAULT_SECOND_FRACTION_PATTERN = "SSS";
         private static final int MILLI_FRACTION_DIGITS = DEFAULT_SECOND_FRACTION_PATTERN.length();

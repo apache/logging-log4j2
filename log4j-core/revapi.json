@@ -192,6 +192,25 @@
         "code": "java.method.removed",
         "old": "method java.util.List<java.lang.String> org.apache.logging.log4j.core.util.NetUtils::getLocalIps()",
         "justification": "method is no longer used."
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method <B extends org.apache.logging.log4j.core.appender.SyslogAppender.Builder<B extends org.apache.logging.log4j.core.appender.SyslogAppender.Builder<B>>> org.apache.logging.log4j.core.appender.SyslogAppender org.apache.logging.log4j.core.appender.SyslogAppender::createAppender(java.lang.String, int, java.lang.String, org.apache.logging.log4j.core.net.ssl.SslConfiguration, int, int, boolean, java.lang.String, boolean, boolean, org.apache.logging.log4j.core.net.Facility, java.lang.String, int, boolean, java.lang.String, java.lang.String, java.lang.String, boolean, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.apache.logging.log4j.core.Filter, org.apache.logging.log4j.core.config.Configuration, java.nio.charset.Charset, java.lang.String, org.apache.logging.log4j.core.layout.LoggerFields[], boolean)",
+        "new": "method <B extends org.apache.logging.log4j.core.appender.SyslogAppender.Builder<B extends org.apache.logging.log4j.core.appender.SyslogAppender.Builder<B>>> org.apache.logging.log4j.core.appender.SyslogAppender org.apache.logging.log4j.core.appender.SyslogAppender::createAppender(java.lang.String, int, java.lang.String, org.apache.logging.log4j.core.net.ssl.SslConfiguration, int, int, boolean, java.lang.String, boolean, boolean, org.apache.logging.log4j.core.net.Facility, java.lang.String, int, boolean, java.lang.String, java.lang.String, java.lang.String, boolean, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.apache.logging.log4j.core.Filter, org.apache.logging.log4j.core.config.Configuration, java.nio.charset.Charset, java.lang.String, org.apache.logging.log4j.core.layout.LoggerFields[], boolean, java.lang.String)",
+        "justification": "LOG4J2-3280 - Add support for microsecond precision in RFC5424Layout"
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method org.apache.logging.log4j.core.layout.Rfc5424Layout org.apache.logging.log4j.core.layout.Rfc5424Layout::createLayout(org.apache.logging.log4j.core.net.Facility, java.lang.String, int, boolean, java.lang.String, java.lang.String, java.lang.String, boolean, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean, org.apache.logging.log4j.core.layout.LoggerFields[], org.apache.logging.log4j.core.config.Configuration)",
+        "new": "method org.apache.logging.log4j.core.layout.Rfc5424Layout org.apache.logging.log4j.core.layout.Rfc5424Layout::createLayout(org.apache.logging.log4j.core.net.Facility, java.lang.String, int, boolean, java.lang.String, java.lang.String, java.lang.String, boolean, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean, org.apache.logging.log4j.core.layout.LoggerFields[], org.apache.logging.log4j.core.config.Configuration, java.lang.String)",
+        "justification": "LOG4J2-3280 - Add support for microsecond precision in RFC5424Layout"
+      },
+      {
+        "code": "java.annotation.added",
+        "old": "parameter org.apache.logging.log4j.core.layout.Rfc5424Layout org.apache.logging.log4j.core.layout.Rfc5424Layout::createLayout(org.apache.logging.log4j.core.net.Facility, java.lang.String, int, boolean, java.lang.String, java.lang.String, java.lang.String, boolean, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean, org.apache.logging.log4j.core.layout.LoggerFields[], org.apache.logging.log4j.core.config.Configuration)",
+        "new": "parameter org.apache.logging.log4j.core.layout.Rfc5424Layout org.apache.logging.log4j.core.layout.Rfc5424Layout::createLayout(org.apache.logging.log4j.core.net.Facility, java.lang.String, int, boolean, java.lang.String, java.lang.String, java.lang.String, boolean, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean, org.apache.logging.log4j.core.layout.LoggerFields[], org.apache.logging.log4j.core.config.Configuration, ===java.lang.String===)",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginAttribute(value=\"timestampPrecision\")",
+        "justification": "LOG4J2-3280 - Add support for microsecond precision in RFC5424Layout"
       }
     ]
   }

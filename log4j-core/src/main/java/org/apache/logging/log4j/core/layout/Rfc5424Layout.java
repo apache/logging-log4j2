@@ -19,8 +19,6 @@ package org.apache.logging.log4j.core.layout;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,15 +33,15 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.TlsSyslogFrame;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.layout.internal.ExcludeChecker;
-import org.apache.logging.log4j.core.layout.internal.IncludeChecker;
-import org.apache.logging.log4j.core.layout.internal.ListChecker;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.layout.internal.ExcludeChecker;
+import org.apache.logging.log4j.core.layout.internal.IncludeChecker;
+import org.apache.logging.log4j.core.layout.internal.ListChecker;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Priority;
 import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
@@ -51,8 +49,11 @@ import org.apache.logging.log4j.core.pattern.PatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.core.pattern.ThrowablePatternConverter;
+import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.Patterns;
+import org.apache.logging.log4j.core.util.datetime.FixedDateFormat;
+import org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageCollectionMessage;
 import org.apache.logging.log4j.message.StructuredDataCollectionMessage;
@@ -92,11 +93,14 @@ public final class Rfc5424Layout extends AbstractStringLayout {
      */
     public static final String DEFAULT_MDCID = "mdc";
 
+    private static final String TIME_PRECISION_MICRO = "microsecond";
+
+	private static final FixedDateFormat FIXED_DATE_FORMAT_MILLI_PRECISION = FixedDateFormat
+			.create(FixedFormat.ISO8601_OFFSET_DATE_TIME_HHCMM_PERIOD);
+	private static final FixedDateFormat FIXED_DATE_FORMAT_MICRO_PRECISION = FixedDateFormat
+			.create(FixedFormat.ISO8601_OFFSET_DATE_TIME_HHCMM_PERIOD_MICRO);
+
     private static final String LF = "\n";
-    private static final int TWO_DIGITS = 10;
-    private static final int THREE_DIGITS = 100;
-    private static final int MILLIS_PER_MINUTE = 60000;
-    private static final int MINUTES_PER_HOUR = 60;
     private static final String COMPONENT_KEY = "RFC5424-Converter";
 
     private final Facility facility;
@@ -118,19 +122,22 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     private final boolean includeNewLine;
     private final String escapeNewLine;
     private final boolean useTlsMessageFormat;
+    private final String timestampPrecision;
 
     private long lastTimestamp = -1;
+    private int lastNanoOfMillisecond = -1;
     private String timestamppStr;
 
     private final List<PatternFormatter> exceptionFormatters;
     private final Map<String, FieldFormatter> fieldFormatters;
     private final String procId;
 
-    private Rfc5424Layout(final Configuration config, final Facility facility, final String id, final int ein,
-            final boolean includeMDC, final boolean includeNL, final String escapeNL, final String mdcId,
-            final String mdcPrefix, final String eventPrefix, final String appName, final String messageId,
-            final String excludes, final String includes, final String required, final Charset charset,
-            final String exceptionPattern, final boolean useTLSMessageFormat, final LoggerFields[] loggerFields) {
+	private Rfc5424Layout(final Configuration config, final Facility facility, final String id, final int ein,
+			final boolean includeMDC, final boolean includeNL, final String escapeNL, final String mdcId,
+			final String mdcPrefix, final String eventPrefix, final String appName, final String messageId,
+			final String excludes, final String includes, final String required, final Charset charset,
+			final String exceptionPattern, final boolean useTLSMessageFormat, final LoggerFields[] loggerFields,
+			final String timestampPrecision) {
         super(charset);
         final PatternParser exceptionParser = createPatternParser(config, ThrowablePatternConverter.class);
         exceptionFormatters = exceptionPattern == null ? null : exceptionParser.parse(exceptionPattern);
@@ -196,6 +203,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         configName = Strings.isNotEmpty(name) ? name : null;
         this.fieldFormatters = createFieldFormatters(loggerFields, config);
         this.procId = ProcessIdUtil.getProcessId();
+        this.timestampPrecision = timestampPrecision;
     }
 
     private Map<String, FieldFormatter> createFieldFormatters(final LoggerFields[] loggerFields,
@@ -270,7 +278,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     public String toSerializable(final LogEvent event) {
         final StringBuilder buf = getStringBuilder();
         appendPriority(buf, event.getLevel());
-        appendTimestamp(buf, event.getTimeMillis());
+		appendTimestamp(buf, event.getInstant());
         appendSpace(buf);
         appendHostName(buf);
         appendSpace(buf);
@@ -294,9 +302,9 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         buffer.append(">1 ");
     }
 
-    private void appendTimestamp(final StringBuilder buffer, final long milliseconds) {
-        buffer.append(computeTimeStampString(milliseconds));
-    }
+	private void appendTimestamp(final StringBuilder buffer, final Instant instant) {
+		buffer.append(computeTimeStampString(instant));
+	}
 
     private void appendSpace(final StringBuilder buffer) {
         buffer.append(' ');
@@ -445,66 +453,36 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         return mdcIncludes;
     }
 
-    private String computeTimeStampString(final long now) {
-        long last;
-        synchronized (this) {
-            last = lastTimestamp;
-            if (now == lastTimestamp) {
-                return timestamppStr;
-            }
-        }
+	private String computeTimeStampString(final Instant instant) {
+		long last;
+		int lastNano;
+		synchronized (this) {
+			last = lastTimestamp;
+			lastNano = lastNanoOfMillisecond;
+			if (instant.getEpochMillisecond() == lastTimestamp) {
+				if (!TIME_PRECISION_MICRO.equalsIgnoreCase(timestampPrecision)
+						|| lastNanoOfMillisecond == instant.getNanoOfMillisecond()) {
+					return timestamppStr;
+				}
+			}
+		}
 
-        final StringBuilder buffer = new StringBuilder();
-        final Calendar cal = new GregorianCalendar();
-        cal.setTimeInMillis(now);
-        buffer.append(Integer.toString(cal.get(Calendar.YEAR)));
-        buffer.append('-');
-        pad(cal.get(Calendar.MONTH) + 1, TWO_DIGITS, buffer);
-        buffer.append('-');
-        pad(cal.get(Calendar.DAY_OF_MONTH), TWO_DIGITS, buffer);
-        buffer.append('T');
-        pad(cal.get(Calendar.HOUR_OF_DAY), TWO_DIGITS, buffer);
-        buffer.append(':');
-        pad(cal.get(Calendar.MINUTE), TWO_DIGITS, buffer);
-        buffer.append(':');
-        pad(cal.get(Calendar.SECOND), TWO_DIGITS, buffer);
-        buffer.append('.');
-        pad(cal.get(Calendar.MILLISECOND), THREE_DIGITS, buffer);
+		String formattedDateTime = null;
+		if (TIME_PRECISION_MICRO.equalsIgnoreCase(timestampPrecision)) {
+			formattedDateTime = FIXED_DATE_FORMAT_MICRO_PRECISION.formatInstant(instant);
+		} else {
+			formattedDateTime = FIXED_DATE_FORMAT_MILLI_PRECISION.formatInstant(instant);
+		}
 
-        int tzmin = (cal.get(Calendar.ZONE_OFFSET) + cal.get(Calendar.DST_OFFSET)) / MILLIS_PER_MINUTE;
-        if (tzmin == 0) {
-            buffer.append('Z');
-        } else {
-            if (tzmin < 0) {
-                tzmin = -tzmin;
-                buffer.append('-');
-            } else {
-                buffer.append('+');
-            }
-            final int tzhour = tzmin / MINUTES_PER_HOUR;
-            tzmin -= tzhour * MINUTES_PER_HOUR;
-            pad(tzhour, TWO_DIGITS, buffer);
-            buffer.append(':');
-            pad(tzmin, TWO_DIGITS, buffer);
-        }
-        synchronized (this) {
-            if (last == lastTimestamp) {
-                lastTimestamp = now;
-                timestamppStr = buffer.toString();
-            }
-        }
-        return buffer.toString();
-    }
-
-    private void pad(final int val, int max, final StringBuilder buf) {
-        while (max > 1) {
-            if (val < max) {
-                buf.append('0');
-            }
-            max = max / TWO_DIGITS;
-        }
-        buf.append(Integer.toString(val));
-    }
+		synchronized (this) {
+			if (last == lastTimestamp && lastNano == lastNanoOfMillisecond) {
+				lastTimestamp = instant.getEpochMillisecond();
+				lastNanoOfMillisecond = instant.getNanoOfMillisecond();
+				timestamppStr = formattedDateTime;
+			}
+		}
+		return formattedDateTime;
+	}
 
     private void formatStructuredElement(final String id, final StructuredDataElement data,
             final StringBuilder sb, final ListChecker checker) {
@@ -602,6 +580,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
      * @param exceptionPattern The pattern for formatting exceptions.
      * @param useTlsMessageFormat If true the message will be formatted according to RFC 5425.
      * @param loggerFields Container for the KeyValuePairs containing the patterns
+     * @param timestampPrecision Precision of seconds part of the timestamp. Possible values 'microsecond' or 'millisecond'
      * @param config The Configuration. Some Converters require access to the Interpolator.
      * @return An Rfc5424Layout.
      */
@@ -627,7 +606,8 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             // RFC 5425
             @PluginAttribute(value = "useTlsMessageFormat") final boolean useTlsMessageFormat,
             @PluginElement("LoggerFields") final LoggerFields[] loggerFields,
-            @PluginConfiguration final Configuration config) {
+            @PluginConfiguration final Configuration config,
+            @PluginAttribute(value = "timestampPrecision") final String timestampPrecision) {
         // @formatter:on
         if (includes != null && excludes != null) {
             LOGGER.error("mdcIncludes and mdcExcludes are mutually exclusive. Includes wil be ignored");
@@ -636,7 +616,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
 
         return new Rfc5424Layout(config, facility, id, enterpriseNumber, includeMDC, newLine, escapeNL, mdcId,
                 mdcPrefix, eventPrefix, appName, msgId, excludes, includes, required, StandardCharsets.UTF_8,
-                exceptionPattern, useTlsMessageFormat, loggerFields);
+                exceptionPattern, useTlsMessageFormat, loggerFields, timestampPrecision);
     }
 
     private class FieldFormatter {

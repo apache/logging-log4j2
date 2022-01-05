@@ -104,6 +104,9 @@ public class SyslogAppender extends SocketAppender {
         @PluginElement("LoggerFields")
         private LoggerFields[] loggerFields;
 
+        @PluginBuilderAttribute( "timestampPrecision" )
+        private String timestampPrecision;
+
         @SuppressWarnings({"resource", "unchecked"})
         @Override
         public SyslogAppender build() {
@@ -116,7 +119,7 @@ public class SyslogAppender extends SocketAppender {
                 layout = RFC5424.equalsIgnoreCase(format)
                         ? Rfc5424Layout.createLayout(facility, id, enterpriseNumber, includeMdc, mdcId, mdcPrefix,
                                 eventPrefix, newLine, escapeNL, appName, msgId, excludes, includes, required,
-                                exceptionPattern, useTlsMessageFormat, loggerFields, configuration)
+                                exceptionPattern, useTlsMessageFormat, loggerFields, configuration, timestampPrecision)
                         :
                         // @formatter:off
                         SyslogLayout.newBuilder()
@@ -211,6 +214,10 @@ public class SyslogAppender extends SocketAppender {
             return loggerFields;
         }
 
+		public String getTimestampPrecision() {
+			return timestampPrecision;
+		}
+
         public B setFacility(final Facility facility) {
             this.facility = facility;
             return asBuilder();
@@ -300,6 +307,11 @@ public class SyslogAppender extends SocketAppender {
             this.loggerFields = loggerFields;
             return asBuilder();
         }
+
+		public B setTimestampPrecision(final String timestampPrecision) {
+			this.timestampPrecision = timestampPrecision;
+			return asBuilder();
+		}
     }
 
     protected static final String RFC5424 = "RFC5424";
@@ -357,6 +369,8 @@ public class SyslogAppender extends SocketAppender {
      * @param exceptionPattern The converter pattern to use for formatting exceptions.
      * @param loggerFields The logger fields
      * @param advertise Whether to advertise
+     * @param timestampPrecision The precision to use while formatting timestamp. Possible values are 'millisecond' and
+     * 'microsecond'
      * @return A SyslogAppender.
      * @deprecated Use {@link #newSyslogAppenderBuilder()}.
      */
@@ -393,7 +407,8 @@ public class SyslogAppender extends SocketAppender {
             final Charset charset,
             final String exceptionPattern,
             final LoggerFields[] loggerFields,
-            final boolean advertise) {
+            final boolean advertise,
+            final String timestampPrecision) {
         // @formatter:on
 
         // @formatter:off
@@ -425,6 +440,7 @@ public class SyslogAppender extends SocketAppender {
                 .setCharsetName(charset)
                 .setExceptionPattern(exceptionPattern)
                 .setLoggerFields(loggerFields)
+                .setTimestampPrecision( timestampPrecision )
                 .build();
         // @formatter:on
     }
