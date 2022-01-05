@@ -43,6 +43,8 @@ import org.junit.Test;
  */
 public class PropertiesConfigurationTest {
 
+    private static final String TEST_KEY = "log4j.test.tmpdir";
+
     @Test
     public void testConfigureNullPointerException() throws Exception {
         try (LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/LOG4J2-3247.properties")) {
@@ -125,6 +127,8 @@ public class PropertiesConfigurationTest {
 
     @Test
     public void testSystemProperties() throws Exception {
+        final String testPathLocation = "target";
+        System.setProperty(TEST_KEY, testPathLocation);
         try (LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/config-1.2/log4j-FileAppender-with-props.properties")) {
             // [LOG4J2-3312] Bridge does not convert properties.
             final Configuration configuration = loggerContext.getConfiguration();
@@ -135,7 +139,9 @@ public class PropertiesConfigurationTest {
             assertTrue(appender instanceof FileAppender);
             final FileAppender fileAppender = (FileAppender) appender;
             // Two slashes because that's how the config file is setup.
-            assertEquals(SystemUtils.getJavaIoTmpDir() + File.separator + "/hadoop.log", fileAppender.getFileName());
+            assertEquals(testPathLocation + "/hadoop.log", fileAppender.getFileName());
+        } finally {
+            System.clearProperty(TEST_KEY);
         }
     }
 
