@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core.config.arbiters;
 
+import com.github.stefanbirkner.systemlambda.SystemLambda;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Rule;
-import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -37,9 +37,6 @@ public class EnvironmentArbiterTest {
     static final String CONFIG = "log4j2-environmentArbiters.xml";
     static LoggerContext loggerContext = null;
 
-    @Rule
-    public final EnvironmentVariables env = new EnvironmentVariables();
-
     @AfterEach
     public void after() {
         loggerContext.stop();
@@ -47,21 +44,23 @@ public class EnvironmentArbiterTest {
     }
 
     @Test
-    public void prodTest() {
-        env.set("ENV", "prod");
-        loggerContext = Configurator.initialize(null, CONFIG);
-        assertNotNull(loggerContext);
-        Appender app = loggerContext.getConfiguration().getAppender("Out");
+    public void prodTest() throws Exception {
+        Appender app = SystemLambda.withEnvironmentVariable("ENV", "prod").execute(() -> {
+            loggerContext = Configurator.initialize(null, CONFIG);
+            assertNotNull(loggerContext);
+            return loggerContext.getConfiguration().getAppender("Out");
+        });
         assertNotNull(app);
         assertTrue(app instanceof ListAppender);
     }
 
     @Test
-    public void devTest() {
-        env.set("ENV", "dev");
-        loggerContext = Configurator.initialize(null, CONFIG);
-        assertNotNull(loggerContext);
-        Appender app = loggerContext.getConfiguration().getAppender("Out");
+    public void devTest() throws Exception {
+        Appender app = SystemLambda.withEnvironmentVariable("ENV", "dev").execute(() -> {
+            loggerContext = Configurator.initialize(null, CONFIG);
+            assertNotNull(loggerContext);
+            return loggerContext.getConfiguration().getAppender("Out");
+        });
         assertNotNull(app);
         assertTrue(app instanceof ConsoleAppender);
     }
