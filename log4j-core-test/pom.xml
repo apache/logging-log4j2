@@ -329,6 +329,13 @@
       <artifactId>xz</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- Used for testing environment variables arbiter -->
+    <dependency>
+      <groupId>com.github.stefanbirkner</groupId>
+      <artifactId>system-lambda</artifactId>
+      <version>1.2.1</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
