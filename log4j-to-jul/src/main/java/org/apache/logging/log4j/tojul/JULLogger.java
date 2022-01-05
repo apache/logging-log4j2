@@ -43,13 +43,11 @@ public final class JULLogger extends AbstractLogger {
     public JULLogger(final String name, final MessageFactory messageFactory, final Logger logger) {
         super(name, messageFactory);
         this.logger = requireNonNull(logger, "logger");
-        System.setProperty("jdk.logger.packages", getClass().getPackageName() + "," + getClass().getSuperclass().getPackageName());
     }
 
     public JULLogger(final String name, final Logger logger) {
         super(name);
         this.logger = requireNonNull(logger, "logger");
-        System.setProperty("jdk.logger.packages", getClass().getPackageName() + "," + getClass().getSuperclass().getPackageName());
     }
 
     public Logger getWrappedLogger() {
@@ -66,6 +64,9 @@ public final class JULLogger extends AbstractLogger {
         // NOT record.setParameters(message.getParameters()); BECAUSE getFormattedMessage() NOT getFormat()
         record.setLoggerName(getName());
         record.setThrown(t == null ? message.getThrowable() : t);
+        // Source class/method is not supported (yet)
+        record.setSourceClassName(null);
+        record.setSourceMethodName(null);
         logger.log(record);
         // fqcn is un-used
     }
