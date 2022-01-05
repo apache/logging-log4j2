@@ -1344,6 +1344,10 @@
             <exclude>.idea/**/*</exclude>
             <exclude>**/*.iml</exclude>
             <exclude>src/test/resources/**/*</exclude>
+            <!-- Eclise files -->
+            <exclude>**/.project</exclude>
+            <exclude>**/.classpath</exclude>
+            <exclude>**/.settings/**</exclude>
             <!-- IDE settings imports -->
             <exclude>src/ide/**</exclude>
             <!-- does it even make sense to apply a license to a GPG signature? -->
