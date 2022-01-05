@@ -20,30 +20,35 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.test.appender.ListAppender;
+import org.junit.Rule;
+import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Tests basic condition processing.
+ * Tests system property condition processing.
  */
-public class BasicArbiterTest {
+public class EnvironmentArbiterTest {
 
-    static final String CONFIG = "log4j2-arbiters.xml";
+    static final String CONFIG = "log4j2-environmentArbiters.xml";
     static LoggerContext loggerContext = null;
+
+    @Rule
+    public final EnvironmentVariables env = new EnvironmentVariables();
 
     @AfterEach
     public void after() {
         loggerContext.stop();
         loggerContext = null;
-        System.clearProperty("env");
     }
 
     @Test
     public void prodTest() {
-        System.setProperty("env", "prod");
+        env.set("ENV", "prod");
         loggerContext = Configurator.initialize(null, CONFIG);
         assertNotNull(loggerContext);
         Appender app = loggerContext.getConfiguration().getAppender("Out");
@@ -53,21 +58,11 @@ public class BasicArbiterTest {
 
     @Test
     public void devTest() {
-        System.setProperty("env", "dev");
+        env.set("ENV", "dev");
         loggerContext = Configurator.initialize(null, CONFIG);
         assertNotNull(loggerContext);
         Appender app = loggerContext.getConfiguration().getAppender("Out");
         assertNotNull(app);
         assertTrue(app instanceof ConsoleAppender);
-    }
-
-    @Test void classArbiterTest() {
-        loggerContext = Configurator.initialize(null, CONFIG);
-        assertNotNull(loggerContext);
-        Appender app = loggerContext.getConfiguration().getAppender("ShouldExist");
-        assertNotNull(app);
-        assertTrue(app instanceof ListAppender);
-        app = loggerContext.getConfiguration().getAppender("ShouldNotExist");
-        assertNull(app);
     }
 }
