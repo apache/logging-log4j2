@@ -1433,6 +1433,7 @@
         <artifactId>apache-rat-plugin</artifactId>
         <version>${rat.plugin.version}</version>
         <configuration>
+          <consoleOutput>true</consoleOutput>
           <excludes>
             <!-- Matches other RAT configurations in this POM -->
             <exclude>src/main/resources/META-INF/services/**/*</exclude>
@@ -1637,6 +1638,7 @@
         <artifactId>apache-rat-plugin</artifactId>
         <version>${rat.plugin.version}</version>
         <configuration>
+          <consoleOutput>true</consoleOutput>
           <excludes>
             <!-- Matches other RAT configurations in this POM -->
             <exclude>src/main/resources/META-INF/services/**/*</exclude>
@@ -1842,6 +1844,7 @@
             <artifactId>apache-rat-plugin</artifactId>
             <version>${rat.plugin.version}</version>
             <configuration>
+              <consoleOutput>true</consoleOutput>
               <excludes>
                 <!-- Matches other RAT configurations in this POM -->
                 <exclude>src/main/resources/META-INF/services/**/*</exclude>
