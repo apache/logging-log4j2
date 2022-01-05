@@ -135,7 +135,7 @@ public class PropertiesConfigurationTest {
             assertTrue(appender instanceof FileAppender);
             final FileAppender fileAppender = (FileAppender) appender;
             // Two slashes because that's how the config file is setup.
-            assertEquals(SystemUtils.getJavaIoTmpDir() + File.separator + "/hadoop.log", fileAppender.getFileName());
+            assertEquals(SystemUtils.getJavaIoTmpDir() + File.separator + "hadoop.log", fileAppender.getFileName());
         }
     }
 
