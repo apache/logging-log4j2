@@ -126,7 +126,7 @@ subclassing is required.
 
 $h3 Log Builder API
 In addition to using one of the many log methods in the Log4j API, log events can be constructed using a builder. See
-[Log Builder][manual/logbuilder.html] for more information.
+[Log Builder](manual/logbuilder.html) for more information.
 
 $h3 Garbage-free
 
