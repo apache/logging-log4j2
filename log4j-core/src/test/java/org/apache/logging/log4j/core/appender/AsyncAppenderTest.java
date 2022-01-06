@@ -25,10 +25,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LoggingException;
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.junit.Named;
@@ -41,6 +43,7 @@ import org.junit.jupiter.api.Timeout;
 public class AsyncAppenderTest {
 
     static void exceptionTest(final LoggerContext context) throws InterruptedException {
+        assertNotNull(context);
         final ExtendedLogger logger = context.getLogger(AsyncAppender.class);
         final Exception parent = new IllegalStateException("Test");
         final Throwable child = new LoggingException("This is a test", parent);
@@ -58,6 +61,7 @@ public class AsyncAppenderTest {
     }
 
     static void rewriteTest(final LoggerContext context) throws InterruptedException {
+        assertNotNull(context);
         final ExtendedLogger logger = context.getLogger(AsyncAppender.class);
         logger.error("This is a test");
         logger.warn("Hello world!");
@@ -111,6 +115,17 @@ public class AsyncAppenderTest {
         final AsyncAppender appender = context.getConfiguration().getAppender("Async");
         assertArrayEquals(new String[] {"List"}, appender.getAppenderRefStrings());
         assertNotSame(appender.getAppenderRefStrings(), appender.getAppenderRefStrings());
+    }
+
+    @Test
+    @LoggerContextSource("log4j-asynch.xml")
+    public void testGetAppenders(final LoggerContext context) throws InterruptedException {
+        final AsyncAppender appender = context.getConfiguration().getAppender("Async");
+        final List<Appender> appenders = appender.getAppenders();
+        assertEquals(1, appenders.size());
+        final Appender listAppender = appenders.get(0);
+        assertEquals("List", listAppender.getName());
+        assertTrue(listAppender instanceof ListAppender);
     }
 
     @Test
