@@ -36,6 +36,7 @@ import org.w3c.dom.Element;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -45,8 +46,8 @@ public class BuilderManager {
 
     public static final String CATEGORY = "Log4j Builder";
     private static final Logger LOGGER = StatusLogger.getLogger();
+    private static Class<?>[] CONSTRUCTOR_PARAMS = new Class[] { String.class, Properties.class };
     private final Map<String, PluginType<?>> plugins;
-    private static Class<?>[] constructorParams = new Class[] { String.class, Properties.class};
 
     public BuilderManager() {
         final PluginManager manager = new PluginManager(CATEGORY);
@@ -60,7 +61,7 @@ public class BuilderManager {
             try {
                 AppenderBuilder builder = (AppenderBuilder) LoaderUtil.newInstanceOf(plugin.getPluginClass());
                 return builder.parseAppender(appenderElement, config);
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException ex) {
+            } catch (ReflectiveOperationException ex) {
                 LOGGER.warn("Unable to load plugin: {} due to: {}", plugin.getKey(), ex.getMessage());
             }
         }
@@ -69,6 +70,8 @@ public class BuilderManager {
 
     public Appender parseAppender(String name, String className, String prefix, String layoutPrefix,
             String filterPrefix, Properties props, PropertiesConfiguration config) {
+        Objects.requireNonNull(plugins, "plugins");
+        Objects.requireNonNull(className, "className");
         PluginType<?> plugin = plugins.get(className.toLowerCase());
         if (plugin != null) {
             AppenderBuilder builder = createBuilder(plugin, prefix, props);
@@ -85,7 +88,7 @@ public class BuilderManager {
             try {
                 FilterBuilder builder = (FilterBuilder) LoaderUtil.newInstanceOf(plugin.getPluginClass());
                 return builder.parseFilter(filterElement, config);
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException ex) {
+            } catch (ReflectiveOperationException ex) {
                 LOGGER.warn("Unable to load plugin: {} due to: {}", plugin.getKey(), ex.getMessage());
             }
         }
@@ -109,7 +112,7 @@ public class BuilderManager {
             try {
                 LayoutBuilder builder = (LayoutBuilder) LoaderUtil.newInstanceOf(plugin.getPluginClass());
                 return builder.parseLayout(layoutElement, config);
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException ex) {
+            } catch (ReflectiveOperationException ex) {
                 LOGGER.warn("Unable to load plugin: {} due to: {}", plugin.getKey(), ex.getMessage());
             }
         }
@@ -132,7 +135,7 @@ public class BuilderManager {
             try {
                 RewritePolicyBuilder builder = (RewritePolicyBuilder) LoaderUtil.newInstanceOf(plugin.getPluginClass());
                 return builder.parseRewritePolicy(rewriteElement, config);
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException ex) {
+            } catch (ReflectiveOperationException ex) {
                 LOGGER.warn("Unable to load plugin: {} due to: {}", plugin.getKey(), ex.getMessage());
             }
         }
@@ -155,13 +158,13 @@ public class BuilderManager {
             if (AbstractBuilder.class.isAssignableFrom(clazz)) {
                 @SuppressWarnings("unchecked")
                 Constructor<T> constructor =
-                        (Constructor<T>) clazz.getConstructor(constructorParams);
+                        (Constructor<T>) clazz.getConstructor(CONSTRUCTOR_PARAMS);
                 return constructor.newInstance(prefix, props);
             }
             @SuppressWarnings("unchecked")
             T builder = (T) LoaderUtil.newInstanceOf(clazz);
             return builder;
-        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException ex) {
+        } catch (ReflectiveOperationException ex) {
             LOGGER.warn("Unable to load plugin: {} due to: {}", plugin.getKey(), ex.getMessage());
             return null;
         }

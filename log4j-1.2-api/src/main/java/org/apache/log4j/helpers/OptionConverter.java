@@ -25,11 +25,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.Strings;
 
 import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -296,7 +300,64 @@ public class OptionConverter {
      * @throws IllegalArgumentException if <code>val</code> is malformed.
      */
     public static String substVars(String val, Properties props) throws IllegalArgumentException {
-        return StrSubstitutor.replace(val, props);
+        return substVars(val, props, new ArrayList<>());
+    }
+
+    private static String substVars(final String val, final Properties props, List<String> keys)
+            throws IllegalArgumentException {
+
+        final StringBuilder sbuf = new StringBuilder();
+
+        int i = 0;
+        int j;
+        int k;
+
+        while (true) {
+            j = val.indexOf(DELIM_START, i);
+            if (j == -1) {
+                // no more variables
+                if (i == 0) { // this is a simple string
+                    return val;
+                }
+                // add the tail string which contails no variables and return the result.
+                sbuf.append(val.substring(i, val.length()));
+                return sbuf.toString();
+            }
+            sbuf.append(val.substring(i, j));
+            k = val.indexOf(DELIM_STOP, j);
+            if (k == -1) {
+                throw new IllegalArgumentException(Strings.dquote(val)
+                        + " has no closing brace. Opening brace at position " + j
+                        + '.');
+            }
+            j += DELIM_START_LEN;
+            final String key = val.substring(j, k);
+            // first try in System properties
+            String replacement = PropertiesUtil.getProperties().getStringProperty(key, null);
+            // then try props parameter
+            if (replacement == null && props != null) {
+                replacement = props.getProperty(key);
+            }
+
+            if (replacement != null) {
+
+                // Do variable substitution on the replacement string
+                // such that we can solve "Hello ${x2}" as "Hello p1"
+                // the where the properties are
+                // x1=p1
+                // x2=${x1}
+                if (!keys.contains(key)) {
+                    List<String> usedKeys = new ArrayList<>(keys);
+                    usedKeys.add(key);
+                    final String recursiveReplacement = substVars(replacement, props, usedKeys);
+                    sbuf.append(recursiveReplacement);
+                } else {
+                    sbuf.append(replacement);
+                }
+
+            }
+            i = k + DELIM_STOP_LEN;
+        }
     }
 
     public static org.apache.logging.log4j.Level convertLevel(String level,
