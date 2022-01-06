@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class AsyncAppenderTest {
+public class AsyncAppenderTest {
 
     static void rewriteTest(final LoggerContext context) throws InterruptedException {
         final ExtendedLogger logger = context.getLogger(AsyncAppender.class);
@@ -72,7 +72,7 @@ class AsyncAppenderTest {
 
     @Test
     @LoggerContextSource("log4j-asynch.xml")
-    void defaultAsyncAppenderConfig(final LoggerContext context) throws InterruptedException {
+    public void defaultAsyncAppenderConfig(final LoggerContext context) throws InterruptedException {
         rewriteTest(context);
         exceptionTest(context);
 
@@ -87,7 +87,7 @@ class AsyncAppenderTest {
 
     @Test
     @LoggerContextSource("BlockingQueueFactory-ArrayBlockingQueue.xml")
-    void arrayBlockingQueue(final LoggerContext context) throws InterruptedException {
+    public void arrayBlockingQueue(final LoggerContext context) throws InterruptedException {
         rewriteTest(context);
         exceptionTest(context);
     }
@@ -95,7 +95,7 @@ class AsyncAppenderTest {
     @Test
     @Tag("disruptor")
     @LoggerContextSource("BlockingQueueFactory-DisruptorBlockingQueue.xml")
-    void disruptorBlockingQueue(final LoggerContext context) throws InterruptedException {
+    public void disruptorBlockingQueue(final LoggerContext context) throws InterruptedException {
         rewriteTest(context);
         exceptionTest(context);
     }
@@ -103,14 +103,14 @@ class AsyncAppenderTest {
     @Test
     @Tag("jctools")
     @LoggerContextSource("BlockingQueueFactory-JCToolsBlockingQueue.xml")
-    void jcToolsBlockingQueue(final LoggerContext context) throws InterruptedException {
+    public void jcToolsBlockingQueue(final LoggerContext context) throws InterruptedException {
         rewriteTest(context);
         exceptionTest(context);
     }
 
     @Test
     @LoggerContextSource("BlockingQueueFactory-LinkedTransferQueue.xml")
-    void linkedTransferQueue(final LoggerContext context) throws InterruptedException {
+    public void linkedTransferQueue(final LoggerContext context) throws InterruptedException {
         rewriteTest(context);
         exceptionTest(context);
     }
@@ -118,14 +118,14 @@ class AsyncAppenderTest {
     @Test
     @Timeout(5)
     @LoggerContextSource("log4j-asynch-shutdownTimeout.xml")
-    void shutdownTimeout(final LoggerContext context) {
+    public void shutdownTimeout(final LoggerContext context) {
         context.getLogger("Logger").info("This is a test");
         context.stop();
     }
 
     @Test
     @LoggerContextSource("log4j-asynch-no-location.xml")
-    void noLocationInformation(final LoggerContext context, @Named("List") final ListAppender appender) throws InterruptedException {
+    public void noLocationInformation(final LoggerContext context, @Named("List") final ListAppender appender) throws InterruptedException {
         final ExtendedLogger logger = context.getLogger(getClass());
         logger.error("This is a test");
         logger.warn("Hello world!");
