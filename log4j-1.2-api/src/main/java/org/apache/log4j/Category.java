@@ -55,9 +55,7 @@ public class Category implements AppenderAttachable {
     private static final String FQCN = Category.class.getName();
 
     private static final boolean isCoreAvailable;
-
-    private final RendererMap rendererMap;
-
+    
     static {
         boolean available;
 
@@ -70,9 +68,35 @@ public class Category implements AppenderAttachable {
     }
 
     /**
+     * The name of this category.
+     */
+    protected String name;
+
+    /**
+     * Additivity is set to true by default, that is children inherit the appenders of their ancestors by default. If this
+     * variable is set to <code>false</code> then the appenders found in the ancestors of this category are not used.
+     * However, the children of this category will inherit its appenders, unless the children have their additivity flag set
+     * to <code>false</code> too. See the user manual for more details.
+     */
+    protected boolean additive = true;
+    
+    /**
+     * The assigned level of this category. The <code>level</code> variable need not be assigned a value in which case it is
+     * inherited form the hierarchy.
+     */
+    volatile protected Level level;
+
+    private final RendererMap rendererMap;
+
+    /**
+     * The parent of this category. All categories have at least one ancestor which is the root category.
+     */
+    volatile protected Category parent;
+
+    /**
      * Resource bundle for localized messages.
      */
-    protected ResourceBundle bundle = null;
+    protected ResourceBundle bundle;
 
     private final org.apache.logging.log4j.Logger logger;
 
@@ -85,9 +109,10 @@ public class Category implements AppenderAttachable {
      * @param name The name of the Logger.
      */
     protected Category(final LoggerContext context, final String name) {
-        logger = context.getLogger(name);
-        repository = LogManager.getLoggerRepository();
-        rendererMap = ((RendererSupport) repository).getRendererMap();
+        this.name = name;
+        this.logger = context.getLogger(name);
+        this.repository = LogManager.getLoggerRepository();
+        this.rendererMap = ((RendererSupport) repository).getRendererMap();
     }
 
     /**
@@ -159,8 +184,8 @@ public class Category implements AppenderAttachable {
             return null;
         }
         final ConcurrentMap<String, Logger> loggers = getLoggersMap(loggerContext);
-        final Logger l = loggers.get(parent.getName());
-        return l == null ? new Category(parent) : l;
+        final Logger parentLogger = loggers.get(parent.getName());
+        return parentLogger == null ? new Category(parent) : parentLogger;
     }
 
     public static Category getRoot() {
@@ -375,6 +400,23 @@ public class Category implements AppenderAttachable {
      * @param event The logging event.
      */
     public void callAppenders(final LoggingEvent event) {
+    }
+
+    /**
+     * Closes all attached appenders implementing the AppenderAttachable interface.
+     *
+     * @since 1.0
+     */
+    synchronized void closeNestedAppenders() {
+        Enumeration enumeration = this.getAllAppenders();
+        if (enumeration != null) {
+            while (enumeration.hasMoreElements()) {
+                Appender a = (Appender) enumeration.nextElement();
+                if (a instanceof AppenderAttachable) {
+                    a.close();
+                }
+            }
+        }
     }
 
     @Override
