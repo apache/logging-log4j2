@@ -101,6 +101,9 @@
         Log4j 1.2 bridge adds org.apache.log4j.Hierarchy.
       </action>
       <!-- ADD -->
+      <action dev="ggregory" type="add">
+        Add org.apache.logging.log4j.core.appender.AsyncAppender.getAppenders() to more easily port from org.apache.log4j.AsyncAppender.getAllAppenders(). 
+      </action>
       <!-- UPDATES -->
 	</release>
     <release version="2.17.1" date="2021-12-27" description="GA Release 2.17.1">
