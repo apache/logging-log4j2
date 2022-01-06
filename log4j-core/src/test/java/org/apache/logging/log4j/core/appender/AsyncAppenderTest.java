@@ -17,6 +17,17 @@
 
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.junit.LoggerContextSource;
@@ -26,12 +37,6 @@ import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
-
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class AsyncAppenderTest {
 
@@ -98,6 +103,21 @@ public class AsyncAppenderTest {
     public void testDisruptorBlockingQueue(final LoggerContext context) throws InterruptedException {
         rewriteTest(context);
         exceptionTest(context);
+    }
+
+    @Test
+    @LoggerContextSource("log4j-asynch.xml")
+    public void testGetAppenderRefStrings(final LoggerContext context) throws InterruptedException {
+        final AsyncAppender appender = context.getConfiguration().getAppender("Async");
+        assertArrayEquals(new String[] {"List"}, appender.getAppenderRefStrings());
+        assertNotSame(appender.getAppenderRefStrings(), appender.getAppenderRefStrings());
+    }
+
+    @Test
+    @LoggerContextSource("log4j-asynch.xml")
+    public void testGetErrorRef(final LoggerContext context) throws InterruptedException {
+        final AsyncAppender appender = context.getConfiguration().getAppender("Async");
+        assertEquals("STDOUT", appender.getErrorRef());
     }
 
     @Test
