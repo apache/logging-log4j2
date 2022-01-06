@@ -35,6 +35,23 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class AsyncAppenderTest {
 
+    static void exceptionTest(final LoggerContext context) throws InterruptedException {
+        final ExtendedLogger logger = context.getLogger(AsyncAppender.class);
+        final Exception parent = new IllegalStateException("Test");
+        final Throwable child = new LoggingException("This is a test", parent);
+        logger.error("This is a test", child);
+        final ListAppender appender = context.getConfiguration().getAppender("List");
+        final List<String> messages;
+        try {
+            messages = appender.getMessages(1, 2, TimeUnit.SECONDS);
+        } finally {
+            appender.clear();
+        }
+        assertNotNull(messages);
+        assertEquals(1, messages.size());
+        assertTrue(messages.get(0).contains(parent.getClass().getName()));
+    }
+
     static void rewriteTest(final LoggerContext context) throws InterruptedException {
         final ExtendedLogger logger = context.getLogger(AsyncAppender.class);
         logger.error("This is a test");
@@ -53,21 +70,11 @@ public class AsyncAppenderTest {
         assertEquals(messagePrefix + "Hello world!", messages.get(1));
     }
 
-    static void exceptionTest(final LoggerContext context) throws InterruptedException {
-        final ExtendedLogger logger = context.getLogger(AsyncAppender.class);
-        final Exception parent = new IllegalStateException("Test");
-        final Throwable child = new LoggingException("This is a test", parent);
-        logger.error("This is a test", child);
-        final ListAppender appender = context.getConfiguration().getAppender("List");
-        final List<String> messages;
-        try {
-            messages = appender.getMessages(1, 2, TimeUnit.SECONDS);
-        } finally {
-            appender.clear();
-        }
-        assertNotNull(messages);
-        assertEquals(1, messages.size());
-        assertTrue(messages.get(0).contains(parent.getClass().getName()));
+    @Test
+    @LoggerContextSource("BlockingQueueFactory-ArrayBlockingQueue.xml")
+    public void testArrayBlockingQueue(final LoggerContext context) throws InterruptedException {
+        rewriteTest(context);
+        exceptionTest(context);
     }
 
     @Test
@@ -83,13 +90,6 @@ public class AsyncAppenderTest {
         for (Thread thread : backgroundThreads) {
             assertTrue(thread.isDaemon(), "AsyncAppender should use daemon threads");
         }
-    }
-
-    @Test
-    @LoggerContextSource("BlockingQueueFactory-ArrayBlockingQueue.xml")
-    public void testArrayBlockingQueue(final LoggerContext context) throws InterruptedException {
-        rewriteTest(context);
-        exceptionTest(context);
     }
 
     @Test
@@ -116,14 +116,6 @@ public class AsyncAppenderTest {
     }
 
     @Test
-    @Timeout(5)
-    @LoggerContextSource("log4j-asynch-shutdownTimeout.xml")
-    public void testShutdownTimeout(final LoggerContext context) {
-        context.getLogger("Logger").info("This is a test");
-        context.stop();
-    }
-
-    @Test
     @LoggerContextSource("log4j-asynch-no-location.xml")
     public void testNoLocationInformation(final LoggerContext context, @Named("List") final ListAppender appender) throws InterruptedException {
         final ExtendedLogger logger = context.getLogger(getClass());
@@ -139,5 +131,13 @@ public class AsyncAppenderTest {
         assertEquals(2, messages.size());
         assertEquals("?  This is a test", messages.get(0));
         assertEquals("?  Hello world!", messages.get(1));
+    }
+
+    @Test
+    @Timeout(5)
+    @LoggerContextSource("log4j-asynch-shutdownTimeout.xml")
+    public void testShutdownTimeout(final LoggerContext context) {
+        context.getLogger("Logger").info("This is a test");
+        context.stop();
     }
 }
