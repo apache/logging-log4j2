@@ -42,35 +42,60 @@ public class JndiManager extends AbstractManager {
     private static final String PREFIX = "log4j2.enableJndi";
     private static final String JAVA_SCHEME = "java";
 
-    private static final boolean JNDI_CONTEXT_SELECTOR_ENABLED = isJndiEnabled("ContextSelector");
-    private static final boolean JNDI_JDBC_ENABLED = isJndiEnabled("Jdbc");
-    private static final boolean JNDI_JMS_ENABLED = isJndiEnabled("Jms");
-    private static final boolean JNDI_LOOKUP_ENABLED = isJndiEnabled("Lookup");
-
     private final InitialContext context;
 
     private static boolean isJndiEnabled(final String subKey) {
         return PropertiesUtil.getProperties().getBooleanProperty(PREFIX + subKey, false);
     }
 
+    /**
+     * Tests whether <em>any</em> JNDI system properties are currently enabled.
+     *
+     * @return whether <em>any</em> JNDI system properties are currently enabled.
+     */
     public static boolean isJndiEnabled() {
+        // The value is not cached to allow complex stacks to effect this setting.
         return isJndiContextSelectorEnabled() || isJndiJdbcEnabled() || isJndiJmsEnabled() || isJndiLookupEnabled();
     }
 
+    /**
+     * Tests whether the JNDI system properties for ContextSelector is currently enabled.
+     *
+     * @return whether the JNDI system properties for ContextSelector is currently enabled.
+     */
     public static boolean isJndiContextSelectorEnabled() {
-        return JNDI_CONTEXT_SELECTOR_ENABLED;
+        // The value is not cached to allow complex stacks to effect this setting.
+        return isJndiEnabled("ContextSelector");
     }
 
+    /**
+     * Tests whether the JNDI system properties for JDBC is currently enabled.
+     *
+     * @return whether the JNDI system properties for JDBC is currently enabled.
+     */
     public static boolean isJndiJdbcEnabled() {
-        return JNDI_JDBC_ENABLED;
+        // The value is not cached to allow complex stacks to effect this setting.
+        return isJndiEnabled("Jdbc");
     }
 
+    /**
+     * Tests whether the JNDI system properties for JMS is currently enabled.
+     *
+     * @return whether the JNDI system properties for JMS is currently enabled.
+     */
     public static boolean isJndiJmsEnabled() {
-        return JNDI_JMS_ENABLED;
+        // The value is not cached to allow complex stacks to effect this setting.
+        return isJndiEnabled("Jms");
     }
 
+    /**
+     * Tests whether the JNDI system properties for Lookup is currently enabled.
+     *
+     * @return whether the JNDI system properties for Lookup is currently enabled.
+     */
     public static boolean isJndiLookupEnabled() {
-        return JNDI_LOOKUP_ENABLED;
+        // The value is not cached to allow complex stacks to effect this setting.
+        return isJndiEnabled("Lookup");
     }
 
     private JndiManager(final String name, final InitialContext context) {
