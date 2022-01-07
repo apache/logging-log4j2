@@ -36,29 +36,25 @@ import org.apache.logging.log4j.util.Strings;
 public final class LogManager {
 
     /**
-     * @deprecated This variable is for internal use only. It will
-     * become package protected in future versions.
-     * */
+     * @deprecated This variable is for internal use only. It will become package protected in future versions.
+     */
     @Deprecated
     public static final String DEFAULT_CONFIGURATION_FILE = "log4j.properties";
 
     /**
-     * @deprecated This variable is for internal use only. It will
-     * become private in future versions.
-     * */
+     * @deprecated This variable is for internal use only. It will become private in future versions.
+     */
     @Deprecated
     public static final String DEFAULT_CONFIGURATION_KEY = "log4j.configuration";
 
     /**
-     * @deprecated This variable is for internal use only. It will
-     * become private in future versions.
-     * */
+     * @deprecated This variable is for internal use only. It will become private in future versions.
+     */
     @Deprecated
     public static final String CONFIGURATOR_CLASS_KEY = "log4j.configuratorClass";
 
     /**
-     * @deprecated This variable is for internal use only. It will
-     * become private in future versions.
+     * @deprecated This variable is for internal use only. It will become private in future versions.
      */
     @Deprecated
     public static final String DEFAULT_INIT_OVERRIDE_KEY = "log4j.defaultInitOverride";
