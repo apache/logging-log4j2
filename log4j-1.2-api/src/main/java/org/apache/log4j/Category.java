@@ -235,7 +235,7 @@ public class Category implements AppenderAttachable {
         return LogManager.getLoggerRepository();
     }
 
-    public final Level getEffectiveLevel() {
+    public Level getEffectiveLevel() {
         switch (logger.getLevel().getStandardLevel()) {
         case ALL:
             return Level.ALL;
@@ -277,7 +277,7 @@ public class Category implements AppenderAttachable {
         return repository;
     }
 
-    public final Priority getChainedPriority() {
+    public Priority getChainedPriority() {
         return getEffectiveLevel();
     }
 
