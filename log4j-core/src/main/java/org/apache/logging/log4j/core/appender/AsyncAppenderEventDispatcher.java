@@ -16,17 +16,19 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
+
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.util.List;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
 
 class AsyncAppenderEventDispatcher extends Log4jThread {
 
@@ -55,6 +57,15 @@ class AsyncAppenderEventDispatcher extends Log4jThread {
         this.appenders = appenders;
         this.queue = queue;
         this.stoppedRef = new AtomicBoolean(false);
+    }
+
+    /**
+     * Gets all Appenders.
+     *
+     * @return a list of Appenders.
+     */
+    List<Appender> getAppenders() {
+        return appenders.stream().map(AppenderControl::getAppender).collect(Collectors.toList());
     }
 
     @Override
