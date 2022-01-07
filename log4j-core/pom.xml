@@ -511,6 +511,7 @@
               *
             </Import-Package>
             <Bundle-Activator>org.apache.logging.log4j.core.osgi.Activator</Bundle-Activator>
+            <Eclipse-ExtensibleAPI>true</Eclipse-ExtensibleAPI>
           </instructions>
         </configuration>
       </plugin>
