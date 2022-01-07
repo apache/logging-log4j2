@@ -16,7 +16,6 @@
  */
 package org.apache.log4j;
 
-
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.logging.log4j.spi.LoggerContext;
 
@@ -25,8 +24,13 @@ import org.apache.logging.log4j.spi.LoggerContext;
  */
 public class Logger extends Category {
 
+    /**
+     * The fully qualified name of the Logger class.
+     */
+    private static final String FQCN = Logger.class.getName();
+ 
     protected Logger(final String name) {
-        super(PrivateManager.getContext(), name);
+        super(name);
     }
 
     Logger(final LoggerContext context, final String name) {
@@ -34,33 +38,32 @@ public class Logger extends Category {
     }
 
     public static Logger getLogger(final String name) {
-        return Category.getInstance(PrivateManager.getContext(), name);
+        return LogManager.getLogger(name);
     }
 
     public static Logger getLogger(final Class<?> clazz) {
-        return Category.getInstance(PrivateManager.getContext(), clazz);
+        return LogManager.getLogger(clazz);
     }
 
     public static Logger getRootLogger() {
-        return Category.getRoot(PrivateManager.getContext());
+        return LogManager.getRootLogger();
     }
 
     public static Logger getLogger(final String name, final LoggerFactory factory) {
-        return Category.getInstance(PrivateManager.getContext(), name, factory);
+        return LogManager.getLogger(name, factory);
     }
 
-    /**
-     * Internal Log Manager.
-     */
-    private static class PrivateManager extends org.apache.logging.log4j.LogManager {
-        private static final String FQCN = Logger.class.getName();
-
-        public static LoggerContext getContext() {
-            return getContext(FQCN, false);
-        }
-
-        public static org.apache.logging.log4j.Logger getLogger(final String name) {
-            return getLogger(FQCN, name);
-        }
+    public boolean isTraceEnabled() {
+        return getLogger().isTraceEnabled();
     }
+
+    public void trace(final Object message) {
+        maybeLog(FQCN, org.apache.logging.log4j.Level.TRACE, message, null);
+    }
+
+    public void trace(final Object message, final Throwable t) {
+        maybeLog(FQCN, org.apache.logging.log4j.Level.TRACE, message, t);
+    }
+
+
 }

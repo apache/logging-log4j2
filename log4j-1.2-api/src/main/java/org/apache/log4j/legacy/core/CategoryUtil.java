@@ -25,41 +25,41 @@ import org.apache.logging.log4j.spi.LoggerContext;
  */
 public final class CategoryUtil {
 
-    private CategoryUtil() {
-    }
-
-    public static boolean isAdditive(Logger logger) {
-        if (logger instanceof org.apache.logging.log4j.core.Logger) {
-            return ((org.apache.logging.log4j.core.Logger) logger).isAdditive();
-        }
-        return false;
-    }
-
-    public static void setAdditivity(Logger logger, boolean additivity) {
-        if (logger instanceof org.apache.logging.log4j.core.Logger) {
-            ((org.apache.logging.log4j.core.Logger) logger).setAdditive(additivity);
-        }
-    }
-
-    public static Logger getParent(Logger logger) {
-        if (logger instanceof org.apache.logging.log4j.core.Logger) {
-            return ((org.apache.logging.log4j.core.Logger) logger).getParent();
-
-        }
-        return null;
-    }
-
-    public static LoggerContext getLoggerContext(Logger logger) {
+    public static LoggerContext getLoggerContext(final Logger logger) {
         if (logger instanceof org.apache.logging.log4j.core.Logger) {
             return ((org.apache.logging.log4j.core.Logger) logger).getContext();
         }
         return null;
     }
 
-    public static void setLevel(Logger logger, Level level) {
+    public static Logger getParent(final Logger logger) {
+        if (logger instanceof org.apache.logging.log4j.core.Logger) {
+            return ((org.apache.logging.log4j.core.Logger) logger).getParent();
+
+        }
+        return null;
+    }
+    
+    public static boolean isAdditive(final Logger logger) {
+        if (logger instanceof org.apache.logging.log4j.core.Logger) {
+            return ((org.apache.logging.log4j.core.Logger) logger).isAdditive();
+        }
+        return false;
+    }
+
+    public static void setAdditivity(final Logger logger, final boolean additivity) {
+        if (logger instanceof org.apache.logging.log4j.core.Logger) {
+            ((org.apache.logging.log4j.core.Logger) logger).setAdditive(additivity);
+        }
+    }
+
+    public static void setLevel(final Logger logger, final Level level) {
         if (logger instanceof org.apache.logging.log4j.core.Logger) {
             ((org.apache.logging.log4j.core.Logger) logger).setLevel(level);
 
         }
+    }
+
+    private CategoryUtil() {
     }
 }

@@ -1,0 +1,46 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache license, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
+ */
+
+package org.apache.log4j;
+
+import static org.junit.Assert.assertTrue;
+
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.junit.Ignore;
+import org.junit.Test;
+
+public class LogManagerTest {
+
+    private static final String SIMPLE_NAME = LogManagerTest.class.getSimpleName();
+
+    @Test
+    @Ignore("WIP")
+    public void testGetCurrentLoggers() {
+        Logger.getLogger(SIMPLE_NAME);
+        Logger.getLogger(SIMPLE_NAME + ".foo");
+        Logger.getLogger(SIMPLE_NAME + ".foo.bar");
+        final List<String> names = Collections.list((Enumeration<Logger>) LogManager.getCurrentLoggers()).stream().map(Logger::getName)
+            .collect(Collectors.toList());
+        assertTrue(names.contains(SIMPLE_NAME));
+        assertTrue(names.contains(SIMPLE_NAME + ".foo"));
+        assertTrue(names.contains(SIMPLE_NAME + ".foo.bar"));
+    }
+}
