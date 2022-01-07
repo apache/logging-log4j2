@@ -28,7 +28,7 @@ import org.apache.logging.log4j.spi.LoggerRegistry;
  *
  * @author <a href="http://www.vorburger.ch">Michael Vorburger.ch</a> for Google
  */
-public class JULLoggerContext implements LoggerContext {
+class JULLoggerContext implements LoggerContext {
     private final LoggerRegistry<ExtendedLogger> loggerRegistry = new LoggerRegistry<>();
 
     // This implementation is strongly inspired by org.apache.logging.slf4j.SLF4JLoggerContext
