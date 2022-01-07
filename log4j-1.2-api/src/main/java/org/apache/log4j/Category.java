@@ -367,18 +367,6 @@ public class Category implements AppenderAttachable {
         return logger.isInfoEnabled();
     }
 
-    public void trace(final Object message) {
-        maybeLog(FQCN, org.apache.logging.log4j.Level.TRACE, message, null);
-    }
-
-    public void trace(final Object message, final Throwable t) {
-        maybeLog(FQCN, org.apache.logging.log4j.Level.TRACE, message, t);
-    }
-
-    public boolean isTraceEnabled() {
-        return logger.isTraceEnabled();
-    }
-
     public boolean isEnabledFor(final Priority level) {
         final org.apache.logging.log4j.Level lvl = org.apache.logging.log4j.Level.toLevel(level.toString());
         return isEnabledFor(lvl);
@@ -609,7 +597,7 @@ public class Category implements AppenderAttachable {
         }
     }
 
-    private void maybeLog(
+    void maybeLog(
             final String fqcn,
             final org.apache.logging.log4j.Level level,
             final Object message,

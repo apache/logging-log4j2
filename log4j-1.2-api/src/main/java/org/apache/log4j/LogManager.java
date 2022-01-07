@@ -17,8 +17,6 @@
 package org.apache.log4j;
 
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.log4j.helpers.NullEnumeration;
 import org.apache.log4j.legacy.core.ContextUtil;
@@ -109,7 +107,7 @@ public final class LogManager {
 
     @SuppressWarnings("rawtypes")
     public static Enumeration getCurrentLoggers() {
-        return NullEnumeration.getInstance();
+        return getLoggerRepository().getCurrentLoggers();
     }
 
     static void reconfigure() {
