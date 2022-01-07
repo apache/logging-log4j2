@@ -115,7 +115,7 @@ final class JULLogger extends AbstractLogger {
      * <li>INFO => INFO
      * <li>CONFIG => INFO
      * <li>FINE => DEBUG
-     * <li>FINER => DEBUG (inspired by https://github.com/qos-ch/slf4j/blob/6e784e4ca3a5ae9c5dc421fcd01a417af5bf5ace/jul-to-slf4j/src/main/java/org/slf4j/bridge/SLF4JBridgeHandler.java)
+     * <li>FINER => TRACE (as in https://github.com/apache/logging-log4j2/blob/a58a06bf2365165ac5abdde931bb4ecd1adf0b3c/log4j-jul/src/main/java/org/apache/logging/log4j/jul/DefaultLevelConverter.java#L55-L75)
      * <li>FINEST => TRACE
      * <li>ALL => ALL
      * </ul>
@@ -131,7 +131,7 @@ final class JULLogger extends AbstractLogger {
         if (julLevel == java.util.logging.Level.ALL.intValue()) {
             return Level.ALL;
         }
-        if (julLevel <= java.util.logging.Level.FINEST.intValue()) {
+        if (julLevel <= java.util.logging.Level.FINER.intValue()) {
             return Level.TRACE;
         }
         if (julLevel <= java.util.logging.Level.FINE.intValue()) {  // includes FINER
