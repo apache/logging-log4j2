@@ -22,17 +22,24 @@ import org.apache.log4j.bridge.FilterAdapter;
  * @since 0.9.0
  */
 public abstract class Filter {
+
+    static {
+        boolean temp;
+        try {
+            temp = Class.forName("org.apache.logging.log4j.core.Filter") != null;
+        } catch (Exception e) {
+            temp = false;
+        }
+        isCorePresent = temp;
+    }
+    
     private final FilterAdapter adapter;
 
+    /**
+     * C
+     */
     public Filter() {
-        FilterAdapter filterAdapter = null;
-        try {
-            Class.forName("org.apache.logging.log4j.core.Filter");
-            filterAdapter = new FilterAdapter(this);
-        } catch(ClassNotFoundException ex) {
-            // Ignore the exception. Log4j Core is not present.
-        }
-        this.adapter = filterAdapter;
+        this.adapter = isCorePresent ? new FilterAdapter(this) : null;
     }
 
     /**
@@ -60,6 +67,8 @@ public abstract class Filter {
      */
     @Deprecated
     public Filter next;
+
+    private static final boolean isCorePresent;
 
     /**
      * Usually filters options become active when set. We provide a
