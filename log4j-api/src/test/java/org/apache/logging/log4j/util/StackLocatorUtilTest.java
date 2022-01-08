@@ -16,15 +16,19 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+
+import java.util.Deque;
 import java.util.Stack;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.ParentRunner;
-import sun.reflect.Reflection;
 
-import static org.junit.Assert.*;
+import sun.reflect.Reflection;
 
 /** 
  * Tests {@link StackLocatorUtilTest}.
@@ -65,10 +69,10 @@ public class StackLocatorUtilTest {
 
     @Test
     public void testGetCurrentStackTrace() throws Exception {
-        final Stack<Class<?>> classes = StackLocatorUtil.getCurrentStackTrace();
+        final Deque<Class<?>> classes = StackLocatorUtil.getCurrentStackTrace();
         final Stack<Class<?>> reversed = new Stack<>();
         reversed.ensureCapacity(classes.size());
-        while (!classes.empty()) {
+        while (!classes.isEmpty()) {
             reversed.push(classes.pop());
         }
         while (reversed.peek() != StackLocatorUtil.class) {
