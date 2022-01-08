@@ -71,6 +71,28 @@ public final class StackLocatorUtil {
     }
 
     /**
+     * Gets the ClassLoader of the class that called <em>this</em> method at the location up the call stack by the given
+     * stack frame depth.
+     * <p>
+     * This method returns {@code null} if:
+     * </p>
+     * <ul>
+     * <li>{@code sun.reflect.Reflection.getCallerClass(int)} is not present.</li>
+     * <li>An exception is caught calling {@code sun.reflect.Reflection.getCallerClass(int)}.</li>
+     * <li>Some Class implementations may use null to represent the bootstrap class loader.</li>
+     * </ul>
+     *
+     * @param depth The stack frame count to walk.
+     * @return A class or null.
+     * @throws IndexOutOfBoundsException if depth is negative.
+     */
+    @PerformanceSensitive
+    public static ClassLoader getCallerClassLoader(final int depth) {
+        final Class<?> callerClass = stackLocator.getCallerClass(depth + 1);
+        return callerClass != null ? callerClass.getClassLoader() : null;
+    }
+
+    /**
      * Search for a calling class.
      *
      * @param sentinelClass Sentinel class at which to begin searching
