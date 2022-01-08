@@ -26,14 +26,16 @@ import sun.reflect.Reflection;
 
 import static org.junit.Assert.*;
 
+/** 
+ * Tests {@link StackLocatorUtilTest}.
+ */
 @RunWith(BlockJUnit4ClassRunner.class)
 public class StackLocatorUtilTest {
-
 
     @Test
     public void testStackTraceEquivalence() throws Exception {
         for (int i = 1; i < 15; i++) {
-            final Class<?> expected = Reflection.getCallerClass(i + StackLocator.JDK_7u25_OFFSET);
+            final Class<?> expected = Reflection.getCallerClass(i + StackLocator.JDK_7U25_OFFSET);
             final Class<?> actual = StackLocatorUtil.getCallerClass(i);
             final Class<?> fallbackActual = Class.forName(
                 StackLocatorUtil.getStackTraceElement(i).getClassName());
@@ -47,6 +49,11 @@ public class StackLocatorUtilTest {
         final Class<?> expected = StackLocatorUtilTest.class;
         final Class<?> actual = StackLocatorUtil.getCallerClass(1);
         assertSame(expected, actual);
+    }
+
+    @Test
+    public void testGetCallerClassLoader() throws Exception {
+        assertSame(StackLocatorUtilTest.class.getClassLoader(), StackLocatorUtil.getCallerClassLoader(1));
     }
 
     @Test
