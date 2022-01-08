@@ -27,16 +27,17 @@ public abstract class Filter {
         boolean temp;
         try {
             temp = Class.forName("org.apache.logging.log4j.core.Filter") != null;
-        } catch (Exception e) {
+        } catch (Exception | LinkageError e) {
             temp = false;
         }
         isCorePresent = temp;
     }
     
+    // TODO Unused?
     private final FilterAdapter adapter;
 
     /**
-     * C
+     * Constructs a new instance.
      */
     public Filter() {
         this.adapter = isCorePresent ? new FilterAdapter(this) : null;
@@ -75,6 +76,7 @@ public abstract class Filter {
      * default do-nothing implementation for convenience.
      */
     public void activateOptions() {
+        // noop
     }
 
 
