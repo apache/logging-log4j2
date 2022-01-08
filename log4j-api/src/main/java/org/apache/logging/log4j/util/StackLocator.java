@@ -32,6 +32,11 @@ public final class StackLocator {
 
     private final static StackLocator INSTANCE = new StackLocator();
 
+    /**
+     * Gets the singleton instance.
+     *
+     * @return the singleton instance.
+     */
     public static StackLocator getInstance() {
         return INSTANCE;
     }
@@ -79,6 +84,14 @@ public final class StackLocator {
                 map(StackWalker.StackFrame::getDeclaringClass).orElse(null);
     }
 
+    /**
+     * Gets the Class of the method that called <em>this</em> method at the location up the call stack by the given stack
+     * frame depth.
+     *
+     * @param depth The stack frame count to walk.
+     * @return A class or null.
+     * @throws IndexOutOfBoundsException if depth is negative.
+     */
     @PerformanceSensitive
     public Class<?> getCallerClass(final int depth) {
         return walker.walk(s -> s.skip(depth).findFirst()).map(StackWalker.StackFrame::getDeclaringClass).orElse(null);
@@ -90,7 +103,7 @@ public final class StackLocator {
         if (PrivateSecurityManagerStackTraceUtil.isEnabled()) {
             return PrivateSecurityManagerStackTraceUtil.getCurrentStackTrace();
         }
-        final Stack<Class<?>> stack = new Stack<Class<?>>();
+        final Stack<Class<?>> stack = new Stack<>();
         final List<Class<?>> classes = walker.walk(s -> s.map(StackWalker.StackFrame::getDeclaringClass).collect(Collectors.toList()));
         stack.addAll(classes);
         return stack;

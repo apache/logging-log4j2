@@ -63,6 +63,11 @@ public class StackLocatorUtilTest {
     }
 
     @Test
+    public void testGetCallerClassLoader() throws Exception {
+        assertSame(StackLocatorUtilTest.class.getClassLoader(), StackLocatorUtil.getCallerClassLoader(1));
+    }
+
+    @Test
     public void testGetCallerClassNameViaStackTrace() throws Exception {
         final Class<?> expected = StackLocatorUtilTest.class;
         final Class<?> actual = Class.forName(new Throwable().getStackTrace()[0].getClassName());
