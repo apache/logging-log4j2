@@ -17,7 +17,8 @@
 package org.apache.logging.log4j.util;
 
 import java.lang.reflect.Method;
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.function.Predicate;
 
 /**
@@ -193,13 +194,13 @@ public final class StackLocator {
 
     // migrated from ThrowableProxy
     @PerformanceSensitive
-    public Stack<Class<?>> getCurrentStackTrace() {
+    public Deque<Class<?>> getCurrentStackTrace() {
         // benchmarks show that using the SecurityManager is much faster than looping through getCallerClass(int)
         if (PrivateSecurityManagerStackTraceUtil.isEnabled()) {
             return PrivateSecurityManagerStackTraceUtil.getCurrentStackTrace();
         }
         // slower version using getCallerClass where we cannot use a SecurityManager
-        final Stack<Class<?>> classes = new Stack<>();
+        final Deque<Class<?>> classes = new ArrayDeque<>();
         Class<?> clazz;
         for (int i = 1; null != (clazz = getCallerClass(i)); i++) {
             classes.push(clazz);

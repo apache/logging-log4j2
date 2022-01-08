@@ -16,8 +16,8 @@
  */
 package org.apache.logging.log4j.util;
 
+import java.util.Deque;
 import java.util.NoSuchElementException;
-import java.util.Stack;
 import java.util.function.Predicate;
 
 import org.apache.logging.log4j.status.StatusLogger;
@@ -112,7 +112,7 @@ public final class StackLocatorUtil {
 
     // migrated from ThrowableProxy
     @PerformanceSensitive
-    public static Stack<Class<?>> getCurrentStackTrace() {
+    public static Deque<Class<?>> getCurrentStackTrace() {
         return stackLocator.getCurrentStackTrace();
     }
 

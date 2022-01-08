@@ -10,6 +10,7 @@
             "org\\.apache\\.logging\\.log4j\\.util\\.PrivateSecurityManagerStackTraceUtil",
             "org\\.apache\\.logging\\.log4j\\.util\\.PropertiesUtil",
             "org\\.apache\\.logging\\.log4j\\.util\\.ProviderUtil",
+            "org\\.apache\\.logging\\.log4j\\.util\\.StackLocator",
             "org\\.apache\\.logging\\.log4j\\.util\\.StackLocatorUtil"
           ]
         }
