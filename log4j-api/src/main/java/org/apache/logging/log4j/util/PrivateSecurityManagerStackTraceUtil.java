@@ -16,7 +16,8 @@
  */
 package org.apache.logging.log4j.util;
 
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 /**
  * Internal utility to share a fast implementation of {@link #getCurrentStackTrace()}
@@ -50,10 +51,9 @@ final class PrivateSecurityManagerStackTraceUtil {
     }
 
     // benchmarks show that using the SecurityManager is much faster than looping through getCallerClass(int)
-    static Stack<Class<?>> getCurrentStackTrace() {
+    static Deque<Class<?>> getCurrentStackTrace() {
         final Class<?>[] array = SECURITY_MANAGER.getClassContext();
-        final Stack<Class<?>> classes = new Stack<>();
-        classes.ensureCapacity(array.length);
+        final Deque<Class<?>> classes = new ArrayDeque<>(array.length);
         for (final Class<?> clazz : array) {
             classes.push(clazz);
         }
