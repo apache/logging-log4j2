@@ -72,9 +72,17 @@ public class SortedArrayStringMapTest {
     public void testSerialization() throws Exception {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "avalue");
-        original.putValue("B", "Bvalue");
+        original.putValue("B", null); // null may be treated differently
         original.putValue("3", "3value");
 
+        final byte[] binary = serialize(original);
+        final SortedArrayStringMap copy = deserialize(binary);
+        assertEquals(original, copy);
+    }
+
+    @Test
+    public void testSerializationOfEmptyMap() throws Exception {
+        final SortedArrayStringMap original = new SortedArrayStringMap();
         final byte[] binary = serialize(original);
         final SortedArrayStringMap copy = deserialize(binary);
         assertEquals(original, copy);
@@ -393,12 +401,17 @@ public class SortedArrayStringMapTest {
     @Test
     public void testEquals() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
+        final SortedArrayStringMap other = new SortedArrayStringMap();
+
+        assertEquals(other, original, "Empty maps are equal");
+        assertEquals(other.hashCode(), original.hashCode(), "Empty maps have equal hashcode");
+        assertNotEquals(original, "Object other than SortedArrayStringMap");
+
         original.putValue("a", "avalue");
         original.putValue("B", "Bvalue");
         original.putValue("3", "3value");
         assertEquals(original, original); // equal to itself
 
-        final SortedArrayStringMap other = new SortedArrayStringMap();
         other.putValue("a", "avalue");
         assertNotEquals(original, other);
 
@@ -407,15 +420,23 @@ public class SortedArrayStringMapTest {
 
         other.putValue("3", "3value");
         assertEquals(original, other);
+        assertEquals(original.hashCode(), other.hashCode());
 
         other.putValue("3", "otherValue");
         assertNotEquals(original, other);
 
         other.putValue("3", null);
         assertNotEquals(original, other);
+        assertNotEquals(original.hashCode(), other.hashCode());
 
         other.putValue("3", "3value");
         assertEquals(original, other);
+        assertEquals(other, original); // symmetry
+
+        original.putValue("key not in other", "4value");
+        other.putValue("key not in original", "4value");
+        assertNotEquals(original, other);
+        assertNotEquals(other, original); // symmetry
     }
 
     @Test
