@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class TestConfiguratorError {
 
     @RegisterExtension
-    static final LoggerContextFactoryExtension extension = new LoggerContextFactoryExtension(new SimpleLoggerContextFactory());
+    static final LoggerContextFactoryExtension EXTENSION = new LoggerContextFactoryExtension(SimpleLoggerContextFactory.INSTANCE);
 
     @Test
     public void testErrorNoClassLoader() throws Exception {
