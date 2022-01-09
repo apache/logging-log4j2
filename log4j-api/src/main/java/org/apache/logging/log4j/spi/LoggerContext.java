@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.spi;
 
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.MessageFactory;
 
 /**
@@ -39,6 +40,7 @@ public interface LoggerContext {
         final String canonicalName = cls.getCanonicalName();
         return getLogger(canonicalName != null ? canonicalName : cls.getName());
     }
+
 
     /**
      * Gets an ExtendedLogger using the fully qualified name of the Class as the Logger name.
@@ -68,6 +70,16 @@ public interface LoggerContext {
      * @return The logger with the specified name.
      */
     ExtendedLogger getLogger(String name, MessageFactory messageFactory);
+
+    /**
+     * Gets the LoggerRegistry.
+     *
+     * @return the LoggerRegistry.
+     * @since 2.17.2
+     */
+    default LoggerRegistry<? extends Logger> getLoggerRegistry() {
+        return null;
+    }
 
     /**
      * Gets an object by its name.

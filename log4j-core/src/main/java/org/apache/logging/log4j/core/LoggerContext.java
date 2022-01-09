@@ -535,6 +535,16 @@ public class LoggerContext extends AbstractLifeCycle
     }
 
     /**
+     * Gets the LoggerRegistry.
+     *
+     * @return the LoggerRegistry.
+     * @since 2.17.2
+     */
+    public LoggerRegistry<Logger> getLoggerRegistry() {
+        return loggerRegistry;
+    }
+
+    /**
      * Determines if the specified Logger exists.
      *
      * @param name The Logger name to search for.
