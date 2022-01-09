@@ -21,23 +21,19 @@
 This page lists all the security vulnerabilities fixed in released versions of Apache Log4j 2.
 Each vulnerability is given a [security impact rating](#Security_Impact_Levels)
 by the [Apache Logging security team](mailto:security@logging.apache.org).
-please note that this rating may vary from platform to platform. We also list the versions
+Note that this rating may vary from platform to platform. We also list the versions
 of Apache Log4j the flaw is known to affect, and where a flaw has not been verified list
 the version with a question mark.
 
-Note: Vulnerabilities that are not Log4j vulnerabilities but have either been incorrectly
-reported against Log4j or where Log4j provides a workaround are listed at the end of this page.
-
-Please note that [Log4j 1.x](http://logging.apache.org/log4j/1.2/) has 
+[Log4j 1.x](http://logging.apache.org/log4j/1.2/) has 
 [reached End of Life](https://blogs.apache.org/foundation/entry/apache_logging_services_project_announces)
 in 2015 and is no longer supported.
 Vulnerabilities reported after August 2015 against Log4j 1.x were not checked and will not be fixed.
 Users should [upgrade to Log4j 2](manual/migration.html) to obtain security fixes.
 
-Please note that binary patches are never provided. If you need to apply a source code patch,
+Binary patches are never provided. If you need to apply a source code patch,
 use the building instructions for the Apache Log4j version that you are using.
-For Log4j 2 this is BUILDING.md.
-This file can be found in the root subdirectory of a source distributive.
+For Log4j 2 these can be found in `BUILDING.md` located in the root subdirectory of the source distribution.
 
 If you need help on building or configuring Log4j or other help on following the instructions
 to mitigate the known vulnerabilities listed here, please
@@ -46,7 +42,7 @@ Log4j [Users mailing list](mail-lists.html).
 
 If you have encountered an unlisted security vulnerability or other unexpected behaviour
 that has security impact, or if the descriptions here are incomplete, please report them
-privately to the [Log4j Security Team](mailto:security@logging.apache.org). Thank you.
+privately to the [Log4j Security Team](mailto:security@logging.apache.org). Thank you!
 
 <a name="CVE-2021-44832"/><a name="cve-2021-44832"/>
 ## <a name="log4j-2.17.1"/> Fixed in Log4j 2.17.1 (Java 8), 2.12.4 (Java 7) and 2.3.2 (Java 6)
@@ -491,3 +487,8 @@ it is a configuration that isn't widely used. Moderate vulnerabilities score bet
 All other security flaws are classed as a Low impact. This rating is used for issues that are believed
 to be extremely hard to exploit, or where an exploit gives minimal consequences. Low vulnerabilities
 score between 0.1 and 3.9 on the [CVSS v3 calculator](https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator).
+
+## <a name="cve-creation"></a> CVE creation process
+
+Found security vulnerabilities are subject to voting (by means of [_lazy approval_](https://logging.apache.org/guidelines.html), preferably) before creating a CVE and populating its associated content.
+This procedure involves only the creation of CVEs and blocks neither (vulnerability) fixes, nor releases.
