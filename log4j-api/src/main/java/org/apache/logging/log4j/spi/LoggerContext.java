@@ -24,13 +24,13 @@ import org.apache.logging.log4j.message.MessageFactory;
 public interface LoggerContext {
 
     /**
-     * An anchor for some other context, such as a ClassLoader or ServletContext.
+     * Gets the anchor for some other context, such as a ClassLoader or ServletContext.
      * @return The external context.
      */
     Object getExternalContext();
 
     /**
-     * Returns an ExtendedLogger using the fully qualified name of the Class as the Logger name.
+     * Gets an ExtendedLogger using the fully qualified name of the Class as the Logger name.
      * @param cls The Class whose name should be used as the Logger name.
      * @return The logger.
      * @since 2.14.0
@@ -41,7 +41,7 @@ public interface LoggerContext {
     }
 
     /**
-     * Returns an ExtendedLogger using the fully qualified name of the Class as the Logger name.
+     * Gets an ExtendedLogger using the fully qualified name of the Class as the Logger name.
      * @param cls The Class whose name should be used as the Logger name.
      * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change the
      *                       logger but will log a warning if mismatched.
@@ -54,14 +54,14 @@ public interface LoggerContext {
     }
 
     /**
-     * Returns an ExtendedLogger.
+     * Gets an ExtendedLogger.
      * @param name The name of the Logger to return.
      * @return The logger with the specified name.
      */
     ExtendedLogger getLogger(String name);
 
     /**
-     * Returns an ExtendedLogger.
+     * Gets an ExtendedLogger.
      * @param name The name of the Logger to return.
      * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change
      *                       the logger but will log a warning if mismatched.
@@ -70,7 +70,7 @@ public interface LoggerContext {
     ExtendedLogger getLogger(String name, MessageFactory messageFactory);
 
     /**
-     * Retrieve an object by its name.
+     * Gets an object by its name.
      * @param key The object's key.
      * @return The mapped Object.
      * @since 2.13.0
@@ -80,14 +80,14 @@ public interface LoggerContext {
     }
 
     /**
-     * Detects if a Logger with the specified name exists.
+     * Tests if a Logger with the specified name exists.
      * @param name The Logger name to search for.
      * @return true if the Logger exists, false otherwise.
      */
     boolean hasLogger(String name);
 
     /**
-     * Detects if a Logger with the specified name and MessageFactory type exists.
+     * Tests if a Logger with the specified name and MessageFactory type exists.
      * @param name The Logger name to search for.
      * @param messageFactoryClass The message factory class to search for.
      * @return true if the Logger exists, false otherwise.
@@ -96,7 +96,7 @@ public interface LoggerContext {
     boolean hasLogger(String name, Class<? extends MessageFactory> messageFactoryClass);
 
     /**
-     * Detects if a Logger with the specified name and MessageFactory exists.
+     * Tests if a Logger with the specified name and MessageFactory exists.
      * @param name The Logger name to search for.
      * @param messageFactory The message factory to search for.
      * @return true if the Logger exists, false otherwise.
@@ -105,7 +105,7 @@ public interface LoggerContext {
     boolean hasLogger(String name, MessageFactory messageFactory);
 
     /**
-     * Store an object into the LoggerContext by name for later use.
+     * Associates an object into the LoggerContext by name for later use.
      * @param key The object's key.
      * @param value The object.
      * @return The previous object or null.
@@ -116,7 +116,7 @@ public interface LoggerContext {
     }
 
     /**
-     * Store an object into the LoggerContext by name for later use if an object is not already stored with that key.
+     * Associates an object into the LoggerContext by name for later use if an object is not already stored with that key.
      * @param key The object's key.
      * @param value The object.
      * @return The previous object or null.
@@ -127,7 +127,7 @@ public interface LoggerContext {
     }
 
     /**
-     * Remove an object if it is present.
+     * Removes an object if it is present.
      * @param key The object's key.
      * @return The object if it was present, null if it was not.
      * @since 2.13.0
@@ -137,7 +137,7 @@ public interface LoggerContext {
     }
 
     /**
-     * Remove an object if it is present and the provided object is stored.
+     * Removes an object if it is present and the provided object is stored.
      * @param key The object's key.
      * @param value The object.
      * @return The object if it was present, null if it was not.
