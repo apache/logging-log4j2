@@ -30,6 +30,46 @@ public interface LoggerContext {
     Object getExternalContext();
 
     /**
+     * Returns an ExtendedLogger using the fully qualified name of the Class as the Logger name.
+     * @param cls The Class whose name should be used as the Logger name.
+     * @return The logger.
+     * @since 2.14.0
+     */
+    default ExtendedLogger getLogger(Class<?> cls) {
+        final String canonicalName = cls.getCanonicalName();
+        return getLogger(canonicalName != null ? canonicalName : cls.getName());
+    }
+
+    /**
+     * Returns an ExtendedLogger using the fully qualified name of the Class as the Logger name.
+     * @param cls The Class whose name should be used as the Logger name.
+     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change the
+     *                       logger but will log a warning if mismatched.
+     * @return The logger.
+     * @since 2.14.0
+     */
+    default ExtendedLogger getLogger(Class<?> cls, MessageFactory messageFactory) {
+        final String canonicalName = cls.getCanonicalName();
+        return getLogger(canonicalName != null ? canonicalName : cls.getName(), messageFactory);
+    }
+
+    /**
+     * Returns an ExtendedLogger.
+     * @param name The name of the Logger to return.
+     * @return The logger with the specified name.
+     */
+    ExtendedLogger getLogger(String name);
+
+    /**
+     * Returns an ExtendedLogger.
+     * @param name The name of the Logger to return.
+     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change
+     *                       the logger but will log a warning if mismatched.
+     * @return The logger with the specified name.
+     */
+    ExtendedLogger getLogger(String name, MessageFactory messageFactory);
+
+    /**
      * Retrieve an object by its name.
      * @param key The object's key.
      * @return The mapped Object.
@@ -38,6 +78,31 @@ public interface LoggerContext {
     default Object getObject(String key) {
         return null;
     }
+
+    /**
+     * Detects if a Logger with the specified name exists.
+     * @param name The Logger name to search for.
+     * @return true if the Logger exists, false otherwise.
+     */
+    boolean hasLogger(String name);
+
+    /**
+     * Detects if a Logger with the specified name and MessageFactory type exists.
+     * @param name The Logger name to search for.
+     * @param messageFactoryClass The message factory class to search for.
+     * @return true if the Logger exists, false otherwise.
+     * @since 2.5
+     */
+    boolean hasLogger(String name, Class<? extends MessageFactory> messageFactoryClass);
+
+    /**
+     * Detects if a Logger with the specified name and MessageFactory exists.
+     * @param name The Logger name to search for.
+     * @param messageFactory The message factory to search for.
+     * @return true if the Logger exists, false otherwise.
+     * @since 2.5
+     */
+    boolean hasLogger(String name, MessageFactory messageFactory);
 
     /**
      * Store an object into the LoggerContext by name for later use.
@@ -81,69 +146,4 @@ public interface LoggerContext {
     default boolean removeObject(String key, Object value) {
         return false;
     }
-
-    /**
-     * Returns an ExtendedLogger.
-     * @param name The name of the Logger to return.
-     * @return The logger with the specified name.
-     */
-    ExtendedLogger getLogger(String name);
-
-    /**
-     * Returns an ExtendedLogger using the fully qualified name of the Class as the Logger name.
-     * @param cls The Class whose name should be used as the Logger name.
-     * @return The logger.
-     * @since 2.14.0
-     */
-    default ExtendedLogger getLogger(Class<?> cls) {
-        final String canonicalName = cls.getCanonicalName();
-        return getLogger(canonicalName != null ? canonicalName : cls.getName());
-    }
-
-    /**
-     * Returns an ExtendedLogger.
-     * @param name The name of the Logger to return.
-     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change
-     *                       the logger but will log a warning if mismatched.
-     * @return The logger with the specified name.
-     */
-    ExtendedLogger getLogger(String name, MessageFactory messageFactory);
-
-    /**
-     * Returns an ExtendedLogger using the fully qualified name of the Class as the Logger name.
-     * @param cls The Class whose name should be used as the Logger name.
-     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change the
-     *                       logger but will log a warning if mismatched.
-     * @return The logger.
-     * @since 2.14.0
-     */
-    default ExtendedLogger getLogger(Class<?> cls, MessageFactory messageFactory) {
-        final String canonicalName = cls.getCanonicalName();
-        return getLogger(canonicalName != null ? canonicalName : cls.getName(), messageFactory);
-    }
-
-    /**
-     * Detects if a Logger with the specified name exists.
-     * @param name The Logger name to search for.
-     * @return true if the Logger exists, false otherwise.
-     */
-    boolean hasLogger(String name);
-
-    /**
-     * Detects if a Logger with the specified name and MessageFactory exists.
-     * @param name The Logger name to search for.
-     * @param messageFactory The message factory to search for.
-     * @return true if the Logger exists, false otherwise.
-     * @since 2.5
-     */
-    boolean hasLogger(String name, MessageFactory messageFactory);
-
-    /**
-     * Detects if a Logger with the specified name and MessageFactory type exists.
-     * @param name The Logger name to search for.
-     * @param messageFactoryClass The message factory class to search for.
-     * @return true if the Logger exists, false otherwise.
-     * @since 2.5
-     */
-    boolean hasLogger(String name, Class<? extends MessageFactory> messageFactoryClass);
 }
