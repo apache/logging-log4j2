@@ -490,5 +490,5 @@ score between 0.1 and 3.9 on the [CVSS v3 calculator](https://nvd.nist.gov/vuln-
 
 ## <a name="cve-creation"></a> CVE creation process
 
-Found security vulnerabilities are subject to voting (by means of [_lazy approval_](https://logging.apache.org/guidelines.html), preferably) before creating a CVE and populating its associated content.
+Found security vulnerabilities are subject to voting (by means of [_lazy approval_](https://logging.apache.org/guidelines.html), preferably) in the private [security mailing list](mailto:security@logging.apache.org) before creating a CVE and populating its associated content.
 This procedure involves only the creation of CVEs and blocks neither (vulnerability) fixes, nor releases.
