@@ -19,6 +19,7 @@ package org.apache.logging.log4j.simple;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.nio.file.Files;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.MessageFactory;
@@ -29,7 +30,7 @@ import org.apache.logging.log4j.spi.LoggerRegistry;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
- *
+ * A simple {@link LoggerContext} implementation.
  */
 public class SimpleLoggerContext implements LoggerContext {
 
@@ -53,10 +54,13 @@ public class SimpleLoggerContext implements LoggerContext {
      * lost in a flood of messages without knowing who sends them.
      */
     private final boolean showShortName;
+
     /** Include the current time in the log message */
     private final boolean showDateTime;
+
     /** Include the ThreadContextMap in the log message */
     private final boolean showContextMap;
+    
     /** The date and time format to use in the log message */
     private final String dateTimeFormat;
 
@@ -66,6 +70,9 @@ public class SimpleLoggerContext implements LoggerContext {
 
     private final LoggerRegistry<ExtendedLogger> loggerRegistry = new LoggerRegistry<>();
 
+    /**
+     * Constructs a new initialized instance.
+     */
     public SimpleLoggerContext() {
         props = new PropertiesUtil("log4j2.simplelog.properties");
 
@@ -87,8 +94,7 @@ public class SimpleLoggerContext implements LoggerContext {
             ps = System.out;
         } else {
             try {
-                final FileOutputStream os = new FileOutputStream(fileName);
-                ps = new PrintStream(os);
+                ps = new PrintStream(new FileOutputStream(fileName));
             } catch (final FileNotFoundException fnfe) {
                 ps = System.err;
             }
