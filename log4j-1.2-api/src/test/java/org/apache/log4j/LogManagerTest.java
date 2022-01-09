@@ -24,21 +24,25 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
+/**
+ * Tests {@link LogManager}.
+ */
 public class LogManagerTest {
 
     private static final String SIMPLE_NAME = LogManagerTest.class.getSimpleName();
 
+    List<String> getCurrentLoggerNames() {
+        return Collections.list((Enumeration<Logger>) LogManager.getCurrentLoggers()).stream().map(Logger::getName).collect(Collectors.toList());
+    }
+
     @Test
-    @Ignore("WIP")
     public void testGetCurrentLoggers() {
         Logger.getLogger(SIMPLE_NAME);
         Logger.getLogger(SIMPLE_NAME + ".foo");
         Logger.getLogger(SIMPLE_NAME + ".foo.bar");
-        final List<String> names = Collections.list((Enumeration<Logger>) LogManager.getCurrentLoggers()).stream().map(Logger::getName)
-            .collect(Collectors.toList());
+        final List<String> names = getCurrentLoggerNames();
         assertTrue(names.contains(SIMPLE_NAME));
         assertTrue(names.contains(SIMPLE_NAME + ".foo"));
         assertTrue(names.contains(SIMPLE_NAME + ".foo.bar"));

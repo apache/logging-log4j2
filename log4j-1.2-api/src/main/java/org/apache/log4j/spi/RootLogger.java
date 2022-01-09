@@ -34,7 +34,8 @@ public final class RootLogger extends Logger {
      * The root logger names itself as "root". However, the root logger cannot be retrieved by name.
      */
     public RootLogger(Level level) {
-        // Note that the Log4j 2 root logger name is "".
+        // The Log4j 1 root logger name is "root".
+        // The Log4j 2 root logger name is "".
         super("root");
         setLevel(level);
     }

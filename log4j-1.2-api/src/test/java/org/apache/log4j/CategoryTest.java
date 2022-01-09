@@ -18,8 +18,8 @@
 package org.apache.log4j;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Method;
@@ -74,7 +74,7 @@ public class CategoryTest {
 
     @Test
     public void testExist() throws Exception {
-        assertFalse(Category.exists("Does not exist for sure"));
+        assertNull(Category.exists("Does not exist for sure"));
     }
 
     /**

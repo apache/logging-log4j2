@@ -18,11 +18,10 @@ package org.apache.log4j;
 
 /**
  * Provided for compatibility with Log4j 1.x.
+ *
+ * @since 0.8.1
  */
 public class BasicConfigurator {
-
-    protected BasicConfigurator() {
-    }
 
     public static void configure() {
         LogManager.reconfigure();
@@ -36,10 +35,13 @@ public class BasicConfigurator {
         // no-op
     }
 
-    /**
-     * No-op implementation.
-     */
     public static void resetConfiguration() {
-        // no-op
+        LogManager.resetConfiguration();
+    }
+
+    /**
+     * Constructs a new instance.
+     */
+    protected BasicConfigurator() {
     }
 }
