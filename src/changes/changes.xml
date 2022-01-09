@@ -31,6 +31,9 @@
     -->
     <release version="2.17.2" date="20YY-MM-DD" description="GA Release 2.17.2">
       <!-- FIXES -->
+      <action issue="LOG4J2-3215" dev="vy" due-to="quapka">
+        Replace usages of "compile" with "implementation" in the Gradle docs.
+      </action>
       <action issue="LOG4J2-3267" dev="rpopma" type="update">
         Change modifier of method org.apache.logging.log4j.core.tools.Generate#generate to public (was package private) to facilitate automated code generation.
       </action>
