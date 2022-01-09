@@ -103,6 +103,11 @@ public class SimpleLoggerContext implements LoggerContext {
     }
 
     @Override
+    public Object getExternalContext() {
+        return null;
+    }
+
+    @Override
     public ExtendedLogger getLogger(final String name) {
         return getLogger(name, null);
     }
@@ -127,18 +132,13 @@ public class SimpleLoggerContext implements LoggerContext {
     }
 
     @Override
-    public boolean hasLogger(final String name, final MessageFactory messageFactory) {
-        return false;
-    }
-
-    @Override
     public boolean hasLogger(final String name, final Class<? extends MessageFactory> messageFactoryClass) {
         return false;
     }
 
     @Override
-    public Object getExternalContext() {
-        return null;
+    public boolean hasLogger(final String name, final MessageFactory messageFactory) {
+        return false;
     }
 
 }
