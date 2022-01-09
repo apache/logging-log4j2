@@ -19,7 +19,6 @@ package org.apache.logging.log4j.simple;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.nio.file.Files;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.MessageFactory;
@@ -34,6 +33,9 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  */
 public class SimpleLoggerContext implements LoggerContext {
 
+    /** Singleton instance. */
+    static final SimpleLoggerContext INSTANCE = new SimpleLoggerContext();
+    
     private static final String SYSTEM_OUT = "system.out";
 
     private static final String SYSTEM_ERR = "system.err";
@@ -124,6 +126,17 @@ public class SimpleLoggerContext implements LoggerContext {
                 showContextMap, dateTimeFormat, messageFactory, props, stream);
         loggerRegistry.putIfAbsent(name, messageFactory, simpleLogger);
         return loggerRegistry.getLogger(name, messageFactory);
+    }
+
+    /**
+     * Gets the LoggerRegistry.
+     *
+     * @return the LoggerRegistry.
+     * @since 2.17.2
+     */
+    @Override
+    public LoggerRegistry<ExtendedLogger> getLoggerRegistry() {
+        return loggerRegistry;
     }
 
     @Override

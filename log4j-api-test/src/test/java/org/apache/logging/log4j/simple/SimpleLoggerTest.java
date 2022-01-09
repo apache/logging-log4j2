@@ -30,8 +30,7 @@ import org.junit.jupiter.api.parallel.Resources;
 public class SimpleLoggerTest {
 
     @RegisterExtension
-    public static final LoggerContextFactoryExtension EXTENSION =
-            new LoggerContextFactoryExtension(new SimpleLoggerContextFactory());
+    public static final LoggerContextFactoryExtension EXTENSION = new LoggerContextFactoryExtension(SimpleLoggerContextFactory.INSTANCE);
 
     private final Logger logger = LogManager.getLogger("TestError");
 

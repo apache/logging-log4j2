@@ -22,22 +22,24 @@ import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 
 /**
- *
+ * Simple and stateless {@link LoggerContextFactory}.
  */
 public class SimpleLoggerContextFactory implements LoggerContextFactory {
 
-    private static final LoggerContext context = new SimpleLoggerContext();
+    /**
+     * Singleton instance.
+     */
+    public static final SimpleLoggerContextFactory INSTANCE = new SimpleLoggerContextFactory();
 
     @Override
-    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Object externalContext,
-            final boolean currentContext) {
-        return context;
+    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Object externalContext, final boolean currentContext) {
+        return SimpleLoggerContext.INSTANCE;
     }
 
     @Override
-    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Object externalContext,
-            final boolean currentContext, final URI configLocation, final String name) {
-        return context;
+    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Object externalContext, final boolean currentContext,
+        final URI configLocation, final String name) {
+        return SimpleLoggerContext.INSTANCE;
     }
 
     @Override
