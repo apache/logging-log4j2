@@ -19,8 +19,6 @@ package org.apache.log4j;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.WeakHashMap;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.apache.log4j.helpers.NullEnumeration;
@@ -28,18 +26,16 @@ import org.apache.log4j.legacy.core.CategoryUtil;
 import org.apache.log4j.or.ObjectRenderer;
 import org.apache.log4j.or.RendererMap;
 import org.apache.log4j.spi.AppenderAttachable;
-import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.spi.RendererSupport;
 import org.apache.logging.log4j.message.LocalizedMessage;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.spi.AbstractLoggerAdapter;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -47,25 +43,7 @@ import org.apache.logging.log4j.util.Strings;
  */
 public class Category implements AppenderAttachable {
 
-    private static final PrivateAdapter adapter = new PrivateAdapter();
-
-    private static final Map<LoggerContext, ConcurrentMap<String, Logger>> CONTEXT_MAP =
-        new WeakHashMap<>();
-
     private static final String FQCN = Category.class.getName();
-
-    private static final boolean isCoreAvailable;
-    
-    static {
-        boolean available;
-
-        try {
-            available = Class.forName("org.apache.logging.log4j.core.Logger") != null;
-        } catch (Exception ex) {
-            available = false;
-        }
-        isCoreAvailable = available;
-    }
 
     /**
      * The name of this category.
@@ -79,14 +57,14 @@ public class Category implements AppenderAttachable {
      * to <code>false</code> too. See the user manual for more details.
      */
     protected boolean additive = true;
-    
+
     /**
      * The assigned level of this category. The <code>level</code> variable need not be assigned a value in which case it is
      * inherited form the hierarchy.
      */
     volatile protected Level level;
 
-    private final RendererMap rendererMap;
+    private RendererMap rendererMap;
 
     /**
      * The parent of this category. All categories have at least one ancestor which is the root category.
@@ -112,7 +90,7 @@ public class Category implements AppenderAttachable {
         this.name = name;
         this.logger = context.getLogger(name);
         this.repository = LogManager.getLoggerRepository();
-        this.rendererMap = ((RendererSupport) repository).getRendererMap();
+        //this.rendererMap = ((RendererSupport) repository).getRendererMap();
     }
 
     /**
@@ -120,50 +98,22 @@ public class Category implements AppenderAttachable {
      * @param name The name of the Logger.
      */
     protected Category(final String name) {
-        this(PrivateManager.getContext(), name);
+        this(Hierarchy.getContext(), name);
     }
 
-    private Category(final org.apache.logging.log4j.Logger logger) {
+    Category(final org.apache.logging.log4j.Logger logger) {
         this.logger = logger;
-        rendererMap = ((RendererSupport) LogManager.getLoggerRepository()).getRendererMap();
+        //rendererMap = ((RendererSupport) LogManager.getLoggerRepository()).getRendererMap();
     }
 
     public static Category getInstance(final String name) {
-        return getInstance(PrivateManager.getContext(), name, adapter);
-    }
-
-    static Logger getInstance(final LoggerContext context, final String name) {
-        return getInstance(context, name, adapter);
-    }
-
-    static Logger getInstance(final LoggerContext context, final String name, final LoggerFactory factory) {
-        final ConcurrentMap<String, Logger> loggers = getLoggersMap(context);
-        Logger logger = loggers.get(name);
-        if (logger != null) {
-            return logger;
-        }
-        logger = factory.makeNewLoggerInstance(name);
-        final Logger prev = loggers.putIfAbsent(name, logger);
-        return prev == null ? logger : prev;
-    }
-
-    static Logger getInstance(final LoggerContext context, final String name, final PrivateAdapter factory) {
-        final ConcurrentMap<String, Logger> loggers = getLoggersMap(context);
-        Logger logger = loggers.get(name);
-        if (logger != null) {
-            return logger;
-        }
-        logger = factory.newLogger(name, context);
-        final Logger prev = loggers.putIfAbsent(name, logger);
-        return prev == null ? logger : prev;
+        // Depth 2 gets the call site of this method.
+        return LogManager.getLogger(name, StackLocatorUtil.getCallerClassLoader(2));
     }
 
     public static Category getInstance(@SuppressWarnings("rawtypes") final Class clazz) {
-        return getInstance(clazz.getName());
-    }
-
-    static Logger getInstance(final LoggerContext context, @SuppressWarnings("rawtypes") final Class clazz) {
-        return getInstance(context, clazz.getName());
+        // Depth 2 gets the call site of this method.
+        return LogManager.getLogger(clazz.getName(), StackLocatorUtil.getCallerClassLoader(2));
     }
 
     public final String getName() {
@@ -175,15 +125,15 @@ public class Category implements AppenderAttachable {
     }
 
     public final Category getParent() {
-        if (!isCoreAvailable) {
+        if (!LogManager.isLog4jCorePresent()) {
             return null;
         }
-        org.apache.logging.log4j.Logger parent = CategoryUtil.getParent(logger);
-        LoggerContext loggerContext = CategoryUtil.getLoggerContext(logger);
+        final org.apache.logging.log4j.Logger parent = CategoryUtil.getParent(logger);
+        final LoggerContext loggerContext = CategoryUtil.getLoggerContext(logger);
         if (parent == null || loggerContext == null) {
             return null;
         }
-        final ConcurrentMap<String, Logger> loggers = getLoggersMap(loggerContext);
+        final ConcurrentMap<String, Logger> loggers = Hierarchy.getLoggersMap(loggerContext);
         final Logger parentLogger = loggers.get(parent.getName());
         return parentLogger == null ? new Category(parent) : parentLogger;
     }
@@ -192,35 +142,23 @@ public class Category implements AppenderAttachable {
         return getInstance(Strings.EMPTY);
     }
 
-    static Logger getRoot(final LoggerContext context) {
-        return getInstance(context, Strings.EMPTY);
-    }
-
-    private static ConcurrentMap<String, Logger> getLoggersMap(final LoggerContext context) {
-        synchronized (CONTEXT_MAP) {
-            ConcurrentMap<String, Logger> map = CONTEXT_MAP.get(context);
-            if (map == null) {
-                map = new ConcurrentHashMap<>();
-                CONTEXT_MAP.put(context, map);
-            }
-            return map;
-        }
-    }
-
     /**
-     Returns all the currently defined categories in the default
-     hierarchy as an {@link java.util.Enumeration Enumeration}.
-
-     <p>The root category is <em>not</em> included in the returned
-     {@link Enumeration}.
-     @return and Enumeration of the Categories.
-
-     @deprecated Please use {@link LogManager#getCurrentLoggers()} instead.
+     * Returns all the currently defined categories in the default hierarchy as an
+     * {@link java.util.Enumeration Enumeration}.
+     *
+     * <p>
+     * The root category is <em>not</em> included in the returned
+     * {@link Enumeration}.
+     * </p>
+     *
+     * @return and Enumeration of the Categories.
+     *
+     * @deprecated Please use {@link LogManager#getCurrentLoggers()} instead.
      */
     @SuppressWarnings("rawtypes")
     @Deprecated
     public static Enumeration getCurrentCategories() {
-        return LogManager.getCurrentLoggers();
+        return LogManager.getCurrentLoggers(StackLocatorUtil.getCallerClassLoader(2));
     }
 
     /**
@@ -259,7 +197,7 @@ public class Category implements AppenderAttachable {
 
     /**
      * Gets the the {@link LoggerRepository} where this <code>Category</code> instance is attached.
-     * 
+     *
      * @deprecated Please use {@link #getLoggerRepository()} instead.
      * @since 1.1
      */
@@ -270,7 +208,7 @@ public class Category implements AppenderAttachable {
 
     /**
      * Gets the the {@link LoggerRepository} where this <code>Category</code> is attached.
-     * 
+     *
      * @since 1.2
      */
     public LoggerRepository getLoggerRepository() {
@@ -302,7 +240,7 @@ public class Category implements AppenderAttachable {
     }
 
     private void setLevel(final String levelStr) {
-        if (isCoreAvailable) {
+        if (LogManager.isLog4jCorePresent()) {
             CategoryUtil.setLevel(logger, org.apache.logging.log4j.Level.toLevel(levelStr));
         }
     }
@@ -393,10 +331,10 @@ public class Category implements AppenderAttachable {
      * @since 1.0
      */
     synchronized void closeNestedAppenders() {
-        Enumeration enumeration = this.getAllAppenders();
+        final Enumeration enumeration = this.getAllAppenders();
         if (enumeration != null) {
             while (enumeration.hasMoreElements()) {
-                Appender a = (Appender) enumeration.nextElement();
+                final Appender a = (Appender) enumeration.nextElement();
                 if (a instanceof AppenderAttachable) {
                     a.close();
                 }
@@ -463,11 +401,12 @@ public class Category implements AppenderAttachable {
         final org.apache.logging.log4j.Level lvl = org.apache.logging.log4j.Level.toLevel(level.toString());
         if (logger instanceof ExtendedLogger) {
             @SuppressWarnings("unchecked")
+            final
             Message msg = message instanceof Message ? (Message) message : message instanceof Map ?
                     new MapMessage((Map) message) : new ObjectMessage(message);
             ((ExtendedLogger) logger).logMessage(fqcn, lvl, null, msg, t);
         } else {
-            ObjectRenderer renderer = get(message.getClass());
+            final ObjectRenderer renderer = get(message.getClass());
             final Message msg = message instanceof Message ? (Message) message : renderer != null ?
                     new RenderedMessage(renderer, message) : new ObjectMessage(message);
             logger.log(lvl, msg, t);
@@ -476,24 +415,24 @@ public class Category implements AppenderAttachable {
 
     /**
      * Tests if the named category exists (in the default hierarchy).
-     * 
+     *
      * @param name The name to test.
      * @return Whether the name exists.
-     * 
+     *
      * @deprecated Please use {@link LogManager#exists(String)} instead.
      * @since 0.8.5
      */
     @Deprecated
-    public static boolean exists(final String name) {
-        return PrivateManager.getContext().hasLogger(name);
+    public static Logger exists(final String name) {
+        return LogManager.exists(name);
     }
 
     public boolean getAdditivity() {
-        return isCoreAvailable && CategoryUtil.isAdditive(logger);
+        return LogManager.isLog4jCorePresent() ? CategoryUtil.isAdditive(logger) : false;
     }
 
     public void setAdditivity(final boolean additivity) {
-        if (isCoreAvailable) {
+        if (LogManager.isLog4jCorePresent()) {
             CategoryUtil.setAdditivity(logger, additivity);
         }
     }
@@ -501,7 +440,7 @@ public class Category implements AppenderAttachable {
     /**
      * Only the Hiearchy class can set the hiearchy of a category. Default package access is MANDATORY here.
      */
-    final void setHierarchy(LoggerRepository repository) {
+    final void setHierarchy(final LoggerRepository repository) {
         this.repository = repository;
     }
 
@@ -514,10 +453,10 @@ public class Category implements AppenderAttachable {
             return bundle;
         }
         String name = logger.getName();
-        if (isCoreAvailable) {
-            LoggerContext ctx = CategoryUtil.getLoggerContext(logger);
+        if (LogManager.isLog4jCorePresent()) {
+            final LoggerContext ctx = CategoryUtil.getLoggerContext(logger);
             if (ctx != null) {
-                final ConcurrentMap<String, Logger> loggers = getLoggersMap(ctx);
+                final ConcurrentMap<String, Logger> loggers = Hierarchy.getLoggersMap(ctx);
                 while ((name = getSubName(name)) != null) {
                     final Logger subLogger = loggers.get(name);
                     if (subLogger != null) {
@@ -541,18 +480,18 @@ public class Category implements AppenderAttachable {
     }
 
     /**
-     If <code>assertion</code> parameter is {@code false}, then
-     logs <code>msg</code> as an {@link #error(Object) error} statement.
-
-     <p>The <code>assert</code> method has been renamed to
-     <code>assertLog</code> because <code>assert</code> is a language
-     reserved word in JDK 1.4.
-
-     @param assertion The assertion.
-     @param msg The message to print if <code>assertion</code> is
-     false.
-
-     @since 1.2
+     * If <code>assertion</code> parameter is {@code false}, then logs
+     * <code>msg</code> as an {@link #error(Object) error} statement.
+     *
+     * <p>
+     * The <code>assert</code> method has been renamed to <code>assertLog</code>
+     * because <code>assert</code> is a language reserved word in JDK 1.4.
+     * </p>
+     *
+     * @param assertion The assertion.
+     * @param msg       The message to print if <code>assertion</code> is false.
+     *
+     * @since 1.2
      */
     public void assertLog(final boolean assertion, final String msg) {
         if (!assertion) {
@@ -626,39 +565,11 @@ public class Category implements AppenderAttachable {
         }
     }
 
-    private static class PrivateAdapter extends AbstractLoggerAdapter<Logger> {
-
-        @Override
-        protected Logger newLogger(final String name, final org.apache.logging.log4j.spi.LoggerContext context) {
-            return new Logger(context, name);
-        }
-
-        @Override
-        protected org.apache.logging.log4j.spi.LoggerContext getContext() {
-            return PrivateManager.getContext();
-        }
-    }
-
-    /**
-     * Private LogManager.
-     */
-    private static class PrivateManager extends org.apache.logging.log4j.LogManager {
-        private static final String FQCN = Category.class.getName();
-
-        public static LoggerContext getContext() {
-            return getContext(FQCN, false);
-        }
-
-        public static org.apache.logging.log4j.Logger getLogger(final String name) {
-            return getLogger(FQCN, name);
-        }
-    }
-
     private boolean isEnabledFor(final org.apache.logging.log4j.Level level) {
         return logger.isEnabled(level);
     }
 
-    private ObjectRenderer get(Class clazz) {
+    private <T> ObjectRenderer get(final Class<T> clazz) {
         ObjectRenderer renderer = null;
         for(Class c = clazz; c != null; c = c.getSuperclass()) {
             renderer = rendererMap.get(c);
@@ -673,17 +584,16 @@ public class Category implements AppenderAttachable {
         return null;
     }
 
-    ObjectRenderer searchInterfaces(Class c) {
+    ObjectRenderer searchInterfaces(final Class<?> c) {
         ObjectRenderer renderer = rendererMap.get(c);
         if(renderer != null) {
             return renderer;
-        } else {
-            Class[] ia = c.getInterfaces();
-            for (Class clazz : ia) {
-                renderer = searchInterfaces(clazz);
-                if (renderer != null) {
-                    return renderer;
-                }
+        }
+        final Class<?>[] ia = c.getInterfaces();
+        for (final Class<?> clazz : ia) {
+            renderer = searchInterfaces(clazz);
+            if (renderer != null) {
+                return renderer;
             }
         }
         return null;

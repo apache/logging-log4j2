@@ -17,6 +17,17 @@
 
 package org.apache.log4j;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
+
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -74,7 +85,7 @@ public class CategoryTest {
 
     @Test
     public void testExist() throws Exception {
-        assertFalse(Category.exists("Does not exist for sure"));
+        assertNull(Category.exists("Does not exist for sure"));
     }
 
     /**

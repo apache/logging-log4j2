@@ -18,6 +18,7 @@ package org.apache.log4j;
 
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.logging.log4j.spi.LoggerContext;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 
 /**
  *
@@ -29,28 +30,31 @@ public class Logger extends Category {
      */
     private static final String FQCN = Logger.class.getName();
  
-    protected Logger(final String name) {
-        super(name);
-    }
-
-    Logger(final LoggerContext context, final String name) {
-        super(context, name);
+    public static Logger getLogger(final Class<?> clazz) {
+        // Depth 2 gets the call site of this method.
+        return LogManager.getLogger(clazz.getName(), StackLocatorUtil.getCallerClassLoader(2));
     }
 
     public static Logger getLogger(final String name) {
-        return LogManager.getLogger(name);
+        // Depth 2 gets the call site of this method.
+        return LogManager.getLogger(name, StackLocatorUtil.getCallerClassLoader(2)); 
     }
 
-    public static Logger getLogger(final Class<?> clazz) {
-        return LogManager.getLogger(clazz);
+    public static Logger getLogger(final String name, final LoggerFactory factory) {
+        // Depth 2 gets the call site of this method.
+        return LogManager.getLogger(name, factory, StackLocatorUtil.getCallerClassLoader(2));
     }
 
     public static Logger getRootLogger() {
         return LogManager.getRootLogger();
     }
 
-    public static Logger getLogger(final String name, final LoggerFactory factory) {
-        return LogManager.getLogger(name, factory);
+    Logger(final LoggerContext context, final String name) {
+        super(context, name);
+    }
+
+    protected Logger(final String name) {
+        super(name);
     }
 
     public boolean isTraceEnabled() {
