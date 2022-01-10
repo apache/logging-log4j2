@@ -36,7 +36,6 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.filter.Filterable;
 import org.apache.logging.log4j.core.filter.LevelRangeFilter;
@@ -92,7 +91,6 @@ public class PropertiesConfigurationTest {
     
     @Test
     public void testConsoleAppenderLevelRangeFilter() throws Exception {
-        PluginManager.addPackage("org.apache.log4j.builders.filter");
         try (LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/LOG4J2-3326.properties")) {
             final Configuration configuration = loggerContext.getConfiguration();
             assertNotNull(configuration);
