@@ -261,7 +261,7 @@
     <minSeverity>info</minSeverity>
     <jctoolsVersion>1.2.1</jctoolsVersion>
     <junitVersion>4.13.2</junitVersion>
-    <junitJupiterVersion>5.7.2</junitJupiterVersion>
+    <junitJupiterVersion>5.8.2</junitJupiterVersion>
     <mockitoVersion>4.2.0</mockitoVersion>
     <xmlunitVersion>2.8.3</xmlunitVersion>
     <argLine>-Xms256m -Xmx1024m</argLine>
@@ -709,6 +709,12 @@
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-engine</artifactId>
+        <version>${junitJupiterVersion}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
         <version>${junitJupiterVersion}</version>
         <scope>test</scope>
       </dependency>
