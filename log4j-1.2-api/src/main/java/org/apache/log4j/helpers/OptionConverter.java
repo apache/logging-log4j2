@@ -41,11 +41,21 @@ import java.util.Properties;
  */
 public class OptionConverter {
 
+    private static class CharMap {
+        final char key;
+        final char replacement;
+
+        public CharMap(char key, char replacement) {
+            this.key = key;
+            this.replacement = replacement;
+        }
+    }
     static String DELIM_START = "${";
     static char DELIM_STOP = '}';
     static int DELIM_START_LEN = 2;
     static int DELIM_STOP_LEN = 1;
     private static final Logger LOGGER = LogManager.getLogger(OptionConverter.class);
+
     private static final CharMap[] charMap = new CharMap[] {
         new CharMap('n', '\n'),
         new CharMap('r', '\r'),
@@ -57,12 +67,6 @@ public class OptionConverter {
         new CharMap('\\', '\\')
     };
 
-    /**
-     * OptionConverter is a static class.
-     */
-    private OptionConverter() {
-    }
-
     public static String[] concatanateArrays(String[] l, String[] r) {
         int len = l.length + r.length;
         String[] a = new String[len];
@@ -71,6 +75,57 @@ public class OptionConverter {
         System.arraycopy(r, 0, a, l.length, r.length);
 
         return a;
+    }
+
+    public static  org.apache.logging.log4j.Level convertLevel(Level level) {
+        if (level == null) {
+            return org.apache.logging.log4j.Level.ERROR;
+        }
+        if (level.isGreaterOrEqual(Level.FATAL)) {
+            return org.apache.logging.log4j.Level.FATAL;
+        } else if (level.isGreaterOrEqual(Level.ERROR)) {
+            return org.apache.logging.log4j.Level.ERROR;
+        } else if (level.isGreaterOrEqual(Level.WARN)) {
+            return org.apache.logging.log4j.Level.WARN;
+        } else if (level.isGreaterOrEqual(Level.INFO)) {
+            return org.apache.logging.log4j.Level.INFO;
+        } else if (level.isGreaterOrEqual(Level.DEBUG)) {
+            return org.apache.logging.log4j.Level.DEBUG;
+        } else if (level.isGreaterOrEqual(Level.TRACE)) {
+            return org.apache.logging.log4j.Level.TRACE;
+        }
+        return org.apache.logging.log4j.Level.ALL;
+    }
+
+
+    public static Level convertLevel(org.apache.logging.log4j.Level level) {
+        if (level == null) {
+            return Level.ERROR;
+        }
+        switch (level.getStandardLevel()) {
+            case FATAL:
+                return Level.FATAL;
+            case WARN:
+                return Level.WARN;
+            case INFO:
+                return Level.INFO;
+            case DEBUG:
+                return Level.DEBUG;
+            case TRACE:
+                return Level.TRACE;
+            case ALL:
+                return Level.ALL;
+            case OFF:
+                return Level.OFF;
+            default:
+                return Level.ERROR;
+        }
+    }
+
+    public static org.apache.logging.log4j.Level convertLevel(String level,
+            org.apache.logging.log4j.Level defaultLevel) {
+        Level l = toLevel(level, null);
+        return l != null ? convertLevel(l) : defaultLevel;
     }
 
     public static String convertSpecialChars(String s) {
@@ -94,6 +149,28 @@ public class OptionConverter {
         return sbuf.toString();
     }
 
+    /**
+     * Find the value corresponding to <code>key</code> in
+     * <code>props</code>. Then perform variable substitution on the
+     * found value.
+     * @param key The key used to locate the substitution string.
+     * @param props The properties to use in the substitution.
+     * @return The substituted string.
+     */
+    public static String findAndSubst(String key, Properties props) {
+        String value = props.getProperty(key);
+        if (value == null) {
+            return null;
+        }
+
+        try {
+            return substVars(value, props);
+        } catch (IllegalArgumentException e) {
+            LOGGER.error("Bad option value [{}].", value, e);
+            return value;
+        }
+    }
+
 
     /**
      * Very similar to <code>System.getProperty</code> except
@@ -111,6 +188,207 @@ public class OptionConverter {
         } catch (Throwable e) { // MS-Java throws com.ms.security.SecurityExceptionEx
             LOGGER.debug("Was not allowed to read system property \"{}\".", key);
             return def;
+        }
+    }
+
+    /**
+     * Instantiate an object given a class name. Check that the
+     * <code>className</code> is a subclass of
+     * <code>superClass</code>. If that test fails or the object could
+     * not be instantiated, then <code>defaultValue</code> is returned.
+     *
+     * @param className    The fully qualified class name of the object to instantiate.
+     * @param superClass   The class to which the new object should belong.
+     * @param defaultValue The object to return in case of non-fulfillment
+     * @return The created object.
+     */
+    public static Object instantiateByClassName(String className, Class<?> superClass,
+            Object defaultValue) {
+        if (className != null) {
+            try {
+                Object obj = LoaderUtil.newInstanceOf(className);
+                if (!superClass.isAssignableFrom(obj.getClass())) {
+                    LOGGER.error("A \"{}\" object is not assignable to a \"{}\" variable", className,
+                            superClass.getName());
+                    return defaultValue;
+                }
+                return obj;
+            } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException
+                    | InstantiationException | InvocationTargetException e) {
+                LOGGER.error("Could not instantiate class [" + className + "].", e);
+            }
+        }
+        return defaultValue;
+    }
+
+    /**
+     * Configure log4j given an {@link InputStream}.
+     * <p>
+     * The InputStream will be interpreted by a new instance of a log4j configurator.
+     * </p>
+     * <p>
+     * All configurations steps are taken on the <code>hierarchy</code> passed as a parameter.
+     * </p>
+     * 
+     * @param inputStream The configuration input stream.
+     * @param clazz The class name, of the log4j configurator which will parse the <code>inputStream</code>. This must be a
+     *        subclass of {@link Configurator}, or null. If this value is null then a default configurator of
+     *        {@link PropertyConfigurator} is used.
+     * @param hierarchy The {@link LoggerRepository} to act on.
+     * @since 1.2.17
+     */
+    static public void selectAndConfigure(InputStream inputStream, String clazz, LoggerRepository hierarchy) {
+        Configurator configurator = null;
+
+        if (clazz != null) {
+            LOGGER.debug("Preferred configurator class: " + clazz);
+            configurator = (Configurator) instantiateByClassName(clazz, Configurator.class, null);
+            if (configurator == null) {
+                LOGGER.error("Could not instantiate configurator [" + clazz + "].");
+                return;
+            }
+        } else {
+            configurator = new PropertyConfigurator();
+        }
+
+        configurator.doConfigure(inputStream, hierarchy);
+    }
+
+    /**
+     * Configure log4j given a URL.
+     * <p>
+     * The url must point to a file or resource which will be interpreted by a new instance of a log4j configurator.
+     * </p>
+     * <p>
+     * All configurations steps are taken on the <code>hierarchy</code> passed as a parameter.
+     * </p>
+     * 
+     * @param url The location of the configuration file or resource.
+     * @param clazz The classname, of the log4j configurator which will parse the file or resource at <code>url</code>. This
+     *        must be a subclass of {@link Configurator}, or null. If this value is null then a default configurator of
+     *        {@link PropertyConfigurator} is used, unless the filename pointed to by <code>url</code> ends in '.xml', in
+     *        which case {@link org.apache.log4j.xml.DOMConfigurator} is used.
+     * @param hierarchy The {@link LoggerRepository} to act on.
+     * 
+     * @since 1.1.4
+     */
+    static public void selectAndConfigure(URL url, String clazz, LoggerRepository hierarchy) {
+        Configurator configurator = null;
+        String filename = url.getFile();
+
+        if (clazz == null && filename != null && filename.endsWith(".xml")) {
+            clazz = "org.apache.log4j.xml.DOMConfigurator";
+        }
+
+        if (clazz != null) {
+            LOGGER.debug("Preferred configurator class: " + clazz);
+            configurator = (Configurator) instantiateByClassName(clazz, Configurator.class, null);
+            if (configurator == null) {
+                LOGGER.error("Could not instantiate configurator [" + clazz + "].");
+                return;
+            }
+        } else {
+            configurator = new PropertyConfigurator();
+        }
+
+        configurator.doConfigure(url, hierarchy);
+    }
+
+    /**
+     * Perform variable substitution in string <code>val</code> from the
+     * values of keys found in the system propeties.
+     *
+     * <p>The variable substitution delimeters are <b>${</b> and <b>}</b>.
+     *
+     * <p>For example, if the System properties contains "key=value", then
+     * the call
+     * <pre>
+     * String s = OptionConverter.substituteVars("Value of key is ${key}.");
+     * </pre>
+     * <p>
+     * will set the variable <code>s</code> to "Value of key is value.".
+     *
+     * <p>If no value could be found for the specified key, then the
+     * <code>props</code> parameter is searched, if the value could not
+     * be found there, then substitution defaults to the empty string.
+     *
+     * <p>For example, if system propeties contains no value for the key
+     * "inexistentKey", then the call
+     *
+     * <pre>
+     * String s = OptionConverter.subsVars("Value of inexistentKey is [${inexistentKey}]");
+     * </pre>
+     * will set <code>s</code> to "Value of inexistentKey is []"
+     *
+     * <p>An {@link IllegalArgumentException} is thrown if
+     * <code>val</code> contains a start delimeter "${" which is not
+     * balanced by a stop delimeter "}". </p>
+     *
+     * <p><b>Author</b> Avy Sharell</p>
+     *
+     * @param val The string on which variable substitution is performed.
+     * @param props The properties to use for the substitution.
+     * @return The substituted string.
+     * @throws IllegalArgumentException if <code>val</code> is malformed.
+     */
+    public static String substVars(String val, Properties props) throws IllegalArgumentException {
+        return substVars(val, props, new ArrayList<>());
+    }
+
+    private static String substVars(final String val, final Properties props, List<String> keys)
+            throws IllegalArgumentException {
+
+        final StringBuilder sbuf = new StringBuilder();
+
+        int i = 0;
+        int j;
+        int k;
+
+        while (true) {
+            j = val.indexOf(DELIM_START, i);
+            if (j == -1) {
+                // no more variables
+                if (i == 0) { // this is a simple string
+                    return val;
+                }
+                // add the tail string which contails no variables and return the result.
+                sbuf.append(val.substring(i, val.length()));
+                return sbuf.toString();
+            }
+            sbuf.append(val.substring(i, j));
+            k = val.indexOf(DELIM_STOP, j);
+            if (k == -1) {
+                throw new IllegalArgumentException(Strings.dquote(val)
+                        + " has no closing brace. Opening brace at position " + j
+                        + '.');
+            }
+            j += DELIM_START_LEN;
+            final String key = val.substring(j, k);
+            // first try in System properties
+            String replacement = PropertiesUtil.getProperties().getStringProperty(key, null);
+            // then try props parameter
+            if (replacement == null && props != null) {
+                replacement = props.getProperty(key);
+            }
+
+            if (replacement != null) {
+
+                // Do variable substitution on the replacement string
+                // such that we can solve "Hello ${x2}" as "Hello p1"
+                // the where the properties are
+                // x1=p1
+                // x2=${x1}
+                if (!keys.contains(key)) {
+                    List<String> usedKeys = new ArrayList<>(keys);
+                    usedKeys.add(key);
+                    final String recursiveReplacement = substVars(replacement, props, usedKeys);
+                    sbuf.append(recursiveReplacement);
+                } else {
+                    sbuf.append(replacement);
+                }
+
+            }
+            i = k + DELIM_STOP_LEN;
         }
     }
 
@@ -232,286 +510,8 @@ public class OptionConverter {
     }
 
     /**
-     * Instantiate an object given a class name. Check that the
-     * <code>className</code> is a subclass of
-     * <code>superClass</code>. If that test fails or the object could
-     * not be instantiated, then <code>defaultValue</code> is returned.
-     *
-     * @param className    The fully qualified class name of the object to instantiate.
-     * @param superClass   The class to which the new object should belong.
-     * @param defaultValue The object to return in case of non-fulfillment
-     * @return The created object.
+     * OptionConverter is a static class.
      */
-    public static Object instantiateByClassName(String className, Class<?> superClass,
-            Object defaultValue) {
-        if (className != null) {
-            try {
-                Object obj = LoaderUtil.newInstanceOf(className);
-                if (!superClass.isAssignableFrom(obj.getClass())) {
-                    LOGGER.error("A \"{}\" object is not assignable to a \"{}\" variable", className,
-                            superClass.getName());
-                    return defaultValue;
-                }
-                return obj;
-            } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException
-                    | InstantiationException | InvocationTargetException e) {
-                LOGGER.error("Could not instantiate class [" + className + "].", e);
-            }
-        }
-        return defaultValue;
-    }
-
-
-    /**
-     * Perform variable substitution in string <code>val</code> from the
-     * values of keys found in the system propeties.
-     *
-     * <p>The variable substitution delimeters are <b>${</b> and <b>}</b>.
-     *
-     * <p>For example, if the System properties contains "key=value", then
-     * the call
-     * <pre>
-     * String s = OptionConverter.substituteVars("Value of key is ${key}.");
-     * </pre>
-     * <p>
-     * will set the variable <code>s</code> to "Value of key is value.".
-     *
-     * <p>If no value could be found for the specified key, then the
-     * <code>props</code> parameter is searched, if the value could not
-     * be found there, then substitution defaults to the empty string.
-     *
-     * <p>For example, if system propeties contains no value for the key
-     * "inexistentKey", then the call
-     *
-     * <pre>
-     * String s = OptionConverter.subsVars("Value of inexistentKey is [${inexistentKey}]");
-     * </pre>
-     * will set <code>s</code> to "Value of inexistentKey is []"
-     *
-     * <p>An {@link IllegalArgumentException} is thrown if
-     * <code>val</code> contains a start delimeter "${" which is not
-     * balanced by a stop delimeter "}". </p>
-     *
-     * <p><b>Author</b> Avy Sharell</p>
-     *
-     * @param val The string on which variable substitution is performed.
-     * @param props The properties to use for the substitution.
-     * @return The substituted string.
-     * @throws IllegalArgumentException if <code>val</code> is malformed.
-     */
-    public static String substVars(String val, Properties props) throws IllegalArgumentException {
-        return substVars(val, props, new ArrayList<>());
-    }
-
-    private static String substVars(final String val, final Properties props, List<String> keys)
-            throws IllegalArgumentException {
-
-        final StringBuilder sbuf = new StringBuilder();
-
-        int i = 0;
-        int j;
-        int k;
-
-        while (true) {
-            j = val.indexOf(DELIM_START, i);
-            if (j == -1) {
-                // no more variables
-                if (i == 0) { // this is a simple string
-                    return val;
-                }
-                // add the tail string which contails no variables and return the result.
-                sbuf.append(val.substring(i, val.length()));
-                return sbuf.toString();
-            }
-            sbuf.append(val.substring(i, j));
-            k = val.indexOf(DELIM_STOP, j);
-            if (k == -1) {
-                throw new IllegalArgumentException(Strings.dquote(val)
-                        + " has no closing brace. Opening brace at position " + j
-                        + '.');
-            }
-            j += DELIM_START_LEN;
-            final String key = val.substring(j, k);
-            // first try in System properties
-            String replacement = PropertiesUtil.getProperties().getStringProperty(key, null);
-            // then try props parameter
-            if (replacement == null && props != null) {
-                replacement = props.getProperty(key);
-            }
-
-            if (replacement != null) {
-
-                // Do variable substitution on the replacement string
-                // such that we can solve "Hello ${x2}" as "Hello p1"
-                // the where the properties are
-                // x1=p1
-                // x2=${x1}
-                if (!keys.contains(key)) {
-                    List<String> usedKeys = new ArrayList<>(keys);
-                    usedKeys.add(key);
-                    final String recursiveReplacement = substVars(replacement, props, usedKeys);
-                    sbuf.append(recursiveReplacement);
-                } else {
-                    sbuf.append(replacement);
-                }
-
-            }
-            i = k + DELIM_STOP_LEN;
-        }
-    }
-
-    public static org.apache.logging.log4j.Level convertLevel(String level,
-            org.apache.logging.log4j.Level defaultLevel) {
-        Level l = toLevel(level, null);
-        return l != null ? convertLevel(l) : defaultLevel;
-    }
-
-    public static  org.apache.logging.log4j.Level convertLevel(Level level) {
-        if (level == null) {
-            return org.apache.logging.log4j.Level.ERROR;
-        }
-        if (level.isGreaterOrEqual(Level.FATAL)) {
-            return org.apache.logging.log4j.Level.FATAL;
-        } else if (level.isGreaterOrEqual(Level.ERROR)) {
-            return org.apache.logging.log4j.Level.ERROR;
-        } else if (level.isGreaterOrEqual(Level.WARN)) {
-            return org.apache.logging.log4j.Level.WARN;
-        } else if (level.isGreaterOrEqual(Level.INFO)) {
-            return org.apache.logging.log4j.Level.INFO;
-        } else if (level.isGreaterOrEqual(Level.DEBUG)) {
-            return org.apache.logging.log4j.Level.DEBUG;
-        } else if (level.isGreaterOrEqual(Level.TRACE)) {
-            return org.apache.logging.log4j.Level.TRACE;
-        }
-        return org.apache.logging.log4j.Level.ALL;
-    }
-
-    public static Level convertLevel(org.apache.logging.log4j.Level level) {
-        if (level == null) {
-            return Level.ERROR;
-        }
-        switch (level.getStandardLevel()) {
-            case FATAL:
-                return Level.FATAL;
-            case WARN:
-                return Level.WARN;
-            case INFO:
-                return Level.INFO;
-            case DEBUG:
-                return Level.DEBUG;
-            case TRACE:
-                return Level.TRACE;
-            case ALL:
-                return Level.ALL;
-            case OFF:
-                return Level.OFF;
-            default:
-                return Level.ERROR;
-        }
-    }
-
-    /**
-     * Configure log4j given an {@link InputStream}.
-     * <p>
-     * The InputStream will be interpreted by a new instance of a log4j configurator.
-     * </p>
-     * <p>
-     * All configurations steps are taken on the <code>hierarchy</code> passed as a parameter.
-     * </p>
-     * 
-     * @param inputStream The configuration input stream.
-     * @param clazz The class name, of the log4j configurator which will parse the <code>inputStream</code>. This must be a
-     *        subclass of {@link Configurator}, or null. If this value is null then a default configurator of
-     *        {@link PropertyConfigurator} is used.
-     * @param hierarchy The {@link LoggerRepository} to act on.
-     * @since 1.2.17
-     */
-    static public void selectAndConfigure(InputStream inputStream, String clazz, LoggerRepository hierarchy) {
-        Configurator configurator = null;
-
-        if (clazz != null) {
-            LOGGER.debug("Preferred configurator class: " + clazz);
-            configurator = (Configurator) instantiateByClassName(clazz, Configurator.class, null);
-            if (configurator == null) {
-                LOGGER.error("Could not instantiate configurator [" + clazz + "].");
-                return;
-            }
-        } else {
-            configurator = new PropertyConfigurator();
-        }
-
-        configurator.doConfigure(inputStream, hierarchy);
-    }
-
-    /**
-     * Configure log4j given a URL.
-     * <p>
-     * The url must point to a file or resource which will be interpreted by a new instance of a log4j configurator.
-     * </p>
-     * <p>
-     * All configurations steps are taken on the <code>hierarchy</code> passed as a parameter.
-     * </p>
-     * 
-     * @param url The location of the configuration file or resource.
-     * @param clazz The classname, of the log4j configurator which will parse the file or resource at <code>url</code>. This
-     *        must be a subclass of {@link Configurator}, or null. If this value is null then a default configurator of
-     *        {@link PropertyConfigurator} is used, unless the filename pointed to by <code>url</code> ends in '.xml', in
-     *        which case {@link org.apache.log4j.xml.DOMConfigurator} is used.
-     * @param hierarchy The {@link LoggerRepository} to act on.
-     * 
-     * @since 1.1.4
-     */
-    static public void selectAndConfigure(URL url, String clazz, LoggerRepository hierarchy) {
-        Configurator configurator = null;
-        String filename = url.getFile();
-
-        if (clazz == null && filename != null && filename.endsWith(".xml")) {
-            clazz = "org.apache.log4j.xml.DOMConfigurator";
-        }
-
-        if (clazz != null) {
-            LOGGER.debug("Preferred configurator class: " + clazz);
-            configurator = (Configurator) instantiateByClassName(clazz, Configurator.class, null);
-            if (configurator == null) {
-                LOGGER.error("Could not instantiate configurator [" + clazz + "].");
-                return;
-            }
-        } else {
-            configurator = new PropertyConfigurator();
-        }
-
-        configurator.doConfigure(url, hierarchy);
-    }
-
-    /**
-     * Find the value corresponding to <code>key</code> in
-     * <code>props</code>. Then perform variable substitution on the
-     * found value.
-     * @param key The key used to locate the substitution string.
-     * @param props The properties to use in the substitution.
-     * @return The substituted string.
-     */
-    public static String findAndSubst(String key, Properties props) {
-        String value = props.getProperty(key);
-        if (value == null) {
-            return null;
-        }
-
-        try {
-            return substVars(value, props);
-        } catch (IllegalArgumentException e) {
-            LOGGER.error("Bad option value [{}].", value, e);
-            return value;
-        }
-    }
-
-    private static class CharMap {
-        final char key;
-        final char replacement;
-
-        public CharMap(char key, char replacement) {
-            this.key = key;
-            this.replacement = replacement;
-        }
+    private OptionConverter() {
     }
 }
