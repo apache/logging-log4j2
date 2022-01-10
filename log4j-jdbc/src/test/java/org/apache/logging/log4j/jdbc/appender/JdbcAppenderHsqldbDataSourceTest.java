@@ -26,6 +26,7 @@ import org.apache.logging.log4j.jdbc.appender.AbstractConnectionSource;
  *
  */
 public class JdbcAppenderHsqldbDataSourceTest extends AbstractJdbcAppenderDataSourceTest {
+
     public JdbcAppenderHsqldbDataSourceTest() {
         super(new JdbcRule(
             new AbstractConnectionSource() {
@@ -38,7 +39,7 @@ public class JdbcAppenderHsqldbDataSourceTest extends AbstractJdbcAppenderDataSo
                 "id INTEGER IDENTITY, eventDate DATETIME, literalColumn VARCHAR(255), level VARCHAR(10), " +
                 "logger VARCHAR(255), message VARCHAR(1024), exception CLOB, anotherDate TIMESTAMP" +
                 ")",
-            "DROP TABLE dsLogEntry"
+            "DROP TABLE IF EXISTS dsLogEntry"
         ));
     }
 }

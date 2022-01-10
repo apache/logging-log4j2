@@ -21,23 +21,22 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.jdbc.appender.DriverManagerConnectionSource;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class DriverManagerConnectionSourceTest {
+public class DriverManagerH2ConnectionSourceTest extends AbstractH2Test {
 
     @Test
     public void testH2Properties() throws SQLException {
-        Property[] properties = new Property[] {
+        final Property[] properties = new Property[] {
                 // @formatter:off
                 Property.createProperty("username", JdbcH2TestHelper.USER_NAME),
                 Property.createProperty("password", JdbcH2TestHelper.PASSWORD),
                 // @formatter:on
         };
         // @formatter:off
-        DriverManagerConnectionSource source = DriverManagerConnectionSource.newBuilder()
-            .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_MEM)
+        final DriverManagerConnectionSource source = DriverManagerConnectionSource.newBuilder()
+            .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_IN_MEMORY)
             .setProperties(properties)
             .build();
         // @formatter:on
@@ -49,8 +48,8 @@ public class DriverManagerConnectionSourceTest {
     @Test
     public void testH2UserAndPassword() throws SQLException {
         // @formatter:off
-        DriverManagerConnectionSource source = DriverManagerConnectionSource.newBuilder()
-            .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_MEM)
+        final DriverManagerConnectionSource source = DriverManagerConnectionSource.newBuilder()
+            .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_IN_MEMORY)
             .setUserName(JdbcH2TestHelper.USER_NAME.toCharArray())
             .setPassword(JdbcH2TestHelper.PASSWORD.toCharArray())
             .build();
