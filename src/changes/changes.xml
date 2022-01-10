@@ -118,7 +118,7 @@
       <action dev="ggregory" type="fix" issue="LOG4J2-3326" due-to="Benjamin Röhl, Gary Gregory">
         Log4j 1.2 bridge fixes parsing filters in properties configuration file #680.
       </action>
-      <action dev="ggregory" type="fix" issue="LOG4J2-3326" due-to="Benjamin Röhl, Gary Gregory">
+      <action dev="ggregory" type="fix" issue="LOG4J2-3326" due-to="Gary Gregory">
         Log4j 1.2 bridge missing OptionConverter.instantiateByKey(Properties, String, Class, Object).
       </action>
       <action dev="ggregory" type="fix">
