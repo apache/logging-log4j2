@@ -262,7 +262,7 @@
     <jctoolsVersion>1.2.1</jctoolsVersion>
     <junitVersion>4.13.2</junitVersion>
     <junitJupiterVersion>5.7.2</junitJupiterVersion>
-    <mockitoVersion>3.11.2</mockitoVersion>
+    <mockitoVersion>4.2.0</mockitoVersion>
     <xmlunitVersion>2.8.3</xmlunitVersion>
     <argLine>-Xms256m -Xmx1024m</argLine>
     <javaTargetVersion>1.8</javaTargetVersion>

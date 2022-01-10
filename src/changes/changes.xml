@@ -135,6 +135,9 @@
       <action dev="ggregory" type="udpate" due-to="Dependabot">
         Bump awaitility from 4.0.3 to 4.1.1 #663.
       </action>
+      <action dev="ggregory" type="udpate" due-to="Dependabot">
+        Bump Mockito from 3.11.2 to 4.2.0.
+      </action>
 	</release>
     <release version="2.17.1" date="2021-12-27" description="GA Release 2.17.1">
       <!-- FIXES -->
