@@ -221,6 +221,18 @@ public class OptionConverter {
         return defaultValue;
     }
 
+    public static Object instantiateByKey(Properties props, String key, Class superClass, Object defaultValue) {
+
+        // Get the value of the property in string form
+        String className = findAndSubst(key, props);
+        if (className == null) {
+            LogLog.error("Could not find value for key " + key);
+            return defaultValue;
+        }
+        // Trim className to avoid trailing spaces that cause problems.
+        return OptionConverter.instantiateByClassName(className.trim(), superClass, defaultValue);
+    }
+
     /**
      * Configure log4j given an {@link InputStream}.
      * <p>
