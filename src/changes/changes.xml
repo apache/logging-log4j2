@@ -115,6 +115,9 @@
       <action dev="ggregory" type="fix">
         Log4j 1.2 bridge implements LogManager.getCurrentLoggers() fully.
       </action>
+      <action dev="ggregory" type="fix" issue="LOG4J2-3326" due-to="Benjamin Röhl, Gary Gregory">
+        Fix parsing filters from Log4j 1.2 properties configuration file #680.
+      </action>
       <action dev="ggregory" type="fix">
         JndiManager reverts to 2.17.0 behavior: Read the system property for each call.
       </action>
