@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.config.Property;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class DriverManagerConnectionSourceTest {
+public class DriverManagerH2ConnectionSourceTest extends AbstractH2Test {
 
     @Test
     public void testH2Properties() throws SQLException {
@@ -36,7 +36,7 @@ public class DriverManagerConnectionSourceTest {
         };
         // @formatter:off
         final DriverManagerConnectionSource source = DriverManagerConnectionSource.newBuilder()
-            .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_MEM)
+            .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_IN_MEMORY)
             .setProperties(properties)
             .build();
         // @formatter:on
@@ -49,7 +49,7 @@ public class DriverManagerConnectionSourceTest {
     public void testH2UserAndPassword() throws SQLException {
         // @formatter:off
         final DriverManagerConnectionSource source = DriverManagerConnectionSource.newBuilder()
-            .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_MEM)
+            .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_IN_MEMORY)
             .setUserName(JdbcH2TestHelper.USER_NAME.toCharArray())
             .setPassword(JdbcH2TestHelper.PASSWORD.toCharArray())
             .build();

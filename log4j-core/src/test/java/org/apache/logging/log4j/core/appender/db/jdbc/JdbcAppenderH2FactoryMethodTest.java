@@ -16,24 +16,37 @@
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.apache.logging.log4j.junit.JdbcRule;
+import org.junit.Before;
 
 /**
  *
  */
 public class JdbcAppenderH2FactoryMethodTest extends AbstractJdbcAppenderFactoryMethodTest {
+
     public JdbcAppenderH2FactoryMethodTest() {
         super(new JdbcRule(JdbcH2TestHelper.TEST_CONFIGURATION_SOURCE_MEM,
                 "CREATE TABLE fmLogEntry ("
-                        + "id INTEGER IDENTITY, eventDate DATETIME, literalColumn VARCHAR(255), level NVARCHAR(10), "
+                        + "id INTEGER, eventDate DATETIME, literalColumn VARCHAR(255), level NVARCHAR(10), "
                         + "logger NVARCHAR(255), message VARCHAR(1024), exception NCLOB, anotherDate TIMESTAMP)",
-                "DROP TABLE fmLogEntry"), "h2");
+                "DROP TABLE IF EXISTS fmLogEntry"), "h2");
+    }
+
+    @Before
+    public void afterEachDeleteDir() throws IOException {
+        JdbcH2TestHelper.deleteDir();
+    }
+
+    @Before
+    public void beforeEachDeleteDir() throws IOException {
+        JdbcH2TestHelper.deleteDir();
     }
 
     public static Connection getConnection() throws SQLException {
-        return JdbcH2TestHelper.getConnectionMem();
+        return JdbcH2TestHelper.getConnectionInMemory();
     }
 }

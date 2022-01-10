@@ -16,17 +16,28 @@
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
-import org.apache.commons.lang3.SystemUtils;
+import java.io.IOException;
+
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 
 /**
- * Constants for testing H2.
+ * Abstracts H2 test clean up.
  */
-public class H2TestConstants {
+public abstract class AbstractH2Test {
 
-	public static final String JDBC_DRIVER_CLASS_NAME = "org.h2.Driver";
-	public static final String CONNECTION_STRING = "jdbc:h2:" + SystemUtils.JAVA_IO_TMPDIR
-			+ "/h2/h2_test0;TRACE_LEVEL_SYSTEM_OUT=0";
-	public static final char[] USER = null;
-	public static final char[] PASSWORD = null;
+    @AfterClass
+    @BeforeClass
+    public static void classDeleteDir() throws IOException {
+        JdbcH2TestHelper.deleteDir();
+    }
+
+    @After
+    @Before
+    public void deleteDir() throws IOException {
+        JdbcH2TestHelper.deleteDir();
+    }
 
 }
