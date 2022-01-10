@@ -549,7 +549,7 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
             String clazz = props.getProperty(entry.getKey());
             Filter filter = null;
             if (clazz != null) {
-                filter = manager.parseFilter(clazz, filterPrefix, props, this);
+                filter = manager.parseFilter(clazz, entry.getKey(), props, this);
                 if (filter == null) {
                     LOGGER.debug("Filter key: [{}] class: [{}] props: {}", entry.getKey(), clazz, entry.getValue());
                     filter = buildFilter(clazz, appenderName, entry.getValue());
