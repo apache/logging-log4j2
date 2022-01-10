@@ -263,6 +263,9 @@
       <action dev="ggregory" type="fix" issue="LOG4J2-3326" due-to="Gary Gregory">
         Log4j 1.2 bridge missing OptionConverter.instantiateByKey(Properties, String, Class, Object).
       </action>
+      <action dev="ggregory" type="fix" issue="LOG4J2-3326" due-to="Gary Gregory">
+        Log4j 1.2 bridge class org.apache.log4j.spi.LoggingEvent missing constructors and public instance variable.
+      </action>
       <!-- ADD -->
       <action issue="LOG4J2-3282" dev="ckozak" type="add" due-to="Michael Vorburger">
         Add the log4j-to-jul JDK Logging Bridge
