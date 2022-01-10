@@ -20,10 +20,12 @@ import java.io.IOException;
 import java.net.SocketException;
 
 import org.apache.logging.log4j.core.appender.SyslogAppender.Builder;
+import org.apache.logging.log4j.core.layout.Rfc5424Layout;
 import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.net.mock.MockSyslogServerFactory;
 import org.apache.logging.log4j.util.EnglishEnums;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -125,7 +127,14 @@ public class SyslogAppenderTest extends SyslogAppenderTestBase {
             .setNewLine(newLine)
             .setAppName("TestApp")
             .setMsgId("Test")
-            .setFormat(format);
+            .setFormat(format)
+            .setTimestampPrecision("microsecond");
         // @formatter:on
+    }
+    
+    @Override
+    protected void validate(final Rfc5424Layout layout) {
+		super.validate(layout);
+		Assert.assertEquals("microsecond", layout.getTimestampPrecision());
     }
 }

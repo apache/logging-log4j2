@@ -686,4 +686,8 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     public Facility getFacility() {
         return facility;
     }
+    
+	public String getTimestampPrecision() {
+		return timestampPrecision;
+	}
 }
