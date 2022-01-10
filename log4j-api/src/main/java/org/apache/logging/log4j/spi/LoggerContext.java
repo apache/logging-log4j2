@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.spi;
 
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.MessageFactory;
 
 /**
@@ -24,72 +25,13 @@ import org.apache.logging.log4j.message.MessageFactory;
 public interface LoggerContext {
 
     /**
-     * An anchor for some other context, such as a ClassLoader or ServletContext.
+     * Gets the anchor for some other context, such as a ClassLoader or ServletContext.
      * @return The external context.
      */
     Object getExternalContext();
 
     /**
-     * Retrieve an object by its name.
-     * @param key The object's key.
-     * @since 2.13.0
-     */
-    default Object getObject(String key) {
-        return null;
-    }
-
-    /**
-     * Store an object into the LoggerContext by name for later use.
-     * @param key The object's key.
-     * @param value The object.
-     * @return The previous object or null.
-     * @since 2.13.0
-     */
-    default Object putObject(String key, Object value) {
-        return null;
-    }
-
-    /**
-     * Store an object into the LoggerContext by name for later use if an object is not already stored with that key.
-     * @param key The object's key.
-     * @param value The object.
-     * @return The previous object or null.
-     * @since 2.13.0
-     */
-    default Object putObjectIfAbsent(String key, Object value) {
-        return null;
-    }
-
-    /**
-     * Remove an object if it is present.
-     * @param key The object's key.
-     * @return The object if it was present, null if it was not.
-     * @since 2.13.0
-     */
-    default Object removeObject(String key) {
-        return null;
-    }
-
-    /**
-     * Remove an object if it is present and the provided object is stored.
-     * @param key The object's key.
-     * @param value The object.
-     * @return The object if it was present, null if it was not.
-     * @since 2.13.0
-     */
-    default boolean removeObject(String key, Object value) {
-        return false;
-    }
-
-    /**
-     * Returns an ExtendedLogger.
-     * @param name The name of the Logger to return.
-     * @return The logger with the specified name.
-     */
-    ExtendedLogger getLogger(String name);
-
-    /**
-     * Returns an ExtendedLogger using the fully qualified name of the Class as the Logger name.
+     * Gets an ExtendedLogger using the fully qualified name of the Class as the Logger name.
      * @param cls The Class whose name should be used as the Logger name.
      * @return The logger.
      * @since 2.14.0
@@ -99,17 +41,9 @@ public interface LoggerContext {
         return getLogger(canonicalName != null ? canonicalName : cls.getName());
     }
 
-    /**
-     * Returns an ExtendedLogger.
-     * @param name The name of the Logger to return.
-     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change
-     *                       the logger but will log a warning if mismatched.
-     * @return The logger with the specified name.
-     */
-    ExtendedLogger getLogger(String name, MessageFactory messageFactory);
 
     /**
-     * Returns an ExtendedLogger using the fully qualified name of the Class as the Logger name.
+     * Gets an ExtendedLogger using the fully qualified name of the Class as the Logger name.
      * @param cls The Class whose name should be used as the Logger name.
      * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change the
      *                       logger but will log a warning if mismatched.
@@ -122,14 +56,59 @@ public interface LoggerContext {
     }
 
     /**
-     * Detects if a Logger with the specified name exists.
+     * Gets an ExtendedLogger.
+     * @param name The name of the Logger to return.
+     * @return The logger with the specified name.
+     */
+    ExtendedLogger getLogger(String name);
+
+    /**
+     * Gets an ExtendedLogger.
+     * @param name The name of the Logger to return.
+     * @param messageFactory The message factory is used only when creating a logger, subsequent use does not change
+     *                       the logger but will log a warning if mismatched.
+     * @return The logger with the specified name.
+     */
+    ExtendedLogger getLogger(String name, MessageFactory messageFactory);
+
+    /**
+     * Gets the LoggerRegistry.
+     *
+     * @return the LoggerRegistry.
+     * @since 2.17.2
+     */
+    default LoggerRegistry<? extends Logger> getLoggerRegistry() {
+        return null;
+    }
+
+    /**
+     * Gets an object by its name.
+     * @param key The object's key.
+     * @return The Object that is associated with the key, if any.
+     * @since 2.13.0
+     */
+    default Object getObject(String key) {
+        return null;
+    }
+
+    /**
+     * Tests if a Logger with the specified name exists.
      * @param name The Logger name to search for.
      * @return true if the Logger exists, false otherwise.
      */
     boolean hasLogger(String name);
 
     /**
-     * Detects if a Logger with the specified name and MessageFactory exists.
+     * Tests if a Logger with the specified name and MessageFactory type exists.
+     * @param name The Logger name to search for.
+     * @param messageFactoryClass The message factory class to search for.
+     * @return true if the Logger exists, false otherwise.
+     * @since 2.5
+     */
+    boolean hasLogger(String name, Class<? extends MessageFactory> messageFactoryClass);
+
+    /**
+     * Tests if a Logger with the specified name and MessageFactory exists.
      * @param name The Logger name to search for.
      * @param messageFactory The message factory to search for.
      * @return true if the Logger exists, false otherwise.
@@ -138,11 +117,45 @@ public interface LoggerContext {
     boolean hasLogger(String name, MessageFactory messageFactory);
 
     /**
-     * Detects if a Logger with the specified name and MessageFactory type exists.
-     * @param name The Logger name to search for.
-     * @param messageFactoryClass The message factory class to search for.
-     * @return true if the Logger exists, false otherwise.
-     * @since 2.5
+     * Associates an object into the LoggerContext by name for later use.
+     * @param key The object's key.
+     * @param value The object.
+     * @return The previous object or null.
+     * @since 2.13.0
      */
-    boolean hasLogger(String name, Class<? extends MessageFactory> messageFactoryClass);
+    default Object putObject(String key, Object value) {
+        return null;
+    }
+
+    /**
+     * Associates an object into the LoggerContext by name for later use if an object is not already stored with that key.
+     * @param key The object's key.
+     * @param value The object.
+     * @return The previous object or null.
+     * @since 2.13.0
+     */
+    default Object putObjectIfAbsent(String key, Object value) {
+        return null;
+    }
+
+    /**
+     * Removes an object if it is present.
+     * @param key The object's key.
+     * @return The object if it was present, null if it was not.
+     * @since 2.13.0
+     */
+    default Object removeObject(String key) {
+        return null;
+    }
+
+    /**
+     * Removes an object if it is present and the provided object is stored.
+     * @param key The object's key.
+     * @param value The object.
+     * @return The object if it was present, null if it was not.
+     * @since 2.13.0
+     */
+    default boolean removeObject(String key, Object value) {
+        return false;
+    }
 }

@@ -16,51 +16,58 @@
  */
 package org.apache.log4j;
 
-
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.logging.log4j.spi.LoggerContext;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 
 /**
  *
  */
 public class Logger extends Category {
 
-    protected Logger(final String name) {
-        super(PrivateManager.getContext(), name);
+    /**
+     * The fully qualified name of the Logger class.
+     */
+    private static final String FQCN = Logger.class.getName();
+ 
+    public static Logger getLogger(final Class<?> clazz) {
+        // Depth 2 gets the call site of this method.
+        return LogManager.getLogger(clazz.getName(), StackLocatorUtil.getCallerClassLoader(2));
+    }
+
+    public static Logger getLogger(final String name) {
+        // Depth 2 gets the call site of this method.
+        return LogManager.getLogger(name, StackLocatorUtil.getCallerClassLoader(2)); 
+    }
+
+    public static Logger getLogger(final String name, final LoggerFactory factory) {
+        // Depth 2 gets the call site of this method.
+        return LogManager.getLogger(name, factory, StackLocatorUtil.getCallerClassLoader(2));
+    }
+
+    public static Logger getRootLogger() {
+        return LogManager.getRootLogger();
     }
 
     Logger(final LoggerContext context, final String name) {
         super(context, name);
     }
 
-    public static Logger getLogger(final String name) {
-        return Category.getInstance(PrivateManager.getContext(), name);
+    protected Logger(final String name) {
+        super(name);
     }
 
-    public static Logger getLogger(final Class<?> clazz) {
-        return Category.getInstance(PrivateManager.getContext(), clazz);
+    public boolean isTraceEnabled() {
+        return getLogger().isTraceEnabled();
     }
 
-    public static Logger getRootLogger() {
-        return Category.getRoot(PrivateManager.getContext());
+    public void trace(final Object message) {
+        maybeLog(FQCN, org.apache.logging.log4j.Level.TRACE, message, null);
     }
 
-    public static Logger getLogger(final String name, final LoggerFactory factory) {
-        return Category.getInstance(PrivateManager.getContext(), name, factory);
+    public void trace(final Object message, final Throwable t) {
+        maybeLog(FQCN, org.apache.logging.log4j.Level.TRACE, message, t);
     }
 
-    /**
-     * Internal Log Manager.
-     */
-    private static class PrivateManager extends org.apache.logging.log4j.LogManager {
-        private static final String FQCN = Logger.class.getName();
 
-        public static LoggerContext getContext() {
-            return getContext(FQCN, false);
-        }
-
-        public static org.apache.logging.log4j.Logger getLogger(final String name) {
-            return getLogger(FQCN, name);
-        }
-    }
 }

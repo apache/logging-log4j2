@@ -50,6 +50,7 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TransferQueue;
+import java.util.stream.Collectors;
 
 /**
  * Appends to one or more Appenders asynchronously. You can configure an AsyncAppender with one or more Appenders and an
@@ -399,6 +400,15 @@ public final class AsyncAppender extends AbstractAppender {
         return blocking;
     }
 
+    /**
+     * Gets all Appenders.
+     *
+     * @return a list of Appenders.
+     */
+    public List<Appender> getAppenders() {
+        return dispatcher.getAppenders();
+    }
+    
     /**
      * Returns the name of the appender that any errors are logged to or {@code null}.
      *

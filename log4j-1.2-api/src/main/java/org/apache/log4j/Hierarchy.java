@@ -24,16 +24,22 @@ package org.apache.log4j;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
+import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.or.ObjectRenderer;
 import org.apache.log4j.or.RendererMap;
 import org.apache.log4j.spi.HierarchyEventListener;
 import org.apache.log4j.spi.LoggerFactory;
-import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.RendererSupport;
 import org.apache.log4j.spi.ThrowableRenderer;
 import org.apache.log4j.spi.ThrowableRendererSupport;
+import org.apache.logging.log4j.core.appender.AsyncAppender;
+import org.apache.logging.log4j.spi.AbstractLoggerAdapter;
+import org.apache.logging.log4j.spi.LoggerContext;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * This class is specialized in retrieving loggers by name and also maintaining the logger hierarchy.
@@ -52,18 +58,77 @@ import org.apache.log4j.spi.ThrowableRendererSupport;
  * provision node.
  * </p>
  */
-public class Hierarchy implements LoggerRepository, RendererSupport, ThrowableRendererSupport {
+public class Hierarchy implements LoggerRepository2, RendererSupport, ThrowableRendererSupport {
+
+    private static class PrivateLoggerAdapter extends AbstractLoggerAdapter<Logger> {
+
+        @Override
+        protected org.apache.logging.log4j.spi.LoggerContext getContext() {
+            return PrivateLogManager.getContext();
+        }
+
+        @Override
+        protected Logger newLogger(final String name, final org.apache.logging.log4j.spi.LoggerContext context) {
+            return new Logger(context, name);
+        }
+    }
+
+    /**
+     * Private LogManager.
+     */
+    private static class PrivateLogManager extends org.apache.logging.log4j.LogManager {
+        private static final String FQCN = Hierarchy.class.getName();
+
+        public static LoggerContext getContext() {
+            return getContext(FQCN, false);
+        }
+
+        public static org.apache.logging.log4j.Logger getLogger(final String name) {
+            return getLogger(FQCN, name);
+        }
+    }
+
+    private static final PrivateLoggerAdapter LOGGER_ADAPTER = new PrivateLoggerAdapter();
+
+    private static final WeakHashMap<LoggerContext, ConcurrentMap<String, Logger>> CONTEXT_MAP = new WeakHashMap<>();
+
+    static LoggerContext getContext() {
+        return PrivateLogManager.getContext();
+    }
+
+    static Logger getInstance(final LoggerContext context, final String name) {
+        return getInstance(context, name, LOGGER_ADAPTER);
+    }
+
+    static Logger getInstance(final LoggerContext context, final String name, final LoggerFactory factory) {
+        return getLoggersMap(context).computeIfAbsent(name, k -> factory.makeNewLoggerInstance(name));
+    }
+
+    static Logger getInstance(final LoggerContext context, final String name, final PrivateLoggerAdapter factory) {
+        return getLoggersMap(context).computeIfAbsent(name, k -> factory.newLogger(name, context));
+    }
+
+    static ConcurrentMap<String, Logger> getLoggersMap(final LoggerContext context) {
+        synchronized (CONTEXT_MAP) {
+            return CONTEXT_MAP.computeIfAbsent(context, k -> new ConcurrentHashMap<>());
+        }
+    }
+
+    static Logger getRootLogger(final LoggerContext context) {
+        return getInstance(context, org.apache.logging.log4j.LogManager.ROOT_LOGGER_NAME);
+    }
 
     private final LoggerFactory defaultFactory;
     private final Vector listeners;
-
     Hashtable ht;
     Logger root;
     RendererMap rendererMap;
     int thresholdInt;
     Level threshold;
     boolean emittedNoAppenderWarning;
+
     boolean emittedNoResourceBundleWarning;
+
     private ThrowableRenderer throwableRenderer;
 
     /**
@@ -132,12 +197,11 @@ public class Hierarchy implements LoggerRepository, RendererSupport, ThrowableRe
      */
     @Override
     public Logger exists(final String name) {
-        final Object o = ht.get(new CategoryKey(name));
-        if (o instanceof Logger) {
-            return (Logger) o;
-        } else {
+        final LoggerContext ctx = getContext();
+        if (!ctx.hasLogger(name)) {
             return null;
         }
+        return Logger.getLogger(name);
     }
 
     @Override
@@ -207,18 +271,13 @@ public class Hierarchy implements LoggerRepository, RendererSupport, ThrowableRe
      */
     @Override
     public Logger getLogger(final String name) {
-        return getLogger(name, defaultFactory);
+        return getInstance(getContext(), name);
     }
 
-    /**
-     * Gets an integer representation of the this repository's threshold.
-     *
-     * @since 1.2
-     */
-    // public
-    // int getThresholdInt() {
-    // return thresholdInt;
-    // }
+    @Override
+    public Logger getLogger(final String name, final ClassLoader classLoader) {
+        return getInstance(LogManager.getContext(classLoader), name);
+    }
 
     /**
      * Gets a new logger instance named as the first parameter using <code>factory</code>.
@@ -233,36 +292,12 @@ public class Hierarchy implements LoggerRepository, RendererSupport, ThrowableRe
      */
     @Override
     public Logger getLogger(final String name, final LoggerFactory factory) {
-        // System.out.println("getInstance("+name+") called.");
-        final CategoryKey key = new CategoryKey(name);
-        // Synchronize to prevent write conflicts. Read conflicts (in
-        // getChainedLevel method) are possible only if variable
-        // assignments are non-atomic.
-        Logger logger;
+        return getInstance(getContext(), name, factory);
+    }
 
-        synchronized (ht) {
-            final Object o = ht.get(key);
-            if (o == null) {
-                logger = factory.makeNewLoggerInstance(name);
-                logger.setHierarchy(this);
-                ht.put(key, logger);
-                updateParents(logger);
-                return logger;
-            } else if (o instanceof Logger) {
-                return (Logger) o;
-            } else if (o instanceof ProvisionNode) {
-                // System.out.println("("+name+") ht.get(this) returned ProvisionNode");
-                logger = factory.makeNewLoggerInstance(name);
-                logger.setHierarchy(this);
-                ht.put(key, logger);
-                updateChildren((ProvisionNode) o, logger);
-                updateParents(logger);
-                return logger;
-            } else {
-                // It should be impossible to arrive here
-                return null; // but let's keep the compiler happy.
-            }
-        }
+    @Override
+    public Logger getLogger(final String name, final LoggerFactory factory, final ClassLoader classLoader) {
+        return getInstance(LogManager.getContext(classLoader), name, factory);
     }
 
     /**
@@ -280,7 +315,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport, ThrowableRe
      */
     @Override
     public Logger getRootLogger() {
-        return root;
+        return getInstance(getContext(), org.apache.logging.log4j.LogManager.ROOT_LOGGER_NAME);
     }
 
     /**
@@ -336,7 +371,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport, ThrowableRe
     @Override
     public void resetConfiguration() {
 
-        getRootLogger().setLevel((Level) Level.DEBUG);
+        getRootLogger().setLevel(Level.DEBUG);
         root.setResourceBundle(null);
         setThreshold(Level.ALL);
 
@@ -393,7 +428,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport, ThrowableRe
      */
     @Override
     public void setThreshold(final String levelStr) {
-        final Level l = (Level) Level.toLevel(levelStr, null);
+        final Level l = Level.toLevel(levelStr, null);
         if (l != null) {
             setThreshold(l);
         } else {

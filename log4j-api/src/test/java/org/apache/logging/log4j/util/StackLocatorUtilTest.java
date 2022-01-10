@@ -16,24 +16,30 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+
+import java.util.Deque;
 import java.util.Stack;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.ParentRunner;
+
 import sun.reflect.Reflection;
 
-import static org.junit.Assert.*;
-
+/** 
+ * Tests {@link StackLocatorUtilTest}.
+ */
 @RunWith(BlockJUnit4ClassRunner.class)
 public class StackLocatorUtilTest {
-
 
     @Test
     public void testStackTraceEquivalence() throws Exception {
         for (int i = 1; i < 15; i++) {
-            final Class<?> expected = Reflection.getCallerClass(i + StackLocator.JDK_7u25_OFFSET);
+            final Class<?> expected = Reflection.getCallerClass(i + StackLocator.JDK_7U25_OFFSET);
             final Class<?> actual = StackLocatorUtil.getCallerClass(i);
             final Class<?> fallbackActual = Class.forName(
                 StackLocatorUtil.getStackTraceElement(i).getClassName());
@@ -50,6 +56,11 @@ public class StackLocatorUtilTest {
     }
 
     @Test
+    public void testGetCallerClassLoader() throws Exception {
+        assertSame(StackLocatorUtilTest.class.getClassLoader(), StackLocatorUtil.getCallerClassLoader(1));
+    }
+
+    @Test
     public void testGetCallerClassNameViaStackTrace() throws Exception {
         final Class<?> expected = StackLocatorUtilTest.class;
         final Class<?> actual = Class.forName(new Throwable().getStackTrace()[0].getClassName());
@@ -58,10 +69,10 @@ public class StackLocatorUtilTest {
 
     @Test
     public void testGetCurrentStackTrace() throws Exception {
-        final Stack<Class<?>> classes = StackLocatorUtil.getCurrentStackTrace();
+        final Deque<Class<?>> classes = StackLocatorUtil.getCurrentStackTrace();
         final Stack<Class<?>> reversed = new Stack<>();
         reversed.ensureCapacity(classes.size());
-        while (!classes.empty()) {
+        while (!classes.isEmpty()) {
             reversed.push(classes.pop());
         }
         while (reversed.peek() != StackLocatorUtil.class) {

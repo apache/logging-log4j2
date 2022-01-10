@@ -45,7 +45,7 @@ import org.apache.logging.log4j.util.Strings;
  * Records events that occur in the logging system. By default, only error messages are logged to {@link System#err}.
  * Normally, the Log4j StatusLogger is configured via the root {@code <Configuration status="LEVEL"/>} node in a Log4j
  * configuration file. However, this can be overridden via a system property named
- * "{@value SimpleLoggerContext#SYSTEM_PREFIX}StatusLogger.level" and will work with any Log4j provider.
+ * {@value #DEFAULT_STATUS_LISTENER_LEVEL} and will work with any Log4j provider.
  *
  * @see SimpleLogger
  * @see SimpleLoggerContext
