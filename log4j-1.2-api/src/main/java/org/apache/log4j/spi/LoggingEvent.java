@@ -30,11 +30,15 @@ import java.util.Set;
 public class LoggingEvent {
 
     /**
-     Set the location information for this logging event. The collected
-     information is cached for future use.
-     @return Always returns null.
+     Returns the time when the application started, in milliseconds
+     elapsed since 01.01.1970.
+     @return the JVM start time.
      */
-    public LocationInfo getLocationInformation() {
+    public static long getStartTime() {
+        return LogEventAdapter.getStartTime();
+    }
+
+    public String getFQNOfLoggerClass() {
         return null;
     }
 
@@ -48,20 +52,12 @@ public class LoggingEvent {
     }
 
     /**
-     * Return the name of the logger. Use this form instead of directly
-     * accessing the <code>categoryName</code> field.
-     * @return Always returns null.
+     Set the location information for this logging event. The collected
+     information is cached for future use.
+     @return Always returns null.
      */
-    public String getLoggerName() {
+    public LocationInfo getLocationInformation() {
         return null;
-    }
-
-    public String getFQNOfLoggerClass() {
-        return null;
-    }
-
-    public long getTimeStamp() {
-        return 0;
     }
 
     /**
@@ -72,6 +68,27 @@ public class LoggingEvent {
      */
     public Category getLogger() {
         return null;
+    }
+
+    /**
+     * Return the name of the logger. Use this form instead of directly
+     * accessing the <code>categoryName</code> field.
+     * @return Always returns null.
+     */
+    public String getLoggerName() {
+        return null;
+    }
+
+    public
+    Object getMDC(String key) {
+        return null;
+    }
+
+    /**
+     Obtain a copy of this thread's MDC prior to serialization or
+     asynchronous logging.
+     */
+    public void getMDCCopy() {
     }
 
     /**
@@ -93,29 +110,20 @@ public class LoggingEvent {
         return null;
     }
 
-    public
-    Object getMDC(String key) {
+    public Map getProperties() {
         return null;
     }
 
-    /**
-     Obtain a copy of this thread's MDC prior to serialization or
-     asynchronous logging.
-     */
-    public void getMDCCopy() {
+    public String getProperty(final String key) {
+        return null;
+    }
+
+    public Set getPropertyKeySet() {
+        return null;
     }
 
     public String getRenderedMessage() {
         return null;
-    }
-
-    /**
-     Returns the time when the application started, in milliseconds
-     elapsed since 01.01.1970.
-     @return the JVM start time.
-     */
-    public static long getStartTime() {
-        return LogEventAdapter.getStartTime();
     }
 
     public String getThreadName() {
@@ -142,24 +150,16 @@ public class LoggingEvent {
         return null;
     }
 
-    public void setProperty(final String propName,
-            final String propValue) {
-
-    }
-
-    public String getProperty(final String key) {
-        return null;
-    }
-
-    public Set getPropertyKeySet() {
-        return null;
-    }
-
-    public Map getProperties() {
-        return null;
+    public long getTimeStamp() {
+        return 0;
     }
 
     public Object removeProperty(String propName) {
         return null;
+    }
+
+    public void setProperty(final String propName,
+            final String propValue) {
+
     }
 }
