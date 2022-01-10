@@ -254,6 +254,12 @@
       <action dev="ggregory" type="fix">
         Log4j 1.2 bridge adds org.apache.log4j.spi.DefaultRepositorySelector.
       </action>
+      <action dev="ggregory" type="fix">
+        Log4j 1.2 bridge implements LogManager.getCurrentLoggers() fully.
+      </action>
+      <action dev="ggregory" type="fix" issue="LOG4J2-3326" due-to="Benjamin Röhl, Gary Gregory">
+        Log4j 1.2 bridge fixes parsing filters in properties configuration file #680.
+      </action>
       <!-- ADD -->
       <action issue="LOG4J2-3282" dev="ckozak" type="add" due-to="Michael Vorburger">
         Add the log4j-to-jul JDK Logging Bridge
