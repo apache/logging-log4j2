@@ -264,6 +264,10 @@
       <action issue="LOG4J2-3282" dev="ckozak" type="add" due-to="Michael Vorburger">
         Add the log4j-to-jul JDK Logging Bridge
       </action>
+      <!-- UPDATE -->
+      <action dev="ggregory" type="udpate" due-to="Dependabot">
+        Bump Mockito from 3.11.2 to 4.2.0.
+      </action>
     </release>
     <release version="2.17.1" date="2021-MM-DD" description="GA Release 2.17.1">
       <action issue="LOG4J2-3264" dev="ckozak" type="fix" due-to="Yanming Zhou">
