@@ -30,12 +30,17 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.bridge.AppenderAdapter;
 import org.apache.log4j.bridge.FilterAdapter;
+import org.apache.log4j.bridge.FilterWrapper;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
+import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.filter.Filterable;
+import org.apache.logging.log4j.core.filter.LevelRangeFilter;
 import org.junit.Test;
 
 /**
@@ -84,6 +89,24 @@ public class PropertiesConfigurationTest {
             assertNotNull(filter);
             assertTrue(filter.getFilter() instanceof NeutralFilterFixture);
         }
+    }
+    
+    @Test
+    public void testConsoleAppenderLevelRangeFilter() throws Exception {
+        PluginManager.addPackage("org.apache.log4j.builders.filter");
+        try (LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/LOG4J2-3326.properties")) {
+            final Configuration configuration = loggerContext.getConfiguration();
+            assertNotNull(configuration);
+            final Appender appender = configuration.getAppender("CUSTOM");
+            assertNotNull(appender);
+            final Filterable filterable = (Filterable) appender;
+            final CompositeFilter filter = (CompositeFilter) filterable.getFilter();
+            final org.apache.logging.log4j.core.Filter[] filters = filter.getFiltersArray();
+            final LevelRangeFilter customFilterReal = (LevelRangeFilter) ((FilterWrapper) ((FilterAdapter) filters[0]).getFilter()).getFilter();
+            assertEquals(Level.ALL, customFilterReal.getMinLevel());
+            final LevelRangeFilter defaultFilter = (LevelRangeFilter) ((FilterWrapper) ((FilterAdapter) filters[1]).getFilter()).getFilter();
+            assertEquals(Level.TRACE, defaultFilter.getMinLevel());
+      }
     }
 
     @Test
