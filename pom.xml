@@ -211,7 +211,7 @@
     <disruptorVersion>3.4.4</disruptorVersion>
     <conversantDisruptorVersion>1.2.15</conversantDisruptorVersion> <!-- Version 1.2.16 requires Java 9 -->
     <elastic.version>7.6.2</elastic.version>
-    <mongodb3.version>3.12.7</mongodb3.version>
+    <mongodb3.version>3.12.10</mongodb3.version>
     <mongodb4.version>4.2.2</mongodb4.version>
     <!-- POM for jackson-dataformat-xml 2.12.4 depends on woodstox-core 6.2.4 -->
     <woodstox.version>6.2.6</woodstox.version>
