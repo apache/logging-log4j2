@@ -46,7 +46,8 @@ public class AppenderAttachableImpl implements AppenderAttachable {
 
     @Override
     public Appender getAppender(String name) {
-        return appenders.get(name);
+        // No null keys allowed in a CHM.
+        return name == null ? null : appenders.get(name);
     }
 
     @Override
