@@ -21,7 +21,6 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 
 import java.io.File;
 import java.net.URI;
-import java.net.URL;
 import java.util.Objects;
 
 /**
@@ -60,6 +59,7 @@ public class Source {
      * Constructs a new {@code Source} from the specified URI.
      *
      * @param uri the URI where the input stream originated
+     * @param lastModified Not used.
      */
     public Source(final URI uri, final long lastModified) {
         this.uri = Objects.requireNonNull(uri, "URI is null");
