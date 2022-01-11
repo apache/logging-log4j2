@@ -37,5 +37,5 @@ public @interface Required {
      * The message to be logged if this constraint is violated. This should normally be overridden.
      * @return the message to be logged if the constraint is violated.
      */
-    String message() default "The parameter is null or emtpy";
+    String message() default "The parameter is null or empty";
 }
