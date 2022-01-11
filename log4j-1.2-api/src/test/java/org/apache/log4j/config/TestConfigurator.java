@@ -33,23 +33,23 @@ import org.apache.logging.log4j.core.config.Configurator;
 
 public class TestConfigurator {
 
-    @SuppressWarnings("resource")
-    static LoggerContext configure(String configLocation) throws IOException {
-        File file = new File(configLocation);
-        InputStream is = Files.newInputStream(Paths.get(configLocation));
-        ConfigurationSource source = new ConfigurationSource(is, file);
-        LoggerContext context = (LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
-        Configuration configuration = null;
-        if (configLocation.endsWith(PropertiesConfigurationFactory.FILE_EXTENSION)) {
-            configuration = new PropertiesConfigurationFactory().getConfiguration(context, source);
-        } else if (configLocation.endsWith(XmlConfigurationFactory.FILE_EXTENSION)) {
-            configuration = new XmlConfigurationFactory().getConfiguration(context, source);
-        } else {
-            fail("Test infra does not support " + configLocation);
+    static LoggerContext configure(final String configLocation) throws IOException {
+        final File file = new File(configLocation);
+        try (final InputStream inputStream = Files.newInputStream(Paths.get(configLocation))) {
+            final ConfigurationSource source = new ConfigurationSource(inputStream, file);
+            final LoggerContext context = (LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
+            Configuration configuration = null;
+            if (configLocation.endsWith(PropertiesConfigurationFactory.FILE_EXTENSION)) {
+                configuration = new PropertiesConfigurationFactory().getConfiguration(context, source);
+            } else if (configLocation.endsWith(XmlConfigurationFactory.FILE_EXTENSION)) {
+                configuration = new XmlConfigurationFactory().getConfiguration(context, source);
+            } else {
+                fail("Test infra does not support " + configLocation);
+            }
+            assertNotNull("No configuration created", configuration);
+            Configurator.reconfigure(configuration);
+            return context;
         }
-        assertNotNull("No configuration created", configuration);
-        Configurator.reconfigure(configuration);
-        return context;
     }
 
 }
