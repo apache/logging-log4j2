@@ -24,13 +24,9 @@ import java.net.URI;
 import java.util.Objects;
 
 /**
- * Represents the source for the logging configuration.
+ * Represents the source for the logging configuration as an immutable object.
  */
 public class Source {
-
-    /**
-     * Captures a URI or File.
-     */
 
     private final File file;
     private final URI uri;
@@ -70,7 +66,7 @@ public class Source {
     }
 
     /**
-     * Returns the file configuration source, or {@code null} if this configuration source is based on an URL or has
+     * Gets the file configuration source, or {@code null} if this configuration source is based on an URL or has
      * neither a file nor an URL.
      *
      * @return the configuration source file, or {@code null}
@@ -80,7 +76,7 @@ public class Source {
     }
 
     /**
-     * Returns the configuration source URL, or {@code null} if this configuration source is based on a file or has
+     * Gets the configuration source URL, or {@code null} if this configuration source is based on a file or has
      * neither a file nor an URL.
      *
      * @return the configuration source URL, or {@code null}
@@ -90,7 +86,7 @@ public class Source {
     }
 
     /**
-     * Returns a string describing the configuration source file or URL, or {@code null} if this configuration source
+     * Gets a string describing the configuration source file or URL, or {@code null} if this configuration source
      * has neither a file nor an URL.
      *
      * @return a string describing the configuration source file or URL, or {@code null}
