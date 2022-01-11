@@ -62,9 +62,9 @@ import java.util.StringTokenizer;
 import java.util.TreeMap;
 
 /**
- * Construct a configuration based on Log4j 1 properties.
+ * Constructs a configuration based on Log4j 1 properties.
  */
-public class PropertiesConfiguration  extends Log4j1Configuration {
+public class PropertiesConfiguration extends Log4j1Configuration {
 
     private static final String CATEGORY_PREFIX = "log4j.category.";
     private static final String LOGGER_PREFIX = "log4j.logger.";
@@ -83,7 +83,8 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
     private final Map<String, Appender> registry = new HashMap<>();
 
     /**
-     * Constructor.
+     * Constructs a new instance.
+     *
      * @param loggerContext The LoggerContext.
      * @param source The ConfigurationSource.
      * @param monitorIntervalSeconds The monitoring interval in seconds.
@@ -125,7 +126,7 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
     }
 
     /**
-     * Read configuration from a file. <b>The existing configuration is
+     * Reads a configuration from a file. <b>The existing configuration is
      * not cleared nor reset.</b> If you require a different behavior,
      * then call {@link  LogManager#resetConfiguration
      * resetConfiguration} method before calling
@@ -342,7 +343,7 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
     }
 
     /**
-     * Parse non-root elements, such non-root categories and renderers.
+     * Parses non-root elements, such non-root categories and renderers.
      */
     private void parseLoggers(Properties props) {
         Enumeration<?> enumeration = props.propertyNames();
@@ -368,7 +369,7 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
     }
 
     /**
-     * Parse the additivity option for a non-root category.
+     * Parses the additivity option for a non-root category.
      */
     private boolean getAdditivityForLogger(Properties props, String loggerName) {
         boolean additivity = true;
