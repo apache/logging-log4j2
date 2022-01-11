@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration  SYSTEM "log4j.dtd" [
+<!ENTITY a1 SYSTEM 'DOMTest4_A1.xml'>
+<!ENTITY a2 SYSTEM 'DOMTest4_A2.xml'>
+]>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
+  &a1;
+  &a2;
+
+  <!-- Prevent internal log4j DEBUG messages from polluting the output. -->
+  <logger name="org.apache.log4j.joran"><level value="INFO" /></logger>
+  <logger name="org.apache.log4j.joran.action.PriorityAction"><level value="ERROR" /></logger>
+  <logger name="org.apache.log4j.config"><level value="INFO" /></logger>
+  <logger name="org.apache.log4j.FileAppender"><level value="INFO" /></logger>
+  <logger name="org.apache.log4j.xml.DOMConfigurator"><level value="INFO" /></logger>
+
+  <logger name="org.apache.log4j.xml">
+    <level value="trace" />
+    <appender-ref ref="A1" />
+  </logger>
+
+  <root>
+    <priority value ="trace" />
+    <appender-ref ref="A1" />
+    <appender-ref ref="A2" />
+  </root>
+
+</log4j:configuration>

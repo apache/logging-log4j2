@@ -1,0 +1,3 @@
+INFO org.apache.log4j.rewrite.RewriteAppenderTest - p1: p2: Message 0
+INFO org.apache.log4j.rewrite.RewriteAppenderTest - p1:Hello p2:World {p1=Hello, p2=World, x1=Mundo}
+INFO org.apache.log4j.rewrite.RewriteAppenderTest - p1:Hello p2:World Message 1
