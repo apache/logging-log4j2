@@ -154,10 +154,22 @@
         Bump org.springframework:spring-* from 5.3.13 to 5.3.14.
       </action>
       <action dev="ggregory" type="udpate" due-to="Gary Gregory">
-        Bump de.flapdoodle.embed:de.flapdoodle.embed.mongo 3.0.0 -> 3.2.6. Update tests for binary incompatibilities in APIs.
+        Bump de.flapdoodle.embed:de.flapdoodle.embed.mongo from 3.0.0 to 3.2.6. Update tests for binary incompatibilities in APIs.
       </action>
       <action dev="ggregory" type="udpate" due-to="Gary Gregory">
-        Bump org.fusesource.jansi:jansi 2.3.4 -> 2.4.0.
+        Bump org.fusesource.jansi:jansi from 2.3.4 to 2.4.0.
+      </action>
+      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+        Bump net.javacrumbs.json-unit:json-unit from 2.27.0 to 2.28.0.
+      </action>
+      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+        Bump org.assertj:assertj-core from 3.20.2 to 3.22.0.
+      </action>
+      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+        Bump org.xmlunit:xmlunit-* from 2.8.3 to 2.8.4.
+      </action>
+      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+        Bump org.codehaus.groovy:groovy-* from 3.0.8 to 3.0.9.
       </action>
 	</release>
     <release version="2.17.1" date="2021-12-27" description="GA Release 2.17.1">
