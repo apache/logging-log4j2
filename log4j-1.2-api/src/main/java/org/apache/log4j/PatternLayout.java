@@ -35,6 +35,15 @@ public class PatternLayout extends Layout {
      */
     public final static String TTCC_CONVERSION_PATTERN = "%r [%t] %p %c %x - %m%n";
 
+    /**
+     * Constructs a PatternLayout using the DEFAULT_LAYOUT_PATTERN.
+     *
+     * The default pattern just produces the application supplied message.
+     */
+    public PatternLayout() {
+        this(DEFAULT_CONVERSION_PATTERN);
+    }
+
     public PatternLayout(final String pattern) {
 
     }
