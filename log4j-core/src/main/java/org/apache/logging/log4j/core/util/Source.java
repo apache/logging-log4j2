@@ -21,6 +21,7 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 
 import java.io.File;
 import java.net.URI;
+import java.net.URL;
 import java.util.Objects;
 
 /**
@@ -34,6 +35,7 @@ public class Source {
 
     /**
      * Constructs a Source from a ConfigurationSource.
+     *
      * @param source The ConfigurationSource.
      */
     public Source(final ConfigurationSource source) {
@@ -57,7 +59,7 @@ public class Source {
     /**
      * Constructs a new {@code Source} from the specified URI.
      *
-     * @param uri the URL where the input stream originated
+     * @param uri the URI where the input stream originated
      */
     public Source(final URI uri, final long lastModified) {
         this.uri = Objects.requireNonNull(uri, "URI is null");
@@ -76,20 +78,20 @@ public class Source {
     }
 
     /**
-     * Gets the configuration source URL, or {@code null} if this configuration source is based on a file or has
-     * neither a file nor an URL.
+     * Gets the configuration source URI, or {@code null} if this configuration source is based on a file or has
+     * neither a file nor an URI.
      *
-     * @return the configuration source URL, or {@code null}
+     * @return the configuration source URI, or {@code null}
      */
     public URI getURI() {
         return uri;
     }
 
     /**
-     * Gets a string describing the configuration source file or URL, or {@code null} if this configuration source
-     * has neither a file nor an URL.
+     * Gets a string describing the configuration source file or URI, or {@code null} if this configuration source
+     * has neither a file nor an URI.
      *
-     * @return a string describing the configuration source file or URL, or {@code null}
+     * @return a string describing the configuration source file or URI, or {@code null}
      */
     public String getLocation() {
         return location;
