@@ -55,7 +55,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Tests reconnection support of {@link org.apache.logging.log4j.core.appender.SocketAppender}.
  */
-class SocketAppenderReconnectTest {
+public class SocketAppenderReconnectTest {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
