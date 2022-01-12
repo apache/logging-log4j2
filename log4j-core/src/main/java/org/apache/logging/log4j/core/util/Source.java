@@ -65,6 +65,7 @@ public class Source {
             throw new IllegalArgumentException(e);
         }
     }
+
     private final File file;
     private final URI uri;
     private final String location;
