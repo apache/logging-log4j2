@@ -143,15 +143,15 @@ public class Source {
     }
 
     @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (!(o instanceof Source)) {
+        if (!(obj instanceof Source)) {
             return false;
         }
-        final Source source = (Source) o;
-        return Objects.equals(location, source.location);
+        Source other = (Source) obj;
+        return Objects.equals(location, other.location);
     }
 
     /**
@@ -208,7 +208,7 @@ public class Source {
 
     @Override
     public int hashCode() {
-        return 31 + Objects.hashCode(location);
+        return Objects.hash(location);
     }
 
     @Override
