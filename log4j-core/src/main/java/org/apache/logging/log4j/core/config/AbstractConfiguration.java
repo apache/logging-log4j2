@@ -251,7 +251,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     protected void initializeWatchers(Reconfigurable reconfigurable, ConfigurationSource configSource,
         int monitorIntervalSeconds) {
-        if (configSource.getFile() != null || configSource.getURL() != null) {
+        if (configSource != null && (configSource.getFile() != null || configSource.getURL() != null)) {
             if (monitorIntervalSeconds > 0) {
                 watchManager.setIntervalSeconds(monitorIntervalSeconds);
                 if (configSource.getFile() != null) {
