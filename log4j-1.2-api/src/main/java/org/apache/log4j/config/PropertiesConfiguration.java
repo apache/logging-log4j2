@@ -100,8 +100,7 @@ public class PropertiesConfiguration extends Log4j1Configuration {
             if (source == null) {
                 return null;
             }
-            final PropertiesConfigurationFactory factory = new PropertiesConfigurationFactory();
-            final PropertiesConfiguration config = (PropertiesConfiguration) factory.getConfiguration(getLoggerContext(), source);
+            final Configuration config = new PropertiesConfigurationFactory().getConfiguration(getLoggerContext(), source);
             return config == null || config.getState() != State.INITIALIZING ? null : config;
         } catch (final IOException ex) {
             LOGGER.error("Cannot locate file {}: {}", getConfigurationSource(), ex);
