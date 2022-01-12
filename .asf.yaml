@@ -15,7 +15,23 @@
 
 # .asf.yaml documentation:
 # https://cwiki.apache.org/confluence/display/INFRA/Git+-+.asf.yaml+features
+notifications:
+  commits: commits@logging.apache.org
+  # issues and PRs send their own emails to devs
+  issues: notifications@logging.apache.org
+  pullrequests: notifications@logging.apache.org
+  jira_options: link label
 github:
+  description: "Apache Log4j 2 is an upgrade to Log4j that provides significant improvements over its predecessor, Log4j 1.x, and provides many of the improvements available in Logback while fixing some inherent problems in Logback's architecture."
+  homepage: https://logging.apache.org/log4j/2.x/
+  labels:
+    - apache
+    - api
+    - java
+    - library
+    - log4j
+    - log4j2
+    - logging
   protected_branches:
     # Prevent force pushes to primary branches
     release-2.x: {}
