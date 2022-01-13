@@ -257,7 +257,7 @@ public class Log4j1ConfigurationParser {
         builder.add(appenderBuilder);
     }
 
-    private void buildAttribute(final String componentName, final ComponentBuilder componentBuilder,
+    private void buildAttribute(final String componentName, final ComponentBuilder<?> componentBuilder,
             final String sourceAttributeName, final String targetAttributeName) {
         final String attributeValue = getLog4jAppenderValue(componentName, sourceAttributeName);
         if (attributeValue != null) {
@@ -265,13 +265,13 @@ public class Log4j1ConfigurationParser {
         }
     }
 
-    private void buildAttributeWithDefault(final String componentName, final ComponentBuilder componentBuilder,
+    private void buildAttributeWithDefault(final String componentName, final ComponentBuilder<?> componentBuilder,
             final String sourceAttributeName, final String targetAttributeName, final String defaultValue) {
         final String attributeValue = getLog4jAppenderValue(componentName, sourceAttributeName, defaultValue);
         componentBuilder.addAttribute(targetAttributeName, attributeValue);
     }
 
-    private void buildMandatoryAttribute(final String componentName, final ComponentBuilder componentBuilder,
+    private void buildMandatoryAttribute(final String componentName, final ComponentBuilder<?> componentBuilder,
             final String sourceAttributeName, final String targetAttributeName) {
         final String attributeValue = getLog4jAppenderValue(componentName, sourceAttributeName);
         if (attributeValue != null) {
