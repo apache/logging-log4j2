@@ -44,14 +44,14 @@ public abstract class FileWatchdog extends Thread {
     protected long delay = DEFAULT_DELAY;
 
     File file;
-    long lastModif = 0;
-    boolean warnedAlready = false;
-    boolean interrupted = false;
+    long lastModified;
+    boolean warnedAlready;
+    boolean interrupted;
 
-    protected FileWatchdog(final String filename) {
+    protected FileWatchdog(final String fileName) {
         super("FileWatchdog");
-        this.filename = filename;
-        file = new File(filename);
+        this.filename = fileName;
+        this.file = new File(fileName);
         setDaemon(true);
         checkAndConfigure();
     }
@@ -67,9 +67,9 @@ public abstract class FileWatchdog extends Thread {
         }
 
         if (fileExists) {
-            final long l = file.lastModified(); // this can also throw a SecurityException
-            if (l > lastModif) { // however, if we reached this point this
-                lastModif = l; // is very unlikely.
+            final long fileLastMod = file.lastModified(); // this can also throw a SecurityException
+            if (fileLastMod > lastModified) { // however, if we reached this point this
+                lastModified = fileLastMod; // is very unlikely.
                 doOnChange();
                 warnedAlready = false;
             }
@@ -96,9 +96,11 @@ public abstract class FileWatchdog extends Thread {
     }
 
     /**
-     * Sets the delay to observe between each check of the file changes.
+     * Sets the delay in milliseconds to observe between each check of the file changes.
+     * 
+     * @param delayMillis the delay in milliseconds
      */
-    public void setDelay(final long delay) {
-        this.delay = delay;
+    public void setDelay(final long delayMillis) {
+        this.delay = delayMillis;
     }
 }
