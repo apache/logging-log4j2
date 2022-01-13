@@ -19,6 +19,7 @@ package org.apache.log4j.helpers;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Objects;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -32,6 +33,9 @@ import org.apache.log4j.spi.LoggingEvent;
 public class AppenderAttachableImpl implements AppenderAttachable {
 
     private final ConcurrentMap<String, Appender> appenders = new ConcurrentHashMap<>();
+
+    /** Array of appenders. TODO */
+    protected Vector appenderList;
 
     @Override
     public void addAppender(final Appender newAppender) {
