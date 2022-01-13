@@ -85,6 +85,9 @@ public class AppenderAttachableImpl implements AppenderAttachable {
         return appenders.size();
     }
 
+    /**
+     * Closes all appenders.
+     */
     public void close() {
         for (Appender appender : appenders.values()) {
             appender.close();
