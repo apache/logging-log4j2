@@ -21,17 +21,16 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.AbstractLogEvent;
-import org.apache.logging.log4j.core.time.Instant;
-import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.db.jpa.converter.ContextDataAttributeConverter;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 /**
  * <p>
@@ -327,7 +326,7 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
      */
     @Override
     @Transient
-    //@Convert(converter = ContextDataAttributeConverter.class)
+    // @Convert(converter = ContextDataAttributeConverter.class)
     public ReadOnlyStringMap getContextData() {
         return this.getWrappedEvent().getContextData();
     }

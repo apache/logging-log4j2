@@ -20,5 +20,6 @@ import java.util.Map;
 
 public interface Advertiser {
     Object advertise(Map<String, String> properties);
+
     void unadvertise(Object advertisedObject);
 }

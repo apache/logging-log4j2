@@ -17,9 +17,9 @@
 package org.apache.logging.log4j.spi;
 
 import org.apache.logging.log4j.perf.nogc.OpenHashStringMap;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringMap;
-import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * {@code OpenHashStringMap}-based implementation of the {@code ThreadContextMap} interface that creates a copy of
@@ -35,8 +35,8 @@ public class CopyOnWriteOpenHashMapThreadContextMap extends CopyOnWriteSortedArr
 
     @Override
     protected StringMap createStringMap() {
-        return new OpenHashStringMap<>(PropertiesUtil.getProperties().getIntegerProperty(
-                PROPERTY_NAME_INITIAL_CAPACITY, DEFAULT_INITIAL_CAPACITY));
+        return new OpenHashStringMap<>(PropertiesUtil.getProperties()
+                .getIntegerProperty(PROPERTY_NAME_INITIAL_CAPACITY, DEFAULT_INITIAL_CAPACITY));
     }
 
     @Override

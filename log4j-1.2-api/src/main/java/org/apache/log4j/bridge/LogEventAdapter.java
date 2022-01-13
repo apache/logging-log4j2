@@ -16,6 +16,9 @@
  */
 package org.apache.log4j.bridge;
 
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.Set;
 import org.apache.log4j.Category;
 import org.apache.log4j.Level;
 import org.apache.log4j.spi.LocationInfo;
@@ -27,10 +30,6 @@ import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.spi.StandardLevel;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
-
-import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Converts a Log4j 2 LogEvent into the components needed by a Log4j 1.x LoggingEvent.
@@ -74,8 +73,11 @@ public class LogEventAdapter extends LoggingEvent {
             final Method getStartTime = runtimeMXBeanClass.getMethod("getStartTime");
             return (Long) getStartTime.invoke(runtimeMXBean);
         } catch (final Throwable t) {
-            StatusLogger.getLogger().error("Unable to call ManagementFactory.getRuntimeMXBean().getStartTime(), "
-                    + "using system time for OnStartupTriggeringPolicy", t);
+            StatusLogger.getLogger()
+                    .error(
+                            "Unable to call ManagementFactory.getRuntimeMXBean().getStartTime(), "
+                                    + "using system time for OnStartupTriggeringPolicy",
+                            t);
             // We have little option but to declare "now" as the beginning of time.
             return System.currentTimeMillis();
         }
@@ -159,8 +161,8 @@ public class LogEventAdapter extends LoggingEvent {
     }
 
     /*
-     Returns the context corresponding to the <code>key</code> parameter.
-     */
+    Returns the context corresponding to the <code>key</code> parameter.
+    */
     @Override
     public Object getMDC(String key) {
         if (event.getContextData() != null) {
@@ -174,8 +176,7 @@ public class LogEventAdapter extends LoggingEvent {
      * asynchronous logging.
      */
     @Override
-    public void getMDCCopy() {
-    }
+    public void getMDCCopy() {}
 
     @Override
     public String getRenderedMessage() {

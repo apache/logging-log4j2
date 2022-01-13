@@ -24,7 +24,7 @@ import org.apache.logging.log4j.util.Strings;
  */
 public abstract class Layout {
 
-    public final static String LINE_SEP = Strings.LINE_SEPARATOR;
+    public static final String LINE_SEP = Strings.LINE_SEPARATOR;
 
     /** Note that the line.separator property can be looked up even by applets. */
     public static final int LINE_SEP_LEN = Strings.LINE_SEPARATOR.length();
@@ -63,7 +63,6 @@ public abstract class Layout {
         return null;
     }
 
-
     /**
      * If the layout handles the throwable object contained within
      * {@link LoggingEvent}, then the layout should return
@@ -86,4 +85,3 @@ public abstract class Layout {
      */
     public abstract boolean ignoresThrowable();
 }
-

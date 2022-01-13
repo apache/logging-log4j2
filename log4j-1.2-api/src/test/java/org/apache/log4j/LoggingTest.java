@@ -16,11 +16,11 @@
  */
 package org.apache.log4j;
 
+import static org.junit.Assert.*;
+
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -39,5 +39,4 @@ public class LoggingTest {
         assertNotNull("No parent Logger", parent);
         assertEquals("Incorrect parent logger", "org.apache.test.logging", parent.getName());
     }
-
 }

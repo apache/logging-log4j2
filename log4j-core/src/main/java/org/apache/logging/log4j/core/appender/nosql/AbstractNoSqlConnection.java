@@ -44,5 +44,4 @@ public abstract class AbstractNoSqlConnection<W, T extends NoSqlObject<W>> imple
     public boolean isClosed() {
         return this.closed.get();
     }
-
 }

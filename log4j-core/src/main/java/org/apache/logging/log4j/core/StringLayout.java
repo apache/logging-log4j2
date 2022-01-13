@@ -29,5 +29,4 @@ public interface StringLayout extends Layout<String> {
      * @return the Charset this layout uses to encode Strings into bytes.
      */
     Charset getCharset();
-
 }

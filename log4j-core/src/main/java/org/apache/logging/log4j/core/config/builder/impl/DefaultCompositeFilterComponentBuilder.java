@@ -28,8 +28,10 @@ class DefaultCompositeFilterComponentBuilder
         extends DefaultComponentAndConfigurationBuilder<CompositeFilterComponentBuilder>
         implements CompositeFilterComponentBuilder {
 
-    public DefaultCompositeFilterComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder,
-            final String onMatch, final String onMismatch) {
+    public DefaultCompositeFilterComponentBuilder(
+            final DefaultConfigurationBuilder<? extends Configuration> builder,
+            final String onMatch,
+            final String onMismatch) {
         super(builder, "Filters");
         addAttribute(AbstractFilterBuilder.ATTR_ON_MATCH, onMatch);
         addAttribute(AbstractFilterBuilder.ATTR_ON_MISMATCH, onMismatch);
@@ -39,5 +41,4 @@ class DefaultCompositeFilterComponentBuilder
     public CompositeFilterComponentBuilder add(final FilterComponentBuilder builder) {
         return addComponent(builder);
     }
-
 }

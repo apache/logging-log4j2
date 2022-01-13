@@ -29,5 +29,4 @@ public interface FilterBuilder {
     Filter parseFilter(Element element, XmlConfiguration config);
 
     Filter parseFilter(PropertiesConfiguration config);
-
 }

@@ -23,7 +23,6 @@ import static org.mockito.Mockito.never;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -33,8 +32,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class Log4jShutdownOnContextDestroyedListenerTest {
     @Mock(lenient = true)
     private ServletContextEvent event;
+
     @Mock(lenient = true)
     private ServletContext servletContext;
+
     @Mock
     private Log4jWebLifeCycle initializer;
 
@@ -43,15 +44,15 @@ public class Log4jShutdownOnContextDestroyedListenerTest {
     public void setUp(boolean mockInitializer) {
         this.listener = new Log4jShutdownOnContextDestroyedListener();
         given(event.getServletContext()).willReturn(servletContext);
-        if (mockInitializer) {        	
-        	given(servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE))
-        			.willReturn(initializer);
+        if (mockInitializer) {
+            given(servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE))
+                    .willReturn(initializer);
         }
     }
-		
+
     @Test
     public void testInitAndDestroy() throws Exception {
-    	setUp(true);
+        setUp(true);
         this.listener.contextInitialized(this.event);
 
         then(initializer).should(never()).start();
@@ -65,19 +66,19 @@ public class Log4jShutdownOnContextDestroyedListenerTest {
 
     @Test
     public void testDestroy() throws Exception {
-    	setUp(true);
+        setUp(true);
         this.listener.contextDestroyed(this.event);
 
         then(initializer).should(never()).clearLoggerContext();
         then(initializer).should(never()).stop();
     }
-    
+
     @Test
     public void whenNoInitializerInContextTheContextInitializedShouldThrowAnException() {
-    	setUp(false);
-    	
-    	assertThrows(IllegalStateException.class, () -> {
-    		this.listener.contextInitialized(this.event);
-    	});
+        setUp(false);
+
+        assertThrows(IllegalStateException.class, () -> {
+            this.listener.contextInitialized(this.event);
+        });
     }
 }

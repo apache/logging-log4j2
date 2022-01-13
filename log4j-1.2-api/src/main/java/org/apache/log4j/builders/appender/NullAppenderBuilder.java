@@ -16,6 +16,9 @@
  */
 package org.apache.log4j.builders.appender;
 
+import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+
+import java.util.Properties;
 import org.apache.log4j.Appender;
 import org.apache.log4j.bridge.AppenderWrapper;
 import org.apache.log4j.config.PropertiesConfiguration;
@@ -25,10 +28,6 @@ import org.apache.logging.log4j.core.appender.NullAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
-
-import java.util.Properties;
-
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
 
 /**
  * Build a Null Appender
@@ -44,10 +43,14 @@ public class NullAppenderBuilder implements AppenderBuilder {
         return new AppenderWrapper(NullAppender.createAppender(name));
     }
 
-
     @Override
-    public Appender parseAppender(final String name, final String appenderPrefix, final String layoutPrefix,
-            final String filterPrefix, final Properties props, final PropertiesConfiguration configuration) {
+    public Appender parseAppender(
+            final String name,
+            final String appenderPrefix,
+            final String layoutPrefix,
+            final String filterPrefix,
+            final Properties props,
+            final PropertiesConfiguration configuration) {
         return new AppenderWrapper(NullAppender.createAppender(name));
     }
 }

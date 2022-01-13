@@ -22,7 +22,6 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.util.Arrays;
 import java.util.regex.Pattern;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Rule;
@@ -37,7 +36,8 @@ public class RollingAppenderCustomDeleteActionTest {
     private static final String CONFIG = "log4j-rolling-with-custom-delete.xml";
     private static final String DIR = "target/rolling-with-delete/test";
 
-    private final LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
+    private final LoggerContextRule loggerContextRule =
+            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
 
     @Rule
     public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
@@ -64,8 +64,10 @@ public class RollingAppenderCustomDeleteActionTest {
             }
             if (files.length == 3) {
                 for (final File file : files) {
-                    assertTrue("test-4.log should have been deleted",
-                            Arrays.asList("test-1.log", "test-2.log", "test-3.log").contains(file.getName()));
+                    assertTrue(
+                            "test-4.log should have been deleted",
+                            Arrays.asList("test-1.log", "test-2.log", "test-3.log")
+                                    .contains(file.getName()));
                 }
                 return; // test succeeded
             }

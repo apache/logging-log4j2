@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.async;
 
 import java.net.URI;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;

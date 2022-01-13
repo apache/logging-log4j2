@@ -16,14 +16,13 @@
  */
 package org.apache.log4j.helpers;
 
-import org.apache.log4j.Appender;
-import org.apache.log4j.spi.AppenderAttachable;
-import org.apache.log4j.spi.LoggingEvent;
-
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import org.apache.log4j.Appender;
+import org.apache.log4j.spi.AppenderAttachable;
+import org.apache.log4j.spi.LoggingEvent;
 
 /**
  * Allows Classes to attach Appenders.

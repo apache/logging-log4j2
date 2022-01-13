@@ -37,8 +37,7 @@ public class ConsoleAppender extends WriterAppender {
     /**
      * Constructs a non-configured appender.
      */
-    public ConsoleAppender() {
-    }
+    public ConsoleAppender() {}
 
     /**
      * Constructs a configured appender.
@@ -79,7 +78,7 @@ public class ConsoleAppender extends WriterAppender {
 
     /**
      * Gets whether the appender honors reassignments of System.out or System.err made after configuration.
-     * 
+     *
      * @return true if appender will use value of System.out or System.err in force at the time when logging events are
      *         appended.
      * @since 1.2.13
@@ -107,7 +106,7 @@ public class ConsoleAppender extends WriterAppender {
 
     /**
      * Sets whether the appender honors reassignments of System.out or System.err made after configuration.
-     * 
+     *
      * @param follow if true, appender will use value of System.out or System.err in force at the time when logging events
      *        are appended.
      * @since 1.2.13
@@ -136,5 +135,4 @@ public class ConsoleAppender extends WriterAppender {
         StatusLogger.getLogger().warn("[" + val + "] should be System.out or System.err.");
         StatusLogger.getLogger().warn("Using previously set target, System.out by default.");
     }
-
 }

@@ -20,7 +20,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.AsyncLoggers;
@@ -48,13 +47,12 @@ public class QueueFullAsyncLoggerTest3 extends QueueFullAbstractTest {
 
     @BeforeClass
     public static void beforeClass() {
-        //FORMAT_MESSAGES_IN_BACKGROUND
+        // FORMAT_MESSAGES_IN_BACKGROUND
         System.setProperty("log4j.format.msg.async", "true");
         System.setProperty("log4j2.asyncQueueFullPolicy", "discard");
 
         System.setProperty("AsyncLogger.RingBufferSize", "128"); // minimum ringbuffer size
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "log4j2-queueFull.xml");
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "log4j2-queueFull.xml");
     }
 
     @AfterClass
@@ -63,14 +61,12 @@ public class QueueFullAsyncLoggerTest3 extends QueueFullAbstractTest {
     }
 
     @Rule
-    public LoggerContextRule context = new LoggerContextRule(
-            "log4j2-queueFull.xml", AsyncLoggerContextSelector.class);
+    public LoggerContextRule context = new LoggerContextRule("log4j2-queueFull.xml", AsyncLoggerContextSelector.class);
 
     @Before
     public void before() throws Exception {
         blockingAppender = context.getRequiredAppender("Blocking", BlockingAppender.class);
     }
-
 
     @Test(timeout = 15000)
     public void discardedMessagesShouldBeGarbageCollected() throws InterruptedException {
@@ -88,7 +84,8 @@ public class QueueFullAsyncLoggerTest3 extends QueueFullAbstractTest {
         final GarbageCollectionHelper gcHelper = new GarbageCollectionHelper();
         gcHelper.run();
         try {
-            assertTrue("Parameter should have been garbage collected", garbageCollectionLatch.await(30, TimeUnit.SECONDS));
+            assertTrue(
+                    "Parameter should have been garbage collected", garbageCollectionLatch.await(30, TimeUnit.SECONDS));
         } finally {
             gcHelper.close();
         }

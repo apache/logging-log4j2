@@ -23,8 +23,7 @@ import org.apache.logging.log4j.spi.LoggerContext;
  */
 public final class ContextUtil {
 
-    private ContextUtil() {
-    }
+    private ContextUtil() {}
 
     public static void reconfigure(LoggerContext ctx) {
         if (ctx instanceof org.apache.logging.log4j.core.LoggerContext) {

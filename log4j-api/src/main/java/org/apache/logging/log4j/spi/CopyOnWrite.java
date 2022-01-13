@@ -22,5 +22,4 @@ package org.apache.logging.log4j.spi;
  * @see ReadOnlyThreadContextMap#getReadOnlyContextData()
  * @since 2.7
  */
-public interface CopyOnWrite {
-}
+public interface CopyOnWrite {}

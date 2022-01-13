@@ -86,7 +86,7 @@ public class LogLog {
 
     /**
      * Logs Log4j internal debug statements.
-     * 
+     *
      * @param message the message object to log.
      */
     public static void debug(final String message) {
@@ -97,7 +97,7 @@ public class LogLog {
 
     /**
      * Logs Log4j internal debug statements.
-     * 
+     *
      * @param message the message object to log.
      * @param throwable the {@code Throwable} to log, including its stack trace.
      */
@@ -109,7 +109,7 @@ public class LogLog {
 
     /**
      * Logs Log4j internal error statements.
-     * 
+     *
      * @param message the message object to log.
      */
     public static void error(final String message) {
@@ -120,7 +120,7 @@ public class LogLog {
 
     /**
      * Logs Log4j internal error statements.
-     * 
+     *
      * @param message the message object to log.
      * @param throwable the {@code Throwable} to log, including its stack trace.
      */
@@ -135,7 +135,7 @@ public class LogLog {
      *
      * @param enabled Enable or disable.
      */
-    static public void setInternalDebugging(final boolean enabled) {
+    public static void setInternalDebugging(final boolean enabled) {
         debugEnabled = enabled;
     }
 
@@ -150,7 +150,7 @@ public class LogLog {
 
     /**
      * Logs Log4j internal warning statements.
-     * 
+     *
      * @param message the message object to log.
      */
     public static void warn(final String message) {
@@ -161,7 +161,7 @@ public class LogLog {
 
     /**
      * Logs Log4j internal warnings.
-     * 
+     *
      * @param message the message object to log.
      * @param throwable the {@code Throwable} to log, including its stack trace.
      */

@@ -21,7 +21,6 @@ import javax.persistence.Basic;
 import javax.persistence.Convert;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
@@ -67,8 +66,7 @@ public abstract class BasicLogEventEntity extends AbstractLogEventWrapperEntity 
      * signature. The no-argument constructor is required for a standards-compliant JPA provider to accept this as an
      * entity.
      */
-    public BasicLogEventEntity() {
-    }
+    public BasicLogEventEntity() {}
 
     /**
      * Instantiates this base class. All concrete implementations must have a constructor matching this constructor's

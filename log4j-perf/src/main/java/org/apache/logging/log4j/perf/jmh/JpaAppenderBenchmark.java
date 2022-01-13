@@ -22,7 +22,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -134,8 +133,12 @@ public class JpaAppenderBenchmark {
     public void tearDown() throws SQLException {
         final LoggerContext context = LoggerContext.getContext(false);
         try {
-            ((JpaAppender) context.getConfiguration().getAppender("H2Appender")).getManager().close();
-            ((JpaAppender) context.getConfiguration().getAppender("HSQLDBAppender")).getManager().close();
+            ((JpaAppender) context.getConfiguration().getAppender("H2Appender"))
+                    .getManager()
+                    .close();
+            ((JpaAppender) context.getConfiguration().getAppender("HSQLDBAppender"))
+                    .getManager()
+                    .close();
         } finally {
             System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
             // context.reconfigure();
@@ -170,12 +173,11 @@ public class JpaAppenderBenchmark {
         Class.forName("org.h2.Driver");
         final Connection connection = DriverManager.getConnection("jdbc:h2:mem:Log4j", "sa", "");
         final Statement statement = connection.createStatement();
-        statement
-                .executeUpdate("CREATE TABLE jpaBasicLogEntry ( "
-                        + "id INTEGER IDENTITY, timemillis BIGINT, level NVARCHAR(10), loggerName NVARCHAR(255), "
-                        + "message NVARCHAR(1024), thrown NVARCHAR(1048576), contextMapJson NVARCHAR(1048576),"
-                        + "loggerFQCN NVARCHAR(1024), contextStack NVARCHAR(1048576), marker NVARCHAR(255), source NVARCHAR(2048),"
-                        + "threadName NVARCHAR(255)" + " )");
+        statement.executeUpdate("CREATE TABLE jpaBasicLogEntry ( "
+                + "id INTEGER IDENTITY, timemillis BIGINT, level NVARCHAR(10), loggerName NVARCHAR(255), "
+                + "message NVARCHAR(1024), thrown NVARCHAR(1048576), contextMapJson NVARCHAR(1048576),"
+                + "loggerFQCN NVARCHAR(1024), contextStack NVARCHAR(1048576), marker NVARCHAR(255), source NVARCHAR(2048),"
+                + "threadName NVARCHAR(255)" + " )");
         statement.close();
         return connection;
     }

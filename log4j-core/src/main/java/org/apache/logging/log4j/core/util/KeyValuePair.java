@@ -18,7 +18,6 @@
 package org.apache.logging.log4j.core.util;
 
 import java.util.Objects;
-
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
@@ -98,7 +97,6 @@ public final class KeyValuePair {
         public KeyValuePair build() {
             return new KeyValuePair(key, value);
         }
-
     }
 
     @Override

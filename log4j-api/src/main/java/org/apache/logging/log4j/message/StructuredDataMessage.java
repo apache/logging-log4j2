@@ -18,7 +18,6 @@
 package org.apache.logging.log4j.message;
 
 import java.util.Map;
-
 import org.apache.logging.log4j.util.EnglishEnums;
 import org.apache.logging.log4j.util.StringBuilders;
 
@@ -83,7 +82,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
         this.type = type;
         this.maxLength = maxLength;
     }
-    
+
     /**
      * Creates a StructuredDataMessage using an ID (max 32 characters), message, type (max 32 characters), and an
      * initial map of structured data to include.
@@ -92,8 +91,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
      * @param type The message type.
      * @param data The StructuredData map.
      */
-    public StructuredDataMessage(final String id, final String msg, final String type,
-                                 final Map<String, String> data) {
+    public StructuredDataMessage(final String id, final String msg, final String type, final Map<String, String> data) {
         this(id, msg, type, data, MAX_LENGTH);
     }
 
@@ -107,8 +105,8 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
      * @param maxLength The maximum length of keys;
      * @since 2.9
      */
-    public StructuredDataMessage(final String id, final String msg, final String type,
-                                 final Map<String, String> data, final int maxLength) {
+    public StructuredDataMessage(
+            final String id, final String msg, final String type, final Map<String, String> data, final int maxLength) {
         super(data);
         this.id = new StructuredDataId(id, null, null, maxLength);
         this.message = msg;
@@ -149,8 +147,8 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
      * @param type The message type.
      * @param data The StructuredData map.
      */
-    public StructuredDataMessage(final StructuredDataId id, final String msg, final String type,
-                                 final Map<String, String> data) {
+    public StructuredDataMessage(
+            final StructuredDataId id, final String msg, final String type, final Map<String, String> data) {
         this(id, msg, type, data, MAX_LENGTH);
     }
 
@@ -164,15 +162,18 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
      * @param maxLength The maximum length of keys;
      * @since 2.9
      */
-    public StructuredDataMessage(final StructuredDataId id, final String msg, final String type,
-                                 final Map<String, String> data, final int maxLength) {
+    public StructuredDataMessage(
+            final StructuredDataId id,
+            final String msg,
+            final String type,
+            final Map<String, String> data,
+            final int maxLength) {
         super(data);
         this.id = id;
         this.message = msg;
         this.type = type;
         this.maxLength = maxLength;
     }
-
 
     /**
      * Constructor based on a StructuredDataMessage.
@@ -286,7 +287,6 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
      * @param format The format identifier. Ignored in this implementation.
      * @return The formatted String.
      */
-
     @Override
     public String asString(final String format) {
         try {
@@ -406,7 +406,6 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
         return asString(null, null);
     }
 
-
     @Override
     public StructuredDataMessage newInstance(final Map<String, String> map) {
         return new StructuredDataMessage(this, map);
@@ -468,7 +467,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
     protected void validate(final String key, final char value) {
         validateKey(key);
     }
-    
+
     /**
      * @since 2.9
      */
@@ -476,7 +475,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
     protected void validate(final String key, final double value) {
         validateKey(key);
     }
-    
+
     /**
      * @since 2.9
      */
@@ -524,16 +523,15 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
 
     protected void validateKey(final String key) {
         if (maxLength > 0 && key.length() > maxLength) {
-            throw new IllegalArgumentException("Structured data keys are limited to " + maxLength +
-                    " characters. key: " + key);
+            throw new IllegalArgumentException(
+                    "Structured data keys are limited to " + maxLength + " characters. key: " + key);
         }
         for (int i = 0; i < key.length(); i++) {
             final char c = key.charAt(i);
             if (c < '!' || c > '~' || c == '=' || c == ']' || c == '"') {
-                throw new IllegalArgumentException("Structured data keys must contain printable US ASCII characters" +
-                        "and may not contain a space, =, ], or \"");
+                throw new IllegalArgumentException("Structured data keys must contain printable US ASCII characters"
+                        + "and may not contain a space, =, ], or \"");
             }
         }
     }
-
 }

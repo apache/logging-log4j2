@@ -28,10 +28,7 @@ public class QueueingRecycler<V> implements Recycler<V> {
 
     private final Queue<V> queue;
 
-    public QueueingRecycler(
-            final Supplier<V> supplier,
-            final Consumer<V> cleaner,
-            final Queue<V> queue) {
+    public QueueingRecycler(final Supplier<V> supplier, final Consumer<V> cleaner, final Queue<V> queue) {
         this.supplier = supplier;
         this.cleaner = cleaner;
         this.queue = queue;
@@ -57,5 +54,4 @@ public class QueueingRecycler<V> implements Recycler<V> {
     public void release(final V value) {
         queue.offer(value);
     }
-
 }

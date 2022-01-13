@@ -18,7 +18,6 @@ package org.apache.logging.log4j.io;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-
 import org.apache.logging.log4j.Level;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,8 +49,8 @@ public class LoggerInputStreamCallerInfoTest extends IoBuilderCallerInfoTesting 
     public void setupStreams() {
         final InputStream srcInputStream = new ByteArrayInputStream("a\nb\nc\nd".getBytes());
         this.logIn = IoBuilder.forLogger(getLogger())
-            .filter(srcInputStream)
-            .setLevel(Level.WARN)
-            .buildInputStream();
+                .filter(srcInputStream)
+                .setLevel(Level.WARN)
+                .buildInputStream();
     }
 }

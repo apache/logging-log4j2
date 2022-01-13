@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.perf.jmh;
 
+import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -31,8 +32,6 @@ import org.jctools.queues.MpmcArrayQueue;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
-
-import java.util.List;
 
 /**
  * Checks {@link PatternFormatter} performance with various StringBuilder
@@ -64,8 +63,7 @@ public class ThreadLocalVsPoolBenchmark {
         final String messageString = "AB!(%087936DZYXQWEIOP$#^~-=/><nb"; // length=32
         final Message message = new SimpleMessage(messageString);
         final long timestamp = 12345678;
-        return Log4jLogEvent
-                .newBuilder()
+        return Log4jLogEvent.newBuilder()
                 .setLoggerName(loggerName)
                 .setLoggerFqcn(loggerFqcn)
                 .setLevel(level)
@@ -80,7 +78,7 @@ public class ThreadLocalVsPoolBenchmark {
         return parser.parse("%d %5p [%t] %c{1} %X{transactionId} - %m%n", false, true);
     }
 
-    private static abstract class StringBuilderPool {
+    private abstract static class StringBuilderPool {
 
         abstract StringBuilder acquire();
 
@@ -89,7 +87,6 @@ public class ThreadLocalVsPoolBenchmark {
         StringBuilder createStringBuilder() {
             return new StringBuilder(1024 * 32);
         }
-
     }
 
     private static final class AllocatePool extends StringBuilderPool {
@@ -103,15 +100,13 @@ public class ThreadLocalVsPoolBenchmark {
 
         @Override
         public void release(final StringBuilder stringBuilder) {}
-
     }
 
     private static final class ThreadLocalPool extends StringBuilderPool {
 
         private static final ThreadLocalPool INSTANCE = new ThreadLocalPool();
 
-        private final ThreadLocal<StringBuilder> stringBuilderRef =
-                ThreadLocal.withInitial(this::createStringBuilder);
+        private final ThreadLocal<StringBuilder> stringBuilderRef = ThreadLocal.withInitial(this::createStringBuilder);
 
         @Override
         public StringBuilder acquire() {
@@ -122,7 +117,6 @@ public class ThreadLocalVsPoolBenchmark {
         public void release(final StringBuilder stringBuilder) {
             stringBuilder.setLength(0);
         }
-
     }
 
     private static final class JcPool extends StringBuilderPool {
@@ -134,7 +128,8 @@ public class ThreadLocalVsPoolBenchmark {
         // Putting the under-provisioned instance to a wrapper class to prevent
         // the initialization of JcPool itself when there are insufficient CPU
         // cores.
-        private enum UnderProvisionedInstanceHolder {;
+        private enum UnderProvisionedInstanceHolder {
+            ;
 
             private static final JcPool INSTANCE = createInstance();
 
@@ -144,7 +139,6 @@ public class ThreadLocalVsPoolBenchmark {
                 }
                 return new JcPool(MPMC_REQUIRED_MIN_CAPACITY);
             }
-
         }
 
         private static final JcPool RIGHT_PROVISIONED_INSTANCE =
@@ -159,9 +153,7 @@ public class ThreadLocalVsPoolBenchmark {
         @Override
         public StringBuilder acquire() {
             final StringBuilder stringBuilder = stringBuilders.poll();
-            return stringBuilder != null
-                    ? stringBuilder
-                    : createStringBuilder();
+            return stringBuilder != null ? stringBuilder : createStringBuilder();
         }
 
         @Override
@@ -169,7 +161,6 @@ public class ThreadLocalVsPoolBenchmark {
             stringBuilder.setLength(0);
             stringBuilders.offer(stringBuilder);
         }
-
     }
 
     @Benchmark
@@ -207,5 +198,4 @@ public class ThreadLocalVsPoolBenchmark {
             formatter.format(LOG_EVENT, stringBuilder);
         }
     }
-
 }

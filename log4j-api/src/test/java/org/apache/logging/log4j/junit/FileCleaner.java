@@ -17,14 +17,13 @@
 
 package org.apache.logging.log4j.junit;
 
-import org.junit.jupiter.api.extension.ExtensionContext;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 class FileCleaner extends AbstractFileCleaner {
     @Override
@@ -36,7 +35,8 @@ class FileCleaner extends AbstractFileCleaner {
                 paths.add(Paths.get(path));
             }
         }
-        final CleanUpFiles testMethodAnnotation = context.getRequiredTestMethod().getAnnotation(CleanUpFiles.class);
+        final CleanUpFiles testMethodAnnotation =
+                context.getRequiredTestMethod().getAnnotation(CleanUpFiles.class);
         if (testMethodAnnotation != null) {
             for (final String path : testMethodAnnotation.value()) {
                 paths.add(Paths.get(path));

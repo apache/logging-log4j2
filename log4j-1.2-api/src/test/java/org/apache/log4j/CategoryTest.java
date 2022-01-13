@@ -27,7 +27,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -190,7 +189,8 @@ public class CategoryTest {
     @Test
     public void testClassName() {
         final Category category = Category.getInstance("TestCategory");
-        final Layout<String> layout = PatternLayout.newBuilder().withPattern("%d %p %C{1.} [%t] %m%n").build();
+        final Layout<String> layout =
+                PatternLayout.newBuilder().withPattern("%d %p %C{1.} [%t] %m%n").build();
         final ListAppender appender = new ListAppender("List2", null, layout, false, false);
         appender.start();
         category.setAdditivity(false);
@@ -202,16 +202,16 @@ public class CategoryTest {
         appender.clear();
         final String threadName = Thread.currentThread().getName();
         final String expected = "ERROR o.a.l.CategoryTest [" + threadName + "] Test Message" + Strings.LINE_SEPARATOR;
-        assertTrue("Incorrect message " + Strings.dquote(msg) + " expected " + Strings.dquote(expected), msg.endsWith(expected));
+        assertTrue(
+                "Incorrect message " + Strings.dquote(msg) + " expected " + Strings.dquote(expected),
+                msg.endsWith(expected));
     }
 
     @Test
     public void testStringLog() {
         final String payload = "payload";
         testMessageImplementation(
-                payload,
-                SimpleMessage.class,
-                message -> assertEquals(message.getFormattedMessage(), payload));
+                payload, SimpleMessage.class, message -> assertEquals(message.getFormattedMessage(), payload));
     }
 
     @Test
@@ -237,7 +237,6 @@ public class CategoryTest {
             public String toString() {
                 return "abc";
             }
-
         };
         testMessageImplementation(
                 payload,
@@ -250,30 +249,22 @@ public class CategoryTest {
         final String key = "key";
         final Object value = 0xDEADBEEF;
         final Map<String, Object> payload = Collections.singletonMap(key, value);
-        testMessageImplementation(
-                payload,
-                MapMessage.class,
-                message -> assertEquals(message.getData(), payload));
+        testMessageImplementation(payload, MapMessage.class, message -> assertEquals(message.getData(), payload));
     }
 
     @Test
     public void testObjectLog() {
         final Object payload = new Object();
         testMessageImplementation(
-                payload,
-                ObjectMessage.class,
-                message -> assertEquals(message.getParameter(), payload));
+                payload, ObjectMessage.class, message -> assertEquals(message.getParameter(), payload));
     }
 
     private <M extends Message> void testMessageImplementation(
-            final Object messagePayload,
-            final Class<M> expectedMessageClass,
-            final Consumer<M> messageTester) {
+            final Object messagePayload, final Class<M> expectedMessageClass, final Consumer<M> messageTester) {
 
         // Setup the logger and the appender.
         final Category category = Category.getInstance("TestCategory");
-        final org.apache.logging.log4j.core.Logger logger =
-                (org.apache.logging.log4j.core.Logger) category.getLogger();
+        final org.apache.logging.log4j.core.Logger logger = (org.apache.logging.log4j.core.Logger) category.getLogger();
         logger.addAppender(appender);
 
         // Log the message payload.
@@ -293,7 +284,6 @@ public class CategoryTest {
         @SuppressWarnings("unchecked")
         final M typedMessage = (M) message;
         messageTester.accept(typedMessage);
-
     }
 
     /**

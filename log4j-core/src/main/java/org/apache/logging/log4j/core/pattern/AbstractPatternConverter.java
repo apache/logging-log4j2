@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.pattern;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
-
 /**
  * AbstractPatternConverter is an abstract class that provides the formatting functionality that derived classes need.
  * <p>

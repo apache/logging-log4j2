@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.io;
 
 import java.io.OutputStream;
-
 import org.apache.logging.log4j.Level;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +27,8 @@ public class LoggerOutputStreamCallerInfoTest extends IoBuilderCallerInfoTesting
 
     @Before
     public void setupStreams() {
-        this.logOut = IoBuilder.forLogger(getExtendedLogger()).setLevel(Level.WARN).buildOutputStream();
+        this.logOut =
+                IoBuilder.forLogger(getExtendedLogger()).setLevel(Level.WARN).buildOutputStream();
     }
 
     @Test

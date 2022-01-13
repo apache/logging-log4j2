@@ -71,7 +71,9 @@ public final class ColumnConfig {
             final boolean isPattern = Strings.isNotEmpty(pattern);
             final boolean isLiteralValue = Strings.isNotEmpty(literal);
 
-            if ((isPattern && isLiteralValue) || (isPattern && isEventTimestamp) || (isLiteralValue && isEventTimestamp)) {
+            if ((isPattern && isLiteralValue)
+                    || (isPattern && isEventTimestamp)
+                    || (isLiteralValue && isEventTimestamp)) {
                 LOGGER.error("The pattern, literal, and isEventTimestamp attributes are mutually exclusive.");
                 return null;
             }
@@ -85,8 +87,7 @@ public final class ColumnConfig {
             }
 
             if (isPattern) {
-                final PatternLayout layout =
-                    PatternLayout.newBuilder()
+                final PatternLayout layout = PatternLayout.newBuilder()
                         .withPattern(pattern)
                         .withConfiguration(configuration)
                         .withAlwaysWriteExceptions(false)
@@ -180,9 +181,14 @@ public final class ColumnConfig {
      * @deprecated use {@link #newBuilder()}
      */
     @Deprecated
-    public static ColumnConfig createColumnConfig(final Configuration config, final String name, final String pattern,
-                                                  final String literalValue, final String eventTimestamp,
-                                                  final String unicode, final String clob) {
+    public static ColumnConfig createColumnConfig(
+            final Configuration config,
+            final String name,
+            final String pattern,
+            final String literalValue,
+            final String eventTimestamp,
+            final String unicode,
+            final String clob) {
         if (Strings.isEmpty(name)) {
             LOGGER.error("The column config is not valid because it does not contain a column name.");
             return null;
@@ -193,19 +199,21 @@ public final class ColumnConfig {
         final boolean isClob = Boolean.parseBoolean(clob);
 
         return newBuilder()
-            .setConfiguration(config)
-            .setName(name)
-            .setPattern(pattern)
-            .setLiteral(literalValue)
-            .setEventTimestamp(isEventTimestamp)
-            .setUnicode(isUnicode)
-            .setClob(isClob)
-            .build();
+                .setConfiguration(config)
+                .setName(name)
+                .setPattern(pattern)
+                .setLiteral(literalValue)
+                .setEventTimestamp(isEventTimestamp)
+                .setUnicode(isUnicode)
+                .setClob(isClob)
+                .build();
     }
+
     @PluginBuilderFactory
     public static Builder newBuilder() {
         return new Builder();
     }
+
     private final String columnName;
     private final String columnNameKey;
     private final PatternLayout layout;
@@ -217,8 +225,13 @@ public final class ColumnConfig {
 
     private final boolean clob;
 
-    private ColumnConfig(final String columnName, final PatternLayout layout, final String literalValue,
-                         final boolean eventDate, final boolean unicode, final boolean clob) {
+    private ColumnConfig(
+            final String columnName,
+            final PatternLayout layout,
+            final String literalValue,
+            final boolean eventDate,
+            final boolean unicode,
+            final boolean clob) {
         this.columnName = columnName;
         this.columnNameKey = ColumnMapping.toKey(columnName);
         this.layout = layout;

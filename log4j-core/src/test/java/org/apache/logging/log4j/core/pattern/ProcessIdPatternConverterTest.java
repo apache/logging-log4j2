@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests that process ID succeeds.
@@ -27,7 +27,8 @@ public class ProcessIdPatternConverterTest {
     @Test
     public void getProcessId() {
         final String[] defaultValue = {"???"};
-        final String actual = ProcessIdPatternConverter.newInstance(defaultValue).getProcessId();
+        final String actual =
+                ProcessIdPatternConverter.newInstance(defaultValue).getProcessId();
         assertNotEquals("???", actual);
     }
 }

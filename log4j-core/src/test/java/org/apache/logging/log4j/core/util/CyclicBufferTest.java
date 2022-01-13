@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 public class CyclicBufferTest {
 
@@ -59,7 +59,7 @@ public class CyclicBufferTest {
         buffer.add(4);
         items = buffer.removeAll();
         assertEquals(1, items.length, "Incorrect number of items");
-        assertArrayEquals(new Integer[] { 4 }, items);
+        assertArrayEquals(new Integer[] {4}, items);
         assertTrue(buffer.isEmpty());
     }
 
@@ -80,7 +80,7 @@ public class CyclicBufferTest {
         buffer.add(4);
         items = buffer.removeAll();
         assertEquals(3, items.length, "Incorrect number of items");
-        assertArrayEquals(new Integer[] { 2, 3, 4 }, items);
+        assertArrayEquals(new Integer[] {2, 3, 4}, items);
         assertTrue(buffer.isEmpty());
     }
 
@@ -88,5 +88,4 @@ public class CyclicBufferTest {
     public void testSizeNegative() {
         assertThrows(IllegalArgumentException.class, () -> new CyclicBuffer<>(Integer.class, -1));
     }
-
 }

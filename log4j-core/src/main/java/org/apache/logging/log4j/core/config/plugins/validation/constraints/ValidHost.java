@@ -16,11 +16,10 @@
  */
 package org.apache.logging.log4j.core.config.plugins.validation.constraints;
 
-import org.apache.logging.log4j.core.config.plugins.validation.Constraint;
-import org.apache.logging.log4j.core.config.plugins.validation.validators.ValidHostValidator;
-
 import java.lang.annotation.*;
 import java.net.InetAddress;
+import org.apache.logging.log4j.core.config.plugins.validation.Constraint;
+import org.apache.logging.log4j.core.config.plugins.validation.validators.ValidHostValidator;
 
 /**
  * Indicates that a plugin attribute must be a valid host. This relies on the same validation rules as

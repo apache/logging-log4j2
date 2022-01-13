@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 
@@ -36,6 +35,7 @@ public class MutableThreadContextStack implements ThreadContextStack, StringBuil
      * The underlying list (never null).
      */
     private final List<String> list;
+
     private boolean frozen;
 
     /**

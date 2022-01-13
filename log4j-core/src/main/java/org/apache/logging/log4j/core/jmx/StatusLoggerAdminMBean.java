@@ -17,9 +17,7 @@
 package org.apache.logging.log4j.core.jmx;
 
 import java.util.List;
-
 import javax.management.ObjectName;
-
 import org.apache.logging.log4j.status.StatusData;
 
 /**

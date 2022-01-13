@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.pattern;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -30,7 +29,7 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  * Returns the event's level in a StringBuilder.
  */
 @Plugin(name = "LevelPatternConverter", category = PatternConverter.CATEGORY)
-@ConverterKeys({ "p", "level" })
+@ConverterKeys({"p", "level"})
 @PerformanceSensitive("allocation")
 public class LevelPatternConverter extends LogEventPatternConverter {
     private static final String OPTION_LENGTH = "length";

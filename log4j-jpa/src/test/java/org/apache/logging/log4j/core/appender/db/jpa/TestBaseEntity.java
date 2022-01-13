@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.appender.db.jpa;
 
 import java.util.Date;
 import java.util.Map;
-
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -30,19 +29,18 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.appender.db.jpa.converter.InstantAttributeConverter;
-import org.apache.logging.log4j.core.time.Instant;
-import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.db.jpa.converter.InstantAttributeConverter;
 import org.apache.logging.log4j.core.appender.db.jpa.converter.LevelAttributeConverter;
 import org.apache.logging.log4j.core.appender.db.jpa.converter.MessageAttributeConverter;
 import org.apache.logging.log4j.core.appender.db.jpa.converter.ThrowableAttributeConverter;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
+import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 @Entity
 @Table(name = "jpaBaseLogEntry")
@@ -51,8 +49,7 @@ public class TestBaseEntity extends AbstractLogEventWrapperEntity {
 
     private long id = 0L;
 
-    public TestBaseEntity() {
-    }
+    public TestBaseEntity() {}
 
     public TestBaseEntity(final LogEvent wrappedEvent) {
         super(wrappedEvent);

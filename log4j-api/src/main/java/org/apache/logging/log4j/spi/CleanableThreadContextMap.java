@@ -30,10 +30,9 @@ public interface CleanableThreadContextMap extends ThreadContextMap2 {
      *
      * <p>If the current thread does not have a context map it is
      * created as a side effect.</p>
-
+     *
      * @param keys The keys.
      * @since 2.8
      */
     void removeAll(final Iterable<String> keys);
-
 }

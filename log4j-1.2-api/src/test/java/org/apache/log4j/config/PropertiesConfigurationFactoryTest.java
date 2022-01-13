@@ -19,7 +19,6 @@ package org.apache.log4j.config;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -33,7 +32,8 @@ public class PropertiesConfigurationFactoryTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY, "target/test-classes/log4j1-file.properties");
+        System.setProperty(
+                ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY, "target/test-classes/log4j1-file.properties");
     }
 
     @Test
@@ -47,5 +47,4 @@ public class PropertiesConfigurationFactoryTest {
         assertTrue("File A2 was not created", file.exists());
         assertTrue("File A2 is empty", file.length() > 0);
     }
-
 }

@@ -19,7 +19,6 @@ package org.apache.logging.log4j.samples.events;
 /**
  * Member set up scheduled transaction request.
  */
-
 public interface ScheduledTransaction extends org.apache.logging.log4j.samples.dto.AuditEvent {
 
     /**
@@ -123,6 +122,4 @@ public interface ScheduledTransaction extends org.apache.logging.log4j.samples.d
      * @param toAccount Target account or account that will receive funds in a transfer.
      */
     void setToAccount(String toAccount);
-
-
 }

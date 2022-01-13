@@ -34,7 +34,6 @@ import java.nio.file.WatchService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
 import org.apache.commons.compress.utils.IOUtils;
@@ -58,8 +57,8 @@ public class RollingAppenderTempCompressedFilePatternTest {
     private static final String DIR = "target/rolling2";
     private static final String DIR_TMP = "target/rolling-tmp";
 
-    public static LoggerContextRule loggerContextRule = LoggerContextRule
-            .createShutdownTimeoutLoggerContextRule(CONFIG);
+    public static LoggerContextRule loggerContextRule =
+            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
 
     @Rule
     public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR, DIR_TMP);
@@ -106,8 +105,8 @@ public class RollingAppenderTempCompressedFilePatternTest {
                         if (ext != null) {
                             gzippedFiles++;
                             try {
-                                in = new CompressorStreamFactory().createCompressorInputStream(ext.name().toLowerCase(),
-                                        fis);
+                                in = new CompressorStreamFactory()
+                                        .createCompressorInputStream(ext.name().toLowerCase(), fis);
                             } catch (final CompressorException ce) {
                                 ce.printStackTrace();
                                 fail("Error creating intput stream from " + file.toString() + ": " + ce.getMessage());
@@ -147,8 +146,10 @@ public class RollingAppenderTempCompressedFilePatternTest {
                 }
             }
             assertTrue("No temporary file created during compression", temporaryFilesCreated > 0);
-            assertTrue("Temporarys file created not equals to compressed files " + temporaryFilesCreated + "/"
-                    + gzippedFiles, gzippedFiles == temporaryFilesCreated);
+            assertTrue(
+                    "Temporarys file created not equals to compressed files " + temporaryFilesCreated + "/"
+                            + gzippedFiles,
+                    gzippedFiles == temporaryFilesCreated);
         }
     }
 }

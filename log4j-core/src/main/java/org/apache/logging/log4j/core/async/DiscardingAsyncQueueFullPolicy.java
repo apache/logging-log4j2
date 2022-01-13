@@ -16,12 +16,11 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Discarding router extends the DefaultAsyncQueueFullPolicy by first verifying if the queue is fuller than the specified
@@ -49,10 +48,12 @@ public class DiscardingAsyncQueueFullPolicy extends DefaultAsyncQueueFullPolicy 
     public EventRoute getRoute(final long backgroundThreadId, final Level level) {
         if (level.isLessSpecificThan(thresholdLevel)) {
             if (discardCount.getAndIncrement() == 0) {
-                LOGGER.warn("Async queue is full, discarding event with level {}. " +
-                        "This message will only appear once; future events from {} " +
-                        "are silently discarded until queue capacity becomes available.",
-                        level, thresholdLevel);
+                LOGGER.warn(
+                        "Async queue is full, discarding event with level {}. "
+                                + "This message will only appear once; future events from {} "
+                                + "are silently discarded until queue capacity becomes available.",
+                        level,
+                        thresholdLevel);
             }
             return EventRoute.DISCARD;
         }

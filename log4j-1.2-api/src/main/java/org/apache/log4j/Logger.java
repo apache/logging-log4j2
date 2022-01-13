@@ -28,7 +28,7 @@ public class Logger extends Category {
      * The fully qualified name of the Logger class.
      */
     private static final String FQCN = Logger.class.getName();
- 
+
     protected Logger(final String name) {
         super(name);
     }
@@ -64,6 +64,4 @@ public class Logger extends Category {
     public void trace(final Object message, final Throwable t) {
         maybeLog(FQCN, org.apache.logging.log4j.Level.TRACE, message, t);
     }
-
-
 }

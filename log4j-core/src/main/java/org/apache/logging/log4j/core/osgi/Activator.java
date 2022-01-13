@@ -20,7 +20,6 @@ package org.apache.logging.log4j.core.osgi;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.util.PluginRegistry;
@@ -61,8 +60,8 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
         props.put("APIVersion", "2.60");
         final ContextDataProvider threadContextProvider = new ThreadContextDataProvider();
         provideRegistration = context.registerService(Provider.class.getName(), provider, props);
-        contextDataRegistration = context.registerService(ContextDataProvider.class.getName(), threadContextProvider,
-                null);
+        contextDataRegistration =
+                context.registerService(ContextDataProvider.class.getName(), threadContextProvider, null);
         loadContextProviders(context);
         // allow the user to override the default ContextSelector (e.g., by using BasicContextSelector for a global cfg)
         if (PropertiesUtil.getProperties().getStringProperty(Constants.LOG4J_CONTEXT_SELECTOR) == null) {
@@ -88,8 +87,8 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
         // LOG4J2-920: don't scan system bundle for plugins
         if (bundle.getState() == Bundle.ACTIVE && bundleId != 0) {
             LOGGER.trace("Scanning bundle [{}, id=%d] for plugins.", bundle.getSymbolicName(), bundleId);
-            PluginRegistry.getInstance().loadFromBundle(bundleId,
-                    bundle.adapt(BundleWiring.class).getClassLoader());
+            PluginRegistry.getInstance()
+                    .loadFromBundle(bundleId, bundle.adapt(BundleWiring.class).getClassLoader());
         }
     }
 
@@ -123,7 +122,7 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
     @Override
     public void bundleChanged(final BundleEvent event) {
         switch (event.getType()) {
-            // FIXME: STARTING instead of STARTED?
+                // FIXME: STARTING instead of STARTED?
             case BundleEvent.STARTED:
                 scanBundleForPlugins(event.getBundle());
                 break;

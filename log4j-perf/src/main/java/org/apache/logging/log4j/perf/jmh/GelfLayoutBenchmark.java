@@ -18,7 +18,6 @@
 package org.apache.logging.log4j.perf.jmh;
 
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
@@ -118,5 +117,4 @@ public class GelfLayoutBenchmark {
     public void log4j2Gelf() {
         appender.append(EVENT);
     }
-
 }

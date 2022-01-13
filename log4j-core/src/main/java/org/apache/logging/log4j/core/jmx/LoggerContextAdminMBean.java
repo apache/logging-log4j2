@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.jmx;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Map;
-
 import javax.management.ObjectName;
 
 /**
@@ -167,5 +166,4 @@ public interface LoggerContextAdminMBean {
      * @return a map with configured properties.
      */
     Map<String, String> getConfigProperties();
-
 }

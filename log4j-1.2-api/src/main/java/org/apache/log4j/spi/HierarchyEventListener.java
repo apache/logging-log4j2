@@ -20,10 +20,10 @@ import org.apache.log4j.Appender;
 import org.apache.log4j.Category;
 
 /**
- Listen to events occurring within a Hierarchy.
-
- @since 1.2
-
+ * Listen to events occurring within a Hierarchy.
+ *
+ * @since 1.2
+ *
  */
 public interface HierarchyEventListener {
 

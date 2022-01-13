@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.pattern;
 
 import java.util.Date;
-
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
@@ -25,7 +24,7 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  * Formats an integer.
  */
 @Plugin(name = "IntegerPatternConverter", category = "FileConverter")
-@ConverterKeys({ "i", "index" })
+@ConverterKeys({"i", "index"})
 @PerformanceSensitive("allocation")
 public final class IntegerPatternConverter extends AbstractPatternConverter implements ArrayPatternConverter {
 

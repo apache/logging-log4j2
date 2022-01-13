@@ -26,7 +26,7 @@ public interface ThrowableRenderer {
 
     /**
      * Render Throwable.
-     * 
+     *
      * @param t throwable, may not be null.
      * @return String representation.
      */

@@ -17,11 +17,10 @@
 
 package org.apache.log4j;
 
-import java.util.Locale;
-
-import org.junit.Test;
-
 import static org.junit.Assert.*;
+
+import java.util.Locale;
+import org.junit.Test;
 
 /**
  * Tests of Priority.
@@ -220,7 +219,5 @@ public class PriorityTest {
         final Priority level = Priority.toPriority("info");
         Locale.setDefault(defaultLocale);
         assertEquals("INFO", level.toString());
-  }
-
+    }
 }
-

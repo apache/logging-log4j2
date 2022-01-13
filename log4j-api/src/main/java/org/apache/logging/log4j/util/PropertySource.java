@@ -45,8 +45,7 @@ public interface PropertySource {
      *
      * @param action action to perform on each key/value pair
      */
-    default void forEach(BiConsumer<String, String> action) {
-    }
+    default void forEach(BiConsumer<String, String> action) {}
 
     /**
      * Converts a list of property name tokens into a normal form. For example, a list of tokens such as
@@ -69,7 +68,6 @@ public interface PropertySource {
         return null;
     }
 
-
     /**
      * For PropertySources that cannot iterate over all the potential properties this provides a direct lookup.
      * @param key The key to search for.
@@ -90,7 +88,9 @@ public interface PropertySource {
 
         @Override
         public int compare(final PropertySource o1, final PropertySource o2) {
-            return Integer.compare(Objects.requireNonNull(o1).getPriority(), Objects.requireNonNull(o2).getPriority());
+            return Integer.compare(
+                    Objects.requireNonNull(o1).getPriority(),
+                    Objects.requireNonNull(o2).getPriority());
         }
     }
 
@@ -101,7 +101,8 @@ public interface PropertySource {
      */
     final class Util {
         private static final String PREFIXES = "(?i:^log4j2?[-._/]?|^org\\.apache\\.logging\\.log4j\\.)?";
-        private static final Pattern PROPERTY_TOKENIZER = Pattern.compile(PREFIXES + "([A-Z]*[a-z0-9]+|[A-Z0-9]+)[-._/]?");
+        private static final Pattern PROPERTY_TOKENIZER =
+                Pattern.compile(PREFIXES + "([A-Z]*[a-z0-9]+|[A-Z0-9]+)[-._/]?");
         private static final Map<CharSequence, List<CharSequence>> CACHE = new ConcurrentHashMap<>();
 
         /**
@@ -149,7 +150,6 @@ public interface PropertySource {
             return sb.toString();
         }
 
-        private Util() {
-        }
+        private Util() {}
     }
 }

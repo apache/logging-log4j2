@@ -23,23 +23,22 @@ import org.apache.logging.log4j.core.LogEvent;
  */
 public interface PurgePolicy {
 
-	/**
-	 * Activates purging appenders. Note that {@link PurgePolicy} implementations are responsible for invoking
-	 * this method themselves.
-	 */
-	void purge();
+    /**
+     * Activates purging appenders. Note that {@link PurgePolicy} implementations are responsible for invoking
+     * this method themselves.
+     */
+    void purge();
 
-	/**
-	 * @param key routed appender key
-	 * @param event
-	 */
-	void update(String key, LogEvent event);
+    /**
+     * @param key routed appender key
+     * @param event
+     */
+    void update(String key, LogEvent event);
 
-	/**
-	 * Initializes with routing appender
-	 *
-	 * @param routingAppender
-	 */
-	void initialize(RoutingAppender routingAppender);
-
+    /**
+     * Initializes with routing appender
+     *
+     * @param routingAppender
+     */
+    void initialize(RoutingAppender routingAppender);
 }

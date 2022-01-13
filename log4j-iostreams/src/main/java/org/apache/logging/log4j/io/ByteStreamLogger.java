@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.spi.ExtendedLogger;
@@ -69,12 +68,13 @@ public class ByteStreamLogger {
 
     private final ByteBuffer buf = ByteBuffer.allocate(BUFFER_SIZE);
 
-    public ByteStreamLogger(final ExtendedLogger logger, final Level level, final Marker marker, final Charset charset) {
+    public ByteStreamLogger(
+            final ExtendedLogger logger, final Level level, final Marker marker, final Charset charset) {
         this.logger = logger;
         this.level = level == null ? logger.getLevel() : level;
         this.marker = marker;
-        this.reader = new InputStreamReader(new ByteBufferInputStream(),
-            charset == null ? Charset.defaultCharset() : charset);
+        this.reader = new InputStreamReader(
+                new ByteBufferInputStream(), charset == null ? Charset.defaultCharset() : charset);
     }
 
     public void close(final String fqcn) {
@@ -93,15 +93,15 @@ public class ByteStreamLogger {
             int off = 0;
             for (int pos = 0; pos < read; pos++) {
                 switch (this.msgBuf[pos]) {
-                case '\r':
-                    this.msg.append(this.msgBuf, off, pos - off);
-                    off = pos + 1;
-                    break;
-                case '\n':
-                    this.msg.append(this.msgBuf, off, pos - off);
-                    off = pos + 1;
-                    log(fqcn);
-                    break;
+                    case '\r':
+                        this.msg.append(this.msgBuf, off, pos - off);
+                        off = pos + 1;
+                        break;
+                    case '\n':
+                        this.msg.append(this.msgBuf, off, pos - off);
+                        off = pos + 1;
+                        log(fqcn);
+                        break;
                 }
             }
             this.msg.append(this.msgBuf, off, read - off);

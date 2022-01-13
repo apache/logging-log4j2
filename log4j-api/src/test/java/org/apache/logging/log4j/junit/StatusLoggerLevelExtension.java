@@ -44,7 +44,6 @@ class StatusLoggerLevelExtension implements BeforeEachCallback, AfterEachCallbac
     }
 
     private ExtensionContext.Store getStore(ExtensionContext context) {
-        return context.getStore(ExtensionContext.Namespace
-                .create(getClass(), context.getRequiredTestInstance()));
+        return context.getStore(ExtensionContext.Namespace.create(getClass(), context.getRequiredTestInstance()));
     }
 }

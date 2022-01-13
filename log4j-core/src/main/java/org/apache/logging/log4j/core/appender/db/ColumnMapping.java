@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.appender.db;
 
 import java.util.Date;
 import java.util.Locale;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.StringLayout;
@@ -83,18 +82,21 @@ public class ColumnMapping {
         public ColumnMapping build() {
             if (pattern != null) {
                 layout = PatternLayout.newBuilder()
-                    .withPattern(pattern)
-                    .withConfiguration(configuration)
-                    .withAlwaysWriteExceptions(false)
-                    .build();
+                        .withPattern(pattern)
+                        .withConfiguration(configuration)
+                        .withAlwaysWriteExceptions(false)
+                        .build();
             }
             if (!(layout == null
-                || literal == null
-                || Date.class.isAssignableFrom(type)
-                || ReadOnlyStringMap.class.isAssignableFrom(type)
-                || ThreadContextMap.class.isAssignableFrom(type)
-                || ThreadContextStack.class.isAssignableFrom(type))) {
-                LOGGER.error("No 'layout' or 'literal' value specified and type ({}) is not compatible with ThreadContextMap, ThreadContextStack, or java.util.Date for the mapping", type, this);
+                    || literal == null
+                    || Date.class.isAssignableFrom(type)
+                    || ReadOnlyStringMap.class.isAssignableFrom(type)
+                    || ThreadContextMap.class.isAssignableFrom(type)
+                    || ThreadContextStack.class.isAssignableFrom(type))) {
+                LOGGER.error(
+                        "No 'layout' or 'literal' value specified and type ({}) is not compatible with ThreadContextMap, ThreadContextStack, or java.util.Date for the mapping",
+                        type,
+                        this);
                 return null;
             }
             if (literal != null && parameter != null) {
@@ -148,7 +150,7 @@ public class ColumnMapping {
          * @return this.
          */
         public Builder setParameter(final String parameter) {
-            this.parameter= parameter;
+            this.parameter = parameter;
             return this;
         }
 
@@ -212,7 +214,13 @@ public class ColumnMapping {
     private final String source;
     private final Class<?> type;
 
-    private ColumnMapping(final String name, final String source, final StringLayout layout, final String literalValue, final String parameter, final Class<?> type) {
+    private ColumnMapping(
+            final String name,
+            final String source,
+            final StringLayout layout,
+            final String literalValue,
+            final String parameter,
+            final Class<?> type) {
         this.name = name;
         this.nameKey = toKey(name);
         this.source = source;
@@ -255,5 +263,4 @@ public class ColumnMapping {
         return "ColumnMapping [name=" + name + ", source=" + source + ", literalValue=" + literalValue + ", parameter="
                 + parameter + ", type=" + type + ", layout=" + layout + "]";
     }
-
 }

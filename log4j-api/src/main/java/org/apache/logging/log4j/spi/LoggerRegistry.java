@@ -23,7 +23,6 @@ import java.util.Objects;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 import org.apache.logging.log4j.message.MessageFactory;
 
 /**
@@ -102,7 +101,9 @@ public class LoggerRegistry<T extends ExtendedLogger> {
     }
 
     private static String factoryKey(final MessageFactory messageFactory) {
-        return messageFactory == null ? DEFAULT_FACTORY_KEY : messageFactory.getClass().getName();
+        return messageFactory == null
+                ? DEFAULT_FACTORY_KEY
+                : messageFactory.getClass().getName();
     }
 
     /**

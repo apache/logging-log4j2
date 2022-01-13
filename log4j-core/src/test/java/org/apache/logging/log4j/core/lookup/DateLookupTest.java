@@ -16,16 +16,14 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import java.util.Calendar;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Calendar;
 import org.apache.logging.log4j.core.AbstractLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 public class DateLookupTest {
-
 
     @Test
     public void testLookup() {
@@ -48,6 +46,5 @@ public class DateLookupTest {
             cal.set(2011, Calendar.DECEMBER, 30, 10, 56, 35);
             return cal.getTimeInMillis();
         }
-
     }
 }

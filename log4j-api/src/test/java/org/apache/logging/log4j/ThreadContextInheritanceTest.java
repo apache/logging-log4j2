@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.junit.UsingAnyThreadContext;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.junit.jupiter.api.AfterAll;
@@ -24,8 +26,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link ThreadContext}.

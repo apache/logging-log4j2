@@ -20,7 +20,6 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
@@ -46,8 +45,10 @@ import org.openjdk.jmh.annotations.State;
 // ============================== HOW TO RUN THIS TEST: ====================================
 //
 // single thread:
-// java -Dfile.encoding=ISO-8859-1 -Dlog4j2.is.webapp=false -Dlog4j2.enable.threadlocals=true -jar log4j-perf/target/benchmarks.jar ".*StringBuilderEncoder.*" -f 1 -wi 5 -i 10
-// java -Dfile.encoding=UTF8 -Dlog4j2.is.webapp=false -Dlog4j2.enable.threadlocals=true -jar log4j-perf/target/benchmarks.jar ".*StringBuilderEncoder.*" -f 1 -wi 5 -i 10
+// java -Dfile.encoding=ISO-8859-1 -Dlog4j2.is.webapp=false -Dlog4j2.enable.threadlocals=true -jar
+// log4j-perf/target/benchmarks.jar ".*StringBuilderEncoder.*" -f 1 -wi 5 -i 10
+// java -Dfile.encoding=UTF8 -Dlog4j2.is.webapp=false -Dlog4j2.enable.threadlocals=true -jar
+// log4j-perf/target/benchmarks.jar ".*StringBuilderEncoder.*" -f 1 -wi 5 -i 10
 //
 // Usage help:
 // java -jar log4j-perf/target/benchmarks.jar -help
@@ -55,19 +56,21 @@ import org.openjdk.jmh.annotations.State;
 @State(Scope.Thread)
 public class TextEncoderHelperBenchmark {
 
-    final static String STR = "AB!(%087936DZYXQWEIOP$#^~-=/><nb"; // length=32
-    final static String STR_TEXT = "20:01:59.9876 INFO [org.apache.logging.log4j.perf.jmh.TextEncoderHelperBenchmark] AB!(%087936DZYXQWEIOP$#^~-=/><nb"; // length=32
-    final static StringBuilder BUFF_TEXT = new StringBuilder(STR_TEXT);
-    final static CharBuffer CHAR_BUFFER = CharBuffer.wrap(STR.toCharArray());
+    static final String STR = "AB!(%087936DZYXQWEIOP$#^~-=/><nb"; // length=32
+    static final String STR_TEXT =
+            "20:01:59.9876 INFO [org.apache.logging.log4j.perf.jmh.TextEncoderHelperBenchmark] AB!(%087936DZYXQWEIOP$#^~-=/><nb"; // length=32
+    static final StringBuilder BUFF_TEXT = new StringBuilder(STR_TEXT);
+    static final CharBuffer CHAR_BUFFER = CharBuffer.wrap(STR.toCharArray());
 
-    final static LogEvent EVENT = createLogEvent();
+    static final LogEvent EVENT = createLogEvent();
     private static final Charset CHARSET_DEFAULT = Charset.defaultCharset();
-    private final PatternLayout PATTERN_M_C_D = PatternLayout.createLayout("%d %c %m%n", null, null, null, CHARSET_DEFAULT, false, true, null, null);
+    private final PatternLayout PATTERN_M_C_D =
+            PatternLayout.createLayout("%d %c %m%n", null, null, null, CHARSET_DEFAULT, false, true, null, null);
     private final Destination destination = new Destination();
 
     class Destination implements ByteBufferDestination {
         long count = 0;
-        ByteBuffer buffer = ByteBuffer.wrap(new byte[256*1024]);
+        ByteBuffer buffer = ByteBuffer.wrap(new byte[256 * 1024]);
 
         @Override
         public ByteBuffer getByteBuffer() {
@@ -127,8 +130,9 @@ public class TextEncoderHelperBenchmark {
         return STR_TEXT.getBytes();
     }
 
-    //private static final ThreadLocal<StringBuilderEncoder> textEncoderHelper = new ThreadLocal<>();
+    // private static final ThreadLocal<StringBuilderEncoder> textEncoderHelper = new ThreadLocal<>();
     private final StringBuilderEncoder textEncoderHelper = new StringBuilderEncoder(CHARSET_DEFAULT);
+
     private StringBuilderEncoder getEncoder() {
         final StringBuilderEncoder result = textEncoderHelper;
         return result;
@@ -144,43 +148,43 @@ public class TextEncoderHelperBenchmark {
         return destination.count;
     }
 
-//    @Benchmark
-//    @BenchmarkMode(Mode.SampleTime)
-//    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-//    public long charBufferEncode() {
-//        final StringBuilderEncoder helper = getEncoder();
-//        CHAR_BUFFER.limit(CHAR_BUFFER.capacity());
-//        CHAR_BUFFER.position(0);
-//        helper.encode(CHAR_BUFFER, destination);
-//
-//        return destination.count;
-//    }
-//
-//    @Benchmark
-//    @BenchmarkMode(Mode.SampleTime)
-//    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-//    public long charBufferCopyAndEncode() {
-//        final StringBuilderEncoder helper = getEncoder();
-//        CHAR_BUFFER.clear();
-//        CHAR_BUFFER.put(STR);
-//        CHAR_BUFFER.flip();
-//        helper.encode(CHAR_BUFFER, destination);
-//
-//        return destination.count;
-//    }
-//
-//    @Benchmark
-//    @BenchmarkMode(Mode.SampleTime)
-//    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-//    public long textHelperCopyAndEncode() {
-//        final StringBuilderEncoder helper = getEncoder();
-//        CHAR_BUFFER.clear();
-//        copy(BUFF_TEXT, 0, CHAR_BUFFER);
-//        CHAR_BUFFER.flip();
-//        helper.encode(CHAR_BUFFER, destination);
-//
-//        return destination.count;
-//    }
+    //    @Benchmark
+    //    @BenchmarkMode(Mode.SampleTime)
+    //    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    //    public long charBufferEncode() {
+    //        final StringBuilderEncoder helper = getEncoder();
+    //        CHAR_BUFFER.limit(CHAR_BUFFER.capacity());
+    //        CHAR_BUFFER.position(0);
+    //        helper.encode(CHAR_BUFFER, destination);
+    //
+    //        return destination.count;
+    //    }
+    //
+    //    @Benchmark
+    //    @BenchmarkMode(Mode.SampleTime)
+    //    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    //    public long charBufferCopyAndEncode() {
+    //        final StringBuilderEncoder helper = getEncoder();
+    //        CHAR_BUFFER.clear();
+    //        CHAR_BUFFER.put(STR);
+    //        CHAR_BUFFER.flip();
+    //        helper.encode(CHAR_BUFFER, destination);
+    //
+    //        return destination.count;
+    //    }
+    //
+    //    @Benchmark
+    //    @BenchmarkMode(Mode.SampleTime)
+    //    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    //    public long textHelperCopyAndEncode() {
+    //        final StringBuilderEncoder helper = getEncoder();
+    //        CHAR_BUFFER.clear();
+    //        copy(BUFF_TEXT, 0, CHAR_BUFFER);
+    //        CHAR_BUFFER.flip();
+    //        helper.encode(CHAR_BUFFER, destination);
+    //
+    //        return destination.count;
+    //    }
 
     /**
      * Copies characters from the CharSequence into the CharBuffer,
@@ -202,7 +206,7 @@ public class TextEncoderHelperBenchmark {
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public long byteArrayMCD() {
-        final byte[] data =  PATTERN_M_C_D.toByteArray(EVENT);
+        final byte[] data = PATTERN_M_C_D.toByteArray(EVENT);
         ByteBuffer buff = destination.getByteBuffer();
         if (buff.remaining() < data.length) {
             buff = destination.drain(buff);
@@ -225,13 +229,13 @@ public class TextEncoderHelperBenchmark {
         return destination.count;
     }
 
-//    @Benchmark
-//    @BenchmarkMode(Mode.SampleTime)
-//    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-//    public StringBuilder toTextMCD() {
-//        StringBuilder str = PATTERN_M_C_D.toText(EVENT);
-//        return str;
-//    }
+    //    @Benchmark
+    //    @BenchmarkMode(Mode.SampleTime)
+    //    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    //    public StringBuilder toTextMCD() {
+    //        StringBuilder str = PATTERN_M_C_D.toText(EVENT);
+    //        return str;
+    //    }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)

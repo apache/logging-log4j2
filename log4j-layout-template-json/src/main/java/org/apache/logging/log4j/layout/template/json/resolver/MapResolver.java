@@ -28,9 +28,7 @@ import org.apache.logging.log4j.util.ReadOnlyStringMap;
  */
 public final class MapResolver extends ReadOnlyStringMapResolver {
 
-    MapResolver(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
+    MapResolver(final EventResolverContext context, final TemplateResolverConfig config) {
         super(context, config, MapResolver::toMap);
     }
 
@@ -47,5 +45,4 @@ public final class MapResolver extends ReadOnlyStringMapResolver {
     static String getName() {
         return "map";
     }
-
 }

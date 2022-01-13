@@ -19,7 +19,6 @@ package org.apache.logging.log4j.samples.events;
 /**
  * Member logged in successfully.
  */
-
 public interface Login extends org.apache.logging.log4j.samples.dto.AuditEvent {
 
     /**
@@ -42,5 +41,4 @@ public interface Login extends org.apache.logging.log4j.samples.dto.AuditEvent {
      * @param startPageOption Chosen start page destination for IB login.
      */
     void setStartPageOption(String startPageOption);
-
 }

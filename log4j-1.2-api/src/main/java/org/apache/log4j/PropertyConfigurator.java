@@ -19,7 +19,6 @@ package org.apache.log4j;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
-
 import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.spi.LoggerRepository;
 
@@ -33,8 +32,7 @@ public class PropertyConfigurator implements Configurator {
      *
      * @param inputStream The input stream
      */
-    public static void configure(final InputStream inputStream) {
-    }
+    public static void configure(final InputStream inputStream) {}
 
     /**
      * Read configuration options from <code>properties</code>.
@@ -43,24 +41,21 @@ public class PropertyConfigurator implements Configurator {
      *
      * @param properties The properties
      */
-    public static void configure(final Properties properties) {
-    }
+    public static void configure(final Properties properties) {}
 
     /**
      * Read configuration options from configuration file.
      *
      * @param configFileName The configuration file.
      */
-    public static void configure(final String configFileName) {
-    }
+    public static void configure(final String configFileName) {}
 
     /**
      * Read configuration options from url <code>configURL</code>.
      *
      * @param configURL The configuration URL
      */
-    public static void configure(final URL configURL) {
-    }
+    public static void configure(final URL configURL) {}
 
     /**
      * Like {@link #configureAndWatch(String, long)} except that the
@@ -69,8 +64,7 @@ public class PropertyConfigurator implements Configurator {
      *
      * @param configFilename A file in key=value format.
      */
-    public static void configureAndWatch(final String configFilename) {
-    }
+    public static void configureAndWatch(final String configFilename) {}
 
     /**
      * Read the configuration file <code>configFilename</code> if it
@@ -83,8 +77,7 @@ public class PropertyConfigurator implements Configurator {
      * @param configFilename A file in key=value format.
      * @param delay The delay in milliseconds to wait between each check.
      */
-    public static void configureAndWatch(final String configFilename, final long delay) {
-    }
+    public static void configureAndWatch(final String configFilename, final long delay) {}
 
     /**
      * Read configuration options from an InputStream.
@@ -93,8 +86,7 @@ public class PropertyConfigurator implements Configurator {
      * @param hierarchy The hierarchy
      */
     @Override
-    public void doConfigure(final InputStream inputStream, final LoggerRepository hierarchy) {
-    }
+    public void doConfigure(final InputStream inputStream, final LoggerRepository hierarchy) {}
 
     /**
      * Read configuration options from <code>properties</code>.
@@ -104,8 +96,7 @@ public class PropertyConfigurator implements Configurator {
      * @param properties The properties
      * @param hierarchy The hierarchy
      */
-    public void doConfigure(final Properties properties, final LoggerRepository hierarchy) {
-    }
+    public void doConfigure(final Properties properties, final LoggerRepository hierarchy) {}
 
     /**
      * Read configuration options from configuration file.
@@ -113,9 +104,7 @@ public class PropertyConfigurator implements Configurator {
      * @param configFileName The configuration file
      * @param hierarchy The hierarchy
      */
-    public void doConfigure(final String configFileName, final LoggerRepository hierarchy) {
-
-    }
+    public void doConfigure(final String configFileName, final LoggerRepository hierarchy) {}
 
     /**
      * Read configuration options from url <code>configURL</code>.
@@ -124,6 +113,5 @@ public class PropertyConfigurator implements Configurator {
      * @param hierarchy The hierarchy
      */
     @Override
-    public void doConfigure(final URL configURL, final LoggerRepository hierarchy) {
-    }
+    public void doConfigure(final URL configURL, final LoggerRepository hierarchy) {}
 }

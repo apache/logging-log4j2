@@ -17,6 +17,11 @@
 
 package org.apache.logging.log4j.core.config;
 
+import static org.junit.jupiter.api.Assertions.assertSame;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Appender;
@@ -25,12 +30,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.Supplier;
 import org.opentest4j.MultipleFailuresError;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertSame;
 
 /**
  * Mock object for validating the behavior of a configuration interacting with ReliabilityStrategy.
@@ -46,8 +45,13 @@ public class MockReliabilityStrategy implements ReliabilityStrategy {
 
     @Override
     public void log(
-            final Supplier<LoggerConfig> reconfigured, final String loggerName, final String fqcn, final Marker marker,
-            final Level level, final Message data, final Throwable t) {
+            final Supplier<LoggerConfig> reconfigured,
+            final String loggerName,
+            final String fqcn,
+            final Marker marker,
+            final Level level,
+            final Message data,
+            final Throwable t) {
         config.log(loggerName, fqcn, marker, level, data, t);
     }
 
@@ -90,7 +94,10 @@ public class MockReliabilityStrategy implements ReliabilityStrategy {
 
     private void checkState(final LifeCycle.State expected, final LifeCycle object) {
         try {
-            assertSame(expected, object.getState(), () -> "Expected state " + expected + " for LifeCycle object " + object);
+            assertSame(
+                    expected,
+                    object.getState(),
+                    () -> "Expected state " + expected + " for LifeCycle object " + object);
         } catch (final AssertionError e) {
             errors.add(e);
         }

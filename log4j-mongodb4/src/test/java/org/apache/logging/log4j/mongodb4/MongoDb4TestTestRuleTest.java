@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.mongodb4;
 
+import com.mongodb.client.MongoIterable;
 import org.apache.commons.lang3.JavaVersion;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.mongodb4.MongoDb4TestRule.LoggingTarget;
@@ -29,8 +30,6 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 
-import com.mongodb.client.MongoIterable;
-
 /**
  * Tests MongoDbRule.
  * <p>
@@ -39,11 +38,11 @@ import com.mongodb.client.MongoIterable;
  */
 public class MongoDb4TestTestRuleTest {
 
-    private static final AvailablePortSystemPropertyTestRule mongoDbPortTestRule = AvailablePortSystemPropertyTestRule
-            .create(MongoDb4TestConstants.SYS_PROP_NAME_PORT);
+    private static final AvailablePortSystemPropertyTestRule mongoDbPortTestRule =
+            AvailablePortSystemPropertyTestRule.create(MongoDb4TestConstants.SYS_PROP_NAME_PORT);
 
-    private static final MongoDb4TestRule mongoDbTestRule = new MongoDb4TestRule(mongoDbPortTestRule.getName(),
-            MongoDb4TestTestRuleTest.class, LoggingTarget.NULL);
+    private static final MongoDb4TestRule mongoDbTestRule =
+            new MongoDb4TestRule(mongoDbPortTestRule.getName(), MongoDb4TestTestRuleTest.class, LoggingTarget.NULL);
 
     @ClassRule
     public static RuleChain mongoDbChain = RuleChainFactory.create(mongoDbPortTestRule, mongoDbTestRule);
@@ -56,7 +55,8 @@ public class MongoDb4TestTestRuleTest {
     @Test
     public void testAccess() {
         @SuppressWarnings("resource")
-        final MongoIterable<String> databaseNames = mongoDbTestRule.getMongoClient().listDatabaseNames();
+        final MongoIterable<String> databaseNames =
+                mongoDbTestRule.getMongoClient().listDatabaseNames();
         Assert.assertNotNull(databaseNames);
         Assert.assertNotNull(databaseNames.first());
     }

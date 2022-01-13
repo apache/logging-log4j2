@@ -17,6 +17,11 @@
 
 package org.apache.logging.log4j.perf.jmh;
 
+import java.io.File;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,12 +42,6 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.Threads;
 import org.openjdk.jmh.annotations.Warmup;
-
-import java.io.File;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Tests Log4j2 Async Loggers performance with many threads producing events quickly while the background
@@ -101,14 +100,15 @@ public class ConcurrentAsyncLoggerToFileBenchmark {
         @SuppressWarnings("unused") // Used by JMH
         public enum QueueFullPolicy {
             ENQUEUE(Collections.singletonMap("log4j2.AsyncQueueFullPolicy", "Default")),
-            ENQUEUE_UNSYNCHRONIZED(new HashMap<>() {{
-                put("log4j2.AsyncQueueFullPolicy", "Default");
-                put("AsyncLogger.SynchronizeEnqueueWhenQueueFull", "false");
-                put("AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull", "false");
-            }
+            ENQUEUE_UNSYNCHRONIZED(new HashMap<>() {
+                {
+                    put("log4j2.AsyncQueueFullPolicy", "Default");
+                    put("AsyncLogger.SynchronizeEnqueueWhenQueueFull", "false");
+                    put("AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull", "false");
+                }
             }),
-            SYNCHRONOUS(Collections.singletonMap("log4j2.AsyncQueueFullPolicy",
-                    SynchronousAsyncQueueFullPolicy.class.getName()));
+            SYNCHRONOUS(Collections.singletonMap(
+                    "log4j2.AsyncQueueFullPolicy", SynchronousAsyncQueueFullPolicy.class.getName()));
 
             private final Map<String, String> properties;
 
@@ -133,12 +133,13 @@ public class ConcurrentAsyncLoggerToFileBenchmark {
                 switch (this) {
                     case ASYNC_CONTEXT:
                         System.setProperty("log4j.configurationFile", "ConcurrentAsyncLoggerToFileBenchmark.xml");
-                        System.setProperty("Log4jContextSelector",
+                        System.setProperty(
+                                "Log4jContextSelector",
                                 "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
                         break;
                     case ASYNC_CONFIG:
-                        System.setProperty("log4j.configurationFile",
-                                "ConcurrentAsyncLoggerToFileBenchmark-asyncConfig.xml");
+                        System.setProperty(
+                                "log4j.configurationFile", "ConcurrentAsyncLoggerToFileBenchmark-asyncConfig.xml");
                         break;
                     default:
                         throw new IllegalStateException("Unknown type: " + this);

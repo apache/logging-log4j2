@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.flume.appender;
 
+import com.google.common.base.Preconditions;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -30,10 +31,8 @@ import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
-
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
-
 import org.apache.avro.AvroRemoteException;
 import org.apache.avro.ipc.NettyServer;
 import org.apache.avro.ipc.Responder;
@@ -54,8 +53,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.google.common.base.Preconditions;
 
 /**
  *
@@ -89,9 +86,9 @@ public class FlumePersistentPerf {
         deleteFiles(file);
 
         /*
-        * Clear out all other appenders associated with this logger to ensure we're
-        * only hitting the Avro appender.
-        */
+         * Clear out all other appenders associated with this logger to ensure we're
+         * only hitting the Avro appender.
+         */
         final int primaryPort = AvailablePortFinder.getNextAvailable();
         final int altPort = AvailablePortFinder.getNextAvailable();
         System.setProperty("primaryPort", Integer.toString(primaryPort));
@@ -135,7 +132,6 @@ public class FlumePersistentPerf {
         System.out.println("Time to log " + count + " events " + elapsed + "ms");
     }
 
-
     private String getBody(final Event event) throws IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final InputStream is = new GZIPInputStream(new ByteArrayInputStream(event.getBody()));
@@ -144,31 +140,29 @@ public class FlumePersistentPerf {
             baos.write(n);
         }
         return new String(baos.toByteArray());
-
     }
 
-	private static boolean deleteFiles(final File file) {
-		boolean result = true;
-		if (file.isDirectory()) {
+    private static boolean deleteFiles(final File file) {
+        boolean result = true;
+        if (file.isDirectory()) {
 
-			final File[] files = file.listFiles();
-			if (files != null) {
-				for (final File child : files) {
-					result &= deleteFiles(child);
-				}
-			}
-		} else if (!file.exists()) {
-			return true;
-		}
+            final File[] files = file.listFiles();
+            if (files != null) {
+                for (final File child : files) {
+                    result &= deleteFiles(child);
+                }
+            }
+        } else if (!file.exists()) {
+            return true;
+        }
 
-		return result && file.delete();
-	}
+        return result && file.delete();
+    }
 
     private static class EventCollector implements AvroSourceProtocol {
         private final LinkedBlockingQueue<AvroFlumeEvent> eventQueue = new LinkedBlockingQueue<>();
 
         private final NettyServer nettyServer;
-
 
         public EventCollector(final int port) {
             final Responder responder = new SpecificResponder(AvroSourceProtocol.class, this);
@@ -202,8 +196,7 @@ public class FlumePersistentPerf {
         }
 
         @Override
-        public Status appendBatch(final List<AvroFlumeEvent> events)
-            throws AvroRemoteException {
+        public Status appendBatch(final List<AvroFlumeEvent> events) throws AvroRemoteException {
             Preconditions.checkState(eventQueue.addAll(events));
             return Status.OK;
         }

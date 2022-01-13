@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,12 +30,6 @@ import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
-
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Initializes and configure the Logging system. This class provides several ways to construct a LoggerContext using
@@ -48,10 +47,13 @@ public final class Configurator {
             return (Log4jContextFactory) factory;
         }
         if (factory != null) {
-            LOGGER.error("LogManager returned an instance of {} which does not implement {}. Unable to initialize Log4j.",
-                    factory.getClass().getName(), Log4jContextFactory.class.getName());
+            LOGGER.error(
+                    "LogManager returned an instance of {} which does not implement {}. Unable to initialize Log4j.",
+                    factory.getClass().getName(),
+                    Log4jContextFactory.class.getName());
         } else {
-            LOGGER.fatal("LogManager did not return a LoggerContextFactory. This indicates something has gone terribly wrong!");
+            LOGGER.fatal(
+                    "LogManager did not return a LoggerContextFactory. This indicates something has gone terribly wrong!");
         }
         return null;
     }
@@ -62,8 +64,7 @@ public final class Configurator {
      * @param source The InputSource for the configuration.
      * @return The LoggerContext.
      */
-    public static LoggerContext initialize(final ClassLoader loader,
-                                           final ConfigurationSource source) {
+    public static LoggerContext initialize(final ClassLoader loader, final ConfigurationSource source) {
         return initialize(loader, source, null);
     }
 
@@ -74,18 +75,15 @@ public final class Configurator {
      * @param externalContext The external context to be attached to the LoggerContext.
      * @return The LoggerContext.
      */
-
-    public static LoggerContext initialize(final ClassLoader loader,
-                                           final ConfigurationSource source,
-                                           final Object externalContext)
-    {
+    public static LoggerContext initialize(
+            final ClassLoader loader, final ConfigurationSource source, final Object externalContext) {
 
         try {
             final Log4jContextFactory factory = getFactory();
-            return factory == null ? null :
-                    factory.getContext(FQCN, loader, externalContext, false, source);
+            return factory == null ? null : factory.getContext(FQCN, loader, externalContext, false, source);
         } catch (final Exception ex) {
-            LOGGER.error("There was a problem obtaining a LoggerContext using the configuration source [{}]", source, ex);
+            LOGGER.error(
+                    "There was a problem obtaining a LoggerContext using the configuration source [{}]", source, ex);
         }
         return null;
     }
@@ -99,7 +97,6 @@ public final class Configurator {
      */
     public static LoggerContext initialize(final String name, final ClassLoader loader, final String configLocation) {
         return initialize(name, loader, configLocation, null);
-
     }
 
     /**
@@ -110,8 +107,8 @@ public final class Configurator {
      * @param externalContext The external context to be attached to the LoggerContext
      * @return The LoggerContext or null if an error occurred (check the status logger).
      */
-    public static LoggerContext initialize(final String name, final ClassLoader loader, final String configLocation,
-            final Object externalContext) {
+    public static LoggerContext initialize(
+            final String name, final ClassLoader loader, final String configLocation, final Object externalContext) {
         if (Strings.isBlank(configLocation)) {
             return initialize(name, loader, (URI) null, externalContext);
         }
@@ -150,16 +147,20 @@ public final class Configurator {
      * @param externalContext The external context to be attached to the LoggerContext
      * @return The LoggerContext.
      */
-    public static LoggerContext initialize(final String name, final ClassLoader loader, final URI configLocation,
-                                           final Object externalContext) {
+    public static LoggerContext initialize(
+            final String name, final ClassLoader loader, final URI configLocation, final Object externalContext) {
 
         try {
             final Log4jContextFactory factory = getFactory();
-            return factory == null ? null :
-                    factory.getContext(FQCN, loader, externalContext, false, configLocation, name);
+            return factory == null
+                    ? null
+                    : factory.getContext(FQCN, loader, externalContext, false, configLocation, name);
         } catch (final Exception ex) {
-            LOGGER.error("There was a problem initializing the LoggerContext [{}] using configuration at [{}].",
-                    name, configLocation, ex);
+            LOGGER.error(
+                    "There was a problem initializing the LoggerContext [{}] using configuration at [{}].",
+                    name,
+                    configLocation,
+                    ex);
         }
         return null;
     }
@@ -172,30 +173,41 @@ public final class Configurator {
      * @param entry The external context entry to be attached to the LoggerContext
      * @return The LoggerContext.
      */
-    public static LoggerContext initialize(final String name, final ClassLoader loader, final URI configLocation,
+    public static LoggerContext initialize(
+            final String name,
+            final ClassLoader loader,
+            final URI configLocation,
             final Map.Entry<String, Object> entry) {
 
         try {
             final Log4jContextFactory factory = getFactory();
-            return factory == null ? null :
-                    factory.getContext(FQCN, loader, entry, false, configLocation, name);
+            return factory == null ? null : factory.getContext(FQCN, loader, entry, false, configLocation, name);
         } catch (final Exception ex) {
-            LOGGER.error("There was a problem initializing the LoggerContext [{}] using configuration at [{}].",
-                    name, configLocation, ex);
+            LOGGER.error(
+                    "There was a problem initializing the LoggerContext [{}] using configuration at [{}].",
+                    name,
+                    configLocation,
+                    ex);
         }
         return null;
     }
 
-    public static LoggerContext initialize(final String name, final ClassLoader loader, final List<URI> configLocations,
+    public static LoggerContext initialize(
+            final String name,
+            final ClassLoader loader,
+            final List<URI> configLocations,
             final Object externalContext) {
         try {
             final Log4jContextFactory factory = getFactory();
-            return factory == null ?
-                    null :
-                    factory.getContext(FQCN, loader, externalContext, false, configLocations, name);
+            return factory == null
+                    ? null
+                    : factory.getContext(FQCN, loader, externalContext, false, configLocations, name);
         } catch (final Exception ex) {
-            LOGGER.error("There was a problem initializing the LoggerContext [{}] using configurations at [{}].", name,
-                    configLocations, ex);
+            LOGGER.error(
+                    "There was a problem initializing the LoggerContext [{}] using configurations at [{}].",
+                    name,
+                    configLocations,
+                    ex);
         }
         return null;
     }
@@ -236,14 +248,16 @@ public final class Configurator {
      * @param externalContext - The external context to be attached to the LoggerContext.
      * @return The LoggerContext.
      */
-    public static LoggerContext initialize(final ClassLoader loader, final Configuration configuration, final Object externalContext) {
+    public static LoggerContext initialize(
+            final ClassLoader loader, final Configuration configuration, final Object externalContext) {
         try {
             final Log4jContextFactory factory = getFactory();
-            return factory == null ? null :
-                    factory.getContext(FQCN, loader, externalContext, false, configuration);
+            return factory == null ? null : factory.getContext(FQCN, loader, externalContext, false, configuration);
         } catch (final Exception ex) {
-            LOGGER.error("There was a problem initializing the LoggerContext using configuration {}",
-                    configuration.getName(), ex);
+            LOGGER.error(
+                    "There was a problem initializing the LoggerContext using configuration {}",
+                    configuration.getName(),
+                    ex);
         }
         return null;
     }
@@ -257,12 +271,13 @@ public final class Configurator {
         try {
             final Log4jContextFactory factory = getFactory();
             if (factory != null) {
-                factory.getContext(FQCN, null, null, false)
-                        .reconfigure(configuration);
+                factory.getContext(FQCN, null, null, false).reconfigure(configuration);
             }
         } catch (final Exception ex) {
-            LOGGER.error("There was a problem initializing the LoggerContext using configuration {}",
-                    configuration.getName(), ex);
+            LOGGER.error(
+                    "There was a problem initializing the LoggerContext using configuration {}",
+                    configuration.getName(),
+                    ex);
         }
     }
 

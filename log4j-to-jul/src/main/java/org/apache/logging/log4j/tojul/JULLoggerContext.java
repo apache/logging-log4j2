@@ -49,8 +49,8 @@ class JULLoggerContext implements LoggerContext {
     @Override
     public ExtendedLogger getLogger(final String name, final MessageFactory messageFactory) {
         if (!loggerRegistry.hasLogger(name, messageFactory)) {
-            loggerRegistry.putIfAbsent(name, messageFactory,
-                    new JULLogger(name, messageFactory, Logger.getLogger(name)));
+            loggerRegistry.putIfAbsent(
+                    name, messageFactory, new JULLogger(name, messageFactory, Logger.getLogger(name)));
         }
         return loggerRegistry.getLogger(name, messageFactory);
     }

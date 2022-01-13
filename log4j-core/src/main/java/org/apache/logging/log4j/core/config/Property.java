@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.config;
 
 import java.util.Objects;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -82,8 +81,7 @@ public final class Property {
      */
     @PluginFactory
     public static Property createProperty(
-            @PluginAttribute("name") final String name,
-            @PluginValue("value") final String value) {
+            @PluginAttribute("name") final String name, @PluginValue("value") final String value) {
         if (name == null) {
             LOGGER.error("Property name cannot be null");
         }

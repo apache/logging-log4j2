@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.junit.LoggerContextSource;
@@ -27,53 +31,41 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 @Execution(ExecutionMode.SAME_THREAD)
 class JsonTemplateLayoutAdditionalFieldTest {
 
     @Test
     @LoggerContextSource("additionalFieldEnrichedJsonTemplateLayoutLogging.json")
     void test_JSON_config_additional_fields(
-            final LoggerContext loggerContext,
-            final @Named(value = "List") ListAppender appender) {
+            final LoggerContext loggerContext, final @Named(value = "List") ListAppender appender) {
         assertAdditionalFields(loggerContext, appender);
     }
 
     @Test
     @LoggerContextSource("additionalFieldEnrichedJsonTemplateLayoutLogging.properties")
     void test_Properties_config_additional_fields(
-            final LoggerContext loggerContext,
-            final @Named(value = "List") ListAppender appender) {
+            final LoggerContext loggerContext, final @Named(value = "List") ListAppender appender) {
         assertAdditionalFields(loggerContext, appender);
     }
 
     @Test
     @LoggerContextSource("additionalFieldEnrichedJsonTemplateLayoutLogging.xml")
     void test_XML_config_additional_fields(
-            final LoggerContext loggerContext,
-            final @Named(value = "List") ListAppender appender) {
+            final LoggerContext loggerContext, final @Named(value = "List") ListAppender appender) {
         assertAdditionalFields(loggerContext, appender);
     }
 
     @Test
     @LoggerContextSource("additionalFieldEnrichedJsonTemplateLayoutLogging.yaml")
     void test_YAML_config_additional_fields(
-            final LoggerContext loggerContext,
-            final @Named(value = "List") ListAppender appender) {
+            final LoggerContext loggerContext, final @Named(value = "List") ListAppender appender) {
         assertAdditionalFields(loggerContext, appender);
     }
 
-    private static void assertAdditionalFields(
-            final LoggerContext loggerContext,
-            final ListAppender appender) {
+    private static void assertAdditionalFields(final LoggerContext loggerContext, final ListAppender appender) {
 
         // Log an event.
-        final Logger logger =
-                loggerContext.getLogger(JsonTemplateLayoutAdditionalFieldTest.class);
+        final Logger logger = loggerContext.getLogger(JsonTemplateLayoutAdditionalFieldTest.class);
         logger.info("trigger");
 
         // Verify that the appender has logged the event.
@@ -82,23 +74,17 @@ class JsonTemplateLayoutAdditionalFieldTest {
 
         // Deserialize the serialized event.
         final byte[] serializedEvent = serializedEvents.get(0);
-        final String serializedEventJson =
-                new String(
-                        serializedEvent,
-                        JsonTemplateLayoutDefaults.getCharset());
+        final String serializedEventJson = new String(serializedEvent, JsonTemplateLayoutDefaults.getCharset());
         final Object serializedEventObject = JsonReader.read(serializedEventJson);
         Assertions.assertThat(serializedEventObject).isInstanceOf(Map.class);
-        @SuppressWarnings("unchecked") final Map<String, Object> serializedEventMap =
-                (Map<String, Object>) serializedEventObject;
+        @SuppressWarnings("unchecked")
+        final Map<String, Object> serializedEventMap = (Map<String, Object>) serializedEventObject;
 
         // Verify the serialized additional fields.
-        Assertions
-                .assertThat(serializedEventMap)
+        Assertions.assertThat(serializedEventMap)
                 .containsEntry("stringField", "string")
                 .containsEntry("numberField", 1)
                 .containsEntry("objectField", Collections.singletonMap("numberField", 1))
                 .containsEntry("listField", Arrays.asList(1, "two"));
-
     }
-
 }

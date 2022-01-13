@@ -29,7 +29,6 @@ import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.AppenderWrapper;
@@ -52,7 +51,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
 
-
 /**
  * Build a File Appender
  */
@@ -61,8 +59,7 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    public RollingFileAppenderBuilder() {
-    }
+    public RollingFileAppenderBuilder() {}
 
     public RollingFileAppenderBuilder(String prefix, Properties props) {
         super(prefix, props);
@@ -153,14 +150,27 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
                 }
             }
         });
-        return createAppender(name, config, layout.get(), filter.get(), bufferedIo.get(), immediateFlush.get(),
-                fileName.get(), level.get(), maxSize.get(), maxBackups.get());
+        return createAppender(
+                name,
+                config,
+                layout.get(),
+                filter.get(),
+                bufferedIo.get(),
+                immediateFlush.get(),
+                fileName.get(),
+                level.get(),
+                maxSize.get(),
+                maxBackups.get());
     }
 
-
     @Override
-    public Appender parseAppender(final String name, final String appenderPrefix, final String layoutPrefix,
-            final String filterPrefix, final Properties props, final PropertiesConfiguration configuration) {
+    public Appender parseAppender(
+            final String name,
+            final String appenderPrefix,
+            final String layoutPrefix,
+            final String filterPrefix,
+            final Properties props,
+            final PropertiesConfiguration configuration) {
         Layout layout = configuration.parseLayout(layoutPrefix, name, props);
         Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
         String fileName = getProperty(FILE_PARAM);
@@ -169,13 +179,21 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
         boolean bufferedIo = getBooleanProperty(BUFFERED_IO_PARAM);
         String maxSize = getProperty(MAX_SIZE_PARAM);
         String maxBackups = getProperty(MAX_BACKUP_INDEX);
-        return createAppender(name, configuration, layout, filter, bufferedIo, immediateFlush, fileName, level, maxSize,
-                maxBackups);
+        return createAppender(
+                name, configuration, layout, filter, bufferedIo, immediateFlush, fileName, level, maxSize, maxBackups);
     }
 
-    private Appender createAppender(final String name, final Log4j1Configuration config, final Layout layout,
-            final Filter filter, final boolean bufferedIo, boolean immediateFlush, final String fileName,
-            final String level, final String maxSize, final String maxBackups) {
+    private Appender createAppender(
+            final String name,
+            final Log4j1Configuration config,
+            final Layout layout,
+            final Filter filter,
+            final boolean bufferedIo,
+            boolean immediateFlush,
+            final String fileName,
+            final String level,
+            final String maxSize,
+            final String maxBackups) {
         org.apache.logging.log4j.core.Layout<?> fileLayout = null;
         if (!bufferedIo) {
             immediateFlush = true;
@@ -190,8 +208,9 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
             LOGGER.warn("Unable to create File Appender, no file name provided");
             return null;
         }
-        String filePattern = fileName +"%d{yyy-MM-dd}";
-        TriggeringPolicy timePolicy = TimeBasedTriggeringPolicy.newBuilder().withModulate(true).build();
+        String filePattern = fileName + "%d{yyy-MM-dd}";
+        TriggeringPolicy timePolicy =
+                TimeBasedTriggeringPolicy.newBuilder().withModulate(true).build();
         SizeBasedTriggeringPolicy sizePolicy = SizeBasedTriggeringPolicy.createPolicy(maxSize);
         CompositeTriggeringPolicy policy = CompositeTriggeringPolicy.createPolicy(sizePolicy, timePolicy);
         RolloverStrategy strategy = DefaultRolloverStrategy.newBuilder()

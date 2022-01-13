@@ -18,7 +18,6 @@ package org.apache.logging.log4j.status;
 
 import java.io.IOException;
 import java.io.PrintStream;
-
 import org.apache.logging.log4j.Level;
 
 /**

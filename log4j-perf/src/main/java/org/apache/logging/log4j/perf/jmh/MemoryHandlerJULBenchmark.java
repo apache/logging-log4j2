@@ -16,10 +16,11 @@
  */
 package org.apache.logging.log4j.perf.jmh;
 
+import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.*;
+
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java.util.logging.MemoryHandler;
-
 import org.apache.logging.log4j.perf.util.BenchmarkMessageParams;
 import org.apache.logging.log4j.perf.util.NoOpJULHandler;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -30,8 +31,6 @@ import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
-
-import static org.apache.logging.log4j.perf.util.BenchmarkMessageParams.*;
 
 /**
  * Tests JUL (java.util.logging) Memory Handler performance.
@@ -81,85 +80,126 @@ public class MemoryHandlerJULBenchmark {
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void throughput2Params() {
-        logger.logp(java.util.logging.Level.INFO, getClass().getName(), "methodName", "p1={}, p2={}",
-                new Object[]{one, two});
+        logger.logp(
+                java.util.logging.Level.INFO, getClass().getName(), "methodName", "p1={}, p2={}", new Object[] {one, two
+                });
     }
 
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void throughput3Params() {
-        logger.logp(java.util.logging.Level.INFO, getClass().getName(), "methodName","p1={}, p2={}, p3={}",
-                new Object[]{one, two, three});
+        logger.logp(
+                java.util.logging.Level.INFO, getClass().getName(), "methodName", "p1={}, p2={}, p3={}", new Object[] {
+                    one, two, three
+                });
     }
 
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void throughput4Params() {
-        logger.logp(java.util.logging.Level.INFO, getClass().getName(), "methodName",
-                "p1={}, p2={}, p3={}, p4={}", new Object[]{one, two, three, four,});
+        logger.logp(
+                java.util.logging.Level.INFO,
+                getClass().getName(),
+                "methodName",
+                "p1={}, p2={}, p3={}, p4={}",
+                new Object[] {
+                    one, two, three, four,
+                });
     }
 
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void throughput5Params() {
-        logger.logp(java.util.logging.Level.INFO, getClass().getName(), "methodName",
-                "p1={}, p2={}, p3={}, p4={}, p5={}", new Object[]{one, two, three, four, five,});
+        logger.logp(
+                java.util.logging.Level.INFO,
+                getClass().getName(),
+                "methodName",
+                "p1={}, p2={}, p3={}, p4={}, p5={}",
+                new Object[] {
+                    one, two, three, four, five,
+                });
     }
 
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void throughput6Params() {
-        logger.logp(java.util.logging.Level.INFO, getClass().getName(), "methodName",
+        logger.logp(
+                java.util.logging.Level.INFO,
+                getClass().getName(),
+                "methodName",
                 "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}",
-                new Object[]{one, two, three, four, five, six,});
+                new Object[] {
+                    one, two, three, four, five, six,
+                });
     }
 
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void throughput7Params() {
-        logger.logp(java.util.logging.Level.INFO, getClass().getName(), "methodName",
+        logger.logp(
+                java.util.logging.Level.INFO,
+                getClass().getName(),
+                "methodName",
                 "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}",
-                new Object[]{one, two, three, four, five, six, seven,});
+                new Object[] {
+                    one, two, three, four, five, six, seven,
+                });
     }
 
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void throughput8Params() {
-        logger.logp(java.util.logging.Level.INFO, getClass().getName(), "methodName",
+        logger.logp(
+                java.util.logging.Level.INFO,
+                getClass().getName(),
+                "methodName",
                 "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}",
-                new Object[]{one, two, three, four, five, six, seven, eight,});
+                new Object[] {
+                    one, two, three, four, five, six, seven, eight,
+                });
     }
 
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void throughput9Params() {
-        logger.logp(java.util.logging.Level.INFO, getClass().getName(), "methodName",
+        logger.logp(
+                java.util.logging.Level.INFO,
+                getClass().getName(),
+                "methodName",
                 "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}",
-                new Object[]{one, two, three, four, five, six, seven, eight, nine,});
+                new Object[] {
+                    one, two, three, four, five, six, seven, eight, nine,
+                });
     }
 
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void throughput10Params() {
-        logger.logp(java.util.logging.Level.INFO, getClass().getName(), "methodName",
+        logger.logp(
+                java.util.logging.Level.INFO,
+                getClass().getName(),
+                "methodName",
                 "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}, p10={}",
-                new Object[]{one, two, three, four, five, six, seven, eight, nine, ten});
+                new Object[] {one, two, three, four, five, six, seven, eight, nine, ten});
     }
 
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void throughput11Params() {
-        logger.logp(java.util.logging.Level.INFO, getClass().getName(), "methodName",
+        logger.logp(
+                java.util.logging.Level.INFO,
+                getClass().getName(),
+                "methodName",
                 "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}, p10={}, p11={}",
-                new Object[]{one, two, three, four, five, six, seven, eight, nine, ten, eleven});
+                new Object[] {one, two, three, four, five, six, seven, eight, nine, ten, eleven});
     }
 }

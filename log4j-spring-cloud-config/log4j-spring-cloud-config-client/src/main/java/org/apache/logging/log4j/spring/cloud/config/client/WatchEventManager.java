@@ -19,7 +19,6 @@ package org.apache.logging.log4j.spring.cloud.config.client;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 import org.apache.logging.log4j.core.util.WatchEventService;
 import org.apache.logging.log4j.core.util.WatchManager;
 
@@ -27,22 +26,21 @@ import org.apache.logging.log4j.core.util.WatchManager;
  *
  */
 public class WatchEventManager implements WatchEventService {
-	private static final ConcurrentMap<UUID, WatchManager> watchManagers = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<UUID, WatchManager> watchManagers = new ConcurrentHashMap<>();
 
-	public static void publishEvent() {
-		for (WatchManager manager : watchManagers.values()) {
-			manager.checkFiles();
-		}
-	}
+    public static void publishEvent() {
+        for (WatchManager manager : watchManagers.values()) {
+            manager.checkFiles();
+        }
+    }
 
-	@Override
-	public void subscribe(WatchManager manager) {
-		watchManagers.put(manager.getId(), manager);
+    @Override
+    public void subscribe(WatchManager manager) {
+        watchManagers.put(manager.getId(), manager);
+    }
 
-	}
-
-	@Override
-	public void unsubscribe(WatchManager manager) {
-		watchManagers.remove(manager.getId());
-	}
+    @Override
+    public void unsubscribe(WatchManager manager) {
+        watchManagers.remove(manager.getId());
+    }
 }

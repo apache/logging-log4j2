@@ -25,8 +25,12 @@ import org.apache.logging.log4j.util.LoaderUtil;
 /**
  * Conditional that determines if the specified class is present.
  */
-@Plugin(name = "ClassArbiter", category = Node.CATEGORY, elementType = Arbiter.ELEMENT_TYPE,
-        printObject = true, deferChildren = true)
+@Plugin(
+        name = "ClassArbiter",
+        category = Node.CATEGORY,
+        elementType = Arbiter.ELEMENT_TYPE,
+        printObject = true,
+        deferChildren = true)
 public class ClassArbiter implements Arbiter {
 
     private final String className;
@@ -52,7 +56,6 @@ public class ClassArbiter implements Arbiter {
         @PluginBuilderAttribute(ATTR_CLASS_NAME)
         private String className;
 
-
         /**
          * Sets the Class name.
          * @param className the class name.
@@ -70,6 +73,5 @@ public class ClassArbiter implements Arbiter {
         public ClassArbiter build() {
             return new ClassArbiter(className);
         }
-
     }
 }

@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.async.perftest;
 
 import java.util.concurrent.BlockingQueue;
-
 import org.apache.logging.log4j.core.async.JCToolsBlockingQueueFactory;
 import org.apache.logging.log4j.core.async.JCToolsBlockingQueueFactory.WaitStrategy;
 
@@ -25,8 +24,7 @@ public class RunJCTools extends AbstractRunQueue {
 
     @Override
     BlockingQueue<String> createQueue(final int capacity) {
-        return JCToolsBlockingQueueFactory.<String>createFactory(WaitStrategy.SPIN).create(capacity);
+        return JCToolsBlockingQueueFactory.<String>createFactory(WaitStrategy.SPIN)
+                .create(capacity);
     }
-
-
 }

@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.AppenderWrapper;
@@ -57,8 +56,7 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    public ConsoleAppenderBuilder() {
-    }
+    public ConsoleAppenderBuilder() {}
 
     public ConsoleAppenderBuilder(String prefix, Properties props) {
         super(prefix, props);
@@ -94,7 +92,8 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
                                         target.set(SYSTEM_ERR);
                                         break;
                                     default:
-                                        LOGGER.warn("Invalid value \"{}\" for target parameter. Using default of System.out",
+                                        LOGGER.warn(
+                                                "Invalid value \"{}\" for target parameter. Using default of System.out",
                                                 value);
                                 }
                             }
@@ -128,8 +127,13 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
     }
 
     @Override
-    public Appender parseAppender(final String name, final String appenderPrefix, final String layoutPrefix,
-            final String filterPrefix, final Properties props, final PropertiesConfiguration configuration) {
+    public Appender parseAppender(
+            final String name,
+            final String appenderPrefix,
+            final String layoutPrefix,
+            final String filterPrefix,
+            final Properties props,
+            final PropertiesConfiguration configuration) {
         Layout layout = configuration.parseLayout(layoutPrefix, name, props);
         Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
         String level = getProperty(THRESHOLD_PARAM);
@@ -137,8 +141,8 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
         return createAppender(name, layout, filter, level, target, configuration);
     }
 
-    private <T extends Log4j1Configuration> Appender createAppender(String name, Layout layout, Filter filter,
-            String level, String target, T configuration) {
+    private <T extends Log4j1Configuration> Appender createAppender(
+            String name, Layout layout, Filter filter, String level, String target, T configuration) {
         org.apache.logging.log4j.core.Layout<?> consoleLayout = null;
 
         if (layout instanceof LayoutWrapper) {
@@ -147,8 +151,8 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
             consoleLayout = new LayoutAdapter(layout);
         }
         org.apache.logging.log4j.core.Filter consoleFilter = buildFilters(level, filter);
-        ConsoleAppender.Target consoleTarget = SYSTEM_ERR.equals(target)
-                ? ConsoleAppender.Target.SYSTEM_ERR : ConsoleAppender.Target.SYSTEM_OUT;
+        ConsoleAppender.Target consoleTarget =
+                SYSTEM_ERR.equals(target) ? ConsoleAppender.Target.SYSTEM_ERR : ConsoleAppender.Target.SYSTEM_OUT;
         return new AppenderWrapper(ConsoleAppender.newBuilder()
                 .setName(name)
                 .setTarget(consoleTarget)

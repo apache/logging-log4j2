@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import org.apache.logging.log4j.junit.CleanUpFiles;
 import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.junit.jupiter.api.Test;
@@ -31,11 +30,10 @@ import org.junit.jupiter.api.Test;
 public class FileOutputTest {
 
     @Test
-    @LoggerContextSource(value="classpath:log4j-filetest.xml")
+    @LoggerContextSource(value = "classpath:log4j-filetest.xml")
     public void testConfig() throws IOException {
         final Path logFile = Paths.get("target", "status.log");
         assertTrue(Files.exists(logFile), "Status output file does not exist");
         assertTrue(Files.size(logFile) > 0, "File is empty");
     }
-
 }

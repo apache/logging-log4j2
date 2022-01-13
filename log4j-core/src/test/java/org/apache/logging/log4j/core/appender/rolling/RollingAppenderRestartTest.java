@@ -36,7 +36,6 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.io.file.PathUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
@@ -60,9 +59,8 @@ public class RollingAppenderRestartTest {
             LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
 
     @Rule
-    public RuleChain chain =
-            loggerContextRule.withCleanFoldersRule(
-                    false, true, 5, DIR.toAbsolutePath().toString());
+    public RuleChain chain = loggerContextRule.withCleanFoldersRule(
+            false, true, 5, DIR.toAbsolutePath().toString());
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -70,9 +68,7 @@ public class RollingAppenderRestartTest {
         Files.createDirectories(DIR);
         Files.write(FILE, "Hello, world".getBytes(), StandardOpenOption.CREATE);
         FileTime newTime = FileTime.from(Instant.now().minus(2, ChronoUnit.DAYS));
-        Files
-                .getFileAttributeView(FILE, BasicFileAttributeView.class)
-                .setTimes(newTime, newTime, newTime);
+        Files.getFileAttributeView(FILE, BasicFileAttributeView.class).setTimes(newTime, newTime, newTime);
     }
 
     @AfterClass
@@ -94,7 +90,7 @@ public class RollingAppenderRestartTest {
         assertNotNull(appender, name);
         if (appender.getManager().getSemaphore().tryAcquire(5, TimeUnit.SECONDS)) {
             // If we are in here, either the rollover is done or has not taken place yet.
-            validate();            
+            validate();
         } else {
             fail("Rolling over is taking too long.");
         }
@@ -104,8 +100,8 @@ public class RollingAppenderRestartTest {
         final Matcher<File[]> hasGzippedFile = hasItemInArray(that(hasName(that(endsWith(".gz")))));
         final File[] files = DIR.toFile().listFiles();
         Arrays.sort(files);
-        assertTrue(hasGzippedFile.matches(files),
+        assertTrue(
+                hasGzippedFile.matches(files),
                 () -> "was expecting files with '.gz' suffix, found: " + Arrays.toString(files));
     }
-
 }

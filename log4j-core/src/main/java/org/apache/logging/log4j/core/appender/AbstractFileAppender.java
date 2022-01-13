@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Property;
@@ -149,7 +148,6 @@ public abstract class AbstractFileAppender<M extends OutputStreamManager> extend
             this.fileGroup = fileGroup;
             return asBuilder();
         }
-
     }
 
     private final String fileName;
@@ -158,9 +156,16 @@ public abstract class AbstractFileAppender<M extends OutputStreamManager> extend
 
     private final Object advertisement;
 
-    private AbstractFileAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
-            final M manager, final String filename, final boolean ignoreExceptions,
-            final boolean immediateFlush, final Advertiser advertiser, final Property[] properties) {
+    private AbstractFileAppender(
+            final String name,
+            final Layout<? extends Serializable> layout,
+            final Filter filter,
+            final M manager,
+            final String filename,
+            final boolean ignoreExceptions,
+            final boolean immediateFlush,
+            final Advertiser advertiser,
+            final Property[] properties) {
 
         super(name, layout, filter, ignoreExceptions, immediateFlush, properties, manager);
         if (advertiser != null) {

@@ -21,8 +21,8 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.Test;
 
@@ -75,6 +75,5 @@ public class CustomLevelsOverrideTest {
         logger.log(warnLevel, "Hello DIAG");
         assertThat(listAppender.getEvents(), hasSize(2));
         assertEquals(listAppender.getEvents().get(1).getLevel(), warnLevel);
-
     }
 }

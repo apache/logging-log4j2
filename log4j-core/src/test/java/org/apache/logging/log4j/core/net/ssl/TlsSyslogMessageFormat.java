@@ -20,4 +20,3 @@ public enum TlsSyslogMessageFormat {
     LEGACY_BSD,
     SYSLOG
 }
-

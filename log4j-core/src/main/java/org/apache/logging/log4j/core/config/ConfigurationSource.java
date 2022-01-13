@@ -30,9 +30,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Objects;
-
 import javax.net.ssl.HttpsURLConnection;
-
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
 import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
@@ -58,7 +56,9 @@ public class ConfigurationSource {
     /**
      * ConfigurationSource to use with {@link org.apache.logging.log4j.core.config.composite.CompositeConfiguration}.
      */
-    public static final ConfigurationSource COMPOSITE_SOURCE = new ConfigurationSource(Constants.EMPTY_BYTE_ARRAY, null, 0);
+    public static final ConfigurationSource COMPOSITE_SOURCE =
+            new ConfigurationSource(Constants.EMPTY_BYTE_ARRAY, null, 0);
+
     private static final String HTTPS = "https";
 
     private final File file;
@@ -154,8 +154,8 @@ public class ConfigurationSource {
         this.url = url;
         this.location = null;
         this.lastModified = lastModified;
-        if ( url == null ) {
-        	this.data = data;
+        if (url == null) {
+            this.data = data;
         }
     }
 
@@ -221,7 +221,7 @@ public class ConfigurationSource {
             try {
                 sourceURI = url.toURI();
             } catch (final URISyntaxException ex) {
-                    /* Ignore the exception */
+                /* Ignore the exception */
             }
         }
         if (sourceURI == null && file != null) {
@@ -323,7 +323,8 @@ public class ConfigurationSource {
             return fromResource(path, loader);
         }
         if (!configLocation.isAbsolute()) { // LOG4J2-704 avoid confusing error message thrown by uri.toURL()
-            ConfigurationFactory.LOGGER.error("File not found in file system or classpath: {}", configLocation.toString());
+            ConfigurationFactory.LOGGER.error(
+                    "File not found in file system or classpath: {}", configLocation.toString());
             return null;
         }
         try {
@@ -375,15 +376,16 @@ public class ConfigurationSource {
                 if (file != null) {
                     return new ConfigurationSource(urlConnection.getInputStream(), FileUtils.fileFromUri(url.toURI()));
                 } else {
-                    return new ConfigurationSource(urlConnection.getInputStream(), url, urlConnection.getLastModified());
+                    return new ConfigurationSource(
+                            urlConnection.getInputStream(), url, urlConnection.getLastModified());
                 }
             } catch (FileNotFoundException ex) {
                 ConfigurationFactory.LOGGER.info("Unable to locate file {}, ignoring.", url.toString());
                 return null;
             }
         } catch (IOException | URISyntaxException ex) {
-            ConfigurationFactory.LOGGER.warn("Error accessing {} due to {}, ignoring.", url.toString(),
-                    ex.getMessage());
+            ConfigurationFactory.LOGGER.warn(
+                    "Error accessing {} due to {}, ignoring.", url.toString(), ex.getMessage());
             return null;
         }
     }

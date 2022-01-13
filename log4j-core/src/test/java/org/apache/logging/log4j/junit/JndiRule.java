@@ -19,7 +19,6 @@ package org.apache.logging.log4j.junit;
 import java.util.Collections;
 import java.util.Map;
 import javax.naming.Context;
-
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -55,5 +54,4 @@ public class JndiRule implements TestRule {
             }
         };
     }
-
 }

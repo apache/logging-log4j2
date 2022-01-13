@@ -21,7 +21,6 @@ import static org.junit.Assert.assertNotNull;
 
 import java.lang.reflect.Field;
 import java.util.List;
-
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
@@ -54,24 +53,25 @@ public class LogEventFactoryTest {
     // this would look so cool using lambdas
     @ClassRule
     public static RuleChain chain = RuleChain.outerRule((base, description) -> new Statement() {
-        @Override
-        public void evaluate() throws Throwable {
-            System.setProperty(Constants.LOG4J_LOG_EVENT_FACTORY, TestLogEventFactory.class.getName());
-            resetLogEventFactory(new TestLogEventFactory());
-            try {
-                base.evaluate();
-            } finally {
-                System.clearProperty(Constants.LOG4J_LOG_EVENT_FACTORY);
-                resetLogEventFactory(new DefaultLogEventFactory());
-            }
-        }
+                @Override
+                public void evaluate() throws Throwable {
+                    System.setProperty(Constants.LOG4J_LOG_EVENT_FACTORY, TestLogEventFactory.class.getName());
+                    resetLogEventFactory(new TestLogEventFactory());
+                    try {
+                        base.evaluate();
+                    } finally {
+                        System.clearProperty(Constants.LOG4J_LOG_EVENT_FACTORY);
+                        resetLogEventFactory(new DefaultLogEventFactory());
+                    }
+                }
 
-        private void resetLogEventFactory(final LogEventFactory logEventFactory) throws IllegalAccessException {
-            final Field field = FieldUtils.getField(LoggerConfig.class, "LOG_EVENT_FACTORY", true);
-            FieldUtils.removeFinalModifier(field);
-            FieldUtils.writeStaticField(field, logEventFactory, false);
-        }
-    }).around(context);
+                private void resetLogEventFactory(final LogEventFactory logEventFactory) throws IllegalAccessException {
+                    final Field field = FieldUtils.getField(LoggerConfig.class, "LOG_EVENT_FACTORY", true);
+                    FieldUtils.removeFinalModifier(field);
+                    FieldUtils.writeStaticField(field, logEventFactory, false);
+                }
+            })
+            .around(context);
 
     @Before
     public void before() {
@@ -92,18 +92,28 @@ public class LogEventFactoryTest {
     public static class TestLogEventFactory implements LogEventFactory, LocationAwareLogEventFactory {
 
         @Override
-        public LogEvent createEvent(final String loggerName, final Marker marker,
-                                    final String fqcn, final Level level, final Message data,
-                                    final List<Property> properties, final Throwable t) {
+        public LogEvent createEvent(
+                final String loggerName,
+                final Marker marker,
+                final String fqcn,
+                final Level level,
+                final Message data,
+                final List<Property> properties,
+                final Throwable t) {
             return new Log4jLogEvent("Test", marker, fqcn, level, data, properties, t);
         }
 
         @Override
-        public LogEvent createEvent(final String loggerName, final Marker marker,
-            final String fqcn, final StackTraceElement location, final Level level, final Message data,
-            final List<Property> properties, final Throwable t) {
+        public LogEvent createEvent(
+                final String loggerName,
+                final Marker marker,
+                final String fqcn,
+                final StackTraceElement location,
+                final Level level,
+                final Message data,
+                final List<Property> properties,
+                final Throwable t) {
             return new Log4jLogEvent("Test", marker, fqcn, level, data, properties, t);
         }
     }
 }
-

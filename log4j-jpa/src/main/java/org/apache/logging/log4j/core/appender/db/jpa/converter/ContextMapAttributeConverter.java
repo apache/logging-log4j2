@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
 import java.util.Map;
-
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 

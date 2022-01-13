@@ -105,9 +105,8 @@ public interface DatePrinter {
      */
     <B extends Appendable> B format(Calendar calendar, B buf);
 
-
     // Accessors
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     /**
      * <p>Gets the pattern used by this printer.</p>
      *

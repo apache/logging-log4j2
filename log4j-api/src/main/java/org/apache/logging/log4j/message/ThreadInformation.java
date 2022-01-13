@@ -20,7 +20,7 @@ package org.apache.logging.log4j.message;
  * Interface used to print basic or extended thread information.
  */
 public interface ThreadInformation {
-    
+
     /**
      * Formats the thread information into the provided StringBuilder.
      * @param sb The StringBuilder.
@@ -33,5 +33,4 @@ public interface ThreadInformation {
      * @param trace The stack trace element array to format.
      */
     void printStack(StringBuilder sb, StackTraceElement[] trace);
-
 }

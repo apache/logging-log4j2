@@ -48,5 +48,4 @@ public abstract class AbstractScript {
     public String getName() {
         return this.name;
     }
-
 }

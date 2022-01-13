@@ -43,8 +43,8 @@ class EnvironmentPasswordProvider implements PasswordProvider {
      * @param passwordEnvironmentVariable name of the system environment variable that holds the password
      */
     public EnvironmentPasswordProvider(final String passwordEnvironmentVariable) {
-        this.passwordEnvironmentVariable = Objects.requireNonNull(
-                passwordEnvironmentVariable, "passwordEnvironmentVariable");
+        this.passwordEnvironmentVariable =
+                Objects.requireNonNull(passwordEnvironmentVariable, "passwordEnvironmentVariable");
     }
 
     @Override

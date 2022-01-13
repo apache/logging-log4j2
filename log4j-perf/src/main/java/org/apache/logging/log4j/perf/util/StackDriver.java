@@ -23,7 +23,8 @@ import java.util.function.Function;
  * Facilitates creating a Call Stack for testing the performance of walkign it.
  */
 public class StackDriver {
-    public StackTraceElement deepCall(int initialDepth, Integer targetDepth, Function<String, StackTraceElement> supplier) {
+    public StackTraceElement deepCall(
+            int initialDepth, Integer targetDepth, Function<String, StackTraceElement> supplier) {
         if (--initialDepth == 0) {
             Processor processor = new Processor();
             return processor.apply(targetDepth, supplier);
@@ -31,7 +32,8 @@ public class StackDriver {
         return deepCall(initialDepth, targetDepth, supplier);
     }
 
-    public static class Processor implements BiFunction<Integer, Function<String, StackTraceElement>, StackTraceElement> {
+    public static class Processor
+            implements BiFunction<Integer, Function<String, StackTraceElement>, StackTraceElement> {
         private static final String FQCN = Processor.class.getName();
 
         @Override

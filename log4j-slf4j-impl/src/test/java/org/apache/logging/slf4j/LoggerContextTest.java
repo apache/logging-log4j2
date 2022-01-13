@@ -16,14 +16,13 @@
  */
 package org.apache.logging.slf4j;
 
+import static org.junit.Assert.*;
+
+import java.util.Set;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.junit.Test;
 import org.slf4j.impl.StaticLoggerBinder;
-
-import java.util.Set;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests cleanup of the LoggerContexts.
@@ -32,7 +31,8 @@ public class LoggerContextTest {
 
     @Test
     public void testCleanup() throws Exception {
-        Log4jLoggerFactory factory = (Log4jLoggerFactory) StaticLoggerBinder.getSingleton().getLoggerFactory();
+        Log4jLoggerFactory factory =
+                (Log4jLoggerFactory) StaticLoggerBinder.getSingleton().getLoggerFactory();
         factory.getLogger("test");
         Set<LoggerContext> set = factory.getLoggerContexts();
         LoggerContext ctx1 = set.toArray(new LoggerContext[0])[0];

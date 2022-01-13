@@ -27,7 +27,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.categories.Layouts;
@@ -88,7 +87,8 @@ public class JsonLayoutTest {
 
     private void checkAt(final String expected, final int lineIndex, final List<String> list) {
         final String trimedLine = list.get(lineIndex).trim();
-        assertTrue("Incorrect line index " + lineIndex + ": " + Strings.dquote(trimedLine), trimedLine.equals(expected));
+        assertTrue(
+                "Incorrect line index " + lineIndex + ": " + Strings.dquote(trimedLine), trimedLine.equals(expected));
     }
 
     private void checkContains(final String expected, final List<String> list) {
@@ -101,7 +101,11 @@ public class JsonLayoutTest {
         Assert.fail("Cannot find " + expected + " in " + list);
     }
 
-    private void checkMapEntry(final String key, final String value, final boolean compact, final String str,
+    private void checkMapEntry(
+            final String key,
+            final String value,
+            final boolean compact,
+            final String str,
             final boolean contextMapAslist) {
         this.toPropertySeparator(compact);
         if (contextMapAslist) {
@@ -132,8 +136,14 @@ public class JsonLayoutTest {
         assertFalse(str, str.contains(DQUOTE + name + DQUOTE + propSep));
     }
 
-    private void testAllFeatures(final boolean locationInfo, final boolean compact, final boolean eventEol,
-            final String endOfLine, final boolean includeContext, final boolean contextMapAslist, final boolean includeStacktrace)
+    private void testAllFeatures(
+            final boolean locationInfo,
+            final boolean compact,
+            final boolean eventEol,
+            final String endOfLine,
+            final boolean includeContext,
+            final boolean contextMapAslist,
+            final boolean includeStacktrace)
             throws Exception {
         final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
         // @formatter:off
@@ -154,15 +164,15 @@ public class JsonLayoutTest {
         if (endOfLine == null) {
             // Just check for \n since \r might or might not be there.
             assertEquals(str, !compact || eventEol, str.contains("\n"));
-        }
-        else {
+        } else {
             assertEquals(str, !compact || eventEol, str.contains(endOfLine));
             assertEquals(str, compact && eventEol, str.endsWith(endOfLine));
         }
         assertEquals(str, locationInfo, str.contains("source"));
         assertEquals(str, includeContext, str.contains("contextMap"));
 
-        final Log4jLogEvent actual = new Log4jJsonObjectMapper(contextMapAslist, includeStacktrace, false, false).readValue(str, Log4jLogEvent.class);
+        final Log4jLogEvent actual = new Log4jJsonObjectMapper(contextMapAslist, includeStacktrace, false, false)
+                .readValue(str, Log4jLogEvent.class);
         LogEventFixtures.assertEqualLogEvents(expected, actual, locationInfo, includeContext, includeStacktrace);
         if (includeContext) {
             this.checkMapEntry("MDC.A", "A_Value", compact, str, contextMapAslist);
@@ -356,11 +366,13 @@ public class JsonLayoutTest {
                 .setLevel(Level.DEBUG)
                 .setMessage(new SimpleMessage("M"))
                 .setThreadName("threadName")
-                .setTimeMillis(1).build();
+                .setTimeMillis(1)
+                .build();
         // @formatter:on
         final String str = layout.toSerializable(expected);
         assertTrue(str, str.contains("\"loggerName\":\"a.B\""));
-        final Log4jLogEvent actual = new Log4jJsonObjectMapper(propertiesAsList, true, false, false).readValue(str, Log4jLogEvent.class);
+        final Log4jLogEvent actual =
+                new Log4jJsonObjectMapper(propertiesAsList, true, false, false).readValue(str, Log4jLogEvent.class);
         assertEquals(expected.getLoggerName(), actual.getLoggerName());
         assertEquals(expected, actual);
     }
@@ -375,8 +387,8 @@ public class JsonLayoutTest {
                 .setEventEol(false)
                 .setIncludeStacktrace(false)
                 .setAdditionalFields(new KeyValuePair[] {
-                    new KeyValuePair("KEY1", "VALUE1"),
-                    new KeyValuePair("KEY2", "${java:runtime}"), })
+                    new KeyValuePair("KEY1", "VALUE1"), new KeyValuePair("KEY2", "${java:runtime}"),
+                })
                 .setCharset(StandardCharsets.UTF_8)
                 .setConfiguration(ctx.getConfiguration())
                 .build();
@@ -407,13 +419,15 @@ public class JsonLayoutTest {
                     .setLevel(Level.DEBUG)
                     .setMessage(message)
                     .setThreadName("threadName")
-                    .setTimeMillis(1).build();
+                    .setTimeMillis(1)
+                    .build();
             final MutableLogEvent mutableLogEvent = new MutableLogEvent();
             mutableLogEvent.initFrom(expected);
             final String str = layout.toSerializable(mutableLogEvent);
             final String expectedMessage = "Testing " + TestObj.TO_STRING_VALUE;
             assertTrue(str, str.contains("\"message\":\"" + expectedMessage + '"'));
-            final Log4jLogEvent actual = new Log4jJsonObjectMapper(propertiesAsList, true, false, false).readValue(str, Log4jLogEvent.class);
+            final Log4jLogEvent actual =
+                    new Log4jJsonObjectMapper(propertiesAsList, true, false, false).readValue(str, Log4jLogEvent.class);
             assertEquals(expectedMessage, actual.getMessage().getFormattedMessage());
         } finally {
             ReusableMessageFactory.release(message);
@@ -438,13 +452,26 @@ public class JsonLayoutTest {
         try {
             final RingBufferLogEvent ringBufferEvent = new RingBufferLogEvent();
             ringBufferEvent.setValues(
-                    null, "a.B", null, "f.q.c.n", Level.DEBUG, message,
-                    null, new SortedArrayStringMap(), ThreadContext.EMPTY_STACK, 1L,
-                    "threadName", 1, null, new SystemClock(), new DummyNanoClock());
+                    null,
+                    "a.B",
+                    null,
+                    "f.q.c.n",
+                    Level.DEBUG,
+                    message,
+                    null,
+                    new SortedArrayStringMap(),
+                    ThreadContext.EMPTY_STACK,
+                    1L,
+                    "threadName",
+                    1,
+                    null,
+                    new SystemClock(),
+                    new DummyNanoClock());
             final String str = layout.toSerializable(ringBufferEvent);
             final String expectedMessage = "Testing " + TestObj.TO_STRING_VALUE;
             assertThat(str, containsString("\"message\":\"" + expectedMessage + '"'));
-            final Log4jLogEvent actual = new Log4jJsonObjectMapper(propertiesAsList, true, false, false).readValue(str, Log4jLogEvent.class);
+            final Log4jLogEvent actual =
+                    new Log4jJsonObjectMapper(propertiesAsList, true, false, false).readValue(str, Log4jLogEvent.class);
             assertEquals(expectedMessage, actual.getMessage().getFormattedMessage());
         } finally {
             ReusableMessageFactory.release(message);
@@ -453,6 +480,7 @@ public class JsonLayoutTest {
 
     static class TestObj {
         static final String TO_STRING_VALUE = "This is my toString {} with curly braces";
+
         @Override
         public String toString() {
             return TO_STRING_VALUE;
@@ -515,32 +543,34 @@ public class JsonLayoutTest {
 
     @Test
     public void testObjectMessageAsJsonString() {
-    		final String str = prepareJSONForObjectMessageAsJsonObjectTests(1234, false);
-		assertTrue(str, str.contains("\"message\":\"" + this.getClass().getCanonicalName() + "$TestClass@"));
+        final String str = prepareJSONForObjectMessageAsJsonObjectTests(1234, false);
+        assertTrue(str, str.contains("\"message\":\"" + this.getClass().getCanonicalName() + "$TestClass@"));
     }
 
     @Test
     public void testObjectMessageAsJsonObject() {
-    		final String str = prepareJSONForObjectMessageAsJsonObjectTests(1234, true);
-    		assertTrue(str, str.contains("\"message\":{\"value\":1234}"));
+        final String str = prepareJSONForObjectMessageAsJsonObjectTests(1234, true);
+        assertTrue(str, str.contains("\"message\":{\"value\":1234}"));
     }
 
-    private String prepareJSONForObjectMessageAsJsonObjectTests(final int value, final boolean objectMessageAsJsonObject) {
-    	final TestClass testClass = new TestClass();
-		testClass.setValue(value);
-		// @formatter:off
-		final Log4jLogEvent expected = Log4jLogEvent.newBuilder()
-            .setLoggerName("a.B")
-            .setLoggerFqcn("f.q.c.n")
-            .setLevel(Level.DEBUG)
-            .setMessage(new ObjectMessage(testClass))
-            .setThreadName("threadName")
-            .setTimeMillis(1).build();
+    private String prepareJSONForObjectMessageAsJsonObjectTests(
+            final int value, final boolean objectMessageAsJsonObject) {
+        final TestClass testClass = new TestClass();
+        testClass.setValue(value);
         // @formatter:off
-		final AbstractJacksonLayout layout = JsonLayout.newBuilder()
-				.setCompact(true)
-				.setObjectMessageAsJsonObject(objectMessageAsJsonObject)
-				.build();
+        final Log4jLogEvent expected = Log4jLogEvent.newBuilder()
+                .setLoggerName("a.B")
+                .setLoggerFqcn("f.q.c.n")
+                .setLevel(Level.DEBUG)
+                .setMessage(new ObjectMessage(testClass))
+                .setThreadName("threadName")
+                .setTimeMillis(1)
+                .build();
+        // @formatter:off
+        final AbstractJacksonLayout layout = JsonLayout.newBuilder()
+                .setCompact(true)
+                .setObjectMessageAsJsonObject(objectMessageAsJsonObject)
+                .build();
         // @formatter:off
         return layout.toSerializable(expected);
     }
@@ -564,9 +594,8 @@ public class JsonLayoutTest {
                 .setTimeMillis(1)
                 .build();
         // @formatter:off
-        final AbstractJacksonLayout layout = JsonLayout.newBuilder()
-                .setCompact(true)
-                .build();
+        final AbstractJacksonLayout layout =
+                JsonLayout.newBuilder().setCompact(true).build();
         // @formatter:off
         return layout.toSerializable(expected);
     }
@@ -591,12 +620,10 @@ public class JsonLayoutTest {
         assertFalse(str.endsWith("\0"));
     }
 
-    @Test  // LOG4J2-2749
+    @Test // LOG4J2-2749
     public void testEmptyValuesAreIgnored() {
         final AbstractJacksonLayout layout = JsonLayout.newBuilder()
-                .setAdditionalFields(new KeyValuePair[] {
-                    new KeyValuePair("empty", "${ctx:empty:-}")
-                })
+                .setAdditionalFields(new KeyValuePair[] {new KeyValuePair("empty", "${ctx:empty:-}")})
                 .setConfiguration(ctx.getConfiguration())
                 .build();
 
@@ -608,15 +635,15 @@ public class JsonLayoutTest {
         return compact ? ":" : " : ";
     }
 
-	private static class TestClass {
-		private int value;
+    private static class TestClass {
+        private int value;
 
-		public int getValue() {
-			return value;
-		}
+        public int getValue() {
+            return value;
+        }
 
-		public void setValue(final int value) {
-			this.value = value;
-		}
-	}
+        public void setValue(final int value) {
+            this.value = value;
+        }
+    }
 }

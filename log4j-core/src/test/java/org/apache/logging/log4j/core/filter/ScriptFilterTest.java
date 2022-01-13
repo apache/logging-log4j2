@@ -19,5 +19,4 @@ package org.apache.logging.log4j.core.filter;
 import org.apache.logging.log4j.junit.LoggerContextSource;
 
 @LoggerContextSource("log4j-script-filters.xml")
-public class ScriptFilterTest extends AbstractScriptFilterTest {
-}
+public class ScriptFilterTest extends AbstractScriptFilterTest {}

@@ -35,7 +35,6 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.compress.compressors.CompressorInputStream;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
@@ -72,23 +71,23 @@ public class RollingAppenderSizeTest {
     @Parameterized.Parameters(name = "{0} \u2192 {1} (createOnDemand = {2})")
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] { //
-                // @formatter:off
-               {"log4j-rolling-gz-lazy.xml", ".gz", true},
-               {"log4j-rolling-gz.xml", ".gz", false},
-               {"log4j-rolling-numbered-gz.xml", ".gz", false},
-               {"log4j-rolling-zip-lazy.xml", ".zip", true},
-               {"log4j-rolling-zip.xml", ".zip", false},
-                // Apache Commons Compress
-               {"log4j-rolling-bzip2-lazy.xml", ".bz2", true},
-               {"log4j-rolling-bzip2.xml", ".bz2", false},
-               {"log4j-rolling-deflate-lazy.xml", ".deflate", true},
-               {"log4j-rolling-deflate.xml", ".deflate", false},
-               {"log4j-rolling-pack200-lazy.xml", ".pack200", true},
-               {"log4j-rolling-pack200.xml", ".pack200", false},
-               {"log4j-rolling-xz-lazy.xml", ".xz", true},
-               {"log4j-rolling-xz.xml", ".xz", false},
-                });
-                // @formatter:on
+            // @formatter:off
+            {"log4j-rolling-gz-lazy.xml", ".gz", true},
+            {"log4j-rolling-gz.xml", ".gz", false},
+            {"log4j-rolling-numbered-gz.xml", ".gz", false},
+            {"log4j-rolling-zip-lazy.xml", ".zip", true},
+            {"log4j-rolling-zip.xml", ".zip", false},
+            // Apache Commons Compress
+            {"log4j-rolling-bzip2-lazy.xml", ".bz2", true},
+            {"log4j-rolling-bzip2.xml", ".bz2", false},
+            {"log4j-rolling-deflate-lazy.xml", ".deflate", true},
+            {"log4j-rolling-deflate.xml", ".deflate", false},
+            {"log4j-rolling-pack200-lazy.xml", ".pack200", true},
+            {"log4j-rolling-pack200.xml", ".pack200", false},
+            {"log4j-rolling-xz-lazy.xml", ".xz", true},
+            {"log4j-rolling-xz.xml", ".xz", false},
+        });
+        // @formatter:on
     }
 
     private final LoggerContextRule loggerContextRule;
@@ -107,8 +106,8 @@ public class RollingAppenderSizeTest {
 
     @Test
     public void testIsCreateOnDemand() {
-        final RollingFileAppender rfAppender = loggerContextRule.getRequiredAppender("RollingFile",
-                RollingFileAppender.class);
+        final RollingFileAppender rfAppender =
+                loggerContextRule.getRequiredAppender("RollingFile", RollingFileAppender.class);
         final RollingFileManager manager = rfAppender.getManager();
         Assert.assertNotNull(manager);
         Assert.assertEquals(createOnDemand, manager.isCreateOnDemand());
@@ -148,7 +147,8 @@ public class RollingAppenderSizeTest {
                 CompressorInputStream in = null;
                 try (FileInputStream fis = new FileInputStream(file)) {
                     try {
-                        in = new CompressorStreamFactory().createCompressorInputStream(ext.name().toLowerCase(), fis);
+                        in = new CompressorStreamFactory()
+                                .createCompressorInputStream(ext.name().toLowerCase(), fis);
                     } catch (final CompressorException ce) {
                         ce.printStackTrace();
                         fail("Error creating input stream from " + file.toString() + ": " + ce.getMessage());

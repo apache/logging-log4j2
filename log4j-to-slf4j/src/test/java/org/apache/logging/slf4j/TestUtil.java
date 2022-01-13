@@ -38,10 +38,10 @@ public final class TestUtil {
         return getListAppender(attachable, name);
     }
 
-    public static StringListAppender<ILoggingEvent> getListAppender(final AppenderAttachable<ILoggingEvent> logger, final String name) {
+    public static StringListAppender<ILoggingEvent> getListAppender(
+            final AppenderAttachable<ILoggingEvent> logger, final String name) {
         return (StringListAppender<ILoggingEvent>) logger.getAppender(name);
     }
 
-    private TestUtil() {
-    }
+    private TestUtil() {}
 }

@@ -21,7 +21,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import javax.net.ssl.HttpsURLConnection;
-
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
@@ -43,8 +42,8 @@ public class UrlConnectionFactory {
     private static final String HTTP = "http";
     private static final String HTTPS = "https";
 
-    public static HttpURLConnection createConnection(URL url, long lastModifiedMillis, SslConfiguration sslConfiguration)
-        throws IOException {
+    public static HttpURLConnection createConnection(
+            URL url, long lastModifiedMillis, SslConfiguration sslConfiguration) throws IOException {
         final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         AuthorizationProvider provider = ConfigurationFactory.getAuthorizationProvider();
         if (provider != null) {
@@ -85,7 +84,6 @@ public class UrlConnectionFactory {
         }
         return urlConnection;
     }
-
 
     private static boolean isXml(String type) {
         return type.equalsIgnoreCase("xml");

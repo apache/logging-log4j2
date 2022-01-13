@@ -79,12 +79,8 @@ public final class MessageParameterResolver implements EventResolver {
 
     private final int index;
 
-    MessageParameterResolver(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
-        this.parameterConsumerStateRecycler = context
-                .getRecyclerFactory()
-                .create(ParameterConsumerState::new);
+    MessageParameterResolver(final EventResolverContext context, final TemplateResolverConfig config) {
+        this.parameterConsumerStateRecycler = context.getRecyclerFactory().create(ParameterConsumerState::new);
         this.stringified = config.getBoolean("stringified", false);
         final Integer index = config.getInteger("index");
         if (index != null && index < 0) {
@@ -148,17 +144,13 @@ public final class MessageParameterResolver implements EventResolver {
                 jsonWriter.writeValue(parameter);
             }
         }
-
     }
 
     /**
      * Perform a garbage-free resolution via {@link ParameterVisitable} interface.
      */
-    private void resolve(
-            final ParameterVisitable parameterVisitable,
-            final JsonWriter jsonWriter) {
-        final ParameterConsumerState parameterConsumerState =
-                parameterConsumerStateRecycler.acquire();
+    private void resolve(final ParameterVisitable parameterVisitable, final JsonWriter jsonWriter) {
+        final ParameterConsumerState parameterConsumerState = parameterConsumerStateRecycler.acquire();
         try {
             final boolean arrayNeeded = index < 0;
             if (arrayNeeded) {
@@ -168,8 +160,7 @@ public final class MessageParameterResolver implements EventResolver {
             final int startIndex = buf.length();
             parameterConsumerState.resolver = this;
             parameterConsumerState.jsonWriter = jsonWriter;
-            parameterVisitable.forEachParameter(
-                    PARAMETER_CONSUMER, parameterConsumerState);
+            parameterVisitable.forEachParameter(PARAMETER_CONSUMER, parameterConsumerState);
             if (arrayNeeded) {
                 jsonWriter.writeArrayEnd();
             } else if (startIndex == buf.length()) {
@@ -188,7 +179,6 @@ public final class MessageParameterResolver implements EventResolver {
         private JsonWriter jsonWriter;
 
         private ParameterConsumerState() {}
-
     }
 
     private static final ParameterConsumer<ParameterConsumerState> PARAMETER_CONSUMER =
@@ -209,7 +199,5 @@ public final class MessageParameterResolver implements EventResolver {
                         state.jsonWriter.writeValue(parameter);
                     }
                 }
-
             };
-
 }

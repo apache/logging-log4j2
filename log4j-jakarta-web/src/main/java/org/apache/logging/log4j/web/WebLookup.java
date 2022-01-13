@@ -19,7 +19,6 @@ package org.apache.logging.log4j.web;
 // this comment if no longer relevant
 
 import jakarta.servlet.ServletContext;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.lookup.AbstractLookup;
@@ -51,9 +50,9 @@ public class WebLookup extends AbstractLookup {
         if ("rootDir".equals(key)) {
             final String root = ctx.getRealPath("/");
             if (root == null) {
-                final String msg = "Failed to resolve web:rootDir -- " +
-                        "servlet container unable to translate virtual path " +
-                        " to real path (probably not deployed as exploded";
+                final String msg =
+                        "Failed to resolve web:rootDir -- " + "servlet container unable to translate virtual path "
+                                + " to real path (probably not deployed as exploded";
                 throw new IllegalStateException(msg);
             }
             return root;

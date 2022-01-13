@@ -31,7 +31,6 @@ import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
-
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
@@ -50,8 +49,8 @@ public class RollingAppenderDirectWriteTempCompressedFilePatternTest {
 
     private static final String DIR = "target/rolling-direct";
 
-    public static LoggerContextRule loggerContextRule = LoggerContextRule
-            .createShutdownTimeoutLoggerContextRule(CONFIG);
+    public static LoggerContextRule loggerContextRule =
+            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
 
     @Rule
     public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
@@ -96,8 +95,8 @@ public class RollingAppenderDirectWriteTempCompressedFilePatternTest {
                 }
             }
             assertTrue("No temporary file created during compression", temporaryFilesCreated > 0);
-            assertTrue("Temporarys file created not equals to compressed files",
-                    compressedFiles == temporaryFilesCreated);
+            assertTrue(
+                    "Temporarys file created not equals to compressed files", compressedFiles == temporaryFilesCreated);
         }
     }
 }

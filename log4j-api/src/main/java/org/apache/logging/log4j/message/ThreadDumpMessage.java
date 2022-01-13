@@ -24,7 +24,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
-
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.Strings;
@@ -70,9 +69,14 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
             while (result == null && iterator.hasNext()) {
                 result = iterator.next();
             }
-        } catch (ServiceConfigurationError | LinkageError | Exception unavailable) { // if java management classes not available
-            StatusLogger.getLogger().info("ThreadDumpMessage uses BasicThreadInfoFactory: " +
-                            "could not load extended ThreadInfoFactory: {}", unavailable.toString());
+        } catch (ServiceConfigurationError
+                | LinkageError
+                | Exception unavailable) { // if java management classes not available
+            StatusLogger.getLogger()
+                    .info(
+                            "ThreadDumpMessage uses BasicThreadInfoFactory: "
+                                    + "could not load extended ThreadInfoFactory: {}",
+                            unavailable.toString());
             result = null;
         }
         return result == null ? new BasicThreadInfoFactory() : result;
@@ -130,7 +134,7 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
         return null;
     }
 
-        /**
+    /**
      * Creates a ThreadDumpMessageProxy that can be serialized.
      * @return a ThreadDumpMessageProxy.
      */
@@ -138,8 +142,7 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
         return new ThreadDumpMessageProxy(this);
     }
 
-    private void readObject(final ObjectInputStream stream)
-        throws InvalidObjectException {
+    private void readObject(final ObjectInputStream stream) throws InvalidObjectException {
         throw new InvalidObjectException("Proxy required");
     }
 
@@ -184,8 +187,7 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
         @Override
         public Map<ThreadInformation, StackTraceElement[]> createThreadInfo() {
             final Map<Thread, StackTraceElement[]> map = Thread.getAllStackTraces();
-            final Map<ThreadInformation, StackTraceElement[]> threads =
-                new HashMap<>(map.size());
+            final Map<ThreadInformation, StackTraceElement[]> threads = new HashMap<>(map.size());
             for (final Map.Entry<Thread, StackTraceElement[]> entry : map.entrySet()) {
                 threads.put(new BasicThreadInformation(entry.getKey()), entry.getValue());
             }

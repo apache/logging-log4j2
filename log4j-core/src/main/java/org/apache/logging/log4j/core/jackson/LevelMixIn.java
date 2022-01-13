@@ -16,12 +16,11 @@
  */
 package org.apache.logging.log4j.core.jackson;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Marker;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonValue;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Marker;
 
 /**
  * Jackson mix-in for {@link Level}.
@@ -30,7 +29,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * </p>
  * @see Marker
  */
-@JsonIgnoreProperties({ "name", "declaringClass", "standardLevel" })
+@JsonIgnoreProperties({"name", "declaringClass", "standardLevel"})
 abstract class LevelMixIn {
 
     @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
@@ -40,5 +39,4 @@ abstract class LevelMixIn {
 
     @JsonValue
     public abstract String name();
-
 }

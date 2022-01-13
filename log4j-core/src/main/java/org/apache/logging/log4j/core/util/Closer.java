@@ -59,5 +59,4 @@ public final class Closer {
             return false;
         }
     }
-
 }

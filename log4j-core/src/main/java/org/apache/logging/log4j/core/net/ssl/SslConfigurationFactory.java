@@ -54,12 +54,18 @@ public class SslConfigurationFactory {
                 passwordChars = password.toCharArray();
             }
             try {
-                trustStoreConfiguration = TrustStoreConfiguration.createKeyStoreConfiguration(location, passwordChars,
-                    props.getStringProperty(trustStorePasswordEnvVar), props.getStringProperty(trustStorePasswordFile),
-                    props.getStringProperty(trustStoreKeyStoreType), props.getStringProperty(trustStoreKeyManagerFactoryAlgorithm));
+                trustStoreConfiguration = TrustStoreConfiguration.createKeyStoreConfiguration(
+                        location,
+                        passwordChars,
+                        props.getStringProperty(trustStorePasswordEnvVar),
+                        props.getStringProperty(trustStorePasswordFile),
+                        props.getStringProperty(trustStoreKeyStoreType),
+                        props.getStringProperty(trustStoreKeyManagerFactoryAlgorithm));
             } catch (Exception ex) {
-                LOGGER.warn("Unable to create trust store configuration due to: {} {}", ex.getClass().getName(),
-                    ex.getMessage());
+                LOGGER.warn(
+                        "Unable to create trust store configuration due to: {} {}",
+                        ex.getClass().getName(),
+                        ex.getMessage());
             }
         }
         location = props.getStringProperty(keyStoreLocation);
@@ -70,18 +76,24 @@ public class SslConfigurationFactory {
                 passwordChars = password.toCharArray();
             }
             try {
-                keyStoreConfiguration = KeyStoreConfiguration.createKeyStoreConfiguration(location, passwordChars,
-                    props.getStringProperty(keyStorePasswordEnvVar), props.getStringProperty(keyStorePasswordFile),
-                    props.getStringProperty(keyStoreType), props.getStringProperty(keyStoreKeyManagerFactoryAlgorithm));
+                keyStoreConfiguration = KeyStoreConfiguration.createKeyStoreConfiguration(
+                        location,
+                        passwordChars,
+                        props.getStringProperty(keyStorePasswordEnvVar),
+                        props.getStringProperty(keyStorePasswordFile),
+                        props.getStringProperty(keyStoreType),
+                        props.getStringProperty(keyStoreKeyManagerFactoryAlgorithm));
             } catch (Exception ex) {
-                LOGGER.warn("Unable to create key store configuration due to: {} {}", ex.getClass().getName(),
-                    ex.getMessage());
+                LOGGER.warn(
+                        "Unable to create key store configuration due to: {} {}",
+                        ex.getClass().getName(),
+                        ex.getMessage());
             }
         }
         if (trustStoreConfiguration != null || keyStoreConfiguration != null) {
             boolean isVerifyHostName = props.getBooleanProperty(verifyHostName, false);
-            sslConfiguration = SslConfiguration.createSSLConfiguration("https", keyStoreConfiguration,
-                trustStoreConfiguration, isVerifyHostName);
+            sslConfiguration = SslConfiguration.createSSLConfiguration(
+                    "https", keyStoreConfiguration, trustStoreConfiguration, isVerifyHostName);
         }
     }
 

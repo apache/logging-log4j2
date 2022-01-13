@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.bridge.AppenderWrapper;
 import org.apache.log4j.bridge.RewritePolicyAdapter;
@@ -49,7 +48,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 import org.w3c.dom.Element;
 
-
 /**
  * Build an Asynch Appender
  */
@@ -59,8 +57,7 @@ public class RewriteAppenderBuilder extends AbstractBuilder implements AppenderB
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final String REWRITE_POLICY_TAG = "rewritePolicy";
 
-    public RewriteAppenderBuilder() {
-    }
+    public RewriteAppenderBuilder() {}
 
     public RewriteAppenderBuilder(String prefix, Properties props) {
         super(prefix, props);
@@ -105,19 +102,29 @@ public class RewriteAppenderBuilder extends AbstractBuilder implements AppenderB
                 }
             }
         });
-        return createAppender(name, level.get(), appenderRefs.get().toArray(Strings.EMPTY_ARRAY), rewritePolicyHolder.get(),
-                filter.get(), config);
+        return createAppender(
+                name,
+                level.get(),
+                appenderRefs.get().toArray(Strings.EMPTY_ARRAY),
+                rewritePolicyHolder.get(),
+                filter.get(),
+                config);
     }
 
     @Override
-    public Appender parseAppender(final String name, final String appenderPrefix, final String layoutPrefix,
-            final String filterPrefix, final Properties props, final PropertiesConfiguration configuration) {
+    public Appender parseAppender(
+            final String name,
+            final String appenderPrefix,
+            final String layoutPrefix,
+            final String filterPrefix,
+            final Properties props,
+            final PropertiesConfiguration configuration) {
         String appenderRef = getProperty(APPENDER_REF_TAG);
         Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
         String policyPrefix = appenderPrefix + ".rewritePolicy";
         String className = getProperty(policyPrefix);
-        RewritePolicy policy = configuration.getBuilderManager().parseRewritePolicy(className, policyPrefix,
-                props, configuration);
+        RewritePolicy policy =
+                configuration.getBuilderManager().parseRewritePolicy(className, policyPrefix, props, configuration);
         String level = getProperty(THRESHOLD_PARAM);
         if (appenderRef == null) {
             LOGGER.warn("No appender references configured for AsyncAppender {}", name);
@@ -131,10 +138,10 @@ public class RewriteAppenderBuilder extends AbstractBuilder implements AppenderB
         return createAppender(name, level, new String[] {appenderRef}, policy, filter, configuration);
     }
 
-    private <T extends Log4j1Configuration> Appender createAppender(String name, String level,
-            String[] appenderRefs, RewritePolicy policy, Filter filter, T configuration) {
-        org.apache.logging.log4j.Level logLevel = OptionConverter.convertLevel(level,
-                org.apache.logging.log4j.Level.TRACE);
+    private <T extends Log4j1Configuration> Appender createAppender(
+            String name, String level, String[] appenderRefs, RewritePolicy policy, Filter filter, T configuration) {
+        org.apache.logging.log4j.Level logLevel =
+                OptionConverter.convertLevel(level, org.apache.logging.log4j.Level.TRACE);
         AppenderRef[] refs = new AppenderRef[appenderRefs.length];
         int index = 0;
         for (String appenderRef : appenderRefs) {
@@ -147,7 +154,7 @@ public class RewriteAppenderBuilder extends AbstractBuilder implements AppenderB
         } else {
             rewritePolicy = new RewritePolicyAdapter(policy);
         }
-        return new AppenderWrapper(RewriteAppender.createAppender(name, "true", refs, configuration,
-                rewritePolicy, rewriteFilter));
+        return new AppenderWrapper(
+                RewriteAppender.createAppender(name, "true", refs, configuration, rewritePolicy, rewriteFilter));
     }
 }

@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
+import static org.junit.Assert.*;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
-
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.Logger;
@@ -31,8 +32,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import static org.junit.Assert.*;
-
 /**
  *
  */
@@ -43,10 +42,10 @@ public class DefaultRouteScriptAppenderTest {
     public static Object[][] getParameters() {
         // @formatter:off
         return new Object[][] {
-                { "log4j-routing-default-route-script-groovy.xml", false },
-                { "log4j-routing-default-route-script-javascript.xml", false },
-                { "log4j-routing-script-staticvars-javascript.xml", true },
-                { "log4j-routing-script-staticvars-groovy.xml", true },
+            {"log4j-routing-default-route-script-groovy.xml", false},
+            {"log4j-routing-default-route-script-javascript.xml", false},
+            {"log4j-routing-script-staticvars-javascript.xml", true},
+            {"log4j-routing-script-staticvars-groovy.xml", true},
         };
         // @formatter:on
     }
@@ -105,7 +104,9 @@ public class DefaultRouteScriptAppenderTest {
     @Test
     public void testListAppenderPresence() {
         // No appender until an event is routed, even thought we initialized the default route on startup.
-        Assert.assertNull("No appender control generated", getRoutingAppender().getAppenders().get("Service2"));
+        Assert.assertNull(
+                "No appender control generated",
+                getRoutingAppender().getAppenders().get("Service2"));
     }
 
     @Test

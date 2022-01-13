@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.config.plugins.visitors;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Node;

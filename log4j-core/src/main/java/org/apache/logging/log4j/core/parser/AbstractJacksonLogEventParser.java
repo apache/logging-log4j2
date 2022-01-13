@@ -19,10 +19,9 @@ package org.apache.logging.log4j.core.parser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+import java.io.IOException;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-
-import java.io.IOException;
 
 class AbstractJacksonLogEventParser implements TextLogEventParser {
     private final ObjectReader objectReader;

@@ -32,7 +32,6 @@ import java.security.Provider;
 import java.security.Security;
 import java.util.UUID;
 import java.util.regex.Pattern;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.rolling.action.Duration;
@@ -200,7 +199,6 @@ public final class TypeConverters {
                 default:
                     return LoaderUtil.loadClass(s);
             }
-
         }
     }
 
@@ -410,7 +408,8 @@ public final class TypeConverters {
      */
     public static <T> T convert(final String s, final Class<? extends T> clazz, final Object defaultValue) {
         @SuppressWarnings("unchecked")
-        final TypeConverter<T> converter = (TypeConverter<T>) TypeConverterRegistry.getInstance().findCompatibleConverter(clazz);
+        final TypeConverter<T> converter =
+                (TypeConverter<T>) TypeConverterRegistry.getInstance().findCompatibleConverter(clazz);
         if (s == null) {
             // don't debug print here, resulting output is hard to understand
             // LOGGER.debug("Null string given to convert. Using default [{}].", defaultValue);
@@ -419,8 +418,12 @@ public final class TypeConverters {
         try {
             return converter.convert(s);
         } catch (final Exception e) {
-            LOGGER.warn("Error while converting string [{}] to type [{}]. Using default value [{}].", s, clazz,
-                    defaultValue, e);
+            LOGGER.warn(
+                    "Error while converting string [{}] to type [{}]. Using default value [{}].",
+                    s,
+                    clazz,
+                    defaultValue,
+                    e);
             return parseDefaultValue(converter, defaultValue);
         }
     }
@@ -442,5 +445,4 @@ public final class TypeConverters {
     }
 
     private static final Logger LOGGER = StatusLogger.getLogger();
-
 }

@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.core.appender;
 
+import java.io.Serializable;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
@@ -38,8 +39,6 @@ import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.net.SmtpManager;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.util.Booleans;
-
-import java.io.Serializable;
 
 /**
  * Send an e-mail when a specific logging event occurs, typically on errors or
@@ -67,8 +66,13 @@ public final class SmtpAppender extends AbstractAppender {
     /** The SMTP Manager */
     private final SmtpManager manager;
 
-    private SmtpAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
-            final SmtpManager manager, final boolean ignoreExceptions, final Property[] properties) {
+    private SmtpAppender(
+            final String name,
+            final Filter filter,
+            final Layout<? extends Serializable> layout,
+            final SmtpManager manager,
+            final boolean ignoreExceptions,
+            final Property[] properties) {
         super(name, filter, layout, ignoreExceptions, properties);
         this.manager = manager;
     }
@@ -260,10 +264,25 @@ public final class SmtpAppender extends AbstractAppender {
             if (getFilter() == null) {
                 setFilter(ThresholdFilter.createFilter(null, null, null));
             }
-            final SmtpManager smtpManager = SmtpManager.getSmtpManager(getConfiguration(), to, cc, bcc, from, replyTo,
-                    subject, smtpProtocol, smtpHost, smtpPort, smtpUsername, smtpPassword, smtpDebug,
-                    getFilter().toString(), bufferSize, sslConfiguration);
-            return new SmtpAppender(getName(), getFilter(), getLayout(), smtpManager, isIgnoreExceptions(), getPropertyArray());
+            final SmtpManager smtpManager = SmtpManager.getSmtpManager(
+                    getConfiguration(),
+                    to,
+                    cc,
+                    bcc,
+                    from,
+                    replyTo,
+                    subject,
+                    smtpProtocol,
+                    smtpHost,
+                    smtpPort,
+                    smtpUsername,
+                    smtpPassword,
+                    smtpDebug,
+                    getFilter().toString(),
+                    bufferSize,
+                    sslConfiguration);
+            return new SmtpAppender(
+                    getName(), getFilter(), getLayout(), smtpManager, isIgnoreExceptions(), getPropertyArray());
         }
     }
 
@@ -318,8 +337,23 @@ public final class SmtpAppender extends AbstractAppender {
         }
         final Configuration configuration = config != null ? config : new DefaultConfiguration();
 
-        final SmtpManager manager = SmtpManager.getSmtpManager(configuration, to, cc, bcc, from, replyTo, subject, smtpProtocol,
-            smtpHost, smtpPort, smtpUsername, smtpPassword, isSmtpDebug, filter.toString(),  bufferSize, null);
+        final SmtpManager manager = SmtpManager.getSmtpManager(
+                configuration,
+                to,
+                cc,
+                bcc,
+                from,
+                replyTo,
+                subject,
+                smtpProtocol,
+                smtpHost,
+                smtpPort,
+                smtpUsername,
+                smtpPassword,
+                isSmtpDebug,
+                filter.toString(),
+                bufferSize,
+                null);
         if (manager == null) {
             return null;
         }

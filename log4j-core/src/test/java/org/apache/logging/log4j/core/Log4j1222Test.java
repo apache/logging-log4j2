@@ -16,50 +16,47 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.junit.Assert.assertTrue;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.TestLogger;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertTrue;
-
 /**
  * Tests logging during shutdown.
  */
 @Tag("functional")
-public class Log4j1222Test
-{
+public class Log4j1222Test {
 
-	@Test
-	public void homepageRendersSuccessfully()
-	{
+    @Test
+    public void homepageRendersSuccessfully() {
         System.setProperty("log4j.configurationFile", "log4j2-console.xml");
-		Runtime.getRuntime().addShutdownHook(new ShutdownHook());
-	}
+        Runtime.getRuntime().addShutdownHook(new ShutdownHook());
+    }
 
-	private static class ShutdownHook extends Thread {
+    private static class ShutdownHook extends Thread {
 
-		private static class Holder {
-			private static final Logger LOGGER = LogManager.getLogger(Log4j1222Test.class);
-		}
+        private static class Holder {
+            private static final Logger LOGGER = LogManager.getLogger(Log4j1222Test.class);
+        }
 
-		@Override
-		public void run()
-		{
-			super.run();
-			trigger();
-		}
+        @Override
+        public void run() {
+            super.run();
+            trigger();
+        }
 
-		private void trigger() {
-			Holder.LOGGER.info("Attempt to trigger");
-			assertTrue("Logger is of type " + Holder.LOGGER.getClass().getName(), Holder.LOGGER instanceof TestLogger);
-			if (((TestLogger) Holder.LOGGER).getEntries().isEmpty()) {
-				System.out.println("Logger contains no messages");
-			}
-			for (final String msg : ((TestLogger) Holder.LOGGER).getEntries()) {
-				System.out.println(msg);
-			}
-		}
-	}
+        private void trigger() {
+            Holder.LOGGER.info("Attempt to trigger");
+            assertTrue("Logger is of type " + Holder.LOGGER.getClass().getName(), Holder.LOGGER instanceof TestLogger);
+            if (((TestLogger) Holder.LOGGER).getEntries().isEmpty()) {
+                System.out.println("Logger contains no messages");
+            }
+            for (final String msg : ((TestLogger) Holder.LOGGER).getEntries()) {
+                System.out.println(msg);
+            }
+        }
+    }
 }

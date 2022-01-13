@@ -30,20 +30,18 @@ final class StackTraceObjectResolver implements StackTraceResolver {
     }
 
     @Override
-    public void resolve(
-            final Throwable throwable,
-            final JsonWriter jsonWriter) {
+    public void resolve(final Throwable throwable, final JsonWriter jsonWriter) {
         // Following check against the stacktrace element count is not
         // implemented in isResolvable(), since Throwable#getStackTrace() incurs
         // a significant cloning cost.
         final StackTraceElement[] stackTraceElements = throwable.getStackTrace();
-        if (stackTraceElements.length  == 0) {
+        if (stackTraceElements.length == 0) {
             jsonWriter.writeNull();
         } else {
             jsonWriter.writeArrayStart();
             for (int stackTraceElementIndex = 0;
-                 stackTraceElementIndex < stackTraceElements.length;
-                 stackTraceElementIndex++) {
+                    stackTraceElementIndex < stackTraceElements.length;
+                    stackTraceElementIndex++) {
                 if (stackTraceElementIndex > 0) {
                     jsonWriter.writeSeparator();
                 }
@@ -53,5 +51,4 @@ final class StackTraceObjectResolver implements StackTraceResolver {
             jsonWriter.writeArrayEnd();
         }
     }
-
 }

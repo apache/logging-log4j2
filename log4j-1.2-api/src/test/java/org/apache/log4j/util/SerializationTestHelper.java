@@ -27,9 +27,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-
 import org.apache.commons.io.FileUtils;
-
 
 /**
  * Utiities for serialization tests.
@@ -38,8 +36,7 @@ public class SerializationTestHelper {
     /**
      * Private constructor.
      */
-    private SerializationTestHelper() {
-    }
+    private SerializationTestHelper() {}
 
     /**
      * Creates a clone by serializing object and
@@ -50,8 +47,7 @@ public class SerializationTestHelper {
      * @throws IOException            on IO error.
      * @throws ClassNotFoundException if class not found.
      */
-    public static Object serializeClone(final Object obj)
-        throws IOException, ClassNotFoundException {
+    public static Object serializeClone(final Object obj) throws IOException, ClassNotFoundException {
         final ByteArrayOutputStream memOut = new ByteArrayOutputStream();
         try (final ObjectOutputStream objOut = new ObjectOutputStream(memOut)) {
             objOut.writeObject(obj);
@@ -87,8 +83,7 @@ public class SerializationTestHelper {
      * @throws Exception thrown on IO or serialization exception.
      */
     public static void assertSerializationEquals(
-        final String witness, final Object obj, final int[] skip,
-        final int endCompare) throws Exception {
+            final String witness, final Object obj, final int[] skip, final int endCompare) throws Exception {
         final ByteArrayOutputStream memOut = new ByteArrayOutputStream();
         try (final ObjectOutputStream objOut = new ObjectOutputStream(memOut)) {
             objOut.writeObject(obj);
@@ -107,8 +102,7 @@ public class SerializationTestHelper {
      * @throws IOException thrown on IO or serialization exception.
      */
     public static void assertStreamEquals(
-        final String witness, final byte[] actual, final int[] skip,
-        final int endCompare) throws IOException {
+            final String witness, final byte[] actual, final int[] skip, final int endCompare) throws IOException {
         final File witnessFile = new File(witness);
 
         if (witnessFile.exists()) {
@@ -130,8 +124,7 @@ public class SerializationTestHelper {
                 if ((skipIndex < skip.length) && (skip[skipIndex] == i)) {
                     skipIndex++;
                 } else if (expected[i] != actual[i]) {
-                    assertEquals(
-                        "Difference at offset " + i, expected[i], actual[i]);
+                    assertEquals("Difference at offset " + i, expected[i], actual[i]);
                 }
             }
         } else {
@@ -143,4 +136,3 @@ public class SerializationTestHelper {
         }
     }
 }
-

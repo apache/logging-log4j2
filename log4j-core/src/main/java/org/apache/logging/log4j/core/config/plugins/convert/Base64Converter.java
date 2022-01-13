@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.config.plugins.convert;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Constants;
@@ -41,8 +40,10 @@ public class Base64Converter {
             decoder = getDecoder.invoke(null, (Object[]) null);
             clazz = decoder.getClass();
             method = clazz.getMethod("decode", String.class);
-        } catch (final ClassNotFoundException | NoSuchMethodException | IllegalAccessException |
-            InvocationTargetException ex) {
+        } catch (final ClassNotFoundException
+                | NoSuchMethodException
+                | IllegalAccessException
+                | InvocationTargetException ex) {
             // ignore
         }
         if (method == null) {

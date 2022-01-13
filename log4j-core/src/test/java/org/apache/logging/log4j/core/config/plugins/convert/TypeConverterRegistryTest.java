@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.config.plugins.convert;
 
-import org.junit.Test;
-
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.*;
+
+import org.junit.Test;
 
 public class TypeConverterRegistryTest {
 
@@ -46,7 +46,7 @@ public class TypeConverterRegistryTest {
     @Test
     public void testFindCharSequenceConverterUsingStringConverter() throws Exception {
         final TypeConverter<CharSequence> converter = (TypeConverter<CharSequence>)
-            TypeConverterRegistry.getInstance().findCompatibleConverter(CharSequence.class);
+                TypeConverterRegistry.getInstance().findCompatibleConverter(CharSequence.class);
         assertNotNull(converter);
         assertThat(converter, instanceOf(TypeConverters.StringConverter.class));
         final CharSequence expected = "This is a test sequence of characters";
@@ -57,25 +57,26 @@ public class TypeConverterRegistryTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testFindNumberConverter() throws Exception {
-        final TypeConverter<Number> numberTypeConverter = (TypeConverter<Number>)
-            TypeConverterRegistry.getInstance().findCompatibleConverter(Number.class);
+        final TypeConverter<Number> numberTypeConverter =
+                (TypeConverter<Number>) TypeConverterRegistry.getInstance().findCompatibleConverter(Number.class);
         assertNotNull(numberTypeConverter);
         // TODO: is there a specific converter this should return?
     }
 
     public enum Foo {
-        I, PITY, THE
+        I,
+        PITY,
+        THE
     }
 
     @SuppressWarnings("unchecked")
     @Test
     public void testFindEnumConverter() throws Exception {
-        final TypeConverter<Foo> fooTypeConverter = (TypeConverter<Foo>)
-            TypeConverterRegistry.getInstance().findCompatibleConverter(Foo.class);
+        final TypeConverter<Foo> fooTypeConverter =
+                (TypeConverter<Foo>) TypeConverterRegistry.getInstance().findCompatibleConverter(Foo.class);
         assertNotNull(fooTypeConverter);
         assertEquals(Foo.I, fooTypeConverter.convert("i"));
         assertEquals(Foo.PITY, fooTypeConverter.convert("pity"));
         assertEquals(Foo.THE, fooTypeConverter.convert("THE"));
     }
-
 }

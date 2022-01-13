@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.pattern;
 
 /**
- Renders input unchanged.
+ * Renders input unchanged.
  */
 public final class PlainTextRenderer implements TextRenderer {
 
@@ -36,5 +36,4 @@ public final class PlainTextRenderer implements TextRenderer {
     public void render(final StringBuilder input, final StringBuilder output) {
         output.append(input);
     }
-
 }

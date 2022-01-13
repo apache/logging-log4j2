@@ -26,7 +26,7 @@ import org.apache.logging.log4j.util.StringBuilders;
  * Returns events' full marker string in a StringBuilder.
  */
 @Plugin(name = "MarkerPatternConverter", category = PatternConverter.CATEGORY)
-@ConverterKeys({ "marker" })
+@ConverterKeys({"marker"})
 @PerformanceSensitive("allocation")
 public final class MarkerPatternConverter extends LogEventPatternConverter {
 

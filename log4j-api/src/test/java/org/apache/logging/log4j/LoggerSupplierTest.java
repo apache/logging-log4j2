@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.Properties;
 import org.apache.logging.log4j.message.FormattedMessage;
 import org.apache.logging.log4j.message.JsonMessage;
 import org.apache.logging.log4j.message.LocalizedMessage;
@@ -32,12 +37,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
-
-import java.util.List;
-import java.util.Locale;
-import java.util.Properties;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests Logger APIs with {@link Supplier}.
@@ -57,7 +56,8 @@ public class LoggerSupplierTest {
         logger.traceEntry(() -> new FormattedMessage("int foo={}", 1234567890));
         assertThat(results).hasSize(1);
         String entry = results.get(0);
-        assertThat(entry).startsWith("ENTER[ FLOW ] TRACE Enter")
+        assertThat(entry)
+                .startsWith("ENTER[ FLOW ] TRACE Enter")
                 .contains("(int foo=1234567890)")
                 .doesNotContain("FormattedMessage");
     }
@@ -69,7 +69,8 @@ public class LoggerSupplierTest {
         logger.traceEntry(() -> new JsonMessage(props));
         assertThat(results).hasSize(1);
         String entry = results.get(0);
-        assertThat(entry).startsWith("ENTER[ FLOW ] TRACE Enter")
+        assertThat(entry)
+                .startsWith("ENTER[ FLOW ] TRACE Enter")
                 .contains("\"foo\":\"bar\"")
                 .doesNotContain("JsonMessage");
     }
@@ -79,7 +80,8 @@ public class LoggerSupplierTest {
         logger.traceEntry(() -> new LocalizedMessage("int foo={}", 1234567890));
         assertThat(results).hasSize(1);
         String entry = results.get(0);
-        assertThat(entry).startsWith("ENTER[ FLOW ] TRACE Enter")
+        assertThat(entry)
+                .startsWith("ENTER[ FLOW ] TRACE Enter")
                 .contains("(int foo=1234567890)")
                 .doesNotContain("LocalizedMessage");
     }
@@ -89,7 +91,8 @@ public class LoggerSupplierTest {
         logger.traceEntry(() -> 1234567890L);
         assertThat(results).hasSize(1);
         String entry = results.get(0);
-        assertThat(entry).startsWith("ENTER[ FLOW ] TRACE Enter")
+        assertThat(entry)
+                .startsWith("ENTER[ FLOW ] TRACE Enter")
                 .contains("(1234567890)")
                 .doesNotContain("SimpleMessage");
     }
@@ -99,7 +102,8 @@ public class LoggerSupplierTest {
         logger.traceEntry(() -> new MessageFormatMessage("int foo={0}", 1234567890));
         assertThat(results).hasSize(1);
         String entry = results.get(0);
-        assertThat(entry).startsWith("ENTER[ FLOW ] TRACE Enter")
+        assertThat(entry)
+                .startsWith("ENTER[ FLOW ] TRACE Enter")
                 .contains("(int foo=1,234,567,890)")
                 .doesNotContain("MessageFormatMessage");
     }
@@ -109,7 +113,8 @@ public class LoggerSupplierTest {
         logger.traceEntry(() -> new ObjectArrayMessage(1234567890));
         assertThat(results).hasSize(1);
         String entry = results.get(0);
-        assertThat(entry).startsWith("ENTER[ FLOW ] TRACE Enter")
+        assertThat(entry)
+                .startsWith("ENTER[ FLOW ] TRACE Enter")
                 .contains("([1234567890])")
                 .doesNotContain("ObjectArrayMessage");
     }
@@ -119,7 +124,8 @@ public class LoggerSupplierTest {
         logger.traceEntry(() -> new ObjectMessage(1234567890));
         assertThat(results).hasSize(1);
         String entry = results.get(0);
-        assertThat(entry).startsWith("ENTER[ FLOW ] TRACE Enter")
+        assertThat(entry)
+                .startsWith("ENTER[ FLOW ] TRACE Enter")
                 .contains("(1234567890)")
                 .doesNotContain("ObjectMessage");
     }
@@ -129,7 +135,8 @@ public class LoggerSupplierTest {
         logger.traceEntry(() -> new ParameterizedMessage("int foo={}", 1234567890));
         assertThat(results).hasSize(1);
         String entry = results.get(0);
-        assertThat(entry).startsWith("ENTER[ FLOW ] TRACE Enter")
+        assertThat(entry)
+                .startsWith("ENTER[ FLOW ] TRACE Enter")
                 .contains("(int foo=1234567890)")
                 .doesNotContain("ParameterizedMessage");
     }
@@ -139,7 +146,8 @@ public class LoggerSupplierTest {
         logger.traceEntry(() -> new SimpleMessage("1234567890"));
         assertThat(results).hasSize(1);
         String entry = results.get(0);
-        assertThat(entry).startsWith("ENTER[ FLOW ] TRACE Enter")
+        assertThat(entry)
+                .startsWith("ENTER[ FLOW ] TRACE Enter")
                 .contains("(1234567890)")
                 .doesNotContain("SimpleMessage");
     }
@@ -149,7 +157,8 @@ public class LoggerSupplierTest {
         logger.traceEntry(() -> "1234567890");
         assertThat(results).hasSize(1);
         String entry = results.get(0);
-        assertThat(entry).startsWith("ENTER[ FLOW ] TRACE Enter")
+        assertThat(entry)
+                .startsWith("ENTER[ FLOW ] TRACE Enter")
                 .contains("(1234567890)")
                 .doesNotContain("SimpleMessage");
     }
@@ -159,7 +168,8 @@ public class LoggerSupplierTest {
         logger.traceEntry(() -> new StringFormattedMessage("int foo=%,d", 1234567890));
         assertThat(results).hasSize(1);
         String entry = results.get(0);
-        assertThat(entry).startsWith("ENTER[ FLOW ] TRACE Enter")
+        assertThat(entry)
+                .startsWith("ENTER[ FLOW ] TRACE Enter")
                 .contains("(int foo=1,234,567,890)")
                 .doesNotContain("StringFormattedMessage");
     }
@@ -169,19 +179,20 @@ public class LoggerSupplierTest {
         logger.traceEntry(() -> new ThreadDumpMessage("Title of ..."));
         assertThat(results).hasSize(1);
         String entry = results.get(0);
-        assertThat(entry).startsWith("ENTER[ FLOW ] TRACE Enter").contains("RUNNABLE", "Title of ...", getClass().getName());
+        assertThat(entry)
+                .startsWith("ENTER[ FLOW ] TRACE Enter")
+                .contains("RUNNABLE", "Title of ...", getClass().getName());
     }
-    
+
     @BeforeEach
     public void setup() {
         results.clear();
         defaultLocale = Locale.getDefault(Locale.Category.FORMAT);
         Locale.setDefault(Locale.Category.FORMAT, java.util.Locale.US);
     }
-    
+
     @AfterEach
     public void tearDown() {
         Locale.setDefault(Locale.Category.FORMAT, defaultLocale);
     }
-
 }

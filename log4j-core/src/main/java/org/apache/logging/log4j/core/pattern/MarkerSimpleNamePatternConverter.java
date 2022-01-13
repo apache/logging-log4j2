@@ -25,7 +25,7 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  * Appends an event's maker name to a StringBuilder.
  */
 @Plugin(name = "MarkerNamePatternConverter", category = PatternConverter.CATEGORY)
-@ConverterKeys({ "markerSimpleName" })
+@ConverterKeys({"markerSimpleName"})
 @PerformanceSensitive("allocation")
 public final class MarkerSimpleNamePatternConverter extends LogEventPatternConverter {
 

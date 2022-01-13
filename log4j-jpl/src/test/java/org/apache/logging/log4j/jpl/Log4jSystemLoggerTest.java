@@ -26,7 +26,6 @@ import static org.junit.Assert.assertThat;
 
 import java.lang.System.Logger;
 import java.util.List;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;

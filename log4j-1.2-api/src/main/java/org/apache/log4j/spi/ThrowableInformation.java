@@ -19,7 +19,6 @@ package org.apache.log4j.spi;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
-
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -63,4 +62,3 @@ public class ThrowableInformation implements java.io.Serializable {
         return null;
     }
 }
-

@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.perf.jmh;
 
+import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -24,8 +25,6 @@ import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * This benchmark tests encoding implementations.

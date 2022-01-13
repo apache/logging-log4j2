@@ -23,7 +23,6 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -74,6 +73,5 @@ public class PropertiesReconfigurationTest {
         public synchronized void onChange(final Reconfigurable reconfigurable) {
             toggle.countDown();
         }
-
     }
 }

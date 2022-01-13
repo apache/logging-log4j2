@@ -23,7 +23,6 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 @SpringBootApplication
 public class SampleApplication extends SpringBootServletInitializer {
     public static void main(String[] args) {
-            SpringApplication.run(SampleApplication.class, args);
+        SpringApplication.run(SampleApplication.class, args);
     }
-
 }

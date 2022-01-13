@@ -18,12 +18,10 @@ package org.apache.logging.log4j.taglib;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTag;
 import javax.servlet.jsp.tagext.DynamicAttributes;
 import javax.servlet.jsp.tagext.Tag;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
@@ -110,7 +108,8 @@ abstract class LoggingMessageTagSupport extends ExceptionAwareTagSupport impleme
                 }
                 logger.logIfEnabled(FQCN, level, marker, data, exception);
             } else {
-                logger.logIfEnabled(FQCN, level, marker, logger.getMessageFactory().newMessage(message), exception);
+                logger.logIfEnabled(
+                        FQCN, level, marker, logger.getMessageFactory().newMessage(message), exception);
             }
         }
 

@@ -24,13 +24,12 @@ import org.apache.logging.log4j.core.impl.LocationAware;
  * Returns the event's line location information in a StringBuilder.
  */
 @Plugin(name = "MethodLocationPatternConverter", category = PatternConverter.CATEGORY)
-@ConverterKeys({ "M", "method" })
+@ConverterKeys({"M", "method"})
 public final class MethodLocationPatternConverter extends LogEventPatternConverter implements LocationAware {
     /**
      * Singleton.
      */
-    private static final MethodLocationPatternConverter INSTANCE =
-        new MethodLocationPatternConverter();
+    private static final MethodLocationPatternConverter INSTANCE = new MethodLocationPatternConverter();
 
     /**
      * Private constructor.

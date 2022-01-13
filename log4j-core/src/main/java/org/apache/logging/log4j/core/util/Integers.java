@@ -25,8 +25,7 @@ public final class Integers {
 
     private static final int BITS_PER_INT = 32;
 
-    private Integers() {
-    }
+    private Integers() {}
 
     /**
      * Parses the string argument as a signed decimal integer.

@@ -16,13 +16,12 @@
  */
 package org.apache.logging.log4j.message;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
-
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ThreadDumpMessageTest {
 
@@ -31,12 +30,11 @@ public class ThreadDumpMessageTest {
         final ThreadDumpMessage msg = new ThreadDumpMessage("Testing");
 
         final String message = msg.getFormattedMessage();
-        //System.out.print(message);
+        // System.out.print(message);
         assertTrue(message.contains("Testing"), "No header");
         assertTrue(message.contains("RUNNABLE"), "No RUNNABLE");
         assertTrue(message.contains("ThreadDumpMessage"), "No ThreadDumpMessage");
     }
-
 
     @Test
     public void testMessageWithLocks() throws Exception {
@@ -45,7 +43,7 @@ public class ThreadDumpMessageTest {
         final Thread thread1 = new Thread1(lock);
         thread1.start();
         ThreadDumpMessage msg;
-        synchronized(this) {
+        synchronized (this) {
             final Thread thread2 = new Thread2(this);
             thread2.start();
             try {
@@ -57,12 +55,12 @@ public class ThreadDumpMessageTest {
         }
 
         final String message = msg.getFormattedMessage();
-        //System.out.print(message);
+        // System.out.print(message);
         assertTrue(message.contains("Testing"), "No header");
         assertTrue(message.contains("RUNNABLE"), "No RUNNABLE");
         assertTrue(message.contains("ThreadDumpMessage"), "No ThreadDumpMessage");
-        //assertTrue("No Locks", message.contains("waiting on"));
-        //assertTrue("No syncronizers", message.contains("locked syncrhonizers"));
+        // assertTrue("No Locks", message.contains("waiting on"));
+        // assertTrue("No syncronizers", message.contains("locked syncrhonizers"));
     }
 
     @Test
@@ -106,8 +104,7 @@ public class ThreadDumpMessageTest {
 
         final StringBuilder result = new StringBuilder();
         message.formatTo(result);
-        assertFalse(
-                result.toString().contains("ThreadWithCountDownLatch"), "no ThreadWithCountDownLatch captured");
+        assertFalse(result.toString().contains("ThreadWithCountDownLatch"), "no ThreadWithCountDownLatch captured");
         assertEquals(initial, result.toString());
         keepAlive.countDown(); // allow thread to die
     }

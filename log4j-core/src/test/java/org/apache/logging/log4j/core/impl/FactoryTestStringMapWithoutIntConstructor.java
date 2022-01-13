@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.impl;
 
 import java.util.Map;
-
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringMap;
@@ -30,8 +29,7 @@ public class FactoryTestStringMapWithoutIntConstructor implements StringMap {
     private static final long serialVersionUID = -3239395494628445052L;
     int initialCapacity;
 
-    public FactoryTestStringMapWithoutIntConstructor() {
-    }
+    public FactoryTestStringMapWithoutIntConstructor() {}
 
     @Override
     public Map<String, String> toMap() {
@@ -44,14 +42,10 @@ public class FactoryTestStringMapWithoutIntConstructor implements StringMap {
     }
 
     @Override
-    public <V> void forEach(final BiConsumer<String, ? super V> action) {
-
-    }
+    public <V> void forEach(final BiConsumer<String, ? super V> action) {}
 
     @Override
-    public <V, S> void forEach(final TriConsumer<String, ? super V, S> action, final S state) {
-
-    }
+    public <V, S> void forEach(final TriConsumer<String, ? super V, S> action, final S state) {}
 
     @Override
     public <V> V getValue(final String key) {
@@ -69,14 +63,10 @@ public class FactoryTestStringMapWithoutIntConstructor implements StringMap {
     }
 
     @Override
-    public void clear() {
-
-    }
+    public void clear() {}
 
     @Override
-    public void freeze() {
-
-    }
+    public void freeze() {}
 
     @Override
     public boolean isFrozen() {
@@ -84,17 +74,11 @@ public class FactoryTestStringMapWithoutIntConstructor implements StringMap {
     }
 
     @Override
-    public void putAll(final ReadOnlyStringMap source) {
-
-    }
+    public void putAll(final ReadOnlyStringMap source) {}
 
     @Override
-    public void putValue(final String key, final Object value) {
-
-    }
+    public void putValue(final String key, final Object value) {}
 
     @Override
-    public void remove(final String key) {
-
-    }
+    public void remove(final String key) {}
 }

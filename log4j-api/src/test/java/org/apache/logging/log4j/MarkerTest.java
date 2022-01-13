@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ResourceLock("log4j2.MarkerManager")
 public class MarkerTest {
@@ -55,7 +55,7 @@ public class MarkerTest {
         existing.setParents(parent);
         assertTrue(existing.hasParents());
     }
-    
+
     @Test
     public void testMarker() {
         // root (level 1)
@@ -117,7 +117,6 @@ public class MarkerTest {
         assertTrue(test1.isInstanceOf(existing), "TEST1 is not an instance of EXISTING");
         assertTrue(test1.isInstanceOf("EXISTING"), "TEST1 is not an instance of EXISTING");
     }
-
 
     @Test
     public void testDuplicateParents() {

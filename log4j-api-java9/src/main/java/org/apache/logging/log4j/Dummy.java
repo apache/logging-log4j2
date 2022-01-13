@@ -20,5 +20,4 @@ package org.apache.logging.log4j;
  * This is a dummy class and is only here to allow module-info.java to compile. It will not
  * be copied into the log4j-api module.
  */
-public class Dummy {
-}
+public class Dummy {}

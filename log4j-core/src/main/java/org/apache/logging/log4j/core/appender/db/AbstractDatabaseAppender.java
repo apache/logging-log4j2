@@ -21,7 +21,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -43,9 +42,9 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
     public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B> {
         // empty for now.
     }
-    
+
     public static final int DEFAULT_RECONNECT_INTERVAL_MILLIS = 5000;
-    
+
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
     private final Lock readLock = lock.readLock();
     private final Lock writeLock = lock.writeLock();
@@ -62,8 +61,8 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
      * @deprecated Use {@link #AbstractDatabaseAppender(String, Filter, Layout, boolean, Property[], AbstractDatabaseManager)}.
      */
     @Deprecated
-    protected AbstractDatabaseAppender(final String name, final Filter filter, final boolean ignoreExceptions,
-                                       final T manager) {
+    protected AbstractDatabaseAppender(
+            final String name, final Filter filter, final boolean ignoreExceptions, final T manager) {
         super(name, filter, null, ignoreExceptions, Property.EMPTY_ARRAY);
         this.manager = manager;
     }
@@ -78,9 +77,13 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
      *                         they are propagated to the caller.
      * @param manager The matching {@link AbstractDatabaseManager} implementation.
      */
-    protected AbstractDatabaseAppender(final String name, final Filter filter,
-            final Layout<? extends Serializable> layout, final boolean ignoreExceptions,
-            final Property[] properties, final T manager) {
+    protected AbstractDatabaseAppender(
+            final String name,
+            final Filter filter,
+            final Layout<? extends Serializable> layout,
+            final boolean ignoreExceptions,
+            final Property[] properties,
+            final T manager) {
         super(name, filter, layout, ignoreExceptions, properties);
         this.manager = manager;
     }
@@ -97,8 +100,12 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
      * @deprecated Use {@link #AbstractDatabaseAppender(String, Filter, Layout, boolean, Property[], AbstractDatabaseManager)}
      */
     @Deprecated
-    protected AbstractDatabaseAppender(final String name, final Filter filter,
-            final Layout<? extends Serializable> layout, final boolean ignoreExceptions, final T manager) {
+    protected AbstractDatabaseAppender(
+            final String name,
+            final Filter filter,
+            final Layout<? extends Serializable> layout,
+            final boolean ignoreExceptions,
+            final T manager) {
         super(name, filter, layout, ignoreExceptions, Property.EMPTY_ARRAY);
         this.manager = manager;
     }
@@ -109,12 +116,18 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
         try {
             this.getManager().write(event, toSerializable(event));
         } catch (final LoggingException e) {
-            LOGGER.error("Unable to write to database [{}] for appender [{}].", this.getManager().getName(),
-                    this.getName(), e);
+            LOGGER.error(
+                    "Unable to write to database [{}] for appender [{}].",
+                    this.getManager().getName(),
+                    this.getName(),
+                    e);
             throw e;
         } catch (final Exception e) {
-            LOGGER.error("Unable to write to database [{}] for appender [{}].", this.getManager().getName(),
-                    this.getName(), e);
+            LOGGER.error(
+                    "Unable to write to database [{}] for appender [{}].",
+                    this.getManager().getName(),
+                    this.getName(),
+                    e);
             throw new AppenderLoggingException("Unable to write to database in appender: " + e.getMessage(), e);
         } finally {
             this.readLock.unlock();

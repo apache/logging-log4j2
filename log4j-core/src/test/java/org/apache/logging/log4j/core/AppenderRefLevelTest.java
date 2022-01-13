@@ -16,16 +16,15 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
-import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @LoggerContextSource("log4j-reference-level.xml")
 public class AppenderRefLevelTest {
@@ -33,7 +32,10 @@ public class AppenderRefLevelTest {
     private final ListAppender app1;
     private final ListAppender app2;
 
-    public AppenderRefLevelTest(final LoggerContext context, @Named("LIST1") final ListAppender first, @Named("LIST2") final ListAppender second) {
+    public AppenderRefLevelTest(
+            final LoggerContext context,
+            @Named("LIST1") final ListAppender first,
+            @Named("LIST2") final ListAppender second) {
         logger1 = context.getLogger("org.apache.logging.log4j.test1");
         logger2 = context.getLogger("org.apache.logging.log4j.test2");
         logger3 = context.getLogger("org.apache.logging.log4j.test3");
@@ -86,4 +88,3 @@ public class AppenderRefLevelTest {
         assertEquals(4, events.size(), "Incorrect number of events. Expected 4, actual " + events.size());
     }
 }
-

@@ -21,7 +21,6 @@ import org.apache.logging.log4j.samples.dto.Constraint;
 /**
  * Member change their password.
  */
-
 public interface ChangePassword extends org.apache.logging.log4j.samples.dto.AuditEvent {
 
     /**

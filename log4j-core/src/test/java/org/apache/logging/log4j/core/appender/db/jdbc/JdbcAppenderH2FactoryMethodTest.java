@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.appender.db.jdbc;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-
 import org.apache.logging.log4j.junit.JdbcRule;
 
 /**
@@ -26,11 +25,14 @@ import org.apache.logging.log4j.junit.JdbcRule;
  */
 public class JdbcAppenderH2FactoryMethodTest extends AbstractJdbcAppenderFactoryMethodTest {
     public JdbcAppenderH2FactoryMethodTest() {
-        super(new JdbcRule(JdbcH2TestHelper.TEST_CONFIGURATION_SOURCE_MEM,
-                "CREATE TABLE fmLogEntry ("
-                        + "id INTEGER IDENTITY, eventDate DATETIME, literalColumn VARCHAR(255), level NVARCHAR(10), "
-                        + "logger NVARCHAR(255), message VARCHAR(1024), exception NCLOB, anotherDate TIMESTAMP)",
-                "DROP TABLE fmLogEntry"), "h2");
+        super(
+                new JdbcRule(
+                        JdbcH2TestHelper.TEST_CONFIGURATION_SOURCE_MEM,
+                        "CREATE TABLE fmLogEntry ("
+                                + "id INTEGER IDENTITY, eventDate DATETIME, literalColumn VARCHAR(255), level NVARCHAR(10), "
+                                + "logger NVARCHAR(255), message VARCHAR(1024), exception NCLOB, anotherDate TIMESTAMP)",
+                        "DROP TABLE fmLogEntry"),
+                "h2");
     }
 
     public static Connection getConnection() throws SQLException {

@@ -40,10 +40,7 @@ public final class SourceResolverFactory implements EventResolverFactory {
     }
 
     @Override
-    public SourceResolver create(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
+    public SourceResolver create(final EventResolverContext context, final TemplateResolverConfig config) {
         return new SourceResolver(context, config);
     }
-
 }

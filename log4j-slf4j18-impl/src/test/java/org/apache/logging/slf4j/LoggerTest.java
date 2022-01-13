@@ -21,7 +21,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
-
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.util.Strings;
@@ -94,11 +93,10 @@ public class LoggerTest {
         verify("List", "o.a.l.s.LoggerTest Debug message {} MDC{}" + Strings.LINE_SEPARATOR);
         logger.debug("Debug message {}", (Object[]) null);
         verify("List", "o.a.l.s.LoggerTest Debug message {} MDC{}" + Strings.LINE_SEPARATOR);
-        ((LocationAwareLogger)logger).log(null, Log4jLogger.class.getName(), LocationAwareLogger.DEBUG_INT,
-            "Debug message {}", null, null);
+        ((LocationAwareLogger) logger)
+                .log(null, Log4jLogger.class.getName(), LocationAwareLogger.DEBUG_INT, "Debug message {}", null, null);
         verify("List", "o.a.l.s.LoggerTest Debug message {} MDC{}" + Strings.LINE_SEPARATOR);
     }
-
 
     @Test
     public void debugWithParms() {
@@ -146,7 +144,7 @@ public class LoggerTest {
         final ListAppender listApp = ctx.getListAppender(name);
         assertNotNull("Missing Appender", listApp);
         final List<String> events = listApp.getMessages();
-        assertTrue("Incorrect number of messages. Expected 1 Actual " + events.size(), events.size()== 1);
+        assertTrue("Incorrect number of messages. Expected 1 Actual " + events.size(), events.size() == 1);
         final String actual = events.get(0);
         assertEquals("Incorrect message. Expected " + expected + ". Actual " + actual, expected, actual);
         listApp.clear();

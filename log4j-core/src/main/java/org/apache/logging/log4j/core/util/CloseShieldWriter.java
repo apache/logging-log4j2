@@ -35,12 +35,10 @@ public class CloseShieldWriter extends Writer {
     @Override
     public void flush() throws IOException {
         delegate.flush();
-
     }
 
     @Override
     public void write(final char[] cbuf, final int off, final int len) throws IOException {
         delegate.write(cbuf, off, len);
     }
-
 }

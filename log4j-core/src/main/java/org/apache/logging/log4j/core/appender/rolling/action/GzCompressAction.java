@@ -127,17 +127,15 @@ public final class GzCompressAction extends AbstractAction {
      * @throws IOException on IO exception.
      */
     public static boolean execute(
-            final File source,
-            final File destination,
-            final boolean deleteSource,
-            final int compressionLevel) throws IOException {
+            final File source, final File destination, final boolean deleteSource, final int compressionLevel)
+            throws IOException {
         if (source.exists()) {
             try (final FileInputStream fis = new FileInputStream(source);
-                 final OutputStream fos = new FileOutputStream(destination);
-                 final OutputStream gzipOut = new ConfigurableLevelGZIPOutputStream(
-                         fos, BUF_SIZE, compressionLevel);
-                 // Reduce native invocations by buffering data into GZIPOutputStream
-                 final OutputStream os = new BufferedOutputStream(gzipOut, BUF_SIZE)) {
+                    final OutputStream fos = new FileOutputStream(destination);
+                    final OutputStream gzipOut =
+                            new ConfigurableLevelGZIPOutputStream(fos, BUF_SIZE, compressionLevel);
+                    // Reduce native invocations by buffering data into GZIPOutputStream
+                    final OutputStream os = new BufferedOutputStream(gzipOut, BUF_SIZE)) {
                 final byte[] inbuf = new byte[BUF_SIZE];
                 int n;
 
@@ -176,8 +174,8 @@ public final class GzCompressAction extends AbstractAction {
 
     @Override
     public String toString() {
-        return GzCompressAction.class.getSimpleName() + '[' + source + " to " + destination
-                + ", deleteSource=" + deleteSource + ']';
+        return GzCompressAction.class.getSimpleName() + '[' + source + " to " + destination + ", deleteSource="
+                + deleteSource + ']';
     }
 
     public File getSource() {

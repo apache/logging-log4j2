@@ -28,7 +28,6 @@ import static org.mockito.Mockito.reset;
 
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Property;
@@ -41,12 +40,16 @@ import org.mockito.junit.MockitoJUnitRunner;
 public class AbstractDatabaseAppenderTest {
     private static class LocalAbstractDatabaseAppender extends AbstractDatabaseAppender<LocalAbstractDatabaseManager> {
 
-        public LocalAbstractDatabaseAppender(final String name, final Filter filter, final boolean ignoreExceptions,
-                                             final LocalAbstractDatabaseManager manager) {
+        public LocalAbstractDatabaseAppender(
+                final String name,
+                final Filter filter,
+                final boolean ignoreExceptions,
+                final LocalAbstractDatabaseManager manager) {
             super(name, filter, null, ignoreExceptions, Property.EMPTY_ARRAY, manager);
         }
     }
-    private static abstract class LocalAbstractDatabaseManager extends AbstractDatabaseManager {
+
+    private abstract static class LocalAbstractDatabaseManager extends AbstractDatabaseManager {
         public LocalAbstractDatabaseManager(final String name, final int bufferSize) {
             super(name, bufferSize);
         }

@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.docker;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -31,8 +32,6 @@ import org.apache.logging.log4j.docker.model.Container;
 import org.apache.logging.log4j.docker.model.Network;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Lookups up keys for for a Docker container.
@@ -61,17 +60,18 @@ public class DockerLookup extends AbstractLookup {
         }
         Container current = null;
         try {
-            URL url= new URL(baseUri + "/containers/json");
+            URL url = new URL(baseUri + "/containers/json");
             if (url.getProtocol().equals(HTTP)) {
                 String macAddr = NetUtils.getMacAddressString();
                 ObjectMapper objectMapper = new ObjectMapper();
-                List<Container> containerList = objectMapper.readValue(url, new TypeReference<List<Container>>(){});
+                List<Container> containerList = objectMapper.readValue(url, new TypeReference<List<Container>>() {});
 
                 for (Container container : containerList) {
                     if (macAddr != null && container.getNetworkSettings() != null) {
-                        Map<String, Network> networks = container.getNetworkSettings().getNetworks();
+                        Map<String, Network> networks =
+                                container.getNetworkSettings().getNetworks();
                         if (networks != null) {
-                            for (Network network: networks.values()) {
+                            for (Network network : networks.values()) {
                                 if (macAddr.equals(network.getMacAddress())) {
                                     current = container;
                                     break;

@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core;
 
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.junit.Named;
@@ -26,12 +31,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
-
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Map;
 
 @LoggerContextSource("log4j-collectionLogging.xml")
 @Disabled("Work in progress")
@@ -78,5 +77,4 @@ public class CollectionLoggingTest {
         logger.error(Charset.availableCharsets());
         // TODO: some assertions
     }
-
 }

@@ -16,17 +16,16 @@
  */
 package org.apache.logging.other.pkg;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Test LoggerContext lookups by verifying the anchor class representing calling code.

@@ -23,7 +23,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
@@ -53,8 +52,11 @@ public class HttpWatcher extends AbstractWatcher {
     private static final String HTTP = "http";
     private static final String HTTPS = "https";
 
-    public HttpWatcher(final Configuration configuration, final Reconfigurable reconfigurable,
-        final List<ConfigurationListener> configurationListeners, long lastModifiedMillis) {
+    public HttpWatcher(
+            final Configuration configuration,
+            final Reconfigurable reconfigurable,
+            final List<ConfigurationListener> configurationListeners,
+            long lastModifiedMillis) {
         super(configuration, reconfigurable, configurationListeners);
         sslConfiguration = SslConfigurationFactory.getSslConfiguration();
         this.lastModifiedMillis = lastModifiedMillis;
@@ -72,9 +74,10 @@ public class HttpWatcher extends AbstractWatcher {
 
     @Override
     public void watching(Source source) {
-        if (!source.getURI().getScheme().equals(HTTP) && !source.getURI().getScheme().equals(HTTPS)) {
-            throw new IllegalArgumentException(
-                "HttpWatcher requires a url using the HTTP or HTTPS protocol, not " + source.getURI().getScheme());
+        if (!source.getURI().getScheme().equals(HTTP)
+                && !source.getURI().getScheme().equals(HTTPS)) {
+            throw new IllegalArgumentException("HttpWatcher requires a url using the HTTP or HTTPS protocol, not "
+                    + source.getURI().getScheme());
         }
         try {
             url = source.getURI().toURL();
@@ -85,8 +88,8 @@ public class HttpWatcher extends AbstractWatcher {
     }
 
     @Override
-    public Watcher newWatcher(Reconfigurable reconfigurable, List<ConfigurationListener> listeners,
-        long lastModifiedMillis) {
+    public Watcher newWatcher(
+            Reconfigurable reconfigurable, List<ConfigurationListener> listeners, long lastModifiedMillis) {
         HttpWatcher watcher = new HttpWatcher(getConfiguration(), reconfigurable, listeners, lastModifiedMillis);
         if (getSource() != null) {
             watcher.watching(getSource());
@@ -96,8 +99,8 @@ public class HttpWatcher extends AbstractWatcher {
 
     private boolean refreshConfiguration() {
         try {
-            final HttpURLConnection urlConnection = UrlConnectionFactory.createConnection(url, lastModifiedMillis,
-                sslConfiguration);
+            final HttpURLConnection urlConnection =
+                    UrlConnectionFactory.createConnection(url, lastModifiedMillis, sslConfiguration);
             urlConnection.connect();
 
             try {
@@ -109,7 +112,8 @@ public class HttpWatcher extends AbstractWatcher {
                     }
                     case OK: {
                         try (InputStream is = urlConnection.getInputStream()) {
-                            ConfigurationSource configSource = getConfiguration().getConfigurationSource();
+                            ConfigurationSource configSource =
+                                    getConfiguration().getConfigurationSource();
                             configSource.setData(readStream(is));
                             lastModifiedMillis = urlConnection.getLastModified();
                             configSource.setModifiedMillis(lastModifiedMillis);

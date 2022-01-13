@@ -111,5 +111,4 @@ public interface LoggerConfigAdminMBean {
      * @return the appender refs for the instrumented {@code LoggerConfig}.
      */
     String[] getAppenderRefs();
-
 }

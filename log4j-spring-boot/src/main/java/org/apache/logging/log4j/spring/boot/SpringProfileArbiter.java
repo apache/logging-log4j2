@@ -30,15 +30,18 @@ import org.springframework.util.StringUtils;
 /**
  * An Aribter that uses the active Spring profile to determine if configuration should be included.
  */
-@Plugin(name = "SpringProfile", category = Node.CATEGORY, elementType = Arbiter.ELEMENT_TYPE,
-        deferChildren = true, printObject = true)
+@Plugin(
+        name = "SpringProfile",
+        category = Node.CATEGORY,
+        elementType = Arbiter.ELEMENT_TYPE,
+        deferChildren = true,
+        printObject = true)
 public class SpringProfileArbiter extends SpringEnvironmentHolder implements Arbiter {
 
     private final String[] profileNames;
 
     private SpringProfileArbiter(final String[] profiles) {
         this.profileNames = profiles;
-
     }
 
     @Override
@@ -67,7 +70,9 @@ public class SpringProfileArbiter extends SpringEnvironmentHolder implements Arb
         private String name;
 
         @PluginConfiguration
-        private Configuration configuration;;
+        private Configuration configuration;
+
+        ;
 
         /**
          * Sets the Profile Name or Names.
@@ -89,8 +94,8 @@ public class SpringProfileArbiter extends SpringEnvironmentHolder implements Arb
         }
 
         public SpringProfileArbiter build() {
-            String[] profileNames = StringUtils.trimArrayElements(
-                    StringUtils.commaDelimitedListToStringArray(configuration.getStrSubstitutor().replace(name)));
+            String[] profileNames = StringUtils.trimArrayElements(StringUtils.commaDelimitedListToStringArray(
+                    configuration.getStrSubstitutor().replace(name)));
             return new SpringProfileArbiter(profileNames);
         }
     }

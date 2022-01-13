@@ -36,5 +36,4 @@ public class DefaultLoggerContextAccessor implements LoggerContextAccessor {
     public LoggerContext getLoggerContext() {
         return LoggerContext.getContext();
     }
-
 }

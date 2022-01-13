@@ -21,8 +21,7 @@ package org.apache.log4j;
  */
 public class BasicConfigurator {
 
-    protected BasicConfigurator() {
-    }
+    protected BasicConfigurator() {}
 
     public static void configure() {
         LogManager.reconfigure();

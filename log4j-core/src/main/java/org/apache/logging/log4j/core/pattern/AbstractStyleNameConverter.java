@@ -20,7 +20,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -42,8 +41,8 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
      * @param formatters The PatternFormatters to generate the text to manipulate.
      * @param styling The styling that should encapsulate the pattern.
      */
-    protected AbstractStyleNameConverter(final String name, final List<PatternFormatter> formatters,
-                                         final String styling) {
+    protected AbstractStyleNameConverter(
+            final String name, final List<PatternFormatter> formatters, final String styling) {
         super(name, "style");
         this.formatters = formatters;
         this.style = styling;
@@ -321,9 +320,8 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
      *                throwable will be formatted.
      * @return new instance of class or null
      */
-    protected static <T extends AbstractStyleNameConverter> T newInstance(final Class<T> asnConverterClass,
-                                                                          final String name, final Configuration config,
-                                                                          final String[] options) {
+    protected static <T extends AbstractStyleNameConverter> T newInstance(
+            final Class<T> asnConverterClass, final String name, final Configuration config, final String[] options) {
         final List<PatternFormatter> formatters = toPatternFormatterList(config, options);
         if (formatters == null) {
             return null;
@@ -331,8 +329,12 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
         try {
             final Constructor<T> constructor = asnConverterClass.getConstructor(List.class, String.class);
             return constructor.newInstance(formatters, AnsiEscape.createSequence(name));
-        } catch (final SecurityException | NoSuchMethodException | IllegalArgumentException | InstantiationException |
-            IllegalAccessException | InvocationTargetException e) {
+        } catch (final SecurityException
+                | NoSuchMethodException
+                | IllegalArgumentException
+                | InstantiationException
+                | IllegalAccessException
+                | InvocationTargetException e) {
             LOGGER.error(e.toString(), e);
         }
         return null;

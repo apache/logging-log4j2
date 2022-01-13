@@ -28,16 +28,14 @@ public class PatternLayout extends Layout {
      * Default pattern string for log output. Currently set to the string <b>{@value #DEFAULT_CONVERSION_PATTERN}</b> which
      * just prints the application supplied message.
      */
-    public final static String DEFAULT_CONVERSION_PATTERN = "%m%n";
+    public static final String DEFAULT_CONVERSION_PATTERN = "%m%n";
 
     /**
      * A conversion pattern equivalent to the TTCCCLayout. Current value is <b>{@value #TTCC_CONVERSION_PATTERN}</b>
      */
-    public final static String TTCC_CONVERSION_PATTERN = "%r [%t] %p %c %x - %m%n";
+    public static final String TTCC_CONVERSION_PATTERN = "%r [%t] %p %c %x - %m%n";
 
-    public PatternLayout(final String pattern) {
-
-    }
+    public PatternLayout(final String pattern) {}
 
     @Override
     public String format(final LoggingEvent event) {

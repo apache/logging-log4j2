@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.lookup;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -27,14 +30,9 @@ import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
 /**
  *
  */
-
 @Plugin(name = "mapMessage", category = StrLookup.CATEGORY)
 public class MapMessageLookup extends AbstractLookup {
 
@@ -72,6 +70,4 @@ public class MapMessageLookup extends AbstractLookup {
     public static void setLoggerProperties(final String loggerName, final Map<String, String> properties) {
         loggerProperties.put(loggerName, properties);
     }
-
 }
-

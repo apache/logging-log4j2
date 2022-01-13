@@ -68,8 +68,7 @@ public final class LoaderUtil {
         }
     }
 
-    private LoaderUtil() {
-    }
+    private LoaderUtil() {}
 
     /**
      * Gets the current Thread ClassLoader. Returns the system ClassLoader if the TCCL is {@code null}. If the system
@@ -112,7 +111,7 @@ public final class LoaderUtil {
         accumulateClassLoaders(LoaderUtil.class.getClassLoader(), classLoaders);
         accumulateClassLoaders(tcl == null ? null : tcl.getParent(), classLoaders);
         final ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
-		if (systemClassLoader != null) {
+        if (systemClassLoader != null) {
             classLoaders.add(systemClassLoader);
         }
         return classLoaders.toArray(new ClassLoader[classLoaders.size()]);
@@ -204,8 +203,9 @@ public final class LoaderUtil {
      * @since 2.1
      */
     @SuppressWarnings("unchecked")
-    public static <T> T newInstanceOf(final String className) throws ClassNotFoundException, IllegalAccessException,
-            InstantiationException, NoSuchMethodException, InvocationTargetException {
+    public static <T> T newInstanceOf(final String className)
+            throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException,
+                    InvocationTargetException {
         return newInstanceOf((Class<T>) loadClass(className));
     }
 
@@ -226,7 +226,7 @@ public final class LoaderUtil {
      */
     public static <T> T newCheckedInstanceOf(final String className, final Class<T> clazz)
             throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException,
-            IllegalAccessException {
+                    IllegalAccessException {
         return clazz.cast(newInstanceOf(className));
     }
 
@@ -246,8 +246,8 @@ public final class LoaderUtil {
      * @since 2.5
      */
     public static <T> T newCheckedInstanceOfProperty(final String propertyName, final Class<T> clazz)
-        throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException,
-        IllegalAccessException {
+            throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException,
+                    IllegalAccessException {
         final String className = PropertiesUtil.getProperties().getStringProperty(propertyName);
         if (className == null) {
             return null;
@@ -283,9 +283,10 @@ public final class LoaderUtil {
     static Collection<UrlResource> findUrlResources(final String resource) {
         // @formatter:off
         final ClassLoader[] candidates = {
-                getThreadContextClassLoader(), 
-                LoaderUtil.class.getClassLoader(),
-                GET_CLASS_LOADER_DISABLED ? null : ClassLoader.getSystemClassLoader()};
+            getThreadContextClassLoader(),
+            LoaderUtil.class.getClassLoader(),
+            GET_CLASS_LOADER_DISABLED ? null : ClassLoader.getSystemClassLoader()
+        };
         // @formatter:on
         final Collection<UrlResource> resources = new LinkedHashSet<>();
         for (final ClassLoader cl : candidates) {

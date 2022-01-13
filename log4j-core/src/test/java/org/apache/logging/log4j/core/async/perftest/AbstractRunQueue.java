@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.async.perftest;
 
 import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
-
 import org.apache.logging.log4j.core.async.perftest.ResponseTimeTest.PrintingAsyncQueueFullPolicy;
 
 public abstract class AbstractRunQueue implements IPerfTestRunner {
@@ -47,15 +46,11 @@ public abstract class AbstractRunQueue implements IPerfTestRunner {
     }
 
     @Override
-    public void runThroughputTest(final int lines, final Histogram histogram) {
-    }
-
+    public void runThroughputTest(final int lines, final Histogram histogram) {}
 
     @Override
-    public void runLatencyTest(final int samples, final Histogram histogram,
-                               final long nanoTimeCost, final int threadCount) {
-    }
-
+    public void runLatencyTest(
+            final int samples, final Histogram histogram, final long nanoTimeCost, final int threadCount) {}
 
     @Override
     public final void shutdown() {
@@ -66,7 +61,6 @@ public abstract class AbstractRunQueue implements IPerfTestRunner {
             e.printStackTrace();
         }
     }
-
 
     @Override
     public final void log(final String finalMessage) {
@@ -81,6 +75,5 @@ public abstract class AbstractRunQueue implements IPerfTestRunner {
                 e.printStackTrace();
             }
         }
-
     }
 }

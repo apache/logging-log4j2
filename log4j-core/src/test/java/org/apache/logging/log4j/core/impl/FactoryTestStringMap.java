@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.impl;
 
 import java.util.Map;
-
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.IndexedStringMap;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
@@ -30,8 +29,7 @@ public class FactoryTestStringMap implements IndexedStringMap {
     private static final long serialVersionUID = -2035823164390218862L;
     int initialCapacity;
 
-    public FactoryTestStringMap() {
-    }
+    public FactoryTestStringMap() {}
 
     public FactoryTestStringMap(final int initialCapacity) {
         this.initialCapacity = initialCapacity;

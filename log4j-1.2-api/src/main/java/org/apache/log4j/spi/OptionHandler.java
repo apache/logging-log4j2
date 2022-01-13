@@ -16,7 +16,6 @@
  */
 package org.apache.log4j.spi;
 
-
 /**
  * Log4j 1 Interface for dealing with configuration. Ignored in Log4j 2.
  */

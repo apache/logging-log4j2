@@ -18,7 +18,6 @@
 package org.apache.logging.slf4j;
 
 import java.util.Iterator;
-
 import org.slf4j.Marker;
 
 /**

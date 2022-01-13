@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender.rolling.action;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Objects;
-
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -66,8 +65,7 @@ public final class IfNot implements PathCondition {
      * @return An IfNot PathCondition.
      */
     @PluginFactory
-    public static IfNot createNotCondition(
-            @PluginElement("PathConditions") final PathCondition condition) {
+    public static IfNot createNotCondition(@PluginElement("PathConditions") final PathCondition condition) {
         return new IfNot(condition);
     }
 

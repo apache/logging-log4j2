@@ -16,13 +16,12 @@
  */
 package org.apache.logging.log4j.kubernetes;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.status.StatusLogger;
-
 import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.ConfigBuilder;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClient;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Builds a Kubernetes Client.
@@ -41,7 +40,7 @@ public class KubernetesClientBuilder {
         try {
             base = Config.autoConfigure(null);
         } catch (Exception ex) {
-            if (ex instanceof  NullPointerException) {
+            if (ex instanceof NullPointerException) {
                 return null;
             }
         }

@@ -48,7 +48,6 @@ public class OutputBenchmark {
 
     Logger log4j2Logger;
 
-
     @State(Scope.Group)
     public static class Redirect {
         PrintStream defaultStream = System.out;
@@ -85,7 +84,7 @@ public class OutputBenchmark {
 
     private void deleteLogFiles() {
         final File outFile = new File("target/stdout.log");
-        final File log4j2File = new File ("target/testlog4j2.log");
+        final File log4j2File = new File("target/testlog4j2.log");
         log4j2File.delete();
         outFile.delete();
     }

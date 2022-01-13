@@ -16,15 +16,13 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.impl.ContextAnchor;
-import org.apache.logging.log4j.core.selector.ContextSelector;
-
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.impl.ContextAnchor;
+import org.apache.logging.log4j.core.selector.ContextSelector;
 
 /**
  * Returns either this Thread's context or the default {@link AsyncLoggerContext}.
@@ -55,13 +53,9 @@ public class BasicAsyncLoggerContextSelector implements ContextSelector {
         return ctx != null ? ctx : CONTEXT;
     }
 
-
     @Override
     public LoggerContext getContext(
-            final String fqcn,
-            final ClassLoader loader,
-            final boolean currentContext,
-            final URI configLocation) {
+            final String fqcn, final ClassLoader loader, final boolean currentContext, final URI configLocation) {
         final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
         return ctx != null ? ctx : CONTEXT;
     }
@@ -80,5 +74,4 @@ public class BasicAsyncLoggerContextSelector implements ContextSelector {
     public List<LoggerContext> getLoggerContexts() {
         return Collections.singletonList(CONTEXT);
     }
-
 }

@@ -16,15 +16,14 @@
  */
 package org.apache.logging.slf4j;
 
-import java.util.List;
+import static org.junit.Assert.*;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.testUtil.StringListAppender;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class CallerInformationTest {
 

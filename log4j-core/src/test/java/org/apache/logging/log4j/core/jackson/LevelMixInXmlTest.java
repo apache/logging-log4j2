@@ -17,10 +17,9 @@
 
 package org.apache.logging.log4j.core.jackson;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.categories.Layouts;
 import org.junit.Ignore;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.experimental.categories.Category;
 
 @Ignore("Fails for #testNameOnly()")
@@ -31,5 +30,4 @@ public class LevelMixInXmlTest extends LevelMixInTest {
     protected ObjectMapper newObjectMapper() {
         return new Log4jXmlObjectMapper();
     }
-
 }

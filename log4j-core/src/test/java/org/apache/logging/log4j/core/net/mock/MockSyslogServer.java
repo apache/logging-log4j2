@@ -31,13 +31,9 @@ public abstract class MockSyslogServer extends Thread {
     }
 
     @Override
-    public void run() {
+    public void run() {}
 
-    }
-
-    public void shutdown() {
-
-    }
+    public void shutdown() {}
 
     public int getNumberOfReceivedMessages() {
         return messageList.size();

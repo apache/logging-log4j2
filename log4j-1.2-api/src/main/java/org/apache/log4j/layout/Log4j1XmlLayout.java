@@ -21,7 +21,6 @@ import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
-
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Node;
@@ -51,7 +50,7 @@ public final class Log4j1XmlLayout extends AbstractStringLayout {
             @PluginAttribute(value = "locationInfo") final boolean locationInfo,
             @PluginAttribute(value = "properties") final boolean properties
             // @formatter:on
-    ) {
+            ) {
         return new Log4j1XmlLayout(locationInfo, properties);
     }
 
@@ -109,7 +108,7 @@ public final class Log4j1XmlLayout extends AbstractStringLayout {
         }
 
         @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
-		final Throwable thrown = event.getThrown();
+        final Throwable thrown = event.getThrown();
         if (thrown != null) {
             buf.append("<log4j:throwable><![CDATA[");
             final StringWriter w = new StringWriter();
@@ -152,5 +151,4 @@ public final class Log4j1XmlLayout extends AbstractStringLayout {
 
         buf.append("</log4j:event>\r\n\r\n");
     }
-
 }

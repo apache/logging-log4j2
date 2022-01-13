@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -37,8 +36,9 @@ public class LogManagerTest {
         Logger.getLogger(SIMPLE_NAME);
         Logger.getLogger(SIMPLE_NAME + ".foo");
         Logger.getLogger(SIMPLE_NAME + ".foo.bar");
-        final List<String> names = Collections.list((Enumeration<Logger>) LogManager.getCurrentLoggers()).stream().map(Logger::getName)
-            .collect(Collectors.toList());
+        final List<String> names = Collections.list((Enumeration<Logger>) LogManager.getCurrentLoggers()).stream()
+                .map(Logger::getName)
+                .collect(Collectors.toList());
         assertTrue(names.contains(SIMPLE_NAME));
         assertTrue(names.contains(SIMPLE_NAME + ".foo"));
         assertTrue(names.contains(SIMPLE_NAME + ".foo.bar"));

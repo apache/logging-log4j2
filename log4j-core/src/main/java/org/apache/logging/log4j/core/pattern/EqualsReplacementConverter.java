@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.pattern;
 
 import java.util.List;
-
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
@@ -28,7 +27,7 @@ import org.apache.logging.log4j.util.StringBuilders;
  * Equals pattern converter.
  */
 @Plugin(name = "equals", category = PatternConverter.CATEGORY)
-@ConverterKeys({ "equals" })
+@ConverterKeys({"equals"})
 @PerformanceSensitive("allocation")
 public final class EqualsReplacementConverter extends EqualsBaseReplacementConverter {
 
@@ -70,8 +69,11 @@ public final class EqualsReplacementConverter extends EqualsBaseReplacementConve
      * @param substitution The substitution string.
      * @param parser        The PatternParser.
      */
-    private EqualsReplacementConverter(final List<PatternFormatter> formatters, final String testString,
-                                       final String substitution, final PatternParser parser) {
+    private EqualsReplacementConverter(
+            final List<PatternFormatter> formatters,
+            final String testString,
+            final String substitution,
+            final PatternParser parser) {
         super("equals", "equals", formatters, testString, substitution, parser);
     }
 

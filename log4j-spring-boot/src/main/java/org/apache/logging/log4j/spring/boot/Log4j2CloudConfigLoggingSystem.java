@@ -30,7 +30,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import javax.net.ssl.HttpsURLConnection;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -128,11 +127,14 @@ public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
                 for (final String sourceLocation : locations) {
                     final ConfigurationSource source = getConfigurationSource(ResourceUtils.getURL(sourceLocation));
                     if (source != null) {
-                        final Configuration config = ConfigurationFactory.getInstance().getConfiguration(ctx, source);
+                        final Configuration config =
+                                ConfigurationFactory.getInstance().getConfiguration(ctx, source);
                         if (config instanceof AbstractConfiguration) {
                             configs.add((AbstractConfiguration) config);
                         } else {
-                            LOGGER.warn("Configuration at {} cannot be combined in a CompositeConfiguration", sourceLocation);
+                            LOGGER.warn(
+                                    "Configuration at {} cannot be combined in a CompositeConfiguration",
+                                    sourceLocation);
                             return;
                         }
                     }
@@ -143,10 +145,8 @@ public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
                     ctx.start(configs.get(0));
                 }
             }
-        }
-        catch (Exception ex) {
-            throw new IllegalStateException(
-                "Could not initialize Log4J2 logging from " + location, ex);
+        } catch (Exception ex) {
+            throw new IllegalStateException("Could not initialize Log4J2 logging from " + location, ex);
         }
     }
 

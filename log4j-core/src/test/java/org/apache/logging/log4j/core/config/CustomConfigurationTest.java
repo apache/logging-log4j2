@@ -16,6 +16,17 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Layout;
@@ -30,18 +41,6 @@ import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @CleanUpFiles("target/test.log")
 public class CustomConfigurationTest {
@@ -67,24 +66,27 @@ public class CustomConfigurationTest {
             }
         }
         final Layout<? extends Serializable> layout = PatternLayout.newBuilder()
-            .withPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
-            .withConfiguration(config)
-            .build();
+                .withPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
+                .withConfiguration(config)
+                .build();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()
-        .withFileName(LOG_FILE.toString())
-        .withAppend(false).setName("File").setIgnoreExceptions(false)
-            .withBufferSize(4000)
-            .withBufferedIo(false).setLayout(layout)
-            .build();
+                .withFileName(LOG_FILE.toString())
+                .withAppend(false)
+                .setName("File")
+                .setIgnoreExceptions(false)
+                .withBufferSize(4000)
+                .withBufferedIo(false)
+                .setLayout(layout)
+                .build();
         // @formatter:on
         appender.start();
         config.addAppender(appender);
         final AppenderRef ref = AppenderRef.createAppenderRef("File", null, null);
         final AppenderRef[] refs = new AppenderRef[] {ref};
 
-        final LoggerConfig loggerConfig = LoggerConfig.createLogger(false, Level.INFO, "org.apache.logging.log4j",
-            "true", refs, null, config, null );
+        final LoggerConfig loggerConfig = LoggerConfig.createLogger(
+                false, Level.INFO, "org.apache.logging.log4j", "true", refs, null, config, null);
         loggerConfig.addAppender(appender, null, null);
         config.addLogger("org.apache.logging.log4j", loggerConfig);
         ctx.updateLoggers();

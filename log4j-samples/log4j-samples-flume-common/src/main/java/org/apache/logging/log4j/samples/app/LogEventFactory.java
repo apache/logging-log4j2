@@ -20,7 +20,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.samples.dto.AuditEvent;
@@ -37,8 +36,8 @@ public class LogEventFactory {
 
         final String eventId = NamingUtils.lowerFirst(intrface.getSimpleName());
         final StructuredDataMessage msg = new StructuredDataMessage(eventId, null, "Audit");
-        return (T)Proxy.newProxyInstance(intrface
-            .getClassLoader(), new Class<?>[]{intrface}, new AuditProxy(msg, intrface));
+        return (T) Proxy.newProxyInstance(
+                intrface.getClassLoader(), new Class<?>[] {intrface}, new AuditProxy(msg, intrface));
     }
 
     private static class AuditProxy implements InvocationHandler {
@@ -52,8 +51,7 @@ public class LogEventFactory {
         }
 
         @Override
-        public Object invoke(final Object o, final Method method, final Object[] objects)
-            throws Throwable {
+        public Object invoke(final Object o, final Method method, final Object[] objects) throws Throwable {
             if (method.getName().equals("logEvent")) {
 
                 final StringBuilder missing = new StringBuilder();
@@ -61,8 +59,7 @@ public class LogEventFactory {
                 final Method[] methods = intrface.getMethods();
 
                 for (final Method _method : methods) {
-                    final String name = NamingUtils.lowerFirst(NamingUtils
-                        .getMethodShortName(_method.getName()));
+                    final String name = NamingUtils.lowerFirst(NamingUtils.getMethodShortName(_method.getName()));
 
                     final Annotation[] annotations = _method.getDeclaredAnnotations();
                     for (final Annotation annotation : annotations) {
@@ -78,8 +75,8 @@ public class LogEventFactory {
                 }
 
                 if (missing.length() > 0) {
-                    throw new IllegalStateException("Event " + msg.getId().getName() +
-                        " is missing required attributes " + missing);
+                    throw new IllegalStateException(
+                            "Event " + msg.getId().getName() + " is missing required attributes " + missing);
                 }
                 EventLogger.logEvent(msg);
             }
@@ -99,6 +96,5 @@ public class LogEventFactory {
 
             return null;
         }
-
     }
 }

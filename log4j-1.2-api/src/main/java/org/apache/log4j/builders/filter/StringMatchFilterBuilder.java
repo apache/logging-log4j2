@@ -23,7 +23,6 @@ import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.log4j.bridge.FilterWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
 import org.apache.log4j.config.PropertiesConfiguration;
@@ -58,7 +57,6 @@ public class StringMatchFilterBuilder extends AbstractBuilder implements FilterB
                     case ACCEPT_ON_MATCH:
                         acceptOnMatch.set(Boolean.parseBoolean(currentElement.getAttribute(VALUE_ATTR)));
                         break;
-
                 }
             }
         });

@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.flume.Event;
 import org.apache.flume.EventDeliveryException;
 import org.apache.flume.agent.embedded.EmbeddedAgent;
@@ -44,7 +43,6 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
 
     private final String shortName;
 
-
     /**
      * Constructor
      * @param name The unique name of this manager.
@@ -66,8 +64,8 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
      * @param dataDir The directory where the Flume FileChannel should write to.
      * @return A FlumeAvroManager.
      */
-    public static FlumeEmbeddedManager getManager(final String name, final Agent[] agents, final Property[] properties,
-                                                  int batchSize, final String dataDir) {
+    public static FlumeEmbeddedManager getManager(
+            final String name, final Agent[] agents, final Property[] properties, int batchSize, final String dataDir) {
 
         if (batchSize <= 0) {
             batchSize = 1;
@@ -80,15 +78,10 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
         }
 
         final String extendedName = extendManagerName(name, agents, properties);
-        return getManager(extendedName, FACTORY,
-                new FactoryData(name, agents, properties, batchSize, dataDir));
-
+        return getManager(extendedName, FACTORY, new FactoryData(name, agents, properties, batchSize, dataDir));
     }
 
-    private static String extendManagerName(
-            final String name,
-            final Agent[] agents,
-            final Property[] properties) {
+    private static String extendManagerName(final String name, final Agent[] agents, final Property[] properties) {
 
         final StringBuilder sb = new StringBuilder();
         boolean first = true;
@@ -116,7 +109,6 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
         }
 
         return sb.toString();
-
     }
 
     @Override
@@ -152,8 +144,12 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
          * @param batchSize The number of events to include in a batch.
          * @param dataDir The directory where Flume should write to.
          */
-        public FactoryData(final String name, final Agent[] agents, final Property[] properties, final int batchSize,
-                           final String dataDir) {
+        public FactoryData(
+                final String name,
+                final Agent[] agents,
+                final Property[] properties,
+                final int batchSize,
+                final String dataDir) {
             this.name = name;
             this.agents = agents;
             this.batchSize = batchSize;
@@ -176,8 +172,8 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
         @Override
         public FlumeEmbeddedManager createManager(final String name, final FactoryData data) {
             try {
-                final Map<String, String> props = createProperties(data.name, data.agents, data.properties,
-                    data.batchSize, data.dataDir);
+                final Map<String, String> props =
+                        createProperties(data.name, data.agents, data.properties, data.batchSize, data.dataDir);
                 final EmbeddedAgent agent = new EmbeddedAgent(name);
                 agent.configure(props);
                 agent.start();
@@ -189,8 +185,12 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
             return null;
         }
 
-        private Map<String, String> createProperties(final String name, final Agent[] agents,
-                                                     final Property[] properties, final int batchSize, String dataDir) {
+        private Map<String, String> createProperties(
+                final String name,
+                final Agent[] agents,
+                final Property[] properties,
+                final int batchSize,
+                String dataDir) {
             final Map<String, String> props = new HashMap<>();
 
             if ((agents == null || agents.length == 0) && (properties == null || properties.length == 0)) {
@@ -254,7 +254,8 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
 
                     if (upperKey.startsWith(name.toUpperCase(Locale.ENGLISH))) {
                         final String msg =
-                            "Specification of the agent name is not allowed in Flume Appender configuration: " + key;
+                                "Specification of the agent name is not allowed in Flume Appender configuration: "
+                                        + key;
                         LOGGER.error(msg);
                         throw new ConfigurationException(msg);
                     }
@@ -281,7 +282,5 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
             }
             return props;
         }
-
     }
-
 }

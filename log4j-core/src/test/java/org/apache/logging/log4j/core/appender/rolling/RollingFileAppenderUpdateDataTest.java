@@ -49,13 +49,12 @@ public class RollingFileAppenderUpdateDataTest {
         builder.setConfigurationName("LOG4J2-1964 demo");
         builder.setStatusLevel(Level.ERROR);
         // @formatter:off
-        builder.add(builder.newAppender("consoleLog", "Console")
-            .addAttribute("target", ConsoleAppender.Target.SYSTEM_ERR));
+        builder.add(
+                builder.newAppender("consoleLog", "Console").addAttribute("target", ConsoleAppender.Target.SYSTEM_ERR));
         builder.add(builder.newAppender("fooAppender", "RollingFile")
                 .addAttribute("fileName", "target/rolling-update-date/foo.log")
                 .addAttribute("filePattern", filePattern)
-                .addComponent(builder.newComponent("SizeBasedTriggeringPolicy")
-                        .addAttribute("size", "10MB")));
+                .addComponent(builder.newComponent("SizeBasedTriggeringPolicy").addAttribute("size", "10MB")));
         builder.add(builder.newRootLogger(Level.INFO)
                 .add(builder.newAppenderRef("consoleLog"))
                 .add(builder.newAppenderRef("fooAppender")));
@@ -67,26 +66,28 @@ public class RollingFileAppenderUpdateDataTest {
     private LoggerContext loggerContext2 = null;
 
     @After
-	public void after() {
-    	if (loggerContext1 != null) {
-    		loggerContext1.close();
-    		loggerContext1 = null;
-		}
-    	if (loggerContext2 != null) {
-    		loggerContext2.close();
-    		loggerContext2 = null;
-		}
-	}
+    public void after() {
+        if (loggerContext1 != null) {
+            loggerContext1.close();
+            loggerContext1 = null;
+        }
+        if (loggerContext2 != null) {
+            loggerContext2.close();
+            loggerContext2 = null;
+        }
+    }
 
     @Test
     public void testClosingLoggerContext() {
         // initial config with indexed rollover
-        try (LoggerContext loggerContext1 = Configurator.initialize(buildConfigA().build())) {
+        try (LoggerContext loggerContext1 =
+                Configurator.initialize(buildConfigA().build())) {
             validateAppender(loggerContext1, "target/rolling-update-date/foo.log.%i");
         }
 
         // rebuild config with date based rollover
-        try (LoggerContext loggerContext2 = Configurator.initialize(buildConfigB().build())) {
+        try (LoggerContext loggerContext2 =
+                Configurator.initialize(buildConfigB().build())) {
             validateAppender(loggerContext2, "target/rolling-update-date/foo.log.%d{yyyy-MM-dd-HH:mm:ss}.%i");
         }
     }
@@ -101,19 +102,19 @@ public class RollingFileAppenderUpdateDataTest {
         loggerContext2 = Configurator.initialize(buildConfigB().build());
         Assert.assertNotNull("No LoggerContext", loggerContext2);
         Assert.assertTrue("Expected same logger context to be returned", loggerContext1 == loggerContext2);
-		validateAppender(loggerContext1, "target/rolling-update-date/foo.log.%i");
+        validateAppender(loggerContext1, "target/rolling-update-date/foo.log.%i");
     }
 
-	@Test
-	public void testReconfigure() {
-		// initial config with indexed rollover
-		loggerContext1 = Configurator.initialize(buildConfigA().build());
-		validateAppender(loggerContext1, "target/rolling-update-date/foo.log.%i");
+    @Test
+    public void testReconfigure() {
+        // initial config with indexed rollover
+        loggerContext1 = Configurator.initialize(buildConfigA().build());
+        validateAppender(loggerContext1, "target/rolling-update-date/foo.log.%i");
 
-		// rebuild config with date based rollover
-		loggerContext1.setConfiguration(buildConfigB().build());
-		validateAppender(loggerContext1, "target/rolling-update-date/foo.log.%d{yyyy-MM-dd-HH:mm:ss}.%i");
-	}
+        // rebuild config with date based rollover
+        loggerContext1.setConfiguration(buildConfigB().build());
+        validateAppender(loggerContext1, "target/rolling-update-date/foo.log.%d{yyyy-MM-dd-HH:mm:ss}.%i");
+    }
 
     private void validateAppender(final LoggerContext loggerContext, final String expectedFilePattern) {
         final RollingFileAppender appender = loggerContext.getConfiguration().getAppender("fooAppender");

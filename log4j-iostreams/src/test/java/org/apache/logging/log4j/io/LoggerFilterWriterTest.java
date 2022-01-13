@@ -29,9 +29,8 @@ public class LoggerFilterWriterTest extends AbstractLoggerWriterTest {
     @Override
     protected Writer createWriterWrapper() {
         return IoBuilder.forLogger(getExtendedLogger())
-            .filter(this.wrapped)
-            .setLevel(LEVEL)
-            .buildWriter();
+                .filter(this.wrapped)
+                .setLevel(LEVEL)
+                .buildWriter();
     }
-
 }

@@ -32,7 +32,7 @@ public abstract class Filter {
         }
         isCorePresent = temp;
     }
-    
+
     // TODO Unused?
     private final FilterAdapter adapter;
 
@@ -79,7 +79,6 @@ public abstract class Filter {
         // noop
     }
 
-
     /**
      * <p>If the decision is <code>DENY</code>, then the event will be
      * dropped. If the decision is <code>NEUTRAL</code>, then the next
@@ -107,5 +106,4 @@ public abstract class Filter {
     public Filter getNext() {
         return next;
     }
-
 }

@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-
 import org.apache.log4j.bridge.FilterAdapter;
 import org.apache.log4j.bridge.FilterWrapper;
 import org.apache.log4j.helpers.OptionConverter;
@@ -103,14 +102,13 @@ public abstract class AbstractBuilder {
         return properties;
     }
 
-
     protected org.apache.logging.log4j.core.Filter buildFilters(String level, Filter filter) {
         if (level != null && filter != null) {
             List<org.apache.logging.log4j.core.Filter> filterList = new ArrayList<>();
-            org.apache.logging.log4j.core.Filter thresholdFilter =
-                    ThresholdFilter.createFilter(OptionConverter.convertLevel(level, Level.TRACE),
-                            org.apache.logging.log4j.core.Filter.Result.NEUTRAL,
-                            org.apache.logging.log4j.core.Filter.Result.DENY);
+            org.apache.logging.log4j.core.Filter thresholdFilter = ThresholdFilter.createFilter(
+                    OptionConverter.convertLevel(level, Level.TRACE),
+                    org.apache.logging.log4j.core.Filter.Result.NEUTRAL,
+                    org.apache.logging.log4j.core.Filter.Result.DENY);
             filterList.add(thresholdFilter);
             Filter f = filter;
             while (f != null) {
@@ -123,7 +121,8 @@ public abstract class AbstractBuilder {
             }
             return CompositeFilter.createFilters(filterList.toArray(new org.apache.logging.log4j.core.Filter[0]));
         } else if (level != null) {
-            return ThresholdFilter.createFilter(OptionConverter.convertLevel(level, Level.TRACE),
+            return ThresholdFilter.createFilter(
+                    OptionConverter.convertLevel(level, Level.TRACE),
                     org.apache.logging.log4j.core.Filter.Result.NEUTRAL,
                     org.apache.logging.log4j.core.Filter.Result.DENY);
         } else if (filter != null) {
@@ -138,5 +137,4 @@ public abstract class AbstractBuilder {
     String toLowerCase(final String value) {
         return value == null ? null : value.toLowerCase(Locale.ROOT);
     }
-
 }

@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j.core.jackson;
 
-import java.io.IOException;
-
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
+import java.io.IOException;
 
 /**
  * Copy and edit the Jackson (Apache License 2.0) class to use Log4j attribute names. Does not work as of Jackson 2.3.2.
@@ -42,8 +41,8 @@ public final class Log4jStackTraceElementDeserializer extends StdScalarDeseriali
     }
 
     @Override
-    public StackTraceElement deserialize(final JsonParser jp, final DeserializationContext ctxt) throws IOException,
-            JsonProcessingException {
+    public StackTraceElement deserialize(final JsonParser jp, final DeserializationContext ctxt)
+            throws IOException, JsonProcessingException {
         JsonToken t = jp.getCurrentToken();
         // Must get an Object
         if (t == JsonToken.START_OBJECT) {

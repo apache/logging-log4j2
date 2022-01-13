@@ -24,7 +24,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
@@ -55,8 +54,14 @@ public class AwaitCompletionReliabilityStrategy implements ReliabilityStrategy, 
      * org.apache.logging.log4j.message.Message, java.lang.Throwable)
      */
     @Override
-    public void log(final Supplier<LoggerConfig> reconfigured, final String loggerName, final String fqcn,
-            final Marker marker, final Level level, final Message data, final Throwable t) {
+    public void log(
+            final Supplier<LoggerConfig> reconfigured,
+            final String loggerName,
+            final String fqcn,
+            final Marker marker,
+            final Level level,
+            final Message data,
+            final Throwable t) {
 
         final LoggerConfig config = getActiveLoggerConfig(reconfigured);
         try {
@@ -74,9 +79,15 @@ public class AwaitCompletionReliabilityStrategy implements ReliabilityStrategy, 
      * org.apache.logging.log4j.Level, org.apache.logging.log4j.message.Message, java.lang.Throwable)
      */
     @Override
-    public void log(final Supplier<LoggerConfig> reconfigured, final String loggerName, final String fqcn,
-        final StackTraceElement location, final Marker marker, final Level level, final Message data,
-        final Throwable t) {
+    public void log(
+            final Supplier<LoggerConfig> reconfigured,
+            final String loggerName,
+            final String fqcn,
+            final StackTraceElement location,
+            final Marker marker,
+            final Level level,
+            final Message data,
+            final Throwable t) {
         final LoggerConfig config = getActiveLoggerConfig(reconfigured);
         try {
             config.log(loggerName, fqcn, location, marker, level, data, t);
@@ -113,7 +124,9 @@ public class AwaitCompletionReliabilityStrategy implements ReliabilityStrategy, 
         LoggerConfig result = this.loggerConfig;
         if (!beforeLogEvent()) {
             result = next.get();
-            return result == this.loggerConfig ? result : result.getReliabilityStrategy().getActiveLoggerConfig(next);
+            return result == this.loggerConfig
+                    ? result
+                    : result.getReliabilityStrategy().getActiveLoggerConfig(next);
         }
         return result;
     }
@@ -190,5 +203,4 @@ public class AwaitCompletionReliabilityStrategy implements ReliabilityStrategy, 
     public void beforeStopConfiguration(final Configuration configuration) {
         // no action
     }
-
 }

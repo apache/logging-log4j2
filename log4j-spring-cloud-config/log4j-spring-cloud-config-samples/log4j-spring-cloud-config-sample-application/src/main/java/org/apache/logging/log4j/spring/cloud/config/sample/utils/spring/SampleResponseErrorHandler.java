@@ -29,7 +29,5 @@ public class SampleResponseErrorHandler implements org.springframework.web.clien
     }
 
     @Override
-    public void handleError(ClientHttpResponse clientHttpResponse) throws IOException {
-
-    }
+    public void handleError(ClientHttpResponse clientHttpResponse) throws IOException {}
 }

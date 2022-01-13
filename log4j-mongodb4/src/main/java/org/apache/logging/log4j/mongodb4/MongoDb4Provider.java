@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.mongodb4;
 
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoDatabase;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.appender.nosql.NoSqlProvider;
@@ -27,12 +32,6 @@ import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
-
-import com.mongodb.ConnectionString;
-import com.mongodb.MongoClientSettings;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoDatabase;
 
 /**
  * The MongoDB implementation of {@link NoSqlProvider} using the MongoDB driver
@@ -74,8 +73,7 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
 
     // @formatter:off
     private static final CodecRegistry CODEC_REGISTRIES = CodecRegistries.fromRegistries(
-            MongoClientSettings.getDefaultCodecRegistry(),
-            CodecRegistries.fromCodecs(MongoDb4LevelCodec.INSTANCE));
+            MongoClientSettings.getDefaultCodecRegistry(), CodecRegistries.fromCodecs(MongoDb4LevelCodec.INSTANCE));
     // @formatter:on
 
     // TODO Where does this number come from?
@@ -92,8 +90,8 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
     private final MongoDatabase mongoDatabase;
     private final ConnectionString connectionString;
 
-    private MongoDb4Provider(final String connectionStringSource, final boolean isCapped,
-            final Integer collectionSize) {
+    private MongoDb4Provider(
+            final String connectionStringSource, final boolean isCapped, final Integer collectionSize) {
         LOGGER.debug("Creating ConnectionString {}...", connectionStringSource);
         this.connectionString = new ConnectionString(connectionStringSource);
         LOGGER.debug("Created ConnectionString {}", connectionString);
@@ -125,8 +123,11 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
     public String toString() {
         return String.format(
                 "%s [connectionString=%s, collectionSize=%s, isCapped=%s, mongoClient=%s, mongoDatabase=%s]",
-                MongoDb4Provider.class.getSimpleName(), connectionString, collectionSize, isCapped, mongoClient,
+                MongoDb4Provider.class.getSimpleName(),
+                connectionString,
+                collectionSize,
+                isCapped,
+                mongoClient,
                 mongoDatabase);
     }
-
 }

@@ -32,8 +32,7 @@ import java.util.TreeMap;
  *
  */
 public class PluginCache {
-    private final Map<String, Map<String, PluginEntry>> categories =
-        new TreeMap<>();
+    private final Map<String, Map<String, PluginEntry>> categories = new TreeMap<>();
 
     /**
      * Returns all categories of plugins in this cache.

@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
@@ -54,23 +53,21 @@ public class PluginRegistry {
     /**
      * Contains plugins found in Log4j2Plugins.dat cache files in the main CLASSPATH.
      */
-    private final AtomicReference<Map<String, List<PluginType<?>>>> pluginsByCategoryRef =
-        new AtomicReference<>();
+    private final AtomicReference<Map<String, List<PluginType<?>>>> pluginsByCategoryRef = new AtomicReference<>();
 
     /**
      * Contains plugins found in Log4j2Plugins.dat cache files in OSGi Bundles.
      */
     private final ConcurrentMap<Long, Map<String, List<PluginType<?>>>> pluginsByCategoryByBundleId =
-        new ConcurrentHashMap<>();
+            new ConcurrentHashMap<>();
 
     /**
      * Contains plugins found by searching for annotated classes at runtime.
      */
     private final ConcurrentMap<String, Map<String, List<PluginType<?>>>> pluginsByCategoryByPackage =
-        new ConcurrentHashMap<>();
+            new ConcurrentHashMap<>();
 
-    private PluginRegistry() {
-    }
+    private PluginRegistry() {}
 
     /**
      * Returns the global PluginRegistry instance.
@@ -170,7 +167,8 @@ public class PluginRegistry {
         }
         final Map<String, List<PluginType<?>>> newPluginsByCategory = new HashMap<>();
         int pluginCount = 0;
-        for (final Map.Entry<String, Map<String, PluginEntry>> outer : cache.getAllCategories().entrySet()) {
+        for (final Map.Entry<String, Map<String, PluginEntry>> outer :
+                cache.getAllCategories().entrySet()) {
             final String categoryLowerCase = outer.getKey();
             final List<PluginType<?>> types = new ArrayList<>(outer.getValue().size());
             newPluginsByCategory.put(categoryLowerCase, types);
@@ -233,8 +231,8 @@ public class PluginRegistry {
                 newPluginsByCategory.put(categoryLowerCase, list = new ArrayList<>());
             }
             final PluginEntry mainEntry = new PluginEntry();
-            final String mainElementName = plugin.elementType().equals(
-                Plugin.EMPTY) ? plugin.name() : plugin.elementType();
+            final String mainElementName =
+                    plugin.elementType().equals(Plugin.EMPTY) ? plugin.name() : plugin.elementType();
             mainEntry.setKey(plugin.name().toLowerCase());
             mainEntry.setName(plugin.name());
             mainEntry.setCategory(plugin.category());
@@ -247,8 +245,8 @@ public class PluginRegistry {
             if (pluginAliases != null) {
                 for (final String alias : pluginAliases.value()) {
                     final PluginEntry aliasEntry = new PluginEntry();
-                    final String aliasElementName = plugin.elementType().equals(
-                        Plugin.EMPTY) ? alias.trim() : plugin.elementType();
+                    final String aliasElementName =
+                            plugin.elementType().equals(Plugin.EMPTY) ? alias.trim() : plugin.elementType();
                     aliasEntry.setKey(alias.trim().toLowerCase());
                     aliasEntry.setName(plugin.name());
                     aliasEntry.setCategory(plugin.category());

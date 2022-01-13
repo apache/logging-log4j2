@@ -22,7 +22,7 @@ import java.util.Objects;
 
 /**
  * <em>Consider this class private.</em>
- * 
+ *
  * @see <a href="http://commons.apache.org/proper/commons-lang/">Apache Commons Lang</a>
  */
 public final class Strings {
@@ -33,29 +33,29 @@ public final class Strings {
      * The empty string.
      */
     public static final String EMPTY = "";
-    
+
     /**
      * The empty array.
      */
     public static final String[] EMPTY_ARRAY = {};
-    
+
     /**
      * OS-dependent line separator, defaults to {@code "\n"} if the system property {@code ""line.separator"} cannot be
      * read.
      */
-    public static final String LINE_SEPARATOR = PropertiesUtil.getProperties().getStringProperty("line.separator",
-            "\n");
+    public static final String LINE_SEPARATOR =
+            PropertiesUtil.getProperties().getStringProperty("line.separator", "\n");
 
     /**
      * Returns a double quoted string.
-     * 
+     *
      * @param str a String
      * @return {@code "str"}
      */
     public static String dquote(final String str) {
         return Chars.DQUOTE + str + Chars.DQUOTE;
     }
-    
+
     /**
      * Checks if a String is blank. A blank string is one that is either
      * {@code null}, empty, or all characters are {@link Character#isWhitespace(char)}.
@@ -218,7 +218,7 @@ public final class Strings {
      * <p>
      * Copied from Apache Commons Lang org.apache.commons.lang3.StringUtils.
      * </p>
-     * 
+     *
      * @param str  the String to get the leftmost characters from, may be null
      * @param len  the length of the required String
      * @return the leftmost characters, {@code null} if null String input
@@ -238,14 +238,14 @@ public final class Strings {
 
     /**
      * Returns a quoted string.
-     * 
+     *
      * @param str a String
      * @return {@code 'str'}
      */
     public static String quote(final String str) {
         return Chars.QUOTE + str + Chars.QUOTE;
     }
-    
+
     /**
      * <p>
      * Removes control characters (char &lt;= 32) from both ends of this String returning {@code null} if the String is
@@ -331,5 +331,4 @@ public final class Strings {
             sb.setLength(0);
         }
     }
-
 }

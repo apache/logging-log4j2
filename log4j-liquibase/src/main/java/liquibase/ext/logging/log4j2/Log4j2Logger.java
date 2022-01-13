@@ -17,7 +17,6 @@
 package liquibase.ext.logging.log4j2;
 
 import liquibase.logging.core.AbstractLogger;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.spi.ExtendedLogger;
@@ -89,5 +88,4 @@ public class Log4j2Logger extends AbstractLogger {
     public void warning(final String message, final Throwable e) {
         logger.logIfEnabled(FQCN, Level.WARN, null, buildMessage(message), e);
     }
-
 }

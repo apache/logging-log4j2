@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
@@ -33,7 +32,8 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 @PerformanceSensitive
 public class AppenderControlArraySet {
     private static final AtomicReferenceFieldUpdater<AppenderControlArraySet, AppenderControl[]> appenderArrayUpdater =
-            AtomicReferenceFieldUpdater.newUpdater(AppenderControlArraySet.class, AppenderControl[].class, "appenderArray");
+            AtomicReferenceFieldUpdater.newUpdater(
+                    AppenderControlArraySet.class, AppenderControl[].class, "appenderArray");
     private volatile AppenderControl[] appenderArray = AppenderControl.EMPTY_ARRAY;
 
     /**

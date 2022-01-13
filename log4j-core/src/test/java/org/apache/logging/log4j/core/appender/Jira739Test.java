@@ -37,8 +37,8 @@ public class Jira739Test {
     private static final Logger LOG = LogManager.getLogger(Jira739Test.class);
 
     public static void main(final String[] args) {
-        try (final LoggerContext ctx = Configurator.initialize(Jira739Test.class.getName(),
-                "target/test-classes/LOG4J2-739.xml")) {
+        try (final LoggerContext ctx =
+                Configurator.initialize(Jira739Test.class.getName(), "target/test-classes/LOG4J2-739.xml")) {
             for (int i = 0; i < 10; i++) {
                 LOG.trace("Entering Log4j Example " + i + " times");
                 LOG.error("Ohh!Failed!");
@@ -46,5 +46,4 @@ public class Jira739Test {
             }
         }
     }
-
 }

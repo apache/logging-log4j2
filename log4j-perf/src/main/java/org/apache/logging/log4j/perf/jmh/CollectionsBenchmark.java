@@ -19,7 +19,6 @@ package org.apache.logging.log4j.perf.jmh;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
-
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
@@ -59,8 +58,7 @@ public class CollectionsBenchmark {
     }
 
     @Benchmark
-    public void testBaseline(final Blackhole bh) {
-    }
+    public void testBaseline(final Blackhole bh) {}
 
     @Benchmark
     public long iterMap1Element() {

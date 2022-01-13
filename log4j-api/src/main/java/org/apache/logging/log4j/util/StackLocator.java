@@ -54,7 +54,7 @@ public final class StackLocator {
     private static final Method GET_CALLER_CLASS_METHOD;
 
     private static final StackLocator INSTANCE;
-    
+
     /** TODO: Use Object.class. */
     private static final Class<?> DEFAULT_CALLER_CLASS = null;
 
@@ -72,12 +72,14 @@ public final class StackLocator {
             } else {
                 o = getCallerClassMethod.invoke(null, 1);
                 if (o == sunReflectionClass) {
-                    System.out.println("WARNING: Unexpected result from sun.reflect.Reflection.getCallerClass(int), adjusting offset for future calls.");
+                    System.out.println(
+                            "WARNING: Unexpected result from sun.reflect.Reflection.getCallerClass(int), adjusting offset for future calls.");
                     java7u25CompensationOffset = 1;
                 }
             }
         } catch (final Exception | LinkageError e) {
-            System.out.println("WARNING: sun.reflect.Reflection.getCallerClass is not supported. This will impact performance.");
+            System.out.println(
+                    "WARNING: sun.reflect.Reflection.getCallerClass is not supported. This will impact performance.");
             getCallerClassMethod = null;
             java7u25CompensationOffset = -1;
         }
@@ -96,8 +98,7 @@ public final class StackLocator {
         return INSTANCE;
     }
 
-    private StackLocator() {
-    }
+    private StackLocator() {}
 
     // TODO: return Object.class instead of null (though it will have a null ClassLoader)
     // (MS) I believe this would work without any modifications elsewhere, but I could be wrong

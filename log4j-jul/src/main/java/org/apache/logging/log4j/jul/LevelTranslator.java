@@ -47,7 +47,7 @@ public final class LevelTranslator {
 
     static {
         final String levelConverterClassName =
-            PropertiesUtil.getProperties().getStringProperty(Constants.LEVEL_CONVERTER_PROPERTY);
+                PropertiesUtil.getProperties().getStringProperty(Constants.LEVEL_CONVERTER_PROPERTY);
         if (levelConverterClassName != null) {
             LevelConverter levelConverter;
             try {
@@ -82,6 +82,5 @@ public final class LevelTranslator {
         return LEVEL_CONVERTER.toJavaLevel(level);
     }
 
-    private LevelTranslator() {
-    }
+    private LevelTranslator() {}
 }

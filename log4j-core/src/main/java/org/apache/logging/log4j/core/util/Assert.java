@@ -23,8 +23,7 @@ import java.util.Map;
  * Utility class providing common validation logic.
  */
 public final class Assert {
-    private Assert() {
-    }
+    private Assert() {}
 
     /**
      * Checks if an object has empty semantics. The following scenarios are considered empty:

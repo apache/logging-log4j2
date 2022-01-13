@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.async;
 
 import java.util.concurrent.CountDownLatch;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.AsyncLoggers;
@@ -40,19 +39,17 @@ public class QueueFullAsyncLoggerConfigLoggingFromToStringTest2 extends QueueFul
 
     @BeforeClass
     public static void beforeClass() {
-        //FORMAT_MESSAGES_IN_BACKGROUND
+        // FORMAT_MESSAGES_IN_BACKGROUND
         System.setProperty("log4j.format.msg.async", "true");
 
         System.setProperty("log4j2.enable.threadlocals", "true");
         System.setProperty("log4j2.is.webapp", "false");
         System.setProperty("AsyncLoggerConfig.RingBufferSize", "128");
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "log4j2-queueFullAsyncLoggerConfig.xml");
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "log4j2-queueFullAsyncLoggerConfig.xml");
     }
 
     @Rule
-    public LoggerContextRule context = new LoggerContextRule(
-            "log4j2-queueFullAsyncLoggerConfig.xml");
+    public LoggerContextRule context = new LoggerContextRule("log4j2-queueFullAsyncLoggerConfig.xml");
 
     @Before
     public void before() throws Exception {
@@ -61,13 +58,14 @@ public class QueueFullAsyncLoggerConfigLoggingFromToStringTest2 extends QueueFul
 
     @Test(timeout = 5000)
     public void testLoggingFromToStringCausesOutOfOrderMessages() throws InterruptedException {
-        //TRACE = true;
+        // TRACE = true;
         final Logger logger = LogManager.getLogger(this.getClass());
 
         blockingAppender.countDownLatch = new CountDownLatch(1);
         unlocker = new Unlocker(new CountDownLatch(129)); // count slightly different from "pure" async loggers
         unlocker.start();
 
-        QueueFullAsyncLoggerConfigLoggingFromToStringTest.asyncLoggerConfigRecursiveTest(logger, unlocker, blockingAppender, this);
+        QueueFullAsyncLoggerConfigLoggingFromToStringTest.asyncLoggerConfigRecursiveTest(
+                logger, unlocker, blockingAppender, this);
     }
 }

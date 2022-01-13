@@ -31,7 +31,6 @@ public interface TriggeringPolicy /* TODO 3.0: extends LifeCycle */ {
      * Initializes this triggering policy.
      * @param manager The RollingFileManager.
      */
-
     void initialize(final RollingFileManager manager);
 
     /**

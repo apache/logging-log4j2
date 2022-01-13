@@ -73,6 +73,4 @@ public class Log4j1MdcPatternConverterTest {
         converter.format(event, sb);
         assertEquals(expected, sb.toString());
     }
-
 }
-

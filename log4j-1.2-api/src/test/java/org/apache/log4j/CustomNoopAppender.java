@@ -35,5 +35,4 @@ public class CustomNoopAppender extends AppenderSkeleton {
     protected void append(LoggingEvent event) {
         // Noop
     }
-
 }

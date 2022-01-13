@@ -27,5 +27,4 @@ public interface RecyclerFactory {
     }
 
     <V> Recycler<V> create(Supplier<V> supplier, Consumer<V> cleaner);
-
 }

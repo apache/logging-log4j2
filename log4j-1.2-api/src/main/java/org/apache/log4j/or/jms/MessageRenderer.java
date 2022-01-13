@@ -16,13 +16,12 @@
  */
 package org.apache.log4j.or.jms;
 
+import javax.jms.DeliveryMode;
+import javax.jms.JMSException;
+import javax.jms.Message;
 import org.apache.log4j.or.ObjectRenderer;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import javax.jms.Message;
-import javax.jms.JMSException;
-import javax.jms.DeliveryMode;
 
 /**
  * Log4j 1.x JMS Message Renderer
@@ -31,24 +30,24 @@ public class MessageRenderer implements ObjectRenderer {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     /**
-     Render a {@link javax.jms.Message}.
+     * Render a {@link javax.jms.Message}.
      */
     @Override
-    public
-    String  doRender(Object obj) {
+    public String doRender(Object obj) {
         if (obj instanceof Message) {
             StringBuilder sb = new StringBuilder();
             Message message = (Message) obj;
             try {
                 sb.append("DeliveryMode=");
-                switch(message.getJMSDeliveryMode()) {
-                    case DeliveryMode.NON_PERSISTENT :
+                switch (message.getJMSDeliveryMode()) {
+                    case DeliveryMode.NON_PERSISTENT:
                         sb.append("NON_PERSISTENT");
                         break;
-                    case DeliveryMode.PERSISTENT :
+                    case DeliveryMode.PERSISTENT:
                         sb.append("PERSISTENT");
                         break;
-                    default: sb.append("UNKNOWN");
+                    default:
+                        sb.append("UNKNOWN");
                 }
                 sb.append(", CorrelationID=");
                 sb.append(message.getJMSCorrelationID());
@@ -77,7 +76,7 @@ public class MessageRenderer implements ObjectRenderer {
                 sb.append(", Type=");
                 sb.append(message.getJMSType());
 
-            } catch(JMSException e) {
+            } catch (JMSException e) {
                 LOGGER.error("Could not parse Message.", e);
             }
             return sb.toString();

@@ -22,7 +22,6 @@ import java.io.ObjectOutputStream;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -80,8 +79,8 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
         this.locale = locale;
     }
 
-    public LocalizedMessage(final ResourceBundle bundle, final Locale locale, final String key,
-            final Object[] arguments) {
+    public LocalizedMessage(
+            final ResourceBundle bundle, final Locale locale, final String key, final Object[] arguments) {
         this.key = key;
         this.argArray = arguments;
         this.throwable = null;
@@ -137,13 +136,13 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
         this(bundle, (Locale) null, key, new Object[] {arg1, arg2});
     }
 
-    public LocalizedMessage(final String baseName, final Locale locale, final String key, final Object arg1,
-            final Object arg2) {
+    public LocalizedMessage(
+            final String baseName, final Locale locale, final String key, final Object arg1, final Object arg2) {
         this(baseName, locale, key, new Object[] {arg1, arg2});
     }
 
-    public LocalizedMessage(final ResourceBundle bundle, final Locale locale, final String key, final Object arg1,
-            final Object arg2) {
+    public LocalizedMessage(
+            final ResourceBundle bundle, final Locale locale, final String key, final Object arg1, final Object arg2) {
         this(bundle, locale, key, new Object[] {arg1, arg2});
     }
 
@@ -153,7 +152,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
 
     /**
      * Set the name of the Logger.
-     * 
+     *
      * @param name The name of the Logger.
      */
     @Override
@@ -163,7 +162,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
 
     /**
      * Returns the name of the Logger.
-     * 
+     *
      * @return the name of the Logger.
      */
     @Override
@@ -173,7 +172,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
 
     /**
      * Returns the formatted message after looking up the format in the resource bundle.
-     * 
+     *
      * @return The formatted message String.
      */
     @Override
@@ -218,15 +217,15 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
 
     /**
      * Override this to use a ResourceBundle.Control in Java 6
-     * 
+     *
      * @param rbBaseName The base name of the resource bundle, a fully qualified class name.
      * @param resourceBundleLocale The locale to use when formatting the message.
      * @param loop If true the key will be treated as a package or class name and a resource bundle will be located
      *            based on all or part of the package name. If false the key is expected to be the exact bundle id.
      * @return The ResourceBundle.
      */
-    protected ResourceBundle getResourceBundle(final String rbBaseName, final Locale resourceBundleLocale,
-            final boolean loop) {
+    protected ResourceBundle getResourceBundle(
+            final String rbBaseName, final Locale resourceBundleLocale, final boolean loop) {
         ResourceBundle rb = null;
 
         if (rbBaseName == null) {

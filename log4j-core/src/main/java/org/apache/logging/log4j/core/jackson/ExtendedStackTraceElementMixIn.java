@@ -16,21 +16,19 @@
  */
 package org.apache.logging.log4j.core.jackson;
 
-import java.io.Serializable;
-
-import org.apache.logging.log4j.core.impl.ExtendedClassInfo;
-import org.apache.logging.log4j.core.impl.ExtendedStackTraceElement;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import java.io.Serializable;
+import org.apache.logging.log4j.core.impl.ExtendedClassInfo;
+import org.apache.logging.log4j.core.impl.ExtendedStackTraceElement;
 
 /**
  * Mix-in for {@link ExtendedStackTraceElement}.
  */
-@JsonPropertyOrder({ "class", "method", "file", "line", "exact", "location", "version" })
+@JsonPropertyOrder({"class", "method", "file", "line", "exact", "location", "version"})
 abstract class ExtendedStackTraceElementMixIn implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -46,7 +44,7 @@ abstract class ExtendedStackTraceElementMixIn implements Serializable {
             @JsonProperty("location") final String location,
             @JsonProperty("version") final String version
             // @formatter:on
-    ) {
+            ) {
         // empty
     }
 
@@ -86,5 +84,4 @@ abstract class ExtendedStackTraceElementMixIn implements Serializable {
 
     @JsonIgnore
     public abstract boolean isNativeMethod();
-
 }

@@ -20,7 +20,6 @@ import java.io.BufferedReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.nio.CharBuffer;
-
 import org.apache.logging.log4j.Level;
 import org.junit.Before;
 import org.junit.Test;
@@ -80,8 +79,7 @@ public class LoggerBufferedReaderCallerInfoTest extends IoBuilderCallerInfoTesti
     @Before
     public void setupReader() {
         final Reader srcReader = new StringReader("a\nb\nc\nd");
-        this.logReader = (BufferedReader)
-            IoBuilder.forLogger(getLogger())
+        this.logReader = (BufferedReader) IoBuilder.forLogger(getLogger())
                 .filter(srcReader)
                 .setLevel(Level.WARN)
                 .setBuffered(true)

@@ -19,7 +19,6 @@ package org.apache.log4j;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
-
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.ClassRule;

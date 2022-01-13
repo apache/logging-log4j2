@@ -16,12 +16,11 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import java.util.Objects;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.MapMessage.MapFormat;
-
-import java.util.Objects;
 
 /**
  * Able to handle the contents of the LogEvent's MapMessage and either
@@ -30,7 +29,7 @@ import java.util.Objects;
  * within the Map.
  */
 @Plugin(name = "MapPatternConverter", category = PatternConverter.CATEGORY)
-@ConverterKeys({ "K", "map", "MAP" })
+@ConverterKeys({"K", "map", "MAP"})
 public final class MapPatternConverter extends LogEventPatternConverter {
 
     private static final String JAVA_UNQUOTED = MapFormat.JAVA_UNQUOTED.name();

@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.layout;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.QuoteMode;
 import org.apache.logging.log4j.core.Layout;
@@ -51,7 +50,8 @@ import org.apache.logging.log4j.status.StatusLogger;
 public class CsvParameterLayout extends AbstractCsvLayout {
 
     public static AbstractCsvLayout createDefaultLayout() {
-        return new CsvParameterLayout(null, Charset.forName(DEFAULT_CHARSET), CSVFormat.valueOf(DEFAULT_FORMAT), null, null);
+        return new CsvParameterLayout(
+                null, Charset.forName(DEFAULT_CHARSET), CSVFormat.valueOf(DEFAULT_FORMAT), null, null);
     }
 
     public static AbstractCsvLayout createLayout(final CSVFormat format) {
@@ -72,14 +72,20 @@ public class CsvParameterLayout extends AbstractCsvLayout {
             @PluginAttribute(value = "charset", defaultString = DEFAULT_CHARSET) final Charset charset,
             @PluginAttribute("header") final String header,
             @PluginAttribute("footer") final String footer)
-            // @formatter:on
-    {
+                // @formatter:on
+            {
 
-        final CSVFormat csvFormat = createFormat(format, delimiter, escape, quote, quoteMode, nullString, recordSeparator);
+        final CSVFormat csvFormat =
+                createFormat(format, delimiter, escape, quote, quoteMode, nullString, recordSeparator);
         return new CsvParameterLayout(config, charset, csvFormat, header, footer);
     }
 
-    public CsvParameterLayout(final Configuration config, final Charset charset, final CSVFormat csvFormat, final String header, final String footer) {
+    public CsvParameterLayout(
+            final Configuration config,
+            final Charset charset,
+            final CSVFormat csvFormat,
+            final String header,
+            final String footer) {
         super(config, charset, csvFormat, header, footer);
     }
 
@@ -96,5 +102,4 @@ public class CsvParameterLayout extends AbstractCsvLayout {
             return getFormat().getCommentMarker() + " " + e;
         }
     }
-
 }

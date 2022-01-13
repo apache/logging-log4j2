@@ -42,5 +42,4 @@ public interface TextRenderer {
      *            The output
      */
     void render(StringBuilder input, StringBuilder output);
-
 }

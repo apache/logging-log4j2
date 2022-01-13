@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender.db.jdbc;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-
 import org.apache.logging.log4j.junit.JdbcRule;
 
 /**
@@ -28,17 +27,16 @@ import org.apache.logging.log4j.junit.JdbcRule;
 public class JdbcAppenderHsqldbDataSourceTest extends AbstractJdbcAppenderDataSourceTest {
     public JdbcAppenderHsqldbDataSourceTest() {
         super(new JdbcRule(
-            new AbstractConnectionSource() {
-                @Override
-                public Connection getConnection() throws SQLException {
-                    return DriverManager.getConnection("jdbc:hsqldb:mem:Log4j", "sa", "");
-                }
-            },
-            "CREATE TABLE dsLogEntry (" +
-                "id INTEGER IDENTITY, eventDate DATETIME, literalColumn VARCHAR(255), level VARCHAR(10), " +
-                "logger VARCHAR(255), message VARCHAR(1024), exception CLOB, anotherDate TIMESTAMP" +
-                ")",
-            "DROP TABLE dsLogEntry"
-        ));
+                new AbstractConnectionSource() {
+                    @Override
+                    public Connection getConnection() throws SQLException {
+                        return DriverManager.getConnection("jdbc:hsqldb:mem:Log4j", "sa", "");
+                    }
+                },
+                "CREATE TABLE dsLogEntry ("
+                        + "id INTEGER IDENTITY, eventDate DATETIME, literalColumn VARCHAR(255), level VARCHAR(10), "
+                        + "logger VARCHAR(255), message VARCHAR(1024), exception CLOB, anotherDate TIMESTAMP"
+                        + ")",
+                "DROP TABLE dsLogEntry"));
     }
 }

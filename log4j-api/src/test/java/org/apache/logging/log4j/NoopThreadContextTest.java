@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
-
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * Tests {@link ThreadContext}.
@@ -54,6 +54,4 @@ public class NoopThreadContextTest {
         final String value = ThreadContext.get("Test");
         assertNull(value, "value was saved");
     }
-
-
 }

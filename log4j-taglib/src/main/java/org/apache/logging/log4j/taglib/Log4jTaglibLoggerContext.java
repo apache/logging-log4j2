@@ -17,9 +17,7 @@
 package org.apache.logging.log4j.taglib;
 
 import java.util.WeakHashMap;
-
 import javax.servlet.ServletContext;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
@@ -38,8 +36,8 @@ final class Log4jTaglibLoggerContext implements LoggerContext {
     // important in Servlet containers.
     private static final WeakHashMap<ServletContext, Log4jTaglibLoggerContext> CONTEXTS = new WeakHashMap<>();
 
-    private final LoggerRegistry<Log4jTaglibLogger> loggerRegistry = new LoggerRegistry<>(
-            new LoggerRegistry.WeakMapFactory<Log4jTaglibLogger>());
+    private final LoggerRegistry<Log4jTaglibLogger> loggerRegistry =
+            new LoggerRegistry<>(new LoggerRegistry.WeakMapFactory<Log4jTaglibLogger>());
 
     private final ServletContext servletContext;
 
@@ -70,8 +68,8 @@ final class Log4jTaglibLoggerContext implements LoggerContext {
             logger = this.loggerRegistry.getLogger(name, messageFactory);
             if (logger == null) {
                 final LoggerContext context = LogManager.getContext(false);
-                final ExtendedLogger original = messageFactory == null ?
-                        context.getLogger(name) : context.getLogger(name, messageFactory);
+                final ExtendedLogger original =
+                        messageFactory == null ? context.getLogger(name) : context.getLogger(name, messageFactory);
                 // wrap a logger from an underlying implementation
                 logger = new Log4jTaglibLogger(original, name, original.getMessageFactory());
                 this.loggerRegistry.putIfAbsent(name, messageFactory, logger);

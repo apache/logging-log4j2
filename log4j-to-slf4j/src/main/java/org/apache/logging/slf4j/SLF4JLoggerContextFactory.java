@@ -17,7 +17,6 @@
 package org.apache.logging.slf4j;
 
 import java.net.URI;
-
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -43,20 +42,24 @@ public class SLF4JLoggerContextFactory implements LoggerContextFactory {
     }
 
     @Override
-    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Object externalContext,
-                                    final boolean currentContext) {
+    public LoggerContext getContext(
+            final String fqcn, final ClassLoader loader, final Object externalContext, final boolean currentContext) {
         return context;
     }
 
     @Override
-    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Object externalContext,
-                                    final boolean currentContext, final URI configLocation, final String name) {
+    public LoggerContext getContext(
+            final String fqcn,
+            final ClassLoader loader,
+            final Object externalContext,
+            final boolean currentContext,
+            final URI configLocation,
+            final String name) {
         return context;
     }
 
     @Override
-    public void removeContext(final LoggerContext ignored) {
-    }
+    public void removeContext(final LoggerContext ignored) {}
 
     @Override
     public boolean isClassLoaderDependent() {

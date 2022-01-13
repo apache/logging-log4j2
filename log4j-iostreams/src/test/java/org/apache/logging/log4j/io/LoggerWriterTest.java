@@ -28,9 +28,6 @@ public class LoggerWriterTest extends AbstractLoggerWriterTest {
 
     @Override
     protected Writer createWriterWrapper() {
-        return IoBuilder.forLogger(getExtendedLogger())
-            .setLevel(LEVEL)
-            .buildWriter();
+        return IoBuilder.forLogger(getExtendedLogger()).setLevel(LEVEL).buildWriter();
     }
-
 }

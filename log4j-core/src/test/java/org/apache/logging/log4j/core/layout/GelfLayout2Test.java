@@ -16,10 +16,11 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import java.io.IOException;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.lookup.JavaLookup;
@@ -27,8 +28,6 @@ import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @LoggerContextSource("GelfLayout2Test.xml")
 public class GelfLayout2Test {
@@ -46,6 +45,4 @@ public class GelfLayout2Test {
         assertEquals("FOO", json.get("_foo").asText());
         assertEquals(new JavaLookup().getRuntime(), json.get("_runtime").asText());
     }
-
 }
-

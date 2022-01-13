@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.mongodb3;
 
+import com.mongodb.MongoClient;
+import com.mongodb.MongoException;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.CreateCollectionOptions;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.nosql.AbstractNoSqlConnection;
@@ -24,12 +29,6 @@ import org.apache.logging.log4j.core.appender.nosql.NoSqlObject;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.bson.Document;
 
-import com.mongodb.MongoClient;
-import com.mongodb.MongoException;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.CreateCollectionOptions;
-
 /**
  * The MongoDB implementation of {@link NoSqlConnection}.
  */
@@ -37,8 +36,11 @@ public final class MongoDbConnection extends AbstractNoSqlConnection<Document, M
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private static MongoCollection<Document> getOrCreateMongoCollection(final MongoDatabase database,
-            final String collectionName, final boolean isCapped, final Integer sizeInBytes) {
+    private static MongoCollection<Document> getOrCreateMongoCollection(
+            final MongoDatabase database,
+            final String collectionName,
+            final boolean isCapped,
+            final Integer sizeInBytes) {
         try {
             LOGGER.debug("Gettting collection '{}'...", collectionName);
             // throws IllegalArgumentException if collectionName is invalid
@@ -46,23 +48,26 @@ public final class MongoDbConnection extends AbstractNoSqlConnection<Document, M
         } catch (final IllegalStateException e) {
             LOGGER.debug("Collection '{}' does not exist.", collectionName);
             final CreateCollectionOptions options = new CreateCollectionOptions()
-            // @formatter:off
+                    // @formatter:off
                     .capped(isCapped)
                     .sizeInBytes(sizeInBytes);
             // @formatter:on
-            LOGGER.debug("Creating collection {} (capped = {}, sizeInBytes = {})", collectionName, isCapped,
-                    sizeInBytes);
+            LOGGER.debug(
+                    "Creating collection {} (capped = {}, sizeInBytes = {})", collectionName, isCapped, sizeInBytes);
             database.createCollection(collectionName, options);
             return database.getCollection(collectionName);
         }
-
     }
 
     private final MongoCollection<Document> collection;
     private final MongoClient mongoClient;
 
-    public MongoDbConnection(final MongoClient mongoClient, final MongoDatabase mongoDatabase,
-            final String collectionName, final boolean isCapped, final Integer sizeInBytes) {
+    public MongoDbConnection(
+            final MongoClient mongoClient,
+            final MongoDatabase mongoDatabase,
+            final String collectionName,
+            final boolean isCapped,
+            final Integer sizeInBytes) {
         this.mongoClient = mongoClient;
         this.collection = getOrCreateMongoCollection(mongoDatabase, collectionName, isCapped, sizeInBytes);
     }
@@ -90,9 +95,8 @@ public final class MongoDbConnection extends AbstractNoSqlConnection<Document, M
             LOGGER.debug("Inserting object {}", unwrapped);
             this.collection.insertOne(unwrapped);
         } catch (final MongoException e) {
-            throw new AppenderLoggingException("Failed to write log event to MongoDB due to error: " + e.getMessage(),
-                    e);
+            throw new AppenderLoggingException(
+                    "Failed to write log event to MongoDB due to error: " + e.getMessage(), e);
         }
     }
-
 }

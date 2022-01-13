@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -52,7 +51,7 @@ public class PluginCacheTest {
 
     private void createCategory(PluginCache cache, String categoryName, List<String> entryNames) {
         Map<String, PluginEntry> category = cache.getCategory(categoryName);
-        for (String entryName: entryNames) {
+        for (String entryName : entryNames) {
             PluginEntry entry = new PluginEntry();
             entry.setKey(entryName);
             entry.setClassName("com.example.Plugin");
@@ -67,5 +66,4 @@ public class PluginCacheTest {
         cache.writeCache(outputB);
         return outputB.toByteArray();
     }
-
 }

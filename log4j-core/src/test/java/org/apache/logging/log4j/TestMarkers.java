@@ -22,10 +22,10 @@ package org.apache.logging.log4j;
  */
 public class TestMarkers {
 
-	public static final Marker LIFE_CYCLE = MarkerManager.getMarker("LIFECYCLE");
-	public static final Marker TEST = MarkerManager.getMarker("TEST");
-	public static final Marker TEST_RULE = MarkerManager.getMarker("TEST_RULE").addParents(TEST);
-	public static final Marker TEST_RULE_LIFE_CYCLE = MarkerManager.getMarker("TEST_RULE_LIFE_CYCLE")
-			.addParents(TEST_RULE).addParents(LIFE_CYCLE);
-
+    public static final Marker LIFE_CYCLE = MarkerManager.getMarker("LIFECYCLE");
+    public static final Marker TEST = MarkerManager.getMarker("TEST");
+    public static final Marker TEST_RULE = MarkerManager.getMarker("TEST_RULE").addParents(TEST);
+    public static final Marker TEST_RULE_LIFE_CYCLE = MarkerManager.getMarker("TEST_RULE_LIFE_CYCLE")
+            .addParents(TEST_RULE)
+            .addParents(LIFE_CYCLE);
 }

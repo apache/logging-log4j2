@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.junit.Assert.*;
+
 import java.util.Stack;
 import java.util.concurrent.CountDownLatch;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.AsyncLoggers;
@@ -33,8 +34,6 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 
-import static org.junit.Assert.*;
-
 /**
  * Tests queue full scenarios with AsyncAppender.
  */
@@ -44,19 +43,16 @@ public class QueueFullAsyncAppenderTest extends QueueFullAbstractTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "log4j2-queueFullAsyncAppender.xml");
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "log4j2-queueFullAsyncAppender.xml");
     }
 
     @Rule
-    public LoggerContextRule context = new LoggerContextRule(
-            "log4j2-queueFullAsyncAppender.xml");
+    public LoggerContextRule context = new LoggerContextRule("log4j2-queueFullAsyncAppender.xml");
 
     @Before
     public void before() throws Exception {
         blockingAppender = context.getRequiredAppender("Blocking", BlockingAppender.class);
     }
-
 
     @Test(timeout = 5000)
     public void testNormalQueueFullKeepsMessagesInOrder() throws InterruptedException {
@@ -69,19 +65,20 @@ public class QueueFullAsyncAppenderTest extends QueueFullAbstractTest {
         asyncAppenderTest(logger, unlocker, blockingAppender);
     }
 
-    static void asyncAppenderTest(final Logger logger,
-                                  final Unlocker unlocker,
-                                  final BlockingAppender blockingAppender) {
+    static void asyncAppenderTest(
+            final Logger logger, final Unlocker unlocker, final BlockingAppender blockingAppender) {
         for (int i = 0; i < 130; i++) {
-            TRACE("Test logging message " + i  + ". Remaining capacity=" + asyncRemainingCapacity(logger));
+            TRACE("Test logging message " + i + ". Remaining capacity=" + asyncRemainingCapacity(logger));
             TRACE("Test decrementing unlocker countdown latch. Count=" + unlocker.countDownLatch.getCount());
             unlocker.countDownLatch.countDown();
             final String param = "I'm innocent";
             logger.info(new ParameterizedMessage("logging innocent object #{} {}", i, param));
         }
         TRACE("Before stop() blockingAppender.logEvents.count=" + blockingAppender.logEvents.size());
-        //CoreLoggerContexts.stopLoggerContext(false); // stop async thread
-        while (blockingAppender.logEvents.size() < 130) { Thread.yield(); }
+        // CoreLoggerContexts.stopLoggerContext(false); // stop async thread
+        while (blockingAppender.logEvents.size() < 130) {
+            Thread.yield();
+        }
         TRACE("After  stop() blockingAppender.logEvents.count=" + blockingAppender.logEvents.size());
 
         final Stack<String> actual = transform(blockingAppender.logEvents);

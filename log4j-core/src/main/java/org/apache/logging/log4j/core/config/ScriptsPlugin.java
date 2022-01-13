@@ -28,8 +28,7 @@ import org.apache.logging.log4j.core.script.AbstractScript;
 @Plugin(name = "scripts", category = Core.CATEGORY_NAME)
 public final class ScriptsPlugin {
 
-    private ScriptsPlugin() {
-    }
+    private ScriptsPlugin() {}
 
     /**
      * Return the array of scripts

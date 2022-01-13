@@ -16,22 +16,23 @@
  */
 package org.apache.logging.log4j.io;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import org.junit.Before;
+import org.junit.Test;
 
 public abstract class AbstractLoggerOutputStreamTest extends AbstractStreamTest {
 
     protected OutputStream out;
     protected ByteArrayOutputStream wrapped;
+
     protected abstract ByteArrayOutputStream createOutputStream();
+
     protected abstract OutputStream createOutputStreamWrapper();
 
     @Before
@@ -64,12 +65,11 @@ public abstract class AbstractLoggerOutputStreamTest extends AbstractStreamTest 
     public void testFlush() throws IOException {
         final OutputStream os = mock(OutputStream.class);
 
-        try (final OutputStream filteredOut =
-            IoBuilder.forLogger(getExtendedLogger())
+        try (final OutputStream filteredOut = IoBuilder.forLogger(getExtendedLogger())
                 .filter(os)
                 .setLevel(LEVEL)
                 .buildOutputStream()) {
-          filteredOut.flush();
+            filteredOut.flush();
         }
 
         then(os).should().flush();

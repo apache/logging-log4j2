@@ -25,7 +25,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 import javax.naming.NamingException;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.core.net.JndiManager;
@@ -89,8 +88,7 @@ public class JndiContextSelector implements NamedContextSelector {
 
     private static final LoggerContext CONTEXT = new LoggerContext("Default");
 
-    private static final ConcurrentMap<String, LoggerContext> CONTEXT_MAP =
-        new ConcurrentHashMap<>();
+    private static final ConcurrentMap<String, LoggerContext> CONTEXT_MAP = new ConcurrentHashMap<>();
 
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
@@ -133,8 +131,8 @@ public class JndiContextSelector implements NamedContextSelector {
     }
 
     @Override
-    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext,
-                                    final URI configLocation) {
+    public LoggerContext getContext(
+            final String fqcn, final ClassLoader loader, final boolean currentContext, final URI configLocation) {
 
         final LoggerContext lc = ContextAnchor.THREAD_CONTEXT.get();
         if (lc != null) {
@@ -200,5 +198,4 @@ public class JndiContextSelector implements NamedContextSelector {
     public List<LoggerContext> getLoggerContexts() {
         return Collections.unmodifiableList(new ArrayList<>(CONTEXT_MAP.values()));
     }
-
 }

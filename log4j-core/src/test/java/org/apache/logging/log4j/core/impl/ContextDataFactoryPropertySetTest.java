@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the ContextDataFactory class.

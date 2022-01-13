@@ -22,7 +22,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.categories.Appenders;
 import org.apache.logging.log4j.core.Logger;
@@ -56,7 +55,8 @@ public class JeroMqAppenderTest {
     public void testClientServer() throws Exception {
         final JeroMqAppender appender = ctx.getRequiredAppender(APPENDER_NAME, JeroMqAppender.class);
         final int expectedReceiveCount = 3;
-        final JeroMqTestClient client = new JeroMqTestClient(JeroMqManager.getContext(), ENDPOINT, expectedReceiveCount);
+        final JeroMqTestClient client =
+                new JeroMqTestClient(JeroMqManager.getContext(), ENDPOINT, expectedReceiveCount);
         final ExecutorService executor = Executors.newSingleThreadExecutor();
         try {
             final Future<List<String>> future = executor.submit(client);
@@ -83,8 +83,8 @@ public class JeroMqAppenderTest {
         final int nThreads = 10;
         final JeroMqAppender appender = ctx.getRequiredAppender(APPENDER_NAME, JeroMqAppender.class);
         final int expectedReceiveCount = 2 * nThreads;
-        final JeroMqTestClient client = new JeroMqTestClient(JeroMqManager.getContext(), ENDPOINT,
-                expectedReceiveCount);
+        final JeroMqTestClient client =
+                new JeroMqTestClient(JeroMqManager.getContext(), ENDPOINT, expectedReceiveCount);
         final ExecutorService executor = Executors.newSingleThreadExecutor();
         try {
             final Future<List<String>> future = executor.submit(client);
@@ -105,21 +105,21 @@ public class JeroMqAppenderTest {
             int again = 0;
             for (final String string : list) {
                 switch (string) {
-                case "Hello":
-                    hello++;
-                    break;
-                case "Again":
-                    again++;
-                    break;
-                default:
-                    Assert.fail("Unexpected message: " + string);
+                    case "Hello":
+                        hello++;
+                        break;
+                    case "Again":
+                        again++;
+                        break;
+                    default:
+                        Assert.fail("Unexpected message: " + string);
                 }
             }
             Assert.assertEquals(nThreads, hello);
             Assert.assertEquals(nThreads, again);
         } finally {
-            ExecutorServices.shutdown(executor, DEFAULT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS,
-                    JeroMqAppenderTest.class.getSimpleName());
+            ExecutorServices.shutdown(
+                    executor, DEFAULT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS, JeroMqAppenderTest.class.getSimpleName());
         }
     }
 

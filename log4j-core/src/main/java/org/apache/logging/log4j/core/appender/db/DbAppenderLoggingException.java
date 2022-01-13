@@ -58,5 +58,4 @@ public class DbAppenderLoggingException extends AppenderLoggingException {
     public DbAppenderLoggingException(Throwable cause, String format, Object... args) {
         super(cause, format, args);
     }
-
 }

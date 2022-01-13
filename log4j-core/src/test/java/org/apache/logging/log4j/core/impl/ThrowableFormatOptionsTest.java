@@ -16,18 +16,17 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.core.pattern.JAnsiTextRenderer;
 import org.apache.logging.log4j.core.pattern.TextRenderer;
 import org.apache.logging.log4j.util.Strings;
 import org.fusesource.jansi.AnsiRenderer.Code;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit tests for {@code ThrowableFormatOptions}.
@@ -46,8 +45,11 @@ public final class ThrowableFormatOptionsTest {
      * @param expectedSeparator
      *            The expected separator.
      */
-    private static ThrowableFormatOptions test(final String[] options, final int expectedLines,
-            final String expectedSeparator, final List<String> expectedPackages) {
+    private static ThrowableFormatOptions test(
+            final String[] options,
+            final int expectedLines,
+            final String expectedSeparator,
+            final List<String> expectedPackages) {
         final ThrowableFormatOptions tfo = ThrowableFormatOptions.newInstance(options);
         assertEquals(expectedLines, tfo.getLines(), "getLines");
         assertEquals(expectedSeparator, tfo.getSeparator(), "getSeparator");
@@ -82,7 +84,7 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testOneNullElement() {
-        test(new String[] { null }, Integer.MAX_VALUE, Strings.LINE_SEPARATOR, null);
+        test(new String[] {null}, Integer.MAX_VALUE, Strings.LINE_SEPARATOR, null);
     }
 
     /**
@@ -90,7 +92,7 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testOneEmptyElement() {
-        test(new String[] { "" }, Integer.MAX_VALUE, Strings.LINE_SEPARATOR, null);
+        test(new String[] {""}, Integer.MAX_VALUE, Strings.LINE_SEPARATOR, null);
     }
 
     /**
@@ -98,7 +100,7 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testFull() {
-        test(new String[] { "full" }, Integer.MAX_VALUE, Strings.LINE_SEPARATOR, null);
+        test(new String[] {"full"}, Integer.MAX_VALUE, Strings.LINE_SEPARATOR, null);
     }
 
     /**
@@ -106,8 +108,8 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testFullAnsi() {
-        final ThrowableFormatOptions tfo = test(new String[] { "full", "ansi" },
-                Integer.MAX_VALUE, Strings.LINE_SEPARATOR, null);
+        final ThrowableFormatOptions tfo =
+                test(new String[] {"full", "ansi"}, Integer.MAX_VALUE, Strings.LINE_SEPARATOR, null);
         testFullAnsiEmptyConfig(tfo);
     }
 
@@ -116,8 +118,8 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testFullAnsiEmptyConfig() {
-        final ThrowableFormatOptions tfo = test(new String[] { "full", "ansi()" },
-                Integer.MAX_VALUE, Strings.LINE_SEPARATOR, null);
+        final ThrowableFormatOptions tfo =
+                test(new String[] {"full", "ansi()"}, Integer.MAX_VALUE, Strings.LINE_SEPARATOR, null);
         testFullAnsiEmptyConfig(tfo);
     }
 
@@ -137,14 +139,14 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testFullAnsiWithCustomStyle() {
-        final ThrowableFormatOptions tfo = test(new String[] { "full", "ansi(Warning=red)" },
-                Integer.MAX_VALUE, Strings.LINE_SEPARATOR, null);
+        final ThrowableFormatOptions tfo =
+                test(new String[] {"full", "ansi(Warning=red)"}, Integer.MAX_VALUE, Strings.LINE_SEPARATOR, null);
         final TextRenderer textRenderer = tfo.getTextRenderer();
         assertNotNull(textRenderer);
         assertTrue(textRenderer instanceof JAnsiTextRenderer);
         final JAnsiTextRenderer jansiRenderer = (JAnsiTextRenderer) textRenderer;
         final Map<String, Code[]> styleMap = jansiRenderer.getStyleMap();
-        assertArrayEquals(new Code[] { Code.RED }, styleMap.get("Warning"));
+        assertArrayEquals(new Code[] {Code.RED}, styleMap.get("Warning"));
     }
 
     /**
@@ -152,16 +154,19 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testFullAnsiWithCustomStyles() {
-        final ThrowableFormatOptions tfo = test(new String[] { "full", "ansi(Warning=red Key=blue Value=cyan)" },
-                Integer.MAX_VALUE, Strings.LINE_SEPARATOR, null);
+        final ThrowableFormatOptions tfo = test(
+                new String[] {"full", "ansi(Warning=red Key=blue Value=cyan)"},
+                Integer.MAX_VALUE,
+                Strings.LINE_SEPARATOR,
+                null);
         final TextRenderer textRenderer = tfo.getTextRenderer();
         assertNotNull(textRenderer);
         assertTrue(textRenderer instanceof JAnsiTextRenderer);
         final JAnsiTextRenderer jansiRenderer = (JAnsiTextRenderer) textRenderer;
         final Map<String, Code[]> styleMap = jansiRenderer.getStyleMap();
-        assertArrayEquals(new Code[] { Code.RED }, styleMap.get("Warning"));
-        assertArrayEquals(new Code[] { Code.BLUE }, styleMap.get("Key"));
-        assertArrayEquals(new Code[] { Code.CYAN }, styleMap.get("Value"));
+        assertArrayEquals(new Code[] {Code.RED}, styleMap.get("Warning"));
+        assertArrayEquals(new Code[] {Code.BLUE}, styleMap.get("Key"));
+        assertArrayEquals(new Code[] {Code.CYAN}, styleMap.get("Value"));
     }
 
     /**
@@ -170,16 +175,18 @@ public final class ThrowableFormatOptionsTest {
     @Test
     public void testFullAnsiWithCustomComplexStyles() {
         final ThrowableFormatOptions tfo = test(
-                new String[] { "full", "ansi(Warning=red Key=blue,bg_red Value=cyan,bg_black,underline)" }, Integer.MAX_VALUE,
-                Strings.LINE_SEPARATOR, null);
+                new String[] {"full", "ansi(Warning=red Key=blue,bg_red Value=cyan,bg_black,underline)"},
+                Integer.MAX_VALUE,
+                Strings.LINE_SEPARATOR,
+                null);
         final TextRenderer textRenderer = tfo.getTextRenderer();
         assertNotNull(textRenderer);
         assertTrue(textRenderer instanceof JAnsiTextRenderer);
         final JAnsiTextRenderer jansiRenderer = (JAnsiTextRenderer) textRenderer;
         final Map<String, Code[]> styleMap = jansiRenderer.getStyleMap();
-        assertArrayEquals(new Code[] { Code.RED }, styleMap.get("Warning"));
-        assertArrayEquals(new Code[] { Code.BLUE, Code.BG_RED }, styleMap.get("Key"));
-        assertArrayEquals(new Code[] { Code.CYAN, Code.BG_BLACK, Code.UNDERLINE }, styleMap.get("Value"));
+        assertArrayEquals(new Code[] {Code.RED}, styleMap.get("Warning"));
+        assertArrayEquals(new Code[] {Code.BLUE, Code.BG_RED}, styleMap.get("Key"));
+        assertArrayEquals(new Code[] {Code.CYAN, Code.BG_BLACK, Code.UNDERLINE}, styleMap.get("Value"));
     }
 
     /**
@@ -187,7 +194,7 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testNone() {
-        test(new String[] { "none" }, 0, Strings.LINE_SEPARATOR, null);
+        test(new String[] {"none"}, 0, Strings.LINE_SEPARATOR, null);
     }
 
     /**
@@ -195,7 +202,7 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testShort() {
-        test(new String[] { "short" }, 2, Strings.LINE_SEPARATOR, null);
+        test(new String[] {"short"}, 2, Strings.LINE_SEPARATOR, null);
     }
 
     /**
@@ -203,7 +210,7 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testDepth() {
-        test(new String[] { "10" }, 10, Strings.LINE_SEPARATOR, null);
+        test(new String[] {"10"}, 10, Strings.LINE_SEPARATOR, null);
     }
 
     /**
@@ -211,7 +218,7 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testSeparator() {
-        test(new String[] { "separator(|)" }, Integer.MAX_VALUE, "|", null);
+        test(new String[] {"separator(|)"}, Integer.MAX_VALUE, "|", null);
     }
 
     /**
@@ -219,7 +226,7 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testSeparatorAsEmpty() {
-        test(new String[] { "separator()" }, Integer.MAX_VALUE, Strings.EMPTY, null);
+        test(new String[] {"separator()"}, Integer.MAX_VALUE, Strings.EMPTY, null);
     }
 
     /**
@@ -227,8 +234,11 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testSeparatorAsDefaultLineSeparator() {
-        test(new String[] { "separator(" + Strings.LINE_SEPARATOR + ')' }, Integer.MAX_VALUE,
-                Strings.LINE_SEPARATOR, null);
+        test(
+                new String[] {"separator(" + Strings.LINE_SEPARATOR + ')'},
+                Integer.MAX_VALUE,
+                Strings.LINE_SEPARATOR,
+                null);
     }
 
     /**
@@ -236,7 +246,7 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testSeparatorAsMultipleCharacters() {
-        test(new String[] { "separator( | )" }, Integer.MAX_VALUE, " | ", null);
+        test(new String[] {"separator( | )"}, Integer.MAX_VALUE, " | ", null);
     }
 
     /**
@@ -244,7 +254,7 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testFullAndSeparator() {
-        test(new String[] { "full", "separator(|)" }, Integer.MAX_VALUE, "|", null);
+        test(new String[] {"full", "separator(|)"}, Integer.MAX_VALUE, "|", null);
     }
 
     /**
@@ -252,7 +262,10 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testFullAndFiltersAndSeparator() {
-        test(new String[] { "full", "filters(org.junit)", "separator(|)" }, Integer.MAX_VALUE, "|",
+        test(
+                new String[] {"full", "filters(org.junit)", "separator(|)"},
+                Integer.MAX_VALUE,
+                "|",
                 Collections.singletonList("org.junit"));
     }
 
@@ -261,7 +274,7 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testNoneAndSeparator() {
-        test(new String[] { "none", "separator(|)" }, 0, "|", null);
+        test(new String[] {"none", "separator(|)"}, 0, "|", null);
     }
 
     /**
@@ -269,7 +282,7 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testShortAndSeparator() {
-        test(new String[] { "short", "separator(|)" }, 2, "|", null);
+        test(new String[] {"short", "separator(|)"}, 2, "|", null);
     }
 
     /**
@@ -277,7 +290,7 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testDepthAndSeparator() {
-        test(new String[] { "10", "separator(|)" }, 10, "|", null);
+        test(new String[] {"10", "separator(|)"}, 10, "|", null);
     }
 
     /**
@@ -285,7 +298,10 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testFilters() {
-        test(new String[] { "filters(packages)" }, Integer.MAX_VALUE, Strings.LINE_SEPARATOR,
+        test(
+                new String[] {"filters(packages)"},
+                Integer.MAX_VALUE,
+                Strings.LINE_SEPARATOR,
                 Collections.singletonList("packages"));
     }
 
@@ -294,7 +310,7 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testFiltersAsEmpty() {
-        test(new String[] { "filters()" }, Integer.MAX_VALUE, Strings.LINE_SEPARATOR, null);
+        test(new String[] {"filters()"}, Integer.MAX_VALUE, Strings.LINE_SEPARATOR, null);
     }
 
     /**
@@ -302,7 +318,10 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testFiltersAsMultiplePackages() {
-        test(new String[] { "filters(package1,package2)" }, Integer.MAX_VALUE, Strings.LINE_SEPARATOR,
+        test(
+                new String[] {"filters(package1,package2)"},
+                Integer.MAX_VALUE,
+                Strings.LINE_SEPARATOR,
                 Arrays.asList("package1", "package2"));
     }
 
@@ -311,7 +330,10 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testFullAndFilters() {
-        test(new String[] { "full", "filters(packages)" }, Integer.MAX_VALUE, Strings.LINE_SEPARATOR,
+        test(
+                new String[] {"full", "filters(packages)"},
+                Integer.MAX_VALUE,
+                Strings.LINE_SEPARATOR,
                 Collections.singletonList("packages"));
     }
 
@@ -320,7 +342,11 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testNoneAndFilters() {
-        test(new String[] { "none", "filters(packages)" }, 0, Strings.LINE_SEPARATOR, Collections.singletonList("packages"));
+        test(
+                new String[] {"none", "filters(packages)"},
+                0,
+                Strings.LINE_SEPARATOR,
+                Collections.singletonList("packages"));
     }
 
     /**
@@ -328,7 +354,11 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testShortAndFilters() {
-        test(new String[] { "short", "filters(packages)" }, 2, Strings.LINE_SEPARATOR, Collections.singletonList("packages"));
+        test(
+                new String[] {"short", "filters(packages)"},
+                2,
+                Strings.LINE_SEPARATOR,
+                Collections.singletonList("packages"));
     }
 
     /**
@@ -336,7 +366,11 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testDepthAndFilters() {
-        test(new String[] { "10", "filters(packages)" }, 10, Strings.LINE_SEPARATOR, Collections.singletonList("packages"));
+        test(
+                new String[] {"10", "filters(packages)"},
+                10,
+                Strings.LINE_SEPARATOR,
+                Collections.singletonList("packages"));
     }
 
     /**
@@ -344,7 +378,10 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testFullAndSeparatorAndFilter() {
-        test(new String[] { "full", "separator(|)", "filters(packages)" }, Integer.MAX_VALUE, "|",
+        test(
+                new String[] {"full", "separator(|)", "filters(packages)"},
+                Integer.MAX_VALUE,
+                "|",
                 Collections.singletonList("packages"));
     }
 
@@ -353,7 +390,10 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testFullAndSeparatorAndFilters() {
-        test(new String[] { "full", "separator(|)", "filters(package1,package2)" }, Integer.MAX_VALUE, "|",
+        test(
+                new String[] {"full", "separator(|)", "filters(package1,package2)"},
+                Integer.MAX_VALUE,
+                "|",
                 Arrays.asList("package1", "package2"));
     }
 
@@ -362,7 +402,7 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testNoneAndSeparatorAndFilters() {
-        test(new String[] { "none", "separator(|)", "filters(packages)" }, 0, "|", Collections.singletonList("packages"));
+        test(new String[] {"none", "separator(|)", "filters(packages)"}, 0, "|", Collections.singletonList("packages"));
     }
 
     /**
@@ -370,7 +410,11 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testShortAndSeparatorAndFilters() {
-        test(new String[] { "short", "separator(|)", "filters(packages)" }, 2, "|", Collections.singletonList("packages"));
+        test(
+                new String[] {"short", "separator(|)", "filters(packages)"},
+                2,
+                "|",
+                Collections.singletonList("packages"));
     }
 
     /**
@@ -378,7 +422,7 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testDepthAndSeparatorAndFilters() {
-        test(new String[] { "10", "separator(|)", "filters(packages)" }, 10, "|", Collections.singletonList("packages"));
+        test(new String[] {"10", "separator(|)", "filters(packages)"}, 10, "|", Collections.singletonList("packages"));
     }
 
     /**
@@ -386,7 +430,10 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testSingleOptionFullAndFilters() {
-        test(new String[] { "full,filters(packages)" }, Integer.MAX_VALUE, Strings.LINE_SEPARATOR,
+        test(
+                new String[] {"full,filters(packages)"},
+                Integer.MAX_VALUE,
+                Strings.LINE_SEPARATOR,
                 Collections.singletonList("packages"));
     }
 
@@ -395,7 +442,7 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testSingleOptionNoneAndFilters() {
-        test(new String[] { "none,filters(packages)" }, 0, Strings.LINE_SEPARATOR, Collections.singletonList("packages"));
+        test(new String[] {"none,filters(packages)"}, 0, Strings.LINE_SEPARATOR, Collections.singletonList("packages"));
     }
 
     /**
@@ -403,7 +450,11 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testSingleOptionShortAndFilters() {
-        test(new String[] { "short,filters(packages)" }, 2, Strings.LINE_SEPARATOR, Collections.singletonList("packages"));
+        test(
+                new String[] {"short,filters(packages)"},
+                2,
+                Strings.LINE_SEPARATOR,
+                Collections.singletonList("packages"));
     }
 
     /**
@@ -411,7 +462,7 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testSingleOptionDepthAndFilters() {
-        test(new String[] { "10,filters(packages)" }, 10, Strings.LINE_SEPARATOR, Collections.singletonList("packages"));
+        test(new String[] {"10,filters(packages)"}, 10, Strings.LINE_SEPARATOR, Collections.singletonList("packages"));
     }
 
     /**
@@ -419,7 +470,10 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testSingleOptionFullAndMultipleFilters() {
-        test(new String[] { "full,filters(package1,package2)" }, Integer.MAX_VALUE, Strings.LINE_SEPARATOR,
+        test(
+                new String[] {"full,filters(package1,package2)"},
+                Integer.MAX_VALUE,
+                Strings.LINE_SEPARATOR,
                 Arrays.asList("package1", "package2"));
     }
 
@@ -428,7 +482,10 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testSingleOptionNoneAndMultipleFilters() {
-        test(new String[] { "none,filters(package1,package2)" }, 0, Strings.LINE_SEPARATOR,
+        test(
+                new String[] {"none,filters(package1,package2)"},
+                0,
+                Strings.LINE_SEPARATOR,
                 Arrays.asList("package1", "package2"));
     }
 
@@ -437,7 +494,10 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testSingleOptionShortAndMultipleFilters() {
-        test(new String[] { "short,filters(package1,package2)" }, 2, Strings.LINE_SEPARATOR,
+        test(
+                new String[] {"short,filters(package1,package2)"},
+                2,
+                Strings.LINE_SEPARATOR,
                 Arrays.asList("package1", "package2"));
     }
 
@@ -446,7 +506,10 @@ public final class ThrowableFormatOptionsTest {
      */
     @Test
     public void testSingleOptionDepthAndMultipleFilters() {
-        test(new String[] { "10,filters(package1,package2)" }, 10, Strings.LINE_SEPARATOR,
+        test(
+                new String[] {"10,filters(package1,package2)"},
+                10,
+                Strings.LINE_SEPARATOR,
                 Arrays.asList("package1", "package2"));
     }
 }

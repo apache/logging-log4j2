@@ -16,12 +16,11 @@
  */
 package org.apache.logging.log4j.core.jackson;
 
-import org.apache.logging.log4j.util.Strings;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * <p>
@@ -32,7 +31,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
  * an element/property name would mean that you cannot have a generic JSON/XML schema for all log event.
  * </p>
  */
-@JsonPropertyOrder({ "key", "value" })
+@JsonPropertyOrder({"key", "value"})
 final class MapEntry {
 
     @JsonProperty
@@ -91,7 +90,8 @@ final class MapEntry {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((this.getKey() == null) ? 0 : this.getKey().hashCode());
-        result = prime * result + ((this.getValue() == null) ? 0 : this.getValue().hashCode());
+        result = prime * result
+                + ((this.getValue() == null) ? 0 : this.getValue().hashCode());
         return result;
     }
 

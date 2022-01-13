@@ -18,7 +18,6 @@ package org.apache.logging.log4j.flume.appender;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.flume.Event;
 
 /**

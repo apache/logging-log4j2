@@ -16,18 +16,17 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 /**
  * Exception resolver.
@@ -189,23 +188,18 @@ public class ExceptionResolver implements EventResolver {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private static final EventResolver NULL_RESOLVER =
-            (ignored, jsonGenerator) -> jsonGenerator.writeNull();
+    private static final EventResolver NULL_RESOLVER = (ignored, jsonGenerator) -> jsonGenerator.writeNull();
 
     private final boolean stackTraceEnabled;
 
     private final EventResolver internalResolver;
 
-    ExceptionResolver(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
+    ExceptionResolver(final EventResolverContext context, final TemplateResolverConfig config) {
         this.stackTraceEnabled = context.isStackTraceEnabled();
         this.internalResolver = createInternalResolver(context, config);
     }
 
-    EventResolver createInternalResolver(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
+    EventResolver createInternalResolver(final EventResolverContext context, final TemplateResolverConfig config) {
         final String fieldName = config.getString("field");
         if ("className".equals(fieldName)) {
             return createClassNameResolver();
@@ -242,8 +236,7 @@ public class ExceptionResolver implements EventResolver {
     }
 
     private EventResolver createStackTraceResolver(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
+            final EventResolverContext context, final TemplateResolverConfig config) {
         if (!context.isStackTraceEnabled()) {
             return NULL_RESOLVER;
         }
@@ -253,17 +246,14 @@ public class ExceptionResolver implements EventResolver {
                 : createStackTraceObjectResolver(context, config);
     }
 
-    private static boolean isStackTraceStringified(
-            final TemplateResolverConfig config) {
+    private static boolean isStackTraceStringified(final TemplateResolverConfig config) {
         final Boolean stringifiedOld = config.getBoolean("stringified");
         if (stringifiedOld != null) {
-            LOGGER.warn(
-                    "\"stringified\" flag at the root level of an exception " +
-                            "[root cause] resolver is deprecated in favor of " +
-                            "\"stackTrace.stringified\"");
+            LOGGER.warn("\"stringified\" flag at the root level of an exception "
+                    + "[root cause] resolver is deprecated in favor of "
+                    + "\"stackTrace.stringified\"");
         }
-        final Object stringifiedNew =
-                config.getObject(new String[]{"stackTrace", "stringified"});
+        final Object stringifiedNew = config.getObject(new String[] {"stackTrace", "stringified"});
         if (stringifiedOld == null && stringifiedNew == null) {
             return false;
         } else if (stringifiedNew == null) {
@@ -274,24 +264,16 @@ public class ExceptionResolver implements EventResolver {
     }
 
     private EventResolver createStackTraceStringResolver(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
+            final EventResolverContext context, final TemplateResolverConfig config) {
 
         // Read the configuration.
-        final String truncationSuffix =
-                readTruncationSuffix(context, config);
-        final List<String> truncationPointMatcherStrings =
-                readTruncationPointMatcherStrings(config);
-        final List<String> truncationPointMatcherRegexes =
-                readTruncationPointMatcherRegexes(config);
+        final String truncationSuffix = readTruncationSuffix(context, config);
+        final List<String> truncationPointMatcherStrings = readTruncationPointMatcherStrings(config);
+        final List<String> truncationPointMatcherRegexes = readTruncationPointMatcherRegexes(config);
 
         // Create the resolver.
-        final StackTraceStringResolver resolver =
-                new StackTraceStringResolver(
-                        context,
-                        truncationSuffix,
-                        truncationPointMatcherStrings,
-                        truncationPointMatcherRegexes);
+        final StackTraceStringResolver resolver = new StackTraceStringResolver(
+                context, truncationSuffix, truncationPointMatcherStrings, truncationPointMatcherRegexes);
 
         // Create the null-protected resolver.
         return (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
@@ -302,37 +284,28 @@ public class ExceptionResolver implements EventResolver {
                 resolver.resolve(exception, jsonWriter);
             }
         };
-
     }
 
     private static String readTruncationSuffix(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
-        final String suffix = config.getString(
-                new String[]{"stackTrace", "stringified", "truncation", "suffix"});
-        return suffix != null
-                ? suffix
-                : context.getTruncatedStringSuffix();
+            final EventResolverContext context, final TemplateResolverConfig config) {
+        final String suffix = config.getString(new String[] {"stackTrace", "stringified", "truncation", "suffix"});
+        return suffix != null ? suffix : context.getTruncatedStringSuffix();
     }
 
-    private static List<String> readTruncationPointMatcherStrings(
-            final TemplateResolverConfig config) {
+    private static List<String> readTruncationPointMatcherStrings(final TemplateResolverConfig config) {
         List<String> strings = config.getList(
-                new String[]{"stackTrace", "stringified", "truncation", "pointMatcherStrings"},
-                String.class);
+                new String[] {"stackTrace", "stringified", "truncation", "pointMatcherStrings"}, String.class);
         if (strings == null) {
             strings = Collections.emptyList();
         }
         return strings;
     }
 
-    private static List<String> readTruncationPointMatcherRegexes(
-            final TemplateResolverConfig config) {
+    private static List<String> readTruncationPointMatcherRegexes(final TemplateResolverConfig config) {
 
         // Extract the regexes.
         List<String> regexes = config.getList(
-                new String[]{"stackTrace", "stringified", "truncation", "pointMatcherRegexes"},
-                String.class);
+                new String[] {"stackTrace", "stringified", "truncation", "pointMatcherRegexes"}, String.class);
         if (regexes == null) {
             regexes = Collections.emptyList();
         }
@@ -343,16 +316,14 @@ public class ExceptionResolver implements EventResolver {
             try {
                 Pattern.compile(regex);
             } catch (final PatternSyntaxException error) {
-                final String message = String.format(
-                        "invalid truncation point matcher regex at index %d: %s",
-                        i, regex);
+                final String message =
+                        String.format("invalid truncation point matcher regex at index %d: %s", i, regex);
                 throw new IllegalArgumentException(message, error);
             }
         }
 
         // Return the extracted regexes.
         return regexes;
-
     }
 
     private static final Map<String, StackTraceElementResolverFactory> STACK_TRACE_ELEMENT_RESOLVER_FACTORY_BY_NAME;
@@ -361,18 +332,14 @@ public class ExceptionResolver implements EventResolver {
         final StackTraceElementResolverFactory stackTraceElementResolverFactory =
                 StackTraceElementResolverFactory.getInstance();
         STACK_TRACE_ELEMENT_RESOLVER_FACTORY_BY_NAME =
-                Collections.singletonMap(
-                        stackTraceElementResolverFactory.getName(),
-                        stackTraceElementResolverFactory);
+                Collections.singletonMap(stackTraceElementResolverFactory.getName(), stackTraceElementResolverFactory);
     }
 
     private EventResolver createStackTraceObjectResolver(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
+            final EventResolverContext context, final TemplateResolverConfig config) {
         final TemplateResolver<StackTraceElement> stackTraceElementResolver =
                 createStackTraceElementResolver(context, config);
-        final StackTraceObjectResolver stackTraceResolver =
-                new StackTraceObjectResolver(stackTraceElementResolver);
+        final StackTraceObjectResolver stackTraceResolver = new StackTraceObjectResolver(stackTraceElementResolver);
         return (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
             final Throwable throwable = extractThrowable(logEvent);
             if (throwable == null) {
@@ -384,32 +351,24 @@ public class ExceptionResolver implements EventResolver {
     }
 
     private static TemplateResolver<StackTraceElement> createStackTraceElementResolver(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
-        final StackTraceElementResolverStringSubstitutor substitutor =
-                new StackTraceElementResolverStringSubstitutor(
-                        context.getSubstitutor().getInternalSubstitutor());
+            final EventResolverContext context, final TemplateResolverConfig config) {
+        final StackTraceElementResolverStringSubstitutor substitutor = new StackTraceElementResolverStringSubstitutor(
+                context.getSubstitutor().getInternalSubstitutor());
         final StackTraceElementResolverContext stackTraceElementResolverContext =
-                StackTraceElementResolverContext
-                        .newBuilder()
+                StackTraceElementResolverContext.newBuilder()
                         .setResolverFactoryByName(STACK_TRACE_ELEMENT_RESOLVER_FACTORY_BY_NAME)
                         .setSubstitutor(substitutor)
                         .setJsonWriter(context.getJsonWriter())
                         .build();
-        final String stackTraceElementTemplate =
-                findEffectiveStackTraceElementTemplate(context, config);
-        return TemplateResolvers.ofTemplate(
-                stackTraceElementResolverContext,
-                stackTraceElementTemplate);
+        final String stackTraceElementTemplate = findEffectiveStackTraceElementTemplate(context, config);
+        return TemplateResolvers.ofTemplate(stackTraceElementResolverContext, stackTraceElementTemplate);
     }
 
     private static String findEffectiveStackTraceElementTemplate(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
+            final EventResolverContext context, final TemplateResolverConfig config) {
 
         // First, check the template configured in the resolver configuration.
-        final Object stackTraceElementTemplateObject =
-                config.getObject(new String[]{"stackTrace", "elementTemplate"});
+        final Object stackTraceElementTemplateObject = config.getObject(new String[] {"stackTrace", "elementTemplate"});
         if (stackTraceElementTemplateObject != null) {
             final JsonWriter jsonWriter = context.getJsonWriter();
             return jsonWriter.use(() -> jsonWriter.writeValue(stackTraceElementTemplateObject));
@@ -417,7 +376,6 @@ public class ExceptionResolver implements EventResolver {
 
         // Otherwise, use the template provided in the context.
         return context.getStackTraceElementTemplate();
-
     }
 
     Throwable extractThrowable(final LogEvent logEvent) {
@@ -439,10 +397,7 @@ public class ExceptionResolver implements EventResolver {
     }
 
     @Override
-    public void resolve(
-            final LogEvent logEvent,
-            final JsonWriter jsonWriter) {
+    public void resolve(final LogEvent logEvent, final JsonWriter jsonWriter) {
         internalResolver.resolve(logEvent, jsonWriter);
     }
-
 }

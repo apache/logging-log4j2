@@ -66,8 +66,9 @@ public class AsyncQueueFullPolicyFactory {
      */
     public static AsyncQueueFullPolicy create() {
         final String router = PropertiesUtil.getProperties().getStringProperty(PROPERTY_NAME_ASYNC_EVENT_ROUTER);
-        if (router == null || isRouterSelected(
-                router, DefaultAsyncQueueFullPolicy.class, PROPERTY_VALUE_DEFAULT_ASYNC_EVENT_ROUTER)) {
+        if (router == null
+                || isRouterSelected(
+                        router, DefaultAsyncQueueFullPolicy.class, PROPERTY_VALUE_DEFAULT_ASYNC_EVENT_ROUTER)) {
             return new DefaultAsyncQueueFullPolicy();
         }
         if (isRouterSelected(
@@ -78,21 +79,23 @@ public class AsyncQueueFullPolicyFactory {
     }
 
     private static boolean isRouterSelected(
-            String propertyValue,
-            Class<? extends AsyncQueueFullPolicy> policy,
-            String shortPropertyValue) {
-        return propertyValue != null && (shortPropertyValue.equalsIgnoreCase(propertyValue)
-                || policy.getName().equals(propertyValue)
-                || policy.getSimpleName().equals(propertyValue));
+            String propertyValue, Class<? extends AsyncQueueFullPolicy> policy, String shortPropertyValue) {
+        return propertyValue != null
+                && (shortPropertyValue.equalsIgnoreCase(propertyValue)
+                        || policy.getName().equals(propertyValue)
+                        || policy.getSimpleName().equals(propertyValue));
     }
 
     private static AsyncQueueFullPolicy createCustomRouter(final String router) {
         try {
-            final Class<? extends AsyncQueueFullPolicy> cls = Loader.loadClass(router).asSubclass(AsyncQueueFullPolicy.class);
+            final Class<? extends AsyncQueueFullPolicy> cls =
+                    Loader.loadClass(router).asSubclass(AsyncQueueFullPolicy.class);
             LOGGER.debug("Creating custom AsyncQueueFullPolicy '{}'", router);
             return cls.newInstance();
         } catch (final Exception ex) {
-            LOGGER.debug("Using DefaultAsyncQueueFullPolicy. Could not create custom AsyncQueueFullPolicy '{}': {}", router,
+            LOGGER.debug(
+                    "Using DefaultAsyncQueueFullPolicy. Could not create custom AsyncQueueFullPolicy '{}': {}",
+                    router,
                     ex.toString());
             return new DefaultAsyncQueueFullPolicy();
         }

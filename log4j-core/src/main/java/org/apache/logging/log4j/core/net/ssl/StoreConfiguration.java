@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.net.ssl;
 
 import java.util.Arrays;
 import java.util.Objects;
-
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**

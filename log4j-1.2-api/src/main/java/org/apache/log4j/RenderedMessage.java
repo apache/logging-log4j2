@@ -33,7 +33,6 @@ public class RenderedMessage implements Message {
         this.object = object;
     }
 
-
     @Override
     public String getFormattedMessage() {
         if (rendered == null) {

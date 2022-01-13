@@ -16,10 +16,9 @@
  */
 package org.apache.logging.log4j.core.time;
 
+import java.io.Serializable;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.util.PerformanceSensitive;
-
-import java.io.Serializable;
 
 // This class is here to allow {@link SystemClock}, {@link SystemMillisClock}
 // to compile. It will not be copied into the log4j-core module.
@@ -64,7 +63,8 @@ public class MutableInstant implements Instant, Serializable {
     @Override
     public int getNanoOfMillisecond() {
         final int millis = nanoOfSecond / NANOS_PER_MILLI;
-        int nanoOfMillisecond = nanoOfSecond - (millis * NANOS_PER_MILLI); // cheaper than nanoOfSecond % NANOS_PER_MILLI
+        int nanoOfMillisecond =
+                nanoOfSecond - (millis * NANOS_PER_MILLI); // cheaper than nanoOfSecond % NANOS_PER_MILLI
         return nanoOfMillisecond;
     }
 
@@ -81,7 +81,8 @@ public class MutableInstant implements Instant, Serializable {
     public void initFromEpochMilli(final long epochMilli, final int nanoOfMillisecond) {
         validateNanoOfMillisecond(nanoOfMillisecond);
         this.epochSecond = epochMilli / MILLIS_PER_SECOND;
-        this.nanoOfSecond = (int) (epochMilli - (epochSecond * MILLIS_PER_SECOND)) * NANOS_PER_MILLI + nanoOfMillisecond;
+        this.nanoOfSecond =
+                (int) (epochMilli - (epochSecond * MILLIS_PER_SECOND)) * NANOS_PER_MILLI + nanoOfMillisecond;
     }
 
     private void validateNanoOfMillisecond(final int nanoOfMillisecond) {

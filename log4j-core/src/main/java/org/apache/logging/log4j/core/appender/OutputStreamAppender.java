@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.appender;
 
 import java.io.OutputStream;
 import java.io.Serializable;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
@@ -58,10 +57,15 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
         @Override
         public OutputStreamAppender build() {
             final Layout<? extends Serializable> layout = getLayout();
-            final Layout<? extends Serializable> actualLayout = layout == null ? PatternLayout.createDefaultLayout()
-                    : layout;
-            return new OutputStreamAppender(getName(), actualLayout, getFilter(), getManager(target, follow, actualLayout),
-                    ignoreExceptions, getPropertyArray());
+            final Layout<? extends Serializable> actualLayout =
+                    layout == null ? PatternLayout.createDefaultLayout() : layout;
+            return new OutputStreamAppender(
+                    getName(),
+                    actualLayout,
+                    getFilter(),
+                    getManager(target, follow, actualLayout),
+                    ignoreExceptions,
+                    getPropertyArray());
         }
 
         public B setFollow(final boolean shouldFollow) {
@@ -143,8 +147,13 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
      * @return The ConsoleAppender.
      */
     @PluginFactory
-    public static OutputStreamAppender createAppender(Layout<? extends Serializable> layout, final Filter filter,
-            final OutputStream target, final String name, final boolean follow, final boolean ignore) {
+    public static OutputStreamAppender createAppender(
+            Layout<? extends Serializable> layout,
+            final Filter filter,
+            final OutputStream target,
+            final String name,
+            final boolean follow,
+            final boolean ignore) {
         if (name == null) {
             LOGGER.error("No name provided for OutputStreamAppender");
             return null;
@@ -155,12 +164,12 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
         return new OutputStreamAppender(name, layout, filter, getManager(target, follow, layout), ignore, null);
     }
 
-    private static OutputStreamManager getManager(final OutputStream target, final boolean follow,
-            final Layout<? extends Serializable> layout) {
+    private static OutputStreamManager getManager(
+            final OutputStream target, final boolean follow, final Layout<? extends Serializable> layout) {
         final OutputStream os = target == null ? NullOutputStream.getInstance() : new CloseShieldOutputStream(target);
         final OutputStream targetRef = target == null ? os : target;
-        final String managerName = targetRef.getClass().getName() + "@" + Integer.toHexString(targetRef.hashCode())
-                + '.' + follow;
+        final String managerName =
+                targetRef.getClass().getName() + "@" + Integer.toHexString(targetRef.hashCode()) + '.' + follow;
         return OutputStreamManager.getManager(managerName, new FactoryData(os, managerName, layout), factory);
     }
 
@@ -169,9 +178,13 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
         return new Builder<B>().asBuilder();
     }
 
-    private OutputStreamAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
-            final OutputStreamManager manager, final boolean ignoreExceptions, final Property[] properties) {
+    private OutputStreamAppender(
+            final String name,
+            final Layout<? extends Serializable> layout,
+            final Filter filter,
+            final OutputStreamManager manager,
+            final boolean ignoreExceptions,
+            final Property[] properties) {
         super(name, layout, filter, ignoreExceptions, true, properties, manager);
     }
-
 }

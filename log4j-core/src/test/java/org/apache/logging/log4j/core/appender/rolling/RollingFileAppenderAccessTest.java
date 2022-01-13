@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import java.io.File;
 import java.io.IOException;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -40,8 +39,9 @@ public class RollingFileAppenderAccessTest {
             file.deleteOnExit();
             // @formatter:off
             final RollingFileAppender appender = RollingFileAppender.newBuilder()
-            .withFileName(file.getCanonicalPath())
-            .withFilePattern("FilePattern").setName("Name")
+                    .withFileName(file.getCanonicalPath())
+                    .withFilePattern("FilePattern")
+                    .setName("Name")
                     .withPolicy(OnStartupTriggeringPolicy.createPolicy(1))
                     .setConfiguration(config)
                     .build();
@@ -65,9 +65,22 @@ public class RollingFileAppenderAccessTest {
             final Configuration config = ctx.getConfiguration();
             final File file = File.createTempFile("RollingFileAppenderAccessTest", ".tmp");
             file.deleteOnExit();
-            final RollingFileAppender appender = RollingFileAppender.createAppender(file.getCanonicalPath(),
-                    "FilePattern", null, "Name", null, null, null, OnStartupTriggeringPolicy.createPolicy(1), null,
-                    null, null, null, null, null, config);
+            final RollingFileAppender appender = RollingFileAppender.createAppender(
+                    file.getCanonicalPath(),
+                    "FilePattern",
+                    null,
+                    "Name",
+                    null,
+                    null,
+                    null,
+                    OnStartupTriggeringPolicy.createPolicy(1),
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    config);
             final RollingFileManager manager = appender.getManager();
             // Since the RolloverStrategy and TriggeringPolicy are immutable, we could also use generics to type their
             // access.

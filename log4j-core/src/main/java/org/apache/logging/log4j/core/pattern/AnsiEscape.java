@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
 import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.util.EnglishEnums;
 import org.apache.logging.log4j.util.Strings;
@@ -333,5 +332,4 @@ public enum AnsiEscape {
         sb.append(AnsiEscape.SUFFIX.getCode());
         return sb.toString();
     }
-
 }

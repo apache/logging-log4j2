@@ -22,7 +22,6 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
@@ -85,7 +84,11 @@ public abstract class AbstractManager implements AutoCloseable {
                 MAP.remove(name);
                 LOGGER.debug("Shutting down {} {}", this.getClass().getSimpleName(), getName());
                 stopped = releaseSub(timeout, timeUnit);
-                LOGGER.debug("Shut down {} {}, all resources released: {}", this.getClass().getSimpleName(), getName(), stopped);
+                LOGGER.debug(
+                        "Shut down {} {}, all resources released: {}",
+                        this.getClass().getSimpleName(),
+                        getName(),
+                        stopped);
             }
         } finally {
             LOCK.unlock();
@@ -104,8 +107,8 @@ public abstract class AbstractManager implements AutoCloseable {
      */
     // @SuppressWarnings("resource"): this is a factory method, the resource is allocated and released elsewhere.
     @SuppressWarnings("resource")
-    public static <M extends AbstractManager, T> M getManager(final String name, final ManagerFactory<M, T> factory,
-                                                              final T data) {
+    public static <M extends AbstractManager, T> M getManager(
+            final String name, final ManagerFactory<M, T> factory, final T data) {
         LOCK.lock();
         try {
             @SuppressWarnings("unchecked")
@@ -166,8 +169,8 @@ public abstract class AbstractManager implements AutoCloseable {
             return (M) manager;
         }
         throw new ConfigurationException(
-                "Configuration has multiple incompatible Appenders pointing to the same resource '" +
-                        manager.getName() + "'");
+                "Configuration has multiple incompatible Appenders pointing to the same resource '" + manager.getName()
+                        + "'");
     }
 
     protected static StatusLogger logger() {
@@ -230,8 +233,8 @@ public abstract class AbstractManager implements AutoCloseable {
     }
 
     protected void log(final Level level, final String message, final Throwable throwable) {
-        final Message m = LOGGER.getMessageFactory().newMessage("{} {} {}: {}",
-                getClass().getSimpleName(), getName(), message, throwable);
+        final Message m = LOGGER.getMessageFactory()
+                .newMessage("{} {} {}: {}", getClass().getSimpleName(), getName(), message, throwable);
         LOGGER.log(level, m, throwable);
     }
 
@@ -246,5 +249,4 @@ public abstract class AbstractManager implements AutoCloseable {
     protected void logWarn(final String message, final Throwable throwable) {
         log(Level.WARN, message, throwable);
     }
-
 }

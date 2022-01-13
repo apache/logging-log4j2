@@ -16,18 +16,17 @@
  */
 package org.apache.logging.log4j.core;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.junit.Named;
-import org.apache.logging.log4j.junit.LoggerContextSource;
-import org.apache.logging.log4j.test.ExtendedLevels;
-import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.List;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.apache.logging.log4j.junit.Named;
+import org.apache.logging.log4j.test.ExtendedLevels;
+import org.apache.logging.log4j.test.appender.ListAppender;
+import org.junit.jupiter.api.Test;
 
 @LoggerContextSource("log4j-customLevel.xml")
 public class ExtendedLevelTest {

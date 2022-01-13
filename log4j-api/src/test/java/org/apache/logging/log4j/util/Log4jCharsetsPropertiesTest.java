@@ -17,14 +17,13 @@
 
 package org.apache.logging.log4j.util;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.charset.Charset;
 import java.util.Enumeration;
 import java.util.ResourceBundle;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
 
 public class Log4jCharsetsPropertiesTest {
 
@@ -38,7 +37,8 @@ public class Log4jCharsetsPropertiesTest {
         while (keys.hasMoreElements()) {
             String key = keys.nextElement();
             assertFalse(
-                    Charset.isSupported(key), String.format("The Charset %s is available and should not be mapped", key));
+                    Charset.isSupported(key),
+                    String.format("The Charset %s is available and should not be mapped", key));
             String value = resourceBundle.getString(key);
             assertTrue(
                     Charset.isSupported(value),

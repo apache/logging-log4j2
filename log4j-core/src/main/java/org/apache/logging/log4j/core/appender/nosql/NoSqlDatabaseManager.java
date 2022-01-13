@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.appender.nosql;
 
 import java.io.Serializable;
-
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
@@ -40,7 +39,9 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
 
     private NoSqlConnection<W, ? extends NoSqlObject<W>> connection;
 
-    private NoSqlDatabaseManager(final String name, final int bufferSize,
+    private NoSqlDatabaseManager(
+            final String name,
+            final int bufferSize,
             final NoSqlProvider<NoSqlConnection<W, ? extends NoSqlObject<W>>> provider) {
         super(name, bufferSize);
         this.provider = provider;
@@ -91,7 +92,9 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
     private void setFields(final LogEvent event, final NoSqlObject<W> entity) {
         entity.set("level", event.getLevel());
         entity.set("loggerName", event.getLoggerName());
-        entity.set("message", event.getMessage() == null ? null : event.getMessage().getFormattedMessage());
+        entity.set(
+                "message",
+                event.getMessage() == null ? null : event.getMessage().getFormattedMessage());
 
         final StackTraceElement source = event.getSource();
         if (source == null) {
@@ -175,7 +178,7 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
         // also, all our NoSQL drivers use internal connection pooling and provide clients, not connections.
         // thus, we should not be closing the client until shutdown as NoSQL is very different from SQL.
         // see LOG4J2-591 and LOG4J2-676
-    	return true;
+        return true;
     }
 
     private NoSqlObject<W>[] convertStackTrace(final StackTraceElement[] stackTrace) {
@@ -203,8 +206,8 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
      * @param provider A provider instance which will be used to obtain connections to the chosen NoSQL database.
      * @return a new or existing NoSQL manager as applicable.
      */
-    public static NoSqlDatabaseManager<?> getNoSqlDatabaseManager(final String name, final int bufferSize,
-                                                                  final NoSqlProvider<?> provider) {
+    public static NoSqlDatabaseManager<?> getNoSqlDatabaseManager(
+            final String name, final int bufferSize, final NoSqlProvider<?> provider) {
         return AbstractDatabaseManager.getManager(name, new FactoryData(bufferSize, provider), FACTORY);
     }
 
@@ -223,8 +226,8 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
     /**
      * Creates managers.
      */
-    private static final class NoSQLDatabaseManagerFactory implements
-            ManagerFactory<NoSqlDatabaseManager<?>, FactoryData> {
+    private static final class NoSQLDatabaseManagerFactory
+            implements ManagerFactory<NoSqlDatabaseManager<?>, FactoryData> {
         @Override
         @SuppressWarnings("unchecked")
         public NoSqlDatabaseManager<?> createManager(final String name, final FactoryData data) {

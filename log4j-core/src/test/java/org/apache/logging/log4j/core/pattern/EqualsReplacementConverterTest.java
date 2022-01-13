@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -23,8 +25,6 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class EqualsReplacementConverterTest {
 
@@ -47,24 +47,24 @@ public class EqualsReplacementConverterTest {
 
     @Test
     public void testMarkerReplacementWithMessage() {
-        testReplacement(TEST_MESSAGE, new String[]{"[%marker]", "[]", "%msg"});
+        testReplacement(TEST_MESSAGE, new String[] {"[%marker]", "[]", "%msg"});
     }
 
     private void testReplacement(final String tag, final String expectedValue) {
-        final String[] options = new String[]{"[" + tag + "]", "[]", expectedValue};
+        final String[] options = new String[] {"[" + tag + "]", "[]", expectedValue};
         testReplacement(expectedValue, options);
     }
 
     private void testReplacement(final String expectedValue, final String[] options) {
         final LogEvent event = Log4jLogEvent.newBuilder() //
-            .setLoggerName(EqualsReplacementConverterTest.class.getName()) //
-            .setLevel(Level.DEBUG) //
-            .setMessage(new SimpleMessage(TEST_MESSAGE)) //
-            .build();
+                .setLoggerName(EqualsReplacementConverterTest.class.getName()) //
+                .setLevel(Level.DEBUG) //
+                .setMessage(new SimpleMessage(TEST_MESSAGE)) //
+                .build();
         final StringBuilder sb = new StringBuilder();
         final LoggerContext ctx = LoggerContext.getContext();
-        final EqualsReplacementConverter converter = EqualsReplacementConverter.newInstance(ctx.getConfiguration(),
-            options);
+        final EqualsReplacementConverter converter =
+                EqualsReplacementConverter.newInstance(ctx.getConfiguration(), options);
         assertNotNull(converter);
         converter.format(event, sb);
         assertEquals(expectedValue, sb.toString());
@@ -93,13 +93,13 @@ public class EqualsReplacementConverterTest {
 
     private void testParseSubstitution(final String substitution, final String expected) {
         final LogEvent event = Log4jLogEvent.newBuilder()
-            .setLoggerName(EqualsReplacementConverterTest.class.getName())
-            .setLevel(Level.DEBUG)
-            .setMessage(new SimpleMessage(TEST_MESSAGE))
-            .build();
+                .setLoggerName(EqualsReplacementConverterTest.class.getName())
+                .setLevel(Level.DEBUG)
+                .setMessage(new SimpleMessage(TEST_MESSAGE))
+                .build();
         final LoggerContext ctx = LoggerContext.getContext();
-        final EqualsReplacementConverter converter = EqualsReplacementConverter.newInstance(ctx.getConfiguration(),
-            new String[]{"[%marker]", "[]", substitution});
+        final EqualsReplacementConverter converter = EqualsReplacementConverter.newInstance(
+                ctx.getConfiguration(), new String[] {"[%marker]", "[]", substitution});
 
         final StringBuilder sb = new StringBuilder();
         assertNotNull(converter);

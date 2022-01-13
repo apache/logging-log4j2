@@ -16,21 +16,19 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import com.lmax.disruptor.dsl.Disruptor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 import java.util.concurrent.CountDownLatch;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AsyncAppender;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-
-import com.lmax.disruptor.dsl.Disruptor;
 
 /**
  * Tests queue full scenarios abstract superclass.
@@ -48,9 +46,11 @@ public abstract class QueueFullAbstractTest {
 
     class Unlocker extends Thread {
         final CountDownLatch countDownLatch;
+
         Unlocker(final CountDownLatch countDownLatch) {
             this.countDownLatch = countDownLatch;
         }
+
         @Override
         public void run() {
             try {
@@ -68,6 +68,7 @@ public abstract class QueueFullAbstractTest {
     class DomainObject {
         private final Logger innerLogger = LogManager.getLogger(DomainObject.class);
         final int count;
+
         DomainObject(final int loggingCount) {
             this.count = loggingCount;
         }
@@ -75,9 +76,11 @@ public abstract class QueueFullAbstractTest {
         @Override
         public String toString() {
             for (int i = 0; i < count; i++) {
-                TRACE("DomainObject decrementing unlocker countdown latch before logging. Count was " + unlocker.countDownLatch.getCount());
+                TRACE("DomainObject decrementing unlocker countdown latch before logging. Count was "
+                        + unlocker.countDownLatch.getCount());
                 unlocker.countDownLatch.countDown();
-                TRACE("DomainObject logging message " + i  + ". Remaining capacity=" + asyncRemainingCapacity(innerLogger));
+                TRACE("DomainObject logging message " + i + ". Remaining capacity="
+                        + asyncRemainingCapacity(innerLogger));
                 innerLogger.info("Logging in toString() #" + i);
             }
             return "Who's bad?!";
@@ -99,7 +102,10 @@ public abstract class QueueFullAbstractTest {
         if (logger instanceof AsyncLogger) {
             try {
                 final Field f = field(AsyncLogger.class, "loggerDisruptor");
-                return ((AsyncLoggerDisruptor) f.get(logger)).getDisruptor().getRingBuffer().remainingCapacity();
+                return ((AsyncLoggerDisruptor) f.get(logger))
+                        .getDisruptor()
+                        .getRingBuffer()
+                        .remainingCapacity();
             } catch (final Exception ex) {
                 throw new RuntimeException(ex);
             }
@@ -107,8 +113,12 @@ public abstract class QueueFullAbstractTest {
             final LoggerConfig loggerConfig = ((org.apache.logging.log4j.core.Logger) logger).get();
             if (loggerConfig instanceof AsyncLoggerConfig) {
                 try {
-                    final Object delegate = field(AsyncLoggerConfig.class, "delegate").get(loggerConfig);
-                    return ((Disruptor) field(AsyncLoggerConfigDisruptor.class, "disruptor").get(delegate)).getRingBuffer().remainingCapacity();
+                    final Object delegate =
+                            field(AsyncLoggerConfig.class, "delegate").get(loggerConfig);
+                    return ((Disruptor) field(AsyncLoggerConfigDisruptor.class, "disruptor")
+                                    .get(delegate))
+                            .getRingBuffer()
+                            .remainingCapacity();
                 } catch (final Exception ex) {
                     throw new RuntimeException(ex);
                 }
@@ -121,6 +131,7 @@ public abstract class QueueFullAbstractTest {
         }
         throw new IllegalStateException("Neither Async Loggers nor AsyncAppender are configured");
     }
+
     private static Field field(final Class<?> c, final String name) throws NoSuchFieldException {
         final Field f = c.getDeclaredField(name);
         f.setAccessible(true);

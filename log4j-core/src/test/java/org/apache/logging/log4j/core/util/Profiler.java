@@ -40,15 +40,12 @@ public final class Profiler {
             } catch (final Exception e) {
                 LOGGER.error("Profiler was active, but failed.", e);
             }
-        }
-        catch (final Exception ignored) {
+        } catch (final Exception ignored) {
             // Ignore
         }
-
     }
 
-    private Profiler() {
-    }
+    private Profiler() {}
 
     public static boolean isActive() {
         return profiler != null;
@@ -69,8 +66,7 @@ public final class Profiler {
                 controllerClazz
                         .getMethod("startCPUProfiling", long.class, String.class)
                         .invoke(profiler, cpuSampling(), Strings.EMPTY);
-            }
-            catch (final Exception e) {
+            } catch (final Exception e) {
                 LOGGER.error("Profiler was active, but failed.", e);
             }
         }
@@ -79,14 +75,9 @@ public final class Profiler {
     public static void stop() {
         if (profiler != null) {
             try {
-                controllerClazz
-                        .getMethod("captureSnapshot", long.class)
-                        .invoke(profiler, snapshotWithoutHeap());
-                controllerClazz
-                        .getMethod("stopCPUProfiling")
-                        .invoke(profiler);
-            }
-            catch (final Exception e) {
+                controllerClazz.getMethod("captureSnapshot", long.class).invoke(profiler, snapshotWithoutHeap());
+                controllerClazz.getMethod("stopCPUProfiling").invoke(profiler);
+            } catch (final Exception e) {
                 LOGGER.error("Profiler was active, but failed.", e);
             }
         }

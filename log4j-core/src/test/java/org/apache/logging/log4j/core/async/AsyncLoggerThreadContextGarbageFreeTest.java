@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.async;
 
 import java.util.Arrays;
 import java.util.Collection;
-
 import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -33,10 +32,11 @@ public class AsyncLoggerThreadContextGarbageFreeTest extends AbstractAsyncThread
     @Parameterized.Parameters(name = "{0} {1}")
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-                { ContextImpl.GARBAGE_FREE, Mode.ALL_ASYNC},
-                { ContextImpl.GARBAGE_FREE, Mode.BOTH_ALL_ASYNC_AND_MIXED},
+            {ContextImpl.GARBAGE_FREE, Mode.ALL_ASYNC},
+            {ContextImpl.GARBAGE_FREE, Mode.BOTH_ALL_ASYNC_AND_MIXED},
         });
     }
+
     public AsyncLoggerThreadContextGarbageFreeTest(final ContextImpl contextImpl, final Mode asyncMode) {
         super(contextImpl, asyncMode);
     }

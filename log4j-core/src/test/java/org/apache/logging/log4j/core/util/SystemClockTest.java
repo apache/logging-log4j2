@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 public class SystemClockTest {
 
@@ -42,5 +42,4 @@ public class SystemClockTest {
 
         assertTrue(diff <= 1, "diff too large: " + diff);
     }
-
 }

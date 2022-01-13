@@ -22,7 +22,6 @@ import java.util.MissingResourceException;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.function.Supplier;
-
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**

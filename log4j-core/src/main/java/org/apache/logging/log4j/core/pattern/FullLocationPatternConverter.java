@@ -24,13 +24,12 @@ import org.apache.logging.log4j.core.impl.LocationAware;
  * Format the event's line location information.
  */
 @Plugin(name = "FullLocationPatternConverter", category = PatternConverter.CATEGORY)
-@ConverterKeys({ "l", "location" })
+@ConverterKeys({"l", "location"})
 public final class FullLocationPatternConverter extends LogEventPatternConverter implements LocationAware {
     /**
      * Singleton.
      */
-    private static final FullLocationPatternConverter INSTANCE =
-        new FullLocationPatternConverter();
+    private static final FullLocationPatternConverter INSTANCE = new FullLocationPatternConverter();
 
     /**
      * Private constructor.

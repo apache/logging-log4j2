@@ -67,5 +67,4 @@ public class Log4jThread extends Thread {
     public Log4jThread(final ThreadGroup group, final String name) {
         super(group, toThreadName(name));
     }
-
 }

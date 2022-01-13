@@ -16,8 +16,8 @@
  */
 package org.apache.log4j.xml;
 
-import org.w3c.dom.Element;
 import java.util.Properties;
+import org.w3c.dom.Element;
 
 /**
  * When implemented by an object configured by DOMConfigurator,

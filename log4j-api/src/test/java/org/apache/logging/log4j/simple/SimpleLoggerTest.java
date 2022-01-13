@@ -63,6 +63,6 @@ public class SimpleLoggerTest {
      */
     @Test
     public void testMessageWithShortArray() {
-        logger.error("Logging with a size 1 Object[] {} {}", new Object[] { "only one param" });
+        logger.error("Logging with a size 1 Object[] {} {}", new Object[] {"only one param"});
     }
 }

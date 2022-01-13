@@ -97,5 +97,4 @@ public class MDCFilterBenchmark {
     public void slf4jMDCFilter(final ThreadContextState state) {
         slf4jLogger.info(state.message());
     }
-
 }

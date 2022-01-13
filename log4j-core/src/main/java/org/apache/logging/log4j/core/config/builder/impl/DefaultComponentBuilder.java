@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.builder.api.Component;
@@ -51,8 +50,7 @@ class DefaultComponentBuilder<T extends ComponentBuilder<T>, CB extends Configur
         this(builder, name, type, null);
     }
 
-    public DefaultComponentBuilder(final CB builder, final String name, final String type,
-            final String value) {
+    public DefaultComponentBuilder(final CB builder, final String name, final String type, final String value) {
         this.type = type;
         this.builder = builder;
         this.name = name;
@@ -74,7 +72,6 @@ class DefaultComponentBuilder<T extends ComponentBuilder<T>, CB extends Configur
         return put(key, Integer.toString(value));
     }
 
-
     @Override
     public T addAttribute(final String key, final Level level) {
         return put(key, level.toString());
@@ -84,7 +81,6 @@ class DefaultComponentBuilder<T extends ComponentBuilder<T>, CB extends Configur
     public T addAttribute(final String key, final Object value) {
         return put(key, value.toString());
     }
-
 
     @Override
     public T addAttribute(final String key, final String value) {

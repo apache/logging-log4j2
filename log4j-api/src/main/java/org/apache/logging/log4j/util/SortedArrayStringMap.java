@@ -32,7 +32,6 @@ import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -64,15 +63,18 @@ public class SortedArrayStringMap implements IndexedStringMap {
      * The default initial capacity.
      */
     private static final int DEFAULT_INITIAL_CAPACITY = 4;
+
     private static final long serialVersionUID = -5748905872274478116L;
     private static final int HASHVAL = 31;
 
-    private static final TriConsumer<String, Object, StringMap> PUT_ALL = (key, value, contextData) -> contextData.putValue(key, value);
+    private static final TriConsumer<String, Object, StringMap> PUT_ALL =
+            (key, value, contextData) -> contextData.putValue(key, value);
 
     /**
      * An empty array instance to share when the table is not inflated.
      */
     private static final String[] EMPTY = {};
+
     private static final String FROZEN = "Frozen collection cannot be modified";
 
     private transient String[] keys = EMPTY;
@@ -125,6 +127,7 @@ public class SortedArrayStringMap implements IndexedStringMap {
     // If table == EMPTY_TABLE then this is the initial capacity at which the
     // table will be created when inflated.
     private int threshold;
+
     private boolean immutable;
     private transient boolean iterating;
 
@@ -586,9 +589,10 @@ public class SortedArrayStringMap implements IndexedStringMap {
      * Reconstitute the {@code SortedArrayStringMap} instance from a stream (i.e.,
      * deserialize it).
      */
-    private void readObject(final java.io.ObjectInputStream s)  throws IOException, ClassNotFoundException {
+    private void readObject(final java.io.ObjectInputStream s) throws IOException, ClassNotFoundException {
         if (!(s instanceof FilteredObjectInputStream) && setObjectInputFilter == null) {
-            throw new IllegalArgumentException("readObject requires a FilteredObjectInputStream or an ObjectInputStream that accepts an ObjectInputFilter");
+            throw new IllegalArgumentException(
+                    "readObject requires a FilteredObjectInputStream or an ObjectInputStream that accepts an ObjectInputFilter");
         }
         // Read in the threshold (ignored), and any hidden stuff
         s.defaultReadObject();

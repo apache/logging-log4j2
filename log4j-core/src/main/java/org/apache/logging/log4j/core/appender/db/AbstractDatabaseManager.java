@@ -21,7 +21,6 @@ import java.io.Flushable;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractManager;
@@ -31,7 +30,7 @@ import org.apache.logging.log4j.core.appender.ManagerFactory;
  * Manager that allows database appenders to have their configuration reloaded without losing events.
  */
 public abstract class AbstractDatabaseManager extends AbstractManager implements Flushable {
-    
+
     /**
      * Implementations should extend this class for passing data between the getManager method and the manager factory
      * class.
@@ -82,10 +81,10 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
      * @return a new or existing manager of the specified type and name.
      */
     protected static <M extends AbstractDatabaseManager, T extends AbstractFactoryData> M getManager(
-            final String name, final T data, final ManagerFactory<M, T> factory
-    ) {
+            final String name, final T data, final ManagerFactory<M, T> factory) {
         return AbstractManager.getManager(name, factory, data);
     }
+
     private final ArrayList<LogEvent> buffer;
     private final int bufferSize;
 
@@ -112,7 +111,8 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
      * @param layout the Appender-level layout.
      * @param bufferSize The size of the log event buffer.
      */
-    protected AbstractDatabaseManager(final String name, final int bufferSize, final Layout<? extends Serializable> layout) {
+    protected AbstractDatabaseManager(
+            final String name, final int bufferSize, final Layout<? extends Serializable> layout) {
         super(null, name);
         this.bufferSize = bufferSize;
         this.buffer = new ArrayList<>(bufferSize + 1);
@@ -250,7 +250,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
     public final synchronized void write(final LogEvent event) {
         write(event, null);
     }
-    
+
     /**
      * This method manages buffering and writing of events.
      *

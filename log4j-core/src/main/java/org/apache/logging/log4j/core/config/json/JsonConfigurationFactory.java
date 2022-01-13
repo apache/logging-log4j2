@@ -34,9 +34,9 @@ public class JsonConfigurationFactory extends ConfigurationFactory {
     private static final String[] SUFFIXES = new String[] {".json", ".jsn"};
 
     private static final String[] dependencies = new String[] {
-            "com.fasterxml.jackson.databind.ObjectMapper",
-            "com.fasterxml.jackson.databind.JsonNode",
-            "com.fasterxml.jackson.core.JsonParser"
+        "com.fasterxml.jackson.databind.ObjectMapper",
+        "com.fasterxml.jackson.databind.JsonNode",
+        "com.fasterxml.jackson.core.JsonParser"
     };
 
     private final boolean isActive;
@@ -44,7 +44,9 @@ public class JsonConfigurationFactory extends ConfigurationFactory {
     public JsonConfigurationFactory() {
         for (final String dependency : dependencies) {
             if (!Loader.isClassAvailable(dependency)) {
-                LOGGER.debug("Missing dependencies for Json support, ConfigurationFactory {} is inactive", getClass().getName());
+                LOGGER.debug(
+                        "Missing dependencies for Json support, ConfigurationFactory {} is inactive",
+                        getClass().getName());
                 isActive = false;
                 return;
             }

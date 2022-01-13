@@ -24,7 +24,6 @@ import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.log4j.bridge.FilterWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
 import org.apache.log4j.config.PropertiesConfiguration;
@@ -47,8 +46,7 @@ public class LevelMatchFilterBuilder extends AbstractBuilder implements FilterBu
     private static final String LEVEL = "LevelToMatch";
     private static final String ACCEPT_ON_MATCH = "AcceptOnMatch";
 
-    public LevelMatchFilterBuilder() {
-    }
+    public LevelMatchFilterBuilder() {}
 
     public LevelMatchFilterBuilder(String prefix, Properties props) {
         super(prefix, props);

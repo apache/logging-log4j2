@@ -24,7 +24,6 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.log4j.ListAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -81,7 +80,6 @@ public class AsyncAppenderTest {
         assertTrue("No messages", messages != null && messages.size() > 0);
     }
 
-
     private LoggerContext configure(String configLocation) throws Exception {
         File file = new File(configLocation);
         InputStream is = new FileInputStream(file);
@@ -98,5 +96,4 @@ public class AsyncAppenderTest {
         Configurator.reconfigure(configuration);
         return context;
     }
-
 }

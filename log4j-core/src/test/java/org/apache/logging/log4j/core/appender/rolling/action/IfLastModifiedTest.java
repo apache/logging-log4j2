@@ -17,11 +17,10 @@
 
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import java.nio.file.attribute.FileTime;
-
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.nio.file.attribute.FileTime;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the FileAgeFilter class.
@@ -89,8 +88,8 @@ public class IfLastModifiedTest {
     @Test
     public void testBeforeTreeWalk() {
         final CountingCondition counter = new CountingCondition(true);
-        final IfLastModified filter = IfLastModified.createAgeCondition(Duration.parse("PT33S"), counter, counter,
-                counter);
+        final IfLastModified filter =
+                IfLastModified.createAgeCondition(Duration.parse("PT33S"), counter, counter, counter);
         filter.beforeFileTreeWalk();
         assertEquals(3, counter.getBeforeFileTreeWalkCount());
     }

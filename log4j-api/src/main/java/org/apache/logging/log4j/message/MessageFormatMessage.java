@@ -24,7 +24,6 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.IllegalFormatException;
 import java.util.Locale;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -51,7 +50,7 @@ public class MessageFormatMessage implements Message {
 
     /**
      * Constructs a message.
-     * 
+     *
      * @param locale the locale for this message format
      * @param messagePattern the pattern for this message format
      * @param parameters The objects to format
@@ -69,7 +68,7 @@ public class MessageFormatMessage implements Message {
 
     /**
      * Constructs a message.
-     * 
+     *
      * @param messagePattern the pattern for this message format
      * @param parameters The objects to format
      */
@@ -143,7 +142,6 @@ public class MessageFormatMessage implements Message {
         result = HASHVAL * result + (serializedParameters != null ? Arrays.hashCode(serializedParameters) : 0);
         return result;
     }
-
 
     @Override
     public String toString() {

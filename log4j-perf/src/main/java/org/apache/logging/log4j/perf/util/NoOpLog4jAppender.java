@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.perf.util;
 
 import java.util.concurrent.atomic.AtomicLong;
-
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.LoggingEvent;
 
@@ -33,9 +32,7 @@ public class NoOpLog4jAppender extends AppenderSkeleton {
     }
 
     @Override
-    public void close() {
-
-    }
+    public void close() {}
 
     @Override
     public boolean requiresLayout() {

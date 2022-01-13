@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.util;
 
 import java.util.List;
-
 import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 

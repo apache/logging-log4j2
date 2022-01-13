@@ -16,10 +16,9 @@
  */
 package org.apache.logging.log4j.core.jackson;
 
+import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import org.apache.logging.log4j.core.jackson.Initializers.SetupContextInitializer;
 import org.apache.logging.log4j.core.jackson.Initializers.SimpleModuleInitializer;
-
-import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 
 /**
  * <p>

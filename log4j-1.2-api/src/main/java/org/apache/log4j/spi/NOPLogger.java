@@ -19,7 +19,6 @@ package org.apache.log4j.spi;
 import java.util.Enumeration;
 import java.util.ResourceBundle;
 import java.util.Vector;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -264,5 +263,4 @@ public final class NOPLogger extends Logger {
     public void warn(final Object message, final Throwable t) {
         // NOP
     }
-
 }

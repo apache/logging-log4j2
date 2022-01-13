@@ -20,7 +20,6 @@ package org.apache.logging.log4j.core.util;
 import java.io.File;
 import java.net.URI;
 import java.util.Objects;
-
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 
 /**
@@ -31,8 +30,8 @@ public class Source {
     /**
      * Captures a URI or File.
      */
-
     private final File file;
+
     private final URI uri;
     private final String location;
 

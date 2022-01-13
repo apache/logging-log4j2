@@ -16,21 +16,19 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import java.util.List;
-
-import static org.junit.Assert.assertTrue;
-
 /**
  * Class Description goes here.
  */
 public class PatternVariableResolverTest {
-
 
     private static final String CONFIG = "log4j2-pattern-layout.xml";
     private ListAppender listAppender;

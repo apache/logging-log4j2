@@ -28,14 +28,14 @@ public class SystemPropertiesMain {
 
     /**
      * Prints system properties to the console.
-     * 
+     *
      * @param args
      *            unused
      */
     public static void main(final String[] args) {
         @SuppressWarnings("unchecked")
-        final
-        Enumeration<String> keyEnum = (Enumeration<String>) System.getProperties().propertyNames();
+        final Enumeration<String> keyEnum =
+                (Enumeration<String>) System.getProperties().propertyNames();
         final List<String> list = new ArrayList<>();
         while (keyEnum.hasMoreElements()) {
             list.add(keyEnum.nextElement());

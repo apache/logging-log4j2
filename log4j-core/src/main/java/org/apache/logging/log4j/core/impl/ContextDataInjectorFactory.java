@@ -71,14 +71,17 @@ public class ContextDataInjectorFactory {
             return createDefaultInjector();
         }
         try {
-            final Class<? extends ContextDataInjector> cls = Loader.loadClass(className).asSubclass(
-                    ContextDataInjector.class);
+            final Class<? extends ContextDataInjector> cls =
+                    Loader.loadClass(className).asSubclass(ContextDataInjector.class);
             return cls.newInstance();
         } catch (final Exception dynamicFailed) {
             final ContextDataInjector result = createDefaultInjector();
-            StatusLogger.getLogger().warn(
-                    "Could not create ContextDataInjector for '{}', using default {}: {}",
-                    className, result.getClass().getName(), dynamicFailed);
+            StatusLogger.getLogger()
+                    .warn(
+                            "Could not create ContextDataInjector for '{}', using default {}: {}",
+                            className,
+                            result.getClass().getName(),
+                            dynamicFailed);
             return result;
         }
     }

@@ -22,7 +22,6 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.Locale;
-
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -109,7 +108,6 @@ public class Level extends Priority implements Serializable {
         super(level, levelStr, syslogEquivalent);
     }
 
-
     /**
      * Convert the string passed as argument to a level. If the
      * conversion fails, then this method returns {@link #DEBUG}.
@@ -177,24 +175,24 @@ public class Level extends Priority implements Serializable {
         }
         final String s = sArg.toUpperCase(Locale.ROOT);
         switch (s) {
-        case "ALL":
-            return Level.ALL;
-        case "DEBUG":
-            return Level.DEBUG;
-        case "INFO":
-            return Level.INFO;
-        case "WARN":
-            return Level.WARN;
-        case "ERROR":
-            return Level.ERROR;
-        case "FATAL":
-            return Level.FATAL;
-        case "OFF":
-            return Level.OFF;
-        case "TRACE":
-            return Level.TRACE;
-        default:
-            return defaultLevel;
+            case "ALL":
+                return Level.ALL;
+            case "DEBUG":
+                return Level.DEBUG;
+            case "INFO":
+                return Level.INFO;
+            case "WARN":
+                return Level.WARN;
+            case "ERROR":
+                return Level.ERROR;
+            case "FATAL":
+                return Level.FATAL;
+            case "OFF":
+                return Level.OFF;
+            case "TRACE":
+                return Level.TRACE;
+            default:
+                return defaultLevel;
         }
     }
 
@@ -247,6 +245,4 @@ public class Level extends Priority implements Serializable {
         //
         return this;
     }
-
 }
-

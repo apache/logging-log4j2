@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.impl;
 
 import java.io.Serializable;
 import java.util.Objects;
-
 import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
 import org.apache.logging.log4j.core.pattern.TextRenderer;
 
@@ -106,5 +105,4 @@ public final class ExtendedClassInfo implements Serializable {
         renderOn(sb, PlainTextRenderer.getInstance());
         return sb.toString();
     }
-
 }

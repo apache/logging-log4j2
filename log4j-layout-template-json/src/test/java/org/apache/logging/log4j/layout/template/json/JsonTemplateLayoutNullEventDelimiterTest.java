@@ -16,13 +16,6 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.assertj.core.api.Assertions;
-import org.awaitility.Awaitility;
-import org.junit.jupiter.api.Test;
-
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
@@ -30,6 +23,12 @@ import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.Duration;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.assertj.core.api.Assertions;
+import org.awaitility.Awaitility;
+import org.junit.jupiter.api.Test;
 
 class JsonTemplateLayoutNullEventDelimiterTest {
 
@@ -40,12 +39,8 @@ class JsonTemplateLayoutNullEventDelimiterTest {
         try (final TcpServer server = new TcpServer(0)) {
 
             // Set the configuration.
-            System.setProperty(
-                    "serverPort",
-                    String.valueOf(server.getPort()));
-            System.setProperty(
-                    "log4j.configurationFile",
-                    "nullEventDelimitedJsonTemplateLayoutLogging.xml");
+            System.setProperty("serverPort", String.valueOf(server.getPort()));
+            System.setProperty("log4j.configurationFile", "nullEventDelimitedJsonTemplateLayoutLogging.xml");
 
             // Produce log events.
             final Logger logger = LogManager.getLogger(JsonTemplateLayoutNullEventDelimiterTest.class);
@@ -54,13 +49,12 @@ class JsonTemplateLayoutNullEventDelimiterTest {
 
             // Set the expected bytes.
             final byte[] expectedBytes = {
-                    '"', 'f', 'o', 'o', '"', '\0',
-                    '"', 'b', 'a', 'r', '"', '\0'
+                '"', 'f', 'o', 'o', '"', '\0',
+                '"', 'b', 'a', 'r', '"', '\0'
             };
 
             // Wait for the log events.
-            Awaitility
-                    .await()
+            Awaitility.await()
                     .atMost(Duration.ofSeconds(10))
                     .pollDelay(Duration.ofSeconds(1))
                     .until(() -> server.getTotalReadByteCount() >= expectedBytes.length);
@@ -68,9 +62,7 @@ class JsonTemplateLayoutNullEventDelimiterTest {
             // Verify the received log events.
             final byte[] actualBytes = server.getReceivedBytes();
             Assertions.assertThat(actualBytes).startsWith(expectedBytes);
-
         }
-
     }
 
     private static final class TcpServer extends Thread implements AutoCloseable {
@@ -146,7 +138,5 @@ class JsonTemplateLayoutNullEventDelimiterTest {
                 Thread.currentThread().interrupt();
             }
         }
-
     }
-
 }

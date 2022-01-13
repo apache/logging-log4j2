@@ -16,8 +16,9 @@
  */
 package org.apache.logging.log4j.taglib;
 
-import javax.servlet.jsp.tagext.Tag;
+import static org.junit.Assert.*;
 
+import javax.servlet.jsp.tagext.Tag;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.MarkerManager;
@@ -26,8 +27,6 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.springframework.mock.web.MockPageContext;
-
-import static org.junit.Assert.*;
 
 /**
  *

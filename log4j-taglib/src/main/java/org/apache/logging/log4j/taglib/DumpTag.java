@@ -18,7 +18,6 @@ package org.apache.logging.log4j.taglib;
 
 import java.io.IOException;
 import java.util.Enumeration;
-
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.Tag;

@@ -16,26 +16,28 @@
  */
 package org.apache.logging.log4j.spring.boot;
 
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static org.junit.Assert.assertTrue;
 
 public class Log4j2CloudConfigLoggingSystemTest {
 
     @Test
     public void getStandardConfigLocations() {
         String customLog4j2Location = "classpath:my_custom_log4j2.properties";
-        LoggerContext lc = LogManager.getContext(); // Initialize LogManager to here to prevent a failure trying to initialize it from StatusLogger.
+        LoggerContext lc =
+                LogManager.getContext(); // Initialize LogManager to here to prevent a failure trying to initialize it
+        // from
+        // StatusLogger.
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, customLog4j2Location);
-        Log4j2CloudConfigLoggingSystem cloudLoggingSystem = new Log4j2CloudConfigLoggingSystem(this.getClass().getClassLoader());
+        Log4j2CloudConfigLoggingSystem cloudLoggingSystem =
+                new Log4j2CloudConfigLoggingSystem(this.getClass().getClassLoader());
         List<String> standardConfigLocations = Arrays.asList(cloudLoggingSystem.getStandardConfigLocations());
         assertTrue(standardConfigLocations.contains(customLog4j2Location));
-
     }
 }

@@ -16,6 +16,10 @@
  */
 package org.apache.log4j.builders;
 
+import java.lang.reflect.Constructor;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Properties;
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.builders.appender.AppenderBuilder;
@@ -33,12 +37,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.w3c.dom.Element;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Properties;
-
 /**
  *
  */
@@ -46,7 +44,7 @@ public class BuilderManager {
 
     public static final String CATEGORY = "Log4j Builder";
     private static final Logger LOGGER = StatusLogger.getLogger();
-    private static Class<?>[] CONSTRUCTOR_PARAMS = new Class[] { String.class, Properties.class };
+    private static Class<?>[] CONSTRUCTOR_PARAMS = new Class[] {String.class, Properties.class};
     private final Map<String, PluginType<?>> plugins;
 
     public BuilderManager() {
@@ -68,8 +66,14 @@ public class BuilderManager {
         return null;
     }
 
-    public Appender parseAppender(String name, String className, String prefix, String layoutPrefix,
-            String filterPrefix, Properties props, PropertiesConfiguration config) {
+    public Appender parseAppender(
+            String name,
+            String className,
+            String prefix,
+            String layoutPrefix,
+            String filterPrefix,
+            Properties props,
+            PropertiesConfiguration config) {
         Objects.requireNonNull(plugins, "plugins");
         Objects.requireNonNull(className, "className");
         PluginType<?> plugin = plugins.get(className.toLowerCase());
@@ -118,6 +122,7 @@ public class BuilderManager {
         }
         return null;
     }
+
     public Layout parseLayout(String className, String layoutPrefix, Properties props, PropertiesConfiguration config) {
         PluginType<?> plugin = plugins.get(className.toLowerCase());
         if (plugin != null) {
@@ -141,7 +146,9 @@ public class BuilderManager {
         }
         return null;
     }
-    public RewritePolicy parseRewritePolicy(String className, String policyPrefix, Properties props, PropertiesConfiguration config) {
+
+    public RewritePolicy parseRewritePolicy(
+            String className, String policyPrefix, Properties props, PropertiesConfiguration config) {
         PluginType<?> plugin = plugins.get(className.toLowerCase());
         if (plugin != null) {
             RewritePolicyBuilder builder = createBuilder(plugin, policyPrefix, props);
@@ -157,8 +164,7 @@ public class BuilderManager {
             Class<?> clazz = plugin.getPluginClass();
             if (AbstractBuilder.class.isAssignableFrom(clazz)) {
                 @SuppressWarnings("unchecked")
-                Constructor<T> constructor =
-                        (Constructor<T>) clazz.getConstructor(CONSTRUCTOR_PARAMS);
+                Constructor<T> constructor = (Constructor<T>) clazz.getConstructor(CONSTRUCTOR_PARAMS);
                 return constructor.newInstance(prefix, props);
             }
             @SuppressWarnings("unchecked")
@@ -169,5 +175,4 @@ public class BuilderManager {
             return null;
         }
     }
-
 }

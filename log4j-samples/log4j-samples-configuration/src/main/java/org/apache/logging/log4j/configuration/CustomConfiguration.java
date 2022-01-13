@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.configuration;
 
 import java.io.Serializable;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Layout;
@@ -73,12 +72,11 @@ public class CustomConfiguration extends AbstractConfiguration {
         root.addAppender(appender, null, null);
 
         final String levelName = PropertiesUtil.getProperties().getStringProperty(DEFAULT_LEVEL);
-        final Level level = levelName != null && Level.valueOf(levelName) != null ?
-                Level.valueOf(levelName) : Level.ERROR;
+        final Level level =
+                levelName != null && Level.valueOf(levelName) != null ? Level.valueOf(levelName) : Level.ERROR;
         root.setLevel(level);
     }
 
     @Override
-    protected void doConfigure() {
-    }
+    protected void doConfigure() {}
 }

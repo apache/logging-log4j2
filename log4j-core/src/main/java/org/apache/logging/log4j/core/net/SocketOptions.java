@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.net;
 
 import java.net.Socket;
 import java.net.SocketException;
-
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;

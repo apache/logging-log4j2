@@ -77,7 +77,8 @@ public class Log4jThreadFactory implements ThreadFactory {
         this.daemon = daemon;
         this.priority = priority;
         final SecurityManager securityManager = System.getSecurityManager();
-        this.group = securityManager != null ? securityManager.getThreadGroup()
+        this.group = securityManager != null
+                ? securityManager.getThreadGroup()
                 : Thread.currentThread().getThreadGroup();
     }
 
@@ -93,5 +94,4 @@ public class Log4jThreadFactory implements ThreadFactory {
         }
         return thread;
     }
-
 }

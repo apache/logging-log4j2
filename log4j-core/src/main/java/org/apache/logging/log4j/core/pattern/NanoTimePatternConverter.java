@@ -24,7 +24,7 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  * Converts and formats the event's nanoTime in a StringBuilder.
  */
 @Plugin(name = "NanoTimePatternConverter", category = PatternConverter.CATEGORY)
-@ConverterKeys({ "N", "nano" })
+@ConverterKeys({"N", "nano"})
 @PerformanceSensitive("allocation")
 public final class NanoTimePatternConverter extends LogEventPatternConverter {
 

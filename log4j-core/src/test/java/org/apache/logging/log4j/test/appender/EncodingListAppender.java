@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j.test.appender;
 
+import java.io.Serializable;
+import java.nio.ByteBuffer;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
-
-import java.io.Serializable;
-import java.nio.ByteBuffer;
 
 /**
  * This appender is primarily used for testing. Use in a real environment is discouraged as the
@@ -37,7 +36,12 @@ public class EncodingListAppender extends ListAppender {
         super(name);
     }
 
-    public EncodingListAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout, final boolean newline, final boolean raw) {
+    public EncodingListAppender(
+            final String name,
+            final Filter filter,
+            final Layout<? extends Serializable> layout,
+            final boolean newline,
+            final boolean raw) {
         super(name, filter, layout, newline, raw);
     }
 
@@ -88,5 +92,4 @@ public class EncodingListAppender extends ListAppender {
             write(record);
         }
     }
-
 }

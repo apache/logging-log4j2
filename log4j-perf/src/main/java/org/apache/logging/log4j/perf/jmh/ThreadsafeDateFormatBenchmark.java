@@ -23,9 +23,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-
-import org.apache.logging.log4j.core.util.datetime.FixedDateFormat;
 import org.apache.logging.log4j.core.util.datetime.FastDateFormat;
+import org.apache.logging.log4j.core.util.datetime.FixedDateFormat;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Mode;
@@ -138,17 +137,17 @@ public class ThreadsafeDateFormatBenchmark {
     private final long currentTimestamp = 0;
     private String cachedTime = null;
 
-    private final AtomicReference<CachedTimeFastFormat> cachedTimeFastFmt = new AtomicReference<>(new CachedTimeFastFormat(System.currentTimeMillis()));
-    private final AtomicReference<CachedTimeFixedFmt> cachedTimeFixedFmt = new AtomicReference<>(new CachedTimeFixedFmt(System.currentTimeMillis()));
+    private final AtomicReference<CachedTimeFastFormat> cachedTimeFastFmt =
+            new AtomicReference<>(new CachedTimeFastFormat(System.currentTimeMillis()));
+    private final AtomicReference<CachedTimeFixedFmt> cachedTimeFixedFmt =
+            new AtomicReference<>(new CachedTimeFixedFmt(System.currentTimeMillis()));
 
-    public static void main(final String[] args) {
-    }
+    public static void main(final String[] args) {}
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public void baseline() {
-    }
+    public void baseline() {}
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
@@ -221,7 +220,6 @@ public class ThreadsafeDateFormatBenchmark {
                 return newTime.formatted;
             }
             return cachedTimeFastFmt.get().formatted;
-
         }
         return current.formatted;
     }
@@ -238,7 +236,6 @@ public class ThreadsafeDateFormatBenchmark {
                 return newTime.formatted;
             }
             return cachedTimeFixedFmt.get().formatted;
-
         }
         return current.formatted;
     }

@@ -41,23 +41,20 @@ import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
  */
 public final class ThreadResolver implements EventResolver {
 
-    private static final EventResolver NAME_RESOLVER =
-            (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
-                final String threadName = logEvent.getThreadName();
-                jsonWriter.writeString(threadName);
-            };
+    private static final EventResolver NAME_RESOLVER = (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
+        final String threadName = logEvent.getThreadName();
+        jsonWriter.writeString(threadName);
+    };
 
-    private static final EventResolver ID_RESOLVER =
-            (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
-                final long threadId = logEvent.getThreadId();
-                jsonWriter.writeNumber(threadId);
-            };
+    private static final EventResolver ID_RESOLVER = (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
+        final long threadId = logEvent.getThreadId();
+        jsonWriter.writeNumber(threadId);
+    };
 
-    private static final EventResolver PRIORITY_RESOLVER =
-            (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
-                final int threadPriority = logEvent.getThreadPriority();
-                jsonWriter.writeNumber(threadPriority);
-            };
+    private static final EventResolver PRIORITY_RESOLVER = (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
+        final int threadPriority = logEvent.getThreadPriority();
+        jsonWriter.writeNumber(threadPriority);
+    };
 
     private final EventResolver internalResolver;
 
@@ -65,8 +62,7 @@ public final class ThreadResolver implements EventResolver {
         this.internalResolver = createInternalResolver(config);
     }
 
-    private static EventResolver createInternalResolver(
-            final TemplateResolverConfig config) {
+    private static EventResolver createInternalResolver(final TemplateResolverConfig config) {
         final String fieldName = config.getString("field");
         if ("name".equals(fieldName)) {
             return NAME_RESOLVER;
@@ -83,10 +79,7 @@ public final class ThreadResolver implements EventResolver {
     }
 
     @Override
-    public void resolve(
-            final LogEvent logEvent,
-            final JsonWriter jsonWriter) {
+    public void resolve(final LogEvent logEvent, final JsonWriter jsonWriter) {
         internalResolver.resolve(logEvent, jsonWriter);
     }
-
 }

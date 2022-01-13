@@ -40,8 +40,14 @@ public interface ReliabilityStrategy {
      * @param data The Message.
      * @param t A Throwable or null.
      */
-    void log(Supplier<LoggerConfig> reconfigured, String loggerName, String fqcn, Marker marker, Level level,
-            Message data, Throwable t);
+    void log(
+            Supplier<LoggerConfig> reconfigured,
+            String loggerName,
+            String fqcn,
+            Marker marker,
+            Level level,
+            Message data,
+            Throwable t);
 
     /**
      * Logs an event.
@@ -75,5 +81,4 @@ public interface ReliabilityStrategy {
      * @param configuration the configuration that will be stopped
      */
     void beforeStopConfiguration(Configuration configuration);
-
 }

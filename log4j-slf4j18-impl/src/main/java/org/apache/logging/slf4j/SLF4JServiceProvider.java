@@ -54,6 +54,4 @@ public class SLF4JServiceProvider implements org.slf4j.spi.SLF4JServiceProvider 
         loggerFactory = new Log4jLoggerFactory(markerFactory);
         mdcAdapter = new Log4jMDCAdapter();
     }
-
-
 }

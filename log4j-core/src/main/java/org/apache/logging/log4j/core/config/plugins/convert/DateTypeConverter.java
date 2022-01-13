@@ -35,11 +35,11 @@ public final class DateTypeConverter {
 
     static {
         final MethodHandles.Lookup lookup = MethodHandles.publicLookup();
-        for (final Class<? extends Date> dateClass : Arrays.asList(Date.class, java.sql.Date.class, Time.class,
-            Timestamp.class)) {
+        for (final Class<? extends Date> dateClass :
+                Arrays.asList(Date.class, java.sql.Date.class, Time.class, Timestamp.class)) {
             try {
-                CONSTRUCTORS.put(dateClass,
-                    lookup.findConstructor(dateClass, MethodType.methodType(void.class, long.class)));
+                CONSTRUCTORS.put(
+                        dateClass, lookup.findConstructor(dateClass, MethodType.methodType(void.class, long.class)));
             } catch (final NoSuchMethodException | IllegalAccessException ignored) {
                 // these classes all have this exact constructor
             }
@@ -63,6 +63,5 @@ public final class DateTypeConverter {
         }
     }
 
-    private DateTypeConverter() {
-    }
+    private DateTypeConverter() {}
 }

@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.cassandra;
 
+import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.Session;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.nio.file.Files;
@@ -23,9 +25,6 @@ import java.nio.file.Path;
 import java.security.Permission;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadFactory;
-
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.Session;
 import org.apache.cassandra.service.CassandraDaemon;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.util.Cancellable;
@@ -71,10 +70,12 @@ public class CassandraRule extends ExternalResource {
         System.setProperty("cassandra-foreground", "true"); // prevents Cassandra from closing stdout/stderr
         THREAD_FACTORY.newThread(embeddedCassandra).start();
         latch.await();
-        cluster = Cluster.builder().addContactPoints(InetAddress.getLoopbackAddress()).build();
+        cluster = Cluster.builder()
+                .addContactPoints(InetAddress.getLoopbackAddress())
+                .build();
         try (final Session session = cluster.connect()) {
-            session.execute("CREATE KEYSPACE " + keyspace + " WITH REPLICATION = " +
-                "{ 'class': 'SimpleStrategy', 'replication_factor': 2 };");
+            session.execute("CREATE KEYSPACE " + keyspace + " WITH REPLICATION = "
+                    + "{ 'class': 'SimpleStrategy', 'replication_factor': 2 };");
         }
         try (final Session session = connect()) {
             session.execute(tableDdl);

@@ -21,7 +21,5 @@ package org.apache.logging.log4j.message;
  * be copied into the log4j-api module.
  */
 public class ThreadDumpMessage {
-    public static interface ThreadInfoFactory {
-
-    }
+    public static interface ThreadInfoFactory {}
 }

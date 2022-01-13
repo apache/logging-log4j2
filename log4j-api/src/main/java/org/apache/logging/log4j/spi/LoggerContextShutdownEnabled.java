@@ -25,5 +25,5 @@ public interface LoggerContextShutdownEnabled {
 
     void addShutdownListener(LoggerContextShutdownAware listener);
 
-     List<LoggerContextShutdownAware> getListeners();
+    List<LoggerContextShutdownAware> getListeners();
 }

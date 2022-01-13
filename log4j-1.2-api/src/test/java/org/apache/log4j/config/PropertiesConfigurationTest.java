@@ -23,8 +23,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.lang3.SystemUtils;
 import org.apache.log4j.ListAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -129,7 +127,8 @@ public class PropertiesConfigurationTest {
     public void testSystemProperties() throws Exception {
         final String testPathLocation = "target";
         System.setProperty(TEST_KEY, testPathLocation);
-        try (LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/config-1.2/log4j-FileAppender-with-props.properties")) {
+        try (LoggerContext loggerContext =
+                TestConfigurator.configure("target/test-classes/config-1.2/log4j-FileAppender-with-props.properties")) {
             // [LOG4J2-3312] Bridge does not convert properties.
             final Configuration configuration = loggerContext.getConfiguration();
             assertNotNull(configuration);
@@ -144,5 +143,4 @@ public class PropertiesConfigurationTest {
             System.clearProperty(TEST_KEY);
         }
     }
-
 }

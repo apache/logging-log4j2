@@ -21,7 +21,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.Arrays;
-
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.categories.Appenders;
 import org.apache.logging.log4j.junit.ThreadContextStackRule;
@@ -45,36 +44,30 @@ public class ContextStackJsonAttributeConverterTest {
 
     @Test
     public void testConvert01() {
-        final ThreadContext.ContextStack stack = new MutableThreadContextStack(
-                Arrays.asList("value1", "another2"));
+        final ThreadContext.ContextStack stack = new MutableThreadContextStack(Arrays.asList("value1", "another2"));
 
         final String converted = this.converter.convertToDatabaseColumn(stack);
 
         assertNotNull("The converted value should not be null.", converted);
 
-        final ThreadContext.ContextStack reversed = this.converter
-                .convertToEntityAttribute(converted);
+        final ThreadContext.ContextStack reversed = this.converter.convertToEntityAttribute(converted);
 
         assertNotNull("The reversed value should not be null.", reversed);
-        assertEquals("The reversed value is not correct.", stack.asList(),
-                reversed.asList());
+        assertEquals("The reversed value is not correct.", stack.asList(), reversed.asList());
     }
 
     @Test
     public void testConvert02() {
-        final ThreadContext.ContextStack stack = new MutableThreadContextStack(
-                Arrays.asList("key1", "value2", "my3"));
+        final ThreadContext.ContextStack stack = new MutableThreadContextStack(Arrays.asList("key1", "value2", "my3"));
 
         final String converted = this.converter.convertToDatabaseColumn(stack);
 
         assertNotNull("The converted value should not be null.", converted);
 
-        final ThreadContext.ContextStack reversed = this.converter
-                .convertToEntityAttribute(converted);
+        final ThreadContext.ContextStack reversed = this.converter.convertToEntityAttribute(converted);
 
         assertNotNull("The reversed value should not be null.", reversed);
-        assertEquals("The reversed value is not correct.", stack.asList(),
-                reversed.asList());
+        assertEquals("The reversed value is not correct.", stack.asList(), reversed.asList());
     }
 
     @Test

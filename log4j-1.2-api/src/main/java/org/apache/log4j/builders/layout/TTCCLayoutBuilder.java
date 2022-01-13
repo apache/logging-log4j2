@@ -25,7 +25,6 @@ import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.LayoutWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
@@ -52,8 +51,7 @@ public class TTCCLayoutBuilder extends AbstractBuilder implements LayoutBuilder 
     private static final String DATE_FORMAT_PARAM = "DateFormat";
     private static final String TIMEZONE_FORMAT = "TimeZone";
 
-    public TTCCLayoutBuilder() {
-    }
+    public TTCCLayoutBuilder() {}
 
     public TTCCLayoutBuilder(String prefix, Properties props) {
         super(prefix, props);
@@ -87,8 +85,13 @@ public class TTCCLayoutBuilder extends AbstractBuilder implements LayoutBuilder 
                 }
             }
         });
-        return createLayout(threadPrinting.get(), categoryPrefixing.get(), contextPrinting.get(),
-                dateFormat.get(), timezone.get(), config);
+        return createLayout(
+                threadPrinting.get(),
+                categoryPrefixing.get(),
+                contextPrinting.get(),
+                dateFormat.get(),
+                timezone.get(),
+                config);
     }
 
     @Override
@@ -99,12 +102,16 @@ public class TTCCLayoutBuilder extends AbstractBuilder implements LayoutBuilder 
         String dateFormat = getProperty(DATE_FORMAT_PARAM);
         String timezone = getProperty(TIMEZONE_FORMAT);
 
-        return createLayout(threadPrinting, categoryPrefixing, contextPrinting,
-                dateFormat, timezone, config);
+        return createLayout(threadPrinting, categoryPrefixing, contextPrinting, dateFormat, timezone, config);
     }
 
-    private Layout createLayout(boolean threadPrinting, boolean categoryPrefixing, boolean contextPrinting,
-            String dateFormat, String timezone, Log4j1Configuration config) {
+    private Layout createLayout(
+            boolean threadPrinting,
+            boolean categoryPrefixing,
+            boolean contextPrinting,
+            String dateFormat,
+            String timezone,
+            Log4j1Configuration config) {
         StringBuilder sb = new StringBuilder();
         if (dateFormat != null) {
             if (RELATIVE.equalsIgnoreCase(dateFormat)) {

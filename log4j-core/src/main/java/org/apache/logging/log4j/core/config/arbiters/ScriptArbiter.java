@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.config.arbiters;
 
 import javax.script.SimpleBindings;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -34,8 +33,12 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Condition that evaluates a script.
  */
-@Plugin(name = "ScriptArbiter", category = Node.CATEGORY, elementType = Arbiter.ELEMENT_TYPE,
-        deferChildren = true, printObject = true)
+@Plugin(
+        name = "ScriptArbiter",
+        category = Node.CATEGORY,
+        elementType = Arbiter.ELEMENT_TYPE,
+        deferChildren = true,
+        printObject = true)
 public class ScriptArbiter implements Arbiter {
 
     private final AbstractScript script;

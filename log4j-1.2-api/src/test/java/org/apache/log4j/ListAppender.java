@@ -16,12 +16,11 @@
  */
 package org.apache.log4j;
 
-import org.apache.log4j.spi.LoggingEvent;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import org.apache.log4j.spi.LoggingEvent;
 
 /**
  * Used to test Log4j 1 support.
@@ -32,7 +31,6 @@ public class ListAppender extends AppenderSkeleton {
     final List<LoggingEvent> events = Collections.synchronizedList(new ArrayList<>());
 
     private final List<String> messages = Collections.synchronizedList(new ArrayList<>());
-
 
     private static final String WINDOWS_LINE_SEP = "\r\n";
 
@@ -50,9 +48,7 @@ public class ListAppender extends AppenderSkeleton {
     }
 
     @Override
-    public void close() {
-
-    }
+    public void close() {}
 
     @Override
     public boolean requiresLayout() {
@@ -73,7 +69,8 @@ public class ListAppender extends AppenderSkeleton {
      * Polls the messages list for it to grow to a given minimum size at most timeout timeUnits and return a copy of
      * what we have so far.
      */
-    public List<String> getMessages(final int minSize, final long timeout, final TimeUnit timeUnit) throws InterruptedException {
+    public List<String> getMessages(final int minSize, final long timeout, final TimeUnit timeUnit)
+            throws InterruptedException {
         final long endMillis = System.currentTimeMillis() + timeUnit.toMillis(timeout);
         while (messages.size() < minSize && System.currentTimeMillis() < endMillis) {
             Thread.sleep(100);

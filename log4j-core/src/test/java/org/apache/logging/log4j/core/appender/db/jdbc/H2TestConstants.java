@@ -23,10 +23,9 @@ import org.apache.commons.lang3.SystemUtils;
  */
 public class H2TestConstants {
 
-	public static final String JDBC_DRIVER_CLASS_NAME = "org.h2.Driver";
-	public static final String CONNECTION_STRING = "jdbc:h2:" + SystemUtils.JAVA_IO_TMPDIR
-			+ "/h2/h2_test0;TRACE_LEVEL_SYSTEM_OUT=0";
-	public static final char[] USER = null;
-	public static final char[] PASSWORD = null;
-
+    public static final String JDBC_DRIVER_CLASS_NAME = "org.h2.Driver";
+    public static final String CONNECTION_STRING =
+            "jdbc:h2:" + SystemUtils.JAVA_IO_TMPDIR + "/h2/h2_test0;TRACE_LEVEL_SYSTEM_OUT=0";
+    public static final char[] USER = null;
+    public static final char[] PASSWORD = null;
 }

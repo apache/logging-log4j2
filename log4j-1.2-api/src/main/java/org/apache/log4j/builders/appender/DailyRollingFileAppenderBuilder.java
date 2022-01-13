@@ -29,7 +29,6 @@ import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.AppenderWrapper;
@@ -50,7 +49,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
 
-
 /**
  * Build a Daily Rolling File Appender
  */
@@ -59,13 +57,11 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    public DailyRollingFileAppenderBuilder() {
-    }
+    public DailyRollingFileAppenderBuilder() {}
 
     public DailyRollingFileAppenderBuilder(String prefix, Properties props) {
         super(prefix, props);
     }
-
 
     @Override
     public Appender parseAppender(final Element appenderElement, final XmlConfiguration config) {
@@ -132,13 +128,27 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
                 }
             }
         });
-        return createAppender(name, layout.get(), filter.get(), fileName.get(), append.get(), immediateFlush.get(),
-                level.get(), bufferedIo.get(), bufferSize.get(), config);
+        return createAppender(
+                name,
+                layout.get(),
+                filter.get(),
+                fileName.get(),
+                append.get(),
+                immediateFlush.get(),
+                level.get(),
+                bufferedIo.get(),
+                bufferSize.get(),
+                config);
     }
 
     @Override
-    public Appender parseAppender(final String name, final String appenderPrefix, final String layoutPrefix,
-            final String filterPrefix, final Properties props, final PropertiesConfiguration configuration) {
+    public Appender parseAppender(
+            final String name,
+            final String appenderPrefix,
+            final String layoutPrefix,
+            final String filterPrefix,
+            final Properties props,
+            final PropertiesConfiguration configuration) {
         Layout layout = configuration.parseLayout(layoutPrefix, name, props);
         Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
         String fileName = getProperty(FILE_PARAM);
@@ -147,13 +157,21 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
         boolean immediateFlush = false;
         boolean bufferedIo = getBooleanProperty(BUFFERED_IO_PARAM);
         int bufferSize = Integer.parseInt(getProperty(BUFFER_SIZE_PARAM, "8192"));
-        return createAppender(name, layout, filter, fileName, append, immediateFlush,
-                level, bufferedIo, bufferSize, configuration);
+        return createAppender(
+                name, layout, filter, fileName, append, immediateFlush, level, bufferedIo, bufferSize, configuration);
     }
 
-    private <T extends Log4j1Configuration> Appender createAppender(final String name, final Layout layout,
-            final Filter filter, final String fileName, final boolean append, boolean immediateFlush,
-            final String level, final boolean bufferedIo, final int bufferSize, final T configuration) {
+    private <T extends Log4j1Configuration> Appender createAppender(
+            final String name,
+            final Layout layout,
+            final Filter filter,
+            final String fileName,
+            final boolean append,
+            boolean immediateFlush,
+            final String level,
+            final boolean bufferedIo,
+            final int bufferSize,
+            final T configuration) {
 
         org.apache.logging.log4j.core.Layout<?> fileLayout = null;
         if (bufferedIo) {
@@ -169,8 +187,9 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
             LOGGER.warn("Unable to create File Appender, no file name provided");
             return null;
         }
-        String filePattern = fileName +"%d{yyy-MM-dd}";
-        TriggeringPolicy policy = TimeBasedTriggeringPolicy.newBuilder().withModulate(true).build();
+        String filePattern = fileName + "%d{yyy-MM-dd}";
+        TriggeringPolicy policy =
+                TimeBasedTriggeringPolicy.newBuilder().withModulate(true).build();
         RolloverStrategy strategy = DefaultRolloverStrategy.newBuilder()
                 .withConfig(configuration)
                 .withMax(Integer.toString(Integer.MAX_VALUE))

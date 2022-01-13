@@ -27,8 +27,7 @@ import java.io.Serializable;
  * Utility class to facilitate serializing and deserializing objects.
  */
 public class SerialUtil {
-    private SerialUtil() {
-    }
+    private SerialUtil() {}
 
     /**
      * Serializes the specified object and returns the result as a byte array.
@@ -46,7 +45,7 @@ public class SerialUtil {
             throw new IllegalStateException("Could not serialize", ex);
         }
     }
-    
+
     /**
      * Deserialize an object from the specified byte array and returns the result.
      * @param data byte array representing the serialized object

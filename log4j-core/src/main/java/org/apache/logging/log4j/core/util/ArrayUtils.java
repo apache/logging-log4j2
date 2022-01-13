@@ -34,7 +34,7 @@ public class ArrayUtils {
     public static boolean isEmpty(final byte[] array) {
         return getLength(array) == 0;
     }
-    
+
     /**
      * <p>Returns the length of the specified array.
      * This method can deal with {@code Object} arrays and with primitive arrays.</p>
@@ -131,5 +131,4 @@ public class ArrayUtils {
     public static <T> T[] remove(final T[] array, final int index) {
         return (T[]) remove((Object) array, index);
     }
-
 }

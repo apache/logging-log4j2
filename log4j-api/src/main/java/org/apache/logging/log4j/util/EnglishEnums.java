@@ -20,7 +20,7 @@ import java.util.Locale;
 
 /**
  * <em>Consider this class private.</em>
- * 
+ *
  * <p>
  * Helps convert English Strings to English Enum values.
  * </p>
@@ -31,8 +31,7 @@ import java.util.Locale;
  */
 public final class EnglishEnums {
 
-    private EnglishEnums() {
-    }
+    private EnglishEnums() {}
 
     /**
      * Returns the Result for the given string.
@@ -66,5 +65,4 @@ public final class EnglishEnums {
     public static <T extends Enum<T>> T valueOf(final Class<T> enumType, final String name, final T defaultValue) {
         return name == null ? defaultValue : Enum.valueOf(enumType, name.toUpperCase(Locale.ENGLISH));
     }
-
 }

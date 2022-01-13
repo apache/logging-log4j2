@@ -51,7 +51,6 @@ public class Log4jEventSource extends AbstractSource implements EventDrivenSourc
         LOGGER.info("Log4j Source stopped. Metrics {}", sourceCounter);
     }
 
-
     public void send(final Event event) {
         sourceCounter.incrementAppendReceivedCount();
         sourceCounter.incrementEventReceivedCount();

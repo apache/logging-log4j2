@@ -24,7 +24,6 @@ import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -38,7 +37,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -91,7 +89,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     private String name;
 
     public static void formatXml(final Source source, final Result result)
-        throws TransformerConfigurationException, TransformerFactoryConfigurationError, TransformerException {
+            throws TransformerConfigurationException, TransformerFactoryConfigurationError, TransformerException {
         final Transformer transformer = TransformerFactory.newInstance().newTransformer();
         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", Integer.toString(INDENT.length()));
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
@@ -187,7 +185,8 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             if (source == null) {
                 source = ConfigurationSource.NULL_SOURCE;
             }
-            final Constructor<T> constructor = clazz.getConstructor(LoggerContext.class, ConfigurationSource.class, Component.class);
+            final Constructor<T> constructor =
+                    clazz.getConstructor(LoggerContext.class, ConfigurationSource.class, Component.class);
             configuration = constructor.newInstance(loggerContext, source, root);
             configuration.getRootNode().getAttributes().putAll(root.getAttributes());
             if (name != null) {
@@ -226,7 +225,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     private String formatXml(String xml)
-        throws TransformerConfigurationException, TransformerException, TransformerFactoryConfigurationError {
+            throws TransformerConfigurationException, TransformerException, TransformerFactoryConfigurationError {
         final StringWriter writer = new StringWriter();
         formatXml(new StreamSource(new StringReader(xml)), new StreamResult(writer));
         return writer.toString();
@@ -307,12 +306,15 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     private void writeXmlSection(final XMLStreamWriter xmlWriter, final Component component) throws XMLStreamException {
-        if (!component.getAttributes().isEmpty() || !component.getComponents().isEmpty() || component.getValue() != null) {
+        if (!component.getAttributes().isEmpty()
+                || !component.getComponents().isEmpty()
+                || component.getValue() != null) {
             writeXmlComponent(xmlWriter, component);
         }
     }
 
-    private void writeXmlComponent(final XMLStreamWriter xmlWriter, final Component component) throws XMLStreamException {
+    private void writeXmlComponent(final XMLStreamWriter xmlWriter, final Component component)
+            throws XMLStreamException {
         if (!component.getComponents().isEmpty() || component.getValue() != null) {
             xmlWriter.writeStartElement(component.getPluginType());
             writeXmlAttributes(xmlWriter, component);
@@ -329,8 +331,10 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         }
     }
 
-    private void writeXmlAttributes(final XMLStreamWriter xmlWriter, final Component component) throws XMLStreamException {
-        for (final Map.Entry<String, String> attribute : component.getAttributes().entrySet()) {
+    private void writeXmlAttributes(final XMLStreamWriter xmlWriter, final Component component)
+            throws XMLStreamException {
+        for (final Map.Entry<String, String> attribute :
+                component.getAttributes().entrySet()) {
             xmlWriter.writeAttribute(attribute.getKey(), attribute.getValue());
         }
     }
@@ -339,7 +343,6 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     public ScriptComponentBuilder newScript(final String name, final String language, final String text) {
         return new DefaultScriptComponentBuilder(this, name, language, text);
     }
-
 
     @Override
     public ScriptFileComponentBuilder newScriptFile(final String path) {
@@ -421,7 +424,6 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         return new DefaultRootLoggerComponentBuilder(this, level, "AsyncRoot", includeLocation);
     }
 
-
     @Override
     public <B extends ComponentBuilder<B>> ComponentBuilder<B> newComponent(final String type) {
         return new DefaultComponentBuilder<>(this, type);
@@ -433,8 +435,8 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public <B extends ComponentBuilder<B>> ComponentBuilder<B> newComponent(final String name, final String type,
-                                                                            final String value) {
+    public <B extends ComponentBuilder<B>> ComponentBuilder<B> newComponent(
+            final String name, final String type, final String value) {
         return new DefaultComponentBuilder<>(this, name, type, value);
     }
 
@@ -454,8 +456,8 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     }
 
     @Override
-    public FilterComponentBuilder newFilter(final String type, final Filter.Result onMatch,
-                                            final Filter.Result onMismatch) {
+    public FilterComponentBuilder newFilter(
+            final String type, final Filter.Result onMatch, final Filter.Result onMismatch) {
         return new DefaultFilterComponentBuilder(this, type, onMatch.name(), onMismatch.name());
     }
 
@@ -611,5 +613,4 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         root.getAttributes().put(key, value);
         return this;
     }
-
 }

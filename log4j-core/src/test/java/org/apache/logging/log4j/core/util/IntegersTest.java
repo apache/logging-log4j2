@@ -17,9 +17,9 @@
 
 package org.apache.logging.log4j.core.util;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the Integers class.
@@ -37,5 +37,4 @@ public class IntegersTest {
         final int powerOfTwo = Integers.ceilingNextPowerOfTwo(1024);
         assertEquals(1024, powerOfTwo);
     }
-
 }

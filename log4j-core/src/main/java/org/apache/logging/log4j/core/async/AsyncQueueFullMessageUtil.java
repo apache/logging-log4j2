@@ -34,7 +34,7 @@ public final class AsyncQueueFullMessageUtil {
      */
     public static void logWarningToStatusLogger() {
         StatusLogger.getLogger()
-                .warn("LOG4J2-2031: Log4j2 logged an event out of order to prevent deadlock caused by domain " +
-                        "objects logging from their toString method when the async queue is full");
+                .warn("LOG4J2-2031: Log4j2 logged an event out of order to prevent deadlock caused by domain "
+                        + "objects logging from their toString method when the async queue is full");
     }
 }

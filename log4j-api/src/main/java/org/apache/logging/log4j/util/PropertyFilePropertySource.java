@@ -48,5 +48,4 @@ public class PropertyFilePropertySource extends PropertiesPropertySource {
     public int getPriority() {
         return 0;
     }
-
 }

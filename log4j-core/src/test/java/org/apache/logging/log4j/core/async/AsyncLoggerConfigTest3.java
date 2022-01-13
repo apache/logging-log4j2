@@ -16,10 +16,11 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,15 +32,12 @@ import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.*;
-
 @Category(AsyncLoggers.class)
 public class AsyncLoggerConfigTest3 {
 
     @Test
     public void testNoConcurrentModificationException() throws Exception {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "AsyncLoggerConfigTest2.xml");
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "AsyncLoggerConfigTest2.xml");
         final File file = new File("target", "AsyncLoggerConfigTest2.log");
         assertTrue("Deleted old file before test", !file.exists() || file.delete());
 
@@ -57,10 +55,11 @@ public class AsyncLoggerConfigTest3 {
                 .setLevel(Level.WARN)
                 .setLoggerName(getClass().getName())
                 .setMessage(msg)
-                .setTimeMillis(0).build();
+                .setTimeMillis(0)
+                .build();
 
         for (int i = 0; i < 100; i++) {
-            ((AsyncLoggerConfig)((org.apache.logging.log4j.core.Logger) log).get()).callAppenders(event);
+            ((AsyncLoggerConfig) ((org.apache.logging.log4j.core.Logger) log).get()).callAppenders(event);
             for (int j = 0; j < 3000; j++) {
                 map.remove(String.valueOf(j));
             }

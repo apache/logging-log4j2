@@ -37,5 +37,4 @@ public interface MultiFormatStringBuilderFormattable extends MultiformatMessage,
      * @param buffer the StringBuilder to write into
      */
     void formatTo(String[] formats, StringBuilder buffer);
-
 }

@@ -39,5 +39,4 @@ public class PathConditionTest {
         CountingCondition cc = new CountingCondition(true);
         assertNotSame(cc, PathCondition.copy(cc));
     }
-    
 }

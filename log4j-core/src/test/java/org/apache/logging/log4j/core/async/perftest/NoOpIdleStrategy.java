@@ -31,7 +31,5 @@ class NoOpIdleStrategy implements IdleStrategy {
      * @see IdleStrategy
      */
     @Override
-    public void idle() {
-
-    }
+    public void idle() {}
 }

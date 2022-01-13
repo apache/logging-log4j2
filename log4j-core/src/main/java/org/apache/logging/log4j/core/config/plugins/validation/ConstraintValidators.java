@@ -21,7 +21,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
-
 import org.apache.logging.log4j.core.util.ReflectionUtil;
 
 /**
@@ -31,8 +30,7 @@ import org.apache.logging.log4j.core.util.ReflectionUtil;
  */
 public final class ConstraintValidators {
 
-    private ConstraintValidators() {
-    }
+    private ConstraintValidators() {}
 
     /**
      * Finds all relevant {@link ConstraintValidator} objects from an array of annotations. All validators will be
@@ -42,8 +40,7 @@ public final class ConstraintValidators {
      * @return a collection of ConstraintValidators for the given annotations
      */
     public static Collection<ConstraintValidator<?>> findValidators(final Annotation... annotations) {
-        final Collection<ConstraintValidator<?>> validators =
-            new ArrayList<>();
+        final Collection<ConstraintValidator<?>> validators = new ArrayList<>();
         for (final Annotation annotation : annotations) {
             final Class<? extends Annotation> type = annotation.annotationType();
             if (type.isAnnotationPresent(Constraint.class)) {
@@ -56,14 +53,14 @@ public final class ConstraintValidators {
         return validators;
     }
 
-    private static <A extends Annotation> ConstraintValidator<A> getValidator(final A annotation,
-                                                                              final Class<? extends A> type) {
+    private static <A extends Annotation> ConstraintValidator<A> getValidator(
+            final A annotation, final Class<? extends A> type) {
         final Constraint constraint = type.getAnnotation(Constraint.class);
         final Class<? extends ConstraintValidator<?>> validatorClass = constraint.value();
         if (type.equals(getConstraintValidatorAnnotationType(validatorClass))) {
             @SuppressWarnings("unchecked") // I don't think we could be any more thorough in validation here
-            final ConstraintValidator<A> validator = (ConstraintValidator<A>)
-                ReflectionUtil.instantiate(validatorClass);
+            final ConstraintValidator<A> validator =
+                    (ConstraintValidator<A>) ReflectionUtil.instantiate(validatorClass);
             validator.initialize(annotation);
             return validator;
         }

@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.config;
 
 import java.util.Map;
-
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.net.Advertiser;
 
@@ -43,7 +42,6 @@ public class DefaultAdvertiser implements Advertiser {
      */
     @Override
     public void unadvertise(final Object advertisedObject) {
-        //no-op
+        // no-op
     }
-
 }

@@ -29,7 +29,7 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Requi
 /**
  *
  */
-@Plugin(name="AlwaysFail", category ="Core", elementType=Appender.ELEMENT_TYPE, printObject=true)
+@Plugin(name = "AlwaysFail", category = "Core", elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class AlwaysFailAppender extends AbstractAppender {
 
     private AlwaysFailAppender(final String name) {
@@ -43,8 +43,8 @@ public class AlwaysFailAppender extends AbstractAppender {
 
     @PluginFactory
     public static AlwaysFailAppender createAppender(
-        @PluginAttribute("name") @Required(message = "A name for the Appender must be specified") final String name) {
+            @PluginAttribute("name") @Required(message = "A name for the Appender must be specified")
+                    final String name) {
         return new AlwaysFailAppender(name);
     }
-
 }

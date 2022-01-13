@@ -16,17 +16,17 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class ScriptAppenderSelectorTest {
 
@@ -55,5 +55,4 @@ public class ScriptAppenderSelectorTest {
         logger.error(MarkerManager.getMarker("HEXDUMP"), "DEADBEEF");
         assertThat(listAppender.getEvents(), hasSize(3));
     }
-
 }

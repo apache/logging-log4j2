@@ -23,7 +23,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.charset.Charset;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.util.Closer;
@@ -63,7 +62,7 @@ public class RollingRandomAccessFileManagerHeaderFooterTest {
         }
         Thread.sleep(50);
         final File dir = new File(DIR);
-        assertTrue("Directory not created: " + dir, dir.exists() );
+        assertTrue("Directory not created: " + dir, dir.exists());
         assertTrue("Directory empty: " + dir, dir.listFiles().length > 0);
         final File[] files = dir.listFiles();
         assertNotNull(files);

@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
 import org.apache.logging.log4j.core.pattern.JAnsiTextRenderer;
 import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
 import org.apache.logging.log4j.core.pattern.TextRenderer;
@@ -97,8 +96,12 @@ public final class ThrowableFormatOptions {
      *            The ANSI renderer
      * @param suffix
      */
-    protected ThrowableFormatOptions(final int lines, final String separator, final List<String> ignorePackages,
-            final TextRenderer textRenderer, final String suffix) {
+    protected ThrowableFormatOptions(
+            final int lines,
+            final String separator,
+            final List<String> ignorePackages,
+            final TextRenderer textRenderer,
+            final String suffix) {
         this.lines = lines;
         this.separator = separator == null ? Strings.LINE_SEPARATOR : separator;
         this.ignorePackages = ignorePackages;
@@ -239,9 +242,12 @@ public final class ThrowableFormatOptions {
             final String[] opts = options[0].split(Patterns.COMMA_SEPARATOR, 2);
             final String first = opts[0].trim();
             try (final Scanner scanner = new Scanner(first)) {
-                if (opts.length > 1 && (first.equalsIgnoreCase(FULL) || first.equalsIgnoreCase(SHORT)
-                        || first.equalsIgnoreCase(NONE) || scanner.hasNextInt())) {
-                    options = new String[] { first, opts[1].trim() };
+                if (opts.length > 1
+                        && (first.equalsIgnoreCase(FULL)
+                                || first.equalsIgnoreCase(SHORT)
+                                || first.equalsIgnoreCase(NONE)
+                                || scanner.hasNextInt())) {
+                    options = new String[] {first, opts[1].trim()};
                 }
             }
         }
@@ -274,24 +280,29 @@ public final class ThrowableFormatOptions {
                     }
                 } else if (option.equalsIgnoreCase(NONE)) {
                     lines = 0;
-                } else if (option.equalsIgnoreCase(SHORT) || option.equalsIgnoreCase(CLASS_NAME)
-                        || option.equalsIgnoreCase(METHOD_NAME) || option.equalsIgnoreCase(LINE_NUMBER)
-                        || option.equalsIgnoreCase(FILE_NAME) || option.equalsIgnoreCase(MESSAGE)
+                } else if (option.equalsIgnoreCase(SHORT)
+                        || option.equalsIgnoreCase(CLASS_NAME)
+                        || option.equalsIgnoreCase(METHOD_NAME)
+                        || option.equalsIgnoreCase(LINE_NUMBER)
+                        || option.equalsIgnoreCase(FILE_NAME)
+                        || option.equalsIgnoreCase(MESSAGE)
                         || option.equalsIgnoreCase(LOCALIZED_MESSAGE)) {
                     lines = 2;
                 } else if (option.startsWith("ansi(") && option.endsWith(")") || option.equals("ansi")) {
                     if (Loader.isJansiAvailable()) {
-                        final String styleMapStr = option.equals("ansi") ? Strings.EMPTY
+                        final String styleMapStr = option.equals("ansi")
+                                ? Strings.EMPTY
                                 : option.substring("ansi(".length(), option.length() - 1);
-                        ansiRenderer = new JAnsiTextRenderer(new String[] { null, styleMapStr },
-                                JAnsiTextRenderer.DefaultExceptionStyleMap);
+                        ansiRenderer = new JAnsiTextRenderer(
+                                new String[] {null, styleMapStr}, JAnsiTextRenderer.DefaultExceptionStyleMap);
                     } else {
-                        StatusLogger.getLogger().warn(
-                                "You requested ANSI exception rendering but JANSI is not on the classpath. Please see https://logging.apache.org/log4j/2.x/runtime-dependencies.html");
+                        StatusLogger.getLogger()
+                                .warn(
+                                        "You requested ANSI exception rendering but JANSI is not on the classpath. Please see https://logging.apache.org/log4j/2.x/runtime-dependencies.html");
                     }
-                } else if (option.startsWith("S(") && option.endsWith(")")){
+                } else if (option.startsWith("S(") && option.endsWith(")")) {
                     suffix = option.substring("S(".length(), option.length() - 1);
-                } else if (option.startsWith("suffix(") && option.endsWith(")")){
+                } else if (option.startsWith("suffix(") && option.endsWith(")")) {
                     suffix = option.substring("suffix(".length(), option.length() - 1);
                 } else if (!option.equalsIgnoreCase(FULL)) {
                     lines = Integer.parseInt(option);
@@ -304,5 +315,4 @@ public final class ThrowableFormatOptions {
     public String getSuffix() {
         return suffix;
     }
-
 }

@@ -22,7 +22,6 @@ import java.text.ParseException;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -40,10 +39,9 @@ public final class FileSize {
      * Pattern for string parsing.
      */
     private static final Pattern VALUE_PATTERN =
-        Pattern.compile("([0-9]+([\\.,][0-9]+)?)\\s*(|K|M|G)B?", Pattern.CASE_INSENSITIVE);
+            Pattern.compile("([0-9]+([\\.,][0-9]+)?)\\s*(|K|M|G)B?", Pattern.CASE_INSENSITIVE);
 
-    private FileSize() {
-    }
+    private FileSize() {}
 
     /**
      * Converts a string to a number of bytes. Strings consist of a floating point value followed by
@@ -61,8 +59,9 @@ public final class FileSize {
         if (matcher.matches()) {
             try {
                 // Get double precision value
-                final double value = NumberFormat.getNumberInstance(Locale.ROOT).parse(
-                    matcher.group(1)).doubleValue();
+                final double value = NumberFormat.getNumberInstance(Locale.ROOT)
+                        .parse(matcher.group(1))
+                        .doubleValue();
 
                 // Get units specified
                 final String units = matcher.group(3);
@@ -87,5 +86,4 @@ public final class FileSize {
         LOGGER.error("FileSize unable to parse bytes: " + string);
         return defaultValue;
     }
-
 }

@@ -35,7 +35,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.logging.log4j.core.config.plugins.util.PluginRegistry.PluginTest;
 import org.apache.logging.log4j.junit.CleanFolders;
 import org.junit.Rule;
@@ -54,7 +53,8 @@ public class ResolverUtilTest {
 
     @Test
     public void testExtractPathFromJarUrl() throws Exception {
-        final URL url = new URL("jar:file:/C:/Users/me/.m2/repository/junit/junit/4.11/junit-4.11.jar!/org/junit/Test.class");
+        final URL url =
+                new URL("jar:file:/C:/Users/me/.m2/repository/junit/junit/4.11/junit-4.11.jar!/org/junit/Test.class");
         final String expected = "/C:/Users/me/.m2/repository/junit/junit/4.11/junit-4.11.jar";
         assertEquals(expected, new ResolverUtil().extractPath(url));
     }
@@ -128,7 +128,8 @@ public class ResolverUtilTest {
 
     @Test
     public void testExtractPathFromHttpsComplexUrl() throws Exception {
-        final URL url = new URL("https://issues.apache.org/jira/browse/LOG4J2-445?focusedCommentId=13862479&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-13862479");
+        final URL url = new URL(
+                "https://issues.apache.org/jira/browse/LOG4J2-445?focusedCommentId=13862479&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-13862479");
         final String expected = "/jira/browse/LOG4J2-445";
         assertEquals(expected, new ResolverUtil().extractPath(url));
     }
@@ -142,7 +143,8 @@ public class ResolverUtilTest {
 
     @Test
     public void testExtractPathFromFtpUrlWithPlusCharacters() throws Exception {
-        final URL url = new URL("ftp://user001:secretpassword@private.ftp-servers.example.com/my+directory/my+file.txt");
+        final URL url =
+                new URL("ftp://user001:secretpassword@private.ftp-servers.example.com/my+directory/my+file.txt");
         final String expected = "/my directory/my file.txt";
         assertEquals(expected, new ResolverUtil().extractPath(url));
     }
@@ -153,8 +155,11 @@ public class ResolverUtilTest {
             final ResolverUtil resolverUtil = new ResolverUtil();
             resolverUtil.setClassLoader(cl);
             resolverUtil.findInPackage(new PluginTest(), "customplugin1");
-            assertEquals("Class not found in packages", 1, resolverUtil.getClasses().size());
-            assertEquals("Unexpected class resolved", cl.loadClass("customplugin1.FixedString1Layout"),
+            assertEquals(
+                    "Class not found in packages", 1, resolverUtil.getClasses().size());
+            assertEquals(
+                    "Unexpected class resolved",
+                    cl.loadClass("customplugin1.FixedString1Layout"),
                     resolverUtil.getClasses().iterator().next());
         }
     }
@@ -165,8 +170,11 @@ public class ResolverUtilTest {
             final ResolverUtil resolverUtil = new ResolverUtil();
             resolverUtil.setClassLoader(cl);
             resolverUtil.findInPackage(new PluginTest(), "customplugin2");
-            assertEquals("Class not found in packages", 1, resolverUtil.getClasses().size());
-            assertEquals("Unexpected class resolved", cl.loadClass("customplugin2.FixedString2Layout"),
+            assertEquals(
+                    "Class not found in packages", 1, resolverUtil.getClasses().size());
+            assertEquals(
+                    "Unexpected class resolved",
+                    cl.loadClass("customplugin2.FixedString2Layout"),
                     resolverUtil.getClasses().iterator().next());
         }
     }
@@ -175,8 +183,8 @@ public class ResolverUtilTest {
         final File workDir = compile(suffix);
         final File jarFile = new File(workDir, "customplugin" + suffix + ".jar");
         final URI jarURI = jarFile.toURI();
-        createJar(jarURI, workDir, new File(workDir,
-              "customplugin" + suffix + "/FixedString" + suffix + "Layout.class"));
+        createJar(
+                jarURI, workDir, new File(workDir, "customplugin" + suffix + "/FixedString" + suffix + "Layout.class"));
         return URLClassLoader.newInstance(new URL[] {jarURI.toURL()});
     }
 
@@ -191,12 +199,14 @@ public class ResolverUtilTest {
         final File f = new File(workDir, "customplugin" + suffix + "/FixedString" + suffix + "Layout.java");
         final File parent = f.getParentFile();
         if (!parent.exists()) {
-          assertTrue("Create customplugin" + suffix + " folder KO", f.getParentFile().mkdirs());
+            assertTrue(
+                    "Create customplugin" + suffix + " folder KO",
+                    f.getParentFile().mkdirs());
         }
 
         final String content = new String(Files.readAllBytes(orig.toPath()))
-          .replaceAll("FixedString", "FixedString" + suffix)
-          .replaceAll("customplugin", "customplugin" + suffix);
+                .replaceAll("FixedString", "FixedString" + suffix)
+                .replaceAll("customplugin", "customplugin" + suffix);
         Files.write(f.toPath(), content.getBytes());
 
         PluginManagerPackagesTest.compile(f);
@@ -208,14 +218,12 @@ public class ResolverUtilTest {
         env.put("create", "true");
         final URI uri = URI.create("jar:file://" + jarURI.getRawPath());
         try (FileSystem zipfs = FileSystems.newFileSystem(uri, env)) {
-            final Path path = zipfs.getPath(workDir.toPath().relativize(f.toPath()).toString());
+            final Path path =
+                    zipfs.getPath(workDir.toPath().relativize(f.toPath()).toString());
             if (path.getParent() != null) {
                 Files.createDirectories(path.getParent());
             }
-            Files.copy(f.toPath(),
-                   path,
-                   StandardCopyOption.REPLACE_EXISTING );
+            Files.copy(f.toPath(), path, StandardCopyOption.REPLACE_EXISTING);
         }
     }
-
 }

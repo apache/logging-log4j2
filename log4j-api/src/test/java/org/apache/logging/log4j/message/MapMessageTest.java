@@ -16,18 +16,17 @@
  */
 package org.apache.logging.log4j.message;
 
-import com.google.common.base.Strings;
-import org.apache.logging.log4j.util.StringBuilderFormattable;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
+import com.google.common.base.Strings;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.apache.logging.log4j.util.StringBuilderFormattable;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -48,9 +47,8 @@ public class MapMessageTest {
     @Test
     public void testBuilder() {
         final String testMsg = "Test message {}";
-        final StringMapMessage msg = new StringMapMessage()
-                .with("message", testMsg)
-                .with("project", "Log4j");
+        final StringMapMessage msg =
+                new StringMapMessage().with("message", testMsg).with("project", "Log4j");
         final String result = msg.getFormattedMessage();
         final String expected = "message=\"Test message {}\" project=\"Log4j\"";
         assertEquals(expected, result);
@@ -62,10 +60,9 @@ public class MapMessageTest {
         final StringMapMessage msg = new StringMapMessage();
         msg.put("message", testMsg);
         msg.put("project", "Log4j");
-        final String result = msg.getFormattedMessage(new String[]{"XML"});
-        final String expected = "<Map>\n  <Entry key=\"message\">Test message {}</Entry>\n" +
-            "  <Entry key=\"project\">Log4j</Entry>\n" +
-            "</Map>";
+        final String result = msg.getFormattedMessage(new String[] {"XML"});
+        final String expected = "<Map>\n  <Entry key=\"message\">Test message {}</Entry>\n"
+                + "  <Entry key=\"project\">Log4j</Entry>\n" + "</Map>";
         assertEquals(expected, result);
     }
 
@@ -74,9 +71,8 @@ public class MapMessageTest {
         final String testMsg = "Test message <foo>";
         final StringMapMessage msg = new StringMapMessage();
         msg.put("message", testMsg);
-        final String result = msg.getFormattedMessage(new String[]{"XML"});
-        final String expected = "<Map>\n  <Entry key=\"message\">Test message &lt;foo&gt;</Entry>\n" +
-                "</Map>";
+        final String result = msg.getFormattedMessage(new String[] {"XML"});
+        final String expected = "<Map>\n  <Entry key=\"message\">Test message &lt;foo&gt;</Entry>\n" + "</Map>";
         assertEquals(expected, result);
     }
 
@@ -86,7 +82,7 @@ public class MapMessageTest {
         final StringMapMessage msg = new StringMapMessage();
         msg.put("message", testMsg);
         msg.put("project", "Log4j");
-        final String result = msg.getFormattedMessage(new String[]{"JSON"});
+        final String result = msg.getFormattedMessage(new String[] {"JSON"});
         final String expected = "{'message':'Test message {}','project':'Log4j'}".replace('\'', '"');
         assertEquals(expected, result);
     }
@@ -96,7 +92,7 @@ public class MapMessageTest {
         final String testMsg = "Test message \"Hello, World!\"";
         final StringMapMessage msg = new StringMapMessage();
         msg.put("message", testMsg);
-        final String result = msg.getFormattedMessage(new String[]{"JSON"});
+        final String result = msg.getFormattedMessage(new String[] {"JSON"});
         final String expected = "{\"message\":\"Test message \\\"Hello, World!\\\"\"}";
         assertEquals(expected, result);
     }
@@ -106,9 +102,8 @@ public class MapMessageTest {
         final String testMsg = "hello\tworld\r\nhh\bere is it\f";
         final StringMapMessage msg = new StringMapMessage();
         msg.put("one\ntwo", testMsg);
-        final String result = msg.getFormattedMessage(new String[]{"JSON"});
-        final String expected =
-                "{\"one\\ntwo\":\"hello\\tworld\\r\\nhh\\bere is it\\f\"}";
+        final String result = msg.getFormattedMessage(new String[] {"JSON"});
+        final String expected = "{\"one\\ntwo\":\"hello\\tworld\\r\\nhh\\bere is it\\f\"}";
         assertEquals(expected, result);
     }
 
@@ -117,41 +112,45 @@ public class MapMessageTest {
         final String actualJson = new ObjectMapMessage()
                 .with("key1", "val1")
                 .with("key2", Collections.singletonMap("key2.1", "val2.1"))
-                .with("key3", Arrays.asList(
-                        3,
-                        (byte) 127,
-                        4.5D,
-                        4.6F,
-                        Arrays.asList(true, false),
-                        new BigDecimal(30),
-                        Collections.singletonMap("key3.3", "val3.3")))
-                .with("key4", new LinkedHashMap<String, Object>() {{
-                    put("chars", new char[]{'a', 'b', 'c'});
-                    put("booleans", new boolean[]{true, false});
-                    put("bytes", new byte[]{1, 2});
-                    put("shorts", new short[]{3, 4});
-                    put("ints", new int[]{256, 257});
-                    put("longs", new long[]{2147483648L, 2147483649L});
-                    put("floats", new float[]{1.0F, 1.1F});
-                    put("doubles", new double[]{2.0D, 2.1D});
-                    put("objects", new Object[]{"foo", "bar"});
-                }})
-                .getFormattedMessage(new String[]{"JSON"});
-        final String expectedJson = ("{" +
-                "'key1':'val1'," +
-                "'key2':{'key2.1':'val2.1'}," +
-                "'key3':[3,127,4.5,4.6,[true,false],30,{'key3.3':'val3.3'}]," +
-                "'key4':{" +
-                "'chars':['a','b','c']," +
-                "'booleans':[true,false]," +
-                "'bytes':[1,2]," +
-                "'shorts':[3,4]," +
-                "'ints':[256,257]," +
-                "'longs':[2147483648,2147483649]," +
-                "'floats':[1.0,1.1]," +
-                "'doubles':[2.0,2.1]," +
-                "'objects':['foo','bar']" +
-                "}}").replace('\'', '"');
+                .with(
+                        "key3",
+                        Arrays.asList(
+                                3,
+                                (byte) 127,
+                                4.5D,
+                                4.6F,
+                                Arrays.asList(true, false),
+                                new BigDecimal(30),
+                                Collections.singletonMap("key3.3", "val3.3")))
+                .with("key4", new LinkedHashMap<String, Object>() {
+                    {
+                        put("chars", new char[] {'a', 'b', 'c'});
+                        put("booleans", new boolean[] {true, false});
+                        put("bytes", new byte[] {1, 2});
+                        put("shorts", new short[] {3, 4});
+                        put("ints", new int[] {256, 257});
+                        put("longs", new long[] {2147483648L, 2147483649L});
+                        put("floats", new float[] {1.0F, 1.1F});
+                        put("doubles", new double[] {2.0D, 2.1D});
+                        put("objects", new Object[] {"foo", "bar"});
+                    }
+                })
+                .getFormattedMessage(new String[] {"JSON"});
+        final String expectedJson = ("{" + "'key1':'val1',"
+                        + "'key2':{'key2.1':'val2.1'},"
+                        + "'key3':[3,127,4.5,4.6,[true,false],30,{'key3.3':'val3.3'}],"
+                        + "'key4':{"
+                        + "'chars':['a','b','c'],"
+                        + "'booleans':[true,false],"
+                        + "'bytes':[1,2],"
+                        + "'shorts':[3,4],"
+                        + "'ints':[256,257],"
+                        + "'longs':[2147483648,2147483649],"
+                        + "'floats':[1.0,1.1],"
+                        + "'doubles':[2.0,2.1],"
+                        + "'objects':['foo','bar']"
+                        + "}}")
+                .replace('\'', '"');
         assertEquals(expectedJson, actualJson);
     }
 
@@ -160,23 +159,21 @@ public class MapMessageTest {
         final List<Object> recursiveValue = Arrays.asList(1, null);
         // noinspection CollectionAddedToSelf
         recursiveValue.set(1, recursiveValue);
-        assertThrows(IllegalArgumentException.class, () -> new ObjectMapMessage()
-                .with("key", recursiveValue)
-                .getFormattedMessage(new String[]{"JSON"}));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> new ObjectMapMessage().with("key", recursiveValue).getFormattedMessage(new String[] {"JSON"}));
     }
 
     @Test
     public void testJsonFormatterMaxDepthViolation() {
-        assertThrows(IllegalArgumentException.class, () -> testJsonFormatterMaxDepth(MapMessageJsonFormatter.MAX_DEPTH - 1));
+        assertThrows(
+                IllegalArgumentException.class, () -> testJsonFormatterMaxDepth(MapMessageJsonFormatter.MAX_DEPTH - 1));
     }
 
     @Test
     public void testJsonFormatterMaxDepthConformance() {
         int depth = MapMessageJsonFormatter.MAX_DEPTH - 2;
-        String expectedJson = String
-                .format("{'key':%s1%s}",
-                        Strings.repeat("[", depth),
-                        Strings.repeat("]", depth))
+        String expectedJson = String.format("{'key':%s1%s}", Strings.repeat("[", depth), Strings.repeat("]", depth))
                 .replace('\'', '"');
         String actualJson = testJsonFormatterMaxDepth(depth);
         assertEquals(expectedJson, actualJson);
@@ -188,9 +185,7 @@ public class MapMessageTest {
         while (--depth > 0) {
             list = new LinkedList<>(Collections.singletonList(list));
         }
-        return new ObjectMapMessage()
-                .with("key", list)
-                .getFormattedMessage(new String[]{"JSON"});
+        return new ObjectMapMessage().with("key", list).getFormattedMessage(new String[] {"JSON"});
     }
 
     @Test
@@ -199,7 +194,7 @@ public class MapMessageTest {
         final StringMapMessage msg = new StringMapMessage();
         msg.put("message", testMsg);
         msg.put("project", "Log4j");
-        final String result = msg.getFormattedMessage(new String[]{"Java"});
+        final String result = msg.getFormattedMessage(new String[] {"Java"});
         final String expected = "{message=\"Test message {}\", project=\"Log4j\"}";
         assertEquals(expected, result);
     }
@@ -211,13 +206,13 @@ public class MapMessageTest {
         // modify parameter before calling msg.getFormattedMessage
         msg.put("key1", "value1");
         msg.put("key2", "value2");
-        final String result = msg.getFormattedMessage(new String[]{"Java"});
+        final String result = msg.getFormattedMessage(new String[] {"Java"});
         final String expected = "{key1=\"value1\", key2=\"value2\"}";
         assertEquals(expected, result);
 
         // modify parameter after calling msg.getFormattedMessage
         msg.put("key3", "value3");
-        final String result2 = msg.getFormattedMessage(new String[]{"Java"});
+        final String result2 = msg.getFormattedMessage(new String[] {"Java"});
         final String expected2 = "{key1=\"value1\", key2=\"value2\", key3=\"value3\"}";
         assertEquals(expected2, result2);
     }
@@ -225,67 +220,60 @@ public class MapMessageTest {
     @Test
     public void testGetNonStringValue() {
         final String key = "Key";
-        final ObjectMapMessage msg = new ObjectMapMessage()
-                .with(key, 1L);
+        final ObjectMapMessage msg = new ObjectMapMessage().with(key, 1L);
         assertEquals("1", msg.get(key));
     }
 
     @Test
     public void testRemoveNonStringValue() {
         final String key = "Key";
-        final ObjectMapMessage msg = new ObjectMapMessage()
-                .with(key, 1L);
+        final ObjectMapMessage msg = new ObjectMapMessage().with(key, 1L);
         assertEquals("1", msg.remove(key));
     }
 
     @Test
     public void testJSONFormatNonStringValue() {
         final ObjectMapMessage msg = new ObjectMapMessage().with("key", 1L);
-        final String result = msg.getFormattedMessage(new String[]{"JSON"});
+        final String result = msg.getFormattedMessage(new String[] {"JSON"});
         final String expected = "{'key':1}".replace('\'', '"');
         assertEquals(expected, result);
     }
 
     @Test
     public void testXMLFormatNonStringValue() {
-        final ObjectMapMessage msg = new ObjectMapMessage()
-                .with("key", 1L);
-        final String result = msg.getFormattedMessage(new String[]{"XML"});
+        final ObjectMapMessage msg = new ObjectMapMessage().with("key", 1L);
+        final String result = msg.getFormattedMessage(new String[] {"XML"});
         final String expected = "<Map>\n  <Entry key=\"key\">1</Entry>\n</Map>";
         assertEquals(expected, result);
     }
 
     @Test
     public void testFormatToUsedInOutputXml() {
-        final ObjectMapMessage msg = new ObjectMapMessage()
-                .with("key", new FormattableTestType());
-        final String result = msg.getFormattedMessage(new String[]{"XML"});
+        final ObjectMapMessage msg = new ObjectMapMessage().with("key", new FormattableTestType());
+        final String result = msg.getFormattedMessage(new String[] {"XML"});
         final String expected = "<Map>\n  <Entry key=\"key\">formatTo</Entry>\n</Map>";
         assertEquals(expected, result);
     }
 
     @Test
     public void testFormatToUsedInOutputJson() {
-        final ObjectMapMessage msg = new ObjectMapMessage()
-                .with("key", new FormattableTestType());
-        final String result = msg.getFormattedMessage(new String[]{"JSON"});
+        final ObjectMapMessage msg = new ObjectMapMessage().with("key", new FormattableTestType());
+        final String result = msg.getFormattedMessage(new String[] {"JSON"});
         final String expected = "{\"key\":\"formatTo\"}";
         assertEquals(expected, result);
     }
 
     @Test
     public void testFormatToUsedInOutputJava() {
-        final ObjectMapMessage msg = new ObjectMapMessage()
-                .with("key", new FormattableTestType());
-        final String result = msg.getFormattedMessage(new String[]{"JAVA"});
+        final ObjectMapMessage msg = new ObjectMapMessage().with("key", new FormattableTestType());
+        final String result = msg.getFormattedMessage(new String[] {"JAVA"});
         final String expected = "{key=\"formatTo\"}";
         assertEquals(expected, result);
     }
 
     @Test
     public void testFormatToUsedInOutputDefault() {
-        final ObjectMapMessage msg = new ObjectMapMessage()
-                .with("key", new FormattableTestType());
+        final ObjectMapMessage msg = new ObjectMapMessage().with("key", new FormattableTestType());
         final String result = msg.getFormattedMessage(null);
         final String expected = "key=\"formatTo\"";
         assertEquals(expected, result);
@@ -294,8 +282,7 @@ public class MapMessageTest {
     @Test
     public void testGetUsesDeepToString() {
         final String key = "key";
-        final ObjectMapMessage msg = new ObjectMapMessage()
-                .with(key, new FormattableTestType());
+        final ObjectMapMessage msg = new ObjectMapMessage().with(key, new FormattableTestType());
         final String result = msg.get(key);
         final String expected = "formatTo";
         assertEquals(expected, result);
@@ -304,8 +291,7 @@ public class MapMessageTest {
     @Test
     public void testRemoveUsesDeepToString() {
         final String key = "key";
-        final ObjectMapMessage msg = new ObjectMapMessage()
-                .with(key, new FormattableTestType());
+        final ObjectMapMessage msg = new ObjectMapMessage().with(key, new FormattableTestType());
         final String result = msg.remove(key);
         final String expected = "formatTo";
         assertEquals(expected, result);

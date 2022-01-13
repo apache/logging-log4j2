@@ -18,7 +18,6 @@ package org.apache.logging.log4j.io;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
-
 import org.apache.logging.log4j.Level;
 
 public class LoggerFilterOutputStreamTest extends AbstractLoggerOutputStreamTest {
@@ -31,9 +30,8 @@ public class LoggerFilterOutputStreamTest extends AbstractLoggerOutputStreamTest
     @Override
     protected OutputStream createOutputStreamWrapper() {
         return IoBuilder.forLogger(getExtendedLogger())
-            .filter(this.wrapped)
-            .setLevel(Level.ERROR)
-            .buildOutputStream();
+                .filter(this.wrapped)
+                .setLevel(Level.ERROR)
+                .buildOutputStream();
     }
-
 }

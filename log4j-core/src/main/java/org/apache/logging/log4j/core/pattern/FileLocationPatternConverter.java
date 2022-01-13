@@ -19,18 +19,16 @@ package org.apache.logging.log4j.core.pattern;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 
-
 /**
  * Returns the event's line location information in a StringBuilder.
  */
 @Plugin(name = "FileLocationPatternConverter", category = PatternConverter.CATEGORY)
-@ConverterKeys({ "F", "file" })
+@ConverterKeys({"F", "file"})
 public final class FileLocationPatternConverter extends LogEventPatternConverter {
     /**
      * Singleton.
      */
-    private static final FileLocationPatternConverter INSTANCE =
-        new FileLocationPatternConverter();
+    private static final FileLocationPatternConverter INSTANCE = new FileLocationPatternConverter();
 
     /**
      * Private constructor.

@@ -22,10 +22,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  */
 public class Mount {
-    
+
     @JsonProperty("Type")
     private String type;
-    
+
     @JsonProperty("Name")
     private String name;
 

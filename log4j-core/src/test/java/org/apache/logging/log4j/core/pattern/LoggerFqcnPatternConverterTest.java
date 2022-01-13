@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class LoggerFqcnPatternConverterTest {
 
@@ -28,8 +28,7 @@ public class LoggerFqcnPatternConverterTest {
 
     @Test
     public void testConverter() {
-        final LogEvent event = Log4jLogEvent.newBuilder()
-                .setLoggerFqcn(FQCN).build();
+        final LogEvent event = Log4jLogEvent.newBuilder().setLoggerFqcn(FQCN).build();
         final StringBuilder sb = new StringBuilder();
         final LogEventPatternConverter converter = LoggerFqcnPatternConverter.newInstance(null);
         converter.format(event, sb);

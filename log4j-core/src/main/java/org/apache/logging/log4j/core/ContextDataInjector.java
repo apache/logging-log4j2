@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core;
 
 import java.util.List;
-
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.impl.ThreadContextDataInjector;

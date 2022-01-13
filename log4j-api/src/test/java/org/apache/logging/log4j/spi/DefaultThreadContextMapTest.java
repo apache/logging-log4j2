@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j.spi;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.logging.log4j.junit.UsingThreadContextMap;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the {@code DefaultThreadContextMap} class.
@@ -129,7 +128,7 @@ public class DefaultThreadContextMapTest {
         assertEquals("value2", map.get("key2"));
         return map;
     }
-    
+
     @Test
     public void testGetCopyReturnsMutableMap() {
         final DefaultThreadContextMap map = new DefaultThreadContextMap(true);
@@ -221,7 +220,7 @@ public class DefaultThreadContextMapTest {
         final ThreadLocal<Map<String, String>> threadLocal = DefaultThreadContextMap.createThreadLocalMap(true);
         assertFalse(threadLocal instanceof InheritableThreadLocal<?>);
     }
-    
+
     @Test
     @ResourceLock(Resources.SYSTEM_PROPERTIES)
     public void testThreadLocalInheritableIfConfigured() {

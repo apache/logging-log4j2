@@ -16,10 +16,9 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import org.apache.logging.log4j.core.LogEvent;
-
 import java.util.Collections;
 import java.util.Map;
+import org.apache.logging.log4j.core.LogEvent;
 
 /**
  * A lookup designed for {@code Properties} defined in the configuration. This is similar
@@ -35,15 +34,11 @@ public final class PropertiesLookup implements StrLookup {
     private final Map<String, String> properties;
 
     public PropertiesLookup(final Map<String, String> properties) {
-        this.properties = properties == null
-                ? Collections.emptyMap()
-                : properties;
+        this.properties = properties == null ? Collections.emptyMap() : properties;
     }
 
     @Override
-    public String lookup(
-            @SuppressWarnings("ignored") final LogEvent event,
-            final String key) {
+    public String lookup(@SuppressWarnings("ignored") final LogEvent event, final String key) {
         return lookup(key);
     }
 

@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.jmx;
 
-
 /**
  * The MBean interface for monitoring and managing an {@code Appender}.
  */

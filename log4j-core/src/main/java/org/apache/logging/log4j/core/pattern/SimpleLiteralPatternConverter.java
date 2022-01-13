@@ -20,7 +20,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.util.OptionConverter;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
-
 /**
  * Formats a string literal without substitution.
  *

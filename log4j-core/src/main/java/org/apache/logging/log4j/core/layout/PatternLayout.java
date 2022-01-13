@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -83,6 +82,7 @@ public final class PatternLayout extends AbstractStringLayout {
      * Conversion pattern.
      */
     private final String conversionPattern;
+
     private final PatternSelector patternSelector;
     private final Serializer eventSerializer;
 
@@ -103,11 +103,20 @@ public final class PatternLayout extends AbstractStringLayout {
      * @param headerPattern header conversion pattern.
      * @param footerPattern footer conversion pattern.
      */
-    private PatternLayout(final Configuration config, final RegexReplacement replace, final String eventPattern,
-            final PatternSelector patternSelector, final Charset charset, final boolean alwaysWriteExceptions,
-            final boolean disableAnsi, final boolean noConsoleNoAnsi, final String headerPattern,
+    private PatternLayout(
+            final Configuration config,
+            final RegexReplacement replace,
+            final String eventPattern,
+            final PatternSelector patternSelector,
+            final Charset charset,
+            final boolean alwaysWriteExceptions,
+            final boolean disableAnsi,
+            final boolean noConsoleNoAnsi,
+            final String headerPattern,
             final String footerPattern) {
-        super(config, charset,
+        super(
+                config,
+                charset,
                 newSerializerBuilder()
                         .setConfiguration(config)
                         .setReplace(replace)
@@ -149,7 +158,6 @@ public final class PatternLayout extends AbstractStringLayout {
         return eventSerializer instanceof LocationAware && ((LocationAware) eventSerializer).requiresLocation();
     }
 
-
     /**
      * Deprecated, use {@link #newSerializerBuilder()} instead.
      *
@@ -164,9 +172,14 @@ public final class PatternLayout extends AbstractStringLayout {
      * @deprecated Use {@link #newSerializerBuilder()} instead.
      */
     @Deprecated
-    public static Serializer createSerializer(final Configuration configuration, final RegexReplacement replace,
-            final String pattern, final String defaultPattern, final PatternSelector patternSelector,
-            final boolean alwaysWriteExceptions, final boolean noConsoleNoAnsi) {
+    public static Serializer createSerializer(
+            final Configuration configuration,
+            final RegexReplacement replace,
+            final String pattern,
+            final String defaultPattern,
+            final PatternSelector patternSelector,
+            final boolean alwaysWriteExceptions,
+            final boolean noConsoleNoAnsi) {
         final SerializerBuilder builder = newSerializerBuilder();
         builder.setAlwaysWriteExceptions(alwaysWriteExceptions);
         builder.setConfiguration(configuration);
@@ -236,8 +249,7 @@ public final class PatternLayout extends AbstractStringLayout {
      * Implementations are free to return a new StringBuilder if they can
      * detect in advance that the specified StringBuilder is too small.
      */
-    private StringBuilder toText(final Serializer2 serializer, final LogEvent event,
-            final StringBuilder destination) {
+    private StringBuilder toText(final Serializer2 serializer, final LogEvent event, final StringBuilder destination) {
         return serializer.toSerializable(event, destination);
     }
 
@@ -297,21 +309,22 @@ public final class PatternLayout extends AbstractStringLayout {
             @PluginElement("Replace") final RegexReplacement replace,
             // LOG4J2-783 use platform default by default, so do not specify defaultString for charset
             @PluginAttribute(value = "charset") final Charset charset,
-            @PluginAttribute(value = "alwaysWriteExceptions", defaultBoolean = true) final boolean alwaysWriteExceptions,
+            @PluginAttribute(value = "alwaysWriteExceptions", defaultBoolean = true)
+                    final boolean alwaysWriteExceptions,
             @PluginAttribute(value = "noConsoleNoAnsi") final boolean noConsoleNoAnsi,
             @PluginAttribute("header") final String headerPattern,
             @PluginAttribute("footer") final String footerPattern) {
         return newBuilder()
-            .withPattern(pattern)
-            .withPatternSelector(patternSelector)
-            .withConfiguration(config)
-            .withRegexReplacement(replace)
-            .withCharset(charset)
-            .withAlwaysWriteExceptions(alwaysWriteExceptions)
-            .withNoConsoleNoAnsi(noConsoleNoAnsi)
-            .withHeader(headerPattern)
-            .withFooter(footerPattern)
-            .build();
+                .withPattern(pattern)
+                .withPatternSelector(patternSelector)
+                .withConfiguration(config)
+                .withRegexReplacement(replace)
+                .withCharset(charset)
+                .withAlwaysWriteExceptions(alwaysWriteExceptions)
+                .withNoConsoleNoAnsi(noConsoleNoAnsi)
+                .withHeader(headerPattern)
+                .withFooter(footerPattern)
+                .build();
     }
 
     private interface PatternSerializer extends Serializer, Serializer2, LocationAware {}
@@ -399,10 +412,7 @@ public final class PatternLayout extends AbstractStringLayout {
 
         @Override
         public String toString() {
-            return super.toString() +
-                    "[formatters=" +
-                    Arrays.toString(formatters) +
-                    "]";
+            return super.toString() + "[formatters=" + Arrays.toString(formatters) + "]";
         }
     }
 
@@ -443,12 +453,7 @@ public final class PatternLayout extends AbstractStringLayout {
 
         @Override
         public String toString() {
-            return super.toString() +
-                    "[delegate=" +
-                    delegate +
-                    ", replace=" +
-                    replace +
-                    "]";
+            return super.toString() + "[delegate=" + delegate + ", replace=" + replace + "]";
         }
     }
 
@@ -471,8 +476,11 @@ public final class PatternLayout extends AbstractStringLayout {
             if (patternSelector == null) {
                 try {
                     final PatternParser parser = createPatternParser(configuration);
-                    final List<PatternFormatter> list = parser.parse(pattern == null ? defaultPattern : pattern,
-                            alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi);
+                    final List<PatternFormatter> list = parser.parse(
+                            pattern == null ? defaultPattern : pattern,
+                            alwaysWriteExceptions,
+                            disableAnsi,
+                            noConsoleNoAnsi);
                     final PatternFormatter[] formatters = list.toArray(PatternFormatter.EMPTY_ARRAY);
                     boolean hasFormattingInfo = false;
                     for (PatternFormatter formatter : formatters) {
@@ -532,7 +540,6 @@ public final class PatternLayout extends AbstractStringLayout {
             this.noConsoleNoAnsi = noConsoleNoAnsi;
             return this;
         }
-
     }
 
     private static final class PatternSelectorSerializer implements Serializer, Serializer2, LocationAware {
@@ -657,8 +664,7 @@ public final class PatternLayout extends AbstractStringLayout {
         @PluginBuilderAttribute
         private String footer;
 
-        private Builder() {
-        }
+        private Builder() {}
 
         private boolean useAnsiEscapeCodes() {
             final PropertiesUtil propertiesUtil = PropertiesUtil.getProperties();
@@ -767,8 +773,17 @@ public final class PatternLayout extends AbstractStringLayout {
             if (configuration == null) {
                 configuration = new DefaultConfiguration();
             }
-            return new PatternLayout(configuration, regexReplacement, pattern, patternSelector, charset,
-                alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi, header, footer);
+            return new PatternLayout(
+                    configuration,
+                    regexReplacement,
+                    pattern,
+                    patternSelector,
+                    charset,
+                    alwaysWriteExceptions,
+                    disableAnsi,
+                    noConsoleNoAnsi,
+                    header,
+                    footer);
         }
     }
 

@@ -29,7 +29,6 @@ import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.AppenderWrapper;
@@ -54,8 +53,7 @@ public class FileAppenderBuilder extends AbstractBuilder implements AppenderBuil
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    public FileAppenderBuilder() {
-    }
+    public FileAppenderBuilder() {}
 
     public FileAppenderBuilder(String prefix, Properties props) {
         super(prefix, props);
@@ -127,14 +125,27 @@ public class FileAppenderBuilder extends AbstractBuilder implements AppenderBuil
             }
         });
 
-        return createAppender(name, config, layout.get(), filter.get(), fileName.get(), level.get(),
-                immediateFlush.get(), append.get(), bufferedIo.get(), bufferSize.get());
+        return createAppender(
+                name,
+                config,
+                layout.get(),
+                filter.get(),
+                fileName.get(),
+                level.get(),
+                immediateFlush.get(),
+                append.get(),
+                bufferedIo.get(),
+                bufferSize.get());
     }
 
-
     @Override
-    public Appender parseAppender(final String name, final String appenderPrefix, final String layoutPrefix,
-            final String filterPrefix, final Properties props, final PropertiesConfiguration configuration) {
+    public Appender parseAppender(
+            final String name,
+            final String appenderPrefix,
+            final String layoutPrefix,
+            final String filterPrefix,
+            final Properties props,
+            final PropertiesConfiguration configuration) {
         Layout layout = configuration.parseLayout(layoutPrefix, name, props);
         Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
         String level = getProperty(THRESHOLD_PARAM);
@@ -143,13 +154,21 @@ public class FileAppenderBuilder extends AbstractBuilder implements AppenderBuil
         boolean immediateFlush = false;
         boolean bufferedIo = getBooleanProperty(BUFFERED_IO_PARAM);
         int bufferSize = Integer.parseInt(getProperty(BUFFER_SIZE_PARAM, "8192"));
-        return createAppender(name, configuration, layout, filter, fileName, level, immediateFlush,
-                append, bufferedIo, bufferSize);
+        return createAppender(
+                name, configuration, layout, filter, fileName, level, immediateFlush, append, bufferedIo, bufferSize);
     }
 
-    private Appender createAppender(final String name, final Log4j1Configuration configuration, final Layout layout,
-            final Filter filter, final String fileName, String level, boolean immediateFlush, final boolean append,
-            final boolean bufferedIo, final int bufferSize) {
+    private Appender createAppender(
+            final String name,
+            final Log4j1Configuration configuration,
+            final Layout layout,
+            final Filter filter,
+            final String fileName,
+            String level,
+            boolean immediateFlush,
+            final boolean append,
+            final boolean bufferedIo,
+            final int bufferSize) {
         org.apache.logging.log4j.core.Layout<?> fileLayout = null;
         if (bufferedIo) {
             immediateFlush = true;

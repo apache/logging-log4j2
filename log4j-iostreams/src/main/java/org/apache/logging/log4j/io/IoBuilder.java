@@ -25,7 +25,6 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.Objects;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -123,8 +122,8 @@ public class IoBuilder {
      */
     protected IoBuilder(final Logger logger) {
         if (!(logger instanceof ExtendedLogger)) {
-            throw new UnsupportedOperationException("The provided Logger [" + String.valueOf(logger) +
-                "] does not implement " + ExtendedLogger.class.getName());
+            throw new UnsupportedOperationException("The provided Logger [" + String.valueOf(logger)
+                    + "] does not implement " + ExtendedLogger.class.getName());
         }
         this.logger = (ExtendedLogger) logger;
     }
@@ -323,8 +322,8 @@ public class IoBuilder {
         final InputStream in = Objects.requireNonNull(this.inputStream, "inputStream");
         if (this.buffered) {
             if (this.bufferSize > 0) {
-                return new LoggerBufferedInputStream(in, this.charset, this.bufferSize, this.logger, this.fqcn,
-                    this.level, this.marker);
+                return new LoggerBufferedInputStream(
+                        in, this.charset, this.bufferSize, this.logger, this.fqcn, this.level, this.marker);
             }
             return new LoggerBufferedInputStream(in, this.charset, this.logger, this.fqcn, this.level, this.marker);
         }
@@ -342,8 +341,8 @@ public class IoBuilder {
         if (this.outputStream == null) {
             return new LoggerOutputStream(this.logger, this.level, this.marker, this.charset, this.fqcn);
         }
-        return new LoggerFilterOutputStream(this.outputStream, this.charset, this.logger, this.fqcn, this.level,
-            this.marker);
+        return new LoggerFilterOutputStream(
+                this.outputStream, this.charset, this.logger, this.fqcn, this.level, this.marker);
     }
 
     /**
@@ -357,15 +356,14 @@ public class IoBuilder {
     public PrintStream buildPrintStream() {
         try {
             if (this.outputStream == null) {
-                return new LoggerPrintStream(this.logger, this.autoFlush, this.charset, this.fqcn, this.level,
-                    this.marker);
+                return new LoggerPrintStream(
+                        this.logger, this.autoFlush, this.charset, this.fqcn, this.level, this.marker);
             }
-            return new LoggerPrintStream(this.outputStream, this.autoFlush, this.charset, this.logger, this.fqcn,
-                this.level, this.marker);
+            return new LoggerPrintStream(
+                    this.outputStream, this.autoFlush, this.charset, this.logger, this.fqcn, this.level, this.marker);
         } catch (final UnsupportedEncodingException e) {
             // this exception shouldn't really happen since we use Charset and not String
             throw new LoggingException(e);
         }
     }
-
 }

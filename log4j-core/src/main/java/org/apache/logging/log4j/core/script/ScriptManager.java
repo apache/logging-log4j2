@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 import javax.script.Bindings;
 import javax.script.Compilable;
 import javax.script.CompiledScript;
@@ -34,7 +33,6 @@ import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.util.FileWatcher;
@@ -59,7 +57,6 @@ public class ScriptManager implements FileWatcher, Serializable {
             bindings.put(KEY_STATUS_LOGGER, logger);
             return bindings;
         }
-
     }
 
     private static final long serialVersionUID = -2534169384971965196L;
@@ -98,9 +95,15 @@ public class ScriptManager implements FileWatcher, Serializable {
                 }
                 sb.append(names);
                 final boolean compiled = factory.getScriptEngine() instanceof Compilable;
-                logger.debug("{} version: {}, language: {}, threading: {}, compile: {}, names: {}, factory class: {}",
-                        factory.getEngineName(), factory.getEngineVersion(), factory.getLanguageName(), threading,
-                        compiled, languageNames, factory.getClass().getName());
+                logger.debug(
+                        "{} version: {}, language: {}, threading: {}, compile: {}, names: {}, factory class: {}",
+                        factory.getEngineName(),
+                        factory.getEngineVersion(),
+                        factory.getLanguageName(),
+                        threading,
+                        compiled,
+                        languageNames,
+                        factory.getClass().getName());
             }
             languages = sb.toString();
         } else {
@@ -162,7 +165,6 @@ public class ScriptManager implements FileWatcher, Serializable {
         } else {
             scriptRunners.put(script.getName(), new MainScriptRunner(engine, script));
         }
-
     }
 
     public Object execute(final String name, final Bindings bindings) {

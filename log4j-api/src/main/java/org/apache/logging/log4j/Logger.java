@@ -438,8 +438,8 @@ public interface Logger {
      * @param p5 parameter to the message.
      * @param p6 parameter to the message.
      */
-    void debug(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5,
-            Object p6);
+    void debug(
+            Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6);
 
     /**
      * Logs a message with parameters at debug level.
@@ -455,7 +455,16 @@ public interface Logger {
      * @param p6 parameter to the message.
      * @param p7 parameter to the message.
      */
-    void debug(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
+    void debug(
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
             Object p7);
 
     /**
@@ -473,8 +482,18 @@ public interface Logger {
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
      */
-    void debug(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
-            Object p7, Object p8);
+    void debug(
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
+            Object p8);
 
     /**
      * Logs a message with parameters at debug level.
@@ -492,8 +511,19 @@ public interface Logger {
      * @param p8 parameter to the message.
      * @param p9 parameter to the message.
      */
-    void debug(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
-            Object p7, Object p8, Object p9);
+    void debug(
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
+            Object p8,
+            Object p9);
 
     /**
      * Logs a message with parameters at debug level.
@@ -601,7 +631,16 @@ public interface Logger {
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
      */
-    void debug(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7,
+    void debug(
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
             Object p8);
 
     /**
@@ -619,8 +658,18 @@ public interface Logger {
      * @param p8 parameter to the message.
      * @param p9 parameter to the message.
      */
-    void debug(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7,
-            Object p8, Object p9);
+    void debug(
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
+            Object p8,
+            Object p9);
 
     /**
      * Logs entry to a method. Used when the method in question has no parameters or when the parameters should not be
@@ -994,8 +1043,8 @@ public interface Logger {
      * @param p5 parameter to the message.
      * @param p6 parameter to the message.
      */
-    void error(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5,
-            Object p6);
+    void error(
+            Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6);
 
     /**
      * Logs a message with parameters at error level.
@@ -1011,7 +1060,16 @@ public interface Logger {
      * @param p6 parameter to the message.
      * @param p7 parameter to the message.
      */
-    void error(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
+    void error(
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
             Object p7);
 
     /**
@@ -1029,8 +1087,18 @@ public interface Logger {
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
      */
-    void error(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
-            Object p7, Object p8);
+    void error(
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
+            Object p8);
 
     /**
      * Logs a message with parameters at error level.
@@ -1048,8 +1116,19 @@ public interface Logger {
      * @param p8 parameter to the message.
      * @param p9 parameter to the message.
      */
-    void error(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
-            Object p7, Object p8, Object p9);
+    void error(
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
+            Object p8,
+            Object p9);
 
     /**
      * Logs a message with parameters at error level.
@@ -1157,7 +1236,16 @@ public interface Logger {
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
      */
-    void error(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7,
+    void error(
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
             Object p8);
 
     /**
@@ -1175,8 +1263,18 @@ public interface Logger {
      * @param p8 parameter to the message.
      * @param p9 parameter to the message.
      */
-    void error(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7,
-            Object p8, Object p9);
+    void error(
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
+            Object p8,
+            Object p9);
 
     /**
      * Logs exit from a method. Used for methods that do not return anything.
@@ -1542,8 +1640,8 @@ public interface Logger {
      * @param p5 parameter to the message.
      * @param p6 parameter to the message.
      */
-    void fatal(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5,
-            Object p6);
+    void fatal(
+            Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6);
 
     /**
      * Logs a message with parameters at fatal level.
@@ -1559,7 +1657,16 @@ public interface Logger {
      * @param p6 parameter to the message.
      * @param p7 parameter to the message.
      */
-    void fatal(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
+    void fatal(
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
             Object p7);
 
     /**
@@ -1577,8 +1684,18 @@ public interface Logger {
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
      */
-    void fatal(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
-            Object p7, Object p8);
+    void fatal(
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
+            Object p8);
 
     /**
      * Logs a message with parameters at fatal level.
@@ -1596,8 +1713,19 @@ public interface Logger {
      * @param p8 parameter to the message.
      * @param p9 parameter to the message.
      */
-    void fatal(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
-            Object p7, Object p8, Object p9);
+    void fatal(
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
+            Object p8,
+            Object p9);
 
     /**
      * Logs a message with parameters at fatal level.
@@ -1705,7 +1833,16 @@ public interface Logger {
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
      */
-    void fatal(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7,
+    void fatal(
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
             Object p8);
 
     /**
@@ -1723,8 +1860,18 @@ public interface Logger {
      * @param p8 parameter to the message.
      * @param p9 parameter to the message.
      */
-    void fatal(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7,
-            Object p8, Object p9);
+    void fatal(
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
+            Object p8,
+            Object p9);
 
     /**
      * Gets the Level associated with the Logger.
@@ -2095,8 +2242,8 @@ public interface Logger {
      * @param p5 parameter to the message.
      * @param p6 parameter to the message.
      */
-    void info(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5,
-            Object p6);
+    void info(
+            Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6);
 
     /**
      * Logs a message with parameters at info level.
@@ -2112,7 +2259,16 @@ public interface Logger {
      * @param p6 parameter to the message.
      * @param p7 parameter to the message.
      */
-    void info(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
+    void info(
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
             Object p7);
 
     /**
@@ -2130,8 +2286,18 @@ public interface Logger {
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
      */
-    void info(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
-            Object p7, Object p8);
+    void info(
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
+            Object p8);
 
     /**
      * Logs a message with parameters at info level.
@@ -2149,8 +2315,19 @@ public interface Logger {
      * @param p8 parameter to the message.
      * @param p9 parameter to the message.
      */
-    void info(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
-            Object p7, Object p8, Object p9);
+    void info(
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
+            Object p8,
+            Object p9);
 
     /**
      * Logs a message with parameters at info level.
@@ -2258,7 +2435,16 @@ public interface Logger {
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
      */
-    void info(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7,
+    void info(
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
             Object p8);
 
     /**
@@ -2276,8 +2462,18 @@ public interface Logger {
      * @param p8 parameter to the message.
      * @param p9 parameter to the message.
      */
-    void info(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7,
-            Object p8, Object p9);
+    void info(
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
+            Object p8,
+            Object p9);
 
     /**
      * Checks whether this Logger is enabled for the {@link Level#DEBUG DEBUG} Level.
@@ -2753,7 +2949,16 @@ public interface Logger {
      * @param p4 parameter to the message.
      * @param p5 parameter to the message.
      */
-    void log(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5);
+    void log(
+            Level level,
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5);
 
     /**
      * Logs a message with parameters at the specified level.
@@ -2769,7 +2974,16 @@ public interface Logger {
      * @param p5 parameter to the message.
      * @param p6 parameter to the message.
      */
-    void log(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5,
+    void log(
+            Level level,
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
             Object p6);
 
     /**
@@ -2787,7 +3001,17 @@ public interface Logger {
      * @param p6 parameter to the message.
      * @param p7 parameter to the message.
      */
-    void log(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
+    void log(
+            Level level,
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
             Object p7);
 
     /**
@@ -2806,8 +3030,19 @@ public interface Logger {
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
      */
-    void log(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
-            Object p7, Object p8);
+    void log(
+            Level level,
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
+            Object p8);
 
     /**
      * Logs a message with parameters at the specified level.
@@ -2826,8 +3061,20 @@ public interface Logger {
      * @param p8 parameter to the message.
      * @param p9 parameter to the message.
      */
-    void log(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
-            Object p7, Object p8, Object p9);
+    void log(
+            Level level,
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
+            Object p8,
+            Object p9);
 
     /**
      * Logs a message with parameters at the specified level.
@@ -2927,7 +3174,17 @@ public interface Logger {
      * @param p6 parameter to the message.
      * @param p7 parameter to the message.
      */
-    void log(Level level, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7);
+    void log(
+            Level level,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7);
 
     /**
      * Logs a message with parameters at the specified level.
@@ -2944,7 +3201,17 @@ public interface Logger {
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
      */
-    void log(Level level, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7,
+    void log(
+            Level level,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
             Object p8);
 
     /**
@@ -2963,8 +3230,19 @@ public interface Logger {
      * @param p8 parameter to the message.
      * @param p9 parameter to the message.
      */
-    void log(Level level, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7,
-            Object p8, Object p9);
+    void log(
+            Level level,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
+            Object p8,
+            Object p9);
 
     /**
      * Logs a formatted message using the specified format string and arguments.
@@ -3361,8 +3639,8 @@ public interface Logger {
      * @param p5 parameter to the message.
      * @param p6 parameter to the message.
      */
-    void trace(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5,
-            Object p6);
+    void trace(
+            Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6);
 
     /**
      * Logs a message with parameters at trace level.
@@ -3378,7 +3656,16 @@ public interface Logger {
      * @param p6 parameter to the message.
      * @param p7 parameter to the message.
      */
-    void trace(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
+    void trace(
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
             Object p7);
 
     /**
@@ -3396,8 +3683,18 @@ public interface Logger {
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
      */
-    void trace(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
-            Object p7, Object p8);
+    void trace(
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
+            Object p8);
 
     /**
      * Logs a message with parameters at trace level.
@@ -3415,8 +3712,19 @@ public interface Logger {
      * @param p8 parameter to the message.
      * @param p9 parameter to the message.
      */
-    void trace(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
-            Object p7, Object p8, Object p9);
+    void trace(
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
+            Object p8,
+            Object p9);
 
     /**
      * Logs a message with parameters at trace level.
@@ -3524,7 +3832,16 @@ public interface Logger {
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
      */
-    void trace(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7,
+    void trace(
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
             Object p8);
 
     /**
@@ -3542,8 +3859,18 @@ public interface Logger {
      * @param p8 parameter to the message.
      * @param p9 parameter to the message.
      */
-    void trace(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7,
-            Object p8, Object p9);
+    void trace(
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
+            Object p8,
+            Object p9);
 
     /**
      * Logs entry to a method. Used when the method in question has no parameters or when the parameters should not be
@@ -4070,8 +4397,8 @@ public interface Logger {
      * @param p5 parameter to the message.
      * @param p6 parameter to the message.
      */
-    void warn(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5,
-            Object p6);
+    void warn(
+            Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6);
 
     /**
      * Logs a message with parameters at warn level.
@@ -4087,7 +4414,16 @@ public interface Logger {
      * @param p6 parameter to the message.
      * @param p7 parameter to the message.
      */
-    void warn(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
+    void warn(
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
             Object p7);
 
     /**
@@ -4105,8 +4441,18 @@ public interface Logger {
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
      */
-    void warn(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
-            Object p7, Object p8);
+    void warn(
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
+            Object p8);
 
     /**
      * Logs a message with parameters at warn level.
@@ -4124,8 +4470,19 @@ public interface Logger {
      * @param p8 parameter to the message.
      * @param p9 parameter to the message.
      */
-    void warn(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
-            Object p7, Object p8, Object p9);
+    void warn(
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
+            Object p8,
+            Object p9);
 
     /**
      * Logs a message with parameters at warn level.
@@ -4233,7 +4590,16 @@ public interface Logger {
      * @param p7 parameter to the message.
      * @param p8 parameter to the message.
      */
-    void warn(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7,
+    void warn(
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
             Object p8);
 
     /**
@@ -4251,8 +4617,18 @@ public interface Logger {
      * @param p8 parameter to the message.
      * @param p9 parameter to the message.
      */
-    void warn(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7,
-            Object p8, Object p9);
+    void warn(
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
+            Object p8,
+            Object p9);
 
     /**
      * Logs a Message.
@@ -4265,8 +4641,8 @@ public interface Logger {
      * @param throwable the {@code Throwable} to log, including its stack trace.
      * @since 2.13.0
      */
-    default void logMessage(Level level, Marker marker, String fqcn, StackTraceElement location, Message message,
-        Throwable throwable) {
+    default void logMessage(
+            Level level, Marker marker, String fqcn, StackTraceElement location, Message message, Throwable throwable) {
         // noop
     }
 
@@ -4342,5 +4718,4 @@ public interface Logger {
     default LogBuilder atLevel(Level level) {
         return LogBuilder.NOOP;
     }
-
 }

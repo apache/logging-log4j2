@@ -16,9 +16,8 @@
  */
 package org.apache.logging.log4j.core.jmx;
 
-import javax.management.ObjectName;
-
 import com.lmax.disruptor.RingBuffer;
+import javax.management.ObjectName;
 
 /**
  * Instruments an LMAX Disruptor ring buffer.
@@ -34,8 +33,8 @@ public class RingBufferAdmin implements RingBufferAdminMBean {
         return new RingBufferAdmin(ringBuffer, name);
     }
 
-    public static RingBufferAdmin forAsyncLoggerConfig(final RingBuffer<?> ringBuffer,
-            final String contextName, final String configName) {
+    public static RingBufferAdmin forAsyncLoggerConfig(
+            final RingBuffer<?> ringBuffer, final String contextName, final String configName) {
         final String ctxName = Server.escape(contextName);
         final String cfgName = Server.escape(configName);
         final String name = String.format(PATTERN_ASYNC_LOGGER_CONFIG, ctxName, cfgName);
@@ -71,5 +70,4 @@ public class RingBufferAdmin implements RingBufferAdminMBean {
     public ObjectName getObjectName() {
         return objectName;
     }
-
 }

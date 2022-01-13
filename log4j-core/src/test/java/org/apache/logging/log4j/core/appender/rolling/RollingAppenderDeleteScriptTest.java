@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender.rolling;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Rule;
@@ -34,7 +33,8 @@ public class RollingAppenderDeleteScriptTest {
     private static final String CONFIG = "log4j-rolling-with-custom-delete-script.xml";
     private static final String DIR = "target/rolling-with-delete-script/test";
 
-    private final LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
+    private final LoggerContextRule loggerContextRule =
+            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
 
     @Rule
     public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);

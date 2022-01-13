@@ -29,5 +29,4 @@ public final class SystemClock implements Clock {
     public long currentTimeMillis() {
         return System.currentTimeMillis();
     }
-
 }

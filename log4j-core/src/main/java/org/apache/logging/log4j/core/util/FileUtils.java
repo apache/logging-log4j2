@@ -31,7 +31,6 @@ import java.nio.file.attribute.UserPrincipal;
 import java.nio.file.attribute.UserPrincipalLookupService;
 import java.util.Objects;
 import java.util.Set;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -47,8 +46,7 @@ public final class FileUtils {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private FileUtils() {
-    }
+    private FileUtils() {}
 
     /**
      * Tries to convert the specified URI to a file object. If this fails, <b>null</b> is returned.
@@ -92,7 +90,8 @@ public final class FileUtils {
     }
 
     public static boolean isFile(final URL url) {
-        return url != null && (url.getProtocol().equals(PROTOCOL_FILE) || url.getProtocol().equals(JBOSS_FILE));
+        return url != null
+                && (url.getProtocol().equals(PROTOCOL_FILE) || url.getProtocol().equals(JBOSS_FILE));
     }
 
     public static String getFileExtension(final File file) {
@@ -105,7 +104,7 @@ public final class FileUtils {
 
     /**
      * Asserts that the given directory exists and creates it if necessary.
-     * 
+     *
      * @param dir the directory that shall exist
      * @param createDirectoryIfNotExisting specifies if the directory shall be created if it does not exist.
      * @throws java.io.IOException thrown if the directory could not be created.
@@ -124,15 +123,16 @@ public final class FileUtils {
             throw new IOException("File " + dir + " exists and is not a directory. Unable to create directory.");
         }
     }
-    
+
     /**
      * Creates the parent directories for the given File.
-     * 
+     *
      * @param file
      * @throws IOException
      */
     public static void makeParentDirs(final File file) throws IOException {
-        final File parent = Objects.requireNonNull(file, "file").getCanonicalFile().getParentFile();
+        final File parent =
+                Objects.requireNonNull(file, "file").getCanonicalFile().getParentFile();
         if (parent != null) {
             mkdir(parent, true);
         }
@@ -147,14 +147,16 @@ public final class FileUtils {
      * @param fileGroup File group
      * @throws IOException If IO error during definition of file attribute view
      */
-    public static void defineFilePosixAttributeView(final Path path,
+    public static void defineFilePosixAttributeView(
+            final Path path,
             final Set<PosixFilePermission> filePermissions,
             final String fileOwner,
-            final String fileGroup) throws IOException {
+            final String fileGroup)
+            throws IOException {
         final PosixFileAttributeView view = Files.getFileAttributeView(path, PosixFileAttributeView.class);
         if (view != null) {
-            final UserPrincipalLookupService lookupService = FileSystems.getDefault()
-                    .getUserPrincipalLookupService();
+            final UserPrincipalLookupService lookupService =
+                    FileSystems.getDefault().getUserPrincipalLookupService();
             if (fileOwner != null) {
                 final UserPrincipal userPrincipal = lookupService.lookupPrincipalByName(fileOwner);
                 if (userPrincipal != null) {

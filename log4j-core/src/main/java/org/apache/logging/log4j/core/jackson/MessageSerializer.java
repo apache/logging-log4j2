@@ -16,14 +16,12 @@
  */
 package org.apache.logging.log4j.core.jackson;
 
-import java.io.IOException;
-
-import org.apache.logging.log4j.message.Message;
-
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
+import java.io.IOException;
+import org.apache.logging.log4j.message.Message;
 
 /**
  * <p>
@@ -39,9 +37,8 @@ final class MessageSerializer extends StdScalarSerializer<Message> {
     }
 
     @Override
-    public void serialize(final Message value, final JsonGenerator jgen, final SerializerProvider provider) throws IOException,
-            JsonGenerationException {
+    public void serialize(final Message value, final JsonGenerator jgen, final SerializerProvider provider)
+            throws IOException, JsonGenerationException {
         jgen.writeString(value.getFormattedMessage());
     }
-
 }

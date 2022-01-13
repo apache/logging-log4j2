@@ -25,11 +25,10 @@ import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
-import org.apache.logging.log4j.util.ReadOnlyStringMap;
-import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.util.BiConsumer;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.TriConsumer;
 
 /**
@@ -125,12 +124,10 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
     @SuppressWarnings("unchecked")
     public OpenHashStringMap(final int expected, final float f) {
         if (f <= 0 || f > 1) {
-            throw new IllegalArgumentException(
-                    "Load factor must be greater than 0 and smaller than or equal to 1");
+            throw new IllegalArgumentException("Load factor must be greater than 0 and smaller than or equal to 1");
         }
-        if (expected < 0){
-            throw new IllegalArgumentException(
-                    "The expected number of elements must be nonnegative");
+        if (expected < 0) {
+            throw new IllegalArgumentException("The expected number of elements must be nonnegative");
         }
         this.loadFactor = f;
         arraySize = HashCommon.arraySize(expected, f);
@@ -188,6 +185,7 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
             contextData.forEach(PUT_ALL, this);
         }
     }
+
     private static final TriConsumer<String, Object, StringMap> PUT_ALL =
             (key, value, contextData) -> contextData.putValue(key, value);
 
@@ -227,8 +225,8 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
     }
 
     private void tryCapacity(final long capacity) {
-        final int needed = Math.min(
-                1 << 30, Math.max(2, HashCommon.nextPowerOfTwo((int) Math.ceil(capacity / loadFactor))));
+        final int needed =
+                Math.min(1 << 30, Math.max(2, HashCommon.nextPowerOfTwo((int) Math.ceil(capacity / loadFactor))));
         if (needed > arraySize) {
             rehash(needed);
         }
@@ -296,7 +294,7 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
     }
 
     @Override
-	public boolean equals(final Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == this) {
             return true;
         }
@@ -562,6 +560,7 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
             }
         }
     }
+
     private V removeEntry(final int pos) {
         final V oldValue = values[pos];
         values[pos] = null;
@@ -572,6 +571,7 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
         }
         return oldValue;
     }
+
     private V removeNullEntry() {
         containsNullKey = false;
         keys[arraySize] = null;
@@ -595,9 +595,9 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
         int last, slot;
         K curr;
         final K[] myKeys = this.keys;
-        for (;;) {
+        for (; ; ) {
             pos = ((last = pos) + 1) & mask;
-            for (;;) {
+            for (; ; ) {
                 if (((curr = myKeys[pos]) == null)) {
                     myKeys[last] = (null);
                     values[last] = null;
@@ -642,8 +642,8 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
     public boolean trim(final int n) {
         final int l = HashCommon.nextPowerOfTwo((int) Math.ceil(n / loadFactor));
         if (l >= n || size > HashCommon.maxFill(l, loadFactor)) {
-			return true;
-		}
+            return true;
+        }
         try {
             rehash(l);
         } catch (final OutOfMemoryError cantDoIt) { // unusual to catch OOME but in this case appropriate
@@ -672,7 +672,7 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
         final K newKey[] = (K[]) new Object[newN + 1];
         final V newValue[] = (V[]) new Object[newN + 1];
         int i = arraySize, pos;
-        for (int j = realSize(); j-- != 0;) {
+        for (int j = realSize(); j-- != 0; ) {
             while (myKeys[--i] == null) {
                 // advance i until we find an existing key
             }
@@ -698,9 +698,9 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
      * @return a hash code for this map.
      */
     @Override
-	public int hashCode() {
+    public int hashCode() {
         int result = 0;
-        for (int j = realSize(), i = 0, t = 0; j-- != 0;) {
+        for (int j = realSize(), i = 0, t = 0; j-- != 0; ) {
             while (keys[i] == null) {
                 i++;
             }
@@ -730,7 +730,7 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
         final V value[] = this.values = (V[]) new Object[arraySize + 1];
         K k;
         V v;
-        for (int i = size, pos; i-- != 0;) {
+        for (int i = size, pos; i-- != 0; ) {
             k = (K) s.readObject();
             v = (V) s.readObject();
             if (k == null) {
@@ -759,8 +759,7 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
         }
     }
 
-    private static final TriConsumer<String, Object, ObjectOutputStream> SERIALIZER =
-            (k, v, objectOutputStream) -> {
+    private static final TriConsumer<String, Object, ObjectOutputStream> SERIALIZER = (k, v, objectOutputStream) -> {
         try {
             objectOutputStream.writeObject(k);
             objectOutputStream.writeObject(v);
@@ -891,7 +890,6 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
             return (x | x >> 32) + 1;
         }
 
-
         /** Returns the maximum number of entries that can be filled before rehashing.
          *
          * @param n the size of the backing array.
@@ -899,8 +897,8 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
          * @return the maximum number of entries before rehashing.
          */
         public static int maxFill(final int n, final float f) {
-		/* We must guarantee that there is always at least
-		 * one free entry (even with pathological load factors). */
+            /* We must guarantee that there is always at least
+             * one free entry (even with pathological load factors). */
             return Math.min((int) Math.ceil(n * f), n - 1);
         }
 
@@ -916,8 +914,8 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
         public static int arraySize(final int expected, final float f) {
             final long result = Math.max(2, nextPowerOfTwo((long) Math.ceil(expected / f)));
             if (result > (1 << 30)) {
-                throw new IllegalArgumentException("Too large (" + expected +
-                        " expected elements with load factor " + f + ")");
+                throw new IllegalArgumentException(
+                        "Too large (" + expected + " expected elements with load factor " + f + ")");
             }
             return (int) result;
         }

@@ -17,14 +17,13 @@
 
 package org.apache.logging.log4j.core.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.net.URI;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.OS;
-
-import java.net.URI;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class NetUtilsTest {
 
@@ -56,5 +55,4 @@ public class NetUtilsTest {
         assertNotNull(uri, "The URI should not be null.");
         assertEquals("file:/D:/path/to/something/on/windows", uri.toString(), "The URI is not correct.");
     }
-
 }

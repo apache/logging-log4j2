@@ -27,5 +27,4 @@ public class XmlLogEventParser extends AbstractJacksonLogEventParser {
     public XmlLogEventParser() {
         super(new Log4jXmlObjectMapper());
     }
-
 }

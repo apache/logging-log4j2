@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 
@@ -52,10 +51,9 @@ public class BasicContextSelector implements ContextSelector {
         return ctx != null ? ctx : CONTEXT;
     }
 
-
     @Override
-    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext,
-                                    final URI configLocation) {
+    public LoggerContext getContext(
+            final String fqcn, final ClassLoader loader, final boolean currentContext, final URI configLocation) {
 
         final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
         return ctx != null ? ctx : CONTEXT;
@@ -81,5 +79,4 @@ public class BasicContextSelector implements ContextSelector {
         list.add(CONTEXT);
         return Collections.unmodifiableList(list);
     }
-
 }

@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.message;
 
 import java.util.Arrays;
-
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.StringBuilders;
@@ -129,7 +128,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
      * @param arg The parameter.
      */
     public ParameterizedMessage(final String messagePattern, final Object arg) {
-        this(messagePattern, new Object[]{arg});
+        this(messagePattern, new Object[] {arg});
     }
 
     /**
@@ -139,7 +138,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
      * @param arg1 The second parameter.
      */
     public ParameterizedMessage(final String messagePattern, final Object arg0, final Object arg1) {
-        this(messagePattern, new Object[]{arg0, arg1});
+        this(messagePattern, new Object[] {arg0, arg1});
     }
 
     private void init(final String messagePattern) {
@@ -256,7 +255,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
         if (!Arrays.equals(this.argArray, that.argArray)) {
             return false;
         }
-        //if (throwable != null ? !throwable.equals(that.throwable) : that.throwable != null) return false;
+        // if (throwable != null ? !throwable.equals(that.throwable) : that.throwable != null) return false;
 
         return true;
     }
@@ -326,7 +325,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
 
     @Override
     public String toString() {
-        return "ParameterizedMessage[messagePattern=" + messagePattern + ", stringArgs=" +
-                Arrays.toString(argArray) + ", throwable=" + throwable + ']';
+        return "ParameterizedMessage[messagePattern=" + messagePattern + ", stringArgs=" + Arrays.toString(argArray)
+                + ", throwable=" + throwable + ']';
     }
 }

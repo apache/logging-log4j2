@@ -16,12 +16,11 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests MainLookup.
@@ -29,10 +28,11 @@ import static org.junit.jupiter.api.Assertions.*;
 public class MainLookupTest {
 
     @Test
-    public void testMainArgs(){
+    public void testMainArgs() {
         MainMapLookup.setMainArguments("--file", "foo.txt", "--verbose", "-x", "bar");
-        String str ="${key} ${main:-1} ${main:0} ${main:1} ${main:2} ${main:3} ${main:4} ${main:\\--file} ${main:foo.txt} ${main:\\--verbose} ${main:\\-x} ${main:bar} ${main:\\--quiet:-true}";
-        Map<String, String> properties =  new HashMap<>();
+        String str =
+                "${key} ${main:-1} ${main:0} ${main:1} ${main:2} ${main:3} ${main:4} ${main:\\--file} ${main:foo.txt} ${main:\\--verbose} ${main:\\-x} ${main:bar} ${main:\\--quiet:-true}";
+        Map<String, String> properties = new HashMap<>();
         properties.put("key", "value");
         properties.put("bar", "default_bar_value");
         Interpolator lookup = new Interpolator(properties);

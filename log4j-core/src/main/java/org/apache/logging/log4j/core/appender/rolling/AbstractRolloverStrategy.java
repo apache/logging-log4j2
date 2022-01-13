@@ -27,7 +27,6 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
@@ -46,14 +45,13 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
      */
     protected static final Logger LOGGER = StatusLogger.getLogger();
 
-    public static final Pattern PATTERN_COUNTER= Pattern.compile(".*%((?<ZEROPAD>0)?(?<PADDING>\\d+))?i.*");
+    public static final Pattern PATTERN_COUNTER = Pattern.compile(".*%((?<ZEROPAD>0)?(?<PADDING>\\d+))?i.*");
 
     protected final StrSubstitutor strSubstitutor;
 
     protected AbstractRolloverStrategy(final StrSubstitutor strSubstitutor) {
         this.strSubstitutor = strSubstitutor;
     }
-
 
     public StrSubstitutor getStrSubstitutor() {
         return strSubstitutor;
@@ -81,13 +79,11 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
         return 0;
     }
 
-
     protected SortedMap<Integer, Path> getEligibleFiles(final RollingFileManager manager) {
         return getEligibleFiles(manager, true);
     }
 
-    protected SortedMap<Integer, Path> getEligibleFiles(final RollingFileManager manager,
-                                                        final boolean isAscending) {
+    protected SortedMap<Integer, Path> getEligibleFiles(final RollingFileManager manager, final boolean isAscending) {
         final StringBuilder buf = new StringBuilder();
         final String pattern = manager.getPatternProcessor().getPattern();
         manager.getPatternProcessor().formatFileName(strSubstitutor, buf, NotANumber.NAN);
@@ -100,13 +96,13 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
     }
 
     @Deprecated
-    protected SortedMap<Integer, Path> getEligibleFiles(final String path, final String logfilePattern,
-            final boolean isAscending) {
+    protected SortedMap<Integer, Path> getEligibleFiles(
+            final String path, final String logfilePattern, final boolean isAscending) {
         return getEligibleFiles("", path, logfilePattern, isAscending);
     }
 
-    protected SortedMap<Integer, Path> getEligibleFiles(final String currentFile, final String path,
-            final String logfilePattern, final boolean isAscending) {
+    protected SortedMap<Integer, Path> getEligibleFiles(
+            final String currentFile, final String path, final String logfilePattern, final boolean isAscending) {
         final TreeMap<Integer, Path> eligibleFiles = new TreeMap<>();
         final File file = new File(path);
         File parent = file.getParentFile();
@@ -136,14 +132,15 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
         LOGGER.debug("Current file: {}", currentFile);
 
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
-            for (final Path entry: stream) {
+            for (final Path entry : stream) {
                 final Matcher matcher = pattern.matcher(entry.toFile().getName());
                 if (matcher.matches() && !entry.equals(current)) {
                     try {
                         final Integer index = Integer.parseInt(matcher.group(1));
                         eligibleFiles.put(index, entry);
                     } catch (NumberFormatException ex) {
-                        LOGGER.debug("Ignoring file {} which matches pattern but the index is invalid.",
+                        LOGGER.debug(
+                                "Ignoring file {} which matches pattern but the index is invalid.",
                                 entry.toFile().getName());
                     }
                 }
@@ -151,6 +148,6 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
         } catch (final IOException ioe) {
             throw new LoggingException("Error reading folder " + dir + " " + ioe.getMessage(), ioe);
         }
-        return isAscending? eligibleFiles : eligibleFiles.descendingMap();
+        return isAscending ? eligibleFiles : eligibleFiles.descendingMap();
     }
 }

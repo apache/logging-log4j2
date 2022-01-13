@@ -34,9 +34,9 @@ public final class Chars {
     public static final char LF = '\n';
 
     /** NUL. */
-	public static final char NUL = 0;
+    public static final char NUL = 0;
 
-	/** Single Quote [']. */
+    /** Single Quote [']. */
     public static final char QUOTE = '\'';
 
     /** Space. */
@@ -83,6 +83,5 @@ public final class Chars {
         return (char) ('a' + digit - 10);
     }
 
-    private Chars() {
-    }
+    private Chars() {}
 }

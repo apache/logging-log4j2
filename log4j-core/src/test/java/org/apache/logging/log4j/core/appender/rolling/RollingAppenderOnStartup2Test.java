@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.file.DirectoryStream;
@@ -34,8 +37,6 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -59,8 +60,8 @@ public class RollingAppenderOnStartup2Test {
                 Files.delete(Paths.get(DIR));
             }
         }
-        //System.setProperty("log4j2.debug", "true");
-        //System.setProperty("log4j2.StatusLogger.level", "trace");
+        // System.setProperty("log4j2.debug", "true");
+        // System.setProperty("log4j2.StatusLogger.level", "trace");
         final Configuration configuration = new DefaultConfiguration();
         final Path target = Paths.get(TARGET_FILE);
         Assert.assertFalse(Files.exists(target));
@@ -106,6 +107,5 @@ public class RollingAppenderOnStartup2Test {
         for (int i = 0; i < 10; ++i) {
             logger.debug("This is test message number " + i);
         }
-
     }
 }

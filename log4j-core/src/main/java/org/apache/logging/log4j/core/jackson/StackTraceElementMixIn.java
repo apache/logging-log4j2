@@ -38,8 +38,8 @@ abstract class StackTraceElementMixIn {
             @JsonProperty("method") final String methodName,
             @JsonProperty("file") final String fileName,
             @JsonProperty("line") final int lineNumber)
-            // @formatter:on
-    {
+                // @formatter:on
+            {
         // empty
     }
 
@@ -58,5 +58,4 @@ abstract class StackTraceElementMixIn {
     @JsonProperty("method")
     @JacksonXmlProperty(localName = "method", isAttribute = true)
     abstract String getMethodName();
-
 }

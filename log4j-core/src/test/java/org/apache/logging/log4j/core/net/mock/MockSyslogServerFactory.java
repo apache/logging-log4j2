@@ -18,22 +18,25 @@ package org.apache.logging.log4j.core.net.mock;
 
 import java.io.IOException;
 import java.net.SocketException;
-
 import javax.net.ssl.SSLServerSocket;
-
 import org.apache.logging.log4j.core.net.ssl.TlsSyslogMessageFormat;
 
 public class MockSyslogServerFactory {
 
-    public static MockSyslogServer createUDPSyslogServer(final int numberOfMessagesToReceive, final int port) throws SocketException {
+    public static MockSyslogServer createUDPSyslogServer(final int numberOfMessagesToReceive, final int port)
+            throws SocketException {
         return new MockUdpSyslogServer(numberOfMessagesToReceive, port);
     }
 
-    public static MockSyslogServer createTCPSyslogServer(final int numberOfMessagesToReceive, final int port) throws IOException {
+    public static MockSyslogServer createTCPSyslogServer(final int numberOfMessagesToReceive, final int port)
+            throws IOException {
         return new MockTcpSyslogServer(numberOfMessagesToReceive, port);
     }
 
-    public static MockSyslogServer createTLSSyslogServer(final int numberOfMessagesToReceive, final TlsSyslogMessageFormat format, final SSLServerSocket serverSocket) {
+    public static MockSyslogServer createTLSSyslogServer(
+            final int numberOfMessagesToReceive,
+            final TlsSyslogMessageFormat format,
+            final SSLServerSocket serverSocket) {
         return new MockTlsSyslogServer(numberOfMessagesToReceive, format, serverSocket);
-   }
+    }
 }

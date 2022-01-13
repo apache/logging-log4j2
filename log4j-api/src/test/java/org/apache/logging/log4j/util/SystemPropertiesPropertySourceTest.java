@@ -17,16 +17,15 @@
 
 package org.apache.logging.log4j.util;
 
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.ResourceLock;
-import org.junit.jupiter.api.parallel.Resources;
-
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 
 /**
  * Tests https://issues.apache.org/jira/browse/LOG4J2-2276.
@@ -39,15 +38,15 @@ public class SystemPropertiesPropertySourceTest {
 
     /**
      * Tests avoiding a ConcurrentModificationException. For example:
-     * 
+     *
      * <pre>
      * java.util.ConcurrentModificationException
      *  at java.util.Hashtable$Enumerator.next(Hashtable.java:1167)
      *  at org.apache.logging.log4j.util.SystemPropertiesPropertySource.forEach(SystemPropertiesPropertySource.java:38)
      *  at org.apache.logging.log4j.util.SystemPropertiesPropertySourceTest.testMultiThreadedAccess(SystemPropertiesPropertySourceTest.java:47)
      * </pre>
-     * @throws InterruptedException 
-     * @throws ExecutionException 
+     * @throws InterruptedException
+     * @throws ExecutionException
      */
     @Test
     public void testMultiThreadedAccess() throws InterruptedException, ExecutionException {
@@ -69,5 +68,4 @@ public class SystemPropertiesPropertySourceTest {
             threadPool.shutdown();
         }
     }
-
 }

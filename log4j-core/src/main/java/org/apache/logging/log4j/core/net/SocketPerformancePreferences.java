@@ -92,5 +92,4 @@ public class SocketPerformancePreferences implements Builder<SocketPerformancePr
         return "SocketPerformancePreferences [bandwidth=" + bandwidth + ", connectionTime=" + connectionTime
                 + ", latency=" + latency + "]";
     }
-
 }

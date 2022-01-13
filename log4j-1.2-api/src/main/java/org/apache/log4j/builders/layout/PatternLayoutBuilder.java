@@ -16,6 +16,10 @@
  */
 package org.apache.log4j.builders.layout;
 
+import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
+
+import java.util.Properties;
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.LayoutWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
@@ -31,11 +35,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.util.Properties;
-
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
-
 /**
  * Build a Pattern Layout
  */
@@ -46,8 +45,7 @@ public class PatternLayoutBuilder extends AbstractBuilder implements LayoutBuild
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final String PATTERN = "ConversionPattern";
 
-    public PatternLayoutBuilder() {
-    }
+    public PatternLayoutBuilder() {}
 
     public PatternLayoutBuilder(String prefix, Properties props) {
         super(prefix, props);
@@ -58,7 +56,7 @@ public class PatternLayoutBuilder extends AbstractBuilder implements LayoutBuild
         NodeList params = layoutElement.getElementsByTagName("param");
         final int length = params.getLength();
         String pattern = null;
-        for (int index = 0; index < length; ++ index) {
+        for (int index = 0; index < length; ++index) {
             Node currentNode = params.item(index);
             if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
                 Element currentElement = (Element) currentNode;

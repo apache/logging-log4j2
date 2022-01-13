@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import static org.junit.Assert.*;
+
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -33,57 +34,55 @@ import org.junit.Test;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
-import static org.junit.Assert.*;
-
 public class CompositeConfigurationTest {
-/*
-    @Test
-    public void compositeConfigurationUsed() {
-        final LoggerContextRule lcr = new LoggerContextRule(
-                "classpath:log4j-comp-appender.xml,log4j-comp-appender.json");
-        Statement test = new Statement() {
-            @Override
-            public void evaluate() throws Throwable {
-                assertTrue(lcr.getConfiguration() instanceof CompositeConfiguration);
-            }
-        };
-        runTest(lcr, test);
-    }
+    /*
+        @Test
+        public void compositeConfigurationUsed() {
+            final LoggerContextRule lcr = new LoggerContextRule(
+                    "classpath:log4j-comp-appender.xml,log4j-comp-appender.json");
+            Statement test = new Statement() {
+                @Override
+                public void evaluate() throws Throwable {
+                    assertTrue(lcr.getConfiguration() instanceof CompositeConfiguration);
+                }
+            };
+            runTest(lcr, test);
+        }
 
-    @Test
-    public void compositeProperties() {
-        final LoggerContextRule lcr = new LoggerContextRule(
-                "classpath:log4j-comp-properties.xml,log4j-comp-properties.json");
-        Statement test = new Statement() {
-            @Override
-            public void evaluate() throws Throwable {
-                CompositeConfiguration config = (CompositeConfiguration) lcr.getConfiguration();
-                assertEquals("json", config.getStrSubstitutor().replace("${propertyShared}"));
-                assertEquals("xml", config.getStrSubstitutor().replace("${propertyXml}"));
-                assertEquals("json", config.getStrSubstitutor().replace("${propertyJson}"));
-            }
-        };
-        runTest(lcr, test);
-    }
+        @Test
+        public void compositeProperties() {
+            final LoggerContextRule lcr = new LoggerContextRule(
+                    "classpath:log4j-comp-properties.xml,log4j-comp-properties.json");
+            Statement test = new Statement() {
+                @Override
+                public void evaluate() throws Throwable {
+                    CompositeConfiguration config = (CompositeConfiguration) lcr.getConfiguration();
+                    assertEquals("json", config.getStrSubstitutor().replace("${propertyShared}"));
+                    assertEquals("xml", config.getStrSubstitutor().replace("${propertyXml}"));
+                    assertEquals("json", config.getStrSubstitutor().replace("${propertyJson}"));
+                }
+            };
+            runTest(lcr, test);
+        }
 
-    @Test
-    public void compositeAppenders() {
-        final LoggerContextRule lcr = new LoggerContextRule(
-                "classpath:log4j-comp-appender.xml,log4j-comp-appender.json");
-        Statement test = new Statement() {
-            @Override
-            public void evaluate() throws Throwable {
-                CompositeConfiguration config = (CompositeConfiguration) lcr.getConfiguration();
-                Map<String, Appender> appender = config.getAppenders();
-                assertEquals(3, appender.size());
-                assertTrue(appender.get("STDOUT") instanceof ConsoleAppender);
-                assertTrue(appender.get("File") instanceof FileAppender);
-                assertTrue(appender.get("Override") instanceof RollingFileAppender);
-            }
-        };
-        runTest(lcr, test);
-    }
-*/
+        @Test
+        public void compositeAppenders() {
+            final LoggerContextRule lcr = new LoggerContextRule(
+                    "classpath:log4j-comp-appender.xml,log4j-comp-appender.json");
+            Statement test = new Statement() {
+                @Override
+                public void evaluate() throws Throwable {
+                    CompositeConfiguration config = (CompositeConfiguration) lcr.getConfiguration();
+                    Map<String, Appender> appender = config.getAppenders();
+                    assertEquals(3, appender.size());
+                    assertTrue(appender.get("STDOUT") instanceof ConsoleAppender);
+                    assertTrue(appender.get("File") instanceof FileAppender);
+                    assertTrue(appender.get("Override") instanceof RollingFileAppender);
+                }
+            };
+            runTest(lcr, test);
+        }
+    */
     @Test
     public void compositeLogger() {
         final LoggerContextRule lcr = new LoggerContextRule("classpath:log4j-comp-logger.xml,log4j-comp-logger.json");
@@ -92,7 +91,9 @@ public class CompositeConfigurationTest {
             public void evaluate() throws Throwable {
                 final CompositeConfiguration config = (CompositeConfiguration) lcr.getConfiguration();
                 Map<String, Appender> appendersMap = config.getLogger("cat1").getAppenders();
-                assertEquals("Expected 2 Appender references for cat1 but got " + appendersMap.size(), 2,
+                assertEquals(
+                        "Expected 2 Appender references for cat1 but got " + appendersMap.size(),
+                        2,
                         appendersMap.size());
                 assertTrue(appendersMap.get("STDOUT") instanceof ConsoleAppender);
 
@@ -101,23 +102,32 @@ public class CompositeConfigurationTest {
                 assertEquals(loggerFilter.getOnMatch(), Filter.Result.DENY);
 
                 appendersMap = config.getLogger("cat2").getAppenders();
-                assertEquals("Expected 1 Appender reference for cat2 but got " + appendersMap.size(), 1,
+                assertEquals(
+                        "Expected 1 Appender reference for cat2 but got " + appendersMap.size(),
+                        1,
                         appendersMap.size());
                 assertTrue(appendersMap.get("File") instanceof FileAppender);
 
                 appendersMap = config.getLogger("cat3").getAppenders();
-                assertEquals("Expected 1 Appender reference for cat3 but got " + appendersMap.size(), 1,
+                assertEquals(
+                        "Expected 1 Appender reference for cat3 but got " + appendersMap.size(),
+                        1,
                         appendersMap.size());
                 assertTrue(appendersMap.get("File") instanceof FileAppender);
 
                 appendersMap = config.getRootLogger().getAppenders();
-                assertEquals("Expected 2 Appender references for the root logger but got " + appendersMap.size(), 2,
+                assertEquals(
+                        "Expected 2 Appender references for the root logger but got " + appendersMap.size(),
+                        2,
                         appendersMap.size());
                 assertTrue(appendersMap.get("File") instanceof FileAppender);
                 assertTrue(appendersMap.get("STDOUT") instanceof ConsoleAppender);
 
-                assertEquals("Expected COMPOSITE_SOURCE for composite configuration but got " + config.getConfigurationSource(),
-                        config.getConfigurationSource(), ConfigurationSource.COMPOSITE_SOURCE);
+                assertEquals(
+                        "Expected COMPOSITE_SOURCE for composite configuration but got "
+                                + config.getConfigurationSource(),
+                        config.getConfigurationSource(),
+                        ConfigurationSource.COMPOSITE_SOURCE);
             }
         };
         runTest(lcr, test);
@@ -125,7 +135,8 @@ public class CompositeConfigurationTest {
 
     @Test
     public void testAttributeCheckWhenMergingConfigurations() {
-        final LoggerContextRule lcr = new LoggerContextRule("classpath:log4j-comp-root-loggers.xml,log4j-comp-logger.json");
+        final LoggerContextRule lcr =
+                new LoggerContextRule("classpath:log4j-comp-root-loggers.xml,log4j-comp-logger.json");
         final Statement test = new Statement() {
             @Override
             public void evaluate() throws Throwable {
@@ -142,26 +153,36 @@ public class CompositeConfigurationTest {
 
     @Test
     public void testAttributeMergeForLoggers() {
-        final LoggerContextRule lcr = new LoggerContextRule("classpath:log4j-comp-logger-root.xml,log4j-comp-logger-attr-override.json");
+        final LoggerContextRule lcr =
+                new LoggerContextRule("classpath:log4j-comp-logger-root.xml,log4j-comp-logger-attr-override.json");
         final Statement test = new Statement() {
             @Override
             public void evaluate() throws Throwable {
                 final CompositeConfiguration config = (CompositeConfiguration) lcr.getConfiguration();
-                //Test for Root log level override
-                assertEquals("Expected Root logger log level to be WARN", Level.WARN, config.getRootLogger().getLevel());
+                // Test for Root log level override
+                assertEquals(
+                        "Expected Root logger log level to be WARN",
+                        Level.WARN,
+                        config.getRootLogger().getLevel());
 
-                //Test for cat2 level override
+                // Test for cat2 level override
                 final LoggerConfig cat2 = config.getLogger("cat2");
                 assertEquals("Expected cat2 log level to be INFO", Level.INFO, cat2.getLevel());
 
-                //Test for cat2 additivity override
+                // Test for cat2 additivity override
                 assertTrue("Expected cat2 additivity to be true", cat2.isAdditive());
 
-                //Regression
-                //Check level on cat3 (not present in root config)
-                assertEquals("Expected cat3 log level to be ERROR", Level.ERROR, config.getLogger("cat3").getLevel());
-                //Check level on cat1 (not present in overridden config)
-                assertEquals("Expected cat1 log level to be DEBUG", Level.DEBUG, config.getLogger("cat1").getLevel());
+                // Regression
+                // Check level on cat3 (not present in root config)
+                assertEquals(
+                        "Expected cat3 log level to be ERROR",
+                        Level.ERROR,
+                        config.getLogger("cat3").getLevel());
+                // Check level on cat1 (not present in overridden config)
+                assertEquals(
+                        "Expected cat1 log level to be DEBUG",
+                        Level.DEBUG,
+                        config.getLogger("cat1").getLevel());
             }
         };
         runTest(lcr, test);
@@ -169,16 +190,20 @@ public class CompositeConfigurationTest {
 
     @Test
     public void testMissingConfig() {
-        final LoggerContextRule lcr = new LoggerContextRule("classpath:log4j-comp-logger-root.xml,log4j-does-not-exist.json");
+        final LoggerContextRule lcr =
+                new LoggerContextRule("classpath:log4j-comp-logger-root.xml,log4j-does-not-exist.json");
         final Statement test = new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                final AbstractConfiguration config =  (AbstractConfiguration) lcr.getConfiguration();
+                final AbstractConfiguration config = (AbstractConfiguration) lcr.getConfiguration();
                 assertNotNull("No configuration returned", config);
-                //Test for Root log level override
-                assertEquals("Expected Root logger log level to be ERROR", Level.ERROR, config.getRootLogger().getLevel());
+                // Test for Root log level override
+                assertEquals(
+                        "Expected Root logger log level to be ERROR",
+                        Level.ERROR,
+                        config.getRootLogger().getLevel());
 
-                //Test for no cat2 level override
+                // Test for no cat2 level override
                 final LoggerConfig cat2 = config.getLogger("cat2");
                 assertEquals("Expected cat2 log level to be INFO", Level.DEBUG, cat2.getLevel());
             }
@@ -188,16 +213,18 @@ public class CompositeConfigurationTest {
 
     @Test
     public void testAppenderRefFilterMerge() {
-        final LoggerContextRule lcr = new LoggerContextRule(
-                "classpath:log4j-comp-logger-ref.xml,log4j-comp-logger-ref.json");
+        final LoggerContextRule lcr =
+                new LoggerContextRule("classpath:log4j-comp-logger-ref.xml,log4j-comp-logger-ref.json");
         final Statement test = new Statement() {
             @Override
             public void evaluate() throws Throwable {
                 final CompositeConfiguration config = (CompositeConfiguration) lcr.getConfiguration();
 
-                final List<AppenderRef> appenderRefList = config.getLogger("cat1").getAppenderRefs();
+                final List<AppenderRef> appenderRefList =
+                        config.getLogger("cat1").getAppenderRefs();
                 final AppenderRef appenderRef = getAppenderRef(appenderRefList, "STDOUT");
-                assertTrue("Expected cat1 STDOUT appenderRef to have a regex filter",
+                assertTrue(
+                        "Expected cat1 STDOUT appenderRef to have a regex filter",
                         appenderRef.getFilter() != null && appenderRef.getFilter() instanceof RegexFilter);
             }
         };
@@ -212,7 +239,7 @@ public class CompositeConfigurationTest {
         }
         return null;
     }
-/*
+    /*
     @Test
     public void overrideFilter() {
         final LoggerContextRule lcr = new LoggerContextRule("classpath:log4j-comp-filter.xml,log4j-comp-filter.json");
@@ -262,8 +289,11 @@ public class CompositeConfigurationTest {
 
     private void runTest(final LoggerContextRule rule, final Statement statement) {
         try {
-            rule.apply(statement, Description
-                    .createTestDescription(getClass(), Thread.currentThread().getStackTrace()[1].getMethodName()))
+            rule.apply(
+                            statement,
+                            Description.createTestDescription(
+                                    getClass(),
+                                    Thread.currentThread().getStackTrace()[1].getMethodName()))
                     .evaluate();
         } catch (final Throwable e) {
             Throwables.rethrow(e);

@@ -23,8 +23,7 @@ import java.util.Stack;
  */
 public final class NDC {
 
-    private NDC() {
-    }
+    private NDC() {}
 
     /**
      * Clear any nested diagnostic information if any. This method is
@@ -38,7 +37,6 @@ public final class NDC {
     public static void clear() {
         org.apache.logging.log4j.ThreadContext.clearStack();
     }
-
 
     /**
      * Clone the diagnostic context for the current thread.
@@ -57,12 +55,12 @@ public final class NDC {
     @SuppressWarnings("rawtypes")
     public static Stack cloneStack() {
         final Stack<String> stack = new Stack<>();
-        for (final String element : org.apache.logging.log4j.ThreadContext.cloneStack().asList()) {
+        for (final String element :
+                org.apache.logging.log4j.ThreadContext.cloneStack().asList()) {
             stack.push(element);
         }
         return stack;
     }
-
 
     /**
      * Inherit the diagnostic context of another thread, a Stack of Strings.
@@ -89,7 +87,6 @@ public final class NDC {
     public static void inherit(final Stack stack) {
         org.apache.logging.log4j.ThreadContext.setStack(stack);
     }
-
 
     /**
      * <strong style="color:#FF4040">Never use this method directly.</strong>

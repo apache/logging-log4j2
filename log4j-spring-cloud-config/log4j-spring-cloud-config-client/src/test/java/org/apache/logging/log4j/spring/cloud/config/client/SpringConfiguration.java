@@ -22,5 +22,4 @@ import org.springframework.context.annotation.Configuration;
  * Needed to make Spring happy.
  */
 @Configuration
-public class SpringConfiguration {
-}
+public class SpringConfiguration {}

@@ -17,9 +17,9 @@
 
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the IfAccumulatedFileSize class.
@@ -121,10 +121,9 @@ public class IfAccumulatedFileSizeTest {
     @Test
     public void testBeforeTreeWalk() {
         final CountingCondition counter = new CountingCondition(true);
-        final IfAccumulatedFileSize filter = IfAccumulatedFileSize.createFileSizeCondition("2GB", counter, counter,
-                counter);
+        final IfAccumulatedFileSize filter =
+                IfAccumulatedFileSize.createFileSizeCondition("2GB", counter, counter, counter);
         filter.beforeFileTreeWalk();
         assertEquals(3, counter.getBeforeFileTreeWalkCount());
     }
-
 }

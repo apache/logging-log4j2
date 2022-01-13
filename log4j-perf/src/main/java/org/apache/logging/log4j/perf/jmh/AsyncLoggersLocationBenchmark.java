@@ -19,7 +19,6 @@ package org.apache.logging.log4j.perf.jmh;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LifeCycle;
@@ -59,8 +58,8 @@ public class AsyncLoggersLocationBenchmark {
         System.setProperty("Log4jContextSelector", "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
         System.setProperty("AsyncLogger.RingBufferSize", "262144");
         System.setProperty("AsyncLogger.WaitStrategy", "Yield");
-        //System.setProperty("log4j2.enable.threadlocals", "true");
-        //System.setProperty("log4j.format.msg.async", "true");
+        // System.setProperty("log4j2.enable.threadlocals", "true");
+        // System.setProperty("log4j.format.msg.async", "true");
 
         logger = LogManager.getLogger(getClass());
         new File("perftest.log").delete();
@@ -78,5 +77,4 @@ public class AsyncLoggersLocationBenchmark {
     public void throughputSimple() {
         logger.info(BenchmarkMessageParams.TEST);
     }
-
 }

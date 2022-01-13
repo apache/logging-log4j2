@@ -22,15 +22,13 @@ import static org.junit.Assert.assertSame;
 
 import java.util.Deque;
 import java.util.Stack;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.ParentRunner;
-
 import sun.reflect.Reflection;
 
-/** 
+/**
  * Tests {@link StackLocatorUtilTest}.
  */
 @RunWith(BlockJUnit4ClassRunner.class)
@@ -41,8 +39,8 @@ public class StackLocatorUtilTest {
         for (int i = 1; i < 15; i++) {
             final Class<?> expected = Reflection.getCallerClass(i + StackLocator.JDK_7U25_OFFSET);
             final Class<?> actual = StackLocatorUtil.getCallerClass(i);
-            final Class<?> fallbackActual = Class.forName(
-                StackLocatorUtil.getStackTraceElement(i).getClassName());
+            final Class<?> fallbackActual =
+                    Class.forName(StackLocatorUtil.getStackTraceElement(i).getClassName());
             assertSame(expected, actual);
             assertSame(expected, fallbackActual);
         }
@@ -107,5 +105,4 @@ public class StackLocatorUtilTest {
         assertNotNull("Could not locate class", clazz);
         assertEquals("Incorrect class", this.getClass(), clazz);
     }
-
 }

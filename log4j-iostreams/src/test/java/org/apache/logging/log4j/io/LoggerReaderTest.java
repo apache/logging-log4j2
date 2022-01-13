@@ -16,17 +16,16 @@
  */
 package org.apache.logging.log4j.io;
 
+import static org.junit.Assert.*;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.CharBuffer;
-
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class LoggerReaderTest extends AbstractStreamTest {
     protected StringReader wrapped;
@@ -35,9 +34,9 @@ public class LoggerReaderTest extends AbstractStreamTest {
 
     protected Reader createReader() {
         return IoBuilder.forLogger(getExtendedLogger())
-            .filter(this.wrapped)
-            .setLevel(LEVEL)
-            .buildReader();
+                .filter(this.wrapped)
+                .setLevel(LEVEL)
+                .buildReader();
     }
 
     @Before

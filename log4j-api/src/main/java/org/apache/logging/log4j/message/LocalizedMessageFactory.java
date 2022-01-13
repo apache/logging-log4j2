@@ -21,7 +21,7 @@ import java.util.ResourceBundle;
 /**
  * Creates {@link FormattedMessage} instances for {@link MessageFactory2} methods (and {@link MessageFactory} by
  * extension.)
- * 
+ *
  * <h4>Note to implementors</h4>
  * <p>
  * This class does <em>not</em> implement any {@link MessageFactory2} methods and lets the superclass funnel those calls
@@ -32,7 +32,7 @@ public class LocalizedMessageFactory extends AbstractMessageFactory {
     private static final long serialVersionUID = -1996295808703146741L;
 
     // FIXME: cannot use ResourceBundle name for serialization until Java 8
-    private transient final ResourceBundle resourceBundle;
+    private final transient ResourceBundle resourceBundle;
     private final String baseName;
 
     public LocalizedMessageFactory(final ResourceBundle resourceBundle) {
@@ -69,11 +69,11 @@ public class LocalizedMessageFactory extends AbstractMessageFactory {
     @Override
     public Message newMessage(final String key) {
         if (resourceBundle == null) {
-            return new LocalizedMessage(baseName,  key);
+            return new LocalizedMessage(baseName, key);
         }
         return new LocalizedMessage(resourceBundle, key);
     }
-    
+
     /**
      * Creates {@link LocalizedMessage} instances.
      *
@@ -90,5 +90,4 @@ public class LocalizedMessageFactory extends AbstractMessageFactory {
         }
         return new LocalizedMessage(resourceBundle, key, params);
     }
-
 }

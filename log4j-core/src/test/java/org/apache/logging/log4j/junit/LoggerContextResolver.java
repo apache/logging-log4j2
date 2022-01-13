@@ -17,6 +17,8 @@
 
 package org.apache.logging.log4j.junit;
 
+import java.lang.reflect.Method;
+import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.LoggerContextAccessor;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -29,11 +31,8 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 
-import java.lang.reflect.Method;
-import java.util.concurrent.TimeUnit;
-
-class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> implements BeforeAllCallback,
-        AfterAllCallback, BeforeEachCallback, AfterEachCallback {
+class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext>
+        implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback {
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
         final Class<?> testClass = context.getRequiredTestClass();
@@ -57,11 +56,12 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
     public void beforeEach(ExtensionContext context) throws Exception {
         final Class<?> testClass = context.getRequiredTestClass();
         if (testClass.isAnnotationPresent(LoggerContextSource.class)) {
-            final LoggerContextConfig config = getTestClassStore(context).get(LoggerContext.class, LoggerContextConfig.class);
+            final LoggerContextConfig config =
+                    getTestClassStore(context).get(LoggerContext.class, LoggerContextConfig.class);
             if (config == null) {
                 throw new IllegalStateException(
-                        "Specified @LoggerContextSource but no LoggerContext found for test class " +
-                                testClass.getCanonicalName());
+                        "Specified @LoggerContextSource but no LoggerContext found for test class "
+                                + testClass.getCanonicalName());
             }
             if (config.reconfigurationPolicy == ReconfigurationPolicy.BEFORE_EACH) {
                 config.reconfigure();
@@ -88,11 +88,12 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
         // reloadable variant
         final Class<?> testClass = context.getRequiredTestClass();
         if (testClass.isAnnotationPresent(LoggerContextSource.class)) {
-            final LoggerContextConfig config = getTestClassStore(context).get(LoggerContext.class, LoggerContextConfig.class);
+            final LoggerContextConfig config =
+                    getTestClassStore(context).get(LoggerContext.class, LoggerContextConfig.class);
             if (config == null) {
                 throw new IllegalStateException(
-                        "Specified @LoggerContextSource but no LoggerContext found for test class " +
-                                testClass.getCanonicalName());
+                        "Specified @LoggerContextSource but no LoggerContext found for test class "
+                                + testClass.getCanonicalName());
             }
             if (config.reconfigurationPolicy == ReconfigurationPolicy.AFTER_EACH) {
                 config.reconfigure();
@@ -101,8 +102,8 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
     }
 
     @Override
-    public LoggerContext resolveParameter(
-            ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+    public LoggerContext resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
+            throws ParameterResolutionException {
         return getParameterLoggerContext(parameterContext, extensionContext);
     }
 
@@ -111,17 +112,24 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
     }
 
     private static ExtensionContext.Store getTestInstanceStore(final ExtensionContext context) {
-        return context.getStore(ExtensionContext.Namespace.create(LoggerContext.class, context.getRequiredTestInstance()));
+        return context.getStore(
+                ExtensionContext.Namespace.create(LoggerContext.class, context.getRequiredTestInstance()));
     }
 
-    static LoggerContext getParameterLoggerContext(ParameterContext parameterContext, ExtensionContext extensionContext) {
+    static LoggerContext getParameterLoggerContext(
+            ParameterContext parameterContext, ExtensionContext extensionContext) {
         if (parameterContext.getDeclaringExecutable() instanceof Method) {
             final LoggerContextAccessor accessor =
                     getTestInstanceStore(extensionContext).get(LoggerContext.class, LoggerContextAccessor.class);
-            return accessor != null ? accessor.getLoggerContext() :
-                    getTestClassStore(extensionContext).get(LoggerContext.class, LoggerContextAccessor.class).getLoggerContext();
+            return accessor != null
+                    ? accessor.getLoggerContext()
+                    : getTestClassStore(extensionContext)
+                            .get(LoggerContext.class, LoggerContextAccessor.class)
+                            .getLoggerContext();
         }
-        return getTestClassStore(extensionContext).get(LoggerContext.class, LoggerContextAccessor.class).getLoggerContext();
+        return getTestClassStore(extensionContext)
+                .get(LoggerContext.class, LoggerContextAccessor.class)
+                .getLoggerContext();
     }
 
     private static class LoggerContextConfig implements AutoCloseable, LoggerContextAccessor {
@@ -132,7 +140,8 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
 
         private LoggerContextConfig(final LoggerContextSource source, final ExtensionContext extensionContext) {
             final String displayName = extensionContext.getDisplayName();
-            final ClassLoader classLoader = extensionContext.getRequiredTestClass().getClassLoader();
+            final ClassLoader classLoader =
+                    extensionContext.getRequiredTestClass().getClassLoader();
             context = Configurator.initialize(displayName, classLoader, source.value());
             reconfigurationPolicy = source.reconfigure();
             shutdownTimeout = source.timeout();
@@ -153,5 +162,4 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
             context.stop(shutdownTimeout, unit);
         }
     }
-
 }

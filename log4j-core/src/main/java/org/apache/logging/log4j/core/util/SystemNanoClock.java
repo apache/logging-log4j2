@@ -29,5 +29,4 @@ public final class SystemNanoClock implements NanoClock {
     public long nanoTime() {
         return System.nanoTime();
     }
-
 }

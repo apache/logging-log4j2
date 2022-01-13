@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j.core.config.plugins.convert;
 
+import static org.junit.Assert.assertEquals;
+
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Date;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -39,7 +38,7 @@ public class DateTypeConverterTest {
     @Parameterized.Parameters
     public static Object[][] data() {
         final long millis = System.currentTimeMillis();
-        return new Object[][]{
+        return new Object[][] {
             {Date.class, millis, new Date(millis)},
             {java.sql.Date.class, millis, new java.sql.Date(millis)},
             {Time.class, millis, new Time(millis)},

@@ -39,5 +39,4 @@ public class SimpleLayout extends Layout {
     public boolean ignoresThrowable() {
         return true;
     }
-
 }

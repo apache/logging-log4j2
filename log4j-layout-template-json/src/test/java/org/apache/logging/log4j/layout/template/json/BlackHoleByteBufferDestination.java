@@ -16,9 +16,8 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
-import org.apache.logging.log4j.core.layout.ByteBufferDestination;
-
 import java.nio.ByteBuffer;
+import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 
 class BlackHoleByteBufferDestination implements ByteBufferDestination {
 
@@ -46,5 +45,4 @@ class BlackHoleByteBufferDestination implements ByteBufferDestination {
 
     @Override
     public void writeBytes(final byte[] buffer, final int offset, final int length) {}
-
 }

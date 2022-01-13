@@ -28,10 +28,8 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -62,7 +60,8 @@ public abstract class AbstractLog4j1ConfigurationConverterTest {
     public void test() throws Exception {
         final Path tempFile = Files.createTempFile("log4j2", ".xml");
         try {
-            final Log4j1ConfigurationConverter.CommandLineArguments cla = new Log4j1ConfigurationConverter.CommandLineArguments();
+            final Log4j1ConfigurationConverter.CommandLineArguments cla =
+                    new Log4j1ConfigurationConverter.CommandLineArguments();
             cla.setPathIn(pathIn);
             cla.setPathOut(tempFile);
             Log4j1ConfigurationConverter.run(cla);
@@ -77,10 +76,11 @@ public abstract class AbstractLog4j1ConfigurationConverterTest {
         for (String line : Files.readAllLines(tempFile)) {
             assertFalse(line.endsWith("&#xd;"));
         }
-
     }
 
     private void checkWellFormedXml(Path xmlFilePath) throws SAXException, IOException, ParserConfigurationException {
-        DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xmlFilePath.toUri().toString());
+        DocumentBuilderFactory.newInstance()
+                .newDocumentBuilder()
+                .parse(xmlFilePath.toUri().toString());
     }
 }

@@ -25,7 +25,6 @@ import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
@@ -59,8 +58,7 @@ public class ThreadContextDataInjector {
     /**
      * ContextDataProviders loaded via OSGi.
      */
-    public static Collection<ContextDataProvider> contextDataProviders =
-            new ConcurrentLinkedDeque<>();
+    public static Collection<ContextDataProvider> contextDataProviders = new ConcurrentLinkedDeque<>();
 
     private static volatile List<ContextDataProvider> serviceProviders = null;
     private static final Lock providerLock = new ReentrantLock();

@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.mongodb4;
 
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.Appenders;
@@ -31,10 +34,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.RuleChain;
 
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-
 /**
  *
  *
@@ -46,15 +45,15 @@ public class MongoDb4AuthFailureTest {
 
     private static LoggerContextRule loggerContextTestRule = new LoggerContextRule("log4j2-mongodb-auth-failure.xml");
 
-    private static final AvailablePortSystemPropertyTestRule mongoDbPortTestRule = AvailablePortSystemPropertyTestRule
-            .create(MongoDb4TestConstants.SYS_PROP_NAME_PORT);
+    private static final AvailablePortSystemPropertyTestRule mongoDbPortTestRule =
+            AvailablePortSystemPropertyTestRule.create(MongoDb4TestConstants.SYS_PROP_NAME_PORT);
 
-    private static final MongoDb4TestRule mongoDbTestRule = new MongoDb4TestRule(mongoDbPortTestRule.getName(),
-            MongoDb4AuthFailureTest.class, LoggingTarget.NULL);
+    private static final MongoDb4TestRule mongoDbTestRule =
+            new MongoDb4TestRule(mongoDbPortTestRule.getName(), MongoDb4AuthFailureTest.class, LoggingTarget.NULL);
 
     @ClassRule
-    public static RuleChain ruleChain = RuleChainFactory.create(mongoDbPortTestRule, mongoDbTestRule,
-            loggerContextTestRule);
+    public static RuleChain ruleChain =
+            RuleChainFactory.create(mongoDbPortTestRule, mongoDbTestRule, loggerContextTestRule);
 
     @Test
     public void test() {

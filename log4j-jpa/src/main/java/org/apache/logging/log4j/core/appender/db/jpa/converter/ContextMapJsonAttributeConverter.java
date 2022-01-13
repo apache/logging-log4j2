@@ -16,17 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Map;
-
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import javax.persistence.PersistenceException;
-
 import org.apache.logging.log4j.util.Strings;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * A JPA 2.1 attribute converter for {@link Map Map&lt;String, String&gt;}s in
@@ -59,7 +56,7 @@ public class ContextMapJsonAttributeConverter implements AttributeConverter<Map<
             return null;
         }
         try {
-            return OBJECT_MAPPER.readValue(s, new TypeReference<Map<String, String>>() { });
+            return OBJECT_MAPPER.readValue(s, new TypeReference<Map<String, String>>() {});
         } catch (final IOException e) {
             throw new PersistenceException("Failed to convert JSON string to map.", e);
         }

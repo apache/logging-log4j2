@@ -55,6 +55,5 @@ import java.lang.annotation.Target;
  */
 @Documented // This annotation is part of the public API of annotated elements.
 @Target(ElementType.TYPE) // Only applies to types.
-@Retention(RetentionPolicy.RUNTIME) //Needs to be reflectively discoverable runtime.
-public @interface AsynchronouslyFormattable {
-}
+@Retention(RetentionPolicy.RUNTIME) // Needs to be reflectively discoverable runtime.
+public @interface AsynchronouslyFormattable {}

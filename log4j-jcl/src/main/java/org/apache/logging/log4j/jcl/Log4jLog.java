@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.jcl;
 
 import java.io.Serializable;
-
 import org.apache.commons.logging.Log;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.spi.ExtendedLogger;

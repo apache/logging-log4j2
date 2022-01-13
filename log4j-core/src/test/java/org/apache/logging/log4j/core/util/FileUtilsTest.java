@@ -17,12 +17,11 @@
 
 package org.apache.logging.log4j.core.util;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.net.URI;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the FileUtils class.
@@ -77,5 +76,4 @@ public class FileUtilsTest {
         assertEquals(LOG4J_CONFIG_WITH_PLUS, file.getName());
         assertTrue(file.exists(), "file exists");
     }
-
 }

@@ -25,7 +25,7 @@ public class PortDefinition {
 
     @JsonProperty("IP")
     private String ip;
-    
+
     @JsonProperty("PrivatePort")
     private Integer privatePort;
 

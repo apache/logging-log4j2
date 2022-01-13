@@ -80,7 +80,7 @@ public interface DateParser {
     boolean parse(String source, ParsePosition pos, Calendar calendar);
 
     // Accessors
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     /**
      * <p>Gets the pattern used by this parser.</p>
      *

@@ -110,7 +110,6 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
         SimpleEntryMessage(final String entryText, final Message message) {
             super(entryText, message);
         }
-
     }
 
     private static final class SimpleExitMessage extends AbstractFlowMessage implements ExitMessage {

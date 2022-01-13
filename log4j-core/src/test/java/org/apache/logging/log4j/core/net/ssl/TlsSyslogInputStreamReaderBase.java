@@ -24,7 +24,8 @@ public abstract class TlsSyslogInputStreamReaderBase {
     protected InputStream inputStream;
     protected TlsSyslogMessageFormat messageFormat;
 
-    protected TlsSyslogInputStreamReaderBase(final InputStream inputStream, final TlsSyslogMessageFormat messageFormat) {
+    protected TlsSyslogInputStreamReaderBase(
+            final InputStream inputStream, final TlsSyslogMessageFormat messageFormat) {
         this.inputStream = inputStream;
         this.messageFormat = messageFormat;
     }

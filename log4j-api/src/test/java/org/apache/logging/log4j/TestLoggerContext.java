@@ -18,10 +18,9 @@ package org.apache.logging.log4j;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.ExtendedLogger;
+import org.apache.logging.log4j.spi.LoggerContext;
 
 /**
  *
@@ -33,7 +32,7 @@ public class TestLoggerContext implements LoggerContext {
     public ExtendedLogger getLogger(final String name) {
         final ExtendedLogger extendedLogger = map.get(name);
         if (extendedLogger != null) {
-			return extendedLogger;
+            return extendedLogger;
         }
         final ExtendedLogger logger = new TestLogger(name);
         map.put(name, logger);
@@ -64,5 +63,4 @@ public class TestLoggerContext implements LoggerContext {
     public boolean hasLogger(final String name, final Class<? extends MessageFactory> messageFactoryClass) {
         return false;
     }
-
 }

@@ -16,10 +16,9 @@
  */
 package org.apache.logging.log4j.lookup;
 
+import java.util.Map;
 import org.apache.logging.log4j.message.AsynchronouslyFormattable;
 import org.apache.logging.log4j.message.StringMapMessage;
-
-import java.util.Map;
 
 /**
  *
@@ -50,5 +49,4 @@ public class CustomMapMessage extends StringMapMessage {
         }
         return super.getFormattedMessage();
     }
-
 }

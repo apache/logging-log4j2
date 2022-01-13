@@ -30,7 +30,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.Serializable;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.junit.Test;
 
@@ -66,7 +65,6 @@ public class AbstractDatabaseManagerTest {
         protected void writeInternal(final LogEvent event, final Serializable serializable) {
             // noop
         }
-
     }
 
     private AbstractDatabaseManager manager;

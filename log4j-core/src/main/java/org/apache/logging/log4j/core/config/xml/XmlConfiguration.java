@@ -32,7 +32,6 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -60,10 +59,8 @@ import org.xml.sax.SAXException;
  */
 public class XmlConfiguration extends AbstractConfiguration implements Reconfigurable {
 
-    private static final String XINCLUDE_FIXUP_LANGUAGE =
-            "http://apache.org/xml/features/xinclude/fixup-language";
-    private static final String XINCLUDE_FIXUP_BASE_URIS =
-            "http://apache.org/xml/features/xinclude/fixup-base-uris";
+    private static final String XINCLUDE_FIXUP_LANGUAGE = "http://apache.org/xml/features/xinclude/fixup-language";
+    private static final String XINCLUDE_FIXUP_BASE_URIS = "http://apache.org/xml/features/xinclude/fixup-base-uris";
     private static final String[] VERBOSE_CLASSES = new String[] {ResolverUtil.class.getName()};
     private static final String LOG4J_XSD = "Log4j-config.xsd";
 
@@ -96,8 +93,9 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                 if (throwable instanceof UnsupportedOperationException) {
                     LOGGER.warn(
                             "The DocumentBuilder {} does not support an operation: {}."
-                            + "Trying again without XInclude...",
-                            documentBuilder, e);
+                                    + "Trying again without XInclude...",
+                            documentBuilder,
+                            e);
                     document = newDocumentBuilder(false).parse(source);
                 } else {
                     throw e;
@@ -105,7 +103,8 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             }
             rootElement = document.getDocumentElement();
             final Map<String, String> attrs = processAttributes(rootNode, rootElement);
-            final StatusConfiguration statusConfig = new StatusConfiguration().withVerboseClasses(VERBOSE_CLASSES)
+            final StatusConfiguration statusConfig = new StatusConfiguration()
+                    .withVerboseClasses(VERBOSE_CLASSES)
                     .withStatus(getDefaultStatus());
             int monitorIntervalSeconds = 0;
             for (final Map.Entry<String, String> entry : attrs.entrySet()) {
@@ -199,12 +198,20 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         setFeature(factory, "http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
     }
 
-    private static void setFeature(final DocumentBuilderFactory factory, final String featureName, final boolean value) {
+    private static void setFeature(
+            final DocumentBuilderFactory factory, final String featureName, final boolean value) {
         try {
             factory.setFeature(featureName, value);
         } catch (Exception | LinkageError e) {
-            getStatusLogger().error("Caught {} setting feature {} to {} on DocumentBuilderFactory {}: {}",
-                    e.getClass().getCanonicalName(), featureName, value, factory, e, e);
+            getStatusLogger()
+                    .error(
+                            "Caught {} setting feature {} to {} on DocumentBuilderFactory {}: {}",
+                            e.getClass().getCanonicalName(),
+                            featureName,
+                            value,
+                            factory,
+                            e,
+                            e);
         }
     }
 
@@ -221,28 +228,38 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         } catch (final UnsupportedOperationException e) {
             LOGGER.warn("The DocumentBuilderFactory [{}] does not support XInclude: {}", factory, e);
         } catch (@SuppressWarnings("ErrorNotRethrown") final AbstractMethodError | NoSuchMethodError err) {
-            LOGGER.warn("The DocumentBuilderFactory [{}] is out of date and does not support XInclude: {}", factory,
-                    err);
+            LOGGER.warn(
+                    "The DocumentBuilderFactory [{}] is out of date and does not support XInclude: {}", factory, err);
         }
         try {
             // Alternative: We could specify all features and values with system properties like:
             // -DLog4j.DocumentBuilderFactory.Feature="http://apache.org/xml/features/xinclude/fixup-base-uris true"
             factory.setFeature(XINCLUDE_FIXUP_BASE_URIS, true);
         } catch (final ParserConfigurationException e) {
-            LOGGER.warn("The DocumentBuilderFactory [{}] does not support the feature [{}]: {}", factory,
-                    XINCLUDE_FIXUP_BASE_URIS, e);
-        } catch (@SuppressWarnings("ErrorNotRethrown") final AbstractMethodError err) {
-            LOGGER.warn("The DocumentBuilderFactory [{}] is out of date and does not support setFeature: {}", factory,
-                    err);
+            LOGGER.warn(
+                    "The DocumentBuilderFactory [{}] does not support the feature [{}]: {}",
+                    factory,
+                    XINCLUDE_FIXUP_BASE_URIS,
+                    e);
+        } catch (
+                @SuppressWarnings("ErrorNotRethrown")
+                final AbstractMethodError err) {
+            LOGGER.warn(
+                    "The DocumentBuilderFactory [{}] is out of date and does not support setFeature: {}", factory, err);
         }
         try {
             factory.setFeature(XINCLUDE_FIXUP_LANGUAGE, true);
         } catch (final ParserConfigurationException e) {
-            LOGGER.warn("The DocumentBuilderFactory [{}] does not support the feature [{}]: {}", factory,
-                    XINCLUDE_FIXUP_LANGUAGE, e);
-        } catch (@SuppressWarnings("ErrorNotRethrown") final AbstractMethodError err) {
-            LOGGER.warn("The DocumentBuilderFactory [{}] is out of date and does not support setFeature: {}", factory,
-                    err);
+            LOGGER.warn(
+                    "The DocumentBuilderFactory [{}] does not support the feature [{}]: {}",
+                    factory,
+                    XINCLUDE_FIXUP_LANGUAGE,
+                    e);
+        } catch (
+                @SuppressWarnings("ErrorNotRethrown")
+                final AbstractMethodError err) {
+            LOGGER.warn(
+                    "The DocumentBuilderFactory [{}] is out of date and does not support setFeature: {}", factory, err);
         }
     }
 
@@ -377,7 +394,5 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         public String toString() {
             return "Status [name=" + name + ", element=" + element + ", errorType=" + errorType + "]";
         }
-
     }
-
 }

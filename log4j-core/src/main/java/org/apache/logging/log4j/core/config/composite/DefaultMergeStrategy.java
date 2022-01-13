@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
@@ -70,21 +69,24 @@ public class DefaultMergeStrategy implements MergeStrategy {
      */
     @Override
     public void mergeRootProperties(final Node rootNode, final AbstractConfiguration configuration) {
-        for (final Map.Entry<String, String> attribute : configuration.getRootNode().getAttributes().entrySet()) {
+        for (final Map.Entry<String, String> attribute :
+                configuration.getRootNode().getAttributes().entrySet()) {
             boolean isFound = false;
-            for (final Map.Entry<String, String> targetAttribute : rootNode.getAttributes().entrySet()) {
+            for (final Map.Entry<String, String> targetAttribute :
+                    rootNode.getAttributes().entrySet()) {
                 if (targetAttribute.getKey().equalsIgnoreCase(attribute.getKey())) {
                     if (attribute.getKey().equalsIgnoreCase(STATUS)) {
-                        final Level targetLevel = Level.getLevel(targetAttribute.getValue().toUpperCase());
-                        final Level sourceLevel = Level.getLevel(attribute.getValue().toUpperCase());
+                        final Level targetLevel =
+                                Level.getLevel(targetAttribute.getValue().toUpperCase());
+                        final Level sourceLevel =
+                                Level.getLevel(attribute.getValue().toUpperCase());
                         if (targetLevel != null && sourceLevel != null) {
                             if (sourceLevel.isLessSpecificThan(targetLevel)) {
                                 targetAttribute.setValue(attribute.getValue());
                             }
-                        } else
-                            if (sourceLevel != null) {
-                                targetAttribute.setValue(attribute.getValue());
-                            }
+                        } else if (sourceLevel != null) {
+                            targetAttribute.setValue(attribute.getValue());
+                        }
                     } else if (attribute.getKey().equalsIgnoreCase("monitorInterval")) {
                         final int sourceInterval = Integer.parseInt(attribute.getValue());
                         final int targetInterval = Integer.parseInt(targetAttribute.getValue());
@@ -97,13 +99,11 @@ public class DefaultMergeStrategy implements MergeStrategy {
                         if (sourcePackages != null) {
                             if (targetPackages != null) {
                                 targetAttribute.setValue(targetPackages + "," + sourcePackages);
-                            }
-                            else {
+                            } else {
                                 targetAttribute.setValue(sourcePackages);
                             }
                         }
-                    }
-                    else {
+                    } else {
                         targetAttribute.setValue(attribute.getValue());
                     }
                     isFound = true;
@@ -147,7 +147,9 @@ public class DefaultMergeStrategy implements MergeStrategy {
                     case APPENDERS: {
                         for (final Node node : sourceChildNode.getChildren()) {
                             for (final Node targetNode : targetChildNode.getChildren()) {
-                                if (Objects.equals(targetNode.getAttributes().get(NAME), node.getAttributes().get(NAME))) {
+                                if (Objects.equals(
+                                        targetNode.getAttributes().get(NAME),
+                                        node.getAttributes().get(NAME))) {
                                     targetChildNode.getChildren().remove(targetNode);
                                     break;
                                 }
@@ -163,7 +165,8 @@ public class DefaultMergeStrategy implements MergeStrategy {
                             targetLoggers.put(node.getName(), node);
                         }
                         for (final Node node : sourceChildNode.getChildren()) {
-                            final Node targetNode = getLoggerNode(targetChildNode, node.getAttributes().get(NAME));
+                            final Node targetNode = getLoggerNode(
+                                    targetChildNode, node.getAttributes().get(NAME));
                             final Node loggerNode = new Node(targetChildNode, node.getName(), node.getType());
                             if (targetNode != null) {
                                 targetNode.getAttributes().putAll(node.getAttributes());
@@ -172,22 +175,24 @@ public class DefaultMergeStrategy implements MergeStrategy {
                                         boolean foundFilter = false;
                                         for (final Node targetChild : targetNode.getChildren()) {
                                             if (isFilterNode(targetChild)) {
-                                                updateFilterNode(loggerNode, targetChild, sourceLoggerChild,
-                                                        pluginManager);
+                                                updateFilterNode(
+                                                        loggerNode, targetChild, sourceLoggerChild, pluginManager);
                                                 foundFilter = true;
                                                 break;
                                             }
                                         }
                                         if (!foundFilter) {
-                                            final Node childNode = new Node(loggerNode, sourceLoggerChild.getName(),
+                                            final Node childNode = new Node(
+                                                    loggerNode,
+                                                    sourceLoggerChild.getName(),
                                                     sourceLoggerChild.getType());
                                             childNode.getAttributes().putAll(sourceLoggerChild.getAttributes());
                                             childNode.getChildren().addAll(sourceLoggerChild.getChildren());
                                             targetNode.getChildren().add(childNode);
                                         }
                                     } else {
-                                        final Node childNode = new Node(loggerNode, sourceLoggerChild.getName(),
-                                                sourceLoggerChild.getType());
+                                        final Node childNode = new Node(
+                                                loggerNode, sourceLoggerChild.getName(), sourceLoggerChild.getType());
                                         childNode.getAttributes().putAll(sourceLoggerChild.getAttributes());
                                         childNode.getChildren().addAll(sourceLoggerChild.getChildren());
                                         if (childNode.getName().equalsIgnoreCase("AppenderRef")) {
@@ -223,7 +228,6 @@ public class DefaultMergeStrategy implements MergeStrategy {
                         isMerged = true;
                         break;
                     }
-
                 }
             }
             if (!isMerged) {
@@ -249,7 +253,10 @@ public class DefaultMergeStrategy implements MergeStrategy {
         return null;
     }
 
-    private void updateFilterNode(final Node target, final Node targetChildNode, final Node sourceChildNode,
+    private void updateFilterNode(
+            final Node target,
+            final Node targetChildNode,
+            final Node sourceChildNode,
             final PluginManager pluginManager) {
         if (CompositeFilter.class.isAssignableFrom(targetChildNode.getType().getPluginClass())) {
             final Node node = new Node(targetChildNode, sourceChildNode.getName(), sourceChildNode.getType());
@@ -276,11 +283,13 @@ public class DefaultMergeStrategy implements MergeStrategy {
 
     private boolean isSameName(final Node node1, final Node node2) {
         final String value = node1.getAttributes().get(NAME);
-        return value != null && value.toLowerCase().equals(node2.getAttributes().get(NAME).toLowerCase());
+        return value != null
+                && value.toLowerCase().equals(node2.getAttributes().get(NAME).toLowerCase());
     }
 
     private boolean isSameReference(final Node node1, final Node node2) {
         final String value = node1.getAttributes().get(REF);
-        return value != null && value.toLowerCase().equals(node2.getAttributes().get(REF).toLowerCase());
+        return value != null
+                && value.toLowerCase().equals(node2.getAttributes().get(REF).toLowerCase());
     }
 }

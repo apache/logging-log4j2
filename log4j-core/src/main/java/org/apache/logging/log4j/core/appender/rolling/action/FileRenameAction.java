@@ -120,69 +120,99 @@ public class FileRenameAction extends AbstractAction {
                 try {
                     return moveFile(Paths.get(source.getAbsolutePath()), Paths.get(destination.getAbsolutePath()));
                 } catch (final IOException exMove) {
-                    LOGGER.debug("Unable to move file {} to {}: {} {} - will try to copy and delete",
-                            source.getAbsolutePath(), destination.getAbsolutePath(), exMove.getClass().getName(),
+                    LOGGER.debug(
+                            "Unable to move file {} to {}: {} {} - will try to copy and delete",
+                            source.getAbsolutePath(),
+                            destination.getAbsolutePath(),
+                            exMove.getClass().getName(),
                             exMove.getMessage());
                     boolean result = source.renameTo(destination);
                     if (!result) {
                         try {
-                            Files.copy(Paths.get(source.getAbsolutePath()), Paths.get(destination.getAbsolutePath()),
+                            Files.copy(
+                                    Paths.get(source.getAbsolutePath()),
+                                    Paths.get(destination.getAbsolutePath()),
                                     StandardCopyOption.REPLACE_EXISTING);
                             try {
                                 Files.delete(Paths.get(source.getAbsolutePath()));
                                 result = true;
-                                LOGGER.trace("Renamed file {} to {} using copy and delete",
-                                        source.getAbsolutePath(), destination.getAbsolutePath());
+                                LOGGER.trace(
+                                        "Renamed file {} to {} using copy and delete",
+                                        source.getAbsolutePath(),
+                                        destination.getAbsolutePath());
                             } catch (final IOException exDelete) {
-                                LOGGER.error("Unable to delete file {}: {} {}", source.getAbsolutePath(),
-                                        exDelete.getClass().getName(), exDelete.getMessage());
+                                LOGGER.error(
+                                        "Unable to delete file {}: {} {}",
+                                        source.getAbsolutePath(),
+                                        exDelete.getClass().getName(),
+                                        exDelete.getMessage());
                                 try {
                                     result = true;
                                     new PrintWriter(source.getAbsolutePath()).close();
-                                    LOGGER.trace("Renamed file {} to {} with copy and truncation",
-                                            source.getAbsolutePath(), destination.getAbsolutePath());
+                                    LOGGER.trace(
+                                            "Renamed file {} to {} with copy and truncation",
+                                            source.getAbsolutePath(),
+                                            destination.getAbsolutePath());
                                 } catch (final IOException exOwerwrite) {
-                                    LOGGER.error("Unable to overwrite file {}: {} {}",
-                                            source.getAbsolutePath(), exOwerwrite.getClass().getName(),
+                                    LOGGER.error(
+                                            "Unable to overwrite file {}: {} {}",
+                                            source.getAbsolutePath(),
+                                            exOwerwrite.getClass().getName(),
                                             exOwerwrite.getMessage());
                                 }
                             }
                         } catch (final IOException exCopy) {
-                            LOGGER.error("Unable to copy file {} to {}: {} {}", source.getAbsolutePath(),
-                                    destination.getAbsolutePath(), exCopy.getClass().getName(), exCopy.getMessage());
+                            LOGGER.error(
+                                    "Unable to copy file {} to {}: {} {}",
+                                    source.getAbsolutePath(),
+                                    destination.getAbsolutePath(),
+                                    exCopy.getClass().getName(),
+                                    exCopy.getMessage());
                         }
                     } else {
-                        LOGGER.trace("Renamed file {} to {} with source.renameTo",
-                                source.getAbsolutePath(), destination.getAbsolutePath());
+                        LOGGER.trace(
+                                "Renamed file {} to {} with source.renameTo",
+                                source.getAbsolutePath(),
+                                destination.getAbsolutePath());
                     }
                     return result;
                 }
             } catch (final RuntimeException ex) {
-                LOGGER.error("Unable to rename file {} to {}: {} {}", source.getAbsolutePath(),
-                        destination.getAbsolutePath(), ex.getClass().getName(), ex.getMessage());
+                LOGGER.error(
+                        "Unable to rename file {} to {}: {} {}",
+                        source.getAbsolutePath(),
+                        destination.getAbsolutePath(),
+                        ex.getClass().getName(),
+                        ex.getMessage());
             }
         } else {
             try {
                 source.delete();
             } catch (final Exception exDelete) {
-                LOGGER.error("Unable to delete empty file {}: {} {}", source.getAbsolutePath(),
-                        exDelete.getClass().getName(), exDelete.getMessage());
+                LOGGER.error(
+                        "Unable to delete empty file {}: {} {}",
+                        source.getAbsolutePath(),
+                        exDelete.getClass().getName(),
+                        exDelete.getMessage());
             }
         }
 
         return false;
     }
 
-    private static boolean moveFile(Path source, Path target)  throws IOException {
+    private static boolean moveFile(Path source, Path target) throws IOException {
         try {
-            Files.move(source, target,
-                    StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
-            LOGGER.trace("Renamed file {} to {} with Files.move", source.toFile().getAbsolutePath(),
+            Files.move(source, target, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
+            LOGGER.trace(
+                    "Renamed file {} to {} with Files.move",
+                    source.toFile().getAbsolutePath(),
                     target.toFile().getAbsolutePath());
             return true;
         } catch (final AtomicMoveNotSupportedException ex) {
             Files.move(source, target, StandardCopyOption.REPLACE_EXISTING);
-            LOGGER.trace("Renamed file {} to {} with Files.move", source.toFile().getAbsolutePath(),
+            LOGGER.trace(
+                    "Renamed file {} to {} with Files.move",
+                    source.toFile().getAbsolutePath(),
                     target.toFile().getAbsolutePath());
             return true;
         }
@@ -190,8 +220,7 @@ public class FileRenameAction extends AbstractAction {
 
     @Override
     public String toString() {
-        return FileRenameAction.class.getSimpleName() + '[' + source + " to " + destination
-                + ", renameEmptyFiles=" + renameEmptyFiles + ']';
+        return FileRenameAction.class.getSimpleName() + '[' + source + " to " + destination + ", renameEmptyFiles="
+                + renameEmptyFiles + ']';
     }
-
 }

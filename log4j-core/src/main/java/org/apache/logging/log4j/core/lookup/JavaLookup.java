@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.lookup;
 
 import java.util.Locale;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.util.Strings;
@@ -100,20 +99,20 @@ public class JavaLookup extends AbstractLookup {
     @Override
     public String lookup(final LogEvent event, final String key) {
         switch (key) {
-        case "version":
-            return "Java version " + getSystemProperty("java.version");
-        case "runtime":
-            return getRuntime();
-        case "vm":
-            return getVirtualMachine();
-        case "os":
-            return getOperatingSystem();
-        case "hw":
-            return getHardware();
-        case "locale":
-            return getLocale();
-        default:
-            throw new IllegalArgumentException(key);
+            case "version":
+                return "Java version " + getSystemProperty("java.version");
+            case "runtime":
+                return getRuntime();
+            case "vm":
+                return getVirtualMachine();
+            case "os":
+                return getOperatingSystem();
+            case "hw":
+                return getHardware();
+            case "locale":
+                return getLocale();
+            default:
+                throw new IllegalArgumentException(key);
         }
     }
 }

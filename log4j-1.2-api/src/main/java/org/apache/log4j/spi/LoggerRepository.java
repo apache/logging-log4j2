@@ -17,7 +17,6 @@
 package org.apache.log4j.spi;
 
 import java.util.Enumeration;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.Category;
 import org.apache.log4j.Level;

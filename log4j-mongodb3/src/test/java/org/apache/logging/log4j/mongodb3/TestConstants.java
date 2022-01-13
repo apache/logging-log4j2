@@ -20,5 +20,4 @@ package org.apache.logging.log4j.mongodb3;
 public class TestConstants {
 
     public static final String SYS_PROP_NAME_PORT = "MongoDBTestPort";
-
 }

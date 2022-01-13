@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.logging.log4j.junit.UsingAnyThreadContext;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @UsingAnyThreadContext
 public class ThreadContextTest {

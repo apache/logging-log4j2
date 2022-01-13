@@ -19,8 +19,6 @@ package org.apache.logging.log4j.core.pattern;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -36,10 +34,10 @@ import org.apache.logging.log4j.util.StringBuilderFormattable;
  * Returns the event's rendered message in a StringBuilder.
  */
 @Plugin(name = "MessagePatternConverter", category = PatternConverter.CATEGORY)
-@ConverterKeys({ "m", "msg", "message" })
+@ConverterKeys({"m", "msg", "message"})
 @PerformanceSensitive("allocation")
 public class MessagePatternConverter extends LogEventPatternConverter {
-    
+
     private static final String LOOKUPS = "lookups";
     private static final String NOLOOKUPS = "nolookups";
 
@@ -51,15 +49,15 @@ public class MessagePatternConverter extends LogEventPatternConverter {
         if (options != null) {
             for (final String option : options) {
                 switch (option.toUpperCase(Locale.ROOT)) {
-                case "ANSI":
-                    if (Loader.isJansiAvailable()) {
-                        return new JAnsiTextRenderer(options, JAnsiTextRenderer.DefaultMessageStyleMap);
-                    }
-                    StatusLogger.getLogger()
-                            .warn("You requested ANSI message rendering but JANSI is not on the classpath.");
-                    return null;
-                case "HTML":
-                    return new HtmlTextRenderer(options);
+                    case "ANSI":
+                        if (Loader.isJansiAvailable()) {
+                            return new JAnsiTextRenderer(options, JAnsiTextRenderer.DefaultMessageStyleMap);
+                        }
+                        StatusLogger.getLogger()
+                                .warn("You requested ANSI message rendering but JANSI is not on the classpath.");
+                        return null;
+                    case "HTML":
+                        return new HtmlTextRenderer(options);
                 }
             }
         }
@@ -145,9 +143,10 @@ public class MessagePatternConverter extends LogEventPatternConverter {
                     ((StringBuilderFormattable) msg).formatTo(toAppendTo);
                 }
             } else if (msg != null) {
-                toAppendTo.append(msg instanceof MultiformatMessage
-                        ? ((MultiformatMessage) msg).getFormattedMessage(formats)
-                        : msg.getFormattedMessage());
+                toAppendTo.append(
+                        msg instanceof MultiformatMessage
+                                ? ((MultiformatMessage) msg).getFormattedMessage(formats)
+                                : msg.getFormattedMessage());
             }
         }
     }
@@ -171,6 +170,5 @@ public class MessagePatternConverter extends LogEventPatternConverter {
             delegate.format(event, workingBuilder);
             textRenderer.render(workingBuilder, toAppendTo);
         }
-
     }
 }

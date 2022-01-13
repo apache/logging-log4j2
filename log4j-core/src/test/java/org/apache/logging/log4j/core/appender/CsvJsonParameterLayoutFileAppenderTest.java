@@ -17,11 +17,11 @@
 
 package org.apache.logging.log4j.core.appender;
 
+import com.google.common.io.Files;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
-
 import org.apache.logging.log4j.categories.Layouts;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -31,8 +31,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.RuleChain;
-
-import com.google.common.io.Files;
 
 /**
  * Tests https://issues.apache.org/jira/browse/LOG4J2-1502
@@ -111,7 +109,7 @@ public class CsvJsonParameterLayoutFileAppenderTest {
 
     @Test
     public void testNoNulCharactersXml() throws IOException {
-        testNoNulCharacters("<test attr1='val1' attr2=\"value2\">X</test>",
-                "\"<test attr1='val1' attr2=\"\"value2\"\">X</test>\"");
+        testNoNulCharacters(
+                "<test attr1='val1' attr2=\"value2\">X</test>", "\"<test attr1='val1' attr2=\"\"value2\"\">X</test>\"");
     }
 }

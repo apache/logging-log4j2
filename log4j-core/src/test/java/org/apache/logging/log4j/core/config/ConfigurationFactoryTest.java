@@ -17,6 +17,16 @@
 
 package org.apache.logging.log4j.core.config;
 
+import static org.apache.logging.log4j.util.Unbox.box;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -30,23 +40,12 @@ import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import static org.apache.logging.log4j.util.Unbox.box;
-import static org.junit.jupiter.api.Assertions.*;
-
 @CleanUpFiles({
-        "target/test-xml.log",
-        "target/test-xinclude.log",
-        "target/test-json.log",
-        "target/test-yaml.log",
-        "target/test-properties.log"
+    "target/test-xml.log",
+    "target/test-xinclude.log",
+    "target/test-json.log",
+    "target/test-yaml.log",
+    "target/test-properties.log"
 })
 class ConfigurationFactoryTest {
 
@@ -62,7 +61,8 @@ class ConfigurationFactoryTest {
         final Configuration configuration = context.getConfiguration();
         final Map<String, Appender> appenders = configuration.getAppenders();
         // these used to be separate tests
-        assertAll(() -> assertNotNull(appenders),
+        assertAll(
+                () -> assertNotNull(appenders),
                 () -> assertEquals(3, appenders.size()),
                 () -> assertNotNull(configuration.getLoggerContext()),
                 () -> assertEquals(configuration.getRootLogger(), configuration.getLoggerConfig(Strings.EMPTY)),

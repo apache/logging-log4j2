@@ -29,7 +29,6 @@ import java.util.Properties;
 import java.util.SortedMap;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.LogManager;
@@ -49,7 +48,7 @@ import org.apache.logging.log4j.util.LoaderUtil;
 /**
  * Construct a configuration based on Log4j 1 properties.
  */
-public class PropertiesConfiguration  extends Log4j1Configuration {
+public class PropertiesConfiguration extends Log4j1Configuration {
 
     private static final String CATEGORY_PREFIX = "log4j.category.";
     private static final String LOGGER_PREFIX = "log4j.logger.";
@@ -57,11 +56,11 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
     private static final String ROOT_CATEGORY_PREFIX = "log4j.rootCategory";
     private static final String ROOT_LOGGER_PREFIX = "log4j.rootLogger";
     private static final String APPENDER_PREFIX = "log4j.appender.";
-    private static final String LOGGER_REF	= "logger-ref";
-    private static final String ROOT_REF		= "root-ref";
+    private static final String LOGGER_REF = "logger-ref";
+    private static final String ROOT_REF = "root-ref";
     private static final String APPENDER_REF_TAG = "appender-ref";
     public static final long DEFAULT_DELAY = 60000;
-    public static final String DEBUG_KEY="log4j.debug";
+    public static final String DEBUG_KEY = "log4j.debug";
 
     private static final String INTERNAL_ROOT_NAME = "root";
 
@@ -73,8 +72,8 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
      * @param source The ConfigurationSource.
      * @param monitorIntervalSeconds The monitoring interval in seconds.
      */
-    public PropertiesConfiguration(final LoggerContext loggerContext, final ConfigurationSource source,
-            int monitorIntervalSeconds) {
+    public PropertiesConfiguration(
+            final LoggerContext loggerContext, final ConfigurationSource source, int monitorIntervalSeconds) {
         super(loggerContext, source, monitorIntervalSeconds);
     }
 
@@ -85,7 +84,10 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
         try {
             props.load(is);
         } catch (Exception e) {
-            LOGGER.error("Could not read configuration file [{}].", getConfigurationSource().toString(), e);
+            LOGGER.error(
+                    "Could not read configuration file [{}].",
+                    getConfigurationSource().toString(),
+                    e);
             return;
         }
         // If we reach here, then the config file is alright.
@@ -388,8 +390,9 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
             String levelStr = st.nextToken();
             LOGGER.debug("Level token is [{}].", levelStr);
 
-            org.apache.logging.log4j.Level level = levelStr == null ? org.apache.logging.log4j.Level.ERROR :
-                    OptionConverter.convertLevel(levelStr, org.apache.logging.log4j.Level.DEBUG);
+            org.apache.logging.log4j.Level level = levelStr == null
+                    ? org.apache.logging.log4j.Level.ERROR
+                    : OptionConverter.convertLevel(levelStr, org.apache.logging.log4j.Level.DEBUG);
             logger.setLevel(level);
             LOGGER.debug("Logger {} level set to {}", loggerName, level);
         }
@@ -404,8 +407,7 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
             LOGGER.debug("Parsing appender named \"{}\".", appenderName);
             appender = parseAppender(props, appenderName);
             if (appender != null) {
-                LOGGER.debug("Adding appender named [{}] to loggerConfig [{}].", appenderName,
-                        logger.getName());
+                LOGGER.debug("Adding appender named [{}] to loggerConfig [{}].", appenderName, logger.getName());
                 logger.addAppender(getAppender(appenderName), null, null);
             } else {
                 LOGGER.debug("Appender named [{}] not found.", appenderName);
@@ -438,8 +440,13 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
         return appender;
     }
 
-    private Appender buildAppender(final String appenderName, final String className, final String prefix,
-            final String layoutPrefix, final String filterPrefix, final Properties props) {
+    private Appender buildAppender(
+            final String appenderName,
+            final String className,
+            final String prefix,
+            final String layoutPrefix,
+            final String filterPrefix,
+            final Properties props) {
         Appender appender = newInstanceOf(className, "Appender");
         if (appender == null) {
             return null;
@@ -455,7 +462,7 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
             }
         }
         appender.addFilter(parseAppenderFilters(props, filterPrefix, appenderName));
-        String[] keys = new String[] { layoutPrefix };
+        String[] keys = new String[] {layoutPrefix};
         addProperties(appender, keys, props, prefix);
         if (appender instanceof AppenderWrapper) {
             addAppender(((AppenderWrapper) appender).getAppender());
@@ -489,13 +496,16 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
         return layout;
     }
 
-    public ErrorHandler parseErrorHandler(final Properties props, final String errorHandlerPrefix,
-            final String errorHandlerClass, final Appender appender) {
+    public ErrorHandler parseErrorHandler(
+            final Properties props,
+            final String errorHandlerPrefix,
+            final String errorHandlerClass,
+            final Appender appender) {
         ErrorHandler eh = newInstanceOf(errorHandlerClass, "ErrorHandler");
         final String[] keys = new String[] {
-                errorHandlerPrefix + "." + ROOT_REF,
-                errorHandlerPrefix + "." + LOGGER_REF,
-                errorHandlerPrefix + "." + APPENDER_REF_TAG
+            errorHandlerPrefix + "." + ROOT_REF,
+            errorHandlerPrefix + "." + LOGGER_REF,
+            errorHandlerPrefix + "." + APPENDER_REF_TAG
         };
         addProperties(eh, keys, props, errorHandlerPrefix);
         return eh;
@@ -503,20 +513,21 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
 
     public void addProperties(final Object obj, final String[] keys, final Properties props, final String prefix) {
         final Properties edited = new Properties();
-        props.stringPropertyNames().stream().filter(name -> {
-            if (name.startsWith(prefix)) {
-                for (String key : keys) {
-                    if (name.equals(key)) {
-                        return false;
+        props.stringPropertyNames().stream()
+                .filter(name -> {
+                    if (name.startsWith(prefix)) {
+                        for (String key : keys) {
+                            if (name.equals(key)) {
+                                return false;
+                            }
+                        }
+                        return true;
                     }
-                }
-                return true;
-            }
-            return false;
-        }).forEach(name -> edited.put(name, props.getProperty(name)));
+                    return false;
+                })
+                .forEach(name -> edited.put(name, props.getProperty(name)));
         PropertySetter.setProperties(obj, edited, prefix + ".");
     }
-
 
     public Filter parseAppenderFilters(Properties props, String filterPrefix, String appenderName) {
         // extract filters and filter options from props into a hashtable mapping
@@ -579,14 +590,20 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
         return filter;
     }
 
-
     private static <T> T newInstanceOf(String className, String type) {
         try {
             return LoaderUtil.newInstanceOf(className);
-        } catch (ClassNotFoundException | IllegalAccessException | NoSuchMethodException |
-                InstantiationException | InvocationTargetException ex) {
-            LOGGER.error("Unable to create {} {} due to {}:{}", type,  className,
-                    ex.getClass().getSimpleName(), ex.getMessage());
+        } catch (ClassNotFoundException
+                | IllegalAccessException
+                | NoSuchMethodException
+                | InstantiationException
+                | InvocationTargetException ex) {
+            LOGGER.error(
+                    "Unable to create {} {} due to {}:{}",
+                    type,
+                    className,
+                    ex.getClass().getSimpleName(),
+                    ex.getMessage());
             return null;
         }
     }
@@ -604,5 +621,4 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
             return key + "=" + value;
         }
     }
-
 }

@@ -23,7 +23,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 import java.util.logging.Logger;
-
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.After;
 import org.junit.AfterClass;

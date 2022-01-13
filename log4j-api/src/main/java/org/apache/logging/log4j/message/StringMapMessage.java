@@ -18,12 +18,11 @@
 package org.apache.logging.log4j.message;
 
 import java.util.Map;
-
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * A {@link StringMapMessage} typed to {@link String}-only values. This is like the MapMessage class before 2.9.
- * 
+ *
  * @since 2.9
  */
 @PerformanceSensitive("allocation")
@@ -35,12 +34,11 @@ public class StringMapMessage extends MapMessage<StringMapMessage, String> {
     /**
      * Constructs a new instance.
      */
-    public StringMapMessage() {
-    }
+    public StringMapMessage() {}
 
     /**
      * Constructs a new instance.
-     * 
+     *
      * @param initialCapacity
      *            the initial capacity.
      */
@@ -50,7 +48,7 @@ public class StringMapMessage extends MapMessage<StringMapMessage, String> {
 
     /**
      * Constructs a new instance based on an existing Map.
-     * 
+     *
      * @param map
      *            The Map.
      */

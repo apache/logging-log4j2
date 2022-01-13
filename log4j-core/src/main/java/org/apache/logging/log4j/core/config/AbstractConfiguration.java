@@ -35,7 +35,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -123,6 +122,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * The Advertiser which exposes appender configurations to external systems.
      */
     private Advertiser advertiser = new DefaultAdvertiser();
+
     private Node advertiserNode = null;
     private Object advertisement;
     private String name;
@@ -154,7 +154,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         pluginManager = new PluginManager(Node.CATEGORY);
         rootNode = new Node();
         setState(State.INITIALIZING);
-
     }
 
     @Override
@@ -235,10 +234,15 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             for (final PluginType<?> type : plugins.values()) {
                 try {
                     // Cause the class to be initialized if it isn't already.
-                    Loader.initializeClass(type.getPluginClass().getName(), type.getPluginClass().getClassLoader());
+                    Loader.initializeClass(
+                            type.getPluginClass().getName(),
+                            type.getPluginClass().getClassLoader());
                 } catch (final Exception e) {
-                    LOGGER.error("Unable to initialize {} due to {}", type.getPluginClass().getName(), e.getClass()
-                            .getSimpleName(), e);
+                    LOGGER.error(
+                            "Unable to initialize {} due to {}",
+                            type.getPluginClass().getName(),
+                            e.getClass().getSimpleName(),
+                            e);
                 }
             }
         }
@@ -249,41 +253,42 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         LOGGER.debug("Configuration {} initialized", this);
     }
 
-    protected void initializeWatchers(Reconfigurable reconfigurable, ConfigurationSource configSource,
-        int monitorIntervalSeconds) {
+    protected void initializeWatchers(
+            Reconfigurable reconfigurable, ConfigurationSource configSource, int monitorIntervalSeconds) {
         if (configSource.getFile() != null || configSource.getURL() != null) {
             if (monitorIntervalSeconds > 0) {
                 watchManager.setIntervalSeconds(monitorIntervalSeconds);
                 if (configSource.getFile() != null) {
                     final Source cfgSource = new Source(configSource);
                     final long lastModifeid = configSource.getFile().lastModified();
-                    final ConfigurationFileWatcher watcher = new ConfigurationFileWatcher(this, reconfigurable,
-                        listeners, lastModifeid);
+                    final ConfigurationFileWatcher watcher =
+                            new ConfigurationFileWatcher(this, reconfigurable, listeners, lastModifeid);
                     watchManager.watch(cfgSource, watcher);
                 } else if (configSource.getURL() != null) {
                     monitorSource(reconfigurable, configSource);
                 }
-            } else if (watchManager.hasEventListeners() && configSource.getURL() != null
-                && monitorIntervalSeconds >= 0) {
+            } else if (watchManager.hasEventListeners()
+                    && configSource.getURL() != null
+                    && monitorIntervalSeconds >= 0) {
                 monitorSource(reconfigurable, configSource);
             }
         }
     }
 
     private void monitorSource(Reconfigurable reconfigurable, ConfigurationSource configSource) {
-		if (configSource.getLastModified() > 0) {
-			final Source cfgSource = new Source(configSource);
-			final Watcher watcher = WatcherFactory.getInstance(pluginPackages)
-				.newWatcher(cfgSource, this, reconfigurable, listeners, configSource.getLastModified());
-			if (watcher != null) {
-				watchManager.watch(cfgSource, watcher);
-			}
-		} else {
-			LOGGER.info("{} does not support dynamic reconfiguration", configSource.getURI());
-		}
-	}
+        if (configSource.getLastModified() > 0) {
+            final Source cfgSource = new Source(configSource);
+            final Watcher watcher = WatcherFactory.getInstance(pluginPackages)
+                    .newWatcher(cfgSource, this, reconfigurable, listeners, configSource.getLastModified());
+            if (watcher != null) {
+                watchManager.watch(cfgSource, watcher);
+            }
+        } else {
+            LOGGER.info("{} does not support dynamic reconfiguration", configSource.getURI());
+        }
+    }
 
-	/**
+    /**
      * Start the configuration.
      */
     @Override
@@ -355,8 +360,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         root.getReliabilityStrategy().beforeStopConfiguration(this);
 
         final String cls = getClass().getSimpleName();
-        LOGGER.trace("{} notified {} ReliabilityStrategies that config will be stopped.", cls, loggerConfigs.size()
-                + 1);
+        LOGGER.trace(
+                "{} notified {} ReliabilityStrategies that config will be stopped.", cls, loggerConfigs.size() + 1);
 
         if (!loggerConfigs.isEmpty()) {
             LOGGER.trace("{} stopping {} LoggerConfigs.", cls, loggerConfigs.size());
@@ -459,8 +464,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     protected Level getDefaultStatus() {
-        final String statusLevel = PropertiesUtil.getProperties().getStringProperty(
-                Constants.LOG4J_DEFAULT_STATUS_LEVEL, Level.ERROR.name());
+        final String statusLevel = PropertiesUtil.getProperties()
+                .getStringProperty(Constants.LOG4J_DEFAULT_STATUS_LEVEL, Level.ERROR.name());
         try {
             return Level.toLevel(statusLevel);
         } catch (final Exception ex) {
@@ -468,8 +473,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
     }
 
-    protected void createAdvertiser(final String advertiserString, final ConfigurationSource configSource,
-            final byte[] buffer, final String contentType) {
+    protected void createAdvertiser(
+            final String advertiserString,
+            final ConfigurationSource configSource,
+            final byte[] buffer,
+            final String contentType) {
         if (advertiserString != null) {
             final Node node = new Node(null, advertiserString, null);
             final Map<String, String> attributes = node.getAttributes();
@@ -555,13 +563,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                                 processConditionals(child);
                             }
                         } catch (final Exception inner) {
-                            LOGGER.error("Exception processing {}: Ignoring and including children",
-                                    type.getPluginClass());
+                            LOGGER.error(
+                                    "Exception processing {}: Ignoring and including children", type.getPluginClass());
                             processConditionals(child);
                         }
                     } else {
-                        LOGGER.error("Encountered Condition Plugin that does not implement Condition: {}",
-                                child.getName());
+                        LOGGER.error(
+                                "Encountered Condition Plugin that does not implement Condition: {}", child.getName());
                         processConditionals(child);
                     }
                 } else {
@@ -600,8 +608,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                     conditions.add(condition);
                     child.setObject(condition);
                 } else {
-                    LOGGER.error("Invalid Node {} for Select. Must be a Condition",
-                            child.getName());
+                    LOGGER.error("Invalid Node {} for Select. Must be a Condition", child.getName());
                 }
             } else {
                 LOGGER.error("No PluginType for node {}", child.getName());
@@ -655,7 +662,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             if (child.getName().equalsIgnoreCase("Scripts")) {
                 for (final AbstractScript script : child.getObject(AbstractScript[].class)) {
                     if (script instanceof ScriptRef) {
-                        LOGGER.error("Script reference to {} not added. Scripts definition cannot contain script references",
+                        LOGGER.error(
+                                "Script reference to {} not added. Scripts definition cannot contain script references",
                                 script.getName());
                     } else if (scriptManager != null) {
                         scriptManager.addScript(script);
@@ -680,10 +688,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 copy.add(child.getObject(CustomLevelConfig.class));
                 customLevels = copy;
             } else {
-                final List<String> expected = Arrays.asList("\"Appenders\"", "\"Loggers\"", "\"Properties\"",
-                        "\"Scripts\"", "\"CustomLevels\"");
-                LOGGER.error("Unknown object \"{}\" of type {} is ignored: try nesting it inside one of: {}.",
-                        child.getName(), child.getObject().getClass().getName(), expected);
+                final List<String> expected = Arrays.asList(
+                        "\"Appenders\"", "\"Loggers\"", "\"Properties\"", "\"Scripts\"", "\"CustomLevels\"");
+                LOGGER.error(
+                        "Unknown object \"{}\" of type {} is ignored: try nesting it inside one of: {}.",
+                        child.getName(),
+                        child.getObject().getClass().getName(),
+                        expected);
             }
         }
 
@@ -692,7 +703,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             setToDefault();
             return;
         } else if (!setRoot) {
-            LOGGER.warn("No Root logger was configured, creating default ERROR-level Root logger with Console appender");
+            LOGGER.warn(
+                    "No Root logger was configured, creating default ERROR-level Root logger with Console appender");
             setToDefault();
             // return; // LOG4J2-219: creating default root=ok, but don't exclude configured Loggers
         }
@@ -704,11 +716,10 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 if (app != null) {
                     loggerConfig.addAppender(app, ref.getLevel(), ref.getFilter());
                 } else {
-                    LOGGER.error("Unable to locate appender \"{}\" for logger config \"{}\"", ref.getRef(),
-                            loggerConfig);
+                    LOGGER.error(
+                            "Unable to locate appender \"{}\" for logger config \"{}\"", ref.getRef(), loggerConfig);
                 }
             }
-
         }
 
         setParents();
@@ -728,8 +739,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         rootLoggerConfig.addAppender(appender, null, null);
 
         final Level defaultLevel = Level.ERROR;
-        final String levelName = PropertiesUtil.getProperties().getStringProperty(DefaultConfiguration.DEFAULT_LEVEL,
-                defaultLevel.name());
+        final String levelName = PropertiesUtil.getProperties()
+                .getStringProperty(DefaultConfiguration.DEFAULT_LEVEL, defaultLevel.name());
         final Level level = Level.valueOf(levelName);
         rootLoggerConfig.setLevel(level != null ? level : defaultLevel);
     }
@@ -848,8 +859,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * @param appender The Appender.
      */
     @Override
-    public synchronized void addLoggerAppender(final org.apache.logging.log4j.core.Logger logger,
-            final Appender appender) {
+    public synchronized void addLoggerAppender(
+            final org.apache.logging.log4j.core.Logger logger, final Appender appender) {
         if (appender == null || logger == null) {
             return;
         }
@@ -903,7 +914,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * @param additive True if the LoggerConfig should be additive, false otherwise.
      */
     @Override
-    public synchronized void setLoggerAdditive(final org.apache.logging.log4j.core.Logger logger, final boolean additive) {
+    public synchronized void setLoggerAdditive(
+            final org.apache.logging.log4j.core.Logger logger, final boolean additive) {
         final String loggerName = logger.getName();
         final LoggerConfig lc = getLoggerConfig(loggerName);
         if (lc.getName().equals(loggerName)) {
@@ -1117,7 +1129,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             }
         }
 
-        return new PluginBuilder(type).withConfiguration(this).withConfigurationNode(node).forLogEvent(event).build();
+        return new PluginBuilder(type)
+                .withConfiguration(this)
+                .withConfigurationNode(node)
+                .forLogEvent(event)
+                .build();
     }
 
     private static Map<String, ?> createPluginMap(final Node node) {

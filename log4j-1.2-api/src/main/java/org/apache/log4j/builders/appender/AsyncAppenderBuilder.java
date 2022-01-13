@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.bridge.AppenderWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
@@ -45,7 +44,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 import org.w3c.dom.Element;
 
-
 /**
  * Build an Asynch Appender
  */
@@ -56,8 +54,7 @@ public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBui
     private static final String BLOCKING_PARAM = "Blocking";
     private static final String INCLUDE_LOCATION_PARAM = "IncludeLocation";
 
-    public AsyncAppenderBuilder() {
-    }
+    public AsyncAppenderBuilder() {}
 
     public AsyncAppenderBuilder(String prefix, Properties props) {
         super(prefix, props);
@@ -122,13 +119,24 @@ public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBui
                 }
             }
         });
-        return createAppender(name, level.get(), appenderRefs.get().toArray(Strings.EMPTY_ARRAY), blocking.get(),
-                bufferSize.get(), includeLocation.get(), config);
+        return createAppender(
+                name,
+                level.get(),
+                appenderRefs.get().toArray(Strings.EMPTY_ARRAY),
+                blocking.get(),
+                bufferSize.get(),
+                includeLocation.get(),
+                config);
     }
 
     @Override
-    public Appender parseAppender(final String name, final String appenderPrefix, final String layoutPrefix,
-            final String filterPrefix, final Properties props, final PropertiesConfiguration configuration) {
+    public Appender parseAppender(
+            final String name,
+            final String appenderPrefix,
+            final String layoutPrefix,
+            final String filterPrefix,
+            final Properties props,
+            final PropertiesConfiguration configuration) {
         String appenderRef = getProperty(APPENDER_REF_TAG);
         boolean blocking = getBooleanProperty(BLOCKING_PARAM);
         boolean includeLocation = getBooleanProperty(INCLUDE_LOCATION_PARAM);
@@ -143,15 +151,20 @@ public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBui
             LOGGER.warn("Cannot locate Appender {}", appenderRef);
             return null;
         }
-        return createAppender(name, level, new String[] {appenderRef}, blocking, bufferSize, includeLocation,
-                configuration);
+        return createAppender(
+                name, level, new String[] {appenderRef}, blocking, bufferSize, includeLocation, configuration);
     }
 
-    private <T extends Log4j1Configuration> Appender createAppender(String name, String level,
-            String[] appenderRefs, boolean blocking, int bufferSize, boolean includeLocation,
+    private <T extends Log4j1Configuration> Appender createAppender(
+            String name,
+            String level,
+            String[] appenderRefs,
+            boolean blocking,
+            int bufferSize,
+            boolean includeLocation,
             T configuration) {
-        org.apache.logging.log4j.Level logLevel = OptionConverter.convertLevel(level,
-                org.apache.logging.log4j.Level.TRACE);
+        org.apache.logging.log4j.Level logLevel =
+                OptionConverter.convertLevel(level, org.apache.logging.log4j.Level.TRACE);
         AppenderRef[] refs = new AppenderRef[appenderRefs.length];
         int index = 0;
         for (String appenderRef : appenderRefs) {

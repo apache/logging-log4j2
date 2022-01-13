@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import org.apache.logging.log4j.layout.template.json.util.TruncatingBufferedPrintWriter;
-import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
-import org.apache.logging.log4j.layout.template.json.util.Recycler;
-
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
+import org.apache.logging.log4j.layout.template.json.util.Recycler;
+import org.apache.logging.log4j.layout.template.json.util.TruncatingBufferedPrintWriter;
 
 /**
  * Exception stack trace to JSON string resolver used by {@link ExceptionResolver}.
@@ -47,34 +46,22 @@ final class StackTraceStringResolver implements StackTraceResolver {
             final List<String> truncationPointMatcherStrings,
             final List<String> truncationPointMatcherRegexes) {
         final Supplier<TruncatingBufferedPrintWriter> writerSupplier =
-                () -> TruncatingBufferedPrintWriter.ofCapacity(
-                        context.getMaxStringByteCount());
-        this.writerRecycler = context
-                .getRecyclerFactory()
-                .create(writerSupplier, TruncatingBufferedPrintWriter::close);
-        this.truncationEnabled =
-                !truncationPointMatcherStrings.isEmpty() ||
-                        !truncationPointMatcherRegexes.isEmpty();
+                () -> TruncatingBufferedPrintWriter.ofCapacity(context.getMaxStringByteCount());
+        this.writerRecycler = context.getRecyclerFactory().create(writerSupplier, TruncatingBufferedPrintWriter::close);
+        this.truncationEnabled = !truncationPointMatcherStrings.isEmpty() || !truncationPointMatcherRegexes.isEmpty();
         this.truncationSuffix = truncationSuffix;
         this.truncationPointMatcherStrings = truncationPointMatcherStrings;
-        this.groupedTruncationPointMatcherRegexes =
-                groupTruncationPointMatcherRegexes(truncationPointMatcherRegexes);
+        this.groupedTruncationPointMatcherRegexes = groupTruncationPointMatcherRegexes(truncationPointMatcherRegexes);
     }
 
-    private static List<Pattern> groupTruncationPointMatcherRegexes(
-            final List<String> regexes) {
-        return regexes
-                .stream()
-                .map(regex -> Pattern.compile(
-                        "^.*(" + regex + ")(.*)$",
-                        Pattern.MULTILINE | Pattern.DOTALL))
+    private static List<Pattern> groupTruncationPointMatcherRegexes(final List<String> regexes) {
+        return regexes.stream()
+                .map(regex -> Pattern.compile("^.*(" + regex + ")(.*)$", Pattern.MULTILINE | Pattern.DOTALL))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public void resolve(
-            final Throwable throwable,
-            final JsonWriter jsonWriter) {
+    public void resolve(final Throwable throwable, final JsonWriter jsonWriter) {
         final TruncatingBufferedPrintWriter writer = writerRecycler.acquire();
         try {
             throwable.printStackTrace(writer);
@@ -117,14 +104,10 @@ final class StackTraceStringResolver implements StackTraceResolver {
                 return;
             }
         }
-
     }
 
-    private void truncate(
-            final TruncatingBufferedPrintWriter writer,
-            final int index) {
+    private void truncate(final TruncatingBufferedPrintWriter writer, final int index) {
         writer.position(index);
         writer.print(truncationSuffix);
     }
-
 }

@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.config;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -31,8 +30,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 @Plugin(name = "appenders", category = Core.CATEGORY_NAME)
 public final class AppendersPlugin {
 
-    private AppendersPlugin() {
-    }
+    private AppendersPlugin() {}
 
     /**
      * Creates a Map of the Appenders.
@@ -41,9 +39,9 @@ public final class AppendersPlugin {
      */
     @PluginFactory
     public static ConcurrentMap<String, Appender> createAppenders(
-                @PluginElement("Appenders") final Appender[] appenders) {
+            @PluginElement("Appenders") final Appender[] appenders) {
 
-        final ConcurrentMap<String, Appender> map =  new ConcurrentHashMap<>(appenders.length);
+        final ConcurrentMap<String, Appender> map = new ConcurrentHashMap<>(appenders.length);
 
         for (final Appender appender : appenders) {
             map.put(appender.getName(), appender);

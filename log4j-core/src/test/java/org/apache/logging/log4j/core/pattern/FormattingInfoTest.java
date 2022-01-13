@@ -16,42 +16,43 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Testing FormattingInfo.
  */
 public class FormattingInfoTest {
 
-	@Test
-	public void testFormatTruncateFromBeginning() {
-		final StringBuilder message = new StringBuilder("Hello, world");
+    @Test
+    public void testFormatTruncateFromBeginning() {
+        final StringBuilder message = new StringBuilder("Hello, world");
 
-		final FormattingInfo formattingInfo = new FormattingInfo(false, 0, 5, true);
-		formattingInfo.format(0, message);
+        final FormattingInfo formattingInfo = new FormattingInfo(false, 0, 5, true);
+        formattingInfo.format(0, message);
 
-		assertEquals("world", message.toString());
-	}
+        assertEquals("world", message.toString());
+    }
 
-	@Test
-	public void testFormatTruncateFromEnd() {
-		final StringBuilder message = new StringBuilder("Hello, world");
+    @Test
+    public void testFormatTruncateFromEnd() {
+        final StringBuilder message = new StringBuilder("Hello, world");
 
-		final FormattingInfo formattingInfo = new FormattingInfo(false, 0, 5, false);
-		formattingInfo.format(0, message);
+        final FormattingInfo formattingInfo = new FormattingInfo(false, 0, 5, false);
+        formattingInfo.format(0, message);
 
-		assertEquals("Hello", message.toString());
-	}
+        assertEquals("Hello", message.toString());
+    }
 
-	@Test
-	public void testFormatTruncateFromEndGivenFieldStart() {
-		final StringBuilder message = new StringBuilder("2015-03-09 11:49:28,295; INFO  org.apache.logging.log4j.PatternParserTest");
+    @Test
+    public void testFormatTruncateFromEndGivenFieldStart() {
+        final StringBuilder message =
+                new StringBuilder("2015-03-09 11:49:28,295; INFO  org.apache.logging.log4j.PatternParserTest");
 
-		final FormattingInfo formattingInfo = new FormattingInfo(false, 0, 5, false);
-		formattingInfo.format(31, message);
+        final FormattingInfo formattingInfo = new FormattingInfo(false, 0, 5, false);
+        formattingInfo.format(31, message);
 
-		assertEquals("2015-03-09 11:49:28,295; INFO  org.a", message.toString());
-	}
+        assertEquals("2015-03-09 11:49:28,295; INFO  org.a", message.toString());
+    }
 }

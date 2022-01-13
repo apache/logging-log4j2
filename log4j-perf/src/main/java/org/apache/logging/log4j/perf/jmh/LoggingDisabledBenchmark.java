@@ -18,7 +18,6 @@ package org.apache.logging.log4j.perf.jmh;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -31,7 +30,7 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 import org.slf4j.LoggerFactory;
 
-//import com.newrelic.api.agent.Trace;
+// import com.newrelic.api.agent.Trace;
 
 /**
  * Benchmark logging with logging disabled.
@@ -79,16 +78,16 @@ public class LoggingDisabledBenchmark {
     private void deleteLogFiles() {
         final File logbackFile = new File("target/testlogback.log");
         logbackFile.delete();
-        final File log4jFile = new File ("target/testlog4j.log");
+        final File log4jFile = new File("target/testlog4j.log");
         log4jFile.delete();
-        final File log4j2File = new File ("target/testlog4j2.log");
+        final File log4j2File = new File("target/testlog4j2.log");
         log4j2File.delete();
     }
 
     @Benchmark
-    @BenchmarkMode(Mode.AverageTime) @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public void baseline() {
-    }
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public void baseline() {}
 
     /*
       This benchmark tests the overhead of NewRelic on method calls. It is commented out so
@@ -102,19 +101,22 @@ public class LoggingDisabledBenchmark {
     } */
 
     @Benchmark
-    @BenchmarkMode(Mode.AverageTime) @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public void log4j2() {
         log4j2Logger.debug("This won't be logged");
     }
 
     @Benchmark
-    @BenchmarkMode(Mode.AverageTime) @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public void slf4j() {
         slf4jLogger.debug("This won't be logged");
     }
 
     @Benchmark
-    @BenchmarkMode(Mode.AverageTime) @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public void log4j2IsDebugEnabled() {
         if (log4j2Logger.isDebugEnabled()) {
             log4j2Logger.debug("This won't be logged");
@@ -122,7 +124,8 @@ public class LoggingDisabledBenchmark {
     }
 
     @Benchmark
-    @BenchmarkMode(Mode.AverageTime) @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public void slf4jIsDebugEnabled() {
         if (slf4jLogger.isDebugEnabled()) {
             slf4jLogger.debug("This won't be logged");
@@ -130,11 +133,11 @@ public class LoggingDisabledBenchmark {
     }
 
     @Benchmark
-    @BenchmarkMode(Mode.AverageTime) @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public void log4j1IsDebugEnabled() {
         if (log4j1Logger.isDebugEnabled()) {
             log4j1Logger.debug("This won't be logged");
         }
     }
-
 }

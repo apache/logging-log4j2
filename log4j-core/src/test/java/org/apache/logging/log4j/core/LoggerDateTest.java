@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.util.Calendar;
-
-import org.apache.logging.log4j.core.appender.FileAppender;
-import org.apache.logging.log4j.junit.Named;
-import org.apache.logging.log4j.junit.LoggerContextSource;
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.Calendar;
+import org.apache.logging.log4j.core.appender.FileAppender;
+import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.apache.logging.log4j.junit.Named;
+import org.junit.jupiter.api.Test;
 
 @LoggerContextSource("log4j-date.xml")
 public class LoggerDateTest {

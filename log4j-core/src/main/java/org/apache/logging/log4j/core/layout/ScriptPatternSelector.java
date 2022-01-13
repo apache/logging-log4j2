@@ -19,9 +19,7 @@ package org.apache.logging.log4j.core.layout;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.script.SimpleBindings;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -43,7 +41,11 @@ import org.apache.logging.log4j.status.StatusLogger;
  * to choose between one of the configured patterns. If no key is returned or there is no match the default
  * pattern will be used.
  */
-@Plugin(name = "ScriptPatternSelector", category = Node.CATEGORY, elementType = PatternSelector.ELEMENT_TYPE, printObject = true)
+@Plugin(
+        name = "ScriptPatternSelector",
+        category = Node.CATEGORY,
+        elementType = PatternSelector.ELEMENT_TYPE,
+        printObject = true)
 public class ScriptPatternSelector implements PatternSelector, LocationAware {
 
     /**
@@ -95,8 +97,14 @@ public class ScriptPatternSelector implements PatternSelector, LocationAware {
                 LOGGER.warn("No marker patterns were provided");
                 return null;
             }
-            return new ScriptPatternSelector(script, properties, defaultPattern, alwaysWriteExceptions, disableAnsi,
-                    noConsoleNoAnsi, configuration);
+            return new ScriptPatternSelector(
+                    script,
+                    properties,
+                    defaultPattern,
+                    alwaysWriteExceptions,
+                    disableAnsi,
+                    noConsoleNoAnsi,
+                    configuration);
         }
 
         public Builder setScript(final AbstractScript script) {
@@ -152,9 +160,14 @@ public class ScriptPatternSelector implements PatternSelector, LocationAware {
      * @deprecated Use {@link #newBuilder()} instead. This will be private in a future version.
      */
     @Deprecated
-    public ScriptPatternSelector(final AbstractScript script, final PatternMatch[] properties, final String defaultPattern,
-                                 final boolean alwaysWriteExceptions, final boolean disableAnsi,
-                                 final boolean noConsoleNoAnsi, final Configuration config) {
+    public ScriptPatternSelector(
+            final AbstractScript script,
+            final PatternMatch[] properties,
+            final String defaultPattern,
+            final boolean alwaysWriteExceptions,
+            final boolean disableAnsi,
+            final boolean noConsoleNoAnsi,
+            final Configuration config) {
         this.script = script;
         this.configuration = config;
         if (!(script instanceof ScriptRef)) {
@@ -164,7 +177,8 @@ public class ScriptPatternSelector implements PatternSelector, LocationAware {
         boolean needsLocation = false;
         for (final PatternMatch property : properties) {
             try {
-                final List<PatternFormatter> list = parser.parse(property.getPattern(), alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi);
+                final List<PatternFormatter> list =
+                        parser.parse(property.getPattern(), alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi);
                 PatternFormatter[] formatters = list.toArray(PatternFormatter.EMPTY_ARRAY);
                 formatterMap.put(property.getKey(), formatters);
                 patternMap.put(property.getKey(), property.getPattern());
@@ -176,7 +190,8 @@ public class ScriptPatternSelector implements PatternSelector, LocationAware {
             }
         }
         try {
-            final List<PatternFormatter> list = parser.parse(defaultPattern, alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi);
+            final List<PatternFormatter> list =
+                    parser.parse(defaultPattern, alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi);
             defaultFormatters = list.toArray(PatternFormatter.EMPTY_ARRAY);
             this.defaultPattern = defaultPattern;
             for (int i = 0; !needsLocation && i < defaultFormatters.length; ++i) {
@@ -207,7 +222,6 @@ public class ScriptPatternSelector implements PatternSelector, LocationAware {
 
         return patternFormatter == null ? defaultFormatters : patternFormatter;
     }
-
 
     /**
      * Creates a builder for a custom ScriptPatternSelector.
@@ -257,7 +271,11 @@ public class ScriptPatternSelector implements PatternSelector, LocationAware {
             if (!first) {
                 sb.append(", ");
             }
-            sb.append("key=\"").append(entry.getKey()).append("\", pattern=\"").append(entry.getValue()).append("\"");
+            sb.append("key=\"")
+                    .append(entry.getKey())
+                    .append("\", pattern=\"")
+                    .append(entry.getValue())
+                    .append("\"");
             first = false;
         }
         if (!first) {

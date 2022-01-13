@@ -62,5 +62,4 @@ public class MessageLayout extends AbstractLayout<Message> {
     public static Layout<?> createLayout() {
         return new MessageLayout();
     }
-
 }

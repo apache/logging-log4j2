@@ -19,10 +19,8 @@ package org.apache.logging.log4j.core.appender.db.jdbc;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Objects;
-
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -64,7 +62,8 @@ public final class DataSourceConnectionSource extends AbstractConnectionSource {
      * @return the created connection source.
      */
     @PluginFactory
-    public static DataSourceConnectionSource createConnectionSource(@PluginAttribute("jndiName") final String jndiName) {
+    public static DataSourceConnectionSource createConnectionSource(
+            @PluginAttribute("jndiName") final String jndiName) {
         if (!JndiManager.isJndiJdbcEnabled()) {
             LOGGER.error("JNDI must be enabled by setting log4j2.enableJndiJdbc=true");
             return null;
@@ -75,7 +74,9 @@ public final class DataSourceConnectionSource extends AbstractConnectionSource {
         }
         try {
             @SuppressWarnings("resource")
-            final DataSource dataSource = JndiManager.getDefaultManager(DataSourceConnectionSource.class.getCanonicalName()).lookup(jndiName);
+            final DataSource dataSource = JndiManager.getDefaultManager(
+                            DataSourceConnectionSource.class.getCanonicalName())
+                    .lookup(jndiName);
             if (dataSource == null) {
                 LOGGER.error("No DataSource found with JNDI name [" + jndiName + "].");
                 return null;

@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import com.lmax.disruptor.EventFactory;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
@@ -28,16 +28,14 @@ import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.MementoMessage;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
-import org.apache.logging.log4j.core.util.*;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
+import org.apache.logging.log4j.core.util.*;
 import org.apache.logging.log4j.message.*;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
-
-import com.lmax.disruptor.EventFactory;
 
 /**
  * When the Disruptor is started, the RingBuffer is populated with event objects. These objects are then re-used during
@@ -87,11 +85,22 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
 
     private transient AsyncLogger asyncLogger;
 
-    public void setValues(final AsyncLogger anAsyncLogger, final String aLoggerName, final Marker aMarker,
-                          final String theFqcn, final Level aLevel, final Message msg, final Throwable aThrowable,
-                          final StringMap mutableContextData, final ContextStack aContextStack, final long threadId,
-                          final String threadName, final int threadPriority, final StackTraceElement aLocation,
-                          final Clock clock, final NanoClock nanoClock) {
+    public void setValues(
+            final AsyncLogger anAsyncLogger,
+            final String aLoggerName,
+            final Marker aMarker,
+            final String theFqcn,
+            final Level aLevel,
+            final Message msg,
+            final Throwable aThrowable,
+            final StringMap mutableContextData,
+            final ContextStack aContextStack,
+            final long threadId,
+            final String threadName,
+            final int threadPriority,
+            final StackTraceElement aLocation,
+            final Clock clock,
+            final NanoClock nanoClock) {
         this.threadPriority = threadPriority;
         this.threadId = threadId;
         this.level = aLevel;
@@ -381,7 +390,9 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
 
     @Override
     public long getTimeMillis() {
-        return message instanceof TimestampMessage ? ((TimestampMessage) message).getTimestamp() : instant.getEpochMillisecond();
+        return message instanceof TimestampMessage
+                ? ((TimestampMessage) message).getTimestamp()
+                : instant.getEpochMillisecond();
     }
 
     @Override
@@ -447,7 +458,6 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
      */
     public LogEvent createMemento() {
         return new Log4jLogEvent.Builder(this).build();
-
     }
 
     /**
@@ -474,5 +484,4 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
                 .setInstant(instant) //
         ;
     }
-
 }

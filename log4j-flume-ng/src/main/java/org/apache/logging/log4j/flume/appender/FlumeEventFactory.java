@@ -34,6 +34,12 @@ public interface FlumeEventFactory {
      * @param compress If true the event body should be compressed.
      * @return A FlumeEvent.
      */
-    FlumeEvent createEvent(LogEvent event, String includes, String excludes, String required,
-                      String mdcPrefix, String eventPrefix, boolean compress);
+    FlumeEvent createEvent(
+            LogEvent event,
+            String includes,
+            String excludes,
+            String required,
+            String mdcPrefix,
+            String eventPrefix,
+            boolean compress);
 }

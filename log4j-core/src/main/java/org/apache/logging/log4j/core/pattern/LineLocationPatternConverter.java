@@ -24,13 +24,12 @@ import org.apache.logging.log4j.core.impl.LocationAware;
  * Returns the event's line location information in a StringBuilder.
  */
 @Plugin(name = "LineLocationPatternConverter", category = PatternConverter.CATEGORY)
-@ConverterKeys({ "L", "line" })
+@ConverterKeys({"L", "line"})
 public final class LineLocationPatternConverter extends LogEventPatternConverter implements LocationAware {
     /**
      * Singleton.
      */
-    private static final LineLocationPatternConverter INSTANCE =
-        new LineLocationPatternConverter();
+    private static final LineLocationPatternConverter INSTANCE = new LineLocationPatternConverter();
 
     /**
      * Private constructor.
@@ -45,8 +44,7 @@ public final class LineLocationPatternConverter extends LogEventPatternConverter
      * @param options options, may be null.
      * @return instance of pattern converter.
      */
-    public static LineLocationPatternConverter newInstance(
-        final String[] options) {
+    public static LineLocationPatternConverter newInstance(final String[] options) {
         return INSTANCE;
     }
 

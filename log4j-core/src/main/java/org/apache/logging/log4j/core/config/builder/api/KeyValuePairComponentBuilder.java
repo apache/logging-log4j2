@@ -20,6 +20,4 @@ package org.apache.logging.log4j.core.config.builder.api;
  * Assembler for constructing KeyValuePair Components.
  * @since 2.9
  */
-public interface KeyValuePairComponentBuilder extends ComponentBuilder<KeyValuePairComponentBuilder> {
-
-}
+public interface KeyValuePairComponentBuilder extends ComponentBuilder<KeyValuePairComponentBuilder> {}

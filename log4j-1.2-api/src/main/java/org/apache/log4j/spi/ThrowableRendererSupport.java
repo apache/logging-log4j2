@@ -24,14 +24,14 @@ package org.apache.log4j.spi;
 public interface ThrowableRendererSupport {
     /**
      * Get throwable renderer.
-     * 
+     *
      * @return throwable renderer, may be null.
      */
     ThrowableRenderer getThrowableRenderer();
 
     /**
      * Set throwable renderer.
-     * 
+     *
      * @param renderer renderer, may be null.
      */
     void setThrowableRenderer(ThrowableRenderer renderer);

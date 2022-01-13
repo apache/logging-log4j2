@@ -16,13 +16,12 @@
  */
 package org.apache.logging.log4j.io;
 
+import static org.junit.Assert.*;
+
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
-
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class LoggerPrintStreamTest extends AbstractLoggerOutputStreamTest {
     private PrintStream print;
@@ -35,9 +34,9 @@ public class LoggerPrintStreamTest extends AbstractLoggerOutputStreamTest {
     @Override
     protected OutputStream createOutputStreamWrapper() {
         return this.print = IoBuilder.forLogger(getExtendedLogger())
-            .filter(this.wrapped)
-            .setLevel(LEVEL)
-            .buildPrintStream();
+                .filter(this.wrapped)
+                .setLevel(LEVEL)
+                .buildPrintStream();
     }
 
     @Test
@@ -116,7 +115,7 @@ public class LoggerPrintStreamTest extends AbstractLoggerOutputStreamTest {
 
     @Test
     public void testPrintf() throws Exception {
-        assertSame(this.print,  this.print.printf("<<<%s>>>", FIRST));
+        assertSame(this.print, this.print.printf("<<<%s>>>", FIRST));
         assertMessages();
         this.print.println();
         assertMessages("<<<" + FIRST + ">>>");

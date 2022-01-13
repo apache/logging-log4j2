@@ -19,7 +19,6 @@ package org.apache.log4j.config;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.junit.BeforeClass;
@@ -43,5 +42,4 @@ public class PropertiesRollingWithPropertiesTest {
         assertTrue("Log file was not created", file.exists());
         assertTrue("Log file is empty", file.length() > 0);
     }
-
 }

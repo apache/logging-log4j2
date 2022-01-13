@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.serializeUsingLayout;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
@@ -23,26 +28,17 @@ import org.apache.logging.log4j.core.layout.JsonLayout;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
-import static org.apache.logging.log4j.layout.template.json.TestHelpers.serializeUsingLayout;
-
 class JsonLayoutTest {
 
     private static final Configuration CONFIGURATION = new DefaultConfiguration();
 
-    private static final JsonTemplateLayout JSON_TEMPLATE_LAYOUT = JsonTemplateLayout
-            .newBuilder()
+    private static final JsonTemplateLayout JSON_TEMPLATE_LAYOUT = JsonTemplateLayout.newBuilder()
             .setConfiguration(CONFIGURATION)
             .setEventTemplateUri("classpath:JsonLayout.json")
             .build();
 
-    private static final JsonLayout JSON_LAYOUT = JsonLayout
-            .newBuilder()
-            .setConfiguration(CONFIGURATION)
-            .build();
+    private static final JsonLayout JSON_LAYOUT =
+            JsonLayout.newBuilder().setConfiguration(CONFIGURATION).build();
 
     @Test
     void test_lite_log_events() {
@@ -74,14 +70,11 @@ class JsonLayoutTest {
         Assertions.assertThat(jsonTemplateLayoutMap).isEqualTo(jsonLayoutMap);
     }
 
-    private static Map<String, Object> renderUsingJsonTemplateLayout(
-            final LogEvent logEvent) {
+    private static Map<String, Object> renderUsingJsonTemplateLayout(final LogEvent logEvent) {
         return serializeUsingLayout(logEvent, JSON_TEMPLATE_LAYOUT);
     }
 
-    private static Map<String, Object> renderUsingJsonLayout(
-            final LogEvent logEvent) {
+    private static Map<String, Object> renderUsingJsonLayout(final LogEvent logEvent) {
         return serializeUsingLayout(logEvent, JSON_LAYOUT);
     }
-
 }

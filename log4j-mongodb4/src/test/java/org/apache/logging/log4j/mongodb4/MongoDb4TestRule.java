@@ -17,18 +17,8 @@
 
 package org.apache.logging.log4j.mongodb4;
 
-import java.util.Objects;
-
-import org.apache.commons.lang3.NotImplementedException;
-import org.junit.rules.TestRule;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
-
 import de.flapdoodle.embed.mongo.Command;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodProcess;
@@ -40,6 +30,13 @@ import de.flapdoodle.embed.mongo.config.Timeout;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
 import de.flapdoodle.embed.process.runtime.Network;
+import java.util.Objects;
+import org.apache.commons.lang3.NotImplementedException;
+import org.junit.rules.TestRule;
+import org.junit.runner.Description;
+import org.junit.runners.model.Statement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A JUnit test rule to manage a MongoDB embedded instance.
@@ -49,7 +46,8 @@ import de.flapdoodle.embed.process.runtime.Network;
 public class MongoDb4TestRule implements TestRule {
 
     public enum LoggingTarget {
-        CONSOLE, NULL;
+        CONSOLE,
+        NULL;
 
         public static LoggingTarget getLoggingTarget(final String sysPropertyName, final LoggingTarget defaultValue) {
             return LoggingTarget.valueOf(System.getProperty(sysPropertyName, defaultValue.name()));
@@ -67,18 +65,17 @@ public class MongoDb4TestRule implements TestRule {
             return MongodStarter.getDefaultInstance();
         }
         switch (loggingTarget) {
-        case NULL:
-            final Logger logger = LoggerFactory.getLogger(MongoDb4TestRule.class.getName());
-            // @formatter:off
-            return MongodStarter.getInstance(
-                    Defaults
-                        .runtimeConfigFor(Command.MongoD, logger)
-                        .processOutput(ProcessOutput.getDefaultInstanceSilent()).build());
-            // @formatter:on
-        case CONSOLE:
-            return MongodStarter.getDefaultInstance();
-        default:
-            throw new NotImplementedException(loggingTarget.toString());
+            case NULL:
+                final Logger logger = LoggerFactory.getLogger(MongoDb4TestRule.class.getName());
+                // @formatter:off
+                return MongodStarter.getInstance(Defaults.runtimeConfigFor(Command.MongoD, logger)
+                        .processOutput(ProcessOutput.getDefaultInstanceSilent())
+                        .build());
+                // @formatter:on
+            case CONSOLE:
+                return MongodStarter.getDefaultInstance();
+            default:
+                throw new NotImplementedException(loggingTarget.toString());
         }
     }
 
@@ -105,11 +102,11 @@ public class MongoDb4TestRule implements TestRule {
      * @param clazz                  The test case class.
      * @param defaultLoggingTarget   The logging target.
      */
-    public MongoDb4TestRule(final String portSystemPropertyName, final Class<?> clazz,
-            final LoggingTarget defaultLoggingTarget) {
+    public MongoDb4TestRule(
+            final String portSystemPropertyName, final Class<?> clazz, final LoggingTarget defaultLoggingTarget) {
         this.portSystemPropertyName = Objects.requireNonNull(portSystemPropertyName, "portSystemPropertyName");
-        this.loggingTarget = LoggingTarget.getLoggingTarget(clazz.getName() + "." + LoggingTarget.class.getSimpleName(),
-                defaultLoggingTarget);
+        this.loggingTarget = LoggingTarget.getLoggingTarget(
+                clazz.getName() + "." + LoggingTarget.class.getSimpleName(), defaultLoggingTarget);
         this.starter = getMongodStarter(this.loggingTarget);
     }
 
@@ -119,15 +116,17 @@ public class MongoDb4TestRule implements TestRule {
 
             @Override
             public void evaluate() throws Throwable {
-                final String value = Objects.requireNonNull(System.getProperty(portSystemPropertyName),
+                final String value = Objects.requireNonNull(
+                        System.getProperty(portSystemPropertyName),
                         "System property '" + portSystemPropertyName + "' is null");
                 final int port = Integer.parseInt(value);
                 mongodExecutable = starter.prepare(
-                // @formatter:off
+                        // @formatter:off
                         MongodConfig.builder()
                                 .version(Version.Main.PRODUCTION)
                                 .timeout(new Timeout(BUILDER_TIMEOUT_MILLIS))
-                                .net(new Net("localhost", port, Network.localhostIsIPv6())).build());
+                                .net(new Net("localhost", port, Network.localhostIsIPv6()))
+                                .build());
                 // @formatter:on
                 mongodProcess = mongodExecutable.start();
                 mongoClient = MongoClients.create("mongodb://localhost:" + port);
@@ -181,5 +180,4 @@ public class MongoDb4TestRule implements TestRule {
         builder.append("]");
         return builder.toString();
     }
-
 }

@@ -29,7 +29,6 @@ import static org.mockito.Mockito.times;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
@@ -38,7 +37,6 @@ import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
 import javax.jms.Session;
 import javax.jms.TextMessage;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.categories.Appenders;
 import org.apache.logging.log4j.core.LogEvent;
@@ -119,18 +117,18 @@ public class JmsAppenderTest {
         return map;
     }
 
-    private  Log4jLogEvent createLogEvent() {
+    private Log4jLogEvent createLogEvent() {
         return createLogEvent(new SimpleMessage(LOG_MESSAGE));
     }
 
     private Log4jLogEvent createLogEvent(final Message message) {
         // @formatter:off
         return Log4jLogEvent.newBuilder()
-            .setLoggerName(JmsAppenderTest.class.getName())
-            .setLoggerFqcn(JmsAppenderTest.class.getName())
-            .setLevel(Level.INFO)
-            .setMessage(message)
-            .build();
+                .setLoggerName(JmsAppenderTest.class.getName())
+                .setLoggerFqcn(JmsAppenderTest.class.getName())
+                .setLevel(Level.INFO)
+                .setMessage(message)
+                .build();
         // @formatter:on
     }
 
@@ -196,5 +194,4 @@ public class JmsAppenderTest {
         then(session).should().close();
         then(connection).should().close();
     }
-
 }

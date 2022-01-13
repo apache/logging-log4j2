@@ -23,7 +23,6 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.concurrent.TimeUnit;
-
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Mode;
@@ -48,7 +47,8 @@ import org.openjdk.jmh.annotations.State;
 @State(Scope.Thread)
 public class StringEncodingBenchmark {
 
-    private final static String LOGMSG = "2015-10-02 00:26:28,517 DEBUG (main) [o.a.l.l.p.j.StringEncodingBenchmark] - Very short log message."; // length=100
+    private static final String LOGMSG =
+            "2015-10-02 00:26:28,517 DEBUG (main) [o.a.l.l.p.j.StringEncodingBenchmark] - Very short log message."; // length=100
     private static final String STRING_ISO8859_1 = "ISO-8859-1";
     private static final String STRING_US_ASCII = "US-ASCII";
     private static final String STRING_SHIFT_JIS = "SHIFT_JIS";
@@ -189,7 +189,8 @@ public class StringEncodingBenchmark {
         return result;
     }
 
-    private static int encodeISOArray(final String charArray, int charIndex, final byte[] byteArray, int byteIndex, final int length) {
+    private static int encodeISOArray(
+            final String charArray, int charIndex, final byte[] byteArray, int byteIndex, final int length) {
         int i = 0;
         for (; i < length; i++) {
             final char c = charArray.charAt(charIndex++);
@@ -211,7 +212,8 @@ public class StringEncodingBenchmark {
             offset += m;
             if (m != length) {
                 final char c = charArray.charAt(charOffset++);
-                if ((Character.isHighSurrogate(c)) && (charOffset < charDoneIndex)
+                if ((Character.isHighSurrogate(c))
+                        && (charOffset < charDoneIndex)
                         && (Character.isLowSurrogate(charArray.charAt(charOffset)))) {
                     if (charLength > byteArray.length) {
                         charDoneIndex++;
@@ -237,7 +239,8 @@ public class StringEncodingBenchmark {
         return result;
     }
 
-    private static int encodeISOArray0(final char[] charArray, int charIndex, final byte[] byteArray, int byteIndex, final int length) {
+    private static int encodeISOArray0(
+            final char[] charArray, int charIndex, final byte[] byteArray, int byteIndex, final int length) {
         int i = 0;
         for (; i < length; i++) {
             final char c = charArray[(charIndex++)];
@@ -259,7 +262,8 @@ public class StringEncodingBenchmark {
             offset += m;
             if (m != length) {
                 final char c = charArray[(charOffset++)];
-                if ((Character.isHighSurrogate(c)) && (charOffset < charDoneIndex)
+                if ((Character.isHighSurrogate(c))
+                        && (charOffset < charDoneIndex)
                         && (Character.isLowSurrogate(charArray[(charOffset)]))) {
                     if (charLength > byteArray.length) {
                         charDoneIndex++;

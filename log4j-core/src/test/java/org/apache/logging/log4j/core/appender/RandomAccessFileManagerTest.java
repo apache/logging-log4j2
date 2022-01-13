@@ -16,17 +16,16 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
-
 import org.apache.logging.log4j.core.util.NullOutputStream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the RandomAccessFileManager class.
@@ -45,8 +44,8 @@ public class RandomAccessFileManagerTest {
         final File file = new File(tempDir, "testWrite_multiplesOfBufferSize.bin");
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
             final OutputStream os = NullOutputStream.getInstance();
-            final RandomAccessFileManager manager = new RandomAccessFileManager(null, raf, file.getName(),
-                    os, RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null, true);
+            final RandomAccessFileManager manager = new RandomAccessFileManager(
+                    null, raf, file.getName(), os, RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null, true);
 
             final int size = RandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3;
             final byte[] data = new byte[size];
@@ -67,8 +66,8 @@ public class RandomAccessFileManagerTest {
         final File file = new File(tempDir, "testWrite_dataExceedingBufferSize.bin");
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
             final OutputStream os = NullOutputStream.getInstance();
-            final RandomAccessFileManager manager = new RandomAccessFileManager(null, raf, file.getName(),
-                    os, RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null, true);
+            final RandomAccessFileManager manager = new RandomAccessFileManager(
+                    null, raf, file.getName(), os, RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null, true);
 
             final int size = RandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3 + 1;
             final byte[] data = new byte[size];
@@ -89,8 +88,8 @@ public class RandomAccessFileManagerTest {
             final int bufferSize = 4 * 1024;
             assertNotEquals(bufferSize, RandomAccessFileManager.DEFAULT_BUFFER_SIZE);
 
-            final RandomAccessFileManager manager = new RandomAccessFileManager(null, raf, file.getName(),
-                    os, bufferSize, null, null, true);
+            final RandomAccessFileManager manager =
+                    new RandomAccessFileManager(null, raf, file.getName(), os, bufferSize, null, null, true);
 
             // check the resulting buffer size is what was requested
             assertEquals(bufferSize, manager.getBufferSize());
@@ -103,8 +102,8 @@ public class RandomAccessFileManagerTest {
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
             final OutputStream os = NullOutputStream.getInstance();
             final int bufferSize = 1;
-            final RandomAccessFileManager manager = new RandomAccessFileManager(null, raf, file.getName(),
-                    os, bufferSize, null, null, true);
+            final RandomAccessFileManager manager =
+                    new RandomAccessFileManager(null, raf, file.getName(), os, bufferSize, null, null, true);
 
             final int size = bufferSize * 3 + 1;
             final byte[] data = new byte[size];
@@ -132,8 +131,14 @@ public class RandomAccessFileManagerTest {
         }
         assertEquals(bytes.length, file.length(), "all flushed to disk");
 
-        try (final RandomAccessFileManager manager = RandomAccessFileManager.getFileManager(file.getAbsolutePath(),
-                isAppend, true, RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null, null)) {
+        try (final RandomAccessFileManager manager = RandomAccessFileManager.getFileManager(
+                file.getAbsolutePath(),
+                isAppend,
+                true,
+                RandomAccessFileManager.DEFAULT_BUFFER_SIZE,
+                null,
+                null,
+                null)) {
             manager.write(bytes, 0, bytes.length, true);
             final int expected = bytes.length * 2;
             assertEquals(expected, file.length(), "appended, not overwritten");

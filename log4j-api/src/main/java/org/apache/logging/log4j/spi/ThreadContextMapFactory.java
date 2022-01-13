@@ -49,14 +49,14 @@ public final class ThreadContextMapFactory {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final String THREAD_CONTEXT_KEY = "log4j2.threadContextMap";
     private static final String GC_FREE_THREAD_CONTEXT_KEY = "log4j2.garbagefree.threadContextMap";
-    
+
     private static boolean GcFreeThreadContextKey;
     private static String ThreadContextMapName;
 
     static {
         initPrivate();
     }
-    
+
     /**
      * Initializes static variables based on system properties. Normally called when this class is initialized by the VM
      * and when Log4j is reconfigured.
@@ -77,9 +77,8 @@ public final class ThreadContextMapFactory {
         ThreadContextMapName = properties.getStringProperty(THREAD_CONTEXT_KEY);
         GcFreeThreadContextKey = properties.getBooleanProperty(GC_FREE_THREAD_CONTEXT_KEY);
     }
-    
-    private ThreadContextMapFactory() {
-    }
+
+    private ThreadContextMapFactory() {}
 
     public static ThreadContextMap createThreadContextMap() {
         final ClassLoader cl = ProviderUtil.findClassLoader();
@@ -96,7 +95,7 @@ public final class ThreadContextMapFactory {
                 LOGGER.error("Unable to create configured ThreadContextMap {}", ThreadContextMapName, ex);
             }
         }
-        if (result == null && ProviderUtil.hasProviders() && LogManager.getFactory() != null) { //LOG4J2-1658
+        if (result == null && ProviderUtil.hasProviders() && LogManager.getFactory() != null) { // LOG4J2-1658
             final String factoryClassName = LogManager.getFactory().getClass().getName();
             for (final Provider provider : ProviderUtil.getProviders()) {
                 if (factoryClassName.equals(provider.getClassName())) {
@@ -106,8 +105,10 @@ public final class ThreadContextMapFactory {
                             result = clazz.newInstance();
                             break;
                         } catch (final Exception e) {
-                            LOGGER.error("Unable to locate or load configured ThreadContextMap {}",
-                                    provider.getThreadContextMap(), e);
+                            LOGGER.error(
+                                    "Unable to locate or load configured ThreadContextMap {}",
+                                    provider.getThreadContextMap(),
+                                    e);
                             result = createDefaultThreadContextMap();
                         }
                     }

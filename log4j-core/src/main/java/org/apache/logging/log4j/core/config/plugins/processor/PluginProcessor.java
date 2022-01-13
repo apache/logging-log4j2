@@ -39,7 +39,6 @@ import javax.lang.model.util.SimpleElementVisitor7;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
-
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.util.Strings;
@@ -94,8 +93,8 @@ public class PluginProcessor extends AbstractProcessor {
     private void collectPlugins(final Iterable<? extends Element> elements) {
         final Elements elementUtils = processingEnv.getElementUtils();
         final ElementVisitor<PluginEntry, Plugin> pluginVisitor = new PluginElementVisitor(elementUtils);
-        final ElementVisitor<Collection<PluginEntry>, Plugin> pluginAliasesVisitor = new PluginAliasesElementVisitor(
-                elementUtils);
+        final ElementVisitor<Collection<PluginEntry>, Plugin> pluginAliasesVisitor =
+                new PluginAliasesElementVisitor(elementUtils);
         for (final Element element : elements) {
             final Plugin plugin = element.getAnnotation(Plugin.class);
             if (plugin == null) {
@@ -112,8 +111,9 @@ public class PluginProcessor extends AbstractProcessor {
     }
 
     private void writeCacheFile(final Element... elements) throws IOException {
-        final FileObject fileObject = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT, Strings.EMPTY,
-                PLUGIN_CACHE_FILE, elements);
+        final FileObject fileObject = processingEnv
+                .getFiler()
+                .createResource(StandardLocation.CLASS_OUTPUT, Strings.EMPTY, PLUGIN_CACHE_FILE, elements);
         try (final OutputStream out = fileObject.openOutputStream()) {
             pluginCache.writeCache(out);
         }
@@ -152,7 +152,7 @@ public class PluginProcessor extends AbstractProcessor {
         private final Elements elements;
 
         private PluginAliasesElementVisitor(final Elements elements) {
-            super(Collections.<PluginEntry> emptyList());
+            super(Collections.<PluginEntry>emptyList());
             this.elements = elements;
         }
 

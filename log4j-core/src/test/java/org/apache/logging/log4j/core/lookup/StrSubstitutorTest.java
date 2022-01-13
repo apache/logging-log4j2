@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.junit.jupiter.api.AfterAll;
@@ -34,7 +33,6 @@ public class StrSubstitutorTest {
     private static final String TESTKEY = "TestKey";
     private static final String TESTVAL = "TestValue";
 
-
     @AfterAll
     public static void after() {
         System.clearProperty(TESTKEY);
@@ -45,7 +43,6 @@ public class StrSubstitutorTest {
         System.setProperty(TESTKEY, TESTVAL);
     }
 
-
     @Test
     public void testDefault() {
         final Map<String, String> map = new HashMap<>();
@@ -53,7 +50,7 @@ public class StrSubstitutorTest {
         final StrLookup lookup = new Interpolator(new MapLookup(map));
         final StrSubstitutor subst = new StrSubstitutor(lookup);
         ThreadContext.put(TESTKEY, TESTVAL);
-        //String value = subst.replace("${sys:TestKey1:-${ctx:TestKey}}");
+        // String value = subst.replace("${sys:TestKey1:-${ctx:TestKey}}");
         final String value = subst.replace("${sys:TestKey1:-${ctx:TestKey}}");
         assertEquals("TestValue", value);
     }

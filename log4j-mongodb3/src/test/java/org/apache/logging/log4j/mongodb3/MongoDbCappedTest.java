@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.mongodb3;
 
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.Appenders;
@@ -30,10 +33,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.RuleChain;
 
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-
 /**
  *
  */
@@ -42,15 +41,15 @@ public class MongoDbCappedTest {
 
     private static LoggerContextRule loggerContextTestRule = new LoggerContextRule("log4j2-mongodb-capped.xml");
 
-    private static final AvailablePortSystemPropertyTestRule mongoDbPortTestRule = AvailablePortSystemPropertyTestRule
-            .create(TestConstants.SYS_PROP_NAME_PORT);
+    private static final AvailablePortSystemPropertyTestRule mongoDbPortTestRule =
+            AvailablePortSystemPropertyTestRule.create(TestConstants.SYS_PROP_NAME_PORT);
 
-    private static final MongoDbTestRule mongoDbTestRule = new MongoDbTestRule(mongoDbPortTestRule.getName(),
-            MongoDbCappedTest.class, LoggingTarget.NULL);
+    private static final MongoDbTestRule mongoDbTestRule =
+            new MongoDbTestRule(mongoDbPortTestRule.getName(), MongoDbCappedTest.class, LoggingTarget.NULL);
 
     @ClassRule
-    public static RuleChain ruleChain = RuleChainFactory.create(mongoDbPortTestRule, mongoDbTestRule,
-            loggerContextTestRule);
+    public static RuleChain ruleChain =
+            RuleChainFactory.create(mongoDbPortTestRule, mongoDbTestRule, loggerContextTestRule);
 
     @Test
     public void test() {

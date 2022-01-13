@@ -16,17 +16,6 @@
  */
 package org.apache.logging.log4j.core.jackson;
 
-import java.util.Map;
-
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.ThreadContext.ContextStack;
-import org.apache.logging.log4j.core.time.Instant;
-import org.apache.logging.log4j.util.ReadOnlyStringMap;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.ThrowableProxy;
-import org.apache.logging.log4j.message.Message;
-
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -37,20 +26,42 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import java.util.Map;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.ThreadContext.ContextStack;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.ThrowableProxy;
+import org.apache.logging.log4j.core.time.Instant;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 @JsonRootName(XmlConstants.ELT_EVENT)
 @JacksonXmlRootElement(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_EVENT)
 @JsonFilter("org.apache.logging.log4j.core.impl.Log4jLogEvent")
-@JsonPropertyOrder({ "timeMillis", XmlConstants.ELT_INSTANT, "threadName", "level", "loggerName", "marker", "message", "thrown", XmlConstants.ELT_CONTEXT_MAP,
-        JsonConstants.ELT_CONTEXT_STACK, "loggerFQCN", "Source", "endOfBatch" })
+@JsonPropertyOrder({
+    "timeMillis",
+    XmlConstants.ELT_INSTANT,
+    "threadName",
+    "level",
+    "loggerName",
+    "marker",
+    "message",
+    "thrown",
+    XmlConstants.ELT_CONTEXT_MAP,
+    JsonConstants.ELT_CONTEXT_STACK,
+    "loggerFQCN",
+    "Source",
+    "endOfBatch"
+})
 abstract class LogEventWithContextListMixIn implements LogEvent {
 
     private static final long serialVersionUID = 1L;
 
-//    @JsonProperty(JsonConstants.ELT_CONTEXT_MAP)
-//    @JacksonXmlProperty(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_CONTEXT_MAP)
-//    @JsonSerialize(using = ListOfMapEntrySerializer.class)
-//    @JsonDeserialize(using = ListOfMapEntryDeserializer.class)
+    //    @JsonProperty(JsonConstants.ELT_CONTEXT_MAP)
+    //    @JacksonXmlProperty(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_CONTEXT_MAP)
+    //    @JsonSerialize(using = ListOfMapEntrySerializer.class)
+    //    @JsonDeserialize(using = ListOfMapEntryDeserializer.class)
     @Override
     @JsonIgnore
     public abstract Map<String, String> getContextMap();
@@ -59,7 +70,7 @@ abstract class LogEventWithContextListMixIn implements LogEvent {
     @JacksonXmlProperty(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_CONTEXT_MAP)
     @JsonSerialize(using = ContextDataAsEntryListSerializer.class)
     @JsonDeserialize(using = ContextDataAsEntryListDeserializer.class)
-//    @JsonIgnore
+    //    @JsonIgnore
     @Override
     public abstract ReadOnlyStringMap getContextData();
 
@@ -150,5 +161,4 @@ abstract class LogEventWithContextListMixIn implements LogEvent {
 
     @Override
     public abstract void setIncludeLocation(boolean locationRequired);
-
 }

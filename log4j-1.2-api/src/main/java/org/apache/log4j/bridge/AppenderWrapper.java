@@ -62,9 +62,7 @@ public class AppenderWrapper extends AppenderAttachableImpl implements Appender 
     }
 
     @Override
-    public void clearFilters() {
-
-    }
+    public void clearFilters() {}
 
     @Override
     public void close() {
@@ -90,7 +88,7 @@ public class AppenderWrapper extends AppenderAttachableImpl implements Appender 
 
     @Override
     public ErrorHandler getErrorHandler() {
-        return ((ErrorHandlerAdapter)appender.getHandler()).getHandler();
+        return ((ErrorHandlerAdapter) appender.getHandler()).getHandler();
     }
 
     @Override

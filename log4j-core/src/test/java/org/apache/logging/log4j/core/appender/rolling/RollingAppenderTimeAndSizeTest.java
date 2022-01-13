@@ -21,8 +21,8 @@ import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -31,7 +31,6 @@ import java.nio.file.Files;
 import java.nio.file.attribute.FileTime;
 import java.util.Arrays;
 import java.util.Random;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.Before;
@@ -48,7 +47,8 @@ public class RollingAppenderTimeAndSizeTest {
 
     private static final String DIR = "target/rolling3/test";
 
-    public static LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
+    public static LoggerContextRule loggerContextRule =
+            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
 
     @Rule
     public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
@@ -62,41 +62,43 @@ public class RollingAppenderTimeAndSizeTest {
 
     @Test
     public void testAppender() throws Exception {
-		Random rand = new Random();
-		final File logFile = new File("target/rolling3/rollingtest.log");
-		assertTrue("target/rolling3/rollingtest.log does not exist", logFile.exists());
-		FileTime time = (FileTime) Files.getAttribute(logFile.toPath(), "creationTime");
-		for (int j=0; j < 100; ++j) {
-			int count = rand.nextInt(50);
-			for (int i = 0; i < count; ++i) {
-				logger.debug("This is test message number " + i);
-			}
-			Thread.sleep(rand.nextInt(50));
-		}
-		Thread.sleep(50);
-		final File dir = new File(DIR);
-		assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
-		final File[] files = dir.listFiles();
-		Arrays.sort(files);
-		assertNotNull(files);
-		assertThat(files, hasItemInArray(that(hasName(that(endsWith(".log"))))));
-		int found = 0;
-		int fileCounter = 0;
-		String previous = "";
-		for (final File file: files) {
-			final String actual = file.getName();
-			StringBuilder padding = new StringBuilder();
-			String length = Long.toString(file.length());
-			for (int i = length.length(); i < 10; ++i) {
-				padding.append(" ");
-			}
-			final String[] fileParts = actual.split("_|\\.");
-			fileCounter = previous.equals(fileParts[1]) ? ++fileCounter : 1;
-			previous = fileParts[1];
-			assertEquals("Incorrect file name. Expected counter value of " + fileCounter + " in " + actual,
-				Integer.toString(fileCounter), fileParts[2]);
-		}
-		FileTime endTime = (FileTime) Files.getAttribute(logFile.toPath(), "creationTime");
-		assertNotEquals("Creation times are equal", time, endTime);
+        Random rand = new Random();
+        final File logFile = new File("target/rolling3/rollingtest.log");
+        assertTrue("target/rolling3/rollingtest.log does not exist", logFile.exists());
+        FileTime time = (FileTime) Files.getAttribute(logFile.toPath(), "creationTime");
+        for (int j = 0; j < 100; ++j) {
+            int count = rand.nextInt(50);
+            for (int i = 0; i < count; ++i) {
+                logger.debug("This is test message number " + i);
+            }
+            Thread.sleep(rand.nextInt(50));
+        }
+        Thread.sleep(50);
+        final File dir = new File(DIR);
+        assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
+        final File[] files = dir.listFiles();
+        Arrays.sort(files);
+        assertNotNull(files);
+        assertThat(files, hasItemInArray(that(hasName(that(endsWith(".log"))))));
+        int found = 0;
+        int fileCounter = 0;
+        String previous = "";
+        for (final File file : files) {
+            final String actual = file.getName();
+            StringBuilder padding = new StringBuilder();
+            String length = Long.toString(file.length());
+            for (int i = length.length(); i < 10; ++i) {
+                padding.append(" ");
+            }
+            final String[] fileParts = actual.split("_|\\.");
+            fileCounter = previous.equals(fileParts[1]) ? ++fileCounter : 1;
+            previous = fileParts[1];
+            assertEquals(
+                    "Incorrect file name. Expected counter value of " + fileCounter + " in " + actual,
+                    Integer.toString(fileCounter),
+                    fileParts[2]);
+        }
+        FileTime endTime = (FileTime) Files.getAttribute(logFile.toPath(), "creationTime");
+        assertNotEquals("Creation times are equal", time, endTime);
     }
 }

@@ -28,5 +28,4 @@ public class FelixLoadApiBundleTest extends AbstractLoadBundleTest {
     protected FrameworkFactory getFactory() {
         return new org.apache.felix.framework.FrameworkFactory();
     }
-
 }

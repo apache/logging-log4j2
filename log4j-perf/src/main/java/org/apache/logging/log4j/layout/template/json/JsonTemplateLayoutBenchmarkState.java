@@ -17,6 +17,9 @@
 package org.apache.logging.log4j.layout.template.json;
 
 import co.elastic.logging.log4j2.EcsLayout;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
@@ -29,10 +32,6 @@ import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTem
 import org.apache.logging.log4j.layout.template.json.util.ThreadLocalRecyclerFactory;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
-
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 @State(Scope.Benchmark)
 public class JsonTemplateLayoutBenchmarkState {
@@ -76,8 +75,7 @@ public class JsonTemplateLayoutBenchmarkState {
     }
 
     private static JsonTemplateLayout createJsonTemplateLayout4JsonLayout() {
-        return JsonTemplateLayout
-                .newBuilder()
+        return JsonTemplateLayout.newBuilder()
                 .setConfiguration(CONFIGURATION)
                 .setCharset(CHARSET)
                 .setEventTemplateUri("classpath:JsonLayout.json")
@@ -86,16 +84,13 @@ public class JsonTemplateLayoutBenchmarkState {
     }
 
     private static JsonTemplateLayout createJsonTemplateLayout4EcsLayout() {
-        final EventTemplateAdditionalField[] additionalFields =
-                new EventTemplateAdditionalField[]{
-                        EventTemplateAdditionalField
-                                .newBuilder()
-                                .setKey("service.name")
-                                .setValue("benchmark")
-                                .build()
-                };
-        return JsonTemplateLayout
-                .newBuilder()
+        final EventTemplateAdditionalField[] additionalFields = new EventTemplateAdditionalField[] {
+            EventTemplateAdditionalField.newBuilder()
+                    .setKey("service.name")
+                    .setValue("benchmark")
+                    .build()
+        };
+        return JsonTemplateLayout.newBuilder()
                 .setConfiguration(CONFIGURATION)
                 .setCharset(CHARSET)
                 .setEventTemplateUri("classpath:EcsLayout.json")
@@ -105,48 +100,40 @@ public class JsonTemplateLayoutBenchmarkState {
     }
 
     private static JsonTemplateLayout createJsonTemplateLayout4GelfLayout() {
-        return JsonTemplateLayout
-                .newBuilder()
+        return JsonTemplateLayout.newBuilder()
                 .setConfiguration(CONFIGURATION)
                 .setCharset(CHARSET)
                 .setEventTemplateUri("classpath:GelfLayout.json")
                 .setRecyclerFactory(ThreadLocalRecyclerFactory.getInstance())
-                .setEventTemplateAdditionalFields(
-                        new EventTemplateAdditionalField[]{
-                                // Adding "host" as a constant rather than using
-                                // the "hostName" property lookup at runtime, which
-                                // is what GelfLayout does as well.
-                                EventTemplateAdditionalField
-                                        .newBuilder()
-                                        .setKey("host")
-                                        .setValue(NetUtils.getLocalHostname())
-                                        .build()
-                        })
+                .setEventTemplateAdditionalFields(new EventTemplateAdditionalField[] {
+                    // Adding "host" as a constant rather than using
+                    // the "hostName" property lookup at runtime, which
+                    // is what GelfLayout does as well.
+                    EventTemplateAdditionalField.newBuilder()
+                            .setKey("host")
+                            .setValue(NetUtils.getLocalHostname())
+                            .build()
+                })
                 .build();
     }
 
     private static JsonLayout createDefaultJsonLayout() {
-        return JsonLayout
-                .newBuilder()
+        return JsonLayout.newBuilder()
                 .setConfiguration(CONFIGURATION)
                 .setCharset(CHARSET)
                 .build();
     }
 
     private static JsonLayout createCustomJsonLayout() {
-        return JsonLayout
-                .newBuilder()
+        return JsonLayout.newBuilder()
                 .setConfiguration(CONFIGURATION)
                 .setCharset(CHARSET)
-                .setAdditionalFields(new KeyValuePair[]{
-                        new KeyValuePair("@version", "\"1\"")
-                })
+                .setAdditionalFields(new KeyValuePair[] {new KeyValuePair("@version", "\"1\"")})
                 .build();
     }
 
     private static EcsLayout createEcsLayout() {
-        final EcsLayout layout = EcsLayout
-                .newBuilder()
+        final EcsLayout layout = EcsLayout.newBuilder()
                 .setConfiguration(CONFIGURATION)
                 .setServiceName("benchmark")
                 .build();
@@ -161,8 +148,7 @@ public class JsonTemplateLayoutBenchmarkState {
     }
 
     private static GelfLayout createGelfLayout() {
-        return GelfLayout
-                .newBuilder()
+        return GelfLayout.newBuilder()
                 .setConfiguration(CONFIGURATION)
                 .setCharset(CHARSET)
                 .setCompressionType(GelfLayout.CompressionType.OFF)
@@ -208,5 +194,4 @@ public class JsonTemplateLayoutBenchmarkState {
     List<LogEvent> getLiteLogEvents() {
         return liteLogEvents;
     }
-
 }

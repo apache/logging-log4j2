@@ -25,8 +25,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 @Plugin(name = "ThreadContextDataResolverFactory", category = TemplateResolverFactory.CATEGORY)
 public final class ThreadContextDataResolverFactory implements EventResolverFactory {
 
-    private static final ThreadContextDataResolverFactory INSTANCE =
-            new ThreadContextDataResolverFactory();
+    private static final ThreadContextDataResolverFactory INSTANCE = new ThreadContextDataResolverFactory();
 
     private ThreadContextDataResolverFactory() {}
 
@@ -41,10 +40,7 @@ public final class ThreadContextDataResolverFactory implements EventResolverFact
     }
 
     @Override
-    public ThreadContextDataResolver create(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
+    public ThreadContextDataResolver create(final EventResolverContext context, final TemplateResolverConfig config) {
         return new ThreadContextDataResolver(context, config);
     }
-
 }

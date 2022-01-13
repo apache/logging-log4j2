@@ -16,6 +16,17 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.removeStub;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -25,7 +36,6 @@ import java.util.TimeZone;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.ConfigurationScheduler;
@@ -39,18 +49,6 @@ import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import com.github.tomakehurst.wiremock.stubbing.StubMapping;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.removeStub;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 /**
  * Test the WatchManager
@@ -76,10 +74,12 @@ public class WatchHttpTest {
     }
 
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort().dynamicHttpsPort()
-        .keystorePath(TestConstants.KEYSTORE_FILE)
-        .keystorePassword(String.valueOf(TestConstants.KEYSTORE_PWD()))
-        .keystoreType(TestConstants.KEYSTORE_TYPE));
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig()
+            .dynamicPort()
+            .dynamicHttpsPort()
+            .keystorePath(TestConstants.KEYSTORE_FILE)
+            .keystorePassword(String.valueOf(TestConstants.KEYSTORE_PWD()))
+            .keystoreType(TestConstants.KEYSTORE_TYPE));
 
     @Test
     public void testWatchManager() throws Exception {
@@ -94,11 +94,11 @@ public class WatchHttpTest {
         Assume.assumeTrue(!IS_WINDOWS || Boolean.getBoolean(FORCE_RUN_KEY));
         URL url = new URL("http://localhost:" + wireMockRule.port() + "/log4j-test1.xml");
         StubMapping stubMapping = stubFor(get(urlPathEqualTo("/log4j-test1.xml"))
-            .willReturn(aResponse()
-            .withBodyFile(file)
-            .withStatus(200)
-            .withHeader("Last-Modified", formatter.format(previous) + " GMT")
-            .withHeader("Content-Type", XML)));
+                .willReturn(aResponse()
+                        .withBodyFile(file)
+                        .withStatus(200)
+                        .withHeader("Last-Modified", formatter.format(previous) + " GMT")
+                        .withHeader("Content-Type", XML)));
         final ConfigurationScheduler scheduler = new ConfigurationScheduler();
         scheduler.incrementScheduledItems();
         final WatchManager watchManager = new WatchManager(scheduler);
@@ -106,8 +106,9 @@ public class WatchHttpTest {
         scheduler.start();
         watchManager.start();
         try {
-            watchManager.watch(new Source(url.toURI(), previous.getTimeInMillis()), new HttpWatcher(configuration, null,
-                listeners, previous.getTimeInMillis()));
+            watchManager.watch(
+                    new Source(url.toURI(), previous.getTimeInMillis()),
+                    new HttpWatcher(configuration, null, listeners, previous.getTimeInMillis()));
             final String str = queue.poll(2, TimeUnit.SECONDS);
             assertNotNull("File change not detected", str);
         } finally {
@@ -130,11 +131,11 @@ public class WatchHttpTest {
         Assume.assumeTrue(!IS_WINDOWS || Boolean.getBoolean(FORCE_RUN_KEY));
         URL url = new URL("http://localhost:" + wireMockRule.port() + "/log4j-test2.xml");
         StubMapping stubMapping = stubFor(get(urlPathEqualTo("/log4j-test2.xml"))
-            .willReturn(aResponse()
-                .withBodyFile(file)
-                .withStatus(304)
-                .withHeader("Last-Modified", formatter.format(now) + " GMT")
-                .withHeader("Content-Type", XML)));
+                .willReturn(aResponse()
+                        .withBodyFile(file)
+                        .withStatus(304)
+                        .withHeader("Last-Modified", formatter.format(now) + " GMT")
+                        .withHeader("Content-Type", XML)));
         final ConfigurationScheduler scheduler = new ConfigurationScheduler();
         scheduler.incrementScheduledItems();
         final WatchManager watchManager = new WatchManager(scheduler);
@@ -142,8 +143,9 @@ public class WatchHttpTest {
         scheduler.start();
         watchManager.start();
         try {
-            watchManager.watch(new Source(url.toURI(), previous.getTimeInMillis()), new HttpWatcher(configuration, null,
-                listeners, previous.getTimeInMillis()));
+            watchManager.watch(
+                    new Source(url.toURI(), previous.getTimeInMillis()),
+                    new HttpWatcher(configuration, null, listeners, previous.getTimeInMillis()));
             final String str = queue.poll(2, TimeUnit.SECONDS);
             assertNull("File changed.", str);
         } finally {
@@ -164,7 +166,7 @@ public class WatchHttpTest {
 
         @Override
         public void onChange(Reconfigurable reconfigurable) {
-            //System.out.println("Reconfiguration detected for " + name);
+            // System.out.println("Reconfiguration detected for " + name);
             queue.add(name);
         }
     }

@@ -23,8 +23,7 @@ class TruncatingBufferedWriterTest {
 
     @Test
     void test_ctor_invalid_args() {
-        Assertions
-                .assertThatThrownBy(() -> new TruncatingBufferedWriter(-1))
+        Assertions.assertThatThrownBy(() -> new TruncatingBufferedWriter(-1))
                 .isInstanceOf(NegativeArraySizeException.class);
     }
 
@@ -35,10 +34,10 @@ class TruncatingBufferedWriterTest {
         final int capacity = 1_000;
         final TruncatingBufferedWriter writer = new TruncatingBufferedWriter(capacity);
         writer.write(Character.MAX_VALUE);
-        writer.write(new char[]{Character.MIN_VALUE, Character.MAX_VALUE});
+        writer.write(new char[] {Character.MIN_VALUE, Character.MAX_VALUE});
         writer.write("foo");
         writer.write("foobar", 3, 3);
-        writer.write(new char[]{'f', 'o', 'o', 'b', 'a', 'r', 'b', 'u', 'z', 'z'}, 6, 4);
+        writer.write(new char[] {'f', 'o', 'o', 'b', 'a', 'r', 'b', 'u', 'z', 'z'}, 6, 4);
         writer.append('!');
         writer.append("yo");
         writer.append(null);
@@ -80,7 +79,6 @@ class TruncatingBufferedWriterTest {
         Assertions.assertThat(writer.capacity()).isEqualTo(capacity);
         Assertions.assertThat(writer.truncated()).isFalse();
         verifyClose(writer);
-
     }
 
     @Test
@@ -94,7 +92,7 @@ class TruncatingBufferedWriterTest {
     @Test
     void test_write_char_array_truncation() {
         final TruncatingBufferedWriter writer = new TruncatingBufferedWriter(1);
-        writer.write(new char[]{'a', 'b'});
+        writer.write(new char[] {'a', 'b'});
         verifyTruncation(writer, 'a');
     }
 
@@ -109,20 +107,16 @@ class TruncatingBufferedWriterTest {
     void test_write_String_slice_invalid_args() {
         final TruncatingBufferedWriter writer = new TruncatingBufferedWriter(1);
         final String string = "a";
-        Assertions
-                .assertThatThrownBy(() -> writer.write(string, -1, 1))
+        Assertions.assertThatThrownBy(() -> writer.write(string, -1, 1))
                 .isInstanceOf(IndexOutOfBoundsException.class)
                 .hasMessageStartingWith("invalid offset");
-        Assertions
-                .assertThatThrownBy(() -> writer.write(string, 1, 1))
+        Assertions.assertThatThrownBy(() -> writer.write(string, 1, 1))
                 .isInstanceOf(IndexOutOfBoundsException.class)
                 .hasMessageStartingWith("invalid offset");
-        Assertions
-                .assertThatThrownBy(() -> writer.write(string, 0, -1))
+        Assertions.assertThatThrownBy(() -> writer.write(string, 0, -1))
                 .isInstanceOf(IndexOutOfBoundsException.class)
                 .hasMessageStartingWith("invalid length");
-        Assertions
-                .assertThatThrownBy(() -> writer.write(string, 0, 2))
+        Assertions.assertThatThrownBy(() -> writer.write(string, 0, 2))
                 .isInstanceOf(IndexOutOfBoundsException.class)
                 .hasMessageStartingWith("invalid length");
     }
@@ -137,21 +131,17 @@ class TruncatingBufferedWriterTest {
     @Test
     void test_write_char_array_slice_invalid_args() {
         final TruncatingBufferedWriter writer = new TruncatingBufferedWriter(1);
-        final char[] buffer = new char[]{'a'};
-        Assertions
-                .assertThatThrownBy(() -> writer.write(buffer, -1, 1))
+        final char[] buffer = new char[] {'a'};
+        Assertions.assertThatThrownBy(() -> writer.write(buffer, -1, 1))
                 .isInstanceOf(IndexOutOfBoundsException.class)
                 .hasMessageStartingWith("invalid offset");
-        Assertions
-                .assertThatThrownBy(() -> writer.write(buffer, 1, 1))
+        Assertions.assertThatThrownBy(() -> writer.write(buffer, 1, 1))
                 .isInstanceOf(IndexOutOfBoundsException.class)
                 .hasMessageStartingWith("invalid offset");
-        Assertions
-                .assertThatThrownBy(() -> writer.write(buffer, 0, -1))
+        Assertions.assertThatThrownBy(() -> writer.write(buffer, 0, -1))
                 .isInstanceOf(IndexOutOfBoundsException.class)
                 .hasMessageStartingWith("invalid length");
-        Assertions
-                .assertThatThrownBy(() -> writer.write(buffer, 0, 2))
+        Assertions.assertThatThrownBy(() -> writer.write(buffer, 0, 2))
                 .isInstanceOf(IndexOutOfBoundsException.class)
                 .hasMessageStartingWith("invalid length");
     }
@@ -159,7 +149,7 @@ class TruncatingBufferedWriterTest {
     @Test
     void test_write_char_array_slice_truncation() {
         final TruncatingBufferedWriter writer = new TruncatingBufferedWriter(1);
-        writer.write(new char[]{'a', 'b'}, 0, 2);
+        writer.write(new char[] {'a', 'b'}, 0, 2);
         verifyTruncation(writer, 'a');
     }
 
@@ -189,24 +179,19 @@ class TruncatingBufferedWriterTest {
     void test_append_seq_slice_invalid_args() {
         final TruncatingBufferedWriter writer = new TruncatingBufferedWriter(1);
         final CharSequence seq = "ab";
-        Assertions
-                .assertThatThrownBy(() -> writer.append(seq, -1, 2))
+        Assertions.assertThatThrownBy(() -> writer.append(seq, -1, 2))
                 .isInstanceOf(IndexOutOfBoundsException.class)
                 .hasMessageStartingWith("invalid start");
-        Assertions
-                .assertThatThrownBy(() -> writer.append(seq, 2, 2))
+        Assertions.assertThatThrownBy(() -> writer.append(seq, 2, 2))
                 .isInstanceOf(IndexOutOfBoundsException.class)
                 .hasMessageStartingWith("invalid start");
-        Assertions
-                .assertThatThrownBy(() -> writer.append(seq, 0, -1))
+        Assertions.assertThatThrownBy(() -> writer.append(seq, 0, -1))
                 .isInstanceOf(IndexOutOfBoundsException.class)
                 .hasMessageStartingWith("invalid end");
-        Assertions
-                .assertThatThrownBy(() -> writer.append(seq, 1, 0))
+        Assertions.assertThatThrownBy(() -> writer.append(seq, 1, 0))
                 .isInstanceOf(IndexOutOfBoundsException.class)
                 .hasMessageStartingWith("invalid end");
-        Assertions
-                .assertThatThrownBy(() -> writer.append(seq, 0, 3))
+        Assertions.assertThatThrownBy(() -> writer.append(seq, 0, 3))
                 .isInstanceOf(IndexOutOfBoundsException.class)
                 .hasMessageStartingWith("invalid end");
     }
@@ -225,10 +210,8 @@ class TruncatingBufferedWriterTest {
         verifyTruncation(writer, 'n');
     }
 
-    private void verifyTruncation(
-            final TruncatingBufferedWriter writer,
-            final char c) {
-        Assertions.assertThat(writer.buffer()).isEqualTo(new char[]{c});
+    private void verifyTruncation(final TruncatingBufferedWriter writer, final char c) {
+        Assertions.assertThat(writer.buffer()).isEqualTo(new char[] {c});
         Assertions.assertThat(writer.position()).isEqualTo(1);
         Assertions.assertThat(writer.capacity()).isEqualTo(1);
         Assertions.assertThat(writer.truncated()).isTrue();
@@ -240,5 +223,4 @@ class TruncatingBufferedWriterTest {
         Assertions.assertThat(writer.position()).isEqualTo(0);
         Assertions.assertThat(writer.truncated()).isFalse();
     }
-
 }

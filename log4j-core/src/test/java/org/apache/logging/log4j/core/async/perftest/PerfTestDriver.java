@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
 
 /**
@@ -37,7 +36,9 @@ public class PerfTestDriver {
     private static final String DEFAULT_WAIT_STRATEGY = "Block";
 
     static enum WaitStrategy {
-        Sleep, Yield, Block;
+        Sleep,
+        Yield,
+        Block;
 
         public static WaitStrategy get() {
             return WaitStrategy.valueOf(System.getProperty("WaitStrategy", DEFAULT_WAIT_STRATEGY));
@@ -58,8 +59,15 @@ public class PerfTestDriver {
         private final WaitStrategy wait;
         private final Runner runner;
 
-        public Setup(final Class<?> klass, final Runner runner, final String name, final String log4jConfig,
-                final int threadCount, final WaitStrategy wait, final String... systemProperties) throws IOException {
+        public Setup(
+                final Class<?> klass,
+                final Runner runner,
+                final String name,
+                final String log4jConfig,
+                final int threadCount,
+                final WaitStrategy wait,
+                final String... systemProperties)
+                throws IOException {
             this.klass = klass;
             this.runner = runner;
             this.name = name;
@@ -88,7 +96,7 @@ public class PerfTestDriver {
 
             args.add("-Dlog4j.configuration=" + log4jConfig); // log4j 1.2
             args.add("-Dlog4j.configurationFile=" + log4jConfig); // log4j 2
-            args.add("-Dlogback.configurationFile=" + log4jConfig);// logback
+            args.add("-Dlogback.configurationFile=" + log4jConfig); // logback
 
             final int ringBufferSize = getUserSpecifiedRingBufferSize();
             if (ringBufferSize >= 128) {
@@ -184,10 +192,12 @@ public class PerfTestDriver {
         @Override
         public String toString() {
             final String fmt = "throughput: %,d ops/sec. latency(ns): avg=%.1f 99%% < %.1f 99.99%% < %.1f (%d samples)";
-            return String.format(fmt, averageOpsPerSec, //
+            return String.format(
+                    fmt,
+                    averageOpsPerSec, //
                     average / latencyRowCount, // mean latency
                     pct99 / latencyRowCount, // 99% observations less than
-                    pct99_99 / latencyRowCount,// 99.99% observs less than
+                    pct99_99 / latencyRowCount, // 99.99% observs less than
                     count);
         }
     }
@@ -210,8 +220,9 @@ public class PerfTestDriver {
         final List<Setup> tests = selectTests();
         runPerfTests(args, tests);
 
-        System.out.printf("Done. Total duration: %.1f minutes%n", (System.nanoTime() - start)
-                / (60.0 * 1000.0 * 1000.0 * 1000.0));
+        System.out.printf(
+                "Done. Total duration: %.1f minutes%n",
+                (System.nanoTime() - start) / (60.0 * 1000.0 * 1000.0 * 1000.0));
 
         printRanking(tests.toArray(new Setup[tests.size()]));
     }
@@ -240,7 +251,8 @@ public class PerfTestDriver {
         // add(tests, 1, "perf6AsyncApndLoc.xml", Runner.Log4j2, "Async Appender includeLocation");
         // add(tests, 1, "perf8MixedLoc.xml", Runner.Log4j2, "Mixed sync/async includeLocation");
         // add(tests, 1, "perf4PlainLocation.xml", Runner.Log4j2, "Loggers all async includeLocation", ALL_ASYNC);
-        // add(tests, 1, "perf4PlainLocation.xml", Runner.Log4j2, "Loggers all async includeLocation CachedClock", ALL_ASYNC, CACHEDCLOCK);
+        // add(tests, 1, "perf4PlainLocation.xml", Runner.Log4j2, "Loggers all async includeLocation CachedClock",
+        // ALL_ASYNC, CACHEDCLOCK);
         // add(tests, 1, "perf4PlainLocation.xml", Runner.Log4j2, "Sync includeLocation");
 
         // appenders
@@ -265,7 +277,8 @@ public class PerfTestDriver {
             // add(tests, i, "perf6AsyncApndLoc.xml", Runner.Log4j2, "Async Appender includeLocation");
             // add(tests, i, "perf8MixedLoc.xml", Runner.Log4j2, "Mixed sync/async includeLocation");
             // add(tests, i, "perf4PlainLocation.xml", Runner.Log4j2, "Loggers all async includeLocation", ALL_ASYNC));
-            // add(tests, i, "perf4PlainLocation.xml", Runner.Log4j2, "Loggers all async includeLocation CachedClock", ALL_ASYNC, CACHEDCLOCK));
+            // add(tests, i, "perf4PlainLocation.xml", Runner.Log4j2, "Loggers all async includeLocation CachedClock",
+            // ALL_ASYNC, CACHEDCLOCK));
             // add(tests, i, "perf4PlainLocation.xml", Runner.Log4j2, "Sync includeLocation");
 
             // appenders
@@ -277,16 +290,22 @@ public class PerfTestDriver {
         return tests;
     }
 
-    private static void add(final List<Setup> tests, final int threadCount, final String config, final Runner runner, final String name,
-            final String... systemProperties) throws IOException {
+    private static void add(
+            final List<Setup> tests,
+            final int threadCount,
+            final String config,
+            final Runner runner,
+            final String name,
+            final String... systemProperties)
+            throws IOException {
         final WaitStrategy wait = WaitStrategy.get();
         final Class<?> perfTest = threadCount == 1 ? PerfTest.class : MultiThreadPerfTest.class;
         final Setup setup = new Setup(perfTest, runner, name, config, threadCount, wait, systemProperties);
         tests.add(setup);
     }
 
-    private static void runPerfTests(final String[] args, final List<Setup> tests) throws IOException,
-            InterruptedException, FileNotFoundException {
+    private static void runPerfTests(final String[] args, final List<Setup> tests)
+            throws IOException, InterruptedException, FileNotFoundException {
         final String java = args.length > 0 ? args[0] : "java";
         final int repeat = args.length > 1 ? Integer.parseInt(args[1]) : 5;
         int x = 0;

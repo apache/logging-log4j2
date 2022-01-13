@@ -17,8 +17,8 @@
 package org.apache.logging.log4j.layout.template.json;
 
 import org.apache.logging.log4j.core.GcFreeLoggingTestUtil;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("allocation")
 @Tag("functional")
@@ -35,9 +35,6 @@ public class JsonTemplateLayoutGcFreeTest {
     public static void main(final String[] args) throws Exception {
         System.setProperty("log4j.layout.jsonTemplate.recyclerFactory", "threadLocal");
         System.setProperty("log4j2.garbagefree.threadContextMap", "true");
-        GcFreeLoggingTestUtil.executeLogging(
-                "gcFreeJsonTemplateLayoutLogging.xml",
-                JsonTemplateLayoutGcFreeTest.class);
+        GcFreeLoggingTestUtil.executeLogging("gcFreeJsonTemplateLayoutLogging.xml", JsonTemplateLayoutGcFreeTest.class);
     }
-
 }

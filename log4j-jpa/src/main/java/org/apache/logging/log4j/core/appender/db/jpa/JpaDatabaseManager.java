@@ -19,12 +19,10 @@ package org.apache.logging.log4j.core.appender.db.jpa;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.Objects;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
@@ -43,12 +41,15 @@ public final class JpaDatabaseManager extends AbstractDatabaseManager {
     private EntityManager entityManager;
     private EntityTransaction transaction;
 
-    private JpaDatabaseManager(final String name, final int bufferSize,
-        final Class<? extends AbstractLogEventWrapperEntity> entityClass,
-        final Constructor<? extends AbstractLogEventWrapperEntity> entityConstructor,
-        final String persistenceUnitName) {
+    private JpaDatabaseManager(
+            final String name,
+            final int bufferSize,
+            final Class<? extends AbstractLogEventWrapperEntity> entityClass,
+            final Constructor<? extends AbstractLogEventWrapperEntity> entityConstructor,
+            final String persistenceUnitName) {
         super(name, bufferSize);
-        this.entityClassName = Objects.requireNonNull(entityClass, "entityClass").getName();
+        this.entityClassName =
+                Objects.requireNonNull(entityClass, "entityClass").getName();
         this.entityConstructor = entityConstructor;
         this.persistenceUnitName = persistenceUnitName;
     }
@@ -78,16 +79,19 @@ public final class JpaDatabaseManager extends AbstractDatabaseManager {
             this.transaction.begin();
         } catch (final Exception e) {
             throw new AppenderLoggingException(
-                "Cannot write logging event or flush buffer; manager cannot create EntityManager or transaction.", e);
+                    "Cannot write logging event or flush buffer; manager cannot create EntityManager or transaction.",
+                    e);
         }
     }
 
     @Override
     protected void writeInternal(final LogEvent event, final Serializable serializable) {
-        if (!this.isRunning() || this.entityManagerFactory == null || this.entityManager == null
-            || this.transaction == null) {
+        if (!this.isRunning()
+                || this.entityManagerFactory == null
+                || this.entityManager == null
+                || this.transaction == null) {
             throw new AppenderLoggingException(
-                "Cannot write logging event; JPA manager not connected to the database.");
+                    "Cannot write logging event; JPA manager not connected to the database.");
         }
 
         AbstractLogEventWrapperEntity entity;
@@ -105,7 +109,7 @@ public final class JpaDatabaseManager extends AbstractDatabaseManager {
                 this.transaction = null;
             }
             throw new AppenderLoggingException(
-                "Failed to insert record for log event in JPA manager: " + e.getMessage(), e);
+                    "Failed to insert record for log event in JPA manager: " + e.getMessage(), e);
         }
     }
 
@@ -147,13 +151,15 @@ public final class JpaDatabaseManager extends AbstractDatabaseManager {
      * @param persistenceUnitName The name of the JPA persistence unit that should be used for persisting log events.
      * @return a new or existing JPA manager as applicable.
      */
-    public static JpaDatabaseManager getJPADatabaseManager(final String name, final int bufferSize,
-        final Class<? extends AbstractLogEventWrapperEntity> entityClass,
-        final Constructor<? extends AbstractLogEventWrapperEntity> entityConstructor,
-        final String persistenceUnitName) {
+    public static JpaDatabaseManager getJPADatabaseManager(
+            final String name,
+            final int bufferSize,
+            final Class<? extends AbstractLogEventWrapperEntity> entityClass,
+            final Constructor<? extends AbstractLogEventWrapperEntity> entityConstructor,
+            final String persistenceUnitName) {
 
-        return AbstractDatabaseManager.getManager(name,
-            new FactoryData(bufferSize, entityClass, entityConstructor, persistenceUnitName), FACTORY);
+        return AbstractDatabaseManager.getManager(
+                name, new FactoryData(bufferSize, entityClass, entityConstructor, persistenceUnitName), FACTORY);
     }
 
     /**
@@ -164,9 +170,11 @@ public final class JpaDatabaseManager extends AbstractDatabaseManager {
         private final Constructor<? extends AbstractLogEventWrapperEntity> entityConstructor;
         private final String persistenceUnitName;
 
-        protected FactoryData(final int bufferSize, final Class<? extends AbstractLogEventWrapperEntity> entityClass,
-            final Constructor<? extends AbstractLogEventWrapperEntity> entityConstructor,
-            final String persistenceUnitName) {
+        protected FactoryData(
+                final int bufferSize,
+                final Class<? extends AbstractLogEventWrapperEntity> entityClass,
+                final Constructor<? extends AbstractLogEventWrapperEntity> entityConstructor,
+                final String persistenceUnitName) {
             super(bufferSize, null);
 
             this.entityClass = entityClass;
@@ -181,8 +189,8 @@ public final class JpaDatabaseManager extends AbstractDatabaseManager {
     private static final class JPADatabaseManagerFactory implements ManagerFactory<JpaDatabaseManager, FactoryData> {
         @Override
         public JpaDatabaseManager createManager(final String name, final FactoryData data) {
-            return new JpaDatabaseManager(name, data.getBufferSize(), data.entityClass, data.entityConstructor,
-                data.persistenceUnitName);
+            return new JpaDatabaseManager(
+                    name, data.getBufferSize(), data.entityClass, data.entityConstructor, data.persistenceUnitName);
         }
     }
 }

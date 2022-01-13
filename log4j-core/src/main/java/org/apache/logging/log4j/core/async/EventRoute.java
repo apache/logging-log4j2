@@ -37,9 +37,13 @@ public enum EventRoute {
      */
     ENQUEUE {
         @Override
-        public void logMessage(final AsyncLogger asyncLogger, final String fqcn, final Level level,
-                final Marker marker, final Message message, final Throwable thrown) {
-        }
+        public void logMessage(
+                final AsyncLogger asyncLogger,
+                final String fqcn,
+                final Level level,
+                final Marker marker,
+                final Message message,
+                final Throwable thrown) {}
 
         @Override
         public void logMessage(final AsyncLoggerConfig asyncLoggerConfig, final LogEvent event) {
@@ -58,9 +62,13 @@ public enum EventRoute {
      */
     SYNCHRONOUS {
         @Override
-        public void logMessage(final AsyncLogger asyncLogger, final String fqcn, final Level level,
-                final Marker marker, final Message message, final Throwable thrown) {
-        }
+        public void logMessage(
+                final AsyncLogger asyncLogger,
+                final String fqcn,
+                final Level level,
+                final Marker marker,
+                final Message message,
+                final Throwable thrown) {}
 
         @Override
         public void logMessage(final AsyncLoggerConfig asyncLoggerConfig, final LogEvent event) {
@@ -77,8 +85,13 @@ public enum EventRoute {
      */
     DISCARD {
         @Override
-        public void logMessage(final AsyncLogger asyncLogger, final String fqcn, final Level level,
-                final Marker marker, final Message message, final Throwable thrown) {
+        public void logMessage(
+                final AsyncLogger asyncLogger,
+                final String fqcn,
+                final Level level,
+                final Marker marker,
+                final Message message,
+                final Throwable thrown) {
             // do nothing: drop the event
         }
 
@@ -93,8 +106,13 @@ public enum EventRoute {
         }
     };
 
-    public abstract void logMessage(final AsyncLogger asyncLogger, final String fqcn, final Level level,
-            final Marker marker, final Message message, final Throwable thrown);
+    public abstract void logMessage(
+            final AsyncLogger asyncLogger,
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final Message message,
+            final Throwable thrown);
 
     public abstract void logMessage(final AsyncLoggerConfig asyncLoggerConfig, final LogEvent event);
 

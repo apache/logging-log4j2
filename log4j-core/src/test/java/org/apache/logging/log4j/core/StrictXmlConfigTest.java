@@ -16,20 +16,19 @@
  */
 package org.apache.logging.log4j.core;
 
-import org.apache.logging.log4j.MarkerManager;
-import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.junit.Named;
-import org.apache.logging.log4j.junit.LoggerContextSource;
-import org.apache.logging.log4j.message.EntryMessage;
-import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.apache.logging.log4j.MarkerManager;
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.apache.logging.log4j.junit.Named;
+import org.apache.logging.log4j.message.EntryMessage;
+import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.test.appender.ListAppender;
+import org.junit.jupiter.api.Test;
 
 @LoggerContextSource("log4j-strict1.xml")
 public class StrictXmlConfigTest {
@@ -130,4 +129,3 @@ public class StrictXmlConfigTest {
         assertEquals(1, events.size(), "Incorrect number of events. Expected 1, actual " + events.size());
     }
 }
-

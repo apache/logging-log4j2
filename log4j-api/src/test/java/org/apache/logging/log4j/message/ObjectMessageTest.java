@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j.message;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
-
 import org.apache.logging.log4j.junit.Mutable;
 import org.apache.logging.log4j.junit.SerialUtil;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link ObjectMessage}.

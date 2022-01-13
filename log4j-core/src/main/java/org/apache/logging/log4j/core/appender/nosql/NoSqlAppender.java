@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.appender.nosql;
 
 import java.io.Serializable;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -73,8 +72,8 @@ public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseM
             final String managerName = "noSqlManager{ description=" + name + ", bufferSize=" + bufferSize
                     + ", provider=" + provider + " }";
 
-            final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager(managerName,
-                    bufferSize, provider);
+            final NoSqlDatabaseManager<?> manager =
+                    NoSqlDatabaseManager.getNoSqlDatabaseManager(managerName, bufferSize, provider);
             if (manager == null) {
                 return null;
             }
@@ -129,13 +128,13 @@ public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseM
     @SuppressWarnings("resource")
     @Deprecated
     public static NoSqlAppender createAppender(
-    // @formatter:off
+            // @formatter:off
             final String name,
             final String ignore,
             final Filter filter,
             final String bufferSize,
             final NoSqlProvider<?> provider) {
-    // @formatter:on
+        // @formatter:on
         if (provider == null) {
             LOGGER.error("NoSQL provider not specified for appender [{}].", name);
             return null;
@@ -144,11 +143,11 @@ public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseM
         final int bufferSizeInt = AbstractAppender.parseInt(bufferSize, 0);
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
 
-        final String managerName = "noSqlManager{ description=" + name + ", bufferSize=" + bufferSizeInt + ", provider="
-                + provider + " }";
+        final String managerName =
+                "noSqlManager{ description=" + name + ", bufferSize=" + bufferSizeInt + ", provider=" + provider + " }";
 
-        final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager(managerName, bufferSizeInt,
-                provider);
+        final NoSqlDatabaseManager<?> manager =
+                NoSqlDatabaseManager.getNoSqlDatabaseManager(managerName, bufferSizeInt, provider);
         if (manager == null) {
             return null;
         }
@@ -163,8 +162,13 @@ public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseM
 
     private final String description;
 
-    private NoSqlAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
-            final boolean ignoreExceptions, final Property[] properties, final NoSqlDatabaseManager<?> manager) {
+    private NoSqlAppender(
+            final String name,
+            final Filter filter,
+            final Layout<? extends Serializable> layout,
+            final boolean ignoreExceptions,
+            final Property[] properties,
+            final NoSqlDatabaseManager<?> manager) {
         super(name, filter, layout, ignoreExceptions, properties, manager);
         this.description = this.getName() + "{ manager=" + this.getManager() + " }";
     }

@@ -16,12 +16,11 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import org.apache.logging.log4j.util.Strings;
-
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  *
@@ -74,5 +73,4 @@ public final class NameUtil {
             throw new RuntimeException(error);
         }
     }
-
 }

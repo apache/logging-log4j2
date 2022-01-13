@@ -26,7 +26,7 @@ import java.util.Arrays;
  * Filter that accepts or rejects a candidate {@code Path} for deletion.
  */
 public interface PathCondition {
-    
+
     /**
      * The empty array.
      */
@@ -41,7 +41,7 @@ public interface PathCondition {
     static PathCondition[] copy(PathCondition... source) {
         return source == null || source.length == 0 ? EMPTY_ARRAY : Arrays.copyOf(source, source.length);
     }
-    
+
     /**
      * Invoked before a new {@linkplain Files#walkFileTree(Path, java.util.Set, int, java.nio.file.FileVisitor) file
      * tree walk} is started. Stateful PathConditions can reset their state when this method is called.

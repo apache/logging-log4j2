@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Filter;
@@ -55,14 +54,14 @@ public final class RegexFilter extends AbstractFilter {
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
-            final Object... params) {
+    public Result filter(
+            final Logger logger, final Level level, final Marker marker, final String msg, final Object... params) {
         return filter(msg);
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg,
-            final Throwable t) {
+    public Result filter(
+            final Logger logger, final Level level, final Marker marker, final Object msg, final Throwable t) {
         if (msg == null) {
             return onMismatch;
         }
@@ -70,8 +69,8 @@ public final class RegexFilter extends AbstractFilter {
     }
 
     @Override
-    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg,
-            final Throwable t) {
+    public Result filter(
+            final Logger logger, final Level level, final Marker marker, final Message msg, final Throwable t) {
         if (msg == null) {
             return onMismatch;
         }
@@ -81,7 +80,9 @@ public final class RegexFilter extends AbstractFilter {
 
     @Override
     public Result filter(final LogEvent event) {
-        final String text = useRawMessage ? event.getMessage().getFormat() : event.getMessage().getFormattedMessage();
+        final String text = useRawMessage
+                ? event.getMessage().getFormat()
+                : event.getMessage().getFormattedMessage();
         return filter(text);
     }
 
@@ -121,13 +122,13 @@ public final class RegexFilter extends AbstractFilter {
     // TODO Consider refactoring to use AbstractFilter.AbstractFilterBuilder
     @PluginFactory
     public static RegexFilter createFilter(
-            //@formatter:off
+            // @formatter:off
             @PluginAttribute("regex") final String regex,
             @PluginElement("PatternFlags") final String[] patternFlags,
             @PluginAttribute("useRawMsg") final Boolean useRawMsg,
             @PluginAttribute("onMatch") final Result match,
             @PluginAttribute("onMismatch") final Result mismatch)
-            //@formatter:on
+            // @formatter:on
             throws IllegalArgumentException, IllegalAccessException {
         if (regex == null) {
             LOGGER.error("A regular expression must be provided for RegexFilter");
@@ -136,8 +137,8 @@ public final class RegexFilter extends AbstractFilter {
         return new RegexFilter(useRawMsg, Pattern.compile(regex, toPatternFlags(patternFlags)), match, mismatch);
     }
 
-    private static int toPatternFlags(final String[] patternFlags) throws IllegalArgumentException,
-            IllegalAccessException {
+    private static int toPatternFlags(final String[] patternFlags)
+            throws IllegalArgumentException, IllegalAccessException {
         if (patternFlags == null || patternFlags.length == 0) {
             return DEFAULT_PATTERN_FLAGS;
         }

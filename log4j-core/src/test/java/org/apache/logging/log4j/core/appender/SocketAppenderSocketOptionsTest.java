@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
-
 import org.apache.logging.log4j.core.appender.SocketAppenderTest.TcpSocketTestServer;
 import org.apache.logging.log4j.core.net.Rfc1349TrafficClass;
 import org.apache.logging.log4j.core.net.SocketOptions;
@@ -79,7 +78,8 @@ public class SocketAppenderSocketOptionsTest {
         Assert.assertEquals(false, socketOptions.isOobInline());
         Assert.assertEquals(false, socketOptions.isReuseAddress());
         Assert.assertEquals(false, socketOptions.isTcpNoDelay());
-        Assert.assertEquals(Rfc1349TrafficClass.IPTOS_LOWCOST.value(),
+        Assert.assertEquals(
+                Rfc1349TrafficClass.IPTOS_LOWCOST.value(),
                 socketOptions.getActualTrafficClass().intValue());
         Assert.assertEquals(10000, socketOptions.getReceiveBufferSize().intValue());
         Assert.assertEquals(8000, socketOptions.getSendBufferSize().intValue());
@@ -99,7 +99,9 @@ public class SocketAppenderSocketOptionsTest {
 
     @Test
     public void testSocketTrafficClass() throws IOException {
-        Assume.assumeTrue("Run only on Java 7", System.getProperty("java.specification.version").equals("1.7"));
+        Assume.assumeTrue(
+                "Run only on Java 7",
+                System.getProperty("java.specification.version").equals("1.7"));
         Assume.assumeFalse("Do not run on Travis CI", "true".equals(System.getenv("TRAVIS")));
         final SocketAppender appender = loggerContextRule.getAppender("socket", SocketAppender.class);
         final TcpSocketManager manager = (TcpSocketManager) appender.getManager();

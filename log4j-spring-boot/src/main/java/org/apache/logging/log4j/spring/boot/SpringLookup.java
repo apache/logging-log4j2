@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j.spring.boot;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.springframework.core.env.Environment;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Lookup for Spring properties.
@@ -70,7 +69,6 @@ public class SpringLookup extends SpringEnvironmentHolder implements StrLookup {
                                 LOGGER.warn("Unable to parse {} as integer value", matcher.group(1));
                                 return null;
                             }
-
                         }
                         return String.join(",", env.getActiveProfiles());
                     }
@@ -97,7 +95,6 @@ public class SpringLookup extends SpringEnvironmentHolder implements StrLookup {
                                 LOGGER.warn("Unable to parse {} as integer value", matcher.group(1));
                                 return null;
                             }
-
                         }
                         return String.join(",", env.getDefaultProfiles());
                     }
@@ -105,7 +102,6 @@ public class SpringLookup extends SpringEnvironmentHolder implements StrLookup {
             }
 
             return env.getProperty(key);
-
         }
         return null;
     }

@@ -22,7 +22,6 @@ import java.lang.management.ThreadMXBean;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.logging.log4j.message.ThreadDumpMessage;
 import org.apache.logging.log4j.message.ThreadInformation;
 
@@ -43,13 +42,13 @@ public class ExtendedThreadInfoFactory implements ThreadDumpMessage.ThreadInfoFa
             throw new IllegalStateException();
         }
     }
+
     @Override
     public Map<ThreadInformation, StackTraceElement[]> createThreadInfo() {
         final ThreadMXBean bean = ManagementFactory.getThreadMXBean();
         final ThreadInfo[] array = bean.dumpAllThreads(true, true);
 
-        final Map<ThreadInformation, StackTraceElement[]>  threads =
-            new HashMap<>(array.length);
+        final Map<ThreadInformation, StackTraceElement[]> threads = new HashMap<>(array.length);
         for (final ThreadInfo info : array) {
             threads.put(new ExtendedThreadInformation(info), info.getStackTrace());
         }

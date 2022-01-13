@@ -25,8 +25,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 @Plugin(name = "MessageParameterResolverFactory", category = TemplateResolverFactory.CATEGORY)
 public final class MessageParameterResolverFactory implements EventResolverFactory {
 
-    private static final MessageParameterResolverFactory INSTANCE =
-            new MessageParameterResolverFactory();
+    private static final MessageParameterResolverFactory INSTANCE = new MessageParameterResolverFactory();
 
     private MessageParameterResolverFactory() {}
 
@@ -41,10 +40,7 @@ public final class MessageParameterResolverFactory implements EventResolverFacto
     }
 
     @Override
-    public MessageParameterResolver create(
-            final EventResolverContext context,
-            final TemplateResolverConfig config) {
+    public MessageParameterResolver create(final EventResolverContext context, final TemplateResolverConfig config) {
         return new MessageParameterResolver(context, config);
     }
-
 }

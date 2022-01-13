@@ -16,16 +16,14 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
+import java.util.Objects;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
-
-import java.util.Objects;
 
 /**
  * {@link TemplateResolverStringSubstitutor} specialized for {@link LogEvent}s.
  */
-public final class EventResolverStringSubstitutor
-        implements TemplateResolverStringSubstitutor<LogEvent> {
+public final class EventResolverStringSubstitutor implements TemplateResolverStringSubstitutor<LogEvent> {
 
     private final StrSubstitutor substitutor;
 
@@ -47,5 +45,4 @@ public final class EventResolverStringSubstitutor
     public String replace(final LogEvent logEvent, final String source) {
         return substitutor.replace(logEvent, source);
     }
-
 }

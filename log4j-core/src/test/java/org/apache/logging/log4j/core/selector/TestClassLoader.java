@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.Throwables;

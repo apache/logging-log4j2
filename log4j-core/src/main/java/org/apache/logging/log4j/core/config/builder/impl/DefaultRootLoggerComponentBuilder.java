@@ -32,8 +32,8 @@ class DefaultRootLoggerComponentBuilder extends DefaultComponentAndConfiguration
      * @param builder
      * @param level
      */
-    public DefaultRootLoggerComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder,
-            final String level) {
+    public DefaultRootLoggerComponentBuilder(
+            final DefaultConfigurationBuilder<? extends Configuration> builder, final String level) {
         super(builder, "", "Root");
         if (level != null) {
             addAttribute("level", level);
@@ -46,8 +46,10 @@ class DefaultRootLoggerComponentBuilder extends DefaultComponentAndConfiguration
      * @param level
      * @param includeLocation
      */
-    public DefaultRootLoggerComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder,
-            final String level, final boolean includeLocation) {
+    public DefaultRootLoggerComponentBuilder(
+            final DefaultConfigurationBuilder<? extends Configuration> builder,
+            final String level,
+            final boolean includeLocation) {
         super(builder, "", "Root");
         if (level != null) {
             addAttribute("level", level);
@@ -61,14 +63,13 @@ class DefaultRootLoggerComponentBuilder extends DefaultComponentAndConfiguration
      * @param level
      * @param type
      */
-    public DefaultRootLoggerComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder,
-            final String level, final String type) {
+    public DefaultRootLoggerComponentBuilder(
+            final DefaultConfigurationBuilder<? extends Configuration> builder, final String level, final String type) {
         super(builder, "", type);
         if (level != null) {
             addAttribute("level", level);
         }
     }
-
 
     /**
      * Configure the root logger.
@@ -76,8 +77,11 @@ class DefaultRootLoggerComponentBuilder extends DefaultComponentAndConfiguration
      * @param level
      * @param type
      */
-    public DefaultRootLoggerComponentBuilder(final DefaultConfigurationBuilder<? extends Configuration> builder,
-            final String level, final String type, final boolean includeLocation) {
+    public DefaultRootLoggerComponentBuilder(
+            final DefaultConfigurationBuilder<? extends Configuration> builder,
+            final String level,
+            final String type,
+            final boolean includeLocation) {
         super(builder, "", type);
         if (level != null) {
             addAttribute("level", level);
@@ -89,7 +93,6 @@ class DefaultRootLoggerComponentBuilder extends DefaultComponentAndConfiguration
     public RootLoggerComponentBuilder add(final AppenderRefComponentBuilder builder) {
         return addComponent(builder);
     }
-
 
     @Override
     public RootLoggerComponentBuilder add(final FilterComponentBuilder builder) {

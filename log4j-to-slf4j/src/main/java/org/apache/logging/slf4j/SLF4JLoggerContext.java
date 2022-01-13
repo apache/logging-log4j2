@@ -41,8 +41,8 @@ public class SLF4JLoggerContext implements LoggerContext {
     @Override
     public ExtendedLogger getLogger(final String name, final MessageFactory messageFactory) {
         if (!loggerRegistry.hasLogger(name, messageFactory)) {
-            loggerRegistry.putIfAbsent(name, messageFactory,
-                    new SLF4JLogger(name, messageFactory, LoggerFactory.getLogger(name)));
+            loggerRegistry.putIfAbsent(
+                    name, messageFactory, new SLF4JLogger(name, messageFactory, LoggerFactory.getLogger(name)));
         }
         return loggerRegistry.getLogger(name, messageFactory);
     }

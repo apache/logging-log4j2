@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 public class LevelTest {
 
@@ -255,5 +255,4 @@ public class LevelTest {
         assertTrue(Level.ALL.isLessSpecificThan(Level.TRACE));
         assertTrue(Level.ALL.isLessSpecificThan(Level.ALL));
     }
-
 }

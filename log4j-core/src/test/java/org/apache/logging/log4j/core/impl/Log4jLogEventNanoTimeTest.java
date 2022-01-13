@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.CoreLoggerContexts;
@@ -34,15 +35,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @Tag("functional")
 public class Log4jLogEventNanoTimeTest {
 
     @BeforeAll
     public static void beforeClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "NanoTimeToFileTest.xml");
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "NanoTimeToFileTest.xml");
     }
 
     @AfterAll
@@ -64,7 +62,7 @@ public class Log4jLogEventNanoTimeTest {
         Log4jLogEvent.setNanoClock(new DummyNanoClock(DUMMYNANOTIME));
         log.info("Use dummy nano clock");
         assertTrue(Log4jLogEvent.getNanoClock() instanceof DummyNanoClock, "using SystemNanoClock");
-        
+
         CoreLoggerContexts.stopLoggerContext(file); // stop async thread
 
         String line1;
@@ -84,11 +82,10 @@ public class Log4jLogEventNanoTimeTest {
         assertEquals(line1Parts[0], line1Parts[1]);
         final long loggedNanoTime = Long.parseLong(line1Parts[0]);
         assertTrue(loggedNanoTime - before < TimeUnit.SECONDS.toNanos(1), "used system nano time");
-        
+
         final String[] line2Parts = line2.split(" AND ");
         assertEquals("Use dummy nano clock", line2Parts[2]);
         assertEquals(String.valueOf(DUMMYNANOTIME), line2Parts[0]);
         assertEquals(String.valueOf(DUMMYNANOTIME), line2Parts[1]);
     }
-
 }

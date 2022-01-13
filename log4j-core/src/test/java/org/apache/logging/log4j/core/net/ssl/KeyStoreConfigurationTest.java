@@ -16,48 +16,52 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.security.KeyStore;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 public class KeyStoreConfigurationTest {
     @SuppressWarnings("deprecation")
     @Test
     public void loadEmptyConfigurationDeprecated() {
-        assertThrows(StoreConfigurationException.class,
+        assertThrows(
+                StoreConfigurationException.class,
                 () -> new KeyStoreConfiguration(null, TestConstants.NULL_PWD, null, null));
     }
 
     @Test
     public void loadEmptyConfiguration() {
-        assertThrows(StoreConfigurationException.class,
+        assertThrows(
+                StoreConfigurationException.class,
                 () -> new KeyStoreConfiguration(null, new MemoryPasswordProvider(TestConstants.NULL_PWD), null, null));
     }
 
     @Test
     public void loadNotEmptyConfigurationDeprecated() throws StoreConfigurationException {
-        @SuppressWarnings("deprecation") final KeyStoreConfiguration ksc =
-                new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, TestConstants.KEYSTORE_PWD(),
-                        TestConstants.KEYSTORE_TYPE, null);
+        @SuppressWarnings("deprecation")
+        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(
+                TestConstants.KEYSTORE_FILE, TestConstants.KEYSTORE_PWD(), TestConstants.KEYSTORE_TYPE, null);
         final KeyStore ks = ksc.getKeyStore();
         assertNotNull(ks);
     }
 
     @Test
     public void loadNotEmptyConfiguration() throws StoreConfigurationException {
-        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, new MemoryPasswordProvider(TestConstants.KEYSTORE_PWD()),
-                TestConstants.KEYSTORE_TYPE, null);
+        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(
+                TestConstants.KEYSTORE_FILE,
+                new MemoryPasswordProvider(TestConstants.KEYSTORE_PWD()),
+                TestConstants.KEYSTORE_TYPE,
+                null);
         final KeyStore ks = ksc.getKeyStore();
         assertNotNull(ks);
     }
 
     @Test
     public void returnTheSameKeyStoreAfterMultipleLoadsDeprecated() throws StoreConfigurationException {
-        @SuppressWarnings("deprecation") final KeyStoreConfiguration ksc =
-                new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, TestConstants.KEYSTORE_PWD(),
-                        TestConstants.KEYSTORE_TYPE, null);
+        @SuppressWarnings("deprecation")
+        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(
+                TestConstants.KEYSTORE_FILE, TestConstants.KEYSTORE_PWD(), TestConstants.KEYSTORE_TYPE, null);
         final KeyStore ks = ksc.getKeyStore();
         final KeyStore ks2 = ksc.getKeyStore();
         assertSame(ks, ks2);
@@ -65,8 +69,11 @@ public class KeyStoreConfigurationTest {
 
     @Test
     public void returnTheSameKeyStoreAfterMultipleLoads() throws StoreConfigurationException {
-        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, new MemoryPasswordProvider(TestConstants.KEYSTORE_PWD()),
-                TestConstants.KEYSTORE_TYPE, null);
+        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(
+                TestConstants.KEYSTORE_FILE,
+                new MemoryPasswordProvider(TestConstants.KEYSTORE_PWD()),
+                TestConstants.KEYSTORE_TYPE,
+                null);
         final KeyStore ks = ksc.getKeyStore();
         final KeyStore ks2 = ksc.getKeyStore();
         assertSame(ks, ks2);
@@ -75,13 +82,19 @@ public class KeyStoreConfigurationTest {
     @SuppressWarnings("deprecation")
     @Test
     public void wrongPasswordDeprecated() {
-        assertThrows(StoreConfigurationException.class,
+        assertThrows(
+                StoreConfigurationException.class,
                 () -> new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, "wrongPassword!", null, null));
     }
 
     @Test
     public void wrongPassword() {
-        assertThrows(StoreConfigurationException.class, () -> new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE,
-                new MemoryPasswordProvider("wrongPassword!".toCharArray()), null, null));
+        assertThrows(
+                StoreConfigurationException.class,
+                () -> new KeyStoreConfiguration(
+                        TestConstants.KEYSTORE_FILE,
+                        new MemoryPasswordProvider("wrongPassword!".toCharArray()),
+                        null,
+                        null));
     }
 }

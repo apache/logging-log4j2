@@ -16,8 +16,9 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.io.File;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.File;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
@@ -27,8 +28,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("functional")
 public class LateConfigTest {
@@ -63,4 +62,3 @@ public class LateConfigTest {
         assertSame(newConfig, sameConfig, "Configuration should not have been reset");
     }
 }
-

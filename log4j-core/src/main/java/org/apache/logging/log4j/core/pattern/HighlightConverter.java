@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -72,11 +71,11 @@ import org.apache.logging.log4j.util.Strings;
  * disable ANSI output if no console is detected, specify option <code>noConsoleNoAnsi=true</code> e.g..
  * </p>
  * <pre>
-  * %highlight{%d{ ISO8601 } [%t] %-5level: %msg%n%throwable}{STYLE=DEFAULT, noConsoleNoAnsi=true}
-  * </pre>
+ * %highlight{%d{ ISO8601 } [%t] %-5level: %msg%n%throwable}{STYLE=DEFAULT, noConsoleNoAnsi=true}
+ * </pre>
  */
 @Plugin(name = "highlight", category = PatternConverter.CATEGORY)
-@ConverterKeys({ "highlight" })
+@ConverterKeys({"highlight"})
 @PerformanceSensitive("allocation")
 public final class HighlightConverter extends LogEventPatternConverter implements AnsiConverter {
 
@@ -157,8 +156,8 @@ public final class HighlightConverter extends LogEventPatternConverter implement
             if (STYLE_KEY.equalsIgnoreCase(key)) {
                 final Map<String, String> enumMap = STYLES.get(value.toUpperCase(Locale.ENGLISH));
                 if (enumMap == null) {
-                    LOGGER.error("Unknown level style: " + value + ". Use one of " +
-                        Arrays.toString(STYLES.keySet().toArray()));
+                    LOGGER.error("Unknown level style: " + value + ". Use one of "
+                            + Arrays.toString(STYLES.keySet().toArray()));
                 } else {
                     levelStyles.putAll(enumMap);
                 }
@@ -216,7 +215,10 @@ public final class HighlightConverter extends LogEventPatternConverter implement
      * @param noAnsi
      *            If true, do not output ANSI escape codes.
      */
-    private HighlightConverter(final List<PatternFormatter> patternFormatters, final Map<String, String> levelStyles, final boolean noAnsi) {
+    private HighlightConverter(
+            final List<PatternFormatter> patternFormatters,
+            final Map<String, String> levelStyles,
+            final boolean noAnsi) {
         super("style", "style");
         this.patternFormatters = patternFormatters;
         this.levelStyles = levelStyles;
@@ -263,11 +265,10 @@ public final class HighlightConverter extends LogEventPatternConverter implement
     @Override
     public boolean handlesThrowable() {
         for (final PatternFormatter formatter : patternFormatters) {
-            if (formatter .handlesThrowable()) {
+            if (formatter.handlesThrowable()) {
                 return true;
             }
         }
         return false;
     }
-
 }

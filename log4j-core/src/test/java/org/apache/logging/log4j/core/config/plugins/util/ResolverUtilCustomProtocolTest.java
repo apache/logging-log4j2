@@ -29,7 +29,6 @@ import java.net.URLStreamHandlerFactory;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
-
 import org.apache.logging.log4j.core.config.plugins.util.PluginRegistry.PluginTest;
 import org.apache.logging.log4j.junit.CleanFolders;
 import org.apache.logging.log4j.junit.URLStreamHandlerFactoryRule;
@@ -117,7 +116,8 @@ public class ResolverUtilCustomProtocolTest {
     public void testExtractPathFromVfsEarJarWindowsUrl() throws Exception {
         final URL url = new URL(
                 "vfs:/C:/jboss/jboss-eap-6.4/standalone/deployments/com.xxx.yyy.application-ear.ear/lib/com.xxx.yyy.logging.jar/com/xxx/yyy/logging/config/");
-        final String expected = "/C:/jboss/jboss-eap-6.4/standalone/deployments/com.xxx.yyy.application-ear.ear/lib/com.xxx.yyy.logging.jar/com/xxx/yyy/logging/config/";
+        final String expected =
+                "/C:/jboss/jboss-eap-6.4/standalone/deployments/com.xxx.yyy.application-ear.ear/lib/com.xxx.yyy.logging.jar/com/xxx/yyy/logging/config/";
         assertEquals(expected, new ResolverUtil().extractPath(url));
     }
 
@@ -125,15 +125,17 @@ public class ResolverUtilCustomProtocolTest {
     public void testExtractPathFromVfsWarClassesWindowsUrl() throws Exception {
         final URL url = new URL(
                 "vfs:/C:/jboss/jboss-eap-6.4/standalone/deployments/test-log4j2-web-standalone.war/WEB-INF/classes/org/hypik/test/jboss/eap7/logging/config/");
-        final String expected = "/C:/jboss/jboss-eap-6.4/standalone/deployments/test-log4j2-web-standalone.war/WEB-INF/classes/org/hypik/test/jboss/eap7/logging/config/";
+        final String expected =
+                "/C:/jboss/jboss-eap-6.4/standalone/deployments/test-log4j2-web-standalone.war/WEB-INF/classes/org/hypik/test/jboss/eap7/logging/config/";
         assertEquals(expected, new ResolverUtil().extractPath(url));
     }
 
     @Test
     public void testExtractPathFromVfsWarClassesLinuxUrl() throws Exception {
-        final URL url = new URL(
-                "vfs:/content/mycustomweb.war/WEB-INF/classes/org/hypik/test/jboss/log4j2/logging/pluginweb/");
-        final String expected = "/content/mycustomweb.war/WEB-INF/classes/org/hypik/test/jboss/log4j2/logging/pluginweb/";
+        final URL url =
+                new URL("vfs:/content/mycustomweb.war/WEB-INF/classes/org/hypik/test/jboss/log4j2/logging/pluginweb/");
+        final String expected =
+                "/content/mycustomweb.war/WEB-INF/classes/org/hypik/test/jboss/log4j2/logging/pluginweb/";
         assertEquals(expected, new ResolverUtil().extractPath(url));
     }
 
@@ -141,7 +143,8 @@ public class ResolverUtilCustomProtocolTest {
     public void testExtractPathFromVfszipUrl() throws Exception {
         final URL url = new URL(
                 "vfszip:/home2/jboss-5.0.1.CR2/jboss-as/server/ais/ais-deploy/myear.ear/mywar.war/WEB-INF/some.xsd");
-        final String expected = "/home2/jboss-5.0.1.CR2/jboss-as/server/ais/ais-deploy/myear.ear/mywar.war/WEB-INF/some.xsd";
+        final String expected =
+                "/home2/jboss-5.0.1.CR2/jboss-as/server/ais/ais-deploy/myear.ear/mywar.war/WEB-INF/some.xsd";
         assertEquals(expected, new ResolverUtil().extractPath(url));
     }
 
@@ -149,7 +152,8 @@ public class ResolverUtilCustomProtocolTest {
     public void testExtractPathFromVfsEarJarLinuxUrl() throws Exception {
         final URL url = new URL(
                 "vfs:/content/test-log4k2-ear.ear/lib/test-log4j2-jar-plugins.jar/org/hypik/test/jboss/log4j2/pluginjar/");
-        final String expected = "/content/test-log4k2-ear.ear/lib/test-log4j2-jar-plugins.jar/org/hypik/test/jboss/log4j2/pluginjar/";
+        final String expected =
+                "/content/test-log4k2-ear.ear/lib/test-log4j2-jar-plugins.jar/org/hypik/test/jboss/log4j2/pluginjar/";
         assertEquals(expected, new ResolverUtil().extractPath(url));
     }
 
@@ -185,11 +189,14 @@ public class ResolverUtilCustomProtocolTest {
     public void testFindInPackageFromVfsDirectoryURL() throws Exception {
         try (final URLClassLoader cl = ResolverUtilTest.compileAndCreateClassLoader("3")) {
             final ResolverUtil resolverUtil = new ResolverUtil();
-            resolverUtil
-                    .setClassLoader(new SingleURLClassLoader(new URL("vfs:/" + ResolverUtilTest.WORK_DIR + "/resolverutil3/customplugin3/"), cl));
+            resolverUtil.setClassLoader(new SingleURLClassLoader(
+                    new URL("vfs:/" + ResolverUtilTest.WORK_DIR + "/resolverutil3/customplugin3/"), cl));
             resolverUtil.findInPackage(new PluginTest(), "customplugin3");
-            assertEquals("Class not found in packages", 1, resolverUtil.getClasses().size());
-            assertEquals("Unexpected class resolved", cl.loadClass("customplugin3.FixedString3Layout"),
+            assertEquals(
+                    "Class not found in packages", 1, resolverUtil.getClasses().size());
+            assertEquals(
+                    "Unexpected class resolved",
+                    cl.loadClass("customplugin3.FixedString3Layout"),
                     resolverUtil.getClasses().iterator().next());
         }
     }
@@ -199,12 +206,15 @@ public class ResolverUtilCustomProtocolTest {
         try (final URLClassLoader cl = ResolverUtilTest.compileJarAndCreateClassLoader("4")) {
             final ResolverUtil resolverUtil = new ResolverUtil();
             resolverUtil.setClassLoader(new SingleURLClassLoader(
-                    new URL("vfs:/" + ResolverUtilTest.WORK_DIR + "/resolverutil4/customplugin4.jar/customplugin4/"), cl));
+                    new URL("vfs:/" + ResolverUtilTest.WORK_DIR + "/resolverutil4/customplugin4.jar/customplugin4/"),
+                    cl));
             resolverUtil.findInPackage(new PluginTest(), "customplugin4");
-            assertEquals("Class not found in packages", 1, resolverUtil.getClasses().size());
-            assertEquals("Unexpected class resolved", cl.loadClass("customplugin4.FixedString4Layout"),
+            assertEquals(
+                    "Class not found in packages", 1, resolverUtil.getClasses().size());
+            assertEquals(
+                    "Unexpected class resolved",
+                    cl.loadClass("customplugin4.FixedString4Layout"),
                     resolverUtil.getClasses().iterator().next());
         }
     }
-
 }

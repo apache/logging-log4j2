@@ -16,42 +16,38 @@
  */
 package org.apache.logging.slf4j;
 
+import static org.junit.Assert.*;
+
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.*;
-
 /**
  * Tests logging during shutdown.
  */
-public class Log4j1222Test
-{
+public class Log4j1222Test {
 
-	@Test
-	public void homepageRendersSuccessfully()
-	{
+    @Test
+    public void homepageRendersSuccessfully() {
         System.setProperty("log4j.configurationFile", "log4j2-console.xml");
-		Runtime.getRuntime().addShutdownHook(new ShutdownHook());
-	}
+        Runtime.getRuntime().addShutdownHook(new ShutdownHook());
+    }
 
-	private static class ShutdownHook extends Thread {
+    private static class ShutdownHook extends Thread {
 
-		private static class Holder {
-			private static final Logger LOGGER = LoggerFactory.getLogger(Log4j1222Test.class);
-		}
+        private static class Holder {
+            private static final Logger LOGGER = LoggerFactory.getLogger(Log4j1222Test.class);
+        }
 
-		@Override
-		public void run()
-		{
-			super.run();
-			trigger();
-		}
+        @Override
+        public void run() {
+            super.run();
+            trigger();
+        }
 
-		private void trigger() {
-			Holder.LOGGER.info("Attempt to trigger");
-			assertTrue("Logger is of type " + Holder.LOGGER.getClass().getName(), Holder.LOGGER instanceof Log4jLogger);
-
-		}
-	}
+        private void trigger() {
+            Holder.LOGGER.info("Attempt to trigger");
+            assertTrue("Logger is of type " + Holder.LOGGER.getClass().getName(), Holder.LOGGER instanceof Log4jLogger);
+        }
+    }
 }

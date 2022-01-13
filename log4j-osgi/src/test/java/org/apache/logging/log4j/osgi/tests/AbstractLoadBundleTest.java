@@ -22,7 +22,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import org.apache.logging.log4j.osgi.tests.junit.BundleTestInfo;
 import org.apache.logging.log4j.osgi.tests.junit.OsgiRule;
 import org.junit.Assert;
@@ -65,26 +64,33 @@ public abstract class AbstractLoadBundleTest {
     }
 
     private Bundle getApiBundle() throws BundleException {
-        final Path apiPath = here.resolveSibling("log4j-api").resolve("target").resolve("log4j-api-" + bundleTestInfo.getVersion() + ".jar");
+        final Path apiPath = here.resolveSibling("log4j-api")
+                .resolve("target")
+                .resolve("log4j-api-" + bundleTestInfo.getVersion() + ".jar");
         return bundleContext.installBundle(apiPath.toUri().toString());
     }
 
-
     private Bundle getCoreBundle() throws BundleException {
-        final Path corePath = here.resolveSibling("log4j-core").resolve("target").resolve("log4j-core-" + bundleTestInfo.getVersion() + ".jar");
+        final Path corePath = here.resolveSibling("log4j-core")
+                .resolve("target")
+                .resolve("log4j-core-" + bundleTestInfo.getVersion() + ".jar");
         return bundleContext.installBundle(corePath.toUri().toString());
     }
 
     private Bundle getDummyBundle() throws BundleException {
-        final Path dumyPath = here.resolveSibling("log4j-samples").resolve("log4j-samples-configuration").resolve("target").resolve("log4j-samples-configuration-" + bundleTestInfo.getVersion() + ".jar");
+        final Path dumyPath = here.resolveSibling("log4j-samples")
+                .resolve("log4j-samples-configuration")
+                .resolve("target")
+                .resolve("log4j-samples-configuration-" + bundleTestInfo.getVersion() + ".jar");
         return bundleContext.installBundle(dumyPath.toUri().toString());
     }
 
     private Bundle get12ApiBundle() throws BundleException {
-        final Path apiPath = here.resolveSibling("log4j-1.2-api").resolve("target").resolve("log4j-1.2-api-" + bundleTestInfo.getVersion() + ".jar");
+        final Path apiPath = here.resolveSibling("log4j-1.2-api")
+                .resolve("target")
+                .resolve("log4j-1.2-api-" + bundleTestInfo.getVersion() + ".jar");
         return bundleContext.installBundle(apiPath.toUri().toString());
     }
-
 
     protected abstract FrameworkFactory getFactory();
 
@@ -201,17 +207,20 @@ public abstract class AbstractLoadBundleTest {
         // fails if LOG4J2-1637 is not fixed
         try {
             core.start();
-        }
-        catch (final BundleException ex) {
+        } catch (final BundleException ex) {
             boolean shouldRethrow = true;
             final Throwable t = ex.getCause();
             if (t != null) {
                 final Throwable t2 = t.getCause();
                 if (t2 != null) {
                     final String cause = t2.toString();
-                    final boolean result = cause.equals("java.lang.ClassNotFoundException: org.apache.logging.log4j.Logger") // Equinox
-                                  || cause.equals("java.lang.ClassNotFoundException: org.apache.logging.log4j.Logger not found by org.apache.logging.log4j.core [2]"); // Felix
-                    Assert.assertFalse("org.apache.logging.log4j package is not properly imported in org.apache.logging.log4j.core bundle, check that the package is exported from api and is not split between api and core", result);
+                    final boolean result =
+                            cause.equals("java.lang.ClassNotFoundException: org.apache.logging.log4j.Logger") // Equinox
+                                    || cause.equals(
+                                            "java.lang.ClassNotFoundException: org.apache.logging.log4j.Logger not found by org.apache.logging.log4j.core [2]"); // Felix
+                    Assert.assertFalse(
+                            "org.apache.logging.log4j package is not properly imported in org.apache.logging.log4j.core bundle, check that the package is exported from api and is not split between api and core",
+                            result);
                     shouldRethrow = !result;
                 }
             }
@@ -276,10 +285,11 @@ public abstract class AbstractLoadBundleTest {
 
             log(dummy);
 
-            final String result = baos.toString().substring(
-                12).trim(); // remove the instant then the spaces at start and end, that are non constant
-            Assert.assertEquals("[main] ERROR org.apache.logging.log4j.configuration.CustomConfiguration - Test OK",
-                result);
+            final String result = baos.toString()
+                    .substring(12)
+                    .trim(); // remove the instant then the spaces at start and end, that are non constant
+            Assert.assertEquals(
+                    "[main] ERROR org.apache.logging.log4j.configuration.CustomConfiguration - Test OK", result);
         } finally {
             System.setOut(bakStream);
         }
@@ -287,7 +297,6 @@ public abstract class AbstractLoadBundleTest {
         stop(api, core, dummy);
         uninstall(api, core, dummy);
     }
-
 
     /**
      * Tests the loading of the 1.2 Compatibility API bundle, its classes should be loadable from the Core bundle,
@@ -307,13 +316,18 @@ public abstract class AbstractLoadBundleTest {
         final Class<?> levelClassFrom12API = core.loadClass("org.apache.log4j.Level");
         final Class<?> levelClassFromAPI = core.loadClass("org.apache.logging.log4j.Level");
 
-        Assert.assertEquals("expected 1.2 API Level to have the same class loader as Core", levelClassFrom12API.getClassLoader(), coreClassFromCore.getClassLoader());
-        Assert.assertNotEquals("expected 1.2 API Level NOT to have the same class loader as API Level", levelClassFrom12API.getClassLoader(), levelClassFromAPI.getClassLoader());
+        Assert.assertEquals(
+                "expected 1.2 API Level to have the same class loader as Core",
+                levelClassFrom12API.getClassLoader(),
+                coreClassFromCore.getClassLoader());
+        Assert.assertNotEquals(
+                "expected 1.2 API Level NOT to have the same class loader as API Level",
+                levelClassFrom12API.getClassLoader(),
+                levelClassFromAPI.getClassLoader());
 
         core.stop();
         api.stop();
 
         uninstall(api, core, compat);
     }
-
 }

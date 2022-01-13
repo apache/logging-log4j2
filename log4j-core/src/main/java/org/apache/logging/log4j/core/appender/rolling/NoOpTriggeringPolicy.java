@@ -30,22 +30,21 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 @Plugin(name = "NoOpTriggeringPolicy", category = Core.CATEGORY_NAME, printObject = true)
 public class NoOpTriggeringPolicy extends AbstractTriggeringPolicy {
 
-	public static final NoOpTriggeringPolicy INSTANCE = new NoOpTriggeringPolicy();
+    public static final NoOpTriggeringPolicy INSTANCE = new NoOpTriggeringPolicy();
 
-	@PluginFactory
-	public static NoOpTriggeringPolicy createPolicy() {
-		return INSTANCE;
-	}
+    @PluginFactory
+    public static NoOpTriggeringPolicy createPolicy() {
+        return INSTANCE;
+    }
 
-	@Override
-	public void initialize(final RollingFileManager manager) {
-		// NoOp
-	}
+    @Override
+    public void initialize(final RollingFileManager manager) {
+        // NoOp
+    }
 
-	@Override
-	public boolean isTriggeringEvent(final LogEvent logEvent) {
-		// Never triggers.
-		return false;
-	}
-
+    @Override
+    public boolean isTriggeringEvent(final LogEvent logEvent) {
+        // Never triggers.
+        return false;
+    }
 }

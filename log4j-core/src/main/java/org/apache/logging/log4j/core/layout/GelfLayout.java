@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPOutputStream;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -70,7 +69,6 @@ import org.apache.logging.log4j.util.TriConsumer;
 public final class GelfLayout extends AbstractStringLayout {
 
     public enum CompressionType {
-
         GZIP {
             @Override
             public DeflaterOutputStream createDeflaterOutputStream(final OutputStream os) throws IOException {
@@ -114,7 +112,7 @@ public final class GelfLayout extends AbstractStringLayout {
     private final FieldWriter mapWriter;
 
     public static class Builder<B extends Builder<B>> extends AbstractStringLayout.Builder<B>
-        implements org.apache.logging.log4j.core.util.Builder<GelfLayout> {
+            implements org.apache.logging.log4j.core.util.Builder<GelfLayout> {
 
         @PluginBuilderAttribute
         private String host;
@@ -185,21 +183,36 @@ public final class GelfLayout extends AbstractStringLayout {
                 messagePattern = null;
             }
             if (messagePattern != null) {
-                patternLayout = PatternLayout.newBuilder().withPattern(messagePattern)
+                patternLayout = PatternLayout.newBuilder()
+                        .withPattern(messagePattern)
                         .withAlwaysWriteExceptions(includeStacktrace)
                         .withConfiguration(getConfiguration())
                         .build();
             }
             if (patternSelector != null) {
-                patternLayout = PatternLayout.newBuilder().withPatternSelector(patternSelector)
+                patternLayout = PatternLayout.newBuilder()
+                        .withPatternSelector(patternSelector)
                         .withAlwaysWriteExceptions(includeStacktrace)
                         .withConfiguration(getConfiguration())
                         .build();
             }
-            return new GelfLayout(getConfiguration(), host, additionalFields, compressionType, compressionThreshold,
-                    includeStacktrace, includeThreadContext, includeMapMessage, includeNullDelimiter,
-                    includeNewLineDelimiter, omitEmptyFields, mdcChecker, mapChecker, patternLayout,
-                    threadContextPrefix, mapPrefix);
+            return new GelfLayout(
+                    getConfiguration(),
+                    host,
+                    additionalFields,
+                    compressionType,
+                    compressionThreshold,
+                    includeStacktrace,
+                    includeThreadContext,
+                    includeMapMessage,
+                    includeNullDelimiter,
+                    includeNewLineDelimiter,
+                    omitEmptyFields,
+                    mdcChecker,
+                    mapChecker,
+                    patternLayout,
+                    threadContextPrefix,
+                    mapPrefix);
         }
 
         private ListChecker createChecker(String excludes, String includes) {
@@ -250,7 +263,9 @@ public final class GelfLayout extends AbstractStringLayout {
             return includeThreadContext;
         }
 
-        public boolean isIncludeNullDelimiter() { return includeNullDelimiter; }
+        public boolean isIncludeNullDelimiter() {
+            return includeNullDelimiter;
+        }
 
         public boolean isIncludeNewLineDelimiter() {
             return includeNewLineDelimiter;
@@ -441,17 +456,47 @@ public final class GelfLayout extends AbstractStringLayout {
      * @deprecated Use {@link #newBuilder()} instead
      */
     @Deprecated
-    public GelfLayout(final String host, final KeyValuePair[] additionalFields, final CompressionType compressionType,
-                      final int compressionThreshold, final boolean includeStacktrace) {
-        this(null, host, additionalFields, compressionType, compressionThreshold, includeStacktrace, true, true,
-                false, false, false, null, null, null, "", "");
+    public GelfLayout(
+            final String host,
+            final KeyValuePair[] additionalFields,
+            final CompressionType compressionType,
+            final int compressionThreshold,
+            final boolean includeStacktrace) {
+        this(
+                null,
+                host,
+                additionalFields,
+                compressionType,
+                compressionThreshold,
+                includeStacktrace,
+                true,
+                true,
+                false,
+                false,
+                false,
+                null,
+                null,
+                null,
+                "",
+                "");
     }
 
-    private GelfLayout(final Configuration config, final String host, final KeyValuePair[] additionalFields,
-            final CompressionType compressionType, final int compressionThreshold, final boolean includeStacktrace,
-            final boolean includeThreadContext, final boolean includeMapMessage, final boolean includeNullDelimiter,
-            final boolean includeNewLineDelimiter, final boolean omitEmptyFields, final ListChecker mdcChecker,
-            final ListChecker mapChecker, final PatternLayout patternLayout, final String mdcPrefix,
+    private GelfLayout(
+            final Configuration config,
+            final String host,
+            final KeyValuePair[] additionalFields,
+            final CompressionType compressionType,
+            final int compressionThreshold,
+            final boolean includeStacktrace,
+            final boolean includeThreadContext,
+            final boolean includeMapMessage,
+            final boolean includeNullDelimiter,
+            final boolean includeNewLineDelimiter,
+            final boolean omitEmptyFields,
+            final ListChecker mdcChecker,
+            final ListChecker mapChecker,
+            final PatternLayout patternLayout,
+            final String mdcPrefix,
             final String mapPrefix) {
         super(config, StandardCharsets.UTF_8, null, null);
         this.host = host != null ? host : NetUtils.getLocalHostname();
@@ -459,7 +504,8 @@ public final class GelfLayout extends AbstractStringLayout {
         if (config == null) {
             for (final KeyValuePair additionalField : this.additionalFields) {
                 if (valueNeedsLookup(additionalField.getValue())) {
-                    throw new IllegalArgumentException("configuration needs to be set when there are additional fields with variables");
+                    throw new IllegalArgumentException(
+                            "configuration needs to be set when there are additional fields with variables");
                 }
             }
         }
@@ -508,18 +554,31 @@ public final class GelfLayout extends AbstractStringLayout {
      */
     @Deprecated
     public static GelfLayout createLayout(
-            //@formatter:off
+            // @formatter:off
             @PluginAttribute("host") final String host,
             @PluginElement("AdditionalField") final KeyValuePair[] additionalFields,
-            @PluginAttribute(value = "compressionType",
-                defaultString = "GZIP") final CompressionType compressionType,
-            @PluginAttribute(value = "compressionThreshold",
-                defaultInt = COMPRESSION_THRESHOLD) final int compressionThreshold,
-            @PluginAttribute(value = "includeStacktrace",
-                defaultBoolean = true) final boolean includeStacktrace) {
-            // @formatter:on
-        return new GelfLayout(null, host, additionalFields, compressionType, compressionThreshold, includeStacktrace,
-                true, true, false, false, false, null, null, null, "", "");
+            @PluginAttribute(value = "compressionType", defaultString = "GZIP") final CompressionType compressionType,
+            @PluginAttribute(value = "compressionThreshold", defaultInt = COMPRESSION_THRESHOLD)
+                    final int compressionThreshold,
+            @PluginAttribute(value = "includeStacktrace", defaultBoolean = true) final boolean includeStacktrace) {
+        // @formatter:on
+        return new GelfLayout(
+                null,
+                host,
+                additionalFields,
+                compressionType,
+                compressionThreshold,
+                includeStacktrace,
+                true,
+                true,
+                false,
+                false,
+                false,
+                null,
+                null,
+                null,
+                "",
+                "");
     }
 
     @PluginBuilderFactory
@@ -589,7 +648,9 @@ public final class GelfLayout extends AbstractStringLayout {
         builder.append("\"host\":\"");
         JsonUtils.quoteAsString(toNullSafeString(host), builder);
         builder.append(QC);
-        builder.append("\"timestamp\":").append(formatTimestamp(event.getTimeMillis())).append(C);
+        builder.append("\"timestamp\":")
+                .append(formatTimestamp(event.getTimeMillis()))
+                .append(C);
         builder.append("\"level\":").append(formatLevel(event.getLevel())).append(C);
         if (event.getThreadName() != null) {
             builder.append("\"_thread\":\"");

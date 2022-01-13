@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.File;
 import java.util.Map;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -26,8 +27,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("functional")
 public class AdvertiserTest {
@@ -67,9 +66,9 @@ public class AdvertiserTest {
         boolean foundFile2 = false;
         boolean foundSocket1 = false;
         boolean foundSocket2 = false;
-        for (final Map<String, String>entry:entries.values()) {
+        for (final Map<String, String> entry : entries.values()) {
             if (foundFile1 && foundFile2 && foundSocket1 && foundSocket2) {
-               break;
+                break;
             }
             if (entry.get("name").equals("File1")) {
                 foundFile1 = true;
@@ -105,7 +104,7 @@ public class AdvertiserTest {
         final Map<Object, Map<String, String>> entries = InMemoryAdvertiser.getAdvertisedEntries();
         assertTrue(entries.isEmpty(), "Entries found: " + entries);
 
-        //reconfigure for subsequent testing
+        // reconfigure for subsequent testing
         ctx.start();
     }
 

@@ -17,17 +17,6 @@
 
 package org.apache.log4j.helpers;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.spi.Configurator;
-import org.apache.log4j.spi.LoggerRepository;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.lookup.StrSubstitutor;
-import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.Strings;
-
 import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.lang.reflect.InvocationTargetException;
@@ -35,6 +24,15 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import org.apache.log4j.Level;
+import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.spi.Configurator;
+import org.apache.log4j.spi.LoggerRepository;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * A convenience class to convert property values to specific types.
@@ -60,8 +58,7 @@ public class OptionConverter {
     /**
      * OptionConverter is a static class.
      */
-    private OptionConverter() {
-    }
+    private OptionConverter() {}
 
     public static String[] concatanateArrays(String[] l, String[] r) {
         int len = l.length + r.length;
@@ -93,7 +90,6 @@ public class OptionConverter {
         }
         return sbuf.toString();
     }
-
 
     /**
      * Very similar to <code>System.getProperty</code> except
@@ -189,44 +185,38 @@ public class OptionConverter {
             return null;
         }
 
-        LOGGER.debug("toLevel" + ":class=[" + clazz + "]"
-                + ":pri=[" + levelName + "]");
+        LOGGER.debug("toLevel" + ":class=[" + clazz + "]" + ":pri=[" + levelName + "]");
 
         try {
             Class<?> customLevel = LoaderUtil.loadClass(clazz);
 
             // get a ref to the specified class' static method
             // toLevel(String, org.apache.log4j.Level)
-            Class<?>[] paramTypes = new Class[] { String.class, org.apache.log4j.Level.class };
-            java.lang.reflect.Method toLevelMethod =
-                    customLevel.getMethod("toLevel", paramTypes);
+            Class<?>[] paramTypes = new Class[] {String.class, org.apache.log4j.Level.class};
+            java.lang.reflect.Method toLevelMethod = customLevel.getMethod("toLevel", paramTypes);
 
             // now call the toLevel method, passing level string + default
-            Object[] params = new Object[]{levelName, defaultValue};
+            Object[] params = new Object[] {levelName, defaultValue};
             Object o = toLevelMethod.invoke(null, params);
 
             result = (Level) o;
         } catch (ClassNotFoundException e) {
             LOGGER.warn("custom level class [" + clazz + "] not found.");
         } catch (NoSuchMethodException e) {
-            LOGGER.warn("custom level class [" + clazz + "]"
-                    + " does not have a class function toLevel(String, Level)", e);
+            LOGGER.warn(
+                    "custom level class [" + clazz + "]" + " does not have a class function toLevel(String, Level)", e);
         } catch (java.lang.reflect.InvocationTargetException e) {
             if (e.getTargetException() instanceof InterruptedException
                     || e.getTargetException() instanceof InterruptedIOException) {
                 Thread.currentThread().interrupt();
             }
-            LOGGER.warn("custom level class [" + clazz + "]"
-                    + " could not be instantiated", e);
+            LOGGER.warn("custom level class [" + clazz + "]" + " could not be instantiated", e);
         } catch (ClassCastException e) {
-            LOGGER.warn("class [" + clazz
-                    + "] is not a subclass of org.apache.log4j.Level", e);
+            LOGGER.warn("class [" + clazz + "] is not a subclass of org.apache.log4j.Level", e);
         } catch (IllegalAccessException e) {
-            LOGGER.warn("class [" + clazz +
-                    "] cannot be instantiated due to access restrictions", e);
+            LOGGER.warn("class [" + clazz + "] cannot be instantiated due to access restrictions", e);
         } catch (RuntimeException e) {
-            LOGGER.warn("class [" + clazz + "], level [" + levelName +
-                    "] conversion failed.", e);
+            LOGGER.warn("class [" + clazz + "], level [" + levelName + "] conversion failed.", e);
         }
         return result;
     }
@@ -242,25 +232,26 @@ public class OptionConverter {
      * @param defaultValue The object to return in case of non-fulfillment
      * @return The created object.
      */
-    public static Object instantiateByClassName(String className, Class<?> superClass,
-            Object defaultValue) {
+    public static Object instantiateByClassName(String className, Class<?> superClass, Object defaultValue) {
         if (className != null) {
             try {
                 Object obj = LoaderUtil.newInstanceOf(className);
                 if (!superClass.isAssignableFrom(obj.getClass())) {
-                    LOGGER.error("A \"{}\" object is not assignable to a \"{}\" variable", className,
-                            superClass.getName());
+                    LOGGER.error(
+                            "A \"{}\" object is not assignable to a \"{}\" variable", className, superClass.getName());
                     return defaultValue;
                 }
                 return obj;
-            } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException
-                    | InstantiationException | InvocationTargetException e) {
+            } catch (ClassNotFoundException
+                    | NoSuchMethodException
+                    | IllegalAccessException
+                    | InstantiationException
+                    | InvocationTargetException e) {
                 LOGGER.error("Could not instantiate class [" + className + "].", e);
             }
         }
         return defaultValue;
     }
-
 
     /**
      * Perform variable substitution in string <code>val</code> from the
@@ -326,9 +317,8 @@ public class OptionConverter {
             sbuf.append(val.substring(i, j));
             k = val.indexOf(DELIM_STOP, j);
             if (k == -1) {
-                throw new IllegalArgumentException(Strings.dquote(val)
-                        + " has no closing brace. Opening brace at position " + j
-                        + '.');
+                throw new IllegalArgumentException(
+                        Strings.dquote(val) + " has no closing brace. Opening brace at position " + j + '.');
             }
             j += DELIM_START_LEN;
             final String key = val.substring(j, k);
@@ -354,19 +344,18 @@ public class OptionConverter {
                 } else {
                     sbuf.append(replacement);
                 }
-
             }
             i = k + DELIM_STOP_LEN;
         }
     }
 
-    public static org.apache.logging.log4j.Level convertLevel(String level,
-            org.apache.logging.log4j.Level defaultLevel) {
+    public static org.apache.logging.log4j.Level convertLevel(
+            String level, org.apache.logging.log4j.Level defaultLevel) {
         Level l = toLevel(level, null);
         return l != null ? convertLevel(l) : defaultLevel;
     }
 
-    public static  org.apache.logging.log4j.Level convertLevel(Level level) {
+    public static org.apache.logging.log4j.Level convertLevel(Level level) {
         if (level == null) {
             return org.apache.logging.log4j.Level.ERROR;
         }
@@ -418,7 +407,7 @@ public class OptionConverter {
      * <p>
      * All configurations steps are taken on the <code>hierarchy</code> passed as a parameter.
      * </p>
-     * 
+     *
      * @param inputStream The configuration input stream.
      * @param clazz The class name, of the log4j configurator which will parse the <code>inputStream</code>. This must be a
      *        subclass of {@link Configurator}, or null. If this value is null then a default configurator of
@@ -426,7 +415,7 @@ public class OptionConverter {
      * @param hierarchy The {@link LoggerRepository} to act on.
      * @since 1.2.17
      */
-    static public void selectAndConfigure(InputStream inputStream, String clazz, LoggerRepository hierarchy) {
+    public static void selectAndConfigure(InputStream inputStream, String clazz, LoggerRepository hierarchy) {
         Configurator configurator = null;
 
         if (clazz != null) {
@@ -451,17 +440,17 @@ public class OptionConverter {
      * <p>
      * All configurations steps are taken on the <code>hierarchy</code> passed as a parameter.
      * </p>
-     * 
+     *
      * @param url The location of the configuration file or resource.
      * @param clazz The classname, of the log4j configurator which will parse the file or resource at <code>url</code>. This
      *        must be a subclass of {@link Configurator}, or null. If this value is null then a default configurator of
      *        {@link PropertyConfigurator} is used, unless the filename pointed to by <code>url</code> ends in '.xml', in
      *        which case {@link org.apache.log4j.xml.DOMConfigurator} is used.
      * @param hierarchy The {@link LoggerRepository} to act on.
-     * 
+     *
      * @since 1.1.4
      */
-    static public void selectAndConfigure(URL url, String clazz, LoggerRepository hierarchy) {
+    public static void selectAndConfigure(URL url, String clazz, LoggerRepository hierarchy) {
         Configurator configurator = null;
         String filename = url.getFile();
 

@@ -16,10 +16,6 @@
  */
 package org.apache.logging.log4j.layout.template.json.util;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.LoaderUtil;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,6 +29,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 
 public final class Uris {
 
@@ -75,10 +74,7 @@ public final class Uris {
         }
     }
 
-    private static String unsafeReadUri(
-            final URI uri,
-            final Charset charset)
-            throws Exception {
+    private static String unsafeReadUri(final URI uri, final Charset charset) throws Exception {
         final String uriScheme = uri.getScheme().toLowerCase();
         switch (uriScheme) {
             case "classpath":
@@ -91,38 +87,30 @@ public final class Uris {
         }
     }
 
-    private static String readFileUri(
-            final URI uri,
-            final Charset charset)
-            throws IOException {
+    private static String readFileUri(final URI uri, final Charset charset) throws IOException {
         final Path path = Paths.get(uri);
         try (final BufferedReader fileReader = Files.newBufferedReader(path, charset)) {
             return consumeReader(fileReader);
         }
     }
 
-    private static String readClassPathUri(
-            final URI uri,
-            final Charset charset)
-            throws IOException {
+    private static String readClassPathUri(final URI uri, final Charset charset) throws IOException {
         final String spec = uri.toString();
         final String path = spec.substring("classpath:".length());
         final List<URL> resources = new ArrayList<>(LoaderUtil.findResources(path));
         if (resources.isEmpty()) {
-            final String message = String.format(
-                    "could not locate classpath resource (path=%s)", path);
+            final String message = String.format("could not locate classpath resource (path=%s)", path);
             throw new RuntimeException(message);
         }
         final URL resource = resources.get(0);
         if (resources.size() > 1) {
             final String message = String.format(
-                    "for URI %s found %d resources, using the first one: %s",
-                    uri, resources.size(), resource);
+                    "for URI %s found %d resources, using the first one: %s", uri, resources.size(), resource);
             LOGGER.warn(message);
         }
         try (final InputStream inputStream = resource.openStream()) {
             try (final InputStreamReader reader = new InputStreamReader(inputStream, charset);
-                 final BufferedReader bufferedReader = new BufferedReader(reader)) {
+                    final BufferedReader bufferedReader = new BufferedReader(reader)) {
                 return consumeReader(bufferedReader);
             }
         }
@@ -136,5 +124,4 @@ public final class Uris {
         }
         return builder.toString();
     }
-
 }

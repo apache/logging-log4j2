@@ -38,9 +38,9 @@ public interface Configurator {
 
     /**
      * Interpret a resource pointed by a InputStream and set up log4j accordingly.
-     * 
+     *
      * The configuration is done relative to the <code>hierarchy</code> parameter.
-     * 
+     *
      * @param inputStream The InputStream to parse
      * @param loggerRepository The hierarchy to operation upon.
      *
@@ -50,9 +50,9 @@ public interface Configurator {
 
     /**
      * Interpret a resource pointed by a URL and set up log4j accordingly.
-     * 
+     *
      * The configuration is done relative to the <code>hierarchy</code> parameter.
-     * 
+     *
      * @param url The URL to parse
      * @param loggerRepository The hierarchy to operation upon.
      */

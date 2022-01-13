@@ -42,5 +42,4 @@ public abstract class AbstractLogger {
         reusedLogEvent.setMessage(message);
         return reusedLogEvent;
     }
-
 }

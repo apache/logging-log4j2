@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
 import javax.sql.DataSource;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -35,5 +34,4 @@ public abstract class AbstractJdbcDataSourceTest {
     public static void beforeClass() throws Exception {
         System.setProperty("log4j2.enableJndiJdbc", "true");
     }
-
 }

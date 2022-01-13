@@ -16,15 +16,11 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.google.monitoring.runtime.instrumentation.AllocationRecorder;
 import com.google.monitoring.runtime.instrumentation.Sampler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.MarkerManager;
-import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.message.StringMapMessage;
-
 import java.io.File;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -32,17 +28,20 @@ import java.nio.file.Files;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.message.StringMapMessage;
 
 /**
  * Utility methods for the GC-free logging tests.
  */
-public enum GcFreeLoggingTestUtil {;
+public enum GcFreeLoggingTestUtil {
+    ;
 
-    public static void executeLogging(final String configurationFile,
-                                      final Class<?> testClass) throws Exception {
+    public static void executeLogging(final String configurationFile, final Class<?> testClass) throws Exception {
 
         System.setProperty("log4j2.enable.threadlocals", "true");
         System.setProperty("log4j2.enable.direct.encoders", "true");
@@ -77,8 +76,8 @@ public enum GcFreeLoggingTestUtil {;
 
         // BlockingWaitStrategy uses ReentrantLock which allocates Node objects. Ignore this.
         final String[] exclude = new String[] {
-                "java/util/concurrent/locks/AbstractQueuedSynchronizer$Node", //
-                "com/google/monitoring/runtime/instrumentation/Sampler", //
+            "java/util/concurrent/locks/AbstractQueuedSynchronizer$Node", //
+            "com/google/monitoring/runtime/instrumentation/Sampler", //
         };
         final AtomicBoolean samplingEnabled = new AtomicBoolean(true);
         final Sampler sampler = (count, desc, newObj, size) -> {
@@ -90,8 +89,7 @@ public enum GcFreeLoggingTestUtil {;
                     return; // exclude
                 }
             }
-            System.err.println("I just allocated the object " + newObj +
-                    " of type " + desc + " whose size is " + size);
+            System.err.println("I just allocated the object " + newObj + " of type " + desc + " whose size is " + size);
             if (count != -1) {
                 System.err.println("It's an array of size " + count);
             }
@@ -156,12 +154,9 @@ public enum GcFreeLoggingTestUtil {;
                 final String firstLinePattern = String.format(
                         "^FATAL .*\\.%s %s",
                         className,
-                        Pattern.quote("[main] value1 {aKey=value1, " +
-                                "key2=value2, prop1=value1, prop2=value2} " +
-                                "This message is logged to the console"));
-                assertTrue(
-                        line.matches(firstLinePattern),
-                        "pattern mismatch at line 1: " + line);
+                        Pattern.quote("[main] value1 {aKey=value1, " + "key2=value2, prop1=value1, prop2=value2} "
+                                + "This message is logged to the console"));
+                assertTrue(line.matches(firstLinePattern), "pattern mismatch at line 1: " + line);
             }
 
             // Check the rest of the lines.
@@ -170,14 +165,13 @@ public enum GcFreeLoggingTestUtil {;
                         line.contains("allocated") || line.contains("array"),
                         "(allocated|array) pattern matches at line " + lineNumber + ": " + line);
             }
-
         });
-
     }
 
     private static File agentJar() {
         final String name = AllocationRecorder.class.getName();
-        final URL url = AllocationRecorder.class.getResource("/" + name.replace('.', '/').concat(".class"));
+        final URL url = AllocationRecorder.class.getResource(
+                "/" + name.replace('.', '/').concat(".class"));
         if (url == null) {
             throw new IllegalStateException("Could not find url for " + name);
         }

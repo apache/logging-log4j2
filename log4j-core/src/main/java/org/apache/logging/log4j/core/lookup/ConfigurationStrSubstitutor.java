@@ -26,8 +26,7 @@ import java.util.Properties;
  */
 public final class ConfigurationStrSubstitutor extends StrSubstitutor {
 
-    public ConfigurationStrSubstitutor() {
-    }
+    public ConfigurationStrSubstitutor() {}
 
     public ConfigurationStrSubstitutor(final Map<String, String> valueMap) {
         super(valueMap);

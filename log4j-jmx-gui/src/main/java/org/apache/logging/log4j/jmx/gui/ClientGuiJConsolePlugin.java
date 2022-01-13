@@ -16,13 +16,11 @@
  */
 package org.apache.logging.log4j.jmx.gui;
 
+import com.sun.tools.jconsole.JConsolePlugin;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
-
-import com.sun.tools.jconsole.JConsolePlugin;
 
 /**
  * Adapts the {@code ClientGui} to the {@code JConsolePlugin} API.

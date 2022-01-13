@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.config.plugins.util;
 
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -25,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
 /**
  * {@link org.apache.logging.log4j.core.config.plugins.Plugin} utilities.
@@ -47,8 +46,7 @@ public final class PluginUtil {
      * Short for collecting plugins matching with the given {@code category} in provided {@code packages}.
      */
     public static Map<String, PluginType<?>> collectPluginsByCategoryAndPackage(
-            final String category,
-            final List<String> packages) {
+            final String category, final List<String> packages) {
         Objects.requireNonNull(category, "category");
         Objects.requireNonNull(packages, "packages");
         final PluginManager pluginManager = new PluginManager(category);
@@ -92,5 +90,4 @@ public final class PluginUtil {
         }
         throw new IllegalStateException("no factory method found for class " + pluginClass);
     }
-
 }

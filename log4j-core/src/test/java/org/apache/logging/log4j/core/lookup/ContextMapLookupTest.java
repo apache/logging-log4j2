@@ -16,8 +16,9 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import java.io.File;
+import static org.junit.Assert.*;
 
+import java.io.File;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
@@ -26,8 +27,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runners.model.Statement;
-
-import static org.junit.Assert.*;
 
 public class ContextMapLookupTest {
 
@@ -38,23 +37,24 @@ public class ContextMapLookupTest {
 
     @Rule
     public RuleChain chain = RuleChain.outerRule((base, description) -> new Statement() {
-        @Override
-        public void evaluate() throws Throwable {
-            final File logFile = new File("target",
-                description.getClassName() + '.' + description.getMethodName() + ".log");
-            ThreadContext.put("testClassName", description.getClassName());
-            ThreadContext.put("testMethodName", description.getMethodName());
-            try {
-                base.evaluate();
-            } finally {
-                ThreadContext.remove("testClassName");
-                ThreadContext.remove("testMethodName");
-                if (logFile.exists()) {
-                    logFile.deleteOnExit();
+                @Override
+                public void evaluate() throws Throwable {
+                    final File logFile =
+                            new File("target", description.getClassName() + '.' + description.getMethodName() + ".log");
+                    ThreadContext.put("testClassName", description.getClassName());
+                    ThreadContext.put("testMethodName", description.getMethodName());
+                    try {
+                        base.evaluate();
+                    } finally {
+                        ThreadContext.remove("testClassName");
+                        ThreadContext.remove("testMethodName");
+                        if (logFile.exists()) {
+                            logFile.deleteOnExit();
+                        }
+                    }
                 }
-            }
-        }
-    }).around(context);
+            })
+            .around(context);
 
     @Test
     public void testLookup() {

@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import static org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.lang.management.ManagementFactory;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
@@ -25,7 +28,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.AbstractLogEvent;
@@ -44,9 +46,6 @@ import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat;
 
 @UsingAnyThreadContext
 public class HtmlLayoutTest {
@@ -96,7 +95,8 @@ public class HtmlLayoutTest {
         ConfigurationFactory.removeConfigurationFactory(cf);
     }
 
-    private static final String body = "<tr><td bgcolor=\"#993300\" style=\"color:White; font-size : small;\" colspan=\"6\">java.lang.NullPointerException: test";
+    private static final String body =
+            "<tr><td bgcolor=\"#993300\" style=\"color:White; font-size : small;\" colspan=\"6\">java.lang.NullPointerException: test";
 
     private static final String multiLine = "<td title=\"Message\">First line<br />Second line</td>";
 
@@ -109,11 +109,11 @@ public class HtmlLayoutTest {
     @Test
     public void testContentType() {
         final HtmlLayout layout = HtmlLayout.newBuilder()
-            .withContentType("text/html; charset=UTF-16")
-            .build();
+                .withContentType("text/html; charset=UTF-16")
+                .build();
         assertEquals("text/html; charset=UTF-16", layout.getContentType());
         // TODO: make sure this following bit works as well
-//        assertEquals(Charset.forName("UTF-16"), layout.getCharset());
+        //        assertEquals(Charset.forName("UTF-16"), layout.getCharset());
     }
 
     @Test
@@ -141,9 +141,8 @@ public class HtmlLayoutTest {
             root.removeAppender(appender);
         }
         // set up appender
-        final HtmlLayout layout = HtmlLayout.newBuilder()
-            .withLocationInfo(includeLocation)
-            .build();
+        final HtmlLayout layout =
+                HtmlLayout.newBuilder().withLocationInfo(includeLocation).build();
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
@@ -206,7 +205,8 @@ public class HtmlLayoutTest {
 
     @Test
     public void testLayoutWithDatePatternJvmElapseTime() {
-        final HtmlLayout layout = HtmlLayout.newBuilder().setDatePattern("JVM_ELAPSE_TIME").build();
+        final HtmlLayout layout =
+                HtmlLayout.newBuilder().setDatePattern("JVM_ELAPSE_TIME").build();
 
         MyLogEvent event = new MyLogEvent();
         String actual = getDateLine(layout.toSerializable(event));
@@ -227,7 +227,8 @@ public class HtmlLayoutTest {
 
     @Test
     public void testLayoutWithDatePatternUnixMillis() {
-        final HtmlLayout layout = HtmlLayout.newBuilder().setDatePattern("UNIX_MILLIS").build();
+        final HtmlLayout layout =
+                HtmlLayout.newBuilder().setDatePattern("UNIX_MILLIS").build();
 
         MyLogEvent event = new MyLogEvent();
         String actual = getDateLine(layout.toSerializable(event));
@@ -243,20 +244,23 @@ public class HtmlLayoutTest {
             }
         }
     }
-    
+
     private String getDateLine(String logEventString) {
         return logEventString.split(System.lineSeparator())[2];
     }
 
     private void testLayoutWithDatePatternFixedFormat(FixedFormat format, String timezone) {
-        final HtmlLayout layout = HtmlLayout.newBuilder().setDatePattern(format.name()).setTimezone(timezone).build();
+        final HtmlLayout layout = HtmlLayout.newBuilder()
+                .setDatePattern(format.name())
+                .setTimezone(timezone)
+                .build();
 
         LogEvent event = new MyLogEvent();
         String actual = getDateLine(layout.toSerializable(event));
 
         // build expected date string
-        java.time.Instant instant =
-            java.time.Instant.ofEpochSecond(event.getInstant().getEpochSecond(), event.getInstant().getNanoOfSecond());
+        java.time.Instant instant = java.time.Instant.ofEpochSecond(
+                event.getInstant().getEpochSecond(), event.getInstant().getNanoOfSecond());
         ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault());
         if (timezone != null) {
             zonedDateTime = zonedDateTime.withZoneSameInstant(ZoneId.of(timezone));
@@ -266,11 +270,13 @@ public class HtmlLayoutTest {
         // Pattern letter 'S' means fraction-of-second, 'n' means nano-of-second. Log4j2 needs S.
         // Pattern letter 'X' (upper case) will output 'Z' when the offset to be output would be zero,
         // whereas pattern letter 'x' (lower case) will output '+00', '+0000', or '+00:00'. Log4j2 needs x.
-        DateTimeFormatter dateTimeFormatter =
-            DateTimeFormatter.ofPattern(format.getPattern().replace('n', 'S').replace('X', 'x'));
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(
+                format.getPattern().replace('n', 'S').replace('X', 'x'));
         String expected = zonedDateTime.format(dateTimeFormatter);
 
-        assertEquals("<td>" + expected + "</td>", actual,
-            MessageFormat.format("Incorrect date={0}, format={1}, timezone={2}", actual, format.name(), timezone));
+        assertEquals(
+                "<td>" + expected + "</td>",
+                actual,
+                MessageFormat.format("Incorrect date={0}, format={1}, timezone={2}", actual, format.name(), timezone));
     }
 }

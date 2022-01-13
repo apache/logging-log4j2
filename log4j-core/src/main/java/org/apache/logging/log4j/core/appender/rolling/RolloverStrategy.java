@@ -28,6 +28,6 @@ public interface RolloverStrategy {
      * @param manager The RollingFileManager name for current active log file.
      * @return Description of pending rollover, may be null to indicate no rollover at this time.
      * @throws SecurityException if denied access to log files.
-   */
+     */
     RolloverDescription rollover(final RollingFileManager manager) throws SecurityException;
 }

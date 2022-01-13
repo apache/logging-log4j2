@@ -17,9 +17,9 @@
 
 package org.apache.logging.log4j.core.pattern;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the LiteralPatternConverter.
@@ -39,5 +39,4 @@ public class LiteralPatternConverterTest {
         final LiteralPatternConverter converter = new LiteralPatternConverter(null, literal, false);
         assertEquals(literal, converter.getLiteral());
     }
-
 }

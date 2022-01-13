@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.lmax.disruptor.ExceptionHandler;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -30,8 +32,6 @@ import org.junit.experimental.categories.Category;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test an exception thrown in {@link RingBufferLogEventTranslator#translateTo(RingBufferLogEvent, long)}
@@ -60,26 +60,16 @@ class AsyncLoggerEventTranslationExceptionTest {
 
         final Logger log = LogManager.getLogger("com.foo.Bar");
 
-        assertTrue(
-                TestExceptionHandler.INSTANTIATED,
-                "TestExceptionHandler was not configured properly");
+        assertTrue(TestExceptionHandler.INSTANTIATED, "TestExceptionHandler was not configured properly");
 
         final Message exceptionThrowingMessage = new ExceptionThrowingMessage();
-        assertThrows(
-                TestMessageException.class,
-                () -> ((AbstractLogger) log).logMessage(
-                        "com.foo.Bar",
-                        Level.INFO,
-                        null,
-                        exceptionThrowingMessage,
-                        null));
+        assertThrows(TestMessageException.class, () -> ((AbstractLogger) log)
+                .logMessage("com.foo.Bar", Level.INFO, null, exceptionThrowingMessage, null));
 
         CoreLoggerContexts.stopLoggerContext(); // stop async thread
 
         assertFalse(
-                TestExceptionHandler.EVENT_EXCEPTION_ENCOUNTERED,
-                "ExceptionHandler encountered an event exception");
-
+                TestExceptionHandler.EVENT_EXCEPTION_ENCOUNTERED, "ExceptionHandler encountered an event exception");
     }
 
     public static final class TestExceptionHandler implements ExceptionHandler<RingBufferLogEvent> {
@@ -106,7 +96,6 @@ class AsyncLoggerEventTranslationExceptionTest {
         public void handleOnShutdownException(final Throwable error) {
             fail("Unexpected shutdown exception: " + error.getMessage());
         }
-
     }
 
     private static class TestMessageException extends RuntimeException {}
@@ -142,7 +131,5 @@ class AsyncLoggerEventTranslationExceptionTest {
         public short getParameterCount() {
             throw new TestMessageException();
         }
-
     }
-
 }

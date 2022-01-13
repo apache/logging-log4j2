@@ -43,7 +43,7 @@ public class FormattedMessage implements Message {
     private final Throwable throwable;
     private Message message;
     private final Locale locale;
-    
+
     /**
      * Constructs with a locale, a pattern and a single parameter.
      * @param locale The locale
@@ -52,7 +52,7 @@ public class FormattedMessage implements Message {
      * @since 2.6
      */
     public FormattedMessage(final Locale locale, final String messagePattern, final Object arg) {
-        this(locale, messagePattern, new Object[] { arg }, null);
+        this(locale, messagePattern, new Object[] {arg}, null);
     }
 
     /**
@@ -64,7 +64,7 @@ public class FormattedMessage implements Message {
      * @since 2.6
      */
     public FormattedMessage(final Locale locale, final String messagePattern, final Object arg1, final Object arg2) {
-        this(locale, messagePattern, new Object[] { arg1, arg2 });
+        this(locale, messagePattern, new Object[] {arg1, arg2});
     }
 
     /**
@@ -86,7 +86,8 @@ public class FormattedMessage implements Message {
      * @param throwable The throwable
      * @since 2.6
      */
-    public FormattedMessage(final Locale locale, final String messagePattern, final Object[] arguments, final Throwable throwable) {
+    public FormattedMessage(
+            final Locale locale, final String messagePattern, final Object[] arguments, final Throwable throwable) {
         this.locale = locale;
         this.messagePattern = messagePattern;
         this.argArray = arguments;
@@ -99,7 +100,7 @@ public class FormattedMessage implements Message {
      * @param arg The parameter.
      */
     public FormattedMessage(final String messagePattern, final Object arg) {
-        this(messagePattern, new Object[] { arg }, null);
+        this(messagePattern, new Object[] {arg}, null);
     }
 
     /**
@@ -109,7 +110,7 @@ public class FormattedMessage implements Message {
      * @param arg2 The second parameter.
      */
     public FormattedMessage(final String messagePattern, final Object arg1, final Object arg2) {
-        this(messagePattern, new Object[] { arg1, arg2 });
+        this(messagePattern, new Object[] {arg1, arg2});
     }
 
     /**
@@ -133,7 +134,6 @@ public class FormattedMessage implements Message {
         this.argArray = arguments;
         this.throwable = throwable;
     }
-
 
     @Override
     public boolean equals(final Object o) {
@@ -222,7 +222,6 @@ public class FormattedMessage implements Message {
         }
         return message.getThrowable();
     }
-
 
     @Override
     public int hashCode() {

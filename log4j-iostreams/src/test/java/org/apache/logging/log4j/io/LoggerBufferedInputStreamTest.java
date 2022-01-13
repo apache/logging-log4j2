@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.io;
 
 import java.io.InputStream;
-
 import org.apache.logging.log4j.Level;
 
 public class LoggerBufferedInputStreamTest extends LoggerInputStreamTest {
@@ -25,9 +24,9 @@ public class LoggerBufferedInputStreamTest extends LoggerInputStreamTest {
     @Override
     protected InputStream createInputStream() {
         return IoBuilder.forLogger(getExtendedLogger())
-            .filter(this.wrapped)
-            .setLevel(Level.ERROR)
-            .setBuffered(true)
-            .buildInputStream();
+                .filter(this.wrapped)
+                .setLevel(Level.ERROR)
+                .setBuffered(true)
+                .buildInputStream();
     }
 }

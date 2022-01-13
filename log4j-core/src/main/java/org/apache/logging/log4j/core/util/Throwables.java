@@ -30,8 +30,7 @@ import java.util.List;
  */
 public final class Throwables {
 
-    private Throwables() {
-    }
+    private Throwables() {}
 
     /**
      * Returns the deepest cause of the given {@code throwable}.
@@ -59,7 +58,6 @@ public final class Throwables {
             advanceSlowPointer = !advanceSlowPointer; // only advance every other iteration
         }
         return parent;
-
     }
 
     /**

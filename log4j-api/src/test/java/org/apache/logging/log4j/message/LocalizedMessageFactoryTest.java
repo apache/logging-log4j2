@@ -16,12 +16,11 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests {@link LocalizedMessageFactory}.
@@ -30,8 +29,8 @@ public class LocalizedMessageFactoryTest {
 
     @Test
     public void testNewMessage() {
-        final LocalizedMessageFactory localizedMessageFactory = new LocalizedMessageFactory(
-                ResourceBundle.getBundle("MF", Locale.US));
+        final LocalizedMessageFactory localizedMessageFactory =
+                new LocalizedMessageFactory(ResourceBundle.getBundle("MF", Locale.US));
         final Message message = localizedMessageFactory.newMessage("hello_world");
         assertEquals("Hello world.", message.getFormattedMessage());
     }

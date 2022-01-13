@@ -20,5 +20,4 @@ package org.apache.logging.log4j.categories;
 /**
  * JUnit category to indicate a test is primarily for testing performance.
  */
-public interface PerformanceTests {
-}
+public interface PerformanceTests {}

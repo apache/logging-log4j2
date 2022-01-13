@@ -17,7 +17,6 @@
 package org.apache.log4j;
 
 import java.io.StringWriter;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -33,7 +32,7 @@ import org.junit.Test;
  */
 public class VelocityTest {
 
-private static LoggerContext context;
+    private static LoggerContext context;
 
     @BeforeClass
     public static void setupClass() {

@@ -25,7 +25,6 @@ import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -100,18 +99,18 @@ public final class ProviderUtil {
         }
     }
 
-	/**
-	 * 
-	 * @param classLoader null can be used to mark the bootstrap class loader.
-	 */
-	protected static void loadProviders(final ClassLoader classLoader) {
-		final ServiceLoader<Provider> serviceLoader = ServiceLoader.load(Provider.class, classLoader);
-		for (final Provider provider : serviceLoader) {
-			if (validVersion(provider.getVersions()) && !PROVIDERS.contains(provider)) {
-				PROVIDERS.add(provider);
-			}
-		}
-	}
+    /**
+     *
+     * @param classLoader null can be used to mark the bootstrap class loader.
+     */
+    protected static void loadProviders(final ClassLoader classLoader) {
+        final ServiceLoader<Provider> serviceLoader = ServiceLoader.load(Provider.class, classLoader);
+        for (final Provider provider : serviceLoader) {
+            if (validVersion(provider.getVersions()) && !PROVIDERS.contains(provider)) {
+                PROVIDERS.add(provider);
+            }
+        }
+    }
 
     /**
      * @deprecated Use {@link #loadProvider(java.net.URL, ClassLoader)} instead. Will be removed in 3.0.

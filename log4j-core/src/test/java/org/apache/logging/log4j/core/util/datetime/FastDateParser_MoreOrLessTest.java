@@ -21,7 +21,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -66,7 +65,7 @@ public class FastDateParser_MoreOrLessTest {
     @Test
     public void testInputHasWhitespace() {
         final FastDateParser parser = new FastDateParser("M/d/y", TimeZone.getDefault(), Locale.getDefault());
-        //SimpleDateFormat parser = new SimpleDateFormat("M/d/y");
+        // SimpleDateFormat parser = new SimpleDateFormat("M/d/y");
         final ParsePosition parsePosition = new ParsePosition(0);
         final Date date = parser.parse(" 3/ 23/ 1961", parsePosition);
         Assert.assertEquals(12, parsePosition.getIndex());
@@ -95,7 +94,7 @@ public class FastDateParser_MoreOrLessTest {
         Assert.assertEquals(input.length(), parsePosition.getIndex());
 
         parsePosition.setIndex(0);
-        Assert.assertNull(parser.parse( "Thorsday, 03/23/61", parsePosition));
+        Assert.assertNull(parser.parse("Thorsday, 03/23/61", parsePosition));
         Assert.assertEquals(0, parsePosition.getErrorIndex());
     }
 
@@ -109,7 +108,7 @@ public class FastDateParser_MoreOrLessTest {
         Assert.assertEquals(input.length(), parsePosition.getIndex());
 
         parsePosition.setIndex(0);
-        Assert.assertNull(parser.parse( "11:23 Pacific Standard ", parsePosition));
+        Assert.assertNull(parser.parse("11:23 Pacific Standard ", parsePosition));
         Assert.assertEquals(6, parsePosition.getErrorIndex());
     }
 }

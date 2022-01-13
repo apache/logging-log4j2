@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
@@ -23,13 +27,7 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 public class PatternResolverDoesNotEvaluateThreadContextTest {
-
 
     private static final String CONFIG = "log4j2-pattern-layout-with-context.xml";
     private static final String PARAMETER = "user";
@@ -51,8 +49,10 @@ public class PatternResolverDoesNotEvaluateThreadContextTest {
         List<String> messages = listAppender.getMessages();
         assertTrue(messages != null && messages.size() > 0, "No messages returned");
         String message = messages.get(0);
-        assertEquals("INFO org.apache.logging.log4j.core." +
-                "PatternResolverDoesNotEvaluateThreadContextTest ${ctx:user} This is a test", message);
+        assertEquals(
+                "INFO org.apache.logging.log4j.core."
+                        + "PatternResolverDoesNotEvaluateThreadContextTest ${ctx:user} This is a test",
+                message);
     }
 
     @Test
@@ -62,8 +62,10 @@ public class PatternResolverDoesNotEvaluateThreadContextTest {
         List<String> messages = listAppender.getMessages();
         assertTrue(messages != null && messages.size() > 0, "No messages returned");
         String message = messages.get(0);
-        assertEquals("INFO org.apache.logging.log4j.core." +
-                "PatternResolverDoesNotEvaluateThreadContextTest ${ctx:user} This is a ${upper:test}", message);
+        assertEquals(
+                "INFO org.apache.logging.log4j.core."
+                        + "PatternResolverDoesNotEvaluateThreadContextTest ${ctx:user} This is a ${upper:test}",
+                message);
     }
 
     @Test
@@ -78,8 +80,10 @@ public class PatternResolverDoesNotEvaluateThreadContextTest {
         List<String> messages = listAppender.getMessages();
         assertTrue(messages != null && messages.size() > 0, "No messages returned");
         String message = messages.get(0);
-        assertEquals("INFO org.apache.logging.log4j.core." +
-                "PatternResolverDoesNotEvaluateThreadContextTest 123 This is a test", message);
+        assertEquals(
+                "INFO org.apache.logging.log4j.core."
+                        + "PatternResolverDoesNotEvaluateThreadContextTest 123 This is a test",
+                message);
     }
 
     @Test
@@ -94,8 +98,10 @@ public class PatternResolverDoesNotEvaluateThreadContextTest {
         List<String> messages = listAppender.getMessages();
         assertTrue(messages != null && messages.size() > 0, "No messages returned");
         String message = messages.get(0);
-        assertEquals("INFO org.apache.logging.log4j.core." +
-                "PatternResolverDoesNotEvaluateThreadContextTest ${java:version} This is a test", message);
+        assertEquals(
+                "INFO org.apache.logging.log4j.core."
+                        + "PatternResolverDoesNotEvaluateThreadContextTest ${java:version} This is a test",
+                message);
     }
 
     @Test
@@ -110,7 +116,9 @@ public class PatternResolverDoesNotEvaluateThreadContextTest {
         List<String> messages = listAppender.getMessages();
         assertTrue(messages != null && messages.size() > 0, "No messages returned");
         String message = messages.get(0);
-        assertEquals("INFO org.apache.logging.log4j.core." +
-                "PatternResolverDoesNotEvaluateThreadContextTest user${java:version}name This is a test", message);
+        assertEquals(
+                "INFO org.apache.logging.log4j.core."
+                        + "PatternResolverDoesNotEvaluateThreadContextTest user${java:version}name This is a test",
+                message);
     }
 }

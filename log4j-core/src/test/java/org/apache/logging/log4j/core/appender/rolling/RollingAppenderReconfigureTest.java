@@ -22,7 +22,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
@@ -42,8 +41,8 @@ public class RollingAppenderReconfigureTest {
 
     private static final File CONFIG_FILE = new File("target/test-classes/", CONFIG);
 
-    public static LoggerContextRule loggerContextRule = LoggerContextRule
-            .createShutdownTimeoutLoggerContextRule(CONFIG);
+    public static LoggerContextRule loggerContextRule =
+            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
 
     @Rule
     public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
@@ -70,8 +69,8 @@ public class RollingAppenderReconfigureTest {
 
         final String originalXmlConfig = FileUtils.readFileToString(CONFIG_FILE, "UTF-8");
         try {
-            final String updatedXmlConfig = originalXmlConfig.replace("target/rolling1/rollingtest.%i.rolled",
-                    "target/rolling1/rollingtest.%i.reconfigured");
+            final String updatedXmlConfig = originalXmlConfig.replace(
+                    "target/rolling1/rollingtest.%i.rolled", "target/rolling1/rollingtest.%i.reconfigured");
             FileUtils.write(CONFIG_FILE, updatedXmlConfig, "UTF-8");
 
             // Reconfigure

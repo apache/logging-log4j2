@@ -35,5 +35,4 @@ public class NullConfiguration extends AbstractConfiguration {
         final LoggerConfig root = getRootLogger();
         root.setLevel(Level.OFF);
     }
-
 }

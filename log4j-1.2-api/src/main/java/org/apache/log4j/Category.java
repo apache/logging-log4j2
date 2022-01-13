@@ -22,7 +22,6 @@ import java.util.ResourceBundle;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 import org.apache.log4j.helpers.NullEnumeration;
 import org.apache.log4j.legacy.core.CategoryUtil;
 import org.apache.log4j.or.ObjectRenderer;
@@ -49,13 +48,12 @@ public class Category implements AppenderAttachable {
 
     private static PrivateAdapter adapter = new PrivateAdapter();
 
-    private static final Map<LoggerContext, ConcurrentMap<String, Logger>> CONTEXT_MAP =
-        new WeakHashMap<>();
+    private static final Map<LoggerContext, ConcurrentMap<String, Logger>> CONTEXT_MAP = new WeakHashMap<>();
 
     private static final String FQCN = Category.class.getName();
 
     private static final boolean isCoreAvailable;
-    
+
     static {
         boolean available;
 
@@ -79,19 +77,19 @@ public class Category implements AppenderAttachable {
      * to <code>false</code> too. See the user manual for more details.
      */
     protected boolean additive = true;
-    
+
     /**
      * The assigned level of this category. The <code>level</code> variable need not be assigned a value in which case it is
      * inherited form the hierarchy.
      */
-    volatile protected Level level;
+    protected volatile Level level;
 
     private final RendererMap rendererMap;
 
     /**
      * The parent of this category. All categories have at least one ancestor which is the root category.
      */
-    volatile protected Category parent;
+    protected volatile Category parent;
 
     /**
      * Resource bundle for localized messages.
@@ -210,14 +208,14 @@ public class Category implements AppenderAttachable {
     /**
      * Returns all the currently defined categories in the default hierarchy as an
      * {@link java.util.Enumeration Enumeration}.
-     * 
+     *
      * <p>
      * The root category is <em>not</em> included in the returned
      * {@link Enumeration}.
      * </p>
-     * 
+     *
      * @return and Enumeration of the Categories.
-     * 
+     *
      * @deprecated Please use {@link LogManager#getCurrentLoggers()} instead.
      */
     @SuppressWarnings("rawtypes")
@@ -240,29 +238,29 @@ public class Category implements AppenderAttachable {
 
     public Level getEffectiveLevel() {
         switch (logger.getLevel().getStandardLevel()) {
-        case ALL:
-            return Level.ALL;
-        case TRACE:
-            return Level.TRACE;
-        case DEBUG:
-            return Level.DEBUG;
-        case INFO:
-            return Level.INFO;
-        case WARN:
-            return Level.WARN;
-        case ERROR:
-            return Level.ERROR;
-        case FATAL:
-            return Level.FATAL;
-        default:
-            // TODO Should this be an IllegalStateException?
-            return Level.OFF;
+            case ALL:
+                return Level.ALL;
+            case TRACE:
+                return Level.TRACE;
+            case DEBUG:
+                return Level.DEBUG;
+            case INFO:
+                return Level.INFO;
+            case WARN:
+                return Level.WARN;
+            case ERROR:
+                return Level.ERROR;
+            case FATAL:
+                return Level.FATAL;
+            default:
+                // TODO Should this be an IllegalStateException?
+                return Level.OFF;
         }
     }
 
     /**
      * Gets the the {@link LoggerRepository} where this <code>Category</code> instance is attached.
-     * 
+     *
      * @deprecated Please use {@link #getLoggerRepository()} instead.
      * @since 1.1
      */
@@ -273,7 +271,7 @@ public class Category implements AppenderAttachable {
 
     /**
      * Gets the the {@link LoggerRepository} where this <code>Category</code> is attached.
-     * 
+     *
      * @since 1.2
      */
     public LoggerRepository getLoggerRepository() {
@@ -380,15 +378,13 @@ public class Category implements AppenderAttachable {
      * @param appender The Appender to add.
      */
     @Override
-    public void addAppender(final Appender appender) {
-    }
+    public void addAppender(final Appender appender) {}
 
     /**
      * No-op implementation.
      * @param event The logging event.
      */
-    public void callAppenders(final LoggingEvent event) {
-    }
+    public void callAppenders(final LoggingEvent event) {}
 
     /**
      * Closes all attached appenders implementing the AppenderAttachable interface.
@@ -424,7 +420,7 @@ public class Category implements AppenderAttachable {
     }
 
     /**
-     Is the appender passed as parameter attached to this category?
+     * Is the appender passed as parameter attached to this category?
      * @param appender The Appender to add.
      * @return true if the appender is attached.
      */
@@ -437,52 +433,50 @@ public class Category implements AppenderAttachable {
      * No-op implementation.
      */
     @Override
-    public void removeAllAppenders() {
-    }
+    public void removeAllAppenders() {}
 
     /**
      * No-op implementation.
      * @param appender The Appender to remove.
      */
     @Override
-    public void removeAppender(final Appender appender) {
-    }
+    public void removeAppender(final Appender appender) {}
 
     /**
      * No-op implementation.
      * @param name The Appender to remove.
      */
     @Override
-    public void removeAppender(final String name) {
-    }
+    public void removeAppender(final String name) {}
 
     /**
      * No-op implementation.
      */
-    public static void shutdown() {
-    }
+    public static void shutdown() {}
 
     public void forcedLog(final String fqcn, final Priority level, final Object message, final Throwable t) {
         final org.apache.logging.log4j.Level lvl = org.apache.logging.log4j.Level.toLevel(level.toString());
         if (logger instanceof ExtendedLogger) {
             @SuppressWarnings("unchecked")
-            Message msg = message instanceof Message ? (Message) message : message instanceof Map ?
-                    new MapMessage((Map) message) : new ObjectMessage(message);
+            Message msg = message instanceof Message
+                    ? (Message) message
+                    : message instanceof Map ? new MapMessage((Map) message) : new ObjectMessage(message);
             ((ExtendedLogger) logger).logMessage(fqcn, lvl, null, msg, t);
         } else {
             ObjectRenderer renderer = get(message.getClass());
-            final Message msg = message instanceof Message ? (Message) message : renderer != null ?
-                    new RenderedMessage(renderer, message) : new ObjectMessage(message);
+            final Message msg = message instanceof Message
+                    ? (Message) message
+                    : renderer != null ? new RenderedMessage(renderer, message) : new ObjectMessage(message);
             logger.log(lvl, msg, t);
         }
     }
 
     /**
      * Tests if the named category exists (in the default hierarchy).
-     * 
+     *
      * @param name The name to test.
      * @return Whether the name exists.
-     * 
+     *
      * @deprecated Please use {@link LogManager#exists(String)} instead.
      * @since 0.8.5
      */
@@ -535,7 +529,7 @@ public class Category implements AppenderAttachable {
         return null;
     }
 
-    private static  String getSubName(final String name) {
+    private static String getSubName(final String name) {
         if (Strings.isEmpty(name)) {
             return null;
         }
@@ -546,7 +540,7 @@ public class Category implements AppenderAttachable {
     /**
      * If <code>assertion</code> parameter is {@code false}, then logs
      * <code>msg</code> as an {@link #error(Object) error} statement.
-     * 
+     *
      * <p>
      * The <code>assert</code> method has been renamed to <code>assertLog</code>
      * because <code>assert</code> is a language reserved word in JDK 1.4.
@@ -554,7 +548,7 @@ public class Category implements AppenderAttachable {
      *
      * @param assertion The assertion.
      * @param msg       The message to print if <code>assertion</code> is false.
-     * 
+     *
      * @since 1.2
      */
     public void assertLog(final boolean assertion, final String msg) {
@@ -690,5 +684,4 @@ public class Category implements AppenderAttachable {
         }
         return null;
     }
-
 }

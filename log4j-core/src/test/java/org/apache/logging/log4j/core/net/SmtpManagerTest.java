@@ -40,25 +40,57 @@ class SmtpManagerTest {
 
     @Test
     void testCreateManagerName() {
-        String managerName = SmtpManager.createManagerName("to", "cc", null, "from", null, "LOG4J2-3107",
-                "proto", "smtp.log4j.com", 4711, "username", false, "filter");
+        String managerName = SmtpManager.createManagerName(
+                "to",
+                "cc",
+                null,
+                "from",
+                null,
+                "LOG4J2-3107",
+                "proto",
+                "smtp.log4j.com",
+                4711,
+                "username",
+                false,
+                "filter");
         assertEquals("SMTP:to:cc::from::LOG4J2-3107:proto:smtp.log4j.com:4711:username::filter", managerName);
     }
 
     private void testAdd(LogEvent event) {
-        SmtpManager smtpManager = SmtpManager.getSmtpManager(null, "to", "cc", "bcc", "from", "replyTo", "subject", "protocol", "host", 0, "username", "password", false, "filterName", 10, null);
+        SmtpManager smtpManager = SmtpManager.getSmtpManager(
+                null,
+                "to",
+                "cc",
+                "bcc",
+                "from",
+                "replyTo",
+                "subject",
+                "protocol",
+                "host",
+                0,
+                "username",
+                "password",
+                false,
+                "filterName",
+                10,
+                null);
         smtpManager.removeAllBufferedEvents(); // in case this smtpManager is reused
         smtpManager.add(event);
 
         LogEvent[] bufferedEvents = smtpManager.removeAllBufferedEvents();
         assertThat("unexpected number of buffered events", bufferedEvents.length, is(1));
-        assertThat("expected the immutable version of the event to be buffered", bufferedEvents[0].getMessage(), is(instanceOf(MementoMessage.class)));
+        assertThat(
+                "expected the immutable version of the event to be buffered",
+                bufferedEvents[0].getMessage(),
+                is(instanceOf(MementoMessage.class)));
     }
 
     // LOG4J2-3172: make sure existing protections are not violated
     @Test
     void testAdd_WhereLog4jLogEventWithReusableMessage() {
-        LogEvent event = new Log4jLogEvent.Builder().setMessage(getReusableMessage("test message")).build();
+        LogEvent event = new Log4jLogEvent.Builder()
+                .setMessage(getReusableMessage("test message"))
+                .build();
         testAdd(event);
     }
 
@@ -73,7 +105,22 @@ class SmtpManagerTest {
     @Test
     void testAdd_WhereRingBufferLogEvent() {
         RingBufferLogEvent event = new RingBufferLogEvent();
-        event.setValues(null, null, null, null, null, getReusableMessage("test message"), null, null, null, 0, null, 0, null, ClockFactory.getClock(), new DummyNanoClock());
+        event.setValues(
+                null,
+                null,
+                null,
+                null,
+                null,
+                getReusableMessage("test message"),
+                null,
+                null,
+                null,
+                0,
+                null,
+                0,
+                null,
+                ClockFactory.getClock(),
+                new DummyNanoClock());
         testAdd(event);
     }
 

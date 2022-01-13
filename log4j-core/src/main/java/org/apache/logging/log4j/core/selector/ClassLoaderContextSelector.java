@@ -27,7 +27,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
@@ -55,8 +54,8 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
             new ConcurrentHashMap<>();
 
     @Override
-    public void shutdown(final String fqcn, final ClassLoader loader, final boolean currentContext,
-                         final boolean allContexts) {
+    public void shutdown(
+            final String fqcn, final ClassLoader loader, final boolean currentContext, final boolean allContexts) {
         LoggerContext ctx = null;
         if (currentContext) {
             ctx = ContextAnchor.THREAD_CONTEXT.get();
@@ -118,14 +117,18 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
     }
 
     @Override
-    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext,
-            final URI configLocation) {
+    public LoggerContext getContext(
+            final String fqcn, final ClassLoader loader, final boolean currentContext, final URI configLocation) {
         return getContext(fqcn, loader, null, currentContext, configLocation);
     }
 
     @Override
-    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Map.Entry<String, Object> entry,
-            final boolean currentContext, final URI configLocation) {
+    public LoggerContext getContext(
+            final String fqcn,
+            final ClassLoader loader,
+            final Map.Entry<String, Object> entry,
+            final boolean currentContext,
+            final URI configLocation) {
         if (currentContext) {
             final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
             if (ctx != null) {
@@ -176,8 +179,8 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
         return Collections.unmodifiableList(list);
     }
 
-    private LoggerContext locateContext(final ClassLoader loaderOrNull, final Map.Entry<String, Object> entry,
-            final URI configLocation) {
+    private LoggerContext locateContext(
+            final ClassLoader loaderOrNull, final Map.Entry<String, Object> entry, final URI configLocation) {
         // LOG4J2-477: class loader may be null
         final ClassLoader loader = loaderOrNull != null ? loaderOrNull : ClassLoader.getSystemClassLoader();
         final String name = toContextMapKey(loader);
@@ -219,8 +222,10 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
             if (entry != null) {
                 ctx.putObject(entry.getKey(), entry.getValue());
             }
-            LoggerContext newContext = CONTEXT_MAP.computeIfAbsent(name,
-                    k -> new AtomicReference<>(new WeakReference<>(ctx))).get().get();
+            LoggerContext newContext = CONTEXT_MAP
+                    .computeIfAbsent(name, k -> new AtomicReference<>(new WeakReference<>(ctx)))
+                    .get()
+                    .get();
             if (newContext == ctx) {
                 ctx.addShutdownListener(this);
             }
@@ -235,9 +240,12 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
             if (ctx.getConfigLocation() == null && configLocation != null) {
                 LOGGER.debug("Setting configuration to {}", configLocation);
                 ctx.setConfigLocation(configLocation);
-            } else if (ctx.getConfigLocation() != null && configLocation != null
+            } else if (ctx.getConfigLocation() != null
+                    && configLocation != null
                     && !ctx.getConfigLocation().equals(configLocation)) {
-                LOGGER.warn("locateContext called with URI {}. Existing LoggerContext has URI {}", configLocation,
+                LOGGER.warn(
+                        "locateContext called with URI {}. Existing LoggerContext has URI {}",
+                        configLocation,
                         ctx.getConfigLocation());
             }
             return ctx;

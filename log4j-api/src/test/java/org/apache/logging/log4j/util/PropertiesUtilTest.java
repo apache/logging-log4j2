@@ -17,18 +17,17 @@
 
 package org.apache.logging.log4j.util;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.ResourceAccessMode;
-import org.junit.jupiter.api.parallel.ResourceLock;
-import org.junit.jupiter.api.parallel.Resources;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Properties;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceAccessMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 
 public class PropertiesUtilTest {
 
@@ -54,7 +53,8 @@ public class PropertiesUtilTest {
         assertEquals(4, parts.size());
         assertHasAllProperties(parts.get("a"));
         assertHasAllProperties(parts.get("b"));
-        assertHasAllProperties(PropertiesUtil.partitionOnCommonPrefixes(parts.get("c")).get("1"));
+        assertHasAllProperties(
+                PropertiesUtil.partitionOnCommonPrefixes(parts.get("c")).get("1"));
         assertHasAllProperties(parts.get("dd"));
     }
 
@@ -64,7 +64,6 @@ public class PropertiesUtilTest {
         assertEquals("2", properties.getProperty("2"));
         assertEquals("3", properties.getProperty("3"));
     }
-
 
     @Test
     public void testGetCharsetProperty() {
@@ -77,7 +76,7 @@ public class PropertiesUtilTest {
         assertEquals(StandardCharsets.US_ASCII, pu.getCharsetProperty("e.1"));
         assertEquals(Charset.defaultCharset(), pu.getCharsetProperty("e.2"));
     }
-    
+
     @Test
     @ResourceLock(value = Resources.SYSTEM_PROPERTIES, mode = ResourceAccessMode.READ)
     public void testGetMappedProperty_sun_stdout_encoding() {

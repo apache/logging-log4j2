@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.junit.Assert.*;
+
 import java.util.Stack;
 import java.util.concurrent.CountDownLatch;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.AsyncLoggers;
@@ -37,8 +38,6 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 
-import static org.junit.Assert.*;
-
 /**
  * Tests queue full scenarios with pure AsyncLoggers (all loggers async).
  */
@@ -49,8 +48,7 @@ public class QueueFullAsyncLoggerLoggingFromToStringTest extends QueueFullAbstra
     @BeforeClass
     public static void beforeClass() {
         System.setProperty("AsyncLogger.RingBufferSize", "128"); // minimum ringbuffer size
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "log4j2-queueFull.xml");
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "log4j2-queueFull.xml");
     }
 
     @AfterClass
@@ -59,8 +57,7 @@ public class QueueFullAsyncLoggerLoggingFromToStringTest extends QueueFullAbstra
     }
 
     @Rule
-    public LoggerContextRule context = new LoggerContextRule(
-            "log4j2-queueFull.xml", AsyncLoggerContextSelector.class);
+    public LoggerContextRule context = new LoggerContextRule("log4j2-queueFull.xml", AsyncLoggerContextSelector.class);
 
     @Before
     public void before() throws Exception {
@@ -78,12 +75,13 @@ public class QueueFullAsyncLoggerLoggingFromToStringTest extends QueueFullAbstra
         asyncLoggerRecursiveTest(logger, unlocker, blockingAppender, this);
     }
 
-    static void asyncLoggerRecursiveTest(final Logger logger,
-                                         final Unlocker unlocker,
-                                         final BlockingAppender blockingAppender,
-                                         final QueueFullAbstractTest factory) {
+    static void asyncLoggerRecursiveTest(
+            final Logger logger,
+            final Unlocker unlocker,
+            final BlockingAppender blockingAppender,
+            final QueueFullAbstractTest factory) {
         for (int i = 0; i < 1; i++) {
-            TRACE("Test logging message " + i  + ". Remaining capacity=" + asyncRemainingCapacity(logger));
+            TRACE("Test logging message " + i + ". Remaining capacity=" + asyncRemainingCapacity(logger));
             TRACE("Test decrementing unlocker countdown latch. Count=" + unlocker.countDownLatch.getCount());
             unlocker.countDownLatch.countDown();
             final DomainObject obj = factory.new DomainObject(129);
@@ -91,12 +89,16 @@ public class QueueFullAsyncLoggerLoggingFromToStringTest extends QueueFullAbstra
         }
         TRACE("Before stop() blockingAppender.logEvents.count=" + blockingAppender.logEvents.size());
         CoreLoggerContexts.stopLoggerContext(false); // stop async thread
-        while (blockingAppender.logEvents.size() < 129) { Thread.yield(); }
+        while (blockingAppender.logEvents.size() < 129) {
+            Thread.yield();
+        }
         TRACE("After  stop() blockingAppender.logEvents.count=" + blockingAppender.logEvents.size());
 
         final Stack<String> actual = transform(blockingAppender.logEvents);
-        assertEquals("Jumped the queue: test(2)+domain1(65)+domain2(61)=128: queue full",
-                "Logging in toString() #127", actual.pop());
+        assertEquals(
+                "Jumped the queue: test(2)+domain1(65)+domain2(61)=128: queue full",
+                "Logging in toString() #127",
+                actual.pop());
         assertEquals("Logging in toString() #128", actual.pop());
         assertEquals("logging naughty object #0 Who's bad?!", actual.pop());
 

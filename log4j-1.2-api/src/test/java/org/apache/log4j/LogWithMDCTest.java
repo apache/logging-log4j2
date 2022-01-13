@@ -16,14 +16,13 @@
  */
 package org.apache.log4j;
 
+import static org.junit.Assert.*;
+
+import java.util.List;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import java.util.List;
-
-import static org.junit.Assert.*;
 
 /**
  * Test logging with MDC values.

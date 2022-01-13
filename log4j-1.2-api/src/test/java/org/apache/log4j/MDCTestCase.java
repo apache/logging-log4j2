@@ -45,5 +45,4 @@ public class MDCTestCase {
         MDC.put("key", "some value");
         MDC.remove("key");
     }
-
 }

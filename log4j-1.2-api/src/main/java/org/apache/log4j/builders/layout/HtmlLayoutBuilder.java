@@ -23,7 +23,6 @@ import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.LayoutWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
@@ -46,13 +45,11 @@ public class HtmlLayoutBuilder extends AbstractBuilder implements LayoutBuilder 
     private static final String TITLE = "Title";
     private static final String LOCATION_INFO = "LocationInfo";
 
-    public HtmlLayoutBuilder() {
-    }
+    public HtmlLayoutBuilder() {}
 
     public HtmlLayoutBuilder(String prefix, Properties props) {
         super(prefix, props);
     }
-
 
     @Override
     public Layout parseLayout(Element layoutElement, XmlConfiguration config) {

@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 import org.apache.logging.log4j.Level;
 
 /**
@@ -41,6 +40,7 @@ public class DefaultLevelConverter implements LevelConverter {
 
     static final class JulLevelComparator implements Comparator<java.util.logging.Level>, Serializable {
         private static final long serialVersionUID = 1L;
+
         @Override
         public int compare(final java.util.logging.Level level1, final java.util.logging.Level level2) {
             return Integer.compare(level1.intValue(), level2.intValue());
@@ -76,7 +76,6 @@ public class DefaultLevelConverter implements LevelConverter {
         // Sorted Java levels
         sortedJulLevels.addAll(julToLog4j.keySet());
         Collections.sort(sortedJulLevels, new JulLevelComparator());
-
     }
 
     private long distance(final java.util.logging.Level javaLevel, final java.util.logging.Level customJavaLevel) {

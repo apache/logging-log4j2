@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.config.plugins.util;
 
-
 import org.apache.logging.log4j.core.config.plugins.processor.PluginEntry;
 
 /**
@@ -72,12 +71,11 @@ public class PluginType<T> {
 
     @Override
     public String toString() {
-        return "PluginType [pluginClass=" + pluginClass +
-                ", key=" + pluginEntry.getKey() +
-                ", elementName=" + pluginEntry.getName() +
-                ", isObjectPrintable=" + pluginEntry.isPrintable() +
-                ", isDeferChildren==" + pluginEntry.isDefer() +
-                ", category=" + pluginEntry.getCategory() +
-                "]";
+        return "PluginType [pluginClass=" + pluginClass + ", key="
+                + pluginEntry.getKey() + ", elementName="
+                + pluginEntry.getName() + ", isObjectPrintable="
+                + pluginEntry.isPrintable() + ", isDeferChildren=="
+                + pluginEntry.isDefer() + ", category="
+                + pluginEntry.getCategory() + "]";
     }
 }

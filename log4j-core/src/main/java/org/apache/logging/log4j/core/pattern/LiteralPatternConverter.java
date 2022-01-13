@@ -21,7 +21,6 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.util.OptionConverter;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
-
 /**
  * Formats a string literal.
  */
@@ -93,5 +92,4 @@ public final class LiteralPatternConverter extends LogEventPatternConverter impl
     public String toString() {
         return "LiteralPatternConverter[literal=" + literal + ", config=" + config + ", substitute=" + substitute + "]";
     }
-
 }

@@ -26,5 +26,4 @@ public class JansiConsoleAppenderJira965 {
         LoggerFactory.getLogger(JansiConsoleAppenderJira965.class);
         System.out.println("Unable to print on Windows");
     }
-
 }

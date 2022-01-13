@@ -16,18 +16,17 @@
  */
 package org.apache.logging.log4j.core;
 
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.junit.Named;
-import org.apache.logging.log4j.junit.LoggerContextSource;
-import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
-
-import static org.junit.jupiter.api.Assertions.assertNotSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.apache.logging.log4j.junit.Named;
+import org.apache.logging.log4j.test.appender.ListAppender;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 @LoggerContextSource("log4j-test2.properties")
 public class PropertiesFileConfigTest {
@@ -66,4 +65,3 @@ public class PropertiesFileConfigTest {
         assertNotSame(newConfig, oldConfig, "Reconfiguration failed");
     }
 }
-

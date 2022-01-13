@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.config.properties;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -42,7 +41,8 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
     }
 
     @Override
-    public PropertiesConfiguration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
+    public PropertiesConfiguration getConfiguration(
+            final LoggerContext loggerContext, final ConfigurationSource source) {
         final Properties properties = new Properties();
         try (final InputStream configStream = source.getInputStream()) {
             properties.load(configStream);

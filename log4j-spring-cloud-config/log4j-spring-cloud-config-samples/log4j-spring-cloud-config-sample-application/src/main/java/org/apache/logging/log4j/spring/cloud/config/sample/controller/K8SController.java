@@ -17,8 +17,11 @@
 
 package org.apache.logging.log4j.spring.cloud.config.sample.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.fabric8.kubernetes.api.model.Pod;
+import io.fabric8.kubernetes.client.Config;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import java.nio.file.Paths;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.kubernetes.KubernetesClientBuilder;
@@ -29,12 +32,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.fabric8.kubernetes.api.model.Pod;
-import io.fabric8.kubernetes.client.Config;
-import io.fabric8.kubernetes.client.KubernetesClient;
-
 /**
  * Test class
  */
@@ -43,6 +40,7 @@ public class K8SController {
 
     private static final Logger LOGGER = LogManager.getLogger(K8SController.class);
     private static final String HOSTNAME = "HOSTNAME";
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -77,7 +75,8 @@ public class K8SController {
 
     private boolean isServiceAccount() {
         return Paths.get(Config.KUBERNETES_SERVICE_ACCOUNT_TOKEN_PATH).toFile().exists()
-                && Paths.get(Config.KUBERNETES_SERVICE_ACCOUNT_CA_CRT_PATH).toFile().exists();
+                && Paths.get(Config.KUBERNETES_SERVICE_ACCOUNT_CA_CRT_PATH)
+                        .toFile()
+                        .exists();
     }
-
 }

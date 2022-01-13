@@ -35,7 +35,7 @@ public class LevelCodec implements Codec<Level> {
      * @since 2.14.0
      */
     public static final LevelCodec INSTANCE = new LevelCodec();
-    
+
     @Override
     public Level decode(final BsonReader reader, final DecoderContext decoderContext) {
         return Level.getLevel(reader.readString());
@@ -50,5 +50,4 @@ public class LevelCodec implements Codec<Level> {
     public Class<Level> getEncoderClass() {
         return Level.class;
     }
-
 }

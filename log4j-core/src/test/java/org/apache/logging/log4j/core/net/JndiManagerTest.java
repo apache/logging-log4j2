@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Properties;
-
 import org.junit.jupiter.api.Test;
 
 /**
@@ -89,7 +88,8 @@ public class JndiManagerTest {
         assertThrows(IllegalStateException.class, () -> JndiManager.getJndiManager(null));
         assertThrows(IllegalStateException.class, () -> JndiManager.getJndiManager(new Properties()));
         assertThrows(IllegalStateException.class, () -> JndiManager.getJndiManager(null, null, null, null, null, null));
-        assertThrows(IllegalStateException.class, () -> JndiManager.getJndiManager("A", "A", "A", "A", "A", new Properties()));
+        assertThrows(
+                IllegalStateException.class,
+                () -> JndiManager.getJndiManager("A", "A", "A", "A", "A", new Properties()));
     }
-
 }

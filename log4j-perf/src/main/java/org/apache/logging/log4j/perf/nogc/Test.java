@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.perf.nogc;
 
-import java.util.Date;
-
 import static org.apache.logging.log4j.util.Unbox.*;
+
+import java.util.Date;
 
 /**
  * Tests the classic Log4j2 components.
@@ -47,9 +47,9 @@ public class Test {
             runTestSuite(logger);
         } else {
             throw new IllegalArgumentException("Specify either Classic or NoGC");
-//            ClassicLogger classic = new ClassicLogger();
-//            NoGcLogger nogc = new NoGcLogger();
-//            doTestRunBoth(classic, nogc, REPETITIONS, 0);
+            //            ClassicLogger classic = new ClassicLogger();
+            //            NoGcLogger nogc = new NoGcLogger();
+            //            doTestRunBoth(classic, nogc, REPETITIONS, 0);
         }
         reportResults(args[0]);
     }
@@ -73,7 +73,7 @@ public class Test {
         final long start = System.nanoTime();
         for (int i = 0; i < repetitions; i++) {
             logger.log("Test message str={}, double={}, int={}, obj={}", "abc", box(i / 2.5), box(i), "XYX");
-            //logger.log("Test message str={}, double={}, int={}, obj={}", "abc", (i / 2.5), (i), logger);
+            // logger.log("Test message str={}, double={}, int={}, obj={}", "abc", (i / 2.5), (i), logger);
         }
         duration[n] = System.nanoTime() - start;
         checksums[n] = logger.appender.checksum;
@@ -91,7 +91,8 @@ public class Test {
         logger.appender.checksum = 0;
     }
 
-    private static void doTestRunBoth(final ClassicLogger classic, final NoGcLogger nogc, final int repetitions, final int n) {
+    private static void doTestRunBoth(
+            final ClassicLogger classic, final NoGcLogger nogc, final int repetitions, final int n) {
         startTime[n] = System.currentTimeMillis();
         final long start = System.nanoTime();
         for (int i = 0; i < repetitions; i++) {
@@ -107,8 +108,9 @@ public class Test {
 
     private static void reportResults(final String type) {
         for (int i = 0; i < COUNT; i++) {
-            System.out.printf("%s[%d] (%3$tF %3$tT.%3$tL) took %4$,d ns. CHECK=%5$s%n", type, i,
-                    new Date(startTime[i]), duration[i], Long.toHexString(checksums[i]));
+            System.out.printf(
+                    "%s[%d] (%3$tF %3$tT.%3$tL) took %4$,d ns. CHECK=%5$s%n",
+                    type, i, new Date(startTime[i]), duration[i], Long.toHexString(checksums[i]));
         }
     }
 }

@@ -19,7 +19,6 @@ package org.apache.logging.log4j.osgi.tests.junit;
 
 import java.io.FileReader;
 import java.io.IOException;
-
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.project.MavenProject;
@@ -67,5 +66,4 @@ public class BundleTestInfo {
     public String toString() {
         return "BundleTestInfo [project=" + project + "]";
     }
-
 }

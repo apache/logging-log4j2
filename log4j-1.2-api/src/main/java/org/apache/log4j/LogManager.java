@@ -17,7 +17,6 @@
 package org.apache.log4j;
 
 import java.util.Enumeration;
-
 import org.apache.log4j.helpers.NullEnumeration;
 import org.apache.log4j.legacy.core.ContextUtil;
 import org.apache.log4j.or.ObjectRenderer;
@@ -116,14 +115,12 @@ public final class LogManager {
     /**
      * No-op implementation.
      */
-    public static void shutdown() {
-    }
+    public static void shutdown() {}
 
     /**
      * No-op implementation.
      */
-    public static void resetConfiguration() {
-    }
+    public static void resetConfiguration() {}
 
     /**
      * No-op implementation.
@@ -132,8 +129,7 @@ public final class LogManager {
      * @throws IllegalArgumentException if a parameter is invalid.
      */
     public static void setRepositorySelector(final RepositorySelector selector, final Object guard)
-        throws IllegalArgumentException {
-    }
+            throws IllegalArgumentException {}
 
     public static LoggerRepository getLoggerRepository() {
         return REPOSITORY;
@@ -152,9 +148,7 @@ public final class LogManager {
         }
 
         @Override
-        public void addHierarchyEventListener(final HierarchyEventListener listener) {
-
-        }
+        public void addHierarchyEventListener(final HierarchyEventListener listener) {}
 
         @Override
         public boolean isDisabled(final int level) {
@@ -162,19 +156,13 @@ public final class LogManager {
         }
 
         @Override
-        public void setThreshold(final Level level) {
-
-        }
+        public void setThreshold(final Level level) {}
 
         @Override
-        public void setThreshold(final String val) {
-
-        }
+        public void setThreshold(final String val) {}
 
         @Override
-        public void emitNoAppenderWarning(final Category cat) {
-
-        }
+        public void emitNoAppenderWarning(final Category cat) {}
 
         @Override
         public Level getThreshold() {
@@ -202,8 +190,7 @@ public final class LogManager {
         }
 
         @Override
-        public void shutdown() {
-        }
+        public void shutdown() {}
 
         @Override
         @SuppressWarnings("rawtypes")
@@ -218,12 +205,10 @@ public final class LogManager {
         }
 
         @Override
-        public void fireAddAppenderEvent(final Category logger, final Appender appender) {
-        }
+        public void fireAddAppenderEvent(final Category logger, final Appender appender) {}
 
         @Override
-        public void resetConfiguration() {
-        }
+        public void resetConfiguration() {}
 
         @Override
         public void setRenderer(Class renderedClass, ObjectRenderer renderer) {

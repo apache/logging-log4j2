@@ -17,11 +17,11 @@
 
 package org.apache.logging.log4j.util;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the LambdaUtil class.
@@ -56,16 +56,20 @@ public class LambdaUtilTest {
 
     @Test
     public void testGetSupplierExceptionIfSupplierThrowsException() {
-        assertThrows(RuntimeException.class, () -> LambdaUtil.get((Supplier<String>) () -> {
-            throw new RuntimeException();
-        }));
+        assertThrows(
+                RuntimeException.class,
+                () -> LambdaUtil.get((Supplier<String>) () -> {
+                    throw new RuntimeException();
+                }));
     }
 
     @Test
     public void testGetMessageSupplierExceptionIfSupplierThrowsException() {
-        assertThrows(RuntimeException.class, () -> LambdaUtil.get(() -> {
-            throw new RuntimeException();
-        }));
+        assertThrows(
+                RuntimeException.class,
+                () -> LambdaUtil.get(() -> {
+                    throw new RuntimeException();
+                }));
     }
 
     @Test
@@ -75,7 +79,7 @@ public class LambdaUtilTest {
         final String expected2 = "result2";
         final Supplier<String> function2 = () -> expected2;
 
-        final Supplier<?>[] functions = { function1, function2 };
+        final Supplier<?>[] functions = {function1, function2};
         final Object[] actual = LambdaUtil.getAll(functions);
         assertEquals(actual.length, functions.length);
         assertSame(expected1, actual[0]);
@@ -105,7 +109,7 @@ public class LambdaUtilTest {
             throw new RuntimeException();
         };
 
-        final Supplier<?>[] functions = { function1, function2 };
+        final Supplier<?>[] functions = {function1, function2};
         assertThrows(RuntimeException.class, () -> LambdaUtil.getAll(functions));
     }
 }

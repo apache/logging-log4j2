@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.perf.jmh;
 
+import ch.qos.logback.core.spi.LifeCycle;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.perf.util.BenchmarkMessageParams;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -32,8 +32,6 @@ import org.openjdk.jmh.annotations.TearDown;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.core.spi.LifeCycle;
-
 /**
  * Tests Logback Async Appender performance when including caller location information.
  */
@@ -43,7 +41,8 @@ import ch.qos.logback.core.spi.LifeCycle;
 // java -jar log4j-perf/target/benchmarks.jar ".*AsyncAppenderLogbackLocationBenchmark.*" -f 1 -wi 10 -i 20
 //
 // multiple threads (for example, 4 threads):
-// java -jar log4j-perf/target/benchmarks.jar ".*AsyncAppenderLogbackLocationBenchmark.*" -f 1 -wi 10 -i 20 -t 4 -si true
+// java -jar log4j-perf/target/benchmarks.jar ".*AsyncAppenderLogbackLocationBenchmark.*" -f 1 -wi 10 -i 20 -t 4 -si
+// true
 //
 // Usage help:
 // java -jar log4j-perf/target/benchmarks.jar -help
@@ -71,5 +70,4 @@ public class AsyncAppenderLogbackLocationBenchmark {
     public void throughputSimple() {
         logger.info(BenchmarkMessageParams.TEST);
     }
-
 }

@@ -21,7 +21,6 @@ import org.apache.logging.log4j.core.LogEvent;
 /**
  * Interface to be implemented by components that support modifications to the LogEvent.
  */
-
 public interface RewritePolicy {
     /**
      * Rewrite a logging event.

@@ -78,8 +78,13 @@ public interface LoggerContextFactory {
      * @param name The name of the context or null.
      * @return The LoggerContext.
      */
-    LoggerContext getContext(String fqcn, ClassLoader loader, Object externalContext, boolean currentContext,
-                             URI configLocation, String name);
+    LoggerContext getContext(
+            String fqcn,
+            ClassLoader loader,
+            Object externalContext,
+            boolean currentContext,
+            URI configLocation,
+            String name);
 
     /**
      * Removes knowledge of a LoggerContext.

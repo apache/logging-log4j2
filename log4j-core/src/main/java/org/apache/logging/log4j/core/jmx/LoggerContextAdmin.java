@@ -35,12 +35,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicLong;
-
 import javax.management.MBeanNotificationInfo;
 import javax.management.Notification;
 import javax.management.NotificationBroadcasterSupport;
 import javax.management.ObjectName;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -52,8 +50,8 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Implementation of the {@code LoggerContextAdminMBean} interface.
  */
-public class LoggerContextAdmin extends NotificationBroadcasterSupport implements LoggerContextAdminMBean,
-        PropertyChangeListener {
+public class LoggerContextAdmin extends NotificationBroadcasterSupport
+        implements LoggerContextAdminMBean, PropertyChangeListener {
     private static final int PAGE = 4 * 1024;
     private static final int TEXT_BUFFER = 64 * 1024;
     private static final int BUFFER_SIZE = 2048;
@@ -84,7 +82,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
     }
 
     private static MBeanNotificationInfo createNotificationInfo() {
-        final String[] notifTypes = new String[] { NOTIF_TYPE_RECONFIGURED };
+        final String[] notifTypes = new String[] {NOTIF_TYPE_RECONFIGURED};
         final String name = Notification.class.getName();
         final String description = "Configuration reconfigured";
         return new MBeanNotificationInfo(notifTypes, name, description);

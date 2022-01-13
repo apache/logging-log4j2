@@ -21,7 +21,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import java.util.Map;
-
 import org.apache.log4j.ListAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -67,5 +66,4 @@ public class AutoConfigTest {
         List<String> messages = messageAppender.getMessages();
         assertTrue("No messages", messages != null && messages.size() > 0);
     }
-
 }

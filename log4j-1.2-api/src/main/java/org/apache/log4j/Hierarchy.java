@@ -24,7 +24,6 @@ package org.apache.log4j;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
-
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.or.ObjectRenderer;
 import org.apache.log4j.or.RendererMap;
@@ -459,7 +458,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport, ThrowableRe
      * Otherwise, we set cat's parent field to c's parent and set c's parent field to cat.
      *
      */
-    final private void updateChildren(final ProvisionNode pn, final Logger logger) {
+    private final void updateChildren(final ProvisionNode pn, final Logger logger) {
         // System.out.println("updateChildren called for " + logger.name);
         final int last = pn.size();
 
@@ -492,7 +491,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport, ThrowableRe
      *
      * We add 'cat' to the list of children for this potential parent.
      */
-    final private void updateParents(final Logger cat) {
+    private final void updateParents(final Logger cat) {
         final String name = cat.name;
         final int length = name.length();
         boolean parentFound = false;
@@ -528,5 +527,4 @@ public class Hierarchy implements LoggerRepository, RendererSupport, ThrowableRe
             cat.parent = root;
         }
     }
-
 }

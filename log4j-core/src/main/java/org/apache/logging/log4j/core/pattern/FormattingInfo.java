@@ -27,12 +27,12 @@ public final class FormattingInfo {
     /**
      * Array of spaces.
      */
-    private static final char[] SPACES = new char[] { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' };
+    private static final char[] SPACES = new char[] {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '};
 
     /**
      * Array of zeros.
      */
-    private static final char[] ZEROS = new char[] { '0', '0', '0', '0', '0', '0', '0', '0' };
+    private static final char[] ZEROS = new char[] {'0', '0', '0', '0', '0', '0', '0', '0'};
 
     /**
      * Default instance.
@@ -76,7 +76,8 @@ public final class FormattingInfo {
      * @param leftTruncate
      *            truncates to the left if true
      */
-    public FormattingInfo(final boolean leftAlign, final int minLength, final int maxLength, final boolean leftTruncate) {
+    public FormattingInfo(
+            final boolean leftAlign, final int minLength, final int maxLength, final boolean leftTruncate) {
         this(leftAlign, minLength, maxLength, leftTruncate, false);
     }
 
@@ -94,7 +95,12 @@ public final class FormattingInfo {
      * @param zeroPad
      *            use zero-padding instead of whitespace-padding
      */
-    public FormattingInfo(final boolean leftAlign, final int minLength, final int maxLength, final boolean leftTruncate, final boolean zeroPad) {
+    public FormattingInfo(
+            final boolean leftAlign,
+            final int minLength,
+            final int maxLength,
+            final boolean leftTruncate,
+            final boolean zeroPad) {
         this.leftAlign = leftAlign;
         this.minLength = minLength;
         this.maxLength = maxLength;
@@ -126,8 +132,8 @@ public final class FormattingInfo {
      * @return true if left truncated.
      */
     public boolean isLeftTruncate() {
-		return leftTruncate;
-	}
+        return leftTruncate;
+    }
 
     /**
      * Determine if zero-padded.
@@ -168,11 +174,11 @@ public final class FormattingInfo {
         final int rawLength = buffer.length() - fieldStart;
 
         if (rawLength > maxLength) {
-			if (leftTruncate) {
-				buffer.delete(fieldStart, buffer.length() - maxLength);
-			} else {
-				buffer.delete(fieldStart + maxLength, fieldStart + buffer.length());
-			}
+            if (leftTruncate) {
+                buffer.delete(fieldStart, buffer.length() - maxLength);
+            } else {
+                buffer.delete(fieldStart + maxLength, fieldStart + buffer.length());
+            }
         } else if (rawLength < minLength) {
             if (leftAlign) {
                 final int fieldEnd = buffer.length();
@@ -184,7 +190,7 @@ public final class FormattingInfo {
             } else {
                 int padLength = minLength - rawLength;
 
-                final char[] paddingArray= zeroPad ? ZEROS : SPACES;
+                final char[] paddingArray = zeroPad ? ZEROS : SPACES;
 
                 for (; padLength > paddingArray.length; padLength -= paddingArray.length) {
                     buffer.insert(fieldStart, paddingArray);
@@ -217,5 +223,4 @@ public final class FormattingInfo {
         sb.append(']');
         return sb.toString();
     }
-
 }

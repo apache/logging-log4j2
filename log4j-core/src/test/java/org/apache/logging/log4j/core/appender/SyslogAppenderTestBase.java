@@ -16,12 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.Assert.*;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
@@ -39,12 +40,10 @@ import org.apache.logging.log4j.util.Strings;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 
-import static org.junit.Assert.*;
-
 public abstract class SyslogAppenderTestBase {
     protected static final String line1 =
-            "TestApp - Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"]" +
-                    "[RequestContext@18060 ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete";
+            "TestApp - Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"]"
+                    + "[RequestContext@18060 ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete";
     protected LoggerContext ctx = LoggerContext.getContext();
     protected static final int DEFAULT_TIMEOUT_IN_MS = 100;
     protected static final int PORTNUM = 8199;
@@ -107,8 +106,10 @@ public abstract class SyslogAppenderTestBase {
     }
 
     protected void checkTheNumberOfSentAndReceivedMessages() throws InterruptedException {
-        assertEquals("The number of received messages should be equal with the number of sent messages",
-                sentMessages.size(), getReceivedMessages(DEFAULT_TIMEOUT_IN_MS).size());
+        assertEquals(
+                "The number of received messages should be equal with the number of sent messages",
+                sentMessages.size(),
+                getReceivedMessages(DEFAULT_TIMEOUT_IN_MS).size());
     }
 
     protected void checkTheEqualityOfSentAndReceivedMessages(final Level expectedLevel) throws InterruptedException {
@@ -119,16 +120,18 @@ public abstract class SyslogAppenderTestBase {
             final String receivedMessage = receivedMessages.get(i);
             final String sentMessage = sentMessages.get(i);
             final String suffix = includeNewLine ? "\n" : Strings.EMPTY;
-            assertTrue("Incorrect message received: " + receivedMessage,
+            assertTrue(
+                    "Incorrect message received: " + receivedMessage,
                     receivedMessage.endsWith(sentMessage + suffix) || receivedMessage.contains(sentMessage));
             final int expectedPriority = Priority.getPriority(getExpectedFacility(), expectedLevel);
-            assertTrue("Expected facility " + expectedPriority + " in message " + receivedMessage,
+            assertTrue(
+                    "Expected facility " + expectedPriority + " in message " + receivedMessage,
                     receivedMessage.startsWith("<" + expectedPriority + ">"));
         }
     }
 
     protected void removeAppenders() {
-        final Map<String,Appender> map = root.getAppenders();
+        final Map<String, Appender> map = root.getAppenders();
         for (final Map.Entry<String, Appender> entry : map.entrySet()) {
             final Appender app = entry.getValue();
             root.removeAppender(app);

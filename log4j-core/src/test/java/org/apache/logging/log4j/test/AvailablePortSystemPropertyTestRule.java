@@ -30,5 +30,4 @@ public class AvailablePortSystemPropertyTestRule extends SystemPropertyTestRule 
     protected AvailablePortSystemPropertyTestRule(final String name) {
         super(name, () -> Integer.toString(AvailablePortFinder.getNextAvailable()));
     }
-
 }

@@ -29,8 +29,7 @@ public final class StaticMDCBinder {
      */
     public static final StaticMDCBinder SINGLETON = new StaticMDCBinder();
 
-    private StaticMDCBinder() {
-    }
+    private StaticMDCBinder() {}
 
     /**
      * Returns the {@link #SINGLETON} {@link StaticMDCBinder}.

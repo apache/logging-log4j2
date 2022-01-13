@@ -19,6 +19,8 @@ package org.apache.logging.log4j;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.lookup.MapMessageLookup;
@@ -27,14 +29,10 @@ import org.apache.logging.log4j.message.StringMapMessage;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.junit.Test;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Tests {@link MapMessageLookup}
  */
-public class MapMessageLookupTest
-{
+public class MapMessageLookupTest {
     @Test
     public void testStructuredDataMessageLookup() {
         // GIVEN: A StructuredDataMessage object
@@ -45,7 +43,10 @@ public class MapMessageLookupTest
         message.put("C", "c");
 
         // AND: An event with that message
-        final LogEvent event = Log4jLogEvent.newBuilder().setLevel(Level.DEBUG).setMessage(message).build();
+        final LogEvent event = Log4jLogEvent.newBuilder()
+                .setLevel(Level.DEBUG)
+                .setMessage(message)
+                .build();
 
         // AND: A MapMessageLookup object
         final MapMessageLookup lookup = new MapMessageLookup();
@@ -71,7 +72,10 @@ public class MapMessageLookupTest
         final MapMessage message = new StringMapMessage(values);
 
         // AND: An event with that message
-        final LogEvent event = Log4jLogEvent.newBuilder().setLevel(Level.DEBUG).setMessage(message).build();
+        final LogEvent event = Log4jLogEvent.newBuilder()
+                .setLevel(Level.DEBUG)
+                .setMessage(message)
+                .build();
 
         // AND: A MapMessageLookup object
         final MapMessageLookup lookup = new MapMessageLookup();

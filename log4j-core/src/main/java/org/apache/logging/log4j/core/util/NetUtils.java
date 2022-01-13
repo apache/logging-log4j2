@@ -27,7 +27,6 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Enumeration;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -132,7 +131,6 @@ public final class NetUtils {
                 sb.append(":").append(String.format("%02x", macAddr[i]));
             }
             return sb.toString();
-
         }
         return null;
     }
@@ -162,5 +160,4 @@ public final class NetUtils {
             }
         }
     }
-
 }

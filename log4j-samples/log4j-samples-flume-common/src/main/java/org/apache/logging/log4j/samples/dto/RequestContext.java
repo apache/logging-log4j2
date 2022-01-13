@@ -24,8 +24,7 @@ import org.apache.logging.log4j.core.util.UuidUtil;
  */
 public final class RequestContext {
 
-    private RequestContext() {
-    }
+    private RequestContext() {}
     // Unique token to identify this request.
     public static final String REQUEST_ID = "id";
     // Token used to correlate multiple events within the request.
@@ -73,7 +72,7 @@ public final class RequestContext {
     }
 
     public static void setTransId(final String id) {
-        ThreadContext.put(TRANSACTION_ID,  id);
+        ThreadContext.put(TRANSACTION_ID, id);
     }
 
     public static String getTransId() {
@@ -81,7 +80,7 @@ public final class RequestContext {
     }
 
     public static void setRequestURI(final String URI) {
-        ThreadContext.put(REQUEST_URI,  URI);
+        ThreadContext.put(REQUEST_URI, URI);
     }
 
     public static String getRequestURI() {
@@ -89,7 +88,7 @@ public final class RequestContext {
     }
 
     public static void setLoginId(final String id) {
-        ThreadContext.put(LOGIN_ID,  id);
+        ThreadContext.put(LOGIN_ID, id);
     }
 
     public static String getLoginId() {
@@ -97,7 +96,7 @@ public final class RequestContext {
     }
 
     public static void setUserId(final String id) {
-        ThreadContext.put(USER_ID,  id);
+        ThreadContext.put(USER_ID, id);
     }
 
     public static String getUserId() {
@@ -105,7 +104,7 @@ public final class RequestContext {
     }
 
     public static void setUserType(final String type) {
-        ThreadContext.put(USER_TYPE,  type);
+        ThreadContext.put(USER_TYPE, type);
     }
 
     public static String getUserType() {
@@ -113,7 +112,7 @@ public final class RequestContext {
     }
 
     public static void setClientId(final String id) {
-        ThreadContext.put(CLIENT_ID,  id);
+        ThreadContext.put(CLIENT_ID, id);
     }
 
     public static String getClientId() {
@@ -121,7 +120,7 @@ public final class RequestContext {
     }
 
     public static void setIpAddress(final String addr) {
-        ThreadContext.put(IP_ADDRESS,  addr);
+        ThreadContext.put(IP_ADDRESS, addr);
     }
 
     public static String getIpAddress() {
@@ -135,7 +134,6 @@ public final class RequestContext {
     public static String getProductName() {
         return ThreadContext.get(PRODUCT_NAME);
     }
-
 
     public static void setProductVersion(final String productVersion) {
         ThreadContext.put(PRODUCT_VERSION, productVersion);
@@ -168,5 +166,4 @@ public final class RequestContext {
     public static String getUserAgent() {
         return ThreadContext.get(USER_AGENT);
     }
-
 }

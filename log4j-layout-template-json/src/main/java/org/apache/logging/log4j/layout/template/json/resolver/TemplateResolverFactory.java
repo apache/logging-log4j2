@@ -42,5 +42,4 @@ public interface TemplateResolverFactory<V, C extends TemplateResolverContext<V,
     String getName();
 
     TemplateResolver<V> create(C context, TemplateResolverConfig config);
-
 }

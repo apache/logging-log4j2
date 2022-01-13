@@ -16,10 +16,9 @@
  */
 package org.apache.logging.log4j.core.async.perftest;
 
-import org.slf4j.LoggerFactory;
-
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.core.spi.LifeCycle;
+import org.slf4j.LoggerFactory;
 
 public class RunLogback implements IPerfTestRunner {
     final Logger LOGGER = (Logger) LoggerFactory.getLogger(getClass());
@@ -37,8 +36,8 @@ public class RunLogback implements IPerfTestRunner {
     }
 
     @Override
-    public void runLatencyTest(final int samples, final Histogram histogram,
-            final long nanoTimeCost, final int threadCount) {
+    public void runLatencyTest(
+            final int samples, final Histogram histogram, final long nanoTimeCost, final int threadCount) {
         final Logger logger = LOGGER;
         for (int i = 0; i < samples; i++) {
             final long s1 = System.nanoTime();

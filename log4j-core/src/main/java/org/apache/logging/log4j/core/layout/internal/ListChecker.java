@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.layout.internal;
 /**
  * Class Description goes here.
  */
-
 public interface ListChecker {
 
     static final NoopChecker NOOP_CHECKER = new NoopChecker();

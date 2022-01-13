@@ -24,9 +24,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Objects;
-
 import javax.net.ssl.HttpsURLConnection;
-
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -50,12 +48,17 @@ public class HttpURLConnectionManager extends HttpManager {
     private final SslConfiguration sslConfiguration;
     private final boolean verifyHostname;
 
-    public HttpURLConnectionManager(final Configuration configuration, final LoggerContext loggerContext, final String name,
-                                    final URL url, final String method, final int connectTimeoutMillis,
-                                    final int readTimeoutMillis,
-                                    final Property[] headers,
-                                    final SslConfiguration sslConfiguration,
-                                    final boolean verifyHostname) {
+    public HttpURLConnectionManager(
+            final Configuration configuration,
+            final LoggerContext loggerContext,
+            final String name,
+            final URL url,
+            final String method,
+            final int connectTimeoutMillis,
+            final int readTimeoutMillis,
+            final Property[] headers,
+            final SslConfiguration sslConfiguration,
+            final boolean verifyHostname) {
         super(configuration, loggerContext, name);
         this.url = url;
         if (!(url.getProtocol().equalsIgnoreCase("http") || url.getProtocol().equalsIgnoreCase("https"))) {
@@ -75,7 +78,7 @@ public class HttpURLConnectionManager extends HttpManager {
 
     @Override
     public void send(final Layout<?> layout, final LogEvent event) throws IOException {
-        final HttpURLConnection urlConnection = (HttpURLConnection)url.openConnection();
+        final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         urlConnection.setAllowUserInteraction(false);
         urlConnection.setDoOutput(true);
         urlConnection.setDoInput(true);
@@ -91,14 +94,16 @@ public class HttpURLConnectionManager extends HttpManager {
         }
         for (final Property header : headers) {
             urlConnection.setRequestProperty(
-                header.getName(),
-                header.isValueNeedsLookup() ? getConfiguration().getStrSubstitutor().replace(event, header.getValue()) : header.getValue());
+                    header.getName(),
+                    header.isValueNeedsLookup()
+                            ? getConfiguration().getStrSubstitutor().replace(event, header.getValue())
+                            : header.getValue());
         }
         if (sslConfiguration != null) {
-            ((HttpsURLConnection)urlConnection).setSSLSocketFactory(sslConfiguration.getSslSocketFactory());
+            ((HttpsURLConnection) urlConnection).setSSLSocketFactory(sslConfiguration.getSslSocketFactory());
         }
         if (isHttps && !verifyHostname) {
-            ((HttpsURLConnection)urlConnection).setHostnameVerifier(LaxHostnameVerifier.INSTANCE);
+            ((HttpsURLConnection) urlConnection).setHostnameVerifier(LaxHostnameVerifier.INSTANCE);
         }
 
         final byte[] msg = layout.toByteArray(event);
@@ -135,5 +140,4 @@ public class HttpURLConnectionManager extends HttpManager {
             }
         }
     }
-
 }

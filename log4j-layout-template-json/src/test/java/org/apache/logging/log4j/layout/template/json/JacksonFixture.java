@@ -27,5 +27,4 @@ public final class JacksonFixture {
     public static ObjectMapper getObjectMapper() {
         return OBJECT_MAPPER;
     }
-
 }

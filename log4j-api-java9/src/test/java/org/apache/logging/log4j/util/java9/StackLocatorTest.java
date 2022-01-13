@@ -16,12 +16,11 @@
  */
 package org.apache.logging.log4j.util.java9;
 
-import org.apache.logging.log4j.util.StackLocator;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Stack;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.apache.logging.log4j.util.StackLocator;
+import org.junit.jupiter.api.Test;
 
 public class StackLocatorTest {
 
@@ -95,7 +94,6 @@ public class StackLocatorTest {
         private StackTraceElement foo() {
             return new Bar().bar(); // <--- testCalcLocation() line
         }
-
     }
 
     private final class Bar {
@@ -107,7 +105,6 @@ public class StackLocatorTest {
         private StackTraceElement baz() {
             return quux();
         }
-
     }
 
     private StackTraceElement quux() {
@@ -146,5 +143,4 @@ public class StackLocatorTest {
             return stackLocator.getCallerClass(ClassLocator.class);
         }
     }
-
 }

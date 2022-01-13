@@ -16,13 +16,12 @@
  */
 package org.apache.logging.log4j.core.jackson;
 
-import org.apache.logging.log4j.Marker;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.apache.logging.log4j.Marker;
 
 /**
  * Jackson mix-in for {@link Marker}.
@@ -36,17 +35,17 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
  * Example XML:
  * </p>
  * <pre>
-&lt;Marker name=&quot;Marker1&quot;&gt;
-    &lt;Parents&gt;
-        &lt;Marker name=&quot;ParentMarker1&quot;&gt;
-            &lt;Parents&gt;
-                &lt;Marker name=&quot;GrandMotherMarker&quot;/&gt;
-                &lt;Marker name=&quot;GrandFatherMarker&quot;/&gt;
-            &lt;/Parents&gt;
-        &lt;/Marker&gt;
-        &lt;Marker name=&quot;ParentMarker2&quot;/&gt;
-    &lt;/Parents&gt;
-&lt;/Marker&gt;
+ * &lt;Marker name=&quot;Marker1&quot;&gt;
+ * &lt;Parents&gt;
+ * &lt;Marker name=&quot;ParentMarker1&quot;&gt;
+ * &lt;Parents&gt;
+ * &lt;Marker name=&quot;GrandMotherMarker&quot;/&gt;
+ * &lt;Marker name=&quot;GrandFatherMarker&quot;/&gt;
+ * &lt;/Parents&gt;
+ * &lt;/Marker&gt;
+ * &lt;Marker name=&quot;ParentMarker2&quot;/&gt;
+ * &lt;/Parents&gt;
+ * &lt;/Marker&gt;
  * </pre>
  *
  * @see Marker
@@ -72,5 +71,4 @@ abstract class MarkerMixIn implements Marker {
     @JacksonXmlElementWrapper(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_PARENTS)
     @JacksonXmlProperty(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_MARKER)
     public abstract Marker[] getParents();
-
 }

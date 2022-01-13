@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.ConfigurationAware;
@@ -70,15 +69,18 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
      * @since 2.1
      */
     public Interpolator(final StrLookup defaultLookup, final List<String> pluginPackages) {
-        this.defaultLookup = defaultLookup == null ? new PropertiesLookup(new HashMap<String, String>()) : defaultLookup;
+        this.defaultLookup =
+                defaultLookup == null ? new PropertiesLookup(new HashMap<String, String>()) : defaultLookup;
         final PluginManager manager = new PluginManager(CATEGORY);
         manager.collectPlugins(pluginPackages);
         final Map<String, PluginType<?>> plugins = manager.getPlugins();
 
         for (final Map.Entry<String, PluginType<?>> entry : plugins.entrySet()) {
             try {
-                final Class<? extends StrLookup> clazz = entry.getValue().getPluginClass().asSubclass(StrLookup.class);
-                if (!clazz.getName().equals("org.apache.logging.log4j.core.lookup.JndiLookup") || JndiManager.isJndiLookupEnabled()) {
+                final Class<? extends StrLookup> clazz =
+                        entry.getValue().getPluginClass().asSubclass(StrLookup.class);
+                if (!clazz.getName().equals("org.apache.logging.log4j.core.lookup.JndiLookup")
+                        || JndiManager.isJndiLookupEnabled()) {
                     strLookupMap.put(entry.getKey().toLowerCase(), ReflectionUtil.instantiate(clazz));
                 }
             } catch (final Throwable t) {
@@ -113,8 +115,10 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         if (JndiManager.isJndiLookupEnabled()) {
             try {
                 // [LOG4J2-703] We might be on Android
-                strLookupMap.put(LOOKUP_KEY_JNDI,
-                        Loader.newCheckedInstanceOf("org.apache.logging.log4j.core.lookup.JndiLookup", StrLookup.class));
+                strLookupMap.put(
+                        LOOKUP_KEY_JNDI,
+                        Loader.newCheckedInstanceOf(
+                                "org.apache.logging.log4j.core.lookup.JndiLookup", StrLookup.class));
             } catch (final LinkageError | Exception e) {
                 handleError(LOOKUP_KEY_JNDI, e);
             }
@@ -122,17 +126,19 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         // JMX input args
         try {
             // We might be on Android
-            strLookupMap.put(LOOKUP_KEY_JVMRUNARGS,
-                Loader.newCheckedInstanceOf("org.apache.logging.log4j.core.lookup.JmxRuntimeInputArgumentsLookup",
-                        StrLookup.class));
+            strLookupMap.put(
+                    LOOKUP_KEY_JVMRUNARGS,
+                    Loader.newCheckedInstanceOf(
+                            "org.apache.logging.log4j.core.lookup.JmxRuntimeInputArgumentsLookup", StrLookup.class));
         } catch (final LinkageError | Exception e) {
             handleError(LOOKUP_KEY_JVMRUNARGS, e);
         }
         strLookupMap.put("date", new DateLookup());
         if (Constants.IS_WEB_APP) {
             try {
-                strLookupMap.put(LOOKUP_KEY_WEB,
-                    Loader.newCheckedInstanceOf("org.apache.logging.log4j.web.WebLookup", StrLookup.class));
+                strLookupMap.put(
+                        LOOKUP_KEY_WEB,
+                        Loader.newCheckedInstanceOf("org.apache.logging.log4j.web.WebLookup", StrLookup.class));
             } catch (final Exception ignored) {
                 handleError(LOOKUP_KEY_WEB, ignored);
             }
@@ -140,20 +146,24 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
             LOGGER.debug("Not in a ServletContext environment, thus not loading WebLookup plugin.");
         }
         try {
-            strLookupMap.put(LOOKUP_KEY_DOCKER,
-                Loader.newCheckedInstanceOf("org.apache.logging.log4j.docker.DockerLookup", StrLookup.class));
+            strLookupMap.put(
+                    LOOKUP_KEY_DOCKER,
+                    Loader.newCheckedInstanceOf("org.apache.logging.log4j.docker.DockerLookup", StrLookup.class));
         } catch (final Exception ignored) {
             handleError(LOOKUP_KEY_DOCKER, ignored);
         }
         try {
-            strLookupMap.put(LOOKUP_KEY_SPRING,
+            strLookupMap.put(
+                    LOOKUP_KEY_SPRING,
                     Loader.newCheckedInstanceOf("org.apache.logging.log4j.spring.boot.SpringLookup", StrLookup.class));
         } catch (final Exception ignored) {
             handleError(LOOKUP_KEY_SPRING, ignored);
         }
         try {
-            strLookupMap.put(LOOKUP_KEY_KUBERNETES,
-                    Loader.newCheckedInstanceOf("org.apache.logging.log4j.kubernetes.KubernetesLookup", StrLookup.class));
+            strLookupMap.put(
+                    LOOKUP_KEY_KUBERNETES,
+                    Loader.newCheckedInstanceOf(
+                            "org.apache.logging.log4j.kubernetes.KubernetesLookup", StrLookup.class));
         } catch (final Exception | NoClassDefFoundError error) {
             handleError(LOOKUP_KEY_KUBERNETES, error);
         }
@@ -168,21 +178,22 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
             case LOOKUP_KEY_JNDI:
                 // java.lang.VerifyError: org/apache/logging/log4j/core/lookup/JndiLookup
                 LOGGER.warn( // LOG4J2-1582 don't print the whole stack trace (it is just a warning...)
-                        "JNDI lookup class is not available because this JRE does not support JNDI." +
-                        " JNDI string lookups will not be available, continuing configuration. Ignoring " + t);
+                        "JNDI lookup class is not available because this JRE does not support JNDI."
+                                + " JNDI string lookups will not be available, continuing configuration. Ignoring "
+                                + t);
                 break;
             case LOOKUP_KEY_JVMRUNARGS:
                 // java.lang.VerifyError: org/apache/logging/log4j/core/lookup/JmxRuntimeInputArgumentsLookup
-                LOGGER.warn(
-                        "JMX runtime input lookup class is not available because this JRE does not support JMX. " +
-                        "JMX lookups will not be available, continuing configuration. Ignoring " + t);
+                LOGGER.warn("JMX runtime input lookup class is not available because this JRE does not support JMX. "
+                        + "JMX lookups will not be available, continuing configuration. Ignoring " + t);
                 break;
             case LOOKUP_KEY_WEB:
-                LOGGER.info("Log4j appears to be running in a Servlet environment, but there's no log4j-web module " +
-                        "available. If you want better web container support, please add the log4j-web JAR to your " +
-                        "web archive or server lib directory.");
+                LOGGER.info("Log4j appears to be running in a Servlet environment, but there's no log4j-web module "
+                        + "available. If you want better web container support, please add the log4j-web JAR to your "
+                        + "web archive or server lib directory.");
                 break;
-            case LOOKUP_KEY_DOCKER: case LOOKUP_KEY_SPRING:
+            case LOOKUP_KEY_DOCKER:
+            case LOOKUP_KEY_SPRING:
                 break;
             case LOOKUP_KEY_KUBERNETES:
                 if (t instanceof NoClassDefFoundError) {
@@ -254,5 +265,4 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         }
         return sb.toString();
     }
-
 }

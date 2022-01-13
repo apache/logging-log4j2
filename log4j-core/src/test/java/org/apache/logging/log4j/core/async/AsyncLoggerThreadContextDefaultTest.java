@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.async;
 
 import java.util.Arrays;
 import java.util.Collection;
-
 import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -33,10 +32,11 @@ public class AsyncLoggerThreadContextDefaultTest extends AbstractAsyncThreadCont
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-                { ContextImpl.WEBAPP, Mode.ALL_ASYNC},
-                { ContextImpl.WEBAPP, Mode.BOTH_ALL_ASYNC_AND_MIXED},
+            {ContextImpl.WEBAPP, Mode.ALL_ASYNC},
+            {ContextImpl.WEBAPP, Mode.BOTH_ALL_ASYNC_AND_MIXED},
         });
     }
+
     public AsyncLoggerThreadContextDefaultTest(final ContextImpl contextImpl, final Mode asyncMode) {
         super(contextImpl, asyncMode);
     }

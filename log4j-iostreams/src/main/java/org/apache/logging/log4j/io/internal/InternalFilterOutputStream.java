@@ -21,7 +21,6 @@ import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.io.ByteStreamLogger;
@@ -37,8 +36,13 @@ public class InternalFilterOutputStream extends FilterOutputStream {
     private final ByteStreamLogger logger;
     private final String fqcn;
 
-    public InternalFilterOutputStream(final OutputStream out, final Charset charset, final ExtendedLogger logger,
-                                       final String fqcn, final Level level, final Marker marker) {
+    public InternalFilterOutputStream(
+            final OutputStream out,
+            final Charset charset,
+            final ExtendedLogger logger,
+            final String fqcn,
+            final Level level,
+            final Marker marker) {
         super(out);
         this.logger = new ByteStreamLogger(logger, level, marker, charset);
         this.fqcn = fqcn;

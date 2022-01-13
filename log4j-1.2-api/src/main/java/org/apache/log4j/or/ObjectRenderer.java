@@ -23,5 +23,5 @@ public interface ObjectRenderer {
     /**
      * Render the object passed as parameter as a String.
      */
-	 String doRender(Object o);
+    String doRender(Object o);
 }

@@ -16,9 +16,8 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import org.apache.logging.log4j.core.LogEvent;
-
 import java.util.List;
+import org.apache.logging.log4j.core.LogEvent;
 
 /**
  * Utility class for {@link EventResolverInterceptor}.
@@ -27,12 +26,8 @@ public final class EventResolverInterceptors {
 
     private EventResolverInterceptors() {}
 
-    public static List<EventResolverInterceptor> populateInterceptors(
-            final List<String> pluginPackages) {
+    public static List<EventResolverInterceptor> populateInterceptors(final List<String> pluginPackages) {
         return TemplateResolverInterceptors.populateInterceptors(
-                pluginPackages,
-                LogEvent.class,
-                EventResolverContext.class);
+                pluginPackages, LogEvent.class, EventResolverContext.class);
     }
-
 }

@@ -21,7 +21,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LogEvent;
@@ -94,7 +93,6 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
                 }
             }
         }
-
     }
 
     @Override
@@ -130,10 +128,10 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
      */
     @PluginFactory
     public static PurgePolicy createPurgePolicy(
-        @PluginAttribute("timeToLive") final String timeToLive,
-        @PluginAttribute("checkInterval") final String checkInterval,
-        @PluginAttribute("timeUnit") final String timeUnit,
-        @PluginConfiguration final Configuration configuration) {
+            @PluginAttribute("timeToLive") final String timeToLive,
+            @PluginAttribute("checkInterval") final String checkInterval,
+            @PluginAttribute("timeUnit") final String timeUnit,
+            @PluginConfiguration final Configuration configuration) {
 
         if (timeToLive == null) {
             LOGGER.error("A timeToLive value is required");
@@ -175,5 +173,4 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
     public String toString() {
         return "timeToLive=" + timeToLive;
     }
-
 }

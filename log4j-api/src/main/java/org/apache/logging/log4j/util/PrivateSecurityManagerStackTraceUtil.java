@@ -66,6 +66,5 @@ final class PrivateSecurityManagerStackTraceUtil {
         protected Class<?>[] getClassContext() {
             return super.getClassContext();
         }
-
     }
 }

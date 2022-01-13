@@ -28,8 +28,7 @@ public final class LaxHostnameVerifier implements HostnameVerifier {
      */
     public static final HostnameVerifier INSTANCE = new LaxHostnameVerifier();
 
-    private LaxHostnameVerifier() {
-    }
+    private LaxHostnameVerifier() {}
 
     @Override
     public boolean verify(final String s, final SSLSession sslSession) {

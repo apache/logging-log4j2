@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.impl;
 
 import java.util.ArrayList;
-
 import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +27,12 @@ public class ThrowableProxyRendererTest {
 
     @Test
     public void test_formatExtendedStackTraceTo() {
-        ThrowableProxyRenderer.formatExtendedStackTraceTo(new ThrowableProxy(), new StringBuilder(), new ArrayList<>(),
-            new PlainTextRenderer(), "", System.lineSeparator());
+        ThrowableProxyRenderer.formatExtendedStackTraceTo(
+                new ThrowableProxy(),
+                new StringBuilder(),
+                new ArrayList<>(),
+                new PlainTextRenderer(),
+                "",
+                System.lineSeparator());
     }
 }

@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
@@ -24,8 +26,6 @@ import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.config.plugins.validation.ValidatingPlugin;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class RequiredValidatorTest {
 
@@ -45,9 +45,9 @@ public class RequiredValidatorTest {
     @Test
     public void testNullDefaultValue() throws Exception {
         final ValidatingPlugin validatingPlugin = (ValidatingPlugin) new PluginBuilder(plugin)
-            .withConfiguration(new NullConfiguration())
-            .withConfigurationNode(node)
-            .build();
+                .withConfiguration(new NullConfiguration())
+                .withConfigurationNode(node)
+                .build();
         assertNull(validatingPlugin);
     }
 
@@ -55,9 +55,9 @@ public class RequiredValidatorTest {
     public void testNonNullValue() throws Exception {
         node.getAttributes().put("name", "foo");
         final ValidatingPlugin validatingPlugin = (ValidatingPlugin) new PluginBuilder(plugin)
-            .withConfiguration(new NullConfiguration())
-            .withConfigurationNode(node)
-            .build();
+                .withConfiguration(new NullConfiguration())
+                .withConfigurationNode(node)
+                .build();
         assertNotNull(validatingPlugin);
         assertEquals("foo", validatingPlugin.getName());
     }

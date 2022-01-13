@@ -17,20 +17,19 @@
 
 package org.apache.logging.log4j.util;
 
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.FilePermission;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.Permission;
 import java.util.PropertyPermission;
-
 import org.apache.logging.log4j.junit.SecurityManagerTestRule;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
-
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Test related to https://issues.apache.org/jira/browse/LOG4J2-2274.
@@ -39,7 +38,7 @@ import static org.junit.Assert.assertTrue;
  * integration tests (classes that end in "IT" instead of "Test" and
  * "TestCase".)
  * </p>
- * 
+ *
  * @see PropertyFilePropertySource
  * @see SecurityManager
  * @see System#setSecurityManager(SecurityManager)
@@ -52,7 +51,7 @@ public class PropertyFilePropertySourceSecurityManagerIT {
     public static void beforeClass() {
         assertTrue(TEST_FIXTURE_PATH, Files.exists(Paths.get(TEST_FIXTURE_PATH)));
     }
-    
+
     @Rule
     public final SecurityManagerTestRule rule = new SecurityManagerTestRule(new TestSecurityManager());
 
@@ -76,7 +75,7 @@ public class PropertyFilePropertySourceSecurityManagerIT {
      * Makes sure we do not blow up with exception below due to a security manager
      * rejecting environment variable access in
      * {@link SystemPropertiesPropertySource}.
-     * 
+     *
      * <pre>
      * </pre>
      */

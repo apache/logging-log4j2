@@ -16,21 +16,16 @@
  */
 package org.apache.logging.log4j.spring.cloud.config.sample.controller;
 
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.util.Timer;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import org.apache.logging.log4j.util.Timer;
-
-
 
 @RestController
 public class SampleController {
@@ -39,8 +34,9 @@ public class SampleController {
     private static int MAX_MESSAGES = 100000;
 
     @GetMapping("/log")
-    public ResponseEntity<String> get(@RequestParam(name="threads", defaultValue="1") int threads,
-        @RequestParam(name="messages", defaultValue="100000") int count) {
+    public ResponseEntity<String> get(
+            @RequestParam(name = "threads", defaultValue = "1") int threads,
+            @RequestParam(name = "messages", defaultValue = "100000") int count) {
         if (threads < 1) {
             threads = 1;
         }
@@ -93,7 +89,7 @@ public class SampleController {
         String stackTrace = os.toString();
         stackTrace = stackTrace.replaceAll("\n", "<br>");
 
-        //LOGGER.info("Hello, World");
+        // LOGGER.info("Hello, World");
         return ResponseEntity.ok(stackTrace);
     }
 

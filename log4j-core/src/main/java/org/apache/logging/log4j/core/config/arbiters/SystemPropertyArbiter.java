@@ -24,8 +24,12 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 /**
  * Condition that determines if the specified property is set.
  */
-@Plugin(name = "SystemPropertyArbiter", category = Node.CATEGORY, elementType = Arbiter.ELEMENT_TYPE,
-        deferChildren = true, printObject = true)
+@Plugin(
+        name = "SystemPropertyArbiter",
+        category = Node.CATEGORY,
+        elementType = Arbiter.ELEMENT_TYPE,
+        deferChildren = true,
+        printObject = true)
 public class SystemPropertyArbiter implements Arbiter {
 
     private final String propertyName;
@@ -35,7 +39,6 @@ public class SystemPropertyArbiter implements Arbiter {
         this.propertyName = propertyName;
         this.propertyValue = propertyValue;
     }
-
 
     /**
      * Returns true if either the property name is defined (it has any value) or the property value

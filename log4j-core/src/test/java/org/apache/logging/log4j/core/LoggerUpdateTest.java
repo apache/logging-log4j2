@@ -16,19 +16,18 @@
  */
 package org.apache.logging.log4j.core;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
+import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
 
 @LoggerContextSource("log4j-test2.xml")
 public class LoggerUpdateTest {
@@ -53,7 +52,7 @@ public class LoggerUpdateTest {
            LoggerConfig loggerConfig = getLoggerConfig("com.apache.test");
         */
         loggerConfig.setLevel(Level.DEBUG);
-        ctx.updateLoggers();  // This causes all Loggers to refetch information from their LoggerConfig.
+        ctx.updateLoggers(); // This causes all Loggers to refetch information from their LoggerConfig.
         logger.traceEntry();
         events = app.getEvents();
         assertEquals(0, events.size(), "Incorrect number of events. Expected 0, actual " + events.size());
@@ -68,4 +67,3 @@ public class LoggerUpdateTest {
         context.updateLoggers();
     }
 }
-

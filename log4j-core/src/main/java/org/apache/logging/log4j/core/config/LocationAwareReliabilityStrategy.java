@@ -38,6 +38,13 @@ public interface LocationAwareReliabilityStrategy {
      * @param t A Throwable or null.
      * @since 3.0
      */
-    void log(Supplier<LoggerConfig> reconfigured, String loggerName, String fqcn, StackTraceElement location,
-        Marker marker, Level level, Message data, Throwable t);
+    void log(
+            Supplier<LoggerConfig> reconfigured,
+            String loggerName,
+            String fqcn,
+            StackTraceElement location,
+            Marker marker,
+            Level level,
+            Message data,
+            Throwable t);
 }

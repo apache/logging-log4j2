@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Filter.Result;
@@ -26,10 +30,6 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class RegexFilterTest {
     @BeforeAll
@@ -42,10 +42,11 @@ public class RegexFilterTest {
         RegexFilter filter = RegexFilter.createFilter(".* test .*", null, false, null, null);
         filter.start();
         assertTrue(filter.isStarted());
-        assertSame(Filter.Result.NEUTRAL,
+        assertSame(
+                Filter.Result.NEUTRAL,
                 filter.filter(null, Level.DEBUG, null, (Object) "This is a test message", (Throwable) null));
-        assertSame(Filter.Result.DENY, filter.filter(null, Level.ERROR, null, (Object) "This is not a test",
-                (Throwable) null));
+        assertSame(Filter.Result.DENY, filter.filter(null, Level.ERROR, null, (Object) "This is not a test", (Throwable)
+                null));
         LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("Another test message")) //
@@ -64,8 +65,8 @@ public class RegexFilterTest {
     public void testDotAllPattern() throws Exception {
         final String singleLine = "test single line matches";
         final String multiLine = "test multi line matches\nsome more lines";
-        final RegexFilter filter = RegexFilter.createFilter(".*line.*", new String[] { "DOTALL", "COMMENTS" }, false,
-                Filter.Result.DENY, Filter.Result.ACCEPT);
+        final RegexFilter filter = RegexFilter.createFilter(
+                ".*line.*", new String[] {"DOTALL", "COMMENTS"}, false, Filter.Result.DENY, Filter.Result.ACCEPT);
         final Result singleLineResult = filter.filter(null, null, null, (Object) singleLine, (Throwable) null);
         final Result multiLineResult = filter.filter(null, null, null, (Object) multiLine, (Throwable) null);
         assertThat(singleLineResult, equalTo(Result.DENY));

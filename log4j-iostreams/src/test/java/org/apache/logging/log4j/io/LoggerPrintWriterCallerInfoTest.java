@@ -18,7 +18,6 @@ package org.apache.logging.log4j.io;
 
 import java.io.PrintWriter;
 import java.util.Locale;
-
 import org.apache.logging.log4j.Level;
 import org.junit.Before;
 import org.junit.Test;
@@ -121,9 +120,7 @@ public class LoggerPrintWriterCallerInfoTest extends IoBuilderCallerInfoTesting 
 
     @Before
     public void setupStreams() {
-        this.logOut = IoBuilder.forLogger(getLogger())
-            .setLevel(Level.WARN)
-            .buildPrintWriter();
+        this.logOut = IoBuilder.forLogger(getLogger()).setLevel(Level.WARN).buildPrintWriter();
     }
 
     @Test

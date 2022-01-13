@@ -16,12 +16,11 @@
  */
 package org.apache.logging.log4j;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.logging.log4j.lookup.CustomLookup;
 import org.apache.logging.log4j.lookup.CustomMapMessage;
 import org.junit.Test;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by rgoers on 8/2/15.
@@ -46,6 +45,4 @@ public class CustomPropertiesTest {
         loggerProperties.put("key2", "TestValue");
         logger.debug(new CustomMapMessage("This is a test", loggerProperties));
     }
-
-
 }

@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.async;
 
 import java.util.concurrent.CountDownLatch;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.AsyncLoggers;
@@ -43,12 +42,11 @@ public class QueueFullAsyncLoggerTest2 extends QueueFullAbstractTest {
 
     @BeforeClass
     public static void beforeClass() {
-        //FORMAT_MESSAGES_IN_BACKGROUND
+        // FORMAT_MESSAGES_IN_BACKGROUND
         System.setProperty("log4j.format.msg.async", "true");
 
         System.setProperty("AsyncLogger.RingBufferSize", "128"); // minimum ringbuffer size
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "log4j2-queueFull.xml");
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "log4j2-queueFull.xml");
     }
 
     @AfterClass
@@ -57,14 +55,12 @@ public class QueueFullAsyncLoggerTest2 extends QueueFullAbstractTest {
     }
 
     @Rule
-    public LoggerContextRule context = new LoggerContextRule(
-            "log4j2-queueFull.xml", AsyncLoggerContextSelector.class);
+    public LoggerContextRule context = new LoggerContextRule("log4j2-queueFull.xml", AsyncLoggerContextSelector.class);
 
     @Before
     public void before() throws Exception {
         blockingAppender = context.getRequiredAppender("Blocking", BlockingAppender.class);
     }
-
 
     @Test(timeout = 5000)
     public void testNormalQueueFullKeepsMessagesInOrder() throws InterruptedException {

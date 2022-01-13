@@ -17,13 +17,12 @@
 
 package org.apache.logging.log4j.core.util.datetime;
 
-import org.apache.logging.log4j.core.time.Instant;
-
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Objects;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
+import org.apache.logging.log4j.core.time.Instant;
 
 /**
  * Custom time formatter that trades flexibility for performance. This formatter only supports the date patterns defined
@@ -42,7 +41,7 @@ public class FixedDateFormat {
      * </p>
      */
     public enum FixedFormat {
-        
+
         /**
          * ABSOLUTE time format: {@code "HH:mm:ss,SSS"}.
          */
@@ -109,27 +108,32 @@ public class FixedDateFormat {
          */
         ISO8601("yyyy-MM-dd'T'HH:mm:ss,SSS", "yyyy-MM-dd'T'", 2, ':', 1, ',', 1, 3, null),
 
-// TODO Do we even want a format without seconds?
-//        /**
-//         * ISO8601_OFFSET_DATE_TIME time format: {@code "yyyy-MM-dd'T'HH:mmXXX"}.
-//         */
-//        // Would need work in org.apache.logging.log4j.core.util.datetime.FixedDateFormat.writeTime(int, char[], int)
-//        ISO8601_OFFSET_DATE_TIME("yyyy-MM-dd'T'HH:mmXXX", "yyyy-MM-dd'T'", 2, ':', 1, ' ', 0, 0, FixedTimeZoneFormat.XXX),
+        // TODO Do we even want a format without seconds?
+        //        /**
+        //         * ISO8601_OFFSET_DATE_TIME time format: {@code "yyyy-MM-dd'T'HH:mmXXX"}.
+        //         */
+        //        // Would need work in org.apache.logging.log4j.core.util.datetime.FixedDateFormat.writeTime(int,
+        // char[], int)
+        //        ISO8601_OFFSET_DATE_TIME("yyyy-MM-dd'T'HH:mmXXX", "yyyy-MM-dd'T'", 2, ':', 1, ' ', 0, 0,
+        // FixedTimeZoneFormat.XXX),
 
         /**
          * ISO8601 time format: {@code "yyyy-MM-dd'T'HH:mm:ss,SSSX"} with a time zone like {@code -07}.
          */
-        ISO8601_OFFSET_DATE_TIME_HH("yyyy-MM-dd'T'HH:mm:ss,SSSX", "yyyy-MM-dd'T'", 2, ':', 1, ',', 1, 3, FixedTimeZoneFormat.HH),
+        ISO8601_OFFSET_DATE_TIME_HH(
+                "yyyy-MM-dd'T'HH:mm:ss,SSSX", "yyyy-MM-dd'T'", 2, ':', 1, ',', 1, 3, FixedTimeZoneFormat.HH),
 
         /**
          * ISO8601 time format: {@code "yyyy-MM-dd'T'HH:mm:ss,SSSXX"} with a time zone like {@code -0700}.
          */
-        ISO8601_OFFSET_DATE_TIME_HHMM("yyyy-MM-dd'T'HH:mm:ss,SSSXX", "yyyy-MM-dd'T'", 2, ':', 1, ',', 1, 3, FixedTimeZoneFormat.HHMM),
+        ISO8601_OFFSET_DATE_TIME_HHMM(
+                "yyyy-MM-dd'T'HH:mm:ss,SSSXX", "yyyy-MM-dd'T'", 2, ':', 1, ',', 1, 3, FixedTimeZoneFormat.HHMM),
 
         /**
          * ISO8601 time format: {@code "yyyy-MM-dd'T'HH:mm:ss,SSSXXX"} with a time zone like {@code -07:00}.
          */
-        ISO8601_OFFSET_DATE_TIME_HHCMM("yyyy-MM-dd'T'HH:mm:ss,SSSXXX", "yyyy-MM-dd'T'", 2, ':', 1, ',', 1, 3, FixedTimeZoneFormat.HHCMM),
+        ISO8601_OFFSET_DATE_TIME_HHCMM(
+                "yyyy-MM-dd'T'HH:mm:ss,SSSXXX", "yyyy-MM-dd'T'", 2, ':', 1, ',', 1, 3, FixedTimeZoneFormat.HHCMM),
 
         /**
          * ISO8601 time format: {@code "yyyy-MM-dd'T'HH:mm:ss.SSS"}.
@@ -165,9 +169,16 @@ public class FixedDateFormat {
         private final int secondFractionDigits;
         private final FixedTimeZoneFormat fixedTimeZoneFormat;
 
-        FixedFormat(final String pattern, final String datePattern, final int escapeCount, final char timeSeparator,
-                    final int timeSepLength, final char millisSeparator, final int millisSepLength,
-                    final int secondFractionDigits, final FixedTimeZoneFormat timeZoneFormat) {
+        FixedFormat(
+                final String pattern,
+                final String datePattern,
+                final int escapeCount,
+                final char timeSeparator,
+                final int timeSepLength,
+                final char millisSeparator,
+                final int millisSepLength,
+                final int secondFractionDigits,
+                final FixedTimeZoneFormat timeZoneFormat) {
             this.timeSeparatorChar = timeSeparator;
             this.timeSeparatorLength = timeSepLength;
             this.millisSeparatorChar = millisSeparator;
@@ -217,7 +228,8 @@ public class FixedDateFormat {
             final int nanoStart = nanoRange[0];
             final int nanoEnd = nanoRange[1];
             if (nanoStart > 0) {
-                final String subPattern = pattern.substring(0, nanoStart) + DEFAULT_SECOND_FRACTION_PATTERN
+                final String subPattern = pattern.substring(0, nanoStart)
+                        + DEFAULT_SECOND_FRACTION_PATTERN
                         + pattern.substring(nanoEnd, pattern.length());
                 for (final FixedFormat type : FixedFormat.values()) {
                     if (type.getPattern().equals(subPattern)) {
@@ -228,8 +240,8 @@ public class FixedDateFormat {
             return null;
         }
 
-        private final static int[] EMPTY_RANGE = { -1, -1 };
-        
+        private static final int[] EMPTY_RANGE = {-1, -1};
+
         /**
          * @return int[0] start index inclusive; int[1] end index exclusive
          */
@@ -239,14 +251,14 @@ public class FixedDateFormat {
             if (indexStart >= 0) {
                 indexEnd = pattern.indexOf('Z', indexStart);
                 indexEnd = indexEnd < 0 ? pattern.indexOf('X', indexStart) : indexEnd;
-                indexEnd = indexEnd < 0 ? pattern.length() : indexEnd; 
+                indexEnd = indexEnd < 0 ? pattern.length() : indexEnd;
                 for (int i = indexStart + 1; i < indexEnd; i++) {
                     if (pattern.charAt(i) != SECOND_FRACTION_PATTERN) {
                         return EMPTY_RANGE;
                     }
                 }
             }
-            return new int [] {indexStart, indexEnd};
+            return new int[] {indexStart, indexEnd};
         }
 
         /**
@@ -310,7 +322,7 @@ public class FixedDateFormat {
     /**
      * Fixed time zone formats. The enum names are symbols from Java's <a href=
      * "https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html">DateTimeFormatter</a>.
-     * 
+     *
      * @see <a href=
      * "https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html">DateTimeFormatter</a>
      */
@@ -324,13 +336,13 @@ public class FixedDateFormat {
         /**
          * Offset like {@code -0700}.
          */
-        HHMM(NONE, true, 5), 
-        
-        /** 
+        HHMM(NONE, true, 5),
+
+        /**
          * Offset like {@code -07:00}.
          */
         HHCMM(':', true, 6);
-        
+
         private FixedTimeZoneFormat() {
             this(NONE, true, 4);
         }
@@ -345,7 +357,7 @@ public class FixedDateFormat {
         private final char timeSeparatorChar;
         private final int timeSeparatorCharLen;
         private final boolean useMinutes;
-        // The length includes 1 for the leading sign 
+        // The length includes 1 for the leading sign
         private final int length;
 
         public int getLength() {
@@ -384,7 +396,6 @@ public class FixedDateFormat {
             }
             return pos;
         }
-
     }
 
     private final FixedFormat fixedFormat;
@@ -686,12 +697,12 @@ public class FixedDateFormat {
     }
 
     static int[] TABLE = {
-            100000, // 0
-            10000, // 1
-            1000, // 2
-            100, // 3
-            10, // 4
-            1, // 5
+        100000, // 0
+        10000, // 1
+        1000, // 2
+        100, // 3
+        10, // 4
+        1, // 5
     };
 
     private int formatNanoOfMillisecond(final int nanoOfMillisecond, final char[] buffer, int pos) {

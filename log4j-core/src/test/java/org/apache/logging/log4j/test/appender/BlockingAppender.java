@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.test.appender;
 
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
@@ -30,7 +29,7 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Requi
 /**
  *
  */
-@Plugin(name="Block", category ="Core", elementType=Appender.ELEMENT_TYPE, printObject=true)
+@Plugin(name = "Block", category = "Core", elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class BlockingAppender extends AbstractAppender {
     public volatile boolean running = true;
 
@@ -49,6 +48,7 @@ public class BlockingAppender extends AbstractAppender {
             }
         }
     }
+
     @Override
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
         setStopping();
@@ -60,7 +60,8 @@ public class BlockingAppender extends AbstractAppender {
 
     @PluginFactory
     public static BlockingAppender createAppender(
-        @PluginAttribute("name") @Required(message = "A name for the Appender must be specified") final String name) {
+            @PluginAttribute("name") @Required(message = "A name for the Appender must be specified")
+                    final String name) {
         return new BlockingAppender(name);
     }
 }

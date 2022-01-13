@@ -91,7 +91,7 @@ public class SmtpRequest {
             } else {
                 response = new SmtpResponse(500, "Command not recognized", this.state);
             }
-        // Stateful commands
+            // Stateful commands
         } else if (SmtpActionType.CONNECT == action) {
             if (SmtpState.CONNECT == state) {
                 response = new SmtpResponse(220, "localhost Dumbster SMTP service ready", SmtpState.GREET);
@@ -144,8 +144,8 @@ public class SmtpRequest {
             }
         } else if (SmtpActionType.QUIT == action) {
             if (SmtpState.QUIT == state) {
-                response = new SmtpResponse(221, "localhost Dumbster service closing transmission channel",
-                    SmtpState.CONNECT);
+                response = new SmtpResponse(
+                        221, "localhost Dumbster service closing transmission channel", SmtpState.CONNECT);
             } else {
                 response = new SmtpResponse(503, "Bad sequence of commands: " + action, this.state);
             }

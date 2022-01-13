@@ -17,9 +17,8 @@
 
 package org.apache.log4j.spi;
 
-import org.apache.log4j.Appender;
-
 import java.util.Enumeration;
+import org.apache.log4j.Appender;
 
 /**
  * Interface for attaching appenders to objects.
@@ -45,7 +44,6 @@ public interface AppenderAttachable {
      */
     Appender getAppender(String name);
 
-
     /**
      * Returns <code>true</code> if the specified appender is in list of
      * attached attached, <code>false</code> otherwise.
@@ -61,13 +59,11 @@ public interface AppenderAttachable {
      */
     void removeAllAppenders();
 
-
     /**
      * Remove the appender passed as parameter from the list of appenders.
      * @param appender The Appender to remove.
      */
     void removeAppender(Appender appender);
-
 
     /**
      * Remove the appender with the name passed as parameter from the

@@ -16,11 +16,9 @@
  */
 package org.apache.logging.log4j.web;
 
-import java.util.Objects;
-
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpServletRequest;
-
+import java.util.Objects;
 import org.apache.logging.log4j.ThreadContext;
 
 public class ServletRequestThreadContext {

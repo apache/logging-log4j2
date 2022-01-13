@@ -23,7 +23,6 @@ import java.util.logging.Filter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.ExtendedLogger;
@@ -66,9 +65,9 @@ public class ApiLogger extends Logger {
         final org.apache.logging.log4j.Level level = LevelTranslator.toLevel(record.getLevel());
         final Object[] parameters = record.getParameters();
         final MessageFactory messageFactory = logger.getMessageFactory();
-        final Message message = parameters == null ?
-            messageFactory.newMessage(record.getMessage()) /* LOG4J2-1251: not formatted case */ :
-            messageFactory.newMessage(record.getMessage(), parameters);
+        final Message message = parameters == null
+                ? messageFactory.newMessage(record.getMessage()) /* LOG4J2-1251: not formatted case */
+                : messageFactory.newMessage(record.getMessage(), parameters);
         final Throwable thrown = record.getThrown();
         logger.logIfEnabled(FQCN, level, null, message, thrown);
     }
@@ -156,44 +155,75 @@ public class ApiLogger extends Logger {
     }
 
     @Override
-    public void logp(final Level level, final String sourceClass, final String sourceMethod, final String msg,
-                     final Object param1) {
+    public void logp(
+            final Level level,
+            final String sourceClass,
+            final String sourceMethod,
+            final String msg,
+            final Object param1) {
         log(level, msg, param1);
     }
 
     @Override
-    public void logp(final Level level, final String sourceClass, final String sourceMethod, final String msg,
-                     final Object[] params) {
+    public void logp(
+            final Level level,
+            final String sourceClass,
+            final String sourceMethod,
+            final String msg,
+            final Object[] params) {
         log(level, msg, params);
     }
 
     @Override
-    public void logp(final Level level, final String sourceClass, final String sourceMethod, final String msg,
-                     final Throwable thrown) {
+    public void logp(
+            final Level level,
+            final String sourceClass,
+            final String sourceMethod,
+            final String msg,
+            final Throwable thrown) {
         log(level, msg, thrown);
     }
 
     @Override
-    public void logrb(final Level level, final String sourceClass, final String sourceMethod, final String bundleName,
-                      final String msg) {
+    public void logrb(
+            final Level level,
+            final String sourceClass,
+            final String sourceMethod,
+            final String bundleName,
+            final String msg) {
         log(level, msg);
     }
 
     @Override
-    public void logrb(final Level level, final String sourceClass, final String sourceMethod, final String bundleName,
-                      final String msg, final Object param1) {
+    public void logrb(
+            final Level level,
+            final String sourceClass,
+            final String sourceMethod,
+            final String bundleName,
+            final String msg,
+            final Object param1) {
         log(level, msg, param1);
     }
 
     @Override
-    public void logrb(final Level level, final String sourceClass, final String sourceMethod, final String bundleName,
-                      final String msg, final Object[] params) {
+    public void logrb(
+            final Level level,
+            final String sourceClass,
+            final String sourceMethod,
+            final String bundleName,
+            final String msg,
+            final Object[] params) {
         log(level, msg, params);
     }
 
     @Override
-    public void logrb(final Level level, final String sourceClass, final String sourceMethod, final String bundleName,
-                      final String msg, final Throwable thrown) {
+    public void logrb(
+            final Level level,
+            final String sourceClass,
+            final String sourceMethod,
+            final String bundleName,
+            final String msg,
+            final Throwable thrown) {
         log(level, msg, thrown);
     }
 

@@ -40,6 +40,5 @@ public final class Constants {
     static final String CORE_LOGGER_ADAPTER_CLASS_NAME = "org.apache.logging.log4j.jul.CoreLoggerAdapter";
     static final String API_LOGGER_ADAPTER_CLASS_NAME = "org.apache.logging.log4j.jul.ApiLoggerAdapter";
 
-    private Constants() {
-    }
+    private Constants() {}
 }

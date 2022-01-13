@@ -35,11 +35,10 @@ public final class CategoryUtil {
     public static Logger getParent(final Logger logger) {
         if (logger instanceof org.apache.logging.log4j.core.Logger) {
             return ((org.apache.logging.log4j.core.Logger) logger).getParent();
-
         }
         return null;
     }
-    
+
     public static boolean isAdditive(final Logger logger) {
         if (logger instanceof org.apache.logging.log4j.core.Logger) {
             return ((org.apache.logging.log4j.core.Logger) logger).isAdditive();
@@ -56,10 +55,8 @@ public final class CategoryUtil {
     public static void setLevel(final Logger logger, final Level level) {
         if (logger instanceof org.apache.logging.log4j.core.Logger) {
             ((org.apache.logging.log4j.core.Logger) logger).setLevel(level);
-
         }
     }
 
-    private CategoryUtil() {
-    }
+    private CategoryUtil() {}
 }

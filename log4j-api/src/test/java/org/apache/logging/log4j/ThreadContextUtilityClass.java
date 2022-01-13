@@ -16,11 +16,10 @@
  */
 package org.apache.logging.log4j;
 
-import org.apache.logging.log4j.util.Timer;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.apache.logging.log4j.util.Timer;
 
 public class ThreadContextUtilityClass {
 
@@ -51,12 +50,10 @@ public class ThreadContextUtilityClass {
         System.out.println(complete.toString());
     }
 
-
     public static void testGetContextReturnsEmptyMapIfEmpty() {
         ThreadContext.clearMap();
         assertTrue(ThreadContext.getContext().isEmpty());
     }
-
 
     public static void testGetContextReturnsMutableCopy() {
         ThreadContext.clearMap();
@@ -85,7 +82,6 @@ public class ThreadContextUtilityClass {
         assertTrue(ThreadContext.getImmutableContext().isEmpty());
     }
 
-
     public static void testGetImmutableContextReturnsImmutableMapIfNonEmpty() {
         ThreadContext.clearMap();
         ThreadContext.put("key", "val");
@@ -103,7 +99,6 @@ public class ThreadContextUtilityClass {
         ThreadContext.clearStack();
         assertTrue(ThreadContext.getImmutableStack().asList().isEmpty());
     }
-
 
     public static void testPut() {
         ThreadContext.clearMap();

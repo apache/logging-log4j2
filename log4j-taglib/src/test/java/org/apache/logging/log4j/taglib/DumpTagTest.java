@@ -16,22 +16,20 @@
  */
 package org.apache.logging.log4j.taglib;
 
+import static org.junit.Assert.*;
+
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.Tag;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.mock.web.MockJspWriter;
 import org.springframework.mock.web.MockPageContext;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -50,6 +48,7 @@ public class DumpTagTest {
 
         this.context = new MockPageContext() {
             private final MockJspWriter jspWriter = new MockJspWriter(writer);
+
             @Override
             public JspWriter getOut() {
                 return this.jspWriter;
@@ -81,11 +80,12 @@ public class DumpTagTest {
 
         this.writer.flush();
         final String output = new String(this.output.toByteArray(), UTF8);
-        assertEquals("The output is not correct.",
-                "<dl>" +
-                        "<dt><code>testAttribute01</code></dt><dd><code>testValue01</code></dd>" +
-                        "<dt><code>anotherAttribute02</code></dt><dd><code>finalValue02</code></dd>" +
-                        "</dl>", output);
+        assertEquals(
+                "The output is not correct.",
+                "<dl>" + "<dt><code>testAttribute01</code></dt><dd><code>testValue01</code></dd>"
+                        + "<dt><code>anotherAttribute02</code></dt><dd><code>finalValue02</code></dd>"
+                        + "</dl>",
+                output);
     }
 
     @Test
@@ -113,10 +113,11 @@ public class DumpTagTest {
 
         this.writer.flush();
         final String output = new String(this.output.toByteArray(), UTF8);
-        assertEquals("The output is not correct.",
-                "<dl>" +
-                        "<dt><code>coolAttribute01</code></dt><dd><code>weirdValue01</code></dd>" +
-                        "<dt><code>testAttribute02</code></dt><dd><code>testValue02</code></dd>" +
-                        "</dl>", output);
+        assertEquals(
+                "The output is not correct.",
+                "<dl>" + "<dt><code>coolAttribute01</code></dt><dd><code>weirdValue01</code></dd>"
+                        + "<dt><code>testAttribute02</code></dt><dd><code>testValue02</code></dd>"
+                        + "</dl>",
+                output);
     }
 }

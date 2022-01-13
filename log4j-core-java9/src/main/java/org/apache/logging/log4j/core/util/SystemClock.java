@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.util;
 
 import java.time.Instant;
-
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.time.PreciseClock;
 

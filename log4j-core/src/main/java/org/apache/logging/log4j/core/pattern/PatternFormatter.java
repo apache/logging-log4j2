@@ -46,6 +46,7 @@ public class PatternFormatter {
             formatWithInfo(event, buf);
         }
     }
+
     private void formatWithInfo(final LogEvent event, final StringBuilder buf) {
         final int startField = buf.length();
         converter.format(event, buf);

@@ -29,19 +29,18 @@ public class Log4jMarkerTest {
     @BeforeClass
     public static void startup() {
         markerFactory = ((Log4jLoggerFactory) org.slf4j.LoggerFactory.getILoggerFactory()).getMarkerFactory();
-
     }
 
-	@Test
-	public void testEquals() {
-		final Marker markerA = MarkerManager.getMarker(Log4jMarkerTest.class.getName() + "-A");
-		final Marker markerB = MarkerManager.getMarker(Log4jMarkerTest.class.getName() + "-B");
-		final Log4jMarker marker1 = new Log4jMarker(markerFactory, markerA);
-		final Log4jMarker marker2 = new Log4jMarker(markerFactory, markerA);
-		final Log4jMarker marker3 = new Log4jMarker(markerFactory, markerB);
-		Assert.assertEquals(marker1, marker2);
-		Assert.assertNotEquals(marker1, null);
-		Assert.assertNotEquals(null, marker1);
-		Assert.assertNotEquals(marker1, marker3);
-	}
+    @Test
+    public void testEquals() {
+        final Marker markerA = MarkerManager.getMarker(Log4jMarkerTest.class.getName() + "-A");
+        final Marker markerB = MarkerManager.getMarker(Log4jMarkerTest.class.getName() + "-B");
+        final Log4jMarker marker1 = new Log4jMarker(markerFactory, markerA);
+        final Log4jMarker marker2 = new Log4jMarker(markerFactory, markerA);
+        final Log4jMarker marker3 = new Log4jMarker(markerFactory, markerB);
+        Assert.assertEquals(marker1, marker2);
+        Assert.assertNotEquals(marker1, null);
+        Assert.assertNotEquals(null, marker1);
+        Assert.assertNotEquals(marker1, marker3);
+    }
 }

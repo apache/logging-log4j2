@@ -34,6 +34,4 @@ public class WebMvcConfig implements WebMvcConfigurer {
         restTemplate.setErrorHandler(new SampleResponseErrorHandler());
         return restTemplate;
     }
-
-
 }

@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.config;
 
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;

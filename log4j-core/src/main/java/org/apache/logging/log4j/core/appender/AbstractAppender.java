@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.Objects;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.ErrorHandler;
 import org.apache.logging.log4j.core.Filter;
@@ -144,7 +143,6 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
         public B withName(final String name) {
             return setName(name);
         }
-
     }
 
     public static int parseInt(final String s, final int defaultValue) {
@@ -155,6 +153,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
             return defaultValue;
         }
     }
+
     private final String name;
     private final boolean ignoreExceptions;
     private final Layout<? extends Serializable> layout;
@@ -190,7 +189,10 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
      * @deprecated Use {@link #AbstractAppender(String, Filter, Layout, boolean, Property[])}
      */
     @Deprecated
-    protected AbstractAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
+    protected AbstractAppender(
+            final String name,
+            final Filter filter,
+            final Layout<? extends Serializable> layout,
             final boolean ignoreExceptions) {
         this(name, filter, layout, ignoreExceptions, Property.EMPTY_ARRAY);
     }
@@ -205,8 +207,12 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
      *            then passed to the application.
      * @since 2.11.2
      */
-    protected AbstractAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
-            final boolean ignoreExceptions, final Property[] properties) {
+    protected AbstractAppender(
+            final String name,
+            final Filter filter,
+            final Layout<? extends Serializable> layout,
+            final boolean ignoreExceptions,
+            final Property[] properties) {
         super(filter, properties);
         this.name = Objects.requireNonNull(name, "name");
         this.layout = layout;
@@ -318,5 +324,4 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
     public String toString() {
         return name;
     }
-
 }

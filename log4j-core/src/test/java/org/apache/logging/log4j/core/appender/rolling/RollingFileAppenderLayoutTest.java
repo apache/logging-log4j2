@@ -26,13 +26,15 @@ public class RollingFileAppenderLayoutTest {
     @Test
     public void testDefaultLayout() throws Exception {
         // @formatter:off
-        Assert.assertNotNull(RollingFileAppender.newBuilder().setName(RollingFileAppenderLayoutTest.class.getName())
+        Assert.assertNotNull(RollingFileAppender.newBuilder()
+                .setName(RollingFileAppenderLayoutTest.class.getName())
                 .setConfiguration(new DefaultConfiguration())
                 .withFileName("log.txt")
                 .withFilePattern("FilePattern")
                 .withPolicy(OnStartupTriggeringPolicy.createPolicy(1))
                 .withCreateOnDemand(true) // no need to clutter up test folder with another file
-                .build().getLayout());
+                .build()
+                .getLayout());
         // @formatter:on
     }
 }

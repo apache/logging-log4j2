@@ -149,11 +149,12 @@ public final class PropertiesUtil {
      * @param defaultValueIfPresent the default value to use if the property is defined but not assigned
      * @return the boolean value of the property or {@code defaultValue} if undefined.
      */
-    public boolean getBooleanProperty(final String name, final boolean defaultValueIfAbsent,
-                                      final boolean defaultValueIfPresent) {
+    public boolean getBooleanProperty(
+            final String name, final boolean defaultValueIfAbsent, final boolean defaultValueIfPresent) {
         final String prop = getStringProperty(name);
-        return prop == null ? defaultValueIfAbsent
-            : prop.isEmpty() ? defaultValueIfPresent : "true".equalsIgnoreCase(prop);
+        return prop == null
+                ? defaultValueIfAbsent
+                : prop.isEmpty() ? defaultValueIfPresent : "true".equalsIgnoreCase(prop);
     }
 
     /**
@@ -208,7 +209,7 @@ public final class PropertiesUtil {
             }
         }
         LowLevelLogUtil.log("Unable to get Charset '" + charsetName + "' for property '" + name + "', using default "
-            + defaultValue + " and continuing.");
+                + defaultValue + " and continuing.");
         return defaultValue;
     }
 
@@ -435,17 +436,17 @@ public final class PropertiesUtil {
                 // Access to System Properties is restricted so just skip it.
             }
             sources.add(propertySource);
-			for (final ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
-				try {
-					for (final PropertySource source : ServiceLoader.load(PropertySource.class, classLoader)) {
-						sources.add(source);
-					}
-				} catch (final Throwable ex) {
-					/* Don't log anything to the console. It may not be a problem that a PropertySource
-					 * isn't accessible.
-					 */
-				}
-			}
+            for (final ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
+                try {
+                    for (final PropertySource source : ServiceLoader.load(PropertySource.class, classLoader)) {
+                        sources.add(source);
+                    }
+                } catch (final Throwable ex) {
+                    /* Don't log anything to the console. It may not be a problem that a PropertySource
+                     * isn't accessible.
+                     */
+                }
+            }
 
             reload();
         }
@@ -497,10 +498,10 @@ public final class PropertiesUtil {
         }
 
         private boolean containsKey(final String key) {
-            return normalized.containsKey(key) ||
-                literal.containsKey(key) ||
-                hasSystemProperty(key) ||
-                tokenized.containsKey(PropertySource.Util.tokenize(key));
+            return normalized.containsKey(key)
+                    || literal.containsKey(key)
+                    || hasSystemProperty(key)
+                    || tokenized.containsKey(PropertySource.Util.tokenize(key));
         }
     }
 

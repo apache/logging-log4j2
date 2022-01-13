@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.spi;
 
 import java.util.Objects;
-
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.MessageFactory2;
@@ -60,44 +59,84 @@ public class MessageFactory2Adapter implements MessageFactory2 {
     }
 
     @Override
-    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3) {
+    public Message newMessage(
+            final String message, final Object p0, final Object p1, final Object p2, final Object p3) {
         return wrapped.newMessage(message, p0, p1, p2, p3);
     }
 
     @Override
-    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4) {
+    public Message newMessage(
+            final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
         return wrapped.newMessage(message, p0, p1, p2, p3, p4);
     }
 
     @Override
-    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5) {
+    public Message newMessage(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5) {
         return wrapped.newMessage(message, p0, p1, p2, p3, p4, p5);
     }
 
     @Override
-    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6) {
+    public Message newMessage(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6) {
         return wrapped.newMessage(message, p0, p1, p2, p3, p4, p5, p6);
     }
 
     @Override
-    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6, final Object p7) {
+    public Message newMessage(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7) {
         return wrapped.newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7);
     }
 
     @Override
-    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6, final Object p7, final Object p8) {
+    public Message newMessage(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8) {
         return wrapped.newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
     }
 
     @Override
-    public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6, final Object p7, final Object p8, final Object p9) {
+    public Message newMessage(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8,
+            final Object p9) {
         return wrapped.newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
 

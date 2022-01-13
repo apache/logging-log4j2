@@ -24,7 +24,6 @@ import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.log4j.bridge.FilterWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
 import org.apache.log4j.config.PropertiesConfiguration;
@@ -48,8 +47,7 @@ public class LevelRangeFilterBuilder extends AbstractBuilder implements FilterBu
     private static final String LEVEL_MIN = "LevelMin";
     private static final String ACCEPT_ON_MATCH = "AcceptOnMatch";
 
-    public LevelRangeFilterBuilder() {
-    }
+    public LevelRangeFilterBuilder() {}
 
     public LevelRangeFilterBuilder(String prefix, Properties props) {
         super(prefix, props);
@@ -99,7 +97,7 @@ public class LevelRangeFilterBuilder extends AbstractBuilder implements FilterBu
                 ? org.apache.logging.log4j.core.Filter.Result.ACCEPT
                 : org.apache.logging.log4j.core.Filter.Result.NEUTRAL;
 
-        return new FilterWrapper(LevelRangeFilter.createFilter(min, max, onMatch,
-                org.apache.logging.log4j.core.Filter.Result.DENY));
+        return new FilterWrapper(
+                LevelRangeFilter.createFilter(min, max, onMatch, org.apache.logging.log4j.core.Filter.Result.DENY));
     }
 }

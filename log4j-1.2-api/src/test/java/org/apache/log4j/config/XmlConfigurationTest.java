@@ -22,7 +22,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.log4j.ListAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -74,5 +73,4 @@ public class XmlConfigurationTest {
         assertTrue("File A2 was not created", file.exists());
         assertTrue("File A2 is empty", file.length() > 0);
     }
-
 }

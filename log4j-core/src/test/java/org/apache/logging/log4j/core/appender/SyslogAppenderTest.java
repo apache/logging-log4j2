@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.appender;
 
 import java.io.IOException;
 import java.net.SocketException;
-
 import org.apache.logging.log4j.core.appender.SyslogAppender.Builder;
 import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.net.mock.MockSyslogServerFactory;
@@ -116,16 +115,18 @@ public class SyslogAppenderTest extends SyslogAppenderTestBase {
     protected Builder newSyslogAppenderBuilder(final String protocol, final String format, final boolean newLine) {
         // @formatter:off
         return SyslogAppender.newSyslogAppenderBuilder()
-            .withPort(PORTNUM)
-            .withProtocol(EnglishEnums.valueOf(Protocol.class, protocol))
-            .withReconnectDelayMillis(-1).setName("TestApp").setIgnoreExceptions(false)
-            .setId("Audit")
-            .setEnterpriseNumber(18060)
-            .setMdcId("RequestContext")
-            .setNewLine(newLine)
-            .setAppName("TestApp")
-            .setMsgId("Test")
-            .setFormat(format);
+                .withPort(PORTNUM)
+                .withProtocol(EnglishEnums.valueOf(Protocol.class, protocol))
+                .withReconnectDelayMillis(-1)
+                .setName("TestApp")
+                .setIgnoreExceptions(false)
+                .setId("Audit")
+                .setEnterpriseNumber(18060)
+                .setMdcId("RequestContext")
+                .setNewLine(newLine)
+                .setAppName("TestApp")
+                .setMsgId("Test")
+                .setFormat(format);
         // @formatter:on
     }
 }

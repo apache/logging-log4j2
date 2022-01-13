@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import static org.junit.Assert.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
@@ -38,11 +39,9 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 public abstract class AbstractAsyncThreadContextTestBase {
 
-    private final static int LINE_COUNT = 130;
+    private static final int LINE_COUNT = 130;
 
     @BeforeClass
     public static void beforeClass() {
@@ -63,11 +62,13 @@ public abstract class AbstractAsyncThreadContextTestBase {
     }
 
     enum Mode {
-        ALL_ASYNC, MIXED, BOTH_ALL_ASYNC_AND_MIXED;
+        ALL_ASYNC,
+        MIXED,
+        BOTH_ALL_ASYNC_AND_MIXED;
 
         void initSelector() {
             if (this == ALL_ASYNC || this == BOTH_ALL_ASYNC_AND_MIXED) {
-                System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,  AsyncLoggerContextSelector.class.getName());
+                System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, AsyncLoggerContextSelector.class.getName());
             } else {
                 System.clearProperty(Constants.LOG4J_CONTEXT_SELECTOR);
             }
@@ -83,7 +84,9 @@ public abstract class AbstractAsyncThreadContextTestBase {
     }
 
     enum ContextImpl {
-        WEBAPP, GARBAGE_FREE, COPY_ON_WRITE;
+        WEBAPP,
+        GARBAGE_FREE,
+        COPY_ON_WRITE;
 
         void init() {
             System.clearProperty("log4j2.threadContextMap");
@@ -122,10 +125,10 @@ public abstract class AbstractAsyncThreadContextTestBase {
     @Test
     public void testAsyncLogWritesToLog() throws Exception {
         final File[] files = new File[] {
-                new File("target", "AsyncLoggerTest.log"), //
-                new File("target", "SynchronousContextTest.log"), //
-                new File("target", "AsyncLoggerAndAsyncAppenderTest.log"), //
-                new File("target", "AsyncAppenderContextTest.log"), //
+            new File("target", "AsyncLoggerTest.log"), //
+            new File("target", "SynchronousContextTest.log"), //
+            new File("target", "AsyncLoggerAndAsyncAppenderTest.log"), //
+            new File("target", "AsyncAppenderContextTest.log"), //
         };
         for (final File f : files) {
             f.delete();
@@ -169,7 +172,9 @@ public abstract class AbstractAsyncThreadContextTestBase {
 
     private static String contextMap() {
         final ReadOnlyThreadContextMap impl = ThreadContext.getThreadContextMap();
-        return impl == null ? ContextImpl.WEBAPP.implClassSimpleName() : impl.getClass().getSimpleName();
+        return impl == null
+                ? ContextImpl.WEBAPP.implClassSimpleName()
+                : impl.getClass().getSimpleName();
     }
 
     private void checkResult(final File file, final String loggerContextName) throws IOException {
@@ -179,10 +184,13 @@ public abstract class AbstractAsyncThreadContextTestBase {
             for (int i = 0; i < LINE_COUNT; i++) {
                 final String line = reader.readLine();
                 if ((i & 1) == 1) {
-                    expect = "INFO c.f.Bar mapvalue [stackvalue] {KEY=mapvalue, configProp=configValue, configProp2=configValue2, count=" + i + "} "
-                            + contextDesc + " i=" + i;
+                    expect =
+                            "INFO c.f.Bar mapvalue [stackvalue] {KEY=mapvalue, configProp=configValue, configProp2=configValue2, count="
+                                    + i + "} " + contextDesc + " i=" + i;
                 } else {
-                    expect = "INFO c.f.Bar mapvalue [stackvalue] {KEY=mapvalue, configProp=configValue, configProp2=configValue2} " + contextDesc + " i=" + i;
+                    expect =
+                            "INFO c.f.Bar mapvalue [stackvalue] {KEY=mapvalue, configProp=configValue, configProp2=configValue2} "
+                                    + contextDesc + " i=" + i;
                 }
                 assertEquals(file.getName() + ": line " + i, expect, line);
             }

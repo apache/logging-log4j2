@@ -21,7 +21,6 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -31,7 +30,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 
 /**
  * Class Description goes here.
@@ -43,7 +41,8 @@ public class SyslogAppenderTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY, "target/test-classes/log4j1-syslog.xml");
+        System.setProperty(
+                ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY, "target/test-classes/log4j1-syslog.xml");
     }
 
     @AfterClass
@@ -74,7 +73,6 @@ public class SyslogAppenderTest {
         assertNotNull("No messages received", messages);
         assertEquals("Sent message not detected", 1, messages.size());
     }
-
 
     protected void initTCPTestEnvironment(final String messageFormat) throws IOException {
         syslogServer = MockSyslogServerFactory.createTCPSyslogServer(1, PORTNUM);

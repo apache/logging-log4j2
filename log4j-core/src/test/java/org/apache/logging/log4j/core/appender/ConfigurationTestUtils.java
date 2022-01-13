@@ -33,5 +33,4 @@ public class ConfigurationTestUtils {
         }
         config.getRootLogger().addAppender(appender, level, filter);
     }
-
 }
