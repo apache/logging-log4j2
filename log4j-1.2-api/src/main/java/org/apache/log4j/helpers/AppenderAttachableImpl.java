@@ -22,6 +22,7 @@ import org.apache.log4j.spi.LoggingEvent;
 
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -35,7 +36,8 @@ public class AppenderAttachableImpl implements AppenderAttachable {
     @Override
     public void addAppender(Appender newAppender) {
         if (newAppender != null) {
-            appenders.put(newAppender.getName(), newAppender);
+            // NullAppender name is null.
+            appenders.put(Objects.toString(newAppender.getName()), newAppender);
         }
     }
 
@@ -71,7 +73,8 @@ public class AppenderAttachableImpl implements AppenderAttachable {
     }
 
     /**
-     * Call the <code>doAppend</code> method on all attached appenders.
+     * Calls the <code>doAppend</code> method on all attached appenders.
+     * 
      * @param event The event to log.
      * @return The number of appenders.
      */
