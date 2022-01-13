@@ -52,7 +52,7 @@ public class AppenderControl extends AbstractFilterable {
      */
     public AppenderControl(final Appender appender, final Level level, final Filter filter) {
         super(filter);
-        this.appender = appender;
+        this.appender = Objects.requireNonNull(appender, "appender");
         this.appenderName = appender.getName();
         this.level = level;
         this.intLevel = level == null ? Level.ALL.intLevel() : level.intLevel();
