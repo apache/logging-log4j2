@@ -36,13 +36,12 @@ public class Log4j1Configuration extends AbstractConfiguration implements Reconf
 
     public static final String NULL = "null";
 
-    protected final BuilderManager manager;
+    protected final BuilderManager manager = new BuilderManager();
 
-    public Log4j1Configuration(final LoggerContext loggerContext, final ConfigurationSource source,
+    public Log4j1Configuration(final LoggerContext loggerContext, final ConfigurationSource configurationSource,
             int monitorIntervalSeconds) {
-        super(loggerContext, source);
-        manager = new BuilderManager();
-        initializeWatchers(this, source, monitorIntervalSeconds);
+        super(loggerContext, configurationSource);
+        initializeWatchers(this, configurationSource, monitorIntervalSeconds);
     }
 
     public BuilderManager getBuilderManager() {
