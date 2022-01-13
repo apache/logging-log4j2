@@ -213,8 +213,7 @@ public class OptionConverter {
                     return defaultValue;
                 }
                 return obj;
-            } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException
-                    | InstantiationException | InvocationTargetException e) {
+            } catch (ReflectiveOperationException e) {
                 LOGGER.error("Could not instantiate class [" + className + "].", e);
             }
         }
