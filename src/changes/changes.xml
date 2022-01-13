@@ -269,6 +269,9 @@
       <action dev="ggregory" type="fix" issue="LOG4J2-3330" due-to="Mircea Lemnaru, Gary Gregory">
         Configurator.setLevel not fetching the correct LoggerContext.
       </action>
+      <action dev="ggregory" type="fix">
+        Fix DTD error: Add missing ELEMENT for Marker.
+      </action>
       <!-- ADD -->
       <action issue="LOG4J2-3282" dev="ckozak" type="add" due-to="Michael Vorburger">
         Add the log4j-to-jul JDK Logging Bridge
