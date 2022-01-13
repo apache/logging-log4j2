@@ -199,13 +199,12 @@ public final class LoaderUtil {
      * @throws ClassNotFoundException if the class isn't available to the usual ClassLoaders
      * @throws IllegalAccessException if the class can't be instantiated through a public constructor
      * @throws InstantiationException if there was an exception whilst instantiating the class
-     * @throws NoSuchMethodException if there isn't a no-args constructor on the class
      * @throws InvocationTargetException if there was an exception whilst constructing the class
      * @since 2.1
      */
     @SuppressWarnings("unchecked")
     public static <T> T newInstanceOf(final String className) throws ClassNotFoundException, IllegalAccessException,
-            InstantiationException, NoSuchMethodException, InvocationTargetException {
+            InstantiationException, InvocationTargetException {
         return newInstanceOf((Class<T>) loadClass(className));
     }
 
@@ -219,13 +218,12 @@ public final class LoaderUtil {
      * @throws ClassNotFoundException if the class isn't available to the usual ClassLoaders
      * @throws IllegalAccessException if the class can't be instantiated through a public constructor
      * @throws InstantiationException if there was an exception whilst instantiating the class
-     * @throws NoSuchMethodException if there isn't a no-args constructor on the class
      * @throws InvocationTargetException if there was an exception whilst constructing the class
      * @throws ClassCastException if the constructed object isn't type compatible with {@code T}
      * @since 2.1
      */
     public static <T> T newCheckedInstanceOf(final String className, final Class<T> clazz)
-            throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException,
+            throws ClassNotFoundException, InvocationTargetException, InstantiationException,
             IllegalAccessException {
         return clazz.cast(newInstanceOf(className));
     }
@@ -240,13 +238,12 @@ public final class LoaderUtil {
      * @throws ClassNotFoundException    if the class isn't available to the usual ClassLoaders
      * @throws IllegalAccessException    if the class can't be instantiated through a public constructor
      * @throws InstantiationException    if there was an exception whilst instantiating the class
-     * @throws NoSuchMethodException     if there isn't a no-args constructor on the class
      * @throws InvocationTargetException if there was an exception whilst constructing the class
      * @throws ClassCastException        if the constructed object isn't type compatible with {@code T}
      * @since 2.5
      */
     public static <T> T newCheckedInstanceOfProperty(final String propertyName, final Class<T> clazz)
-        throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException,
+        throws ClassNotFoundException, InvocationTargetException, InstantiationException,
         IllegalAccessException {
         final String className = PropertiesUtil.getProperties().getStringProperty(propertyName);
         if (className == null) {
