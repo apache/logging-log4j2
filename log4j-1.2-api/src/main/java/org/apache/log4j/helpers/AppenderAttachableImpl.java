@@ -41,6 +41,28 @@ public class AppenderAttachableImpl implements AppenderAttachable {
         }
     }
 
+    /**
+     * Calls the <code>doAppend</code> method on all attached appenders.
+     * 
+     * @param event The event to log.
+     * @return The number of appenders.
+     */
+    public int appendLoopOnAppenders(LoggingEvent event) {
+        for (Appender appender : appenders.values()) {
+            appender.doAppend(event);
+        }
+        return appenders.size();
+    }
+
+    /**
+     * Closes all appenders.
+     */
+    public void close() {
+        for (Appender appender : appenders.values()) {
+            appender.close();
+        }
+    }
+
     @Override
     public Enumeration getAllAppenders() {
         return Collections.enumeration(appenders.values());
@@ -70,27 +92,5 @@ public class AppenderAttachableImpl implements AppenderAttachable {
     @Override
     public void removeAppender(String name) {
         appenders.remove(name);
-    }
-
-    /**
-     * Calls the <code>doAppend</code> method on all attached appenders.
-     * 
-     * @param event The event to log.
-     * @return The number of appenders.
-     */
-    public int appendLoopOnAppenders(LoggingEvent event) {
-        for (Appender appender : appenders.values()) {
-            appender.doAppend(event);
-        }
-        return appenders.size();
-    }
-
-    /**
-     * Closes all appenders.
-     */
-    public void close() {
-        for (Appender appender : appenders.values()) {
-            appender.close();
-        }
     }
 }
