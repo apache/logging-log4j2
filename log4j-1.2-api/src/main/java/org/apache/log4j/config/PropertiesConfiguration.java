@@ -18,7 +18,6 @@ package org.apache.log4j.config;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -582,8 +581,7 @@ public class PropertiesConfiguration extends Log4j1Configuration {
     private static <T> T newInstanceOf(final String className, final String type) {
         try {
             return LoaderUtil.newInstanceOf(className);
-        } catch (ClassNotFoundException | IllegalAccessException | NoSuchMethodException |
-                InstantiationException | InvocationTargetException ex) {
+        } catch (ReflectiveOperationException ex) {
             LOGGER.error("Unable to create {} {} due to {}:{}", type,  className,
                     ex.getClass().getSimpleName(), ex.getMessage());
             return null;
