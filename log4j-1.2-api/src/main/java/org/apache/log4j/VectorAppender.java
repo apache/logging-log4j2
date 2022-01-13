@@ -22,7 +22,7 @@ import java.util.Vector;
 import org.apache.log4j.spi.LoggingEvent;
 
 /**
- * An appender that appends logging events to a vector.
+ * Appends logging events to a vector.
  */
 public class VectorAppender extends AppenderSkeleton {
 
@@ -37,6 +37,7 @@ public class VectorAppender extends AppenderSkeleton {
      */
     @Override
     public void activateOptions() {
+        // noop
     }
 
     /**
@@ -50,6 +51,7 @@ public class VectorAppender extends AppenderSkeleton {
         try {
             Thread.sleep(100);
         } catch (final Exception e) {
+            // ignore
         }
         vector.addElement(event);
     }
