@@ -16,15 +16,15 @@
  */
 package org.apache.log4j.helpers;
 
-import org.apache.log4j.Appender;
-import org.apache.log4j.spi.AppenderAttachable;
-import org.apache.log4j.spi.LoggingEvent;
-
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import org.apache.log4j.Appender;
+import org.apache.log4j.spi.AppenderAttachable;
+import org.apache.log4j.spi.LoggingEvent;
 
 /**
  * Allows Classes to attach Appenders.
@@ -34,7 +34,7 @@ public class AppenderAttachableImpl implements AppenderAttachable {
     private final ConcurrentMap<String, Appender> appenders = new ConcurrentHashMap<>();
 
     @Override
-    public void addAppender(Appender newAppender) {
+    public void addAppender(final Appender newAppender) {
         if (newAppender != null) {
             // NullAppender name is null.
             appenders.put(Objects.toString(newAppender.getName()), newAppender);
@@ -43,12 +43,12 @@ public class AppenderAttachableImpl implements AppenderAttachable {
 
     /**
      * Calls the <code>doAppend</code> method on all attached appenders.
-     * 
+     *
      * @param event The event to log.
      * @return The number of appenders.
      */
-    public int appendLoopOnAppenders(LoggingEvent event) {
-        for (Appender appender : appenders.values()) {
+    public int appendLoopOnAppenders(final LoggingEvent event) {
+        for (final Appender appender : appenders.values()) {
             appender.doAppend(event);
         }
         return appenders.size();
@@ -58,7 +58,7 @@ public class AppenderAttachableImpl implements AppenderAttachable {
      * Closes all appenders.
      */
     public void close() {
-        for (Appender appender : appenders.values()) {
+        for (final Appender appender : appenders.values()) {
             appender.close();
         }
     }
@@ -69,13 +69,13 @@ public class AppenderAttachableImpl implements AppenderAttachable {
     }
 
     @Override
-    public Appender getAppender(String name) {
+    public Appender getAppender(final String name) {
         // No null keys allowed in a CHM.
         return name == null ? null : appenders.get(name);
     }
 
     @Override
-    public boolean isAttached(Appender appender) {
+    public boolean isAttached(final Appender appender) {
         return appenders.containsValue(appender);
     }
 
@@ -85,12 +85,12 @@ public class AppenderAttachableImpl implements AppenderAttachable {
     }
 
     @Override
-    public void removeAppender(Appender appender) {
+    public void removeAppender(final Appender appender) {
         appenders.remove(appender.getName(), appender);
     }
 
     @Override
-    public void removeAppender(String name) {
+    public void removeAppender(final String name) {
         appenders.remove(name);
     }
 }
