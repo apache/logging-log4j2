@@ -18,7 +18,6 @@ package org.apache.log4j.bridge;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
-import org.apache.log4j.helpers.AppenderAttachableImpl;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggingEvent;
@@ -27,18 +26,28 @@ import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * Holds a Log4j 2 Appender in an empty Log4j 1 Appender so it can be extracted when constructing the configuration.
+ * Wraps a Log4j 2 Appender in an empty Log4j 1 Appender so it can be extracted when constructing the configuration.
  * Allows a Log4j 1 Appender to reference a Log4j 2 Appender.
  */
-public class AppenderWrapper extends AppenderAttachableImpl implements Appender {
+public class AppenderWrapper implements Appender {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
     private final org.apache.logging.log4j.core.Appender appender;
 
+    /**
+     * Constructs a new instance for a Core Appender.
+     *
+     * @param appender a Core Appender.
+     */
     public AppenderWrapper(org.apache.logging.log4j.core.Appender appender) {
         this.appender = appender;
     }
 
+    /**
+     * Gets the wrapped Core Appender.
+     *
+     * @return the wrapped Core Appender.
+     */
     public org.apache.logging.log4j.core.Appender getAppender() {
         return appender;
     }
@@ -63,7 +72,7 @@ public class AppenderWrapper extends AppenderAttachableImpl implements Appender 
 
     @Override
     public void clearFilters() {
-
+        // noop
     }
 
     @Override
@@ -90,7 +99,7 @@ public class AppenderWrapper extends AppenderAttachableImpl implements Appender 
 
     @Override
     public ErrorHandler getErrorHandler() {
-        return ((ErrorHandlerAdapter)appender.getHandler()).getHandler();
+        return ((ErrorHandlerAdapter) appender.getHandler()).getHandler();
     }
 
     @Override
