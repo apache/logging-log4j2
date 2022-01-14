@@ -21,11 +21,11 @@ import java.util.logging.LogRecord;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 
 /**
- * Extension of {@link java.util.logging.LogRecord} with lazy get source related methods.
+ * Extension of {@link java.util.logging.LogRecord} with lazy get source related methods based on Log4j's {@link StackLocatorUtil#calcLocation(String)}.
  *
  * @author <a href="http://www.vorburger.ch">Michael Vorburger.ch</a> for Google
  */
-/* package-local */ final class LazyLogRecord extends LogRecord {
+/* package-local */ final class LazyLog4jLogRecord extends LogRecord {
 
     private static final long serialVersionUID = 6798134264543826471L;
 
@@ -34,7 +34,7 @@ import org.apache.logging.log4j.util.StackLocatorUtil;
 
     private final String fqcn;
 
-    LazyLogRecord(String fqcn, Level level, String msg) {
+    LazyLog4jLogRecord(String fqcn, Level level, String msg) {
         super(level, msg);
         this.fqcn = fqcn;
     }

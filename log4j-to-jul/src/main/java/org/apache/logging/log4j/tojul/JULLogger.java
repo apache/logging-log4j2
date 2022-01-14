@@ -59,7 +59,7 @@ final class JULLogger extends AbstractLogger {
         if (!logger.isLoggable(julLevel)) {
             return;
         }
-        LazyLogRecord record = new LazyLogRecord(fqcn, julLevel, message.getFormattedMessage()); // NOT getFormat()
+        LazyLog4jLogRecord record = new LazyLog4jLogRecord(fqcn, julLevel, message.getFormattedMessage()); // NOT getFormat()
         // NOT record.setParameters(message.getParameters()); BECAUSE getFormattedMessage() NOT getFormat()
         record.setLoggerName(getName());
         record.setThrown(t == null ? message.getThrowable() : t);
