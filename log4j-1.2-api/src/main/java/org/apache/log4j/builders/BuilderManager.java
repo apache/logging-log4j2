@@ -152,7 +152,7 @@ public class BuilderManager {
         return null;
     }
 
-    private <T extends AbstractBuilder> T createBuilder(PluginType<?> plugin, String prefix, Properties props) {
+    private <T extends Builder> T createBuilder(PluginType<?> plugin, String prefix, Properties props) {
         try {
             Class<?> clazz = plugin.getPluginClass();
             if (AbstractBuilder.class.isAssignableFrom(clazz)) {

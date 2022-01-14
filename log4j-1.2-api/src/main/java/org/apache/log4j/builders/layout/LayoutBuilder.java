@@ -17,6 +17,7 @@
 package org.apache.log4j.builders.layout;
 
 import org.apache.log4j.Layout;
+import org.apache.log4j.builders.Builder;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.xml.XmlConfiguration;
 import org.w3c.dom.Element;
@@ -24,7 +25,7 @@ import org.w3c.dom.Element;
 /**
  * Define a Layout Builder.
  */
-public interface LayoutBuilder {
+public interface LayoutBuilder extends Builder {
 
     Layout parseLayout(Element element, XmlConfiguration config);
 
