@@ -22,15 +22,13 @@ import org.apache.logging.log4j.util.StackLocatorUtil;
 
 /**
  * Extension of {@link java.util.logging.LogRecord} with lazy get source related methods based on Log4j's {@link StackLocatorUtil#calcLocation(String)}.
- *
- * @author <a href="http://www.vorburger.ch">Michael Vorburger.ch</a> for Google
  */
-/* package-local */ final class LazyLog4jLogRecord extends LogRecord {
+final class LazyLog4jLogRecord extends LogRecord {
 
     private static final long serialVersionUID = 6798134264543826471L;
 
     // parent class LogRecord already has a needToInferCaller but it's private
-    private transient boolean stillNeedToInferCaller = true;
+    private transient boolean inferCaller = true;
 
     private final String fqcn;
 
@@ -41,7 +39,7 @@ import org.apache.logging.log4j.util.StackLocatorUtil;
 
     @Override
     public String getSourceClassName() {
-        if (stillNeedToInferCaller) {
+        if (inferCaller) {
             inferCaller();
         }
         return super.getSourceClassName();
@@ -49,16 +47,16 @@ import org.apache.logging.log4j.util.StackLocatorUtil;
 
     @Override
     public String getSourceMethodName() {
-        if (stillNeedToInferCaller) {
+        if (inferCaller) {
             inferCaller();
         }
         return super.getSourceMethodName();
     }
 
-    private void inferCaller() {
+    private synchronized void inferCaller() {
         StackTraceElement location = StackLocatorUtil.calcLocation(fqcn);
         setSourceClassName(location.getClassName());
         setSourceMethodName(location.getMethodName());
-        stillNeedToInferCaller = false;
+        inferCaller = false;
     }
 }
