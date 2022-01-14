@@ -18,7 +18,6 @@ package org.apache.logging.log4j.tojul;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
@@ -60,15 +59,11 @@ final class JULLogger extends AbstractLogger {
         if (!logger.isLoggable(julLevel)) {
             return;
         }
-        LogRecord record = new LogRecord(julLevel, message.getFormattedMessage()); // NOT getFormat()
+        LazyLog4jLogRecord record = new LazyLog4jLogRecord(fqcn, julLevel, message.getFormattedMessage()); // NOT getFormat()
         // NOT record.setParameters(message.getParameters()); BECAUSE getFormattedMessage() NOT getFormat()
         record.setLoggerName(getName());
         record.setThrown(t == null ? message.getThrowable() : t);
-        // Source class/method is not supported (yet)
-        record.setSourceClassName(null);
-        record.setSourceMethodName(null);
         logger.log(record);
-        // fqcn is un-used
     }
 
     // Convert Level in Log4j scale to JUL scale.
