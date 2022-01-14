@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+  <appender name="RFA" class="org.apache.log4j.DailyRollingFileAppender">
+    <param name="File" value="${java.io.tmpdir}/hadoop.log" />
+  </appender>
+
+  <root>
+    <priority value="trace" />
+    <appender-ref ref="RFA" />
+  </root>
+</log4j:configuration>

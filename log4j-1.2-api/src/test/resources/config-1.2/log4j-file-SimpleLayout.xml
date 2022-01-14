@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+  <appender name="File" class="org.apache.log4j.FileAppender">
+    <param name="File" value="target/mylog.txt" />
+    <layout class="org.apache.log4j.SimpleLayout" />
+  </appender>
+
+  <logger name="com.example.foo">
+    <level value="DEBUG" />
+  </logger>
+
+  <root>
+    <priority value="trace" />
+    <appender-ref ref="File" />
+  </root>
+</log4j:configuration>
