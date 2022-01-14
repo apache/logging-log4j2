@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+  <appender name="Console" class="org.apache.log4j.ConsoleAppender">
+    <param name="target" value="System.err" />
+    <layout class="org.apache.log4j.HTMLLayout">
+      <param name="Title" value="Headline" />
+      <param name="LocationInfo" value="true" />
+    </layout>
+  </appender>
+
+  <logger name="com.example.foo">
+    <level value="DEBUG" />
+  </logger>
+
+  <root>
+    <priority value="trace" />
+    <appender-ref ref="Console" />
+  </root>
+</log4j:configuration>
