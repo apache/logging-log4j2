@@ -53,7 +53,7 @@ final class LazyLog4jLogRecord extends LogRecord {
         return super.getSourceMethodName();
     }
 
-    private synchronized void inferCaller() {
+    private void inferCaller() {
         StackTraceElement location = null;
         if (fqcn != null) {
             location = StackLocatorUtil.calcLocation(fqcn);
