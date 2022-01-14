@@ -107,11 +107,14 @@ public final class StatusLogger extends AbstractLogger {
         final boolean showDateTime = !Strings.isEmpty(dateFormat);
         this.logger = new SimpleLogger("StatusLogger", Level.ERROR, false, true, showDateTime, false,
                 dateFormat, messageFactory, PROPS, System.err);
-        this.listenersLevel = Level.toLevel(DEFAULT_STATUS_LEVEL, Level.WARN).intLevel();
+        final Level defaultStatusLevel = Level.toLevel(DEFAULT_STATUS_LEVEL, Level.WARN);
+        this.listenersLevel = defaultStatusLevel.intLevel();
 
         // LOG4J2-1813 if system property "log4j2.debug" is defined, print all status logging
         if (isDebugPropertyEnabled()) {
             logger.setLevel(Level.TRACE);
+        } else {
+            logger.setLevel(defaultStatusLevel);
         }
     }
 
