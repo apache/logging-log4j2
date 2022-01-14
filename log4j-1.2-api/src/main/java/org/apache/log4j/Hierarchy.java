@@ -16,7 +16,7 @@
  */
 
 // WARNING This class MUST not have references to the Category or
-// WARNING RootCategory classes in its static initiliazation neither
+// WARNING RootCategory classes in its static initialization neither
 // WARNING directly nor indirectly.
 
 package org.apache.log4j;
@@ -29,17 +29,19 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.legacy.core.ContextUtil;
 import org.apache.log4j.or.ObjectRenderer;
 import org.apache.log4j.or.RendererMap;
 import org.apache.log4j.spi.HierarchyEventListener;
 import org.apache.log4j.spi.LoggerFactory;
+import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.RendererSupport;
 import org.apache.log4j.spi.ThrowableRenderer;
 import org.apache.log4j.spi.ThrowableRendererSupport;
 import org.apache.logging.log4j.core.appender.AsyncAppender;
 import org.apache.logging.log4j.spi.AbstractLoggerAdapter;
 import org.apache.logging.log4j.spi.LoggerContext;
-import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 
 /**
  * This class is specialized in retrieving loggers by name and also maintaining the logger hierarchy.
@@ -58,7 +60,7 @@ import org.apache.logging.log4j.util.Strings;
  * provision node.
  * </p>
  */
-public class Hierarchy implements LoggerRepository2, RendererSupport, ThrowableRendererSupport {
+public class Hierarchy implements LoggerRepository, RendererSupport, ThrowableRendererSupport {
 
     private static class PrivateLoggerAdapter extends AbstractLoggerAdapter<Logger> {
 
@@ -170,12 +172,14 @@ public class Hierarchy implements LoggerRepository2, RendererSupport, ThrowableR
      *
      * <p>
      * You should <em>really</em> know what you are doing before invoking this method.
+     * </p>
      *
      * @since 0.9.0
      */
     public void clear() {
         // System.out.println("\n\nAbout to clear internal hash table.");
         ht.clear();
+        getLoggersMap(getContext()).clear();
     }
 
     @Override
@@ -197,8 +201,15 @@ public class Hierarchy implements LoggerRepository2, RendererSupport, ThrowableR
      */
     @Override
     public Logger exists(final String name) {
-        final LoggerContext ctx = getContext();
-        if (!ctx.hasLogger(name)) {
+        return exists(name, getContext());
+    }
+
+    Logger exists(final String name, final ClassLoader classLoader) {
+        return exists(name, getContext(classLoader));
+    }
+
+    Logger exists(final String name, final LoggerContext loggerContext) {
+        if (!loggerContext.hasLogger(name)) {
             return null;
         }
         return Logger.getLogger(name);
@@ -227,6 +238,10 @@ public class Hierarchy implements LoggerRepository2, RendererSupport, ThrowableR
         }
     }
 
+    LoggerContext getContext(final ClassLoader classLoader) {
+        return LogManager.getContext(classLoader);
+    }
+
     /**
      * @deprecated Please use {@link #getCurrentLoggers} instead.
      */
@@ -241,22 +256,25 @@ public class Hierarchy implements LoggerRepository2, RendererSupport, ThrowableR
      *
      * <p>
      * The root logger is <em>not</em> included in the returned {@link Enumeration}.
+     * </p>
      */
     @Override
     public Enumeration getCurrentLoggers() {
         // The accumlation in v is necessary because not all elements in
         // ht are Logger objects as there might be some ProvisionNodes
         // as well.
-        final Vector v = new Vector(ht.size());
+//        final Vector v = new Vector(ht.size());
+//
+//        final Enumeration elems = ht.elements();
+//        while (elems.hasMoreElements()) {
+//            final Object o = elems.nextElement();
+//            if (o instanceof Logger) {
+//                v.addElement(o);
+//            }
+//        }
+//        return v.elements();
 
-        final Enumeration elems = ht.elements();
-        while (elems.hasMoreElements()) {
-            final Object o = elems.nextElement();
-            if (o instanceof Logger) {
-                v.addElement(o);
-            }
-        }
-        return v.elements();
+        return LogManager.getCurrentLoggers(StackLocatorUtil.getCallerClassLoader(2));
     }
 
     /**
@@ -265,6 +283,7 @@ public class Hierarchy implements LoggerRepository2, RendererSupport, ThrowableR
      * <p>
      * If a logger of that name already exists, then it will be returned. Otherwise, a new logger will be instantiated and
      * then linked with its existing ancestors as well as children.
+     * </p>
      *
      * @param name The name of the logger to retrieve.
      *
@@ -274,9 +293,8 @@ public class Hierarchy implements LoggerRepository2, RendererSupport, ThrowableR
         return getInstance(getContext(), name);
     }
 
-    @Override
-    public Logger getLogger(final String name, final ClassLoader classLoader) {
-        return getInstance(LogManager.getContext(classLoader), name);
+    Logger getLogger(final String name, final ClassLoader classLoader) {
+        return getInstance(getContext(classLoader), name);
     }
 
     /**
@@ -285,6 +303,7 @@ public class Hierarchy implements LoggerRepository2, RendererSupport, ThrowableR
      * <p>
      * If a logger of that name already exists, then it will be returned. Otherwise, a new logger will be instantiated by
      * the <code>factory</code> parameter and linked with its existing ancestors as well as children.
+     * </p>
      *
      * @param name The name of the logger to retrieve.
      * @param factory The factory that will make the new logger instance.
@@ -295,9 +314,8 @@ public class Hierarchy implements LoggerRepository2, RendererSupport, ThrowableR
         return getInstance(getContext(), name, factory);
     }
 
-    @Override
-    public Logger getLogger(final String name, final LoggerFactory factory, final ClassLoader classLoader) {
-        return getInstance(LogManager.getContext(classLoader), name, factory);
+    Logger getLogger(final String name, final LoggerFactory factory, final ClassLoader classLoader) {
+        return getInstance(getContext(classLoader), name, factory);
     }
 
     /**
@@ -316,6 +334,10 @@ public class Hierarchy implements LoggerRepository2, RendererSupport, ThrowableR
     @Override
     public Logger getRootLogger() {
         return getInstance(getContext(), org.apache.logging.log4j.LogManager.ROOT_LOGGER_NAME);
+    }
+
+    Logger getRootLogger(final ClassLoader classLoader) {
+        return getInstance(getContext(classLoader), org.apache.logging.log4j.LogManager.ROOT_LOGGER_NAME);
     }
 
     /**
@@ -361,6 +383,7 @@ public class Hierarchy implements LoggerRepository2, RendererSupport, ThrowableR
      *
      * <p>
      * Existing categories are not removed. They are just reset.
+     * </p>
      *
      * <p>
      * This method should be used sparingly and with care as it will block all logging until it is completed.
@@ -370,6 +393,15 @@ public class Hierarchy implements LoggerRepository2, RendererSupport, ThrowableR
      */
     @Override
     public void resetConfiguration() {
+        resetConfiguration(getContext());
+    }
+
+    void resetConfiguration(final ClassLoader classLoader) {
+        resetConfiguration(getContext(classLoader));
+    }
+
+    void resetConfiguration(final LoggerContext loggerContext) {
+        getLoggersMap(loggerContext).clear();
 
         getRootLogger().setLevel(Level.DEBUG);
         root.setResourceBundle(null);
@@ -413,13 +445,13 @@ public class Hierarchy implements LoggerRepository2, RendererSupport, ThrowableR
     /**
      * Enable logging for logging requests with level <code>l</code> or higher. By default all levels are enabled.
      *
-     * @param l The minimum level for which logging requests are sent to their appenders.
+     * @param level The minimum level for which logging requests are sent to their appenders.
      */
     @Override
-    public void setThreshold(final Level l) {
-        if (l != null) {
-            thresholdInt = l.level;
-            threshold = l;
+    public void setThreshold(final Level level) {
+        if (level != null) {
+            thresholdInt = level.level;
+            threshold = level;
         }
     }
 
@@ -428,9 +460,9 @@ public class Hierarchy implements LoggerRepository2, RendererSupport, ThrowableR
      */
     @Override
     public void setThreshold(final String levelStr) {
-        final Level l = Level.toLevel(levelStr, null);
-        if (l != null) {
-            setThreshold(l);
+        final Level level = Level.toLevel(levelStr, null);
+        if (level != null) {
+            setThreshold(level);
         } else {
             LogLog.warn("Could not convert [" + levelStr + "] to Level.");
         }
@@ -440,8 +472,8 @@ public class Hierarchy implements LoggerRepository2, RendererSupport, ThrowableR
      * {@inheritDoc}
      */
     @Override
-    public void setThrowableRenderer(final ThrowableRenderer renderer) {
-        throwableRenderer = renderer;
+    public void setThrowableRenderer(final ThrowableRenderer throwableRenderer) {
+        this.throwableRenderer = throwableRenderer;
     }
 
     /**
@@ -461,26 +493,37 @@ public class Hierarchy implements LoggerRepository2, RendererSupport, ThrowableR
      */
     @Override
     public void shutdown() {
-        final Logger root = getRootLogger();
+      shutdown(getContext());
+  }
 
-        // begin by closing nested appenders
-        root.closeNestedAppenders();
+    public void shutdown(final ClassLoader classLoader) {
+      shutdown(org.apache.logging.log4j.LogManager.getContext(classLoader, false));
+  }
 
-        synchronized (ht) {
-            Enumeration cats = this.getCurrentLoggers();
-            while (cats.hasMoreElements()) {
-                final Logger c = (Logger) cats.nextElement();
-                c.closeNestedAppenders();
-            }
-
-            // then, remove all appenders
-            root.removeAllAppenders();
-            cats = this.getCurrentLoggers();
-            while (cats.hasMoreElements()) {
-                final Logger c = (Logger) cats.nextElement();
-                c.removeAllAppenders();
-            }
-        }
+    void shutdown(final LoggerContext context) {
+//      final Logger root = getRootLogger();
+//      // begin by closing nested appenders
+//      root.closeNestedAppenders();
+//
+//      synchronized (ht) {
+//          Enumeration cats = this.getCurrentLoggers();
+//          while (cats.hasMoreElements()) {
+//              final Logger c = (Logger) cats.nextElement();
+//              c.closeNestedAppenders();
+//          }
+//
+//          // then, remove all appenders
+//          root.removeAllAppenders();
+//          cats = this.getCurrentLoggers();
+//          while (cats.hasMoreElements()) {
+//              final Logger c = (Logger) cats.nextElement();
+//              c.removeAllAppenders();
+//          }
+//      }
+        getLoggersMap(context).clear();
+          if (LogManager.isLog4jCorePresent()) {
+              ContextUtil.shutdown(context);
+          }
     }
 
     /**
