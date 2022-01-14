@@ -50,9 +50,10 @@ import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.Test;
 
-public class Log4j1ConfigurationFactoryTest {
+public class Log4j1ConfigurationFactoryTest extends AbstractLog4j1ConfigurationTest {
 
-    static Configuration getConfiguration(final String configResource) throws URISyntaxException {
+    @Override
+    protected Configuration getConfiguration(final String configResource) throws URISyntaxException {
         final URL configLocation = ClassLoader.getSystemResource(configResource);
         assertNotNull(configResource, configLocation);
         final Configuration configuration = new Log4j1ConfigurationFactory().getConfiguration(null, "test",
