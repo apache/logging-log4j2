@@ -28,82 +28,100 @@ import org.apache.logging.log4j.util.Strings;
 
 /**
  * Levels used for identifying the severity of an event. Levels are organized from most specific to least:
- * <ul>
- * <li>{@link #OFF} (most specific, no logging)</li>
- * <li>{@link #FATAL} (most specific, little data)</li>
- * <li>{@link #ERROR}</li>
- * <li>{@link #WARN}</li>
- * <li>{@link #INFO}</li>
- * <li>{@link #DEBUG}</li>
- * <li>{@link #TRACE} (least specific, a lot of data)</li>
- * <li>{@link #ALL} (least specific, all data)</li>
- * </ul>
- *
+ * <table>
+ * <tr>
+ * <th>Name</th>
+ * <th>Description</th>
+ * </tr>
+ * <tr>
+ * <td>{@link #OFF}</td>
+ * <td>No events will be logged.</td>
+ * </tr>
+ * <tr>
+ * <td>{@link #FATAL}</td>
+ * <td>A fatal event that will prevent the application from continuing.</td>
+ * </tr>
+ * <tr>
+ * <td>{@link #ERROR}</td>
+ * <td>An error in the application, possibly recoverable.</td>
+ * </tr>
+ * <tr>
+ * <td>{@link #WARN}</td>
+ * <td>An event that might possible lead to an error.</td>
+ * </tr>
+ * <tr>
+ * <td>{@link #INFO}</td>
+ * <td>An event for informational purposes.</td>
+ * </tr>
+ * <tr>
+ * <td>{@link #DEBUG}</td>
+ * <td>A general debugging event.</td>
+ * </tr>
+ * <tr>
+ * <td>{@link #TRACE}</td>
+ * <td>A fine-grained debug message, typically capturing the flow through the application.</td>
+ * </tr>
+ * <tr>
+ * <td>{@link #ALL}</td>
+ * <td>All events should be logged.</td>
+ * </tr>
+ * </table>
+ * <p>
  * Typically, configuring a level in a filter or on a logger will cause logging events of that level and those that are
  * more specific to pass through the filter. A special level, {@link #ALL}, is guaranteed to capture all levels when
  * used in logging configurations.
+ * </p>
  */
 public final class Level implements Comparable<Level>, Serializable {
+
+    private static final ConcurrentMap<String, Level> LEVELS = new ConcurrentHashMap<>(); // SUPPRESS CHECKSTYLE
 
     /**
      * No events will be logged.
      */
-    public static final Level OFF;
+    public static final Level OFF = new Level("OFF", StandardLevel.OFF.intLevel());
 
     /**
      * A fatal event that will prevent the application from continuing.
      */
-    public static final Level FATAL;
+    public static final Level FATAL = new Level("FATAL", StandardLevel.FATAL.intLevel());
 
     /**
      * An error in the application, possibly recoverable.
      */
-    public static final Level ERROR;
+    public static final Level ERROR = new Level("ERROR", StandardLevel.ERROR.intLevel());
 
     /**
      * An event that might possible lead to an error.
      */
-    public static final Level WARN;
+    public static final Level WARN = new Level("WARN", StandardLevel.WARN.intLevel());
 
     /**
      * An event for informational purposes.
      */
-    public static final Level INFO;
+    public static final Level INFO = new Level("INFO", StandardLevel.INFO.intLevel());
 
     /**
      * A general debugging event.
      */
-    public static final Level DEBUG;
+    public static final Level DEBUG = new Level("DEBUG", StandardLevel.DEBUG.intLevel());
 
     /**
      * A fine-grained debug message, typically capturing the flow through the application.
      */
-    public static final Level TRACE;
+    public static final Level TRACE = new Level("TRACE", StandardLevel.TRACE.intLevel());
 
     /**
      * All events should be logged.
      */
-    public static final Level ALL;
+    public static final Level ALL = new Level("ALL", StandardLevel.ALL.intLevel());
 
     /**
      * @since 2.1
      */
     public static final String CATEGORY = "Level";
 
-    private static final ConcurrentMap<String, Level> LEVELS = new ConcurrentHashMap<>(); // SUPPRESS CHECKSTYLE
-
     private static final long serialVersionUID = 1581082L;
-
-    static {
-        OFF = new Level("OFF", StandardLevel.OFF.intLevel());
-        FATAL = new Level("FATAL", StandardLevel.FATAL.intLevel());
-        ERROR = new Level("ERROR", StandardLevel.ERROR.intLevel());
-        WARN = new Level("WARN", StandardLevel.WARN.intLevel());
-        INFO = new Level("INFO", StandardLevel.INFO.intLevel());
-        DEBUG = new Level("DEBUG", StandardLevel.DEBUG.intLevel());
-        TRACE = new Level("TRACE", StandardLevel.TRACE.intLevel());
-        ALL = new Level("ALL", StandardLevel.ALL.intLevel());
-    }
 
     private final String name;
     private final int intLevel;
