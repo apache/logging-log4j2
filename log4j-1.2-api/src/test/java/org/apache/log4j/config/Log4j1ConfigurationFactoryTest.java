@@ -112,4 +112,10 @@ public class Log4j1ConfigurationFactoryTest extends AbstractLog4j1ConfigurationT
 		super.testSystemProperties2();
 	}
 
+    @Override
+    @Test
+    public void testRecursiveProperties() throws Exception {
+        super.testRecursiveProperties();
+    }
+
 }
