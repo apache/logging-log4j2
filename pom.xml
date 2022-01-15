@@ -157,7 +157,20 @@
           <picUrl>https://mir-s3-cdn-cf.behance.net/user/138/403dcf1521581.54d67f8fb01f7.jpg</picUrl>
         </properties>
       </contributor>
-   </contributors>
+      <contributor>
+        <name>Michael Vorburger.ch</name>
+        <email>vorburger@apache.org</email>
+        <url>http://www.vorburger.ch</url>
+        <roles>
+          <role>https://github.com/apache/logging-log4j2/commits?author=vorburger</role>
+          <role>JULer</role>
+        </roles>
+        <timezone>Europe/Zurich</timezone>
+        <properties>
+          <picUrl>http://www.vorburger.ch/michael_vorburger_portrait_in_bay_of_roses_spain_with_bad_lighting.jpg</picUrl>
+        </properties>
+      </contributor>
+  </contributors>
   <mailingLists>
     <mailingList>
       <name>log4j-user</name>
