@@ -378,7 +378,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
         }
 
         if (compressAction != null && manager.isAttributeViewEnabled()) {
-            // Propagate posix attribute view to compressed file
+            // Propagate POSIX attribute view to compressed file
             // @formatter:off
             final Action posixAttributeViewAction = PosixViewAttributeAction.newBuilder()
                                                     .withBasePath(compressedName)
