@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 
+import static org.junit.Assert.assertSame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -59,6 +60,16 @@ public class InterpolatorTest {
     public static void afterClass() {
         System.clearProperty(TESTKEY);
         System.clearProperty(TESTKEY2);
+    }
+
+    @Test
+    public void testGetDefaultLookup() {
+        final Map<String, String> map = new HashMap<>();
+        map.put(TESTKEY, TESTVAL);
+        final MapLookup defaultLookup = new MapLookup(map);
+        final Interpolator interpolator = new Interpolator(defaultLookup);
+        assertEquals(defaultLookup.getMap(), ((MapLookup) interpolator.getDefaultLookup()).getMap());
+        assertSame(defaultLookup, interpolator.getDefaultLookup());
     }
 
     @Test
