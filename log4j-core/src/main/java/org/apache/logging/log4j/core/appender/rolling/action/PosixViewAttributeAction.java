@@ -299,7 +299,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
     @Override
     public String toString() {
         return "PosixViewAttributeAction [filePermissions=" + filePermissions + ", fileOwner="
-                + fileOwner + ", fileGroup=" + fileGroup + ", getBasePath()=" + getBasePath()
+                + fileOwner + ", fileGroup=" + fileGroup + ", getBasePath()=" + getBasePathString()
                 + ", getMaxDepth()=" + getMaxDepth() + ", getPathConditions()="
                 + getPathConditions() + "]";
     }

@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitor;
@@ -52,7 +53,7 @@ public class DeleteActionTest {
     }
 
     @Test
-    public void testGetBasePathResolvesLookups() {
+    public void testGetBasePathResolvesLookups() throws IOException {
         final DeleteAction delete = createAnyFilter("${sys:user.home}/a/b/c", false, 1, false);
 
         final Path actual = delete.getBasePath();
@@ -94,14 +95,14 @@ public class DeleteActionTest {
     }
 
     @Test
-    public void testCreateFileVisitorReturnsDeletingVisitor() {
+    public void testCreateFileVisitorReturnsDeletingVisitor() throws IOException {
         final DeleteAction delete = createAnyFilter("any", true, 0, false);
         final FileVisitor<Path> visitor = delete.createFileVisitor(delete.getBasePath(), delete.getPathConditions());
         assertThat(visitor, instanceOf(DeletingVisitor.class));
     }
 
     @Test
-    public void testCreateFileVisitorTestModeIsActionTestMode() {
+    public void testCreateFileVisitorTestModeIsActionTestMode() throws IOException {
         final DeleteAction delete = createAnyFilter("any", true, 0, false);
         assertFalse(delete.isTestMode());
         final FileVisitor<Path> visitor = delete.createFileVisitor(delete.getBasePath(), delete.getPathConditions());
