@@ -210,4 +210,17 @@ public abstract class AbstractLog4j1ConfigurationTest {
 		configuration.start();
 		configuration.stop();
 	}
+
+    public void testRecursiveProperties() throws Exception {
+        final Configuration configuration = getConfiguration("config-1.2/log4j-file-recursive");
+        final FileAppender appender = configuration.getAppender("File");
+        assertNotNull(appender);
+        assertEquals("target/path/to/the/logFile.txt", appender.getFileName());
+        //
+        final LoggerConfig loggerConfig = configuration.getLoggerConfig("com.example.foo");
+        assertNotNull(loggerConfig);
+        assertEquals(Level.DEBUG, loggerConfig.getLevel());
+        final LoggerConfig rootLogger = configuration.getRootLogger();
+        assertEquals(Level.TRACE, rootLogger.getLevel());
+    }
 }

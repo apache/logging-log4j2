@@ -259,4 +259,11 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
 	public void testSystemProperties2() throws Exception {
 		super.testSystemProperties2();
 	}
+
+    @Override
+    @Test
+    public void testRecursiveProperties() throws Exception {
+        super.testRecursiveProperties();
+    }
+
 }
