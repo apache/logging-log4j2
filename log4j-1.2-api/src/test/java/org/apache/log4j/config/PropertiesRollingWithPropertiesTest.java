@@ -22,18 +22,18 @@ import java.io.File;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.junit.BeforeClass;
+import org.apache.logging.log4j.test.SystemPropertyTestRule;
+import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 
 /**
  * Test configuration from Properties.
  */
 public class PropertiesRollingWithPropertiesTest {
 
-    @BeforeClass
-    public static void setupClass() {
-        System.setProperty("log4j.configuration", "target/test-classes/log4j1-rolling-properties.properties");
-    }
+    @ClassRule
+    public static TestRule SP_RULE = SystemPropertyTestRule.create("log4j.configuration", "target/test-classes/log4j1-rolling-properties.properties");
 
     @Test
     public void testProperties() throws Exception {
