@@ -18,13 +18,16 @@ package org.apache.log4j.config;
 
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.logging.log4j.core.test.SystemPropertyTestRule;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 
 /**
@@ -32,16 +35,23 @@ import org.junit.rules.TestRule;
  */
 public class PropertiesRollingWithPropertiesTest {
 
+    private static final String TEST_DIR = "target/" + PropertiesRollingWithPropertiesTest.class.getSimpleName();
+
     @ClassRule
-    public static TestRule SP_RULE = SystemPropertyTestRule.create("log4j.configuration", "target/test-classes/log4j1-rolling-properties.properties");
+    public static TestRule SP_RULE = RuleChain.emptyRuleChain()
+    //@formatter:off
+        .around(SystemPropertyTestRule.create("test.directory", TEST_DIR))
+        .around(SystemPropertyTestRule.create("log4j.configuration", "target/test-classes/log4j1-rolling-properties.properties"));
+    //@formatter:on
 
     @Test
     public void testProperties() throws Exception {
-        Logger logger = LogManager.getLogger("test");
+        final Logger logger = LogManager.getLogger("test");
         logger.debug("This is a test of the root logger");
-        File file = new File("target/rolling/somefile.log");
-        assertTrue("Log file was not created", file.exists());
-        assertTrue("Log file is empty", file.length() > 0);
+        final Path path = Paths.get(TEST_DIR, "somefile.log");
+        assertTrue("Log file was not created", Files.exists(path));
+        assertTrue("Log file is empty", Files.size(path) > 0);
+
     }
 
 }
