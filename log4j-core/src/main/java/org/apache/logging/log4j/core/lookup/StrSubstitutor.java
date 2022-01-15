@@ -59,7 +59,7 @@ import org.apache.logging.log4j.util.Strings;
  * The following example demonstrates this:
  * </p>
  * <pre>
- * Map valuesMap = HashMap();
+ * Map valuesMap = new HashMap&lt;&gt;();
  * valuesMap.put(&quot;animal&quot;, &quot;quick brown fox&quot;);
  * valuesMap.put(&quot;target&quot;, &quot;lazy dog&quot;);
  * String templateString = &quot;The ${animal} jumped over the ${target}.&quot;;
@@ -80,7 +80,7 @@ import org.apache.logging.log4j.util.Strings;
  * The following shows an example with variable default value settings:
  * </p>
  * <pre>
- * Map valuesMap = HashMap();
+ * Map valuesMap = new HashMap&lt;&gt;();
  * valuesMap.put(&quot;animal&quot;, &quot;quick brown fox&quot;);
  * valuesMap.put(&quot;target&quot;, &quot;lazy dog&quot;);
  * String templateString = &quot;The ${animal} jumped over the ${target}. ${undefined.number:-1234567890}.&quot;;
