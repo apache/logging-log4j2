@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
- *
+ * Tests {@link Interpolator}.
  */
 public class InterpolatorTest {
 
@@ -51,7 +51,7 @@ public class InterpolatorTest {
     private static final String TEST_CONTEXT_NAME = "app-1";
 
     @ClassRule
-    public static RuleChain rules = RuleChain.outerRule(new ExternalResource() {
+    public final static RuleChain RULES = RuleChain.outerRule(new ExternalResource() {
         @Override
         protected void before() throws Throwable {
             System.setProperty(TESTKEY, TESTVAL);
@@ -67,6 +67,16 @@ public class InterpolatorTest {
         }
     }).around(new JndiRule(
         JndiLookup.CONTAINER_JNDI_RESOURCE_PATH_PREFIX + TEST_CONTEXT_RESOURCE_NAME, TEST_CONTEXT_NAME));
+
+    @Test
+    public void testGetDefaultLookup() {
+        final Map<String, String> map = new HashMap<>();
+        map.put(TESTKEY, TESTVAL);
+        final MapLookup defaultLookup = new MapLookup(map);
+        final Interpolator interpolator = new Interpolator(defaultLookup);
+        assertEquals(defaultLookup.getMap(), ((MapLookup) interpolator.getDefaultLookup()).getMap());
+        assertSame(defaultLookup, interpolator.getDefaultLookup());
+    }
 
     @Test
     public void testLookup() {
@@ -119,7 +129,6 @@ public class InterpolatorTest {
         assertLookupNotEmpty(lookup, "java:locale");
         assertLookupNotEmpty(lookup, "java:hw");
     }
-
 
     @Test
     public void testInterpolatorMapMessageWithNoPrefix() {
