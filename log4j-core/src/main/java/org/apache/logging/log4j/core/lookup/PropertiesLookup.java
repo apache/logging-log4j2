@@ -34,16 +34,28 @@ public final class PropertiesLookup implements StrLookup {
      */
     private final Map<String, String> properties;
 
+    /**
+     * Constructs a new instance for the given map.
+     *
+     * @param properties map these.
+     */
     public PropertiesLookup(final Map<String, String> properties) {
         this.properties = properties == null
                 ? Collections.emptyMap()
                 : properties;
     }
 
+    /**
+     * Gets the property map.
+     *
+     * @return the property map.
+     */
+    public Map<String, String> getProperties() {
+        return properties;
+    }
+
     @Override
-    public String lookup(
-            @SuppressWarnings("ignored") final LogEvent event,
-            final String key) {
+    public String lookup(@SuppressWarnings("ignored") final LogEvent event, final String key) {
         return lookup(key);
     }
 
@@ -65,4 +77,5 @@ public final class PropertiesLookup implements StrLookup {
     public String toString() {
         return "PropertiesLookup{properties=" + properties + '}';
     }
+
 }
