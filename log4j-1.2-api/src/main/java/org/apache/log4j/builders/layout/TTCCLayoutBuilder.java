@@ -59,10 +59,10 @@ public class TTCCLayoutBuilder extends AbstractBuilder implements LayoutBuilder 
 
     @Override
     public Layout parseLayout(Element layoutElement, XmlConfiguration config) {
-        final AtomicBoolean threadPrinting = new AtomicBoolean();
-        final AtomicBoolean categoryPrefixing = new AtomicBoolean();
-        final AtomicBoolean contextPrinting = new AtomicBoolean();
-        final AtomicReference<String> dateFormat = new AtomicReference<>();
+        final AtomicBoolean threadPrinting = new AtomicBoolean(Boolean.TRUE);
+        final AtomicBoolean categoryPrefixing = new AtomicBoolean(Boolean.TRUE);
+        final AtomicBoolean contextPrinting = new AtomicBoolean(Boolean.TRUE);
+        final AtomicReference<String> dateFormat = new AtomicReference<>(RELATIVE);
         final AtomicReference<String> timezone = new AtomicReference<>();
         forEachElement(layoutElement.getElementsByTagName("param"), currentElement -> {
             if (currentElement.getTagName().equals(PARAM_TAG)) {
@@ -91,10 +91,10 @@ public class TTCCLayoutBuilder extends AbstractBuilder implements LayoutBuilder 
 
     @Override
     public Layout parseLayout(PropertiesConfiguration config) {
-        boolean threadPrinting = getBooleanProperty(THREAD_PRINTING_PARAM);
-        boolean categoryPrefixing = getBooleanProperty(CATEGORY_PREFIXING_PARAM);
-        boolean contextPrinting = getBooleanProperty(CONTEXT_PRINTING_PARAM);
-        String dateFormat = getProperty(DATE_FORMAT_PARAM);
+        boolean threadPrinting = getBooleanProperty(THREAD_PRINTING_PARAM, true);
+        boolean categoryPrefixing = getBooleanProperty(CATEGORY_PREFIXING_PARAM, true);
+        boolean contextPrinting = getBooleanProperty(CONTEXT_PRINTING_PARAM, true);
+        String dateFormat = getProperty(DATE_FORMAT_PARAM, RELATIVE);
         String timezone = getProperty(TIMEZONE_FORMAT);
 
         return createLayout(threadPrinting, categoryPrefixing, contextPrinting,

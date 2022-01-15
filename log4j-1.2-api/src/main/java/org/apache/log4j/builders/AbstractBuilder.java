@@ -91,7 +91,11 @@ public abstract class AbstractBuilder {
     }
 
     public boolean getBooleanProperty(String key) {
-        return Boolean.parseBoolean(getProperty(key, Boolean.FALSE.toString()));
+        return getBooleanProperty(key, false);
+    }
+
+    public boolean getBooleanProperty(String key, boolean defaultValue) {
+        return Boolean.parseBoolean(getProperty(key, Boolean.toString(defaultValue)));
     }
 
     public int getIntegerProperty(String key, int defaultValue) {
@@ -151,4 +155,11 @@ public abstract class AbstractBuilder {
         return value == null ? null : value.toLowerCase(Locale.ROOT);
     }
 
+    protected String capitalize(final String value) {
+        if (value == null || value.length() == 0)
+            return value;
+        char[] chars = value.toCharArray();
+        chars[0] = Character.toUpperCase(chars[0]);
+        return new String(chars);
+    }
 }
