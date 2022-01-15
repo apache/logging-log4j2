@@ -102,14 +102,10 @@ public abstract class AbstractPathAction extends AbstractAction {
      *
      * @return the base path (all lookups resolved)
      */
-    public Path getBasePath() {
+    public Path getBasePath() throws IOException {
         Path path = Paths.get(subst.replace(getBasePathString()));
         if (Files.isSymbolicLink(path)) {
-            try {
-                path = Files.readSymbolicLink(path);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+           path = Files.readSymbolicLink(path);
         }
         return path;
     }
@@ -165,7 +161,7 @@ public abstract class AbstractPathAction extends AbstractAction {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[basePath=" + getBasePath() + ", options=" + options + ", maxDepth="
+        return getClass().getSimpleName() + "[basePath=" + getBasePathString() + ", options=" + options + ", maxDepth="
                 + maxDepth + ", conditions=" + pathConditions + "]";
     }
 }
