@@ -242,7 +242,6 @@ public final class LoaderUtil {
      * 
      * @param <T> the type of the class modeled by the {@code Class} object.
      * @param clazz The class.
-     * @param <T> The Class's type.
      * @return new instance of the class.
      * @throws IllegalAccessException if the class can't be instantiated through a public constructor
      * @throws InstantiationException if there was an exception whilst instantiating the class
