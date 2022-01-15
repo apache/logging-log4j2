@@ -64,6 +64,101 @@ public class StrSubstitutorTest {
     }
 
     @Test
+    public void testJavaDocExample() {
+        final Map<String, String> valuesMap = new HashMap<>();
+        valuesMap.put("animal", "quick brown fox");
+        valuesMap.put("target", "lazy dog");
+        final String templateString = "The ${animal} jumped over the ${target}.";
+        final StrSubstitutor sub = new StrSubstitutor(valuesMap);
+        final String resolvedString = sub.replace(templateString);
+        assertEquals("The quick brown fox jumped over the lazy dog.", resolvedString);
+    }
+
+    @Test
+    public void testDelimiterExampleFromJavaDoc() {
+        final Map<String, String> valuesMap = new HashMap<>();
+        valuesMap.put("animal", "quick brown fox");
+        valuesMap.put("target", "lazy dog");
+        final String templateString = "The ${animal} jumped over the ${target}. ${undefined.number:-1234567890}";
+        final StrSubstitutor sub = new StrSubstitutor(valuesMap);
+        final String resolvedString = sub.replace(templateString);
+        assertEquals("The quick brown fox jumped over the lazy dog. 1234567890", resolvedString);
+    }
+
+    @Test
+    public void testEscapedRecursionExampleFromJavaDoc() {
+        final Map<String, String> valuesMap = new HashMap<>();
+        valuesMap.put("name", "x");
+        final String templateString = "The variable $${${name}} must be used.";
+        final StrSubstitutor sub = new StrSubstitutor(valuesMap);
+
+        sub.setEnableSubstitutionInVariables(false);
+        final String resolvedString = sub.replace(templateString);
+        assertEquals("The variable ${x} must be used.", resolvedString);
+
+        // Due to escaping enabling recursion now should make no difference.
+        sub.setEnableSubstitutionInVariables(true);
+        final String resolvedStringWithRecursion = sub.replace(templateString);
+        assertEquals(resolvedString, resolvedStringWithRecursion);
+    }
+
+    @Test
+    public void testPrePostfixRecursionExampleFromJavaDoc() {
+        final Map<String, String> valuesMap = new HashMap<>();
+        valuesMap.put("name", "x");
+        final String templateString = "The variable ${$[name]} must be used.";
+        final StrSubstitutor sub = new StrSubstitutor(valuesMap, "$[", "]");
+        final String resolvedString = sub.replace(templateString);
+        assertEquals("The variable ${x} must be used.", resolvedString);
+    }
+
+    @Test
+    public void testRecursionExampleFromJavaDoc() {
+        final Map<String, String> valuesMap = new HashMap<>();
+        valuesMap.put("name", "x");
+        valuesMap.put("x", "3");
+        final String templateString = "The value ${${name}} must be used.";
+        final StrSubstitutor sub = new StrSubstitutor(valuesMap);
+
+        sub.setEnableSubstitutionInVariables(false);
+        assertEquals("The value ${${name}} must be used.", sub.replace(templateString));
+
+        sub.setEnableSubstitutionInVariables(true);
+        assertEquals("The value 3 must be used.", sub.replace(templateString));
+    }
+
+    @Test
+    public void testValueEscapeDelimiter() {
+        final Map<String, String> valuesMap = new HashMap<>();
+        // Example from MainMapLookup. Key contains ":-"
+        valuesMap.put("main:--file", "path/file.txt");
+        // Create substitutor, initially without support for escaping :-
+        final StrSubstitutor sub = new StrSubstitutor(
+                new PropertiesLookup(valuesMap),
+                StrSubstitutor.DEFAULT_PREFIX,
+                StrSubstitutor.DEFAULT_SUFFIX,
+                StrSubstitutor.DEFAULT_ESCAPE,
+                StrSubstitutor.DEFAULT_VALUE_DELIMITER,
+                null // Ensure valueEscapeMatcher == null
+        );
+        // regular default values work without a valueEscapeMatcher.
+        assertEquals("3", sub.replace("${y:-3}"));
+        // variables with ':-' are treated as if they have a default value
+        assertEquals("-file", sub.replace("${main:--file}"));
+        // yet escaping doesn't work anymore (results in the original string).
+        assertEquals("${main:\\--file}", sub.replace("${main:\\--file}"));
+
+        // ensure there is valueEscapeMatcher (by resetting the value delimiter)
+        sub.setValueDelimiter(StrSubstitutor.DEFAULT_VALUE_DELIMITER_STRING);
+        // now the escaped variable with ":-" in it will be resolved.
+        assertEquals("path/file.txt", sub.replace("${main:\\--file}"));
+        // default values continue to work:
+        assertEquals("no help", sub.replace("${main:\\--help:-no help}"));
+        // even in minimalistic corner case:
+        assertEquals("", sub.replace("${:\\-:-}"));
+    }
+
+    @Test
     public void testDefault() {
         final Map<String, String> map = new HashMap<>();
         map.put(TESTKEY, TESTVAL);
