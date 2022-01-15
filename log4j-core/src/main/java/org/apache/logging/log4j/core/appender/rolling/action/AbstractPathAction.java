@@ -103,7 +103,15 @@ public abstract class AbstractPathAction extends AbstractAction {
      * @return the base path (all lookups resolved)
      */
     public Path getBasePath() {
-        return Paths.get(subst.replace(getBasePathString()));
+        Path path = Paths.get(subst.replace(getBasePathString()));
+        if (Files.isSymbolicLink(path)) {
+            try {
+                path = Files.readSymbolicLink(path);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return path;
     }
 
     /**
