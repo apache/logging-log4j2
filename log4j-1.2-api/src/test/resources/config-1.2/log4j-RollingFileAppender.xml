@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
-  <appender name="RFA" class="org.apache.log4j.DailyRollingFileAppender">
+  <appender name="RFA" class="org.apache.log4j.RollingFileAppender">
     <param name="File" value="target/hadoop.log" />
     <param name="MaxFileSize" value="256MB" />
     <param name="MaxBackupIndex" value="20" />
