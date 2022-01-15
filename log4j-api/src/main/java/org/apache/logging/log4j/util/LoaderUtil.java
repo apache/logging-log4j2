@@ -239,7 +239,8 @@ public final class LoaderUtil {
 
     /**
      * Loads and instantiates a Class using the default constructor.
-     *
+     * 
+     * @param <T> the type of the class modeled by the {@code Class} object.
      * @param clazz The class.
      * @param <T> The Class's type.
      * @return new instance of the class.
