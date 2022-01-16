@@ -26,7 +26,6 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.logging.log4j.core.test.SystemPropertyTestRule;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
@@ -34,7 +33,6 @@ import org.junit.rules.TestRule;
 /**
  * Test configuration from Properties.
  */
-@Ignore
 public class XmlRollingWithPropertiesTest {
 
     private static final String TEST_DIR = "target/" + XmlRollingWithPropertiesTest.class.getSimpleName();
@@ -49,11 +47,12 @@ public class XmlRollingWithPropertiesTest {
     @Test
     public void testProperties() throws Exception {
         // ${test.directory}/logs/etl.log
-        Logger logger = LogManager.getLogger("test");
+        final Path path = Paths.get(TEST_DIR, "logs/etl.log");
+        Files.deleteIfExists(path);
+        final Logger logger = LogManager.getLogger("test");
         logger.debug("This is a test of the root logger");
-        Path path = Paths.get(TEST_DIR, "logs/etl.log");
-        assertTrue("Log file was not created", Files.exists(path));
-        assertTrue("Log file is empty", Files.size(path) > 0);
+        assertTrue("Log file was not created " + path, Files.exists(path));
+        assertTrue("Log file is empty " + path, Files.size(path) > 0);
     }
 
 }

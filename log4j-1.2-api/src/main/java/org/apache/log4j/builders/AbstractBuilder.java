@@ -87,7 +87,7 @@ public abstract class AbstractBuilder {
     }
 
     protected String getValueAttribute(Element element) {
-        return element.getAttribute(VALUE_ATTR);
+        return substVars(element.getAttribute(VALUE_ATTR));
     }
 
     public boolean getBooleanProperty(String key) {
