@@ -62,7 +62,7 @@ public class FileAppenderBuilder extends AbstractBuilder implements AppenderBuil
 
     @Override
     public Appender parseAppender(Element appenderElement, XmlConfiguration config) {
-        String name = appenderElement.getAttribute(NAME_ATTR);
+        String name = getNameAttribute(appenderElement);
         Holder<Layout> layout = new Holder<>();
         Holder<Filter> filter = new Holder<>();
         Holder<String> fileName = new Holder<>();
@@ -80,12 +80,12 @@ public class FileAppenderBuilder extends AbstractBuilder implements AppenderBuil
                     filter.set(config.parseFilters(currentElement));
                     break;
                 case PARAM_TAG: {
-                    switch (currentElement.getAttribute(NAME_ATTR)) {
+                    switch (getNameAttribute(currentElement)) {
                         case FILE_PARAM:
-                            fileName.set(currentElement.getAttribute(VALUE_ATTR));
+                            fileName.set(getValueAttribute(currentElement));
                             break;
                         case APPEND_PARAM: {
-                            String bool = currentElement.getAttribute(VALUE_ATTR);
+                            String bool = getValueAttribute(currentElement);
                             if (bool != null) {
                                 append.set(Boolean.parseBoolean(bool));
                             } else {
@@ -94,7 +94,7 @@ public class FileAppenderBuilder extends AbstractBuilder implements AppenderBuil
                             break;
                         }
                         case BUFFERED_IO_PARAM: {
-                            String bool = currentElement.getAttribute(VALUE_ATTR);
+                            String bool = getValueAttribute(currentElement);
                             if (bool != null) {
                                 bufferedIo.set(Boolean.parseBoolean(bool));
                             } else {
@@ -103,7 +103,7 @@ public class FileAppenderBuilder extends AbstractBuilder implements AppenderBuil
                             break;
                         }
                         case BUFFER_SIZE_PARAM: {
-                            String size = currentElement.getAttribute(VALUE_ATTR);
+                            String size = getValueAttribute(currentElement);
                             if (size != null) {
                                 bufferSize.set(Integer.parseInt(size));
                             } else {
@@ -112,7 +112,7 @@ public class FileAppenderBuilder extends AbstractBuilder implements AppenderBuil
                             break;
                         }
                         case THRESHOLD_PARAM: {
-                            String value = currentElement.getAttribute(VALUE_ATTR);
+                            String value = getValueAttribute(currentElement);
                             if (value == null) {
                                 LOGGER.warn("No value supplied for Threshold parameter, ignoring.");
                             } else {

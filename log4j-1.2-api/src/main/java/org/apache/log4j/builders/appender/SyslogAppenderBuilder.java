@@ -67,7 +67,7 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
 
     @Override
     public Appender parseAppender(Element appenderElement, XmlConfiguration config) {
-        String name = appenderElement.getAttribute(NAME_ATTR);
+        String name = getNameAttribute(appenderElement);
         Holder<Layout> layout = new Holder<>();
         Holder<Filter> filter = new Holder<>();
         Holder<String> facility = new Holder<>();
@@ -82,16 +82,16 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
                     filter.set(config.parseFilters(currentElement));
                     break;
                 case PARAM_TAG: {
-                    switch (currentElement.getAttribute(NAME_ATTR)) {
+                    switch (getNameAttribute(currentElement)) {
                         case SYSLOG_HOST_PARAM: {
-                            host.set(currentElement.getAttribute(VALUE_ATTR));
+                            host.set(getValueAttribute(currentElement));
                             break;
                         }
                         case FACILITY_PARAM:
-                            facility.set(currentElement.getAttribute(VALUE_ATTR));
+                            facility.set(getValueAttribute(currentElement));
                             break;
                         case THRESHOLD_PARAM: {
-                            String value = currentElement.getAttribute(VALUE_ATTR);
+                            String value = getValueAttribute(currentElement);
                             if (value == null) {
                                 LOGGER.warn("No value supplied for Threshold parameter, ignoring.");
                             } else {

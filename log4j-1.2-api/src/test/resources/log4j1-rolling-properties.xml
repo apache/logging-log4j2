@@ -18,7 +18,7 @@
 <!-- See https://issues.apache.org/jira/browse/LOG4J2-3328 -->
 <log4j:configuration>
   <appender name="DAILY" class="org.apache.log4j.RollingFileAppender">
-    <param name="File" value="${sys:test.directory}/logs/etl.log" />
+    <param name="File" value="${test.directory}/logs/etl.log" />
     <param name="DatePattern" value="'.'yyyy-MM-dd" />
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="GATEWAY: %p %d [%t] %c{1}.%M(%L) | %m%n" />

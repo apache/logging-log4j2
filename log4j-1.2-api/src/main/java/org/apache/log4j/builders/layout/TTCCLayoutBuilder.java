@@ -65,21 +65,21 @@ public class TTCCLayoutBuilder extends AbstractBuilder implements LayoutBuilder 
         final Holder<String> timezone = new Holder<>();
         forEachElement(layoutElement.getElementsByTagName("param"), (currentElement) -> {
             if (currentElement.getTagName().equals(PARAM_TAG)) {
-                switch (currentElement.getAttribute(NAME_ATTR)) {
+                switch (getNameAttribute(currentElement)) {
                     case THREAD_PRINTING_PARAM:
-                        threadPrinting.set(Boolean.parseBoolean(currentElement.getAttribute(VALUE_ATTR)));
+                        threadPrinting.set(Boolean.parseBoolean(getValueAttribute(currentElement)));
                         break;
                     case CATEGORY_PREFIXING_PARAM:
-                        categoryPrefixing.set(Boolean.parseBoolean(currentElement.getAttribute(VALUE_ATTR)));
+                        categoryPrefixing.set(Boolean.parseBoolean(getValueAttribute(currentElement)));
                         break;
                     case CONTEXT_PRINTING_PARAM:
-                        contextPrinting.set(Boolean.parseBoolean(currentElement.getAttribute(VALUE_ATTR)));
+                        contextPrinting.set(Boolean.parseBoolean(getValueAttribute(currentElement)));
                         break;
                     case DATE_FORMAT_PARAM:
-                        dateFormat.set(currentElement.getAttribute(VALUE_ATTR));
+                        dateFormat.set(getValueAttribute(currentElement));
                         break;
                     case TIMEZONE_FORMAT:
-                        timezone.set(currentElement.getAttribute(VALUE_ATTR));
+                        timezone.set(getValueAttribute(currentElement));
                         break;
                 }
             }

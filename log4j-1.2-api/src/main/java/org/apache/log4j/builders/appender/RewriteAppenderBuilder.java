@@ -67,7 +67,7 @@ public class RewriteAppenderBuilder extends AbstractBuilder implements AppenderB
 
     @Override
     public Appender parseAppender(final Element appenderElement, final XmlConfiguration config) {
-        String name = appenderElement.getAttribute(NAME_ATTR);
+        String name = getNameAttribute(appenderElement);
         Holder<List<String>> appenderRefs = new Holder<>(new ArrayList<>());
         Holder<RewritePolicy> rewritePolicyHolder = new Holder<>();
         Holder<String> level = new Holder<>();
@@ -92,8 +92,8 @@ public class RewriteAppenderBuilder extends AbstractBuilder implements AppenderB
                     break;
                 }
                 case PARAM_TAG: {
-                    if (currentElement.getAttribute(NAME_ATTR).equalsIgnoreCase(THRESHOLD_PARAM)) {
-                        String value = currentElement.getAttribute(VALUE_ATTR);
+                    if (getNameAttribute(currentElement).equalsIgnoreCase(THRESHOLD_PARAM)) {
+                        String value = getValueAttribute(currentElement);
                         if (value == null) {
                             LOGGER.warn("No value supplied for Threshold parameter, ignoring.");
                         } else {

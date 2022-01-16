@@ -64,7 +64,7 @@ public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBui
 
     @Override
     public Appender parseAppender(final Element appenderElement, final XmlConfiguration config) {
-        String name = appenderElement.getAttribute(NAME_ATTR);
+        String name = getNameAttribute(appenderElement);
         Holder<List<String>> appenderRefs = new Holder<>(new ArrayList<>());
         Holder<Boolean> blocking = new BooleanHolder();
         Holder<Boolean> includeLocation = new BooleanHolder();
@@ -79,9 +79,9 @@ public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBui
                     }
                     break;
                 case PARAM_TAG: {
-                    switch (currentElement.getAttribute(NAME_ATTR)) {
+                    switch (getNameAttribute(currentElement)) {
                         case BUFFER_SIZE_PARAM: {
-                            String value = currentElement.getAttribute(VALUE_ATTR);
+                            String value = getValueAttribute(currentElement);
                             if (value == null) {
                                 LOGGER.warn("No value supplied for BufferSize parameter. Defaulting to 1024.");
                             } else {
@@ -90,7 +90,7 @@ public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBui
                             break;
                         }
                         case BLOCKING_PARAM: {
-                            String value = currentElement.getAttribute(VALUE_ATTR);
+                            String value = getValueAttribute(currentElement);
                             if (value == null) {
                                 LOGGER.warn("No value supplied for Blocking parameter. Defaulting to false.");
                             } else {
@@ -99,7 +99,7 @@ public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBui
                             break;
                         }
                         case INCLUDE_LOCATION_PARAM: {
-                            String value = currentElement.getAttribute(VALUE_ATTR);
+                            String value = getValueAttribute(currentElement);
                             if (value == null) {
                                 LOGGER.warn("No value supplied for IncludeLocation parameter. Defaulting to false.");
                             } else {
@@ -108,7 +108,7 @@ public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBui
                             break;
                         }
                         case THRESHOLD_PARAM: {
-                            String value = currentElement.getAttribute(VALUE_ATTR);
+                            String value = getValueAttribute(currentElement);
                             if (value == null) {
                                 LOGGER.warn("No value supplied for Threshold parameter, ignoring.");
                             } else {
