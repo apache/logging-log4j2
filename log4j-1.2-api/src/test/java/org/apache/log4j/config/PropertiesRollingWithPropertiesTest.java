@@ -46,9 +46,10 @@ public class PropertiesRollingWithPropertiesTest {
 
     @Test
     public void testProperties() throws Exception {
+        final Path path = Paths.get(TEST_DIR, "somefile.log");
+        Files.deleteIfExists(path);
         final Logger logger = LogManager.getLogger("test");
         logger.debug("This is a test of the root logger");
-        final Path path = Paths.get(TEST_DIR, "somefile.log");
         assertTrue("Log file was not created", Files.exists(path));
         assertTrue("Log file is empty", Files.size(path) > 0);
 
