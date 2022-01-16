@@ -112,7 +112,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     /**
      * Shutdown timeout in milliseconds.
      */
-    protected long shutdownTimeoutMillis = 0;
+    protected long shutdownTimeoutMillis;
 
     /**
      * The Script manager.
