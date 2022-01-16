@@ -666,7 +666,7 @@ public class XmlConfiguration extends Log4j1Configuration {
 
     private void setParameter(Element element, PropertySetter propSetter) {
         String name = subst(element.getAttribute(NAME_ATTR));
-        String value = (element.getAttribute(VALUE_ATTR));
+        String value = element.getAttribute(VALUE_ATTR);
         value = subst(OptionConverter.convertSpecialChars(value));
         propSetter.setProperty(name, value);
     }
