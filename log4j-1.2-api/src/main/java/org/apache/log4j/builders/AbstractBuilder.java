@@ -82,14 +82,26 @@ public abstract class AbstractBuilder {
         return value == null ? defaultValue : value;
     }
 
+    /**
+     * Returns the value of the "name" attribute.
+     * 
+     * @param element
+     *            an XML element
+     * @return the value of the "name" attribute
+     */
     protected String getNameAttribute(Element element) {
         return element.getAttribute(NAME_ATTR);
     }
 
     /**
      * Normalized version of the "name" attribute of the &lt;param&gt; tag.
+     * Since Log4j 1.x accepts component property names in both capitalized
+     * ('InfoLocation') and Java-style ('infoLocation') format, we return the
+     * capitalized form.
+     * 
      * @param element
-     * @return
+     *            an XML element
+     * @return a normalized attribute value
      */
     protected String getNormalizedNameAttribute(Element element) {
         return capitalize(getNameAttribute(element));
