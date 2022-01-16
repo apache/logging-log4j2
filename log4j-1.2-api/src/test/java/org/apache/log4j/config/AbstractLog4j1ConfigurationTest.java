@@ -27,6 +27,9 @@ import java.net.URISyntaxException;
 import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.layout.Log4j1XmlLayout;
@@ -35,10 +38,10 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LifeCycle.State;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
+import org.apache.logging.log4j.core.appender.ConsoleAppender.Target;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.appender.NullAppender;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
-import org.apache.logging.log4j.core.appender.ConsoleAppender.Target;
 import org.apache.logging.log4j.core.appender.rolling.CompositeTriggeringPolicy;
 import org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.RolloverStrategy;
@@ -47,7 +50,6 @@ import org.apache.logging.log4j.core.appender.rolling.TimeBasedTriggeringPolicy;
 import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
@@ -247,5 +249,15 @@ public abstract class AbstractLog4j1ConfigurationTest {
         assertEquals(Level.DEBUG, loggerConfig.getLevel());
         final LoggerConfig rootLogger = configuration.getRootLogger();
         assertEquals(Level.TRACE, rootLogger.getLevel());
+        appender.stop();
+        final List<Path> paths = Arrays.asList(Paths.get("target/path/to/the/logFile.txt"), Paths.get("target/path/to/the"),
+                Paths.get("target/path/to"), Paths.get("target/path"));
+        paths.forEach(t -> {
+            try {
+                Files.deleteIfExists(t);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 }
