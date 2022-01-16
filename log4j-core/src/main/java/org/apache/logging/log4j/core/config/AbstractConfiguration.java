@@ -123,7 +123,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * The Advertiser which exposes appender configurations to external systems.
      */
     private Advertiser advertiser = new DefaultAdvertiser();
-    private Node advertiserNode = null;
+    private Node advertiserNode;
     private Object advertisement;
     private String name;
     private ConcurrentMap<String, Appender> appenders = new ConcurrentHashMap<>();
@@ -154,7 +154,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         pluginManager = new PluginManager(Node.CATEGORY);
         rootNode = new Node();
         setState(State.INITIALIZING);
-
     }
 
     @Override
