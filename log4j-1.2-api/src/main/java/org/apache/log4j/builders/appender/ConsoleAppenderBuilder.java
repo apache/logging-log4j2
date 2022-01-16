@@ -78,7 +78,7 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
                     filters.get().add(config.parseFilters(currentElement));
                     break;
                 case PARAM_TAG: {
-                    switch (getNameAttribute(currentElement)) {
+                    switch (getNormalizedNameAttribute(currentElement)) {
                         case TARGET: {
                             String value = getValueAttribute(currentElement);
                             if (value == null) {

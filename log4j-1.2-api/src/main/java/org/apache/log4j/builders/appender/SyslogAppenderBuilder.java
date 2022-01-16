@@ -88,7 +88,7 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
                     filter.set(config.parseFilters(currentElement));
                     break;
                 case PARAM_TAG: {
-                    switch (getNameAttribute(currentElement)) {
+                    switch (getNormalizedNameAttribute(currentElement)) {
                         case SYSLOG_HOST_PARAM: {
                             host.set(getValueAttribute(currentElement));
                             break;

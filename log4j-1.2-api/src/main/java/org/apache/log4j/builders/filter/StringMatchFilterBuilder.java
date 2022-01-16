@@ -49,7 +49,7 @@ public class StringMatchFilterBuilder extends AbstractBuilder implements FilterB
         final AtomicReference<String> text = new AtomicReference<>();
         forEachElement(filterElement.getElementsByTagName("param"), currentElement -> {
             if (currentElement.getTagName().equals("param")) {
-                switch (getNameAttribute(currentElement)) {
+                switch (getNormalizedNameAttribute(currentElement)) {
                     case STRING_TO_MATCH:
                         text.set(getValueAttribute(currentElement));
                         break;

@@ -66,7 +66,7 @@ public class TTCCLayoutBuilder extends AbstractBuilder implements LayoutBuilder 
         final AtomicReference<String> timezone = new AtomicReference<>();
         forEachElement(layoutElement.getElementsByTagName("param"), currentElement -> {
             if (currentElement.getTagName().equals(PARAM_TAG)) {
-                switch (getNameAttribute(currentElement)) {
+                switch (getNormalizedNameAttribute(currentElement)) {
                     case THREAD_PRINTING_PARAM:
                         threadPrinting.set(Boolean.parseBoolean(getValueAttribute(currentElement)));
                         break;
