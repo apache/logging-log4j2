@@ -83,7 +83,7 @@ public abstract class AbstractBuilder {
     }
 
     protected String getNameAttribute(Element element) {
-        return element.getAttribute(NAME_ATTR);
+        return capitalize(element.getAttribute(NAME_ATTR));
     }
 
     protected String getValueAttribute(Element element) {

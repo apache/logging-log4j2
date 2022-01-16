@@ -51,7 +51,7 @@ import org.w3c.dom.Element;
 public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderBuilder {
     private static final String SYSTEM_OUT = "System.out";
     private static final String SYSTEM_ERR = "System.err";
-    private static final String TARGET = "target";
+    private static final String TARGET = "Target";
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
