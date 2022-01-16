@@ -60,7 +60,7 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final String FACILITY_PARAM = "Facility";
     private static final String SYSLOG_HOST_PARAM = "SyslogHost";
-    private static final String PROTOCOL_PARAM = "protocol";
+    private static final String PROTOCOL_PARAM = "Protocol";
 
 
     public SyslogAppenderBuilder() {
