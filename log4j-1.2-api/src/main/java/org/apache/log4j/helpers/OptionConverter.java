@@ -344,7 +344,9 @@ public class OptionConverter {
 
     private static String substVars(final String val, final Properties props, final List<String> keys)
             throws IllegalArgumentException {
-
+        if (val == null) {
+            return null;
+        }
         final StringBuilder sbuf = new StringBuilder();
 
         int i = 0;

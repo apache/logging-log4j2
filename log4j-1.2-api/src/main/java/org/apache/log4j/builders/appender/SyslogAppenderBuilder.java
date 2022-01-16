@@ -20,9 +20,7 @@ import static org.apache.log4j.builders.BuilderManager.CATEGORY;
 import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
 import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
 import static org.apache.log4j.xml.XmlConfiguration.LAYOUT_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.NAME_ATTR;
 import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
 import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 
 import java.io.Serializable;
@@ -74,7 +72,7 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
 
     @Override
     public Appender parseAppender(Element appenderElement, XmlConfiguration config) {
-        String name = appenderElement.getAttribute(NAME_ATTR);
+        String name = getNameAttribute(appenderElement);
         AtomicReference<Layout> layout = new AtomicReference<>();
         AtomicReference<Filter> filter = new AtomicReference<>();
         AtomicReference<String> facility = new AtomicReference<>();
@@ -90,16 +88,16 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
                     filter.set(config.parseFilters(currentElement));
                     break;
                 case PARAM_TAG: {
-                    switch (currentElement.getAttribute(NAME_ATTR)) {
+                    switch (getNameAttribute(currentElement)) {
                         case SYSLOG_HOST_PARAM: {
-                            host.set(currentElement.getAttribute(VALUE_ATTR));
+                            host.set(getValueAttribute(currentElement));
                             break;
                         }
                         case FACILITY_PARAM:
-                            facility.set(currentElement.getAttribute(VALUE_ATTR));
+                            facility.set(getValueAttribute(currentElement));
                             break;
                         case THRESHOLD_PARAM: {
-                            String value = currentElement.getAttribute(VALUE_ATTR);
+                            String value = getValueAttribute(currentElement);
                             if (value == null) {
                                 LOGGER.warn("No value supplied for Threshold parameter, ignoring.");
                             } else {
@@ -108,7 +106,7 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
                             break;
                         }
                         case PROTOCOL_PARAM:
-                            protocol.set(Protocol.valueOf(currentElement.getAttribute(VALUE_ATTR)));
+                            protocol.set(Protocol.valueOf(getValueAttribute(currentElement)));
                             break;
                     }
                     break;

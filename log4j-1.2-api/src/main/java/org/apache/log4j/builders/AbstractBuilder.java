@@ -16,6 +16,9 @@
  */
 package org.apache.log4j.builders;
 
+import static org.apache.log4j.xml.XmlConfiguration.NAME_ATTR;
+import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +35,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.w3c.dom.Element;
 
 /**
  * Base class for Log4j 1 component builders.
@@ -74,8 +78,16 @@ public abstract class AbstractBuilder {
         String fullKey = prefix + key;
         String value = properties.getProperty(fullKey);
         value = value != null ? value : properties.getProperty(toLowerCase(fullKey), defaultValue);
-        value = value == null ? defaultValue : OptionConverter.substVars(value, properties);
+        value = value == null ? defaultValue : substVars(value);
         return value == null ? defaultValue : value;
+    }
+
+    protected String getNameAttribute(Element element) {
+        return element.getAttribute(NAME_ATTR);
+    }
+
+    protected String getValueAttribute(Element element) {
+        return element.getAttribute(VALUE_ATTR);
     }
 
     public boolean getBooleanProperty(String key) {
@@ -129,6 +141,10 @@ public abstract class AbstractBuilder {
             return new FilterAdapter(filter);
         }
         return null;
+    }
+
+    protected String substVars(String value) {
+        return OptionConverter.substVars(value, properties);
     }
 
     String toLowerCase(final String value) {

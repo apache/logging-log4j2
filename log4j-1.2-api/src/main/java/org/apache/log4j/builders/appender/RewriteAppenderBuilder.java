@@ -20,9 +20,7 @@ import static org.apache.log4j.builders.BuilderManager.CATEGORY;
 import static org.apache.log4j.config.Log4j1Configuration.APPENDER_REF_TAG;
 import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
 import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.NAME_ATTR;
 import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
 import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 
 import java.util.ArrayList;
@@ -68,7 +66,7 @@ public class RewriteAppenderBuilder extends AbstractBuilder implements AppenderB
 
     @Override
     public Appender parseAppender(final Element appenderElement, final XmlConfiguration config) {
-        String name = appenderElement.getAttribute(NAME_ATTR);
+        String name = getNameAttribute(appenderElement);
         AtomicReference<List<String>> appenderRefs = new AtomicReference<>(new ArrayList<>());
         AtomicReference<RewritePolicy> rewritePolicyHolder = new AtomicReference<>();
         AtomicReference<String> level = new AtomicReference<>();
@@ -93,8 +91,8 @@ public class RewriteAppenderBuilder extends AbstractBuilder implements AppenderB
                     break;
                 }
                 case PARAM_TAG: {
-                    if (currentElement.getAttribute(NAME_ATTR).equalsIgnoreCase(THRESHOLD_PARAM)) {
-                        String value = currentElement.getAttribute(VALUE_ATTR);
+                    if (getNameAttribute(currentElement).equalsIgnoreCase(THRESHOLD_PARAM)) {
+                        String value = getValueAttribute(currentElement);
                         if (value == null) {
                             LOGGER.warn("No value supplied for Threshold parameter, ignoring.");
                         } else {

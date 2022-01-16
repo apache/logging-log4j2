@@ -17,8 +17,6 @@
 package org.apache.log4j.builders.filter;
 
 import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.xml.XmlConfiguration.NAME_ATTR;
-import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
 import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -51,12 +49,12 @@ public class StringMatchFilterBuilder extends AbstractBuilder implements FilterB
         final AtomicReference<String> text = new AtomicReference<>();
         forEachElement(filterElement.getElementsByTagName("param"), currentElement -> {
             if (currentElement.getTagName().equals("param")) {
-                switch (currentElement.getAttribute(NAME_ATTR)) {
+                switch (getNameAttribute(currentElement)) {
                     case STRING_TO_MATCH:
-                        text.set(currentElement.getAttribute(VALUE_ATTR));
+                        text.set(getValueAttribute(currentElement));
                         break;
                     case ACCEPT_ON_MATCH:
-                        acceptOnMatch.set(Boolean.parseBoolean(currentElement.getAttribute(VALUE_ATTR)));
+                        acceptOnMatch.set(Boolean.parseBoolean(getValueAttribute(currentElement)));
                         break;
 
                 }

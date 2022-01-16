@@ -20,9 +20,7 @@ import static org.apache.log4j.builders.BuilderManager.CATEGORY;
 import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
 import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
 import static org.apache.log4j.xml.XmlConfiguration.LAYOUT_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.NAME_ATTR;
 import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
 import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 
 import java.util.Properties;
@@ -63,7 +61,7 @@ public class FileAppenderBuilder extends AbstractBuilder implements AppenderBuil
 
     @Override
     public Appender parseAppender(Element appenderElement, XmlConfiguration config) {
-        String name = appenderElement.getAttribute(NAME_ATTR);
+        String name = getNameAttribute(appenderElement);
         AtomicReference<Layout> layout = new AtomicReference<>();
         AtomicReference<Filter> filter = new AtomicReference<>();
         AtomicReference<String> fileName = new AtomicReference<>();
@@ -81,12 +79,12 @@ public class FileAppenderBuilder extends AbstractBuilder implements AppenderBuil
                     filter.set(config.parseFilters(currentElement));
                     break;
                 case PARAM_TAG: {
-                    switch (currentElement.getAttribute(NAME_ATTR)) {
+                    switch (getNameAttribute(currentElement)) {
                         case FILE_PARAM:
-                            fileName.set(currentElement.getAttribute(VALUE_ATTR));
+                            fileName.set(getValueAttribute(currentElement));
                             break;
                         case APPEND_PARAM: {
-                            String bool = currentElement.getAttribute(VALUE_ATTR);
+                            String bool = getValueAttribute(currentElement);
                             if (bool != null) {
                                 append.set(Boolean.parseBoolean(bool));
                             } else {
@@ -95,7 +93,7 @@ public class FileAppenderBuilder extends AbstractBuilder implements AppenderBuil
                             break;
                         }
                         case BUFFERED_IO_PARAM: {
-                            String bool = currentElement.getAttribute(VALUE_ATTR);
+                            String bool = getValueAttribute(currentElement);
                             if (bool != null) {
                                 bufferedIo.set(Boolean.parseBoolean(bool));
                             } else {
@@ -104,7 +102,7 @@ public class FileAppenderBuilder extends AbstractBuilder implements AppenderBuil
                             break;
                         }
                         case BUFFER_SIZE_PARAM: {
-                            String size = currentElement.getAttribute(VALUE_ATTR);
+                            String size = getValueAttribute(currentElement);
                             if (size != null) {
                                 bufferSize.set(Integer.parseInt(size));
                             } else {
@@ -113,7 +111,7 @@ public class FileAppenderBuilder extends AbstractBuilder implements AppenderBuil
                             break;
                         }
                         case THRESHOLD_PARAM: {
-                            String value = currentElement.getAttribute(VALUE_ATTR);
+                            String value = getValueAttribute(currentElement);
                             if (value == null) {
                                 LOGGER.warn("No value supplied for Threshold parameter, ignoring.");
                             } else {
