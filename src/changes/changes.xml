@@ -266,6 +266,9 @@
       <action dev="ggregory" type="fix" issue="LOG4J2-3326" due-to="Gary Gregory">
         Log4j 1.2 bridge class org.apache.log4j.spi.LoggingEvent missing constructors and public instance variable.
       </action>
+      <action dev="ggregory" type="fix" issue="LOG4J2-3328" due-to="Gary Gregory">
+        Log4j 1.2 bridge does not support system properties in log4j.xml.
+      </action>
       <action dev="ggregory" type="fix" issue="LOG4J2-3330" due-to="Mircea Lemnaru, Gary Gregory">
         Configurator.setLevel not fetching the correct LoggerContext.
       </action>
