@@ -33,6 +33,7 @@ import org.apache.log4j.layout.Log4j1XmlLayout;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LifeCycle.State;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.appender.NullAppender;
@@ -160,16 +161,24 @@ public abstract class AbstractLog4j1ConfigurationTest {
 		}
 	}
 
-	public void testSystemProperties2() throws Exception {
-		final Configuration configuration = getConfiguration("config-1.2/log4j-system-properties-2");
-		final RollingFileAppender appender = configuration.getAppender("RFA");
-		assertEquals("${java.io.tmpdir}/hadoop.log", appender.getFileName());
-		appender.stop(10, TimeUnit.SECONDS);
-		Path path = new File(appender.getFileName()).toPath();
-		Files.deleteIfExists(path);
-		path = new File("${java.io.tmpdir}").toPath();
-		Files.deleteIfExists(path);
-	}
+    public void testSystemProperties2() throws Exception {
+        final Configuration configuration = getConfiguration("config-1.2/log4j-system-properties-2");
+        final RollingFileAppender appender = configuration.getAppender("RFA");
+        final String tmpDir = System.getProperty("java.io.tmpdir");
+        assertEquals(tmpDir + "/hadoop.log", appender.getFileName());
+        // The appender should be in the INITIALIZED state, so no cleanup necessary
+        if (appender.getState() == State.STARTED) {
+            appender.stop(10, TimeUnit.SECONDS);
+            try {
+                Path path = new File(appender.getFileName()).toPath();
+                Files.deleteIfExists(path);
+                path = new File("${java.io.tmpdir}").toPath();
+                Files.deleteIfExists(path);
+            } catch (FileSystemException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
 	private void testRollingFileAppender(final String configResourcePrefix, final String name, final String filePattern)
 			throws Exception {
