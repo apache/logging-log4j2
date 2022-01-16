@@ -156,7 +156,7 @@ public class PropertiesConfigurationTest {
             final String name = "FILE_APPENDER";
             final Appender appender = configuration.getAppender(name);
             assertNotNull(name, appender);
-            assertTrue(appender instanceof FileAppender);
+            assertTrue(appender.getClass().getName(), appender instanceof FileAppender);
             final FileAppender fileAppender = (FileAppender) appender;
             // Two slashes because that's how the config file is setup.
             assertEquals(testPathLocation + "/hadoop.log", fileAppender.getFileName());
