@@ -270,17 +270,17 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     private void monitorSource(Reconfigurable reconfigurable, ConfigurationSource configSource) {
-		if (configSource.getLastModified() > 0) {
-			final Source cfgSource = new Source(configSource);
-			final Watcher watcher = WatcherFactory.getInstance(pluginPackages)
-				.newWatcher(cfgSource, this, reconfigurable, listeners, configSource.getLastModified());
-			if (watcher != null) {
-				watchManager.watch(cfgSource, watcher);
-			}
-		} else {
-			LOGGER.info("{} does not support dynamic reconfiguration", configSource.getURI());
-		}
-	}
+        if (configSource.getLastModified() > 0) {
+            final Source cfgSource = new Source(configSource);
+            final Watcher watcher = WatcherFactory.getInstance(pluginPackages).newWatcher(cfgSource, this, reconfigurable, listeners,
+                configSource.getLastModified());
+            if (watcher != null) {
+                watchManager.watch(cfgSource, watcher);
+            }
+        } else {
+            LOGGER.info("{} does not support dynamic reconfiguration", configSource.getURI());
+        }
+    }
 
 	/**
      * Start the configuration.
@@ -491,10 +491,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 try {
                     advertiser = clazz.newInstance();
                     advertisement = advertiser.advertise(advertiserNode.getAttributes());
-                } catch (final InstantiationException e) {
-                    LOGGER.error("InstantiationException attempting to instantiate advertiser: {}", nodeName, e);
-                } catch (final IllegalAccessException e) {
-                    LOGGER.error("IllegalAccessException attempting to instantiate advertiser: {}", nodeName, e);
+                } catch (final ReflectiveOperationException e) {
+                    LOGGER.error("{} attempting to instantiate advertiser: {}", e.getClass().getSimpleName(), nodeName, e);
                 }
             }
         }
