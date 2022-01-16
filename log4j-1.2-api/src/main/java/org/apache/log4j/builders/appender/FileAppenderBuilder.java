@@ -131,7 +131,6 @@ public class FileAppenderBuilder extends AbstractBuilder implements AppenderBuil
                 immediateFlush.get(), append.get(), bufferedIo.get(), bufferSize.get());
     }
 
-
     @Override
     public Appender parseAppender(final String name, final String appenderPrefix, final String layoutPrefix,
             final String filterPrefix, final Properties props, final PropertiesConfiguration configuration) {
