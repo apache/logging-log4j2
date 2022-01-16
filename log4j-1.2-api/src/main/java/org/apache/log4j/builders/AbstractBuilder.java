@@ -83,7 +83,16 @@ public abstract class AbstractBuilder {
     }
 
     protected String getNameAttribute(Element element) {
-        return capitalize(element.getAttribute(NAME_ATTR));
+        return element.getAttribute(NAME_ATTR);
+    }
+
+    /**
+     * Normalized version of the "name" attribute of the &lt;param&gt; tag.
+     * @param element
+     * @return
+     */
+    protected String getNormalizedNameAttribute(Element element) {
+        return capitalize(getNameAttribute(element));
     }
 
     protected String getValueAttribute(Element element) {
@@ -155,7 +164,7 @@ public abstract class AbstractBuilder {
         return value == null ? null : value.toLowerCase(Locale.ROOT);
     }
 
-    protected String capitalize(final String value) {
+    private String capitalize(final String value) {
         if (value == null || value.length() == 0)
             return value;
         char[] chars = value.toCharArray();

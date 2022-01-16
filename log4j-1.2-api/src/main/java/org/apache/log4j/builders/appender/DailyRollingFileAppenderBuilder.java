@@ -86,7 +86,7 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
                     filter.set(config.parseFilters(currentElement));
                     break;
                 case PARAM_TAG: {
-                    switch (getNameAttribute(currentElement)) {
+                    switch (getNormalizedNameAttribute(currentElement)) {
                         case FILE_PARAM:
                             fileName.set(getValueAttribute(currentElement));
                             break;

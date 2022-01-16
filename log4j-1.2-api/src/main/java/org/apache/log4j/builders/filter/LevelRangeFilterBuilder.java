@@ -60,7 +60,7 @@ public class LevelRangeFilterBuilder extends AbstractBuilder implements FilterBu
         final AtomicBoolean acceptOnMatch = new AtomicBoolean();
         forEachElement(filterElement.getElementsByTagName("param"), currentElement -> {
             if (currentElement.getTagName().equals("param")) {
-                switch (getNameAttribute(currentElement)) {
+                switch (getNormalizedNameAttribute(currentElement)) {
                     case LEVEL_MAX:
                         levelMax.set(getValueAttribute(currentElement));
                         break;
