@@ -114,7 +114,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     /**
      * Shutdown timeout in milliseconds.
      */
-    protected long shutdownTimeoutMillis = 0;
+    protected long shutdownTimeoutMillis;
 
     /**
      * The Script manager.
@@ -125,7 +125,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * The Advertiser which exposes appender configurations to external systems.
      */
     private Advertiser advertiser = new DefaultAdvertiser();
-    private Node advertiserNode = null;
+    private Node advertiserNode;
     private Object advertisement;
     private String name;
     private ConcurrentMap<String, Appender> appenders = new ConcurrentHashMap<>();
@@ -133,8 +133,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private List<CustomLevelConfig> customLevels = Collections.emptyList();
     private final ConcurrentMap<String, String> properties = new ConcurrentHashMap<>();
     private final StrLookup tempLookup = new Interpolator(properties);
-    private final StrSubstitutor subst = new RuntimeStrSubstitutor(tempLookup);
-    private final StrSubstitutor configurationStrSubstitutor = new ConfigurationStrSubstitutor(subst);
+    private final StrSubstitutor runtimeStrSubstitutor = new RuntimeStrSubstitutor(tempLookup);
+    private final StrSubstitutor configurationStrSubstitutor = new ConfigurationStrSubstitutor(runtimeStrSubstitutor);
     private LoggerConfig root = new LoggerConfig();
     private final ConcurrentMap<String, Object> componentMap = new ConcurrentHashMap<>();
     private final ConfigurationSource configurationSource;
@@ -156,7 +156,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         pluginManager = new PluginManager(Node.CATEGORY);
         rootNode = new Node();
         setState(State.INITIALIZING);
-
     }
 
     @Override
@@ -221,11 +220,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @Override
     public void initialize() {
         LOGGER.debug(Version.getProductString() + " initializing configuration {}", this);
-        subst.setConfiguration(this);
+        runtimeStrSubstitutor.setConfiguration(this);
         configurationStrSubstitutor.setConfiguration(this);
         try {
             ServiceLoaderUtil.loadServices(ScriptManagerFactory.class,
-                            (layer) -> ServiceLoader.load(layer, ScriptManagerFactory.class),
+                            layer -> ServiceLoader.load(layer, ScriptManagerFactory.class),
                             null).stream().findFirst().ifPresent(scriptManagerFactory ->
                     scriptManager = scriptManagerFactory.createScriptManager(this, watchManager));
         } catch (final LinkageError | Exception e) {
@@ -490,10 +489,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 try {
                     advertiser = clazz.newInstance();
                     advertisement = advertiser.advertise(advertiserNode.getAttributes());
-                } catch (final InstantiationException e) {
-                    LOGGER.error("InstantiationException attempting to instantiate advertiser: {}", nodeName, e);
-                } catch (final IllegalAccessException e) {
-                    LOGGER.error("IllegalAccessException attempting to instantiate advertiser: {}", nodeName, e);
+                } catch (final ReflectiveOperationException e) {
+                    LOGGER.error("{} attempting to instantiate advertiser: {}", e.getClass().getSimpleName(), nodeName, e);
                 }
             }
         }
@@ -628,14 +625,14 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             createConfiguration(first, null);
             if (first.getObject() != null) {
                 StrLookup lookup = (StrLookup) first.getObject();
-                subst.setVariableResolver(lookup);
+                runtimeStrSubstitutor.setVariableResolver(lookup);
                 configurationStrSubstitutor.setVariableResolver(lookup);
             }
         } else {
             final Map<String, String> map = this.getComponent(CONTEXT_PROPERTIES);
             final StrLookup lookup = map == null ? null : new PropertiesLookup(map);
             Interpolator interpolator = new Interpolator(lookup, pluginPackages);
-            subst.setVariableResolver(interpolator);
+            runtimeStrSubstitutor.setVariableResolver(interpolator);
             configurationStrSubstitutor.setVariableResolver(interpolator);
         }
 
@@ -643,7 +640,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         boolean setRoot = false;
         for (final Node child : rootNode.getChildren()) {
             if (child.getName().equalsIgnoreCase("Properties")) {
-                if (tempLookup == subst.getVariableResolver()) {
+                if (tempLookup == runtimeStrSubstitutor.getVariableResolver()) {
                     LOGGER.error("Properties declaration must be the first element in the configuration");
                 }
                 continue;
@@ -804,7 +801,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     @Override
     public StrSubstitutor getStrSubstitutor() {
-        return subst;
+        return runtimeStrSubstitutor;
     }
 
     @Override
@@ -1051,10 +1048,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     public Object createPluginObject(final PluginType<?> type, final Node node) {
         if (this.getState().equals(State.INITIALIZING)) {
             return createPluginObject(type, node, null);
-        } else {
-            LOGGER.warn("Plugin Object creation is not allowed after initialization");
-            return null;
         }
+        LOGGER.warn("Plugin Object creation is not allowed after initialization");
+        return null;
     }
 
     /**
