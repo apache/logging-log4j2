@@ -262,7 +262,7 @@
     <maven.doap.skip>false</maven.doap.skip>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- See https://maven.apache.org/guides/mini/guide-reproducible-builds.html -->
-    <project.build.outputTimestamp>10</project.build.outputTimestamp>
+    <project.build.outputTimestamp>1641056400</project.build.outputTimestamp>
     <docLabel>Site Documentation</docLabel>
     <projectDir />
     <commonsLoggingVersion>1.2</commonsLoggingVersion>
