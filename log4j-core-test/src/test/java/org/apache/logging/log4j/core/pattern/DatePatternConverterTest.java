@@ -16,8 +16,18 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import org.apache.logging.log4j.core.AbstractLogEvent;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.time.Instant;
+import org.apache.logging.log4j.core.time.MutableInstant;
+import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
+import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedTimeZoneFormat;
+import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.util.Strings;
+import org.junit.AssumptionViolatedException;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -28,17 +38,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.apache.logging.log4j.core.AbstractLogEvent;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.time.Instant;
-import org.apache.logging.log4j.core.time.MutableInstant;
-import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
-import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedTimeZoneFormat;
-import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.util.Strings;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 @RunWith(Parameterized.class)
 public class DatePatternConverterTest {
@@ -98,7 +99,12 @@ public class DatePatternConverterTest {
         final Field field = Constants.class.getDeclaredField("ENABLE_THREADLOCALS");
         field.setAccessible(true); // make non-private
 
-        final Field modifiersField = Field.class.getDeclaredField("modifiers");
+        final Field modifiersField;
+        try {
+            modifiersField = Field.class.getDeclaredField("modifiers");
+        } catch (final NoSuchFieldException e) {
+            throw new AssumptionViolatedException("Cannot modify static final field", e);
+        }
         modifiersField.setAccessible(true);
         modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL); // make non-final
 
