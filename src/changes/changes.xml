@@ -160,7 +160,7 @@
         Bump org.junit.jupiter:junit-* from 5.7.2 to 5.8.2.
       </action>
       <action dev="ggregory" type="udpate" due-to="Gary Gregory">
-        Bump org.springframework:spring-* from 5.3.13 to 5.3.14.
+        Bump org.springframework:spring-* from 5.3.13 to 5.3.15.
       </action>
       <action dev="ggregory" type="udpate" due-to="Gary Gregory">
         Bump de.flapdoodle.embed:de.flapdoodle.embed.mongo from 3.0.0 to 3.2.6. Update tests for binary incompatibilities in APIs.
