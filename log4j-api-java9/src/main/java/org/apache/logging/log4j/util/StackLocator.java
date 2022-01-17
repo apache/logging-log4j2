@@ -16,12 +16,11 @@
  */
 package org.apache.logging.log4j.util;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
-import java.util.Stack;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * <em>Consider this class private.</em> Determines the caller's class.
@@ -81,12 +80,12 @@ public class StackLocator {
         return walker.walk(s -> s.skip(depth).findFirst()).map(StackWalker.StackFrame::getDeclaringClass).orElse(null);
     }
 
-    public Stack<Class<?>> getCurrentStackTrace() {
+    public Deque<Class<?>> getCurrentStackTrace() {
         // benchmarks show that using the SecurityManager is much faster than looping through getCallerClass(int)
         if (PrivateSecurityManagerStackTraceUtil.isEnabled()) {
             return PrivateSecurityManagerStackTraceUtil.getCurrentStackTrace();
         }
-        Stack<Class<?>> stack = new Stack<Class<?>>();
+        Deque<Class<?>> stack = new ArrayDeque<Class<?>>();
         List<Class<?>> classes = walker.walk(s -> s.map(f -> f.getDeclaringClass()).collect(Collectors.toList()));
         stack.addAll(classes);
         return stack;
