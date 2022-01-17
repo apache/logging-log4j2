@@ -127,7 +127,7 @@ public abstract class AbstractBuilder {
                 } else {
                     filterList.add(new FilterAdapter(f));
                 }
-                f = f.next;
+                f = f.getNext();
             }
             return CompositeFilter.createFilters(filterList.toArray(new org.apache.logging.log4j.core.Filter[0]));
         } else if (level != null) {
