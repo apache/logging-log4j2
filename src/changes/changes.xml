@@ -180,6 +180,12 @@
       <action dev="ggregory" type="udpate" due-to="Gary Gregory">
         Bump org.codehaus.groovy:groovy-* from 3.0.8 to 3.0.9.
       </action>
+      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+        Bump org.mongodb:bson from 4.2.2 to 4.4.1.
+      </action>
+      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+        Bump org.mongodb:mongodb-driver-sync from 4.2.2 to 4.4.1.
+      </action>
 	</release>
     <release version="2.17.1" date="2021-12-27" description="GA Release 2.17.1">
       <!-- FIXES -->
