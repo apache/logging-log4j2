@@ -189,6 +189,9 @@
       <action dev="ggregory" type="udpate" due-to="Gary Gregory">
         Bump de.flapdoodle.embed:de.flapdoodle.embed.mongo from 3.2.6 to 3.2.8.
       </action>
+      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+        Bump Woodstox 6.2.6 to 6.2.8.
+      </action>
 	</release>
     <release version="2.17.1" date="2021-12-27" description="GA Release 2.17.1">
       <!-- FIXES -->
