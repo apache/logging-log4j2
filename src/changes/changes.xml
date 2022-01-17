@@ -143,6 +143,9 @@
       <action dev="ggregory" type="add">
         Add org.apache.logging.log4j.core.appender.AsyncAppender.getAppenders() to more easily port from org.apache.log4j.AsyncAppender.getAllAppenders(). 
       </action>
+      <action issue="LOG4J2-3343" type="add" dev="mattsicker">
+        Add ability to use exclusion pattern filter on Map Resolver keys.
+      </action>
       <!-- UPDATES -->
       <action dev="ggregory" type="udpate" due-to="Dependabot">
         Bump mongodb3.version from 3.12.4 to 3.12.10 #605.
