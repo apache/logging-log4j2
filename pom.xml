@@ -219,7 +219,7 @@
     <jackson2Version>2.13.1</jackson2Version>
     <spring-boot.version>2.5.7</spring-boot.version>
     <springVersion>5.3.15</springVersion>
-    <kubernetes-client.version>4.6.1</kubernetes-client.version>
+    <kubernetes-client.version>5.11.2</kubernetes-client.version>
     <flumeVersion>1.9.0</flumeVersion>
     <disruptorVersion>3.4.4</disruptorVersion>
     <conversantDisruptorVersion>1.2.15</conversantDisruptorVersion> <!-- Version 1.2.16 requires Java 9 -->
