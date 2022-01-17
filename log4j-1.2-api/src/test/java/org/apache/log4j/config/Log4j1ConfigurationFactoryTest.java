@@ -17,13 +17,16 @@
 package org.apache.log4j.config;
 
 import static org.junit.Assert.assertNotNull;
+
 import java.net.URISyntaxException;
 import java.net.URL;
+
 import org.apache.logging.log4j.core.config.Configuration;
 import org.junit.Test;
 
 public class Log4j1ConfigurationFactoryTest extends AbstractLog4j1ConfigurationTest {
 
+	@Override
 	Configuration getConfiguration(final String configResourcePrefix) throws URISyntaxException {
 		final String configResource = configResourcePrefix + ".properties";
 		final URL configLocation = ClassLoader.getSystemResource(configResource);

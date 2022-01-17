@@ -36,7 +36,6 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.junit.Test;
 
 /**
@@ -44,19 +43,19 @@ import org.junit.Test;
  */
 public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
 
-	@Override
-	Configuration getConfiguration(String configResourcePrefix) throws URISyntaxException, IOException {
-		final String configResource = configResourcePrefix + ".xml";
-		final InputStream inputStream = ClassLoader.getSystemResourceAsStream(configResource);
-		final ConfigurationSource source = new ConfigurationSource(inputStream);
-		final LoggerContext context = LoggerContext.getContext(false);
-		final Configuration configuration = new XmlConfigurationFactory().getConfiguration(context, source);
-		assertNotNull("No configuration created", configuration);
-		configuration.initialize();
-		return configuration;
-	}
+    @Override
+    Configuration getConfiguration(String configResourcePrefix) throws URISyntaxException, IOException {
+        final String configResource = configResourcePrefix + ".xml";
+        final InputStream inputStream = ClassLoader.getSystemResourceAsStream(configResource);
+        final ConfigurationSource source = new ConfigurationSource(inputStream);
+        final LoggerContext context = LoggerContext.getContext(false);
+        final Configuration configuration = new XmlConfigurationFactory().getConfiguration(context, source);
+        assertNotNull("No configuration created", configuration);
+        configuration.initialize();
+        return configuration;
+    }
 
-	@Test
+    @Test
     public void testListAppender() throws Exception {
         final LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/log4j1-list.xml");
         final Logger logger = LogManager.getLogger("test");
@@ -93,81 +92,81 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
         assertTrue("File A2 is empty", file.length() > 0);
     }
 
-	@Override
-	@Test
-	public void testConsoleEnhancedPatternLayout() throws Exception {
-		super.testConsoleEnhancedPatternLayout();
-	}
+    @Override
+    @Test
+    public void testConsoleEnhancedPatternLayout() throws Exception {
+        super.testConsoleEnhancedPatternLayout();
+    }
 
-	@Override
-	@Test
-	public void testConsoleHtmlLayout() throws Exception {
-		super.testConsoleHtmlLayout();
-	}
+    @Override
+    @Test
+    public void testConsoleHtmlLayout() throws Exception {
+        super.testConsoleHtmlLayout();
+    }
 
-	@Override
-	@Test
-	public void testConsolePatternLayout() throws Exception {
-		super.testConsolePatternLayout();
-	}
+    @Override
+    @Test
+    public void testConsolePatternLayout() throws Exception {
+        super.testConsolePatternLayout();
+    }
 
-	@Override
-	@Test
-	public void testConsoleSimpleLayout() throws Exception {
-		super.testConsoleSimpleLayout();
-	}
+    @Override
+    @Test
+    public void testConsoleSimpleLayout() throws Exception {
+        super.testConsoleSimpleLayout();
+    }
 
-	@Override
-	@Test
-	public void testConsoleTtccLayout() throws Exception {
-		super.testConsoleTtccLayout();
-	}
+    @Override
+    @Test
+    public void testConsoleTtccLayout() throws Exception {
+        super.testConsoleTtccLayout();
+    }
 
-	@Override
-	@Test
-	public void testConsoleXmlLayout() throws Exception {
-		super.testConsoleXmlLayout();
-	}
+    @Override
+    @Test
+    public void testConsoleXmlLayout() throws Exception {
+        super.testConsoleXmlLayout();
+    }
 
-	@Override
-	@Test
-	public void testFileSimpleLayout() throws Exception {
-		super.testFileSimpleLayout();
-	}
+    @Override
+    @Test
+    public void testFileSimpleLayout() throws Exception {
+        super.testFileSimpleLayout();
+    }
 
-	@Override
-	@Test
-	public void testNullAppender() throws Exception {
-		super.testNullAppender();
-	}
+    @Override
+    @Test
+    public void testNullAppender() throws Exception {
+        super.testNullAppender();
+    }
 
-	@Override
-	@Test
-	public void testRollingFileAppender() throws Exception {
-		super.testRollingFileAppender();
-	}
+    @Override
+    @Test
+    public void testRollingFileAppender() throws Exception {
+        super.testRollingFileAppender();
+    }
 
-	@Override
-	@Test
-	public void testDailyRollingFileAppender() throws Exception {
-		super.testDailyRollingFileAppender();
-	}
+    @Override
+    @Test
+    public void testDailyRollingFileAppender() throws Exception {
+        super.testDailyRollingFileAppender();
+    }
 
-	@Override
-	// Don't test: XML does not allow properties.
-	public void testRollingFileAppenderWithProperties() throws Exception {
-		super.testRollingFileAppenderWithProperties();
-	}
+    @Override
+    // Don't test: XML does not allow properties.
+    public void testRollingFileAppenderWithProperties() throws Exception {
+        super.testRollingFileAppenderWithProperties();
+    }
 
-	@Override
-	@Test
-	public void testSystemProperties1() throws Exception {
-		super.testSystemProperties1();
-	}
+    @Override
+    @Test
+    public void testSystemProperties1() throws Exception {
+        super.testSystemProperties1();
+    }
 
-	@Override
-	// Don't test: XML does not allow properties.
-	public void testSystemProperties2() throws Exception {
-		super.testSystemProperties2();
-	}
+    @Override
+    // Don't test: XML does not allow properties.
+    public void testSystemProperties2() throws Exception {
+        super.testSystemProperties2();
+    }
 }

@@ -19,6 +19,7 @@ package org.apache.log4j.config;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,7 +39,6 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.filter.Filterable;
@@ -52,19 +52,19 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
 
     private static final String TEST_KEY = "log4j.test.tmpdir";
 
-	@Override
-	Configuration getConfiguration(String configResourcePrefix) throws IOException {
-		final String configResource = configResourcePrefix + ".properties";
-		final InputStream inputStream = ClassLoader.getSystemResourceAsStream(configResource);
-		final ConfigurationSource source = new ConfigurationSource(inputStream);
-		//final LoggerContext context = LoggerContext.getContext(false);
-		final Configuration configuration = new PropertiesConfigurationFactory().getConfiguration(null, source);
-		assertNotNull("No configuration created", configuration);
-		configuration.initialize();
-		return configuration;
-	}
+    @Override
+    Configuration getConfiguration(String configResourcePrefix) throws IOException {
+        final String configResource = configResourcePrefix + ".properties";
+        final InputStream inputStream = ClassLoader.getSystemResourceAsStream(configResource);
+        final ConfigurationSource source = new ConfigurationSource(inputStream);
+        // final LoggerContext context = LoggerContext.getContext(false);
+        final Configuration configuration = new PropertiesConfigurationFactory().getConfiguration(null, source);
+        assertNotNull("No configuration created", configuration);
+        configuration.initialize();
+        return configuration;
+    }
 
-	@Test
+    @Test
     public void testConfigureNullPointerException() throws Exception {
         try (LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/LOG4J2-3247.properties")) {
             // [LOG4J2-3247] configure() should not throw an NPE.
@@ -104,7 +104,7 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
             assertTrue(filter.getFilter() instanceof NeutralFilterFixture);
         }
     }
-    
+
     @Test
     public void testConsoleAppenderLevelRangeFilter() throws Exception {
         PluginManager.addPackage("org.apache.log4j.builders.filter");
@@ -182,83 +182,83 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
         }
     }
 
-	@Override
-	@Test
-	public void testConsoleEnhancedPatternLayout() throws Exception {
-		super.testConsoleEnhancedPatternLayout();
-	}
+    @Override
+    @Test
+    public void testConsoleEnhancedPatternLayout() throws Exception {
+        super.testConsoleEnhancedPatternLayout();
+    }
 
-	@Override
-	@Test
-	public void testConsoleHtmlLayout() throws Exception {
-		super.testConsoleHtmlLayout();
-	}
+    @Override
+    @Test
+    public void testConsoleHtmlLayout() throws Exception {
+        super.testConsoleHtmlLayout();
+    }
 
-	@Override
-	@Test
-	public void testConsolePatternLayout() throws Exception {
-		super.testConsolePatternLayout();
-	}
+    @Override
+    @Test
+    public void testConsolePatternLayout() throws Exception {
+        super.testConsolePatternLayout();
+    }
 
-	@Override
-	@Test
-	public void testConsoleSimpleLayout() throws Exception {
-		super.testConsoleSimpleLayout();
-	}
+    @Override
+    @Test
+    public void testConsoleSimpleLayout() throws Exception {
+        super.testConsoleSimpleLayout();
+    }
 
-	@Override
-	@Test
-	public void testConsoleTtccLayout() throws Exception {
-		super.testConsoleTtccLayout();
-	}
+    @Override
+    @Test
+    public void testConsoleTtccLayout() throws Exception {
+        super.testConsoleTtccLayout();
+    }
 
-	@Override
-	@Test
-	public void testConsoleXmlLayout() throws Exception {
-		super.testConsoleXmlLayout();
-	}
+    @Override
+    @Test
+    public void testConsoleXmlLayout() throws Exception {
+        super.testConsoleXmlLayout();
+    }
 
-	@Override
-	@Test
-	public void testFileSimpleLayout() throws Exception {
-		super.testFileSimpleLayout();
-	}
+    @Override
+    @Test
+    public void testFileSimpleLayout() throws Exception {
+        super.testFileSimpleLayout();
+    }
 
-	@Override
-	@Test
-	public void testNullAppender() throws Exception {
-		super.testNullAppender();
-	}
+    @Override
+    @Test
+    public void testNullAppender() throws Exception {
+        super.testNullAppender();
+    }
 
-	@Override
-	@Test
-	public void testRollingFileAppender() throws Exception {
-		super.testRollingFileAppender();
-	}
+    @Override
+    @Test
+    public void testRollingFileAppender() throws Exception {
+        super.testRollingFileAppender();
+    }
 
-	@Override
-	@Test
-	public void testDailyRollingFileAppender() throws Exception {
-		super.testDailyRollingFileAppender();
-	}
+    @Override
+    @Test
+    public void testDailyRollingFileAppender() throws Exception {
+        super.testDailyRollingFileAppender();
+    }
 
-	@Override
-	@Test
-	public void testRollingFileAppenderWithProperties() throws Exception {
-		super.testRollingFileAppenderWithProperties();
-	}
+    @Override
+    @Test
+    public void testRollingFileAppenderWithProperties() throws Exception {
+        super.testRollingFileAppenderWithProperties();
+    }
 
-	@Override
-	@Test
-	public void testSystemProperties1() throws Exception {
-		super.testSystemProperties1();
-	}
+    @Override
+    @Test
+    public void testSystemProperties1() throws Exception {
+        super.testSystemProperties1();
+    }
 
-	@Override
-	@Test
-	public void testSystemProperties2() throws Exception {
-		super.testSystemProperties2();
-	}
+    @Override
+    @Test
+    public void testSystemProperties2() throws Exception {
+        super.testSystemProperties2();
+    }
 
     @Override
     @Test
