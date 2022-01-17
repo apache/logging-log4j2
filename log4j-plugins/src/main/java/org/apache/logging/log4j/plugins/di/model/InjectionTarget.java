@@ -17,33 +17,28 @@
 
 package org.apache.logging.log4j.plugins.di.model;
 
-import java.lang.annotation.Annotation;
+import org.apache.logging.log4j.plugins.util.PluginUtil;
+import org.apache.logging.log4j.plugins.util.Value;
+
 import java.util.Set;
 
 public class InjectionTarget implements PluginSource {
-    private final String className;
+    private final Value<Class<?>> declaringClass;
     private final Set<Class<?>> implementedInterfaces;
-    private final Class<? extends Annotation> scopeType;
 
-    public InjectionTarget(final String className, final Set<Class<?>> implementedInterfaces,
-                           final Class<? extends Annotation> scopeType) {
-        this.className = className;
+    public InjectionTarget(
+            final ClassLoader classLoader, final String className, final Set<Class<?>> implementedInterfaces) {
+        declaringClass = PluginUtil.lazyLoadClass(classLoader, className);
         this.implementedInterfaces = implementedInterfaces;
-        this.scopeType = scopeType;
     }
 
     @Override
-    public String getDeclaringClassName() {
-        return className;
+    public Class<?> getDeclaringClass() {
+        return declaringClass.get();
     }
 
     @Override
     public Set<Class<?>> getImplementedInterfaces() {
         return implementedInterfaces;
-    }
-
-    @Override
-    public Class<? extends Annotation> getScopeType() {
-        return scopeType;
     }
 }

@@ -17,20 +17,24 @@
 package org.apache.logging.log4j.plugins.convert;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.plugins.util.PluginManager;
-import org.apache.logging.log4j.plugins.util.PluginType;
+import org.apache.logging.log4j.plugins.di.model.PluginSource;
+import org.apache.logging.log4j.plugins.spi.Bean;
+import org.apache.logging.log4j.plugins.spi.BeanManager;
+import org.apache.logging.log4j.plugins.util.PluginLoader;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
-import org.apache.logging.log4j.util.ReflectionUtil;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UnknownFormatConversionException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
 
 /**
  * Registry for {@link TypeConverter} plugins.
@@ -40,6 +44,7 @@ import java.util.concurrent.ConcurrentMap;
 public class TypeConverterRegistry {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
+    private static final String DEFAULT_CONVERTERS_PACKAGE = "org.apache.logging.log4j.core.config.plugins.convert";
     private static volatile TypeConverterRegistry INSTANCE;
     private static final Object INSTANCE_LOCK = new Object();
 
@@ -107,22 +112,37 @@ public class TypeConverterRegistry {
 
     private TypeConverterRegistry() {
         LOGGER.trace("TypeConverterRegistry initializing.");
-        final PluginManager manager = new PluginManager(TypeConverters.CATEGORY);
-        manager.collectPlugins();
-        loadKnownTypeConverters(manager.getPlugins().values());
+        // TODO: this should eventually be refactored to load TypeConverter instances on demand via BeanManager
+        //  (can be done after AbstractConfigurationBinder is removed; can then combine TypeConverters with rest of beans)
+        loadKnownTypeConverters();
         registerPrimitiveTypes();
     }
 
-    private void loadKnownTypeConverters(final Collection<PluginType<?>> knownTypes) {
-        for (final PluginType<?> knownType : knownTypes) {
-            final Class<?> clazz = knownType.getPluginClass();
-            if (TypeConverter.class.isAssignableFrom(clazz)) {
-                @SuppressWarnings("rawtypes")
-                final Class<? extends TypeConverter> pluginClass =  clazz.asSubclass(TypeConverter.class);
-                final Type conversionType = getTypeConverterSupportedType(pluginClass);
-                final TypeConverter<?> converter = ReflectionUtil.instantiate(pluginClass);
-                registerConverter(conversionType, converter);
-            }
+    private void loadKnownTypeConverters() {
+        final BeanManager beanManager = BeanManager.getInstance();
+        final Set<PluginSource> typeConverterPlugins = PluginLoader.loadPluginSourcesFromMainClassLoader()
+                .stream()
+                .filter(pluginSource -> pluginSource.getImplementedInterfaces().contains(TypeConverter.class))
+                .collect(Collectors.toSet());
+        final Collection<Bean<?>> typeConverterBeans;
+        if (typeConverterPlugins.isEmpty()) {
+            // retry with a classpath scan
+            LOGGER.warn("Unable to load PluginModule metadata; falling back to scan of classpath");
+            typeConverterBeans = beanManager.scanAndLoadBeans(LoaderUtil.getClassLoader(), DEFAULT_CONVERTERS_PACKAGE)
+                    .stream()
+                    .filter(bean -> bean.hasMatchingType(TypeConverter.class))
+                    .collect(Collectors.toSet());
+        } else {
+            typeConverterBeans = beanManager.loadBeansFromPluginSources(typeConverterPlugins);
+        }
+        beanManager.validateBeans(typeConverterBeans);
+        final var initializationContext = beanManager.createInitializationContext(null);
+        for (final Bean<?> typeConverterBean : typeConverterBeans) {
+            final Bean<TypeConverter<?>> bean = TypeUtil.cast(typeConverterBean);
+            final Class<? extends TypeConverter<?>> pluginClass = TypeUtil.cast(bean.getDeclaringClass());
+            final Type conversionType = getTypeConverterSupportedType(pluginClass);
+            final TypeConverter<?> converter = beanManager.getValue(bean, initializationContext);
+            registerConverter(conversionType, converter);
         }
     }
 

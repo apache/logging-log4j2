@@ -17,6 +17,15 @@
 
 package org.apache.logging.log4j.plugins.spi.impl;
 
+import org.apache.logging.log4j.plugins.di.DependentScoped;
+import org.apache.logging.log4j.plugins.di.Disposes;
+import org.apache.logging.log4j.plugins.di.Producer;
+import org.apache.logging.log4j.plugins.di.Provider;
+import org.apache.logging.log4j.plugins.di.ScopeType;
+import org.apache.logging.log4j.plugins.di.SingletonScoped;
+import org.apache.logging.log4j.plugins.di.model.PluginSource;
+import org.apache.logging.log4j.plugins.name.AnnotatedElementAliasesProvider;
+import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
 import org.apache.logging.log4j.plugins.spi.AmbiguousBeanException;
 import org.apache.logging.log4j.plugins.spi.Bean;
 import org.apache.logging.log4j.plugins.spi.BeanManager;
@@ -30,17 +39,11 @@ import org.apache.logging.log4j.plugins.spi.ResolutionException;
 import org.apache.logging.log4j.plugins.spi.ScopeContext;
 import org.apache.logging.log4j.plugins.spi.UnsatisfiedBeanException;
 import org.apache.logging.log4j.plugins.spi.ValidationException;
-import org.apache.logging.log4j.plugins.di.DependentScoped;
-import org.apache.logging.log4j.plugins.di.Disposes;
-import org.apache.logging.log4j.plugins.di.Producer;
-import org.apache.logging.log4j.plugins.di.Provider;
-import org.apache.logging.log4j.plugins.di.ScopeType;
-import org.apache.logging.log4j.plugins.di.SingletonScoped;
-import org.apache.logging.log4j.plugins.name.AnnotatedElementAliasesProvider;
-import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
 import org.apache.logging.log4j.plugins.util.AnnotationUtil;
 import org.apache.logging.log4j.plugins.util.LazyValue;
+import org.apache.logging.log4j.plugins.util.ResolverUtil;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
+import org.apache.logging.log4j.util.Strings;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -51,18 +54,20 @@ import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -70,20 +75,25 @@ public class DefaultBeanManager implements BeanManager {
 
     private final Injector injector = new Injector(this);
 
-    private final Collection<Bean<?>> enabledBeans = new HashSet<>();
+    private final Collection<Bean<?>> enabledBeans = ConcurrentHashMap.newKeySet();
     private final Map<Type, Collection<Bean<?>>> beansByType = new ConcurrentHashMap<>();
     private final Collection<DisposesMethod> disposesMethods = new ArrayList<>();
     private final Map<Class<? extends Annotation>, ScopeContext> scopes = new LinkedHashMap<>();
 
     public DefaultBeanManager() {
         // TODO: need a better way to register scope contexts
+        // TODO: need ThreadLocalScopeContext for LoggerContext (~ContextSelector) and ConfigurationContext scopes
+        //  (can potentially modify LoggerContext[Factory] to set these thread local values on construction et al.
         scopes.put(DependentScoped.class, new DependentScopeContext());
         scopes.put(SingletonScoped.class, new DefaultScopeContext(SingletonScoped.class));
     }
 
     @Override
     public Collection<Bean<?>> loadBeans(final Collection<Class<?>> beanClasses) {
-        final Collection<Bean<?>> loadedBeans = new HashSet<>();
+        if (beanClasses.isEmpty()) {
+            return Set.of();
+        }
+        final Collection<Bean<?>> loadedBeans = new LinkedHashSet<>();
         for (final Class<?> beanClass : beanClasses) {
             final Bean<?> bean = isInjectable(beanClass) ? createBean(beanClass) : null;
             loadDisposerMethods(beanClass, bean);
@@ -108,6 +118,32 @@ public class DefaultBeanManager implements BeanManager {
             }
         }
         return loadedBeans;
+    }
+
+    @Override
+    public Collection<Bean<?>> scanAndLoadBeans(final ClassLoader classLoader, final String packageName) {
+        if (Strings.isBlank(packageName)) {
+            return Set.of();
+        }
+        final ResolverUtil resolver = new ResolverUtil();
+        if (classLoader != null) {
+            resolver.setClassLoader(classLoader);
+        }
+        resolver.findInPackage(new BeanTest(this::isInjectable), packageName);
+        return loadBeans(resolver.getClasses());
+    }
+
+    @Override
+    public Collection<Bean<?>> loadBeansFromPluginSources(final Collection<PluginSource> pluginSources) {
+        if (pluginSources.isEmpty()) {
+            return Set.of();
+        }
+        // TODO: enhance PluginSource metadata to support lazy loading of classes in respective beans for implemented interfaces
+        final Set<Class<?>> beanClasses = pluginSources.stream()
+                .map(PluginSource::getDeclaringClass)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        return loadBeans(beanClasses);
     }
 
     @Override
@@ -172,12 +208,11 @@ public class DefaultBeanManager implements BeanManager {
     }
 
     private void loadDisposerMethods(final Class<?> beanClass, final Bean<?> bean) {
-        for (final Method method : beanClass.getDeclaredMethods()) {
+        for (final Method method : beanClass.getMethods()) {
             for (final Parameter parameter : method.getParameters()) {
                 if (parameter.isAnnotationPresent(Disposes.class)) {
                     final String name = AnnotatedElementNameProvider.getName(parameter);
                     final Collection<String> aliases = AnnotatedElementAliasesProvider.getAliases(parameter);
-                    method.setAccessible(true);
                     disposesMethods.add(new DisposesMethod(parameter.getParameterizedType(), name, aliases, bean, method));
                 }
             }
@@ -423,6 +458,43 @@ public class DefaultBeanManager implements BeanManager {
         }
     }
 
+    private static class BeanTest implements ResolverUtil.Test {
+        private final Predicate<Class<?>> isBeanClass;
+
+        private BeanTest(final Predicate<Class<?>> isBeanClass) {
+            this.isBeanClass = isBeanClass;
+        }
+
+        @Override
+        public boolean matches(final Class<?> type) {
+            if (isBeanClass.test(type)) {
+                return true;
+            }
+            for (final Annotation annotation : type.getAnnotations()) {
+                final String name = annotation.annotationType().getName();
+                if (name.startsWith("org.apache.logging.log4j.") && name.endsWith(".plugins.Plugin")) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public boolean matches(final URI resource) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean doesMatchClass() {
+            return true;
+        }
+
+        @Override
+        public boolean doesMatchResource() {
+            return false;
+        }
+    }
+
     private static class DisposesMethod {
         private final Type type;
         private final String name;
@@ -454,6 +526,22 @@ public class DefaultBeanManager implements BeanManager {
 
         private boolean matchesName(final String name) {
             return this.name.equalsIgnoreCase(name) || aliases.stream().anyMatch(name::equalsIgnoreCase);
+        }
+
+        @Override
+        public boolean equals(final Object o) {
+            if (this == o)
+                return true;
+            if (o == null || getClass() != o.getClass())
+                return false;
+            final DisposesMethod that = (DisposesMethod) o;
+            return type.equals(that.type) && name.equals(that.name) && aliases.equals(that.aliases) && Objects.equals(
+                    declaringBean, that.declaringBean) && disposesMethod.equals(that.disposesMethod);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(type, name, aliases, declaringBean, disposesMethod);
         }
     }
 

@@ -34,5 +34,8 @@ module org.apache.logging.log4j.plugins {
 
     uses org.apache.logging.log4j.plugins.processor.PluginService;
     uses org.apache.logging.log4j.plugins.di.model.PluginModule;
+    uses org.apache.logging.log4j.plugins.spi.BeanManager;
+    provides org.apache.logging.log4j.plugins.spi.BeanManager with
+            org.apache.logging.log4j.plugins.spi.impl.DefaultBeanManager;
 
 }

@@ -17,37 +17,32 @@
 
 package org.apache.logging.log4j.plugins.di.model;
 
-import org.apache.logging.log4j.plugins.di.Disposes;
+import org.apache.logging.log4j.plugins.util.PluginUtil;
+import org.apache.logging.log4j.plugins.util.Value;
 
-import java.lang.annotation.Annotation;
 import java.util.Set;
 
 public class DisposesMethod implements PluginSource {
-    private final String declaringClassName;
-    private final String disposesTypeName;
+    private final Value<Class<?>> disposesType;
+    private final Value<Class<?>> declaringClass;
 
-    public DisposesMethod(final String declaringClassName, final String disposesTypeName) {
-        this.declaringClassName = declaringClassName;
-        this.disposesTypeName = disposesTypeName;
+    public DisposesMethod(
+            final ClassLoader classLoader, final String declaringClassName, final String disposesTypeName) {
+        disposesType = PluginUtil.lazyLoadClass(classLoader, disposesTypeName);
+        declaringClass = PluginUtil.lazyLoadClass(classLoader, declaringClassName);
     }
 
     @Override
-    public String getDeclaringClassName() {
-        return declaringClassName;
+    public Class<?> getDeclaringClass() {
+        return declaringClass.get();
     }
 
-    public String getDisposesTypeName() {
-        return disposesTypeName;
+    public Class<?> getDisposesType() {
+        return disposesType.get();
     }
 
     @Override
     public Set<Class<?>> getImplementedInterfaces() {
         return Set.of();
-    }
-
-    @Override
-    public Class<? extends Annotation> getScopeType() {
-        // not a real scope
-        return Disposes.class;
     }
 }

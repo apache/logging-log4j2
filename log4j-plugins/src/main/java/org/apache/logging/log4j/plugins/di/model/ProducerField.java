@@ -17,26 +17,27 @@
 
 package org.apache.logging.log4j.plugins.di.model;
 
-import java.lang.annotation.Annotation;
+import org.apache.logging.log4j.plugins.util.PluginUtil;
+import org.apache.logging.log4j.plugins.util.Value;
+
 import java.util.Set;
 
 public class ProducerField implements PluginSource {
-    private final String declaringClassName;
+    private final Value<Class<?>> declaringClass;
     private final String fieldName;
     private final Set<Class<?>> implementedInterfaces;
-    private final Class<? extends Annotation> scopeType;
 
-    public ProducerField(final String declaringClassName, final String fieldName,
-                         final Set<Class<?>> implementedInterfaces, final Class<? extends Annotation> scopeType) {
-        this.declaringClassName = declaringClassName;
+    public ProducerField(
+            final ClassLoader classLoader, final String declaringClassName, final String fieldName,
+            final Set<Class<?>> implementedInterfaces) {
+        declaringClass = PluginUtil.lazyLoadClass(classLoader, declaringClassName);
         this.fieldName = fieldName;
         this.implementedInterfaces = implementedInterfaces;
-        this.scopeType = scopeType;
     }
 
     @Override
-    public String getDeclaringClassName() {
-        return declaringClassName;
+    public Class<?> getDeclaringClass() {
+        return declaringClass.get();
     }
 
     public String getFieldName() {
@@ -46,10 +47,5 @@ public class ProducerField implements PluginSource {
     @Override
     public Set<Class<?>> getImplementedInterfaces() {
         return implementedInterfaces;
-    }
-
-    @Override
-    public Class<? extends Annotation> getScopeType() {
-        return scopeType;
     }
 }

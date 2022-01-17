@@ -19,14 +19,6 @@ package org.apache.logging.log4j.plugins.di.model;
 
 import java.util.List;
 
-public abstract class PluginModule {
-    private final List<PluginSource> pluginSources;
-
-    protected PluginModule(final List<PluginSource> pluginSources) {
-        this.pluginSources = pluginSources;
-    }
-
-    public List<PluginSource> getPluginSources() {
-        return pluginSources;
-    }
+public interface PluginModule {
+    List<PluginSource> getPluginSources();
 }

@@ -17,12 +17,10 @@
 
 package org.apache.logging.log4j.plugin.processor;
 
-import org.apache.logging.log4j.plugins.di.DependentScoped;
 import org.apache.logging.log4j.plugins.di.Disposes;
 import org.apache.logging.log4j.plugins.di.Inject;
 import org.apache.logging.log4j.plugins.di.Producer;
 import org.apache.logging.log4j.plugins.di.Qualifier;
-import org.apache.logging.log4j.plugins.di.ScopeType;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
@@ -40,6 +38,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.ElementKindVisitor9;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.SimpleTypeVisitor9;
@@ -56,7 +55,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @SupportedAnnotationTypes({"org.apache.logging.log4j.plugins.*", "org.apache.logging.log4j.core.config.plugins.*"})
 @SupportedOptions({"pluginPackage", "pluginClassName"})
@@ -71,6 +69,9 @@ public class BeanProcessor extends AbstractProcessor {
         return SourceVersion.latestSupported();
     }
 
+    /**
+     * Collects fields and methods annotated with {@link Producer}-type annotations.
+     */
     private static class ProducerAnnotationVisitor extends ElementKindVisitor9<Void, Void> {
         private final List<ProducerMethodMirror> producerMethods = new ArrayList<>();
         private final List<ProducerFieldMirror> producerFields = new ArrayList<>();
@@ -88,6 +89,9 @@ public class BeanProcessor extends AbstractProcessor {
         }
     }
 
+    /**
+     * Collects {@link Disposes} methods (applied to a method argument).
+     */
     private static class DisposesAnnotationVisitor extends ElementKindVisitor9<Void, Void> {
         private final List<DisposesMirror> disposesParameters = new ArrayList<>();
 
@@ -98,6 +102,9 @@ public class BeanProcessor extends AbstractProcessor {
         }
     }
 
+    /**
+     * Collects {@link Inject}-annotated constructors, fields, and methods.
+     */
     private static class InjectAnnotationVisitor extends ElementKindVisitor9<Void, Void> {
         private final List<InjectionTargetMirror> injectableClasses = new ArrayList<>();
 
@@ -120,6 +127,10 @@ public class BeanProcessor extends AbstractProcessor {
         }
     }
 
+    /**
+     * Collects fields and method parameters annotated with {@link Qualifier}-type annotations that do not also include
+     * {@link Producer}-type annotations.
+     */
     private static class QualifiedAnnotationVisitor extends ElementKindVisitor9<Void, Void> {
         private final Predicate<AnnotationMirror> isProducerAnnotation;
         private final List<InjectionTargetMirror> injectableClasses = new ArrayList<>();
@@ -148,53 +159,29 @@ public class BeanProcessor extends AbstractProcessor {
         }
     }
 
+    /**
+     * Collects generic {@code @Plugin}-annotated classes. Plugins with a single constructor are considered for
+     * {@link Inject} targets.
+     */
     private static class PluginAnnotationVisitor extends ElementKindVisitor9<Void, Void> {
-        private final List<GenericPluginMirror> plugins = new ArrayList<>();
+        private final List<InjectionTargetMirror> implicitPlugins = new ArrayList<>();
+        private final List<GenericPluginMirror> genericPlugins = new ArrayList<>();
 
         @Override
         public Void visitTypeAsClass(final TypeElement e, final Void unused) {
-            plugins.add(new GenericPluginMirror(e));
+            final var constructors = ElementFilter.constructorsIn(e.getEnclosedElements());
+            if (constructors.size() > 1) {
+                genericPlugins.add(new GenericPluginMirror(e));
+            } else {
+                implicitPlugins.add(new InjectionTargetMirror(e));
+            }
             return null;
         }
     }
 
-    private static class ScopeTypeVisitor extends ElementKindVisitor9<TypeElement, Types> {
-        protected ScopeTypeVisitor(final TypeElement defaultValue) {
-            super(defaultValue);
-        }
-
-        @Override
-        public TypeElement visitType(final TypeElement e, final Types types) {
-            for (final AnnotationMirror annotationMirror : e.getAnnotationMirrors()) {
-                final DeclaredType annotationType = annotationMirror.getAnnotationType();
-                if (annotationType.getAnnotation(ScopeType.class) != null) {
-                    return (TypeElement) annotationType.asElement();
-                }
-            }
-            return super.visitType(e, types);
-        }
-
-        @Override
-        public TypeElement visitVariableAsField(final VariableElement e, final Types types) {
-            return Stream.concat(e.getAnnotationMirrors().stream(), e.asType().getAnnotationMirrors().stream())
-                    .map(AnnotationMirror::getAnnotationType)
-                    .filter(type -> type.getAnnotation(ScopeType.class) != null)
-                    .findFirst()
-                    .map(type -> (TypeElement) type.asElement())
-                    .orElse(super.DEFAULT_VALUE);
-        }
-
-        @Override
-        public TypeElement visitExecutableAsMethod(final ExecutableElement e, final Types types) {
-            return Stream.concat(e.getAnnotationMirrors().stream(), e.getReturnType().getAnnotationMirrors().stream())
-                    .map(AnnotationMirror::getAnnotationType)
-                    .filter(type -> type.getAnnotation(ScopeType.class) != null)
-                    .findFirst()
-                    .map(type -> (TypeElement) type.asElement())
-                    .orElse(super.DEFAULT_VALUE);
-        }
-    }
-
+    /**
+     * Annotation scanning mirror of {@link org.apache.logging.log4j.plugins.di.model.PluginSource}.
+     */
     interface PluginSourceMirror<E extends Element> {
         E getElement();
 
@@ -364,6 +351,7 @@ public class BeanProcessor extends AbstractProcessor {
         mirrors.addAll(producesAnnotationVisitor.producerFields);
         mirrors.addAll(injectAnnotationVisitor.injectableClasses);
         mirrors.addAll(disposesAnnotationVisitor.disposesParameters);
+        mirrors.addAll(pluginAnnotationVisitor.implicitPlugins);
         mirrors.forEach(mirror -> {
             declaringTypes.add(mirror.getDeclaringElement());
             packageElements.add(elements.getPackageOf(mirror.getDeclaringElement()));
@@ -377,7 +365,7 @@ public class BeanProcessor extends AbstractProcessor {
                     packageElements.add(elements.getPackageOf(mirror.getDeclaringElement()));
                 });
 
-        pluginAnnotationVisitor.plugins.stream()
+        pluginAnnotationVisitor.genericPlugins.stream()
                 .filter(mirror -> !declaringTypes.contains(mirror.getDeclaringElement()))
                 .forEach(mirror -> {
                     mirrors.add(mirror);
@@ -418,12 +406,14 @@ public class BeanProcessor extends AbstractProcessor {
             out.println("import java.util.List;");
             out.println("import java.util.Set;");
             out.println();
-            out.println("public class " + className + " extends PluginModule {");
+            out.println("public class " + className + " implements PluginModule {");
             out.println();
-            out.println("  private static final List<PluginSource> PLUGINS = List.of(" + javaListOfPlugins(mirrors) + ");");
+            out.println("  private final ClassLoader classLoader = getClass().getClassLoader();");
+            out.println("  private final List<PluginSource> pluginSources = List.of(" + javaListOfPlugins(mirrors) + ");");
             out.println();
-            out.println("  public " + className + "() {");
-            out.println("    super(PLUGINS);");
+            out.println("  @Override");
+            out.println("  public List<PluginSource> getPluginSources() {");
+            out.println("    return pluginSources;");
             out.println("  }");
             out.println();
             out.println("}");
@@ -433,39 +423,35 @@ public class BeanProcessor extends AbstractProcessor {
     private String javaListOfPlugins(final List<PluginSourceMirror<?>> mirrors) {
         final Elements elements = processingEnv.getElementUtils();
         final Types types = processingEnv.getTypeUtils();
-        final var scopeTypeVisitor = new ScopeTypeVisitor(elements.getTypeElement(DependentScoped.class.getCanonicalName()));
         return mirrors.stream()
                 .sorted(Comparator.<PluginSourceMirror<?>, String>comparing(m -> m.getClass().getName())
                         .thenComparing(m -> elements.getBinaryName(m.getDeclaringElement()), CharSequence::compare))
                 .map(mirror -> {
                     final String declaringClassName = '"' + elements.getBinaryName(mirror.getDeclaringElement()).toString() + '"';
                     final String setOfImplementedInterfaces = javaSetOfImplementedInterfaces(mirror.getType());
-                    final String scopeTypeClassReference = mirror.getElement().accept(scopeTypeVisitor, types).getQualifiedName() + ".class";
                     if (mirror instanceof ProducerMethodMirror) {
-                        return "new ProducerMethod(" + declaringClassName + ", \"" +
+                        return "new ProducerMethod(classLoader, " + declaringClassName + ", \"" +
                                 mirror.getType().toString() + "\", \"" +
                                 mirror.getElement().getSimpleName() + "\", " +
-                                setOfImplementedInterfaces + ", " +
-                                scopeTypeClassReference + ")";
+                                setOfImplementedInterfaces + ")";
                     } else if (mirror instanceof ProducerFieldMirror) {
-                        return "new ProducerField(" + declaringClassName + ", \"" +
+                        return "new ProducerField(classLoader, " + declaringClassName + ", \"" +
                                 mirror.getElement().getSimpleName() + "\", " +
-                                setOfImplementedInterfaces + ", " +
-                                scopeTypeClassReference + ")";
+                                setOfImplementedInterfaces + ")";
                     } else if (mirror instanceof InjectionTargetMirror) {
-                        return "new InjectionTarget(" + declaringClassName + ", " +
-                                setOfImplementedInterfaces + ", " +
-                                scopeTypeClassReference + ")";
+                        return "new InjectionTarget(classLoader, " + declaringClassName + ", " +
+                                setOfImplementedInterfaces + ")";
                     } else if (mirror instanceof DisposesMirror) {
-                        return "new DisposesMethod(" + declaringClassName + ", \"" +
+                        return "new DisposesMethod(classLoader, " + declaringClassName + ", \"" +
                                 elements.getBinaryName((TypeElement) types.asElement(mirror.getElement().asType())) + "\")";
                     } else if (mirror instanceof GenericPluginMirror) {
-                        return "new GenericPlugin(" + declaringClassName + ", " + setOfImplementedInterfaces + ")";
+                        return "new GenericPlugin(classLoader, " + declaringClassName + ", " +
+                                setOfImplementedInterfaces + ")";
                     } else {
                         throw new UnsupportedOperationException(mirror.getClass().getName());
                     }
                 })
-                .collect(Collectors.joining(",\n", "\n", "\n"));
+                .collect(Collectors.joining(",\n    ", "\n    ", "\n  "));
     }
 
     private String javaSetOfImplementedInterfaces(final TypeMirror base) {

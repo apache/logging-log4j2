@@ -18,11 +18,14 @@
 package org.apache.logging.log4j.plugin.processor;
 
 import org.apache.logging.log4j.plugins.di.model.DisposesMethod;
-import org.apache.logging.log4j.plugins.di.model.GenericPlugin;
 import org.apache.logging.log4j.plugins.di.model.InjectionTarget;
 import org.apache.logging.log4j.plugins.di.model.PluginModule;
 import org.apache.logging.log4j.plugins.di.model.ProducerField;
+import org.apache.logging.log4j.plugins.test.validation.ExampleBean;
 import org.apache.logging.log4j.plugins.test.validation.FakePlugin;
+import org.apache.logging.log4j.plugins.test.validation.ImplicitBean;
+import org.apache.logging.log4j.plugins.test.validation.ImplicitMethodBean;
+import org.apache.logging.log4j.plugins.test.validation.ProductionBean;
 import org.apache.logging.log4j.plugins.test.validation.plugins.Log4jModule;
 import org.junit.jupiter.api.Test;
 
@@ -34,18 +37,18 @@ class BeanProcessorTest {
         final PluginModule module = new Log4jModule();
         final var plugins = module.getPluginSources();
         assertTrue(plugins.stream().anyMatch(plugin -> plugin instanceof InjectionTarget &&
-                plugin.getDeclaringClassName().equals("org.apache.logging.log4j.plugins.test.validation.ExampleBean")));
+                plugin.getDeclaringClass().equals(ExampleBean.class)));
         assertTrue(plugins.stream().anyMatch(plugin -> plugin instanceof InjectionTarget &&
-                plugin.getDeclaringClassName().equals("org.apache.logging.log4j.plugins.test.validation.ImplicitBean")));
+                plugin.getDeclaringClass().equals(ImplicitBean.class)));
         assertTrue(plugins.stream().anyMatch(plugin -> plugin instanceof InjectionTarget &&
-                plugin.getDeclaringClassName().equals("org.apache.logging.log4j.plugins.test.validation.ImplicitMethodBean")));
+                plugin.getDeclaringClass().equals(ImplicitMethodBean.class)));
         assertTrue(plugins.stream().anyMatch(plugin -> plugin instanceof InjectionTarget &&
-                plugin.getDeclaringClassName().equals("org.apache.logging.log4j.plugins.test.validation.ProductionBean$Builder")));
+                plugin.getDeclaringClass().equals(ProductionBean.Builder.class)));
         assertTrue(plugins.stream().anyMatch(plugin -> plugin instanceof ProducerField &&
-                plugin.getDeclaringClassName().equals("org.apache.logging.log4j.plugins.test.validation.ProductionBean")));
+                plugin.getDeclaringClass().equals(ProductionBean.class)));
         assertTrue(plugins.stream().anyMatch(plugin -> plugin instanceof DisposesMethod &&
-                plugin.getDeclaringClassName().equals("org.apache.logging.log4j.plugins.test.validation.ProductionBean")));
-        assertTrue(plugins.stream().anyMatch(plugin -> plugin instanceof GenericPlugin &&
-                plugin.getDeclaringClassName().equals(FakePlugin.class.getName())));
+                plugin.getDeclaringClass().equals(ProductionBean.class)));
+        assertTrue(plugins.stream().anyMatch(plugin -> plugin instanceof InjectionTarget &&
+                plugin.getDeclaringClass().equals(FakePlugin.class)));
     }
 }

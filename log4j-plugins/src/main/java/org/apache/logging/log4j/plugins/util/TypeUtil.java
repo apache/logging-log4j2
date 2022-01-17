@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.plugins.util;
 
-import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
@@ -29,9 +28,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Utility class for working with Java {@link Type}s and derivatives. This class is adapted heavily from the
@@ -533,6 +534,14 @@ public final class TypeUtil {
 
     public static ParameterizedType getParameterizedType(final Type rawType, final Type... typeArguments) {
         return new ParameterizedTypeImpl(null, rawType, typeArguments);
+    }
+
+    public static Set<Class<?>> getImplementedInterfaces(final Class<?> type) {
+        final Set<Class<?>> interfaces = new LinkedHashSet<>(List.of(type.getInterfaces()));
+        for (Class<?> superclass = type.getSuperclass(); superclass != null; superclass = superclass.getSuperclass()) {
+            interfaces.addAll(List.of(superclass.getInterfaces()));
+        }
+        return interfaces;
     }
 
 }

@@ -17,33 +17,33 @@
 
 package org.apache.logging.log4j.plugins.di.model;
 
-import java.lang.annotation.Annotation;
+import org.apache.logging.log4j.plugins.util.PluginUtil;
+import org.apache.logging.log4j.plugins.util.Value;
+
 import java.util.Set;
 
 public class ProducerMethod implements PluginSource {
-    private final String declaringClassName;
-    private final String returnTypeClassName;
+    private final Value<Class<?>> declaringClass;
+    private final Value<Class<?>> returnType;
     private final String methodName;
     private final Set<Class<?>> implementedInterfaces;
-    private final Class<? extends Annotation> scopeType;
 
-    public ProducerMethod(final String declaringClassName, final String returnTypeClassName,
-                          final String methodName, final Set<Class<?>> implementedInterfaces,
-                          final Class<? extends Annotation> scopeType) {
-        this.declaringClassName = declaringClassName;
-        this.returnTypeClassName = returnTypeClassName;
+    public ProducerMethod(
+            final ClassLoader classLoader, final String declaringClassName, final String returnTypeClassName,
+            final String methodName, final Set<Class<?>> implementedInterfaces) {
+        declaringClass = PluginUtil.lazyLoadClass(classLoader, declaringClassName);
+        returnType = PluginUtil.lazyLoadClass(classLoader, returnTypeClassName);
         this.methodName = methodName;
         this.implementedInterfaces = implementedInterfaces;
-        this.scopeType = scopeType;
     }
 
     @Override
-    public String getDeclaringClassName() {
-        return declaringClassName;
+    public Class<?> getDeclaringClass() {
+        return declaringClass.get();
     }
 
-    public String getReturnTypeClassName() {
-        return returnTypeClassName;
+    public Class<?> getReturnType() {
+        return returnType.get();
     }
 
     public String getMethodName() {
@@ -53,10 +53,5 @@ public class ProducerMethod implements PluginSource {
     @Override
     public Set<Class<?>> getImplementedInterfaces() {
         return implementedInterfaces;
-    }
-
-    @Override
-    public Class<? extends Annotation> getScopeType() {
-        return scopeType;
     }
 }

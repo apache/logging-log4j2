@@ -18,6 +18,10 @@
 package org.apache.logging.log4j.plugins.spi;
 
 public class InitializationException extends InjectionException {
+    public InitializationException(final String message) {
+        super(message);
+    }
+
     public InitializationException(final String message, final Throwable cause) {
         super(message, cause);
     }

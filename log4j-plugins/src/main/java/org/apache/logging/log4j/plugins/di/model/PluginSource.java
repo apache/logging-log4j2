@@ -17,13 +17,10 @@
 
 package org.apache.logging.log4j.plugins.di.model;
 
-import java.lang.annotation.Annotation;
 import java.util.Set;
 
 public interface PluginSource {
-    String getDeclaringClassName();
+    Class<?> getDeclaringClass();
 
     Set<Class<?>> getImplementedInterfaces();
-
-    Class<? extends Annotation> getScopeType();
 }
