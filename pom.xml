@@ -262,6 +262,7 @@
     <maven.doap.skip>false</maven.doap.skip>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- See https://maven.apache.org/guides/mini/guide-reproducible-builds.html -->
+    <!-- 1641056400 = Jan 1 2022, instead of 1969, which shows up in Javadoc -->
     <project.build.outputTimestamp>1641056400</project.build.outputTimestamp>
     <docLabel>Site Documentation</docLabel>
     <projectDir />
