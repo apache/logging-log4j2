@@ -19,6 +19,7 @@ package org.apache.logging.log4j.util.java9;
 import org.apache.logging.log4j.util.StackLocator;
 import org.junit.jupiter.api.Test;
 
+import java.util.Deque;
 import java.util.Stack;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -43,11 +44,11 @@ public class StackLocatorTest {
     @Test
     public void testGetCurrentStackTrace() {
         final StackLocator stackLocator = StackLocator.getInstance();
-        final Stack<Class<?>> classes = stackLocator.getCurrentStackTrace();
+        final Deque<Class<?>> classes = stackLocator.getCurrentStackTrace();
         final Stack<Class<?>> reversed = new Stack<>();
         reversed.ensureCapacity(classes.size());
-        while (!classes.empty()) {
-            reversed.push(classes.pop());
+        while (!classes.isEmpty()) {
+            reversed.push(classes.removeLast());
         }
         while (reversed.peek() != StackLocator.class) {
             reversed.pop();
@@ -129,7 +130,8 @@ public class StackLocatorTest {
          */
         final StackTraceElement element = new Foo().foo();
         assertEquals("org.apache.logging.log4j.util.java9.StackLocatorTest$Foo", element.getClassName());
-        assertEquals(96, element.getLineNumber());
+        // The line number below may need adjustment if this file is changed. 
+        assertEquals(97, element.getLineNumber());
     }
 
     @Test
