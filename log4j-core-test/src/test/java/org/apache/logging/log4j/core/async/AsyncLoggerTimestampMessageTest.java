@@ -16,15 +16,10 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.ClockFactory;
 import org.apache.logging.log4j.core.time.ClockFactoryTest;
@@ -33,12 +28,18 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnJre;
+import org.junit.jupiter.api.condition.JRE;
 
-import static org.junit.Assert.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Confirms that if you log a {@link TimestampMessage} then there are no unnecessary calls to {@link Clock}.
@@ -46,10 +47,11 @@ import static org.junit.Assert.*;
  * See LOG4J2-744.
  * </p>
  */
-@Category(AsyncLoggers.class)
+@Tag("async")
+@EnabledOnJre(JRE.JAVA_11)
 public class AsyncLoggerTimestampMessageTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
                 AsyncLoggerContextSelector.class.getName());
@@ -59,7 +61,7 @@ public class AsyncLoggerTimestampMessageTest {
                 PoisonClock.class.getName());
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() throws IllegalAccessException {
         System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, Strings.EMPTY);
         ClockFactoryTest.resetClocks();
@@ -82,7 +84,7 @@ public class AsyncLoggerTimestampMessageTest {
         reader.close();
         file.delete();
         assertNotNull(line1);
-        assertEquals("line1 correct", "123456789000 Async logger msg with embedded timestamp", line1);
+        assertEquals("123456789000 Async logger msg with embedded timestamp", line1, "line1 correct");
     }
 
     public static class PoisonClock implements Clock {
