@@ -176,6 +176,9 @@
     </release>
     <release version="2.17.2" date="20YY-MM-DD" description="GA Release 2.17.2">
       <!-- FIXES -->
+      <action issue="LOG4J2-3333" dev="ckozak" type="fix">
+        Fix ThreadContextDataInjector initialization deadlock
+      </action>
       <action issue="LOG4J2-3358" dev="ckozak" type="fix">
         Fix substitutions when programmatic configuration is used
       </action>

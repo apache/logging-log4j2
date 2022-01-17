@@ -41,11 +41,9 @@ import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.impl.ThreadContextDataInjector;
 import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.ExecutorServices;
-import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.message.MessageFactory;
@@ -66,15 +64,6 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 public class LoggerContext extends AbstractLifeCycle
         implements org.apache.logging.log4j.spi.LoggerContext, AutoCloseable, Terminable, ConfigurationListener,
         LoggerContextShutdownEnabled {
-
-    static {
-        try {
-            // LOG4J2-1642 preload ExecutorServices as it is used in shutdown hook
-            Loader.loadClass(ExecutorServices.class.getName());
-        } catch (final Exception e) {
-            LOGGER.error("Failed to preload ExecutorServices class.", e);
-        }
-    }
 
     /**
      * Property name of the property change event fired if the configuration is changed.
@@ -134,9 +123,6 @@ public class LoggerContext extends AbstractLifeCycle
             externalMap.put(EXTERNAL_CONTEXT_KEY, externalContext);
         }
         this.configLocation = configLocn;
-        final Thread runner = new Thread(new ThreadContextDataTask(), "Thread Context Data Task");
-        runner.setDaemon(true);
-        runner.start();
     }
 
     /**
@@ -165,9 +151,6 @@ public class LoggerContext extends AbstractLifeCycle
         } else {
             configLocation = null;
         }
-        final Thread runner = new Thread(new ThreadContextDataTask(), "Thread Context Data Task");
-        runner.setDaemon(true);
-        runner.start();
     }
 
     public void addShutdownListener(final LoggerContextShutdownAware listener) {
@@ -305,6 +288,8 @@ public class LoggerContext extends AbstractLifeCycle
             final LoggerContextFactory factory = LogManager.getFactory();
             if (factory instanceof ShutdownCallbackRegistry) {
                 LOGGER.debug(SHUTDOWN_HOOK_MARKER, "Shutdown hook enabled. Registering a new one.");
+                // LOG4J2-1642 preload ExecutorServices as it is used in shutdown hook
+                ExecutorServices.ensureInitialized();
                 try {
                     final long shutdownTimeoutMillis = this.configuration.getShutdownTimeoutMillis();
                     this.shutdownCallback = ((ShutdownCallbackRegistry) factory).addShutdownCallback(new Runnable() {
@@ -778,15 +763,5 @@ public class LoggerContext extends AbstractLifeCycle
     // LOG4J2-151: changed visibility from private to protected
     protected Logger newInstance(final LoggerContext ctx, final String name, final MessageFactory messageFactory) {
         return new Logger(ctx, name, messageFactory);
-    }
-
-    private static class ThreadContextDataTask implements Runnable {
-
-        @Override
-        public void run() {
-            LOGGER.debug("Initializing Thread Context Data Service Providers");
-            ThreadContextDataInjector.initServiceProviders();
-            LOGGER.debug("Thread Context Data Service Provider initialization complete");
-        }
     }
 }
