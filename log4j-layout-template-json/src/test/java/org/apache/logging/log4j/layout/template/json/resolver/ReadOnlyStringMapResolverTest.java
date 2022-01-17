@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.PatternSyntaxException;
 
 import static org.apache.logging.log4j.layout.template.json.TestHelpers.*;
@@ -450,4 +451,29 @@ class ReadOnlyStringMapResolverTest {
 
     }
 
+    @Test
+    void test_map_exclude_pattern() {
+        final StringMapMessage message = new StringMapMessage()
+                .with("first", "alpha")
+                .with("second", "beta")
+                .with("third", "gamma")
+                .with("fourth", "delta");
+        final LogEvent logEvent = Log4jLogEvent.newBuilder()
+                .setMessage(message)
+                .build();
+
+        final String eventTemplate = writeJson(asMap(
+                "map", asMap(
+                        "$resolver", "map",
+                        "excludePattern", ".+d")));
+
+        final JsonTemplateLayout layout = JsonTemplateLayout.newBuilder()
+                .setConfiguration(CONFIGURATION)
+                .setEventTemplate(eventTemplate)
+                .build();
+
+        usingSerializedLogEventAccessor(layout, logEvent,
+                accessor -> assertThat(accessor.getObject("map")).isInstanceOfSatisfying(Map.class,
+                        map -> assertThat(map).containsOnlyKeys("first", "fourth")));
+    }
 }
