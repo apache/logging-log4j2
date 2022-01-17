@@ -34,18 +34,19 @@ import java.util.regex.Pattern;
  * <h3>Configuration</h3>
  *
  * <pre>
- * config        = singleAccess | multiAccess
+ * config         = singleAccess | multiAccess
  *
- * singleAccess  = key , [ stringified ]
- * key           = "key" -> string
- * stringified   = "stringified" -> boolean
+ * singleAccess   = key , [ stringified ]
+ * key            = "key" -> string
+ * stringified    = "stringified" -> boolean
  *
- * multiAccess   = [ pattern ] , [ replacement ] , [ flatten ] , [ stringified ]
- * pattern       = "pattern" -> string
- * replacement   = "replacement" -> string
- * flatten       = "flatten" -> ( boolean | flattenConfig )
- * flattenConfig = [ flattenPrefix ]
- * flattenPrefix = "prefix" -> string
+ * multiAccess    = [ pattern ] , [ replacement ] , [ excludePattern ] , [ flatten ] , [ stringified ]
+ * pattern        = "pattern" -> string
+ * excludePattern = "excludePattern" -> string
+ * replacement    = "replacement" -> string
+ * flatten        = "flatten" -> ( boolean | flattenConfig )
+ * flattenConfig  = [ flattenPrefix ]
+ * flattenPrefix  = "prefix" -> string
  * </pre>
  *
  * Note that <tt>singleAccess</tt> resolves a single field, whilst
@@ -61,14 +62,17 @@ import java.util.regex.Pattern;
  * These two are effectively equivalent to
  * <tt>Pattern.compile(pattern).matcher(key).matches()</tt> and
  * <tt>Pattern.compile(pattern).matcher(key).replaceAll(replacement)</tt> calls.
+ * Regex provided in the <tt>excludePattern</tt> is used to exclude matching keys.
+ * This exclusion pattern is not used with the previously mentioned
+ * <tt>replacement</tt> option.
  *
  * <h3>Garbage Footprint</h3>
  *
  * <tt>stringified</tt> allocates a new <tt>String</tt> for values that are not
  * of type <tt>String</tt>.
  * <p>
- * <tt>pattern</tt> and <tt>replacement</tt> incur pattern matcher allocation
- * costs.
+ * <tt>pattern</tt>, <tt>excludePattern</tt> and <tt>replacement</tt> incur pattern
+ * matcher allocation costs.
  * <p>
  * Writing certain non-primitive values (e.g., <tt>BigDecimal</tt>,
  * <tt>Set</tt>, etc.) to JSON generates garbage, though most (e.g.,
@@ -208,6 +212,11 @@ class ReadOnlyStringMapResolver implements EventResolver {
             throw new IllegalArgumentException(
                     "replacement cannot be provided without a pattern: " + config);
         }
+        final String excludePattern = config.getString("excludePattern");
+        if (excludePattern != null && key != null) {
+            throw new IllegalArgumentException(
+                    "excludePattern and key options cannot be combined: " + config);
+        }
         final boolean stringified = config.getBoolean("stringified", false);
         if (key != null) {
             return createKeyResolver(key, stringified, mapAccessor);
@@ -219,7 +228,7 @@ class ReadOnlyStringMapResolver implements EventResolver {
                     prefix,
                     pattern,
                     replacement,
-                    stringified,
+                    excludePattern, stringified,
                     mapAccessor);
         }
     }
@@ -257,6 +266,7 @@ class ReadOnlyStringMapResolver implements EventResolver {
             final String prefix,
             final String pattern,
             final String replacement,
+            final String excludePattern,
             final boolean stringified,
             final Function<LogEvent, ReadOnlyStringMap> mapAccessor) {
 
@@ -265,6 +275,8 @@ class ReadOnlyStringMapResolver implements EventResolver {
                 pattern == null
                         ? null
                         : Pattern.compile(pattern);
+        final Pattern exclusionPattern =
+                excludePattern == null ? null : Pattern.compile(excludePattern);
 
         // Create the recycler for the loop context.
         final Recycler<LoopContext> loopContextRecycler =
@@ -276,6 +288,7 @@ class ReadOnlyStringMapResolver implements EventResolver {
                     }
                     loopContext.pattern = compiledPattern;
                     loopContext.replacement = replacement;
+                    loopContext.exclusionPattern = exclusionPattern;
                     loopContext.stringified = stringified;
                     return loopContext;
                 });
@@ -354,6 +367,8 @@ class ReadOnlyStringMapResolver implements EventResolver {
 
         private String replacement;
 
+        private Pattern exclusionPattern;
+
         private boolean stringified;
 
         private JsonWriter jsonWriter;
@@ -376,7 +391,11 @@ class ReadOnlyStringMapResolver implements EventResolver {
             final Matcher matcher = loopContext.pattern != null
                     ? loopContext.pattern.matcher(key)
                     : null;
-            final boolean keyMatched = matcher == null || matcher.matches();
+            final Matcher mismatcher = loopContext.exclusionPattern != null
+                    ? loopContext.exclusionPattern.matcher(key)
+                    : null;
+            final boolean keyMatched = (matcher == null || matcher.matches())
+                    && (mismatcher == null || !mismatcher.matches());
             if (keyMatched) {
                 final String replacedKey =
                         matcher != null && loopContext.replacement != null
