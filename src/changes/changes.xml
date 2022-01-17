@@ -192,6 +192,9 @@
       <action dev="ggregory" type="udpate" due-to="Gary Gregory">
         Bump Woodstox 6.2.6 to 6.2.8.
       </action>
+      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+        Bump maven-compiler-plugin from 3.8.1 to 3.9.0.
+      </action>
 	</release>
     <release version="2.17.1" date="2021-12-27" description="GA Release 2.17.1">
       <!-- FIXES -->
