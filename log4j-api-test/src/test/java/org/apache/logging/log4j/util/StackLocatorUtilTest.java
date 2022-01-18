@@ -31,7 +31,6 @@ import org.junit.runners.ParentRunner;
 @RunWith(BlockJUnit4ClassRunner.class)
 public class StackLocatorUtilTest {
 
-
     @Test
     public void testStackTraceEquivalence() throws Throwable {
         StackTraceElement[] stackTraceElements = expectedStack(new Throwable().getStackTrace());
