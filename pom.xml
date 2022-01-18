@@ -122,10 +122,14 @@
       <id>ckozak</id>
       <name>Carter Kozak</name>
       <email>ckozak@apache.org</email>
+      <url>https://github.com/carterkozak</url>
       <roles>
         <role>PMC Member</role>
       </roles>
       <timezone>America/New York</timezone>
+      <properties>
+        <picUrl>https://www.gravatar.com/avatar/e057b8f2538a0258f451d9efc8d2f6fa.jpg</picUrl>
+      </properties>
     </developer>
     <developer>
       <id>vy</id>
