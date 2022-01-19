@@ -33,6 +33,11 @@ import org.apache.logging.log4j.util.EnglishEnums;
 public interface Filter extends LifeCycle {
 
     /**
+     * Empty array.
+     */
+    Filter[] EMPTY_ARRAY = {};
+    
+    /**
      * Main {@linkplain org.apache.logging.log4j.plugins.Plugin#elementType() plugin element type} for
      * Filter plugins.
      *

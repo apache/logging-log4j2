@@ -25,6 +25,11 @@ import org.apache.logging.log4j.message.MessageFactory;
 public interface LoggerContext {
 
     /**
+     * Empty array.
+     */
+    LoggerContext[] EMPTY_ARRAY = {};
+
+    /**
      * Gets the anchor for some other context, such as a ClassLoader or ServletContext.
      * @return The external context.
      */

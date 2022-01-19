@@ -164,7 +164,7 @@ public class FastDatePrinter implements DatePrinter, Serializable {
      */
     private void init() {
         final List<Rule> rulesList = parsePattern();
-        mRules = rulesList.toArray(new Rule[rulesList.size()]);
+        mRules = rulesList.toArray(Rule.EMPTY_ARRAY);
 
         int len = 0;
         for (int i=mRules.length; --i >= 0; ) {
@@ -722,6 +722,9 @@ public class FastDatePrinter implements DatePrinter, Serializable {
      * <p>Inner class defining a rule.</p>
      */
     private interface Rule {
+        
+        Rule[] EMPTY_ARRAY = {};
+
         /**
          * Returns the estimated length of the result.
          *

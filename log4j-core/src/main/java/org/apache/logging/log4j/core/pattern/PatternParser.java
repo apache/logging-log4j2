@@ -569,7 +569,7 @@ public final class PatternParser {
             boolean errors = false;
             for (final Class<?> clazz : parmTypes) {
                 if (clazz.isArray() && clazz.getName().equals("[Ljava.lang.String;")) {
-                    final String[] optionsArray = options.toArray(new String[options.size()]);
+                    final String[] optionsArray = options.toArray(Strings.EMPTY_ARRAY);
                     parms[i] = optionsArray;
                 } else if (clazz.isAssignableFrom(Configuration.class)) {
                     parms[i] = config;

@@ -55,6 +55,8 @@ import java.util.function.Function;
  */
 public class PluginBuilder implements Builder<Object> {
 
+    private static final Field[] EMPTY_FIELD_ARRAY = {};
+    
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final PluginType<?> pluginType;
@@ -178,7 +180,7 @@ public class PluginBuilder implements Builder<Object> {
     private Object injectBuilder(final Builder<?> builder) {
         final Object target = builder instanceof BuilderWrapper ? ((BuilderWrapper) builder).getBuilder() : builder;
         final List<Field> fields = TypeUtil.getAllDeclaredFields(target.getClass());
-        AccessibleObject.setAccessible(fields.toArray(new Field[0]), true);
+        AccessibleObject.setAccessible(fields.toArray(EMPTY_FIELD_ARRAY), true);
         final StringBuilder log = new StringBuilder();
         // TODO: collect OptionBindingExceptions into a composite error message (ConfigurationException?)
         for (final Field field : fields) {
