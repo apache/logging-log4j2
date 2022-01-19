@@ -201,7 +201,7 @@ class SocketAppenderReconnectTest {
     private static void awaitUntilSucceeds(final Runnable runnable) {
         // These figures are collected via trial-and-error; nothing scientific to look for here.
         final long pollIntervalMillis = 1_000L;
-        final long timeoutSeconds = 60L;
+        final long timeoutSeconds = 120L;
         await()
                 .pollInterval(pollIntervalMillis, TimeUnit.MILLISECONDS)
                 .atMost(timeoutSeconds, TimeUnit.SECONDS)
