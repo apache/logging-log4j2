@@ -28,11 +28,21 @@ import static org.junit.jupiter.api.Assertions.*;
 public class StringsTest {
 
     @Test
-    public void testIsEmpty() {
-        assertTrue(Strings.isEmpty(null));
-        assertTrue(Strings.isEmpty(""));
-        assertFalse(Strings.isEmpty(" "));
-        assertFalse(Strings.isEmpty("a"));
+    public void testConcat() {
+        assertEquals("ab", Strings.concat("a", "b"));
+        assertEquals("a", Strings.concat("a", ""));
+        assertEquals("a", Strings.concat("a", null));
+        assertEquals("b", Strings.concat("", "b"));
+        assertEquals("b", Strings.concat(null, "b"));
+    }
+
+    /**
+     * A sanity test to make sure a typo does not mess up {@link Strings#EMPTY}.
+     */
+    @Test
+    public void testEMPTY() {
+        assertEquals("", Strings.EMPTY);
+        assertEquals(0, Strings.EMPTY.length());
     }
 
     @Test
@@ -46,22 +56,12 @@ public class StringsTest {
         assertFalse(Strings.isEmpty("a"));
     }
 
-    /**
-     * A sanity test to make sure a typo does not mess up {@link Strings#EMPTY}.
-     */
     @Test
-    public void testEMPTY() {
-        assertEquals("", Strings.EMPTY);
-        assertEquals(0, Strings.EMPTY.length());
-    }
-
-    @Test
-    public void testConcat() {
-        assertEquals("ab", Strings.concat("a", "b"));
-        assertEquals("a", Strings.concat("a", ""));
-        assertEquals("a", Strings.concat("a", null));
-        assertEquals("b", Strings.concat("", "b"));
-        assertEquals("b", Strings.concat(null, "b"));
+    public void testIsEmpty() {
+        assertTrue(Strings.isEmpty(null));
+        assertTrue(Strings.isEmpty(""));
+        assertFalse(Strings.isEmpty(" "));
+        assertFalse(Strings.isEmpty("a"));
     }
 
     @Test
