@@ -17,9 +17,12 @@
 package org.apache.logging.log4j.core.lookup;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Property;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * A lookup designed for {@code Properties} defined in the configuration. This is similar
@@ -29,10 +32,20 @@ import java.util.Map;
  */
 public final class PropertiesLookup implements StrLookup {
 
-    /**
-     * Configuration from which to read properties.
-     */
-    private final Map<String, String> properties;
+    /** Logger context properties. */
+    private final Map<String, String> contextProperties;
+
+    /** Configuration properties. */
+    private final Map<String, ConfigurationPropertyResult> configurationProperties;
+
+    public PropertiesLookup(final Property[] configProperties, final Map<String, String> contextProperties) {
+        this.contextProperties = contextProperties == null
+                ? Collections.emptyMap()
+                : contextProperties;
+        this.configurationProperties = configProperties == null
+                ? Collections.emptyMap()
+                : createConfigurationPropertyMap(configProperties);
+    }
 
     /**
      * Constructs a new instance for the given map.
@@ -40,18 +53,7 @@ public final class PropertiesLookup implements StrLookup {
      * @param properties map these.
      */
     public PropertiesLookup(final Map<String, String> properties) {
-        this.properties = properties == null
-                ? Collections.emptyMap()
-                : properties;
-    }
-
-    /**
-     * Gets the property map.
-     *
-     * @return the property map.
-     */
-    public Map<String, String> getProperties() {
-        return properties;
+        this(Property.EMPTY_ARRAY, properties);
     }
 
     @Override
@@ -70,12 +72,100 @@ public final class PropertiesLookup implements StrLookup {
      */
     @Override
     public String lookup(final String key) {
-        return key == null ? null : properties.get(key);
+        LookupResult result = evaluate(key);
+        return result == null ? null : result.value();
+    }
+
+    @Override
+    public LookupResult evaluate(String key) {
+        if (key == null) {
+            return null;
+        }
+        LookupResult configResult = configurationProperties.get(key);
+        if (configResult != null) {
+            return configResult;
+        }
+        // Allow the context map to be mutated after this lookup has been initialized.
+        String contextResult = contextProperties.get(key);
+        return contextResult == null ? null : new ContextPropertyResult(contextResult);
+    }
+
+    @Override
+    public LookupResult evaluate(@SuppressWarnings("ignored") final LogEvent event, final String key) {
+        return evaluate(key);
     }
 
     @Override
     public String toString() {
-        return "PropertiesLookup{properties=" + properties + '}';
+        return "PropertiesLookup{" +
+                "contextProperties=" + contextProperties +
+                ", configurationProperties=" + configurationProperties +
+                '}';
     }
 
+    private static Map<String, ConfigurationPropertyResult> createConfigurationPropertyMap(Property[] props) {
+        // The raw property values must be used without the substitution handled by the plugin framework
+        // which calls this method, otherwise we risk re-interpolating through unexpected data.
+        // The PropertiesLookup is unique in that results from this lookup support recursive evaluation.
+        Map<String, ConfigurationPropertyResult> result = new HashMap<>(props.length);
+        for (Property property : props) {
+            result.put(property.getName(), new ConfigurationPropertyResult(property.getRawValue()));
+        }
+        return result;
+    }
+
+    private static final class ConfigurationPropertyResult implements LookupResult {
+
+        private final String value;
+
+        ConfigurationPropertyResult(String value) {
+            this.value = Objects.requireNonNull(value, "value is required");
+        }
+
+        @Override
+        public String value() {
+            return value;
+        }
+
+        /**
+         * Properties are a special case in which lookups contained
+         * within the properties map are allowed for recursive evaluation.
+         */
+        @Override
+        public boolean isLookupEvaluationAllowedInValue() {
+            return true;
+        }
+
+        @Override
+        public String toString() {
+            return "ConfigurationPropertyResult{'" + value + "'}";
+        }
+    }
+
+    private static final class ContextPropertyResult implements LookupResult {
+
+        private final String value;
+
+        ContextPropertyResult(String value) {
+            this.value = Objects.requireNonNull(value, "value is required");
+        }
+
+        @Override
+        public String value() {
+            return value;
+        }
+
+        /**
+         * Unlike configuration properties, context properties are not built around lookup syntax.
+         */
+        @Override
+        public boolean isLookupEvaluationAllowedInValue() {
+            return false;
+        }
+
+        @Override
+        public String toString() {
+            return "ContextPropertyResult{'" + value + "'}";
+        }
+    }
 }

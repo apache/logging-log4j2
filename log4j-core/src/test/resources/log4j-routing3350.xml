@@ -16,24 +16,24 @@
  limitations under the License.
 
 -->
-<Configuration status="WARN" name="RoutingTest">
+<Configuration status="OFF" name="Routing3350">
   <Properties>
-    <Property name="filename">target/routing1/routingtest-$${sd:type}.log</Property>
+    <Property name="pcode">def</Property>
+    <Property name="drive">target</Property>
+    <Property name="path">/tmp/</Property>
+    <Property name="name">test.log</Property>
+    <Property name="filename">${drive}${path}${name}</Property>
+    <Property name="filepattern">${filename}.%i.backup</Property>
   </Properties>
-
   <Appenders>
-    <Console name="STDOUT">
-      <PatternLayout pattern="%m%n"/>
-    </Console>
     <Routing name="Routing">
-      <Routes>
+      <Routes pattern="$${map:pcode}">
         <Route>
-          <RollingFile name="Routing-${sd:type}" fileName="${filename}"
-                       filePattern="target/routing1/test1-${sd:type}.%i.log.gz">
+          <RollingFile name="Rolling" fileName="${filename}" filePattern="${filepattern}">
             <PatternLayout>
-              <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+              <pattern>%map{data}%n</pattern>
             </PatternLayout>
-            <SizeBasedTriggeringPolicy size="500" />
+            <SizeBasedTriggeringPolicy size="500"/>
           </RollingFile>
         </Route>
       </Routes>

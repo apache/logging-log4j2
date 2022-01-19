@@ -49,6 +49,33 @@
         "old": "method void org.apache.logging.log4j.core.script.ScriptManager::addScript(org.apache.logging.log4j.core.script.AbstractScript)",
         "new": "method boolean org.apache.logging.log4j.core.script.ScriptManager::addScript(org.apache.logging.log4j.core.script.AbstractScript)",
         "justification": "LOG4J2-2486 - Require enabled script languages to be specified in a system property"
+      },
+      {
+        "code": "java.method.returnTypeChanged",
+        "old": "method java.lang.String org.apache.logging.log4j.core.lookup.StrSubstitutor::resolveVariable(org.apache.logging.log4j.core.LogEvent, java.lang.String, java.lang.StringBuilder, int, int)",
+        "new": "method org.apache.logging.log4j.core.lookup.LookupResult org.apache.logging.log4j.core.lookup.StrSubstitutor::resolveVariable(org.apache.logging.log4j.core.LogEvent, java.lang.String, java.lang.StringBuilder, int, int)",
+        "justification": "LOG4J2-3317: Fix RoutingAppender backcompat while improving lookup security"
+      },
+      {
+        "code": "java.annotation.removed",
+        "old": "parameter org.apache.logging.log4j.core.config.Property org.apache.logging.log4j.core.config.Property::createProperty(===java.lang.String===, java.lang.String)",
+        "new": "parameter org.apache.logging.log4j.core.config.Property org.apache.logging.log4j.core.config.Property::createProperty(===java.lang.String===, java.lang.String)",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginAttribute(\"name\")",
+        "justification": "LOG4J2-3317: Fix RoutingAppender backcompat while improving lookup security"
+      },
+      {
+        "code": "java.annotation.removed",
+        "old": "parameter org.apache.logging.log4j.core.config.Property org.apache.logging.log4j.core.config.Property::createProperty(java.lang.String, ===java.lang.String===)",
+        "new": "parameter org.apache.logging.log4j.core.config.Property org.apache.logging.log4j.core.config.Property::createProperty(java.lang.String, ===java.lang.String===)",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginValue(\"value\")",
+        "justification": "LOG4J2-3317: Fix RoutingAppender backcompat while improving lookup security"
+      },
+      {
+        "code": "java.annotation.removed",
+        "old": "method org.apache.logging.log4j.core.config.Property org.apache.logging.log4j.core.config.Property::createProperty(java.lang.String, java.lang.String)",
+        "new": "method org.apache.logging.log4j.core.config.Property org.apache.logging.log4j.core.config.Property::createProperty(java.lang.String, java.lang.String)",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginFactory",
+        "justification": "LOG4J2-3317: Fix RoutingAppender backcompat while improving lookup security"
       }
     ]
   }
