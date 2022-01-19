@@ -89,7 +89,7 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
         } else {
             filterList.remove(filter);
         }
-        return new CompositeFilter(filterList.toArray(new Filter[this.filters.length - 1]));
+        return new CompositeFilter(filterList.toArray(Filter.EMPTY_ARRAY));
     }
 
     @Override

@@ -25,6 +25,7 @@ import java.util.Objects;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringMap;
+import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.TriConsumer;
 
 /**
@@ -91,7 +92,7 @@ public class JdkMapAdapterStringMap implements StringMap {
 
     private String[] getSortedKeys() {
         if (sortedKeys == null) {
-            sortedKeys = map.keySet().toArray(new String[map.size()]);
+            sortedKeys = map.keySet().toArray(Strings.EMPTY_ARRAY);
             Arrays.sort(sortedKeys, NULL_FIRST_COMPARATOR);
         }
         return sortedKeys;

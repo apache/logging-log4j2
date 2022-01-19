@@ -258,6 +258,9 @@ public abstract class NameAbbreviator {
      * Fragment of an pattern abbreviator.
      */
     private static final class PatternAbbreviatorFragment {
+        
+        static final PatternAbbreviatorFragment[] EMPTY_ARRAY = {};
+
         /**
          * Count of initial characters of element to output.
          */
@@ -336,7 +339,7 @@ public abstract class NameAbbreviator {
                     "fragments must have at least one element");
             }
 
-            this.fragments = fragments.toArray(new PatternAbbreviatorFragment[0]);
+            this.fragments = fragments.toArray(PatternAbbreviatorFragment.EMPTY_ARRAY);
         }
 
         /**

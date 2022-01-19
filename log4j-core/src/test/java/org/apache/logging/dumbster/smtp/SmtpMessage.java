@@ -88,7 +88,7 @@ public class SmtpMessage {
         if (values == null) {
             return Strings.EMPTY_ARRAY;
         }
-        return values.toArray(new String[values.size()]);
+        return values.toArray(Strings.EMPTY_ARRAY);
     }
 
     /**

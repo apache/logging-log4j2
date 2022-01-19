@@ -35,6 +35,8 @@ import org.apache.logging.log4j.util.Strings;
  */
 @Converter(autoApply = false)
 public class ThrowableAttributeConverter implements AttributeConverter<Throwable, String> {
+    private static final StackTraceElement[] EMPTY_STACK_TRACE_ELEMENT_ARRAY = new StackTraceElement[0];
+
     private static final int CAUSED_BY_STRING_LENGTH = 10;
 
     private static final Field THROWABLE_CAUSE;
@@ -118,7 +120,7 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
         }
 
         return this.getThrowable(throwableClassName, message, cause,
-                stackTrace.toArray(new StackTraceElement[stackTrace.size()]));
+                stackTrace.toArray(EMPTY_STACK_TRACE_ELEMENT_ARRAY));
     }
 
     private Throwable getThrowable(final String throwableClassName, final String message, final Throwable cause,
