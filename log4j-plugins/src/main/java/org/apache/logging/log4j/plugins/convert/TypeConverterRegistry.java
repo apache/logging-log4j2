@@ -20,8 +20,10 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.di.model.PluginSource;
 import org.apache.logging.log4j.plugins.spi.Bean;
 import org.apache.logging.log4j.plugins.spi.BeanManager;
+import org.apache.logging.log4j.plugins.util.LazyValue;
 import org.apache.logging.log4j.plugins.util.PluginLoader;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
+import org.apache.logging.log4j.plugins.util.Value;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 
@@ -45,7 +47,7 @@ public class TypeConverterRegistry {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final String DEFAULT_CONVERTERS_PACKAGE = "org.apache.logging.log4j.core.config.plugins.convert";
-    private static volatile TypeConverterRegistry INSTANCE;
+    private static final Value<TypeConverterRegistry> INSTANCE = LazyValue.forSupplier(TypeConverterRegistry::new);
     private static final Object INSTANCE_LOCK = new Object();
 
     private final ConcurrentMap<Type, TypeConverter<?>> registry = new ConcurrentHashMap<>();
@@ -56,16 +58,7 @@ public class TypeConverterRegistry {
      * @return the singleton instance.
      */
     public static TypeConverterRegistry getInstance() {
-        TypeConverterRegistry result = INSTANCE;
-        if (result == null) {
-            synchronized (INSTANCE_LOCK) {
-                result = INSTANCE;
-                if (result == null) {
-                    INSTANCE = result = new TypeConverterRegistry();
-                }
-            }
-        }
-        return result;
+        return INSTANCE.get();
     }
 
     /**
