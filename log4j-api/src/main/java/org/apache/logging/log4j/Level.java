@@ -316,8 +316,7 @@ public final class Level implements Comparable<Level>, Serializable {
      * @return An array of Levels.
      */
     public static Level[] values() {
-        final Collection<Level> values = Level.LEVELS.values();
-        return values.toArray(new Level[0]);
+        return Level.LEVELS.values().toArray(new Level[0]);
     }
 
     /**
