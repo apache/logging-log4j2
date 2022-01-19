@@ -285,6 +285,9 @@
       <action issue="LOG4J2-3282" dev="ckozak" type="add" due-to="Michael Vorburger">
         Add the log4j-to-jul JDK Logging Bridge
       </action>
+      <action type="add" dev="ggregory" due-to="Gary Gregory">
+        Add Configurator.setLevel(Logger, Level) and setLevel(String, String).      
+      </action>
       <!-- UPDATE -->
       <action dev="ggregory" type="udpate" due-to="Dependabot">
         Bump Mockito from 3.11.2 to 4.2.0.
