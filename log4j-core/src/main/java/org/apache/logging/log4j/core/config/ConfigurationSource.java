@@ -29,6 +29,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Objects;
 
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
@@ -82,6 +84,26 @@ public class ConfigurationSource {
         try {
             modified = file.lastModified();
         } catch (final Exception ex) {
+            // There is a problem with the file. It will be handled somewhere else.
+        }
+        this.lastModified = modified;
+    }
+
+    /**
+     * Constructs a new {@code ConfigurationSource} with the specified input stream that originated from the specified
+     * path.
+     *
+     * @param stream the input stream, the caller is responsible for closing this resource.
+     * @param path the path where the input stream originated.
+     */
+    public ConfigurationSource(final InputStream stream, final Path path) {
+        this.stream = Objects.requireNonNull(stream, "stream is null");
+        this.data = null;
+        this.source = new Source(path);
+        long modified = 0;
+        try {
+            modified = Files.getLastModifiedTime(path).toMillis();
+        } catch (Exception ex) {
             // There is a problem with the file. It will be handled somewhere else.
         }
         this.lastModified = modified;
