@@ -194,16 +194,6 @@ public final class Strings {
     }
 
     /**
-     * Shorthand for {@code str.toUpperCase(Locale.ROOT);}
-     * @param str The string to upper case.
-     * @return a new string
-     * @see String#toLowerCase(Locale)
-     */
-    public static String toRootUpperCase(final String str) {
-        return str.toUpperCase(Locale.ROOT);
-    }
-
-    /**
      * <p>
      * Removes control characters (char &lt;= 32) from both ends of this String returning {@code null} if the String is
      * empty ("") after the trim or if it is {@code null}.
@@ -311,6 +301,26 @@ public final class Strings {
      */
     public static String[] splitList(final String string) {
         return string != null ? string.split(COMMA_DELIMITED_RE) : new String[0];
+    }
+
+    /**
+     * Shorthand for {@code str.toLowerCase(Locale.ROOT);}
+     * @param str The string to upper case.
+     * @return a new string
+     * @see String#toLowerCase(Locale)
+     */
+    public static String toRootLowerCase(final String str) {
+        return str.toLowerCase(Locale.ROOT);
+    }
+
+    /**
+     * Shorthand for {@code str.toUpperCase(Locale.ROOT);}
+     * @param str The string to lower case.
+     * @return a new string
+     * @see String#toLowerCase(Locale)
+     */
+    public static String toRootUpperCase(final String str) {
+        return str.toUpperCase(Locale.ROOT);
     }
 
     /**
