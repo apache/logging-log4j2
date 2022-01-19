@@ -37,4 +37,7 @@ import org.apache.logging.log4j.core.config.plugins.visitors.PluginValueVisitor;
 public @interface PluginValue {
 
     String value();
+
+    /** If false, standard configuration value substitution is not done on the referenced value. */
+    boolean substitute() default true;
 }

@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginValue;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
@@ -40,11 +41,13 @@ public final class Property {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final String name;
+    private final String rawValue;
     private final String value;
     private final boolean valueNeedsLookup;
 
-    private Property(final String name, final String value) {
+    private Property(final String name, final String rawValue, final String value) {
         this.name = name;
+        this.rawValue = rawValue;
         this.value = value;
         this.valueNeedsLookup = value != null && value.contains("${");
     }
@@ -55,6 +58,14 @@ public final class Property {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Returns the original raw property value without substitution.
+     * @return the raw value of the property, or empty string if it is not set.
+     */
+    public String getRawValue() {
+        return Objects.toString(rawValue, Strings.EMPTY);
     }
 
     /**
@@ -74,20 +85,48 @@ public final class Property {
     }
 
     /**
+     * Evaluate this property with the provided substitutor. If {@link #isValueNeedsLookup()} is {@code false},
+     * the {@link #getValue() value} is returned, otherwise the {@link #getRawValue() raw value} is evaluated
+     * with the given substitutor.
+     */
+    public String evaluate(StrSubstitutor substitutor) {
+        return valueNeedsLookup
+                // Unescape the raw value first, handling '$${ctx:foo}' -> '${ctx:foo}'
+                ? substitutor.replace(PropertiesPlugin.unescape(getRawValue()))
+                : getValue();
+    }
+
+    /**
      * Creates a Property.
      *
      * @param name The key.
      * @param value The value.
      * @return A Property.
      */
+    public static Property createProperty(final String name, final String value) {
+        if (name == null) {
+            LOGGER.error("Property name cannot be null");
+        }
+        return new Property(name, value, value);
+    }
+
+    /**
+     * Creates a Property.
+     *
+     * @param name The key.
+     * @param rawValue The value without any substitution applied.
+     * @param value The value.
+     * @return A Property.
+     */
     @PluginFactory
     public static Property createProperty(
             @PluginAttribute("name") final String name,
+            @PluginValue(value = "value", substitute = false) final String rawValue,
             @PluginValue("value") final String value) {
         if (name == null) {
             LOGGER.error("Property name cannot be null");
         }
-        return new Property(name, value);
+        return new Property(name, rawValue, value);
     }
 
     @Override

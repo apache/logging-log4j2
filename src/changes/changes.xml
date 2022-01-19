@@ -31,6 +31,9 @@
     -->
     <release version="2.17.2" date="20YY-MM-DD" description="GA Release 2.17.2">
       <!-- FIXES -->
+      <action issue="LOG4J2-3317" dev="ckozak" type="fix">
+        Fix RoutingAppender backcompat and disallow recursive evaluation of lookup results outside of configuration properties.
+      </action>
       <action issue="LOG4J2-3333" dev="ckozak" type="fix">
         Fix ThreadContextDataInjector initialization deadlock
       </action>

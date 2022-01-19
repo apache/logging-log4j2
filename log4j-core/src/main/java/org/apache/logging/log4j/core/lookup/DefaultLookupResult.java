@@ -14,33 +14,32 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
 package org.apache.logging.log4j.core.lookup;
 
-/**
- * A default lookup for others to extend.
- *
- * @since 2.1
- */
-public abstract class AbstractLookup implements StrLookup {
+import java.util.Objects;
 
-    /**
-     * Calls {@code lookup(null, key)} in the implementation.
-     *
-     * @see StrLookup#lookup(LogEvent, String)
-     */
-    @Override
-    public String lookup(final String key) {
-        return lookup(null, key);
+/** Default internal implementation of {@link LookupResult}. */
+final class DefaultLookupResult implements LookupResult {
+
+    private final String value;
+
+    DefaultLookupResult(String value) {
+        this.value = Objects.requireNonNull(value, "value is required");
     }
 
-    /**
-     * Calls {@code evaluate(null, key)} in the implementation.
-     *
-     * @see StrLookup#evaluate(LogEvent, String)
-     */
     @Override
-    public LookupResult evaluate(final String key) {
-        return evaluate(null, key);
+    public String value() {
+        return value;
     }
 
+    @Override
+    public boolean isLookupEvaluationAllowedInValue() {
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "DefaultLookupResult{value='" + value + "'}";
+    }
 }

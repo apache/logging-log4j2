@@ -496,9 +496,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
             if (contextData.getValue(prop.getName()) != null) {
                 continue; // contextMap overrides config properties
             }
-            final String value = prop.isValueNeedsLookup() //
-                    ? privateConfig.config.getStrSubstitutor().replace(event, prop.getValue()) //
-                    : prop.getValue();
+            final String value = prop.evaluate(privateConfig.config.getStrSubstitutor());
             contextData.putValue(prop.getName(), value);
         }
         event.setContextData(contextData);

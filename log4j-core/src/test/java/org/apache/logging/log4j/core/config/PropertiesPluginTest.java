@@ -14,33 +14,23 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.lookup;
 
-/**
- * A default lookup for others to extend.
- *
- * @since 2.1
- */
-public abstract class AbstractLookup implements StrLookup {
+package org.apache.logging.log4j.core.config;
 
-    /**
-     * Calls {@code lookup(null, key)} in the implementation.
-     *
-     * @see StrLookup#lookup(LogEvent, String)
-     */
-    @Override
-    public String lookup(final String key) {
-        return lookup(null, key);
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class PropertiesPluginTest {
+
+    @Test
+    public void testUnescape() {
+        assertEquals("${foo}", PropertiesPlugin.unescape("$${foo}"));
     }
 
-    /**
-     * Calls {@code evaluate(null, key)} in the implementation.
-     *
-     * @see StrLookup#evaluate(LogEvent, String)
-     */
-    @Override
-    public LookupResult evaluate(final String key) {
-        return evaluate(null, key);
+    @Test
+    public void testUnescapeNotEscapedWithDefault() {
+        String value = "${foo:-bar}";
+        assertEquals(value, PropertiesPlugin.unescape(value));
     }
-
 }

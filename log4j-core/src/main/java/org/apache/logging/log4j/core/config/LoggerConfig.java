@@ -454,10 +454,8 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 .build();
         for (int i = 0; i < props.size(); i++) {
             final Property prop = props.get(i);
-            final String value = prop.isValueNeedsLookup() // since LOG4J2-1575
-                    ? config.getStrSubstitutor().replace(event, prop.getValue()) //
-                    : prop.getValue();
-            results.add(Property.createProperty(prop.getName(), value));
+            final String value = prop.evaluate(config.getStrSubstitutor()); // since LOG4J2-1575
+            results.add(Property.createProperty(prop.getName(), prop.getRawValue(), value));
         }
         return results;
     }

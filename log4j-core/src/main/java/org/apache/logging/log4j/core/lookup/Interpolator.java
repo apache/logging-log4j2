@@ -154,6 +154,25 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
      */
     @Override
     public String lookup(final LogEvent event, String var) {
+        LookupResult result = evaluate(event, var);
+        return result == null ? null : result.value();
+    }
+
+    /**
+     * Resolves the specified variable. This implementation will try to extract
+     * a variable prefix from the given variable name (the first colon (':') is
+     * used as prefix separator). It then passes the name of the variable with
+     * the prefix stripped to the lookup object registered for this prefix. If
+     * no prefix can be found or if the associated lookup object cannot resolve
+     * this variable, the default lookup object will be used.
+     *
+     * @param event The current LogEvent or null.
+     * @param var the name of the variable whose value is to be looked up
+     * @return the value of this variable or <b>null</b> if it cannot be
+     * resolved
+     */
+    @Override
+    public LookupResult evaluate(final LogEvent event, String var) {
         if (var == null) {
             return null;
         }
@@ -166,9 +185,9 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
             if (lookup instanceof ConfigurationAware) {
                 ((ConfigurationAware) lookup).setConfiguration(configuration);
             }
-            String value = null;
+            LookupResult value = null;
             if (lookup != null) {
-                value = event == null ? lookup.lookup(name) : lookup.lookup(event, name);
+                value = event == null ? lookup.evaluate(name) : lookup.evaluate(event, name);
             }
 
             if (value != null) {
@@ -177,7 +196,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
             var = var.substring(prefixPos + 1);
         }
         if (defaultLookup != null) {
-            return event == null ? defaultLookup.lookup(var) : defaultLookup.lookup(event, var);
+            return event == null ? defaultLookup.evaluate(var) : defaultLookup.evaluate(event, var);
         }
         return null;
     }
