@@ -117,7 +117,7 @@ public class LoggerTest {
         final List<LogEvent> events = app.getEvents();
         assertEventCount(events, 3);
         assertEquals(
-                "org.apache.logging.log4j.core.LoggerTest.builder(LoggerTest.java:81)", events.get(0).getSource().toString(),
+                "org.apache.logging.log4j.core.LoggerTest.builder(LoggerTest.java:113)", events.get(0).getSource().toString(),
                 "Incorrect location");
         assertEquals(Level.DEBUG, events.get(0).getLevel(), "Incorrect Level");
         MatcherAssert.assertThat("Incorrect message", events.get(1).getMessage().getFormattedMessage(), equalTo("Hello John"));
@@ -143,7 +143,19 @@ public class LoggerTest {
     }
 
     @Test
-    public void debugChangeLevel() {
+    public void debugChangeLevel_ForLogger() {
+        logger.debug("Debug message 1");
+        assertEventCount(app.getEvents(), 1);
+        Configurator.setLevel(logger, Level.OFF);
+        logger.debug("Debug message 2");
+        assertEventCount(app.getEvents(), 1);
+        Configurator.setLevel(logger, Level.DEBUG);
+        logger.debug("Debug message 3");
+        assertEventCount(app.getEvents(), 2);
+    }
+
+    @Test
+    public void debugChangeLevel_ForLoggerName() {
         logger.debug("Debug message 1");
         assertEventCount(app.getEvents(), 1);
         Configurator.setLevel(logger.getName(), Level.OFF);
@@ -174,7 +186,26 @@ public class LoggerTest {
     }
 
     @Test
-    public void debugChangeLevelChildLogger() {
+    public void debugChangeLevelChildLogger_ForLogger() {
+        // Use logger AND child loggers
+        logger.debug("Debug message 1");
+        loggerChild.debug("Debug message 1 child");
+        loggerGrandchild.debug("Debug message 1 grandchild");
+        assertEventCount(app.getEvents(), 3);
+        Configurator.setLevel(logger, Level.OFF);
+        logger.debug("Debug message 2");
+        loggerChild.debug("Debug message 2 child");
+        loggerGrandchild.debug("Debug message 2 grandchild");
+        assertEventCount(app.getEvents(), 3);
+        Configurator.setLevel(logger, Level.DEBUG);
+        logger.debug("Debug message 3");
+        loggerChild.debug("Debug message 3 child");
+        loggerGrandchild.debug("Debug message 3 grandchild");
+        assertEventCount(app.getEvents(), 6);
+    }
+
+    @Test
+    public void debugChangeLevelChildLogger_ForLoggerName() {
         // Use logger AND child loggers
         logger.debug("Debug message 1");
         loggerChild.debug("Debug message 1 child");
@@ -193,7 +224,74 @@ public class LoggerTest {
     }
 
     @Test
-    public void debugChangeLevelsChildLoggers(final LoggerContext context) {
+    public void debugChangeLevelName_ForLoggerName() {
+        logger.debug("Debug message 1");
+        assertEventCount(app.getEvents(), 1);
+        Configurator.setLevel(logger.getName(), Level.OFF.name());
+        logger.debug("Debug message 2");
+        assertEventCount(app.getEvents(), 1);
+        Configurator.setLevel(logger.getName(), Level.DEBUG.name());
+        logger.debug("Debug message 3");
+        assertEventCount(app.getEvents(), 2);
+    }
+
+    @Test
+    public void debugChangeLevelNameChildLogger_ForLoggerName() {
+        // Use logger AND child loggers
+        logger.debug("Debug message 1");
+        loggerChild.debug("Debug message 1 child");
+        loggerGrandchild.debug("Debug message 1 grandchild");
+        assertEventCount(app.getEvents(), 3);
+        Configurator.setLevel(logger.getName(), Level.OFF.name());
+        logger.debug("Debug message 2");
+        loggerChild.debug("Debug message 2 child");
+        loggerGrandchild.debug("Debug message 2 grandchild");
+        assertEventCount(app.getEvents(), 3);
+        Configurator.setLevel(logger.getName(), Level.DEBUG.name());
+        logger.debug("Debug message 3");
+        loggerChild.debug("Debug message 3 child");
+        loggerGrandchild.debug("Debug message 3 grandchild");
+        assertEventCount(app.getEvents(), 6);
+    }
+
+    @Test
+    public void debugChangeLevelNameChildLoggers_ForLoggerName(final LoggerContext context) {
+        final org.apache.logging.log4j.Logger loggerChild = context.getLogger(logger.getName() + ".child");
+        // Use logger AND loggerChild
+        logger.debug("Debug message 1");
+        loggerChild.debug("Debug message 1 child");
+        assertEventCount(app.getEvents(), 2);
+        Configurator.setLevel(logger.getName(), Level.ERROR.name());
+        Configurator.setLevel(loggerChild.getName(), Level.DEBUG.name());
+        logger.debug("Debug message 2");
+        loggerChild.debug("Debug message 2 child");
+        assertEventCount(app.getEvents(), 3);
+        Configurator.setLevel(logger.getName(), Level.DEBUG.name());
+        logger.debug("Debug message 3");
+        loggerChild.debug("Debug message 3 child");
+        assertEventCount(app.getEvents(), 5);
+    }
+
+    @Test
+    public void debugChangeLevelsChildLoggers_ForLogger(final LoggerContext context) {
+        final org.apache.logging.log4j.Logger loggerChild = context.getLogger(logger.getName() + ".child");
+        // Use logger AND loggerChild
+        logger.debug("Debug message 1");
+        loggerChild.debug("Debug message 1 child");
+        assertEventCount(app.getEvents(), 2);
+        Configurator.setLevel(logger, Level.ERROR);
+        Configurator.setLevel(loggerChild, Level.DEBUG);
+        logger.debug("Debug message 2");
+        loggerChild.debug("Debug message 2 child");
+        assertEventCount(app.getEvents(), 3);
+        Configurator.setLevel(logger, Level.DEBUG);
+        logger.debug("Debug message 3");
+        loggerChild.debug("Debug message 3 child");
+        assertEventCount(app.getEvents(), 5);
+    }
+
+    @Test
+    public void debugChangeLevelsChildLoggers_ForLoggerName(final LoggerContext context) {
         final org.apache.logging.log4j.Logger loggerChild = context.getLogger(logger.getName() + ".child");
         // Use logger AND loggerChild
         logger.debug("Debug message 1");
