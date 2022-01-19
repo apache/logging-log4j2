@@ -19,10 +19,10 @@ package org.apache.log4j.config;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.apache.log4j.xml.XmlConfigurationFactory;
@@ -34,9 +34,9 @@ import org.apache.logging.log4j.core.config.Configurator;
 public class TestConfigurator {
 
     static LoggerContext configure(final String configLocation) throws IOException {
-        final File file = new File(configLocation);
-        try (final InputStream inputStream = Files.newInputStream(Paths.get(configLocation))) {
-            final ConfigurationSource source = new ConfigurationSource(inputStream, file);
+        final Path path = Paths.get(configLocation);
+        try (final InputStream inputStream = Files.newInputStream(path)) {
+            final ConfigurationSource source = new ConfigurationSource(inputStream, path);
             final LoggerContext context = (LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
             Configuration configuration = null;
             if (configLocation.endsWith(PropertiesConfigurationFactory.FILE_EXTENSION)) {
