@@ -74,6 +74,8 @@ import org.apache.logging.log4j.util.Strings;
  */
 public final class Level implements Comparable<Level>, Serializable {
 
+    private static final Level[] EMPTY_ARRAY = {};
+
     private static final ConcurrentMap<String, Level> LEVELS = new ConcurrentHashMap<>(); // SUPPRESS CHECKSTYLE
 
     /**
@@ -316,7 +318,7 @@ public final class Level implements Comparable<Level>, Serializable {
      * @return An array of Levels.
      */
     public static Level[] values() {
-        return Level.LEVELS.values().toArray(new Level[0]);
+        return Level.LEVELS.values().toArray(EMPTY_ARRAY);
     }
 
     /**
