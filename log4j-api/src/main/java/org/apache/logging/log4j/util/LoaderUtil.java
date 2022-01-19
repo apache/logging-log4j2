@@ -36,6 +36,8 @@ import java.util.Objects;
  */
 public final class LoaderUtil {
 
+    private static final ClassLoader[] EMPTY_CLASS_LOADER_ARRAY = {};
+
     /**
      * System property to set to ignore the thread context ClassLoader.
      *
@@ -170,7 +172,7 @@ public final class LoaderUtil {
                 }
             }
         }
-        return classLoaders.toArray(new ClassLoader[0]);
+        return classLoaders.toArray(EMPTY_CLASS_LOADER_ARRAY);
     }
 
     private static void accumulateLayerClassLoaders(final ModuleLayer layer, final Collection<ClassLoader> classLoaders) {
