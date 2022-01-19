@@ -100,4 +100,10 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
         super.testConsoleCapitalization();
     }
 
+    @Override
+    @Test
+    public void testConsoleTtccLayout() throws Exception {
+        super.testConsoleTtccLayout();
+    }
+
 }

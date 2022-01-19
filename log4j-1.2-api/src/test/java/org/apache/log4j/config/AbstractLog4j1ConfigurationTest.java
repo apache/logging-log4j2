@@ -22,10 +22,15 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
+import org.apache.logging.log4j.core.appender.ConsoleAppender.Target;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.junit.Test;
 
 public abstract class AbstractLog4j1ConfigurationTest {
 
@@ -55,4 +60,27 @@ public abstract class AbstractLog4j1ConfigurationTest {
         assertEquals(expected.getCharset(), actual.getCharset());
         assertEquals(expected.getConversionPattern(), actual.getConversionPattern());
     }
+
+    private Layout<?> testConsole(final String configResource) throws Exception {
+        final Configuration configuration = getConfiguration(configResource);
+        final String name = "Console";
+        final ConsoleAppender appender = configuration.getAppender(name);
+        assertNotNull("Missing appender '" + name + "' in configuration " + configResource + " → " + configuration,
+                appender);
+        assertEquals(Target.SYSTEM_ERR, appender.getTarget());
+        //
+        final LoggerConfig loggerConfig = configuration.getLoggerConfig("com.example.foo");
+        assertNotNull(loggerConfig);
+        assertEquals(Level.DEBUG, loggerConfig.getLevel());
+        configuration.start();
+        configuration.stop();
+        return appender.getLayout();
+    }
+
+    @Test
+    public void testConsoleTtccLayout() throws Exception {
+        final PatternLayout layout = (PatternLayout) testConsole("config-1.2/log4j-console-TTCCLayout");
+        assertEquals("%r [%t] %p %notEmpty{%ndc }- %m%n", layout.getConversionPattern());
+    }
+
 }

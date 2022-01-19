@@ -115,10 +115,10 @@ public class Log4j1ConfigurationFactoryTest extends AbstractLog4j1ConfigurationT
         assertEquals("%level - %m%n", layout.getConversionPattern());
     }
 
+    @Override
     @Test
     public void testConsoleTtccLayout() throws Exception {
-        final PatternLayout layout = (PatternLayout) testConsole("config-1.2/log4j-console-TTCCLayout");
-        assertEquals("%r [%t] %p %notEmpty{%ndc }- %m%n", layout.getConversionPattern());
+       super.testConsoleTtccLayout();
     }
 
     @Test
@@ -160,7 +160,6 @@ public class Log4j1ConfigurationFactoryTest extends AbstractLog4j1ConfigurationT
 
     @Test
     public void testSystemProperties1() throws Exception {
-
         final String tempFileName = System.getProperty("java.io.tmpdir") + "/hadoop.log";
         final Path tempFilePath = new File(tempFileName).toPath();
         Files.deleteIfExists(tempFilePath);
