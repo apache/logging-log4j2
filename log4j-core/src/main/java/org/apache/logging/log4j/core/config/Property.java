@@ -40,13 +40,19 @@ public final class Property {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final String name;
+    private final String rawValue;
     private final String value;
     private final boolean valueNeedsLookup;
 
-    private Property(final String name, final String value) {
+    private Property(final String name, final String rawValue, final String value) {
         this.name = name;
+        this.rawValue = rawValue;
         this.value = value;
-        this.valueNeedsLookup = value != null && value.contains("${");
+        this.valueNeedsLookup = needsLookup(value);
+    }
+
+    private static boolean needsLookup(final String value) {
+        return value != null && value.contains("${");
     }
 
     /**
@@ -58,11 +64,27 @@ public final class Property {
     }
 
     /**
+     * Returns the original raw property value without substitution.
+     * @return the raw value of the property, or null if it is not set.
+     */
+    public String getRawValue() {
+        return rawValue;
+    }
+
+    /**
      * Returns the property value.
      * @return the value of the property.
      */
     public String getValue() {
         return Objects.toString(value, Strings.EMPTY); // LOG4J2-1313 null would be same as Property not existing
+    }
+
+    /**
+     * Returns {@code true} if the raw value contains a substitutable property that requires a lookup to be resolved.
+     * @return {@code true} if the value contains {@code "${"}, {@code false} otherwise
+     */
+    public boolean isRawValueNeedsLookup() {
+        return needsLookup(rawValue);
     }
 
     /**
@@ -80,14 +102,30 @@ public final class Property {
      * @param value The value.
      * @return A Property.
      */
+    public static Property createProperty(final String name, final String value) {
+        if (name == null) {
+            LOGGER.error("Property name cannot be null");
+        }
+        return new Property(name, null, value);
+    }
+
+    /**
+     * Creates a Property.
+     *
+     * @param name The key.
+     * @param rawValue The value without any substitution applied.
+     * @param value The value.
+     * @return A Property.
+     */
     @PluginFactory
     public static Property createProperty(
             @PluginAttribute("name") final String name,
+            @PluginValue(value = "value", substitute = false) final String rawValue,
             @PluginValue("value") final String value) {
         if (name == null) {
             LOGGER.error("Property name cannot be null");
         }
-        return new Property(name, value);
+        return new Property(name, rawValue, value);
     }
 
     @Override

@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
 import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.PropertiesLookup;
 import org.apache.logging.log4j.core.lookup.StrLookup;
@@ -45,15 +46,30 @@ public final class PropertiesPlugin {
     @PluginFactory
     public static StrLookup configureSubstitutor(@PluginElement("Properties") final Property[] properties,
                                                  @PluginConfiguration final Configuration config) {
-        if (properties == null) {
-            return new Interpolator(config.getProperties());
-        }
+        final Property[] props = properties == null ? Property.EMPTY_ARRAY : properties;
         final Map<String, String> map = new HashMap<>(config.getProperties());
-
-        for (final Property prop : properties) {
-            map.put(prop.getName(), prop.getValue());
+        // Properties may reference other properties, so we build them into an interpolator with a mutable
+        // map, and handle replacement ourselves using property.getRawValue instead of getValue which has
+        // already been substituted by the plugin system.
+        // This way, we don't risk unnecessarily evaluating escaped data, and the property values presented
+        // to other components at runtime are fully evaluated.
+        boolean anyNeedLookups = false;
+        for (final Property prop : props) {
+            String rawValue = prop.getRawValue();
+            anyNeedLookups |= prop.isRawValueNeedsLookup();
+            // handle properties created with the old constructor (null rawValue)
+            map.put(prop.getName(), rawValue == null ? prop.getValue() : rawValue);
         }
-
-        return new Interpolator(new PropertiesLookup(map), config.getPluginPackages());
+        final Interpolator interpolator = new Interpolator(new PropertiesLookup(map), config.getPluginPackages());
+        if (anyNeedLookups) {
+            final ConfigurationStrSubstitutor substitutor = new ConfigurationStrSubstitutor(interpolator);
+            for (final Property prop : props) {
+                if (prop.isRawValueNeedsLookup()) {
+                    final String value = substitutor.replace(prop.getRawValue());
+                    map.put(prop.getName(), value);
+                }
+            }
+        }
+        return interpolator;
     }
 }

@@ -104,7 +104,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         strLookupMap.put("sys", new SystemPropertiesLookup());
         strLookupMap.put("env", new EnvironmentLookup());
         strLookupMap.put("main", MainMapLookup.MAIN_SINGLETON);
-        strLookupMap.put("map", new MapLookup(properties));
+        strLookupMap.put("map", new MapLookup());
         strLookupMap.put("marker", new MarkerLookup());
         strLookupMap.put("java", new JavaLookup());
         strLookupMap.put("lower", new LowerLookup());
