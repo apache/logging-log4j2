@@ -63,6 +63,13 @@ public class ThreadContextDataInjector {
 
     private static final List<ContextDataProvider> SERVICE_PROVIDERS = getServiceProviders();
 
+    /**
+     * Previously this method allowed ContextDataProviders to be loaded eagerly, now they
+     * are loaded when this class is initialized.
+     *
+     * @deprecated no-op
+     */
+    @Deprecated
     public static void initServiceProviders() {}
 
     private static List<ContextDataProvider> getServiceProviders() {
@@ -269,7 +276,6 @@ public class ThreadContextDataInjector {
     }
 
     private static List<ContextDataProvider> getProviders() {
-        initServiceProviders();
         final List<ContextDataProvider> providers =
                 new ArrayList<>(contextDataProviders.size() + SERVICE_PROVIDERS.size());
         providers.addAll(contextDataProviders);
