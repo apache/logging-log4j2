@@ -93,4 +93,11 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
         assertTrue("File A2 was not created", file.exists());
         assertTrue("File A2 is empty", file.length() > 0);
     }
+
+    @Override
+    @Test
+    public void testConsoleCapitalization() throws Exception {
+        super.testConsoleCapitalization();
+    }
+
 }
