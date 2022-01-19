@@ -34,7 +34,6 @@ import org.apache.log4j.bridge.AppenderAdapter;
 import org.apache.log4j.bridge.FilterAdapter;
 import org.apache.log4j.bridge.FilterWrapper;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.xml.XmlConfigurationFactory;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -61,7 +60,7 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
         final InputStream inputStream = ClassLoader.getSystemResourceAsStream(configResource);
         final ConfigurationSource source = new ConfigurationSource(inputStream);
         final LoggerContext context = LoggerContext.getContext(false);
-        final Configuration configuration = new XmlConfigurationFactory().getConfiguration(context, source);
+        final Configuration configuration = new PropertiesConfigurationFactory().getConfiguration(context, source);
         assertNotNull("No configuration created", configuration);
         configuration.initialize();
         return configuration;
