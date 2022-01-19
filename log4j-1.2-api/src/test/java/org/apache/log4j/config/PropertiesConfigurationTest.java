@@ -196,4 +196,33 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
         super.testConsoleTtccLayout();
     }
 
+    @Override
+    @Test
+    public void testRollingFileAppender() throws Exception {
+        super.testRollingFileAppender();
+    }
+
+    @Override
+    @Test
+    public void testDailyRollingFileAppender() throws Exception {
+        super.testDailyRollingFileAppender();
+    }
+
+    @Override
+    @Test
+    public void testRollingFileAppenderWithProperties() throws Exception {
+        super.testRollingFileAppenderWithProperties();
+    }
+
+    @Override
+    @Test
+    public void testSystemProperties1() throws Exception {
+        super.testSystemProperties1();
+    }
+
+    @Override
+    @Test
+    public void testSystemProperties2() throws Exception {
+        super.testSystemProperties2();
+    }
 }
