@@ -25,6 +25,9 @@ import java.util.Iterator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Tests {@linkStrings}.
+ */
 public class StringsTest {
 
     @Test
@@ -83,6 +86,12 @@ public class StringsTest {
     @Test
     public void testQuote() {
         assertEquals("'Q'", Strings.quote("Q"));
+    }
+
+    @Test
+    public void testToLowerCase() {
+        assertEquals("a", Strings.toRootLowerCase("A"));
+        assertEquals("a", Strings.toRootLowerCase("a"));
     }
 
 }
