@@ -129,7 +129,7 @@ public abstract class AbstractBuilder {
                 }
                 f = f.getNext();
             }
-            return CompositeFilter.createFilters(filterList.toArray(new org.apache.logging.log4j.core.Filter[0]));
+            return CompositeFilter.createFilters(filterList.toArray(org.apache.logging.log4j.core.Filter.EMPTY_ARRAY));
         } else if (level != null) {
             return ThresholdFilter.createFilter(OptionConverter.convertLevel(level, Level.TRACE),
                     org.apache.logging.log4j.core.Filter.Result.NEUTRAL,
