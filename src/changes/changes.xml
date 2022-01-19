@@ -279,6 +279,9 @@
         Fix DTD error: Add missing ELEMENT for Marker.
       </action>
       <!-- ADD -->
+      <action issue="LOG4J2-3303" dev="vy" type="add" due-to="ramananravi">
+        Add TB support to FileSize.
+      </action>
       <action issue="LOG4J2-3282" dev="ckozak" type="add" due-to="Michael Vorburger">
         Add the log4j-to-jul JDK Logging Bridge
       </action>
