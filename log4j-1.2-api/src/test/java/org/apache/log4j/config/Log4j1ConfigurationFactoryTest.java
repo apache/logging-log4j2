@@ -17,14 +17,12 @@
 package org.apache.log4j.config;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import org.apache.log4j.layout.Log4j1XmlLayout;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
@@ -90,11 +88,10 @@ public class Log4j1ConfigurationFactoryTest extends AbstractLog4j1ConfigurationT
         super.testConsoleTtccLayout();
     }
 
+    @Override
     @Test
     public void testConsoleXmlLayout() throws Exception {
-        final Log4j1XmlLayout layout = (Log4j1XmlLayout) testConsole("config-1.2/log4j-console-XmlLayout");
-        assertTrue(layout.isLocationInfo());
-        assertFalse(layout.isProperties());
+        super.testConsoleXmlLayout();
     }
 
     @Override
