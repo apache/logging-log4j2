@@ -36,6 +36,8 @@ public class IfAccumulatedFileSizeTest {
         assertEquals(3 * 1024 * 1024, create("3 MB").getThresholdBytes());
         assertEquals(2L * 1024 * 1024 * 1024, create("2GB").getThresholdBytes());
         assertEquals(3L * 1024 * 1024 * 1024, create("3 GB").getThresholdBytes());
+        assertEquals(2L * 1024 * 1024 * 1024 * 1024, create("2TB").getThresholdBytes());
+        assertEquals(3L * 1024 * 1024 * 1024 * 1024, create("3 TB").getThresholdBytes());
     }
 
     private static IfAccumulatedFileSize create(final String size) {
@@ -44,7 +46,7 @@ public class IfAccumulatedFileSizeTest {
 
     @Test
     public void testNotAcceptOnExactMatch() {
-        final String[] sizes = {"2KB", "3MB", "4GB"};
+        final String[] sizes = {"2KB", "3MB", "4GB", "5TB"};
         for (final String size : sizes) {
             final IfAccumulatedFileSize condition = IfAccumulatedFileSize.createFileSizeCondition(size);
             final DummyFileAttributes attribs = new DummyFileAttributes();
@@ -55,7 +57,7 @@ public class IfAccumulatedFileSizeTest {
 
     @Test
     public void testAcceptIfExceedThreshold() {
-        final String[] sizes = {"2KB", "3MB", "4GB"};
+        final String[] sizes = {"2KB", "3MB", "4GB", "5TB"};
         for (final String size : sizes) {
             final IfAccumulatedFileSize condition = IfAccumulatedFileSize.createFileSizeCondition(size);
             final DummyFileAttributes attribs = new DummyFileAttributes();
@@ -66,7 +68,7 @@ public class IfAccumulatedFileSizeTest {
 
     @Test
     public void testNotAcceptIfBelowThreshold() {
-        final String[] sizes = {"2KB", "3MB", "4GB"};
+        final String[] sizes = {"2KB", "3MB", "4GB", "5TB"};
         for (final String size : sizes) {
             final IfAccumulatedFileSize condition = IfAccumulatedFileSize.createFileSizeCondition(size);
             final DummyFileAttributes attribs = new DummyFileAttributes();
@@ -78,7 +80,7 @@ public class IfAccumulatedFileSizeTest {
     @Test
     public void testAcceptOnceThresholdExceeded() {
         final DummyFileAttributes attribs = new DummyFileAttributes();
-        final String[] sizes = {"2KB", "3MB", "4GB"};
+        final String[] sizes = {"2KB", "3MB", "4GB", "5TB"};
         for (final String size : sizes) {
             final IfAccumulatedFileSize condition = IfAccumulatedFileSize.createFileSizeCondition(size);
             final long quarter = condition.getThresholdBytes() / 4;

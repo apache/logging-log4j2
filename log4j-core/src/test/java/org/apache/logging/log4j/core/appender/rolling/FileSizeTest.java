@@ -16,26 +16,15 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests {@link FileSize}.
  */
 public class FileSizeTest {
-
-    private final static long EXPECTED = 10 * 1024;
-
-    @Test
-    public void testFileSize() {
-        long value = FileSize.parse("10KB", 0);
-        assertEquals(EXPECTED, value, "unexpected value " + value);
-        value = FileSize.parse("10 KB", 0);
-        assertEquals(EXPECTED, value, "unexpected value " + value);
-    }
 
     @ParameterizedTest(name = "[{index}] \"{0}\" -> {1}")
     @CsvSource(delimiter = ':', value = {
@@ -51,9 +40,12 @@ public class FileSizeTest {
             "10.75 MB:11272192",
             "1,000 KB:1024000",
             "1 GB:1073741824",
-            "0.51 GB:547608330"
+            "0.51 GB:547608330",
+            "1 TB:1099511627776",
+            "1023 TB:1124800395214848",
     })
-    void testValidFileSizes(String expr, long expected) {
+    void testValidFileSizes(final String expr, final long expected) {
         assertEquals(expected, FileSize.parse(expr, 0));
     }
+
 }
