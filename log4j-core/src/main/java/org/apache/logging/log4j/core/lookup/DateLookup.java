@@ -48,7 +48,7 @@ public class DateLookup implements StrLookup {
 
     /**
      * Looks up the value of the environment variable.
-     * @param event The current LogEvent (is ignored by this StrLookup).
+     * @param event The LogEvent for which the date is returned. If null, current date is returned.
      * @param key the format to use. If null, the default DateFormat will be used.
      * @return The value of the environment variable.
      */
