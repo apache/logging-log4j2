@@ -34,7 +34,6 @@ import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.appender.NullAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.Test;
 
@@ -66,43 +65,27 @@ public class Log4j1ConfigurationFactoryTest extends AbstractLog4j1ConfigurationT
         return appender.getLayout();
     }
 
-    private Layout<?> testFile(final String configResource) throws Exception {
-        final Configuration configuration = getConfiguration(configResource);
-        final FileAppender appender = configuration.getAppender("File");
-        assertNotNull(appender);
-        assertEquals("target/mylog.txt", appender.getFileName());
-        //
-        final LoggerConfig loggerConfig = configuration.getLoggerConfig("com.example.foo");
-        assertNotNull(loggerConfig);
-        assertEquals(Level.DEBUG, loggerConfig.getLevel());
-        configuration.start();
-        configuration.stop();
-        return appender.getLayout();
-    }
-
+    @Override
     @Test
     public void testConsoleEnhancedPatternLayout() throws Exception {
-        final PatternLayout layout = (PatternLayout) testConsole("config-1.2/log4j-console-EnhancedPatternLayout");
-        assertEquals("%d{ISO8601} [%t][%c] %-5p %properties %ndc: %m%n", layout.getConversionPattern());
+        super.testConsoleEnhancedPatternLayout();
     }
 
+    @Override
     @Test
     public void testConsoleHtmlLayout() throws Exception {
-        final HtmlLayout layout = (HtmlLayout) testConsole("config-1.2/log4j-console-HtmlLayout");
-        assertEquals("Headline", layout.getTitle());
-        assertTrue(layout.isLocationInfo());
+        super.testConsoleHtmlLayout();
     }
 
     @Test
     public void testConsolePatternLayout() throws Exception {
-        final PatternLayout layout = (PatternLayout) testConsole("config-1.2/log4j-console-PatternLayout");
-        assertEquals("%d{ISO8601} [%t][%c] %-5p: %m%n", layout.getConversionPattern());
+        super.testConsolePatternLayout();
     }
 
+    @Override
     @Test
     public void testConsoleSimpleLayout() throws Exception {
-        final PatternLayout layout = (PatternLayout) testConsole("config-1.2/log4j-console-SimpleLayout");
-        assertEquals("%level - %m%n", layout.getConversionPattern());
+        super.testConsoleSimpleLayout();
     }
 
     @Override
@@ -118,20 +101,17 @@ public class Log4j1ConfigurationFactoryTest extends AbstractLog4j1ConfigurationT
         assertFalse(layout.isProperties());
     }
 
+    @Override
     @Test
     public void testFileSimpleLayout() throws Exception {
-        final PatternLayout layout = (PatternLayout) testFile("config-1.2/log4j-file-SimpleLayout");
-        assertEquals("%level - %m%n", layout.getConversionPattern());
+        super.testFileSimpleLayout();
     }
 
+    @Override
     @Test
-    public void testNullAppender() throws Exception {
-        final Configuration configuration = getConfiguration("config-1.2/log4j-NullAppender");
-        final Appender appender = configuration.getAppender("NullAppender");
-        assertNotNull(appender);
-        assertEquals("NullAppender", appender.getName());
-        assertTrue(appender.getClass().getName(), appender instanceof NullAppender);
-    }
+	public void testNullAppender() throws Exception {
+        super.testNullAppender();
+	}
 
     @Override
     @Test
