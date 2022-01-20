@@ -167,7 +167,7 @@ public class SslSocketManager extends TcpSocketManager {
 
         @Override
         Socket createSocket(final SslFactoryData data) throws IOException {
-            List<InetSocketAddress> socketAddresses = resolver.resolveHost(data.host, data.port);
+            List<InetSocketAddress> socketAddresses = RESOLVER.resolveHost(data.host, data.port);
             IOException ioe = null;
             for (InetSocketAddress socketAddress : socketAddresses) {
                 try {
