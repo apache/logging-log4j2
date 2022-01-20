@@ -57,11 +57,10 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
     private static final String DEFAULT_HOST = "localhost";
     private static int DEFAULT_PORT = 514;
     private static final String DEFAULT_FACILITY = "LOCAL0";
-
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final String FACILITY_PARAM = "Facility";
     private static final String SYSLOG_HOST_PARAM = "SyslogHost";
-    private static final String PROTOCOL_PARAM = "protocol";
+    private static final String PROTOCOL_PARAM = "Protocol";
 
 
     public SyslogAppenderBuilder() {
@@ -89,7 +88,7 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
                     filter.set(config.parseFilters(currentElement));
                     break;
                 case PARAM_TAG: {
-                    switch (getNameAttribute(currentElement)) {
+                    switch (getNameAttributeKey(currentElement)) {
                         case SYSLOG_HOST_PARAM: {
                             host.set(getValueAttribute(currentElement));
                             break;

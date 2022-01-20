@@ -29,10 +29,8 @@ import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.xml.XmlConfiguration;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.filter.LevelRangeFilter;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
 
 /**
@@ -41,7 +39,6 @@ import org.w3c.dom.Element;
 @Plugin(name = "org.apache.log4j.varia.LevelRangeFilter", category = CATEGORY)
 public class LevelRangeFilterBuilder extends AbstractBuilder implements FilterBuilder {
 
-    private static final Logger LOGGER = StatusLogger.getLogger();
     private static final String LEVEL_MAX = "LevelMax";
     private static final String LEVEL_MIN = "LevelMin";
     private static final String ACCEPT_ON_MATCH = "AcceptOnMatch";
@@ -60,7 +57,7 @@ public class LevelRangeFilterBuilder extends AbstractBuilder implements FilterBu
         final AtomicBoolean acceptOnMatch = new AtomicBoolean();
         forEachElement(filterElement.getElementsByTagName("param"), currentElement -> {
             if (currentElement.getTagName().equals("param")) {
-                switch (getNameAttribute(currentElement)) {
+                switch (getNameAttributeKey(currentElement)) {
                     case LEVEL_MAX:
                         levelMax.set(getValueAttribute(currentElement));
                         break;

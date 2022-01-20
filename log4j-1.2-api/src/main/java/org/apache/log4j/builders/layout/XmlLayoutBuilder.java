@@ -28,10 +28,8 @@ import org.apache.log4j.bridge.LayoutWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.xml.XmlConfiguration;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.XmlLayout;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
 
 /**
@@ -39,8 +37,6 @@ import org.w3c.dom.Element;
  */
 @Plugin(name = "org.apache.log4j.xml.XMLLayout", category = CATEGORY)
 public class XmlLayoutBuilder extends AbstractBuilder implements LayoutBuilder {
-
-    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private static final String LOCATION_INFO = "LocationInfo";
     private static final String PROPERTIES = "Properties";

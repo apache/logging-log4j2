@@ -30,10 +30,8 @@ import org.apache.log4j.builders.AbstractBuilder;
 import org.apache.log4j.config.Log4j1Configuration;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.xml.XmlConfiguration;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
 
 /**
@@ -41,8 +39,6 @@ import org.w3c.dom.Element;
  */
 @Plugin(name = "org.apache.log4j.TTCCLayout", category = CATEGORY)
 public class TTCCLayoutBuilder extends AbstractBuilder implements LayoutBuilder {
-
-    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private static final String THREAD_PRINTING_PARAM = "ThreadPrinting";
     private static final String CATEGORY_PREFIXING_PARAM = "CategoryPrefixing";
@@ -66,7 +62,7 @@ public class TTCCLayoutBuilder extends AbstractBuilder implements LayoutBuilder 
         final AtomicReference<String> timezone = new AtomicReference<>();
         forEachElement(layoutElement.getElementsByTagName("param"), currentElement -> {
             if (currentElement.getTagName().equals(PARAM_TAG)) {
-                switch (getNameAttribute(currentElement)) {
+                switch (getNameAttributeKey(currentElement)) {
                     case THREAD_PRINTING_PARAM:
                         threadPrinting.set(Boolean.parseBoolean(getValueAttribute(currentElement)));
                         break;
