@@ -21,6 +21,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +39,7 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.filter.Filterable;
 import org.apache.logging.log4j.core.filter.LevelRangeFilter;
@@ -44,9 +48,22 @@ import org.junit.Test;
 /**
  * Test configuration from Properties.
  */
-public class PropertiesConfigurationTest {
+public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest {
 
     private static final String TEST_KEY = "log4j.test.tmpdir";
+    private static final String SUFFIX = ".properties";
+
+    @Override
+    Configuration getConfiguration(String configResourcePrefix) throws URISyntaxException, IOException {
+        final String configResource = configResourcePrefix + SUFFIX;
+        final InputStream inputStream = ClassLoader.getSystemResourceAsStream(configResource);
+        final ConfigurationSource source = new ConfigurationSource(inputStream);
+        final LoggerContext context = LoggerContext.getContext(false);
+        final Configuration configuration = new PropertiesConfigurationFactory().getConfiguration(context, source);
+        assertNotNull("No configuration created", configuration);
+        configuration.initialize();
+        return configuration;
+    }
 
     @Test
     public void testConfigureNullPointerException() throws Exception {
@@ -163,6 +180,12 @@ public class PropertiesConfigurationTest {
         } finally {
             System.clearProperty(TEST_KEY);
         }
+    }
+
+    @Override
+    @Test
+    public void testConsoleCapitalization() throws Exception {
+        super.testConsoleCapitalization();
     }
 
 }
