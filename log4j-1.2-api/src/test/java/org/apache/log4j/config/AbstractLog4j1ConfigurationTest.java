@@ -30,7 +30,6 @@ import org.apache.logging.log4j.core.appender.ConsoleAppender.Target;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.junit.Test;
 
 public abstract class AbstractLog4j1ConfigurationTest {
 
@@ -77,7 +76,6 @@ public abstract class AbstractLog4j1ConfigurationTest {
         return appender.getLayout();
     }
 
-    @Test
     public void testConsoleTtccLayout() throws Exception {
         final PatternLayout layout = (PatternLayout) testConsole("config-1.2/log4j-console-TTCCLayout");
         assertEquals("%r [%t] %p %notEmpty{%ndc }- %m%n", layout.getConversionPattern());
