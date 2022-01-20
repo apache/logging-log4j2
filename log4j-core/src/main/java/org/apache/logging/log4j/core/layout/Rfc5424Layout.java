@@ -71,6 +71,10 @@ import org.apache.logging.log4j.util.Strings;
 @Plugin(name = "Rfc5424Layout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class Rfc5424Layout extends AbstractStringLayout {
 
+    public enum TimestampPrecision {
+        MICROSECOND, MILLISECOND;
+    }
+    
     /**
      * Not a very good default - it is the Apache Software Foundation's enterprise number.
      */
@@ -93,12 +97,10 @@ public final class Rfc5424Layout extends AbstractStringLayout {
      */
     public static final String DEFAULT_MDCID = "mdc";
 
-    private static final String TIME_PRECISION_MICRO = "microsecond";
-
-	private static final FixedDateFormat FIXED_DATE_FORMAT_MILLI_PRECISION = FixedDateFormat
-			.create(FixedFormat.ISO8601_OFFSET_DATE_TIME_HHCMM_PERIOD);
-	private static final FixedDateFormat FIXED_DATE_FORMAT_MICRO_PRECISION = FixedDateFormat
-			.create(FixedFormat.ISO8601_OFFSET_DATE_TIME_HHCMM_PERIOD_MICRO);
+    private static final FixedDateFormat FIXED_DATE_FORMAT_MILLI_PRECISION = FixedDateFormat
+            .create(FixedFormat.ISO8601_OFFSET_DATE_TIME_HHCMM_PERIOD);
+    private static final FixedDateFormat FIXED_DATE_FORMAT_MICRO_PRECISION = FixedDateFormat
+            .create(FixedFormat.ISO8601_OFFSET_DATE_TIME_HHCMM_PERIOD_MICRO);
 
     private static final String LF = "\n";
     private static final String COMPONENT_KEY = "RFC5424-Converter";
@@ -122,7 +124,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     private final boolean includeNewLine;
     private final String escapeNewLine;
     private final boolean useTlsMessageFormat;
-    private final String timestampPrecision;
+    private final TimestampPrecision timestampPrecision;
 
     private long lastTimestamp = -1;
     private int lastNanoOfMillisecond = -1;
@@ -132,12 +134,12 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     private final Map<String, FieldFormatter> fieldFormatters;
     private final String procId;
 
-	private Rfc5424Layout(final Configuration config, final Facility facility, final String id, final int ein,
-			final boolean includeMDC, final boolean includeNL, final String escapeNL, final String mdcId,
-			final String mdcPrefix, final String eventPrefix, final String appName, final String messageId,
-			final String excludes, final String includes, final String required, final Charset charset,
-			final String exceptionPattern, final boolean useTLSMessageFormat, final LoggerFields[] loggerFields,
-			final String timestampPrecision) {
+    private Rfc5424Layout(final Configuration config, final Facility facility, final String id, final int ein,
+            final boolean includeMDC, final boolean includeNL, final String escapeNL, final String mdcId,
+            final String mdcPrefix, final String eventPrefix, final String appName, final String messageId,
+            final String excludes, final String includes, final String required, final Charset charset,
+            final String exceptionPattern, final boolean useTLSMessageFormat, final LoggerFields[] loggerFields,
+            final TimestampPrecision timestampPrecision) {
         super(charset);
         final PatternParser exceptionParser = createPatternParser(config, ThrowablePatternConverter.class);
         exceptionFormatters = exceptionPattern == null ? null : exceptionParser.parse(exceptionPattern);
@@ -278,7 +280,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     public String toSerializable(final LogEvent event) {
         final StringBuilder buf = getStringBuilder();
         appendPriority(buf, event.getLevel());
-		appendTimestamp(buf, event.getInstant());
+        appendTimestamp(buf, event.getInstant());
         appendSpace(buf);
         appendHostName(buf);
         appendSpace(buf);
@@ -302,9 +304,9 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         buffer.append(">1 ");
     }
 
-	private void appendTimestamp(final StringBuilder buffer, final Instant instant) {
-		buffer.append(computeTimeStampString(instant));
-	}
+    private void appendTimestamp(final StringBuilder buffer, final Instant instant) {
+        buffer.append(computeTimeStampString(instant));
+    }
 
     private void appendSpace(final StringBuilder buffer) {
         buffer.append(' ');
@@ -453,36 +455,36 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         return mdcIncludes;
     }
 
-	private String computeTimeStampString(final Instant instant) {
-		long last;
-		int lastNano;
-		synchronized (this) {
-			last = lastTimestamp;
-			lastNano = lastNanoOfMillisecond;
-			if (instant.getEpochMillisecond() == lastTimestamp) {
-				if (!TIME_PRECISION_MICRO.equalsIgnoreCase(timestampPrecision)
-						|| lastNanoOfMillisecond == instant.getNanoOfMillisecond()) {
-					return timestamppStr;
-				}
-			}
-		}
+    private String computeTimeStampString(final Instant instant) {
+        long last;
+        int lastNano;
+        synchronized (this) {
+            last = lastTimestamp;
+            lastNano = lastNanoOfMillisecond;
+            if (instant.getEpochMillisecond() == lastTimestamp) {
+                if (TimestampPrecision.MICROSECOND != timestampPrecision
+                        || lastNanoOfMillisecond == instant.getNanoOfMillisecond()) {
+                    return timestamppStr;
+                }
+            }
+        }
 
-		String formattedDateTime = null;
-		if (TIME_PRECISION_MICRO.equalsIgnoreCase(timestampPrecision)) {
-			formattedDateTime = FIXED_DATE_FORMAT_MICRO_PRECISION.formatInstant(instant);
-		} else {
-			formattedDateTime = FIXED_DATE_FORMAT_MILLI_PRECISION.formatInstant(instant);
-		}
+        String formattedDateTime = null;
+        if (TimestampPrecision.MICROSECOND == timestampPrecision) {
+            formattedDateTime = FIXED_DATE_FORMAT_MICRO_PRECISION.formatInstant(instant);
+        } else {
+            formattedDateTime = FIXED_DATE_FORMAT_MILLI_PRECISION.formatInstant(instant);
+        }
 
-		synchronized (this) {
-			if (last == lastTimestamp && lastNano == lastNanoOfMillisecond) {
-				lastTimestamp = instant.getEpochMillisecond();
-				lastNanoOfMillisecond = instant.getNanoOfMillisecond();
-				timestamppStr = formattedDateTime;
-			}
-		}
-		return formattedDateTime;
-	}
+        synchronized (this) {
+            if (last == lastTimestamp && lastNano == lastNanoOfMillisecond) {
+                lastTimestamp = instant.getEpochMillisecond();
+                lastNanoOfMillisecond = instant.getNanoOfMillisecond();
+                timestamppStr = formattedDateTime;
+            }
+        }
+        return formattedDateTime;
+    }
 
     private void formatStructuredElement(final String id, final StructuredDataElement data,
             final StringBuilder sb, final ListChecker checker) {
@@ -607,7 +609,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             @PluginAttribute(value = "useTlsMessageFormat") final boolean useTlsMessageFormat,
             @PluginElement("LoggerFields") final LoggerFields[] loggerFields,
             @PluginConfiguration final Configuration config,
-            @PluginAttribute(value = "timestampPrecision") final String timestampPrecision) {
+            @PluginAttribute(value = "timestampPrecision") final TimestampPrecision timestampPrecision) {
         // @formatter:on
         if (includes != null && excludes != null) {
             LOGGER.error("mdcIncludes and mdcExcludes are mutually exclusive. Includes wil be ignored");
@@ -687,7 +689,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         return facility;
     }
     
-	public String getTimestampPrecision() {
-		return timestampPrecision;
-	}
+    public TimestampPrecision getTimestampPrecision() {
+        return timestampPrecision;
+    }
 }

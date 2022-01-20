@@ -21,6 +21,7 @@ import java.net.SocketException;
 
 import org.apache.logging.log4j.core.appender.SyslogAppender.Builder;
 import org.apache.logging.log4j.core.layout.Rfc5424Layout;
+import org.apache.logging.log4j.core.layout.Rfc5424Layout.TimestampPrecision;
 import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.net.mock.MockSyslogServerFactory;
 import org.apache.logging.log4j.util.EnglishEnums;
@@ -128,13 +129,13 @@ public class SyslogAppenderTest extends SyslogAppenderTestBase {
             .setAppName("TestApp")
             .setMsgId("Test")
             .setFormat(format)
-            .setTimestampPrecision("microsecond");
+            .setTimestampPrecision(TimestampPrecision.MICROSECOND);
         // @formatter:on
     }
     
     @Override
     protected void validate(final Rfc5424Layout layout) {
-		super.validate(layout);
-		Assert.assertEquals("microsecond", layout.getTimestampPrecision());
+        super.validate(layout);
+        Assert.assertEquals(TimestampPrecision.MICROSECOND, layout.getTimestampPrecision());
     }
 }

@@ -22,6 +22,7 @@ import java.util.List;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
 
+import org.apache.logging.log4j.core.layout.Rfc5424Layout.TimestampPrecision;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.mock.MockSyslogServerFactory;
 import org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration;
@@ -95,7 +96,7 @@ public class TlsSyslogAppenderTest extends SyslogAppenderTest {
 
         return SyslogAppender.createAppender("localhost", PORTNUM, "SSL", sslConfiguration, 0, -1, true, "Test", true,
             false, Facility.LOCAL0, "Audit", 18060, true, "RequestContext", null, null, includeNewLine, null,
-            "TestApp", "Test", null, "ipAddress,loginId", null, format, null, null, null, null, null, false, "microsecond");
+            "TestApp", "Test", null, "ipAddress,loginId", null, format, null, null, null, null, null, false, TimestampPrecision.MICROSECOND);
     }
 
     private void initTlsTestEnvironment(final int numberOfMessages, final TlsSyslogMessageFormat messageFormat) throws IOException {

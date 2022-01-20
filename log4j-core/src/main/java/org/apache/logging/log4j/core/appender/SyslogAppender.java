@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.layout.LoggerFields;
 import org.apache.logging.log4j.core.layout.Rfc5424Layout;
+import org.apache.logging.log4j.core.layout.Rfc5424Layout.TimestampPrecision;
 import org.apache.logging.log4j.core.layout.SyslogLayout;
 import org.apache.logging.log4j.core.net.AbstractSocketManager;
 import org.apache.logging.log4j.core.net.Advertiser;
@@ -104,8 +105,8 @@ public class SyslogAppender extends SocketAppender {
         @PluginElement("LoggerFields")
         private LoggerFields[] loggerFields;
 
-        @PluginBuilderAttribute( "timestampPrecision" )
-        private String timestampPrecision;
+        @PluginBuilderAttribute("timestampPrecision")
+        private TimestampPrecision timestampPrecision;
 
         @SuppressWarnings({"resource", "unchecked"})
         @Override
@@ -214,9 +215,9 @@ public class SyslogAppender extends SocketAppender {
             return loggerFields;
         }
 
-		public String getTimestampPrecision() {
-			return timestampPrecision;
-		}
+        public TimestampPrecision getTimestampPrecision() {
+            return timestampPrecision;
+        }
 
         public B setFacility(final Facility facility) {
             this.facility = facility;
@@ -308,10 +309,10 @@ public class SyslogAppender extends SocketAppender {
             return asBuilder();
         }
 
-		public B setTimestampPrecision(final String timestampPrecision) {
-			this.timestampPrecision = timestampPrecision;
-			return asBuilder();
-		}
+        public B setTimestampPrecision(final TimestampPrecision timestampPrecision) {
+            this.timestampPrecision = timestampPrecision;
+            return asBuilder();
+        }
     }
 
     protected static final String RFC5424 = "RFC5424";
@@ -408,7 +409,7 @@ public class SyslogAppender extends SocketAppender {
             final String exceptionPattern,
             final LoggerFields[] loggerFields,
             final boolean advertise,
-            final String timestampPrecision) {
+            final TimestampPrecision timestampPrecision) {
         // @formatter:on
 
         // @formatter:off
@@ -440,7 +441,7 @@ public class SyslogAppender extends SocketAppender {
                 .setCharsetName(charset)
                 .setExceptionPattern(exceptionPattern)
                 .setLoggerFields(loggerFields)
-                .setTimestampPrecision( timestampPrecision )
+                .setTimestampPrecision(timestampPrecision)
                 .build();
         // @formatter:on
     }

@@ -31,6 +31,7 @@ import org.apache.logging.log4j.core.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.layout.Rfc5424Layout.TimestampPrecision;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.junit.UsingAnyThreadContext;
@@ -70,10 +71,10 @@ public class Rfc5424LayoutTest {
     private static final String collectionLine3 = "[RequestContext@3692 ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"]";
     private static final String collectionEndOfLine = "Transfer Complete";
 
-	private static final Pattern milliTimestampPattern = Pattern
-			.compile("<\\d+>1 (\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.\\d{3}[+-]\\d{2}:\\d{2}) .*");
-	private static final Pattern microTimestampPattern = Pattern
-			.compile("<\\d+>1 (\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.\\d{6}[+-]\\d{2}:\\d{2}) .*");
+    private static final Pattern milliTimestampPattern = Pattern
+            .compile("<\\d+>1 (\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.\\d{3}[+-]\\d{2}:\\d{2}) .*");
+    private static final Pattern microTimestampPattern = Pattern
+            .compile("<\\d+>1 (\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.\\d{6}[+-]\\d{2}:\\d{2}) .*");
 
 
     static ConfigurationFactory cf = new BasicConfigurationFactory();
@@ -329,7 +330,7 @@ public class Rfc5424LayoutTest {
 
             assertTrue(list.size() > 1, "Not enough list entries");
             final String string = list.get(1);
-			      assertTrue(string.contains("IllegalArgumentException"), "No Exception in " + string);
+            assertTrue(string.contains("IllegalArgumentException"), "No Exception in " + string);
 
             appender.clear();
         } finally {
@@ -531,113 +532,89 @@ public class Rfc5424LayoutTest {
         }
     }
 
-	@Test
-	public void testTimestampMilliPrecision() {
-		for (final Appender appender : root.getAppenders().values()) {
-			root.removeAppender(appender);
-		}
-		// set up appender layout and appender with millisecond precision
-		AbstractStringLayout layout = Rfc5424Layout.createLayout(Facility.LOCAL0, "Event", 3692, true, "RequestContext",
-				null, null, true, null, "ATM", null, "key1, key2, locale", null, null, null, false, null,
-				null, "millisecond");
-		ListAppender appender = new ListAppender("List", null, layout, true, false);
+    @Test
+    public void testTimestampMilliPrecision() {
+        for (final Appender appender : root.getAppenders().values()) {
+            root.removeAppender(appender);
+        }
+        // set up appender layout and appender with millisecond precision
+        AbstractStringLayout layout = Rfc5424Layout.createLayout(Facility.LOCAL0, "Event", 3692, true, "RequestContext",
+                null, null, true, null, "ATM", null, "key1, key2, locale", null, null, null, false, null, null,
+                TimestampPrecision.MILLISECOND);
+        ListAppender appender = new ListAppender("List", null, layout, true, false);
 
-		appender.start();
+        appender.start();
 
-		// set appender on root and set level to debug
-		root.addAppender(appender);
-		root.setLevel(Level.DEBUG);
-		root.info("Hello");
+        // set appender on root and set level to debug
+        root.addAppender(appender);
+        root.setLevel(Level.DEBUG);
+        root.info("Hello");
 
-		try {
-			final List<String> list = appender.getMessages();
-			assertTrue(list.size() > 0, "Not enough list entries");
-			final String message = list.get(0);
-			Matcher matcher = milliTimestampPattern.matcher(message);
-			assertTrue(matcher.matches(),
-					"Incorrect timstamp format. Expected format - yyyy-MM-ddTHH:mm:ss.SSSXXX, Actual - " + message);
-		} finally {
-			root.removeAppender(appender);
-			appender.stop();
-		}
+        try {
+            final List<String> list = appender.getMessages();
+            assertTrue(list.size() > 0, "Not enough list entries");
+            final String message = list.get(0);
+            Matcher matcher = milliTimestampPattern.matcher(message);
+            assertTrue(matcher.matches(),
+                    "Incorrect timstamp format. Expected format - yyyy-MM-ddTHH:mm:ss.SSSXXX, Actual - " + message);
+        } finally {
+            root.removeAppender(appender);
+            appender.stop();
+        }
 
-		// set up appender layout and appender with some random value for
-		// timestampPrecision. It should default to millisecond
-		layout = Rfc5424Layout.createLayout(Facility.LOCAL0, "Event", 3692, true, "RequestContext", null, null, true,
-				null, "ATM", null, "key1, key2, locale", null, null, null, false, null, null, "something random");
-		appender = new ListAppender("List", null, layout, true, false);
+        // set up appender layout and appender with null
+        // timestampPrecision. It should default to millisecond
+        layout = Rfc5424Layout.createLayout(Facility.LOCAL0, "Event", 3692, true, "RequestContext", null, null, true,
+                null, "ATM", null, "key1, key2, locale", null, null, null, false, null, null, null);
+        appender = new ListAppender("List", null, layout, true, false);
 
-		appender.start();
+        appender.start();
 
-		// set appender on root and set level to debug
-		root.addAppender(appender);
-		root.setLevel(Level.DEBUG);
-		root.info("Hello");
-		try {
-			final List<String> list = appender.getMessages();
-			assertTrue(list.size() > 0, "Not enough list entries");
-			final String message = list.get(0);
-			Matcher matcher = milliTimestampPattern.matcher(message);
-			assertTrue(matcher.matches(),
-					"Incorrect timstamp format. Expected format - yyyy-MM-ddTHH:mm:ss.SSSXXX, Actual - " + message);
-		} finally {
-			root.removeAppender(appender);
-			appender.stop();
-		}
+        // set appender on root and set level to debug
+        root.addAppender(appender);
+        root.setLevel(Level.DEBUG);
+        root.info("Hello");
+        try {
+            final List<String> list = appender.getMessages();
+            assertTrue(list.size() > 0, "Not enough list entries");
+            final String message = list.get(0);
+            Matcher matcher = milliTimestampPattern.matcher(message);
+            assertTrue(matcher.matches(),
+                    "Incorrect timstamp format. Expected format - yyyy-MM-ddTHH:mm:ss.SSSXXX, Actual - " + message);
+        } finally {
+            root.removeAppender(appender);
+            appender.stop();
+        }
+    }
 
-		// set up appender layout and appender with null
-		// timestampPrecision. It should default to millisecond
-		layout = Rfc5424Layout.createLayout(Facility.LOCAL0, "Event", 3692, true, "RequestContext", null, null, true,
-				null, "ATM", null, "key1, key2, locale", null, null, null, false, null, null, null);
-		appender = new ListAppender("List", null, layout, true, false);
+    @Test
+    public void testTimestampMicroPrecision() {
+        for (final Appender appender : root.getAppenders().values()) {
+            root.removeAppender(appender);
+        }
+        // set up appender layout and appender with microsecond precision
+        AbstractStringLayout layout = Rfc5424Layout.createLayout(Facility.LOCAL0, "Event", 3692, true, "RequestContext",
+                null, null, true, null, "ATM", null, "key1, key2, locale", null, null, null, false, null, null,
+                TimestampPrecision.MICROSECOND);
+        ListAppender appender = new ListAppender("List", null, layout, true, false);
 
-		appender.start();
+        appender.start();
 
-		// set appender on root and set level to debug
-		root.addAppender(appender);
-		root.setLevel(Level.DEBUG);
-		root.info("Hello");
-		try {
-			final List<String> list = appender.getMessages();
-			assertTrue(list.size() > 0, "Not enough list entries");
-			final String message = list.get(0);
-			Matcher matcher = milliTimestampPattern.matcher(message);
-			assertTrue(matcher.matches(),
-					"Incorrect timstamp format. Expected format - yyyy-MM-ddTHH:mm:ss.SSSXXX, Actual - " + message);
-		} finally {
-			root.removeAppender(appender);
-			appender.stop();
-		}
-	}
+        // set appender on root and set level to debug
+        root.addAppender(appender);
+        root.setLevel(Level.DEBUG);
+        root.info("Hello");
 
-	@Test
-	public void testTimestampMicroPrecision() {
-		for (final Appender appender : root.getAppenders().values()) {
-			root.removeAppender(appender);
-		}
-		// set up appender layout and appender with microsecond precision
-		AbstractStringLayout layout = Rfc5424Layout.createLayout(Facility.LOCAL0, "Event", 3692, true, "RequestContext",
-				null, null, true, null, "ATM", null, "key1, key2, locale", null, null, null, false, null,
-				null, "microsecond");
-		ListAppender appender = new ListAppender("List", null, layout, true, false);
-
-		appender.start();
-
-		// set appender on root and set level to debug
-		root.addAppender(appender);
-		root.setLevel(Level.DEBUG);
-		root.info("Hello");
-
-		try {
-			final List<String> list = appender.getMessages();
-			assertTrue(list.size() > 0, "Not enough list entries");
-			final String message = list.get(0);
-			Matcher matcher = microTimestampPattern.matcher(message);
-			assertTrue(matcher.matches(),
-					"Incorrect timstamp format. Expected format - yyyy-MM-ddTHH:mm:ss.nnnnnnXXX, Actual - " + message);
-		} finally {
-			root.removeAppender(appender);
-			appender.stop();
-		}
-	}
+        try {
+            final List<String> list = appender.getMessages();
+            assertTrue(list.size() > 0, "Not enough list entries");
+            final String message = list.get(0);
+            Matcher matcher = microTimestampPattern.matcher(message);
+            assertTrue(matcher.matches(),
+                    "Incorrect timstamp format. Expected format - yyyy-MM-ddTHH:mm:ss.nnnnnnXXX, Actual - " + message);
+        } finally {
+            root.removeAppender(appender);
+            appender.stop();
+        }
+    }
 }
