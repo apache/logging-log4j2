@@ -192,6 +192,27 @@
         "code": "java.method.removed",
         "old": "method java.util.List<java.lang.String> org.apache.logging.log4j.core.util.NetUtils::getLocalIps()",
         "justification": "method is no longer used."
+      },
+      {
+        "code": "java.annotation.removed",
+        "old": "parameter org.apache.logging.log4j.core.config.Property org.apache.logging.log4j.core.config.Property::createProperty(===java.lang.String===, java.lang.String)",
+        "new": "parameter org.apache.logging.log4j.core.config.Property org.apache.logging.log4j.core.config.Property::createProperty(===java.lang.String===, java.lang.String)",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginAttribute(\"name\")",
+        "justification": "Plugin system uses the new constructor"
+      },
+      {
+        "code": "java.annotation.removed",
+        "old": "parameter org.apache.logging.log4j.core.config.Property org.apache.logging.log4j.core.config.Property::createProperty(java.lang.String, ===java.lang.String===)",
+        "new": "parameter org.apache.logging.log4j.core.config.Property org.apache.logging.log4j.core.config.Property::createProperty(java.lang.String, ===java.lang.String===)",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginValue(\"value\")",
+        "justification": "Plugin system uses the new constructor"
+      },
+      {
+        "code": "java.annotation.removed",
+        "old": "method org.apache.logging.log4j.core.config.Property org.apache.logging.log4j.core.config.Property::createProperty(java.lang.String, java.lang.String)",
+        "new": "method org.apache.logging.log4j.core.config.Property org.apache.logging.log4j.core.config.Property::createProperty(java.lang.String, java.lang.String)",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginFactory",
+        "justification": "Plugin system uses the new constructor"
       }
     ]
   }
