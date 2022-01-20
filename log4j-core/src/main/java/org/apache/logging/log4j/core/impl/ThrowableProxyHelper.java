@@ -138,7 +138,7 @@ class ThrowableProxyHelper {
                     proxies.add(new ThrowableProxy(candidate, suppressedVisited));
                 }
             }
-            return proxies.toArray(new ThrowableProxy[proxies.size()]);
+            return proxies.toArray(ThrowableProxy.EMPTY_ARRAY);
         } catch (final Exception e) {
             StatusLogger.getLogger().error(e);
         }

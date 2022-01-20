@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.util;
 
-import java.util.Stack;
+import java.util.Deque;
 
 /**
  * This is a dummy class and is only here to allow this module to compile. It will not
@@ -28,7 +28,7 @@ final class PrivateSecurityManagerStackTraceUtil {
         return false;
     }
 
-    static Stack<Class<?>> getCurrentStackTrace() {
+    static Deque<Class<?>> getCurrentStackTrace() {
         return null;
     }
 }

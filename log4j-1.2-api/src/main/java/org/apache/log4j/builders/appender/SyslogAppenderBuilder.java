@@ -45,6 +45,7 @@ import org.apache.logging.log4j.core.layout.SyslogLayout;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
 import org.w3c.dom.Element;
 
 /**
@@ -165,7 +166,7 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
         //  If not an unbracketed IPv6 address then
         //      parse as a URL
         //
-        String[] parts = syslogHost.split(":");
+        final String[] parts = syslogHost != null ? syslogHost.split(":") : Strings.EMPTY_ARRAY;
         if (parts.length == 1) {
             host.set(parts[0]);
             port.set(DEFAULT_PORT);

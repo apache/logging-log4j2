@@ -74,6 +74,8 @@ import org.apache.logging.log4j.util.Strings;
  */
 public final class Level implements Comparable<Level>, Serializable {
 
+    private static final Level[] EMPTY_ARRAY = {};
+
     private static final ConcurrentMap<String, Level> LEVELS = new ConcurrentHashMap<>(); // SUPPRESS CHECKSTYLE
 
     /**
@@ -283,11 +285,11 @@ public final class Level implements Comparable<Level>, Serializable {
      * Converts the string passed as argument to a level. If the conversion fails, then this method returns
      * {@link #DEBUG}.
      *
-     * @param sArg The name of the desired Level.
+     * @param level The name of the desired Level.
      * @return The Level associated with the String.
      */
-    public static Level toLevel(final String sArg) {
-        return toLevel(sArg, Level.DEBUG);
+    public static Level toLevel(final String level) {
+        return toLevel(level, Level.DEBUG);
     }
 
     /**
@@ -316,8 +318,7 @@ public final class Level implements Comparable<Level>, Serializable {
      * @return An array of Levels.
      */
     public static Level[] values() {
-        final Collection<Level> values = Level.LEVELS.values();
-        return values.toArray(new Level[values.size()]);
+        return Level.LEVELS.values().toArray(EMPTY_ARRAY);
     }
 
     /**

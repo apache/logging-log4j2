@@ -22,6 +22,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 
 import java.lang.System.Logger;
@@ -83,6 +84,34 @@ public class Log4jSystemLoggerTest {
         assertEquals(LOGGER_NAME, event.getLoggerName());
         assertEquals("Informative message here.", event.getMessage().getFormattedMessage());
         assertEquals(Log4jSystemLogger.class.getName(), event.getLoggerFqcn());
+    }
+
+    @Test
+    public void testParameterizedLogging() {
+        logger.log(Logger.Level.INFO, "Hello, {0}!", "World");
+        final List<LogEvent> events = eventAppender.getEvents();
+        assertThat(events, hasSize(1));
+        final LogEvent event = events.get(0);
+        assertThat(event, instanceOf(Log4jLogEvent.class));
+        assertEquals(Level.INFO, event.getLevel());
+        assertEquals(LOGGER_NAME, event.getLoggerName());
+        assertEquals("Hello, World!", event.getMessage().getFormattedMessage());
+        assertEquals(Log4jSystemLogger.class.getName(), event.getLoggerFqcn());
+    }
+
+    @Test
+    public void testParameterizedLoggingWithThrowable() {
+        Throwable throwable = new RuntimeException();
+        logger.log(Logger.Level.INFO, "Hello, {0}!", "World", throwable);
+        final List<LogEvent> events = eventAppender.getEvents();
+        assertThat(events, hasSize(1));
+        final LogEvent event = events.get(0);
+        assertThat(event, instanceOf(Log4jLogEvent.class));
+        assertEquals(Level.INFO, event.getLevel());
+        assertEquals(LOGGER_NAME, event.getLoggerName());
+        assertEquals("Hello, World!", event.getMessage().getFormattedMessage());
+        assertEquals(Log4jSystemLogger.class.getName(), event.getLoggerFqcn());
+        assertSame(throwable, event.getThrown());
     }
 
     @Test

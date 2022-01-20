@@ -224,4 +224,26 @@ public class LoggerTest {
             anotherLog4jLogger.info("hello, another world");
         }
     }
+
+    @Test public void placeholdersInFormat() {
+        julLogger.setLevel(Level.INFO);
+        log4jLogger.info("hello, {0} {}", "world");
+
+        List<LogRecord> logs = handler.getStoredLogRecords();
+        assertThat(logs).hasSize(1);
+        LogRecord log1 = logs.get(0);
+        String formattedMessage = new java.util.logging.SimpleFormatter().formatMessage(log1);
+        assertThat(formattedMessage).isEqualTo("hello, {0} world");
+    }
+
+    @Test public void placeholdersInFormattedMessage() {
+        julLogger.setLevel(Level.INFO);
+        log4jLogger.info("hello, {}", "{0} world");
+
+        List<LogRecord> logs = handler.getStoredLogRecords();
+        assertThat(logs).hasSize(1);
+        LogRecord log1 = logs.get(0);
+        String formattedMessage = new java.util.logging.SimpleFormatter().formatMessage(log1);
+        assertThat(formattedMessage).isEqualTo("hello, {0} world");
+    }
 }

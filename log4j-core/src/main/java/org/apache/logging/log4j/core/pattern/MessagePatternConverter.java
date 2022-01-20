@@ -31,6 +31,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.MultiFormatStringBuilderFormattable;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Returns the event's rendered message in a StringBuilder.
@@ -99,7 +100,7 @@ public class MessagePatternConverter extends LogEventPatternConverter {
                 results.add(option);
             }
         }
-        return results.toArray(new String[0]);
+        return results.toArray(Strings.EMPTY_ARRAY);
     }
 
     @Override

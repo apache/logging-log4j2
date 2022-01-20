@@ -17,10 +17,11 @@
 package org.apache.logging.log4j.util;
 
 import java.util.ArrayDeque;
+import java.util.Collections;
 import java.util.Deque;
 
 /**
- * Internal utility to share a fast implementation of {@link #getCurrentStackTrace()}
+ * Internal utility to share a fast implementation of {@code #getCurrentStackTrace()}
  * with the java 9 implementation of {@link StackLocator}.
  */
 final class PrivateSecurityManagerStackTraceUtil {
@@ -50,13 +51,21 @@ final class PrivateSecurityManagerStackTraceUtil {
         return SECURITY_MANAGER != null;
     }
 
+    /**
+     * Returns the current execution stack as a Deque of classes.
+     * <p>
+     * The size of the Deque is the number of methods on the execution stack. The first element is the class that started
+     * execution on this thread, the next element is the class that was called next, and so on, until the last element: the
+     * method that called {@link SecurityManager#getClassContext()} to capture the stack.
+     * </p>
+     *
+     * @return the execution stack.
+     */
     // benchmarks show that using the SecurityManager is much faster than looping through getCallerClass(int)
     static Deque<Class<?>> getCurrentStackTrace() {
         final Class<?>[] array = SECURITY_MANAGER.getClassContext();
         final Deque<Class<?>> classes = new ArrayDeque<>(array.length);
-        for (final Class<?> clazz : array) {
-            classes.push(clazz);
-        }
+        Collections.addAll(classes, array);
         return classes;
     }
 

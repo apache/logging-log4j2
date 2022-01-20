@@ -23,6 +23,9 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.function.Supplier;
 
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MessageFormatMessage;
+import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**
@@ -53,14 +56,14 @@ public class Log4jSystemLogger implements Logger {
 
     @Override
     public void log(Level level, String msg) {
-        log(level, (ResourceBundle) null, msg, (Object[]) null);
+        log(level, (ResourceBundle) null, msg, (Throwable) null);
     }
 
     @Override
     public void log(Level level, Supplier<String> msgSupplier) {
         Objects.requireNonNull(msgSupplier);
         if (isLoggable(Objects.requireNonNull(level))) {
-            log(level, (ResourceBundle) null, msgSupplier.get(), (Object[]) null);
+            log(level, (ResourceBundle) null, msgSupplier.get(), (Throwable) null);
         }
     }
 
@@ -68,7 +71,7 @@ public class Log4jSystemLogger implements Logger {
     public void log(Level level, Object obj) {
         Objects.requireNonNull(obj);
         if (isLoggable(Objects.requireNonNull(level))) {
-            log(level, (ResourceBundle) null, obj.toString(), (Object[]) null);
+            log(level, (ResourceBundle) null, obj.toString(), (Throwable) null);
         }
     }
 
@@ -97,7 +100,15 @@ public class Log4jSystemLogger implements Logger {
 
     @Override
     public void log(final Level level, final ResourceBundle bundle, final String format, final Object... params) {
-        logger.logIfEnabled(FQCN, getLevel(level), null, getResource(bundle, format), params);
+        Message message = createMessage(getResource(bundle, format), params);
+        logger.logIfEnabled(FQCN, getLevel(level), null, message, message.getThrowable());
+    }
+
+    private static Message createMessage(final String format, final Object... params) {
+        if (params == null || params.length == 0) {
+            return new SimpleMessage(format);
+        }
+        return new MessageFormatMessage(format, params);
     }
 
     private static org.apache.logging.log4j.Level getLevel(final Level level) {

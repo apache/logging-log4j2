@@ -280,8 +280,18 @@ public final class Strings {
     }
 
     /**
-     * Shorthand for {@code str.toUpperCase(Locale.ROOT);}
+     * Shorthand for {@code str.toLowerCase(Locale.ROOT);}
      * @param str The string to upper case.
+     * @return a new string
+     * @see String#toLowerCase(Locale)
+     */
+    public static String toRootLowerCase(final String str) {
+        return str.toLowerCase(Locale.ROOT);
+    }
+
+    /**
+     * Shorthand for {@code str.toUpperCase(Locale.ROOT);}
+     * @param str The string to lower case.
      * @return a new string
      * @see String#toLowerCase(Locale)
      */

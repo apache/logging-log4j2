@@ -327,6 +327,20 @@ public final class Configurator {
         }
     }
 
+    /**
+     * Sets a logger's level.
+     *
+     * @param logger
+     *            the logger
+     * @param level
+     *            the new level
+     * @return the given logger
+     */
+    public static Logger setLevel(final Logger logger, final Level level) {
+        setLevel(logger.getName(), level);
+        return logger;
+    }
+    
     private static boolean setLevel(final LoggerConfig loggerConfig, final Level level) {
         final boolean set = !loggerConfig.getLevel().equals(level);
         if (set) {
@@ -371,6 +385,18 @@ public final class Configurator {
         } else if (setLevel(loggerName, level, loggerContext.getConfiguration())) {
             loggerContext.updateLoggers();
         }
+    }
+
+    /**
+     * Sets a logger's level.
+     *
+     * @param loggerName
+     *            the logger name
+     * @param level
+     *            the new level
+     */
+    public static void setLevel(final String loggerName, final String level) {
+        setLevel(loggerName, Level.toLevel(level));
     }
 
     private static boolean setLevel(final String loggerName, final Level level, final Configuration config) {

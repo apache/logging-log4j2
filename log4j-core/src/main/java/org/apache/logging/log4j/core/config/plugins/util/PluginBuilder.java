@@ -52,6 +52,8 @@ import org.apache.logging.log4j.util.StringBuilders;
  */
 public class PluginBuilder implements Builder<Object> {
 
+    private static final Field[] EMPTY_FIELD_ARRAY = new Field[] {};
+
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final PluginType<?> pluginType;
@@ -162,7 +164,7 @@ public class PluginBuilder implements Builder<Object> {
 
     private void injectFields(final Builder<?> builder) throws IllegalAccessException {
         final List<Field> fields = TypeUtil.getAllDeclaredFields(builder.getClass());
-        AccessibleObject.setAccessible(fields.toArray(new Field[] {}), true);
+        AccessibleObject.setAccessible(fields.toArray(EMPTY_FIELD_ARRAY), true);
         final StringBuilder log = new StringBuilder();
         boolean invalid = false;
         String reason = "";

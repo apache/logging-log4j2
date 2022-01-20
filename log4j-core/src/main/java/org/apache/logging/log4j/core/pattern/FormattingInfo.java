@@ -65,6 +65,11 @@ public final class FormattingInfo {
     private final boolean zeroPad;
 
     /**
+     * Empty array.
+     */
+    public static final FormattingInfo[] EMPTY_ARRAY = {};
+
+    /**
      * Creates new instance.
      *
      * @param leftAlign
