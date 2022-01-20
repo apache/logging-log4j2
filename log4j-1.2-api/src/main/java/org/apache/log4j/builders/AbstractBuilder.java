@@ -110,8 +110,12 @@ public abstract class AbstractBuilder {
         return new String(chars);
     }
 
+    public boolean getBooleanProperty(final String key, final boolean defaultValue) {
+        return Boolean.parseBoolean(getProperty(key, Boolean.toString(defaultValue)));
+    }
+
     public boolean getBooleanProperty(final String key) {
-        return Boolean.parseBoolean(getProperty(key, Boolean.FALSE.toString()));
+        return getBooleanProperty(key, false);
     }
 
     public int getIntegerProperty(final String key, final int defaultValue) {
@@ -175,5 +179,4 @@ public abstract class AbstractBuilder {
         chars[0] = Character.toLowerCase(chars[0]);
         return new String(chars);
     }
-
 }
