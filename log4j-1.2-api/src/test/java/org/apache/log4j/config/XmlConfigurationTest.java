@@ -106,4 +106,22 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
         super.testConsoleTtccLayout();
     }
 
+    @Override
+    @Test
+    public void testRollingFileAppender() throws Exception {
+        super.testRollingFileAppender();
+    }
+
+    @Override
+    @Test
+    public void testDailyRollingFileAppender() throws Exception {
+        super.testDailyRollingFileAppender();
+    }
+
+    @Override
+    @Test
+    public void testSystemProperties1() throws Exception {
+        super.testSystemProperties1();
+    }
+
 }

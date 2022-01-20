@@ -40,6 +40,7 @@ import org.apache.log4j.spi.Filter;
 import org.apache.log4j.xml.XmlConfiguration;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
+import org.apache.logging.log4j.core.appender.rolling.CompositeTriggeringPolicy;
 import org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.RolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.TimeBasedTriggeringPolicy;
@@ -47,7 +48,6 @@ import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
-
 
 /**
  * Build a Daily Rolling File Appender
@@ -63,7 +63,6 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
     public DailyRollingFileAppenderBuilder(String prefix, Properties props) {
         super(prefix, props);
     }
-
 
     @Override
     public Appender parseAppender(final Element appenderElement, final XmlConfiguration config) {
@@ -167,8 +166,9 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
             LOGGER.warn("Unable to create File Appender, no file name provided");
             return null;
         }
-        String filePattern = fileName +"%d{yyy-MM-dd}";
-        TriggeringPolicy policy = TimeBasedTriggeringPolicy.newBuilder().withModulate(true).build();
+        String filePattern = fileName + "%d{.yyyy-MM-dd}";
+        TriggeringPolicy timePolicy = TimeBasedTriggeringPolicy.newBuilder().withModulate(true).build();
+        TriggeringPolicy policy = CompositeTriggeringPolicy.createPolicy(timePolicy);
         RolloverStrategy strategy = DefaultRolloverStrategy.newBuilder()
                 .withConfig(configuration)
                 .withMax(Integer.toString(Integer.MAX_VALUE))

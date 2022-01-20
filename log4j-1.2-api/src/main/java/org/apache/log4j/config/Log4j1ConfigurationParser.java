@@ -25,6 +25,7 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.TreeMap;
 
+import org.apache.log4j.helpers.OptionConverter;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.appender.FileAppender;
@@ -39,8 +40,6 @@ import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
-import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
-import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
@@ -69,8 +68,6 @@ public class Log4j1ConfigurationParser {
     private static final String FALSE = "false";
 
     private final Properties properties = new Properties();
-    private StrSubstitutor strSubstitutorProperties;
-    private StrSubstitutor strSubstitutorSystem;
 
     private final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory
             .newConfigurationBuilder();
@@ -90,8 +87,6 @@ public class Log4j1ConfigurationParser {
             throws IOException {
         try {
             properties.load(input);
-            strSubstitutorProperties = new ConfigurationStrSubstitutor(properties);
-            strSubstitutorSystem = new ConfigurationStrSubstitutor(System.getProperties());
             final String rootCategoryValue = getLog4jValue(ROOTCATEGORY);
             final String rootLoggerValue = getLog4jValue(ROOTLOGGER);
             if (rootCategoryValue == null && rootLoggerValue == null) {
@@ -422,8 +417,7 @@ public class Log4j1ConfigurationParser {
 
     private String getProperty(final String key) {
         final String value = properties.getProperty(key);
-        final String sysValue = strSubstitutorSystem.replace(value);
-        return strSubstitutorProperties.replace(sysValue);
+        return OptionConverter.substVars(value, properties);
     }
 
     private String getProperty(final String key, final String defaultValue) {
