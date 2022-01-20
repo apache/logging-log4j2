@@ -16,6 +16,15 @@
  */
 package org.apache.log4j.builders.appender;
 
+import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
+import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.LAYOUT_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
+
+import java.util.Properties;
+
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.AppenderWrapper;
@@ -30,6 +39,7 @@ import org.apache.log4j.spi.Filter;
 import org.apache.log4j.xml.XmlConfiguration;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
+import org.apache.logging.log4j.core.appender.rolling.CompositeTriggeringPolicy;
 import org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.RolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.TimeBasedTriggeringPolicy;
@@ -37,18 +47,6 @@ import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
-
-import java.util.Properties;
-
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
-import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.LAYOUT_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.NAME_ATTR;
-import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
-import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
-
 
 /**
  * Build a Daily Rolling File Appender
@@ -64,7 +62,6 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
     public DailyRollingFileAppenderBuilder(String prefix, Properties props) {
         super(prefix, props);
     }
-
 
     @Override
     public Appender parseAppender(final Element appenderElement, final XmlConfiguration config) {
@@ -168,8 +165,9 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
             LOGGER.warn("Unable to create File Appender, no file name provided");
             return null;
         }
-        String filePattern = fileName +"%d{yyy-MM-dd}";
-        TriggeringPolicy policy = TimeBasedTriggeringPolicy.newBuilder().setModulate(true).build();
+        String filePattern = fileName + "%d{.yyyy-MM-dd}";
+        TriggeringPolicy timePolicy = TimeBasedTriggeringPolicy.newBuilder().setModulate(true).build();
+        TriggeringPolicy policy = CompositeTriggeringPolicy.createPolicy(timePolicy);
         RolloverStrategy strategy = DefaultRolloverStrategy.newBuilder()
                 .setConfig(configuration)
                 .setMax(Integer.toString(Integer.MAX_VALUE))
