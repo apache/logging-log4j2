@@ -118,7 +118,7 @@ public class Log4j1ConfigurationFactoryTest extends AbstractLog4j1ConfigurationT
     @Override
     @Test
     public void testConsoleTtccLayout() throws Exception {
-       super.testConsoleTtccLayout();
+        super.testConsoleTtccLayout();
     }
 
     @Test
