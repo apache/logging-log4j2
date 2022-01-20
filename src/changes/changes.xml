@@ -281,6 +281,9 @@
       <action dev="ggregory" type="fix" due-to="Gary Gregory, Piotr P. Karwasz">
         Log4j 1.2 bridge uses the wrong default values for a TTCCLayout #709.
       </action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory, Piotr P. Karwasz">
+        Log4j 1.2 bridge uses the wrong file pattern for rolling file appenders #710. 
+      </action>
       <action dev="ggregory" type="fix" issue="LOG4J2-3330" due-to="Mircea Lemnaru, Gary Gregory">
         Configurator.setLevel not fetching the correct LoggerContext.
       </action>
