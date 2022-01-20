@@ -92,7 +92,7 @@ public class RewriteAppenderBuilder extends AbstractBuilder implements AppenderB
                     break;
                 }
                 case PARAM_TAG: {
-                    if (getNameAttribute(currentElement).equalsIgnoreCase(THRESHOLD_PARAM)) {
+                    if (getNameAttributeKey(currentElement).equalsIgnoreCase(THRESHOLD_PARAM)) {
                         String value = getValueAttribute(currentElement);
                         if (value == null) {
                             LOGGER.warn("No value supplied for Threshold parameter, ignoring.");

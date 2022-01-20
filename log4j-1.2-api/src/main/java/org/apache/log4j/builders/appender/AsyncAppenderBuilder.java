@@ -79,7 +79,7 @@ public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBui
                     }
                     break;
                 case PARAM_TAG: {
-                    switch (getNameAttribute(currentElement)) {
+                    switch (getNameAttributeKey(currentElement)) {
                         case BUFFER_SIZE_PARAM: {
                             String value = getValueAttribute(currentElement);
                             if (value == null) {

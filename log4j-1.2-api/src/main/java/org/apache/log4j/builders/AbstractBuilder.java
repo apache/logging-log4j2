@@ -22,7 +22,6 @@ import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
@@ -35,6 +34,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
 import org.w3c.dom.Element;
 
 /**
@@ -55,67 +55,24 @@ public abstract class AbstractBuilder {
     private final Properties properties;
 
     public AbstractBuilder() {
-        this.prefix = null;
-        this.properties = new Properties();
+        this(null, new Properties());
     }
 
-    public AbstractBuilder(String prefix, Properties props) {
-        this.prefix = prefix + ".";
+    public AbstractBuilder(final String prefix, final Properties props) {
+        this.prefix = prefix != null ? prefix + "." : null;
         this.properties = (Properties) props.clone();
-        Map<String, String> map = new HashMap<>();
+        final Map<String, String> map = new HashMap<>();
         System.getProperties().forEach((k, v) -> map.put(k.toString(), v.toString()));
         props.forEach((k, v) -> map.put(k.toString(), v.toString()));
         // normalize keys to lower case for case-insensitive access.
-        props.forEach((k, v) -> map.put(toLowerCase(k.toString()), v.toString()));
-        props.entrySet().forEach(e -> this.properties.put(toLowerCase(e.getKey().toString()), e.getValue()));
+        props.forEach((k, v) -> map.put(toBeanKey(k.toString()), v.toString()));
+        props.entrySet().forEach(e -> this.properties.put(toBeanKey(e.getKey().toString()), e.getValue()));
     }
 
-    public String getProperty(String key) {
-        return getProperty(key, null);
-    }
-
-    public String getProperty(String key, String defaultValue) {
-        String fullKey = prefix + key;
-        String value = properties.getProperty(fullKey);
-        value = value != null ? value : properties.getProperty(toLowerCase(fullKey), defaultValue);
-        value = value == null ? defaultValue : substVars(value);
-        return value == null ? defaultValue : value;
-    }
-
-    protected String getNameAttribute(Element element) {
-        return element.getAttribute(NAME_ATTR);
-    }
-
-    protected String getValueAttribute(Element element) {
-        return substVars(element.getAttribute(VALUE_ATTR));
-    }
-
-    public boolean getBooleanProperty(String key) {
-        return Boolean.parseBoolean(getProperty(key, Boolean.FALSE.toString()));
-    }
-
-    public int getIntegerProperty(String key, int defaultValue) {
-        String value = null;
-        try {
-            value = getProperty(key);
-            if (value != null) {
-                return Integer.parseInt(value);
-            }
-        } catch (Exception ex) {
-            LOGGER.warn("Error converting value {} of {} to an integer: {}", value, key, ex.getMessage());
-        }
-        return defaultValue;
-    }
-
-    public Properties getProperties() {
-        return properties;
-    }
-
-
-    protected org.apache.logging.log4j.core.Filter buildFilters(String level, Filter filter) {
+    protected org.apache.logging.log4j.core.Filter buildFilters(final String level, final Filter filter) {
         if (level != null && filter != null) {
-            List<org.apache.logging.log4j.core.Filter> filterList = new ArrayList<>();
-            org.apache.logging.log4j.core.Filter thresholdFilter =
+            final List<org.apache.logging.log4j.core.Filter> filterList = new ArrayList<>();
+            final org.apache.logging.log4j.core.Filter thresholdFilter =
                     ThresholdFilter.createFilter(OptionConverter.convertLevel(level, Level.TRACE),
                             org.apache.logging.log4j.core.Filter.Result.NEUTRAL,
                             org.apache.logging.log4j.core.Filter.Result.DENY);
@@ -144,12 +101,79 @@ public abstract class AbstractBuilder {
         return null;
     }
 
-    protected String substVars(String value) {
+    private String capitalize(final String value) {
+        if (Strings.isEmpty(value) || Character.isUpperCase(value.charAt(0))) {
+            return value;
+        }
+        final char[] chars = value.toCharArray();
+        chars[0] = Character.toUpperCase(chars[0]);
+        return new String(chars);
+    }
+
+    public boolean getBooleanProperty(final String key) {
+        return Boolean.parseBoolean(getProperty(key, Boolean.FALSE.toString()));
+    }
+
+    public int getIntegerProperty(final String key, final int defaultValue) {
+        String value = null;
+        try {
+            value = getProperty(key);
+            if (value != null) {
+                return Integer.parseInt(value);
+            }
+        } catch (final Exception ex) {
+            LOGGER.warn("Error converting value {} of {} to an integer: {}", value, key, ex.getMessage());
+        }
+        return defaultValue;
+    }
+
+    protected String getNameAttribute(final Element element) {
+        return element.getAttribute(NAME_ATTR);
+    }
+
+    protected String getNameAttributeKey(final Element element) {
+        return toBeanKey(element.getAttribute(NAME_ATTR));
+    }
+
+    public Properties getProperties() {
+        return properties;
+    }
+
+    public String getProperty(final String key) {
+        return getProperty(key, null);
+    }
+
+    public String getProperty(final String key, final String defaultValue) {
+        String value = properties.getProperty(prefix + toJavaKey(key));
+        value = value != null ? value : properties.getProperty(prefix + toBeanKey(key), defaultValue);
+        value = value != null ? substVars(value) : defaultValue;
+        return value != null ? value : defaultValue;
+    }
+
+    protected String getValueAttribute(final Element element) {
+        return substVars(element.getAttribute(VALUE_ATTR));
+    }
+
+
+    protected String substVars(final String value) {
         return OptionConverter.substVars(value, properties);
     }
 
-    String toLowerCase(final String value) {
-        return value == null ? null : value.toLowerCase(Locale.ROOT);
+    String toBeanKey(final String value) {
+        return capitalize(value);
+    }
+
+    String toJavaKey(final String value) {
+        return uncapitalize(value);
+    }
+
+    private String uncapitalize(final String value) {
+        if (Strings.isEmpty(value) || Character.isLowerCase(value.charAt(0))) {
+            return value;
+        }
+        final char[] chars = value.toCharArray();
+        chars[0] = Character.toLowerCase(chars[0]);
+        return new String(chars);
     }
 
 }

@@ -51,9 +51,10 @@ import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
  */
 @Plugin(name = "org.apache.log4j.ConsoleAppender", category = CATEGORY)
 public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderBuilder {
+
     private static final String SYSTEM_OUT = "System.out";
     private static final String SYSTEM_ERR = "System.err";
-    private static final String TARGET = "target";
+    private static final String TARGET_PARAM = "Target";
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -80,11 +81,11 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
                     filters.get().add(config.parseFilters(currentElement));
                     break;
                 case PARAM_TAG: {
-                    switch (getNameAttribute(currentElement)) {
-                        case TARGET: {
+                    switch (getNameAttributeKey(currentElement)) {
+                        case TARGET_PARAM: {
                             String value = getValueAttribute(currentElement);
                             if (value == null) {
-                                LOGGER.warn("No value supplied for target parameter. Defaulting to System.out.");
+                                LOGGER.warn("No value supplied for target parameter. Defaulting to " + SYSTEM_OUT);
                             } else {
                                 switch (value) {
                                     case SYSTEM_OUT:
@@ -94,8 +95,7 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
                                         target.set(SYSTEM_ERR);
                                         break;
                                     default:
-                                        LOGGER.warn("Invalid value \"{}\" for target parameter. Using default of System.out",
-                                                value);
+                                        LOGGER.warn("Invalid value \"{}\" for target parameter. Using default of {}", value, SYSTEM_OUT);
                                 }
                             }
                             break;
@@ -134,7 +134,7 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
         Layout layout = configuration.parseLayout(layoutPrefix, name, props);
         Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
         String level = getProperty(THRESHOLD_PARAM);
-        String target = getProperty(TARGET);
+        String target = getProperty(TARGET_PARAM);
         return createAppender(name, layout, filter, level, target, configuration);
     }
 

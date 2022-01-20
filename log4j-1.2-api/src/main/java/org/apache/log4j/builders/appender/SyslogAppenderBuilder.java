@@ -16,19 +16,30 @@
  */
 package org.apache.log4j.builders.appender;
 
+import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
+import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.LAYOUT_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
+
+import java.io.Serializable;
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.AppenderWrapper;
 import org.apache.log4j.bridge.LayoutAdapter;
 import org.apache.log4j.bridge.LayoutWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
-import org.apache.log4j.builders.Holder;
 import org.apache.log4j.config.Log4j1Configuration;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.xml.XmlConfiguration;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.appender.SyslogAppender;
+import org.apache.logging.log4j.core.appender.SocketAppender;
 import org.apache.logging.log4j.core.layout.SyslogLayout;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Protocol;
@@ -37,27 +48,19 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 import org.w3c.dom.Element;
 
-import java.util.Properties;
-
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
-import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.LAYOUT_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.NAME_ATTR;
-import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
-import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
-
 /**
  * Build a File Appender
  */
 @Plugin(name = "org.apache.log4j.net.SyslogAppender", category = CATEGORY)
 public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBuilder {
 
+    private static final String DEFAULT_HOST = "localhost";
+    private static int DEFAULT_PORT = 514;
+    private static final String DEFAULT_FACILITY = "LOCAL0";
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final String FACILITY_PARAM = "Facility";
     private static final String SYSLOG_HOST_PARAM = "SyslogHost";
-    private static final int SYSLOG_PORT = 512;
+    private static final String PROTOCOL_PARAM = "Protocol";
 
     public SyslogAppenderBuilder() {
     }
@@ -69,12 +72,13 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
     @Override
     public Appender parseAppender(Element appenderElement, XmlConfiguration config) {
         String name = getNameAttribute(appenderElement);
-        Holder<Layout> layout = new Holder<>();
-        Holder<Filter> filter = new Holder<>();
-        Holder<String> facility = new Holder<>();
-        Holder<String> level = new Holder<>();
-        Holder<String> host = new Holder<>();
-        forEachElement(appenderElement.getChildNodes(), (currentElement) -> {
+        AtomicReference<Layout> layout = new AtomicReference<>();
+        AtomicReference<Filter> filter = new AtomicReference<>();
+        AtomicReference<String> facility = new AtomicReference<>();
+        AtomicReference<String> level = new AtomicReference<>();
+        AtomicReference<String> host = new AtomicReference<>();
+        AtomicReference<Protocol> protocol = new AtomicReference<>();
+        forEachElement(appenderElement.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
                 case LAYOUT_TAG:
                     layout.set(config.parseLayout(currentElement));
@@ -83,7 +87,7 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
                     filter.set(config.parseFilters(currentElement));
                     break;
                 case PARAM_TAG: {
-                    switch (getNameAttribute(currentElement)) {
+                    switch (getNameAttributeKey(currentElement)) {
                         case SYSLOG_HOST_PARAM: {
                             host.set(getValueAttribute(currentElement));
                             break;
@@ -100,13 +104,16 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
                             }
                             break;
                         }
+                        case PROTOCOL_PARAM:
+                            protocol.set(Protocol.valueOf(getValueAttribute(currentElement)));
+                            break;
                     }
                     break;
                 }
             }
         });
 
-        return createAppender(name, config, layout.get(), facility.get(), filter.get(), host.get(), level.get());
+        return createAppender(name, config, layout.get(), facility.get(), filter.get(), host.get(), level.get(), protocol.get());
     }
 
 
@@ -116,18 +123,19 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
         Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
         Layout layout = configuration.parseLayout(layoutPrefix, name, props);
         String level = getProperty(THRESHOLD_PARAM);
-        String facility = getProperty(FACILITY_PARAM, "LOCAL0");
-        String syslogHost = getProperty(SYSLOG_HOST_PARAM, "localhost:514");
+        String facility = getProperty(FACILITY_PARAM, DEFAULT_FACILITY);
+        String syslogHost = getProperty(SYSLOG_HOST_PARAM, DEFAULT_HOST + ":" + DEFAULT_PORT);
+        String protocol = getProperty(PROTOCOL_PARAM, Protocol.TCP.name());
 
-        return createAppender(name, configuration, layout, facility, filter, syslogHost, level);
+        return createAppender(name, configuration, layout, facility, filter, syslogHost, level, Protocol.valueOf(protocol));
     }
 
     private Appender createAppender(final String name, final Log4j1Configuration configuration, Layout layout,
-            String facility, final Filter filter, final String syslogHost, final String level) {
-        Holder<String> host = new Holder<>();
-        Holder<Integer> port = new Holder<>();
+            String facility, final Filter filter, final String syslogHost, final String level, final Protocol protocol) {
+        AtomicReference<String> host = new AtomicReference<>();
+        AtomicInteger port = new AtomicInteger();
         resolveSyslogHost(syslogHost, host, port);
-        org.apache.logging.log4j.core.Layout appenderLayout;
+        org.apache.logging.log4j.core.Layout<? extends Serializable> appenderLayout;
         if (layout instanceof LayoutWrapper) {
             appenderLayout = ((LayoutWrapper) layout).getLayout();
         } else if (layout != null) {
@@ -140,20 +148,18 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
         }
 
         org.apache.logging.log4j.core.Filter fileFilter = buildFilters(level, filter);
-        return new AppenderWrapper(SyslogAppender.newBuilder()
+        return new AppenderWrapper(SocketAppender.newBuilder()
                 .setName(name)
                 .setConfiguration(configuration)
                 .setLayout(appenderLayout)
                 .setFilter(fileFilter)
                 .setPort(port.get())
-                .setProtocol(Protocol.TCP)
+                .setProtocol(protocol)
                 .setHost(host.get())
                 .build());
     }
 
-    private void resolveSyslogHost(String syslogHost, Holder<String> host, Holder<Integer> port) {
-        int urlPort = -1;
-
+    private void resolveSyslogHost(String syslogHost, AtomicReference<String> host, AtomicInteger port) {
         //
         //  If not an unbracketed IPv6 address then
         //      parse as a URL
@@ -161,14 +167,14 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
         final String[] parts = syslogHost != null ? syslogHost.split(":") : Strings.EMPTY_ARRAY;
         if (parts.length == 1) {
             host.set(parts[0]);
-            port.set(SYSLOG_PORT);
+            port.set(DEFAULT_PORT);
         } else if (parts.length == 2) {
             host.set(parts[0]);
             port.set(Integer.parseInt(parts[1]));
         } else {
-            LOGGER.warn("Invalid syslogHost setting: {}. Using default", syslogHost);
-            host.set("localhost");
-            port.set(SYSLOG_PORT);
+            LOGGER.warn("Invalid {} setting: {}. Using default.", SYSLOG_HOST_PARAM, syslogHost);
+            host.set(DEFAULT_HOST);
+            port.set(DEFAULT_PORT);
         }
     }
 }

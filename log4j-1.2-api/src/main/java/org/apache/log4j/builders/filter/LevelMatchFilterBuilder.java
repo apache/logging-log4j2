@@ -59,7 +59,7 @@ public class LevelMatchFilterBuilder extends AbstractBuilder implements FilterBu
         final Holder<Boolean> acceptOnMatch = new BooleanHolder();
         forEachElement(filterElement.getElementsByTagName("param"), (currentElement) -> {
             if (currentElement.getTagName().equals("param")) {
-                switch (getNameAttribute(currentElement)) {
+                switch (getNameAttributeKey(currentElement)) {
                     case LEVEL:
                         level.set(getValueAttribute(currentElement));
                         break;

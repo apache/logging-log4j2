@@ -50,7 +50,7 @@ public class StringMatchFilterBuilder extends AbstractBuilder implements FilterB
         final Holder<String> text = new Holder<>();
         forEachElement(filterElement.getElementsByTagName("param"), (currentElement) -> {
             if (currentElement.getTagName().equals("param")) {
-                switch (getNameAttribute(currentElement)) {
+                switch (getNameAttributeKey(currentElement)) {
                     case STRING_TO_MATCH:
                         text.set(getValueAttribute(currentElement));
                         break;

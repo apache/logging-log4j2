@@ -41,8 +41,6 @@ import static org.apache.log4j.xml.XmlConfiguration.*;
 @Plugin(name = "org.apache.log4j.TTCCLayout", category = CATEGORY)
 public class TTCCLayoutBuilder extends AbstractBuilder implements LayoutBuilder {
 
-    private static final Logger LOGGER = StatusLogger.getLogger();
-
     private static final String THREAD_PRINTING_PARAM = "ThreadPrinting";
     private static final String CATEGORY_PREFIXING_PARAM = "CategoryPrefixing";
     private static final String CONTEXT_PRINTING_PARAM = "ContextPrinting";
@@ -65,7 +63,7 @@ public class TTCCLayoutBuilder extends AbstractBuilder implements LayoutBuilder 
         final Holder<String> timezone = new Holder<>();
         forEachElement(layoutElement.getElementsByTagName("param"), (currentElement) -> {
             if (currentElement.getTagName().equals(PARAM_TAG)) {
-                switch (getNameAttribute(currentElement)) {
+                switch (getNameAttributeKey(currentElement)) {
                     case THREAD_PRINTING_PARAM:
                         threadPrinting.set(Boolean.parseBoolean(getValueAttribute(currentElement)));
                         break;

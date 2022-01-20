@@ -26,7 +26,6 @@ import org.apache.log4j.xml.XmlConfiguration;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
 
 import java.util.Properties;
@@ -40,10 +39,8 @@ import static org.apache.log4j.xml.XmlConfiguration.*;
 @Plugin(name = "org.apache.log4j.HTMLLayout", category = CATEGORY)
 public class HtmlLayoutBuilder extends AbstractBuilder implements LayoutBuilder {
 
-    private static final Logger LOGGER = StatusLogger.getLogger();
-
-    private static final String TITLE = "Title";
-    private static final String LOCATION_INFO = "LocationInfo";
+    private static final String TITLE_PARAM = "Title";
+    private static final String LOCATION_INFO_PARAM = "LocationInfo";
 
     public HtmlLayoutBuilder() {
     }
@@ -59,9 +56,9 @@ public class HtmlLayoutBuilder extends AbstractBuilder implements LayoutBuilder 
         final Holder<Boolean> locationInfo = new BooleanHolder();
         forEachElement(layoutElement.getElementsByTagName("param"), (currentElement) -> {
             if (currentElement.getTagName().equals(PARAM_TAG)) {
-                if (TITLE.equalsIgnoreCase(currentElement.getAttribute("name"))) {
+                if (TITLE_PARAM.equalsIgnoreCase(currentElement.getAttribute("name"))) {
                     title.set(currentElement.getAttribute("value"));
-                } else if (LOCATION_INFO.equalsIgnoreCase(currentElement.getAttribute("name"))) {
+                } else if (LOCATION_INFO_PARAM.equalsIgnoreCase(currentElement.getAttribute("name"))) {
                     locationInfo.set(Boolean.parseBoolean(currentElement.getAttribute("value")));
                 }
             }
@@ -71,8 +68,8 @@ public class HtmlLayoutBuilder extends AbstractBuilder implements LayoutBuilder 
 
     @Override
     public Layout parseLayout(PropertiesConfiguration config) {
-        String title = getProperty(TITLE);
-        boolean locationInfo = getBooleanProperty(LOCATION_INFO);
+        String title = getProperty(TITLE_PARAM);
+        boolean locationInfo = getBooleanProperty(LOCATION_INFO_PARAM);
         return createLayout(title, locationInfo);
     }
 
