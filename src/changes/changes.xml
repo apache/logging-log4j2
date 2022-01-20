@@ -275,6 +275,9 @@
       <action dev="ggregory" type="fix" due-to="Gary Gregory">
         Log4j 1.2 bridge now logs a warning instead of throwing an NullPointerException when building a Syslog appender with a missing "SyslogHost" param.
       </action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory, ppkarwasz">
+        Log4j 1.2 bridge should allow property and XML attributes to start with either an upper-case or lower-case letter.
+      </action>
       <action dev="ggregory" type="fix" issue="LOG4J2-3330" due-to="Mircea Lemnaru, Gary Gregory">
         Configurator.setLevel not fetching the correct LoggerContext.
       </action>
