@@ -43,7 +43,8 @@ public class SyslogAppenderConfigurationTest {
         final SocketAppender socketAppender = (SocketAppender) appender;
         @SuppressWarnings("resource")
         final AbstractSocketManager manager = socketAppender.getManager();
-        assertTrue(manager.getName().startsWith(expected + ":"));
+        final String prefix = expected + ":";
+        assertTrue(manager.getName().startsWith(prefix), () -> String.format("'%s' does not start with '%s'", manager.getName(), prefix));
     }
 
     private void checkProtocolPropertiesConfig(final Protocol expected, final String xmlPath) throws IOException {
