@@ -20,6 +20,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
@@ -28,15 +31,31 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.bridge.AppenderAdapter;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.xml.XmlConfigurationFactory;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.junit.Test;
 
 /**
  * Test configuration from XML.
  */
-public class XmlConfigurationTest {
+public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
+
+    private static final String SUFFIX = ".xml";
+
+    @Override
+    Configuration getConfiguration(String configResourcePrefix) throws URISyntaxException, IOException {
+        final String configResource = configResourcePrefix + SUFFIX;
+        final InputStream inputStream = ClassLoader.getSystemResourceAsStream(configResource);
+        final ConfigurationSource source = new ConfigurationSource(inputStream);
+        final LoggerContext context = LoggerContext.getContext(false);
+        final Configuration configuration = new XmlConfigurationFactory().getConfiguration(context, source);
+        assertNotNull("No configuration created", configuration);
+        configuration.initialize();
+        return configuration;
+    }
 
     @Test
     public void testListAppender() throws Exception {
@@ -73,6 +92,12 @@ public class XmlConfigurationTest {
         file = new File("target/temp.A2");
         assertTrue("File A2 was not created", file.exists());
         assertTrue("File A2 is empty", file.length() > 0);
+    }
+
+    @Override
+    @Test
+    public void testConsoleCapitalization() throws Exception {
+        super.testConsoleCapitalization();
     }
 
 }
