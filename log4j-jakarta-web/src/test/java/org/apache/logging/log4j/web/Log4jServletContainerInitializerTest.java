@@ -18,9 +18,13 @@ package org.apache.logging.log4j.web;
 
 import java.util.EnumSet;
 import java.util.EventListener;
+import java.util.ServiceLoader;
+import java.util.stream.StreamSupport;
+
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterRegistration;
+import jakarta.servlet.ServletContainerInitializer;
 import jakarta.servlet.ServletContext;
 
 import org.apache.logging.log4j.util.Strings;
@@ -180,5 +184,13 @@ public class Log4jServletContainerInitializerTest {
         then(initializer).should().start();
         assertNotNull(filterCaptor.getValue(), "The filter should not be null.");
         assertSame(Log4jServletFilter.class, filterCaptor.getValue(), "The filter is not correct.");
+    }
+
+    @Test
+    public void testServiceIsDetected() {
+        ServiceLoader<ServletContainerInitializer> loader = ServiceLoader.load(ServletContainerInitializer.class);
+        final boolean found = StreamSupport.stream(loader.spliterator(), false)
+                                           .anyMatch(s -> s instanceof Log4jServletContainerInitializer);
+        assertTrue(found, "ServletContainerInitializer not found.");
     }
 }
