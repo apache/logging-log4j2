@@ -233,13 +233,13 @@ public class SocketAppenderReconnectTest {
      */
     private static final class LineReadingTcpServer implements AutoCloseable {
 
-        private volatile boolean running = false;
+        private volatile boolean running;
 
-        private ServerSocket serverSocket = null;
+        private ServerSocket serverSocket;
 
-        private Socket clientSocket = null;
+        private Socket clientSocket;
 
-        private Thread readerThread = null;
+        private Thread readerThread;
 
         private final BlockingQueue<String> lines = new LinkedBlockingQueue<>();
 
