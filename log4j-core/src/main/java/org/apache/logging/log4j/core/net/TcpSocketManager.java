@@ -284,7 +284,7 @@ public class TcpSocketManager extends AbstractSocketManager {
         }
 
         void reconnect() throws IOException {
-            final List<InetSocketAddress> socketAddresses = FACTORY.resolver.resolveHost(host, port);
+            final List<InetSocketAddress> socketAddresses = TcpSocketManagerFactory.RESOLVER.resolveHost(host, port);
             if (socketAddresses.size() == 1) {
                 LOGGER.debug("Reconnecting " + socketAddresses.get(0));
                 connect(socketAddresses.get(0));
@@ -399,7 +399,7 @@ public class TcpSocketManager extends AbstractSocketManager {
     protected static class TcpSocketManagerFactory<M extends TcpSocketManager, T extends FactoryData>
             implements ManagerFactory<M, T> {
 
-        static HostResolver resolver = new HostResolver();
+        static volatile HostResolver RESOLVER = HostResolver.INSTANCE;
 
         @SuppressWarnings("resource")
         @Override
@@ -437,7 +437,7 @@ public class TcpSocketManager extends AbstractSocketManager {
         }
 
         Socket createSocket(final T data) throws IOException {
-            final List<InetSocketAddress> socketAddresses = resolver.resolveHost(data.host, data.port);
+            final List<InetSocketAddress> socketAddresses = RESOLVER.resolveHost(data.host, data.port);
             IOException ioe = null;
             for (final InetSocketAddress socketAddress : socketAddresses) {
                 try {
@@ -475,11 +475,16 @@ public class TcpSocketManager extends AbstractSocketManager {
      * This method is only for unit testing. It is not Thread-safe.
      * @param resolver the HostResolver.
      */
-    public static void setHostResolver(final HostResolver resolver) {
-        TcpSocketManagerFactory.resolver = resolver;
+    public static void setHostResolver(HostResolver resolver) {
+        TcpSocketManagerFactory.RESOLVER = resolver;
     }
 
     public static class HostResolver {
+        
+        /**
+         * Singleton instance.
+         */
+        public static final HostResolver INSTANCE = new HostResolver();
 
         public List<InetSocketAddress> resolveHost(final String host, final int port) throws UnknownHostException {
             final InetAddress[] addresses = InetAddress.getAllByName(host);
