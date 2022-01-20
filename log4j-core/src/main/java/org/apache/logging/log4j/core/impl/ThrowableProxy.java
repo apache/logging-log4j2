@@ -49,8 +49,6 @@ import org.apache.logging.log4j.util.Strings;
  */
 public class ThrowableProxy implements Serializable {
 
-    static final ThrowableProxy[] EMPTY_ARRAY = {};
-
     private static final char EOL = '\n';
 
     private static final String EOL_STR = String.valueOf(EOL);
@@ -72,6 +70,8 @@ public class ThrowableProxy implements Serializable {
     private final ThrowableProxy[] suppressedProxies;
 
     private final transient Throwable throwable;
+
+    static final ThrowableProxy[] EMPTY_ARRAY = {};
 
     /**
      * For JSON and XML IO via Jackson.

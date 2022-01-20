@@ -38,7 +38,6 @@ import de.flapdoodle.embed.mongo.config.MongodConfig;
 import de.flapdoodle.embed.mongo.config.Net;
 import de.flapdoodle.embed.mongo.config.Timeout;
 import de.flapdoodle.embed.mongo.distribution.Version;
-import de.flapdoodle.embed.process.config.io.ProcessOutput;
 import de.flapdoodle.embed.process.runtime.Network;
 
 /**
@@ -73,7 +72,8 @@ public class MongoDb4TestRule implements TestRule {
             return MongodStarter.getInstance(
                     Defaults
                         .runtimeConfigFor(Command.MongoD, logger)
-                        .processOutput(ProcessOutput.getDefaultInstanceSilent()).build());
+                        //.processOutput(ProcessOutput.builder().build())
+                        .build());
             // @formatter:on
         case CONSOLE:
             return MongodStarter.getDefaultInstance();

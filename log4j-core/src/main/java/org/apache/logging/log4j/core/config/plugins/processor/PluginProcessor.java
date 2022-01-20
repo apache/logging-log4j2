@@ -52,6 +52,8 @@ public class PluginProcessor extends AbstractProcessor {
 
     // TODO: this could be made more abstract to allow for compile-time and run-time plugin processing
 
+    private static final Element[] EMPTY_ELEMENT_ARRAY = {};
+
     /**
      * The location of the plugin cache data file. This file is written to by this processor, and read from by
      * {@link org.apache.logging.log4j.core.config.plugins.util.PluginManager}.
@@ -77,7 +79,7 @@ public class PluginProcessor extends AbstractProcessor {
                 return false;
             }
             collectPlugins(elements);
-            writeCacheFile(elements.toArray(new Element[elements.size()]));
+            writeCacheFile(elements.toArray(EMPTY_ELEMENT_ARRAY));
             messager.printMessage(Kind.NOTE, "Annotations processed");
             return true;
         } catch (final Exception ex) {

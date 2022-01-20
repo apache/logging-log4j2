@@ -25,6 +25,6 @@ import org.apache.logging.log4j.spi.Provider;
  */
 public class JULProvider extends Provider {
     public JULProvider() {
-        super(15, "2.6.0", JULLoggerContextFactory.class, null);
+        super(20, "2.6.0", JULLoggerContextFactory.class, null);
     }
 }

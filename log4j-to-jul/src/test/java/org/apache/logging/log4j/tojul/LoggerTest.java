@@ -81,8 +81,8 @@ public class LoggerTest {
         assertThat(log1.getMessage()).isEqualTo("hello, world");
         assertThat(log1.getParameters()).isNull();
         assertThat(log1.getThrown()).isNull();
-        assertThat(log1.getSourceClassName()).isNull();
-        assertThat(log1.getSourceMethodName()).isNull();
+        assertThat(log1.getSourceClassName()).isEqualTo(getClass().getName());
+        assertThat(log1.getSourceMethodName()).isEqualTo("infoAtInfo");
     }
 
     @Test public void infoAtInfoWithParameters() {
@@ -200,5 +200,50 @@ public class LoggerTest {
         CustomLevel(String name, int value) {
             super(name, value);
         }
+    }
+
+    /**
+     * Test that the {@link LogRecord#getSourceClassName()}, which we already tested above in infoAtInfo()
+     * also works as expected if the logging happened in a class that we have called (indirect), not in the test method itself.
+     */
+    @Test public void indirectSource() {
+        java.util.logging.Logger.getLogger(Another.class.getName()).setLevel(Level.INFO);
+        new Another(handler);
+        List<LogRecord> logs = handler.getStoredLogRecords();
+        assertThat(logs).hasSize(1);
+        LogRecord log1 = logs.get(0);
+        assertThat(log1.getSourceClassName()).isEqualTo(Another.class.getName());
+        assertThat(log1.getSourceMethodName()).isEqualTo("<init>");
+    }
+
+    static class Another {
+        org.apache.logging.log4j.Logger anotherLog4jLogger = LogManager.getLogger(getClass());
+        java.util.logging.Logger anotherJULLogger = java.util.logging.Logger.getLogger(getClass().getName());
+        Another(TestLogHandler handler) {
+            anotherJULLogger.addHandler(handler);
+            anotherLog4jLogger.info("hello, another world");
+        }
+    }
+
+    @Test public void placeholdersInFormat() {
+        julLogger.setLevel(Level.INFO);
+        log4jLogger.info("hello, {0} {}", "world");
+
+        List<LogRecord> logs = handler.getStoredLogRecords();
+        assertThat(logs).hasSize(1);
+        LogRecord log1 = logs.get(0);
+        String formattedMessage = new java.util.logging.SimpleFormatter().formatMessage(log1);
+        assertThat(formattedMessage).isEqualTo("hello, {0} world");
+    }
+
+    @Test public void placeholdersInFormattedMessage() {
+        julLogger.setLevel(Level.INFO);
+        log4jLogger.info("hello, {}", "{0} world");
+
+        List<LogRecord> logs = handler.getStoredLogRecords();
+        assertThat(logs).hasSize(1);
+        LogRecord log1 = logs.get(0);
+        String formattedMessage = new java.util.logging.SimpleFormatter().formatMessage(log1);
+        assertThat(formattedMessage).isEqualTo("hello, {0} world");
     }
 }

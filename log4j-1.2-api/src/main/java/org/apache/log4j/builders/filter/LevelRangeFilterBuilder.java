@@ -17,8 +17,6 @@
 package org.apache.log4j.builders.filter;
 
 import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.xml.XmlConfiguration.NAME_ATTR;
-import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
 import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 
 import java.util.Properties;
@@ -62,15 +60,15 @@ public class LevelRangeFilterBuilder extends AbstractBuilder implements FilterBu
         final AtomicBoolean acceptOnMatch = new AtomicBoolean();
         forEachElement(filterElement.getElementsByTagName("param"), currentElement -> {
             if (currentElement.getTagName().equals("param")) {
-                switch (currentElement.getAttribute(NAME_ATTR)) {
+                switch (getNameAttribute(currentElement)) {
                     case LEVEL_MAX:
-                        levelMax.set(currentElement.getAttribute(VALUE_ATTR));
+                        levelMax.set(getValueAttribute(currentElement));
                         break;
                     case LEVEL_MIN:
-                        levelMax.set(currentElement.getAttribute(VALUE_ATTR));
+                        levelMax.set(getValueAttribute(currentElement));
                         break;
                     case ACCEPT_ON_MATCH:
-                        acceptOnMatch.set(Boolean.parseBoolean(currentElement.getAttribute(VALUE_ATTR)));
+                        acceptOnMatch.set(Boolean.parseBoolean(getValueAttribute(currentElement)));
                         break;
                 }
             }

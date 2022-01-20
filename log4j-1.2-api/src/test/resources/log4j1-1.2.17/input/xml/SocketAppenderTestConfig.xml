@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+-->
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration debug="true" 
+xmlns:log4j='http://jakarta.apache.org/log4j/'>
+
+
+        <!-- primary appender -->
+        <appender name="remote" class="org.apache.log4j.net.SocketAppender">
+
+                <!-- fallback on error -->
+                <errorHandler 
+class="org.apache.log4j.varia.FallbackErrorHandler">
+                        <logger-ref ref="org.apache.log4j.net.SocketAppenderTest"/>
+                        <appender-ref ref="lastOnly"/>
+                </errorHandler>
+                
+                <param name="RemoteHost" value="localhost"/>
+                <param name="Port" value="8189"/>
+                <param name="ReconnectionDelay" value="0"/>
+        </appender>
+
+        
+        <!-- secondary appender -->
+        <appender name="lastOnly" 
+class="org.apache.log4j.net.SocketAppenderTest$LastOnlyAppender"></appender>
+
+        
+        <!-- logger -->
+        <logger name="SocketAppenderTest">
+                <appender-ref ref="remote"/>
+        </logger>
+
+        
+        <!-- logger
+             dummy, so i can have early access to lastOnly appender instance
+        -->
+        <logger name="org.apache.log4j.net.SocketAppenderTestDummy">
+                <appender-ref ref="lastOnly"/>
+        </logger>
+
+        
+</log4j:configuration>
+

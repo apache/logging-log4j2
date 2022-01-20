@@ -14,19 +14,24 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.appender.db.jdbc;
 
-import org.apache.commons.lang3.SystemUtils;
+package org.apache.logging.log4j.core.lookup;
+
+import static org.junit.Assert.assertEquals;
+
+import java.util.HashMap;
+
+import org.junit.jupiter.api.Test;
 
 /**
- * Constants for testing H2.
+ * Tests {@link PropertiesLookup}.
  */
-public class H2TestConstants {
+public class PropertiesLookupTest {
 
-	public static final String JDBC_DRIVER_CLASS_NAME = "org.h2.Driver";
-	public static final String CONNECTION_STRING = "jdbc:h2:" + SystemUtils.JAVA_IO_TMPDIR
-			+ "/h2/h2_test0;TRACE_LEVEL_SYSTEM_OUT=0";
-	public static final char[] USER = null;
-	public static final char[] PASSWORD = null;
-
+    @Test
+    public void testGetProperties() {
+        final HashMap<String, String> properties = new HashMap<>();
+        properties.put("A", "1");
+        assertEquals(properties, new PropertiesLookup(properties).getProperties());
+    }
 }

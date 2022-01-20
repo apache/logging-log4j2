@@ -43,6 +43,11 @@ public interface Appender extends LifeCycle {
      * @since 2.6
      */
     String ELEMENT_TYPE = "appender";
+    
+    /**
+     * Empty array.
+     */
+    Appender[] EMPTY_ARRAY = {};
 
     /**
      * Logs a LogEvent using whatever logic this Appender wishes to use. It is typically recommended to use a

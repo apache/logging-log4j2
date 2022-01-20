@@ -16,6 +16,9 @@
  */
 package org.apache.log4j.builders;
 
+import static org.apache.log4j.xml.XmlConfiguration.NAME_ATTR;
+import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,9 +34,8 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
-import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
-import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.w3c.dom.Element;
 
 /**
  * Base class for Log4j 1 component builders.
@@ -51,12 +53,10 @@ public abstract class AbstractBuilder {
 
     private final String prefix;
     private final Properties properties;
-    private final StrSubstitutor strSubstitutor;
 
     public AbstractBuilder() {
         this.prefix = null;
         this.properties = new Properties();
-        this.strSubstitutor = new ConfigurationStrSubstitutor(System.getProperties());
     }
 
     public AbstractBuilder(String prefix, Properties props) {
@@ -68,7 +68,6 @@ public abstract class AbstractBuilder {
         // normalize keys to lower case for case-insensitive access.
         props.forEach((k, v) -> map.put(toLowerCase(k.toString()), v.toString()));
         props.entrySet().forEach(e -> this.properties.put(toLowerCase(e.getKey().toString()), e.getValue()));
-        this.strSubstitutor = new ConfigurationStrSubstitutor(map);
     }
 
     public String getProperty(String key) {
@@ -79,7 +78,16 @@ public abstract class AbstractBuilder {
         String fullKey = prefix + key;
         String value = properties.getProperty(fullKey);
         value = value != null ? value : properties.getProperty(toLowerCase(fullKey), defaultValue);
-        return strSubstitutor.replace(value);
+        value = value == null ? defaultValue : substVars(value);
+        return value == null ? defaultValue : value;
+    }
+
+    protected String getNameAttribute(Element element) {
+        return element.getAttribute(NAME_ATTR);
+    }
+
+    protected String getValueAttribute(Element element) {
+        return substVars(element.getAttribute(VALUE_ATTR));
     }
 
     public boolean getBooleanProperty(String key) {
@@ -119,9 +127,9 @@ public abstract class AbstractBuilder {
                 } else {
                     filterList.add(new FilterAdapter(f));
                 }
-                f = f.next;
+                f = f.getNext();
             }
-            return CompositeFilter.createFilters(filterList.toArray(new org.apache.logging.log4j.core.Filter[0]));
+            return CompositeFilter.createFilters(filterList.toArray(org.apache.logging.log4j.core.Filter.EMPTY_ARRAY));
         } else if (level != null) {
             return ThresholdFilter.createFilter(OptionConverter.convertLevel(level, Level.TRACE),
                     org.apache.logging.log4j.core.Filter.Result.NEUTRAL,
@@ -133,6 +141,10 @@ public abstract class AbstractBuilder {
             return new FilterAdapter(filter);
         }
         return null;
+    }
+
+    protected String substVars(String value) {
+        return OptionConverter.substVars(value, properties);
     }
 
     String toLowerCase(final String value) {

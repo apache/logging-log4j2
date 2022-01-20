@@ -21,6 +21,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -36,19 +37,26 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 
-public class JdbcAppenderColumnMappingLiteralTest {
+public class JdbcAppenderColumnMappingLiteralTest extends AbstractH2Test {
 
 	@Rule
 	public final RuleChain rules;
+
 	private final JdbcRule jdbcRule;
 
 	public JdbcAppenderColumnMappingLiteralTest() {
 		this(new JdbcRule(JdbcH2TestHelper.TEST_CONFIGURATION_SOURCE_TMPDIR,
-				"CREATE TABLE dsMappingLogEntry (id INTEGER IDENTITY, level VARCHAR(10), logger VARCHAR(255), message VARCHAR(1024), exception CLOB)",
-				"DROP TABLE dsMappingLogEntry"));
+				"CREATE TABLE dsMappingLogEntry (id INTEGER, level VARCHAR(10), logger VARCHAR(255), message VARCHAR(1024), exception CLOB)",
+				"DROP TABLE IF EXISTS dsMappingLogEntry"));
 	}
 
 	protected JdbcAppenderColumnMappingLiteralTest(final JdbcRule jdbcRule) {
+        try {
+            JdbcH2TestHelper.deleteDir();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 		this.rules = RuleChainFactory.create(jdbcRule, new LoggerContextRule(
 				"org/apache/logging/log4j/core/appender/db/jdbc/log4j2-dm-column-mapping-literal.xml"));
 		this.jdbcRule = jdbcRule;

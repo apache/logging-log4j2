@@ -23,6 +23,7 @@ import java.util.Map;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.message.MapMessage;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * A map-based lookup.
@@ -102,7 +103,7 @@ public class MapLookup implements StrLookup {
             return null;
         }
         final int size = args.size();
-        return initMap(args.toArray(new String[size]), newMap(size));
+        return initMap(args.toArray(Strings.EMPTY_ARRAY), newMap(size));
     }
 
     static Map<String, String> toMap(final String[] args) {

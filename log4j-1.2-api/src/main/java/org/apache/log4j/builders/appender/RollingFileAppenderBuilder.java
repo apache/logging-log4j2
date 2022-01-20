@@ -20,9 +20,7 @@ import static org.apache.log4j.builders.BuilderManager.CATEGORY;
 import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
 import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
 import static org.apache.log4j.xml.XmlConfiguration.LAYOUT_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.NAME_ATTR;
 import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
 import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 
 import java.util.Properties;
@@ -64,13 +62,13 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
     public RollingFileAppenderBuilder() {
     }
 
-    public RollingFileAppenderBuilder(String prefix, Properties props) {
-        super(prefix, props);
+    public RollingFileAppenderBuilder(String prefix, Properties properties) {
+        super(prefix, properties);
     }
 
     @Override
     public Appender parseAppender(Element appenderElement, XmlConfiguration config) {
-        String name = appenderElement.getAttribute(NAME_ATTR);
+        String name = getNameAttribute(appenderElement);
         AtomicReference<Layout> layout = new AtomicReference<>();
         AtomicReference<Filter> filter = new AtomicReference<>();
         AtomicReference<String> fileName = new AtomicReference<>();
@@ -90,12 +88,12 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
                     filter.set(config.parseFilters(currentElement));
                     break;
                 case PARAM_TAG: {
-                    switch (currentElement.getAttribute(NAME_ATTR)) {
+                    switch (getNameAttribute(currentElement)) {
                         case FILE_PARAM:
-                            fileName.set(currentElement.getAttribute(VALUE_ATTR));
+                            fileName.set(getValueAttribute(currentElement));
                             break;
                         case APPEND_PARAM: {
-                            String bool = currentElement.getAttribute(VALUE_ATTR);
+                            String bool = getValueAttribute(currentElement);
                             if (bool != null) {
                                 append.set(Boolean.parseBoolean(bool));
                             } else {
@@ -104,7 +102,7 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
                             break;
                         }
                         case BUFFERED_IO_PARAM: {
-                            String bool = currentElement.getAttribute(VALUE_ATTR);
+                            String bool = getValueAttribute(currentElement);
                             if (bool != null) {
                                 bufferedIo.set(Boolean.parseBoolean(bool));
                             } else {
@@ -113,7 +111,7 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
                             break;
                         }
                         case BUFFER_SIZE_PARAM: {
-                            String size = currentElement.getAttribute(VALUE_ATTR);
+                            String size = getValueAttribute(currentElement);
                             if (size != null) {
                                 bufferSize.set(Integer.parseInt(size));
                             } else {
@@ -122,7 +120,7 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
                             break;
                         }
                         case MAX_BACKUP_INDEX: {
-                            String size = currentElement.getAttribute(VALUE_ATTR);
+                            String size = getValueAttribute(currentElement);
                             if (size != null) {
                                 maxBackups.set(size);
                             } else {
@@ -131,7 +129,7 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
                             break;
                         }
                         case MAX_SIZE_PARAM: {
-                            String size = currentElement.getAttribute(VALUE_ATTR);
+                            String size = getValueAttribute(currentElement);
                             if (size != null) {
                                 maxSize.set(size);
                             } else {
@@ -140,7 +138,7 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
                             break;
                         }
                         case THRESHOLD_PARAM: {
-                            String value = currentElement.getAttribute(VALUE_ATTR);
+                            String value = getValueAttribute(currentElement);
                             if (value == null) {
                                 LOGGER.warn("No value supplied for Threshold parameter, ignoring.");
                             } else {
@@ -156,7 +154,6 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
         return createAppender(name, config, layout.get(), filter.get(), bufferedIo.get(), immediateFlush.get(),
                 fileName.get(), level.get(), maxSize.get(), maxBackups.get());
     }
-
 
     @Override
     public Appender parseAppender(final String name, final String appenderPrefix, final String layoutPrefix,

@@ -16,17 +16,31 @@
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
+import java.io.IOException;
+
 import org.apache.logging.log4j.junit.JdbcRule;
+import org.junit.Before;
 
 /**
  *
  */
 public class JdbcAppenderH2DataSourceTest extends AbstractJdbcAppenderDataSourceTest {
+
+    @Before
+    public void afterEachDeleteDir() throws IOException {
+        JdbcH2TestHelper.deleteDir();
+    }
+
+    @Before
+    public void beforeEachDeleteDir() throws IOException {
+        JdbcH2TestHelper.deleteDir();
+    }
+
     public JdbcAppenderH2DataSourceTest() {
         super(new JdbcRule(JdbcH2TestHelper.TEST_CONFIGURATION_SOURCE_MEM,
                 "CREATE TABLE dsLogEntry ("
-                        + "id INTEGER IDENTITY, eventDate DATETIME, literalColumn VARCHAR(255), level NVARCHAR(10), "
+                        + "id INTEGER, eventDate DATETIME, literalColumn VARCHAR(255), level NVARCHAR(10), "
                         + "logger NVARCHAR(255), message VARCHAR(1024), exception NCLOB, anotherDate TIMESTAMP" + ")",
-                "DROP TABLE dsLogEntry"));
+                "DROP TABLE IF EXISTS dsLogEntry"));
     }
 }

@@ -55,7 +55,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Tests reconnection support of {@link org.apache.logging.log4j.core.appender.SocketAppender}.
  */
-class SocketAppenderReconnectTest {
+public class SocketAppenderReconnectTest {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -201,7 +201,7 @@ class SocketAppenderReconnectTest {
     private static void awaitUntilSucceeds(final Runnable runnable) {
         // These figures are collected via trial-and-error; nothing scientific to look for here.
         final long pollIntervalMillis = 1_000L;
-        final long timeoutSeconds = 15L;
+        final long timeoutSeconds = 120L;
         await()
                 .pollInterval(pollIntervalMillis, TimeUnit.MILLISECONDS)
                 .atMost(timeoutSeconds, TimeUnit.SECONDS)

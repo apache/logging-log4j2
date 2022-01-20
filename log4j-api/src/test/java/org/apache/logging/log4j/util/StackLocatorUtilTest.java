@@ -73,7 +73,7 @@ public class StackLocatorUtilTest {
         final Stack<Class<?>> reversed = new Stack<>();
         reversed.ensureCapacity(classes.size());
         while (!classes.isEmpty()) {
-            reversed.push(classes.pop());
+            reversed.push(classes.removeLast());
         }
         while (reversed.peek() != StackLocatorUtil.class) {
             reversed.pop();

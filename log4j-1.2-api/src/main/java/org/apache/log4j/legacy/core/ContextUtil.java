@@ -19,16 +19,32 @@ package org.apache.log4j.legacy.core;
 import org.apache.logging.log4j.spi.LoggerContext;
 
 /**
- * Implements LoggerContext methods specific to log4j-core.
+ * Delegates to {@code LoggerContext} methods implemented by {@code log4j-core} if appropriate.
  */
 public final class ContextUtil {
 
-    private ContextUtil() {
+    /**
+     * Delegates to {@link org.apache.logging.log4j.core.LoggerContext#reconfigure()} if appropriate.
+     * 
+     * @param loggerContext The target logger context.
+     */
+    public static void reconfigure(LoggerContext loggerContext) {
+        if (loggerContext instanceof org.apache.logging.log4j.core.LoggerContext) {
+            ((org.apache.logging.log4j.core.LoggerContext) loggerContext).reconfigure();
+        }
     }
 
-    public static void reconfigure(LoggerContext ctx) {
-        if (ctx instanceof org.apache.logging.log4j.core.LoggerContext) {
-            ((org.apache.logging.log4j.core.LoggerContext) ctx).reconfigure();
+    /**
+     * Delegates to {@link org.apache.logging.log4j.core.LoggerContext#close()} if appropriate.
+     * 
+     * @param loggerContext The target logger context.
+     */
+    public static void shutdown(LoggerContext loggerContext) {
+        if (loggerContext instanceof org.apache.logging.log4j.core.LoggerContext) {
+            ((org.apache.logging.log4j.core.LoggerContext) loggerContext).close();
         }
+    }
+
+    private ContextUtil() {
     }
 }

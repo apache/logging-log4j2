@@ -24,18 +24,22 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.SystemUtils;
 import org.apache.log4j.ListAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.bridge.AppenderAdapter;
 import org.apache.log4j.bridge.FilterAdapter;
+import org.apache.log4j.bridge.FilterWrapper;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
+import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.filter.Filterable;
+import org.apache.logging.log4j.core.filter.LevelRangeFilter;
 import org.junit.Test;
 
 /**
@@ -84,6 +88,24 @@ public class PropertiesConfigurationTest {
             assertNotNull(filter);
             assertTrue(filter.getFilter() instanceof NeutralFilterFixture);
         }
+    }
+    
+    @Test
+    public void testConsoleAppenderLevelRangeFilter() throws Exception {
+        PluginManager.addPackage("org.apache.log4j.builders.filter");
+        try (LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/LOG4J2-3326.properties")) {
+            final Configuration configuration = loggerContext.getConfiguration();
+            assertNotNull(configuration);
+            final Appender appender = configuration.getAppender("CUSTOM");
+            assertNotNull(appender);
+            final Filterable filterable = (Filterable) appender;
+            final CompositeFilter filter = (CompositeFilter) filterable.getFilter();
+            final org.apache.logging.log4j.core.Filter[] filters = filter.getFiltersArray();
+            final LevelRangeFilter customFilterReal = (LevelRangeFilter) ((FilterWrapper) ((FilterAdapter) filters[0]).getFilter()).getFilter();
+            assertEquals(Level.ALL, customFilterReal.getMinLevel());
+            final LevelRangeFilter defaultFilter = (LevelRangeFilter) ((FilterWrapper) ((FilterAdapter) filters[1]).getFilter()).getFilter();
+            assertEquals(Level.TRACE, defaultFilter.getMinLevel());
+      }
     }
 
     @Test
@@ -136,7 +158,7 @@ public class PropertiesConfigurationTest {
             final String name = "FILE_APPENDER";
             final Appender appender = configuration.getAppender(name);
             assertNotNull(name, appender);
-            assertTrue(appender instanceof FileAppender);
+            assertTrue(appender.getClass().getName(), appender instanceof FileAppender);
             final FileAppender fileAppender = (FileAppender) appender;
             // Two slashes because that's how the config file is setup.
             assertEquals(testPathLocation + "/hadoop.log", fileAppender.getFileName());

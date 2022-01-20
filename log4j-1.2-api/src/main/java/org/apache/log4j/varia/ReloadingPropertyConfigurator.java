@@ -15,17 +15,33 @@
  * limitations under the License.
  */
 
-package org.apache.log4j;
+package org.apache.log4j.varia;
 
-import org.apache.log4j.spi.LoggerFactory;
+import java.io.InputStream;
+import java.net.URL;
+
+import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.spi.LoggerRepository;
 
-/**
- * A LoggerRepository that accounts for the caller's class loader.
- */
-interface LoggerRepository2 extends LoggerRepository {
+public class ReloadingPropertyConfigurator implements Configurator {
 
-    Logger getLogger(String name, ClassLoader classLoader);
+    PropertyConfigurator delegate = new PropertyConfigurator();
 
-    Logger getLogger(String name, LoggerFactory factory, ClassLoader classLoader);
+    public ReloadingPropertyConfigurator() {
+    }
+
+    /**
+     * @since 1.2.17
+     */
+    @Override
+    public void doConfigure(final InputStream inputStream, final LoggerRepository repository) {
+        // noop
+    }
+
+    @Override
+    public void doConfigure(final URL url, final LoggerRepository repository) {
+        // noop
+    }
+
 }

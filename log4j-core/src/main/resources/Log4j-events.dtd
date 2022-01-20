@@ -53,6 +53,7 @@
 >
 <!ELEMENT %log4j..Message; ANY>
 <!ELEMENT %log4j..NDC; ANY>
+<!ELEMENT %log4j..Marker; ANY>
 <!ELEMENT %log4j..Throwable; ANY>
 <!ELEMENT %log4j..LocationInfo; EMPTY>
 <!ATTLIST %log4j..LocationInfo;

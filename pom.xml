@@ -127,10 +127,14 @@
       <id>ckozak</id>
       <name>Carter Kozak</name>
       <email>ckozak@apache.org</email>
+      <url>https://github.com/carterkozak</url>
       <roles>
         <role>PMC Member</role>
       </roles>
       <timezone>America/New York</timezone>
+      <properties>
+        <picUrl>https://www.gravatar.com/avatar/e057b8f2538a0258f451d9efc8d2f6fa.jpg</picUrl>
+      </properties>
     </developer>
     <developer>
       <id>vy</id>
@@ -157,7 +161,20 @@
           <picUrl>https://mir-s3-cdn-cf.behance.net/user/138/403dcf1521581.54d67f8fb01f7.jpg</picUrl>
         </properties>
       </contributor>
-   </contributors>
+      <contributor>
+        <name>Michael Vorburger.ch</name>
+        <email>vorburger@apache.org</email>
+        <url>http://www.vorburger.ch</url>
+        <roles>
+          <role>https://github.com/apache/logging-log4j2/commits?author=vorburger</role>
+          <role>JULer</role>
+        </roles>
+        <timezone>Europe/Zurich</timezone>
+        <properties>
+          <picUrl>http://www.vorburger.ch/michael_vorburger_portrait_in_bay_of_roses_spain_with_bad_lighting.jpg</picUrl>
+        </properties>
+      </contributor>
+  </contributors>
   <mailingLists>
     <mailingList>
       <name>log4j-user</name>
@@ -203,20 +220,20 @@
     <slf4jVersion>1.7.25</slf4jVersion>
     <logbackVersion>1.2.3</logbackVersion>
     <jackson1Version>1.9.13</jackson1Version>
-    <jackson2Version>2.12.4</jackson2Version>
+    <jackson2Version>2.13.1</jackson2Version>
     <spring-boot.version>2.5.7</spring-boot.version>
-    <springVersion>5.3.13</springVersion>
+    <springVersion>5.3.15</springVersion>
     <kubernetes-client.version>4.6.1</kubernetes-client.version>
     <flumeVersion>1.9.0</flumeVersion>
     <disruptorVersion>3.4.4</disruptorVersion>
     <conversantDisruptorVersion>1.2.15</conversantDisruptorVersion> <!-- Version 1.2.16 requires Java 9 -->
-    <elastic.version>7.6.2</elastic.version>
-    <mongodb3.version>3.12.7</mongodb3.version>
-    <mongodb4.version>4.2.2</mongodb4.version>
-    <!-- POM for jackson-dataformat-xml 2.12.4 depends on woodstox-core 6.2.4 -->
-    <woodstox.version>6.2.6</woodstox.version>
-    <groovy.version>3.0.8</groovy.version>
-    <compiler.plugin.version>3.8.1</compiler.plugin.version>
+    <elastic.version>7.16.3</elastic.version>
+    <mongodb3.version>3.12.10</mongodb3.version>
+    <mongodb4.version>4.4.1</mongodb4.version>
+    <!-- POM for jackson-dataformat-xml 2.13.1 depends on woodstox-core 6.2.7 -->
+    <woodstox.version>6.2.8</woodstox.version>
+    <groovy.version>3.0.9</groovy.version>
+    <compiler.plugin.version>3.9.0</compiler.plugin.version>
     <pmd.plugin.version>3.10.0</pmd.plugin.version>
     <changes.plugin.version>2.12.1</changes.plugin.version>
     <javadoc.plugin.version>3.3.1</javadoc.plugin.version>
@@ -249,7 +266,8 @@
     <maven.doap.skip>false</maven.doap.skip>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- See https://maven.apache.org/guides/mini/guide-reproducible-builds.html -->
-    <project.build.outputTimestamp>10</project.build.outputTimestamp>
+    <!-- 1641056400 = Jan 1 2022, instead of 1969, which shows up in Javadoc -->
+    <project.build.outputTimestamp>1641056400</project.build.outputTimestamp>
     <docLabel>Site Documentation</docLabel>
     <projectDir />
     <commonsLoggingVersion>1.2</commonsLoggingVersion>
@@ -261,9 +279,9 @@
     <minSeverity>info</minSeverity>
     <jctoolsVersion>1.2.1</jctoolsVersion>
     <junitVersion>4.13.2</junitVersion>
-    <junitJupiterVersion>5.7.2</junitJupiterVersion>
-    <mockitoVersion>3.11.2</mockitoVersion>
-    <xmlunitVersion>2.8.3</xmlunitVersion>
+    <junitJupiterVersion>5.8.2</junitJupiterVersion>
+    <mockitoVersion>4.2.0</mockitoVersion>
+    <xmlunitVersion>2.8.4</xmlunitVersion>
     <argLine>-Xms256m -Xmx1024m</argLine>
     <javaTargetVersion>1.8</javaTargetVersion>
     <module.name />
@@ -477,7 +495,7 @@
       <dependency>
         <groupId>org.fusesource.jansi</groupId>
         <artifactId>jansi</artifactId>
-        <version>2.3.4</version>
+        <version>2.4.0</version>
         <optional>true</optional>
       </dependency>
       <dependency>
@@ -712,6 +730,12 @@
         <version>${junitJupiterVersion}</version>
         <scope>test</scope>
       </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>${junitJupiterVersion}</version>
+        <scope>test</scope>
+      </dependency>
       <!-- JUnit 4 to 5 migration support -->
       <dependency>
         <groupId>org.junit.jupiter</groupId>
@@ -743,7 +767,7 @@
       <dependency>
         <groupId>org.assertj</groupId>
         <artifactId>assertj-core</artifactId>
-        <version>3.20.2</version>
+        <version>3.22.0</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -755,7 +779,7 @@
       <dependency>
         <groupId>org.awaitility</groupId>
         <artifactId>awaitility</artifactId>
-        <version>4.0.3</version>
+        <version>4.1.1</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -871,7 +895,7 @@
       <dependency>
         <groupId>net.javacrumbs.json-unit</groupId>
         <artifactId>json-unit</artifactId>
-        <version>2.27.0</version>
+        <version>2.28.0</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -959,7 +983,7 @@
         <!-- Testing MongoDB -->
         <groupId>de.flapdoodle.embed</groupId>
         <artifactId>de.flapdoodle.embed.mongo</artifactId>
-        <version>3.0.0</version>
+        <version>3.2.8</version>
         <scope>test</scope>
       </dependency>
       <!-- Testing LDAP -->
@@ -1084,7 +1108,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-          <version>3.0.1</version>
+          <version>3.2.1</version>
           <executions>
             <execution>
               <id>attach-sources</id>
@@ -1239,7 +1263,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
-        <version>1.12</version>
+        <version>3.3.0</version>
         <executions>
           <execution>
             <id>timestamp-property</id>

@@ -36,6 +36,8 @@ import java.util.Objects;
  */
 public final class LoaderUtil {
 
+    private static final ClassLoader[] EMPTY_CLASS_LOADER_ARRAY = {};
+
     /**
      * System property to set to ignore the thread context ClassLoader.
      *
@@ -115,7 +117,7 @@ public final class LoaderUtil {
 		if (systemClassLoader != null) {
             classLoaders.add(systemClassLoader);
         }
-        return classLoaders.toArray(new ClassLoader[classLoaders.size()]);
+        return classLoaders.toArray(EMPTY_CLASS_LOADER_ARRAY);
     }
 
     /**
@@ -173,7 +175,8 @@ public final class LoaderUtil {
 
     /**
      * Loads and instantiates a Class using the default constructor.
-     *
+     * 
+     * @param <T> the type of the class modeled by the {@code Class} object.
      * @param clazz The class.
      * @return new instance of the class.
      * @throws IllegalAccessException if the class can't be instantiated through a public constructor
@@ -199,13 +202,12 @@ public final class LoaderUtil {
      * @throws ClassNotFoundException if the class isn't available to the usual ClassLoaders
      * @throws IllegalAccessException if the class can't be instantiated through a public constructor
      * @throws InstantiationException if there was an exception whilst instantiating the class
-     * @throws NoSuchMethodException if there isn't a no-args constructor on the class
      * @throws InvocationTargetException if there was an exception whilst constructing the class
      * @since 2.1
      */
     @SuppressWarnings("unchecked")
     public static <T> T newInstanceOf(final String className) throws ClassNotFoundException, IllegalAccessException,
-            InstantiationException, NoSuchMethodException, InvocationTargetException {
+            InstantiationException, InvocationTargetException {
         return newInstanceOf((Class<T>) loadClass(className));
     }
 
@@ -219,13 +221,12 @@ public final class LoaderUtil {
      * @throws ClassNotFoundException if the class isn't available to the usual ClassLoaders
      * @throws IllegalAccessException if the class can't be instantiated through a public constructor
      * @throws InstantiationException if there was an exception whilst instantiating the class
-     * @throws NoSuchMethodException if there isn't a no-args constructor on the class
      * @throws InvocationTargetException if there was an exception whilst constructing the class
      * @throws ClassCastException if the constructed object isn't type compatible with {@code T}
      * @since 2.1
      */
     public static <T> T newCheckedInstanceOf(final String className, final Class<T> clazz)
-            throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException,
+            throws ClassNotFoundException, InvocationTargetException, InstantiationException,
             IllegalAccessException {
         return clazz.cast(newInstanceOf(className));
     }
@@ -240,13 +241,12 @@ public final class LoaderUtil {
      * @throws ClassNotFoundException    if the class isn't available to the usual ClassLoaders
      * @throws IllegalAccessException    if the class can't be instantiated through a public constructor
      * @throws InstantiationException    if there was an exception whilst instantiating the class
-     * @throws NoSuchMethodException     if there isn't a no-args constructor on the class
      * @throws InvocationTargetException if there was an exception whilst constructing the class
      * @throws ClassCastException        if the constructed object isn't type compatible with {@code T}
      * @since 2.5
      */
     public static <T> T newCheckedInstanceOfProperty(final String propertyName, final Class<T> clazz)
-        throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException,
+        throws ClassNotFoundException, InvocationTargetException, InstantiationException,
         IllegalAccessException {
         final String className = PropertiesUtil.getProperties().getStringProperty(propertyName);
         if (className == null) {

@@ -31,6 +31,9 @@
     -->
     <release version="2.17.2" date="20YY-MM-DD" description="GA Release 2.17.2">
       <!-- FIXES -->
+      <action issue="LOG4J2-3345" dev="ckozak">
+        log4j-jpl formats message parameters correctly using MessageFormat.
+      </action>
       <action issue="LOG4J2-3215" dev="vy" due-to="quapka">
         Replace usages of "compile" with "implementation" in the Gradle docs.
       </action>
@@ -115,17 +118,98 @@
       <action dev="ggregory" type="fix">
         Log4j 1.2 bridge implements LogManager.getCurrentLoggers() fully.
       </action>
+      <action dev="ggregory" type="fix" issue="LOG4J2-3326" due-to="Benjamin Röhl, Gary Gregory">
+        Log4j 1.2 bridge fixes parsing filters in properties configuration file #680.
+      </action>
+      <action dev="ggregory" type="fix" issue="LOG4J2-3326" due-to="Gary Gregory">
+        Log4j 1.2 bridge missing OptionConverter.instantiateByKey(Properties, String, Class, Object).
+      </action>
+      <action dev="ggregory" type="fix" issue="LOG4J2-3326" due-to="Gary Gregory">
+        Log4j 1.2 bridge class org.apache.log4j.spi.LoggingEvent missing constructors and public instance variable.
+      </action>
+      <action dev="ggregory" type="fix" issue="LOG4J2-3328" due-to="Gary Gregory">
+        Log4j 1.2 bridge does not support system properties in log4j.xml.
+      </action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">
+        Log4j 1.2 bridge now logs a warning instead of throwing an NullPointerException when building a Syslog appender with a missing "SyslogHost" param.
+      </action>
       <action dev="ggregory" type="fix">
         JndiManager reverts to 2.17.0 behavior: Read the system property for each call.
       </action>
+      <action dev="ggregory" type="fix" issue="LOG4J2-3330" due-to="Mircea Lemnaru, Gary Gregory">
+        Configurator.setLevel not fetching the correct LoggerContext.
+      </action>
+      <action dev="ggregory" type="fix">
+        Fix DTD error: Add missing ELEMENT for Marker.
+      </action>
       <!-- ADD -->
+      <action issue="LOG4J2-3303" dev="vy" type="add" due-to="ramananravi">
+        Add TB support to FileSize.
+      </action>
       <action issue="LOG4J2-3282" dev="ckozak" type="add" due-to="Michael Vorburger">
         Add the log4j-to-jul JDK Logging Bridge
       </action>
       <action dev="ggregory" type="add">
         Add org.apache.logging.log4j.core.appender.AsyncAppender.getAppenders() to more easily port from org.apache.log4j.AsyncAppender.getAllAppenders(). 
       </action>
+      <action issue="LOG4J2-3343" type="add" dev="mattsicker">
+        Add ability to use exclusion pattern filter on Map Resolver keys.
+      </action>
+      <action type="add" dev="ggregory" due-to="Gary Gregory">
+        Add Configurator.setLevel(Logger, Level) and setLevel(String, String).      
+      </action>
       <!-- UPDATES -->
+      <action dev="ggregory" type="udpate" due-to="Dependabot">
+        Bump mongodb3.version from 3.12.4 to 3.12.10 #605.
+      </action>
+      <action dev="ggregory" type="udpate" due-to="Dependabot">
+        Bump awaitility from 4.0.3 to 4.1.1 #663.
+      </action>
+      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+        Bump Mockito from 3.11.2 to 4.2.0.
+      </action>
+      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+        Bump Jackson from 2.12.4 to 2.13.1.
+      </action>
+      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+        Bump org.junit.jupiter:junit-* from 5.7.2 to 5.8.2.
+      </action>
+      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+        Bump org.springframework:spring-* from 5.3.13 to 5.3.15.
+      </action>
+      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+        Bump de.flapdoodle.embed:de.flapdoodle.embed.mongo from 3.0.0 to 3.2.6. Update tests for binary incompatibilities in APIs.
+      </action>
+      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+        Bump org.fusesource.jansi:jansi from 2.3.4 to 2.4.0.
+      </action>
+      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+        Bump net.javacrumbs.json-unit:json-unit from 2.27.0 to 2.28.0.
+      </action>
+      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+        Bump org.assertj:assertj-core from 3.20.2 to 3.22.0.
+      </action>
+      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+        Bump org.xmlunit:xmlunit-* from 2.8.3 to 2.8.4.
+      </action>
+      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+        Bump org.codehaus.groovy:groovy-* from 3.0.8 to 3.0.9.
+      </action>
+      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+        Bump org.mongodb:bson from 4.2.2 to 4.4.1.
+      </action>
+      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+        Bump org.mongodb:mongodb-driver-sync from 4.2.2 to 4.4.1.
+      </action>
+      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+        Bump de.flapdoodle.embed:de.flapdoodle.embed.mongo from 3.2.6 to 3.2.8.
+      </action>
+      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+        Bump Woodstox 6.2.6 to 6.2.8.
+      </action>
+      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+        Bump maven-compiler-plugin from 3.8.1 to 3.9.0.
+      </action>
 	</release>
     <release version="2.17.1" date="2021-12-27" description="GA Release 2.17.1">
       <!-- FIXES -->

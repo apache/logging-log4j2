@@ -37,7 +37,8 @@
                 <h4>Requirements</h4>
                 <p>
                     Log4j 2 Scala API is dependent on the Log4j 2 API, Scala runtime library and reflection.
-                    It currently supports Scala 2.10, 2.11 and 2.12. See <a href="../maven-artifacts.html#Scala_API">instructions</a>
+                    It currently supports Scala 2.10, 2.11, 2.12, 2.13. Scala 3 support has been recently added.
+                    See <a href="../maven-artifacts.html#Scala_API">instructions</a>
                     on including this in an SBT, Maven, Ivy, or Gradle project.
                 </p>
 

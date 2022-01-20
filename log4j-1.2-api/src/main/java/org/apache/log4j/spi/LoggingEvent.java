@@ -16,12 +16,13 @@
  */
 package org.apache.log4j.spi;
 
-import org.apache.log4j.Category;
-import org.apache.log4j.Level;
-import org.apache.log4j.bridge.LogEventAdapter;
-
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.log4j.Category;
+import org.apache.log4j.Level;
+import org.apache.log4j.Priority;
+import org.apache.log4j.bridge.LogEventAdapter;
 
 /**
  *  No-op version of Log4j 1.2 LoggingEvent. This class is not directly used by Log4j 1.x clients but is used by
@@ -30,11 +31,80 @@ import java.util.Set;
 public class LoggingEvent {
 
     /**
-     Set the location information for this logging event. The collected
-     information is cached for future use.
-     @return Always returns null.
+     Returns the time when the application started, in milliseconds
+     elapsed since 01.01.1970.
+     @return the JVM start time.
      */
-    public LocationInfo getLocationInformation() {
+    public static long getStartTime() {
+        return LogEventAdapter.getStartTime();
+    }
+
+    /**
+     * The number of milliseconds elapsed from 1/1/1970 until logging event was created.
+     */
+    public final long timeStamp;
+
+    /**
+     * Constructs a new instance.
+     */
+    public LoggingEvent() {
+        timeStamp = System.currentTimeMillis();
+    }
+
+    /**
+     * Create new instance.
+     * 
+     * @since 1.2.15
+     * @param fqnOfCategoryClass Fully qualified class name of Logger implementation.
+     * @param logger The logger generating this event.
+     * @param timeStamp the timestamp of this logging event
+     * @param level The level of this event.
+     * @param message The message of this event.
+     * @param threadName thread name
+     * @param throwable The throwable of this event.
+     * @param ndc Nested diagnostic context
+     * @param info Location info
+     * @param properties MDC properties
+     */
+    public LoggingEvent(final String fqnOfCategoryClass, final Category logger, final long timeStamp, final Level level, final Object message,
+        final String threadName, final ThrowableInformation throwable, final String ndc, final LocationInfo info, final Map properties) {
+        this.timeStamp = timeStamp;
+    }
+
+    /**
+     * Instantiate a LoggingEvent from the supplied parameters.
+     * 
+     * <p>
+     * Except {@link #timeStamp} all the other fields of <code>LoggingEvent</code> are filled when actually needed.
+     * <p>
+     * 
+     * @param logger The logger generating this event.
+     * @param timeStamp the timestamp of this logging event
+     * @param level The level of this event.
+     * @param message The message of this event.
+     * @param throwable The throwable of this event.
+     */
+    public LoggingEvent(String fqnOfCategoryClass, Category logger, long timeStamp, Priority level, Object message, Throwable throwable) {
+        this.timeStamp = timeStamp;
+    }
+
+    /**
+     * Instantiate a LoggingEvent from the supplied parameters.
+     * 
+     * <p>
+     * Except {@link #timeStamp} all the other fields of <code>LoggingEvent</code> are filled when actually needed.
+     * <p>
+     * 
+     * @param logger The logger generating this event.
+     * @param level The level of this event.
+     * @param message The message of this event.
+     * @param throwable The throwable of this event.
+     */
+    public LoggingEvent(String fqnOfCategoryClass, Category logger, Priority level, Object message, Throwable throwable) {
+        timeStamp = System.currentTimeMillis();
+    }
+
+    public String getFQNOfLoggerClass() {
         return null;
     }
 
@@ -48,20 +118,12 @@ public class LoggingEvent {
     }
 
     /**
-     * Return the name of the logger. Use this form instead of directly
-     * accessing the <code>categoryName</code> field.
-     * @return Always returns null.
+     Set the location information for this logging event. The collected
+     information is cached for future use.
+     @return Always returns null.
      */
-    public String getLoggerName() {
+    public LocationInfo getLocationInformation() {
         return null;
-    }
-
-    public String getFQNOfLoggerClass() {
-        return null;
-    }
-
-    public long getTimeStamp() {
-        return 0;
     }
 
     /**
@@ -72,6 +134,27 @@ public class LoggingEvent {
      */
     public Category getLogger() {
         return null;
+    }
+
+    /**
+     * Return the name of the logger. Use this form instead of directly
+     * accessing the <code>categoryName</code> field.
+     * @return Always returns null.
+     */
+    public String getLoggerName() {
+        return null;
+    }
+
+    public
+    Object getMDC(String key) {
+        return null;
+    }
+
+    /**
+     Obtain a copy of this thread's MDC prior to serialization or
+     asynchronous logging.
+     */
+    public void getMDCCopy() {
     }
 
     /**
@@ -93,29 +176,20 @@ public class LoggingEvent {
         return null;
     }
 
-    public
-    Object getMDC(String key) {
+    public Map getProperties() {
         return null;
     }
 
-    /**
-     Obtain a copy of this thread's MDC prior to serialization or
-     asynchronous logging.
-     */
-    public void getMDCCopy() {
+    public String getProperty(final String key) {
+        return null;
+    }
+
+    public Set getPropertyKeySet() {
+        return null;
     }
 
     public String getRenderedMessage() {
         return null;
-    }
-
-    /**
-     Returns the time when the application started, in milliseconds
-     elapsed since 01.01.1970.
-     @return the JVM start time.
-     */
-    public static long getStartTime() {
-        return LogEventAdapter.getStartTime();
     }
 
     public String getThreadName() {
@@ -142,24 +216,16 @@ public class LoggingEvent {
         return null;
     }
 
-    public void setProperty(final String propName,
-            final String propValue) {
-
-    }
-
-    public String getProperty(final String key) {
-        return null;
-    }
-
-    public Set getPropertyKeySet() {
-        return null;
-    }
-
-    public Map getProperties() {
-        return null;
+    public long getTimeStamp() {
+        return 0;
     }
 
     public Object removeProperty(String propName) {
         return null;
+    }
+
+    public void setProperty(final String propName,
+            final String propValue) {
+
     }
 }

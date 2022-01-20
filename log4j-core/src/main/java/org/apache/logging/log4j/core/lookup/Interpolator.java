@@ -159,6 +159,10 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         }
     }
 
+    public StrLookup getDefaultLookup() {
+        return defaultLookup;
+    }
+
     public Map<String, StrLookup> getStrLookupMap() {
         return strLookupMap;
     }
