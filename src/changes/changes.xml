@@ -272,6 +272,9 @@
       <action dev="ggregory" type="fix" issue="LOG4J2-3328" due-to="Gary Gregory">
         Log4j 1.2 bridge does not support system properties in log4j.xml.
       </action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">
+        Log4j 1.2 bridge now logs a warning instead of throwing an NullPointerException when building a Syslog appender with a missing "SyslogHost" param.
+      </action>
       <action dev="ggregory" type="fix" issue="LOG4J2-3330" due-to="Mircea Lemnaru, Gary Gregory">
         Configurator.setLevel not fetching the correct LoggerContext.
       </action>
