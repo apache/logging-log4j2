@@ -958,7 +958,7 @@
       <dependency>
         <groupId>com.google.code.java-allocation-instrumenter</groupId>
         <artifactId>java-allocation-instrumenter</artifactId>
-        <version>3.0.1</version>
+        <version>3.3.0</version>
       </dependency>
       <dependency>
         <groupId>org.hdrhistogram</groupId>
