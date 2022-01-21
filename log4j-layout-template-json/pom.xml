@@ -213,8 +213,9 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Fragment-Host>org.apache.logging.log4j.layout.template.json</Fragment-Host>
-            <Export-Package>*</Export-Package>
+            <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
+            <Bundle-SymbolicName>org.apache.logging.log4j.layout.template.json</Bundle-SymbolicName>
+            <Export-Package>org.apache.logging.log4j.layout.template.json</Export-Package>
           </instructions>
         </configuration>
       </plugin>
