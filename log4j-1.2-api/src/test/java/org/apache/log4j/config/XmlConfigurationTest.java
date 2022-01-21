@@ -96,6 +96,42 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
 
     @Override
     @Test
+    public void testConsoleEnhancedPatternLayout() throws Exception {
+        super.testConsoleEnhancedPatternLayout();
+    }
+
+    @Override
+    @Test
+    public void testConsoleHtmlLayout() throws Exception {
+        super.testConsoleHtmlLayout();
+    }
+
+    @Override
+    @Test
+    public void testConsolePatternLayout() throws Exception {
+        super.testConsolePatternLayout();
+    }
+
+    @Override
+    @Test
+    public void testConsoleSimpleLayout() throws Exception {
+        super.testConsoleSimpleLayout();
+    }
+
+    @Override
+    @Test
+    public void testFileSimpleLayout() throws Exception {
+        super.testFileSimpleLayout();
+    }
+
+    @Override
+    @Test
+    public void testNullAppender() throws Exception {
+        super.testNullAppender();
+    }
+
+    @Override
+    @Test
     public void testConsoleCapitalization() throws Exception {
         super.testConsoleCapitalization();
     }

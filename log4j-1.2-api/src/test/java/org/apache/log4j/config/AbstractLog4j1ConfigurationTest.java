@@ -33,6 +33,8 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.appender.ConsoleAppender.Target;
+import org.apache.logging.log4j.core.appender.FileAppender;
+import org.apache.logging.log4j.core.appender.NullAppender;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.appender.rolling.CompositeTriggeringPolicy;
 import org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy;
@@ -42,7 +44,9 @@ import org.apache.logging.log4j.core.appender.rolling.TimeBasedTriggeringPolicy;
 import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.junit.Test;
 
 public abstract class AbstractLog4j1ConfigurationTest {
 
@@ -77,8 +81,7 @@ public abstract class AbstractLog4j1ConfigurationTest {
         final Configuration configuration = getConfiguration(configResource);
         final String name = "Console";
         final ConsoleAppender appender = configuration.getAppender(name);
-        assertNotNull("Missing appender '" + name + "' in configuration " + configResource + " → " + configuration,
-                appender);
+        assertNotNull("Missing appender '" + name + "' in configuration " + configResource + " → " + configuration, appender);
         assertEquals(Target.SYSTEM_ERR, appender.getTarget());
         //
         final LoggerConfig loggerConfig = configuration.getLoggerConfig("com.example.foo");
@@ -143,7 +146,8 @@ public abstract class AbstractLog4j1ConfigurationTest {
         }
     }
 
-    private void testRollingFileAppender(final String configResource, final String name, final String filePattern) throws Exception {
+    private void testRollingFileAppender(final String configResource, final String name, final String filePattern)
+            throws Exception {
         final Configuration configuration = getConfiguration(configResource);
         final Appender appender = configuration.getAppender(name);
         assertNotNull(appender);
@@ -170,7 +174,8 @@ public abstract class AbstractLog4j1ConfigurationTest {
         configuration.stop();
     }
 
-    private void testDailyRollingFileAppender(final String configResource, final String name, final String filePattern) throws Exception {
+    private void testDailyRollingFileAppender(final String configResource, final String name, final String filePattern)
+            throws Exception {
         final Configuration configuration = getConfiguration(configResource);
         final Appender appender = configuration.getAppender(name);
         assertNotNull(appender);
@@ -195,6 +200,54 @@ public abstract class AbstractLog4j1ConfigurationTest {
         assertEquals(Integer.MAX_VALUE, drs.getMaxIndex());
         configuration.start();
         configuration.stop();
+    }
+
+    private Layout<?> testFile(final String configResource) throws Exception {
+        final Configuration configuration = getConfiguration(configResource);
+        final FileAppender appender = configuration.getAppender("File");
+        assertNotNull(appender);
+        assertEquals("target/mylog.txt", appender.getFileName());
+        //
+        final LoggerConfig loggerConfig = configuration.getLoggerConfig("com.example.foo");
+        assertNotNull(loggerConfig);
+        assertEquals(Level.DEBUG, loggerConfig.getLevel());
+        configuration.start();
+        configuration.stop();
+        return appender.getLayout();
+    }
+
+    public void testConsoleEnhancedPatternLayout() throws Exception {
+        final PatternLayout layout = (PatternLayout) testConsole("config-1.2/log4j-console-EnhancedPatternLayout");
+        assertEquals("%d{ISO8601} [%t][%c] %-5p %properties %ndc: %m%n", layout.getConversionPattern());
+    }
+
+    public void testConsoleHtmlLayout() throws Exception {
+        final HtmlLayout layout = (HtmlLayout) testConsole("config-1.2/log4j-console-HtmlLayout");
+        assertEquals("Headline", layout.getTitle());
+        assertTrue(layout.isLocationInfo());
+    }
+
+    public void testConsolePatternLayout() throws Exception {
+        final PatternLayout layout = (PatternLayout) testConsole("config-1.2/log4j-console-PatternLayout");
+        assertEquals("%d{ISO8601} [%t][%c] %-5p: %m%n", layout.getConversionPattern());
+    }
+
+    public void testConsoleSimpleLayout() throws Exception {
+        final PatternLayout layout = (PatternLayout) testConsole("config-1.2/log4j-console-SimpleLayout");
+        assertEquals("%level - %m%n", layout.getConversionPattern());
+    }
+
+    public void testFileSimpleLayout() throws Exception {
+        final PatternLayout layout = (PatternLayout) testFile("config-1.2/log4j-file-SimpleLayout");
+        assertEquals("%level - %m%n", layout.getConversionPattern());
+    }
+
+    public void testNullAppender() throws Exception {
+        final Configuration configuration = getConfiguration("config-1.2/log4j-NullAppender");
+        final Appender appender = configuration.getAppender("NullAppender");
+        assertNotNull(appender);
+        assertEquals("NullAppender", appender.getName());
+        assertTrue(appender.getClass().getName(), appender instanceof NullAppender);
     }
 
 }

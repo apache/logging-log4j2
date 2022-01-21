@@ -40,7 +40,7 @@ import org.w3c.dom.Element;
 /**
  * Base class for Log4j 1 component builders.
  */
-public abstract class AbstractBuilder {
+public abstract class AbstractBuilder implements Builder {
 
     private static Logger LOGGER = StatusLogger.getLogger();
     protected static final String FILE_PARAM = "File";
