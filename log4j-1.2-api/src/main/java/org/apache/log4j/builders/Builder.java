@@ -14,20 +14,10 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.log4j.builders.layout;
 
-import org.apache.log4j.Layout;
-import org.apache.log4j.builders.Builder;
-import org.apache.log4j.config.PropertiesConfiguration;
-import org.apache.log4j.xml.XmlConfiguration;
-import org.w3c.dom.Element;
+package org.apache.log4j.builders;
 
 /**
- * Define a Layout Builder.
+ * A marker interface for Log4j 1.x component builders.
  */
-public interface LayoutBuilder extends Builder {
-
-    Layout parseLayout(Element element, XmlConfiguration config);
-
-    Layout parseLayout(PropertiesConfiguration config);
-}
+public interface Builder {}

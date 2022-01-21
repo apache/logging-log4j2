@@ -156,18 +156,22 @@ public class BuilderManager {
         return null;
     }
 
-    private <T extends AbstractBuilder> T createBuilder(PluginType<?> plugin, String prefix, Properties props) {
+    @SuppressWarnings("unchecked")
+    private <T extends Builder> T createBuilder(PluginType<?> plugin, String prefix, Properties props) {
         try {
             Class<?> clazz = plugin.getPluginClass();
             if (AbstractBuilder.class.isAssignableFrom(clazz)) {
-                @SuppressWarnings("unchecked")
                 Constructor<T> constructor =
                         (Constructor<T>) clazz.getConstructor(CONSTRUCTOR_PARAMS);
                 return constructor.newInstance(prefix, props);
             }
-            @SuppressWarnings("unchecked")
-            T builder = (T) LoaderUtil.newInstanceOf(clazz);
-            return builder;
+            Object builder = LoaderUtil.newInstanceOf(clazz);
+            // Reasonable message instead of `ClassCastException`
+            if (!Builder.class.isAssignableFrom(clazz)) {
+                LOGGER.warn("Unable to load plugin: builder {} does not implement {}", clazz, Builder.class);
+                return null;
+            }
+            return (T) builder;
         } catch (ReflectiveOperationException ex) {
             LOGGER.warn("Unable to load plugin: {} due to: {}", plugin.getKey(), ex.getMessage());
             return null;
