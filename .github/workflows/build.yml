@@ -15,7 +15,12 @@
 
 name: build
 
-on: [ push, pull_request ]
+on:
+  push:
+    branches:
+      - master
+      - release-2.x
+  pull_request:
 
 jobs:
   build:
