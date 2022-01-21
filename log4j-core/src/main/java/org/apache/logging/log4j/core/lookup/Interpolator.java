@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -27,10 +28,8 @@ import org.apache.logging.log4j.core.config.ConfigurationAware;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.net.JndiManager;
-import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.ReflectionUtil;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Constants;
 
 /**
  * Proxies all the other {@link StrLookup}s.
@@ -88,75 +87,17 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
     }
 
     /**
-     * Create the default Interpolator using only Lookups that work without an event.
+     * Create the default Interpolator.
      */
     public Interpolator() {
         this((Map<String, String>) null);
     }
 
     /**
-     * Creates the Interpolator using only Lookups that work without an event and initial properties.
+     * Creates the default Interpolator with the provided properties.
      */
     public Interpolator(final Map<String, String> properties) {
-        this.defaultLookup = new PropertiesLookup(properties);
-        // TODO: this ought to use the PluginManager
-        strLookupMap.put("log4j", new Log4jLookup());
-        strLookupMap.put("sys", new SystemPropertiesLookup());
-        strLookupMap.put("env", new EnvironmentLookup());
-        strLookupMap.put("main", MainMapLookup.MAIN_SINGLETON);
-        strLookupMap.put("map", new MapLookup(properties));
-        strLookupMap.put("marker", new MarkerLookup());
-        strLookupMap.put("java", new JavaLookup());
-        strLookupMap.put("lower", new LowerLookup());
-        strLookupMap.put("upper", new UpperLookup());
-        // JNDI
-        if (JndiManager.isJndiLookupEnabled()) {
-            try {
-                // [LOG4J2-703] We might be on Android
-                strLookupMap.put(LOOKUP_KEY_JNDI,
-                        Loader.newCheckedInstanceOf("org.apache.logging.log4j.core.lookup.JndiLookup", StrLookup.class));
-            } catch (final LinkageError | Exception e) {
-                handleError(LOOKUP_KEY_JNDI, e);
-            }
-        }
-        // JMX input args
-        try {
-            // We might be on Android
-            strLookupMap.put(LOOKUP_KEY_JVMRUNARGS,
-                Loader.newCheckedInstanceOf("org.apache.logging.log4j.core.lookup.JmxRuntimeInputArgumentsLookup",
-                        StrLookup.class));
-        } catch (final LinkageError | Exception e) {
-            handleError(LOOKUP_KEY_JVMRUNARGS, e);
-        }
-        strLookupMap.put("date", new DateLookup());
-        if (Constants.IS_WEB_APP) {
-            try {
-                strLookupMap.put(LOOKUP_KEY_WEB,
-                    Loader.newCheckedInstanceOf("org.apache.logging.log4j.web.WebLookup", StrLookup.class));
-            } catch (final Exception ignored) {
-                handleError(LOOKUP_KEY_WEB, ignored);
-            }
-        } else {
-            LOGGER.debug("Not in a ServletContext environment, thus not loading WebLookup plugin.");
-        }
-        try {
-            strLookupMap.put(LOOKUP_KEY_DOCKER,
-                Loader.newCheckedInstanceOf("org.apache.logging.log4j.docker.DockerLookup", StrLookup.class));
-        } catch (final Exception ignored) {
-            handleError(LOOKUP_KEY_DOCKER, ignored);
-        }
-        try {
-            strLookupMap.put(LOOKUP_KEY_SPRING,
-                    Loader.newCheckedInstanceOf("org.apache.logging.log4j.spring.boot.SpringLookup", StrLookup.class));
-        } catch (final Exception ignored) {
-            handleError(LOOKUP_KEY_SPRING, ignored);
-        }
-        try {
-            strLookupMap.put(LOOKUP_KEY_KUBERNETES,
-                    Loader.newCheckedInstanceOf("org.apache.logging.log4j.kubernetes.KubernetesLookup", StrLookup.class));
-        } catch (final Exception | NoClassDefFoundError error) {
-            handleError(LOOKUP_KEY_KUBERNETES, error);
-        }
+        this(new PropertiesLookup(properties), Collections.emptyList());
     }
 
     public StrLookup getDefaultLookup() {
