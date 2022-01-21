@@ -28,7 +28,8 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * Formats the current date or the date in the LogEvent. The "key" is used as the format String.
+ * Formats the current date or the date in the LogEvent. The "key" is used as the format String,
+ * following the java.text.SimpleDateFormat date and time pattern strings.
  */
 @Plugin(name = "date", category = StrLookup.CATEGORY)
 public class DateLookup implements StrLookup {
@@ -37,9 +38,9 @@ public class DateLookup implements StrLookup {
     private static final Marker LOOKUP = MarkerManager.getMarker("LOOKUP");
 
     /**
-     * Looks up the value of the environment variable.
+     * Looks up the current date.
      * @param key the format to use. If null, the default DateFormat will be used.
-     * @return The value of the environment variable.
+     * @return The formatted current date, never null.
      */
     @Override
     public String lookup(final String key) {
@@ -47,10 +48,10 @@ public class DateLookup implements StrLookup {
     }
 
     /**
-     * Looks up the value of the environment variable.
+     * Looks up the the current date or the date in the LogEvent.
      * @param event The LogEvent for which the date is returned. If null, current date is returned.
      * @param key the format to use. If null, the default DateFormat will be used.
-     * @return The value of the environment variable.
+     * @return The formatted date, never null.
      */
     @Override
     public String lookup(final LogEvent event, final String key) {

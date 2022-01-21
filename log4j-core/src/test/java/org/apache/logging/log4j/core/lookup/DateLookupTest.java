@@ -16,11 +16,15 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import org.apache.logging.log4j.core.AbstractLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -29,36 +33,39 @@ import static org.mockito.Mockito.when;
 public class DateLookupTest {
 
     @Test
-    public void testDateLookupInEvent() {
+    public void testCorrectEvent() {
         final LogEvent mockedEvent = mock(LogEvent.class);
         final Calendar cal = Calendar.getInstance();
         cal.set(2011, Calendar.DECEMBER, 30, 10, 56, 35);
         when(mockedEvent.getTimeMillis()).thenReturn(cal.getTimeInMillis());
 
-        final String actualDate = new DateLookup().lookup(mockedEvent, "MM/dd/yyyy");
-        assertEquals("12/30/2011", actualDate);
+        final String lookupDate = new DateLookup().lookup(mockedEvent, "MM/dd/yyyy");
+        assertEquals("12/30/2011", lookupDate);
     }
 
     @Test
-    public void testDateLookUpNoEvent() {
+    public void testValidKeyWithoutEvent() {
         final String dateFormat = "MM/dd/yyyy";
-        final String actualDate = new DateLookup().lookup(null, dateFormat);
-        // we don't know current time, so check length of format instead.
-        assertEquals(actualDate.length(), dateFormat.length());
+
+        final Calendar cal = Calendar.getInstance();
+        final DateFormat formatter = new SimpleDateFormat(dateFormat);
+        cal.setTimeInMillis(System.currentTimeMillis());
+        final String today = formatter.format(cal.getTime());
+        cal.add(Calendar.DATE, 1);
+        final String tomorrow = formatter.format(cal.getTime());
+
+        final String lookupTime = new DateLookup().lookup(null, dateFormat);
+        // lookup gives current time, which by now could be tomorrow at midnight sharp
+        assertTrue(lookupTime.equals(today) || lookupTime.equals(tomorrow));
     }
 
-    @Test
-    public void testNullDateLookupYieldsCurrentTime() {
-        final String currentTime = new DateLookup().lookup(null, null);
-        assertNotNull(currentTime);
-        // we don't know current time nor format, so just check length of date string.
-        assertTrue(currentTime.length() > 0);
-    }
-
-    @Test
-    public void testInvalidFormatYieldsDefaultFormat() {
-        final String currentTime = new DateLookup().lookup(null, "bananas");
-        // we don't know current time nor format, so just check length of date string.
-        assertTrue(currentTime.length() > 0);
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = { "bananas" })
+    public void testInvalidKey(String key) {
+        // For invalid keys without event, the current time in default format should be returned.
+        // Checking this may depend on locale and exact time, and could become flaky.
+        // Therefore we just check that the result isn't null and that (formatting) exceptions are caught.
+        assertNotNull(new DateLookup().lookup(null, key));
     }
 }
