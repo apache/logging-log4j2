@@ -28,7 +28,7 @@ import org.junit.experimental.categories.Category;
 @Category(Appenders.Jpa.class)
 public class JpaH2AppenderTest extends AbstractJpaAppenderTest {
     private static final String USER_ID = "sa";
-    private static final String PASSWORD = Strings.EMPTY;
+    private static final String PASSWORD = "123";
 
     public JpaH2AppenderTest() {
         super("h2");

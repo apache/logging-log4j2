@@ -32,7 +32,7 @@ import static org.junit.Assert.*;
 @Category(Appenders.Jpa.class)
 public class JpaHsqldbAppenderTest extends AbstractJpaAppenderTest {
     private static final String USER_ID = "sa";
-    private static final String PASSWORD = Strings.EMPTY;
+    private static final String PASSWORD = "123";
 
     public JpaHsqldbAppenderTest() {
         super("hsqldb");
