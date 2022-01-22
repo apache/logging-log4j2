@@ -21,7 +21,6 @@
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
     <version>2.17.2-SNAPSHOT</version>
-    <relativePath>../</relativePath>
   </parent>
   <artifactId>log4j-to-slf4j</artifactId>
   <packaging>jar</packaging>
@@ -96,6 +95,12 @@
         <configuration>
           <instructions>
             <Export-Package>org.apache.logging.slf4j</Export-Package>
+            <Require-Capability>
+              osgi.extender;filter:="(osgi.extender=osgi.serviceloader.registrar)"
+            </Require-Capability>
+            <Provide-Capability>
+              osgi.serviceloader;osgi.serviceloader=org.apache.logging.log4j.spi.Provider
+            </Provide-Capability>
           </instructions>
         </configuration>
       </plugin>

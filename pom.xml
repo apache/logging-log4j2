@@ -1419,6 +1419,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-doap-plugin</artifactId>
         <version>1.2</version>
+        <inherited>false</inherited>
         <dependencies>
           <!-- Fix java.lang.IllegalArgumentException: Invalid version number: Version number may be negative or greater than 255 -->
           <dependency>
@@ -1460,6 +1461,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-changes-plugin</artifactId>
         <version>${changes.plugin.version}</version>
+        <inherited>false</inherited>
         <reportSets>
           <reportSet>
             <reports>

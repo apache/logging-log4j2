@@ -21,7 +21,6 @@
     <artifactId>log4j</artifactId>
     <groupId>org.apache.logging.log4j</groupId>
     <version>2.17.2-SNAPSHOT</version>
-    <relativePath>../</relativePath>
   </parent>
 
   <artifactId>log4j-perf</artifactId>
@@ -39,7 +38,6 @@
     <docLabel>Apache Log4J Performance Tests</docLabel>
     <projectDir>/log4j-perf</projectDir>
     <jmh.version>1.21</jmh.version>
-    <javac.target>1.7</javac.target>
     <uberjar.name>benchmarks</uberjar.name>
     <revapi.skip>true</revapi.skip>
     <maven.doap.skip>true</maven.doap.skip>
