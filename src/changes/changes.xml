@@ -177,7 +177,7 @@
     <release version="2.17.2" date="20YY-MM-DD" description="GA Release 2.17.2">
       <!-- FIXES -->
       <action issue="LOG4J2-3358" dev="ckozak" type="fix">
-        log4j-jpl formats message parameters correctly using MessageFormat.
+        Fix substitutions when programmatic configuration is used
       </action>
       <action issue="LOG4J2-3345" dev="ckozak">
         log4j-jpl formats message parameters correctly using MessageFormat.
