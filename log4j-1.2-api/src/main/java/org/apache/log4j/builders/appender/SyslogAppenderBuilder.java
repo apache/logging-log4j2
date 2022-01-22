@@ -39,7 +39,7 @@ import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.xml.XmlConfiguration;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.appender.SocketAppender;
+import org.apache.logging.log4j.core.appender.SyslogAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.SyslogLayout;
 import org.apache.logging.log4j.core.net.Facility;
@@ -77,7 +77,7 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
         AtomicReference<String> facility = new AtomicReference<>();
         AtomicReference<String> level = new AtomicReference<>();
         AtomicReference<String> host = new AtomicReference<>();
-        AtomicReference<Protocol> protocol = new AtomicReference<>();
+        AtomicReference<Protocol> protocol = new AtomicReference<>(Protocol.TCP);
         forEachElement(appenderElement.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
                 case LAYOUT_TAG:
@@ -105,7 +105,7 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
                             break;
                         }
                         case PROTOCOL_PARAM:
-                            protocol.set(Protocol.valueOf(getValueAttribute(currentElement)));
+                            protocol.set(Protocol.valueOf(getValueAttribute(currentElement, Protocol.TCP.name())));
                             break;
                     }
                     break;
@@ -148,7 +148,7 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
         }
 
         org.apache.logging.log4j.core.Filter fileFilter = buildFilters(level, filter);
-        return new AppenderWrapper(SocketAppender.newBuilder()
+        return new AppenderWrapper(SyslogAppender.newSyslogAppenderBuilder()
                 .setName(name)
                 .setConfiguration(configuration)
                 .setLayout(appenderLayout)

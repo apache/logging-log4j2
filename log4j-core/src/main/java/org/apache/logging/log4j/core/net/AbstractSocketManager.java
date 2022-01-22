@@ -46,7 +46,8 @@ public abstract class AbstractSocketManager extends OutputStreamManager {
     protected final int port;
 
     /**
-     * The Constructor.
+     * Constructs a new instance.
+     *
      * @param name The unique name of this connection.
      * @param os The OutputStream to manage.
      * @param inetAddress The Internet address.
@@ -78,5 +79,23 @@ public abstract class AbstractSocketManager extends OutputStreamManager {
         result.put("port", Integer.toString(port));
         result.put("address", inetAddress.getHostAddress());
         return result;
+    }
+
+    /**
+     * Gets the host.
+     *
+     * @return the host.
+     */
+    public String getHost() {
+        return host;
+    }
+
+    /**
+     * Gets the port.
+     *
+     * @return the port.
+     */
+    public int getPort() {
+        return port;
     }
 }

@@ -16,16 +16,21 @@
  */
 package org.apache.log4j.config;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.Map;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.appender.SocketAppender;
+import org.apache.logging.log4j.core.appender.SyslogAppender;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.filter.ThresholdFilter;
+import org.apache.logging.log4j.core.layout.Rfc5424Layout;
 import org.apache.logging.log4j.core.net.AbstractSocketManager;
+import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Protocol;
 import org.junit.Test;
 
@@ -34,25 +39,32 @@ import org.junit.Test;
  */
 public class SyslogAppenderConfigurationTest {
 
-    private void checkProtocol(final Protocol expected, final Configuration configuration) {
+    private void check(final Protocol expected, final Configuration configuration) {
         final Map<String, Appender> appenders = configuration.getAppenders();
         assertNotNull(appenders);
         final String appenderName = "syslog";
         final Appender appender = appenders.get(appenderName);
         assertNotNull(appender, "Missing appender " + appenderName);
-        final SocketAppender socketAppender = (SocketAppender) appender;
+        final SyslogAppender syslogAppender = (SyslogAppender) appender;
         @SuppressWarnings("resource")
-        final AbstractSocketManager manager = socketAppender.getManager();
+        final AbstractSocketManager manager = syslogAppender.getManager();
         final String prefix = expected + ":";
         assertTrue(manager.getName().startsWith(prefix), () -> String.format("'%s' does not start with '%s'", manager.getName(), prefix));
+        // Threshold
+        final ThresholdFilter filter = (ThresholdFilter) syslogAppender.getFilter();
+        assertEquals(Level.DEBUG, filter.getLevel());
+        // Host
+        assertEquals("localhost", manager.getHost());
+        // Port
+        assertEquals(9999, manager.getPort());
     }
 
     private void checkProtocolPropertiesConfig(final Protocol expected, final String xmlPath) throws IOException {
-        checkProtocol(expected, TestConfigurator.configure(xmlPath).getConfiguration());
+        check(expected, TestConfigurator.configure(xmlPath).getConfiguration());
     }
 
     private void checkProtocolXmlConfig(final Protocol expected, final String xmlPath) throws IOException {
-        checkProtocol(expected, TestConfigurator.configure(xmlPath).getConfiguration());
+        check(expected, TestConfigurator.configure(xmlPath).getConfiguration());
     }
 
     @Test
