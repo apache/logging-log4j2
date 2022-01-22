@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
 import org.apache.logging.log4j.core.pattern.TextRenderer;
+import org.apache.logging.log4j.util.Chars;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.Strings;
 
@@ -49,7 +50,7 @@ import org.apache.logging.log4j.util.Strings;
  */
 public class ThrowableProxy implements Serializable {
 
-    private static final char EOL = '\n';
+    private static final char EOL = Chars.LF;
 
     private static final String EOL_STR = String.valueOf(EOL);
 
