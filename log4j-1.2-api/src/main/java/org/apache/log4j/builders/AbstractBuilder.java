@@ -155,9 +155,13 @@ public abstract class AbstractBuilder implements Builder {
     }
 
     protected String getValueAttribute(final Element element) {
-        return substVars(element.getAttribute(VALUE_ATTR));
+        return getValueAttribute(element, null);
     }
 
+    protected String getValueAttribute(final Element element, final String defaultValue) {
+        final String attribute = element.getAttribute(VALUE_ATTR);
+        return substVars(attribute != null ? attribute : defaultValue);
+    }
 
     protected String substVars(final String value) {
         return OptionConverter.substVars(value, properties);

@@ -102,7 +102,7 @@ public class SyslogAppender extends SocketAppender {
         @PluginElement("LoggerFields")
         private LoggerFields[] loggerFields;
 
-        @SuppressWarnings({"resource", "unchecked"})
+        @SuppressWarnings({"resource"})
         @Override
         public SyslogAppender build() {
             final Protocol protocol = getProtocol();
