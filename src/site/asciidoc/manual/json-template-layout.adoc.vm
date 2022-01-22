@@ -1346,19 +1346,18 @@ and garbage footprint, which are detailed below.
 
 [source]
 ----
-config         = singleAccess | multiAccess
+config        = singleAccess | multiAccess
 
-singleAccess   = key , [ stringified ]
-key            = "key" -> string
-stringified    = "stringified" -> boolean
+singleAccess  = key , [ stringified ]
+key           = "key" -> string
+stringified   = "stringified" -> boolean
 
-multiAccess    = [ pattern ] , [ replacement ] , [ excludePattern ] , [ flatten ] , [ stringified ]
-pattern        = "pattern" -> string
-replacement    = "replacement" -> string
-excludePattern = "excludePattern" -> string
-flatten        = "flatten" -> ( boolean | flattenConfig )
-flattenConfig  = [ flattenPrefix ]
-flattenPrefix  = "prefix" -> string
+multiAccess   = [ pattern ] , [ replacement ] , [ flatten ] , [ stringified ]
+pattern       = "pattern" -> string
+replacement   = "replacement" -> string
+flatten       = "flatten" -> ( boolean | flattenConfig )
+flattenConfig = [ flattenPrefix ]
+flattenPrefix = "prefix" -> string
 ----
 
 `singleAccess` resolves a single field, whilst `multiAccess` resolves a
@@ -1371,16 +1370,13 @@ Regex provided in the `pattern` is used to match against the keys. If provided,
 `replacement` will be used to replace the matched keys. These two are
 effectively equivalent to `Pattern.compile(pattern).matcher(key).matches()` and
 `Pattern.compile(pattern).matcher(key).replaceAll(replacement)` calls.
-Regex provided in the `excludePattern` is used to exclude matching keys.
-This exclusion pattern is not used with the previously mentioned `replacement`
-option.
 
 [WARNING]
 ====
 Regarding garbage footprint, `stringified` flag translates to
 `String.valueOf(value)`, hence mind not-`String`-typed values.
 
-`pattern`, `excludePattern`, and `replacement` incur pattern matcher allocation costs.
+`pattern` and `replacement` incur pattern matcher allocation costs.
 
 Writing certain non-primitive values (e.g., `BigDecimal`, `Set`, etc.) to JSON
 generates garbage, though most (e.g., `int`, `long`, `String`, `List`,
