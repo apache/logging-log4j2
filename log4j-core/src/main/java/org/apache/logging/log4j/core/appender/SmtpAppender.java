@@ -52,9 +52,17 @@ import java.io.Serializable;
  * memory requirements at a reasonable level while still delivering useful
  * application context.
  *
+ * <p>
  * By default, an email message will formatted as HTML. This can be modified by
  * setting a layout for the appender.
  *
+ * <p>
+ * When <code>AttachEvents</code> is enabled, the most recent log event appears
+ * in the body of the email and all events are attached to the email.
+ * <code>AttachEventsCompression</code> and the <code>Layout</code> controls the
+ * attachment's extension: logEvents.html, logEvents.html.zip, logEvents.txt, etc
+ *
+ * <p>
  * By default, an email message will be sent when an ERROR or higher severity
  * message is appended. This can be modified by setting a filter for the
  * appender.
@@ -68,7 +76,7 @@ public final class SmtpAppender extends AbstractAppender {
     private final SmtpManager manager;
 
     private SmtpAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
-            final SmtpManager manager, final boolean ignoreExceptions, final Property[] properties) {
+                         final SmtpManager manager, final boolean ignoreExceptions, final Property[] properties) {
         super(name, filter, layout, ignoreExceptions, properties);
         this.manager = manager;
     }
@@ -120,6 +128,12 @@ public final class SmtpAppender extends AbstractAppender {
 
         @PluginElement("SSL")
         private SslConfiguration sslConfiguration;
+
+        @PluginBuilderAttribute
+        private boolean attachEvents;
+
+        @PluginBuilderAttribute
+        private SmtpManager.AttachEventsCompression attachEventsCompression = SmtpManager.AttachEventsCompression.NONE;
 
         /**
          * Comma-separated list of recipient email addresses.
@@ -235,6 +249,22 @@ public final class SmtpAppender extends AbstractAppender {
         }
 
         /**
+         * Send buffered events as email attachment. Defaults to false.
+         */
+        public Builder setAttachEvents(boolean attachEvents) {
+            this.attachEvents = attachEvents;
+            return this;
+        }
+
+        /**
+         * Compress buffered events (none, zip, gzip) before sending.
+         */
+        public Builder setAttachEventsCompression(SmtpManager.AttachEventsCompression attachEventsCompression) {
+            this.attachEventsCompression = attachEventsCompression;
+            return this;
+        }
+
+        /**
          * Specifies the layout used for the email message body. By default, this uses the
          * {@linkplain HtmlLayout#createDefaultLayout() default HTML layout}.
          */
@@ -262,7 +292,7 @@ public final class SmtpAppender extends AbstractAppender {
             }
             final SmtpManager smtpManager = SmtpManager.getSmtpManager(getConfiguration(), to, cc, bcc, from, replyTo,
                     subject, smtpProtocol, smtpHost, smtpPort, smtpUsername, smtpPassword, smtpDebug,
-                    getFilter().toString(), bufferSize, sslConfiguration);
+                    getFilter().toString(), bufferSize, sslConfiguration, attachEvents, attachEventsCompression);
             return new SmtpAppender(getName(), getFilter(), getLayout(), smtpManager, isIgnoreExceptions(), getPropertyArray());
         }
     }
@@ -318,8 +348,10 @@ public final class SmtpAppender extends AbstractAppender {
         }
         final Configuration configuration = config != null ? config : new DefaultConfiguration();
 
+        // deprecated methods don't receive new features: sslConfiguration, attachEvents, attachEventsCompression
         final SmtpManager manager = SmtpManager.getSmtpManager(configuration, to, cc, bcc, from, replyTo, subject, smtpProtocol,
-            smtpHost, smtpPort, smtpUsername, smtpPassword, isSmtpDebug, filter.toString(),  bufferSize, null);
+                smtpHost, smtpPort, smtpUsername, smtpPassword, isSmtpDebug, filter.toString(),  bufferSize, null,
+                false, SmtpManager.AttachEventsCompression.NONE);
         if (manager == null) {
             return null;
         }

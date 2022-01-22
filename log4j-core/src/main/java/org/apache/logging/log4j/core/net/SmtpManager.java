@@ -16,24 +16,16 @@
  */
 package org.apache.logging.log4j.core.net;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Date;
-import java.util.Properties;
+import java.io.*;
+import java.util.*;
+import java.util.zip.GZIPOutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
+import javax.activation.DataHandler;
 import javax.activation.DataSource;
-import javax.mail.Authenticator;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetHeaders;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.mail.internet.MimeUtility;
+import javax.mail.*;
+import javax.mail.internet.*;
 import javax.mail.util.ByteArrayDataSource;
 import javax.net.ssl.SSLSocketFactory;
 
@@ -44,6 +36,7 @@ import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout.Serializer;
+import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.util.CyclicBuffer;
@@ -56,6 +49,32 @@ import org.apache.logging.log4j.util.Strings;
  */
 public class SmtpManager extends AbstractManager {
     private static final SMTPManagerFactory FACTORY = new SMTPManagerFactory();
+
+    private static final LogEvent[] EMPTY_ARRAY = {};
+
+    /**
+     * Used when AttachEvents is true
+     */
+    public enum AttachEventsCompression
+    {
+        NONE,
+        ZIP,
+        GZ;
+
+        public static AttachEventsCompression lookup(final String value) {
+            for (final AttachEventsCompression aec : values()) {
+                if (aec.name().equalsIgnoreCase(value)) {
+                    return aec;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        public String toString() {
+            return this.name().toLowerCase();
+        }
+    }
 
     private final Session session;
 
@@ -87,13 +106,14 @@ public class SmtpManager extends AbstractManager {
     }
 
     public static SmtpManager getSmtpManager(
-                                             final Configuration config,
-                                             final String to, final String cc, final String bcc,
-                                             final String from, final String replyTo,
-                                             final String subject, String protocol, final String host,
-                                             final int port, final String username, final String password,
-                                             final boolean isDebug, final String filterName, final int numElements,
-                                             final SslConfiguration sslConfiguration) {
+            final Configuration config,
+            final String to, final String cc, final String bcc,
+            final String from, final String replyTo,
+            final String subject, String protocol, final String host,
+            final int port, final String username, final String password,
+            final boolean isDebug, final String filterName, final int numElements,
+            final SslConfiguration sslConfiguration,
+            final boolean attachEvents, final AttachEventsCompression attachEventsCompression) {
         if (Strings.isEmpty(protocol)) {
             protocol = "smtp";
         }
@@ -102,8 +122,7 @@ public class SmtpManager extends AbstractManager {
         final Serializer subjectSerializer = PatternLayout.newSerializerBuilder().setConfiguration(config).setPattern(subject).build();
 
         return getManager(name, FACTORY, new FactoryData(to, cc, bcc, from, replyTo, subjectSerializer,
-            protocol, host, port, username, password, isDebug, numElements, sslConfiguration));
-
+                protocol, host, port, username, password, isDebug, numElements, sslConfiguration, attachEvents, attachEventsCompression));
     }
 
     /**
@@ -175,7 +194,7 @@ public class SmtpManager extends AbstractManager {
             final LogEvent[] priorEvents = removeAllBufferedEvents();
             // LOG4J-310: log appendEvent even if priorEvents is empty
 
-            final byte[] rawBytes = formatContentToBytes(priorEvents, appendEvent, layout);
+            final byte[] rawBytes = formatContentToBytes(data.attachEvents ? EMPTY_ARRAY : priorEvents, appendEvent, layout);
 
             final String contentType = layout.getContentType();
             final String encoding = getEncoding(rawBytes, contentType);
@@ -183,6 +202,11 @@ public class SmtpManager extends AbstractManager {
 
             final InternetHeaders headers = getHeaders(contentType, encoding);
             final MimeMultipart mp = getMimeMultipart(encodedBytes, headers);
+
+            if (data.attachEvents) {
+                // implementation decision to include the current message in the attachment
+                addAttachment(mp, priorEvents, appendEvent, layout);
+            }
 
             final String subject = data.subject.toSerializable(appendEvent);
 
@@ -206,7 +230,7 @@ public class SmtpManager extends AbstractManager {
 
     private void writeContent(final LogEvent[] priorEvents, final LogEvent appendEvent, final Layout<?> layout,
                               final ByteArrayOutputStream out)
-        throws IOException {
+            throws IOException {
         writeHeader(layout, out);
         writeBuffer(priorEvents, appendEvent, layout, out);
         writeFooter(layout, out);
@@ -243,7 +267,7 @@ public class SmtpManager extends AbstractManager {
     }
 
     protected byte[] encodeContentToBytes(final byte[] rawBytes, final String encoding)
-        throws MessagingException, IOException {
+            throws MessagingException, IOException {
         final ByteArrayOutputStream encoded = new ByteArrayOutputStream();
         encodeContent(rawBytes, encoding, encoded);
         return encoded.toByteArray();
@@ -264,11 +288,68 @@ public class SmtpManager extends AbstractManager {
     }
 
     protected MimeMultipart getMimeMultipart(final byte[] encodedBytes, final InternetHeaders headers)
-        throws MessagingException {
+            throws MessagingException {
         final MimeMultipart mp = new MimeMultipart();
         final MimeBodyPart part = new MimeBodyPart(headers, encodedBytes);
         mp.addBodyPart(part);
         return mp;
+    }
+
+    private void addAttachment(final MimeMultipart mp, final LogEvent[] priorEvents, final LogEvent appendEvent,
+                               final Layout<?> layout) throws IOException, MessagingException {
+        final byte[] rawBytes = formatContentToBytes(priorEvents, appendEvent, layout);
+        MimeBodyPart part = new MimeBodyPart();
+        if (data.attachEventsCompression == AttachEventsCompression.NONE) {
+            if (layout instanceof HtmlLayout) {
+                part.setDataHandler(new DataHandler(new ByteArrayDataSource(rawBytes, layout.getContentType())));
+                part.setFileName("logEvents.html");
+            } else {
+                part.setDataHandler(new DataHandler(new ByteArrayDataSource(rawBytes, "text/plain")));
+                part.setFileName("logEvents.txt");
+            }
+        } else if (data.attachEventsCompression == AttachEventsCompression.ZIP) {
+            if (layout instanceof HtmlLayout) {
+                byte[] compressed = zipCompress(rawBytes, "logEvents.html");
+                part.setDataHandler(new DataHandler(new ByteArrayDataSource(compressed, "application/zip")));
+                part.setFileName("logEvents.html.zip");
+            } else {
+                byte[] compressed = zipCompress(rawBytes, "logEvents.txt");
+                part.setDataHandler(new DataHandler(new ByteArrayDataSource(compressed, "application/zip")));
+                part.setFileName("logEvents.txt.zip");
+            }
+        } else if (data.attachEventsCompression == AttachEventsCompression.GZ) {
+            if (layout instanceof HtmlLayout) {
+                byte[] compressed = gzipCompress(rawBytes);
+                part.setDataHandler(new DataHandler(new ByteArrayDataSource(compressed, "application/gzip")));
+                part.setFileName("logEvents.html.gz");
+            } else {
+                byte[] compressed = gzipCompress(rawBytes);
+                part.setDataHandler(new DataHandler(new ByteArrayDataSource(compressed, "application/gzip")));
+                part.setFileName("logEvents.txt.gz");
+            }
+        }
+        part.setDisposition(Part.ATTACHMENT);
+        mp.addBodyPart(part);
+    }
+
+    private byte[] zipCompress(byte[] data, String fileName) throws IOException {
+        try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            try (final ZipOutputStream zos = new ZipOutputStream(baos)) {
+                final ZipEntry zipEntry = new ZipEntry(fileName);
+                zos.putNextEntry(zipEntry);
+                zos.write(data);
+            }
+            return baos.toByteArray();
+        }
+    }
+
+    private byte[] gzipCompress(byte[] data) throws IOException {
+        try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            try (final GZIPOutputStream gzos = new GZIPOutputStream(baos)) {
+                gzos.write(data);
+            }
+            return baos.toByteArray();
+        }
     }
 
     /**
@@ -310,11 +391,13 @@ public class SmtpManager extends AbstractManager {
         private final boolean isDebug;
         private final int numElements;
         private final SslConfiguration sslConfiguration;
+        private final boolean attachEvents;
+        private final AttachEventsCompression attachEventsCompression;
 
         public FactoryData(final String to, final String cc, final String bcc, final String from, final String replyTo,
                            final Serializer subjectSerializer, final String protocol, final String host, final int port,
                            final String username, final String password, final boolean isDebug, final int numElements,
-                           final SslConfiguration sslConfiguration) {
+                           final SslConfiguration sslConfiguration, final boolean attachEvents, AttachEventsCompression attachEventsCompression) {
             this.to = to;
             this.cc = cc;
             this.bcc = bcc;
@@ -329,6 +412,8 @@ public class SmtpManager extends AbstractManager {
             this.isDebug = isDebug;
             this.numElements = numElements;
             this.sslConfiguration = sslConfiguration;
+            this.attachEvents = attachEvents;
+            this.attachEventsCompression = attachEventsCompression;
         }
     }
 
@@ -391,7 +476,7 @@ public class SmtpManager extends AbstractManager {
             if (null != password && null != username) {
                 return new Authenticator() {
                     private final PasswordAuthentication passwordAuthentication =
-                        new PasswordAuthentication(username, password);
+                            new PasswordAuthentication(username, password);
 
                     @Override
                     protected PasswordAuthentication getPasswordAuthentication() {

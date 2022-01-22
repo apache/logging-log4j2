@@ -36,7 +36,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Unit tests for {@link SmtpManager}.
  */
-public class SmtpManagerTest {
+class SmtpManagerTest {
 
     @Test
     void testCreateManagerName() {
@@ -46,7 +46,7 @@ public class SmtpManagerTest {
     }
 
     private void testAdd(LogEvent event) {
-        SmtpManager smtpManager = SmtpManager.getSmtpManager(null, "to", "cc", "bcc", "from", "replyTo", "subject", "protocol", "host", 0, "username", "password", false, "filterName", 10, null);
+        SmtpManager smtpManager = SmtpManager.getSmtpManager(null, "to", "cc", "bcc", "from", "replyTo", "subject", "protocol", "host", 0, "username", "password", false, "filterName", 10, null, false, SmtpManager.AttachEventsCompression.NONE);
         smtpManager.removeAllBufferedEvents(); // in case this smtpManager is reused
         smtpManager.add(event);
 
