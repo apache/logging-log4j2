@@ -160,7 +160,7 @@ public final class SyslogLayout extends AbstractStringLayout {
         buf.append(message);
 
         if (includeNewLine) {
-            buf.append('\n');
+            buf.append(Chars.LF);
         }
         return buf.toString();
     }
