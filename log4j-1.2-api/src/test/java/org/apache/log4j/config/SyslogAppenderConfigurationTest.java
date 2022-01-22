@@ -30,7 +30,7 @@ import org.apache.logging.log4j.core.net.Protocol;
 import org.junit.Test;
 
 /**
- * Class Description goes here.
+ * Tests configuring a Syslog appender.
  */
 public class SyslogAppenderConfigurationTest {
 
