@@ -156,23 +156,20 @@ public class PropertiesConfiguration extends Log4j1Configuration {
      * Reads a configuration from a file. <b>The existing configuration is not cleared nor reset.</b> If you require a
      * different behavior, then call {@link LogManager#resetConfiguration resetConfiguration} method before calling
      * <code>doConfigure</code>.
-     *
      * <p>
      * The configuration file consists of statements in the format <code>key=value</code>. The syntax of different
      * configuration elements are discussed below.
-     *
+     * </p>
      * <p>
      * The level value can consist of the string values OFF, FATAL, ERROR, WARN, INFO, DEBUG, ALL or a <em>custom level</em>
      * value. A custom level value can be specified in the form level#classname. By default the repository-wide threshold is
      * set to the lowest possible value, namely the level <code>ALL</code>.
      * </p>
      *
-     *
      * <h3>Appender configuration</h3>
-     *
      * <p>
      * Appender configuration syntax is:
-     * 
+     * </p>
      * <pre>
      * # For appender named <i>appenderName</i>, set its class.
      * # Note: The appender name can contain dots.
@@ -185,7 +182,7 @@ public class PropertiesConfiguration extends Log4j1Configuration {
      * </pre>
      * <p>
      * For each named appender you can configure its {@link Layout}. The syntax for configuring an appender's layout is:
-     * 
+     * </p>
      * <pre>
      * log4j.appender.appenderName.layout=fully.qualified.name.of.layout.class
      * log4j.appender.appenderName.layout.option1=value1
@@ -194,19 +191,20 @@ public class PropertiesConfiguration extends Log4j1Configuration {
      * </pre>
      * <p>
      * The syntax for adding {@link Filter}s to an appender is:
-     * 
+     * </p>
      * <pre>
      * log4j.appender.appenderName.filter.ID=fully.qualified.name.of.filter.class
      * log4j.appender.appenderName.filter.ID.option1=value1
      * ...
      * log4j.appender.appenderName.filter.ID.optionN=valueN
      * </pre>
-     * 
+     * <p>
      * The first line defines the class name of the filter identified by ID; subsequent lines with the same ID specify
      * filter option - value pairs. Multiple filters are added to the appender in the lexicographic order of IDs.
+     * </p>
      * <p>
      * The syntax for adding an {@link ErrorHandler} to an appender is:
-     * 
+     * </p>
      * <pre>
      * log4j.appender.appenderName.errorhandler=fully.qualified.name.of.errorhandler.class
      * log4j.appender.appenderName.errorhandler.appender-ref=appenderName
@@ -216,60 +214,57 @@ public class PropertiesConfiguration extends Log4j1Configuration {
      * </pre>
      *
      * <h3>Configuring loggers</h3>
-     *
      * <p>
      * The syntax for configuring the root logger is:
-     * 
+     * </p>
      * <pre>
      * log4j.rootLogger=[level], appenderName, appenderName, ...
      * </pre>
-     *
      * <p>
      * This syntax means that an optional <em>level</em> can be supplied followed by appender names separated by commas.
-     *
+     * </p>
      * <p>
      * The level value can consist of the string values OFF, FATAL, ERROR, WARN, INFO, DEBUG, ALL or a <em>custom level</em>
      * value. A custom level value can be specified in the form <code>level#classname</code>.
-     *
+     * </p>
      * <p>
      * If a level value is specified, then the root level is set to the corresponding level. If no level value is specified,
      * then the root level remains untouched.
-     *
+     * </p>
      * <p>
      * The root logger can be assigned multiple appenders.
-     *
+     * </p>
      * <p>
      * Each <i>appenderName</i> (separated by commas) will be added to the root logger. The named appender is defined using
      * the appender syntax defined above.
-     *
+     * </p>
      * <p>
      * For non-root categories the syntax is almost the same:
-     * 
+     * </p>
      * <pre>
      * log4j.logger.logger_name=[level|INHERITED|NULL], appenderName, appenderName, ...
      * </pre>
-     *
      * <p>
      * The meaning of the optional level value is discussed above in relation to the root logger. In addition however, the
      * value INHERITED can be specified meaning that the named logger should inherit its level from the logger hierarchy.
-     *
+     * </p>
      * <p>
      * If no level value is supplied, then the level of the named logger remains untouched.
-     *
+     * </p>
      * <p>
      * By default categories inherit their level from the hierarchy. However, if you set the level of a logger and later
      * decide that that logger should inherit its level, then you should specify INHERITED as the value for the level value.
      * NULL is a synonym for INHERITED.
-     *
+     * </p>
      * <p>
      * Similar to the root logger syntax, each <i>appenderName</i> (separated by commas) will be attached to the named
      * logger.
-     *
+     * </p>
      * <p>
      * See the <a href="../../../../manual.html#additivity">appender additivity rule</a> in the user manual for the meaning
      * of the <code>additivity</code> flag.
-     *
-     *
+     * </p>
+     * <pre>
      * # Set options for appender named "A1". # Appender "A1" will be a SyslogAppender
      * log4j.appender.A1=org.apache.log4j.net.SyslogAppender
      *
@@ -302,14 +297,12 @@ public class PropertiesConfiguration extends Log4j1Configuration {
      * # The logger "class.of.the.day" inherits its level from the # logger hierarchy. Output will go to the appender's of
      * the root # logger, A2 in this case. log4j.logger.class.of.the.day=INHERIT
      * </pre>
-     *
      * <p>
      * Refer to the <b>setOption</b> method in each Appender and Layout for class specific options.
-     *
+     * </p>
      * <p>
      * Use the <code>#</code> or <code>!</code> characters at the beginning of a line for comments.
-     *
-     * <p>
+     * </p>
      */
     private void doConfigure(final Properties properties) {
         String status = "error";
