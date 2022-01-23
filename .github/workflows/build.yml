@@ -79,5 +79,4 @@ jobs:
           -DtrimStackTrace=false \
           -Dsurefire.rerunFailingTestsCount=2 \
           -Dlog4j2.junit.fileCleanerSleepPeriodMillis=1000 \
-          --global-toolchains ".github/workflows/maven-toolchains.xml" \
-          verify
+          --global-toolchains ".github/workflows/maven-toolchains.xml"
