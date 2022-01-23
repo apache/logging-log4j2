@@ -33,7 +33,7 @@ jobs:
         timeout-minutes: 60
         if: runner.os == 'Linux'
         continue-on-error: true
-        run: ./mvnw -V -B --no-transfer-progress -e -DtrimStackTrace=false -Dmaven.test.failure.ignore=true -Dsurefire.rerunFailingTestsCount=1 verify
+        run: ./mvnw -V -B --no-transfer-progress -e -DtrimStackTrace=false -Dmaven.test.failure.ignore=true -Dsurefire.rerunFailingTestsCount=1
 
       - name: Inspect environment (Windows)
         if: runner.os == 'Windows'
@@ -43,7 +43,7 @@ jobs:
         timeout-minutes: 60
         if: runner.os == 'Windows'
         continue-on-error: true
-        run: ./mvnw -V -B --no-transfer-progress -e "-DtrimStackTrace=false" "-Dmaven.test.failure.ignore=true" "-Dsurefire.rerunFailingTestsCount=1" "-Dlog4j2.junit.fileCleanerSleepPeriodMillis=1000" verify
+        run: ./mvnw -V -B --no-transfer-progress -e "-DtrimStackTrace=false" "-Dmaven.test.failure.ignore=true" "-Dsurefire.rerunFailingTestsCount=1" "-Dlog4j2.junit.fileCleanerSleepPeriodMillis=1000"
 
       - name: Inspect environment (MacOS)
         if: runner.os == 'macOS'
@@ -53,7 +53,7 @@ jobs:
         timeout-minutes: 60
         if: runner.os == 'macOS'
         continue-on-error: true
-        run: ./mvnw -V -B --no-transfer-progress -e -DtrimStackTrace=false -Dmaven.test.failure.ignore=true -Dsurefire.rerunFailingTestsCount=1 verify
+        run: ./mvnw -V -B --no-transfer-progress -e -DtrimStackTrace=false -Dmaven.test.failure.ignore=true -Dsurefire.rerunFailingTestsCount=1
 
       - name: Publish Test Results
         # If the CI run is not initiated from the primary repository, it is highly likely that this is a PR from a user who doesn't have commit rights.

@@ -1045,6 +1045,7 @@
     </dependencies>
   </dependencyManagement>
   <build>
+    <defaultGoal>clean verify</defaultGoal>
     <pluginManagement>
       <plugins>
         <plugin>
