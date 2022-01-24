@@ -644,20 +644,22 @@ public class PropertyConfigurator implements Configurator {
 
     private void parseErrorHandler(final ErrorHandler errorHandler, final String errorHandlerPrefix, final Properties props,
         final LoggerRepository loggerRepository) {
-        final boolean rootRef = OptionConverter.toBoolean(OptionConverter.findAndSubst(errorHandlerPrefix + ROOT_REF, props), false);
-        if (rootRef) {
-            errorHandler.setLogger(loggerRepository.getRootLogger());
-        }
-        final String loggerName = OptionConverter.findAndSubst(errorHandlerPrefix + LOGGER_REF, props);
-        if (loggerName != null) {
-            final Logger logger = (loggerFactory == null) ? loggerRepository.getLogger(loggerName) : loggerRepository.getLogger(loggerName, loggerFactory);
-            errorHandler.setLogger(logger);
-        }
-        final String appenderName = OptionConverter.findAndSubst(errorHandlerPrefix + APPENDER_REF_TAG, props);
-        if (appenderName != null) {
-            final Appender backup = parseAppender(props, appenderName);
-            if (backup != null) {
-                errorHandler.setBackupAppender(backup);
+        if (errorHandler != null && loggerRepository != null) {
+            final boolean rootRef = OptionConverter.toBoolean(OptionConverter.findAndSubst(errorHandlerPrefix + ROOT_REF, props), false);
+            if (rootRef) {
+                errorHandler.setLogger(loggerRepository.getRootLogger());
+            }
+            final String loggerName = OptionConverter.findAndSubst(errorHandlerPrefix + LOGGER_REF, props);
+            if (loggerName != null) {
+                final Logger logger = loggerFactory == null ? loggerRepository.getLogger(loggerName) : loggerRepository.getLogger(loggerName, loggerFactory);
+                errorHandler.setLogger(logger);
+            }
+            final String appenderName = OptionConverter.findAndSubst(errorHandlerPrefix + APPENDER_REF_TAG, props);
+            if (appenderName != null) {
+                final Appender backup = parseAppender(props, appenderName);
+                if (backup != null) {
+                    errorHandler.setBackupAppender(backup);
+                }
             }
         }
     }
