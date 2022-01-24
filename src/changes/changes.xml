@@ -182,7 +182,7 @@
         Add org.apache.logging.log4j.core.appender.AsyncAppender.getAppenders() to more easily port from org.apache.log4j.AsyncAppender.getAllAppenders(). 
       </action>
       <action type="add" dev="ggregory" due-to="Gary Gregory">
-        Add Configurator.setLevel(Logger, Level) and setLevel(String, String).      
+        Add Configurator.setLevel(Logger, Level), setLevel(String, String), and setLevel(Class, Level).
       </action>
       <!-- UPDATES -->
       <action dev="ggregory" type="udpate" due-to="Dependabot">
