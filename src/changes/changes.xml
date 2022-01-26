@@ -179,6 +179,9 @@
         Add Configurator.setLevel(Logger, Level) and setLevel(String, String).      
       </action>
       <!-- UPDATES -->
+      <action issue="LOG4J2-3368" dev="vy" type="udpate">
+        Bump Tomcat from 8.5.20 to 10.0.14 in log4j-appserver along with some dependency clean-up.
+      </action>
       <action dev="ggregory" type="udpate" due-to="Dependabot">
         Bump mongodb3.version from 3.12.4 to 3.12.10 #605.
       </action>
