@@ -28,7 +28,7 @@ import javax.mail.*;
 import javax.mail.internet.*;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.logging.commons.mail.util.MimeMessageParser;
+import org.apache.commons.mail.util.MimeMessageParser;
 import org.apache.logging.dumbster.smtp.SimpleSmtpServer;
 import org.apache.logging.dumbster.smtp.SmtpMessage;
 import org.apache.logging.log4j.Level;
@@ -187,7 +187,7 @@ public class SmtpAppenderTest {
         assertTrue(body2.contains("Error message #2"));
     }
 
-    @Test // no delivery (slow), quickly verifies MimeMessage structure
+    @Test // delivering email to a fake server is slow, instead quickly verify msg structure
     public void testNoAttachment() {
         String one = UUID.randomUUID().toString();
         String two = UUID.randomUUID().toString();
@@ -211,7 +211,7 @@ public class SmtpAppenderTest {
         assertTrue(message.getAttachmentList().size() == 0);
     }
 
-    @Test // no delivery (slow), quickly verifies MimeMessage structure
+    @Test // delivering email to a fake server is slow, instead quickly verify msg structure
     public void testAttachmentHtml() throws IOException {
         String bodyUuid = UUID.randomUUID().toString();
         String exceptionUuid = UUID.randomUUID().toString();
@@ -244,7 +244,7 @@ public class SmtpAppenderTest {
         assertTrue(logEventsHtml.contains(attachmentUuid));
     }
 
-    @Test // no delivery (slow), quickly verifies MimeMessage structure
+    @Test // delivering email to a fake server is slow, instead quickly verify msg structure
     public void testAttachmentTxt() throws IOException {
         String bodyUuid = UUID.randomUUID().toString();
         String exceptionUuid = UUID.randomUUID().toString();
@@ -279,7 +279,7 @@ public class SmtpAppenderTest {
         assertFalse(logEventsTxt.toLowerCase().contains("doctype"));
     }
 
-    @Test // no delivery (slow), quickly verifies MimeMessage structure
+    @Test // delivering email to a fake server is slow, instead quickly verify msg structure
     public void testAttachmentZipHtml() throws IOException {
         String bodyUuid = UUID.randomUUID().toString();
         String exceptionUuid = UUID.randomUUID().toString();
@@ -314,7 +314,7 @@ public class SmtpAppenderTest {
         assertTrue(logEventsHtml.toLowerCase().contains("doctype"));
     }
 
-    @Test // no delivery (slow), quickly verifies MimeMessage structure
+    @Test // delivering email to a fake server is slow, instead quickly verify msg structure
     public void testAttachmentZipTxt() throws IOException {
         String bodyUuid = UUID.randomUUID().toString();
         String exceptionUuid = UUID.randomUUID().toString();
@@ -350,7 +350,7 @@ public class SmtpAppenderTest {
         assertFalse(logEventsTxt.toLowerCase().contains("doctype"));
     }
 
-    @Test // no delivery (slow), quickly verifies MimeMessage structure
+    @Test // delivering email to a fake server is slow, instead quickly verify msg structure
     public void testAttachmentGzHtml() throws IOException {
         String bodyUuid = UUID.randomUUID().toString();
         String exceptionUuid = UUID.randomUUID().toString();
@@ -385,7 +385,7 @@ public class SmtpAppenderTest {
         assertTrue(logEventsHtml.toLowerCase().contains("doctype"));
     }
 
-    @Test // no delivery (slow), verifies MimeMessage structure
+    @Test // delivering email to a fake server is slow, instead quickly verify msg structure
     public void testAttachmentGzTxt() throws IOException {
         String bodyUuid = UUID.randomUUID().toString();
         String exceptionUuid = UUID.randomUUID().toString();
@@ -422,7 +422,9 @@ public class SmtpAppenderTest {
     }
 
     /**
-     *  Used by testAttachment* test cases
+     *  Used by testAttachment* to consistently arrange a test SmtpAppender and Logger
+     *  so the test case can tweak the SmtpAppender before its built and verify the
+     *  generated email messages without sending them through a server.
      *
      * @param smtpBuilderConsumer Allow test cases to customize the SmtpAppender before it's created
      * @param loggerConsumer Writes messages to a new LoggerContext each time this function is called
@@ -450,7 +452,13 @@ public class SmtpAppenderTest {
         logger.setAdditive(false);
         logger.setLevel(Level.DEBUG);
 
-        // requires org.mockito:mockito-inline rather than org.mockito:mockito-core
+        /*
+            Mocking static methods requires org.mockito:mockito-inline instead of
+            org.mockito:mockito-core. mockito-inline is a convenience artifact that
+            tweaks mockito-core. Instead of changing pom.xml, mockito-inline
+            functionality has been enabled using
+            /resources/mockito-extensions/org.mockito.plugins.MockMaker
+         */
         List<MimeMessageParser> messages = new ArrayList<>();
         try (MockedStatic<Transport> ignored = Mockito.mockStatic(Transport.class, invocation -> {
             MimeMessage message = invocation.getArgument(0);

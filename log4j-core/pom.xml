@@ -293,6 +293,13 @@
       <artifactId>commons-io</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- Used for testing SmtpAppender -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-email</artifactId>
+      <version>1.5</version>
+      <scope>test</scope>
+    </dependency>
     <!-- Other -->
     <dependency>
       <groupId>commons-codec</groupId>
