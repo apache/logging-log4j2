@@ -36,7 +36,7 @@ public class TomcatLookup implements StrLookup {
     @Override
     public String lookup(String key) {
         final ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        if (cl instanceof WebappProperties) {
+        if (cl instanceof WebappProperties && key != null) {
             final WebappProperties props = (WebappProperties) cl;
             switch (key) {
                 case "catalina.engine.name":
