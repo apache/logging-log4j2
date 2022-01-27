@@ -15,7 +15,7 @@
     limitations under the License.
 ////
 
-# Apache Log4j Security Vulnerabilities
+= Apache Log4j Security Vulnerabilities
 
 This page lists all the security vulnerabilities fixed in released versions of Apache Log4j 2.
 Each vulnerability is given a link:#Security_Impact_Levels[security impact rating]
@@ -44,7 +44,8 @@ If you have encountered an unlisted security vulnerability or other unexpected b
 that has security impact, or if the descriptions here are incomplete, please report them
 privately to the mailto:private@logging.apache.org[Log4j Security Team]. Thank you.
 
-### Fixed in Log4j 2.15.0
+[#log4j-2-15-0]
+=== Fixed in Log4j 2.15.0
 
 https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44228[CVE-2021-4422]:  Apache Log4j2 JNDI
 features do not protect against attacker controlled LDAP and other JNDI related endpoints.
@@ -72,7 +73,8 @@ Credit: This issue was discovered by Chen Zhaojun of Alibaba Cloud Security Team
 References: https://issues.apache.org/jira/browse/LOG4J2-3201[https://issues.apache.org/jira/browse/LOG4J2-3201]
 and https://issues.apache.org/jira/browse/LOG4J2-3198[https://issues.apache.org/jira/browse/LOG4J2-3198].
 
-### Fixed in Log4j 2.13.2
+[#log4j-2-13-2]
+=== Fixed in Log4j 2.13.2
 
 https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-9488[CVE-2020-9488]:
 Improper validation of certificate with host mismatch in Apache Log4j SMTP appender.
@@ -103,7 +105,8 @@ Credit: This issues was discovered by Peter Stöckli.
 
 References: https://issues.apache.org/jira/browse/LOG4J2-2819
 
-### Fixed in Log4j 2.8.2
+[#log4j-2-8-2]
+=== Fixed in Log4j 2.8.2
 
 https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-5645[CVE-2017-5645]: Apache Log4j socket
 receiver deserialization vulnerability.
@@ -129,8 +132,8 @@ at Telstra
 
 References: <https://issues.apache.org/jira/browse/LOG4J2-1863>
 
-[#Security_Impact_Levels]
-## Summary of security impact levels for Apache Log4j
+[#impact-levels]
+== Summary of security impact levels for Apache Log4j
 The Apache Log4j Security Team rates the impact of each security flaw that affects Log4j.
 We've chosen a rating scale quite similar to those used by other major vendors in order to
 be consistent. Basically the goal of the rating system is to answer the question "How worried
@@ -142,24 +145,34 @@ need to read the security advisories to find out more about the flaw.
 
 We use the following descriptions to decide on the impact rating to give each vulnerability:
 
-### Critical
+[#impact-levels-critical]
+=== Critical
 A vulnerability rated with a Critical impact is one which could potentially be exploited by
 a remote attacker to get Log4j to execute arbitrary code (either as the user the server is
 running as, or root). These are the sorts of vulnerabilities that could be exploited automatically
 by worms.
 
-### Important
+[#impact-levels-important]
+=== Important
 A vulnerability rated as Important impact is one which could result in the compromise of data
 or availability of the server. For Log4j this includes issues that allow an easy remote denial
 of service (something that is out of proportion to the attack or with a lasting consequence),
 access to arbitrary files outside of the context root, or access to files that should be otherwise
 prevented by limits or authentication.
 
-### Moderate
+[#impact-levels-moderate]
+=== Moderate
 A vulnerability is likely to be rated as Moderate if there is significant mitigation to make the
 issue less of an impact. This might be because the flaw does not affect likely configurations, or
 it is a configuration that isn't widely used.
 
-### Low
+[#impact-levels-low]
+=== Low
 All other security flaws are classed as a Low impact. This rating is used for issues that are believed
 to be extremely hard to exploit, or where an exploit gives minimal consequences.
+
+[#cve-creation]
+== CVE creation process
+
+Found security vulnerabilities are subject to voting (by means of https://logging.apache.org/guidelines.html[_lazy approval_], preferably) before creating a CVE and populating its associated content.
+This procedure involves only the creation of CVEs and blocks neither (vulnerability) fixes, nor releases.
