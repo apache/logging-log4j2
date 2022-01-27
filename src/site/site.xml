@@ -168,6 +168,7 @@
         <item name="Spring" href="/manual/lookups.html#SpringLookup"/>
         <item name="Structured Data" href="/manual/lookups.html#StructuredDataLookup"/>
         <item name="System Properties" href="/manual/lookups.html#SystemPropertiesLookup"/>
+        <item name="Tomcat" href="/manual/lookups.html#TomcatLookup"/>
         <item name="Upper" href="/manual/lookups.html#UpperLookup"/>
         <item name="Web" href="/manual/lookups.html#WebLookup"/>
       </item>

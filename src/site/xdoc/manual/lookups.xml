@@ -651,6 +651,49 @@ logger.info(PERFORMANCE, "Message in Performance.log");]]></pre>
 </Appenders>]]></pre>            
         </subsection>
         <a name="UpperLookup"/>
+        <a name="TomcatLookup"/>
+        <subsection name="Tomcat Lookup">
+          <p>
+            The TomcatLookup allows applications running on Tomcat to retrieve the names of the component hierarchy
+            containing the application. The keys in parentheses are kept for compatibility with Tomcat JULI.
+          </p>
+          <table>
+            <tr>
+              <th>Key</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>catalina.engine.name<br/>(classloader.serviceName)</td>
+              <td>Returns the name of the current
+                <a href="https://tomcat.apache.org/tomcat-8.5-doc/config/engine.html">Engine</a>
+              </td>
+            </tr>
+            <tr>
+              <td>catalina.host.name<br/>(classloader.hostName)</td>
+              <td>Returns the name of the current
+                <a href="https://tomcat.apache.org/tomcat-8.5-doc/config/host.html">Host</a>
+              </td>
+            </tr>
+            <tr>
+              <td>catalina.context.name<br/>(classloader.webappName)</td>
+              <td>Returns the name of the current
+                <a href="https://tomcat.apache.org/tomcat-8.5-doc/config/context.html">Context</a>
+              </td>
+            </tr>
+            <tr>
+              <td>catalina.engine.logger</td>
+              <td>Returns the logger name of the current engine.</td>
+            </tr>
+            <tr>
+              <td>catalina.host.logger</td>
+              <td>Returns the logger name of the current host.</td>
+            </tr>
+            <tr>
+              <td>catalina.context.logger</td>
+              <td>Returns the logger name of the current context.</td>
+            </tr>
+          </table>
+        </subsection>
         <subsection name="Upper Lookup">
           <p>
             The UpperLookup converts the passed in argument to upper case. Presumably the value will be the
