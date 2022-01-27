@@ -650,7 +650,6 @@ logger.info(PERFORMANCE, "Message in Performance.log");]]></pre>
   <File name="ApplicationLog" fileName="${sys:logPath:-/var/logs}/app.log"/>
 </Appenders>]]></pre>            
         </subsection>
-        <a name="UpperLookup"/>
         <a name="TomcatLookup"/>
         <subsection name="Tomcat Lookup">
           <p>
@@ -694,6 +693,7 @@ logger.info(PERFORMANCE, "Message in Performance.log");]]></pre>
             </tr>
           </table>
         </subsection>
+        <a name="UpperLookup"/>
         <subsection name="Upper Lookup">
           <p>
             The UpperLookup converts the passed in argument to upper case. Presumably the value will be the
