@@ -314,7 +314,7 @@ public final class PatternLayout extends AbstractStringLayout {
             .build();
     }
 
-    private interface PatternSerializer extends Serializer, Serializer2, LocationAware {}
+    private interface PatternSerializer extends Serializer, LocationAware {}
 
     private static final class NoFormatPatternSerializer implements PatternSerializer {
 
@@ -406,7 +406,7 @@ public final class PatternLayout extends AbstractStringLayout {
         }
     }
 
-    private static final class PatternSerializerWithReplacement implements Serializer, Serializer2, LocationAware {
+    private static final class PatternSerializerWithReplacement implements Serializer, LocationAware {
 
         private final PatternSerializer delegate;
         private final RegexReplacement replace;
@@ -535,7 +535,7 @@ public final class PatternLayout extends AbstractStringLayout {
 
     }
 
-    private static final class PatternSelectorSerializer implements Serializer, Serializer2, LocationAware {
+    private static final class PatternSelectorSerializer implements Serializer, LocationAware {
 
         private final PatternSelector patternSelector;
         private final RegexReplacement replace;
