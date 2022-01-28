@@ -148,4 +148,9 @@ public class Log4j1ConfigurationFactoryTest extends AbstractLog4j1ConfigurationT
         super.testConsoleCapitalization();
     }
 
+    @Override
+    @Test
+    public void testDefaultValues() throws Exception {
+        super.testDefaultValues();
+    }
 }

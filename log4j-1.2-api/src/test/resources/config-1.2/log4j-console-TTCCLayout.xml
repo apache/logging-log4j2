@@ -18,10 +18,14 @@
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
   <appender name="Console" class="org.apache.log4j.ConsoleAppender">
+    <param name="Follow" value="true" />
     <param name="Target" value="System.err" />
     <layout class="org.apache.log4j.TTCCLayout">
-      <param name="ThreadPrinting" value="true" />
+      <param name="ThreadPrinting" value="false" />
       <param name="CategoryPrefixing" value="false" />
+      <param name="ContextPrinting" value="false" />
+      <param name="DateFormat" value="ISO8601" />
+      <param name="TimeZone" value="CET" />
     </layout>
   </appender>
 

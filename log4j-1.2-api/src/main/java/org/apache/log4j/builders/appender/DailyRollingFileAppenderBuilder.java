@@ -55,6 +55,9 @@ import org.w3c.dom.Element;
 @Plugin(name = "org.apache.log4j.DailyRollingFileAppender", category = CATEGORY)
 public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements AppenderBuilder {
 
+    private static final String DEFAULT_DATE_PATTERN = ".yyyy-MM-dd";
+    private static final String DATE_PATTERN_PARAM = "DatePattern";
+
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     public DailyRollingFileAppenderBuilder() {
@@ -71,10 +74,11 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
         AtomicReference<Filter> filter = new AtomicReference<>();
         AtomicReference<String> fileName = new AtomicReference<>();
         AtomicReference<String> level = new AtomicReference<>();
-        AtomicBoolean immediateFlush = new AtomicBoolean();
-        AtomicBoolean append = new AtomicBoolean();
-        AtomicBoolean bufferedIo = new AtomicBoolean();
+        AtomicBoolean immediateFlush = new AtomicBoolean(true);
+        AtomicBoolean append = new AtomicBoolean(true);
+        AtomicBoolean bufferedIo = new AtomicBoolean(false);
         AtomicInteger bufferSize = new AtomicInteger(8192);
+        AtomicReference<String> datePattern = new AtomicReference<String>(DEFAULT_DATE_PATTERN);
         forEachElement(appenderElement.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
                 case LAYOUT_TAG:
@@ -124,13 +128,31 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
                             }
                             break;
                         }
+                        case DATE_PATTERN_PARAM: {
+                            String value = getValueAttribute(currentElement);
+                            if (value == null) {
+                                LOGGER.warn("No value supplied for DatePattern parameter, ignoring.");
+                            } else {
+                                datePattern.set(value);
+                            }
+                            break;
+                        }
+                        case IMMEDIATE_FLUSH_PARAM: {
+                            String value = getValueAttribute(currentElement);
+                            if (value == null) {
+                                LOGGER.warn("No value supplied for ImmediateFlush parameter. Using default of {}", true);
+                            } else {
+                                immediateFlush.set(Boolean.getBoolean(value));
+                            }
+                            break;
+                        }
                     }
                     break;
                 }
             }
         });
         return createAppender(name, layout.get(), filter.get(), fileName.get(), append.get(), immediateFlush.get(),
-                level.get(), bufferedIo.get(), bufferSize.get(), config);
+                level.get(), bufferedIo.get(), bufferSize.get(), datePattern.get(), config);
     }
 
     @Override
@@ -140,21 +162,23 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
         Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
         String fileName = getProperty(FILE_PARAM);
         String level = getProperty(THRESHOLD_PARAM);
-        boolean append = getBooleanProperty(APPEND_PARAM);
-        boolean immediateFlush = false;
-        boolean bufferedIo = getBooleanProperty(BUFFERED_IO_PARAM);
-        int bufferSize = Integer.parseInt(getProperty(BUFFER_SIZE_PARAM, "8192"));
+        boolean append = getBooleanProperty(APPEND_PARAM, true);
+        boolean immediateFlush = getBooleanProperty(IMMEDIATE_FLUSH_PARAM, true);
+        boolean bufferedIo = getBooleanProperty(BUFFERED_IO_PARAM, false);
+        int bufferSize = getIntegerProperty(BUFFER_SIZE_PARAM, 8192);
+        String datePattern = getProperty(DATE_PATTERN_PARAM, DEFAULT_DATE_PATTERN);
         return createAppender(name, layout, filter, fileName, append, immediateFlush,
-                level, bufferedIo, bufferSize, configuration);
+                level, bufferedIo, bufferSize, datePattern, configuration);
     }
 
     private <T extends Log4j1Configuration> Appender createAppender(final String name, final Layout layout,
             final Filter filter, final String fileName, final boolean append, boolean immediateFlush,
-            final String level, final boolean bufferedIo, final int bufferSize, final T configuration) {
+            final String level, final boolean bufferedIo, final int bufferSize, final String datePattern,
+            final T configuration) {
 
         org.apache.logging.log4j.core.Layout<?> fileLayout = null;
         if (bufferedIo) {
-            immediateFlush = true;
+            immediateFlush = false;
         }
         if (layout instanceof LayoutWrapper) {
             fileLayout = ((LayoutWrapper) layout).getLayout();
@@ -166,7 +190,7 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
             LOGGER.warn("Unable to create File Appender, no file name provided");
             return null;
         }
-        String filePattern = fileName + "%d{.yyyy-MM-dd}";
+        String filePattern = fileName + "%d{" + datePattern + "}";
         TriggeringPolicy timePolicy = TimeBasedTriggeringPolicy.newBuilder().withModulate(true).build();
         TriggeringPolicy policy = CompositeTriggeringPolicy.createPolicy(timePolicy);
         RolloverStrategy strategy = DefaultRolloverStrategy.newBuilder()
@@ -179,6 +203,8 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
                 .setLayout(fileLayout)
                 .setFilter(fileFilter)
                 .withFileName(fileName)
+                .withAppend(append)
+                .withBufferedIo(bufferedIo)
                 .withBufferSize(bufferSize)
                 .withImmediateFlush(immediateFlush)
                 .withFilePattern(filePattern)

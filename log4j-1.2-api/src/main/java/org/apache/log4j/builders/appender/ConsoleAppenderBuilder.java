@@ -26,6 +26,7 @@ import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.log4j.Appender;
@@ -53,6 +54,7 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
     private static final String SYSTEM_OUT = "System.out";
     private static final String SYSTEM_ERR = "System.err";
     private static final String TARGET_PARAM = "Target";
+    private static final String FOLLOW_PARAM = "Follow";
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -70,6 +72,7 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
         AtomicReference<Layout> layout = new AtomicReference<>();
         AtomicReference<List<Filter>> filters = new AtomicReference<>(new ArrayList<>());
         AtomicReference<String> level = new AtomicReference<>();
+        AtomicBoolean follow = new AtomicBoolean(false);
         forEachElement(appenderElement.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
                 case LAYOUT_TAG:
@@ -107,6 +110,24 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
                             }
                             break;
                         }
+                        case FOLLOW_PARAM: {
+                            String value = getValueAttribute(currentElement);
+                            if (value == null) {
+                                LOGGER.warn("No value supplied for Follow parameter. Using default of {}", false);
+                            } else {
+                                follow.set(Boolean.valueOf(value));
+                            }
+                            break;
+                        }
+                        case IMMEDIATE_FLUSH_PARAM: {
+                            String value = getValueAttribute(currentElement);
+                            if (value == null) {
+                                LOGGER.warn("No value supplied for ImmediateFlush parameter. Using default of {}", true);
+                            } else if (!Boolean.getBoolean(name)) {
+                                LOGGER.warn("The value {} for ImmediateFlush parameter is not supported.", false);
+                            }
+                            break;
+                        }
                     }
                     break;
                 }
@@ -122,7 +143,7 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
             }
             current = f;
         }
-        return createAppender(name, layout.get(), head, level.get(), target.get(), config);
+        return createAppender(name, layout.get(), head, level.get(), target.get(), follow.get(), config);
     }
 
     @Override
@@ -132,11 +153,12 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
         Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
         String level = getProperty(THRESHOLD_PARAM);
         String target = getProperty(TARGET_PARAM);
-        return createAppender(name, layout, filter, level, target, configuration);
+        boolean follow = getBooleanProperty(FOLLOW_PARAM, false);
+        return createAppender(name, layout, filter, level, target, follow, configuration);
     }
 
     private <T extends Log4j1Configuration> Appender createAppender(String name, Layout layout, Filter filter,
-            String level, String target, T configuration) {
+            String level, String target, boolean follow, T configuration) {
         org.apache.logging.log4j.core.Layout<?> consoleLayout = null;
 
         if (layout instanceof LayoutWrapper) {
@@ -150,6 +172,7 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
         return new AppenderWrapper(ConsoleAppender.newBuilder()
                 .setName(name)
                 .setTarget(consoleTarget)
+                .setFollow(follow)
                 .setLayout(consoleLayout)
                 .setFilter(consoleFilter)
                 .setConfiguration(configuration)
