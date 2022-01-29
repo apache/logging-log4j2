@@ -158,8 +158,10 @@
           <properties>
             <configurationParameters>
               <!-- LOG4J2-2921: use parallel test execution by default -->
+              <!-- TODO: testing workflow without parallelism enabled
               junit.jupiter.execution.parallel.enabled = true
               junit.jupiter.execution.parallel.mode.default = concurrent
+              -->
             </configurationParameters>
           </properties>
           <forkCount>1C</forkCount>
