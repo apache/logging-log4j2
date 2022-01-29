@@ -66,12 +66,12 @@
           appenders and filters or manipulate the configuration in any way.
         </p>
         <a name="Architecture"/>
-        <subsection name="Configuration Archhitecture">
+        <subsection name="Configuration Architecture">
           <p>
             In part because support for XML was added first, Log4j's configuration is reflected as a tree structure.
             In fact every configuration dialect, including the ConfigurationBuilder, generates a Node for every
             configuration element. A node is a fairly simple structure that contains a set of attributes, a set of
-            child nodes and a PluginType. It is important to note that every Node must have a corresponding plugn,
+            child nodes and a PluginType. It is important to note that every Node must have a corresponding plugin,
             as the plugin is the component that actually performs the work represented by the node.
           </p>
           <p>
@@ -79,19 +79,19 @@
             that declares what file extensions it supports and what its priority is. Properties have the highest
             precedence with a value of 8, followed by yaml, json and xml. When autoconfiguration is performed Log4j
             will call each of these factories in order to determine which, if any, support the specified configuration
-            file format. If one is found that factory will create the corresponding Configuratoin object and pass the
+            file format. If one is found that factory will create the corresponding Configuration object and pass the
             reference to the configuration data to it.
           </p>
           <p>Every configuration implementation, such as XMLConfiguration, YamlConfiguration, JsonConfiguration, etc.
             has the primary task of converting the configuration text into the Node tree, typically by parsing the
             text with whatever tool is available for that document type. It should be noted that while most of the
-            supported document types are inherintly tree structured, the Java properties syntax is not. Because of the
+            supported document types are inherently tree structured, the Java properties syntax is not. Because of the
             need to convert the syntax into a Node tree the Java properties syntax used by Log4j required all properties
             follow a naming pattern that made the tree structure clear. As a consequence, the Java Properties format
             tends to be more verbose than using a different document type.
           </p>
           <p>
-            Once the Node tree is created control is delegated to AbstractConfiguration, which convertes the Nodes into
+            Once the Node tree is created control is delegated to AbstractConfiguration, which converts the Nodes into
             their respective Java objects using Log4j's Plugin system and provides all the common functionality.
           </p>
         </subsection>
@@ -115,9 +115,9 @@
             pruned.
           </p>
           <p>
-            Arbiters may occur anywhere an element is allowed in the configuration. So an Aribiter could encapsulate
+            Arbiters may occur anywhere an element is allowed in the configuration. So an Arbiter could encapsulate
             something as simple as a single property declaration or a whole set of Appenders or Loggers. Arbiters
-            may also be nested although Arbiters that are the descendant of another arbiter will only be evalued if the
+            may also be nested although Arbiters that are the descendant of another arbiter will only be evaluated if the
             ancestor returned true. The child elements of an Arbiter must be valid elements for whatever element is
             the parent of the Arbiter.
           </p>
@@ -155,7 +155,7 @@
             impact any other Arbiters. This can be cumbersome when you simply want to use one of a set of choices. A
             special plugin named "Select" can be used in this case. Each element under the Select is required to be
             an Arbiter. The first Arbiter that returns a true value will be the one used while others are ignored.
-            If no Arbiter returns true a DefaultAtrbiter may be configured with the default configuration elements.
+            If no Arbiter returns true a DefaultArbiter may be configured with the default configuration elements.
             The DefaultArbiter is an Arbiter that always returns true, so using it outside of a Select would result in
             its configured elements always being included just as if it hadn't been present.
           </p>
@@ -926,7 +926,7 @@ Configuration:
               to be defined in sets of properties that begin with <i>component.&lt;.identifier&gt;.</i>. The identifier does not
               have to match the name of the component being defined but must uniquely identify all the attributes and
               subcomponents that are part of the component. If the list of identifiers is not present the
-              identifer must not contain a '.'. Each individual component MUST have a "type" attribute
+              identifier must not contain a '.'. Each individual component MUST have a "type" attribute
               specified that identifies the component's Plugin type.
             </p>
             <p>
@@ -942,7 +942,7 @@ Configuration:
             </p>
             <p>
               Properties configuration files support the advertiser, monitorInterval, name, packages, shutdownHook,
-              shutdownTimeout, status, verbose, and dest attrbutes. See <a href="#ConfigurationSyntax">Configuration Syntax</a>
+              shutdownTimeout, status, verbose, and dest attributes. See <a href="#ConfigurationSyntax">Configuration Syntax</a>
               for the definitions of these attributes.
             </p>
           <pre class="prettyprint linenums">
@@ -1250,7 +1250,7 @@ rootLogger.appenderRef.stdout.ref = STDOUT
                 <td>System properties. The formats are <code>${dollar}{sys:some.property}</code> and <code>${dollar}{sys:some.property:-default_value}</code>.</td>
               </tr>
             </table>
-          <a name="DefaultProperties"/><h3>Default Properites</h3><p>
+          <a name="DefaultProperties"/><h3>Default Properties</h3><p>
           A default property map can be declared in the configuration file by placing a Properties
           element directly after the Configuration element and before any Loggers, Filters,
           Appenders, etc. are declared. If the value cannot be located in the specified lookup the
@@ -1519,7 +1519,7 @@ rootLogger.appenderRef.stdout.ref = STDOUT
                   configurations.</li>
                 <li>Filters are aggregated under a CompositeFilter if more than one Filter is defined. Since Filters
                   are not named duplicates may be present.</li>
-                <li>Scripts and ScriptFile references are aggregated. Duplicate definiations replace those in previous
+                <li>Scripts and ScriptFile references are aggregated. Duplicate definitions replace those in previous
                   configurations.</li>
                 <li>Appenders are aggregated. Appenders with the same name are replaced by those in later
                   configurations, including all of the Appender's subcomponents.</li>
@@ -1555,7 +1555,7 @@ rootLogger.appenderRef.stdout.ref = STDOUT
             to be able to diagnose problems in the logging configuration or in the configured components. Since
             logging has not been configured, "normal" logging cannot be used during initialization. In addition,
             normal logging within appenders could create infinite recursion which Log4j will detect and cause
-            the recursive events to be ignored. To accomodate this need, the Log4j 2 API includes a
+            the recursive events to be ignored. To accommodate this need, the Log4j 2 API includes a
             <a class="javadoc" href="../log4j-api/apidocs/org/apache/logging/log4j/status/StatusLogger.html">StatusLogger</a>.
             Components declare an instance of the StatusLogger similar to:
           </p>
@@ -1839,7 +1839,7 @@ public class AwesomeTest {
           <p>
             The following is a list of available global configuration properties. Note that these can only be set once
             per JVM process unlike configuration settings available in configuration files. The <i>Property Name</i>
-            column contains the name used in properties files and system properties; <i>Environemt Variable</i>
+            column contains the name used in properties files and system properties; <i>Environment Variable</i>
             for the equivalent environment variable; and <i>Legacy Property Name</i> for the pre-2.10 name.
           </p>
 <style>
