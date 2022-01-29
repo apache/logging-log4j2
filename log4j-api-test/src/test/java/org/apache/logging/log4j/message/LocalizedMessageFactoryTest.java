@@ -17,6 +17,9 @@
 package org.apache.logging.log4j.message;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceAccessMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -26,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * Tests {@link LocalizedMessageFactory}.
  */
+@ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
 public class LocalizedMessageFactoryTest {
 
     @Test
