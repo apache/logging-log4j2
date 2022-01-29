@@ -18,7 +18,6 @@ name: build
 on:
   push:
     branches:
-      - master
       - release-2.x
   pull_request:
 
