@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - release-2.x
   pull_request:
 
 jobs:
@@ -50,5 +49,4 @@ jobs:
             --show-version --batch-mode --errors --no-transfer-progress \
             -DtrimStackTrace=false \
             -Dsurefire.rerunFailingTestsCount=2 \
-            -Dlog4j2.junit.fileCleanerSleepPeriodMillis=1000 \
-            --global-toolchains ".github/workflows/maven-toolchains.xml"
+            -Dlog4j2.junit.fileCleanerSleepPeriodMillis=1000
