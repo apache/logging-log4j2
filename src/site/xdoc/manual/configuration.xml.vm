@@ -942,16 +942,20 @@ Configuration:
             </p>
             <p>
               As of version 2.17.2,
-              appenders can use the wrapper element as the implicit name of the component.
+              components can use the wrapper element as the implicit name of the component. If the name contains
+              dots, they must be replaced with dashes.
               If no name is specified, the grouping element is used as the name. For example, the following
               two properties snippets are equivalent.
             </p>
             <pre class="prettyprint linenums">
 appender.STDOUT.type = Console
+logger.org-apache-logging-log4j.level = INFO
             </pre>
             <pre class="prettyprint linenums">
 appender.console.type = Console
 appender.console.name = STDOUT
+logger.1.level = INFO
+logger.1.name = org.apache.logging.log4j
             </pre>
             <p>
               As of version 2.17.2,
