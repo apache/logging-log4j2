@@ -35,7 +35,7 @@ public class LocalizedMessageFactoryTest {
     @Test
     public void testNewMessage() {
         final LocalizedMessageFactory localizedMessageFactory = new LocalizedMessageFactory(
-                ResourceBundle.getBundle("MF", Locale.US));
+                ResourceBundle.getBundle("MF", Locale.US, getClass().getClassLoader()));
         final Message message = localizedMessageFactory.newMessage("hello_world");
         assertEquals("Hello world.", message.getFormattedMessage());
     }
