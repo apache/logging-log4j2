@@ -51,21 +51,25 @@ import java.io.Serializable;
  * <code>BufferSize</code> logging events in its cyclic buffer. This keeps
  * memory requirements at a reasonable level while still delivering useful
  * application context.
+ * </p>
  *
  * <p>
  * By default, an email message will formatted as HTML. This can be modified by
  * setting a layout for the appender.
+ * </p>
  *
  * <p>
  * When <code>AttachEvents</code> is enabled, the most recent log event appears
  * in the body of the email and all events are attached to the email.
  * <code>AttachEventsCompression</code> and the <code>Layout</code> controls the
  * attachment's extension: logEvents.html, logEvents.html.zip, logEvents.txt, etc
+ * </p>
  *
  * <p>
  * By default, an email message will be sent when an ERROR or higher severity
  * message is appended. This can be modified by setting a filter for the
  * appender.
+ * </p>
  */
 @Plugin(name = "SMTP", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class SmtpAppender extends AbstractAppender {

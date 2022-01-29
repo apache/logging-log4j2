@@ -55,8 +55,7 @@ public class SmtpManager extends AbstractManager {
     /**
      * Used when AttachEvents is true
      */
-    public enum AttachEventsCompression
-    {
+    public enum AttachEventsCompression {
         NONE,
         ZIP,
         GZ;
@@ -84,6 +83,7 @@ public class SmtpManager extends AbstractManager {
 
     private final FactoryData data;
 
+    // setSubject is called here and in sendEvents to support deprecated sendMultipartMessage
     private static MimeMessage createMimeMessage(final FactoryData data, final Session session, final LogEvent appendEvent)
             throws MessagingException {
         return new MimeMessageBuilder(session).setFrom(data.from).setReplyTo(data.replyto)
@@ -298,58 +298,60 @@ public class SmtpManager extends AbstractManager {
     private void addAttachment(final MimeMultipart mp, final LogEvent[] priorEvents, final LogEvent appendEvent,
                                final Layout<?> layout) throws IOException, MessagingException {
         final byte[] rawBytes = formatContentToBytes(priorEvents, appendEvent, layout);
-        MimeBodyPart part = new MimeBodyPart();
-        if (data.attachEventsCompression == AttachEventsCompression.NONE) {
-            if (layout instanceof HtmlLayout) {
-                part.setDataHandler(new DataHandler(new ByteArrayDataSource(rawBytes, layout.getContentType())));
-                part.setFileName("logEvents.html");
-            } else {
-                part.setDataHandler(new DataHandler(new ByteArrayDataSource(rawBytes, "text/plain")));
-                part.setFileName("logEvents.txt");
-            }
-        } else if (data.attachEventsCompression == AttachEventsCompression.ZIP) {
-            if (layout instanceof HtmlLayout) {
-                byte[] compressed = zipCompress(rawBytes, "logEvents.html");
-                part.setDataHandler(new DataHandler(new ByteArrayDataSource(compressed, "application/zip")));
-                part.setFileName("logEvents.html.zip");
-            } else {
-                byte[] compressed = zipCompress(rawBytes, "logEvents.txt");
-                part.setDataHandler(new DataHandler(new ByteArrayDataSource(compressed, "application/zip")));
-                part.setFileName("logEvents.txt.zip");
-            }
-        } else if (data.attachEventsCompression == AttachEventsCompression.GZ) {
-            if (layout instanceof HtmlLayout) {
-                byte[] compressed = gzipCompress(rawBytes);
-                part.setDataHandler(new DataHandler(new ByteArrayDataSource(compressed, "application/gzip")));
-                part.setFileName("logEvents.html.gz");
-            } else {
-                byte[] compressed = gzipCompress(rawBytes);
-                part.setDataHandler(new DataHandler(new ByteArrayDataSource(compressed, "application/gzip")));
-                part.setFileName("logEvents.txt.gz");
-            }
+        final MimeBodyPart part = new MimeBodyPart();
+        switch (data.attachEventsCompression) {
+            case NONE:
+                if (layout instanceof HtmlLayout) {
+                    part.setDataHandler(new DataHandler(new ByteArrayDataSource(rawBytes, layout.getContentType())));
+                    part.setFileName("logEvents.html");
+                } else {
+                    part.setDataHandler(new DataHandler(new ByteArrayDataSource(rawBytes, "text/plain")));
+                    part.setFileName("logEvents.txt");
+                }
+                break;
+            case ZIP:
+                if (layout instanceof HtmlLayout) {
+                    final byte[] compressed = zipCompress(rawBytes, "logEvents.html");
+                    part.setDataHandler(new DataHandler(new ByteArrayDataSource(compressed, "application/zip")));
+                    part.setFileName("logEvents.html.zip");
+                } else {
+                    final byte[] compressed = zipCompress(rawBytes, "logEvents.txt");
+                    part.setDataHandler(new DataHandler(new ByteArrayDataSource(compressed, "application/zip")));
+                    part.setFileName("logEvents.txt.zip");
+                }
+                break;
+            case GZ:
+                if (layout instanceof HtmlLayout) {
+                    final byte[] compressed = gzipCompress(rawBytes);
+                    part.setDataHandler(new DataHandler(new ByteArrayDataSource(compressed, "application/gzip")));
+                    part.setFileName("logEvents.html.gz");
+                } else {
+                    final byte[] compressed = gzipCompress(rawBytes);
+                    part.setDataHandler(new DataHandler(new ByteArrayDataSource(compressed, "application/gzip")));
+                    part.setFileName("logEvents.txt.gz");
+                }
+                break;
         }
         part.setDisposition(Part.ATTACHMENT);
         mp.addBodyPart(part);
     }
 
     private byte[] zipCompress(byte[] data, String fileName) throws IOException {
-        try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            try (final ZipOutputStream zos = new ZipOutputStream(baos)) {
-                final ZipEntry zipEntry = new ZipEntry(fileName);
-                zos.putNextEntry(zipEntry);
-                zos.write(data);
-            }
-            return baos.toByteArray();
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (final ZipOutputStream zos = new ZipOutputStream(baos)) {
+            final ZipEntry zipEntry = new ZipEntry(fileName);
+            zos.putNextEntry(zipEntry);
+            zos.write(data);
         }
+        return baos.toByteArray();
     }
 
     private byte[] gzipCompress(byte[] data) throws IOException {
-        try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            try (final GZIPOutputStream gzos = new GZIPOutputStream(baos)) {
-                gzos.write(data);
-            }
-            return baos.toByteArray();
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (final GZIPOutputStream gzos = new GZIPOutputStream(baos)) {
+            gzos.write(data);
         }
+        return baos.toByteArray();
     }
 
     /**
