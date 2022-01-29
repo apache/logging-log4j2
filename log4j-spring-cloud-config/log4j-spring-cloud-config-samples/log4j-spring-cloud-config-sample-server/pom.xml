@@ -252,7 +252,7 @@
     <repository>
       <id>apache.snapshots</id>
       <name>Apache snapshots repository</name> 
-      <url>http://repository.apache.org/content/groups/snapshots</url> 
+      <url>https://repository.apache.org/content/groups/snapshots</url> 
       <snapshots> 
         <enabled>true</enabled>
       </snapshots> 
