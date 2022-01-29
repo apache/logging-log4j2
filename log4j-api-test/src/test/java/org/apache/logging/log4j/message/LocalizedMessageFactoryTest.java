@@ -35,16 +35,23 @@ public class LocalizedMessageFactoryTest {
     @Test
     public void testNewMessage() {
         final LocalizedMessageFactory localizedMessageFactory = new LocalizedMessageFactory(
-                ResourceBundle.getBundle("MF", Locale.US, getClass().getModule()));
+                ResourceBundle.getBundle("MF", Locale.US));
         final Message message = localizedMessageFactory.newMessage("hello_world");
         assertEquals("Hello world.", message.getFormattedMessage());
     }
 	
-	  @Test
+    @Test
+    @ResourceLock(Resources.LOCALE)
     public void testNewMessageUsingBaseName() {
-        final LocalizedMessageFactory localizedMessageFactory = new LocalizedMessageFactory("MF");
-        final String testMsg = "hello_world";
-        final Message message = localizedMessageFactory.newMessage(testMsg);
-        assertEquals("Hello world.", message.getFormattedMessage());
+        final Locale defaultLocale = Locale.getDefault();
+        Locale.setDefault(Locale.US);
+        try {
+            final LocalizedMessageFactory localizedMessageFactory = new LocalizedMessageFactory("MF");
+            final String testMsg = "hello_world";
+            final Message message = localizedMessageFactory.newMessage(testMsg);
+            assertEquals("Hello world.", message.getFormattedMessage());
+        } finally {
+            Locale.setDefault(defaultLocale);
+        }
     }
 }

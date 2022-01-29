@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.message;
 
-import java.io.Serializable;
-import java.util.Locale;
-
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.logging.log4j.test.junit.Mutable;
 import org.junit.jupiter.api.Test;
@@ -26,7 +23,10 @@ import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.io.Serializable;
+import java.util.Locale;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests LocalizedMessage.
@@ -92,9 +92,16 @@ public class LocalizedMessageTest {
     }
 	
 	@Test
+    @ResourceLock(Resources.LOCALE)
     public void testMessageUsingBaseName() { // LOG4J2-2850
-        final String testMsg = "hello_world";
-        final LocalizedMessage msg = new LocalizedMessage("MF", testMsg, null);
-        assertEquals("Hello world.", msg.getFormattedMessage());
+        final Locale defaultLocale = Locale.getDefault();
+        Locale.setDefault(Locale.US);
+        try {
+            final String testMsg = "hello_world";
+            final LocalizedMessage msg = new LocalizedMessage("MF", testMsg, null);
+            assertEquals("Hello world.", msg.getFormattedMessage());
+        } finally {
+            Locale.setDefault(defaultLocale);
+        }
     }
 }
