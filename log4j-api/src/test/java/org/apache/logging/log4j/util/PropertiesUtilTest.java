@@ -45,18 +45,22 @@ public class PropertiesUtilTest {
         assertHasAllProperties(PropertiesUtil.extractSubset(properties, "b."));
         assertHasAllProperties(PropertiesUtil.extractSubset(properties, "c.1"));
         assertHasAllProperties(PropertiesUtil.extractSubset(properties, "dd"));
-        // One invalid entry remains
-        assertEquals(1, properties.size());
+        assertEquals(2, properties.size());
+        // this one does not start with 'b.'
+        assertTrue(properties.containsKey("b"));
+        assertTrue(properties.containsKey("e"));
     }
 
     @Test
     public void testPartitionOnCommonPrefix() {
         final Map<String, Properties> parts = PropertiesUtil.partitionOnCommonPrefixes(properties);
-        assertEquals(4, parts.size());
+        assertEquals(5, parts.size());
         assertHasAllProperties(parts.get("a"));
         assertHasAllProperties(parts.get("b"));
         assertHasAllProperties(PropertiesUtil.partitionOnCommonPrefixes(parts.get("c")).get("1"));
         assertHasAllProperties(parts.get("dd"));
+        assertTrue(parts.containsKey("e"));
+        assertTrue(parts.get("e").containsKey(""));
     }
 
     private static void assertHasAllProperties(final Properties properties) {

@@ -118,9 +118,9 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
                 throw new ConfigurationException("No type provided for script - must be Script or ScriptFile");
             }
             if (type.equalsIgnoreCase("script")) {
-                builder.add(createScript(scriptProps));
+                builder.add(createScript(entry.getKey(), scriptProps));
             } else {
-                builder.add(createScriptFile(scriptProps));
+                builder.add(createScriptFile(entry.getKey(), scriptProps));
             }
         }
 
@@ -169,25 +169,26 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
             for (final String loggerName : loggerNames) {
                 final String name = loggerName.trim();
                 if (!name.equals(LoggerConfig.ROOT)) {
-                    builder.add(createLogger(name, PropertiesUtil.extractSubset(rootProperties, "logger." +
-                            name)));
+                    final Properties loggerProps = PropertiesUtil.extractSubset(rootProperties, "logger." + name);
+                    useSyntheticLevelAndAppenderRefs(name, loggerProps);
+                    builder.add(createLogger(name, loggerProps));
                 }
             }
         } else {
-            final Properties context = PropertiesUtil.extractSubset(rootProperties, "logger");
-            final Map<String, Properties> loggers = PropertiesUtil.partitionOnCommonPrefixes(context);
+            final Map<String, Properties> loggers = PropertiesUtil
+                    .partitionOnCommonPrefixes(PropertiesUtil.extractSubset(rootProperties, "logger"));
             for (final Map.Entry<String, Properties> entry : loggers.entrySet()) {
                 final String name = entry.getKey().trim();
                 if (!name.equals(LoggerConfig.ROOT)) {
                     final Properties loggerProps = entry.getValue();
-                    useSyntheticLevelAndAppenderRefs(name, loggerProps, context);
+                    useSyntheticLevelAndAppenderRefs(name, loggerProps);
                     builder.add(createLogger(name, loggerProps));
                 }
             }
         }
 
         final Properties props = PropertiesUtil.extractSubset(rootProperties, "rootLogger");
-        useSyntheticLevelAndAppenderRefs("rootLogger", props, rootProperties);
+        useSyntheticLevelAndAppenderRefs("rootLogger", props);
         if (props.size() > 0) {
             builder.add(createRootLogger(props));
         }
@@ -197,8 +198,8 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
         return builder.build(false);
     }
 
-    private static void useSyntheticLevelAndAppenderRefs(final String propertyName, final Properties loggerProps, final Properties context) {
-        final String propertyValue = (String) context.remove(propertyName);
+    private static void useSyntheticLevelAndAppenderRefs(final String propertyName, final Properties loggerProps) {
+        final String propertyValue = (String) loggerProps.remove("");
         if (propertyValue != null) {
             final String[] parts = propertyValue.split(",");
             if (parts.length > 0) {
@@ -214,8 +215,13 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
         }
     }
 
-    private ScriptComponentBuilder createScript(final Properties properties) {
-        final String name = (String) properties.remove("name");
+    private static String getComponentName(final String key, final Properties properties) {
+        // Use the key as default component name. Dots can be encoded with dashes.
+        return Objects.toString(properties.remove(CONFIG_NAME), key.replaceAll("-", "."));
+    }
+
+    private ScriptComponentBuilder createScript(final String key, final Properties properties) {
+        final String name = getComponentName(key, properties);
         final String language = (String) properties.remove("language");
         final String text = (String) properties.remove("text");
         final ScriptComponentBuilder scriptBuilder = builder.newScript(name, language, text);
@@ -223,15 +229,15 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
     }
 
 
-    private ScriptFileComponentBuilder createScriptFile(final Properties properties) {
-        final String name = (String) properties.remove("name");
+    private ScriptFileComponentBuilder createScriptFile(final String key, final Properties properties) {
+        final String name = getComponentName(key, properties);
         final String path = (String) properties.remove("path");
         final ScriptFileComponentBuilder scriptFileBuilder = builder.newScriptFile(name, path);
         return processRemainingProperties(scriptFileBuilder, properties);
     }
 
     private AppenderComponentBuilder createAppender(final String key, final Properties properties) {
-        final String name = Objects.toString(properties.remove(CONFIG_NAME), key);
+        final String name = getComponentName(key, properties);
         if (Strings.isEmpty(name)) {
             throw new ConfigurationException("No name attribute provided for Appender " + key);
         }
@@ -274,7 +280,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
     }
 
     private LoggerComponentBuilder createLogger(final String key, final Properties properties) {
-        final String name = (String) properties.remove(CONFIG_NAME);
+        final String name = getComponentName(key, properties);
         final String location = (String) properties.remove("includeLocation");
         if (Strings.isEmpty(name)) {
             throw new ConfigurationException("No name attribute provided for Logger " + key);
@@ -348,7 +354,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
     private static <B extends ComponentBuilder<B>> ComponentBuilder<B> createComponent(final ComponentBuilder<?> parent,
                                                                                        final String key,
                                                                                        final Properties properties) {
-        final String name = (String) properties.remove(CONFIG_NAME);
+        final String name = getComponentName(key, properties);
         final String type = (String) properties.remove(CONFIG_TYPE);
         if (Strings.isEmpty(type)) {
             throw new ConfigurationException("No type attribute provided for component " + key);
