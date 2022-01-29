@@ -20,10 +20,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Setup JDK 17
+        uses: actions/setup-java@v2.5.0
+        with:
+          distribution: temurin
+          java-version: 17
+          java-package: jdk
+          architecture: x64
+          cache: 'maven'
+
       - name: Setup JDK 11
         uses: actions/setup-java@v2.5.0
         with:
-          distribution: 'zulu'
+          distribution: temurin
           java-version: 11
           java-package: jdk
           architecture: x64
@@ -49,4 +58,5 @@ jobs:
             --show-version --batch-mode --errors --no-transfer-progress \
             -DtrimStackTrace=false \
             -Dsurefire.rerunFailingTestsCount=2 \
-            -Dlog4j2.junit.fileCleanerSleepPeriodMillis=1000
+            -Dlog4j2.junit.fileCleanerSleepPeriodMillis=1000 \
+            --global-toolchains .github/workflows/maven-toolchains.xml
