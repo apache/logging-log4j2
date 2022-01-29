@@ -4,7 +4,7 @@ Apache Log4j 2 is an upgrade to Log4j that provides significant improvements ove
 and provides many of the improvements available in Logback while fixing some inherent problems in Logback's architecture.
 
 [![Maven Central](https://img.shields.io/maven-central/v/org.apache.logging.log4j/log4j-api.svg)](http://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api)
-
+[![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/apache/logging-log4j2/build/release-2.x)](https://github.com/apache/logging-log4j2/actions/workflows/build.yml)
 
 ## Pull Requests on Github
 
