@@ -159,7 +159,7 @@
             <configurationParameters>
               <!-- LOG4J2-2921: use parallel test execution by default -->
               junit.jupiter.execution.parallel.enabled = true
-              junit.jupiter.execution.parallel.mode.default = concurrent
+              junit.jupiter.execution.parallel.mode.default = fork
             </configurationParameters>
           </properties>
           <forkCount>1C</forkCount>
@@ -249,10 +249,9 @@
                project -->
           <failOnError>false</failOnError>
           <detectOfflineLinks>false</detectOfflineLinks>
-          <additionalparam>-Xdoclint:none</additionalparam>
           <linksource>true</linksource>
           <links>
-            <link>http://www.osgi.org/javadoc/r4v43/core/</link>
+            <link>https://www.osgi.org/javadoc/r4v43/core/</link>
           </links>
           <source>8</source>
         </configuration>
