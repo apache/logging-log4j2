@@ -184,6 +184,9 @@
       <action type="add" dev="ggregory" due-to="Gary Gregory">
         Add Configurator.setLevel(Logger, Level), setLevel(String, String), and setLevel(Class, Level).
       </action>
+      <action type="add" dev="mattsicker" issue="LOG4J2-3341">
+        Add shorthand syntax for properties configuration format for specifying a logger level and appender refs and implicit appender names for when no name is specified.
+      </action>
       <!-- UPDATES -->
       <action dev="ggregory" type="udpate" due-to="Dependabot">
         Bump mongodb3.version from 3.12.4 to 3.12.10 #605.
