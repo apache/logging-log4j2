@@ -28,6 +28,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Properties;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PropertiesUtilTest {
@@ -45,7 +46,7 @@ public class PropertiesUtilTest {
         assertHasAllProperties(PropertiesUtil.extractSubset(properties, "b."));
         assertHasAllProperties(PropertiesUtil.extractSubset(properties, "c.1"));
         assertHasAllProperties(PropertiesUtil.extractSubset(properties, "dd"));
-        assertEquals(0, properties.size());
+        assertThat(properties).containsOnly(Map.entry("a", "invalid"));
     }
 
     @Test

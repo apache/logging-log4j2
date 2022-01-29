@@ -552,11 +552,13 @@ public final class PropertiesUtil {
     public static Map<String, Properties> partitionOnCommonPrefixes(final Properties properties) {
         final Map<String, Properties> parts = new ConcurrentHashMap<>();
         for (final String key : properties.stringPropertyNames()) {
-            final String prefix = key.substring(0, key.indexOf('.'));
+            final int idx = key.indexOf('.');
+            if (idx < 0) continue;
+            final String prefix = key.substring(0, idx);
             if (!parts.containsKey(prefix)) {
                 parts.put(prefix, new Properties());
             }
-            parts.get(prefix).setProperty(key.substring(key.indexOf('.') + 1), properties.getProperty(key));
+            parts.get(prefix).setProperty(key.substring(idx + 1), properties.getProperty(key));
         }
         return parts;
     }
