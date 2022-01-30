@@ -22,11 +22,11 @@
 
   <bannerLeft>
     <src>images/ls-logo.jpg</src>
-    <href>http://logging.apache.org</href>
+    <href>https://logging.apache.org</href>
   </bannerLeft>
   <bannerRight>
     <src>images/logo.png</src>
-    <href>http://logging.apache.org/log4j/2.x</href>
+    <href>https://logging.apache.org/log4j/2.x</href>
   </bannerRight>
   <skin>
     <groupId>org.apache.maven.skins</groupId>
@@ -309,14 +309,14 @@
       <item name="Log4Cxx" href="https://logging.apache.org/log4cxx/latest_stable/index.html"/>
       <item name="Log4j Audit" href="https://logging.apache.org/log4j-audit/latest/index.html"/>
       <item name="Log4j Kotlin" href="https://logging.apache.org/log4j/kotlin/index.html"/>
-      <item name="Log4j Scala" href="http://logging.apache.org/log4j/scala/index.html"/>
+      <item name="Log4j Scala" href="https://logging.apache.org/log4j/scala/index.html"/>
       <item name="Log4Net" href="https://logging.apache.org/log4net/index.html"/>
     </menu>
 
     <menu name="Legacy Sites" inherit="top" img="img/glyphicons/link.png">
-      <item name="Log4j 1.2 - End of Life" href="http://logging.apache.org/log4j/1.2/"/>
-      <item name="Log4j 2.3.2 - Java 6" href="http://logging.apache.org/log4j/log4j-2.3.2/"/>
-      <item name="Log4j 2.12.4 - Java 7" href="http://logging.apache.org/log4j/log4j-2.12.4/"/>
+      <item name="Log4j 1.2 - End of Life" href="https://logging.apache.org/log4j/1.2/"/>
+      <item name="Log4j 2.3.2 - Java 6" href="https://logging.apache.org/log4j/log4j-2.3.2/"/>
+      <item name="Log4j 2.12.4 - Java 7" href="https://logging.apache.org/log4j/log4j-2.12.4/"/>
     </menu>
 
     <menu name="Components" inherit="top" img="img/glyphicons/cog.png">
@@ -361,7 +361,7 @@
       <item name="JIRA Report" href="/jira-report.html" />
       <item name="RAT Report" href="/rat-report.html" />
     </menu>
-    <footer><![CDATA[<p align="center">Copyright &copy; ${project.inceptionYear}-${currentYear} <a class="external" href="http://www.apache.org">The Apache Software Foundation</a>. All Rights Reserved.<br>
+    <footer><![CDATA[<p align="center">Copyright &copy; ${project.inceptionYear}-${currentYear} <a class="external" href="https://www.apache.org">The Apache Software Foundation</a>. All Rights Reserved.<br>
       Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, and the Apache Logging project logo are trademarks of The Apache Software Foundation.</p>]]>
     </footer>
   </body>

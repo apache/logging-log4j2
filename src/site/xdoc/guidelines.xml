@@ -25,7 +25,7 @@
   <body>
     <section name="Apache Log4j Project Guidelines">
 
-      <p>This document defines the guidelines for the <a href="http://logging.apache.org/log4j/2.x">Apache Log4j
+      <p>This document defines the guidelines for the <a href="https://logging.apache.org/log4j/2.x">Apache Log4j
         Project</a>. It includes definitions of how conflict
         is resolved by voting, who is able to vote, the procedures to follow
         for proposing and making changes as well as guidelines for changing code.</p>

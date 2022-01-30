@@ -31,13 +31,13 @@
           <h4>Introduction</h4>
           <p>Log4j introduced the concept of the Mapped Diagnostic Context or MDC. It has been documented and
             discussed in numerous places including
-            <a href="http://veerasundar.com/blog/2009/10/log4j-mdc-mapped-diagnostic-context-what-and-why/">Log4j MDC: What and Why</a> and
-            <a href="http://blog.f12.no/wp/2004/12/09/log4j-and-the-mapped-diagnostic-context/">Log4j and the Mapped Diagnostic Context</a>.
+            <a href="https://veerasundar.com/blog/2009/10/log4j-mdc-mapped-diagnostic-context-what-and-why/">Log4j MDC: What and Why</a> and
+            <a href="https://blog.f12.no/wp/2004/12/09/log4j-and-the-mapped-diagnostic-context/">Log4j and the Mapped Diagnostic Context</a>.
             In addition, Log4j 1.x provides support for a Nested Diagnostic Context or NDC. It too has been documented
             and discussed in various places such as
-            <a href="http://lstierneyltd.com/blog/development/log4j-nested-diagnostic-contexts-ndc/">Log4j NDC</a>.
+            <a href="https://lstierneyltd.com/blog/development/log4j-nested-diagnostic-contexts-ndc/">Log4j NDC</a>.
             SLF4J/Logback followed with its own implementation of the MDC, which is documented very well at
-            <a href="http://logback.qos.ch/manual/mdc.html">Mapped Diagnostic Context</a>.
+            <a href="https://logback.qos.ch/manual/mdc.html">Mapped Diagnostic Context</a>.
           </p>
           <p>Log4j 2 continues with the idea of the MDC and the NDC but merges them into a single Thread Context.
             The Thread Context Map is the equivalent of the MDC and the Thread Context Stack is the equivalent of the
@@ -100,7 +100,7 @@ ThreadContext.clear();</pre>
 
           <h4>CloseableThreadContext</h4>
 		  <p>When placing items on the stack or map, it's necessary to remove then again when appropriate. To assist with
-		  this, the <tt>CloseableThreadContext</tt> implements the <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/AutoCloseable.html">AutoCloseable
+		  this, the <tt>CloseableThreadContext</tt> implements the <a href="https://docs.oracle.com/javase/7/docs/api/java/lang/AutoCloseable.html">AutoCloseable
 		  interface</a>. This allows items to be pushed to the stack or put in the map, and removed when the <tt>close()</tt> method is called -
 		  or automatically as part of a try-with-resources. For example, to temporarily push something on to the stack and then remove it:
           </p>
@@ -152,13 +152,13 @@ for( final Session session : sessions ) {
 }</pre>
 		  <h4>Implementation details</h4>
           <p>The Stack and the Map are managed per thread and are based on
-            <a href="http://docs.oracle.com/javase/6/docs/api/java/lang/ThreadLocal.html">ThreadLocal</a>
+            <a href="https://docs.oracle.com/javase/6/docs/api/java/lang/ThreadLocal.html">ThreadLocal</a>
             by default. The Map can be configured to use an
-            <a href="http://docs.oracle.com/javase/6/docs/api/java/lang/InheritableThreadLocal.html">InheritableThreadLocal</a>
+            <a href="https://docs.oracle.com/javase/6/docs/api/java/lang/InheritableThreadLocal.html">InheritableThreadLocal</a>
             (see the <a href="#Configuration">Configuration</a> section).
             When configured this way, the contents of the Map will be passed to child threads. However, as
             discussed in the
-            <a href="http://docs.oracle.com/javase/6/docs/api/java/util/concurrent/Executors.html#privilegedThreadFactory()">Executors</a>
+            <a href="https://docs.oracle.com/javase/6/docs/api/java/util/concurrent/Executors.html#privilegedThreadFactory()">Executors</a>
             class and in other cases where thread pooling is utilized, the ThreadContext may not always be
             automatically passed to worker threads. In those cases the pooling mechanism should provide a means for
             doing so. The getContext() and cloneStack() methods can be used to obtain copies of the Map and Stack
@@ -193,7 +193,7 @@ for( final Session session : sessions ) {
               Use <code>%X{key}</code> to include the specified key.
             </li>
             <li>
-              Use <code>%x</code> to include the full contents of the <a href="http://docs.oracle.com/javase/6/docs/api/java/util/Stack.html">Stack</a>.
+              Use <code>%x</code> to include the full contents of the <a href="https://docs.oracle.com/javase/6/docs/api/java/util/Stack.html">Stack</a>.
             </li>
           </ul>
           <h4>Custom context data injectors for non thread-local context data</h4>

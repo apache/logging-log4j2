@@ -294,7 +294,7 @@ public class MyApp {
         <p>
           <a class="javadoc" href="../log4j-api/apidocs/org/apache/logging/log4j/message/StructuredDataMessage.html">StructuredDataMessage</a>
           allows applications to add items to a Map as well as set the id to allow a message to be formatted as a
-          Structured Data element in accordance with <a href="http://tools.ietf.org/html/rfc5424">RFC 5424</a>.
+          Structured Data element in accordance with <a href="https://tools.ietf.org/html/rfc5424">RFC 5424</a>.
         </p>
       <h4>ThreadDumpMessage</h4>
         <a name="ThreadDumpMessage"/>

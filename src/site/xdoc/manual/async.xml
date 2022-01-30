@@ -816,7 +816,7 @@ or
             From this release we will try to do better and report response time latency
             across the full range of percentages, including all the outliers.
             Our thanks to Gil Tene for his
-            <a href="http://www.infoq.com/presentations/latency-response-time">How NOT to measure latency</a>
+            <a href="https://www.infoq.com/presentations/latency-response-time">How NOT to measure latency</a>
             presentation. (Now we know why this is also known as the "Oh s#@t!" presentation.)
           </td></tr>
         </table>

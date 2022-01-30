@@ -56,7 +56,7 @@
           <p>
             The DateLookup is somewhat unusual from the other lookups as it doesn't use the key to locate an item.
             Instead, the key can be used to specify a date format string that is valid for
-            <a href="http://docs.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>.
+            <a href="https://docs.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>.
             The current date, or the date associated with the current log event will be formatted as specified.
           </p>
           <pre class="prettyprint linenums"><![CDATA[
@@ -294,7 +294,7 @@
           </p>
           <p>
             See the Javadocs for
-            <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/management/RuntimeMXBean.html#getInputArguments--">
+            <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/management/RuntimeMXBean.html#getInputArguments--">
             java.lang.management.RuntimeMXBean.getInputArguments()
             </a>.
           </p>

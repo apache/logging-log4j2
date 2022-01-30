@@ -24,7 +24,6 @@
   <properties>
     <title>Log4j 2 Project Thanks</title>
   </properties>
-  <link href="https://www.jetbrains.com/_assets/common.e5c75942074f0f03f4500affcc4bf651.css" rel="stylesheet" type="text/css" />
 
   <body>
     <section name="Log4j 2 Project Thanks">
@@ -100,12 +99,12 @@
             <tr>
               <td colspan="1" rowspan="1">
                 <span>
-                  <img src="http://www.apache.org/images/feather-small.gif" alt="Apache Feather Logo" />
+                  <img src="https://www.apache.org/images/feather-small.gif" alt="Apache Feather Logo" />
                 </span>
               </td>
               <td colspan="1" rowspan="1">
                 All of the
-                <a shape="rect" class="external-link" href="http://www.apache.org/foundation/thanks.html">Platinum/Gold/Silver/Bronze sponsors of
+                <a shape="rect" class="external-link" href="https://www.apache.org/foundation/thanks.html">Platinum/Gold/Silver/Bronze sponsors of
                   the ASF</a>
               </td>
             </tr>
@@ -124,7 +123,7 @@
         The Apache Software Foundation receives many smaller donations from individuals via our
         PayPal and Amazon Payments
         services (details
-        <a href="http://www.apache.org/foundation/contributing.html">here</a>
+        <a href="https://www.apache.org/foundation/contributing.html">here</a>
         ).
       </p>
       <p>We would like to thank all of our individual donors for their support of our work,

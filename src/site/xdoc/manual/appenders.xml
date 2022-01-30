@@ -62,7 +62,7 @@
             to shut down properly.</p>
           <p>
             By default, AsyncAppender uses
-            <a class="javadoc" href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ArrayBlockingQueue.html">java.util.concurrent.ArrayBlockingQueue</a>
+            <a class="javadoc" href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ArrayBlockingQueue.html">java.util.concurrent.ArrayBlockingQueue</a>
             which does not require any external libraries. Note that multi-threaded applications should exercise care
             when using this appender as such: the blocking queue is susceptible to lock contention and our
             <a href="../performance.html#asyncLogging">tests showed</a>
@@ -270,7 +270,7 @@
             </tr>
             <tr>
               <td>batchType</td>
-              <td><a href="http://docs.datastax.com/en/drivers/java/3.0/com/datastax/driver/core/BatchStatement.Type.html">BatchStatement.Type</a></td>
+              <td><a href="https://docs.datastax.com/en/drivers/java/3.0/com/datastax/driver/core/BatchStatement.Type.html">BatchStatement.Type</a></td>
               <td>The batch type to use when using batched writes. By default, this is <code>LOGGED</code>.</td>
             </tr>
             <tr>
@@ -346,7 +346,7 @@
               <td>useClockForTimestampGenerator</td>
               <td>boolean</td>
               <td>Whether or not to use the configured <code>org.apache.logging.log4j.core.util.Clock</code> as a
-                <a class="javadoc" href="http://docs.datastax.com/en/drivers/java/3.0/com/datastax/driver/core/TimestampGenerator.html">TimestampGenerator</a>.
+                <a class="javadoc" href="https://docs.datastax.com/en/drivers/java/3.0/com/datastax/driver/core/TimestampGenerator.html">TimestampGenerator</a>.
                 By default, this is <code>false</code>.</td>
             </tr>
             <tr>
@@ -684,7 +684,7 @@ CREATE TABLE logs (
                   <p>Changing file's owner may be restricted for security reason and Operation not permitted IOException thrown.
                      Only processes with an effective user ID equal to the user ID
                      of the file or with appropriate privileges may change the ownership of a file
-                     if <a href="http://www.gnu.org/software/libc/manual/html_node/Options-for-Files.html">_POSIX_CHOWN_RESTRICTED</a> is in effect for path.</p>
+                     if <a href="https://www.gnu.org/software/libc/manual/html_node/Options-for-Files.html">_POSIX_CHOWN_RESTRICTED</a> is in effect for path.</p>
                   <p>Underlying files system shall support file <a class="javadoc" href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html">owner</a> attribute view.</p>
               </td>
             </tr>
@@ -719,7 +719,7 @@ CREATE TABLE logs (
         <a name="FlumeAppender"/>
         <subsection name="FlumeAppender">
           <p><i>This is an optional component supplied in a separate jar.</i></p>
-          <p><a href="http://flume.apache.org/index.html">Apache Flume</a> is a distributed, reliable,
+          <p><a href="https://flume.apache.org/index.html">Apache Flume</a> is a distributed, reliable,
             and available system for efficiently collecting, aggregating, and moving large amounts of log data
             from many different sources to a centralized data store. The FlumeAppender takes LogEvents and sends
             them to a Flume agent as serialized Avro events for consumption.</p>
@@ -1220,82 +1220,82 @@ CREATE TABLE logs (
             <tr>
               <td>autoCommitOnReturn</td>
               <td>boolean</td>
-              <td>See <a href="http://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
+              <td>See <a href="https://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
             </tr>
             <tr>
               <td>cacheState</td>
               <td>boolean</td>
-              <td>See <a href="http://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
+              <td>See <a href="https://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
             </tr>
             <tr>
               <td>ConnectionInitSqls</td>
               <td>Strings</td>
-              <td>See <a href="http://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
+              <td>See <a href="https://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
             </tr>
             <tr>
               <td>defaultAutoCommit</td>
               <td>boolean</td>
-              <td>See <a href="http://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
+              <td>See <a href="https://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
             </tr>
             <tr>
               <td>defaultCatalog</td>
               <td>String</td>
-              <td>See <a href="http://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
+              <td>See <a href="https://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
             </tr>
             <tr>
               <td>defaultQueryTimeoutSeconds</td>
               <td>integer</td>
-              <td>See <a href="http://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
+              <td>See <a href="https://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
             </tr>
             <tr>
               <td>defaultReadOnly</td>
               <td>boolean</td>
-              <td>See <a href="http://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
+              <td>See <a href="https://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
             </tr>
             <tr>
               <td>defaultTransactionIsolation</td>
               <td>integer</td>
-              <td>See <a href="http://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
+              <td>See <a href="https://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
             </tr>
             <tr>
               <td>disconnectionSqlCodes</td>
               <td>Strings</td>
-              <td>See <a href="http://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
+              <td>See <a href="https://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
             </tr>
             <tr>
               <td>fastFailValidation</td>
               <td>boolean</td>
-              <td>See <a href="http://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
+              <td>See <a href="https://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
             </tr>
             <tr>
               <td>maxConnLifetimeMillis</td>
               <td>long</td>
-              <td>See <a href="http://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
+              <td>See <a href="https://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
             </tr>
             <tr>
               <td>maxOpenPreparedStatements</td>
               <td>integer</td>
-              <td>See <a href="http://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
+              <td>See <a href="https://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
             </tr>
             <tr>
               <td>poolStatements</td>
               <td>boolean</td>
-              <td>See <a href="http://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
+              <td>See <a href="https://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
             </tr>
             <tr>
               <td>rollbackOnReturn</td>
               <td>boolean</td>
-              <td>See <a href="http://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
+              <td>See <a href="https://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
             </tr>
             <tr>
               <td>validationQuery</td>
               <td>String</td>
-              <td>See <a href="http://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
+              <td>See <a href="https://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
             </tr>
             <tr>
               <td>validationQueryTimeoutSeconds</td>
               <td>integer</td>
-              <td>See <a href="http://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
+              <td>See <a href="https://commons.apache.org/proper/commons-dbcp/api-2.4.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html">Apache Commons DBCP PoolableConnectionFactory.</a></td>
             </tr>
           </table>
           <p>When configuring the JDBCAppender, use the nested <code>&lt;Column&gt;</code> elements to specify which
@@ -1567,7 +1567,7 @@ public class ConnectionFactory {
               <td>String</td>
               <td><em>Required</em></td>
               <td>The name to locate in the Context that provides the
-                <a class="javadoc" href="http://download.oracle.com/javaee/5/api/javax/jms/ConnectionFactory.html">ConnectionFactory</a>.
+                <a class="javadoc" href="https://download.oracle.com/javaee/5/api/javax/jms/ConnectionFactory.html">ConnectionFactory</a>.
                 This can be any subinterface of <code>ConnectionFactory</code> as well.
               </td>
             </tr>
@@ -1576,7 +1576,7 @@ public class ConnectionFactory {
               <td>String</td>
               <td><em>Required</em></td>
               <td>The fully qualified class name that should be used to define the Initial Context Factory as defined in
-                <a class="javadoc" href="http://download.oracle.com/javase/7/docs/api/javax/naming/Context.html#INITIAL_CONTEXT_FACTORY">INITIAL_CONTEXT_FACTORY</a>.
+                <a class="javadoc" href="https://download.oracle.com/javase/7/docs/api/javax/naming/Context.html#INITIAL_CONTEXT_FACTORY">INITIAL_CONTEXT_FACTORY</a>.
                 If a factoryName is specified without a providerURL a warning message will be logged as this is
                 likely to cause problems.
               </td>
@@ -1614,7 +1614,7 @@ public class ConnectionFactory {
               <td>String</td>
               <td><em>Required</em></td>
               <td>The URL of the provider to use as defined by
-                <a class="javadoc" href="http://download.oracle.com/javase/7/docs/api/javax/naming/Context.html#PROVIDER_URL">PROVIDER_URL</a>.
+                <a class="javadoc" href="https://download.oracle.com/javase/7/docs/api/javax/naming/Context.html#PROVIDER_URL">PROVIDER_URL</a>.
                 From Log4j 2.17, only the <code>java:</code> protocol is supported.
               </td>
             </tr>
@@ -1624,7 +1624,7 @@ public class ConnectionFactory {
               <td><em>Required</em></td>
               <td>
                 The name to use to locate the
-                <a class="javadoc" href="http://download.oracle.com/javaee/5/api/javax/jms/Destination.html">Destination</a>.
+                <a class="javadoc" href="https://download.oracle.com/javaee/5/api/javax/jms/Destination.html">Destination</a>.
                 This can be a <code>Queue</code> or <code>Topic</code>, and as such, the attribute names
                 <code>queueBindingName</code> and <code>topicBindingName</code> are aliases to maintain compatibility
                 with the Log4j 2.0 JMS appenders.
@@ -1635,7 +1635,7 @@ public class ConnectionFactory {
               <td>String</td>
               <td>null</td>
               <td>The name of the identity of the Principal as specified by
-                <a class="javadoc" href="http://download.oracle.com/javase/7/docs/api/javax/naming/Context.html#SECURITY_PRINCIPAL">SECURITY_PRINCIPAL</a>.
+                <a class="javadoc" href="https://download.oracle.com/javase/7/docs/api/javax/naming/Context.html#SECURITY_PRINCIPAL">SECURITY_PRINCIPAL</a>.
                 If a securityPrincipalName is specified without securityCredentials a warning message will be
                 logged as this is likely to cause problems.</td>
             </tr>
@@ -1644,7 +1644,7 @@ public class ConnectionFactory {
               <td>String</td>
               <td>null</td>
               <td>The security credentials for the principal as specified by
-                <a class="javadoc" href="http://download.oracle.com/javase/7/docs/api/javax/naming/Context.html#SECURITY_CREDENTIALS">SECURITY_CREDENTIALS</a>.
+                <a class="javadoc" href="https://download.oracle.com/javase/7/docs/api/javax/naming/Context.html#SECURITY_CREDENTIALS">SECURITY_CREDENTIALS</a>.
               </td>
             </tr>
             <tr>
@@ -1678,7 +1678,7 @@ public class ConnectionFactory {
               <td>null</td>
               <td>A colon-separated list of package prefixes for the class name of the factory class that will create
                 a URL context factory as defined by
-                <a class="javadoc" href="http://download.oracle.com/javase/7/docs/api/javax/naming/Context.html#URL_PKG_PREFIXES">URL_PKG_PREFIXES</a>.
+                <a class="javadoc" href="https://download.oracle.com/javase/7/docs/api/javax/naming/Context.html#URL_PKG_PREFIXES">URL_PKG_PREFIXES</a>.
               </td>
             </tr>
             <tr>
@@ -2079,7 +2079,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>properties</td>
               <td>Property[]</td>
               <td>
-                You can set properties in <a href="http://kafka.apache.org/documentation.html#producerconfigs">Kafka producer properties</a>.
+                You can set properties in <a href="https://kafka.apache.org/documentation.html#producerconfigs">Kafka producer properties</a>.
                 You need to set the <code>bootstrap.servers</code> property, there are sensible default values for the others.
                 Do not set the <code>value.serializer</code> nor <code>key.serializer</code> properties.
               </td>
@@ -2099,11 +2099,11 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           <p>
             This appender is synchronous by default and will block until the record has been acknowledged by the Kafka server, timeout
             for this can be set with the <code>timeout.ms</code> property (defaults to 30 seconds). Wrap with
-            <a href="http://logging.apache.org/log4j/2.x/manual/appenders.html#AsyncAppender">Async appender</a> and/or set syncSend to
+            <a href="https://logging.apache.org/log4j/2.x/manual/appenders.html#AsyncAppender">Async appender</a> and/or set syncSend to
             <code>false</code> to log asynchronously.
           </p>
           <p>
-            This appender requires the <a href="http://kafka.apache.org/">Kafka client library</a>. Note that you need to use a version of
+            This appender requires the <a href="https://kafka.apache.org/">Kafka client library</a>. Note that you need to use a version of
             the Kafka client library matching the Kafka server used.
           </p>
           <p>
@@ -2130,7 +2130,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           The main benefit of using memory mapped files is I/O performance. Instead of making system
           calls to write to disk, this appender can simply change the program's local memory,
           which is orders of magnitude faster. Also, in most operating systems the memory
-          region mapped actually is the kernel's <a href="http://en.wikipedia.org/wiki/Page_cache">page
+          region mapped actually is the kernel's <a href="https://en.wikipedia.org/wiki/Page_cache">page
           cache</a> (file cache), meaning that no copies need to be created in user space.
           (TODO: performance tests that compare performance of this appender to
           RandomAccessFileAppender and FileAppender.)
@@ -2185,7 +2185,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <td>boolean</td>
             <td>
               <p>When set to true, each write will be followed by a
-                call to <a href="http://docs.oracle.com/javase/7/docs/api/java/nio/MappedByteBuffer.html#force()">MappedByteBuffer.force()</a>.
+                call to <a href="https://docs.oracle.com/javase/7/docs/api/java/nio/MappedByteBuffer.html#force()">MappedByteBuffer.force()</a>.
             This will guarantee the data is written to the storage device.
               </p>
               <p>The default for this parameter is <code>false</code>.
@@ -2520,7 +2520,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <tr>
               <td>connection</td>
               <td>String</td>
-              <td><em>Required.</em> The MongoDB <a href="http://mongodb.github.io/mongo-java-driver/4.0/apidocs/mongodb-driver-core/com/mongodb/ConnectionString.html?is-external=true">
+              <td><em>Required.</em> The MongoDB <a href="https://mongodb.github.io/mongo-java-driver/4.0/apidocs/mongodb-driver-core/com/mongodb/ConnectionString.html?is-external=true">
                 connection string</a> in the format <code>mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database.collection][?options]]</code>
               </td>
             </tr>
@@ -3059,7 +3059,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>The pattern of the file name of the archived log file. The format of the pattern is
                 dependent on the RolloverPolicy that is used. The DefaultRolloverPolicy will accept both
                 a date/time pattern compatible with
-                <a href="http://download.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>
+                <a href="https://download.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>
                 and/or a %i which represents an integer counter. The pattern also supports interpolation at
                 runtime so any of the Lookups (such as the <a href="./lookups.html#DateLookup">DateLookup</a>) can
                 be included in the pattern.</td>
@@ -3134,7 +3134,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                   <p>Changing file's owner may be restricted for security reason and Operation not permitted IOException thrown.
                      Only processes with an effective user ID equal to the user ID
                      of the file or with appropriate privileges may change the ownership of a file
-                     if <a href="http://www.gnu.org/software/libc/manual/html_node/Options-for-Files.html">_POSIX_CHOWN_RESTRICTED</a> is in effect for path.</p>
+                     if <a href="https://www.gnu.org/software/libc/manual/html_node/Options-for-Files.html">_POSIX_CHOWN_RESTRICTED</a> is in effect for path.</p>
                   <p>Underlying files system shall support file <a class="javadoc" href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html">owner</a> attribute view.</p>
               </td>
             </tr>
@@ -3285,8 +3285,8 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                 in the pattern the integer will be incremented until the result of the date/time pattern changes. If
                 the file pattern ends with ".gz", ".zip", ".bz2", ".deflate", ".pack200", or ".xz" the resulting archive
                 will be compressed using the compression scheme that matches the suffix. The formats bzip2, Deflate,
-                Pack200 and XZ require <a href="http://commons.apache.org/proper/commons-compress/">Apache Commons Compress</a>.
-                In addition, XZ requires <a href="http://tukaani.org/xz/java.html">XZ for Java</a>.
+                Pack200 and XZ require <a href="https://commons.apache.org/proper/commons-compress/">Apache Commons Compress</a>.
+                In addition, XZ requires <a href="https://tukaani.org/xz/java.html">XZ for Java</a>.
                 The pattern may also contain lookup references that can be resolved at runtime such as is shown in the example
                 below.
               </p>
@@ -4063,7 +4063,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                   <p>Changing file's owner may be restricted for security reason and Operation not permitted IOException thrown.
                      Only processes with an effective user ID equal to the user ID
                      of the file or with appropriate privileges may change the ownership of a file
-                     if <a href="http://www.gnu.org/software/libc/manual/html_node/Options-for-Files.html">_POSIX_CHOWN_RESTRICTED</a> is in effect for path.</p>
+                     if <a href="https://www.gnu.org/software/libc/manual/html_node/Options-for-Files.html">_POSIX_CHOWN_RESTRICTED</a> is in effect for path.</p>
                   <p>Underlying files system shall support file <a class="javadoc" href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html">owner</a> attribute view.</p>
               </td>
             </tr>
@@ -4186,7 +4186,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 							of the pattern should is dependent on the RolloverStrategu that is used. The DefaultRolloverStrategy
 							will accept both a date/time pattern compatible with
 							<a
-								href="http://download.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html">
+								href="https://download.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html">
 								SimpleDateFormat</a>
               and/or a %i which represents an integer counter. The integer counter
               allows specifying a padding, like %3i for space-padding the counter to
@@ -4261,7 +4261,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                   <p>Changing file's owner may be restricted for security reason and Operation not permitted IOException thrown.
                      Only processes with an effective user ID equal to the user ID
                      of the file or with appropriate privileges may change the ownership of a file
-                     if <a href="http://www.gnu.org/software/libc/manual/html_node/Options-for-Files.html">_POSIX_CHOWN_RESTRICTED</a> is in effect for path.</p>
+                     if <a href="https://www.gnu.org/software/libc/manual/html_node/Options-for-Files.html">_POSIX_CHOWN_RESTRICTED</a> is in effect for path.</p>
                   <p>Underlying files system shall support file <a class="javadoc" href="https://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/FileOwnerAttributeView.html">owner</a> attribute view.</p>
               </td>
             </tr>
@@ -4964,7 +4964,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             <td>protocol</td>
             <td>String</td>
             <td><code>SSL</code> if omitted.
-            See also <a href="http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#SSLContext">Standard names</a>.</td>
+            See also <a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#SSLContext">Standard names</a>.</td>
           </tr>
           <tr>
             <td>KeyStore</td>
@@ -5027,13 +5027,13 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>String</td>
               <td>Optional KeyStore type, e.g. <code>JKS</code>, <code>PKCS12</code>, <code>PKCS11</code>,
                 <code>BKS</code>, <code>Windows-MY/Windows-ROOT</code>, <code>KeychainStore</code>, etc.
-                The default is JKS. See also <a href="http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyStore">Standard types</a>.</td>
+                The default is JKS. See also <a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyStore">Standard types</a>.</td>
             </tr>
             <tr>
               <td>keyManagerFactoryAlgorithm</td>
               <td>String</td>
               <td>Optional KeyManagerFactory algorithm. The default is <code>SunX509</code>.
-              See also <a href="http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyManagerFactory">Standard algorithms</a>.</td>
+              See also <a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyManagerFactory">Standard algorithms</a>.</td>
             </tr>
           </table>
 
@@ -5082,13 +5082,13 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>String</td>
               <td>Optional KeyStore type, e.g. <code>JKS</code>, <code>PKCS12</code>, <code>PKCS11</code>,
                 <code>BKS</code>, <code>Windows-MY/Windows-ROOT</code>, <code>KeychainStore</code>, etc.
-                The default is JKS. See also <a href="http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyStore">Standard types</a>.</td>
+                The default is JKS. See also <a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyStore">Standard types</a>.</td>
             </tr>
             <tr>
               <td>trustManagerFactoryAlgorithm</td>
               <td>String</td>
               <td>Optional TrustManagerFactory algorithm. The default is <code>SunX509</code>.
-                See also <a href="http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#TrustManagerFactory">Standard algorithms</a>.</td>
+                See also <a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#TrustManagerFactory">Standard algorithms</a>.</td>
             </tr>
           </table>
 
@@ -5130,7 +5130,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>charset</td>
               <td>String</td>
               <td>The character set to use when converting the syslog String to a byte array. The String must be
-                a valid <a href="http://download.oracle.com/javase/7/docs/api/java/nio/charset/Charset.html">Charset</a>.
+                a valid <a href="https://download.oracle.com/javase/7/docs/api/java/nio/charset/Charset.html">Charset</a>.
                 If not specified, the default system Charset will be used.</td>
             </tr>
             <tr>
@@ -5143,7 +5143,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>enterpriseNumber</td>
               <td>integer</td>
               <td>The IANA enterprise number as described in
-                <a href="http://tools.ietf.org/html/rfc5424#section-7.2.2">RFC 5424</a></td>
+                <a href="https://tools.ietf.org/html/rfc5424#section-7.2.2">RFC 5424</a></td>
             </tr>
             <tr>
               <td>filter</td>

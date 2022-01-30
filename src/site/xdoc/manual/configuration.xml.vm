@@ -481,7 +481,7 @@ public class Bar {
           </p>
           <p>
             Log4j provides one Advertiser implementation, a 'multicastdns' Advertiser, which advertises appender configuration
-            details via IP multicast using the <a href="http://jmdns.sourceforge.net">http://jmdns.sourceforge.net</a> library.
+            details via IP multicast using the <a href="https://github.com/jmdns/jmdns">JmDNS</a> library.
           </p>
           <p>
             Chainsaw automatically discovers log4j's multicastdns-generated advertisements and displays those discovered
@@ -493,7 +493,7 @@ public class Bar {
             To advertise an appender configuration:
           </p>
             <ul>
-              <li>Add the JmDns library from <a href="http://jmdns.sourceforge.net">http://jmdns.sourceforge.net</a> to the application classpath</li>
+              <li>Add the JmDNS library from <a href="https://github.com/jmdns/jmdns/releases">JmDNS GitHub Releases</a> to the application classpath</li>
               <li>Set the 'advertiser' attribute of the configuration element to 'multicastdns'</li>
               <li>Set the 'advertise' attribute on the appender element to 'true'</li>
               <li>If advertising a FileAppender-based configuration, set the 'advertiseURI' attribute on the appender element to an appropriate URI</li>
@@ -502,7 +502,7 @@ public class Bar {
             FileAppender-based configurations require an additional 'advertiseURI' attribute to be specified on the appender.
             The 'advertiseURI' attribute provides Chainsaw with information on how the file can be accessed.
             For example, the file may be remotely accessible to Chainsaw via ssh/sftp by specifying a Commons VFS
-            (<a href="http://commons.apache.org/proper/commons-vfs/">http://commons.apache.org/proper/commons-vfs/</a>) sftp:// URI,
+            (<a href="https://commons.apache.org/proper/commons-vfs/">https://commons.apache.org/proper/commons-vfs/</a>) sftp:// URI,
             an http:// URI may be used if the file is accessible through a web server, or a file:// URI can be specified
             if accessing the file from a locally-running instance of Chainsaw.
           </p>
@@ -511,7 +511,7 @@ public class Bar {
             automatically tail the log file (notice the file:// advertiseURI):
           </p>
           <p>
-            <b>Please note, you must add the JmDns library from <a href="http://jmdns.sourceforge.net">http://jmdns.sourceforge.net</a>
+            <b>Please note, you must add the JmDns library from <a href="https://jmdns.sourceforge.net">https://jmdns.sourceforge.net</a>
             to your application classpath in order to advertise with the 'multicastdns' advertiser.</b>
           </p>
           <pre class="prettyprint linenums"><![CDATA[
@@ -1264,7 +1264,7 @@ rootLogger = info, STDOUT
                 <td>jvmrunargs</td>
                 <td>
                   A JVM input argument accessed through JMX, but not a main argument;
-                  see <a class="javadoc" href="http://docs.oracle.com/javase/6/docs/api/java/lang/management/RuntimeMXBean.html#getInputArguments--">RuntimeMXBean.getInputArguments()</a>.
+                  see <a class="javadoc" href="https://docs.oracle.com/javase/6/docs/api/java/lang/management/RuntimeMXBean.html#getInputArguments--">RuntimeMXBean.getInputArguments()</a>.
                   Not available on Android.</td>
               </tr>
               <tr>
@@ -1356,7 +1356,7 @@ rootLogger = info, STDOUT
         <a name="Scripts"/>
         <subsection name="Scripts">
           <p>
-            Log4j provides support for <a href="http://docs.oracle.com/javase/6/docs/technotes/guides/scripting/">JSR 223</a>
+            Log4j provides support for <a href="https://docs.oracle.com/javase/6/docs/technotes/guides/scripting/">JSR 223</a>
             scripting languages to be used in some of its components. Any language that provides support for the JSR
             223 scripting engine may be used. A list of the languages and bindings for them can be found at the
             <a href="https://java.net/projects/scripting/sources/svn/show/trunk/engines">Scripting Engine</a> web site.
@@ -1490,7 +1490,7 @@ rootLogger = info, STDOUT
         <a name="XInclude"/>
         <subsection name="XInclude">
           <p>
-            XML configuration files can include other files with <a href="http://www.xml.com/lpt/a/1009">XInclude</a>.
+            XML configuration files can include other files with <a href="https://www.xml.com/lpt/a/1009">XInclude</a>.
             Here is an example log4j2.xml file that includes two other files:
           </p>
           <pre class="prettyprint linenums"><![CDATA[
