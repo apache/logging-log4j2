@@ -4754,6 +4754,23 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
               <td>SslConfiguration</td>
               <td>Contains the configuration for the KeyStore and TrustStore. See <a href="#SSL">SSL</a>.</td>
             </tr>
+            <tr>
+              <td>attachEvents</td>
+              <td>boolean</td>
+              <td>The default value is <code>false</code>. When set to <code>true</code>, buffered messages are sent
+                as an attachment. The base name of the attachment will be <em>logEvents</em> followed by an extension
+                based on Layout. If no layout is supplied <a href="layouts.html#HTMLLayout">HTML layout</a> will be
+                used and the filename will be <em>logEvents.html</em>. Other layouts such as
+                <a href="layouts.html#PatternLayout">PatternLayout</a> will cause the filename to be
+                <em>logEvents.txt</em>. When compression is specified the filename extension will match the algorithm:
+                <em>logEvents.html.zip</em>, <em>logEvents.txt.zip</em>, <em>logEvents.html.gz</em>, <em>logEvents.txt.gz</em>. </td>
+            </tr>
+            <tr>
+              <td>attachEventsCompression</td>
+              <td>String</td>
+              <td>The compression algorithm used when attachEvents is <code>true</code>: "none", "zip", or "gz".
+                Defaults to "none". </td>
+            </tr>
           </table>
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
