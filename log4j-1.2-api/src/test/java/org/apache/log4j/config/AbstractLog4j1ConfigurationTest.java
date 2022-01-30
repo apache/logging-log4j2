@@ -302,9 +302,17 @@ public abstract class AbstractLog4j1ConfigurationTest {
     }
 
     private boolean getAppendProperty(final FileOutputStream os) throws Exception {
-        final Field appendField = FileDescriptor.class.getDeclaredField("append");
-        appendField.setAccessible(true);
-        return (Boolean) appendField.get(os.getFD());
+        // Java 8
+        try {
+            final Field appendField = FileOutputStream.class.getDeclaredField("append");
+            appendField.setAccessible(true);
+            return (Boolean) appendField.get(os);
+        } catch (NoSuchFieldError e) {
+            // Java 11
+            final Field appendField = FileDescriptor.class.getDeclaredField("append");
+            appendField.setAccessible(true);
+            return (Boolean) appendField.get(os.getFD());
+        }
     }
 
     private OutputStream getOutputStream(final OutputStreamManager manager) throws Exception {
