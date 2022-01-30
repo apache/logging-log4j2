@@ -15,14 +15,15 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <artifactId>log4j</artifactId>
     <groupId>org.apache.logging.log4j</groupId>
     <version>2.17.2-SNAPSHOT</version>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
 
   <artifactId>log4j-appserver</artifactId>
   <packaging>jar</packaging>
@@ -33,7 +34,7 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Web Documentation</docLabel>
     <projectDir>/log4j-appserver</projectDir>
-    <tomcat.version>10.0.14</tomcat.version>
+    <tomcat-juli.version>10.0.16</tomcat-juli.version>
     <jetty.version>8.2.0.v20160908</jetty.version> <!--  Jetty 9 requires Java 8 -->
     <module.name>org.apache.logging.log4j.appserver</module.name>
     <maven.doap.skip>true</maven.doap.skip>
@@ -46,8 +47,8 @@
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
-      <artifactId>tomcat-catalina</artifactId>
-      <version>${tomcat.version}</version>
+      <artifactId>tomcat-juli</artifactId>
+      <version>${tomcat-juli.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -74,8 +75,10 @@
       </plugin>
     </plugins>
   </build>
+
   <reporting>
     <plugins>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-changes-plugin</artifactId>
@@ -92,6 +95,7 @@
           <useJql>true</useJql>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
@@ -105,6 +109,7 @@
           <propertyExpansion>licensedir=${log4jParentDir}/checkstyle-header.txt</propertyExpansion>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
@@ -130,10 +135,12 @@
           </reportSet>
         </reportSets>
       </plugin>
+
       <plugin>
         <groupId>com.github.spotbugs</groupId>
         <artifactId>spotbugs-maven-plugin</artifactId>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jxr-plugin</artifactId>
@@ -153,6 +160,7 @@
           </reportSet>
         </reportSets>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
@@ -161,6 +169,8 @@
           <targetJdk>${maven.compiler.target}</targetJdk>
         </configuration>
       </plugin>
+
     </plugins>
   </reporting>
+
 </project>
