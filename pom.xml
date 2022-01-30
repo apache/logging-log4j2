@@ -145,6 +145,15 @@
         <role>PMC Member</role>
       </roles>
       <timezone>Europe/Amsterdam</timezone>
+    </developer>	  
+    <developer>
+      <id>rgrabowski</id>
+      <name>Ron Grabowski</name>
+      <email>rgrabowski@apache.org</email>
+      <roles>
+        <role>PMC Chair</role>
+      </roles>
+      <timezone>America/New_York</timezone>
     </developer>
   </developers>
   <!-- Contributors -->
