@@ -313,6 +313,9 @@
         Add Configurator.setLevel(Logger, Level) and setLevel(String, String).      
       </action>
       <!-- UPDATE -->
+      <action issue="LOG4J2-3368" dev="vy" type="udpate">
+        Bump Tomcat from 8.5.20 to 10.0.14 in log4j-appserver along with some dependency clean-up.
+      </action>
       <action dev="ggregory" type="udpate" due-to="Dependabot">
         Bump Mockito from 3.11.2 to 4.2.0.
       </action>
