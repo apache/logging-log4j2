@@ -43,6 +43,7 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.filter.Filterable;
 import org.apache.logging.log4j.core.filter.LevelRangeFilter;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**

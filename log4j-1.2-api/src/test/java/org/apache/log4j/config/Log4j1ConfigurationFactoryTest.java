@@ -35,6 +35,7 @@ import org.apache.logging.log4j.core.appender.NullAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class Log4j1ConfigurationFactoryTest extends AbstractLog4j1ConfigurationTest {

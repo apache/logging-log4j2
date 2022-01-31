@@ -39,6 +39,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
