@@ -41,6 +41,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 public class CassandraExtension extends TypeBasedParameterResolver<Cluster> implements BeforeEachCallback, AfterEachCallback {
     private static final ThreadFactory THREAD_FACTORY = Log4jThreadFactory.createThreadFactory("CassandraFixture");
 
@@ -63,6 +65,8 @@ public class CassandraExtension extends TypeBasedParameterResolver<Cluster> impl
             final Throwable error = errorRef.get();
             if (error instanceof NoClassDefFoundError) {
                 throw new TestAbortedException("Unsupported platform", error);
+            } else {
+                fail(error);
             }
             final var cluster = Cluster.builder().addContactPoints(InetAddress.getLoopbackAddress()).build();
             final var store = context.getStore(
