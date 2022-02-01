@@ -21,7 +21,6 @@
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
     <version>3.0.0-SNAPSHOT</version>
-    <relativePath>../</relativePath>
   </parent>
   <artifactId>log4j-api-test</artifactId>
   <packaging>jar</packaging>
@@ -155,15 +154,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <properties>
-            <configurationParameters>
-              <!-- LOG4J2-2921: use parallel test execution by default -->
-              junit.jupiter.execution.parallel.enabled = true
-              junit.jupiter.execution.parallel.mode.default = fork
-            </configurationParameters>
-          </properties>
-          <forkCount>1C</forkCount>
-          <reuseForks>true</reuseForks>
           <redirectTestOutputToFile>true</redirectTestOutputToFile>
           <excludedGroups>performance,smoke</excludedGroups>
         </configuration>
@@ -297,5 +287,29 @@
       </plugin>
     </plugins>
   </reporting>
+  <profiles>
+    <profile>
+      <id>parallel-tests</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <properties>
+                <configurationParameters>
+                  <!-- LOG4J2-2921: use parallel test execution by default -->
+                  junit.jupiter.execution.parallel.enabled = true
+                  junit.jupiter.execution.parallel.mode.default = concurrent
+                </configurationParameters>
+              </properties>
+              <forkCount>1C</forkCount>
+              <reuseForks>true</reuseForks>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
 
