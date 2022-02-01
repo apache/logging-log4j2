@@ -67,7 +67,7 @@ public class CassandraAppenderIT {
         TimeUnit.SECONDS.sleep(3);
 
         int i = 0;
-        try (final Session session = cluster.connect()) {
+        try (final Session session = cluster.connect("test")) {
             for (final Row row : session.execute("SELECT * FROM logs")) {
                 assertNotNull(row.get("id", UUID.class));
                 assertNotNull(row.get("timeid", UUID.class));
