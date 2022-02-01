@@ -151,7 +151,7 @@ public class CassandraExtension extends TypeBasedParameterResolver<Cluster> impl
             try {
                 daemon.init(null);
                 daemon.start();
-            } catch (final Exception e) {
+            } catch (final Exception | LinkageError e) {
                 errorRef.set(Throwables.getRootCause(e));
             } finally {
                 latch.countDown();
