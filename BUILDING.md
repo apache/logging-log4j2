@@ -14,9 +14,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-# Building Log4j 3
+# Building Log4j 3.x
 
-To build Log4j 3, you need a JDK implementation version 11 or greater and Apache Maven 3.x.
+To build Log4j 3.x, you need a JDK implementation version 11 or greater and Apache Maven 3.x.
 
 To perform the license release audit, a.k.a. "RAT check", run.
 
