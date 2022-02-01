@@ -311,40 +311,5 @@
       </plugin>
     </plugins>
   </reporting>
-  <profiles>
-    <!-- The javac compiler has a bug on MacOS that prevents compilations from working in Java 11. It was fixed
-    in Java 17 -->
-    <profile>
-      <id>MacOs</id>
-      <activation>
-        <os>
-          <family>Mac</family>
-        </os>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-toolchains-plugin</artifactId>
-            <version>3.0.0</version>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>toolchain</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <toolchains>
-                <jdk>
-                  <version>[17, )</version>
-                </jdk>
-              </toolchains>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 </project>
 
