@@ -72,6 +72,8 @@ public class CassandraExtension extends TypeBasedParameterResolver<Cluster> impl
             try (final Session session = cluster.connect()) {
                 session.execute("CREATE KEYSPACE " + cassandraFixture.keyspace() + " WITH REPLICATION = " +
                         "{ 'class': 'SimpleStrategy', 'replication_factor': 2 };");
+            }
+            try (final Session session = cluster.connect(cassandraFixture.keyspace())) {
                 for (final String ddl : cassandraFixture.setup()) {
                     session.execute(ddl);
                 }
