@@ -16,7 +16,7 @@
 -->
 # Building Log4j 3.x
 
-To build Log4j 3.x, you need a JDK implementation version 11 or greater and Apache Maven 3.x.
+To build Log4j 3.x, you need a JDK implementation version 11 (at least version 11.0.13 if building on macOS) or greater and Apache Maven 3.x.
 
 To perform the license release audit, a.k.a. "RAT check", run.
 
