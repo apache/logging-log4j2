@@ -242,7 +242,7 @@
             <tr>
               <td>locale</td>
               <td>
-                <p>Hardware information, like:</p>
+                <p>System locale and file encoding information, like:</p>
                 <p><code>default locale: en_US, platform encoding: Cp1252</code></p>
               </td>
             </tr>
