@@ -247,7 +247,7 @@ convenient preformatted strings using the `java:` prefix.
 `default locale: en_US, platform encoding: Cp1252`
 
 |hw
-|Hardware information, like:
+|System locale and file encoding information, like:
 
 `processors: 4, architecture: amd64-64, instruction sets: amd64`
 
