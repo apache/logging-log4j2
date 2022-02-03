@@ -446,7 +446,7 @@ even any Objects. Log4j can log any Object that implements
 creating garbage.
 
 The
-http://www.slf4j.org/api/org/slf4j/spi/LocationAwareLogger.html#log(org.slf4j.Marker,%20java.lang.String,%20int,%20java.lang.String,%20java.lang.Object%5B%5D,%20java.lang.Throwable)[`org.slf4j.spi.LocationAwareLogger::log`]
+https://www.slf4j.org/api/org/slf4j/spi/LocationAwareLogger.html#log-org.slf4j.Marker-java.lang.String-int-java.lang.String-java.lang.Object:A-java.lang.Throwable-[`org.slf4j.spi.LocationAwareLogger::log`]
 method is not yet implemented in a garbage-free manner in the
 log4j-slf4j-impl binding. It creates a new message object for each call.
 
