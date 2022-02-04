@@ -18,8 +18,12 @@
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
   <appender name="DRFA" class="org.apache.log4j.DailyRollingFileAppender">
+    <param name="Append" value="false" />
+    <param name="BufferedIO" value="true" />
+    <param name="BufferSize" value="1000" />
+    <param name="DatePattern" value=".dd-MM-yyyy" />
     <param name="File" value="target/hadoop.log" />
-    <param name="DatePattern" value=".yyyy-MM-dd" />
+    <param name="ImmediateFlush" value="false" />
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="%d{ISO8601} %p %c: %m%n" />
     </layout>

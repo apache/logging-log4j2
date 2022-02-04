@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+  <appender name="HTMLLayout" class="org.apache.log4j.ConsoleAppender">
+    <layout class="org.apache.log4j.HTMLLayout"/>
+  </appender>
+
+  <appender name="PatternLayout" class="org.apache.log4j.ConsoleAppender">
+    <layout class="org.apache.log4j.PatternLayout"/>
+  </appender>
+
+  <appender name="TTCCLayout" class="org.apache.log4j.ConsoleAppender">
+    <layout class="org.apache.log4j.TTCCLayout"/>
+  </appender>
+
+  <appender name="XMLLayout" class="org.apache.log4j.ConsoleAppender">
+    <layout class="org.apache.log4j.xml.XMLLayout"/>
+  </appender>
+
+  <appender name="ConsoleAppender" class="org.apache.log4j.ConsoleAppender">
+    <layout class="org.apache.log4j.SimpleLayout"/>
+  </appender>
+
+  <appender name="DailyRollingFileAppender" class="org.apache.log4j.DailyRollingFileAppender">
+    <param name="file" value="target/dailyRollingFileAppender"/>
+    <layout class="org.apache.log4j.SimpleLayout"/>
+  </appender>
+
+  <appender name="FileAppender" class="org.apache.log4j.FileAppender">
+    <param name="file" value="target/fileAppender"/>
+    <layout class="org.apache.log4j.SimpleLayout"/>
+  </appender>
+
+  <appender name="RollingFileAppender" class="org.apache.log4j.RollingFileAppender">
+    <param name="file" value="target/rollingFileAppender"/>
+    <layout class="org.apache.log4j.SimpleLayout"/>
+  </appender>
+
+  <root>
+    <priority value="TRACE" />
+    <appender-ref ref="HTMLLayout" />
+    <appender-ref ref="PatternLayout" />
+    <appender-ref ref="TTCCLayout" />
+    <appender-ref ref="XMLLayout" />
+    <appender-ref ref="ConsoleAppender" />
+    <appender-ref ref="DailyRollingFileAppender" />
+    <appender-ref ref="FileAppender" />
+    <appender-ref ref="RollingFileAppender" />
+  </root>
+</log4j:configuration>

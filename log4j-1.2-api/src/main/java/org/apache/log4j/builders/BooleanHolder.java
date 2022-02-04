@@ -21,7 +21,11 @@ package org.apache.log4j.builders;
  */
 public class BooleanHolder extends Holder<Boolean> {
     public BooleanHolder() {
-        super(Boolean.FALSE);
+        this(false);
+    }
+
+    public BooleanHolder(boolean value) {
+        super(value);
     }
 
     @Override

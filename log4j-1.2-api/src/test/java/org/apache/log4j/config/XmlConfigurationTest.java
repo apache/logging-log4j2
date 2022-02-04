@@ -180,4 +180,10 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
         super.testSystemProperties1();
     }
 
+    @Override
+    @Test
+    public void testDefaultValues() throws Exception {
+        super.testDefaultValues();
+    }
+
 }

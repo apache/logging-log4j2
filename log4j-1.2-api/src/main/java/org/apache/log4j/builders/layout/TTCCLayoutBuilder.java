@@ -103,7 +103,7 @@ public class TTCCLayoutBuilder extends AbstractBuilder implements LayoutBuilder 
         if (dateFormat != null) {
             if (RELATIVE.equalsIgnoreCase(dateFormat)) {
                 sb.append("%r ");
-            } else {
+            } else if (!NULL.equalsIgnoreCase(dateFormat)){
                 sb.append("%d{").append(dateFormat).append("}");
                 if (timezone != null) {
                     sb.append("{").append(timezone).append("}");

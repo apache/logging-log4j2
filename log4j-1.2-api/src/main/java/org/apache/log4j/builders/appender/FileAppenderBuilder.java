@@ -67,9 +67,9 @@ public class FileAppenderBuilder extends AbstractBuilder implements AppenderBuil
         Holder<Filter> filter = new Holder<>();
         Holder<String> fileName = new Holder<>();
         Holder<String> level = new Holder<>();
-        Holder<Boolean> immediateFlush = new BooleanHolder();
-        Holder<Boolean> append = new BooleanHolder();
-        Holder<Boolean> bufferedIo = new BooleanHolder();
+        Holder<Boolean> immediateFlush = new BooleanHolder(true);
+        Holder<Boolean> append = new BooleanHolder(true);
+        Holder<Boolean> bufferedIo = new BooleanHolder(false);
         Holder<Integer> bufferSize = new Holder<>(8192);
         forEachElement(appenderElement.getChildNodes(), (currentElement) -> {
             switch (currentElement.getTagName()) {
@@ -120,6 +120,15 @@ public class FileAppenderBuilder extends AbstractBuilder implements AppenderBuil
                             }
                             break;
                         }
+                        case IMMEDIATE_FLUSH_PARAM: {
+                            String value = getValueAttribute(currentElement);
+                            if (value == null) {
+                                LOGGER.warn("No value supplied for ImmediateFlush parameter. Using default of {}", true);
+                            } else {
+                                immediateFlush.set(Boolean.getBoolean(value));
+                            }
+                            break;
+                        }
                     }
                     break;
                 }
@@ -137,9 +146,9 @@ public class FileAppenderBuilder extends AbstractBuilder implements AppenderBuil
         Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
         String level = getProperty(THRESHOLD_PARAM);
         String fileName = getProperty(FILE_PARAM);
-        boolean append = getBooleanProperty(APPEND_PARAM);
-        boolean immediateFlush = false;
-        boolean bufferedIo = getBooleanProperty(BUFFERED_IO_PARAM);
+        boolean append = getBooleanProperty(APPEND_PARAM, true);
+        boolean immediateFlush = getBooleanProperty(IMMEDIATE_FLUSH_PARAM, true);
+        boolean bufferedIo = getBooleanProperty(BUFFERED_IO_PARAM, false);
         int bufferSize = Integer.parseInt(getProperty(BUFFER_SIZE_PARAM, "8192"));
         return createAppender(name, configuration, layout, filter, fileName, level, immediateFlush,
                 append, bufferedIo, bufferSize);
@@ -150,7 +159,7 @@ public class FileAppenderBuilder extends AbstractBuilder implements AppenderBuil
             final boolean bufferedIo, final int bufferSize) {
         org.apache.logging.log4j.core.Layout<?> fileLayout = null;
         if (bufferedIo) {
-            immediateFlush = true;
+            immediateFlush = false;
         }
         if (layout instanceof LayoutWrapper) {
             fileLayout = ((LayoutWrapper) layout).getLayout();

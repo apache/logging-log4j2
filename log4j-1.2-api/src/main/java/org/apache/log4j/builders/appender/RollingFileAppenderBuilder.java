@@ -53,6 +53,9 @@ import static org.apache.log4j.xml.XmlConfiguration.*;
 @Plugin(name = "org.apache.log4j.RollingFileAppender", category = CATEGORY)
 public class RollingFileAppenderBuilder extends AbstractBuilder implements AppenderBuilder {
 
+    private static final String DEFAULT_MAX_SIZE = "10 MB";
+    private static final String DEFAULT_MAX_BACKUPS = "1";
+
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     public RollingFileAppenderBuilder() {
@@ -68,12 +71,12 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
         Holder<Layout> layout = new Holder<>();
         Holder<Filter> filter = new Holder<>();
         Holder<String> fileName = new Holder<>();
-        Holder<Boolean> immediateFlush = new BooleanHolder();
-        Holder<Boolean> append = new BooleanHolder();
-        Holder<Boolean> bufferedIo = new BooleanHolder();
+        Holder<Boolean> immediateFlush = new BooleanHolder(true);
+        Holder<Boolean> append = new BooleanHolder(true);
+        Holder<Boolean> bufferedIo = new BooleanHolder(false);
         Holder<Integer> bufferSize = new Holder<>(8192);
-        Holder<String> maxSize = new Holder<>();
-        Holder<String> maxBackups = new Holder<>();
+        Holder<String> maxSize = new Holder<>(DEFAULT_MAX_SIZE);
+        Holder<String> maxBackups = new Holder<>(DEFAULT_MAX_BACKUPS);
         Holder<String> level = new Holder<>();
         forEachElement(appenderElement.getChildNodes(), (currentElement) -> {
             switch (currentElement.getTagName()) {
@@ -142,13 +145,23 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
                             }
                             break;
                         }
+                        case IMMEDIATE_FLUSH_PARAM: {
+                            String value = getValueAttribute(currentElement);
+                            if (value == null) {
+                                LOGGER.warn("No value supplied for ImmediateFlush parameter. Using default of {}", true);
+                            } else {
+                                immediateFlush.set(Boolean.getBoolean(value));
+                            }
+                            break;
+                        }
                     }
                     break;
                 }
             }
         });
-        return createAppender(name, config, layout.get(), filter.get(), bufferedIo.get(), immediateFlush.get(),
-                fileName.get(), level.get(), maxSize.get(), maxBackups.get(), config.getComponent(Clock.KEY));
+        return createAppender(name, config, layout.get(), filter.get(), append.get(), bufferedIo.get(),
+                bufferSize.get(), immediateFlush.get(), fileName.get(), level.get(), maxSize.get(), maxBackups.get(),
+                config.getComponent(Clock.KEY));
     }
 
     @Override
@@ -158,21 +171,23 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
         Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
         String fileName = getProperty(FILE_PARAM);
         String level = getProperty(THRESHOLD_PARAM);
-        boolean immediateFlush = false;
+        boolean append = getBooleanProperty(APPEND_PARAM, true);
+        boolean immediateFlush = getBooleanProperty(IMMEDIATE_FLUSH_PARAM, true);
         boolean bufferedIo = getBooleanProperty(BUFFERED_IO_PARAM);
-        String maxSize = getProperty(MAX_SIZE_PARAM);
-        String maxBackups = getProperty(MAX_BACKUP_INDEX);
-        return createAppender(name, configuration, layout, filter, bufferedIo, immediateFlush, fileName, level, maxSize,
-                maxBackups, configuration.getComponent(Clock.KEY));
+        int bufferSize = getIntegerProperty(BUFFER_SIZE_PARAM, 8192);
+        String maxSize = getProperty(MAX_SIZE_PARAM, DEFAULT_MAX_SIZE);
+        String maxBackups = getProperty(MAX_BACKUP_INDEX, DEFAULT_MAX_BACKUPS);
+        return createAppender(name, configuration, layout, filter, append, bufferedIo, bufferSize, immediateFlush,
+                fileName, level, maxSize, maxBackups, configuration.getComponent(Clock.KEY));
     }
 
-    private Appender createAppender(
-            final String name, final Log4j1Configuration config, final Layout layout, final Filter filter,
-            final boolean bufferedIo, boolean immediateFlush, final String fileName, final String level, final String maxSize,
+    private Appender createAppender(final String name, final Log4j1Configuration config, final Layout layout,
+            final Filter filter, final boolean append, final boolean bufferedIo, final int bufferSize,
+            boolean immediateFlush, final String fileName, final String level, final String maxSize,
             final String maxBackups, final Clock clock) {
         org.apache.logging.log4j.core.Layout<?> fileLayout = null;
-        if (bufferedIo) {
-            immediateFlush = true;
+        if (!bufferedIo) {
+            immediateFlush = false;
         }
         if (layout instanceof LayoutWrapper) {
             fileLayout = ((LayoutWrapper) layout).getLayout();
@@ -197,7 +212,9 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
                 .setConfiguration(config)
                 .setLayout(fileLayout)
                 .setFilter(fileFilter)
+                .setAppend(append)
                 .setBufferedIo(bufferedIo)
+                .setBufferSize(bufferSize)
                 .setImmediateFlush(immediateFlush)
                 .setFileName(fileName)
                 .setFilePattern(filePattern)

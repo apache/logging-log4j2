@@ -17,8 +17,14 @@
 -->
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
-  <appender name="RFA" class="org.apache.log4j.DailyRollingFileAppender">
+  <appender name="RFA" class="org.apache.log4j.RollingFileAppender">
+    <param name="Append" value="false" />
+    <param name="BufferedIO" value="true" />
+    <param name="BufferSize" value="1000" />
     <param name="File" value="${java.io.tmpdir}/hadoop.log" />
+    <param name="ImmediateFlush" value="false" />
+    <param name="MaxBackupIndex" value="16" />
+    <param name="MaxFileSize" value="20 MB" />
   </appender>
 
   <root>

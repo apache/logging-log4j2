@@ -52,6 +52,9 @@ import static org.apache.log4j.xml.XmlConfiguration.*;
 @Plugin(name = "org.apache.log4j.DailyRollingFileAppender", category = CATEGORY)
 public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements AppenderBuilder {
 
+    private static final String DEFAULT_DATE_PATTERN = ".yyyy-MM-dd";
+    private static final String DATE_PATTERN_PARAM = "DatePattern";
+
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     public DailyRollingFileAppenderBuilder() {
@@ -68,10 +71,11 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
         Holder<Filter> filter = new Holder<>();
         Holder<String> fileName = new Holder<>();
         Holder<String> level = new Holder<>();
-        Holder<Boolean> immediateFlush = new BooleanHolder();
-        Holder<Boolean> append = new BooleanHolder();
-        Holder<Boolean> bufferedIo = new BooleanHolder();
+        Holder<Boolean> immediateFlush = new BooleanHolder(true);
+        Holder<Boolean> append = new BooleanHolder(true);
+        Holder<Boolean> bufferedIo = new BooleanHolder(false);
         Holder<Integer> bufferSize = new Holder<>(8192);
+        Holder<String> datePattern = new Holder<>(DEFAULT_DATE_PATTERN);
         forEachElement(appenderElement.getChildNodes(), (currentElement) -> {
             switch (currentElement.getTagName()) {
                 case LAYOUT_TAG:
@@ -121,13 +125,32 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
                             }
                             break;
                         }
+                        case DATE_PATTERN_PARAM: {
+                            String value = getValueAttribute(currentElement);
+                            if (value == null) {
+                                LOGGER.warn("No value supplied for DatePattern parameter, ignoring.");
+                            } else {
+                                datePattern.set(value);
+                            }
+                            break;
+                        }
+                        case IMMEDIATE_FLUSH_PARAM: {
+                            String value = getValueAttribute(currentElement);
+                            if (value == null) {
+                                LOGGER.warn("No value supplied for ImmediateFlush parameter. Using default of {}", true);
+                            } else {
+                                immediateFlush.set(Boolean.getBoolean(value));
+                            }
+                            break;
+                        }
                     }
                     break;
                 }
             }
         });
         return createAppender(name, layout.get(), filter.get(), fileName.get(), append.get(), immediateFlush.get(),
-                level.get(), bufferedIo.get(), bufferSize.get(), config, config.getComponent(Clock.KEY));
+                level.get(), bufferedIo.get(), bufferSize.get(), datePattern.get(), config,
+                config.getComponent(Clock.KEY));
     }
 
     @Override
@@ -137,22 +160,23 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
         Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
         String fileName = getProperty(FILE_PARAM);
         String level = getProperty(THRESHOLD_PARAM);
-        boolean append = getBooleanProperty(APPEND_PARAM);
-        boolean immediateFlush = false;
-        boolean bufferedIo = getBooleanProperty(BUFFERED_IO_PARAM);
-        int bufferSize = Integer.parseInt(getProperty(BUFFER_SIZE_PARAM, "8192"));
-        return createAppender(name, layout, filter, fileName, append, immediateFlush,
-                level, bufferedIo, bufferSize, configuration, configuration.getComponent(Clock.KEY));
+        boolean append = getBooleanProperty(APPEND_PARAM, true);
+        boolean immediateFlush = getBooleanProperty(IMMEDIATE_FLUSH_PARAM, true);
+        boolean bufferedIo = getBooleanProperty(BUFFERED_IO_PARAM, false);
+        int bufferSize = getIntegerProperty(BUFFER_SIZE_PARAM, 8192);
+        String datePattern = getProperty(DATE_PATTERN_PARAM, DEFAULT_DATE_PATTERN);
+        return createAppender(name, layout, filter, fileName, append, immediateFlush, level, bufferedIo, bufferSize,
+                datePattern, configuration, configuration.getComponent(Clock.KEY));
     }
 
-    private <T extends Log4j1Configuration> Appender createAppender(
-            final String name, final Layout layout, final Filter filter, final String fileName, final boolean append,
-            boolean immediateFlush, final String level, final boolean bufferedIo, final int bufferSize, final T configuration,
-            final Clock clock) {
+    private <T extends Log4j1Configuration> Appender createAppender(final String name, final Layout layout,
+            final Filter filter, final String fileName, final boolean append, boolean immediateFlush,
+            final String level, final boolean bufferedIo, final int bufferSize, String datePattern,
+            final T configuration, final Clock clock) {
 
         org.apache.logging.log4j.core.Layout<?> fileLayout = null;
         if (bufferedIo) {
-            immediateFlush = true;
+            immediateFlush = false;
         }
         if (layout instanceof LayoutWrapper) {
             fileLayout = ((LayoutWrapper) layout).getLayout();
@@ -164,7 +188,7 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
             LOGGER.warn("Unable to create File Appender, no file name provided");
             return null;
         }
-        String filePattern = fileName + "%d{.yyyy-MM-dd}";
+        String filePattern = fileName + "%d{" + datePattern + "}";
         TriggeringPolicy timePolicy = TimeBasedTriggeringPolicy.newBuilder().setClock(clock).setModulate(true).build();
         TriggeringPolicy policy = CompositeTriggeringPolicy.createPolicy(timePolicy);
         RolloverStrategy strategy = DefaultRolloverStrategy.newBuilder()
@@ -173,10 +197,12 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
                 .build();
         return new AppenderWrapper(RollingFileAppender.newBuilder()
                 .setName(name)
+                .setAppend(append)
                 .setConfiguration(configuration)
                 .setLayout(fileLayout)
                 .setFilter(fileFilter)
                 .setFileName(fileName)
+                .setBufferedIo(bufferedIo)
                 .setBufferSize(bufferSize)
                 .setImmediateFlush(immediateFlush)
                 .setFilePattern(filePattern)

@@ -66,6 +66,8 @@ public class Log4j1ConfigurationParser {
     private static final String ROOTCATEGORY = "rootCategory";
     private static final String TRUE = "true";
     private static final String FALSE = "false";
+    private static final String RELATIVE = "RELATIVE";
+    private static final String NULL = "NULL";
 
     private final Properties properties = new Properties();
 
@@ -226,7 +228,7 @@ public class Log4j1ConfigurationParser {
                 RollingFileAppender.PLUGIN_NAME);
         buildFileAppender(appenderName, appenderBuilder);
         final String fileName = getLog4jAppenderValue(appenderName, "File");
-        final String datePattern = getLog4jAppenderValue(appenderName, "DatePattern", fileName + "'.'yyyy-MM-dd");
+        final String datePattern = getLog4jAppenderValue(appenderName, "DatePattern", ".yyyy-MM-dd");
         appenderBuilder.addAttribute("filePattern", fileName + "%d{" + datePattern + "}");
         final ComponentBuilder<?> triggeringPolicy = builder.newComponent("Policies")
                 .addComponent(builder.newComponent("TimeBasedTriggeringPolicy").addAttribute("modulate", true));
@@ -287,8 +289,9 @@ public class Log4j1ConfigurationParser {
             switch (layoutClass) {
             case "org.apache.log4j.PatternLayout":
             case "org.apache.log4j.EnhancedPatternLayout": {
-                final String pattern = getLog4jAppenderValue(name, "layout.ConversionPattern", null)
-
+                String pattern = getLog4jAppenderValue(name, "layout.ConversionPattern", null);
+                if (pattern != null) {
+                    pattern = pattern
                         // Log4j 2's %x (NDC) is not compatible with Log4j 1's
                         // %x
                         // Log4j 1: "foo bar baz"
@@ -302,7 +305,9 @@ public class Log4j1ConfigurationParser {
                         // Log4j 2: "{foo=bar,hoo=boo}"
                         // Use %properties to get the Log4j 1 format
                         .replace("%X", "%properties");
-
+                } else {
+                    pattern = "%m%n";
+                }
                 appenderBuilder.add(newPatternLayout(pattern));
                 break;
             }
@@ -311,7 +316,20 @@ public class Log4j1ConfigurationParser {
                 break;
             }
             case "org.apache.log4j.TTCCLayout": {
-                String pattern = "%r ";
+                String pattern = "";
+                final String dateFormat = getLog4jAppenderValue(name, "layout.DateFormat", RELATIVE);
+                final String timezone = getLog4jAppenderValue(name, "layout.TimeZone", null);
+                if (dateFormat != null) {
+                    if (RELATIVE.equalsIgnoreCase(dateFormat)) {
+                        pattern += "%r ";
+                    } else if (!NULL.equalsIgnoreCase(dateFormat)){
+                        pattern += "%d{" + dateFormat + "}";
+                        if (timezone != null) {
+                            pattern += "{" + timezone + "}";
+                        }
+                        pattern += " ";
+                    }
+                }
                 if (Boolean.parseBoolean(getLog4jAppenderValue(name, "layout.ThreadPrinting", TRUE))) {
                     pattern += "[%t] ";
                 }
