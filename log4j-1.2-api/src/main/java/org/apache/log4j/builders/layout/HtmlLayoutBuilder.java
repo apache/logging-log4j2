@@ -70,7 +70,7 @@ public class HtmlLayoutBuilder extends AbstractBuilder implements LayoutBuilder 
     @Override
     public Layout parseLayout(PropertiesConfiguration config) {
         String title = getProperty(TITLE_PARAM, DEFAULT_TITLE);
-        boolean locationInfo = getBooleanProperty(LOCATION_INFO_PARAM, false);
+        boolean locationInfo = getBooleanProperty(LOCATION_INFO_PARAM);
         return createLayout(title, locationInfo);
     }
 
