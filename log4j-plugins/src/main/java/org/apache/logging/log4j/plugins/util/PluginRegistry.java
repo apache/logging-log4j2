@@ -42,8 +42,6 @@ import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Registry singleton for PluginType maps partitioned by source type and then by category names.
@@ -54,7 +52,6 @@ public class PluginRegistry {
 
     private static volatile PluginRegistry INSTANCE;
     private static final Object INSTANCE_LOCK = new Object();
-    protected static final Lock STARTUP_LOCK = new ReentrantLock();
 
     /**
      * Contains plugins found in Log4j2Plugins.dat cache files in the main CLASSPATH.
