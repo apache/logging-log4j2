@@ -125,7 +125,7 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
                             if (value == null) {
                                 LOGGER.warn("No value supplied for ImmediateFlush parameter. Using default of {}", true);
                             } else if (!Boolean.getBoolean(name)) {
-                                LOGGER.warn("The value {} for ImmediateFlush parameter is not supported.", false);
+                                LOGGER.warn("The value {} for ImmediateFlush parameter is not supported.", value);
                             }
                             break;
                         }
