@@ -74,6 +74,7 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
         Holder<List<Filter>> filters = new Holder<>(new ArrayList<>());
         Holder<String> level = new Holder<>();
         Holder<Boolean> follow = new BooleanHolder();
+        Holder<Boolean> immediateFlush = new BooleanHolder(true);
         forEachElement(appenderElement.getChildNodes(), (currentElement) -> {
             switch (currentElement.getTagName()) {
                 case LAYOUT_TAG:
@@ -114,18 +115,18 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
                         case FOLLOW_PARAM: {
                             String value = getValueAttribute(currentElement);
                             if (value == null) {
-                                LOGGER.warn("No value supplied for Follow parameter. Using default of {}", false);
+                                LOGGER.warn("No value supplied for Follow parameter. Using default of {}", follow);
                             } else {
-                                follow.set(Boolean.valueOf(value));
+                                follow.set(Boolean.parseBoolean(value));
                             }
                             break;
                         }
                         case IMMEDIATE_FLUSH_PARAM: {
                             String value = getValueAttribute(currentElement);
                             if (value == null) {
-                                LOGGER.warn("No value supplied for ImmediateFlush parameter. Using default of {}", true);
-                            } else if (!Boolean.getBoolean(name)) {
-                                LOGGER.warn("The value {} for ImmediateFlush parameter is not supported.", value);
+                                LOGGER.warn("No value supplied for ImmediateFlush parameter. Using default of {}", immediateFlush);
+                            } else {
+                                immediateFlush.set(Boolean.parseBoolean(value));
                             }
                             break;
                         }
@@ -145,7 +146,7 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
                 current = f;
             }
         }
-        return createAppender(name, layout.get(), head, level.get(), target.get(), follow.get(), config);
+        return createAppender(name, layout.get(), head, level.get(), target.get(), immediateFlush.get(), follow.get(), config);
     }
 
     @Override
@@ -156,11 +157,11 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
         String level = getProperty(THRESHOLD_PARAM);
         String target = getProperty(TARGET_PARAM);
         boolean follow = getBooleanProperty(FOLLOW_PARAM);
-        return createAppender(name, layout, filter, level, target, follow, configuration);
+        return createAppender(name, layout, filter, level, target, true, follow, configuration);
     }
 
     private <T extends Log4j1Configuration> Appender createAppender(String name, Layout layout, Filter filter,
-            String level, String target, boolean follow, T configuration) {
+            String level, String target, boolean immediateFlush, boolean follow, T configuration) {
         org.apache.logging.log4j.core.Layout<?> consoleLayout = null;
 
         if (layout instanceof LayoutWrapper) {
@@ -178,6 +179,7 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
                 .setLayout(consoleLayout)
                 .setFilter(consoleFilter)
                 .setConfiguration(configuration)
+                .setImmediateFlush(immediateFlush)
                 .build());
     }
 }
