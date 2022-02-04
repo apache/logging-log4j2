@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.plugins.validation;
 
-import java.util.Collection;
-
 /**
  * Performs validation on the Plugin to determine if it can be used.
  */
@@ -25,13 +23,6 @@ public class PluginValidator {
 
 
     public static boolean validatePlugin(Class<?> pluginClass, String elementName) {
-        Collection<ConstraintValidator<?>> validators =
-                ConstraintValidators.findValidators(pluginClass.getAnnotations());
-        for (ConstraintValidator<?> validator : validators) {
-            if (!validator.isValid(elementName, pluginClass)) {
-                return false;
-            }
-        }
-        return true;
+        return ConstraintValidators.isValid(pluginClass, elementName, pluginClass);
     }
 }

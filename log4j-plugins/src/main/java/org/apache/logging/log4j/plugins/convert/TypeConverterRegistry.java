@@ -42,7 +42,7 @@ import java.util.function.Supplier;
 public class TypeConverterRegistry {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
-    private static final Supplier<TypeConverterRegistry> INSTANCE = LazyValue.forSupplier(TypeConverterRegistry::new);
+    private static final Supplier<TypeConverterRegistry> INSTANCE = LazyValue.fromSupplier(TypeConverterRegistry::new);
 
     private final ConcurrentMap<Type, TypeConverter<?>> registry = new ConcurrentHashMap<>();
 
@@ -176,14 +176,28 @@ public class TypeConverterRegistry {
     }
 
     private void registerPrimitiveTypes() {
+        registerConverter(Boolean.class, Boolean::valueOf);
         registerTypeAlias(Boolean.class, Boolean.TYPE);
+        registerConverter(Byte.class, Byte::valueOf);
         registerTypeAlias(Byte.class, Byte.TYPE);
+        registerConverter(Character.class, s -> {
+            if (s.length() != 1) {
+                throw new IllegalArgumentException("Character string must be of length 1: " + s);
+            }
+            return s.toCharArray()[0];
+        });
         registerTypeAlias(Character.class, Character.TYPE);
+        registerConverter(Double.class, Double::valueOf);
         registerTypeAlias(Double.class, Double.TYPE);
+        registerConverter(Float.class, Float::valueOf);
         registerTypeAlias(Float.class, Float.TYPE);
+        registerConverter(Integer.class, Integer::valueOf);
         registerTypeAlias(Integer.class, Integer.TYPE);
+        registerConverter(Long.class, Long::valueOf);
         registerTypeAlias(Long.class, Long.TYPE);
+        registerConverter(Short.class, Short::valueOf);
         registerTypeAlias(Short.class, Short.TYPE);
+        registerConverter(String.class, s -> s);
     }
 
     private void registerTypeAlias(final Type knownType, final Type aliasType) {

@@ -23,6 +23,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import java.util.Optional;
 
+@SuppressWarnings("deprecation")
 public class PluginValueNameProvider implements AnnotatedElementNameProvider<PluginValue> {
     @Override
     public Optional<String> getSpecifiedName(final PluginValue annotation) {

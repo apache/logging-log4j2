@@ -179,13 +179,6 @@
             <Export-Package>org.apache.logging.log4j.core.*</Export-Package>
             <Import-Package>
               sun.reflect;resolution:=optional,
-              org.apache.logging.log4j.util,
-              org.apache.logging.log4j.plugins,
-              org.apache.logging.log4j.plugins.convert,
-              org.apache.logging.log4j.plugins.processor,
-              org.apache.logging.log4j.plugins.util,
-              org.apache.logging.log4j.plugins.validation,
-              org.apache.logging.log4j.plugins.inject,
               *
             </Import-Package>
             <Bundle-Activator>org.apache.logging.log4j.core.osgi.Activator</Bundle-Activator>

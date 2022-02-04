@@ -16,15 +16,10 @@
  */
 package org.apache.logging.log4j.core.plugins.convert;
 
-import org.apache.logging.log4j.core.config.plugins.convert.CoreTypeConverters;
-import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.convert.TypeConverterRegistry;
-import org.apache.logging.log4j.plugins.convert.TypeConverters;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CoreTypeConvertersTest {
@@ -55,7 +50,6 @@ public class CoreTypeConvertersTest {
         final TypeConverter<CharSequence> converter = (TypeConverter<CharSequence>)
             TypeConverterRegistry.getInstance().findCompatibleConverter(CharSequence.class);
         assertNotNull(converter);
-        assertThat(converter, instanceOf(CoreTypeConverters.StringConverter.class));
         final CharSequence expected = "This is a test sequence of characters";
         final CharSequence actual = converter.convert(expected.toString());
         assertEquals(expected, actual);

@@ -16,20 +16,14 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.util.Cancellable;
@@ -40,6 +34,12 @@ import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
+
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Factory to locate a ContextSelector and then load a LoggerContext.
@@ -177,7 +177,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
             if (source != null) {
                 ContextAnchor.THREAD_CONTEXT.set(ctx);
                 final Configuration config = ConfigurationFactory.getInstance().getConfiguration(ctx, source);
-                LOGGER.debug("Starting LoggerContext[name={}] from configuration {}", ctx.getName(), source);
+                LOGGER.debug("Starting {} from configuration {}", ctx, source);
                 ctx.start(config);
                 ContextAnchor.THREAD_CONTEXT.remove();
             } else {
@@ -238,7 +238,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
             if (configLocation != null || name != null) {
                 ContextAnchor.THREAD_CONTEXT.set(ctx);
                 final Configuration config = ConfigurationFactory.getInstance().getConfiguration(ctx, name, configLocation);
-                LOGGER.debug("Starting LoggerContext[name={}] from configuration at {}", ctx.getName(), configLocation);
+                LOGGER.debug("Starting {} from configuration at {}", ctx, configLocation);
                 ctx.start(config);
                 ContextAnchor.THREAD_CONTEXT.remove();
             } else {
@@ -258,7 +258,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
             if (configLocation != null || name != null) {
                 ContextAnchor.THREAD_CONTEXT.set(ctx);
                 final Configuration config = ConfigurationFactory.getInstance().getConfiguration(ctx, name, configLocation);
-                LOGGER.debug("Starting LoggerContext[name={}] from configuration at {}", ctx.getName(), configLocation);
+                LOGGER.debug("Starting {} from configuration at {}", ctx, configLocation);
                 ctx.start(config);
                 ContextAnchor.THREAD_CONTEXT.remove();
             } else {
@@ -303,14 +303,9 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
                 if (configurations.size() == 0) {
                     LOGGER.error("No configurations could be created for {}", configLocations.toString());
                 } else if (configurations.size() == 1) {
-                    final AbstractConfiguration config = configurations.get(0);
-                    LOGGER.debug("Starting LoggerContext[name={}] from configuration at {}", ctx.getName(),
-                            config.getConfigurationSource().getLocation());
-                    ctx.start(config);
+                    ctx.start(configurations.get(0));
                 } else {
                     final CompositeConfiguration compositeConfiguration = new CompositeConfiguration(configurations);
-                    LOGGER.debug("Starting LoggerContext[name={}] from configurations at {}", ctx.getName(),
-                            configLocations);
                     ctx.start(compositeConfiguration);
                 }
                 ContextAnchor.THREAD_CONTEXT.remove();

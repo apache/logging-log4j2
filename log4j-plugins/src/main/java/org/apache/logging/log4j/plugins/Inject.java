@@ -42,6 +42,7 @@ import java.lang.annotation.Target;
  * is ignored (e.g., for builder method chaining).
  *
  * @see Named
+ * @see Factory
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.CONSTRUCTOR, ElementType.METHOD, ElementType.FIELD})

@@ -16,23 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -54,6 +37,23 @@ import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ReflectionUtil;
 import org.apache.logging.log4j.util.Strings;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Factory class for parsed {@link Configuration} objects from a configuration file.
@@ -141,7 +141,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
 
     private static volatile List<ConfigurationFactory> factories;
 
-    private static ConfigurationFactory configFactory = new Factory();
+    private static volatile ConfigurationFactory configFactory;
 
     protected final StrSubstitutor substitutor = new ConfigurationStrSubstitutor(new Interpolator());
 
@@ -157,8 +157,6 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
      * @return the ConfigurationFactory.
      */
     public static ConfigurationFactory getInstance() {
-        // volatile works in Java 1.6+, so double-checked locking also works properly
-        //noinspection DoubleCheckedLocking
         if (factories == null) {
             LOCK.lock();
             try {
@@ -180,14 +178,16 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                             LOGGER.warn("Unable to add class {}", type.getPluginClass(), ex);
                         }
                     }
-                    Collections.sort(ordered, OrderComparator.getInstance());
+                    ordered.sort(OrderComparator.getInstance());
                     for (final Class<? extends ConfigurationFactory> clazz : ordered) {
                         addFactory(list, clazz);
                     }
-                    // see above comments about double-checked locking
-                    //noinspection NonThreadSafeLazyInitialization
                     factories = Collections.unmodifiableList(list);
                     authorizationProvider = authorizationProvider(props);
+                    // late init here to avoid potential class loader deadlock referencing subclass
+                    if (configFactory == null) {
+                        configFactory = new Factory();
+                    }
                 }
             } finally {
                 LOCK.unlock();

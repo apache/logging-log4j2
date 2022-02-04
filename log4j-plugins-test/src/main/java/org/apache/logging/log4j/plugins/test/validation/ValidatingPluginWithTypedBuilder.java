@@ -40,12 +40,6 @@ public class ValidatingPluginWithTypedBuilder {
     }
 
     @PluginFactory
-    public static ValidatingPluginWithTypedBuilder newValidatingPlugin(
-        @Required(message = "The name given by the factory is null") final String name) {
-        return new ValidatingPluginWithTypedBuilder(name);
-    }
-
-    @PluginFactory
     public static Builder<Integer> newBuilder() {
         return new Builder<>();
     }

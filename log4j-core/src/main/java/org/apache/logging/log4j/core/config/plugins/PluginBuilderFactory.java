@@ -17,7 +17,7 @@
 
 package org.apache.logging.log4j.core.config.plugins;
 
-import org.apache.logging.log4j.plugins.Producer;
+import org.apache.logging.log4j.plugins.FactoryType;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -32,7 +32,8 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@Producer
+@FactoryType
+@Deprecated(since = "3.0.0")
 public @interface PluginBuilderFactory {
     // empty
 }

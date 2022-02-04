@@ -16,28 +16,16 @@
  */
 package org.apache.logging.log4j.plugins.validation.validators;
 
-import java.util.Collection;
-import java.util.Map;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.validation.ConstraintValidator;
-import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.plugins.validation.constraints.RequiredClass;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Assert;
 import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
  * Validator that checks for the existence of a class that is required.
- * <ul>
- * <li>The value {@code null}</li>
- * <li>An object of type {@link CharSequence} with length 0</li>
- * <li>An empty array</li>
- * <li>An empty {@link Collection}</li>
- * <li>An empty {@link Map}</li>
- * </ul>
  *
- * @since 2.1
+ * @since 3.0.0
  */
 public class RequiredClassValidator implements ConstraintValidator<RequiredClass> {
 

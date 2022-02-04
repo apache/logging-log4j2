@@ -16,11 +16,6 @@
  */
 package org.apache.logging.log4j.core.config.builder.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.List;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
@@ -32,6 +27,11 @@ import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.util.ResolverUtil;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * This is the general version of the Configuration created by the Builder. It may be extended to
@@ -123,11 +123,11 @@ public class BuiltConfiguration extends AbstractConfiguration {
             if (configSource != null) {
                 final InputStream is = configSource.getInputStream();
                 if (is != null) {
-                    buffer = toByteArray(is);
+                    buffer = is.readAllBytes();
                 }
             }
         } catch (final IOException ioe) {
-            LOGGER.warn("Unable to read configuration source " + configSource.toString());
+            LOGGER.warn("Unable to read configuration source {}", configSource);
         }
         super.createAdvertiser(advertiserString, configSource, buffer, contentType);
     }

@@ -17,20 +17,22 @@
 
 package org.apache.logging.log4j.plugins;
 
+import org.apache.logging.log4j.plugins.name.AliasesProvider;
 import org.apache.logging.log4j.plugins.name.NameProvider;
 import org.apache.logging.log4j.plugins.name.NamedQualifierNameProvider;
-import org.apache.logging.log4j.util.Strings;
 
 import java.lang.annotation.Documented;
-import java.lang.annotation.Repeatable;
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.TYPE_USE})
 @Documented
 @NameProvider(NamedQualifierNameProvider.class)
-@Repeatable(NamedAliases.class)
-@Qualifier
+@AliasesProvider(NamedQualifierNameProvider.class)
+@QualifierType
 public @interface Named {
-    String value() default Strings.EMPTY;
+    String[] value() default {};
 }

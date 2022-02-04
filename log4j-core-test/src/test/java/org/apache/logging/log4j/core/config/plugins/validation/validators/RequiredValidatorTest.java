@@ -17,21 +17,22 @@
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
 import org.apache.logging.log4j.plugins.Node;
-import org.apache.logging.log4j.core.config.NullConfiguration;
-import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
+import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.plugins.di.Keys;
+import org.apache.logging.log4j.plugins.test.validation.ValidatingPlugin;
 import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
-import org.apache.logging.log4j.plugins.test.validation.ValidatingPlugin;
 import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @StatusLoggerLevel("OFF")
 public class RequiredValidatorTest {
 
-    private PluginType<ValidatingPlugin> plugin;
     private Node node;
 
     @SuppressWarnings("unchecked")
@@ -39,28 +40,27 @@ public class RequiredValidatorTest {
     public void setUp() throws Exception {
         final PluginManager manager = new PluginManager("Test");
         manager.collectPlugins();
-        plugin = (PluginType<ValidatingPlugin>) manager.getPluginType("Validator");
+        PluginType<ValidatingPlugin> plugin = (PluginType<ValidatingPlugin>) manager.getPluginType("Validator");
         assertNotNull(plugin, "Rebuild this module to make sure annotation processing kicks in.");
         node = new Node(null, "Validator", plugin);
     }
 
     @Test
     public void testNullDefaultValue() throws Exception {
-        final ValidatingPlugin validatingPlugin = (ValidatingPlugin) new PluginBuilder(plugin)
-            .setConfiguration(new NullConfiguration())
-            .setConfigurationNode(node)
-            .build();
+        DI.createInjector()
+                .bindFactory(Keys.SUBSTITUTOR_KEY, Function::identity)
+                .configureNode(node);
+        final ValidatingPlugin validatingPlugin = node.getObject();
         assertNull(validatingPlugin);
     }
 
     @Test
     public void testNonNullValue() throws Exception {
         node.getAttributes().put("name", "foo");
-        final ValidatingPlugin validatingPlugin = (ValidatingPlugin) new PluginBuilder(plugin)
-            .setConfiguration(new NullConfiguration())
-            .setConfigurationNode(node)
-            .build();
-        assertNotNull(validatingPlugin);
+        DI.createInjector()
+                .bindFactory(Keys.SUBSTITUTOR_KEY, Function::identity)
+                .configureNode(node);
+        final ValidatingPlugin validatingPlugin = node.getObject();
         assertEquals("foo", validatingPlugin.getName());
     }
 }

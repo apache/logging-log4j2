@@ -16,8 +16,8 @@
  */
 package org.apache.logging.log4j.plugins;
 
-import org.apache.logging.log4j.plugins.inject.InjectorStrategy;
-import org.apache.logging.log4j.plugins.inject.PluginNodeInjector;
+import org.apache.logging.log4j.plugins.visit.NodeVisitor;
+import org.apache.logging.log4j.plugins.visit.PluginNodeVisitor;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -33,8 +33,8 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD})
-@InjectorStrategy(PluginNodeInjector.class)
-@Qualifier
+@NodeVisitor.Kind(PluginNodeVisitor.class)
+@QualifierType
 public @interface PluginNode {
     // empty
 }

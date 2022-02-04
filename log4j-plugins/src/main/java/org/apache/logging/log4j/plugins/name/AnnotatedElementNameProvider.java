@@ -18,17 +18,17 @@
 package org.apache.logging.log4j.plugins.name;
 
 import org.apache.logging.log4j.plugins.internal.util.BeanUtils;
+import org.apache.logging.log4j.plugins.util.AnnotationUtil;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.util.ReflectionUtil;
 import org.apache.logging.log4j.util.Strings;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Constructor;
+import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.lang.reflect.Type;
 import java.util.Optional;
 
 /**
@@ -40,30 +40,19 @@ import java.util.Optional;
 public interface AnnotatedElementNameProvider<A extends Annotation> {
 
     static boolean hasName(final AnnotatedElement element) {
-        for (final Annotation annotation : element.getAnnotations()) {
-            if (annotation.annotationType().isAnnotationPresent(NameProvider.class)) {
-                return true;
-            }
-        }
-        return false;
+        return AnnotationUtil.isMetaAnnotationPresent(element, NameProvider.class);
     }
 
-    // note: empty name is the equivalent to a default name
-    static String getName(final AnnotatedElement element) {
-        if (!hasName(element)) {
-            return Strings.EMPTY;
-        }
-        final Optional<String> specifiedName = getSpecifiedName(element);
-        if (specifiedName.isPresent()) {
-            return specifiedName.get();
-        }
+    static String getName(final Field field) {
+        return hasName(field) ? getSpecifiedName(field).orElseGet(field::getName) : Strings.EMPTY;
+    }
 
-        if (element instanceof Field) {
-            return ((Field) element).getName();
-        }
+    static String getName(final Parameter parameter) {
+        return hasName(parameter) ? getSpecifiedName(parameter).orElseGet(parameter::getName) : Strings.EMPTY;
+    }
 
-        if (element instanceof Method) {
-            final Method method = (Method) element;
+    static String getName(final Method method) {
+        return hasName(method) ? getSpecifiedName(method).orElseGet(() -> {
             final String methodName = method.getName();
             if (methodName.startsWith("is")) {
                 return BeanUtils.decapitalize(methodName.substring(2));
@@ -75,21 +64,11 @@ public interface AnnotatedElementNameProvider<A extends Annotation> {
                 return BeanUtils.decapitalize(methodName.substring(4));
             }
             return methodName;
-        }
+        }) : Strings.EMPTY;
+    }
 
-        if (element instanceof Parameter) {
-            return ((Parameter) element).getName();
-        }
-
-        if (element instanceof Type) {
-            return ((Type) element).getTypeName();
-        }
-
-        if (element instanceof Constructor<?>) {
-            return ((Constructor<?>) element).getDeclaringClass().getName();
-        }
-
-        throw new IllegalArgumentException("Unknown element type for naming: " + element.getClass());
+    static String getName(final AnnotatedType annotatedType) {
+        return hasName(annotatedType) ? getSpecifiedName(annotatedType).orElse(Strings.EMPTY) : Strings.EMPTY;
     }
 
     private static Optional<String> getSpecifiedName(final AnnotatedElement element) {

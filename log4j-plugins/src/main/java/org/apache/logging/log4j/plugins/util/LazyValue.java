@@ -21,15 +21,15 @@ import java.util.function.Supplier;
 
 public class LazyValue<T> implements Supplier<T> {
 
-    public static <T> LazyValue<T> forSupplier(final Supplier<T> constructor) {
-        return new LazyValue<>(constructor);
+    public static <T> LazyValue<T> fromSupplier(final Supplier<T> supplier) {
+        return new LazyValue<>(supplier);
     }
 
-    private final Supplier<T> constructor;
+    private final Supplier<T> provider;
     private volatile T value;
 
-    private LazyValue(final Supplier<T> constructor) {
-        this.constructor = constructor;
+    private LazyValue(final Supplier<T> supplier) {
+        this.provider = supplier;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class LazyValue<T> implements Supplier<T> {
             synchronized (this) {
                 value = this.value;
                 if (value == null) {
-                    this.value = value = constructor.get();
+                    this.value = value = provider.get();
                 }
             }
         }

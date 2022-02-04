@@ -23,6 +23,7 @@ package org.apache.logging.log4j.plugins.convert;
  * @param <T> Converts Strings into the given type {@code T}.
  * @since 2.1 Moved to the {@code convert} package.
  */
+@FunctionalInterface
 public interface TypeConverter<T> {
 
     /**

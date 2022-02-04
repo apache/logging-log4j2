@@ -16,22 +16,6 @@
  */
 package org.apache.logging.log4j.core;
 
-import static org.apache.logging.log4j.core.util.ShutdownCallbackRegistry.SHUTDOWN_HOOK_MARKER;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.net.URI;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -47,6 +31,9 @@ import org.apache.logging.log4j.core.util.ExecutorServices;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
@@ -55,6 +42,22 @@ import org.apache.logging.log4j.spi.LoggerRegistry;
 import org.apache.logging.log4j.spi.Terminable;
 import org.apache.logging.log4j.spi.ThreadContextMapFactory;
 import org.apache.logging.log4j.util.PropertiesUtil;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.net.URI;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+import static org.apache.logging.log4j.core.util.ShutdownCallbackRegistry.SHUTDOWN_HOOK_MARKER;
 
 /**
  * The LoggerContext is the anchor for the logging system. It maintains a list of all the loggers requested by
@@ -75,6 +78,8 @@ public class LoggerContext extends AbstractLifeCycle
     private final LoggerRegistry<Logger> loggerRegistry = new LoggerRegistry<>();
     private final CopyOnWriteArrayList<PropertyChangeListener> propertyChangeListeners = new CopyOnWriteArrayList<>();
     private volatile List<LoggerContextShutdownAware> listeners;
+    private final Injector injector = DI.createInjectorFromServiceLoader()
+            .bindFactory(Key.forClass(LoggerContext.class), () -> this);
 
     /**
      * The Configuration is volatile to guarantee that initialization of the Configuration has completed before the
@@ -238,7 +243,7 @@ public class LoggerContext extends AbstractLifeCycle
 
     @Override
     public void start() {
-        LOGGER.debug("Starting LoggerContext[name={}, {}]...", getName(), this);
+        LOGGER.debug("Starting {}...", this);
         if (PropertiesUtil.getProperties().getBooleanProperty("log4j.LoggerContext.stacktrace.on.start", false)) {
             LOGGER.debug("Stack trace to locate invoker",
                     new Exception("Not a real error, showing stack trace to locate invoker"));
@@ -257,7 +262,7 @@ public class LoggerContext extends AbstractLifeCycle
                 configLock.unlock();
             }
         }
-        LOGGER.debug("LoggerContext[name={}, {}] started OK.", getName(), this);
+        LOGGER.debug("{} started OK.", this);
     }
 
     /**
@@ -266,7 +271,7 @@ public class LoggerContext extends AbstractLifeCycle
      * @param config The new Configuration.
      */
     public void start(final Configuration config) {
-        LOGGER.debug("Starting LoggerContext[name={}, {}] with configuration {}...", getName(), this, config);
+        LOGGER.debug("Starting {} with configuration {}...", this, config);
         if (configLock.tryLock()) {
             try {
                 if (this.isInitialized() || this.isStopped()) {
@@ -280,7 +285,7 @@ public class LoggerContext extends AbstractLifeCycle
             }
         }
         setConfiguration(config);
-        LOGGER.debug("LoggerContext[name={}, {}] started OK with configuration {}.", getName(), this, config);
+        LOGGER.debug("{} started OK with configuration {}.", this, config);
     }
 
     private void setUpShutdownHook() {
@@ -297,8 +302,7 @@ public class LoggerContext extends AbstractLifeCycle
                         public void run() {
                             @SuppressWarnings("resource")
                             final LoggerContext context = LoggerContext.this;
-                            LOGGER.debug(SHUTDOWN_HOOK_MARKER, "Stopping LoggerContext[name={}, {}]",
-                                    context.getName(), context);
+                            LOGGER.debug(SHUTDOWN_HOOK_MARKER, "Stopping {}", context);
                             context.stop(shutdownTimeoutMillis, TimeUnit.MILLISECONDS);
                         }
 
@@ -349,7 +353,7 @@ public class LoggerContext extends AbstractLifeCycle
      */
     @Override
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
-        LOGGER.debug("Stopping LoggerContext[name={}, {}]...", getName(), this);
+        LOGGER.debug("Stopping {}...", this);
         configLock.lock();
         try {
             if (this.isStopped()) {
@@ -386,7 +390,7 @@ public class LoggerContext extends AbstractLifeCycle
                 }
             }
         }
-        LOGGER.debug("Stopped LoggerContext[name={}, {}] with status {}", getName(), this, true);
+        LOGGER.debug("Stopped {} with status {}", this, true);
         return true;
     }
 
@@ -520,6 +524,10 @@ public class LoggerContext extends AbstractLifeCycle
      */
     public LoggerRegistry<Logger> getLoggerRegistry() {
         return loggerRegistry;
+    }
+
+    public Injector getInjector() {
+        return injector;
     }
 
     /**
@@ -677,9 +685,9 @@ public class LoggerContext extends AbstractLifeCycle
      */
     private void reconfigure(final URI configURI) {
         final Object externalContext = externalMap.get(EXTERNAL_CONTEXT_KEY);
-        final ClassLoader cl = ClassLoader.class.isInstance(externalContext) ? (ClassLoader) externalContext : null;
-        LOGGER.debug("Reconfiguration started for context[name={}] at URI {} ({}) with optional ClassLoader: {}",
-                contextName, configURI, this, cl);
+        final ClassLoader cl = externalContext instanceof ClassLoader ? (ClassLoader) externalContext : null;
+        LOGGER.debug("Reconfiguration started for {} at URI {} with optional ClassLoader: {}",
+                this, configURI, cl);
         final Configuration instance = ConfigurationFactory.getInstance().getConfiguration(this, contextName, configURI, cl);
         if (instance == null) {
             LOGGER.error("Reconfiguration failed: No configuration found for '{}' at '{}' in '{}'", contextName, configURI, cl);
@@ -690,8 +698,8 @@ public class LoggerContext extends AbstractLifeCycle
              * old.stop(); }
              */
             final String location = configuration == null ? "?" : String.valueOf(configuration.getConfigurationSource());
-            LOGGER.debug("Reconfiguration complete for context[name={}] at URI {} ({}) with optional ClassLoader: {}",
-                    contextName, location, this, cl);
+            LOGGER.debug("Reconfiguration complete for {} at URI {} with optional ClassLoader: {}",
+                    this, location, cl);
         }
     }
 
@@ -754,6 +762,11 @@ public class LoggerContext extends AbstractLifeCycle
             LOGGER.debug("Reconfiguration failed for {} ({}) in {} milliseconds.", contextName, this,
                     System.currentTimeMillis() - startMillis);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "LoggerContext[" + contextName + "]";
     }
 
     private void initApiModule() {

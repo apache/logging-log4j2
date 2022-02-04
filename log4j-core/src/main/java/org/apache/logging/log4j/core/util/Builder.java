@@ -17,6 +17,8 @@
 
 package org.apache.logging.log4j.core.util;
 
+import java.util.function.Supplier;
+
 /**
  * A type of builder that can be used to configure and create a instances using a Java DSL instead of
  * through a configuration file. These builders are primarily useful for internal code and unit tests, but they can
@@ -32,7 +34,7 @@ package org.apache.logging.log4j.core.util;
  * @param <T> This builder creates instances of this class.
  * @deprecated Present only for compatibility with Log4j 2 2.x plugins. Use Builder from log4j-plugins.
  */
-public interface Builder<T> {
+public interface Builder<T> extends Supplier<T> {
 
     /**
      * Builds the object after all configuration has been set. This will use default values for any
@@ -43,4 +45,9 @@ public interface Builder<T> {
      * object.
      */
     T build();
+
+    @Override
+    default T get() {
+        return build();
+    }
 }

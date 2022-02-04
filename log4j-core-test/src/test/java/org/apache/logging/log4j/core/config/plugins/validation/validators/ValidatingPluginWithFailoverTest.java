@@ -21,9 +21,13 @@ import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.appender.FailoverAppender;
 import org.apache.logging.log4j.core.appender.FailoversPlugin;
 import org.apache.logging.log4j.core.config.AppenderRef;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.NullConfiguration;
-import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
 import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.di.Key;
+import org.apache.logging.log4j.plugins.di.Keys;
 import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.status.StatusData;
@@ -32,24 +36,16 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.emptyCollectionOf;
+import java.util.function.Function;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @StatusLoggerLevel("OFF")
 public class ValidatingPluginWithFailoverTest {
 
-    private PluginType<FailoverAppender> plugin;
     private Node node;
 
     @SuppressWarnings("unchecked")
@@ -57,7 +53,7 @@ public class ValidatingPluginWithFailoverTest {
     public void setUp() throws Exception {
         final PluginManager manager = new PluginManager(Core.CATEGORY_NAME);
         manager.collectPlugins();
-        plugin = (PluginType<FailoverAppender>) manager.getPluginType("failover");
+        PluginType<FailoverAppender> plugin = (PluginType<FailoverAppender>) manager.getPluginType("failover");
         assertNotNull(plugin, "Rebuild this module to make sure annotation processing kicks in.");
 
         AppenderRef appenderRef = AppenderRef.createAppenderRef("List", Level.ALL, null);
@@ -77,14 +73,14 @@ public class ValidatingPluginWithFailoverTest {
     public void testDoesNotLog_NoParameterThatMatchesElement_message() {
         final StatusListener listener = mock(StatusListener.class);
         when(listener.getStatusLevel()).thenReturn(Level.WARN);
-        // @formatter:off
-        final PluginBuilder builder = new PluginBuilder(plugin).
-                setConfiguration(new NullConfiguration()).
-                setConfigurationNode(node);
-        // @formatter:on
-        StatusLogger.getLogger().registerListener(listener);
-
-        final FailoverAppender failoverAppender = (FailoverAppender) builder.build();
+        final Injector injector = DI.createInjector()
+                .bindInstance(Keys.SUBSTITUTOR_KEY, Function.identity())
+                .bindInstance(Key.forClass(Configuration.class), new NullConfiguration());
+        final StatusLogger logger = StatusLogger.getLogger();
+        logger.trace("Initializing");
+        logger.registerListener(listener);
+        injector.configureNode(node);
+        final FailoverAppender failoverAppender = node.getObject();
 
         verify(listener, times(1)).getStatusLevel();
         verify(listener, never()).log(any(StatusData.class));

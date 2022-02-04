@@ -32,9 +32,8 @@ module org.apache.logging.log4j.core {
     exports org.apache.logging.log4j.core.config.json;
     exports org.apache.logging.log4j.core.config.plugins;
     exports org.apache.logging.log4j.core.config.plugins.convert;
-    exports org.apache.logging.log4j.core.config.plugins.inject;
     exports org.apache.logging.log4j.core.config.plugins.util;
-    exports org.apache.logging.log4j.core.config.plugins.visitors;
+    exports org.apache.logging.log4j.core.config.plugins.visit;
     exports org.apache.logging.log4j.core.config.properties;
     exports org.apache.logging.log4j.core.config.status;
     exports org.apache.logging.log4j.core.config.xml;
@@ -84,4 +83,5 @@ module org.apache.logging.log4j.core {
     provides org.apache.logging.log4j.core.util.ContextDataProvider with org.apache.logging.log4j.core.impl.ThreadContextDataProvider;
     provides org.apache.logging.log4j.spi.Provider with org.apache.logging.log4j.core.impl.Log4jProvider;
     provides org.apache.logging.log4j.plugins.processor.PluginService with org.apache.logging.log4j.core.plugins.Log4jPlugins;
+    provides org.apache.logging.log4j.plugins.di.Module with org.apache.logging.log4j.core.impl.DefaultModule;
 }

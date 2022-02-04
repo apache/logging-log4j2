@@ -16,9 +16,11 @@
  */
 package org.apache.logging.log4j.plugins.validation;
 
+import org.apache.logging.log4j.plugins.util.AnnotationUtil;
 import org.apache.logging.log4j.util.ReflectionUtil;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -54,6 +56,18 @@ public final class ConstraintValidators {
             }
         }
         return validators;
+    }
+
+    public static boolean hasConstraints(final AnnotatedElement element) {
+        return AnnotationUtil.isMetaAnnotationPresent(element, Constraint.class);
+    }
+
+    public static boolean isValid(final AnnotatedElement element, final String name, final Object value) {
+        boolean isValid = true;
+        for (final ConstraintValidator<?> validator : findValidators(element.getAnnotations())) {
+            isValid &= validator.isValid(name, value);
+        }
+        return isValid;
     }
 
     private static <A extends Annotation> ConstraintValidator<A> getValidator(final A annotation,
