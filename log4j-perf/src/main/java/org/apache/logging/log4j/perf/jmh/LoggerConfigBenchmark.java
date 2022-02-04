@@ -58,7 +58,7 @@ public class LoggerConfigBenchmark {
     private final boolean includeLocation = true;
     private LoggerConfig parent;
     private final AtomicInteger counter = new AtomicInteger();
-    private final AtomicBoolean shutdown = new AtomicBoolean(false);
+    private final AtomicBoolean shutdown = new AtomicBoolean();
     private final Lock shutdownLock = new ReentrantLock();
     private final Condition noLogEvents = shutdownLock.newCondition(); // should only be used when shutdown == true
     private final LogEvent LOGEVENT = createLogEventWithoutException();

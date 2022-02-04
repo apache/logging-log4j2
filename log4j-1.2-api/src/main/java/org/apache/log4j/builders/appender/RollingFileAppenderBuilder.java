@@ -73,7 +73,7 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
         Holder<String> fileName = new Holder<>();
         Holder<Boolean> immediateFlush = new BooleanHolder(true);
         Holder<Boolean> append = new BooleanHolder(true);
-        Holder<Boolean> bufferedIo = new BooleanHolder(false);
+        Holder<Boolean> bufferedIo = new BooleanHolder();
         Holder<Integer> bufferSize = new Holder<>(8192);
         Holder<String> maxSize = new Holder<>(DEFAULT_MAX_SIZE);
         Holder<String> maxBackups = new Holder<>(DEFAULT_MAX_BACKUPS);

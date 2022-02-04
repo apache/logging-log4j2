@@ -73,7 +73,7 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
         Holder<String> level = new Holder<>();
         Holder<Boolean> immediateFlush = new BooleanHolder(true);
         Holder<Boolean> append = new BooleanHolder(true);
-        Holder<Boolean> bufferedIo = new BooleanHolder(false);
+        Holder<Boolean> bufferedIo = new BooleanHolder();
         Holder<Integer> bufferSize = new Holder<>(8192);
         Holder<String> datePattern = new Holder<>(DEFAULT_DATE_PATTERN);
         forEachElement(appenderElement.getChildNodes(), (currentElement) -> {

@@ -54,7 +54,7 @@ public class HtmlLayoutBuilder extends AbstractBuilder implements LayoutBuilder 
     @Override
     public Layout parseLayout(Element layoutElement, XmlConfiguration config) {
         final Holder<String> title = new Holder<>("Log4J Log Messages");
-        final Holder<Boolean> locationInfo = new BooleanHolder(false);
+        final Holder<Boolean> locationInfo = new BooleanHolder();
         forEachElement(layoutElement.getElementsByTagName("param"), (currentElement) -> {
             if (currentElement.getTagName().equals(PARAM_TAG)) {
                 if (TITLE_PARAM.equalsIgnoreCase(currentElement.getAttribute("name"))) {

@@ -54,7 +54,7 @@ class AsyncAppenderEventDispatcher extends Log4jThread {
         this.errorAppender = errorAppender;
         this.appenders = appenders;
         this.queue = queue;
-        this.stoppedRef = new AtomicBoolean(false);
+        this.stoppedRef = new AtomicBoolean();
     }
 
     @Override
