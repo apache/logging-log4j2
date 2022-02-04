@@ -39,6 +39,7 @@ import org.w3c.dom.Element;
 @Plugin(name = "org.apache.log4j.HTMLLayout", category = CATEGORY)
 public class HtmlLayoutBuilder extends AbstractBuilder implements LayoutBuilder {
 
+    private static final String DEFAULT_TITLE = "Log4J Log Messages";
     private static final String TITLE_PARAM = "Title";
     private static final String LOCATION_INFO_PARAM = "LocationInfo";
 
@@ -52,8 +53,8 @@ public class HtmlLayoutBuilder extends AbstractBuilder implements LayoutBuilder 
 
     @Override
     public Layout parseLayout(Element layoutElement, XmlConfiguration config) {
-        final AtomicReference<String> title = new AtomicReference<>();
-        final AtomicBoolean locationInfo = new AtomicBoolean();
+        final AtomicReference<String> title = new AtomicReference<>("Log4J Log Messages");
+        final AtomicBoolean locationInfo = new AtomicBoolean(false);
         forEachElement(layoutElement.getElementsByTagName("param"), currentElement -> {
             if (currentElement.getTagName().equals(PARAM_TAG)) {
                 if (TITLE_PARAM.equalsIgnoreCase(currentElement.getAttribute("name"))) {
@@ -68,8 +69,8 @@ public class HtmlLayoutBuilder extends AbstractBuilder implements LayoutBuilder 
 
     @Override
     public Layout parseLayout(PropertiesConfiguration config) {
-        String title = getProperty(TITLE_PARAM);
-        boolean locationInfo = getBooleanProperty(LOCATION_INFO_PARAM);
+        String title = getProperty(TITLE_PARAM, DEFAULT_TITLE);
+        boolean locationInfo = getBooleanProperty(LOCATION_INFO_PARAM, false);
         return createLayout(title, locationInfo);
     }
 

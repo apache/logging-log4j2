@@ -47,9 +47,11 @@ public abstract class AbstractBuilder implements Builder {
     protected static final String APPEND_PARAM = "Append";
     protected static final String BUFFERED_IO_PARAM = "BufferedIO";
     protected static final String BUFFER_SIZE_PARAM = "BufferSize";
+    protected static final String IMMEDIATE_FLUSH_PARAM = "ImmediateFlush";
     protected static final String MAX_SIZE_PARAM = "MaxFileSize";
     protected static final String MAX_BACKUP_INDEX = "MaxBackupIndex";
     protected static final String RELATIVE = "RELATIVE";
+    protected static final String NULL = "NULL";
 
     private final String prefix;
     private final Properties properties;

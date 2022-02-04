@@ -18,6 +18,7 @@
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
   <appender name="Console" class="org.apache.log4j.ConsoleAppender">
+    <param name="Follow" value="true" />
     <param name="Target" value="System.err" />
     <layout class="org.apache.log4j.EnhancedPatternLayout">
       <param name="ConversionPattern" value="%d{ISO8601} [%t][%c] %-5p %X %x: %m%n" />
