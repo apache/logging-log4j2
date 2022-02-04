@@ -155,7 +155,7 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
         Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
         String level = getProperty(THRESHOLD_PARAM);
         String target = getProperty(TARGET_PARAM);
-        boolean follow = getBooleanProperty(FOLLOW_PARAM, false);
+        boolean follow = getBooleanProperty(FOLLOW_PARAM);
         return createAppender(name, layout, filter, level, target, follow, configuration);
     }
 
