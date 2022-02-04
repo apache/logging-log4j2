@@ -76,7 +76,7 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
         AtomicReference<String> level = new AtomicReference<>();
         AtomicBoolean immediateFlush = new AtomicBoolean(true);
         AtomicBoolean append = new AtomicBoolean(true);
-        AtomicBoolean bufferedIo = new AtomicBoolean(false);
+        AtomicBoolean bufferedIo = new AtomicBoolean();
         AtomicInteger bufferSize = new AtomicInteger(8192);
         AtomicReference<String> datePattern = new AtomicReference<String>(DEFAULT_DATE_PATTERN);
         forEachElement(appenderElement.getChildNodes(), currentElement -> {

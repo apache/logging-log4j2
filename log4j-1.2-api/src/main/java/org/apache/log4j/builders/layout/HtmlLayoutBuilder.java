@@ -54,7 +54,7 @@ public class HtmlLayoutBuilder extends AbstractBuilder implements LayoutBuilder 
     @Override
     public Layout parseLayout(Element layoutElement, XmlConfiguration config) {
         final AtomicReference<String> title = new AtomicReference<>("Log4J Log Messages");
-        final AtomicBoolean locationInfo = new AtomicBoolean(false);
+        final AtomicBoolean locationInfo = new AtomicBoolean();
         forEachElement(layoutElement.getElementsByTagName("param"), currentElement -> {
             if (currentElement.getTagName().equals(PARAM_TAG)) {
                 if (TITLE_PARAM.equalsIgnoreCase(currentElement.getAttribute("name"))) {

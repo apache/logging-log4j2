@@ -74,7 +74,7 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
         AtomicReference<String> fileName = new AtomicReference<>();
         AtomicBoolean immediateFlush = new AtomicBoolean(true);
         AtomicBoolean append = new AtomicBoolean(true);
-        AtomicBoolean bufferedIo = new AtomicBoolean(false);
+        AtomicBoolean bufferedIo = new AtomicBoolean();
         AtomicInteger bufferSize = new AtomicInteger(8192);
         AtomicReference<String> maxSize = new AtomicReference<>(DEFAULT_MAX_SIZE);
         AtomicReference<String> maxBackups = new AtomicReference<>(DEFAULT_MAX_BACKUPS);

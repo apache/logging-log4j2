@@ -72,7 +72,7 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
         AtomicReference<Layout> layout = new AtomicReference<>();
         AtomicReference<List<Filter>> filters = new AtomicReference<>(new ArrayList<>());
         AtomicReference<String> level = new AtomicReference<>();
-        AtomicBoolean follow = new AtomicBoolean(false);
+        AtomicBoolean follow = new AtomicBoolean();
         forEachElement(appenderElement.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
                 case LAYOUT_TAG:

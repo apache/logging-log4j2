@@ -38,7 +38,7 @@ import org.apache.logging.log4j.util.Supplier;
 public class AwaitCompletionReliabilityStrategy implements ReliabilityStrategy, LocationAwareReliabilityStrategy {
     private static final int MAX_RETRIES = 3;
     private final AtomicInteger counter = new AtomicInteger();
-    private final AtomicBoolean shutdown = new AtomicBoolean(false);
+    private final AtomicBoolean shutdown = new AtomicBoolean();
     private final Lock shutdownLock = new ReentrantLock();
     private final Condition noLogEvents = shutdownLock.newCondition(); // should only be used when shutdown == true
     private final LoggerConfig loggerConfig;

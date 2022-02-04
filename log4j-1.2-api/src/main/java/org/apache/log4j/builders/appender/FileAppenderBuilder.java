@@ -68,7 +68,7 @@ public class FileAppenderBuilder extends AbstractBuilder implements AppenderBuil
         AtomicReference<String> level = new AtomicReference<>();
         AtomicBoolean immediateFlush = new AtomicBoolean(true);
         AtomicBoolean append = new AtomicBoolean(true);
-        AtomicBoolean bufferedIo = new AtomicBoolean(false);
+        AtomicBoolean bufferedIo = new AtomicBoolean();
         AtomicInteger bufferSize = new AtomicInteger(8192);
         forEachElement(appenderElement.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
