@@ -15,27 +15,22 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.di;
+package org.apache.logging.log4j.plugins;
+
+import org.apache.logging.log4j.plugins.name.NameProvider;
+import org.apache.logging.log4j.plugins.name.NamedQualifierNameProvider;
+import org.apache.logging.log4j.util.Strings;
 
 import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
-/**
- * Dependent scoped beans are beans that belong to another bean. Beans with this scope are created and destroyed in
- * participation of the lifecycle of the owning bean. That is, when a bean is destroyed, any of its dependent objects
- * are destroyed; dependent beans injected into a {@linkplain Disposes disposer method} are destroyed after the method
- * is finished executing; dependent beans created to {@linkplain Produces produce} or {@linkplain Disposes dispose}
- * a bean are destroyed after the producer or disposer is finished executing; and any other dependent beans no longer
- * directly referenced by the application may be destroyed.
- */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD})
 @Documented
-@Inherited
-@ScopeType
-public @interface DependentScoped {
+@NameProvider(NamedQualifierNameProvider.class)
+@Repeatable(NamedAliases.class)
+@Qualifier
+public @interface Named {
+    String value() default Strings.EMPTY;
 }

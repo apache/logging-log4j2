@@ -23,9 +23,9 @@ import org.apache.logging.log4j.plugins.spi.DefinitionException;
 import org.apache.logging.log4j.plugins.spi.InjectionPoint;
 import org.apache.logging.log4j.plugins.spi.InjectionTarget;
 import org.apache.logging.log4j.plugins.spi.InjectionTargetFactory;
-import org.apache.logging.log4j.plugins.di.Inject;
-import org.apache.logging.log4j.plugins.di.PostConstruct;
-import org.apache.logging.log4j.plugins.di.PreDestroy;
+import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.plugins.PostConstruct;
+import org.apache.logging.log4j.plugins.PreDestroy;
 import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 

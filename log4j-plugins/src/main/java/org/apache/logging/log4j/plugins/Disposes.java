@@ -15,22 +15,23 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.di;
-
-import org.apache.logging.log4j.plugins.name.NameProvider;
-import org.apache.logging.log4j.plugins.name.NamedQualifierNameProvider;
-import org.apache.logging.log4j.util.Strings;
+package org.apache.logging.log4j.plugins;
 
 import java.lang.annotation.Documented;
-import java.lang.annotation.Repeatable;
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
+/**
+ * Marks a parameter of a method to be used for disposing a {@linkplain Produces produced instance}. A disposer method
+ * more generally is a non-abstract method in a bean class with one argument annotated with {@code @Disposes} to indicate
+ * the injection point for the produced bean for disposal along with any other normal injectable parameters if desired.
+ * A bean can have more than one disposer method, but each disposer method can only dispose of one produced type.
+ * Disposer methods can be static or non-static. Disposer methods are <em>not inherited</em> by subclasses.
+ */
 @Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.PARAMETER)
 @Documented
-@NameProvider(NamedQualifierNameProvider.class)
-@Repeatable(NamedAliases.class)
-@Qualifier
-public @interface Named {
-    String value() default Strings.EMPTY;
+public @interface Disposes {
 }

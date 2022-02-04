@@ -17,7 +17,9 @@
 
 package org.apache.logging.log4j.plugins.spi;
 
-import org.apache.logging.log4j.plugins.di.DependentScoped;
+import org.apache.logging.log4j.plugins.DependentScoped;
+import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.plugins.Produces;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 
 import java.lang.annotation.Annotation;
@@ -26,8 +28,8 @@ import java.util.Collection;
 
 /**
  * Provides lifecycle and dependency injection functionality to managed classes. A bean represents an injectable class
- * via {@link org.apache.logging.log4j.plugins.di.Inject} or a producer field or method via
- * {@link org.apache.logging.log4j.plugins.di.Produces} along with their annotation aliases. A bean has a
+ * via {@link Inject} or a producer field or method via
+ * {@link Produces} along with their annotation aliases. A bean has a
  * {@linkplain #getName() name} which can be the empty string to indicate a default bean. Beans provide a
  * {@linkplain #getTypes() type closure} of matching generic types to allow for injecting more complex types. The
  * {@linkplain #getScopeType() scope} of a bean controls the lifecycle of instances

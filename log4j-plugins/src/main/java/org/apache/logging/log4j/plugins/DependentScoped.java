@@ -15,25 +15,27 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.di;
+package org.apache.logging.log4j.plugins;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marks an annotation as a scope type. The scope of a bean determines its lifecycle and the visibility of its
- * instances. In particular, this controls:
- * <ul>
- *     <li>when new instances of a bean are created,</li>
- *     <li>when existing instances of a bean are destroyed, and</li>
- *     <li>which injected references refer to any instance of the bean.</li>
- * </ul>
+ * Dependent scoped beans are beans that belong to another bean. Beans with this scope are created and destroyed in
+ * participation of the lifecycle of the owning bean. That is, when a bean is destroyed, any of its dependent objects
+ * are destroyed; dependent beans injected into a {@linkplain Disposes disposer method} are destroyed after the method
+ * is finished executing; dependent beans created to {@linkplain Produces produce} or {@linkplain Disposes dispose}
+ * a bean are destroyed after the producer or disposer is finished executing; and any other dependent beans no longer
+ * directly referenced by the application may be destroyed.
  */
-@Target(ElementType.ANNOTATION_TYPE) // on an annotation typically with @Target(TYPE), but we use static factory methods
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD})
 @Documented
-public @interface ScopeType {
+@Inherited
+@ScopeType
+public @interface DependentScoped {
 }

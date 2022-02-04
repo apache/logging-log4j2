@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.config.plugins;
 
 import org.apache.logging.log4j.core.config.plugins.visitors.PluginNodeVisitor;
-import org.apache.logging.log4j.plugins.di.Qualifier;
+import org.apache.logging.log4j.plugins.Qualifier;
 import org.apache.logging.log4j.plugins.inject.InjectorStrategy;
 
 import java.lang.annotation.Documented;

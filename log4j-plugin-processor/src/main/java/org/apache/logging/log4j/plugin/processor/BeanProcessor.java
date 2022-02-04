@@ -17,10 +17,10 @@
 
 package org.apache.logging.log4j.plugin.processor;
 
-import org.apache.logging.log4j.plugins.di.Disposes;
-import org.apache.logging.log4j.plugins.di.Inject;
-import org.apache.logging.log4j.plugins.di.Producer;
-import org.apache.logging.log4j.plugins.di.Qualifier;
+import org.apache.logging.log4j.plugins.Disposes;
+import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.plugins.Producer;
+import org.apache.logging.log4j.plugins.Qualifier;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;

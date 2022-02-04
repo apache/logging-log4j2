@@ -21,7 +21,7 @@ import org.apache.logging.log4j.plugins.spi.BeanManager;
 import org.apache.logging.log4j.plugins.spi.InitializationContext;
 import org.apache.logging.log4j.plugins.spi.InitializationException;
 import org.apache.logging.log4j.plugins.spi.InjectionPoint;
-import org.apache.logging.log4j.plugins.di.Disposes;
+import org.apache.logging.log4j.plugins.Disposes;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 
 import java.lang.reflect.Constructor;

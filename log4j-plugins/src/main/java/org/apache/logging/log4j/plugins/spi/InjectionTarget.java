@@ -17,9 +17,9 @@
 
 package org.apache.logging.log4j.plugins.spi;
 
-import org.apache.logging.log4j.plugins.di.Inject;
-import org.apache.logging.log4j.plugins.di.PostConstruct;
-import org.apache.logging.log4j.plugins.di.PreDestroy;
+import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.plugins.PostConstruct;
+import org.apache.logging.log4j.plugins.PreDestroy;
 
 /**
  * Provides lifecycle and dependency injection operations for instances of a specified type.

@@ -17,7 +17,7 @@
 
 package org.apache.logging.log4j.core.config.plugins;
 
-import org.apache.logging.log4j.plugins.di.Producer;
+import org.apache.logging.log4j.plugins.Producer;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

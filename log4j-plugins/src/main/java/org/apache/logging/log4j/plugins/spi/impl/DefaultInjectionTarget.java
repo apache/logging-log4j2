@@ -21,9 +21,9 @@ import org.apache.logging.log4j.plugins.spi.InitializationContext;
 import org.apache.logging.log4j.plugins.spi.InitializationException;
 import org.apache.logging.log4j.plugins.spi.InjectionPoint;
 import org.apache.logging.log4j.plugins.spi.InjectionTarget;
-import org.apache.logging.log4j.plugins.di.Disposes;
-import org.apache.logging.log4j.plugins.di.Inject;
-import org.apache.logging.log4j.plugins.di.Producer;
+import org.apache.logging.log4j.plugins.Disposes;
+import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.plugins.Producer;
 import org.apache.logging.log4j.plugins.util.AnnotationUtil;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 

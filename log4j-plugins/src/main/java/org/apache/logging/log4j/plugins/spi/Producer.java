@@ -17,9 +17,9 @@
 
 package org.apache.logging.log4j.plugins.spi;
 
-import org.apache.logging.log4j.plugins.di.Disposes;
-import org.apache.logging.log4j.plugins.di.Inject;
-import org.apache.logging.log4j.plugins.di.Produces;
+import org.apache.logging.log4j.plugins.Disposes;
+import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.plugins.Produces;
 
 import java.util.Collection;
 

@@ -15,7 +15,7 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.di;
+package org.apache.logging.log4j.plugins;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

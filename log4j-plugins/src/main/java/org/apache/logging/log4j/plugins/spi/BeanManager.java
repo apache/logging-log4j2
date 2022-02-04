@@ -17,9 +17,9 @@
 
 package org.apache.logging.log4j.plugins.spi;
 
-import org.apache.logging.log4j.plugins.di.Inject;
-import org.apache.logging.log4j.plugins.di.Producer;
-import org.apache.logging.log4j.plugins.di.Qualifier;
+import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.plugins.Producer;
+import org.apache.logging.log4j.plugins.Qualifier;
 import org.apache.logging.log4j.plugins.di.model.PluginSource;
 import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
 import org.apache.logging.log4j.plugins.util.AnnotationUtil;

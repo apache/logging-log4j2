@@ -15,19 +15,24 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.di;
+package org.apache.logging.log4j.plugins;
+
+import org.apache.logging.log4j.plugins.name.AliasesProvider;
+import org.apache.logging.log4j.plugins.name.NameProvider;
+import org.apache.logging.log4j.plugins.name.NamedAliasesProvider;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD})
+@Target({ElementType.PARAMETER, ElementType.TYPE, ElementType.FIELD, ElementType.METHOD})
 @Documented
-@Inherited
-@ScopeType
-public @interface SingletonScoped {
+@NameProvider(NamedAliasesProvider.class)
+@AliasesProvider(NamedAliasesProvider.class)
+@Qualifier
+public @interface NamedAliases {
+    Named[] value();
 }

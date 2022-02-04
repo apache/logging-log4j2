@@ -15,16 +15,19 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.di;
+package org.apache.logging.log4j.plugins;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.ANNOTATION_TYPE)
+@Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD})
 @Documented
-public @interface Qualifier {
+@Inherited
+@ScopeType
+public @interface SingletonScoped {
 }

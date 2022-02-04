@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.plugins.test.validation;
 
 import java.util.Map;
-import org.apache.logging.log4j.plugins.di.Named;
+import org.apache.logging.log4j.plugins.Named;
 
 public class ImplicitMethodBean {
     private String alpha;

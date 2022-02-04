@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.plugins.test.validation;
 
 import java.util.Map;
-import org.apache.logging.log4j.plugins.di.Inject;
+import org.apache.logging.log4j.plugins.Inject;
 
 public class ExampleBean {
     private final String alpha;

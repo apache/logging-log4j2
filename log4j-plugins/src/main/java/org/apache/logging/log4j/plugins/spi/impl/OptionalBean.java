@@ -20,7 +20,7 @@ package org.apache.logging.log4j.plugins.spi.impl;
 import org.apache.logging.log4j.plugins.spi.Bean;
 import org.apache.logging.log4j.plugins.spi.InitializationContext;
 import org.apache.logging.log4j.plugins.spi.InjectionPoint;
-import org.apache.logging.log4j.plugins.di.DependentScoped;
+import org.apache.logging.log4j.plugins.DependentScoped;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.plugins.util.Value;
 

@@ -17,13 +17,13 @@
 
 package org.apache.logging.log4j.plugins.spi;
 
-import org.apache.logging.log4j.plugins.di.Inject;
-import org.apache.logging.log4j.plugins.di.Named;
-import org.apache.logging.log4j.plugins.di.PostConstruct;
-import org.apache.logging.log4j.plugins.di.PreDestroy;
-import org.apache.logging.log4j.plugins.di.Produces;
+import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.plugins.Named;
+import org.apache.logging.log4j.plugins.PostConstruct;
+import org.apache.logging.log4j.plugins.PreDestroy;
+import org.apache.logging.log4j.plugins.Produces;
 import org.apache.logging.log4j.plugins.di.Provider;
-import org.apache.logging.log4j.plugins.di.SingletonScoped;
+import org.apache.logging.log4j.plugins.SingletonScoped;
 import org.apache.logging.log4j.plugins.spi.impl.DefaultBeanManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;

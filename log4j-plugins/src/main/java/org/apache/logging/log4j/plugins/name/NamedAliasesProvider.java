@@ -17,8 +17,8 @@
 
 package org.apache.logging.log4j.plugins.name;
 
-import org.apache.logging.log4j.plugins.di.Named;
-import org.apache.logging.log4j.plugins.di.NamedAliases;
+import org.apache.logging.log4j.plugins.Named;
+import org.apache.logging.log4j.plugins.NamedAliases;
 import org.apache.logging.log4j.util.Strings;
 
 import java.util.ArrayList;

@@ -17,7 +17,7 @@
 
 package org.apache.logging.log4j.plugins.spi;
 
-import org.apache.logging.log4j.plugins.di.ScopeType;
+import org.apache.logging.log4j.plugins.ScopeType;
 
 import java.lang.annotation.Annotation;
 import java.util.Optional;

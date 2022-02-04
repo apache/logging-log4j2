@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.plugins;
 
-import org.apache.logging.log4j.plugins.di.Qualifier;
 import org.apache.logging.log4j.plugins.name.AliasesProvider;
 import org.apache.logging.log4j.plugins.name.PluginAliasesProvider;
 

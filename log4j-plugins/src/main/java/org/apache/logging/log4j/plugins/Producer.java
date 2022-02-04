@@ -15,7 +15,7 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.di;
+package org.apache.logging.log4j.plugins;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -23,14 +23,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * Marks a method as a post construct callback. These methods are invoked after dependency injection is complete but
- * before the injection target instance is returned. Post construct callbacks are invoked superclass-first.
- *
- * @see PreDestroy
- */
+@Target(ElementType.ANNOTATION_TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
 @Documented
-public @interface PostConstruct {
+public @interface Producer {
 }

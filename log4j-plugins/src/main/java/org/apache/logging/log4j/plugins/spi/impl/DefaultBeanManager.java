@@ -17,12 +17,12 @@
 
 package org.apache.logging.log4j.plugins.spi.impl;
 
-import org.apache.logging.log4j.plugins.di.DependentScoped;
-import org.apache.logging.log4j.plugins.di.Disposes;
-import org.apache.logging.log4j.plugins.di.Producer;
+import org.apache.logging.log4j.plugins.DependentScoped;
+import org.apache.logging.log4j.plugins.Disposes;
+import org.apache.logging.log4j.plugins.Producer;
 import org.apache.logging.log4j.plugins.di.Provider;
-import org.apache.logging.log4j.plugins.di.ScopeType;
-import org.apache.logging.log4j.plugins.di.SingletonScoped;
+import org.apache.logging.log4j.plugins.ScopeType;
+import org.apache.logging.log4j.plugins.SingletonScoped;
 import org.apache.logging.log4j.plugins.di.model.PluginSource;
 import org.apache.logging.log4j.plugins.name.AnnotatedElementAliasesProvider;
 import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
