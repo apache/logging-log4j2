@@ -1,6 +1,7 @@
 {
     "Configuration" : {
         "name": "LoggerConfigTest",
+        "status": "off",
         "Loggers" : {
             "logger" : [
                 {

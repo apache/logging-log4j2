@@ -15,7 +15,7 @@
   ~ See the license for the specific language governing permissions and
   ~ limitations under the license.
   -->
-<Configuration name="HttpAppenderTest" status="WARN">
+<Configuration name="HttpAppenderTest" status="off">
   <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
         <PatternLayout pattern="%d [%t] %-5level: %msg%n%throwable" />

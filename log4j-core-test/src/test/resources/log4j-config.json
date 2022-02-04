@@ -1,6 +1,6 @@
 {
     "configuration": {
-        "status": "debug"
+        "status": "off"
         ,"name": "Test-Logging"
         ,"monitorInterval":30
         ,"packages": "org.apache.logging.log4j.core"

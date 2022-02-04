@@ -1,6 +1,6 @@
 {
     "Configuration" : {
-        "status": "error",
+        "status": "off",
         "name": "LoggerConfigTest",
         "properties" : {
           "property" : [{

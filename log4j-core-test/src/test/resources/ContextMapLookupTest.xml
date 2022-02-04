@@ -15,7 +15,7 @@
   ~ limitations under the license.
   -->
 
-<Configuration status="error" name="ContextMapLookupTest">
+<Configuration status="off" name="ContextMapLookupTest">
   <Appenders>
     <File name="File" fileName="target/${ctx:testClassName}.${ctx:testMethodName}.log">
       <PatternLayout pattern="%m%n"/>

@@ -53,11 +53,13 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFact
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.net.TcpSocketManager.HostResolver;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.junit.jupiter.api.Test;
 
 /**
  * Tests reconnection support of {@link org.apache.logging.log4j.core.appender.SocketAppender}.
  */
+@StatusLoggerLevel("OFF")
 class SocketAppenderReconnectTest {
 
     private static final long DEFAULT_POLL_MILLIS = 1_000L;

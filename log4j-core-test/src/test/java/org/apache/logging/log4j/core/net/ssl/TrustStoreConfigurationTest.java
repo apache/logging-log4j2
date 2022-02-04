@@ -17,12 +17,14 @@
 package org.apache.logging.log4j.core.net.ssl;
 
 import org.apache.logging.log4j.core.test.net.ssl.TestConstants;
+import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.junit.jupiter.api.Test;
 
 import java.security.KeyStore;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@StatusLoggerLevel("OFF")
 public class TrustStoreConfigurationTest {
     @SuppressWarnings("deprecation")
     @Test

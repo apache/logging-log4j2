@@ -21,12 +21,14 @@ import java.util.Map;
 
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@StatusLoggerLevel("OFF")
 public class StrSubstitutorTest {
 
     private static final String TESTKEY = "TestKey";

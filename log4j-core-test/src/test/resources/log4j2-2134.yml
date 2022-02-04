@@ -1,4 +1,5 @@
-configuration: 
+configuration:
+  status: off
   name: NUAR_DEFAULT_LOGGING
   Appenders: 
      Console: 

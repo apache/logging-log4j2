@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Tests LoggersPlugin.
  */
+@StatusLoggerLevel("OFF")
 @LoggerContextSource("multipleRootLoggersTest.xml")
 public class LoggersPluginTest {
 

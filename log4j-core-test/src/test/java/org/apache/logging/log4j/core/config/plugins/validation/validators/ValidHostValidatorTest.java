@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@StatusLoggerLevel("FATAL")
+@StatusLoggerLevel("OFF")
 public class ValidHostValidatorTest {
 
     private PluginType<HostAndPort> plugin;

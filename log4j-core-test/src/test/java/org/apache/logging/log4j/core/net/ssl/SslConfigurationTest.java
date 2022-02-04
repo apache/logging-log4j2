@@ -25,10 +25,12 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
 import org.apache.logging.log4j.core.test.net.ssl.TestConstants;
+import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@StatusLoggerLevel("OFF")
 public class SslConfigurationTest {
 
     private static final String TLS_TEST_HOST = "login.yahoo.com";

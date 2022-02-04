@@ -16,7 +16,7 @@
   ~ limitations under the license.
   -->
 
-<Configuration name="asynRootConfig" monitorInterval="5" status="warn">
+<Configuration name="asynRootConfig" monitorInterval="5" status="off">
   <Appenders>
     <RandomAccessFile name="FILE_APPENDER" fileName="target/LOG4J2-807.log" immediateFlush="false" append="true">
       <PatternLayout>

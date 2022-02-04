@@ -56,7 +56,6 @@ public class FileAppenderPermissionsTest {
 
     @BeforeAll
     public static void beforeClass() {
-        System.setProperty("log4j2.debug", "true");
         assumeTrue(FileUtils.isFilePosixAttributeViewSupported());
     }
 
