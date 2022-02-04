@@ -44,7 +44,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class PluginManagerPackagesTest {
-    private static final Path TEST_SOURCE = Path.of("target", "test-classes", "customPlugin", "FixedStringLayout.java");
+    private static final Path TEST_SOURCE = Path.of("target", "test-classes", "customplugin", "FixedStringLayout.java");
     private static LoggerContext ctx;
 
     @AfterAll
