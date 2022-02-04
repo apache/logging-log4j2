@@ -157,7 +157,8 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
         String level = getProperty(THRESHOLD_PARAM);
         String target = getProperty(TARGET_PARAM);
         boolean follow = getBooleanProperty(FOLLOW_PARAM);
-        return createAppender(name, layout, filter, level, target, true, follow, configuration);
+        boolean immediateFlush = getBooleanProperty(IMMEDIATE_FLUSH_PARAM);
+        return createAppender(name, layout, filter, level, target, immediateFlush, follow, configuration);
     }
 
     private <T extends Log4j1Configuration> Appender createAppender(String name, Layout layout, Filter filter,
