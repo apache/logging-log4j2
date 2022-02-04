@@ -494,7 +494,7 @@
       <dependency>
         <groupId>com.sleepycat</groupId>
         <artifactId>je</artifactId>
-        <version>5.0.73</version>
+        <version>18.3.12</version>
       </dependency>
       <dependency>
         <groupId>org.osgi</groupId>
