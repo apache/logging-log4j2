@@ -43,7 +43,6 @@ public class TypeConverterRegistry {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final Value<TypeConverterRegistry> INSTANCE = LazyValue.forSupplier(TypeConverterRegistry::new);
-    private static final Object INSTANCE_LOCK = new Object();
 
     private final ConcurrentMap<Type, TypeConverter<?>> registry = new ConcurrentHashMap<>();
 
@@ -79,7 +78,7 @@ public class TypeConverterRegistry {
             if (clazz.isEnum()) {
                 @SuppressWarnings({"unchecked","rawtypes"})
                 final EnumConverter<? extends Enum> converter = new EnumConverter(clazz.asSubclass(Enum.class));
-                synchronized (INSTANCE_LOCK) {
+                synchronized (INSTANCE) {
                     return registerConverter(type, converter);
                 }
             }
@@ -90,7 +89,7 @@ public class TypeConverterRegistry {
             if (TypeUtil.isAssignable(type, key)) {
                 LOGGER.debug("Found compatible TypeConverter<{}> for type [{}].", key, type);
                 final TypeConverter<?> value = entry.getValue();
-                synchronized (INSTANCE_LOCK) {
+                synchronized (INSTANCE) {
                     return registerConverter(type, value);
                 }
             }
