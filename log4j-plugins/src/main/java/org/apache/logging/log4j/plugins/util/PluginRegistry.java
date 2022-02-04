@@ -50,8 +50,7 @@ public class PluginRegistry {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private static volatile PluginRegistry INSTANCE;
-    private static final Object INSTANCE_LOCK = new Object();
+    private static final Value<PluginRegistry> INSTANCE = LazyValue.forSupplier(PluginRegistry::new);
 
     /**
      * Contains plugins found in Log4j2Plugins.dat cache files in the main CLASSPATH.
@@ -81,16 +80,7 @@ public class PluginRegistry {
      * @since 2.1
      */
     public static PluginRegistry getInstance() {
-        PluginRegistry result = INSTANCE;
-        if (result == null) {
-            synchronized (INSTANCE_LOCK) {
-                result = INSTANCE;
-                if (result == null) {
-                    INSTANCE = result = new PluginRegistry();
-                }
-            }
-        }
-        return result;
+        return INSTANCE.get();
     }
 
     /**
