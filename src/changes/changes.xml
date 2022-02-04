@@ -157,6 +157,9 @@
       <action dev="ggregory" type="fix" due-to="Gary Gregory">
         Log4j 1.2 bridge creates a SocketAppender instead of a SyslogAppender.
       </action>
+      <action dev="ggregory" type="fix" due-to="Piotr P. Karwasz">
+        Log4j 1.2 bridge uses some incorrect default property values in appenders.
+      </action>
       <action dev="ggregory" type="fix" due-to="Gary Gregory, Piotr P. Karwasz">
       </action>
       <action dev="ggregory" type="fix">
