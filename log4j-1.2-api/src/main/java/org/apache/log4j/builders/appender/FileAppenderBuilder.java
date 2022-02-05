@@ -145,10 +145,10 @@ public class FileAppenderBuilder extends AbstractBuilder implements AppenderBuil
                 .setLayout(fileLayout)
                 .setFilter(fileFilter)
                 .withFileName(fileName)
-                .withImmediateFlush(immediateFlush)
+                .setImmediateFlush(immediateFlush)
                 .withAppend(append)
-                .withBufferedIo(bufferedIo)
-                .withBufferSize(bufferSize)
+                .setBufferedIo(bufferedIo)
+                .setBufferSize(bufferSize)
                 .build());
     }
 }
