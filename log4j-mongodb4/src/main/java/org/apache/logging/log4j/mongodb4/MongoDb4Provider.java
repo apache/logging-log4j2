@@ -80,7 +80,8 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
     // @formatter:off
     private static final CodecRegistry CODEC_REGISTRIES = CodecRegistries.fromRegistries(
             MongoClientSettings.getDefaultCodecRegistry(),
-            CodecRegistries.fromCodecs(MongoDb4LevelCodec.INSTANCE));
+            CodecRegistries.fromCodecs(MongoDb4LevelCodec.INSTANCE),
+            CodecRegistries.fromCodecs(new MongoDb4DocumentObjectCodec()));
     // @formatter:on
 
     // TODO Where does this number come from?
