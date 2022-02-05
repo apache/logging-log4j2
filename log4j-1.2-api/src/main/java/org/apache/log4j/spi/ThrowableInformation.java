@@ -16,6 +16,7 @@
  */
 package org.apache.log4j.spi;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -25,14 +26,25 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Log4j's internal representation of throwables.
  */
-public class ThrowableInformation implements java.io.Serializable {
+public class ThrowableInformation implements Serializable {
 
     static final long serialVersionUID = -4748765566864322735L;
 
     private transient Throwable throwable;
     private transient Category category;
     private String[] rep;
-    private Method toStringList;
+    private static final Method TO_STRING_LIST;
+
+    static {
+        Method method = null;
+        try {
+            final Class<?> throwables = Class.forName("org.apache.logging.log4j.core.util.Throwables");
+            method = throwables.getMethod("toStringList", Throwable.class);
+        } catch (ClassNotFoundException | NoSuchMethodException ex) {
+            // Ignore the exception if Log4j-core is not present.
+        }
+        TO_STRING_LIST = method;
+    }
 
     /**
      * Constructs new instance.
@@ -49,14 +61,6 @@ public class ThrowableInformation implements java.io.Serializable {
      */
     public ThrowableInformation(final Throwable throwable) {
         this.throwable = throwable;
-        Method method = null;
-        try {
-            final Class<?> throwables = Class.forName("org.apache.logging.log4j.core.util.Throwables");
-            method = throwables.getMethod("toStringList", Throwable.class);
-        } catch (ClassNotFoundException | NoSuchMethodException ex) {
-            // Ignore the exception if Log4j-core is not present.
-        }
-        this.toStringList = method;
     }
 
     /**
@@ -77,11 +81,10 @@ public class ThrowableInformation implements java.io.Serializable {
     }
 
     public synchronized String[] getThrowableStrRep() {
-        if (toStringList != null && throwable != null) {
+        if (TO_STRING_LIST != null && throwable != null) {
             try {
                 @SuppressWarnings("unchecked")
-                final
-                List<String> elements = (List<String>) toStringList.invoke(null, throwable);
+                final List<String> elements = (List<String>) TO_STRING_LIST.invoke(null, throwable);
                 if (elements != null) {
                     return elements.toArray(Strings.EMPTY_ARRAY);
                 }
