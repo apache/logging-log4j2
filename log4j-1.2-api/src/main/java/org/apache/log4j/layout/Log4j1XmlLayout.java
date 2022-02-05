@@ -47,7 +47,7 @@ public final class Log4j1XmlLayout extends AbstractStringLayout {
 
     @PluginFactory
     public static Log4j1XmlLayout createLayout(
-            // @formatter:off
+    // @formatter:off
             @PluginAttribute(value = "locationInfo") final boolean locationInfo,
             @PluginAttribute(value = "properties") final boolean properties
             // @formatter:on
@@ -109,7 +109,7 @@ public final class Log4j1XmlLayout extends AbstractStringLayout {
         }
 
         @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
-		final Throwable thrown = event.getThrown();
+        final Throwable thrown = event.getThrown();
         if (thrown != null) {
             buf.append("<log4j:throwable><![CDATA[");
             final StringWriter w = new StringWriter();
