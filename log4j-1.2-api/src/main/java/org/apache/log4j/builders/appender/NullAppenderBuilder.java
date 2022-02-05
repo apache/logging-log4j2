@@ -39,8 +39,8 @@ public class NullAppenderBuilder implements AppenderBuilder {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     @Override
-    public Appender parseAppender(Element appenderElement, XmlConfiguration config) {
-        String name = appenderElement.getAttribute("name");
+    public Appender parseAppender(final Element appenderElement, final XmlConfiguration config) {
+        final String name = appenderElement.getAttribute("name");
         return new AppenderWrapper(NullAppender.createAppender(name));
     }
 

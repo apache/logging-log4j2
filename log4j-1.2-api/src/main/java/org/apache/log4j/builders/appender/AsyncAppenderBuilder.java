@@ -16,6 +16,19 @@
  */
 package org.apache.log4j.builders.appender;
 
+import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.config.Log4j1Configuration.APPENDER_REF_TAG;
+import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
+import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.apache.log4j.Appender;
 import org.apache.log4j.bridge.AppenderWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
@@ -58,7 +71,7 @@ public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBui
     public AsyncAppenderBuilder() {
     }
 
-    public AsyncAppenderBuilder(String prefix, Properties props) {
+    public AsyncAppenderBuilder(final String prefix, final Properties props) {
         super(prefix, props);
     }
 
@@ -73,49 +86,25 @@ public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBui
         forEachElement(appenderElement.getChildNodes(), (currentElement) -> {
             switch (currentElement.getTagName()) {
                 case APPENDER_REF_TAG:
-                    Appender appender = config.findAppenderByReference(currentElement);
+                    final Appender appender = config.findAppenderByReference(currentElement);
                     if (appender != null) {
                         appenderRefs.get().add(appender.getName());
                     }
                     break;
                 case PARAM_TAG: {
                     switch (getNameAttributeKey(currentElement)) {
-                        case BUFFER_SIZE_PARAM: {
-                            String value = getValueAttribute(currentElement);
-                            if (value == null) {
-                                LOGGER.warn("No value supplied for BufferSize parameter. Defaulting to 1024.");
-                            } else {
-                                bufferSize.set(Integer.parseInt(value));
-                            }
+                        case BUFFER_SIZE_PARAM:
+                            setInteger(BUFFER_SIZE_PARAM, currentElement, bufferSize);
                             break;
-                        }
-                        case BLOCKING_PARAM: {
-                            String value = getValueAttribute(currentElement);
-                            if (value == null) {
-                                LOGGER.warn("No value supplied for Blocking parameter. Defaulting to false.");
-                            } else {
-                                blocking.set(Boolean.parseBoolean(value));
-                            }
+                        case BLOCKING_PARAM:
+                            setBoolean(BLOCKING_PARAM, currentElement, blocking);
                             break;
-                        }
-                        case INCLUDE_LOCATION_PARAM: {
-                            String value = getValueAttribute(currentElement);
-                            if (value == null) {
-                                LOGGER.warn("No value supplied for IncludeLocation parameter. Defaulting to false.");
-                            } else {
-                                includeLocation.set(Boolean.parseBoolean(value));
-                            }
+                        case INCLUDE_LOCATION_PARAM:
+                            setBoolean(INCLUDE_LOCATION_PARAM, currentElement, includeLocation);
                             break;
-                        }
-                        case THRESHOLD_PARAM: {
-                            String value = getValueAttribute(currentElement);
-                            if (value == null) {
-                                LOGGER.warn("No value supplied for Threshold parameter, ignoring.");
-                            } else {
-                                level.set(value);
-                            }
+                        case THRESHOLD_PARAM:
+                            setString(THRESHOLD_PARAM, currentElement, level);
                             break;
-                        }
                     }
                     break;
                 }
@@ -128,16 +117,16 @@ public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBui
     @Override
     public Appender parseAppender(final String name, final String appenderPrefix, final String layoutPrefix,
             final String filterPrefix, final Properties props, final PropertiesConfiguration configuration) {
-        String appenderRef = getProperty(APPENDER_REF_TAG);
-        boolean blocking = getBooleanProperty(BLOCKING_PARAM);
-        boolean includeLocation = getBooleanProperty(INCLUDE_LOCATION_PARAM);
-        String level = getProperty(THRESHOLD_PARAM);
-        int bufferSize = getIntegerProperty(BUFFER_SIZE_PARAM, 1024);
+        final String appenderRef = getProperty(APPENDER_REF_TAG);
+        final boolean blocking = getBooleanProperty(BLOCKING_PARAM);
+        final boolean includeLocation = getBooleanProperty(INCLUDE_LOCATION_PARAM);
+        final String level = getProperty(THRESHOLD_PARAM);
+        final int bufferSize = getIntegerProperty(BUFFER_SIZE_PARAM, 1024);
         if (appenderRef == null) {
             LOGGER.warn("No appender references configured for AsyncAppender {}", name);
             return null;
         }
-        Appender appender = configuration.parseAppender(props, appenderRef);
+        final Appender appender = configuration.parseAppender(props, appenderRef);
         if (appender == null) {
             LOGGER.warn("Cannot locate Appender {}", appenderRef);
             return null;
@@ -146,14 +135,14 @@ public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBui
                 configuration);
     }
 
-    private <T extends Log4j1Configuration> Appender createAppender(String name, String level,
-            String[] appenderRefs, boolean blocking, int bufferSize, boolean includeLocation,
-            T configuration) {
-        org.apache.logging.log4j.Level logLevel = OptionConverter.convertLevel(level,
+    private <T extends Log4j1Configuration> Appender createAppender(final String name, final String level,
+            final String[] appenderRefs, final boolean blocking, final int bufferSize, final boolean includeLocation,
+            final T configuration) {
+        final org.apache.logging.log4j.Level logLevel = OptionConverter.convertLevel(level,
                 org.apache.logging.log4j.Level.TRACE);
-        AppenderRef[] refs = new AppenderRef[appenderRefs.length];
+        final AppenderRef[] refs = new AppenderRef[appenderRefs.length];
         int index = 0;
-        for (String appenderRef : appenderRefs) {
+        for (final String appenderRef : appenderRefs) {
             refs[index++] = AppenderRef.createAppenderRef(appenderRef, logLevel, null);
         }
         return new AppenderWrapper(AsyncAppender.newBuilder()

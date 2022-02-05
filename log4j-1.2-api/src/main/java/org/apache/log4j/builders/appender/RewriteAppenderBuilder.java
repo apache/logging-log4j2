@@ -61,7 +61,7 @@ public class RewriteAppenderBuilder extends AbstractBuilder implements AppenderB
     public RewriteAppenderBuilder() {
     }
 
-    public RewriteAppenderBuilder(String prefix, Properties props) {
+    public RewriteAppenderBuilder(final String prefix, final Properties props) {
         super(prefix, props);
     }
 
@@ -75,33 +75,25 @@ public class RewriteAppenderBuilder extends AbstractBuilder implements AppenderB
         forEachElement(appenderElement.getChildNodes(), (currentElement) -> {
             switch (currentElement.getTagName()) {
                 case APPENDER_REF_TAG:
-                    Appender appender = config.findAppenderByReference(currentElement);
+                    final Appender appender = config.findAppenderByReference(currentElement);
                     if (appender != null) {
                         appenderRefs.get().add(appender.getName());
                     }
                     break;
-                case REWRITE_POLICY_TAG: {
-                    RewritePolicy policy = config.parseRewritePolicy(currentElement);
+                case REWRITE_POLICY_TAG:
+                    final RewritePolicy policy = config.parseRewritePolicy(currentElement);
                     if (policy != null) {
                         rewritePolicyHolder.set(policy);
                     }
                     break;
-                }
-                case FILTER_TAG: {
+                case FILTER_TAG:
                     filter.set(config.parseFilters(currentElement));
                     break;
-                }
-                case PARAM_TAG: {
+                case PARAM_TAG:
                     if (getNameAttributeKey(currentElement).equalsIgnoreCase(THRESHOLD_PARAM)) {
-                        String value = getValueAttribute(currentElement);
-                        if (value == null) {
-                            LOGGER.warn("No value supplied for Threshold parameter, ignoring.");
-                        } else {
-                            level.set(value);
-                        }
+                        setString(THRESHOLD_PARAM, currentElement, level);
                     }
                     break;
-                }
             }
         });
         return createAppender(name, level.get(), appenderRefs.get().toArray(new String[0]), rewritePolicyHolder.get(),
@@ -111,18 +103,18 @@ public class RewriteAppenderBuilder extends AbstractBuilder implements AppenderB
     @Override
     public Appender parseAppender(final String name, final String appenderPrefix, final String layoutPrefix,
             final String filterPrefix, final Properties props, final PropertiesConfiguration configuration) {
-        String appenderRef = getProperty(APPENDER_REF_TAG);
-        Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
-        String policyPrefix = appenderPrefix + ".rewritePolicy";
-        String className = getProperty(policyPrefix);
-        RewritePolicy policy = configuration.getBuilderManager().parseRewritePolicy(className, policyPrefix,
+        final String appenderRef = getProperty(APPENDER_REF_TAG);
+        final Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
+        final String policyPrefix = appenderPrefix + ".rewritePolicy";
+        final String className = getProperty(policyPrefix);
+        final RewritePolicy policy = configuration.getBuilderManager().parseRewritePolicy(className, policyPrefix,
                 props, configuration);
-        String level = getProperty(THRESHOLD_PARAM);
+        final String level = getProperty(THRESHOLD_PARAM);
         if (appenderRef == null) {
             LOGGER.warn("No appender references configured for AsyncAppender {}", name);
             return null;
         }
-        Appender appender = configuration.parseAppender(props, appenderRef);
+        final Appender appender = configuration.parseAppender(props, appenderRef);
         if (appender == null) {
             LOGGER.warn("Cannot locate Appender {}", appenderRef);
             return null;
@@ -130,16 +122,16 @@ public class RewriteAppenderBuilder extends AbstractBuilder implements AppenderB
         return createAppender(name, level, new String[] {appenderRef}, policy, filter, configuration);
     }
 
-    private <T extends Log4j1Configuration> Appender createAppender(String name, String level,
-            String[] appenderRefs, RewritePolicy policy, Filter filter, T configuration) {
-        org.apache.logging.log4j.Level logLevel = OptionConverter.convertLevel(level,
+    private <T extends Log4j1Configuration> Appender createAppender(final String name, final String level,
+            final String[] appenderRefs, final RewritePolicy policy, final Filter filter, final T configuration) {
+        final org.apache.logging.log4j.Level logLevel = OptionConverter.convertLevel(level,
                 org.apache.logging.log4j.Level.TRACE);
-        AppenderRef[] refs = new AppenderRef[appenderRefs.length];
+        final AppenderRef[] refs = new AppenderRef[appenderRefs.length];
         int index = 0;
-        for (String appenderRef : appenderRefs) {
+        for (final String appenderRef : appenderRefs) {
             refs[index++] = AppenderRef.createAppenderRef(appenderRef, logLevel, null);
         }
-        org.apache.logging.log4j.core.Filter rewriteFilter = buildFilters(level, filter);
+        final org.apache.logging.log4j.core.Filter rewriteFilter = buildFilters(level, filter);
         org.apache.logging.log4j.core.appender.rewrite.RewritePolicy rewritePolicy;
         if (policy instanceof RewritePolicyWrapper) {
             rewritePolicy = ((RewritePolicyWrapper) policy).getPolicy();

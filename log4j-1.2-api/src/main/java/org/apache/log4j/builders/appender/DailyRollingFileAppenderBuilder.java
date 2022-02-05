@@ -60,7 +60,7 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
     public DailyRollingFileAppenderBuilder() {
     }
 
-    public DailyRollingFileAppenderBuilder(String prefix, Properties props) {
+    public DailyRollingFileAppenderBuilder(final String prefix, final Properties props) {
         super(prefix, props);
     }
 
@@ -84,68 +84,31 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
                 case FILTER_TAG:
                     filter.set(config.parseFilters(currentElement));
                     break;
-                case PARAM_TAG: {
+                case PARAM_TAG:
                     switch (getNameAttributeKey(currentElement)) {
                         case FILE_PARAM:
-                            fileName.set(getValueAttribute(currentElement));
+                            setString(FILE_PARAM, currentElement, fileName);
                             break;
-                        case APPEND_PARAM: {
-                            String bool = getValueAttribute(currentElement);
-                            if (bool != null) {
-                                append.set(Boolean.parseBoolean(bool));
-                            } else {
-                                LOGGER.warn("No value provided for append parameter");
-                            }
+                        case APPEND_PARAM:
+                            setBoolean(APPEND_PARAM, currentElement, append);
                             break;
-                        }
-                        case BUFFERED_IO_PARAM: {
-                            String bool = getValueAttribute(currentElement);
-                            if (bool != null) {
-                                bufferedIo.set(Boolean.parseBoolean(bool));
-                            } else {
-                                LOGGER.warn("No value provided for bufferedIo parameter");
-                            }
+                        case BUFFERED_IO_PARAM:
+                            setBoolean(BUFFERED_IO_PARAM, currentElement, bufferedIo);
                             break;
-                        }
-                        case BUFFER_SIZE_PARAM: {
-                            String size = getValueAttribute(currentElement);
-                            if (size != null) {
-                                bufferSize.set(Integer.parseInt(size));
-                            } else {
-                                LOGGER.warn("No value provide for bufferSize parameter");
-                            }
+                        case BUFFER_SIZE_PARAM:
+                            setInteger(BUFFER_SIZE_PARAM, currentElement, bufferSize);
                             break;
-                        }
-                        case THRESHOLD_PARAM: {
-                            String value = getValueAttribute(currentElement);
-                            if (value == null) {
-                                LOGGER.warn("No value supplied for Threshold parameter, ignoring.");
-                            } else {
-                                level.set(value);
-                            }
+                        case THRESHOLD_PARAM:
+                            setString(THRESHOLD_PARAM, currentElement, level);
                             break;
-                        }
-                        case DATE_PATTERN_PARAM: {
-                            String value = getValueAttribute(currentElement);
-                            if (value == null) {
-                                LOGGER.warn("No value supplied for DatePattern parameter, ignoring.");
-                            } else {
-                                datePattern.set(value);
-                            }
+                        case DATE_PATTERN_PARAM:
+                            setString(DATE_PATTERN_PARAM, currentElement, datePattern);
                             break;
-                        }
-                        case IMMEDIATE_FLUSH_PARAM: {
-                            String value = getValueAttribute(currentElement);
-                            if (value == null) {
-                                LOGGER.warn("No value supplied for ImmediateFlush parameter. Using default of {}", true);
-                            } else {
-                                immediateFlush.set(Boolean.getBoolean(value));
-                            }
+                        case IMMEDIATE_FLUSH_PARAM:
+                            setBoolean(IMMEDIATE_FLUSH_PARAM, currentElement, immediateFlush);
                             break;
-                        }
                     }
                     break;
-                }
             }
         });
         return createAppender(name, layout.get(), filter.get(), fileName.get(), append.get(), immediateFlush.get(),
@@ -156,15 +119,15 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
     @Override
     public Appender parseAppender(final String name, final String appenderPrefix, final String layoutPrefix,
             final String filterPrefix, final Properties props, final PropertiesConfiguration configuration) {
-        Layout layout = configuration.parseLayout(layoutPrefix, name, props);
-        Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
-        String fileName = getProperty(FILE_PARAM);
-        String level = getProperty(THRESHOLD_PARAM);
-        boolean append = getBooleanProperty(APPEND_PARAM, true);
-        boolean immediateFlush = getBooleanProperty(IMMEDIATE_FLUSH_PARAM, true);
-        boolean bufferedIo = getBooleanProperty(BUFFERED_IO_PARAM, false);
-        int bufferSize = getIntegerProperty(BUFFER_SIZE_PARAM, 8192);
-        String datePattern = getProperty(DATE_PATTERN_PARAM, DEFAULT_DATE_PATTERN);
+        final Layout layout = configuration.parseLayout(layoutPrefix, name, props);
+        final Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
+        final String fileName = getProperty(FILE_PARAM);
+        final String level = getProperty(THRESHOLD_PARAM);
+        final boolean append = getBooleanProperty(APPEND_PARAM, true);
+        final boolean immediateFlush = getBooleanProperty(IMMEDIATE_FLUSH_PARAM, true);
+        final boolean bufferedIo = getBooleanProperty(BUFFERED_IO_PARAM, false);
+        final int bufferSize = getIntegerProperty(BUFFER_SIZE_PARAM, 8192);
+        final String datePattern = getProperty(DATE_PATTERN_PARAM, DEFAULT_DATE_PATTERN);
         return createAppender(name, layout, filter, fileName, append, immediateFlush, level, bufferedIo, bufferSize,
                 datePattern, configuration, configuration.getComponent(Clock.KEY));
     }
@@ -183,15 +146,15 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
         } else if (layout != null) {
             fileLayout = new LayoutAdapter(layout);
         }
-        org.apache.logging.log4j.core.Filter fileFilter = buildFilters(level, filter);
+        final org.apache.logging.log4j.core.Filter fileFilter = buildFilters(level, filter);
         if (fileName == null) {
             LOGGER.warn("Unable to create File Appender, no file name provided");
             return null;
         }
-        String filePattern = fileName + "%d{" + datePattern + "}";
-        TriggeringPolicy timePolicy = TimeBasedTriggeringPolicy.newBuilder().setClock(clock).setModulate(true).build();
-        TriggeringPolicy policy = CompositeTriggeringPolicy.createPolicy(timePolicy);
-        RolloverStrategy strategy = DefaultRolloverStrategy.newBuilder()
+        final String filePattern = fileName + "%d{" + datePattern + "}";
+        final TriggeringPolicy timePolicy = TimeBasedTriggeringPolicy.newBuilder().setClock(clock).setModulate(true).build();
+        final TriggeringPolicy policy = CompositeTriggeringPolicy.createPolicy(timePolicy);
+        final RolloverStrategy strategy = DefaultRolloverStrategy.newBuilder()
                 .setConfig(configuration)
                 .setMax(Integer.toString(Integer.MAX_VALUE))
                 .build();

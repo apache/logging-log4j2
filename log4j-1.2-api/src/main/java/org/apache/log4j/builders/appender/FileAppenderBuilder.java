@@ -56,7 +56,7 @@ public class FileAppenderBuilder extends AbstractBuilder implements AppenderBuil
     public FileAppenderBuilder() {
     }
 
-    public FileAppenderBuilder(String prefix, Properties props) {
+    public FileAppenderBuilder(final String prefix, final Properties props) {
         super(prefix, props);
     }
 
@@ -79,59 +79,28 @@ public class FileAppenderBuilder extends AbstractBuilder implements AppenderBuil
                 case FILTER_TAG:
                     filter.set(config.parseFilters(currentElement));
                     break;
-                case PARAM_TAG: {
+                case PARAM_TAG:
                     switch (getNameAttributeKey(currentElement)) {
                         case FILE_PARAM:
-                            fileName.set(getValueAttribute(currentElement));
+                            setString(FILE_PARAM, currentElement, fileName);
                             break;
-                        case APPEND_PARAM: {
-                            String bool = getValueAttribute(currentElement);
-                            if (bool != null) {
-                                append.set(Boolean.parseBoolean(bool));
-                            } else {
-                                LOGGER.warn("No value provided for append parameter");
-                            }
+                        case APPEND_PARAM:
+                            setBoolean(APPEND_PARAM, currentElement, append);
                             break;
-                        }
-                        case BUFFERED_IO_PARAM: {
-                            String bool = getValueAttribute(currentElement);
-                            if (bool != null) {
-                                bufferedIo.set(Boolean.parseBoolean(bool));
-                            } else {
-                                LOGGER.warn("No value provided for bufferedIo parameter");
-                            }
+                        case BUFFERED_IO_PARAM:
+                            setBoolean(BUFFERED_IO_PARAM, currentElement, bufferedIo);
                             break;
-                        }
-                        case BUFFER_SIZE_PARAM: {
-                            String size = getValueAttribute(currentElement);
-                            if (size != null) {
-                                bufferSize.set(Integer.parseInt(size));
-                            } else {
-                                LOGGER.warn("No value provide for bufferSize parameter");
-                            }
+                        case BUFFER_SIZE_PARAM:
+                            setInteger(BUFFER_SIZE_PARAM, currentElement, bufferSize);
                             break;
-                        }
-                        case THRESHOLD_PARAM: {
-                            String value = getValueAttribute(currentElement);
-                            if (value == null) {
-                                LOGGER.warn("No value supplied for Threshold parameter, ignoring.");
-                            } else {
-                                level.set(value);
-                            }
+                        case THRESHOLD_PARAM:
+                            setString(THRESHOLD_PARAM, currentElement, level);
                             break;
-                        }
-                        case IMMEDIATE_FLUSH_PARAM: {
-                            String value = getValueAttribute(currentElement);
-                            if (value == null) {
-                                LOGGER.warn("No value supplied for ImmediateFlush parameter. Using default of {}", true);
-                            } else {
-                                immediateFlush.set(Boolean.getBoolean(value));
-                            }
+                        case IMMEDIATE_FLUSH_PARAM:
+                            setBoolean(IMMEDIATE_FLUSH_PARAM, currentElement, immediateFlush);
                             break;
-                        }
                     }
                     break;
-                }
             }
         });
 
@@ -142,20 +111,20 @@ public class FileAppenderBuilder extends AbstractBuilder implements AppenderBuil
     @Override
     public Appender parseAppender(final String name, final String appenderPrefix, final String layoutPrefix,
             final String filterPrefix, final Properties props, final PropertiesConfiguration configuration) {
-        Layout layout = configuration.parseLayout(layoutPrefix, name, props);
-        Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
-        String level = getProperty(THRESHOLD_PARAM);
-        String fileName = getProperty(FILE_PARAM);
-        boolean append = getBooleanProperty(APPEND_PARAM, true);
-        boolean immediateFlush = getBooleanProperty(IMMEDIATE_FLUSH_PARAM, true);
-        boolean bufferedIo = getBooleanProperty(BUFFERED_IO_PARAM, false);
-        int bufferSize = Integer.parseInt(getProperty(BUFFER_SIZE_PARAM, "8192"));
+        final Layout layout = configuration.parseLayout(layoutPrefix, name, props);
+        final Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
+        final String level = getProperty(THRESHOLD_PARAM);
+        final String fileName = getProperty(FILE_PARAM);
+        final boolean append = getBooleanProperty(APPEND_PARAM, true);
+        final boolean immediateFlush = getBooleanProperty(IMMEDIATE_FLUSH_PARAM, true);
+        final boolean bufferedIo = getBooleanProperty(BUFFERED_IO_PARAM, false);
+        final int bufferSize = Integer.parseInt(getProperty(BUFFER_SIZE_PARAM, "8192"));
         return createAppender(name, configuration, layout, filter, fileName, level, immediateFlush,
                 append, bufferedIo, bufferSize);
     }
 
     private Appender createAppender(final String name, final Log4j1Configuration configuration, final Layout layout,
-            final Filter filter, final String fileName, String level, boolean immediateFlush, final boolean append,
+            final Filter filter, final String fileName, final String level, boolean immediateFlush, final boolean append,
             final boolean bufferedIo, final int bufferSize) {
         org.apache.logging.log4j.core.Layout<?> fileLayout = null;
         if (bufferedIo) {
@@ -166,7 +135,7 @@ public class FileAppenderBuilder extends AbstractBuilder implements AppenderBuil
         } else if (layout != null) {
             fileLayout = new LayoutAdapter(layout);
         }
-        org.apache.logging.log4j.core.Filter fileFilter = buildFilters(level, filter);
+        final org.apache.logging.log4j.core.Filter fileFilter = buildFilters(level, filter);
         if (fileName == null) {
             LOGGER.warn("Unable to create File Appender, no file name provided");
             return null;

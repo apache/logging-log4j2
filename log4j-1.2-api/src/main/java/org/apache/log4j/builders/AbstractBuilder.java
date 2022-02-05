@@ -24,6 +24,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.log4j.bridge.FilterAdapter;
 import org.apache.log4j.bridge.FilterWrapper;
@@ -74,10 +77,8 @@ public abstract class AbstractBuilder implements Builder {
     protected org.apache.logging.log4j.core.Filter buildFilters(final String level, final Filter filter) {
         if (level != null && filter != null) {
             final List<org.apache.logging.log4j.core.Filter> filterList = new ArrayList<>();
-            final org.apache.logging.log4j.core.Filter thresholdFilter =
-                    ThresholdFilter.createFilter(OptionConverter.convertLevel(level, Level.TRACE),
-                            org.apache.logging.log4j.core.Filter.Result.NEUTRAL,
-                            org.apache.logging.log4j.core.Filter.Result.DENY);
+            final org.apache.logging.log4j.core.Filter thresholdFilter = ThresholdFilter.createFilter(OptionConverter.convertLevel(level, Level.TRACE),
+                org.apache.logging.log4j.core.Filter.Result.NEUTRAL, org.apache.logging.log4j.core.Filter.Result.DENY);
             filterList.add(thresholdFilter);
             Filter f = filter;
             while (f != null) {
@@ -90,9 +91,8 @@ public abstract class AbstractBuilder implements Builder {
             }
             return CompositeFilter.createFilters(filterList.toArray(org.apache.logging.log4j.core.Filter.EMPTY_ARRAY));
         } else if (level != null) {
-            return ThresholdFilter.createFilter(OptionConverter.convertLevel(level, Level.TRACE),
-                    org.apache.logging.log4j.core.Filter.Result.NEUTRAL,
-                    org.apache.logging.log4j.core.Filter.Result.DENY);
+            return ThresholdFilter.createFilter(OptionConverter.convertLevel(level, Level.TRACE), org.apache.logging.log4j.core.Filter.Result.NEUTRAL,
+                org.apache.logging.log4j.core.Filter.Result.DENY);
         } else if (filter != null) {
             if (filter instanceof FilterWrapper) {
                 return ((FilterWrapper) filter).getFilter();
@@ -184,5 +184,36 @@ public abstract class AbstractBuilder implements Builder {
         final char[] chars = value.toCharArray();
         chars[0] = Character.toLowerCase(chars[0]);
         return new String(chars);
+    }
+
+    protected void setBoolean(final String name, final Element element, Holder<Boolean> ref) {
+        final String value = getValueAttribute(element);
+        if (value == null) {
+            LOGGER.warn("No value for {} parameter, using default {}", name, ref);
+        } else {
+            ref.set(Boolean.parseBoolean(value));
+        }
+    }
+
+    protected void setInteger(final String name, final Element element, Holder<Integer> ref) {
+        final String value = getValueAttribute(element);
+        if (value == null) {
+            LOGGER.warn("No value for {} parameter, using default {}", name, ref);
+        } else {
+            try {
+                ref.set(Integer.parseInt(value));
+            } catch (NumberFormatException e) {
+                LOGGER.warn("{} parsing {} parameter, using default {}: {}", e.getClass().getName(), name, ref, e.getMessage(), e);
+            }
+        }
+    }
+
+    protected void setString(final String name, final Element element, Holder<String> ref) {
+        final String value = getValueAttribute(element);
+        if (value == null) {
+            LOGGER.warn("No value for {} parameter, using default {}", name, ref);
+        } else {
+            ref.set(value);
+        }
     }
 }
