@@ -325,7 +325,8 @@
       <action dev="ggregory" type="fix" due-to="Gary Gregory">
         Log4j 1.2 bridge supports the SocketAppender.
       </action>
-      <action dev="ggregory" type="fix" due-to="Gary Gregory, Piotr P. Karwasz">
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">
+        Log4j 1.2 bridge missing DefaultThrowableRenderer.
       </action>
       <action dev="ggregory" type="fix">
         JndiManager reverts to 2.17.0 behavior: Read the system property for each call.
