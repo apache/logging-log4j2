@@ -44,9 +44,6 @@ public class ScriptArbiter implements Arbiter {
     private ScriptArbiter(final Configuration configuration, final AbstractScript script) {
         this.configuration = configuration;
         this.script = script;
-        if (!(script instanceof ScriptRef)) {
-            configuration.getScriptManager().addScript(script);
-        }
     }
 
     /**
@@ -109,9 +106,17 @@ public class ScriptArbiter implements Arbiter {
                 LOGGER.error("A Script, ScriptFile or ScriptRef element must be provided for this ScriptFilter");
                 return null;
             }
+            if (configuration.getScriptManager() == null) {
+                LOGGER.error("Script support is not enabled");
+                return null;
+            }
             if (script instanceof ScriptRef) {
                 if (configuration.getScriptManager().getScript(script.getName()) == null) {
                     LOGGER.error("No script with name {} has been declared.", script.getName());
+                    return null;
+                }
+            } else {
+                if (!configuration.getScriptManager().addScript(script)) {
                     return null;
                 }
             }

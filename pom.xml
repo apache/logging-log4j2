@@ -290,6 +290,7 @@
     <jctoolsVersion>1.2.1</jctoolsVersion>
     <junitVersion>4.13.2</junitVersion>
     <junitJupiterVersion>5.8.2</junitJupiterVersion>
+    <junitPioneerVersion>1.5.0</junitPioneerVersion>
     <mockitoVersion>4.3.1</mockitoVersion>
     <xmlunitVersion>2.9.0</xmlunitVersion>
     <argLine>-Xms256m -Xmx1024m</argLine>
@@ -746,6 +747,12 @@
         <version>${junitJupiterVersion}</version>
         <scope>test</scope>
       </dependency>
+      <dependency>
+        <groupId>org.junit.platform</groupId>
+        <artifactId>junit-platform-commons</artifactId>
+        <version>1.8.2</version>
+        <scope>test</scope>
+      </dependency>
       <!-- JUnit 4 to 5 migration support -->
       <dependency>
         <groupId>org.junit.jupiter</groupId>
@@ -772,6 +779,12 @@
         <groupId>org.junit.vintage</groupId>
         <artifactId>junit-vintage-engine</artifactId>
         <version>${junitJupiterVersion}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.junit-pioneer</groupId>
+        <artifactId>junit-pioneer</artifactId>
+        <version>${junitPioneerVersion}</version>
         <scope>test</scope>
       </dependency>
       <dependency>

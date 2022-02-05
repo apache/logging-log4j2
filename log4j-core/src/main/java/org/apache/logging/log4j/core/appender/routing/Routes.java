@@ -35,6 +35,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.script.AbstractScript;
 import org.apache.logging.log4j.core.script.ScriptManager;
+import org.apache.logging.log4j.core.script.ScriptRef;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -73,7 +74,17 @@ public final class Routes {
                 if (configuration == null) {
                     LOGGER.error("No Configuration defined for Routes; required for Script");
                 } else {
-                    configuration.getScriptManager().addScript(patternScript);
+                    if (configuration.getScriptManager() == null) {
+                        LOGGER.error("Script support is not enabled");
+                        return null;
+                    }
+                    if (!configuration.getScriptManager().addScript(patternScript)) {
+                        if (!(patternScript instanceof ScriptRef)) {
+                            if (!getConfiguration().getScriptManager().addScript(patternScript)) {
+                                return null;
+                            }
+                        }
+                    }
                 }
             }
             return new Routes(configuration, patternScript, pattern, routes);

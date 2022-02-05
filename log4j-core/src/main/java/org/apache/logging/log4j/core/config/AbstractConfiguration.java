@@ -220,11 +220,14 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         LOGGER.debug(Version.getProductString() + " initializing configuration {}", this);
         runtimeStrSubstitutor.setConfiguration(this);
         configurationStrSubstitutor.setConfiguration(this);
-        try {
-            scriptManager = new ScriptManager(this, watchManager);
-        } catch (final LinkageError | Exception e) {
-            // LOG4J2-1920 ScriptEngineManager is not available in Android
-            LOGGER.info("Cannot initialize scripting support because this JRE does not support it.", e);
+        String scriptLanguages = PropertiesUtil.getProperties().getStringProperty(Constants.SCRIPT_LANGUAGES);
+        if (scriptLanguages != null) {
+            try {
+                scriptManager = new ScriptManager(this, watchManager, scriptLanguages);
+            } catch (final LinkageError | Exception e) {
+                // LOG4J2-1920 ScriptEngineManager is not available in Android
+                LOGGER.info("Cannot initialize scripting support because this JRE does not support it.", e);
+            }
         }
         pluginManager.collectPlugins(pluginPackages);
         final PluginManager levelPlugins = new PluginManager(Level.CATEGORY);

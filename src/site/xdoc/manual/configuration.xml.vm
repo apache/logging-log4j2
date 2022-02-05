@@ -1363,6 +1363,8 @@ rootLogger = info, STDOUT
             However, some of the languages listed there, such as JavaScript, Groovy and Beanshell, directly support the
             JSR 223 scripting framework and only require that the jars for that language be installed.
           </p>
+          <p>As of Log4j 2.17.2 the languages to be supported must be specified as a comma separated list in the
+            <code>log4j2.Script.enableLanguages</code> system property.</p>
           <p>
             The components that support using scripts do so by allowing a &lt;script&gt;, &lt;scriptFile&gt;, or
             &lt;scriptRef&gt; element to be configured on
@@ -2799,6 +2801,14 @@ public class AwesomeTest {
     <td></td>
     <td>false</td>
     <td>true or false if the host name should be verified</td>
+  </tr>
+  <tr>
+    <td><a name="log4j2.Script.enableLanguages"/>log4j2.Script.enableLanguages</td>
+    <td></td>
+    <td></td>
+    <td>The list of script languages that are allowed to execute. The names specified must have a ScriptEngine installed
+      that advertises the same language(s) in order for scripting to be enabled. If no languages are specified, which is
+      the default, the ScriptManager will not be installed.</td>
   </tr>
 </table>
 
