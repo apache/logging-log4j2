@@ -28,9 +28,7 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.appender.SyslogAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
-import org.apache.logging.log4j.core.layout.Rfc5424Layout;
 import org.apache.logging.log4j.core.net.AbstractSocketManager;
-import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Protocol;
 import org.junit.Test;
 

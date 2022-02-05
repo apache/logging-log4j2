@@ -16,6 +16,14 @@
  */
 package org.apache.log4j.config;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.net.URISyntaxException;
+import java.net.URL;
+
 import org.apache.log4j.layout.Log4j1XmlLayout;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
@@ -23,12 +31,7 @@ import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.appender.ConsoleAppender.Target;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.junit.jupiter.api.Test;
-
-import java.net.URISyntaxException;
-import java.net.URL;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.Test;
 
 public class Log4j1ConfigurationFactoryTest extends AbstractLog4j1ConfigurationTest {
 
