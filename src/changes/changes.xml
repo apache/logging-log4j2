@@ -172,6 +172,15 @@
       <action dev="ggregory" type="fix" due-to="Gary Gregory">
         Log4j 1.2 bridge missing some LocationInfo constructors.
       </action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">
+        Log4j 1.2 bridge missed 
+      </action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">
+        Log4j 1.2 bridge missed org.apache.log4j.pattern.FormattingInfo.
+      </action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">
+        Log4j 1.2 bridge missed org.apache.log4j.pattern.NameAbbreviator.
+      </action>
       <action dev="ggregory" type="fix">
         JndiManager reverts to 2.17.0 behavior: Read the system property for each call.
       </action>
