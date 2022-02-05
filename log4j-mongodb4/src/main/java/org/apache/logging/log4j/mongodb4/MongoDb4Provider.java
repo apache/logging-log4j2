@@ -25,6 +25,13 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.bson.BsonReader;
+import org.bson.BsonWriter;
+import org.bson.Document;
+import org.bson.codecs.Codec;
+import org.bson.codecs.DecoderContext;
+import org.bson.codecs.DocumentCodec;
+import org.bson.codecs.EncoderContext;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 
@@ -75,7 +82,8 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
     // @formatter:off
     private static final CodecRegistry CODEC_REGISTRIES = CodecRegistries.fromRegistries(
             MongoClientSettings.getDefaultCodecRegistry(),
-            CodecRegistries.fromCodecs(MongoDb4LevelCodec.INSTANCE));
+            CodecRegistries.fromCodecs(MongoDb4LevelCodec.INSTANCE),
+            CodecRegistries.fromCodecs(new MongoDb4DocumentObjectCodec()));
     // @formatter:on
 
     // TODO Where does this number come from?

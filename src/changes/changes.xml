@@ -177,6 +177,9 @@
       <action dev="ggregory" type="fix" due-to="Gary Gregory, Piotr P. Karwasz">
         Fix log4j-jakarta-web service file #723.
       </action>
+      <action issue="LOG4J2-3392" dev="ggregory" type="fix" due-to="Gary Gregory, Omer U">
+        AppenderLoggingException logging any exception to a MongoDB Appender.
+      </action>
       <!-- ADD -->
       <action issue="LOG4J2-3303" dev="vy" type="add" due-to="ramananravi">
         Add TB support to FileSize.
