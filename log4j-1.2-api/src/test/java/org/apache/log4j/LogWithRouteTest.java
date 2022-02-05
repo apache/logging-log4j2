@@ -36,7 +36,7 @@ public class LogWithRouteTest {
 
     @Test
     @LoggerContextSource(CONFIG)
-    public void testMDC(final Configuration configuration) throws Exception {
+    public void testMDC(final Configuration configuration) {
         MDC.put("Type", "Service");
         MDC.put("Name", "John Smith");
         try {

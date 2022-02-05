@@ -42,7 +42,7 @@ public class MapRewriteAppenderTest {
 
     @Test
     @LoggerContextSource(value = "log4j1-mapRewrite.xml", v1config = true)
-    public void testRewrite() throws Exception {
+    public void testRewrite() {
         Logger logger = LogManager.getLogger("test");
         Map<String, String> map = new HashMap<>();
         map.put("message", "This is a test");

@@ -314,7 +314,7 @@ public abstract class AbstractLog4j1ConfigurationTest {
         return (OutputStream) getOutputStream.invoke(manager);
     }
 
-    private Layout<?> testLayout(final Configuration config, final String appenderName) throws Exception {
+    private Layout<?> testLayout(final Configuration config, final String appenderName) {
         final ConsoleAppender appender = config.getAppender(appenderName);
         assertNotNull("Missing appender '" + appenderName + "' in configuration " + config.getConfigurationSource(), appender);
         return appender.getLayout();

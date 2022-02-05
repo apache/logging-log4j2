@@ -66,7 +66,7 @@ public class CategoryTest {
     }
 
     @Test
-    public void testExist() throws Exception {
+    public void testExist() {
         assertNull(Category.exists("Does not exist for sure"));
     }
 

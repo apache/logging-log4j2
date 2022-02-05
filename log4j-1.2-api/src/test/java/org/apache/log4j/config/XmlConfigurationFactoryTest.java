@@ -41,7 +41,7 @@ public class XmlConfigurationFactoryTest {
         System.setProperty(ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY, "target/test-classes/log4j1-file.xml");
     }
     @Test
-    public void testXML() throws Exception {
+    public void testXML() {
         Logger logger = LogManager.getLogger("test");
         logger.debug("This is a test of the root logger");
         File file = new File("target/temp.A1");

@@ -42,7 +42,7 @@ public class RewriteAppenderTest {
 
     @Test
     @LoggerContextSource(value = "log4j1-rewrite.xml", v1config = true)
-    public void testRewrite(final LoggerContext context) throws Exception {
+    public void testRewrite(final LoggerContext context) {
         Logger logger = LogManager.getLogger("test");
         ThreadContext.put("key1", "This is a test");
         ThreadContext.put("hello", "world");
