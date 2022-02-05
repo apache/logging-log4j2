@@ -109,7 +109,7 @@ public final class Log4j1XmlLayout extends AbstractStringLayout {
         }
 
         @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
-		final Throwable thrown = event.getThrown();
+        final Throwable thrown = event.getThrown();
         if (thrown != null) {
             buf.append("<log4j:throwable><![CDATA[");
             final StringWriter w = new StringWriter();
