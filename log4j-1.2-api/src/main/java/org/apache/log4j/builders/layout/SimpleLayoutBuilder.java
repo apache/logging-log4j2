@@ -16,27 +16,23 @@
  */
 package org.apache.log4j.builders.layout;
 
+import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.LayoutWrapper;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.xml.XmlConfiguration;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
 
 import java.util.Properties;
-
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
 
 /**
  * Build a Pattern Layout
  */
 @Plugin(name = "org.apache.log4j.SimpleLayout", category = CATEGORY)
 public class SimpleLayoutBuilder implements LayoutBuilder {
-
-    private static final Logger LOGGER = StatusLogger.getLogger();
 
     @Override
     public Layout parseLayout(Element layoutElement, XmlConfiguration config) {
