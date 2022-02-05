@@ -165,6 +165,7 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
                 .setLayout(fileLayout)
                 .setFilter(fileFilter)
                 .setFileName(fileName)
+                .setAppend(append)
                 .setBufferedIo(bufferedIo)
                 .setBufferSize(bufferSize)
                 .setImmediateFlush(immediateFlush)
