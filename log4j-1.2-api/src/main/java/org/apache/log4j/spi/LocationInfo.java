@@ -17,9 +17,9 @@
 package org.apache.log4j.spi;
 
 /**
- The internal representation of caller location information.
-
- @since 0.8.3
+ * The internal representation of caller location information.
+ * 
+ * @since 0.8.3
  */
 public class LocationInfo implements java.io.Serializable {
 
@@ -36,17 +36,15 @@ public class LocationInfo implements java.io.Serializable {
     }
 
     /**
-     When location information is not available the constant
-     <code>NA</code> is returned. Current value of this string
-     constant is <b>?</b>.  */
+     * When location information is not available the constant <code>NA</code> is returned. Current value of this string
+     * constant is <b>?</b>.
+     */
     public final static String NA = "?";
 
     static final long serialVersionUID = -1325822038990805636L;
 
-
     /**
-     Return the fully qualified class name of the caller making the
-     logging request.
+     * Return the fully qualified class name of the caller making the logging request.
      @return The class name.
      */
     public String getClassName() {
@@ -54,7 +52,7 @@ public class LocationInfo implements java.io.Serializable {
     }
 
     /**
-     Return the file name of the caller.
+     * Return the file name of the caller.
      @return the file name.
      */
     public String getFileName() {
@@ -62,7 +60,7 @@ public class LocationInfo implements java.io.Serializable {
     }
 
     /**
-     Returns the line number of the caller.
+     * Returns the line number of the caller.
      @return The line number.
      */
     public String getLineNumber() {
@@ -70,7 +68,7 @@ public class LocationInfo implements java.io.Serializable {
     }
 
     /**
-     Returns the method name of the caller.
+     * Returns the method name of the caller.
      @return The method name.
      */
     public String getMethodName() {
