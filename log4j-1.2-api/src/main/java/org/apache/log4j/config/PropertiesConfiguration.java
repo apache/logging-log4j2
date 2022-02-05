@@ -594,7 +594,7 @@ public class PropertiesConfiguration extends Log4j1Configuration {
         try {
             return LoaderUtil.newInstanceOf(className);
         } catch (ReflectiveOperationException ex) {
-            LOGGER.error("Unable to create {} {} due to {}:{}", type, className, ex.getClass().getSimpleName(), ex.getMessage());
+            LOGGER.error("Unable to create {} {} due to {}:{}", type, className, ex.getClass().getSimpleName(), ex.getMessage(), ex);
             return null;
         }
     }
