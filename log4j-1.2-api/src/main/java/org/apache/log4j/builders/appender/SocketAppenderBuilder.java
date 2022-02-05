@@ -82,9 +82,9 @@ public class SocketAppenderBuilder extends AbstractBuilder implements AppenderBu
         final org.apache.logging.log4j.core.Filter actualFilter = buildFilters(level, filter);
         // @formatter:off
         return new AppenderWrapper(SocketAppender.newBuilder()
-            .withHost(host)
-            .withPort(port)
-            .withReconnectDelayMillis(reconnectDelayMillis)
+            .setHost(host)
+            .setPort(port)
+            .setReconnectDelayMillis(reconnectDelayMillis)
             .setName(name)
             .setLayout(actualLayout)
             .setFilter(actualFilter)

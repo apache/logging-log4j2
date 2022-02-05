@@ -454,12 +454,12 @@ class LogstashIT {
         final SocketAppender appender = SocketAppender
                 .newBuilder()
                 .setConfiguration(CONFIGURATION)
-                .withHost(HOST_NAME)
-                .withPort(port)
-                .withReconnectDelayMillis(100)
+                .setHost(HOST_NAME)
+                .setPort(port)
+                .setReconnectDelayMillis(100)
                 .setName("LogstashItAppender")
-                .withBufferedIo(false)
-                .withImmediateFail(true)
+                .setBufferedIo(false)
+                .setImmediateFail(true)
                 .setIgnoreExceptions(false)
                 .setLayout(layout)
                 .build();

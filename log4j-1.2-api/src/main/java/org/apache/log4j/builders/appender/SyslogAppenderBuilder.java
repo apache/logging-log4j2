@@ -145,9 +145,9 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
                 .setConfiguration(configuration)
                 .setLayout(appenderLayout)
                 .setFilter(fileFilter)
-                .withPort(port.get())
-                .withProtocol(protocol)
-                .withHost(host.get())
+                .setPort(port.get())
+                .setProtocol(protocol)
+                .setHost(host.get())
                 .build());
     }
 
