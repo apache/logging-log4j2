@@ -38,6 +38,7 @@ import static org.junit.Assert.assertNotNull;
  */
 public class SyslogAppenderTest {
 
+    // TODO Use an ephemeral port, save it in a sys prop, and update test config files.
     private static final int PORTNUM = 9999;
     private MockSyslogServer syslogServer;
 
