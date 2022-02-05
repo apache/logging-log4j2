@@ -73,6 +73,11 @@ public class SocketAppenderConfigurationTest {
     }
 
     @Test
+    public void testPropertiesXmlLayout() throws Exception {
+        checkProtocolXmlConfig(Protocol.TCP, "target/test-classes/log4j1-socket-xml-layout.properties");
+    }
+
+    @Test
     public void testXml() throws Exception {
         checkProtocolXmlConfig(Protocol.TCP, "target/test-classes/log4j1-socket.xml");
     }
