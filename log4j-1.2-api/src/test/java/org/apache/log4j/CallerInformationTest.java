@@ -34,7 +34,7 @@ public class CallerInformationTest {
     public static final LoggerContextRule ctx = new LoggerContextRule(CONFIG);
 
     @Test
-    public void testClassLogger() throws Exception {
+    public void testClassLogger() {
         final ListAppender app = ctx.getListAppender("Class").clear();
         final Logger logger = Logger.getLogger("ClassLogger");
         logger.info("Ignored message contents.");
@@ -48,7 +48,7 @@ public class CallerInformationTest {
     }
 
     @Test
-    public void testMethodLogger() throws Exception {
+    public void testMethodLogger() {
         final ListAppender app = ctx.getListAppender("Method").clear();
         final Logger logger = Logger.getLogger("MethodLogger");
         logger.info("More messages.");

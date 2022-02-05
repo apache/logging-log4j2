@@ -37,7 +37,7 @@ public class LogWithRouteTest {
     public static final LoggerContextRule CTX = new LoggerContextRule(CONFIG);
 
     @Test
-    public void testMDC() throws Exception {
+    public void testMDC() {
         MDC.put("Type", "Service");
         MDC.put("Name", "John Smith");
         try {

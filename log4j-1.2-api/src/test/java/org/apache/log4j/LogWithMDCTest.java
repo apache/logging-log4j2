@@ -36,7 +36,7 @@ public class LogWithMDCTest {
     public static final LoggerContextRule CTX = new LoggerContextRule(CONFIG);
 
     @Test
-    public void testMDC() throws Exception {
+    public void testMDC() {
         MDC.put("Key1", "John");
         MDC.put("Key2", "Smith");
         try {
