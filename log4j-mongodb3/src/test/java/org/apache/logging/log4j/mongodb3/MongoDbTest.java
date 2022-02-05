@@ -62,7 +62,7 @@ public class MongoDbTest {
             Assert.assertNotNull(collection);
             final FindIterable<Document> found = collection.find();
             final Document first = found.first();
-            Assert.assertNotNull(first);
+            Assert.assertNotNull("first", first);
             Assert.assertEquals(first.toJson(), "Hello log 1", first.getString("message"));
             Assert.assertEquals(first.toJson(), "INFO", first.getString("level"));
             //

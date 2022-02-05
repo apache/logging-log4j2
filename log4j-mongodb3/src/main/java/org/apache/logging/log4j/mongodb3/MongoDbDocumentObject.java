@@ -27,6 +27,9 @@ import org.bson.Document;
 public final class MongoDbDocumentObject implements NoSqlObject<Document> {
     private final Document document;
 
+    /**
+     * Constructs a new instance.
+     */
     public MongoDbDocumentObject() {
         this.document = new Document();
     }
