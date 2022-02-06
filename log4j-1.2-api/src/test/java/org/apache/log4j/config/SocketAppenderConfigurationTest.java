@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.util.Map;
 
+import org.apache.log4j.layout.Log4j1XmlLayout;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.appender.SocketAppender;
@@ -37,19 +38,19 @@ import org.junit.Test;
  */
 public class SocketAppenderConfigurationTest {
 
-    private void check(final Protocol expected, final Configuration configuration) {
+    private SocketAppender check(final Protocol expected, final Configuration configuration) {
         final Map<String, Appender> appenders = configuration.getAppenders();
         assertNotNull(appenders);
         final String appenderName = "socket";
         final Appender appender = appenders.get(appenderName);
         assertNotNull(appender, "Missing appender " + appenderName);
-        final SocketAppender syslogAppender = (SocketAppender) appender;
+        final SocketAppender socketAppender = (SocketAppender) appender;
         @SuppressWarnings("resource")
-        final TcpSocketManager manager = (TcpSocketManager) syslogAppender.getManager();
+        final TcpSocketManager manager = (TcpSocketManager) socketAppender.getManager();
         final String prefix = expected + ":";
         assertTrue(manager.getName().startsWith(prefix), () -> String.format("'%s' does not start with '%s'", manager.getName(), prefix));
         // Threshold
-        final ThresholdFilter filter = (ThresholdFilter) syslogAppender.getFilter();
+        final ThresholdFilter filter = (ThresholdFilter) socketAppender.getFilter();
         assertEquals(Level.DEBUG, filter.getLevel());
         // Host
         assertEquals("localhost", manager.getHost());
@@ -57,14 +58,15 @@ public class SocketAppenderConfigurationTest {
         assertEquals(9999, manager.getPort());
         // Port
         assertEquals(100, manager.getReconnectionDelayMillis());
+        return socketAppender;
     }
 
     private void checkProtocolPropertiesConfig(final Protocol expected, final String xmlPath) throws IOException {
         check(expected, TestConfigurator.configure(xmlPath).getConfiguration());
     }
 
-    private void checkProtocolXmlConfig(final Protocol expected, final String xmlPath) throws IOException {
-        check(expected, TestConfigurator.configure(xmlPath).getConfiguration());
+    private SocketAppender checkProtocolXmlConfig(final Protocol expected, final String xmlPath) throws IOException {
+        return check(expected, TestConfigurator.configure(xmlPath).getConfiguration());
     }
 
     @Test
@@ -74,7 +76,8 @@ public class SocketAppenderConfigurationTest {
 
     @Test
     public void testPropertiesXmlLayout() throws Exception {
-        checkProtocolXmlConfig(Protocol.TCP, "target/test-classes/log4j1-socket-xml-layout.properties");
+        final SocketAppender socketAppender = checkProtocolXmlConfig(Protocol.TCP, "target/test-classes/log4j1-socket-xml-layout.properties");
+        assertTrue(socketAppender.getLayout() instanceof Log4j1XmlLayout);
     }
 
     @Test
