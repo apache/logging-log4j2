@@ -1103,10 +1103,10 @@ CREATE TABLE logs (
           <p>When configuring the JDBCAppender, you must specify a <code>ConnectionSource</code> implementation from
             which the Appender gets JDBC connections. You must use exactly one of the following nested elements:</p>
           <ul>
-            <li><a href="#JDBCDataSource"><code>&lt;DataSource&gt;</code></a>: Uses JNDI.</li>
+            <li><a href="#JDBCDataSource"><code>&lt;DataSource&gt;</code></a>: Uses JNDI. Do not share this connection with other clients.</li>
             <li><a href="#JDBCConnectionFactory"><code>&lt;ConnectionFactory&gt;</code></a>: Points to a class-method pair to provide JDBC connections.</li>
             <li><a href="#JDBCDriverManager"><code>&lt;DriverManager&gt;</code></a>: A quick and dirty way to get off the ground, no connection pooling.</li>
-            <li><a href="#JDBCPoolingDriver"><code>&lt;PoolingDriver&gt;</code></a>: Uses Apache Commons DBCP to provide connection pooling.</li>
+            <li><a href="#JDBCPoolingDriver"><code>&lt;PoolingDriver&gt;</code></a>: Uses <a href="https://commons.apache.org/proper/commons-dbcp/">Apache Commons DBCP</a> to provide connection pooling.</li>
           </ul>
           <a name="JDBCDataSource"/>
           <table>
