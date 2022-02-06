@@ -209,6 +209,9 @@
         AppenderLoggingException logging any exception to a MongoDB Appender.
       </action>
       <!-- ADD -->
+      <action issue="LOG4J2-3394" dev="rgoers" type="fix">
+        Allow substitution of system properties and environment variables in shorthand variables introduced in LOG4J2-3341.
+      </action>
       <action issue="LOG4J2-2486" dev="rgoers" type="add">
         Require log4j2.Script.enableLanguages to be specified to enable scripting for specific languages.
       </action>

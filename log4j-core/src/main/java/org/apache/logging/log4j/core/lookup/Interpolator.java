@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
@@ -91,6 +92,19 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
      */
     public Interpolator() {
         this((Map<String, String>) null);
+    }
+
+    /**
+     * Create a limited Interpolator.
+     */
+    public Interpolator(final Properties properties) {
+        Map<String, String> defaultProps = new HashMap<>();
+        if (properties != null) {
+            properties.forEach((key, value) -> defaultProps.put(key.toString(), value.toString()));
+        }
+        this.defaultLookup = new PropertiesLookup(defaultProps);
+        strLookupMap.put("sys", new SystemPropertiesLookup());
+        strLookupMap.put("env", new EnvironmentLookup());
     }
 
     /**

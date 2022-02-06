@@ -31,6 +31,7 @@ import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 import java.util.List;
 import java.util.Map;
@@ -129,5 +130,26 @@ class PropertiesConfigurationTest {
         final List<LogEvent> secondEvents = second.getEvents();
         assertEquals(firstEvents, secondEvents);
         assertEquals(1, firstEvents.size());
+    }
+
+    @Test
+    @LoggerContextSource("LoggerLevelAppenderTestWithSubst.properties")
+    void testLoggerLevelAppenderWithSubst(final LoggerContext context, @Named final ListAppender first, @Named final ListAppender second) {
+        context.getLogger(getClass()).atInfo().log("message");
+        final List<LogEvent> firstEvents = first.getEvents();
+        final List<LogEvent> secondEvents = second.getEvents();
+        assertEquals(firstEvents, secondEvents);
+        assertEquals(1, firstEvents.size());
+    }
+
+    @SetSystemProperty(key = "core.config.logger", value = "DEBUG , second")
+    @Test
+    @LoggerContextSource("LoggerLevelAppenderTestWithSubst.properties")
+    void testLoggerLevelAppenderWithSysSubst(final LoggerContext context, @Named final ListAppender first, @Named final ListAppender second) {
+        context.getLogger(getClass()).atInfo().log("message");
+        final List<LogEvent> firstEvents = first.getEvents();
+        final List<LogEvent> secondEvents = second.getEvents();
+        assertEquals(0, firstEvents.size());
+        assertEquals(1, secondEvents.size());
     }
 }
