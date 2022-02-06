@@ -30,6 +30,7 @@ import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
@@ -52,7 +53,7 @@ public class OptionConverter {
     static char DELIM_STOP = '}';
     static int DELIM_START_LEN = 2;
     static int DELIM_STOP_LEN = 1;
-    private static final Logger LOGGER = LogManager.getLogger(OptionConverter.class);
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private static final CharMap[] charMap = new CharMap[] {
         new CharMap('n', '\n'),
