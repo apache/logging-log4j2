@@ -23,9 +23,13 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.AppenderControl;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junitpioneer.jupiter.SetSystemProperty;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,6 +53,11 @@ public class DefaultRouteScriptAppenderTest {
                 { "log4j-routing-script-staticvars-groovy.xml", true },
         };
         // @formatter:on
+    }
+
+    @BeforeClass
+    public static void beforeClass() {
+        System.setProperty(Constants.SCRIPT_LANGUAGES, "Groovy, Javascript");
     }
 
     @Rule

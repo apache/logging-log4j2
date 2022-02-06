@@ -82,6 +82,15 @@ public class ScriptPatternSelector implements PatternSelector, LocationAware {
                 LOGGER.error("A Script, ScriptFile or ScriptRef element must be provided for this ScriptFilter");
                 return null;
             }
+            if (configuration.getScriptManager() == null) {
+                LOGGER.error("Script support is not enabled");
+                return null;
+            }
+            if (!(script instanceof ScriptRef)) {
+                if (!configuration.getScriptManager().addScript(script)) {
+                    return null;
+                }
+            }
             if (script instanceof ScriptRef) {
                 if (configuration.getScriptManager().getScript(script.getName()) == null) {
                     LOGGER.error("No script with name {} has been declared.", script.getName());
@@ -95,8 +104,8 @@ public class ScriptPatternSelector implements PatternSelector, LocationAware {
                 LOGGER.warn("No marker patterns were provided");
                 return null;
             }
-            return new ScriptPatternSelector(script, properties, defaultPattern, alwaysWriteExceptions, disableAnsi,
-                    noConsoleNoAnsi, configuration);
+            return new ScriptPatternSelector(configuration, script, properties, defaultPattern, alwaysWriteExceptions,
+                    disableAnsi, noConsoleNoAnsi);
         }
 
         public Builder setScript(final AbstractScript script) {
@@ -147,6 +156,40 @@ public class ScriptPatternSelector implements PatternSelector, LocationAware {
     private final AbstractScript script;
     private final Configuration configuration;
     private final boolean requiresLocation;
+
+    private ScriptPatternSelector(final Configuration config, final AbstractScript script,
+            final PatternMatch[] properties, final String defaultPattern,
+            final boolean alwaysWriteExceptions, final boolean disableAnsi,
+            final boolean noConsoleNoAnsi) {
+        this.script = script;
+        this.configuration = config;
+        final PatternParser parser = PatternLayout.createPatternParser(config);
+        boolean needsLocation = false;
+        for (final PatternMatch property : properties) {
+            try {
+                final List<PatternFormatter> list = parser.parse(property.getPattern(), alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi);
+                PatternFormatter[] formatters = list.toArray(PatternFormatter.EMPTY_ARRAY);
+                formatterMap.put(property.getKey(), formatters);
+                patternMap.put(property.getKey(), property.getPattern());
+                for (int i = 0; !needsLocation && i < formatters.length; ++i) {
+                    needsLocation = formatters[i].requiresLocation();
+                }
+            } catch (final RuntimeException ex) {
+                throw new IllegalArgumentException("Cannot parse pattern '" + property.getPattern() + "'", ex);
+            }
+        }
+        try {
+            final List<PatternFormatter> list = parser.parse(defaultPattern, alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi);
+            defaultFormatters = list.toArray(PatternFormatter.EMPTY_ARRAY);
+            this.defaultPattern = defaultPattern;
+            for (int i = 0; !needsLocation && i < defaultFormatters.length; ++i) {
+                needsLocation = defaultFormatters[i].requiresLocation();
+            }
+        } catch (final RuntimeException ex) {
+            throw new IllegalArgumentException("Cannot parse pattern '" + defaultPattern + "'", ex);
+        }
+        this.requiresLocation = needsLocation;
+    }
 
     /**
      * @deprecated Use {@link #newBuilder()} instead. This will be private in a future version.

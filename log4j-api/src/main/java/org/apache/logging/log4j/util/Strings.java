@@ -33,6 +33,7 @@ public final class Strings {
      * The empty string.
      */
     public static final String EMPTY = "";
+    private static final String COMMA_DELIMITED_RE = "\\s*,\\s*";
     
     /**
      * The empty array.
@@ -197,6 +198,10 @@ public final class Strings {
         }
 
         return buf.toString();
+    }
+
+    public static String[] splitList(String string) {
+        return string.split(COMMA_DELIMITED_RE);
     }
 
     /**

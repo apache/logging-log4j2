@@ -57,9 +57,6 @@ public class ScriptCondition {
     public ScriptCondition(final AbstractScript script, final Configuration configuration) {
         this.script = Objects.requireNonNull(script, "script");
         this.configuration = Objects.requireNonNull(configuration, "configuration");
-        if (!(script instanceof ScriptRef)) {
-            configuration.getScriptManager().addScript(script);
-        }
     }
 
     /**
@@ -109,9 +106,17 @@ public class ScriptCondition {
             LOGGER.error("A Script, ScriptFile or ScriptRef element must be provided for this ScriptCondition");
             return null;
         }
+        if (configuration.getScriptManager() == null) {
+            LOGGER.error("Script support is not enabled");
+            return null;
+        }
         if (script instanceof ScriptRef) {
             if (configuration.getScriptManager().getScript(script.getName()) == null) {
                 LOGGER.error("ScriptCondition: No script with name {} has been declared.", script.getName());
+                return null;
+            }
+        } else {
+            if (!configuration.getScriptManager().addScript(script)) {
                 return null;
             }
         }

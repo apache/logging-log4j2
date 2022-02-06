@@ -44,6 +44,11 @@ public final class Constants {
     public static final String JNDI_CONTEXT_NAME = "java:comp/env/log4j/context-name";
 
     /**
+     * Control which script languages are allowed, if any.
+     */
+    public static final String SCRIPT_LANGUAGES = "log4j2.Script.enableLanguages";
+
+    /**
      * Number of milliseconds in a second.
      */
     public static final int MILLIS_IN_SECONDS = 1000;

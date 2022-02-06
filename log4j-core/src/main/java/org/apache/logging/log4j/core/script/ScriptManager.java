@@ -21,10 +21,13 @@ import java.io.Serializable;
 import java.nio.file.Path;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
 
 import javax.script.Bindings;
 import javax.script.Compilable;
@@ -45,7 +48,7 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Manages the scripts use by the Configuration.
  */
-public class ScriptManager implements FileWatcher, Serializable {
+public class ScriptManager implements FileWatcher {
 
     private abstract class AbstractScriptRunner implements ScriptRunner {
 
@@ -62,7 +65,6 @@ public class ScriptManager implements FileWatcher, Serializable {
 
     }
 
-    private static final long serialVersionUID = -2534169384971965196L;
     private static final String KEY_THREADING = "THREADING";
     private static final Logger logger = StatusLogger.getLogger();
 
@@ -70,12 +72,16 @@ public class ScriptManager implements FileWatcher, Serializable {
     private final ScriptEngineManager manager = new ScriptEngineManager();
     private final ConcurrentMap<String, ScriptRunner> scriptRunners = new ConcurrentHashMap<>();
     private final String languages;
+    private final List<String> allowedLanguages;
     private final WatchManager watchManager;
 
-    public ScriptManager(final Configuration configuration, final WatchManager watchManager) {
+    public ScriptManager(final Configuration configuration, final WatchManager watchManager,
+            final String scriptLanguages) {
         this.configuration = configuration;
         this.watchManager = watchManager;
         final List<ScriptEngineFactory> factories = manager.getEngineFactories();
+        allowedLanguages = Arrays.stream(Strings.splitList(scriptLanguages)).map(String::toLowerCase)
+                .collect(Collectors.toList());
         if (logger.isDebugEnabled()) {
             final StringBuilder sb = new StringBuilder();
             final int factorySize = factories.size();
@@ -88,55 +94,72 @@ public class ScriptManager implements FileWatcher, Serializable {
                 final StringBuilder names = new StringBuilder();
                 final List<String> languageNames = factory.getNames();
                 for (final String name : languageNames) {
-                    if (names.length() > 0) {
-                        names.append(", ");
+                    if (allowedLanguages.contains(name.toLowerCase(Locale.ROOT))) {
+                        if (names.length() > 0) {
+                            names.append(", ");
+                        }
+                        names.append(name);
                     }
-                    names.append(name);
                 }
-                if (sb.length() > 0) {
-                    sb.append(", ");
+                if (names.length() > 0) {
+                    if (sb.length() > 0) {
+                        sb.append(", ");
+                    }
+                    sb.append(names);
+                    final boolean compiled = factory.getScriptEngine() instanceof Compilable;
+                    logger.debug("{} version: {}, language: {}, threading: {}, compile: {}, names: {}, factory class: {}",
+                            factory.getEngineName(), factory.getEngineVersion(), factory.getLanguageName(), threading,
+                            compiled, languageNames, factory.getClass().getName());
                 }
-                sb.append(names);
-                final boolean compiled = factory.getScriptEngine() instanceof Compilable;
-                logger.debug("{} version: {}, language: {}, threading: {}, compile: {}, names: {}, factory class: {}",
-                        factory.getEngineName(), factory.getEngineVersion(), factory.getLanguageName(), threading,
-                        compiled, languageNames, factory.getClass().getName());
             }
             languages = sb.toString();
         } else {
             final StringBuilder names = new StringBuilder();
             for (final ScriptEngineFactory factory : factories) {
                 for (final String name : factory.getNames()) {
-                    if (names.length() > 0) {
-                        names.append(", ");
+                    if (allowedLanguages.contains(name.toLowerCase(Locale.ROOT))) {
+                        if (names.length() > 0) {
+                            names.append(", ");
+                        }
+                        names.append(name);
                     }
-                    names.append(name);
                 }
             }
             languages = names.toString();
         }
     }
 
-    public void addScript(final AbstractScript script) {
-        final ScriptEngine engine = manager.getEngineByName(script.getLanguage());
-        if (engine == null) {
-            logger.error("No ScriptEngine found for language " + script.getLanguage() + ". Available languages are: "
-                    + languages);
-            return;
-        }
-        if (engine.getFactory().getParameter(KEY_THREADING) == null) {
-            scriptRunners.put(script.getName(), new ThreadLocalScriptRunner(script));
-        } else {
-            scriptRunners.put(script.getName(), new MainScriptRunner(engine, script));
-        }
+    public List<String> getAllowedLanguages() {
+        return allowedLanguages;
+    }
 
-        if (script instanceof ScriptFile) {
-            final ScriptFile scriptFile = (ScriptFile) script;
-            final Path path = scriptFile.getPath();
-            if (scriptFile.isWatched() && path != null) {
-                watchManager.watchFile(path.toFile(), this);
+    public boolean addScript(final AbstractScript script) {
+        if (allowedLanguages.contains(script.getLanguage().toLowerCase(Locale.ROOT))) {
+            final ScriptEngine engine = manager.getEngineByName(script.getLanguage());
+            if (engine == null) {
+                logger.error("No ScriptEngine found for language " + script.getLanguage() + ". Available languages are: "
+                        + languages);
+                return false;
             }
+            if (engine.getFactory().getParameter(KEY_THREADING) == null) {
+                scriptRunners.put(script.getName(), new ThreadLocalScriptRunner(script));
+            } else {
+                scriptRunners.put(script.getName(), new MainScriptRunner(engine, script));
+            }
+
+            if (script instanceof ScriptFile) {
+                final ScriptFile scriptFile = (ScriptFile) script;
+                final Path path = scriptFile.getPath();
+                if (scriptFile.isWatched() && path != null) {
+                    watchManager.watchFile(path.toFile(), this);
+                }
+            }
+        } else {
+            logger.error("Unable to add script {}, {} has not been configured as an allowed language",
+                    script.getName(), script.getLanguage());
+            return false;
         }
+        return true;
     }
 
     public Bindings createBindings(final AbstractScript script) {

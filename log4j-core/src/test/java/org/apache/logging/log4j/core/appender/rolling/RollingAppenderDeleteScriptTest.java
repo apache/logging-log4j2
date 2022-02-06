@@ -21,7 +21,9 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -35,6 +37,11 @@ public class RollingAppenderDeleteScriptTest {
     private static final String DIR = "target/rolling-with-delete-script/test";
 
     private final LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
+
+    @BeforeClass
+    public static void beforeClass() {
+        System.setProperty(Constants.SCRIPT_LANGUAGES, "Groovy, Javascript");
+    }
 
     @Rule
     public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
