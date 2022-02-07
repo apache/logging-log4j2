@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
@@ -47,10 +46,6 @@ public class InterpolatorTest {
     private static final String TESTKEY = "TestKey";
     private static final String TESTKEY2 = "TestKey2";
     private static final String TESTVAL = "TestValue";
-    private static final String TESTKEY3 = "TestKey3";
-    private static final String TESTKEY4 = "TestKey4";
-    private static final String TESTVAL3 = "${sys:TestKey4:-default}";
-    private static final String TESTVAL4 = "TestVal4";
 
     private static final String TEST_CONTEXT_RESOURCE_NAME = "logging/context-name";
     private static final String TEST_CONTEXT_NAME = "app-1";
@@ -61,8 +56,6 @@ public class InterpolatorTest {
         protected void before() throws Throwable {
             System.setProperty(TESTKEY, TESTVAL);
             System.setProperty(TESTKEY2, TESTVAL);
-            System.setProperty(TESTKEY3, TESTVAL3);
-            System.setProperty(TESTKEY4, TESTVAL4);
             System.setProperty("log4j2.enableJndiLookup", "true");
         }
 
@@ -70,8 +63,6 @@ public class InterpolatorTest {
         protected void after() {
             System.clearProperty(TESTKEY);
             System.clearProperty(TESTKEY2);
-            System.clearProperty(TESTKEY3);
-            System.clearProperty(TESTKEY4);
             System.clearProperty("log4j2.enableJndiLookup");
         }
     }).around(new JndiRule(
@@ -185,13 +176,5 @@ public class InterpolatorTest {
                 .setMessage(new StringMapMessage(map))
                 .build();
         assertEquals("mapMessage", interpolator.lookup(event, "map:key"));
-    }
-
-    @Test
-    public void testLimited() {
-        Interpolator interpolator = new Interpolator((Properties) null);
-        String original = "${sys:TestKey3}";
-        String result = new StrSubstitutor(interpolator).replace(original);
-        assertEquals(TESTVAL3, result);
     }
 }

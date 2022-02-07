@@ -38,8 +38,6 @@ import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuild
 import org.apache.logging.log4j.core.config.builder.api.ScriptComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptFileComponentBuilder;
 import org.apache.logging.log4j.core.filter.AbstractFilter.AbstractFilterBuilder;
-import org.apache.logging.log4j.core.lookup.Interpolator;
-import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.Builder;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -71,7 +69,6 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
     private static final String CONFIG_TYPE = "type";
 
     private final ConfigurationBuilder<PropertiesConfiguration> builder;
-    private final StrSubstitutor subst = new StrSubstitutor(new Interpolator((Properties) null));
     private LoggerContext loggerContext;
     private Properties rootProperties;
 
@@ -200,10 +197,9 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
         return builder.build(false);
     }
 
-    private void useSyntheticLevelAndAppenderRefs(final String propertyName, final Properties loggerProps, final Properties context) {
-        String propertyValue = (String) context.remove(propertyName);
+    private static void useSyntheticLevelAndAppenderRefs(final String propertyName, final Properties loggerProps, final Properties context) {
+        final String propertyValue = (String) context.remove(propertyName);
         if (propertyValue != null) {
-            propertyValue = subst.replace(propertyValue);
             final String[] parts = propertyValue.split(",");
             if (parts.length > 0) {
                 final String level = parts[0].trim();
