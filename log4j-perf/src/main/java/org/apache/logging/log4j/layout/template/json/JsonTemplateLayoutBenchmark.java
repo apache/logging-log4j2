@@ -21,6 +21,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.openjdk.jmh.annotations.Benchmark;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.List;
 
@@ -180,6 +181,31 @@ public class JsonTemplateLayoutBenchmark {
         final int position = byteBuffer.position();
         byteBuffer.clear();
         return position;
+    }
+
+    public static void main(String[] args) throws IOException {
+        System.out.format("Ready?");
+        System.in.read();
+        JsonTemplateLayoutBenchmarkState state = new JsonTemplateLayoutBenchmarkState();
+        int retryCount = 10_000;
+        measureEcs(state, retryCount);
+        measureJtl(state, retryCount);
+    }
+
+    private static void measureJtl(JsonTemplateLayoutBenchmarkState state, int retryCount) {
+        long startInstantNanos = System.nanoTime();
+        for (int i = 0; i < retryCount; i++) {
+            liteJsonTemplateLayout4EcsLayout(state);
+        }
+        System.out.format("%.3fs%n", (System.nanoTime() - startInstantNanos) / 1e9);
+    }
+
+    private static void measureEcs(JsonTemplateLayoutBenchmarkState state, int retryCount) {
+        long startInstantNanos = System.nanoTime();
+        for (int i = 0; i < retryCount; i++) {
+            liteEcsLayout(state);
+        }
+        System.out.format("%.3fs%n", (System.nanoTime() - startInstantNanos) / 1e9);
     }
 
 }
