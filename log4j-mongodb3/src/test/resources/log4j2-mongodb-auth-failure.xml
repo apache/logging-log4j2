@@ -19,7 +19,7 @@
 <Configuration status="WARN">
   <Appenders>
     <NoSql name="MongoDbAppender">
-      <MongoDb3 databaseName="test" collectionName="applog" server="localhost" userName="log4jUser" password="12345678"
+      <MongoDb3 databaseName="testDb" collectionName="testCollection" server="localhost" userName="log4jUser" password="12345678"
         port="${sys:MongoDBTestPort:-27017}" />
     </NoSql>
   </Appenders>

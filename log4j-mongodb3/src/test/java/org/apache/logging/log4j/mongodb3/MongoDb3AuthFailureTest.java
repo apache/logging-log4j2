@@ -61,9 +61,9 @@ public class MongoDb3AuthFailureTest {
         final Logger logger = LogManager.getLogger();
         logger.info("Hello log");
         try (final MongoClient mongoClient = mongoDbTestRule.getMongoClient()) {
-            final MongoDatabase database = mongoClient.getDatabase("test");
+            final MongoDatabase database = mongoClient.getDatabase(MongoDb3TestConstants.DATABASE_NAME);
             Assert.assertNotNull(database);
-            final MongoCollection<Document> collection = database.getCollection("applog");
+            final MongoCollection<Document> collection = database.getCollection(MongoDb3TestConstants.DATABASE_NAME);
             Assert.assertNotNull(collection);
             final Document first = collection.find().first();
             Assert.assertNull(first);
