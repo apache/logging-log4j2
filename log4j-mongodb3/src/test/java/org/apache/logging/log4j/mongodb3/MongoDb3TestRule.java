@@ -44,7 +44,7 @@ import de.flapdoodle.embed.process.runtime.Network;
  *
  * TODO Move this class to Apache Commons Testing.
  */
-public class MongoDbTestRule implements TestRule {
+public class MongoDb3TestRule implements TestRule {
 
     public enum LoggingTarget {
         CONSOLE, NULL;
@@ -66,7 +66,7 @@ public class MongoDbTestRule implements TestRule {
         }
         switch (loggingTarget) {
         case NULL:
-            final Logger logger = LoggerFactory.getLogger(MongoDbTestRule.class.getName());
+            final Logger logger = LoggerFactory.getLogger(MongoDb3TestRule.class.getName());
             // @formatter:off
             return MongodStarter.getInstance(
                     Defaults
@@ -107,7 +107,7 @@ public class MongoDbTestRule implements TestRule {
      * @param defaultLoggingTarget
      *            The logging target.
      */
-    public MongoDbTestRule(final String portSystemPropertyName, final Class<?> clazz,
+    public MongoDb3TestRule(final String portSystemPropertyName, final Class<?> clazz,
             final LoggingTarget defaultLoggingTarget) {
         this.portSystemPropertyName = Objects.requireNonNull(portSystemPropertyName, "portSystemPropertyName");
         this.loggingTarget = LoggingTarget.getLoggingTarget(clazz.getName() + "." + LoggingTarget.class.getSimpleName(),

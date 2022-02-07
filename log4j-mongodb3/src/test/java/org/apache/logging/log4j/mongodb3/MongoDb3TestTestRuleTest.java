@@ -19,7 +19,7 @@ package org.apache.logging.log4j.mongodb3;
 
 import org.apache.commons.lang3.JavaVersion;
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.logging.log4j.mongodb3.MongoDbTestRule.LoggingTarget;
+import org.apache.logging.log4j.mongodb3.MongoDb3TestRule.LoggingTarget;
 import org.apache.logging.log4j.test.AvailablePortSystemPropertyTestRule;
 import org.apache.logging.log4j.test.RuleChainFactory;
 import org.junit.Assert;
@@ -38,13 +38,13 @@ import com.mongodb.client.MongoIterable;
  * The test framework {@code de.flapdoodle.embed.mongo} requires Java 8.
  * </p>
  */
-public class MongoDbTestTestRuleTest {
+public class MongoDb3TestTestRuleTest {
 
     private static final AvailablePortSystemPropertyTestRule mongoDbPortTestRule = AvailablePortSystemPropertyTestRule
-            .create(TestConstants.SYS_PROP_NAME_PORT);
+            .create(MongoDb3TestConstants.SYS_PROP_NAME_PORT);
 
-    private static final MongoDbTestRule mongoDbTestRule = new MongoDbTestRule(mongoDbPortTestRule.getName(),
-            MongoDbTestTestRuleTest.class, LoggingTarget.NULL);
+    private static final MongoDb3TestRule mongoDbTestRule = new MongoDb3TestRule(mongoDbPortTestRule.getName(),
+            MongoDb3TestTestRuleTest.class, LoggingTarget.NULL);
 
     @ClassRule
     public static RuleChain mongoDbChain = RuleChainFactory.create(mongoDbPortTestRule, mongoDbTestRule);

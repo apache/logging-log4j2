@@ -20,8 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.Appenders;
 import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.apache.logging.log4j.message.MapMessage;
-import org.apache.logging.log4j.mongodb3.MongoDbTestRule.LoggingTarget;
+import org.apache.logging.log4j.mongodb3.MongoDb3TestRule.LoggingTarget;
 import org.apache.logging.log4j.test.AvailablePortSystemPropertyTestRule;
 import org.apache.logging.log4j.test.RuleChainFactory;
 import org.bson.Document;
@@ -32,6 +31,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.rules.RuleChain;
 
 import com.mongodb.MongoClient;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
@@ -39,38 +39,41 @@ import com.mongodb.client.MongoDatabase;
  *
  */
 @Category(Appenders.MongoDb.class)
-public class MongoDbMapMessageTest {
+public class MongoDb3Test {
 
-    private static LoggerContextRule loggerContextTestRule = new LoggerContextRule("log4j2-mongodb-map-message.xml");
+    private static LoggerContextRule loggerContextTestRule = new LoggerContextRule("log4j2-mongodb.xml");
 
-    private static final AvailablePortSystemPropertyTestRule mongoDbPortTestRule = AvailablePortSystemPropertyTestRule
-            .create(TestConstants.SYS_PROP_NAME_PORT);
+    private static final AvailablePortSystemPropertyTestRule mongoDbPortTestRule = AvailablePortSystemPropertyTestRule.create(MongoDb3TestConstants.SYS_PROP_NAME_PORT);
 
-    private static final MongoDbTestRule mongoDbTestRule = new MongoDbTestRule(mongoDbPortTestRule.getName(),
-            MongoDbMapMessageTest.class, LoggingTarget.NULL);
+    private static final MongoDb3TestRule mongoDbTestRule = new MongoDb3TestRule(mongoDbPortTestRule.getName(), MongoDb3Test.class, LoggingTarget.NULL);
 
     @ClassRule
-    public static RuleChain ruleChain = RuleChainFactory.create(mongoDbPortTestRule, mongoDbTestRule,
-            loggerContextTestRule);
+    public static RuleChain ruleChain = RuleChainFactory.create(mongoDbPortTestRule, mongoDbTestRule, loggerContextTestRule);
 
     @Test
     public void test() {
         final Logger logger = LogManager.getLogger();
-        final MapMessage<?, Object> mapMessage = new MapMessage<>();
-        mapMessage.with("SomeName", "SomeValue");
-        mapMessage.with("SomeInt", 1);
-        logger.info(mapMessage);
-        //
+        logger.info("Hello log 1");
+        logger.info("Hello log 2", new RuntimeException("Hello ex 2"));
         try (final MongoClient mongoClient = mongoDbTestRule.getMongoClient()) {
             final MongoDatabase database = mongoClient.getDatabase("test");
             Assert.assertNotNull(database);
             final MongoCollection<Document> collection = database.getCollection("applog");
             Assert.assertNotNull(collection);
-            final Document first = collection.find().first();
-            Assert.assertNotNull(first);
-            final String firstJson = first.toJson();
-            Assert.assertEquals(firstJson, "SomeValue", first.getString("SomeName"));
-            Assert.assertEquals(firstJson, Integer.valueOf(1), first.getInteger("SomeInt"));
+            final FindIterable<Document> found = collection.find();
+            final Document first = found.first();
+            Assert.assertNotNull("first", first);
+            Assert.assertEquals(first.toJson(), "Hello log 1", first.getString("message"));
+            Assert.assertEquals(first.toJson(), "INFO", first.getString("level"));
+            //
+            found.skip(1);
+            final Document second = found.first();
+            Assert.assertNotNull(second);
+            Assert.assertEquals(second.toJson(), "Hello log 2", second.getString("message"));
+            Assert.assertEquals(second.toJson(), "INFO", second.getString("level"));
+            final Document thrown = second.get("thrown", Document.class);
+            Assert.assertEquals(thrown.toJson(), "Hello ex 2", thrown.getString("message"));
         }
     }
+
 }

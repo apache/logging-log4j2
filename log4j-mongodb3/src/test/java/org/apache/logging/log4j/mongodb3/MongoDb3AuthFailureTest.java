@@ -20,7 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.Appenders;
 import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.apache.logging.log4j.mongodb3.MongoDbTestRule.LoggingTarget;
+import org.apache.logging.log4j.mongodb3.MongoDb3TestRule.LoggingTarget;
 import org.apache.logging.log4j.test.AvailablePortSystemPropertyTestRule;
 import org.apache.logging.log4j.test.RuleChainFactory;
 import org.bson.Document;
@@ -42,15 +42,15 @@ import com.mongodb.client.MongoDatabase;
  */
 @Ignore("TODO Set up the log4j user in MongoDB")
 @Category(Appenders.MongoDb.class)
-public class MongoDbAuthFailureTest {
+public class MongoDb3AuthFailureTest {
 
     private static LoggerContextRule loggerContextTestRule = new LoggerContextRule("log4j2-mongodb-auth-failure.xml");
 
     private static final AvailablePortSystemPropertyTestRule mongoDbPortTestRule = AvailablePortSystemPropertyTestRule
-            .create(TestConstants.SYS_PROP_NAME_PORT);
+            .create(MongoDb3TestConstants.SYS_PROP_NAME_PORT);
 
-    private static final MongoDbTestRule mongoDbTestRule = new MongoDbTestRule(mongoDbPortTestRule.getName(),
-            MongoDbAuthFailureTest.class, LoggingTarget.NULL);
+    private static final MongoDb3TestRule mongoDbTestRule = new MongoDb3TestRule(mongoDbPortTestRule.getName(),
+            MongoDb3AuthFailureTest.class, LoggingTarget.NULL);
 
     @ClassRule
     public static RuleChain ruleChain = RuleChainFactory.create(mongoDbPortTestRule, mongoDbTestRule,
