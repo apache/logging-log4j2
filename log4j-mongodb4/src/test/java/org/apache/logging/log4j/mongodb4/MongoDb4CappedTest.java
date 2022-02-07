@@ -57,9 +57,9 @@ public class MongoDb4CappedTest {
         final Logger logger = LogManager.getLogger();
         logger.info("Hello log");
         try (final MongoClient mongoClient = mongoDbTestRule.getMongoClient()) {
-            final MongoDatabase database = mongoClient.getDatabase("testDb");
+            final MongoDatabase database = mongoClient.getDatabase(MongoDb4TestConstants.DATABASE_NAME);
             Assert.assertNotNull(database);
-            final MongoCollection<Document> collection = database.getCollection("testCollection");
+            final MongoCollection<Document> collection = database.getCollection(MongoDb4TestConstants.COLLECTION_NAME);
             Assert.assertNotNull(collection);
             final Document first = collection.find().first();
             Assert.assertNotNull(first);

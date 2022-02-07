@@ -59,9 +59,9 @@ public class MongoDb4Test {
         logger.info("Hello log 1");
         logger.info("Hello log 2", new RuntimeException("Hello ex 2"));
         try (final MongoClient mongoClient = mongoDbTestRule.getMongoClient()) {
-            final MongoDatabase database = mongoClient.getDatabase("testDb");
+            final MongoDatabase database = mongoClient.getDatabase(MongoDb4TestConstants.DATABASE_NAME);
             Assert.assertNotNull(database);
-            final MongoCollection<Document> collection = database.getCollection("testCollection");
+            final MongoCollection<Document> collection = database.getCollection(MongoDb4TestConstants.COLLECTION_NAME);
             Assert.assertNotNull(collection);
             final FindIterable<Document> found = collection.find();
             final Document first = found.first();
