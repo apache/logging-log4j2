@@ -90,11 +90,9 @@ public final class RoutingAppender extends AbstractAppender {
                     LOGGER.error("Script support is not enabled");
                     return null;
                 }
-                if (!getConfiguration().getScriptManager().addScript(defaultRouteScript)) {
-                    if (!(defaultRouteScript instanceof ScriptRef)) {
-                        if (!getConfiguration().getScriptManager().addScript(defaultRouteScript)) {
-                            return null;
-                        }
+                if (!(defaultRouteScript instanceof ScriptRef)) {
+                    if (!getConfiguration().getScriptManager().addScript(defaultRouteScript)) {
+                        return null;
                     }
                 }
             }

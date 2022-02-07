@@ -86,14 +86,13 @@ public class ScriptPatternSelector implements PatternSelector, LocationAware {
                 LOGGER.error("Script support is not enabled");
                 return null;
             }
-            if (!(script instanceof ScriptRef)) {
-                if (!configuration.getScriptManager().addScript(script)) {
-                    return null;
-                }
-            }
             if (script instanceof ScriptRef) {
                 if (configuration.getScriptManager().getScript(script.getName()) == null) {
                     LOGGER.error("No script with name {} has been declared.", script.getName());
+                    return null;
+                }
+            } else {
+                if (!configuration.getScriptManager().addScript(script)) {
                     return null;
                 }
             }

@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.script;
 
 import java.io.File;
-import java.io.Serializable;
 import java.nio.file.Path;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -25,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
@@ -72,7 +72,7 @@ public class ScriptManager implements FileWatcher {
     private final ScriptEngineManager manager = new ScriptEngineManager();
     private final ConcurrentMap<String, ScriptRunner> scriptRunners = new ConcurrentHashMap<>();
     private final String languages;
-    private final List<String> allowedLanguages;
+    private final Set<String> allowedLanguages;
     private final WatchManager watchManager;
 
     public ScriptManager(final Configuration configuration, final WatchManager watchManager,
@@ -81,7 +81,7 @@ public class ScriptManager implements FileWatcher {
         this.watchManager = watchManager;
         final List<ScriptEngineFactory> factories = manager.getEngineFactories();
         allowedLanguages = Arrays.stream(Strings.splitList(scriptLanguages)).map(String::toLowerCase)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
         if (logger.isDebugEnabled()) {
             final StringBuilder sb = new StringBuilder();
             final int factorySize = factories.size();
@@ -129,7 +129,7 @@ public class ScriptManager implements FileWatcher {
         }
     }
 
-    public List<String> getAllowedLanguages() {
+    public Set<String> getAllowedLanguages() {
         return allowedLanguages;
     }
 
