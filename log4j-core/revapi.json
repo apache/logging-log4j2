@@ -6,6 +6,7 @@
         "classes": {
           "exclude": [
             "org\\.apache\\.logging\\.log4j\\.corel\\.impl\\.ContextAnchor",
+            "org\\.apache\\.logging\\.log4j\\.core\\.appender\\.db\\.AbstractDatabaseManager\\.AbstractFactoryData",
             "org\\.apache\\.logging\\.log4j\\.core\\.async\\.AsyncLoggerDisruptor",
             "org\\.apache\\.logging\\.log4j\\.core\\.async\\.RingBufferLogEvent\\.Factory",
             "org\\.apache\\.logging\\.log4j\\.core\\.layout\\.AbstractJacksonLayout",
