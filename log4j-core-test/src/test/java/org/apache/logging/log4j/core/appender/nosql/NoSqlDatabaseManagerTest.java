@@ -89,7 +89,7 @@ public class NoSqlDatabaseManagerTest {
     @Test
     public void testConnection() {
         try (final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager("name", 0,
-            provider)) {
+            provider, null, null)) {
 
             assertNotNull("The manager should not be null.", manager);
 
@@ -102,7 +102,7 @@ public class NoSqlDatabaseManagerTest {
     @Test
     public void testWriteInternalNotConnected01() {
         try (final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager("name", 0,
-            provider)) {
+            provider, null, null)) {
             expectedException.expect(AppenderLoggingException.class);
             manager.writeInternal(mock(LogEvent.class));
         }
@@ -113,7 +113,7 @@ public class NoSqlDatabaseManagerTest {
         given(connection.isClosed()).willReturn(true);
 
         try (final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager("name", 0,
-            provider)) {
+            provider, null, null)) {
 
             manager.startup();
             manager.connectAndStart();
@@ -130,7 +130,7 @@ public class NoSqlDatabaseManagerTest {
         given(message.getFormattedMessage()).willReturn("My formatted message 01.");
 
         try (final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager("name", 0,
-            provider)) {
+            provider, null, null)) {
 
             manager.startup();
             manager.connectAndStart();
@@ -188,7 +188,7 @@ public class NoSqlDatabaseManagerTest {
         given(message.getFormattedMessage()).willReturn("Another cool message 02.");
 
         try (final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager("name", 0,
-            provider)) {
+            provider, null, null)) {
             manager.startup();
 
             manager.connectAndStart();
@@ -286,7 +286,7 @@ public class NoSqlDatabaseManagerTest {
         given(message.getFormattedMessage()).willReturn("Another cool message 02.");
 
         try (final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager("name", 0,
-            provider)) {
+            provider, null, null)) {
             manager.startup();
 
             manager.connectAndStart();

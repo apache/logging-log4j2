@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.mongodb4;
 
-
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;

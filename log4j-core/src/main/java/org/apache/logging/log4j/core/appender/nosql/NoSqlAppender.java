@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseAppender;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
@@ -60,6 +61,9 @@ public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseM
         @PluginElement("NoSqlProvider")
         private NoSqlProvider<?> provider;
 
+        @PluginElement("AdditionalField")
+        private KeyValuePair[] additionalFields;
+
         @SuppressWarnings("resource")
         @Override
         public NoSqlAppender build() {
@@ -71,9 +75,8 @@ public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseM
 
             final String managerName = "noSqlManager{ description=" + name + ", bufferSize=" + bufferSize
                     + ", provider=" + provider + " }";
-
-            final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager(managerName,
-                    bufferSize, provider);
+            final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager(managerName, bufferSize, provider, additionalFields,
+                getConfiguration());
             if (manager == null) {
                 return null;
             }

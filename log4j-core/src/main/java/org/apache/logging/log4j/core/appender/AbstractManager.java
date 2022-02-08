@@ -26,7 +26,9 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationException;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -40,6 +42,34 @@ import org.apache.logging.log4j.status.StatusLogger;
  * </p>
  */
 public abstract class AbstractManager implements AutoCloseable {
+
+    /**
+     * Implementations should extend this class for passing data between the getManager method and the manager factory
+     * class.
+     */
+    protected abstract static class AbstractFactoryData {
+
+        private final Configuration configuration;
+
+        /**
+         * Constructs the base factory data.
+         *
+         * @param configuration Configuration creating this instance.
+         */
+        protected AbstractFactoryData(final Configuration configuration) {
+            this.configuration = configuration;
+        }
+
+        /**
+         * Gets my configuration.
+         *
+         * @return my configuration.
+         */
+        public Configuration getConfiguration() {
+            return configuration;
+        }
+
+    }
 
     /**
      * Allow subclasses access to the status logger without creating another instance.
@@ -217,6 +247,22 @@ public abstract class AbstractManager implements AutoCloseable {
      */
     public Map<String, String> getContentFormat() {
         return new HashMap<>();
+    }
+
+    /**
+     * Gets my configuration's StrSubstitutor or null.
+     *
+     * @return my configuration's StrSubstitutor or null.
+     */
+    protected StrSubstitutor getStrSubstitutor() {
+        if (loggerContext == null) {
+            return null;
+        }
+        final Configuration configuration = loggerContext.getConfiguration();
+        if (configuration == null) {
+            return null;
+        }
+        return configuration.getStrSubstitutor();
     }
 
     protected void log(final Level level, final String message, final Throwable throwable) {
