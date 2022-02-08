@@ -275,6 +275,7 @@
     <jctoolsVersion>3.3.0</jctoolsVersion>
     <junitVersion>4.13.2</junitVersion>
     <junitJupiterVersion>5.7.2</junitJupiterVersion>
+    <junitPioneerVersion>1.5.0</junitPioneerVersion>
     <mockitoVersion>4.2.0</mockitoVersion>
     <byteBuddyVersion>1.11.0</byteBuddyVersion>
     <argLine>-Xms256m -Xmx1024m</argLine>
@@ -731,14 +732,35 @@
       <!-- JUnit 5 engine -->
       <dependency>
         <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>${junitJupiterVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-engine</artifactId>
         <version>${junitJupiterVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.platform</groupId>
+        <artifactId>junit-platform-commons</artifactId>
+        <version>1.8.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit-pioneer</groupId>
+        <artifactId>junit-pioneer</artifactId>
+        <version>${junitPioneerVersion}</version>
       </dependency>
       <!-- JUnit 4 to 5 migration support -->
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-migrationsupport</artifactId>
         <version>${junitJupiterVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.platform</groupId>
+        <artifactId>junit-platform-commons</artifactId>
+        <version>1.8.2</version>
+        <scope>test</scope>
       </dependency>
       <!-- JUnit 5 parameterized test support -->
       <dependency>

@@ -22,13 +22,16 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.script.factory.ScriptManagerFactoryImpl;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledForJreRange;
 import org.junit.jupiter.api.condition.JRE;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SetSystemProperty(key = ScriptManagerFactoryImpl.SCRIPT_LANGUAGES, value = "bsh, Javascript")
 @LoggerContextSource("log4j-patternSelector.xml")
 public class PatternSelectorTest {
 
@@ -43,14 +46,13 @@ public class PatternSelectorTest {
         assertEquals(3, messages.size(),
                 "Incorrect number of messages. Expected 3, Actual " + messages.size() + ": " + messages);
         final String expect = String.format("[TRACE] TestMarkerPatternSelector ====== "
-                + "o.a.l.l.s.l.PatternSelectorTest.testMarkerPatternSelector:38 Enter ======%n");
+                + "o.a.l.l.s.l.PatternSelectorTest.testMarkerPatternSelector:41 Enter ======%n");
         assertEquals(expect, messages.get(0));
         assertEquals("[INFO ] TestMarkerPatternSelector Hello World" + Strings.LINE_SEPARATOR, messages.get(1));
         app.clear();
     }
 
     @Test
-    @DisabledForJreRange(min = JRE.JAVA_15, disabledReason = "JEP 372: Remove the Nashorn JavaScript Engine")
     public void testScriptPatternSelector(@Named("List2") final ListAppender app) {
         final org.apache.logging.log4j.Logger logger = LogManager.getLogger("TestScriptPatternSelector");
         final org.apache.logging.log4j.Logger logger2 = LogManager.getLogger("NoLocation");
@@ -63,9 +65,9 @@ public class PatternSelectorTest {
         assertEquals(4, messages.size(),
                 "Incorrect number of messages. Expected 4, Actual " + messages.size() + ": " + messages);
         String expect = "[TRACE] TestScriptPatternSelector ====== " +
-                "o.a.l.l.s.l.PatternSelectorTest.testScriptPatternSelector:57 Enter ======" + Strings.LINE_SEPARATOR;
+                "o.a.l.l.s.l.PatternSelectorTest.testScriptPatternSelector:59 Enter ======" + Strings.LINE_SEPARATOR;
         assertEquals(expect, messages.get(0));
-        expect = "[INFO ] TestScriptPatternSelector o.a.l.l.s.l.PatternSelectorTest.testScriptPatternSelector.58 " +
+        expect = "[INFO ] TestScriptPatternSelector o.a.l.l.s.l.PatternSelectorTest.testScriptPatternSelector.60 " +
                 "Hello World" + Strings.LINE_SEPARATOR;
         assertEquals(expect, messages.get(1));
         assertEquals("[INFO ] NoLocation No location information" + Strings.LINE_SEPARATOR, messages.get(2));
@@ -73,7 +75,6 @@ public class PatternSelectorTest {
     }
 
     @Test
-    @DisabledForJreRange(min = JRE.JAVA_15, disabledReason = "JEP 372: Remove the Nashorn JavaScript Engine")
     public void testJavaScriptPatternSelector(@Named("List3") final ListAppender app) {
         final org.apache.logging.log4j.Logger logger = LogManager.getLogger("TestJavaScriptPatternSelector");
         final org.apache.logging.log4j.Logger logger2 = LogManager.getLogger("JavascriptNoLocation");
@@ -86,10 +87,10 @@ public class PatternSelectorTest {
         assertEquals(4, messages.size(),
                 "Incorrect number of messages. Expected 4, Actual " + messages.size() + ": " + messages);
         String expect = "[TRACE] TestJavaScriptPatternSelector ====== " +
-                "o.a.l.l.s.l.PatternSelectorTest.testJavaScriptPatternSelector:80 Enter ======" + Strings.LINE_SEPARATOR;
+                "o.a.l.l.s.l.PatternSelectorTest.testJavaScriptPatternSelector:81 Enter ======" + Strings.LINE_SEPARATOR;
         assertEquals(expect, messages.get(0));
         expect = "[INFO ] TestJavaScriptPatternSelector " +
-                "o.a.l.l.s.l.PatternSelectorTest.testJavaScriptPatternSelector.81 Hello World" + Strings.LINE_SEPARATOR;
+                "o.a.l.l.s.l.PatternSelectorTest.testJavaScriptPatternSelector.82 Hello World" + Strings.LINE_SEPARATOR;
         assertEquals(expect, messages.get(1));
         assertEquals("[INFO ] JavascriptNoLocation No location information" + Strings.LINE_SEPARATOR, messages.get(2));
         app.clear();

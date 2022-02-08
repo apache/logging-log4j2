@@ -55,9 +55,6 @@ public final class ScriptFilter extends AbstractFilter {
         super(onMatch, onMismatch);
         this.script = script;
         this.configuration = configuration;
-        if (!(script instanceof ScriptRef)) {
-            configuration.getScriptManager().addScript(script);
-        }
     }
 
     @Override
@@ -144,12 +141,21 @@ public final class ScriptFilter extends AbstractFilter {
             AbstractLifeCycle.LOGGER.error("A Script, ScriptFile or ScriptRef element must be provided for this ScriptFilter");
             return null;
         }
+        if (configuration.getScriptManager() == null) {
+            LOGGER.error("Script support is not enabled");
+            return null;
+        }
         if (script instanceof ScriptRef) {
             if (configuration.getScriptManager().getScript(script.getName()) == null) {
                 logger.error("No script with name {} has been declared.", script.getName());
                 return null;
             }
+        } else {
+            if (!configuration.getScriptManager().addScript(script)) {
+                return null;
+            }
         }
+
 
         return new ScriptFilter(script, configuration, onMatch, onMismatch);
     }

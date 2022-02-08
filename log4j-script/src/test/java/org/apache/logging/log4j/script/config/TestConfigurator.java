@@ -26,7 +26,9 @@ import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
+import org.apache.logging.log4j.script.factory.ScriptManagerFactoryImpl;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 import static org.apache.logging.log4j.core.test.hamcrest.MapMatchers.hasSize;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -37,6 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * Test Configuration
  */
+@SetSystemProperty(key = ScriptManagerFactoryImpl.SCRIPT_LANGUAGES, value = "beanshell, Groovy, Javascript")
 public class TestConfigurator {
     @Test
     public void testBuilderWithScripts() throws Exception {

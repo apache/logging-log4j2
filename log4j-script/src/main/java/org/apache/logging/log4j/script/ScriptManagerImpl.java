@@ -17,14 +17,17 @@
 package org.apache.logging.log4j.script;
 
 import java.io.File;
-import java.io.Serializable;
 import java.nio.file.Path;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
 
 import javax.script.Bindings;
 import javax.script.Compilable;
@@ -43,13 +46,15 @@ import org.apache.logging.log4j.core.script.ScriptManager;
 import org.apache.logging.log4j.core.util.FileWatcher;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.script.factory.ScriptManagerFactoryImpl;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
 /**
  * Manages the scripts use by the Configuration.
  */
-public class ScriptManagerImpl implements ScriptManager, FileWatcher, Serializable {
+public class ScriptManagerImpl implements ScriptManager, FileWatcher {
 
     private abstract class AbstractScriptRunner implements ScriptRunner {
 
@@ -69,7 +74,6 @@ public class ScriptManagerImpl implements ScriptManager, FileWatcher, Serializab
     private static class ScriptBindingsImpl extends SimpleBindings implements ScriptBindings {
     }
 
-    private static final long serialVersionUID = -2534169384971965196L;
     private static final String KEY_THREADING = "THREADING";
     private static final Logger logger = StatusLogger.getLogger();
 
@@ -77,12 +81,17 @@ public class ScriptManagerImpl implements ScriptManager, FileWatcher, Serializab
     private final ScriptEngineManager manager = new ScriptEngineManager();
     private final ConcurrentMap<String, ScriptRunner> scriptRunners = new ConcurrentHashMap<>();
     private final String languages;
+    private final Set<String> allowedLanguages;
     private final WatchManager watchManager;
 
     public ScriptManagerImpl(final Configuration configuration, final WatchManager watchManager) {
+        String scriptLanguages =
+                PropertiesUtil.getProperties().getStringProperty(ScriptManagerFactoryImpl.SCRIPT_LANGUAGES);
         this.configuration = configuration;
         this.watchManager = watchManager;
         final List<ScriptEngineFactory> factories = manager.getEngineFactories();
+        allowedLanguages = Arrays.stream(Strings.splitList(scriptLanguages)).map(String::toLowerCase)
+                .collect(Collectors.toSet());
         if (logger.isDebugEnabled()) {
             final StringBuilder sb = new StringBuilder();
             final int factorySize = factories.size();
@@ -95,10 +104,12 @@ public class ScriptManagerImpl implements ScriptManager, FileWatcher, Serializab
                 final StringBuilder names = new StringBuilder();
                 final List<String> languageNames = factory.getNames();
                 for (final String name : languageNames) {
-                    if (names.length() > 0) {
-                        names.append(", ");
+                    if (allowedLanguages.contains(name.toLowerCase(Locale.ROOT))) {
+                        if (names.length() > 0) {
+                            names.append(", ");
+                        }
+                        names.append(name);
                     }
-                    names.append(name);
                 }
                 boolean compiled = false;
                 try {
@@ -120,14 +131,24 @@ public class ScriptManagerImpl implements ScriptManager, FileWatcher, Serializab
             final StringBuilder names = new StringBuilder();
             for (final ScriptEngineFactory factory : factories) {
                 for (final String name : factory.getNames()) {
-                    if (names.length() > 0) {
-                        names.append(", ");
+                    if (allowedLanguages.contains(name.toLowerCase(Locale.ROOT))) {
+                        if (names.length() > 0) {
+                            names.append(", ");
+                        }
+                        names.append(name);
                     }
-                    names.append(name);
                 }
             }
             languages = names.toString();
         }
+    }
+
+    public boolean isScriptRef(final Script script) {
+        return script instanceof ScriptRef;
+    }
+
+    public Set<String> getAllowedLanguages() {
+        return allowedLanguages;
     }
 
     public void addScripts(Node child) {
@@ -141,26 +162,33 @@ public class ScriptManagerImpl implements ScriptManager, FileWatcher, Serializab
         }
     }
 
-    public void addScript(final Script script) {
-        final ScriptEngine engine = manager.getEngineByName(script.getLanguage());
-        if (engine == null) {
-            logger.error("No ScriptEngine found for language " + script.getLanguage() + ". Available languages are: "
-                    + languages);
-            return;
-        }
-        if (engine.getFactory().getParameter(KEY_THREADING) == null) {
-            scriptRunners.put(script.getName(), new ThreadLocalScriptRunner(script));
-        } else {
-            scriptRunners.put(script.getName(), new MainScriptRunner(engine, script));
-        }
-
-        if (script instanceof ScriptFile) {
-            final ScriptFile scriptFile = (ScriptFile) script;
-            final Path path = scriptFile.getPath();
-            if (scriptFile.isWatched() && path != null) {
-                watchManager.watchFile(path.toFile(), this);
+    public boolean addScript(final Script script) {
+        if (allowedLanguages.contains(script.getLanguage().toLowerCase(Locale.ROOT))) {
+            final ScriptEngine engine = manager.getEngineByName(script.getLanguage());
+            if (engine == null) {
+                logger.error("No ScriptEngine found for language " + script.getLanguage() + ". Available languages are: "
+                        + languages);
+                return false;
             }
+            if (engine.getFactory().getParameter(KEY_THREADING) == null) {
+                scriptRunners.put(script.getName(), new ThreadLocalScriptRunner(script));
+            } else {
+                scriptRunners.put(script.getName(), new MainScriptRunner(engine, script));
+            }
+
+            if (script instanceof ScriptFile) {
+                final ScriptFile scriptFile = (ScriptFile) script;
+                final Path path = scriptFile.getPath();
+                if (scriptFile.isWatched() && path != null) {
+                    watchManager.watchFile(path.toFile(), this);
+                }
+            }
+        } else {
+            logger.error("Unable to add script {}, {} has not been configured as an allowed language",
+                    script.getName(), script.getLanguage());
+            return false;
         }
+        return true;
     }
 
     public static ScriptBindings createBindings() {

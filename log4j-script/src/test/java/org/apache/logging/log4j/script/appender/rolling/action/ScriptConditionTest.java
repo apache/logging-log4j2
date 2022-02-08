@@ -22,10 +22,10 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.test.appender.rolling.action.DummyFileAttributes;
 import org.apache.logging.log4j.script.ScriptPlugin;
+import org.apache.logging.log4j.script.factory.ScriptManagerFactoryImpl;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledForJreRange;
-import org.junit.jupiter.api.condition.JRE;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -37,17 +37,18 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Tests the ScriptCondition class.
  */
+@SetSystemProperty(key = ScriptManagerFactoryImpl.SCRIPT_LANGUAGES, value = "js, javascript, groovy")
 public class ScriptConditionTest {
 
     @Test
     public void testConstructorDisallowsNullScript() {
-        assertThrows(NullPointerException.class, () -> new ScriptCondition(null, new DefaultConfiguration()));
+        assertNull(ScriptCondition.createCondition(null, new DefaultConfiguration()));
     }
 
     @Test
     public void testConstructorDisallowsNullConfig() {
-        assertThrows(NullPointerException.class,
-                () -> new ScriptCondition(new ScriptPlugin("test", "js", "print('hi')"), null));
+        assertThrows(NullPointerException.class, () -> ScriptCondition.createCondition(new ScriptPlugin("test",
+                "js", "print('hi')"), null));
     }
 
     @Test
@@ -62,13 +63,12 @@ public class ScriptConditionTest {
     }
 
     @Test
-    @DisabledForJreRange(min = JRE.JAVA_15, disabledReason = "JEP 372: Remove the Nashorn JavaScript Engine")
     public void testSelectFilesToDelete() {
         final Configuration config = new DefaultConfiguration();
         config.initialize(); // creates the ScriptManager
 
         final ScriptPlugin script = new ScriptPlugin("test", "javascript", "pathList;"); // script that returns pathList
-        final ScriptCondition condition = new ScriptCondition(script, config);
+        final ScriptCondition condition = ScriptCondition.createCondition(script, config);
         final List<PathWithAttributes> pathList = new ArrayList<>();
         final Path base = Paths.get("baseDirectory");
         final List<PathWithAttributes> result = condition.selectFilesToDelete(base, pathList);
@@ -76,7 +76,6 @@ public class ScriptConditionTest {
     }
 
     @Test
-    @DisabledForJreRange(min = JRE.JAVA_15, disabledReason = "JEP 372: Remove the Nashorn JavaScript Engine")
     public void testSelectFilesToDelete2() {
         final Configuration config = new DefaultConfiguration();
         config.initialize(); // creates the ScriptManager
@@ -89,7 +88,7 @@ public class ScriptConditionTest {
         final String scriptText = "pathList.remove(1);" //
                 + "pathList;";
         final ScriptPlugin script = new ScriptPlugin("test", "javascript", scriptText);
-        final ScriptCondition condition = new ScriptCondition(script, config);
+        final ScriptCondition condition = ScriptCondition.createCondition(script, config);
         final Path base = Paths.get("baseDirectory");
         final List<PathWithAttributes> result = condition.selectFilesToDelete(base, pathList);
         assertSame(result, pathList);
@@ -100,7 +99,6 @@ public class ScriptConditionTest {
 
     @Test
     @Tag("groovy")
-    @DisabledForJreRange(min = JRE.JAVA_12, disabledReason = "Groovy ScriptEngine incompatibilities")
     public void testSelectFilesToDelete3() {
         final Configuration config = new DefaultConfiguration();
         config.initialize(); // creates the ScriptManager
@@ -131,7 +129,7 @@ public class ScriptConditionTest {
                 + "println copy;"
                 + "copy;";
         final ScriptPlugin script = new ScriptPlugin("test", "groovy", scriptText);
-        final ScriptCondition condition = new ScriptCondition(script, config);
+        final ScriptCondition condition = ScriptCondition.createCondition(script, config);
         final Path base = Paths.get("/path");
         final List<PathWithAttributes> result = condition.selectFilesToDelete(base, pathList);
         assertEquals(1, result.size());

@@ -1375,6 +1375,9 @@ Engine] web site. However, some of the languages listed there, such as
 JavaScript, Groovy and Beanshell, directly support the JSR 223 scripting
 framework and only require that the jars for that language be installed.
 
+As of Log4j 2.17.2 the languages to be supported must be specified as a comma separated list in the
+`log4j2.Script.enableLanguages` system property.
+
 The components that support using scripts do so by allowing a `<script>`,
 `<scriptFile>`, or `<scriptRef>` element to be configured on them. The
 script element contains a name for the script, the language of the
@@ -2589,5 +2592,12 @@ defining all message patterns using `%m{nolookups}`.
 |LOG4J_SSL_VERIFY_HOSTNAME
 |false
 |true or false if the host name should be verified
+
+|[[log4j2.Script.enableLanguages]]log4j2.Script.enableLanguages
+|LOG4J_SCRIPT_ENABLE_LANGUAGES
+|
+| The list of script languages that are allowed to execute. The names specified must have a ScriptEngine installed
+that advertises the same language(s) in order for scripting to be enabled. If no languages are specified, which is
+the default, the ScriptManager will not be installed.
 
 |===

@@ -54,6 +54,7 @@ public class CassandraAppenderIT {
         "ndc list<text>" +
         ")";
 
+    @Disabled("Doesn't work in Java 11 at this Cassandra version")
     @Test
     @CassandraFixture(keyspace = "test", setup = DDL)
     @LoggerContextSource("CassandraAppenderTest.xml")

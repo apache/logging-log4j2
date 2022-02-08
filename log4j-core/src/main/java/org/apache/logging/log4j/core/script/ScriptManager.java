@@ -16,10 +16,12 @@
  */
 package org.apache.logging.log4j.core.script;
 
+import java.util.Set;
+
 import org.apache.logging.log4j.plugins.Node;
 
 /**
- * Class Description goes here.
+ * Script Manager.
  */
 public interface ScriptManager {
 
@@ -28,7 +30,12 @@ public interface ScriptManager {
      * @param child The Scripts node.
      */
     void addScripts(Node child);
-    void addScript(final Script script);
+
+    boolean addScript(final Script script);
+
+    boolean isScriptRef(final Script script);
+
+    Set<String> getAllowedLanguages();
 
     ScriptBindings createBindings(final Script script);
 

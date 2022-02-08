@@ -303,6 +303,9 @@
         Fix log4j-jakarta-web service file #723.
       </action>
       <!-- ADD -->
+      <action issue="LOG4J2-2486" dev="rgoers" type="add">
+        Require log4j2.Script.enableLanguages to be specified to enable scripting for specific languages.
+      </action>
       <action issue="LOG4J2-3303" dev="vy" type="add" due-to="ramananravi">
         Add TB support to FileSize.
       </action>

@@ -16,19 +16,38 @@
  */
 package org.apache.logging.log4j.script.factory;
 
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.script.ScriptManager;
 import org.apache.logging.log4j.core.script.ScriptManagerFactory;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.script.ScriptManagerImpl;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Creates a ScriptManager.
  */
 public class ScriptManagerFactoryImpl implements ScriptManagerFactory {
+    private static final Logger LOGGER = StatusLogger.getLogger();
+
+    /**
+     * Control which script languages are allowed, if any.
+     */
+    public static final String SCRIPT_LANGUAGES = "log4j2.Script.enableLanguages";
 
     @Override
     public ScriptManager createScriptManager(Configuration configuration, WatchManager watchManager) {
-        return new ScriptManagerImpl(configuration, watchManager);
+        String scriptLanguages = PropertiesUtil.getProperties().getStringProperty(SCRIPT_LANGUAGES);
+        if (scriptLanguages != null) {
+            try {
+                return new ScriptManagerImpl(configuration, watchManager);
+            } catch (final LinkageError | Exception e) {
+                // LOG4J2-1920 ScriptEngineManager is not available in Android
+                LOGGER.info("Cannot initialize scripting support because this JRE does not support it.", e);
+            }
+        }
+        return null;
     }
 }

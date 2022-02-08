@@ -34,6 +34,7 @@ public final class Strings {
      * The empty string.
      */
     public static final String EMPTY = "";
+    private static final String COMMA_DELIMITED_RE = "\\s*,\\s*";
 
     /**
      * The empty string array.
@@ -300,6 +301,15 @@ public final class Strings {
         }
 
         return buf.toString();
+    }
+
+    /**
+     * Splits a comma separated list ignoring whitespace surrounding the list item.
+     * @param string The string to split.
+     * @return An array of strings.
+     */
+    public static String[] splitList(String string) {
+        return string.split(COMMA_DELIMITED_RE);
     }
 
     /**

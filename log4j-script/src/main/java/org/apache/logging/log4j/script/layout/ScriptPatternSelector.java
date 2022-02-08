@@ -85,9 +85,17 @@ public class ScriptPatternSelector implements PatternSelector {
                 LOGGER.error("A Script, ScriptFile or ScriptRef element must be provided for this ScriptFilter");
                 return null;
             }
+            if (configuration.getScriptManager() == null) {
+                LOGGER.error("Script support is not enabled");
+                return null;
+            }
             if (script instanceof ScriptRef) {
                 if (configuration.getScriptManager().getScript(script.getName()) == null) {
                     LOGGER.error("No script with name {} has been declared.", script.getName());
+                    return null;
+                }
+            } else {
+                if (!configuration.getScriptManager().addScript(script)) {
                     return null;
                 }
             }
@@ -156,9 +164,6 @@ public class ScriptPatternSelector implements PatternSelector {
                                  final boolean noConsoleNoAnsi, final Configuration config) {
         this.script = script;
         this.configuration = config;
-        if (!(script instanceof ScriptRef)) {
-            config.getScriptManager().addScript(script);
-        }
         final PatternParser parser = PatternLayout.createPatternParser(config);
         boolean needsLocation = false;
         for (final PatternMatch property : properties) {

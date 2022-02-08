@@ -84,6 +84,18 @@ public final class RoutingAppender extends AbstractAppender {
                 LOGGER.error("No routes defined for RoutingAppender {}", name);
                 return null;
             }
+            if (defaultRouteScript != null) {
+                ScriptManager scriptManager = getConfiguration().getScriptManager();
+                if (scriptManager == null) {
+                    LOGGER.error("Script support is not enabled");
+                    return null;
+                }
+                if (!scriptManager.isScriptRef(defaultRouteScript)) {
+                    if (!scriptManager.addScript(defaultRouteScript)) {
+                        return null;
+                    }
+                }
+            }
             return new RoutingAppender(name, getFilter(), isIgnoreExceptions(), routes, rewritePolicy,
                     getConfiguration(), purgePolicy, defaultRouteScript, getPropertyArray(), requiresLocation);
         }
