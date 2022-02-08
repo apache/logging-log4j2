@@ -21,7 +21,6 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.script.Script;
 import org.apache.logging.log4j.core.util.Constants;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
@@ -41,13 +40,13 @@ public class ScriptConditionTest {
 
     @Test
     public void testConstructorDisallowsNullScript() {
-        assertThrows(NullPointerException.class, () -> new ScriptCondition(null, new DefaultConfiguration()));
+        assertNull(ScriptCondition.createCondition(null, new DefaultConfiguration()));
     }
 
     @Test
     public void testConstructorDisallowsNullConfig() {
         assertThrows(NullPointerException.class,
-                () -> new ScriptCondition(new Script("test", "js", "print('hi')"), null));
+                () -> ScriptCondition.createCondition(new Script("test", "js", "print('hi')"), null));
     }
 
     @Test
