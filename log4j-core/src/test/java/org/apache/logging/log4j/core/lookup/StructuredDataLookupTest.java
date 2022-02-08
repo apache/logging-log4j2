@@ -21,23 +21,45 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class StructuredDataLookupTest {
 
-    private static final String TESTKEY = "type";
-    private static final String TESTVAL = "Audit";
+    private StructuredDataLookup dataLookup;
+
+    @BeforeEach
+    public void setUp() {
+        dataLookup = new StructuredDataLookup();
+    }
 
     @Test
-    public void testLookup() {
-        final Message msg = new StructuredDataMessage("Test", "This is a test", "Audit");
+    public void testCorrectEvent() {
+        final Message msg = new StructuredDataMessage("TestId", "This is a test", "Audit");
         final LogEvent event = Log4jLogEvent.newBuilder().setLevel(Level.DEBUG).setMessage(msg).build();
-        final StrLookup lookup = new StructuredDataLookup();
-        String value = lookup.lookup(event, TESTKEY);
-        assertEquals(TESTVAL, value);
-        value = lookup.lookup("BadKey");
-        assertNull(value);
+
+        assertEquals("Audit", dataLookup.lookup(event, StructuredDataLookup.TYPE_KEY));
+        assertEquals("Audit", dataLookup.lookup(event, StructuredDataLookup.TYPE_KEY.toUpperCase()));
+        assertEquals("TestId", dataLookup.lookup(event, StructuredDataLookup.ID_KEY));
+        assertEquals("TestId", dataLookup.lookup(event, StructuredDataLookup.ID_KEY.toUpperCase()));
+        assertNull(dataLookup.lookup(event, "BadKey"));
+        assertNull(dataLookup.lookup(event, null));
+    }
+
+    @Test
+    public void testNullLookup() {
+        assertNull(dataLookup.lookup(null, null));
+        assertNull(dataLookup.lookup(null));
+    }
+
+    @Test void testWrongEvent() {
+        LogEvent mockEvent = mock(LogEvent.class);
+        // ensure message is not a StructuredDataMessage
+        when(mockEvent.getMessage()).thenReturn(mock(Message.class));
+        assertNull(dataLookup.lookup(mockEvent, "ignored"));
     }
 }
