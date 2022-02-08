@@ -24,6 +24,7 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
@@ -38,6 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * Integration test for CassandraAppender.
  */
+@Disabled("https://issues.apache.org/jira/browse/LOG4J2-3384")
 public class CassandraAppenderIT {
 
     private static final String DDL = "CREATE TABLE logs (" +
