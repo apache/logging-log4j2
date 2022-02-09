@@ -211,6 +211,9 @@
       <action issue="LOG4J2-3392" dev="ggregory" type="fix" due-to="Gary Gregory, Omer U">
         AppenderLoggingException logging any exception to a MongoDB Appender.
       </action>
+      <action issue="LOG4J2-3392" dev="ggregory" type="fix" due-to="Gary Gregory">
+        Possible NullPointerException in MongoDb4DocumentObject, MongoDbDocumentObject, DefaultNoSqlObject.
+      </action>
       <!-- ADD -->
       <action issue="LOG4J2-2486" dev="rgoers" type="add">
         Require log4j2.Script.enableLanguages to be specified to enable scripting for specific languages.
