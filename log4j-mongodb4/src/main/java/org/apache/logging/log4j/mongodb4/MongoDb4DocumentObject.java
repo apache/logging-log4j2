@@ -33,12 +33,12 @@ public final class MongoDb4DocumentObject implements NoSqlObject<Document> {
 
     @Override
     public void set(final String field, final NoSqlObject<Document> value) {
-        this.document.append(field, value.unwrap());
+        this.document.append(field, value != null ? value.unwrap() : null);
     }
 
     @Override
     public void set(final String field, final NoSqlObject<Document>[] values) {
-        this.document.append(field, Arrays.asList(values));
+        this.document.append(field, values != null ? Arrays.asList(values) : null);
     }
 
     @Override
@@ -48,7 +48,7 @@ public final class MongoDb4DocumentObject implements NoSqlObject<Document> {
 
     @Override
     public void set(final String field, final Object[] values) {
-        this.document.append(field, Arrays.asList(values));
+        this.document.append(field, values != null ? Arrays.asList(values) : null);
     }
 
     @Override
