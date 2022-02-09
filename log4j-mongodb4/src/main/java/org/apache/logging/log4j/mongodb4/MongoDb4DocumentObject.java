@@ -22,10 +22,10 @@ import org.apache.logging.log4j.core.appender.nosql.NoSqlObject;
 import org.bson.Document;
 
 /**
- * The MongoDB implementation of {@link NoSqlObject} typed to a BSON
- * {@link Document}.
+ * The MongoDB implementation of {@link NoSqlObject} typed to a BSON {@link Document}.
  */
 public final class MongoDb4DocumentObject implements NoSqlObject<Document> {
+
     private final Document document;
 
     /**

@@ -70,18 +70,14 @@ public class MongoDb4AdditionalFieldsTest {
             Assert.assertEquals(first.toJson(), "Hello log 1", first.getString("message"));
             Assert.assertEquals(first.toJson(), "INFO", first.getString("level"));
             //
-            List<Document> list;
+            Document list;
             final String envPath = System.getenv("PATH");
             //
-            list = first.getList("additionalFields", Document.class);
-            Assert.assertEquals(first.toJson(), "A", list.get(0).get("key"));
-            Assert.assertEquals(first.toJson(), "1", list.get(0).get("value"));
-            Assert.assertEquals(first.toJson(), "B", list.get(1).get("key"));
-            Assert.assertEquals(first.toJson(), "2", list.get(1).get("value"));
-            Assert.assertEquals(first.toJson(), "env1", list.get(2).get("key"));
-            Assert.assertEquals(first.toJson(), envPath, list.get(2).get("value"));
-            Assert.assertEquals(first.toJson(), "env2", list.get(3).get("key"));
-            Assert.assertEquals(first.toJson(), envPath, list.get(3).get("value"));
+            list = first.get("additionalFields", Document.class);
+            Assert.assertEquals(first.toJson(), "1", list.getString("A"));
+            Assert.assertEquals(first.toJson(), "2", list.getString("B"));
+            Assert.assertEquals(first.toJson(), envPath, list.getString("env1"));
+            Assert.assertEquals(first.toJson(), envPath, list.getString("env2"));
             //
             found.skip(1);
             final Document second = found.first();
@@ -91,11 +87,11 @@ public class MongoDb4AdditionalFieldsTest {
             final Document thrown = second.get("thrown", Document.class);
             Assert.assertEquals(thrown.toJson(), "Hello ex 2", thrown.getString("message"));
             //
-            list = second.getList("additionalFields", Document.class);
-            Assert.assertEquals(first.toJson(), "A", list.get(0).get("key"));
-            Assert.assertEquals(first.toJson(), "1", list.get(0).get("value"));
-            Assert.assertEquals(first.toJson(), "B", list.get(1).get("key"));
-            Assert.assertEquals(first.toJson(), "2", list.get(1).get("value"));
+            list = second.get("additionalFields", Document.class);
+            Assert.assertEquals(first.toJson(), "1", list.getString("A"));
+            Assert.assertEquals(first.toJson(), "2", list.getString("B"));
+            Assert.assertEquals(first.toJson(), envPath, list.getString("env1"));
+            Assert.assertEquals(first.toJson(), envPath, list.getString("env2"));
         }
     }
 }

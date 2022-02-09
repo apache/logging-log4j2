@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.MapMessage;
@@ -142,13 +143,6 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
         }
     }
 
-    private NoSqlObject<W> convertAdditionalField(KeyValuePair field) {
-        final NoSqlObject<W> object = connection.createObject();
-        object.set("key", field.getKey());
-        object.set("value", getStrSubstitutor().replace(field.getValue()));
-        return object;
-    }
-
     private NoSqlObject<W>[] convertStackTrace(final StackTraceElement[] stackTrace) {
         final NoSqlObject<W>[] stackTraceEntities = this.connection.createList(stackTrace.length);
         for (int i = 0; i < stackTrace.length; i++) {
@@ -168,7 +162,10 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
 
     private void setAdditionalFields(final NoSqlObject<W> entity) {
         if (additionalFields != null) {
-            entity.set("additionalFields", Stream.of(additionalFields).map(this::convertAdditionalField).toArray());
+            final NoSqlObject<W> object = connection.createObject();
+            final StrSubstitutor strSubstitutor = getStrSubstitutor();
+            Stream.of(additionalFields).forEach(f -> object.set(f.getKey(), strSubstitutor != null ? strSubstitutor.replace(f.getValue()) : f.getValue()));
+            entity.set("additionalFields", object);
         }
     }
 

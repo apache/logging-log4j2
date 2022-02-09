@@ -25,6 +25,7 @@ import org.bson.Document;
  * The MongoDB implementation of {@link NoSqlObject} typed to a BSON {@link Document}.
  */
 public final class MongoDbDocumentObject implements NoSqlObject<Document> {
+
     private final Document document;
 
     /**

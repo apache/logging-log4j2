@@ -31,6 +31,9 @@ public class DefaultNoSqlObject implements NoSqlObject<Map<String, Object>> {
 
     private final Map<String, Object> map;
 
+    /**
+     * Constructs a new instance.
+     */
     public DefaultNoSqlObject() {
         this.map = new HashMap<>();
     }

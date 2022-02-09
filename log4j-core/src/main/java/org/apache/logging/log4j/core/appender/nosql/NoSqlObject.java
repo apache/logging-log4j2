@@ -22,6 +22,7 @@ package org.apache.logging.log4j.core.appender.nosql;
  * @param <W> Specifies what type of underlying object (such as a MongoDB BasicDBObject) this NoSqlObject wraps.
  */
 public interface NoSqlObject<W> {
+
     /**
      * Sets the value of a property on this object to a String or primitive.
      *
