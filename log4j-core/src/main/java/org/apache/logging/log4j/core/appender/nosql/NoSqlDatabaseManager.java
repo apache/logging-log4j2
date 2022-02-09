@@ -38,7 +38,62 @@ import org.apache.logging.log4j.util.ReadOnlyStringMap;
  * @param <W> A type parameter for reassuring the compiler that all operations are using the same {@link NoSqlObject}.
  */
 public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
+    /**
+     * Encapsulates data that {@link NoSQLDatabaseManagerFactory} uses to create managers.
+     */
+    private static final class FactoryData extends AbstractDatabaseManager.AbstractFactoryData {
+        private final NoSqlProvider<?> provider;
+        private final KeyValuePair[] additionalFields;
+
+        protected FactoryData(final Configuration configuration, final int bufferSize, final NoSqlProvider<?> provider, final KeyValuePair[] additionalFields) {
+            super(configuration, bufferSize, null); // no layout
+            this.provider = Objects.requireNonNull(provider, "provider");
+            this.additionalFields = additionalFields; // null OK
+        }
+    }
+
+    /**
+     * Creates managers.
+     */
+    private static final class NoSQLDatabaseManagerFactory implements ManagerFactory<NoSqlDatabaseManager<?>, FactoryData> {
+        @Override
+        @SuppressWarnings("unchecked")
+        public NoSqlDatabaseManager<?> createManager(final String name, final FactoryData data) {
+            Objects.requireNonNull(data, "data");
+            return new NoSqlDatabaseManager(name, data.getBufferSize(), data.provider, data.additionalFields, data.getConfiguration());
+        }
+    }
+
     private static final NoSQLDatabaseManagerFactory FACTORY = new NoSQLDatabaseManagerFactory();
+
+    /**
+     * Creates a NoSQL manager for use within the {@link NoSqlAppender}, or returns a suitable one if it already exists.
+     *
+     * @param name The name of the manager, which should include connection details and hashed passwords where possible.
+     * @param bufferSize The size of the log event buffer.
+     * @param provider A provider instance which will be used to obtain connections to the chosen NoSQL database.
+     * @return a new or existing NoSQL manager as applicable.
+     * @deprecated Use {@link #getNoSqlDatabaseManager(String, int, NoSqlProvider, KeyValuePair[], Configuration)}.
+     */
+    @Deprecated
+    public static NoSqlDatabaseManager<?> getNoSqlDatabaseManager(final String name, final int bufferSize, final NoSqlProvider<?> provider) {
+        return AbstractDatabaseManager.getManager(name, new FactoryData(null, bufferSize, provider, null), FACTORY);
+    }
+
+    /**
+     * Creates a NoSQL manager for use within the {@link NoSqlAppender}, or returns a suitable one if it already exists.
+     *
+     * @param name The name of the manager, which should include connection details and hashed passwords where possible.
+     * @param bufferSize The size of the log event buffer.
+     * @param provider A provider instance which will be used to obtain connections to the chosen NoSQL database.
+     * @param additionalFields Additional fields.
+     * @param configuration TODO
+     * @return a new or existing NoSQL manager as applicable.
+     */
+    public static NoSqlDatabaseManager<?> getNoSqlDatabaseManager(final String name, final int bufferSize, final NoSqlProvider<?> provider,
+        final KeyValuePair[] additionalFields, final Configuration configuration) {
+        return AbstractDatabaseManager.getManager(name, new FactoryData(configuration, bufferSize, provider, additionalFields), FACTORY);
+    }
 
     private final NoSqlProvider<NoSqlConnection<W, ? extends NoSqlObject<W>>> provider;
 
@@ -53,15 +108,29 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
         this.additionalFields = additionalFields;
     }
 
-    @Override
-    protected void startupInternal() {
-        // nothing to see here
+    private NoSqlObject<W> buildMarkerEntity(final Marker marker) {
+        final NoSqlObject<W> entity = this.connection.createObject();
+        entity.set("name", marker.getName());
+
+        final Marker[] parents = marker.getParents();
+        if (parents != null) {
+            @SuppressWarnings("unchecked")
+            final NoSqlObject<W>[] parentEntities = new NoSqlObject[parents.length];
+            for (int i = 0; i < parents.length; i++) {
+                parentEntities[i] = buildMarkerEntity(parents[i]);
+            }
+            entity.set("parents", parentEntities);
+        }
+        return entity;
     }
 
     @Override
-    protected boolean shutdownInternal() {
-        // NoSQL doesn't use transactions, so all we need to do here is simply close the client
-        return Closer.closeSilently(this.connection);
+    protected boolean commitAndClose() {
+        // all NoSQL drivers auto-commit (since NoSQL doesn't generally use the concept of transactions).
+        // also, all our NoSQL drivers use internal connection pooling and provide clients, not connections.
+        // thus, we should not be closing the client until shutdown as NoSQL is very different from SQL.
+        // see LOG4J2-591 and LOG4J2-676
+        return true;
     }
 
     @Override
@@ -73,28 +142,6 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
         }
     }
 
-    @Override
-    protected void writeInternal(final LogEvent event, final Serializable serializable) {
-        if (!this.isRunning() || this.connection == null || this.connection.isClosed()) {
-            throw new AppenderLoggingException("Cannot write logging event; NoSQL manager not connected to the database.");
-        }
-
-        final NoSqlObject<W> entity = this.connection.createObject();
-        if (serializable instanceof MapMessage) {
-            setFields((MapMessage<?, ?>) serializable, entity);
-        } else {
-            setFields(event, entity);
-        }
-        setAdditionalFields(entity);
-        this.connection.insertObject(entity);
-    }
-
-    private void setAdditionalFields(final NoSqlObject<W> entity) {
-        if (additionalFields != null) {
-            entity.set("additionalFields", Stream.of(additionalFields).map(this::convertAdditionalField).toArray());
-        }
-    }
-
     private NoSqlObject<W> convertAdditionalField(KeyValuePair field) {
         final NoSqlObject<W> object = connection.createObject();
         object.set("key", field.getKey());
@@ -102,9 +149,27 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
         return object;
     }
 
-    private void setFields(final MapMessage<?, ?> mapMessage, final NoSqlObject<W> noSqlObject) {
-        // Map without calling org.apache.logging.log4j.message.MapMessage#getData() which makes a copy of the map.
-        mapMessage.forEach((key, value) -> noSqlObject.set(key, value));
+    private NoSqlObject<W>[] convertStackTrace(final StackTraceElement[] stackTrace) {
+        final NoSqlObject<W>[] stackTraceEntities = this.connection.createList(stackTrace.length);
+        for (int i = 0; i < stackTrace.length; i++) {
+            stackTraceEntities[i] = this.convertStackTraceElement(stackTrace[i]);
+        }
+        return stackTraceEntities;
+    }
+
+    private NoSqlObject<W> convertStackTraceElement(final StackTraceElement element) {
+        final NoSqlObject<W> elementEntity = this.connection.createObject();
+        elementEntity.set("className", element.getClassName());
+        elementEntity.set("methodName", element.getMethodName());
+        elementEntity.set("fileName", element.getFileName());
+        elementEntity.set("lineNumber", element.getLineNumber());
+        return elementEntity;
+    }
+
+    private void setAdditionalFields(final NoSqlObject<W> entity) {
+        if (additionalFields != null) {
+            entity.set("additionalFields", Stream.of(additionalFields).map(this::convertAdditionalField).toArray());
+        }
     }
 
     private void setFields(final LogEvent event, final NoSqlObject<W> entity) {
@@ -172,100 +237,35 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
         }
     }
 
-    private NoSqlObject<W> buildMarkerEntity(final Marker marker) {
-        final NoSqlObject<W> entity = this.connection.createObject();
-        entity.set("name", marker.getName());
-
-        final Marker[] parents = marker.getParents();
-        if (parents != null) {
-            @SuppressWarnings("unchecked")
-            final NoSqlObject<W>[] parentEntities = new NoSqlObject[parents.length];
-            for (int i = 0; i < parents.length; i++) {
-                parentEntities[i] = buildMarkerEntity(parents[i]);
-            }
-            entity.set("parents", parentEntities);
-        }
-        return entity;
+    private void setFields(final MapMessage<?, ?> mapMessage, final NoSqlObject<W> noSqlObject) {
+        // Map without calling org.apache.logging.log4j.message.MapMessage#getData() which makes a copy of the map.
+        mapMessage.forEach((key, value) -> noSqlObject.set(key, value));
     }
 
     @Override
-    protected boolean commitAndClose() {
-        // all NoSQL drivers auto-commit (since NoSQL doesn't generally use the concept of transactions).
-        // also, all our NoSQL drivers use internal connection pooling and provide clients, not connections.
-        // thus, we should not be closing the client until shutdown as NoSQL is very different from SQL.
-        // see LOG4J2-591 and LOG4J2-676
-        return true;
+    protected boolean shutdownInternal() {
+        // NoSQL doesn't use transactions, so all we need to do here is simply close the client
+        return Closer.closeSilently(this.connection);
     }
 
-    private NoSqlObject<W>[] convertStackTrace(final StackTraceElement[] stackTrace) {
-        final NoSqlObject<W>[] stackTraceEntities = this.connection.createList(stackTrace.length);
-        for (int i = 0; i < stackTrace.length; i++) {
-            stackTraceEntities[i] = this.convertStackTraceElement(stackTrace[i]);
+    @Override
+    protected void startupInternal() {
+        // nothing to see here
+    }
+
+    @Override
+    protected void writeInternal(final LogEvent event, final Serializable serializable) {
+        if (!this.isRunning() || this.connection == null || this.connection.isClosed()) {
+            throw new AppenderLoggingException("Cannot write logging event; NoSQL manager not connected to the database.");
         }
-        return stackTraceEntities;
-    }
 
-    private NoSqlObject<W> convertStackTraceElement(final StackTraceElement element) {
-        final NoSqlObject<W> elementEntity = this.connection.createObject();
-        elementEntity.set("className", element.getClassName());
-        elementEntity.set("methodName", element.getMethodName());
-        elementEntity.set("fileName", element.getFileName());
-        elementEntity.set("lineNumber", element.getLineNumber());
-        return elementEntity;
-    }
-
-    /**
-     * Creates a NoSQL manager for use within the {@link NoSqlAppender}, or returns a suitable one if it already exists.
-     *
-     * @param name The name of the manager, which should include connection details and hashed passwords where possible.
-     * @param bufferSize The size of the log event buffer.
-     * @param provider A provider instance which will be used to obtain connections to the chosen NoSQL database.
-     * @return a new or existing NoSQL manager as applicable.
-     * @deprecated Use {@link #getNoSqlDatabaseManager(String, int, NoSqlProvider, KeyValuePair[], Configuration)}.
-     */
-    @Deprecated
-    public static NoSqlDatabaseManager<?> getNoSqlDatabaseManager(final String name, final int bufferSize, final NoSqlProvider<?> provider) {
-        return AbstractDatabaseManager.getManager(name, new FactoryData(null, bufferSize, provider, null), FACTORY);
-    }
-
-    /**
-     * Creates a NoSQL manager for use within the {@link NoSqlAppender}, or returns a suitable one if it already exists.
-     *
-     * @param name The name of the manager, which should include connection details and hashed passwords where possible.
-     * @param bufferSize The size of the log event buffer.
-     * @param provider A provider instance which will be used to obtain connections to the chosen NoSQL database.
-     * @param additionalFields Additional fields.
-     * @param configuration TODO
-     * @return a new or existing NoSQL manager as applicable.
-     */
-    public static NoSqlDatabaseManager<?> getNoSqlDatabaseManager(final String name, final int bufferSize, final NoSqlProvider<?> provider,
-        final KeyValuePair[] additionalFields, final Configuration configuration) {
-        return AbstractDatabaseManager.getManager(name, new FactoryData(configuration, bufferSize, provider, additionalFields), FACTORY);
-    }
-
-    /**
-     * Encapsulates data that {@link NoSQLDatabaseManagerFactory} uses to create managers.
-     */
-    private static final class FactoryData extends AbstractDatabaseManager.AbstractFactoryData {
-        private final NoSqlProvider<?> provider;
-        private final KeyValuePair[] additionalFields;
-
-        protected FactoryData(final Configuration configuration, final int bufferSize, final NoSqlProvider<?> provider, final KeyValuePair[] additionalFields) {
-            super(configuration, bufferSize, null); // no layout
-            this.provider = Objects.requireNonNull(provider, "provider");
-            this.additionalFields = additionalFields; // null OK
+        final NoSqlObject<W> entity = this.connection.createObject();
+        if (serializable instanceof MapMessage) {
+            setFields((MapMessage<?, ?>) serializable, entity);
+        } else {
+            setFields(event, entity);
         }
-    }
-
-    /**
-     * Creates managers.
-     */
-    private static final class NoSQLDatabaseManagerFactory implements ManagerFactory<NoSqlDatabaseManager<?>, FactoryData> {
-        @Override
-        @SuppressWarnings("unchecked")
-        public NoSqlDatabaseManager<?> createManager(final String name, final FactoryData data) {
-            Objects.requireNonNull(data, "data");
-            return new NoSqlDatabaseManager(name, data.getBufferSize(), data.provider, data.additionalFields, data.getConfiguration());
-        }
+        setAdditionalFields(entity);
+        this.connection.insertObject(entity);
     }
 }
