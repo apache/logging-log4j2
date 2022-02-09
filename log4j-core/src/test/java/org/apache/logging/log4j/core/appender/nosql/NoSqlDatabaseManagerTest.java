@@ -54,17 +54,22 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NoSqlDatabaseManagerTest {
+    
     @Mock
     private NoSqlConnection<Map<String, Object>, DefaultNoSqlObject> connection;
+    
     @Mock
     private NoSqlProvider<NoSqlConnection<Map<String, Object>, DefaultNoSqlObject>> provider;
+    
     @Mock
     private Message message;
+    
     @Captor
     private ArgumentCaptor<NoSqlObject<Map<String, Object>>> captor;
 
     @Rule
     public final ThreadContextStackRule threadContextRule = new ThreadContextStackRule();
+    
     @Rule
     public final ExpectedException expectedException = ExpectedException.none();
 
