@@ -88,8 +88,7 @@ public final class LoggerFields {
         if (enterpriseId == null || sdId == null) {
             return null;
         }
-        final int eId = Integer.parseInt(enterpriseId);
-        return new StructuredDataId(sdId, eId, null, null);
+        return new StructuredDataId(sdId, enterpriseId, null, null);
     }
 
     public boolean getDiscardIfAllFieldsAreEmpty() {

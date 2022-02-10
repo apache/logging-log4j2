@@ -24,6 +24,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
@@ -101,7 +102,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
 
     private final Facility facility;
     private final String defaultId;
-    private final int enterpriseNumber;
+    private final String enterpriseNumber;
     private final boolean includeMdc;
     private final String mdcId;
     private final StructuredDataId mdcSdId;
@@ -126,7 +127,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     private final Map<String, FieldFormatter> fieldFormatters;
     private final String procId;
 
-    private Rfc5424Layout(final Configuration config, final Facility facility, final String id, final int ein,
+    private Rfc5424Layout(final Configuration config, final Facility facility, final String id, final String ein,
             final boolean includeMDC, final boolean includeNL, final String escapeNL, final String mdcId,
             final String mdcPrefix, final String eventPrefix, final String appName, final String messageId,
             final String excludes, final String includes, final String required, final Charset charset,
@@ -529,11 +530,11 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         } else {
             sb.append(id.getName());
         }
-        int ein = id != null ? id.getEnterpriseNumber() : enterpriseNumber;
-        if (ein < 0) {
+        String ein = id != null ? id.getEnterpriseNumber() : enterpriseNumber;
+        if (Objects.equals(ein, StructuredDataId.RESERVED)) {
             ein = enterpriseNumber;
         }
-        if (ein >= 0) {
+        if (!Objects.equals(ein, "")) {
             sb.append('@').append(ein);
         }
         return sb.toString();
@@ -611,7 +612,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             @PluginAttribute(value = "facility", defaultString = "LOCAL0") final Facility facility,
             @PluginAttribute("id") final String id,
             @PluginAttribute(value = "enterpriseNumber", defaultInt = DEFAULT_ENTERPRISE_NUMBER)
-            final int enterpriseNumber,
+            final String enterpriseNumber,
             @PluginAttribute(value = "includeMDC", defaultBoolean = true) final boolean includeMDC,
             @PluginAttribute(value = "mdcId", defaultString = DEFAULT_MDCID) final String mdcId,
             @PluginAttribute("mdcPrefix") final String mdcPrefix,
