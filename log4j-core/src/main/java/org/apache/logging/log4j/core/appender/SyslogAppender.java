@@ -57,7 +57,7 @@ public class SyslogAppender extends SocketAppender {
         private String id;
 
         @PluginBuilderAttribute(value = "enterpriseNumber")
-        private int enterpriseNumber = Rfc5424Layout.DEFAULT_ENTERPRISE_NUMBER;
+        private String enterpriseNumber = Rfc5424Layout.DEFAULT_ENTERPRISE_NUMBER;
 
         @PluginBuilderAttribute(value = "includeMdc")
         private boolean includeMdc = true;
@@ -147,7 +147,7 @@ public class SyslogAppender extends SocketAppender {
             return id;
         }
 
-        public int getEnterpriseNumber() {
+        public String getEnterpriseNumber() {
             return enterpriseNumber;
         }
 
@@ -221,7 +221,7 @@ public class SyslogAppender extends SocketAppender {
             return asBuilder();
         }
 
-        public B setEnterpriseNumber(final int enterpriseNumber) {
+        public B setEnterpriseNumber(final String enterpriseNumber) {
             this.enterpriseNumber = enterpriseNumber;
             return asBuilder();
         }
@@ -375,7 +375,7 @@ public class SyslogAppender extends SocketAppender {
             final boolean ignoreExceptions,
             final Facility facility,
             final String id,
-            final int enterpriseNumber,
+            final String enterpriseNumber,
             final boolean includeMdc,
             final String mdcId,
             final String mdcPrefix,

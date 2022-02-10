@@ -108,4 +108,12 @@ public class StructuredDataMessageTest {
         final String expected2 = "Alert [MsgId@1 memo=\"Added later\" message=\"Test message {}\" project=\"Log4j\"] Test message {}";
         assertEquals(expected2, result2);
     }
+
+    @Test
+    public void testEnterpriseNoAsOidFragment() {
+        final String testMsg = "Test message {}";
+        final StructuredDataMessage structuredDataMessage = new StructuredDataMessage("XX_DATA@1234.55.6.7", testMsg, "Nothing");
+        assertNotNull(structuredDataMessage);
+    }
+
 }

@@ -249,7 +249,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
         final int delayMillis = Integers.parseInt(maxDelayMillis, DEFAULT_MAX_DELAY);
 
         if (layout == null) {
-            final int enterpriseNumber = Rfc5424Layout.DEFAULT_ENTERPRISE_NUMBER;
+            final String enterpriseNumber = Rfc5424Layout.DEFAULT_ENTERPRISE_NUMBER;
             layout = Rfc5424Layout.createLayout(Facility.LOCAL0, null, enterpriseNumber, true, Rfc5424Layout.DEFAULT_MDCID,
                     mdcPrefix, eventPrefix, false, null, null, null, excludes, includes, required, null, false, null,
                     null);

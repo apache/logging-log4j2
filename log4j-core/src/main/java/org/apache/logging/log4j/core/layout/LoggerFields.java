@@ -25,7 +25,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.StructuredDataId;
 
@@ -89,8 +88,7 @@ public final class LoggerFields {
         if (enterpriseId == null || sdId == null) {
             return null;
         }
-        final int eId = Integers.parseInt(enterpriseId);
-        return new StructuredDataId(sdId, eId, null, null);
+        return new StructuredDataId(sdId, enterpriseId, null, null);
     }
 
     public boolean getDiscardIfAllFieldsAreEmpty() {

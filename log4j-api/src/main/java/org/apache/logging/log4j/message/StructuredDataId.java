@@ -47,14 +47,14 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
     /**
      * Reserved enterprise number.
      */
-    public static final int RESERVED = -1;
+    public static final String RESERVED = "-1";
 
-    private static final long serialVersionUID = 9031746276396249990L;
+    private static final long serialVersionUID = -8252896346202183738L;
     private static final int MAX_LENGTH = 32;
     private static final String AT_SIGN = "@";
 
     private final String name;
-    private final int enterpriseNumber;
+    private final String enterpriseNumber;
     private final String[] required;
     private final String[] optional;
 
@@ -110,7 +110,7 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
 
         if (index > 0) {
             this.name = name.substring(0, index);
-            this.enterpriseNumber = Integer.parseInt(name.substring(index + 1).trim());
+            this.enterpriseNumber = name.substring(index + 1).trim();
         } else {
             this.name = name;
             this.enterpriseNumber = RESERVED;
@@ -127,7 +127,7 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
      * @param required The list of keys that are required for this id.
      * @param optional The list of keys that are optional for this id.
      */
-    public StructuredDataId(final String name, final int enterpriseNumber, final String[] required,
+    public StructuredDataId(final String name, final String enterpriseNumber, final String[] required,
                             final String[] optional) {
         this(name, enterpriseNumber, required, optional, MAX_LENGTH);
     }
@@ -142,7 +142,7 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
      * @param maxLength The maximum length of the StructuredData Id key.
      * @since 2.9
      */
-    public StructuredDataId(final String name, final int enterpriseNumber, final String[] required,
+    public StructuredDataId(final String name, final String enterpriseNumber, final String[] required,
             final String[] optional, final int maxLength) {
         if (name == null) {
             throw new IllegalArgumentException("No structured id name was supplied");
@@ -150,7 +150,7 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
         if (name.contains(AT_SIGN)) {
             throw new IllegalArgumentException("Structured id name cannot contain an " + Strings.quote(AT_SIGN));
         }
-        if (enterpriseNumber <= 0) {
+        if (RESERVED.equals(enterpriseNumber)) {
             throw new IllegalArgumentException("No enterprise number was supplied");
         }
         this.name = name;
@@ -183,11 +183,11 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
      * @param anEnterpriseNumber The enterprise number.
      * @return a StructuredDataId.
      */
-    public StructuredDataId makeId(final String defaultId, final int anEnterpriseNumber) {
+    public StructuredDataId makeId(final String defaultId, final String anEnterpriseNumber) {
         String id;
         String[] req;
         String[] opt;
-        if (anEnterpriseNumber <= 0) {
+        if (RESERVED.equals(anEnterpriseNumber)) {
             return this;
         }
         if (this.name != null) {
@@ -235,7 +235,7 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
      *
      * @return the enterprise number.
      */
-    public int getEnterpriseNumber() {
+    public String getEnterpriseNumber() {
         return enterpriseNumber;
     }
 
@@ -245,7 +245,7 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
      * @return true if the id uses the reserved enterprise number, false otherwise.
      */
     public boolean isReserved() {
-        return enterpriseNumber <= 0;
+        return enterpriseNumber.equals(RESERVED);
     }
 
     @Override

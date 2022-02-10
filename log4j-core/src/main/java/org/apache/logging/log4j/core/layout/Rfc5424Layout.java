@@ -71,9 +71,9 @@ import org.apache.logging.log4j.util.Strings;
 public final class Rfc5424Layout extends AbstractStringLayout {
 
     /**
-     * Not a very good default - it is the Apache Software Foundation's enterprise number.
+     * The default example enterprise number from RFC5424.
      */
-    public static final int DEFAULT_ENTERPRISE_NUMBER = 18060;
+    public static final String DEFAULT_ENTERPRISE_NUMBER = "32473";
     /**
      * The default event id.
      */
@@ -101,7 +101,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
 
     private final Facility facility;
     private final String defaultId;
-    private final int enterpriseNumber;
+    private final String enterpriseNumber;
     private final boolean includeMdc;
     private final String mdcId;
     private final StructuredDataId mdcSdId;
@@ -126,7 +126,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     private final Map<String, FieldFormatter> fieldFormatters;
     private final String procId;
 
-    private Rfc5424Layout(final Configuration config, final Facility facility, final String id, final int ein,
+    private Rfc5424Layout(final Configuration config, final Facility facility, final String id, final String ein,
             final boolean includeMDC, final boolean includeNL, final String escapeNL, final String mdcId,
             final String mdcPrefix, final String eventPrefix, final String appName, final String messageId,
             final String excludes, final String includes, final String required, final Charset charset,
@@ -529,11 +529,11 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         } else {
             sb.append(id.getName());
         }
-        int ein = id != null ? id.getEnterpriseNumber() : enterpriseNumber;
-        if (ein < 0) {
+        String ein = id != null ? id.getEnterpriseNumber() : enterpriseNumber;
+        if (StructuredDataId.RESERVED.equals(ein)) {
             ein = enterpriseNumber;
         }
-        if (ein >= 0) {
+        if (!StructuredDataId.RESERVED.equals(ein)) {
             sb.append('@').append(ein);
         }
         return sb.toString();
@@ -610,8 +610,8 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             // @formatter:off
             @PluginAttribute(value = "facility", defaultString = "LOCAL0") final Facility facility,
             @PluginAttribute("id") final String id,
-            @PluginAttribute(value = "enterpriseNumber", defaultInt = DEFAULT_ENTERPRISE_NUMBER)
-            final int enterpriseNumber,
+            @PluginAttribute(value = "enterpriseNumber", defaultString = DEFAULT_ENTERPRISE_NUMBER)
+            final String enterpriseNumber,
             @PluginAttribute(value = "includeMDC", defaultBoolean = true) final boolean includeMDC,
             @PluginAttribute(value = "mdcId", defaultString = DEFAULT_MDCID) final String mdcId,
             @PluginAttribute("mdcPrefix") final String mdcPrefix,
