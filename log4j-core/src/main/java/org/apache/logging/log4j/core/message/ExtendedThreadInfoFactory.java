@@ -34,9 +34,11 @@ public class ExtendedThreadInfoFactory implements ThreadDumpMessage.ThreadInfoFa
         final Method[] methods = ThreadInfo.class.getMethods();
         boolean basic = true;
         for (final Method method : methods) {
-            if (method.getName().equals("getLockInfo")) {
-                basic = false;
-                break;
+            if (method.getName() != null) {
+                if (method.getName().equals("getLockInfo")) {
+                    basic = false;
+                    break;
+                }
             }
         }
         if (basic) {
