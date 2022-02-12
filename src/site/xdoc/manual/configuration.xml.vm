@@ -940,20 +940,6 @@ Configuration:
               definition in the rolling file appender below. You then define each of the subcomponents below that
               wrapper element, as the TimeBasedTriggeringPolicy and SizeBasedTriggeringPolicy are defined below.
             </p>
-            <p>
-              As of version 2.17.2,
-              appenders can use the wrapper element as the implicit name of the component.
-              If no name is specified, the grouping element is used as the name. For example, the following
-              two properties snippets are equivalent.
-            </p>
-            <pre class="prettyprint linenums">
-appender.STDOUT.type = Console
-            </pre>
-            <pre class="prettyprint linenums">
-appender.console.type = Console
-appender.console.name = STDOUT
-            </pre>
-            <p>
               As of version 2.17.2,
               <tt>rootLogger</tt> and <tt>logger.<var>key</var></tt> properties can be specified to set the
               level and zero or more appender refs to create for that logger. The level and appender refs are
@@ -968,9 +954,9 @@ appender.file.type = File
 logger.app = INFO, stdout, file
 logger.app.name = com.example.app
 
-# expanded to:
-appender.stdout.type = Console
-appender.stdout.name = stdout
+# is equivalent to:
+# appender.stdout.type = Console
+# appender.stdout.name = stdout
 # ...
 appender.file.type = File
 appender.file.name = file
@@ -985,7 +971,7 @@ logger.app.appenderRef.$2.ref = file
               shutdownTimeout, status, verbose, and dest attributes. See <a href="#ConfigurationSyntax">Configuration Syntax</a>
               for the definitions of these attributes.
             </p>
-            <pre class="prettyprint linenums">
+          <pre class="prettyprint linenums">
 status = error
 dest = err
 name = PropertiesConfig

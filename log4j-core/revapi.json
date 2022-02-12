@@ -51,6 +51,48 @@
         "justification": "LOG4J2-2486 - Require enabled script languages to be specified in a system property"
       },
       {
+        "code": "java.annotation.removed",
+        "old": "method org.apache.logging.log4j.core.config.LoggerConfig org.apache.logging.log4j.core.config.LoggerConfig::createLogger(boolean, org.apache.logging.log4j.Level, java.lang.String, java.lang.String, org.apache.logging.log4j.core.config.AppenderRef[], org.apache.logging.log4j.core.config.Property[], org.apache.logging.log4j.core.config.Configuration, org.apache.logging.log4j.core.Filter) @ org.apache.logging.log4j.core.async.AsyncLoggerConfig.RootLogger",
+        "new": "method org.apache.logging.log4j.core.config.LoggerConfig org.apache.logging.log4j.core.config.LoggerConfig::createLogger(boolean, org.apache.logging.log4j.Level, java.lang.String, java.lang.String, org.apache.logging.log4j.core.config.AppenderRef[], org.apache.logging.log4j.core.config.Property[], org.apache.logging.log4j.core.config.Configuration, org.apache.logging.log4j.core.Filter) @ org.apache.logging.log4j.core.async.AsyncLoggerConfig.RootLogger",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginFactory",
+        "justification": "LoggerConfig now uses a Builder"
+      },
+      {
+        "code": "java.annotation.removed",
+        "old": "method org.apache.logging.log4j.core.config.LoggerConfig org.apache.logging.log4j.core.async.AsyncLoggerConfig.RootLogger::createLogger(java.lang.String, org.apache.logging.log4j.Level, java.lang.String, org.apache.logging.log4j.core.config.AppenderRef[], org.apache.logging.log4j.core.config.Property[], org.apache.logging.log4j.core.config.Configuration, org.apache.logging.log4j.core.Filter)",
+        "new": "method org.apache.logging.log4j.core.config.LoggerConfig org.apache.logging.log4j.core.async.AsyncLoggerConfig.RootLogger::createLogger(java.lang.String, org.apache.logging.log4j.Level, java.lang.String, org.apache.logging.log4j.core.config.AppenderRef[], org.apache.logging.log4j.core.config.Property[], org.apache.logging.log4j.core.config.Configuration, org.apache.logging.log4j.core.Filter)",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginFactory",
+        "justification": "AsyncLoggerConfig.RootLogger now uses a Builder"
+      },
+      {
+        "code": "java.annotation.removed",
+        "old": "method org.apache.logging.log4j.core.config.LoggerConfig org.apache.logging.log4j.core.async.AsyncLoggerConfig::createLogger(boolean, org.apache.logging.log4j.Level, java.lang.String, java.lang.String, org.apache.logging.log4j.core.config.AppenderRef[], org.apache.logging.log4j.core.config.Property[], org.apache.logging.log4j.core.config.Configuration, org.apache.logging.log4j.core.Filter)",
+        "new": "method org.apache.logging.log4j.core.config.LoggerConfig org.apache.logging.log4j.core.async.AsyncLoggerConfig::createLogger(boolean, org.apache.logging.log4j.Level, java.lang.String, java.lang.String, org.apache.logging.log4j.core.config.AppenderRef[], org.apache.logging.log4j.core.config.Property[], org.apache.logging.log4j.core.config.Configuration, org.apache.logging.log4j.core.Filter)",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginFactory",
+        "justification": "AsyncLoggerConfig now uses a Builder"
+      },
+      {
+        "code": "java.annotation.removed",
+        "old": "method org.apache.logging.log4j.core.config.LoggerConfig org.apache.logging.log4j.core.config.LoggerConfig::createLogger(boolean, org.apache.logging.log4j.Level, java.lang.String, java.lang.String, org.apache.logging.log4j.core.config.AppenderRef[], org.apache.logging.log4j.core.config.Property[], org.apache.logging.log4j.core.config.Configuration, org.apache.logging.log4j.core.Filter) @ org.apache.logging.log4j.core.config.LoggerConfig.RootLogger",
+        "new": "method org.apache.logging.log4j.core.config.LoggerConfig org.apache.logging.log4j.core.config.LoggerConfig::createLogger(boolean, org.apache.logging.log4j.Level, java.lang.String, java.lang.String, org.apache.logging.log4j.core.config.AppenderRef[], org.apache.logging.log4j.core.config.Property[], org.apache.logging.log4j.core.config.Configuration, org.apache.logging.log4j.core.Filter) @ org.apache.logging.log4j.core.config.LoggerConfig.RootLogger",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginFactory",
+        "justification": "LoggerConfig now uses a Builder"
+      },
+      {
+        "code": "java.annotation.removed",
+        "old": "method org.apache.logging.log4j.core.config.LoggerConfig org.apache.logging.log4j.core.config.LoggerConfig.RootLogger::createLogger(java.lang.String, org.apache.logging.log4j.Level, java.lang.String, org.apache.logging.log4j.core.config.AppenderRef[], org.apache.logging.log4j.core.config.Property[], org.apache.logging.log4j.core.config.Configuration, org.apache.logging.log4j.core.Filter)",
+        "new": "method org.apache.logging.log4j.core.config.LoggerConfig org.apache.logging.log4j.core.config.LoggerConfig.RootLogger::createLogger(java.lang.String, org.apache.logging.log4j.Level, java.lang.String, org.apache.logging.log4j.core.config.AppenderRef[], org.apache.logging.log4j.core.config.Property[], org.apache.logging.log4j.core.config.Configuration, org.apache.logging.log4j.core.Filter)",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginFactory",
+        "justification": "LoggerConfig.RootLogger now uses a Builder"
+      },
+      {
+        "code": "java.annotation.removed",
+        "old": "method org.apache.logging.log4j.core.config.LoggerConfig org.apache.logging.log4j.core.config.LoggerConfig::createLogger(boolean, org.apache.logging.log4j.Level, java.lang.String, java.lang.String, org.apache.logging.log4j.core.config.AppenderRef[], org.apache.logging.log4j.core.config.Property[], org.apache.logging.log4j.core.config.Configuration, org.apache.logging.log4j.core.Filter)",
+        "new": "method org.apache.logging.log4j.core.config.LoggerConfig org.apache.logging.log4j.core.config.LoggerConfig::createLogger(boolean, org.apache.logging.log4j.Level, java.lang.String, java.lang.String, org.apache.logging.log4j.core.config.AppenderRef[], org.apache.logging.log4j.core.config.Property[], org.apache.logging.log4j.core.config.Configuration, org.apache.logging.log4j.core.Filter)",
+        "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginFactory",
+        "justification": "LoggerConfig now uses a Builder"
+      },
+      {
         "code": "java.method.returnTypeChanged",
         "old": "method java.lang.String org.apache.logging.log4j.core.lookup.StrSubstitutor::resolveVariable(org.apache.logging.log4j.core.LogEvent, java.lang.String, java.lang.StringBuilder, int, int)",
         "new": "method org.apache.logging.log4j.core.lookup.LookupResult org.apache.logging.log4j.core.lookup.StrSubstitutor::resolveVariable(org.apache.logging.log4j.core.LogEvent, java.lang.String, java.lang.StringBuilder, int, int)",

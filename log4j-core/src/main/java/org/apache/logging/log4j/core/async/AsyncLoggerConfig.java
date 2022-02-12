@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -70,6 +71,23 @@ import org.apache.logging.log4j.util.Strings;
  */
 @Plugin(name = "asyncLogger", category = Node.CATEGORY, printObject = true)
 public class AsyncLoggerConfig extends LoggerConfig {
+
+    @PluginBuilderFactory
+    public static <B extends Builder<B>> B newAsyncBuilder() {
+        return new Builder<B>().asBuilder();
+    }
+
+    public static class Builder<B extends Builder<B>> extends LoggerConfig.Builder<B> {
+
+        @Override
+        public LoggerConfig build() {
+            final String name = getLoggerName().equals(ROOT) ? Strings.EMPTY : getLoggerName();
+            LevelAndRefs container = LoggerConfig.getLevelAndRefs(getLevel(), getRefs(), getLevelAndRefs(),
+                    getConfig());
+            return new AsyncLoggerConfig(name, container.refs,getFilter(), container.level, isAdditivity(),
+                    getProperties(), getConfig(), includeLocation(getIncludeLocation(), getConfig()));
+        }
+    }
 
     private static final ThreadLocal<Boolean> ASYNC_LOGGER_ENTERED = new ThreadLocal<Boolean>() {
         @Override
@@ -258,7 +276,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
      * @return A new LoggerConfig.
      * @since 3.0
      */
-    @PluginFactory
+    @Deprecated
     public static LoggerConfig createLogger(
             @PluginAttribute(value = "additivity", defaultBoolean = true) final boolean additivity,
             @PluginAttribute("level") final Level level,
@@ -283,6 +301,23 @@ public class AsyncLoggerConfig extends LoggerConfig {
      */
     @Plugin(name = "asyncRoot", category = Core.CATEGORY_NAME, printObject = true)
     public static class RootLogger extends LoggerConfig {
+
+        @PluginBuilderFactory
+        public static <B extends Builder<B>> B newAsyncRootBuilder() {
+            return new Builder<B>().asBuilder();
+        }
+
+        public static class Builder<B extends Builder<B>> extends RootLogger.Builder<B> {
+
+            @Override
+            public LoggerConfig build() {
+                LevelAndRefs container = LoggerConfig.getLevelAndRefs(getLevel(), getRefs(), getLevelAndRefs(),
+                        getConfig());
+                return new AsyncLoggerConfig(LogManager.ROOT_LOGGER_NAME, container.refs, getFilter(), container.level,
+                        isAdditivity(), getProperties(), getConfig(), includeLocation(getIncludeLocation(),
+                        getConfig()));
+            }
+        }
 
         /**
          * @deprecated use {@link #createLogger(String, Level, String, AppenderRef[], Property[], Configuration, Filter)}
@@ -311,9 +346,9 @@ public class AsyncLoggerConfig extends LoggerConfig {
         }
 
         /**
-         * @since 3.0
+         *
          */
-        @PluginFactory
+        @Deprecated
         public static LoggerConfig createLogger(
                 @PluginAttribute("additivity") final String additivity,
                 @PluginAttribute("level") final Level level,
