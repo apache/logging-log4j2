@@ -303,6 +303,9 @@
         Fix log4j-jakarta-web service file #723.
       </action>
       <!-- ADD -->
+      <action type="add" dev="rgoers" issue="LOG4J2-3341">
+        Add shorthand syntax for properties configuration format for specifying a logger level and appender refs.
+      </action>
       <action issue="LOG4J2-2486" dev="rgoers" type="add">
         Require log4j2.Script.enableLanguages to be specified to enable scripting for specific languages.
       </action>

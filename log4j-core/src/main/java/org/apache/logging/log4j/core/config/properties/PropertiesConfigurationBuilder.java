@@ -174,20 +174,23 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
                 }
             }
         } else {
-            final Properties context = PropertiesUtil.extractSubset(rootProperties, "logger");
-            final Map<String, Properties> loggers = PropertiesUtil.partitionOnCommonPrefixes(context);
+
+            final Map<String, Properties> loggers = PropertiesUtil
+                    .partitionOnCommonPrefixes(PropertiesUtil.extractSubset(rootProperties, "logger"), true);
             for (final Map.Entry<String, Properties> entry : loggers.entrySet()) {
                 final String name = entry.getKey().trim();
                 if (!name.equals(LoggerConfig.ROOT)) {
-                    final Properties loggerProps = entry.getValue();
-                    useSyntheticLevelAndAppenderRefs(name, loggerProps, context);
-                    builder.add(createLogger(name, loggerProps));
+                    builder.add(createLogger(name, entry.getValue()));
                 }
             }
         }
 
+        final String rootProp = rootProperties.getProperty("rootLogger");
         final Properties props = PropertiesUtil.extractSubset(rootProperties, "rootLogger");
-        useSyntheticLevelAndAppenderRefs("rootLogger", props, rootProperties);
+        if (rootProp != null) {
+            props.setProperty("", rootProp);
+            rootProperties.remove("rootLogger");
+        }
         if (props.size() > 0) {
             builder.add(createRootLogger(props));
         }
@@ -195,23 +198,6 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
         builder.setLoggerContext(loggerContext);
 
         return builder.build(false);
-    }
-
-    private static void useSyntheticLevelAndAppenderRefs(final String propertyName, final Properties loggerProps, final Properties context) {
-        final String propertyValue = (String) context.remove(propertyName);
-        if (propertyValue != null) {
-            final String[] parts = propertyValue.split(",");
-            if (parts.length > 0) {
-                final String level = parts[0].trim();
-                loggerProps.setProperty("level", level);
-                LOGGER.debug("Using log level '{}' for logger '{}'", level, propertyName);
-                for (int i = 1; i < parts.length; i++) {
-                    final String appenderRef = parts[i].trim();
-                    LOGGER.debug("Adding synthetic appender ref '{}' for logger '{}'", appenderRef, propertyName);
-                    loggerProps.setProperty("appenderRef.$" + i + ".ref", appenderRef);
-                }
-            }
-        }
     }
 
     private ScriptComponentBuilder createScript(final Properties properties) {
@@ -271,6 +257,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
     }
 
     private LoggerComponentBuilder createLogger(final String key, final Properties properties) {
+        final String levelAndRefs = properties.getProperty("");
         final String name = (String) properties.remove(CONFIG_NAME);
         final String location = (String) properties.remove("includeLocation");
         if (Strings.isEmpty(name)) {
@@ -305,10 +292,14 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
         if (!Strings.isEmpty(additivity)) {
             loggerBuilder.addAttribute("additivity", additivity);
         }
+        if (levelAndRefs != null) {
+            loggerBuilder.addAttribute("levelAndRefs", levelAndRefs);
+        }
         return loggerBuilder;
     }
 
     private RootLoggerComponentBuilder createRootLogger(final Properties properties) {
+        final String levelAndRefs = properties.getProperty("");
         final String level = Strings.trimToNull((String) properties.remove("level"));
         final String type = (String) properties.remove(CONFIG_TYPE);
         final String location = (String) properties.remove("includeLocation");
@@ -334,6 +325,9 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
             }
         }
         addLoggersToComponent(loggerBuilder, properties);
+        if (levelAndRefs != null) {
+            loggerBuilder.addAttribute("levelAndRefs", levelAndRefs);
+        }
         return addFiltersToComponent(loggerBuilder, properties);
     }
 

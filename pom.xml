@@ -741,11 +741,6 @@
         <version>${junitJupiterVersion}</version>
       </dependency>
       <dependency>
-        <groupId>org.junit.platform</groupId>
-        <artifactId>junit-platform-commons</artifactId>
-        <version>1.8.2</version>
-      </dependency>
-      <dependency>
         <groupId>org.junit-pioneer</groupId>
         <artifactId>junit-pioneer</artifactId>
         <version>${junitPioneerVersion}</version>
@@ -760,7 +755,6 @@
         <groupId>org.junit.platform</groupId>
         <artifactId>junit-platform-commons</artifactId>
         <version>1.8.2</version>
-        <scope>test</scope>
       </dependency>
       <!-- JUnit 5 parameterized test support -->
       <dependency>

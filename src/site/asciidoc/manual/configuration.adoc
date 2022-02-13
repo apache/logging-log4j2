@@ -978,6 +978,33 @@ the subcomponents below that wrapper element, as the
 TimeBasedTriggeringPolicy and SizeBasedTriggeringPolicy are defined
 below.
 
+As of version 2.17.2, `rootLogger` and `logger._key_` properties can be specified to set the
+level and zero or more appender refs to create for that logger. The level and appender refs are
+separated by comma `,` characters with optional whitespace surrounding the comma. The
+following example demonstrates how the shorthand is expanded when reading properties configurations.
+
+[source,properties]
+----
+appender.stdout.type = Console
+# ... other appender properties
+appender.file.type = File
+# ... other appender properties
+logger.app = INFO, stdout, file
+logger.app.name = com.example.app
+
+# is equivalent to:
+# appender.stdout.type = Console
+# appender.stdout.name = stdout
+# ...
+appender.file.type = File
+appender.file.name = file
+# ...
+logger.app.name = com.example.app
+logger.app.level = INFO
+logger.app.appenderRef.$1.ref = stdout
+logger.app.appenderRef.$2.ref = file
+----
+
 Properties configuration files support the advertiser, monitorInterval,
 name, packages, shutdownHook, shutdownTimeout, status, verbose, and dest
 attributes. See link:#ConfigurationSyntax[Configuration Syntax] for the
