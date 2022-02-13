@@ -126,7 +126,7 @@
           <instructions>
             <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
             <Bundle-SymbolicName>org.apache.logging.log4j.layout.template.json</Bundle-SymbolicName>
-            <Export-Package>org.apache.logging.log4j.layout.template.json</Export-Package>
+            <Export-Package>org.apache.logging.log4j.layout.template.json.*</Export-Package>
           </instructions>
         </configuration>
       </plugin>
