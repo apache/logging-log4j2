@@ -184,10 +184,10 @@ public class JsonTemplateLayoutBenchmark {
     }
 
     public static void main(String[] args) throws IOException {
-        System.out.format("Ready?");
-        System.in.read();
+//        System.out.format("Ready?");
+//        System.in.read();
         JsonTemplateLayoutBenchmarkState state = new JsonTemplateLayoutBenchmarkState();
-        int retryCount = 10_000;
+        int retryCount = 200_000;
         measureEcs(state, retryCount);
         measureJtl(state, retryCount);
     }

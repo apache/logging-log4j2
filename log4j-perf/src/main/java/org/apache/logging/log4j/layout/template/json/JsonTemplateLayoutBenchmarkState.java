@@ -17,6 +17,8 @@
 package org.apache.logging.log4j.layout.template.json;
 
 import co.elastic.logging.log4j2.EcsLayout;
+import co.elastic.logging.log4j2.LcsLayout;
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
@@ -53,7 +55,7 @@ public class JsonTemplateLayoutBenchmarkState {
 
     private final JsonLayout customJsonLayout;
 
-    private final EcsLayout ecsLayout;
+    private final LcsLayout ecsLayout;
 
     private final GelfLayout gelfLayout;
 
@@ -98,9 +100,10 @@ public class JsonTemplateLayoutBenchmarkState {
                 .newBuilder()
                 .setConfiguration(CONFIGURATION)
                 .setCharset(CHARSET)
-                .setEventTemplateUri("classpath:EcsLayout.json")
+                .setEventTemplate("{}")
+//                .setEventTemplateUri("classpath:EcsLayout.json")
                 .setRecyclerFactory(ThreadLocalRecyclerFactory.getInstance())
-                .setEventTemplateAdditionalFields(additionalFields)
+//                .setEventTemplateAdditionalFields(additionalFields)
                 .build();
     }
 
@@ -144,8 +147,8 @@ public class JsonTemplateLayoutBenchmarkState {
                 .build();
     }
 
-    private static EcsLayout createEcsLayout() {
-        final EcsLayout layout = EcsLayout
+    private static LcsLayout createEcsLayout() {
+        final LcsLayout layout = LcsLayout
                 .newBuilder()
                 .setConfiguration(CONFIGURATION)
                 .setServiceName("benchmark")
@@ -173,31 +176,31 @@ public class JsonTemplateLayoutBenchmarkState {
         return byteBufferDestination;
     }
 
-    JsonTemplateLayout getJsonTemplateLayout4JsonLayout() {
+    Layout<String> getJsonTemplateLayout4JsonLayout() {
         return jsonTemplateLayout4JsonLayout;
     }
 
-    JsonTemplateLayout getJsonTemplateLayout4EcsLayout() {
+    Layout<String> getJsonTemplateLayout4EcsLayout() {
         return jsonTemplateLayout4EcsLayout;
     }
 
-    JsonTemplateLayout getJsonTemplateLayout4GelfLayout() {
+    Layout<String> getJsonTemplateLayout4GelfLayout() {
         return jsonTemplateLayout4GelfLayout;
     }
 
-    JsonLayout getDefaultJsonLayout() {
+    Layout<String> getDefaultJsonLayout() {
         return defaultJsonLayout;
     }
 
-    JsonLayout getCustomJsonLayout() {
+    Layout<String> getCustomJsonLayout() {
         return customJsonLayout;
     }
 
-    EcsLayout getEcsLayout() {
+    Layout<String> getEcsLayout() {
         return ecsLayout;
     }
 
-    GelfLayout getGelfLayout() {
+    Layout<String> getGelfLayout() {
         return gelfLayout;
     }
 
