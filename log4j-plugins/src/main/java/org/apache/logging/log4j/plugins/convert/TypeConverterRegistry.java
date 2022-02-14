@@ -21,7 +21,6 @@ import org.apache.logging.log4j.plugins.util.LazyValue;
 import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
-import org.apache.logging.log4j.plugins.util.Value;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.ReflectionUtil;
 
@@ -33,6 +32,7 @@ import java.util.Objects;
 import java.util.UnknownFormatConversionException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Supplier;
 
 /**
  * Registry for {@link TypeConverter} plugins.
@@ -42,7 +42,7 @@ import java.util.concurrent.ConcurrentMap;
 public class TypeConverterRegistry {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
-    private static final Value<TypeConverterRegistry> INSTANCE = LazyValue.forSupplier(TypeConverterRegistry::new);
+    private static final Supplier<TypeConverterRegistry> INSTANCE = LazyValue.forSupplier(TypeConverterRegistry::new);
 
     private final ConcurrentMap<Type, TypeConverter<?>> registry = new ConcurrentHashMap<>();
 

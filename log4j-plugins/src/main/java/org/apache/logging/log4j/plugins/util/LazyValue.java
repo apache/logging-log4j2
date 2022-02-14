@@ -17,27 +17,19 @@
 
 package org.apache.logging.log4j.plugins.util;
 
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class LazyValue<T> implements Value<T> {
+public class LazyValue<T> implements Supplier<T> {
 
     public static <T> LazyValue<T> forSupplier(final Supplier<T> constructor) {
-        return new LazyValue<>(constructor, value -> {
-        });
-    }
-
-    public static <T> LazyValue<T> forScope(final Supplier<T> constructor, final Consumer<T> destructor) {
-        return new LazyValue<>(constructor, destructor);
+        return new LazyValue<>(constructor);
     }
 
     private final Supplier<T> constructor;
-    private final Consumer<T> destructor;
     private volatile T value;
 
-    private LazyValue(final Supplier<T> constructor, final Consumer<T> destructor) {
+    private LazyValue(final Supplier<T> constructor) {
         this.constructor = constructor;
-        this.destructor = destructor;
     }
 
     @Override
@@ -52,13 +44,5 @@ public class LazyValue<T> implements Value<T> {
             }
         }
         return value;
-    }
-
-    @Override
-    public void close() {
-        if (value != null) {
-            destructor.accept(value);
-            value = null;
-        }
     }
 }

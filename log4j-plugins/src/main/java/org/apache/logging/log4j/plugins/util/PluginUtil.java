@@ -18,7 +18,6 @@ package org.apache.logging.log4j.plugins.util;
 
 import org.apache.logging.log4j.plugins.PluginFactory;
 
-import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -92,20 +91,6 @@ public final class PluginUtil {
             }
         }
         throw new IllegalStateException("no factory method found for class " + pluginClass);
-    }
-
-    public static Value<Class<?>> lazyLoadClass(final ClassLoader classLoader, final String className) {
-        final var classLoaderRef = new WeakReference<>(classLoader);
-        return WeakLazyValue.forSupplier(() -> {
-            final ClassLoader loader = classLoaderRef.get();
-            if (loader != null) {
-                try {
-                    return loader.loadClass(className);
-                } catch (ClassNotFoundException ignored) {
-                }
-            }
-            return null;
-        });
     }
 
 }

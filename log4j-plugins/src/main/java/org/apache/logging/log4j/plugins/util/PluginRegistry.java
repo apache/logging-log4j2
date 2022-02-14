@@ -42,6 +42,7 @@ import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 
 /**
  * Registry singleton for PluginType maps partitioned by source type and then by category names.
@@ -50,7 +51,7 @@ public class PluginRegistry {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private static final Value<PluginRegistry> INSTANCE = LazyValue.forSupplier(PluginRegistry::new);
+    private static final Supplier<PluginRegistry> INSTANCE = LazyValue.forSupplier(PluginRegistry::new);
 
     /**
      * Contains plugins found in Log4j2Plugins.dat cache files in the main CLASSPATH.

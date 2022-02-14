@@ -25,14 +25,9 @@ import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * Utility class for working with Java {@link Type}s and derivatives. This class is adapted heavily from the
@@ -242,20 +237,6 @@ public final class TypeUtil {
     }
 
     /**
-     * Checks if a type is a raw type.
-     */
-    public static boolean isRawType(final Type type) {
-        if (type instanceof Class<?>) {
-            final Class<?> clazz = (Class<?>) type;
-            if (clazz.isArray()) {
-                return isRawType(clazz.getComponentType());
-            }
-            return clazz.getTypeParameters().length > 0;
-        }
-        return false;
-    }
-
-    /**
      * Extracts the raw type equivalent of a given type.
      */
     public static Class<?> getRawType(final Type type) {
@@ -397,111 +378,6 @@ public final class TypeUtil {
         return false;
     }
 
-    /**
-     * Returns the type closure of a generic type.
-     */
-    public static Collection<Type> getTypeClosure(final Type type) {
-        return TYPE_CLOSURE_CACHE.get(type);
-    }
-
-    private static final Cache<Type, Collection<Type>> TYPE_CLOSURE_CACHE =
-            WeakCache.newWeakRefCache(type -> new TypeResolver(type).types.values());
-
-    private static class TypeResolver {
-        private final Map<TypeVariable<?>, Type> resolvedTypeVariables = new HashMap<>();
-        private final Map<Class<?>, Type> types = new LinkedHashMap<>();
-
-        private TypeResolver(final Type type) {
-            loadTypes(type);
-        }
-
-        private void loadTypes(final Type type) {
-            if (type instanceof Class<?>) {
-                final Class<?> clazz = (Class<?>) type;
-                types.put(clazz, clazz);
-                loadTypes(clazz);
-            } else if (isRawType(type)) {
-                loadTypes(getRawType(type));
-            } else if (type instanceof GenericArrayType) {
-                final GenericArrayType arrayType = (GenericArrayType) type;
-                final Type componentType = arrayType.getGenericComponentType();
-                final Class<?> rawComponentType = getRawType(componentType);
-                final Class<?> arrayClass = Array.newInstance(rawComponentType, 0).getClass();
-                types.put(arrayClass, arrayType);
-                loadTypes(arrayClass);
-            } else if (type instanceof ParameterizedType) {
-                final ParameterizedType parameterizedType = (ParameterizedType) type;
-                final Type rawType = parameterizedType.getRawType();
-                if (rawType instanceof Class<?>) {
-                    final Class<?> clazz = (Class<?>) rawType;
-                    processTypeVariables(clazz.getTypeParameters(), parameterizedType.getActualTypeArguments());
-                    types.put(clazz, parameterizedType);
-                    loadTypes(clazz);
-                }
-            }
-        }
-
-        private void loadTypes(final Class<?> clazz) {
-            if (clazz.getSuperclass() != null) {
-                loadTypes(processAndResolveType(clazz.getGenericSuperclass(), clazz.getSuperclass()));
-            }
-            final Type[] genericInterfaces = clazz.getGenericInterfaces();
-            final Class<?>[] interfaces = clazz.getInterfaces();
-            for (int i = 0; i < interfaces.length; i++) {
-                loadTypes(processAndResolveType(genericInterfaces[i], interfaces[i]));
-            }
-        }
-
-        private Type processAndResolveType(final Type superclass, final Class<?> rawSuperclass) {
-            if (superclass instanceof ParameterizedType) {
-                final ParameterizedType parameterizedSuperclass = (ParameterizedType) superclass;
-                processTypeVariables(rawSuperclass.getTypeParameters(), parameterizedSuperclass.getActualTypeArguments());
-                return resolveType(parameterizedSuperclass);
-            }
-            if (superclass instanceof Class<?>) {
-                return superclass;
-            }
-            throw new IllegalArgumentException("Superclass argument must be parameterized or a class, but got: " + superclass);
-        }
-
-        private void processTypeVariables(final TypeVariable<?>[] variables, final Type[] types) {
-            for (int i = 0; i < variables.length; i++) {
-                final Type type = types[i];
-                final Type resolvedType = type instanceof TypeVariable<?> ? resolveType((TypeVariable<?>) type) : type;
-                resolvedTypeVariables.put(variables[i], resolvedType);
-            }
-        }
-
-        private Type resolveType(final TypeVariable<?> type) {
-            return resolvedTypeVariables.getOrDefault(type, type);
-        }
-
-        private Type resolveType(final ParameterizedType type) {
-            final Type[] unresolved = type.getActualTypeArguments();
-            final Type[] resolved = new Type[unresolved.length];
-            boolean modified = false; // potentially no need to re-create ParameterizedType
-            for (int i = 0; i < unresolved.length; i++) {
-                final Type unresolvedType = unresolved[i];
-                Type resolvedType = unresolvedType;
-                if (resolvedType instanceof TypeVariable<?>) {
-                    resolvedType = resolveType((TypeVariable<?>) resolvedType);
-                } // else if?
-                if (resolvedType instanceof ParameterizedType) {
-                    resolvedType = resolveType((ParameterizedType) resolvedType);
-                }
-                resolved[i] = resolvedType;
-                if (resolvedType != unresolvedType) {
-                    modified = true;
-                }
-            }
-            if (!modified) {
-                return type;
-            }
-            return new ParameterizedTypeImpl(type.getOwnerType(), type.getRawType(), resolved);
-        }
-
-    }
-
     private static final Map<Class<?>, Class<?>> PRIMITIVE_BOXED_TYPES = Map.of(
             boolean.class, Boolean.class,
             byte.class, Byte.class,
@@ -530,18 +406,6 @@ public final class TypeUtil {
     public static <T> T cast(final Object o) {
         @SuppressWarnings("unchecked") final T t = (T) o;
         return t;
-    }
-
-    public static ParameterizedType getParameterizedType(final Type rawType, final Type... typeArguments) {
-        return new ParameterizedTypeImpl(null, rawType, typeArguments);
-    }
-
-    public static Set<Class<?>> getImplementedInterfaces(final Class<?> type) {
-        final Set<Class<?>> interfaces = new LinkedHashSet<>(List.of(type.getInterfaces()));
-        for (Class<?> superclass = type.getSuperclass(); superclass != null; superclass = superclass.getSuperclass()) {
-            interfaces.addAll(List.of(superclass.getInterfaces()));
-        }
-        return interfaces;
     }
 
 }
