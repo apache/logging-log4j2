@@ -16,19 +16,12 @@
  */
 package org.apache.log4j.config;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.apache.log4j.bridge.FilterAdapter;
-import org.apache.log4j.bridge.FilterWrapper;
 import org.apache.log4j.builders.BuilderManager;
-import org.apache.log4j.spi.Filter;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Reconfigurable;
-import org.apache.logging.log4j.core.filter.CompositeFilter;
 
 /**
  * Class Description goes here.
