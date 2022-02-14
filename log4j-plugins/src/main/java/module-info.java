@@ -17,9 +17,6 @@
 module org.apache.logging.log4j.plugins {
     exports org.apache.logging.log4j.plugins;
     exports org.apache.logging.log4j.plugins.convert;
-    exports org.apache.logging.log4j.plugins.di;
-    exports org.apache.logging.log4j.plugins.di.model;
-    exports org.apache.logging.log4j.plugins.spi;
     exports org.apache.logging.log4j.plugins.processor;
     exports org.apache.logging.log4j.plugins.util;
     exports org.apache.logging.log4j.plugins.validation;
@@ -33,9 +30,5 @@ module org.apache.logging.log4j.plugins {
     requires static org.osgi.framework;
 
     uses org.apache.logging.log4j.plugins.processor.PluginService;
-    uses org.apache.logging.log4j.plugins.di.model.PluginModule;
-    uses org.apache.logging.log4j.plugins.spi.BeanManager;
-    provides org.apache.logging.log4j.plugins.spi.BeanManager with
-            org.apache.logging.log4j.plugins.spi.impl.DefaultBeanManager;
 
 }

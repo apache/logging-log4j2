@@ -22,7 +22,5 @@ module org.apache.logging.log4j.plugin.processor {
     requires org.apache.logging.log4j.plugins;
     requires transitive org.osgi.framework;
 
-    provides javax.annotation.processing.Processor with
-            org.apache.logging.log4j.plugin.processor.PluginProcessor,
-            org.apache.logging.log4j.plugin.processor.BeanProcessor;
+    provides javax.annotation.processing.Processor with org.apache.logging.log4j.plugin.processor.PluginProcessor;
 }

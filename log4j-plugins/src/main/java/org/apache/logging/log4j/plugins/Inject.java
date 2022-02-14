@@ -17,8 +17,6 @@
 
 package org.apache.logging.log4j.plugins;
 
-import org.apache.logging.log4j.plugins.di.Provider;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -44,7 +42,6 @@ import java.lang.annotation.Target;
  * is ignored (e.g., for builder method chaining).
  *
  * @see Named
- * @see Provider
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.CONSTRUCTOR, ElementType.METHOD, ElementType.FIELD})
