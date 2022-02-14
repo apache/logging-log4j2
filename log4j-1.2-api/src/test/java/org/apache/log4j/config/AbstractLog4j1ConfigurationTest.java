@@ -19,8 +19,8 @@ package org.apache.log4j.config;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -60,15 +60,12 @@ import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.filter.Filterable;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
 import org.junit.Rule;
-import org.junit.Test;
-import org.junit.jupiter.api.Timeout;
 import org.junit.rules.TemporaryFolder;
 
 public abstract class AbstractLog4j1ConfigurationTest {
@@ -452,7 +449,7 @@ public abstract class AbstractLog4j1ConfigurationTest {
         // CompositeFilter of native Log4j 2.x filters
         // over a:
         // FilterAdapter of a chain of FilterWrappers.
-        assertNull(filter.getNext(), "found chain of Log4j 1.x filters");
+        assertNull("found chain of Log4j 1.x filters", filter.getNext());
         return count;
     }
 

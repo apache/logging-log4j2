@@ -23,17 +23,14 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
 import org.apache.log4j.bridge.FilterAdapter;
-import org.apache.log4j.bridge.FilterWrapper;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.config.PropertySetter;
 import org.apache.log4j.helpers.FileWatchdog;

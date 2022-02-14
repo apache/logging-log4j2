@@ -16,11 +16,6 @@
  */
 package org.apache.log4j.bridge;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import org.apache.log4j.config.Log4j1Configuration;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.logging.log4j.core.LogEvent;

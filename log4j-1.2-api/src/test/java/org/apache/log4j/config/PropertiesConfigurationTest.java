@@ -17,10 +17,8 @@
 package org.apache.log4j.config;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,15 +26,12 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.ListAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.bridge.AppenderAdapter;
-import org.apache.log4j.bridge.AppenderAdapter.Adapter;
 import org.apache.log4j.bridge.FilterAdapter;
-import org.apache.log4j.bridge.FilterWrapper;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
@@ -49,7 +44,6 @@ import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.filter.Filterable;
 import org.apache.logging.log4j.core.filter.LevelRangeFilter;
 import org.junit.Test;
-import org.junit.jupiter.api.Timeout;
 
 /**
  * Test configuration from Properties.
