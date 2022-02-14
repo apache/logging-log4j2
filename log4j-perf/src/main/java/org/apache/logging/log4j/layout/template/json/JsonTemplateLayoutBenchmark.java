@@ -172,15 +172,16 @@ public class JsonTemplateLayoutBenchmark {
             final Layout<String> layout,
             final List<LogEvent> logEvents,
             final ByteBufferDestination destination) {
+        final ByteBuffer byteBuffer = destination.getByteBuffer();
+        int checksum = 0;
         // noinspection ForLoopReplaceableByForEach (avoid iterator instantiation)
         for (int logEventIndex = 0; logEventIndex < logEvents.size(); logEventIndex++) {
             LogEvent logEvent = logEvents.get(logEventIndex);
             layout.encode(logEvent, destination);
+            checksum += byteBuffer.position();
+            byteBuffer.clear();
         }
-        final ByteBuffer byteBuffer = destination.getByteBuffer();
-        final int position = byteBuffer.position();
-        byteBuffer.clear();
-        return position;
+        return checksum;
     }
 
     public static void main(String[] args) throws IOException {
