@@ -19,6 +19,7 @@ package org.apache.log4j.builders.appender;
 import static org.apache.log4j.builders.BuilderManager.CATEGORY;
 import static org.apache.log4j.config.Log4j1Configuration.APPENDER_REF_TAG;
 import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
+import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
 import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
 import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 
@@ -31,13 +32,16 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.bridge.AppenderWrapper;
+import org.apache.log4j.bridge.FilterAdapter;
 import org.apache.log4j.builders.AbstractBuilder;
 import org.apache.log4j.config.Log4j1Configuration;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.spi.Filter;
 import org.apache.log4j.xml.XmlConfiguration;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.AsyncAppender;
+import org.apache.logging.log4j.core.appender.AsyncAppender.Builder;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -70,6 +74,7 @@ public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBui
         final AtomicBoolean includeLocation = new AtomicBoolean();
         final AtomicReference<String> level = new AtomicReference<>("trace");
         final AtomicInteger bufferSize = new AtomicInteger(1024);
+        final AtomicReference<Filter> filter = new AtomicReference<>();
         forEachElement(appenderElement.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
                 case APPENDER_REF_TAG:
@@ -77,6 +82,9 @@ public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBui
                     if (appender != null) {
                         appenderRefs.get().add(appender.getName());
                     }
+                    break;
+                case FILTER_TAG:
+                    config.addFilter(filter, currentElement);
                     break;
                 case PARAM_TAG: {
                     switch (getNameAttributeKey(currentElement)) {
@@ -98,13 +106,14 @@ public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBui
             }
         });
         return createAppender(name, level.get(), appenderRefs.get().toArray(Strings.EMPTY_ARRAY), blocking.get(),
-                bufferSize.get(), includeLocation.get(), config);
+                bufferSize.get(), includeLocation.get(), filter.get(), config);
     }
 
     @Override
     public Appender parseAppender(final String name, final String appenderPrefix, final String layoutPrefix,
             final String filterPrefix, final Properties props, final PropertiesConfiguration configuration) {
         final String appenderRef = getProperty(APPENDER_REF_TAG);
+        final Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
         final boolean blocking = getBooleanProperty(BLOCKING_PARAM);
         final boolean includeLocation = getBooleanProperty(INCLUDE_LOCATION_PARAM);
         final String level = getProperty(THRESHOLD_PARAM);
@@ -118,13 +127,13 @@ public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBui
             LOGGER.warn("Cannot locate Appender {}", appenderRef);
             return null;
         }
-        return createAppender(name, level, new String[] {appenderRef}, blocking, bufferSize, includeLocation,
+        return createAppender(name, level, new String[]{appenderRef}, blocking, bufferSize, includeLocation, filter,
                 configuration);
     }
 
     private <T extends Log4j1Configuration> Appender createAppender(final String name, final String level,
             final String[] appenderRefs, final boolean blocking, final int bufferSize, final boolean includeLocation,
-            final T configuration) {
+            final Filter filter, final T configuration) {
         final org.apache.logging.log4j.Level logLevel = OptionConverter.convertLevel(level,
                 org.apache.logging.log4j.Level.TRACE);
         final AppenderRef[] refs = new AppenderRef[appenderRefs.length];
@@ -132,8 +141,9 @@ public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBui
         for (final String appenderRef : appenderRefs) {
             refs[index++] = AppenderRef.createAppenderRef(appenderRef, logLevel, null);
         }
-        return new AppenderWrapper(AsyncAppender.newBuilder()
-                .setName(name)
+        Builder builder = AsyncAppender.newBuilder();
+        builder.setFilter(FilterAdapter.convertFilter(filter));
+        return new AppenderWrapper(builder.setName(name)
                 .setAppenderRefs(refs)
                 .setBlocking(blocking)
                 .setBufferSize(bufferSize)

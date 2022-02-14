@@ -16,10 +16,16 @@
  */
 package org.apache.log4j.bridge;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import org.apache.log4j.config.Log4j1Configuration;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.filter.AbstractFilter;
+import org.apache.logging.log4j.core.filter.CompositeFilter;
 
 /**
  * Binds a Log4j 1.x Filter with Log4j 2.
@@ -27,6 +33,44 @@ import org.apache.logging.log4j.core.filter.AbstractFilter;
 public class FilterAdapter extends AbstractFilter {
 
     private final Filter filter;
+
+    /**
+     * Converts a Log4j 1.x filter into a Log4j 2.x filter.
+     * 
+     * @param filter
+     *            a Log4j 1.x filter
+     * @return a Log4j 2.x filter
+     */
+    public static org.apache.logging.log4j.core.Filter convertFilter(Filter filter) {
+        if (filter instanceof FilterWrapper && filter.getNext() == null) {
+            return ((FilterWrapper) filter).getFilter();
+        } else if (filter != null) {
+            return new FilterAdapter(filter);
+        }
+        return null;
+    }
+
+    /**
+     * Appends one filter to another using Log4j 2.x concatenation utilities.
+     * @param first
+     * @param second
+     * @return
+     */
+    public static Filter addFilter(Filter first, Filter second) {
+        if (first == null) {
+            return second;
+        }
+        if (second == null) {
+            return first;
+        }
+        final CompositeFilter composite;
+        if (first instanceof FilterWrapper && ((FilterWrapper) first).getFilter() instanceof CompositeFilter) {
+            composite = (CompositeFilter) ((FilterWrapper) first).getFilter();
+        } else {
+            composite = CompositeFilter.createFilters(new org.apache.logging.log4j.core.Filter[] {convertFilter(first)});
+        }
+        return new FilterWrapper(composite.addFilter(convertFilter(second)));
+    }
 
     public FilterAdapter(Filter filter) {
         this.filter = filter;
@@ -37,14 +81,14 @@ public class FilterAdapter extends AbstractFilter {
         LoggingEvent loggingEvent = new LogEventAdapter(event);
         Filter next = filter;
         while (next != null) {
-            switch (filter.decide(loggingEvent)) {
+            switch (next.decide(loggingEvent)) {
                 case Filter.ACCEPT:
                     return Result.ACCEPT;
                 case Filter.DENY:
                     return Result.DENY;
                 default:
             }
-            next = filter.getNext();
+            next = next.getNext();
         }
         return Result.NEUTRAL;
     }

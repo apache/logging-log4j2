@@ -19,9 +19,12 @@ package org.apache.log4j.xml;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -33,6 +36,8 @@ import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
 import org.apache.log4j.bridge.AppenderAdapter;
 import org.apache.log4j.bridge.AppenderWrapper;
+import org.apache.log4j.bridge.FilterAdapter;
+import org.apache.log4j.bridge.FilterWrapper;
 import org.apache.log4j.config.Log4j1Configuration;
 import org.apache.log4j.config.PropertySetter;
 import org.apache.log4j.helpers.OptionConverter;
@@ -45,6 +50,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
+import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.w3c.dom.Document;
@@ -371,6 +377,7 @@ public class XmlConfiguration extends Log4j1Configuration {
             PropertySetter propSetter = new PropertySetter(appender);
 
             appender.setName(subst(appenderElement.getAttribute(NAME_ATTR)));
+            final AtomicReference<Filter> filterChain = new AtomicReference<>();
             forEachElement(appenderElement.getChildNodes(), currentElement -> {
                 // Parse appender parameters
                 switch (currentElement.getTagName()) {
@@ -381,12 +388,7 @@ public class XmlConfiguration extends Log4j1Configuration {
                         appender.setLayout(parseLayout(currentElement));
                         break;
                     case FILTER_TAG:
-                        Filter filter = parseFilters(currentElement);
-                        if (filter != null) {
-                            LOGGER.debug("Adding filter of type [{}] to appender named [{}]",
-                                    filter.getClass(), appender.getName());
-                            appender.addFilter(filter);
-                        }
+                        addFilter(filterChain, currentElement);
                         break;
                     case ERROR_HANDLER_TAG:
                         parseErrorHandler(currentElement, appender);
@@ -413,6 +415,10 @@ public class XmlConfiguration extends Log4j1Configuration {
                         }
                 }
             });
+            final Filter head = filterChain.get();
+            if (head != null) {
+                appender.addFilter(head);
+            }
             propSetter.activate();
             return appender;
         } catch (ConsumerException ex) {
@@ -494,23 +500,52 @@ public class XmlConfiguration extends Log4j1Configuration {
     /**
      * Used internally to parse a filter element.
      */
+    public void addFilter(final AtomicReference<Filter> ref, final Element filterElement) {
+        final Filter value = parseFilters(filterElement);
+        ref.accumulateAndGet(value, FilterAdapter::addFilter);
+    }
+
+    /**
+     * Used internally to parse a filter element.
+     */
     public Filter parseFilters(Element filterElement) {
         String className = subst(filterElement.getAttribute(CLASS_ATTR));
         LOGGER.debug("Class name: [" + className + ']');
         Filter filter = manager.parseFilter(className, filterElement, this);
         if (filter == null) {
+            filter = buildFilter(className, filterElement);
+        }
+        return filter;
+    }
+
+    private Filter buildFilter(final String className, final Element filterElement) {
+        try {
+            Filter filter = LoaderUtil.newInstanceOf(className);
             PropertySetter propSetter = new PropertySetter(filter);
+
             forEachElement(filterElement.getChildNodes(), currentElement -> {
-                String tagName = currentElement.getTagName();
-                if (tagName.equals(PARAM_TAG)) {
-                    setParameter(currentElement, propSetter);
-                } else {
-                    quietParseUnrecognizedElement(filter, currentElement, props);
+                // Parse appender parameters
+                switch (currentElement.getTagName()) {
+                    case PARAM_TAG :
+                        setParameter(currentElement, propSetter);
+                        break;
                 }
             });
             propSetter.activate();
+            return filter;
+        } catch (ConsumerException ex) {
+            Throwable t = ex.getCause();
+            if (t instanceof InterruptedException || t instanceof InterruptedIOException) {
+                Thread.currentThread().interrupt();
+            }
+            LOGGER.error("Could not create an Filter. Reported error follows.", t);
+        } catch (Exception oops) {
+            if (oops instanceof InterruptedException || oops instanceof InterruptedIOException) {
+                Thread.currentThread().interrupt();
+            }
+            LOGGER.error("Could not create an Filter. Reported error follows.", oops);
         }
-        return filter;
+        return null;
     }
 
     /**

@@ -35,6 +35,8 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.bridge.AppenderAdapter;
 import org.apache.log4j.bridge.AppenderWrapper;
+import org.apache.log4j.bridge.FilterAdapter;
+import org.apache.log4j.bridge.FilterWrapper;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.Filter;
@@ -555,7 +557,6 @@ public class PropertiesConfiguration extends Log4j1Configuration {
         }
 
         Filter head = null;
-        Filter next = null;
         for (final Map.Entry<String, List<NameValue>> entry : filters.entrySet()) {
             final String clazz = props.getProperty(entry.getKey());
             Filter filter = null;
@@ -566,14 +567,7 @@ public class PropertiesConfiguration extends Log4j1Configuration {
                     filter = buildFilter(clazz, appenderName, entry.getValue());
                 }
             }
-            if (filter != null) {
-                if (head == null) {
-                    head = filter;
-                } else {
-                    next.setNext(filter);
-                }
-                next = filter;
-            }
+            head = FilterAdapter.addFilter(head, filter);
         }
         return head;
     }

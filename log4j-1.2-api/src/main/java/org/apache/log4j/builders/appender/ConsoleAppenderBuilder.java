@@ -70,7 +70,7 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
         final String name = getNameAttribute(appenderElement);
         final AtomicReference<String> target = new AtomicReference<>(SYSTEM_OUT);
         final AtomicReference<Layout> layout = new AtomicReference<>();
-        final AtomicReference<List<Filter>> filters = new AtomicReference<>(new ArrayList<>());
+        final AtomicReference<Filter> filter = new AtomicReference<>();
         final AtomicReference<String> level = new AtomicReference<>();
         final AtomicBoolean follow = new AtomicBoolean();
         final AtomicBoolean immediateFlush = new AtomicBoolean(true);
@@ -80,7 +80,7 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
                     layout.set(config.parseLayout(currentElement));
                     break;
                 case FILTER_TAG:
-                    filters.get().add(config.parseFilters(currentElement));
+                    config.addFilter(filter, currentElement);
                     break;
                 case PARAM_TAG: {
                     switch (getNameAttributeKey(currentElement)) {
@@ -115,17 +115,7 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
                 }
             }
         });
-        Filter head = null;
-        Filter current = null;
-        for (final Filter f : filters.get()) {
-            if (head == null) {
-                head = f;
-            } else {
-                current.next = f;
-            }
-            current = f;
-        }
-        return createAppender(name, layout.get(), head, level.get(), target.get(), immediateFlush.get(), follow.get(), config);
+        return createAppender(name, layout.get(), filter.get(), level.get(), target.get(), immediateFlush.get(), follow.get(), config);
     }
 
     @Override
