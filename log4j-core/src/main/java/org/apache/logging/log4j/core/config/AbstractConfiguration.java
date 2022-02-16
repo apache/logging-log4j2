@@ -714,6 +714,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         setParents();
     }
 
+    public static Level getDefaultLevel() {
+        final String levelName = PropertiesUtil.getProperties().getStringProperty(DefaultConfiguration.DEFAULT_LEVEL,
+                Level.ERROR.name());
+        return Level.valueOf(levelName);
+    }
+
     protected void setToDefault() {
         // LOG4J2-1176 facilitate memory leak investigation
         setName(DefaultConfiguration.DEFAULT_NAME + "@" + Integer.toHexString(hashCode()));
@@ -727,11 +733,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         final LoggerConfig rootLoggerConfig = getRootLogger();
         rootLoggerConfig.addAppender(appender, null, null);
 
-        final Level defaultLevel = Level.ERROR;
-        final String levelName = PropertiesUtil.getProperties().getStringProperty(DefaultConfiguration.DEFAULT_LEVEL,
-                defaultLevel.name());
-        final Level level = Level.valueOf(levelName);
-        rootLoggerConfig.setLevel(level != null ? level : defaultLevel);
+        rootLoggerConfig.setLevel(getDefaultLevel());
     }
 
     /**

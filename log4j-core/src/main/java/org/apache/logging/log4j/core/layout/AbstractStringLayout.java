@@ -19,8 +19,10 @@ package org.apache.logging.log4j.core.layout;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
+import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
@@ -176,7 +178,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
 
     /**
      * Builds a new layout.
-     * @param config the configuration
+     * @param config the configuration. May be null.
      * @param aCharset the charset used to encode the header bytes, footer bytes and anything else that needs to be
      *      converted from strings to bytes.
      * @param headerSerializer the header bytes serializer
@@ -264,10 +266,20 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
         if (serializer == null) {
             return null;
         }
-        final LoggerConfig rootLogger = getConfiguration().getRootLogger();
+        final String loggerName;
+        final Level level;
+        if (configuration != null) {
+            final LoggerConfig rootLogger = configuration.getRootLogger();
+            loggerName = rootLogger.getName();
+            level = rootLogger.getLevel();
+        } else {
+            // null should be acceptable according to the Javadoc
+            loggerName = "";
+            level = AbstractConfiguration.getDefaultLevel();
+        }
         // Using "" for the FQCN, does it matter?
-        final LogEvent logEvent = getLogEventFactory().createEvent(rootLogger.getName(), null, Strings.EMPTY,
-                rootLogger.getLevel(), null, null, null);
+        final LogEvent logEvent = getLogEventFactory().createEvent(loggerName, null, Strings.EMPTY,
+                level, null, null, null);
         return serializer.toSerializable(logEvent);
     }
 
