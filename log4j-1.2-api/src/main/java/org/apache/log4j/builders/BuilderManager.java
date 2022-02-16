@@ -71,7 +71,7 @@ public class BuilderManager {
             String filterPrefix, Properties props, PropertiesConfiguration config) {
         Objects.requireNonNull(plugins, "plugins");
         Objects.requireNonNull(className, "className");
-        PluginType<?> plugin = plugins.get(className.toLowerCase());
+        PluginType<?> plugin = plugins.get(className.toLowerCase().trim());
         if (plugin != null) {
             AppenderBuilder builder = createBuilder(plugin, prefix, props);
             if (builder != null) {
@@ -95,7 +95,8 @@ public class BuilderManager {
     }
 
     public Filter parseFilter(String className, String filterPrefix, Properties props, PropertiesConfiguration config) {
-        PluginType<?> plugin = plugins.get(className.toLowerCase());
+        Objects.requireNonNull(className, "className");
+        PluginType<?> plugin = plugins.get(className.toLowerCase().trim());
         if (plugin != null) {
             FilterBuilder builder = createBuilder(plugin, filterPrefix, props);
             if (builder != null) {
@@ -118,7 +119,8 @@ public class BuilderManager {
         return null;
     }
     public Layout parseLayout(String className, String layoutPrefix, Properties props, PropertiesConfiguration config) {
-        PluginType<?> plugin = plugins.get(className.toLowerCase());
+        Objects.requireNonNull(className, "className");
+        PluginType<?> plugin = plugins.get(className.toLowerCase().trim());
         if (plugin != null) {
             LayoutBuilder builder = createBuilder(plugin, layoutPrefix, props);
             if (builder != null) {
@@ -141,6 +143,7 @@ public class BuilderManager {
         return null;
     }
     public RewritePolicy parseRewritePolicy(String className, String policyPrefix, Properties props, PropertiesConfiguration config) {
+        Objects.requireNonNull(className, "className");
         PluginType<?> plugin = plugins.get(className.toLowerCase());
         if (plugin != null) {
             RewritePolicyBuilder builder = createBuilder(plugin, policyPrefix, props);

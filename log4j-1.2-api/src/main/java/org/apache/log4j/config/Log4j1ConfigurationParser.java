@@ -159,7 +159,7 @@ public class Log4j1ConfigurationParser {
     }
 
     private void buildAppender(final String appenderName, final String appenderClass) {
-        switch (appenderClass) {
+        switch (appenderClass.trim()) {
         case "org.apache.log4j.ConsoleAppender":
             buildConsoleAppender(appenderName);
             break;
@@ -286,7 +286,7 @@ public class Log4j1ConfigurationParser {
     private void buildAppenderLayout(final String name, final AppenderComponentBuilder appenderBuilder) {
         final String layoutClass = getLog4jAppenderValue(name, "layout", null);
         if (layoutClass != null) {
-            switch (layoutClass) {
+            switch (layoutClass.trim()) {
             case "org.apache.log4j.PatternLayout":
             case "org.apache.log4j.EnhancedPatternLayout": {
                 String pattern = getLog4jAppenderValue(name, "layout.ConversionPattern", null);
@@ -383,7 +383,9 @@ public class Log4j1ConfigurationParser {
         final String rootLoggerLevel = getLevelString(rootLoggerParts, Level.ERROR.name());
         final RootLoggerComponentBuilder loggerBuilder = builder.newRootLogger(rootLoggerLevel);
         //
-        final String[] sortedAppenderNames = Arrays.copyOfRange(rootLoggerParts, 1, rootLoggerParts.length);
+        final String[] sortedAppenderNames = Arrays.stream(rootLoggerParts, 1, rootLoggerParts.length)
+                .map(String::trim)
+                .toArray(String[]::new);
         Arrays.sort(sortedAppenderNames);
         for (final String appender : sortedAppenderNames) {
             loggerBuilder.add(builder.newAppenderRef(appender));
