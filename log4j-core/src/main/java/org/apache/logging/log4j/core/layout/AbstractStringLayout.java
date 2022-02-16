@@ -20,6 +20,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
@@ -273,8 +274,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
             loggerName = rootLogger.getName();
             level = rootLogger.getLevel();
         } else {
-            // null should be acceptable according to the Javadoc
-            loggerName = "";
+            loggerName = LogManager.ROOT_LOGGER_NAME;
             level = AbstractConfiguration.getDefaultLevel();
         }
         // Using "" for the FQCN, does it matter?
