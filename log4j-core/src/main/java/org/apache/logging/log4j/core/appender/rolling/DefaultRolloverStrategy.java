@@ -134,7 +134,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
                 }
                 maxIndex = DEFAULT_WINDOW_SIZE;
                 if (max != null) {
-                    maxIndex = Integer.parseInt(max);
+                    maxIndex = Integer.parseInt(max.trim());
                     if (maxIndex < minIndex) {
                         maxIndex = minIndex < DEFAULT_WINDOW_SIZE ? DEFAULT_WINDOW_SIZE : minIndex;
                         LOGGER.error("Maximum window size must be greater than the minimum windows size. Set to " + maxIndex);
