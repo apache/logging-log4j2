@@ -207,7 +207,7 @@ public abstract class AbstractManager implements AutoCloseable {
     /**
      * For testing purposes.
      */
-    protected static int getManagerCount() {
+    static int getManagerCount() {
         return MAP.size();
     }
 
