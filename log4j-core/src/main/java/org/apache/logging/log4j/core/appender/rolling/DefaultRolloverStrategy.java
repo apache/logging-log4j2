@@ -141,7 +141,8 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
                     }
                 }
             }
-            final int compressionLevel = Integers.parseInt(compressionLevelStr.trim(), Deflater.DEFAULT_COMPRESSION);
+            final String trimmedCompressionLevelStr = compressionLevelStr != null ? compressionLevelStr.trim() : compressionLevelStr;
+            final int compressionLevel = Integers.parseInt(trimmedCompressionLevelStr, Deflater.DEFAULT_COMPRESSION);
             // The config object can be null when this object is built programmatically.
             final StrSubstitutor nonNullStrSubstitutor = config != null ? config.getStrSubstitutor() : new StrSubstitutor();
 			return new DefaultRolloverStrategy(minIndex, maxIndex, useMax, compressionLevel, nonNullStrSubstitutor,
