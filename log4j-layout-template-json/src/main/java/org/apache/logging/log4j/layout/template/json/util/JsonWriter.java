@@ -854,7 +854,7 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
 
     private void trimStringBuilder(final StringBuilder stringBuilder, final int length) {
         final int trimLength = Math.max(maxStringLength, length);
-        if (stringBuilder.length() > trimLength) {
+        if (stringBuilder.capacity() > trimLength) {
             stringBuilder.setLength(trimLength);
             stringBuilder.trimToSize();
         }
