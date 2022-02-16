@@ -215,6 +215,9 @@
         Possible NullPointerException in MongoDb4DocumentObject, MongoDbDocumentObject, DefaultNoSqlObject.
       </action>
       <!-- ADD -->
+      <action issue="LOG4J2-3297" dev="rgoers" type="add">
+        Limit loading of configuration via a url to https by default. 
+      </action>
       <action issue="LOG4J2-2486" dev="rgoers" type="add">
         Require log4j2.Script.enableLanguages to be specified to enable scripting for specific languages.
       </action>

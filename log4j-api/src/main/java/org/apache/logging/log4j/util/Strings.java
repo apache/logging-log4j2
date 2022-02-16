@@ -201,7 +201,7 @@ public final class Strings {
     }
 
     public static String[] splitList(String string) {
-        return string.split(COMMA_DELIMITED_RE);
+        return string != null ? string.split(COMMA_DELIMITED_RE) : new String[0];
     }
 
     /**

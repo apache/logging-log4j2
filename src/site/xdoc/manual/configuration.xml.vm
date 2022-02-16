@@ -367,6 +367,31 @@ public class Bar {
             Note that status logging is disabled when the default configuration is used.
           </p>
         </subsection>
+        <a name="Configuration From a URI"/>
+        <subsection name="Configuraton From a URI">
+          <p>
+            When <code>log4j2.configurationFile</code> references a URL Log4j will first determine if the URL reference
+            a file using the file protocol. If it does Log4j will validate that the file url is valid and continue
+            processing as previously described. If it contains a protocol other than file then Log4j will inspect
+            the value of the <code>log4j2.Configuration.allowedProtocols</code> system property. If the provided list
+            contains the protocol specified then Log4j will use the URI to locate the specified configuration file. If
+            not an exception will be thrown and an error message will be logged. If no value is provided for the
+            system property it will default to "https". Use of any protocol other than "file" can be prevented by
+            setting the system property value to "_none". This value would be an invalid protocol so cannot conflict
+            with any custom protocols that may be present.
+          </p>
+          <p>
+            Log4j supports access to remote urls that require authentication. Log4j supports basic authentication
+            out of the box. If the <code>log4j2.Configuration.username</code> and <code>log4j2.Configuration.password</code>
+            are specified those values will be used to perform the authentication. If the password is encrypted a custom
+            password decryptor may be supplied by specifying the fully qualified class name in the
+            <code>log4j2.Configuration.passwordDecryptor</code> system property. A custom
+            <code>AuthenticationProvider</code> may be used by setting the
+            <code>log4j2.Configuration.authenticationProvider</code> system property to the fully qualified class name
+            of the provider.
+          </p>
+
+        </subsection>
         <a name="Additivity"/>
         <subsection name="Additivity">
           <p>
@@ -1987,6 +2012,63 @@ public class AwesomeTest {
       Fully specified class name of a class extending <tt>org.apache.logging.log4j.core
       .config.ConfigurationFactory</tt>.
       If specified, an instance of this class is added to the list of configuration factories.
+    </td>
+  </tr>
+  <tr>
+    <td><a name="configurationAllowedProtocols"/>log4j2.Configuration.allowedProtocols
+      <br />
+      (<a name="log4j.configurationAllowedProtocols"/>log4j.configurationAllowedProtocols)
+    </td>
+    <td>LOG4J_CONFIGURATION_ALLOWED_PROTOCOLS</td>
+    <td>&nbsp;</td>
+    <td>
+      A comma separated list of the protocols that may be used to load a configuration file. The default is https.
+      To completely prevent accessing the configuration via a URL specify a value of "_none".
+    </td>
+  </tr>
+  <tr>
+    <td><a name="configurationAuthenticationProvider"/>log4j2.Configuration.authenticationProvider
+      <br />
+      (<a name="log4j.configurationAuthenticationProvider"/>log4j.configurationAuthenticationProvider
+    </td>
+    <td>LOG4J_CONFIGURATION_ALLOWED_PROTOCOLS</td>
+    <td>&nbsp;</td>
+    <td>
+      A comma separated list of the protocols that may be used to load a configuration file. The default is https.
+      To completely prevent accessing the configuration via a URL specify a value of "_none".
+    </td>
+  </tr>
+  <tr>
+    <td><a name="configurationPassword"/>log4j2.Configuration.password
+      <br />
+      (<a name="log4j.configurationPassword"/>log4j.configurationPassword
+    </td>
+    <td>LOG4J_CONFIGURATION_PASSWORD</td>
+    <td>&nbsp;</td>
+    <td>
+     The password required to access the remote logging configuration file.
+    </td>
+  </tr>
+  <tr>
+    <td><a name="configurationPasswordDecryptor"/>log4j2.Configuration.passwordDecryptor
+      <br />
+      (<a name="log4j.configurationPasswordDecryptor"/>log4j.configurationPasswordDecryptor
+    </td>
+    <td>LOG4J_CONFIGURATION_PASSWORD_DECRYPTOR</td>
+    <td>&nbsp;</td>
+    <td>
+      If the password is encrypted this class will be used to decrypt it.
+    </td>
+  </tr>
+  <tr>
+    <td><a name="configurationUsername"/>log4j2.Configuration.username
+      <br />
+      (<a name="log4j.configurationUsername"/>log4j.configurationUsername
+    </td>
+    <td>LOG4J_CONFIGURATION_USERNAME</td>
+    <td>&nbsp;</td>
+    <td>
+      The user name required to access the remote logging configuration file.
     </td>
   </tr>
   <tr>

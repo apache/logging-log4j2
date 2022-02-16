@@ -118,6 +118,12 @@
         "new": "method org.apache.logging.log4j.core.config.Property org.apache.logging.log4j.core.config.Property::createProperty(java.lang.String, java.lang.String)",
         "annotation": "@org.apache.logging.log4j.core.config.plugins.PluginFactory",
         "justification": "LOG4J2-3317: Fix RoutingAppender backcompat while improving lookup security"
+      },
+      {
+        "code": "java.field.constantValueChanged",
+        "old": "field org.apache.logging.log4j.core.config.ConfigurationFactory.AUTHORIZATION_PROVIDER",
+        "new": "field org.apache.logging.log4j.core.config.ConfigurationFactory.AUTHORIZATION_PROVIDER",
+        "justification": "Added support for a second prefix"
       }
     ]
   }
