@@ -57,10 +57,8 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
 
         @Override
         public OutputStreamAppender build() {
-            final Layout<? extends Serializable> layout = getLayout();
-            final Layout<? extends Serializable> actualLayout = layout == null ? PatternLayout.createDefaultLayout()
-                    : layout;
-            return new OutputStreamAppender(getName(), actualLayout, getFilter(), getManager(target, follow, actualLayout),
+            final Layout<? extends Serializable> layout = getOrCreateLayout();
+            return new OutputStreamAppender(getName(), layout, getFilter(), getManager(target, follow, layout),
                     ignoreExceptions, getPropertyArray());
         }
 
