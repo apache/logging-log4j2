@@ -124,7 +124,10 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
         final Properties levelProps = PropertiesUtil.extractSubset(rootProperties, "customLevel");
         if (levelProps.size() > 0) {
             for (final String key : levelProps.stringPropertyNames()) {
+             if(key.endsWith("intLevel"))
                 builder.add(builder.newCustomLevel(key, Integer.parseInt(levelProps.getProperty(key))));
+             else
+                builder.add(builder.newCustomLevel(key, levelProps.getProperty(key)));
             }
         }
 
