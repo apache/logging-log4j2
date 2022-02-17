@@ -2027,15 +2027,14 @@ public class AwesomeTest {
     </td>
   </tr>
   <tr>
-    <td><a name="configurationAuthenticationProvider"/>log4j2.Configuration.authenticationProvider
+    <td><a name="configurationAuthorizationProvider"/>log4j2.Configuration.authorizationProvider
       <br />
-      (<a name="log4j.configurationAuthenticationProvider"/>log4j.configurationAuthenticationProvider
+      (<a name="log4j.configurationAuthorizationProvider"/>log4j.configurationAuthorizationProvider
     </td>
-    <td>LOG4J_CONFIGURATION_ALLOWED_PROTOCOLS</td>
-    <td>&nbsp;</td>
+    <td>LOG4J_CONFIGURATION_AUTHORIZATION_PROVIDER</td>
+    <td>org.apache.logging.log4j.core.util.BasicAuthorizationProvider</td>
     <td>
-      A comma separated list of the protocols that may be used to load a configuration file. The default is https.
-      To completely prevent accessing the configuration via a URL specify a value of "_none".
+      The fully qualified class name of the AuthorizationProvider.
     </td>
   </tr>
   <tr>
