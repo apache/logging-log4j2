@@ -28,7 +28,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * Provides the Basic Authorization header to a request.
  */
 public class BasicAuthorizationProvider implements AuthorizationProvider {
-    private static final String[] PREFIXES = {"log4j2.config.", "logging.auth."};
+    private static final String[] PREFIXES = {"log4j2.config.", "log4j2.Configuration.", "logging.auth."};
     private static final String AUTH_USER_NAME = "username";
     private static final String AUTH_PASSWORD = "password";
     private static final String AUTH_PASSWORD_DECRYPTOR = "passwordDecryptor";

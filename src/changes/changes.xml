@@ -303,6 +303,9 @@
         Fix log4j-jakarta-web service file #723.
       </action>
       <!-- ADD -->
+      <action issue="LOG4J2-3297" dev="rgoers" type="add">
+        Limit loading of configuration via a url to https by default.
+      </action>
       <action type="add" dev="rgoers" issue="LOG4J2-3341">
         Add shorthand syntax for properties configuration format for specifying a logger level and appender refs.
       </action>

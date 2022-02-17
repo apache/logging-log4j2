@@ -355,6 +355,28 @@ trace will result in results similar to:
 Note that status logging is disabled when the default configuration is
 used.
 
+[#Configuration_From_a_URI]
+== Configuraton From a URI
+
+When `log4j2.configurationFile` references a URL Log4j will first determine if the URL reference
+a file using the file protocol. If it does Log4j will validate that the file url is valid and continue
+processing as previously described. If it contains a protocol other than file then Log4j will inspect
+the value of the `log4j2.Configuration.allowedProtocols` system property. If the provided list
+contains the protocol specified then Log4j will use the URI to locate the specified configuration file. If
+not an exception will be thrown and an error message will be logged. If no value is provided for the
+system property it will default to "https". Use of any protocol other than "file" can be prevented by
+setting the system property value to "_none". This value would be an invalid protocol so cannot conflict
+with any custom protocols that may be present.
+
+Log4j supports access to remote urls that require authentication. Log4j supports basic authentication
+out of the box. If the `log4j2.Configuration.username` and `log4j2.Configuration.password`
+are specified those values will be used to perform the authentication. If the password is encrypted a custom
+password decryptor may be supplied by specifying the fully qualified class name in the
+`log4j2.Configuration.passwordDecryptor` system property. A custom
+`AuthenticationProvider` may be used by setting the
+`log4j2.Configuration.authenticationProvider` system property to the fully qualified class name
+of the provider.
+
 [#Additivity]
 == Additivity
 
@@ -1960,6 +1982,37 @@ extending
 `org.apache.logging.log4j.core .config.ConfigurationFactory`.
 If specified, an instance of this class is added to the list of
 configuration factories.
+
+|[[configurationAllowedProtocols]]log4j2.Configuration.allowedProtocols +
+([[log4j.configurationAllowedProtocols]]log4j.configurationAllowedProtocols)
+|LOG4J_CONFIGURATION_ALLOWED_PROTOCOLS
+| 
+|A comma separated list of the protocols that may be used to load a configuration file. The default is https.
+To completely prevent accessing the configuration via a URL specify a value of "_none".
+
+|[[configurationAuthorizationProvider]]log4j2.Configuration.authorizationProvider +
+([[log4j.configurationAuthorizationProvider]]log4j.configurationAuthorizationProvider)
+|LOG4J_CONFIGURATION_AUTHORIZATION_PROVIDER
+|org.apache.logging.log4j.core.util.BasicAuthorizationProvider
+|The fully qualified class name of the AuthorizationProvider.
+
+|[[configurationPassword]]log4j2.Configuration.password +
+([[log4j.configurationPassword]]log4j.configurationPassword)
+|LOG4J_CONFIGURATION_PASSWORD
+| 
+|The password required to access the remote logging configuration file.
+
+|[[configurationPasswordDecryptor]]log4j2.Configuration.passwordDecryptor +
+([[log4j.configurationPasswordDecryptor]]log4j.configurationPasswordDecryptor)
+|LOG4J_CONFIGURATION_DECRYPTOR
+| 
+|If the password is encrypted this class will be used to decrypt it.
+
+|[[configurationUsername]]log4j2.Configuration.username+
+([[log4j.configurationUsername]]log4j.configurationUsername)
+|LOG4J_CONFIGURATION_USERNAME
+| 
+|The user name required to access the remote logging configuration file.
 
 |[[shutdownHookEnabled]]log4j2.shutdownHookEnabled +
 ([[log4j.shutdownHookEnabled]]log4j.shutdownHookEnabled)

@@ -18,8 +18,14 @@ package org.apache.logging.log4j.core.net;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Properties;
+import java.util.Set;
 import javax.net.ssl.HttpsURLConnection;
 
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -27,6 +33,9 @@ import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
 import org.apache.logging.log4j.core.util.AuthorizationProvider;
+import org.apache.logging.log4j.core.util.BasicAuthorizationProvider;
+import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Constructs an HTTPURLConnection. This class should be considered to be internal
@@ -42,11 +51,26 @@ public class UrlConnectionFactory {
     private static final String TEXT = "text/plain";
     private static final String HTTP = "http";
     private static final String HTTPS = "https";
+    private static final String NO_PROTOCOLS = "_none";
+    public static final String ALLOWED_PROTOCOLS = "log4j2.Configuration.allowedProtocols";
 
     public static HttpURLConnection createConnection(final URL url, final long lastModifiedMillis, final SslConfiguration sslConfiguration)
         throws IOException {
+        PropertiesUtil props = PropertiesUtil.getProperties();
+        List<String> allowed = Arrays.asList(Strings.splitList(props
+                .getStringProperty(ALLOWED_PROTOCOLS, HTTPS).toLowerCase(Locale.ROOT)));
+        if (allowed.size() == 1 && NO_PROTOCOLS.equals(allowed.get(0))) {
+            throw new ProtocolException("No external protocols have been enabled");
+        }
+        String protocol = url.getProtocol();
+        if (protocol == null) {
+            throw new ProtocolException("No protocol was specified on " + url.toString());
+        }
+        if (!allowed.contains(protocol)) {
+            throw new ProtocolException("Protocol " + protocol + " has not been enabled as an allowed protocol");
+        }
         final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-        final AuthorizationProvider provider = ConfigurationFactory.getAuthorizationProvider();
+        final AuthorizationProvider provider = ConfigurationFactory.authorizationProvider(props);
         if (provider != null) {
             provider.addAuthorization(urlConnection);
         }

@@ -81,6 +81,16 @@ public class StringsTest {
     }
 
     @Test
+    public void splitList() {
+        String[] list = Strings.splitList("1, 2, 3");
+        assertEquals(3, list.length);
+        list = Strings.splitList("");
+        assertEquals(1, list.length);
+        list = Strings.splitList(null);
+        assertEquals(0, list.length);
+    }
+
+    @Test
     public void testQuote() {
         assertEquals("'Q'", Strings.quote("Q"));
     }
