@@ -264,7 +264,7 @@
     <revapi.plugin.version>0.11.1</revapi.plugin.version>
     <revapi.skip>false</revapi.skip>
     <clirr.plugin.version>2.8</clirr.plugin.version>
-    <site.plugin.version>3.8.2</site.plugin.version>
+    <site.plugin.version>3.11.0</site.plugin.version>
     <!-- Maven site depends on Velocity and the escaping rules are different in newer versions. -->
     <!-- See https://maven.apache.org/plugins/maven-site-plugin/migrate.html -->
     <velocity.plugin.version>1.5</velocity.plugin.version>
