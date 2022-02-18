@@ -436,6 +436,10 @@ public class PropertiesConfiguration extends Log4j1Configuration {
         final String layoutPrefix = prefix + ".layout";
         final String filterPrefix = APPENDER_PREFIX + appenderName + ".filter.";
         final String className = OptionConverter.findAndSubst(prefix, props);
+        if (className == null) {
+            LOGGER.debug("Appender \"" + appenderName + "\" does not exist.");
+            return null;
+        }
         appender = manager.parseAppender(appenderName, className, prefix, layoutPrefix, filterPrefix, props, this);
         if (appender == null) {
             appender = buildAppender(appenderName, className, prefix, layoutPrefix, filterPrefix, props);
@@ -505,7 +509,7 @@ public class PropertiesConfiguration extends Log4j1Configuration {
         final ErrorHandler eh = newInstanceOf(errorHandlerClass, "ErrorHandler");
         final String[] keys = new String[] {
             // @formatter:off
-            errorHandlerPrefix + "." + ROOT_REF, 
+            errorHandlerPrefix + "." + ROOT_REF,
             errorHandlerPrefix + "." + LOGGER_REF,
             errorHandlerPrefix + "." + APPENDER_REF_TAG};
             // @formatter:on
