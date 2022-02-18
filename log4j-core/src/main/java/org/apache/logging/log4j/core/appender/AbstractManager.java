@@ -205,6 +205,13 @@ public abstract class AbstractManager implements AutoCloseable {
     }
 
     /**
+     * For testing purposes.
+     */
+    static int getManagerCount() {
+        return MAP.size();
+    }
+
+    /**
      * May be overridden by managers to perform processing while the manager is being released and the
      * lock is held. A timeout is passed for implementors to use as they see fit.
      * @param timeout timeout

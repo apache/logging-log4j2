@@ -25,7 +25,6 @@ import java.util.Map;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -243,7 +242,7 @@ public final class PatternLayout extends AbstractStringLayout {
 
     /**
      * Creates a PatternParser.
-     * @param config The Configuration.
+     * @param config The Configuration or {@code null}.
      * @return The PatternParser.
      */
     public static PatternParser createPatternParser(final Configuration config) {
@@ -763,10 +762,7 @@ public final class PatternLayout extends AbstractStringLayout {
 
         @Override
         public PatternLayout build() {
-            // fall back to DefaultConfiguration
-            if (configuration == null) {
-                configuration = new DefaultConfiguration();
-            }
+            // should work with a null configuration
             return new PatternLayout(configuration, regexReplacement, pattern, patternSelector, charset,
                 alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi, header, footer);
         }
