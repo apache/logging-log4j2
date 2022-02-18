@@ -595,7 +595,8 @@ logger.info(PERFORMANCE, "Message in Performance.log");]]></pre>
             first active profile in the list specify "profiles.active[0]".
           </p>
           <p>
-            This Lookup will return null values until Spring Boot initializes application logging.
+            This Lookup will return null values until Spring Boot initializes application logging. The Spring Boot
+            Lookup requires the <code>log4j-spring-boot</code> jar be included as a dependency.
           </p>
           <pre class="prettyprint linenums"><![CDATA[
 <File name="Application" fileName="application-${spring:profiles.active[0]}.log">
