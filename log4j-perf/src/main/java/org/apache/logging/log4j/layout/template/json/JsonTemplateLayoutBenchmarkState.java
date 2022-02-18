@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
-import co.elastic.logging.log4j2.EcsLayout;
 import co.elastic.logging.log4j2.LcsLayout;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -36,12 +35,14 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-@State(Scope.Benchmark)
+@State(Scope.Thread)
 public class JsonTemplateLayoutBenchmarkState {
 
     private static final Configuration CONFIGURATION = new DefaultConfiguration();
 
     private static final Charset CHARSET = StandardCharsets.UTF_8;
+
+    private static final int LOG_EVENT_COUNT = 1_000;
 
     private final ByteBufferDestination byteBufferDestination;
 
@@ -63,6 +64,8 @@ public class JsonTemplateLayoutBenchmarkState {
 
     private final List<LogEvent> liteLogEvents;
 
+    private int logEventIndex = 0;
+
     public JsonTemplateLayoutBenchmarkState() {
         this.byteBufferDestination = new BlackHoleByteBufferDestination(1024 * 512);
         this.jsonTemplateLayout4JsonLayout = createJsonTemplateLayout4JsonLayout();
@@ -72,9 +75,8 @@ public class JsonTemplateLayoutBenchmarkState {
         this.customJsonLayout = createCustomJsonLayout();
         this.ecsLayout = createEcsLayout();
         this.gelfLayout = createGelfLayout();
-        int logEventCount = 1_000;
-        this.fullLogEvents = LogEventFixture.createFullLogEvents(logEventCount);
-        this.liteLogEvents = LogEventFixture.createLiteLogEvents(logEventCount);
+        this.fullLogEvents = LogEventFixture.createFullLogEvents(LOG_EVENT_COUNT);
+        this.liteLogEvents = LogEventFixture.createLiteLogEvents(LOG_EVENT_COUNT);
     }
 
     private static JsonTemplateLayout createJsonTemplateLayout4JsonLayout() {
@@ -210,6 +212,12 @@ public class JsonTemplateLayoutBenchmarkState {
 
     List<LogEvent> getLiteLogEvents() {
         return liteLogEvents;
+    }
+
+    int nextLogEventIndex() {
+        final int currentLogEventIndex = logEventIndex;
+        logEventIndex = (logEventIndex + 1) % LOG_EVENT_COUNT;
+        return currentLogEventIndex;
     }
 
 }

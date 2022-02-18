@@ -37,8 +37,10 @@ class BlackHoleByteBufferDestination implements ByteBufferDestination {
     @Override
     public ByteBuffer drain(final ByteBuffer byteBuffer) {
         byteBuffer.flip();
-        this.byteBuffer.clear();
-        this.byteBuffer.put(byteBuffer);
+        if (this.byteBuffer != byteBuffer) {
+            this.byteBuffer.clear();
+            this.byteBuffer.put(byteBuffer);
+        }
         byteBuffer.clear();
         return byteBuffer;
     }
