@@ -31,6 +31,9 @@
     -->
     <release version="2.17.2" date="20YY-MM-DD" description="GA Release 2.17.2">
       <!-- FIXES -->
+      <action issue="LOG4J2-3404" dev="ckozak" type="fix" due-to="Piotr Karwasz">
+        Fix DefaultConfiguration leak in PatternLayout
+      </action>
       <action issue="LOG4J2-3405" dev="rgoers" type="fix">
         Document that the Spring Boot Lookup requires the log4j-spring-boot dependency.
       </action>
