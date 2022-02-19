@@ -32,7 +32,6 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.bridge.AppenderAdapter;
 import org.apache.log4j.bridge.FilterAdapter;
-import org.apache.log4j.bridge.FilterWrapper;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
@@ -118,9 +117,9 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
             final Filterable filterable = (Filterable) appender;
             final CompositeFilter filter = (CompositeFilter) filterable.getFilter();
             final org.apache.logging.log4j.core.Filter[] filters = filter.getFiltersArray();
-            final LevelRangeFilter customFilterReal = (LevelRangeFilter) ((FilterWrapper) ((FilterAdapter) filters[0]).getFilter()).getFilter();
+            final LevelRangeFilter customFilterReal = (LevelRangeFilter) filters[0];
             assertEquals(Level.ALL, customFilterReal.getMinLevel());
-            final LevelRangeFilter defaultFilter = (LevelRangeFilter) ((FilterWrapper) ((FilterAdapter) filters[1]).getFilter()).getFilter();
+            final LevelRangeFilter defaultFilter = (LevelRangeFilter) filters[1];
             assertEquals(Level.TRACE, defaultFilter.getMinLevel());
       }
     }
@@ -183,6 +182,7 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
             System.clearProperty(TEST_KEY);
         }
     }
+
 
     @Override
     @Test
@@ -266,5 +266,11 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
     @Test
     public void testDefaultValues() throws Exception {
         super.testDefaultValues();
+    }
+
+    @Override
+    @Test
+    public void testMultipleFilters() throws Exception {
+        super.testMultipleFilters();
     }
 }

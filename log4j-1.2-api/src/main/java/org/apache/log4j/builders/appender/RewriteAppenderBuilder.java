@@ -86,7 +86,7 @@ public class RewriteAppenderBuilder extends AbstractBuilder implements AppenderB
                     }
                     break;
                 case FILTER_TAG:
-                    filter.set(config.parseFilters(currentElement));
+                    config.addFilter(filter, currentElement);
                     break;
                 case PARAM_TAG:
                     if (getNameAttributeKey(currentElement).equalsIgnoreCase(THRESHOLD_PARAM)) {

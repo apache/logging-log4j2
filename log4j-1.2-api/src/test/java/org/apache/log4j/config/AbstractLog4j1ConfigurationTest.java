@@ -17,7 +17,9 @@
 package org.apache.log4j.config;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -33,9 +35,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.log4j.ListAppender;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.bridge.FilterAdapter;
+import org.apache.log4j.bridge.FilterWrapper;
+import org.apache.log4j.bridge.AppenderAdapter.Adapter;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.appender.ConsoleAppender.Target;
 import org.apache.logging.log4j.core.appender.FileAppender;
@@ -49,14 +58,27 @@ import org.apache.logging.log4j.core.appender.rolling.SizeBasedTriggeringPolicy;
 import org.apache.logging.log4j.core.appender.rolling.TimeBasedTriggeringPolicy;
 import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.filter.CompositeFilter;
+import org.apache.logging.log4j.core.filter.Filterable;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 
 public abstract class AbstractLog4j1ConfigurationTest {
 
+    @Rule
+    public TemporaryFolder tempFolder = TemporaryFolder.builder().assureDeletion().build();
+
     abstract Configuration getConfiguration(String configResourcePrefix) throws URISyntaxException, IOException;
+
+    private LoggerContext configure(String configResourcePrefix) throws URISyntaxException, IOException {
+        Configurator.reconfigure(getConfiguration(configResourcePrefix));
+        return (LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
+    }
 
     public void testConsoleCapitalization() throws Exception {
         final Configuration config = getConfiguration("config-1.2/log4j-capitalization");
@@ -307,7 +329,7 @@ public abstract class AbstractLog4j1ConfigurationTest {
             final Field appendField = FileOutputStream.class.getDeclaredField("append");
             appendField.setAccessible(true);
             return (Boolean) appendField.get(os);
-        } catch (NoSuchFieldError e) {
+        } catch (NoSuchFieldError | NoSuchFieldException e) {
             // Java 11
             final Field appendField = FileDescriptor.class.getDeclaredField("append");
             appendField.setAccessible(true);
@@ -384,5 +406,105 @@ public abstract class AbstractLog4j1ConfigurationTest {
         assertEquals("immediateFlush", true, rollingFileAppender.getImmediateFlush());
         config.start();
         config.stop();
+    }
+
+    /**
+     * Checks a hierarchy of filters.
+     * 
+     * @param filter
+     * @return the number of filters
+     */
+    private int checkFilters(final org.apache.logging.log4j.core.Filter filter) {
+        int count = 0;
+        if (filter instanceof CompositeFilter) {
+            for (final org.apache.logging.log4j.core.Filter part : ((CompositeFilter) filter).getFiltersArray()) {
+                count += checkFilters(part);
+            }
+        } else if (filter instanceof FilterAdapter) {
+            // Don't create adapters from wrappers
+            assertFalse("found FilterAdapter of a FilterWrapper", ((FilterAdapter) filter).getFilter() instanceof FilterWrapper);
+            count += checkFilters(((FilterAdapter) filter).getFilter());
+        } else {
+            count++;
+        }
+        return count;
+    }
+
+    /**
+     * Checks a hierarchy of filters.
+     * 
+     * @param filter
+     * @return the number of filters
+     */
+    private int checkFilters(final org.apache.log4j.spi.Filter filter) {
+        int count = 0;
+        if (filter instanceof FilterWrapper) {
+            // Don't create wrappers from adapters
+            assertFalse("found FilterWrapper of a FilterAdapter", ((FilterWrapper) filter).getFilter() instanceof FilterAdapter);
+            count += checkFilters(((FilterWrapper) filter).getFilter());
+        } else {
+            count++;
+        }
+        // We prefer a:
+        // CompositeFilter of native Log4j 2.x filters
+        // over a:
+        // FilterAdapter of a chain of FilterWrappers.
+        assertNull("found chain of Log4j 1.x filters", filter.getNext());
+        return count;
+    }
+
+    public void testMultipleFilters() throws Exception {
+        final File folder = tempFolder.newFolder();
+        System.setProperty("test.tmpDir", folder.getCanonicalPath());
+        try (LoggerContext loggerContext = configure("log4j-multipleFilters")) {
+            final Configuration configuration = loggerContext.getConfiguration();
+            assertNotNull(configuration);
+            // Check only number of filters.
+            final Filterable console = configuration.getAppender("CONSOLE");
+            assertNotNull(console);
+            assertEquals(4, checkFilters(console.getFilter()));
+            final Filterable file = configuration.getAppender("FILE");
+            assertNotNull(file);
+            assertEquals(4, checkFilters(file.getFilter()));
+            final Filterable rfa = configuration.getAppender("RFA");
+            assertNotNull(rfa);
+            assertEquals(4, checkFilters(rfa.getFilter()));
+            final Filterable drfa = configuration.getAppender("DRFA");
+            assertNotNull(drfa);
+            assertEquals(4, checkFilters(drfa.getFilter()));
+            // List appenders
+            final Appender appender = configuration.getAppender("LIST");
+            assertNotNull(appender);
+            assertEquals(3, checkFilters(((Filterable)appender).getFilter()));
+            final ListAppender legacyAppender = (ListAppender) ((Adapter) appender).getAppender();
+            final org.apache.logging.log4j.test.appender.ListAppender nativeAppender = configuration.getAppender("LIST2");
+            assertEquals(3, checkFilters(((Filterable)nativeAppender).getFilter()));
+            final Logger logger = LogManager.getLogger(PropertiesConfigurationTest.class);
+            int expected = 0;
+            // message blocked by Threshold
+            logger.trace("NEUTRAL message");
+            assertEquals(expected, legacyAppender.getEvents().size());
+            assertEquals(expected, nativeAppender.getEvents().size());
+            // message blocked by DenyAll filter
+            logger.warn("NEUTRAL message");
+            assertEquals(expected, legacyAppender.getEvents().size());
+            assertEquals(expected, nativeAppender.getEvents().size());
+            // message accepted by level filter
+            logger.info("NEUTRAL message");
+            expected++;
+            assertEquals(expected, legacyAppender.getEvents().size());
+            assertEquals(expected, nativeAppender.getEvents().size());
+            // message accepted by "StartsWith" filter
+            logger.warn("ACCEPT message");
+            expected++;
+            assertEquals(expected, legacyAppender.getEvents().size());
+            assertEquals(expected, nativeAppender.getEvents().size());
+            // message blocked by "StartsWith" filter
+            logger.info("DENY message");
+            assertEquals(expected, legacyAppender.getEvents().size());
+            assertEquals(expected, nativeAppender.getEvents().size());
+        } finally {
+            System.clearProperty("test.tmpDir");
+        }
     }
 }

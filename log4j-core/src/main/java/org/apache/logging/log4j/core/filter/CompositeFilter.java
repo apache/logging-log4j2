@@ -62,9 +62,9 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
         if (filter instanceof CompositeFilter) {
             final int size = this.filters.length + ((CompositeFilter) filter).size();
             final Filter[] copy = Arrays.copyOf(this.filters, size);
-            final int index = this.filters.length;
+            int index = this.filters.length;
             for (final Filter currentFilter : ((CompositeFilter) filter).filters) {
-                copy[index] = currentFilter;
+                copy[index++] = currentFilter;
             }
             return new CompositeFilter(copy);
         }

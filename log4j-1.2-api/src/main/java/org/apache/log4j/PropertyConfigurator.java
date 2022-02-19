@@ -30,6 +30,7 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import org.apache.log4j.bridge.FilterAdapter;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.config.PropertySetter;
 import org.apache.log4j.helpers.FileWatchdog;
@@ -520,6 +521,7 @@ public class PropertyConfigurator implements Configurator {
         // sort filters by IDs, insantiate filters, set filter options,
         // add filters to the appender
         final Enumeration g = new SortedKeyEnumeration(filters);
+        Filter head = null;
         while (g.hasMoreElements()) {
             final String key = (String) g.nextElement();
             final String clazz = properties.getProperty(key);
@@ -536,12 +538,13 @@ public class PropertyConfigurator implements Configurator {
                     }
                     propSetter.activate();
                     LogLog.debug("Adding filter of type [" + filter.getClass() + "] to appender named [" + appender.getName() + "].");
-                    appender.addFilter(filter);
+                    head = FilterAdapter.addFilter(head, filter);
                 }
             } else {
                 LogLog.warn("Missing class definition for filter: [" + key + "]");
             }
         }
+        appender.addFilter(head);
     }
 
     /**

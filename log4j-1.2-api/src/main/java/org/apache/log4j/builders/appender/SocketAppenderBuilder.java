@@ -101,7 +101,7 @@ public class SocketAppenderBuilder extends AbstractBuilder implements AppenderBu
         final AtomicInteger port = new AtomicInteger(DEFAULT_PORT);
         final AtomicInteger reconnectDelay = new AtomicInteger(DEFAULT_RECONNECTION_DELAY);
         final AtomicReference<Layout> layout = new AtomicReference<>();
-        final AtomicReference<List<Filter>> filters = new AtomicReference<>(new ArrayList<>());
+        final AtomicReference<Filter> filter = new AtomicReference<>();
         final AtomicReference<String> level = new AtomicReference<>();
         final AtomicBoolean immediateFlush = new AtomicBoolean(true);
         forEachElement(appenderElement.getChildNodes(), currentElement -> {
@@ -110,7 +110,7 @@ public class SocketAppenderBuilder extends AbstractBuilder implements AppenderBu
                 layout.set(config.parseLayout(currentElement));
                 break;
             case FILTER_TAG:
-                filters.get().add(config.parseFilters(currentElement));
+                config.addFilter(filter, currentElement);
                 break;
             case PARAM_TAG:
                 switch (getNameAttributeKey(currentElement)) {
@@ -133,17 +133,7 @@ public class SocketAppenderBuilder extends AbstractBuilder implements AppenderBu
                 break;
             }
         });
-        Filter head = null;
-        Filter current = null;
-        for (final Filter f : filters.get()) {
-            if (head == null) {
-                head = f;
-            } else {
-                current.next = f;
-            }
-            current = f;
-        }
-        return createAppender(name, host.get(), port.get(), layout.get(), head, level.get(), immediateFlush.get(), reconnectDelay.get(), config);
+        return createAppender(name, host.get(), port.get(), layout.get(), filter.get(), level.get(), immediateFlush.get(), reconnectDelay.get(), config);
     }
 
     @Override
