@@ -162,7 +162,7 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
             port.set(DEFAULT_PORT);
         } else if (parts.length == 2) {
             host.set(parts[0]);
-            port.set(Integer.parseInt(parts[1]));
+            port.set(Integer.parseInt(parts[1].trim()));
         } else {
             LOGGER.warn("Invalid {} setting: {}. Using default.", SYSLOG_HOST_PARAM, syslogHost);
             host.set(DEFAULT_HOST);

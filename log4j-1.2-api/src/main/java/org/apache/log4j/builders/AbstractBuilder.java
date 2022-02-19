@@ -137,7 +137,7 @@ public abstract class AbstractBuilder implements Builder {
         String value = properties.getProperty(prefix + toJavaKey(key));
         value = value != null ? value : properties.getProperty(prefix + toBeanKey(key), defaultValue);
         value = value != null ? substVars(value) : defaultValue;
-        return value != null ? value : defaultValue;
+        return value != null ? value.trim() : defaultValue;
     }
 
     protected String getValueAttribute(final Element element) {
@@ -146,7 +146,7 @@ public abstract class AbstractBuilder implements Builder {
 
     protected String getValueAttribute(final Element element, final String defaultValue) {
         final String attribute = element.getAttribute(VALUE_ATTR);
-        return substVars(attribute != null ? attribute : defaultValue);
+        return substVars(attribute != null ? attribute.trim() : defaultValue);
     }
 
     protected String substVars(final String value) {
