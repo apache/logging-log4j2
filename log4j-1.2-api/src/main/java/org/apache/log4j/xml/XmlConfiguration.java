@@ -638,17 +638,15 @@ public class XmlConfiguration extends Log4j1Configuration {
 
             propSetter.activate();
             return layout;
-        } catch (ConsumerException ce) {
-            Throwable cause = ce.getCause();
-            if (cause instanceof InterruptedException || cause instanceof InterruptedIOException) {
+        } catch (Exception e) {
+            Throwable cause = e.getCause();
+            if (e instanceof InterruptedException 
+                || e instanceof InterruptedIOException 
+                || cause instanceof InterruptedException
+                || cause instanceof InterruptedIOException) {
                 Thread.currentThread().interrupt();
             }
-            LOGGER.error("Could not create the Layout. Reported error follows.", cause);
-        } catch (Exception oops) {
-            if (oops instanceof InterruptedException || oops instanceof InterruptedIOException) {
-                Thread.currentThread().interrupt();
-            }
-            LOGGER.error("Could not create the Layout. Reported error follows.", oops);
+            LOGGER.error("Could not create the Layout. Reported error follows.", e);
         }
         return null;
     }
