@@ -58,7 +58,7 @@ import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.ServiceLoaderUtil;
+import org.apache.logging.log4j.util.ServiceRegistry;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -151,7 +151,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         // The loggerContext is null for the NullConfiguration class.
         // this.loggerContext = new WeakReference(Objects.requireNonNull(loggerContext, "loggerContext is null"));
         this.configurationSource = Objects.requireNonNull(configurationSource, "configurationSource is null");
-        injector = loggerContext != null ? loggerContext.getInjector() : DI.createInjectorFromServiceLoader();
+        if (loggerContext != null) {
+            injector = loggerContext.getInjector();
+        } else {
+            injector = DI.createInjector();
+            injector.init(this);
+        }
         componentMap.put(Configuration.CONTEXT_PROPERTIES, properties);
         pluginManager = new PluginManager(Node.CATEGORY);
         configurationScheduler = injector.getInstance(ConfigurationScheduler.class);
@@ -227,10 +232,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         runtimeStrSubstitutor.setConfiguration(this);
         configurationStrSubstitutor.setConfiguration(this);
         try {
-            ServiceLoaderUtil.loadServices(ScriptManagerFactory.class,
-                            layer -> ServiceLoader.load(layer, ScriptManagerFactory.class),
-                            null).stream().findFirst().ifPresent(scriptManagerFactory ->
-                    scriptManager = scriptManagerFactory.createScriptManager(this, watchManager));
+            ServiceRegistry.getInstance()
+                    .getServices(ScriptManagerFactory.class, layer -> ServiceLoader.load(layer, ScriptManagerFactory.class),
+                            null)
+                    .stream()
+                    .findFirst()
+                    .ifPresent(scriptManagerFactory -> scriptManager =
+                            scriptManagerFactory.createScriptManager(this, watchManager));
         } catch (final LinkageError | Exception e) {
             // LOG4J2-1920 ScriptEngineManager is not available in Android
             LOGGER.info("Cannot initialize scripting support because this JRE does not support it.", e);
