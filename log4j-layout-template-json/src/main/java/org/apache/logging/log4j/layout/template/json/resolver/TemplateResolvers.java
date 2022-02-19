@@ -51,30 +51,44 @@ public final class TemplateResolvers {
     }
 
     private static final TemplateResolver<?> EMPTY_ARRAY_RESOLVER =
-            new UnresolvableTemplateResolver() {
-                @Override
-                public void resolve(final Object value, final JsonWriter jsonWriter) {
-                    jsonWriter.writeArrayStart();
-                    jsonWriter.writeArrayEnd();
-                }
-            };
+            new EmptyArrayResolver();
+
+    private static final class EmptyArrayResolver
+            extends UnresolvableTemplateResolver {
+
+        @Override
+        public void resolve(final Object value, final JsonWriter jsonWriter) {
+            jsonWriter.writeArrayStart();
+            jsonWriter.writeArrayEnd();
+        }
+
+    }
 
     private static final TemplateResolver<?> EMPTY_OBJECT_RESOLVER =
-            new UnresolvableTemplateResolver() {
-                @Override
-                public void resolve(final Object value, final JsonWriter jsonWriter) {
-                    jsonWriter.writeObjectStart();
-                    jsonWriter.writeObjectEnd();
-                }
-            };
+            new EmptyObjectResolver();
 
-    private static final TemplateResolver<?> NULL_RESOLVER =
-            new UnresolvableTemplateResolver() {
-                @Override
-                public void resolve(final Object value, final JsonWriter jsonWriter) {
-                    jsonWriter.writeNull();
-                }
-            };
+    private static final class EmptyObjectResolver
+            extends UnresolvableTemplateResolver {
+
+        @Override
+        public void resolve(final Object value, final JsonWriter jsonWriter) {
+            jsonWriter.writeObjectStart();
+            jsonWriter.writeObjectEnd();
+        }
+
+    }
+
+    private static final TemplateResolver<?> NULL_RESOLVER = new NullResolver();
+
+    private static final class NullResolver
+            extends UnresolvableTemplateResolver {
+
+        @Override
+        public void resolve(final Object value, final JsonWriter jsonWriter) {
+            jsonWriter.writeNull();
+        }
+
+    }
 
     public static <V, C extends TemplateResolverContext<V, C>> TemplateResolver<V> ofTemplate(
             final C context,
@@ -146,7 +160,7 @@ public final class TemplateResolvers {
             final C context,
             final List<Object> list) {
 
-        // Create resolver for each children.
+        // Create resolver for each child.
         final List<TemplateResolver<V>> itemResolvers = list
                 .stream()
                 .map(item -> {
@@ -168,7 +182,20 @@ public final class TemplateResolvers {
         }
 
         // Create a parent resolver collecting each child resolver execution.
-        return (final V value, final JsonWriter jsonWriter) -> {
+        return new ArrayResolver<>(itemResolvers);
+
+    }
+
+    private static final class ArrayResolver<V> implements TemplateResolver<V> {
+
+        private final List<TemplateResolver<V>> itemResolvers;
+
+        private ArrayResolver(final List<TemplateResolver<V>> itemResolvers) {
+            this.itemResolvers = itemResolvers;
+        }
+
+        @Override
+        public void resolve(final V value, final JsonWriter jsonWriter) {
             jsonWriter.writeArrayStart();
             for (int itemResolverIndex = 0;
                  itemResolverIndex < itemResolvers.size();
@@ -176,11 +203,12 @@ public final class TemplateResolvers {
                 if (itemResolverIndex > 0) {
                     jsonWriter.writeSeparator();
                 }
-                final TemplateResolver<V> itemResolver = itemResolvers.get(itemResolverIndex);
+                final TemplateResolver<V> itemResolver =
+                        itemResolvers.get(itemResolverIndex);
                 itemResolver.resolve(value, jsonWriter);
             }
             jsonWriter.writeArrayEnd();
-        };
+        }
 
     }
 
@@ -440,18 +468,14 @@ public final class TemplateResolvers {
                             contextJsonWriter.use(() ->
                                     contextJsonWriter.writeString(replacedText));
                     // Create a resolver dedicated to the escaped replacement.
-                    return (final V value, final JsonWriter jsonWriter) ->
-                            jsonWriter.writeRawString(escapedReplacedText);
+                    return new RawStringResolver<>(escapedReplacedText);
                 }
             }
 
             // Otherwise, the unstable substitutor needs to be invoked always at
             // runtime.
             else {
-                return (final V value, final JsonWriter jsonWriter) -> {
-                    final String replacedText = substitutor.replace(value, fieldValue);
-                    jsonWriter.writeString(replacedText);
-                };
+                return new SubstitutingStringResolver<>(substitutor, fieldValue);
             }
 
         }
@@ -461,21 +485,87 @@ public final class TemplateResolvers {
             final String escapedFieldValue =
                     contextJsonWriter.use(() ->
                             contextJsonWriter.writeString(fieldValue));
-            return (final V value, final JsonWriter jsonWriter) ->
-                    jsonWriter.writeRawString(escapedFieldValue);
+            return new RawStringResolver<>(escapedFieldValue);
+        }
+
+    }
+
+    private static final class SubstitutingStringResolver<V>
+            implements TemplateResolver<V> {
+
+        private final TemplateResolverStringSubstitutor<V> substitutor;
+
+        private final String string;
+
+        private SubstitutingStringResolver(
+                final TemplateResolverStringSubstitutor<V> substitutor,
+                final String string) {
+            this.substitutor = substitutor;
+            this.string = string;
+        }
+
+        @Override
+        public void resolve(final V value, final JsonWriter jsonWriter) {
+            final String replacedString = substitutor.replace(value, string);
+            jsonWriter.writeString(replacedString);
+        }
+
+    }
+
+    private static final class RawStringResolver<V>
+            implements TemplateResolver<V> {
+
+        private final String rawString;
+
+        private RawStringResolver(final String rawString) {
+            this.rawString = rawString;
+        }
+
+        @Override
+        public void resolve(final V ignored, final JsonWriter jsonWriter) {
+            jsonWriter.writeRawString(rawString);
         }
 
     }
 
     private static <V> TemplateResolver<V> ofNumber(final Number number) {
-        final String numberString = String.valueOf(number);
-        return (final V ignored, final JsonWriter jsonWriter) ->
-                jsonWriter.writeRawString(numberString);
+        return new NumberResolver<>(number);
+    }
+
+    private static final class NumberResolver<V>
+            implements TemplateResolver<V> {
+
+        private final String numberString;
+
+        private NumberResolver(final Number number) {
+            this.numberString = String.valueOf(number);
+        }
+
+        @Override
+        public void resolve(final V ignored, final JsonWriter jsonWriter) {
+            jsonWriter.writeRawString(numberString);
+        }
+
     }
 
     private static <V> TemplateResolver<V> ofBoolean(final boolean value) {
-        return (final V ignored, final JsonWriter jsonWriter) ->
-                jsonWriter.writeBoolean(value);
+        return new BooleanResolver<>(value);
+    }
+
+    private static final class BooleanResolver<V>
+            implements TemplateResolver<V> {
+
+        private final boolean value;
+
+        private BooleanResolver(final boolean value) {
+            this.value = value;
+        }
+
+        @Override
+        public void resolve(final V ignored, final JsonWriter jsonWriter) {
+            jsonWriter.writeBoolean(value);
+        }
+
     }
 
 }
