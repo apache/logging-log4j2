@@ -106,28 +106,28 @@ public class LocationInfo implements Serializable {
     }
 
     /**
-     * Return the fully qualified class name of the caller making the logging request.
+     * Gets the fully qualified class name of the caller making the logging request.
      */
     public String getClassName() {
         return stackTraceElement.getClassName();
     }
 
     /**
-     * Return the file name of the caller.
+     * Gets the file name of the caller.
      */
     public String getFileName() {
         return stackTraceElement.getFileName();
     }
 
     /**
-     * Returns the line number of the caller.
+     * Gets the line number of the caller.
      */
     public String getLineNumber() {
         return Integer.toString(stackTraceElement.getLineNumber());
     }
 
     /**
-     * Returns the method name of the caller.
+     * Gets the method name of the caller.
      */
     public String getMethodName() {
         return stackTraceElement.getMethodName();
