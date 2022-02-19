@@ -376,7 +376,7 @@ public final class PropertiesUtil {
      */
     public String getStringProperty(final String name, final String defaultValue) {
         final String prop = getStringProperty(name);
-        return (prop == null) ? defaultValue : prop;
+        return prop == null ? defaultValue : prop;
     }
 
     /**
