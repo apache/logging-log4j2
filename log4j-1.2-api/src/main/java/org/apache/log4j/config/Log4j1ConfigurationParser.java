@@ -143,13 +143,13 @@ public class Log4j1ConfigurationParser {
         for (final Map.Entry<Object, Object> entry : properties.entrySet()) {
             final Object keyObj = entry.getKey();
             if (keyObj != null) {
-                final String key = keyObj.toString();
+                final String key = keyObj.toString().trim();
                 if (key.startsWith(prefix)) {
                     if (key.indexOf('.', preLength) < 0) {
                         final String name = key.substring(preLength);
                         final Object value = entry.getValue();
                         if (value != null) {
-                            map.put(name, value.toString());
+                            map.put(name, value.toString().trim());
                         }
                     }
                 }
@@ -394,13 +394,13 @@ public class Log4j1ConfigurationParser {
         for (final Map.Entry<Object, Object> entry : properties.entrySet()) {
             final Object keyObj = entry.getKey();
             if (keyObj != null) {
-                final String key = keyObj.toString();
+                final String key = keyObj.toString().trim();
                 if (key.startsWith(prefix)) {
                     final String name = key.substring(preLength);
                     final Object value = entry.getValue();
                     if (value != null) {
                         // a Level may be followed by a list of Appender refs.
-                        final String valueStr = value.toString();
+                        final String valueStr = value.toString().trim();
                         final String[] split = valueStr.split(COMMA_DELIMITED_RE);
                         final String level = getLevelString(split, null);
                         if (level == null) {
@@ -429,7 +429,8 @@ public class Log4j1ConfigurationParser {
 
     private String getProperty(final String key) {
         final String value = properties.getProperty(key);
-        return OptionConverter.substVars(value, properties);
+        final String substVars = OptionConverter.substVars(value, properties);
+        return substVars == null ? null : substVars.trim();
     }
 
     private String getProperty(final String key, final String defaultValue) {

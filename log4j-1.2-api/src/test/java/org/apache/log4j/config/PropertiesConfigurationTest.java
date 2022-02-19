@@ -19,10 +19,12 @@ package org.apache.log4j.config;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
@@ -35,14 +37,20 @@ import org.apache.log4j.bridge.FilterAdapter;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
+import org.apache.logging.log4j.core.filter.DenyAllFilter;
 import org.apache.logging.log4j.core.filter.Filterable;
 import org.apache.logging.log4j.core.filter.LevelRangeFilter;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.Test;
 
 /**
@@ -273,4 +281,25 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
     public void testMultipleFilters() throws Exception {
         super.testMultipleFilters();
     }
+    
+    @Test
+    public void testUntrimmedValues() throws Exception {
+        try {
+            final Configuration config = getConfiguration("config-1.2/log4j-untrimmed");
+            final LoggerConfig rootLogger = config.getRootLogger();
+            assertEquals(Level.DEBUG, rootLogger.getLevel());
+            final Appender appender = config.getAppender("Console");
+            assertTrue(appender instanceof ConsoleAppender);
+            final Layout<? extends Serializable> layout = appender.getLayout();
+            assertTrue(layout instanceof PatternLayout);
+            assertEquals("%level - %m%n", ((PatternLayout)layout).getConversionPattern());
+            final Filter filter = ((Filterable) appender).getFilter();
+            assertTrue(filter instanceof DenyAllFilter);
+            config.start();
+            config.stop();
+        } catch (NoClassDefFoundError e) {
+            fail(e.getMessage());
+        }
+    }
+
 }
