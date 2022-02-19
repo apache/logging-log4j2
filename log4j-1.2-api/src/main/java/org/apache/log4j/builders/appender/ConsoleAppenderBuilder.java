@@ -71,7 +71,7 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
         String name = getNameAttribute(appenderElement);
         Holder<String> target = new Holder<>(SYSTEM_OUT);
         Holder<Layout> layout = new Holder<>();
-        Holder<List<Filter>> filters = new Holder<>(new ArrayList<>());
+        Holder<Filter> filter = new Holder<>();
         Holder<String> level = new Holder<>();
         Holder<Boolean> follow = new BooleanHolder();
         Holder<Boolean> immediateFlush = new BooleanHolder(true);
@@ -81,7 +81,7 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
                     layout.set(config.parseLayout(currentElement));
                     break;
                 case FILTER_TAG:
-                    filters.get().add(config.parseFilters(currentElement));
+                    config.addFilter(filter, currentElement);
                     break;
                 case PARAM_TAG: {
                     switch (getNameAttributeKey(currentElement)) {
@@ -116,18 +116,7 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
                 }
             }
         });
-        Filter head = null;
-        Filter current = null;
-        for (final Filter f : filters.get()) {
-            if (head == null) {
-                head = f;
-                current = f;
-            } else {
-                current.next = f;
-                current = f;
-            }
-        }
-        return createAppender(name, layout.get(), head, level.get(), target.get(), immediateFlush.get(), follow.get(), config);
+        return createAppender(name, layout.get(), filter.get(), level.get(), target.get(), immediateFlush.get(), follow.get(), config);
     }
 
     @Override

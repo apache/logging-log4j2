@@ -84,7 +84,7 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
                     layout.set(config.parseLayout(currentElement));
                     break;
                 case FILTER_TAG:
-                    filter.set(config.parseFilters(currentElement));
+                    config.addFilter(filter, currentElement);
                     break;
                 case PARAM_TAG:
                     switch (getNameAttributeKey(currentElement)) {

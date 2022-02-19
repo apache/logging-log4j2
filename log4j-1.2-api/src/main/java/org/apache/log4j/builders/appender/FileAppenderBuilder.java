@@ -77,7 +77,7 @@ public class FileAppenderBuilder extends AbstractBuilder implements AppenderBuil
                     layout.set(config.parseLayout(currentElement));
                     break;
                 case FILTER_TAG:
-                    filter.set(config.parseFilters(currentElement));
+                    config.addFilter(filter, currentElement);
                     break;
                 case PARAM_TAG:
                     switch (getNameAttributeKey(currentElement)) {

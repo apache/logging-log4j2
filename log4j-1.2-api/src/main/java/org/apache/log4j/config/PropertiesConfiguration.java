@@ -35,7 +35,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.bridge.AppenderAdapter;
 import org.apache.log4j.bridge.AppenderWrapper;
-import org.apache.log4j.builders.BuilderManager;
+import org.apache.log4j.bridge.FilterAdapter;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.Filter;
@@ -44,21 +44,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
-import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.util.LoaderUtil;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.SortedMap;
-import java.util.StringTokenizer;
-import java.util.TreeMap;
 
 /**
  * Constructs a configuration based on Log4j 1 properties.
@@ -570,7 +556,6 @@ public class PropertiesConfiguration extends Log4j1Configuration {
         }
 
         Filter head = null;
-        Filter next = null;
         for (final Map.Entry<String, List<NameValue>> entry : filters.entrySet()) {
             final String clazz = props.getProperty(entry.getKey());
             Filter filter = null;
@@ -581,14 +566,7 @@ public class PropertiesConfiguration extends Log4j1Configuration {
                     filter = buildFilter(clazz, appenderName, entry.getValue());
                 }
             }
-            if (filter != null) {
-                if (head == null) {
-                    head = filter;
-                } else {
-                    next.setNext(filter);
-                }
-                next = filter;
-            }
+            head = FilterAdapter.addFilter(head, filter);
         }
         return head;
     }

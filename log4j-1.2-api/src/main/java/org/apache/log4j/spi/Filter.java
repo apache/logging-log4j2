@@ -16,8 +16,6 @@
  */
 package org.apache.log4j.spi;
 
-import org.apache.log4j.bridge.FilterAdapter;
-
 /**
  * @since 0.9.0
  */
@@ -31,16 +29,6 @@ public abstract class Filter {
             temp = false;
         }
         isCorePresent = temp;
-    }
-    
-    // TODO Unused?
-    private final FilterAdapter adapter;
-
-    /**
-     * Constructs a new instance.
-     */
-    public Filter() {
-        this.adapter = isCorePresent ? new FilterAdapter(this) : null;
     }
 
     /**

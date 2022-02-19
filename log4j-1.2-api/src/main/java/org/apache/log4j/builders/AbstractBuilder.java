@@ -19,14 +19,9 @@ package org.apache.log4j.builders;
 import static org.apache.log4j.xml.XmlConfiguration.NAME_ATTR;
 import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.log4j.bridge.FilterAdapter;
 import org.apache.log4j.bridge.FilterWrapper;
@@ -34,7 +29,6 @@ import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.Filter;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
@@ -74,33 +68,17 @@ public abstract class AbstractBuilder implements Builder {
         props.entrySet().forEach(e -> this.properties.put(toBeanKey(e.getKey().toString()), e.getValue()));
     }
 
-    protected org.apache.logging.log4j.core.Filter buildFilters(final String level, final Filter filter) {
-        if (level != null && filter != null) {
-            final List<org.apache.logging.log4j.core.Filter> filterList = new ArrayList<>();
+    protected static org.apache.logging.log4j.core.Filter buildFilters(final String level, final Filter filter) {
+        Filter head = null;
+        if (level != null) {
             final org.apache.logging.log4j.core.Filter thresholdFilter = ThresholdFilter.createFilter(OptionConverter.convertLevel(level, Level.TRACE),
                 org.apache.logging.log4j.core.Filter.Result.NEUTRAL, org.apache.logging.log4j.core.Filter.Result.DENY);
-            filterList.add(thresholdFilter);
-            Filter f = filter;
-            while (f != null) {
-                if (filter instanceof FilterWrapper) {
-                    filterList.add(((FilterWrapper) f).getFilter());
-                } else {
-                    filterList.add(new FilterAdapter(f));
-                }
-                f = f.getNext();
-            }
-            return CompositeFilter.createFilters(filterList.toArray(org.apache.logging.log4j.core.Filter.EMPTY_ARRAY));
-        } else if (level != null) {
-            return ThresholdFilter.createFilter(OptionConverter.convertLevel(level, Level.TRACE), org.apache.logging.log4j.core.Filter.Result.NEUTRAL,
-                org.apache.logging.log4j.core.Filter.Result.DENY);
-        } else if (filter != null) {
-            if (filter instanceof FilterWrapper) {
-                return ((FilterWrapper) filter).getFilter();
-            } else {
-                return new FilterAdapter(filter);
-            }
+            head = new FilterWrapper(thresholdFilter);
         }
-        return null;
+        if (filter != null) {
+            head = FilterAdapter.addFilter(head, filter);
+        }
+        return FilterAdapter.convertFilter(head);
     }
 
     private String capitalize(final String value) {

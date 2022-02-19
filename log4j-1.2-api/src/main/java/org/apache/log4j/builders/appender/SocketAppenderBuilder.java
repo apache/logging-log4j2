@@ -100,7 +100,7 @@ public class SocketAppenderBuilder extends AbstractBuilder implements AppenderBu
         final Holder<Integer> port = new Holder<>(DEFAULT_PORT);
         final Holder<Integer> reconnectDelay = new Holder<>(DEFAULT_RECONNECTION_DELAY);
         final Holder<Layout> layout = new Holder<>();
-        final Holder<List<Filter>> filters = new Holder<>(new ArrayList<>());
+        final Holder<Filter> filter = new Holder<>();
         final Holder<String> level = new Holder<>();
         final Holder<Boolean> immediateFlush = new BooleanHolder(true);
         forEachElement(appenderElement.getChildNodes(), currentElement -> {
@@ -109,7 +109,7 @@ public class SocketAppenderBuilder extends AbstractBuilder implements AppenderBu
                 layout.set(config.parseLayout(currentElement));
                 break;
             case FILTER_TAG:
-                filters.get().add(config.parseFilters(currentElement));
+                config.addFilter(filter, currentElement);
                 break;
             case PARAM_TAG:
                 switch (getNameAttributeKey(currentElement)) {
@@ -132,17 +132,7 @@ public class SocketAppenderBuilder extends AbstractBuilder implements AppenderBu
                 break;
             }
         });
-        Filter head = null;
-        Filter current = null;
-        for (final Filter f : filters.get()) {
-            if (head == null) {
-                head = f;
-            } else {
-                current.next = f;
-            }
-            current = f;
-        }
-        return createAppender(name, host.get(), port.get(), layout.get(), head, level.get(), immediateFlush.get(), reconnectDelay.get(), config);
+        return createAppender(name, host.get(), port.get(), layout.get(), filter.get(), level.get(), immediateFlush.get(), reconnectDelay.get(), config);
     }
 
     @Override

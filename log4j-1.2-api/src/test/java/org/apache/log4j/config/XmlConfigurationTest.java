@@ -186,4 +186,10 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
         super.testDefaultValues();
     }
 
+    @Override
+    @Test
+    public void testMultipleFilters() throws Exception {
+        super.testMultipleFilters();
+    }
+
 }
