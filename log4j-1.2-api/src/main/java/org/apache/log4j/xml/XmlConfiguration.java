@@ -710,8 +710,7 @@ public class XmlConfiguration extends Log4j1Configuration {
 
         if (!rootElementName.equals(CONFIGURATION_TAG)) {
             if (rootElementName.equals(OLD_CONFIGURATION_TAG)) {
-                LOGGER.warn("The <" + OLD_CONFIGURATION_TAG +
-                        "> element has been deprecated.");
+                LOGGER.warn("The <" + OLD_CONFIGURATION_TAG + "> element has been deprecated.");
                 LOGGER.warn("Use the <" + CONFIGURATION_TAG + "> element instead.");
             } else {
                 LOGGER.error("DOM element is - not a <" + CONFIGURATION_TAG + "> element.");
@@ -728,7 +727,6 @@ public class XmlConfiguration extends Log4j1Configuration {
         String status = "error";
         if (!debugAttrib.equals("") && !debugAttrib.equals("null")) {
             status = OptionConverter.toBoolean(debugAttrib, true) ? "debug" : "error";
-
         } else {
             LOGGER.debug("Ignoring " + INTERNAL_DEBUG_ATTR + " attribute.");
         }
