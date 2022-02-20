@@ -106,8 +106,7 @@ public class RewriteAppenderBuilder extends AbstractBuilder implements AppenderB
         final Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
         final String policyPrefix = appenderPrefix + ".rewritePolicy";
         final String className = getProperty(policyPrefix);
-        final RewritePolicy policy = configuration.getBuilderManager().parseRewritePolicy(className, policyPrefix,
-                props, configuration);
+        final RewritePolicy policy = configuration.getBuilderManager().parse(className, policyPrefix, props, configuration);
         final String level = getProperty(THRESHOLD_PARAM);
         if (appenderRef == null) {
             LOGGER.warn("No appender references configured for AsyncAppender {}", name);

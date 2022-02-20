@@ -14,31 +14,35 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.log4j.builders.filter;
 
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+package org.apache.log4j.builders;
 
-import org.apache.log4j.bridge.FilterWrapper;
 import org.apache.log4j.config.PropertiesConfiguration;
-import org.apache.log4j.spi.Filter;
 import org.apache.log4j.xml.XmlConfiguration;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.filter.DenyAllFilter;
 import org.w3c.dom.Element;
 
 /**
- * Build a Pattern Layout
+ * Parses DOM and properties.
+ *
+ * @param <T> The type to build.
  */
-@Plugin(name = "org.apache.log4j.varia.DenyAllFilter", category = CATEGORY)
-public class DenyAllFilterBuilder implements FilterBuilder {
+public interface Parser<T> extends Builder<T> {
 
-    @Override
-    public Filter parse(Element filterElement, XmlConfiguration config) {
-        return new FilterWrapper(DenyAllFilter.newBuilder().build());
-    }
+    /**
+     * Parses a DOM Element.
+     * 
+     * @param element the DOM Element.
+     * @param config the XML configuration.
+     * @return parse result.
+     */
+    T parse(Element element, XmlConfiguration config);
 
-    @Override
-    public Filter parse(PropertiesConfiguration config) {
-        return new FilterWrapper(DenyAllFilter.newBuilder().build());
-    }
+    /**
+     * Parses a PropertiesConfigurationt.
+     * 
+     * @param element the PropertiesConfiguration.
+     * @return parse result.
+     */
+    T parse(PropertiesConfiguration config);
+
 }

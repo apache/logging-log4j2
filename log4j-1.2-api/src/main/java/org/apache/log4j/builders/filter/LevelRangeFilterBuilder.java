@@ -37,7 +37,7 @@ import org.w3c.dom.Element;
  * Build a Level match failter.
  */
 @Plugin(name = "org.apache.log4j.varia.LevelRangeFilter", category = CATEGORY)
-public class LevelRangeFilterBuilder extends AbstractBuilder implements FilterBuilder {
+public class LevelRangeFilterBuilder extends AbstractBuilder<Filter> implements FilterBuilder {
 
     private static final String LEVEL_MAX = "LevelMax";
     private static final String LEVEL_MIN = "LevelMin";
@@ -51,7 +51,7 @@ public class LevelRangeFilterBuilder extends AbstractBuilder implements FilterBu
     }
 
     @Override
-    public Filter parseFilter(Element filterElement, XmlConfiguration config) {
+    public Filter parse(Element filterElement, XmlConfiguration config) {
         final AtomicReference<String> levelMax = new AtomicReference<>();
         final AtomicReference<String> levelMin = new AtomicReference<>();
         final AtomicBoolean acceptOnMatch = new AtomicBoolean();
@@ -74,7 +74,7 @@ public class LevelRangeFilterBuilder extends AbstractBuilder implements FilterBu
     }
 
     @Override
-    public Filter parseFilter(PropertiesConfiguration config) {
+    public Filter parse(PropertiesConfiguration config) {
         String levelMax = getProperty(LEVEL_MAX);
         String levelMin = getProperty(LEVEL_MIN);
         boolean acceptOnMatch = getBooleanProperty(ACCEPT_ON_MATCH);

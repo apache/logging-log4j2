@@ -39,8 +39,10 @@ import org.w3c.dom.Element;
 
 /**
  * Base class for Log4j 1 component builders.
+ *
+ * @param <T> The type to build.
  */
-public abstract class AbstractBuilder implements Builder {
+public abstract class AbstractBuilder<T> implements Builder<T> {
 
     private static Logger LOGGER = StatusLogger.getLogger();
     protected static final String FILE_PARAM = "File";

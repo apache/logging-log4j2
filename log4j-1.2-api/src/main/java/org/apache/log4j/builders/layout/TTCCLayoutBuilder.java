@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * Build a Pattern Layout
  */
 @Plugin(name = "org.apache.log4j.TTCCLayout", category = CATEGORY)
-public class TTCCLayoutBuilder extends AbstractBuilder implements LayoutBuilder {
+public class TTCCLayoutBuilder extends AbstractBuilder<Layout> implements LayoutBuilder {
 
     private static final String THREAD_PRINTING_PARAM = "ThreadPrinting";
     private static final String CATEGORY_PREFIXING_PARAM = "CategoryPrefixing";
@@ -54,7 +54,7 @@ public class TTCCLayoutBuilder extends AbstractBuilder implements LayoutBuilder 
     }
 
     @Override
-    public Layout parseLayout(Element layoutElement, XmlConfiguration config) {
+    public Layout parse(Element layoutElement, XmlConfiguration config) {
         final AtomicBoolean threadPrinting = new AtomicBoolean(Boolean.TRUE);
         final AtomicBoolean categoryPrefixing = new AtomicBoolean(Boolean.TRUE);
         final AtomicBoolean contextPrinting = new AtomicBoolean(Boolean.TRUE);
@@ -86,7 +86,7 @@ public class TTCCLayoutBuilder extends AbstractBuilder implements LayoutBuilder 
     }
 
     @Override
-    public Layout parseLayout(PropertiesConfiguration config) {
+    public Layout parse(PropertiesConfiguration config) {
         boolean threadPrinting = getBooleanProperty(THREAD_PRINTING_PARAM, true);
         boolean categoryPrefixing = getBooleanProperty(CATEGORY_PREFIXING_PARAM, true);
         boolean contextPrinting = getBooleanProperty(CONTEXT_PRINTING_PARAM, true);

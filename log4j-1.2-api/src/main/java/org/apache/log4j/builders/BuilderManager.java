@@ -44,19 +44,23 @@ import org.w3c.dom.Element;
  */
 public class BuilderManager {
 
+    /** Plugin category. */
     public static final String CATEGORY = "Log4j Builder";
+
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static Class<?>[] CONSTRUCTOR_PARAMS = new Class[] {String.class, Properties.class};
     private final Map<String, PluginType<?>> plugins;
 
+    /**
+     * Constructs a new instance.
+     */
     public BuilderManager() {
         final PluginManager manager = new PluginManager(CATEGORY);
         manager.collectPlugins();
         plugins = manager.getPlugins();
     }
 
-    @SuppressWarnings("unchecked")
-    private <T extends Builder> T createBuilder(final PluginType<T> plugin, final String prefix, final Properties props) {
+    private <T extends Builder<U>, U> T createBuilder(final PluginType<T> plugin, final String prefix, final Properties props) {
         if (plugin == null) {
             return null;
         }
@@ -65,13 +69,13 @@ public class BuilderManager {
             if (AbstractBuilder.class.isAssignableFrom(clazz)) {
                 return clazz.getConstructor(CONSTRUCTOR_PARAMS).newInstance(prefix, props);
             }
-            final Object builder = LoaderUtil.newInstanceOf(clazz);
+            final T builder = LoaderUtil.newInstanceOf(clazz);
             // Reasonable message instead of `ClassCastException`
             if (!Builder.class.isAssignableFrom(clazz)) {
                 LOGGER.warn("Unable to load plugin: builder {} does not implement {}", clazz, Builder.class);
                 return null;
             }
-            return (T) builder;
+            return builder;
         } catch (final ReflectiveOperationException ex) {
             LOGGER.warn("Unable to load plugin: {} due to: {}", plugin.getKey(), ex.getMessage());
             return null;
@@ -90,7 +94,7 @@ public class BuilderManager {
         return (PluginType<T>) pluginType;
     }
 
-    private <T extends Builder, U> U newInstance(final PluginType<T> plugin, final Function<T, U> consumer) {
+    private <T extends Builder<U>, U> U newInstance(final PluginType<T> plugin, final Function<T, U> consumer) {
         if (plugin != null) {
             try {
                 final T builder = LoaderUtil.newInstanceOf(plugin.getPluginClass());
@@ -104,61 +108,31 @@ public class BuilderManager {
         return null;
     }
 
-    public Appender parseAppender(final String className, final Element appenderElement, final XmlConfiguration config) {
-        final PluginType<AppenderBuilder> plugin = getPlugin(className);
-        return newInstance(plugin, b -> b.parseAppender(appenderElement, config));
+    public <P extends Parser<T>, T> T parse(final String className, final String prefix, final Properties props, final PropertiesConfiguration config) {
+        final P parser = createBuilder(getPlugin(className), prefix, props);
+        return parser != null ? parser.parse(config) : null;
     }
 
-    public Appender parseAppender(final String name, final String className, final String prefix, final String layoutPrefix, final String filterPrefix, final Properties props,
-        final PropertiesConfiguration config) {
-        final PluginType<AppenderBuilder> plugin = getPlugin(className);
-        final AppenderBuilder builder = createBuilder(plugin, prefix, props);
-        if (builder != null) {
-            return builder.parseAppender(name, prefix, layoutPrefix, filterPrefix, props, config);
-        }
-        return null;
+    public Appender parseAppender(final String className, final Element appenderElement, final XmlConfiguration config) {
+        return newInstance(this.<AppenderBuilder<Appender>>getPlugin(className), b -> b.parseAppender(appenderElement, config));
+    }
+
+    public Appender parseAppender(final String name, final String className, final String prefix, final String layoutPrefix, final String filterPrefix,
+        final Properties props, final PropertiesConfiguration config) {
+        final AppenderBuilder<Appender> builder = createBuilder(getPlugin(className), prefix, props);
+        return builder != null ? builder.parseAppender(name, prefix, layoutPrefix, filterPrefix, props, config) : null;
     }
 
     public Filter parseFilter(final String className, final Element filterElement, final XmlConfiguration config) {
-        final PluginType<FilterBuilder> plugin = getPlugin(className);
-        return newInstance(plugin, b -> b.parseFilter(filterElement, config));
-    }
-
-    public Filter parseFilter(final String className, final String filterPrefix, final Properties props, final PropertiesConfiguration config) {
-        final PluginType<FilterBuilder> plugin = getPlugin(className);
-        final FilterBuilder builder = createBuilder(plugin, filterPrefix, props);
-        if (builder != null) {
-            return builder.parseFilter(config);
-        }
-        return null;
+        return newInstance(this.<FilterBuilder>getPlugin(className), b -> b.parse(filterElement, config));
     }
 
     public Layout parseLayout(final String className, final Element layoutElement, final XmlConfiguration config) {
-        final PluginType<LayoutBuilder> plugin = getPlugin(className);
-        return newInstance(plugin, b -> b.parseLayout(layoutElement, config));
-    }
-
-    public Layout parseLayout(final String className, final String layoutPrefix, final Properties props, final PropertiesConfiguration config) {
-        final PluginType<LayoutBuilder> plugin = getPlugin(className);
-        final LayoutBuilder builder = createBuilder(plugin, layoutPrefix, props);
-        if (builder != null) {
-            return builder.parseLayout(config);
-        }
-        return null;
+        return newInstance(this.<LayoutBuilder>getPlugin(className), b -> b.parse(layoutElement, config));
     }
 
     public RewritePolicy parseRewritePolicy(final String className, final Element rewriteElement, final XmlConfiguration config) {
-        final PluginType<RewritePolicyBuilder> plugin = getPlugin(className);
-        return newInstance(plugin, b -> b.parseRewritePolicy(rewriteElement, config));
-    }
-
-    public RewritePolicy parseRewritePolicy(final String className, final String policyPrefix, final Properties props, final PropertiesConfiguration config) {
-        final PluginType<RewritePolicyBuilder> plugin = getPlugin(className);
-        final RewritePolicyBuilder builder = createBuilder(plugin, policyPrefix, props);
-        if (builder != null) {
-            return builder.parseRewritePolicy(config);
-        }
-        return null;
+        return newInstance(this.<RewritePolicyBuilder>getPlugin(className), b -> b.parse(rewriteElement, config));
     }
 
 }

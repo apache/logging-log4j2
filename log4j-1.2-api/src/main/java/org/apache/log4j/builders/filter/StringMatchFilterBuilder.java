@@ -37,14 +37,14 @@ import org.w3c.dom.Element;
  * Build a String match filter.
  */
 @Plugin(name = "org.apache.log4j.varia.StringMatchFilter", category = CATEGORY)
-public class StringMatchFilterBuilder extends AbstractBuilder implements FilterBuilder {
+public class StringMatchFilterBuilder extends AbstractBuilder<Filter> implements FilterBuilder {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final String STRING_TO_MATCH = "StringToMatch";
     private static final String ACCEPT_ON_MATCH = "AcceptOnMatch";
 
     @Override
-    public Filter parseFilter(Element filterElement, XmlConfiguration config) {
+    public Filter parse(Element filterElement, XmlConfiguration config) {
         final AtomicBoolean acceptOnMatch = new AtomicBoolean();
         final AtomicReference<String> text = new AtomicReference<>();
         forEachElement(filterElement.getElementsByTagName("param"), currentElement -> {
@@ -64,7 +64,7 @@ public class StringMatchFilterBuilder extends AbstractBuilder implements FilterB
     }
 
     @Override
-    public Filter parseFilter(PropertiesConfiguration config) {
+    public Filter parse(PropertiesConfiguration config) {
         String text = getProperty(STRING_TO_MATCH);
         boolean acceptOnMatch = getBooleanProperty(ACCEPT_ON_MATCH);
         return createFilter(text, acceptOnMatch);
