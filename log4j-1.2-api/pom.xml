@@ -92,6 +92,13 @@
       <artifactId>jackson-dataformat-xml</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- 1.2 tests -->
+    <dependency>
+      <groupId>oro</groupId>
+      <artifactId>oro</artifactId>
+      <version>2.0.8</version>
+      <scope>test</scope>
+    </dependency>    
   </dependencies>
   <build>
     <plugins>
