@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,6 +31,7 @@ import java.nio.file.Paths;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,8 +47,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link FileAppender}.
@@ -163,7 +167,7 @@ public class FileAppenderTest {
     private void testMultipleLockingAppenderThreads(final boolean lock, final int threadCount, boolean createOnDemand)
             throws InterruptedException, Exception {
         final ExecutorService threadPool = Executors.newFixedThreadPool(threadCount);
-        final Exception[] exceptionRef = new Exception[1];
+        final AtomicReference<Exception> exceptionRef = new AtomicReference<>();
         final int logEventCount = 100;
         final Runnable runnable = new FileWriterRunnable(createOnDemand, lock, logEventCount, exceptionRef);
         for (int i = 0; i < threadCount; ++i) {
@@ -172,8 +176,8 @@ public class FileAppenderTest {
         threadPool.shutdown();
         assertTrue(
                 threadPool.awaitTermination(10, TimeUnit.SECONDS), "The thread pool has not shutdown: " + threadPool);
-        if (exceptionRef[0] != null) {
-            throw exceptionRef[0];
+        if (exceptionRef.get() != null) {
+            throw exceptionRef.get();
         }
         verifyFile(threadCount * logEventCount);
     }
@@ -286,10 +290,10 @@ public class FileAppenderTest {
         private final boolean createOnDemand;
         private final boolean lock;
         private final int logEventCount;
-        private final Exception[] exceptionRef;
+        private final AtomicReference<Exception> exceptionRef;
 
         public FileWriterRunnable(
-                boolean createOnDemand, final boolean lock, final int logEventCount, final Exception[] exceptionRef) {
+                boolean createOnDemand, final boolean lock, final int logEventCount, final AtomicReference<Exception> exceptionRef) {
             this.createOnDemand = createOnDemand;
             this.lock = lock;
             this.logEventCount = logEventCount;
@@ -303,7 +307,7 @@ public class FileAppenderTest {
             try {
                 writer(lock, logEventCount, thread.getName(), createOnDemand, true);
             } catch (final Exception e) {
-                exceptionRef[0] = e;
+                exceptionRef.set(e);;
                 Throwables.rethrow(e);
             }
         }
