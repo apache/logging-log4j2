@@ -14,14 +14,14 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package com.log4j2;
+package org.apache.logging.log4j.async;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class Main {
+public class LoggerMain {
 
-    private static final Logger logger = LogManager.getLogger(Main.class);
+    private static final Logger logger = LogManager.getLogger(LoggerMain.class);
 
     public static void main(String[] args) {
 
