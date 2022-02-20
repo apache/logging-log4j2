@@ -20,6 +20,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.function.Function;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
@@ -59,121 +60,107 @@ public class BuilderManager {
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends Builder> T createBuilder(PluginType<T> plugin, String prefix, Properties props) {
+    private <T extends Builder> T createBuilder(final PluginType<T> plugin, final String prefix, final Properties props) {
+        if (plugin == null) {
+            return null;
+        }
         try {
-            Class<T> clazz = plugin.getPluginClass();
+            final Class<T> clazz = plugin.getPluginClass();
             if (AbstractBuilder.class.isAssignableFrom(clazz)) {
                 return clazz.getConstructor(CONSTRUCTOR_PARAMS).newInstance(prefix, props);
             }
-            Object builder = LoaderUtil.newInstanceOf(clazz);
+            final Object builder = LoaderUtil.newInstanceOf(clazz);
             // Reasonable message instead of `ClassCastException`
             if (!Builder.class.isAssignableFrom(clazz)) {
                 LOGGER.warn("Unable to load plugin: builder {} does not implement {}", clazz, Builder.class);
                 return null;
             }
             return (T) builder;
-        } catch (ReflectiveOperationException ex) {
+        } catch (final ReflectiveOperationException ex) {
             LOGGER.warn("Unable to load plugin: {} due to: {}", plugin.getKey(), ex.getMessage());
             return null;
         }
     }
 
     @SuppressWarnings("unchecked")
-    private <T> PluginType<T> getPlugin(String className) {
+    private <T> PluginType<T> getPlugin(final String className) {
         Objects.requireNonNull(plugins, "plugins");
         Objects.requireNonNull(className, "className");
-        return (PluginType<T>) plugins.get(className.toLowerCase(Locale.ROOT).trim());
+        final String key = className.toLowerCase(Locale.ROOT).trim();
+        final PluginType<?> pluginType = plugins.get(key);
+        if (pluginType == null) {
+            LOGGER.warn("Unable to load plugin class name {} with key {}", className, key);
+        }
+        return (PluginType<T>) pluginType;
     }
 
-    public Appender parseAppender(String className, Element appenderElement, XmlConfiguration config) {
-        PluginType<AppenderBuilder> plugin = getPlugin(className);
+    private <T extends Builder, U> U newInstance(final PluginType<T> plugin, final Function<T, U> consumer) {
         if (plugin != null) {
             try {
-                return LoaderUtil.newInstanceOf(plugin.getPluginClass()).parseAppender(appenderElement, config);
-            } catch (ReflectiveOperationException ex) {
+                final T builder = LoaderUtil.newInstanceOf(plugin.getPluginClass());
+                if (builder != null) {
+                    return consumer.apply(builder);
+                }
+            } catch (final ReflectiveOperationException ex) {
                 LOGGER.warn("Unable to load plugin: {} due to: {}", plugin.getKey(), ex.getMessage());
             }
         }
         return null;
     }
 
-    public Appender parseAppender(String name, String className, String prefix, String layoutPrefix, String filterPrefix, Properties props,
-        PropertiesConfiguration config) {
-        PluginType<AppenderBuilder> plugin = getPlugin(className);
-        if (plugin != null) {
-            AppenderBuilder builder = createBuilder(plugin, prefix, props);
-            if (builder != null) {
-                return builder.parseAppender(name, prefix, layoutPrefix, filterPrefix, props, config);
-            }
+    public Appender parseAppender(final String className, final Element appenderElement, final XmlConfiguration config) {
+        final PluginType<AppenderBuilder> plugin = getPlugin(className);
+        return newInstance(plugin, b -> b.parseAppender(appenderElement, config));
+    }
+
+    public Appender parseAppender(final String name, final String className, final String prefix, final String layoutPrefix, final String filterPrefix, final Properties props,
+        final PropertiesConfiguration config) {
+        final PluginType<AppenderBuilder> plugin = getPlugin(className);
+        final AppenderBuilder builder = createBuilder(plugin, prefix, props);
+        if (builder != null) {
+            return builder.parseAppender(name, prefix, layoutPrefix, filterPrefix, props, config);
         }
         return null;
     }
 
-    public Filter parseFilter(String className, Element filterElement, XmlConfiguration config) {
-        PluginType<FilterBuilder> plugin = getPlugin(className);
-        if (plugin != null) {
-            try {
-                return LoaderUtil.newInstanceOf(plugin.getPluginClass()).parseFilter(filterElement, config);
-            } catch (ReflectiveOperationException ex) {
-                LOGGER.warn("Unable to load plugin: {} due to: {}", plugin.getKey(), ex.getMessage());
-            }
+    public Filter parseFilter(final String className, final Element filterElement, final XmlConfiguration config) {
+        final PluginType<FilterBuilder> plugin = getPlugin(className);
+        return newInstance(plugin, b -> b.parseFilter(filterElement, config));
+    }
+
+    public Filter parseFilter(final String className, final String filterPrefix, final Properties props, final PropertiesConfiguration config) {
+        final PluginType<FilterBuilder> plugin = getPlugin(className);
+        final FilterBuilder builder = createBuilder(plugin, filterPrefix, props);
+        if (builder != null) {
+            return builder.parseFilter(config);
         }
         return null;
     }
 
-    public Filter parseFilter(String className, String filterPrefix, Properties props, PropertiesConfiguration config) {
-        PluginType<FilterBuilder> plugin = getPlugin(className);
-        if (plugin != null) {
-            FilterBuilder builder = createBuilder(plugin, filterPrefix, props);
-            if (builder != null) {
-                return builder.parseFilter(config);
-            }
+    public Layout parseLayout(final String className, final Element layoutElement, final XmlConfiguration config) {
+        final PluginType<LayoutBuilder> plugin = getPlugin(className);
+        return newInstance(plugin, b -> b.parseLayout(layoutElement, config));
+    }
+
+    public Layout parseLayout(final String className, final String layoutPrefix, final Properties props, final PropertiesConfiguration config) {
+        final PluginType<LayoutBuilder> plugin = getPlugin(className);
+        final LayoutBuilder builder = createBuilder(plugin, layoutPrefix, props);
+        if (builder != null) {
+            return builder.parseLayout(config);
         }
         return null;
     }
 
-    public Layout parseLayout(String className, Element layoutElement, XmlConfiguration config) {
-        PluginType<LayoutBuilder> plugin = getPlugin(className);
-        if (plugin != null) {
-            try {
-                return LoaderUtil.newInstanceOf(plugin.getPluginClass()).parseLayout(layoutElement, config);
-            } catch (ReflectiveOperationException ex) {
-                LOGGER.warn("Unable to load plugin: {} due to: {}", plugin.getKey(), ex.getMessage());
-            }
-        }
-        return null;
+    public RewritePolicy parseRewritePolicy(final String className, final Element rewriteElement, final XmlConfiguration config) {
+        final PluginType<RewritePolicyBuilder> plugin = getPlugin(className);
+        return newInstance(plugin, b -> b.parseRewritePolicy(rewriteElement, config));
     }
 
-    public Layout parseLayout(String className, String layoutPrefix, Properties props, PropertiesConfiguration config) {
-        PluginType<LayoutBuilder> plugin = getPlugin(className);
-        if (plugin != null) {
-            LayoutBuilder builder = createBuilder(plugin, layoutPrefix, props);
-            if (builder != null) {
-                return builder.parseLayout(config);
-            }
-        }
-        return null;
-    }
-
-    public RewritePolicy parseRewritePolicy(String className, Element rewriteElement, XmlConfiguration config) {
-        PluginType<RewritePolicyBuilder> plugin = getPlugin(className);
-        if (plugin != null) {
-            try {
-                return LoaderUtil.newInstanceOf(plugin.getPluginClass()).parseRewritePolicy(rewriteElement, config);
-            } catch (ReflectiveOperationException ex) {
-                LOGGER.warn("Unable to load plugin: {} due to: {}", plugin.getKey(), ex.getMessage());
-            }
-        }
-        return null;
-    }
-
-    public RewritePolicy parseRewritePolicy(String className, String policyPrefix, Properties props, PropertiesConfiguration config) {
-        PluginType<RewritePolicyBuilder> plugin = getPlugin(className);
-        if (plugin != null) {
-            RewritePolicyBuilder builder = createBuilder(plugin, policyPrefix, props);
-            if (builder != null) {
-                return builder.parseRewritePolicy(config);
-            }
+    public RewritePolicy parseRewritePolicy(final String className, final String policyPrefix, final Properties props, final PropertiesConfiguration config) {
+        final PluginType<RewritePolicyBuilder> plugin = getPlugin(className);
+        final RewritePolicyBuilder builder = createBuilder(plugin, policyPrefix, props);
+        if (builder != null) {
+            return builder.parseRewritePolicy(config);
         }
         return null;
     }
