@@ -24,9 +24,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Meta annotation for specifying named annotations and how to get a specified name from the named annotation.
+ */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface NameProvider {
+    /**
+     * Strategy for extracting a specified name from an annotated element.
+     */
     Class<? extends AnnotatedElementNameProvider<? extends Annotation>> value();
 }

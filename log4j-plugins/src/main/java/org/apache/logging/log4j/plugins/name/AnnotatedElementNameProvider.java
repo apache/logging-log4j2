@@ -39,18 +39,53 @@ import java.util.Optional;
  */
 public interface AnnotatedElementNameProvider<A extends Annotation> {
 
+    /**
+     * Indicates if an annotated element has a named annotation present. Named annotations are annotations that have a
+     * {@link NameProvider} specified.
+     *
+     * @param element annotated element to check for a name
+     * @return true if the annotated element has a named annotation
+     */
     static boolean hasName(final AnnotatedElement element) {
         return AnnotationUtil.isMetaAnnotationPresent(element, NameProvider.class);
     }
 
+    /**
+     * Gets the name of the annotated field using the corresponding {@link AnnotatedElementNameProvider}
+     * strategy for the named annotation on the field. If no named annotations are present, then an empty string
+     * is returned. If no {@linkplain #getSpecifiedName(Annotation) specified name} is given by the name provider,
+     * the {@linkplain Field#getName() field name} is returned.
+     *
+     * @param field annotated field to find name for
+     * @return annotated name of field
+     */
     static String getName(final Field field) {
         return hasName(field) ? getSpecifiedName(field).orElseGet(field::getName) : Strings.EMPTY;
     }
 
+    /**
+     * Gets the name of the given annotated parameter using the corresponding {@link AnnotatedElementNameProvider}
+     * strategy for the named annotation on the parameter. If no named annotations are present, then an empty string
+     * is returned. If no {@linkplain #getSpecifiedName(Annotation) specified name} is given by the name provider,
+     * the {@linkplain Parameter#getName() parameter name} is returned.
+     *
+     * @param parameter annotated parameter to find name for
+     * @return annotated name of parameter
+     */
     static String getName(final Parameter parameter) {
         return hasName(parameter) ? getSpecifiedName(parameter).orElseGet(parameter::getName) : Strings.EMPTY;
     }
 
+    /**
+     * Gets the name of the given annotated method using the corresponding {@link AnnotatedElementNameProvider}
+     * strategy for the named annotation on the method. If no named annotations are present, then an empty string
+     * is returned. If no {@linkplain #getSpecifiedName(Annotation) specified name} is given by the name provider,
+     * the {@linkplain Method#getName() method name} is used with {@code is}, {@code set}, {@code get}, and {@code with}
+     * prefixes removed and the result being de-capitalized.
+     *
+     * @param method annotated method to find name for
+     * @return annotated name of method without is/set/get/with prefix
+     */
     static String getName(final Method method) {
         return hasName(method) ? getSpecifiedName(method).orElseGet(() -> {
             final String methodName = method.getName();
@@ -67,6 +102,15 @@ public interface AnnotatedElementNameProvider<A extends Annotation> {
         }) : Strings.EMPTY;
     }
 
+    /**
+     * Gets the name of the given annotated type using the corresponding {@link AnnotatedElementNameProvider}
+     * strategy for the named annotation on the type. If no named annotations are present or if no
+     * {@linkplain #getSpecifiedName(Annotation) specified name} is given by the name provider, then an empty
+     * string is returned.
+     *
+     * @param annotatedType annotated type to find name for
+     * @return annotated name of annotated type
+     */
     static String getName(final AnnotatedType annotatedType) {
         return hasName(annotatedType) ? getSpecifiedName(annotatedType).orElse(Strings.EMPTY) : Strings.EMPTY;
     }
