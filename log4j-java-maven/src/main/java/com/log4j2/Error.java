@@ -14,7 +14,6 @@ public class Error {
         } catch (IllegalArgumentException e) {
             logger.error("{}", e);
         }
-
     }
 
     static int getException() throws IllegalArgumentException {
