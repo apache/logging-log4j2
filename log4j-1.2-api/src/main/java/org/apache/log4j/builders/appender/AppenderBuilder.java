@@ -26,8 +26,10 @@ import org.w3c.dom.Element;
 
 /**
  * Define an Appender Builder.
+ *
+ * @param <T> The type to build.
  */
-public interface AppenderBuilder extends Builder {
+public interface AppenderBuilder<T extends Appender> extends Builder<T> {
 
     Appender parseAppender(Element element, XmlConfiguration configuration);
 

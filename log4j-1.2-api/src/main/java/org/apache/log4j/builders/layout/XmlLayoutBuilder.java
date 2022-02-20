@@ -36,7 +36,7 @@ import org.w3c.dom.Element;
  * Build an XML Layout
  */
 @Plugin(name = "org.apache.log4j.xml.XMLLayout", category = CATEGORY)
-public class XmlLayoutBuilder extends AbstractBuilder implements LayoutBuilder {
+public class XmlLayoutBuilder extends AbstractBuilder<Layout> implements LayoutBuilder {
 
     private static final String LOCATION_INFO = "LocationInfo";
     private static final String PROPERTIES = "Properties";
@@ -50,7 +50,7 @@ public class XmlLayoutBuilder extends AbstractBuilder implements LayoutBuilder {
 
 
     @Override
-    public Layout parseLayout(Element layoutElement, XmlConfiguration config) {
+    public Layout parse(Element layoutElement, XmlConfiguration config) {
         final AtomicBoolean properties = new AtomicBoolean();
         final AtomicBoolean locationInfo = new AtomicBoolean();
         forEachElement(layoutElement.getElementsByTagName(PARAM_TAG), currentElement -> {
@@ -64,7 +64,7 @@ public class XmlLayoutBuilder extends AbstractBuilder implements LayoutBuilder {
     }
 
     @Override
-    public Layout parseLayout(PropertiesConfiguration config) {
+    public Layout parse(PropertiesConfiguration config) {
         boolean properties = getBooleanProperty(PROPERTIES);
         boolean locationInfo = getBooleanProperty(LOCATION_INFO);
         return createLayout(properties, locationInfo);

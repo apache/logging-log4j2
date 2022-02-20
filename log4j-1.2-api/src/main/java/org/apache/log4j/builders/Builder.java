@@ -19,7 +19,9 @@ package org.apache.log4j.builders;
 
 /**
  * A marker interface for Log4j 1.x component builders.
+ * 
+ * @param <T> The type to build.
  */
-public interface Builder {
+public interface Builder<T> {
     // empty
 }

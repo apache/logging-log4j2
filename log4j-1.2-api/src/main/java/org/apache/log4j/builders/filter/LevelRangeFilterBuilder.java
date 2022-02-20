@@ -39,7 +39,7 @@ import static org.apache.log4j.xml.XmlConfiguration.*;
  * Build a Level match filter.
  */
 @Plugin(name = "org.apache.log4j.varia.LevelRangeFilter", category = CATEGORY)
-public class LevelRangeFilterBuilder extends AbstractBuilder implements FilterBuilder {
+public class LevelRangeFilterBuilder extends AbstractBuilder<Filter> implements FilterBuilder {
 
     private static final String LEVEL_MAX = "LevelMax";
     private static final String LEVEL_MIN = "LevelMin";
@@ -53,7 +53,7 @@ public class LevelRangeFilterBuilder extends AbstractBuilder implements FilterBu
     }
 
     @Override
-    public Filter parseFilter(Element filterElement, XmlConfiguration config) {
+    public Filter parse(Element filterElement, XmlConfiguration config) {
         final Holder<String> levelMax = new Holder<>();
         final Holder<String> levelMin = new Holder<>();
         final Holder<Boolean> acceptOnMatch = new BooleanHolder();
@@ -76,7 +76,7 @@ public class LevelRangeFilterBuilder extends AbstractBuilder implements FilterBu
     }
 
     @Override
-    public Filter parseFilter(PropertiesConfiguration config) {
+    public Filter parse(PropertiesConfiguration config) {
         String levelMax = getProperty(LEVEL_MAX);
         String levelMin = getProperty(LEVEL_MIN);
         boolean acceptOnMatch = getBooleanProperty(ACCEPT_ON_MATCH);

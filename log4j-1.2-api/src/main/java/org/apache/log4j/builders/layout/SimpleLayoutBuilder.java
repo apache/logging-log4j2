@@ -35,7 +35,7 @@ import java.util.Properties;
 public class SimpleLayoutBuilder implements LayoutBuilder {
 
     @Override
-    public Layout parseLayout(Element layoutElement, XmlConfiguration config) {
+    public Layout parse(Element layoutElement, XmlConfiguration config) {
         return new LayoutWrapper(PatternLayout.newBuilder()
                 .setPattern("%level - %m%n")
                 .setConfiguration(config)
@@ -43,7 +43,7 @@ public class SimpleLayoutBuilder implements LayoutBuilder {
     }
 
     @Override
-    public Layout parseLayout(PropertiesConfiguration config) {
+    public Layout parse(PropertiesConfiguration config) {
         return new LayoutWrapper(PatternLayout.newBuilder()
                 .setPattern("%level - %m%n")
                 .setConfiguration(config)

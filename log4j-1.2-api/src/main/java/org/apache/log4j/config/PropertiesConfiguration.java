@@ -484,7 +484,7 @@ public class PropertiesConfiguration extends Log4j1Configuration {
         if (layoutClass == null) {
             return null;
         }
-        Layout layout = manager.parseLayout(layoutClass, layoutPrefix, props, this);
+        Layout layout = manager.parse(layoutClass, layoutPrefix, props, this);
         if (layout == null) {
             layout = buildLayout(layoutPrefix, layoutClass, appenderName, props);
         }
@@ -560,7 +560,7 @@ public class PropertiesConfiguration extends Log4j1Configuration {
             final String clazz = props.getProperty(entry.getKey());
             Filter filter = null;
             if (clazz != null) {
-                filter = manager.parseFilter(clazz, entry.getKey(), props, this);
+                filter = manager.parse(clazz, entry.getKey(), props, this);
                 if (filter == null) {
                     LOGGER.debug("Filter key: [{}] class: [{}] props: {}", entry.getKey(), clazz, entry.getValue());
                     filter = buildFilter(clazz, appenderName, entry.getValue());

@@ -33,12 +33,12 @@ import org.w3c.dom.Element;
 public class DenyAllFilterBuilder implements FilterBuilder {
 
     @Override
-    public Filter parseFilter(Element filterElement, XmlConfiguration config) {
+    public Filter parse(Element filterElement, XmlConfiguration config) {
         return new FilterWrapper(DenyAllFilter.newBuilder().build());
     }
 
     @Override
-    public Filter parseFilter(PropertiesConfiguration config) {
+    public Filter parse(PropertiesConfiguration config) {
         return new FilterWrapper(DenyAllFilter.newBuilder().build());
     }
 }

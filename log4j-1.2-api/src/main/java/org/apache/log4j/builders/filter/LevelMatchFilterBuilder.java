@@ -38,7 +38,7 @@ import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
  * Build a Level match filter.
  */
 @Plugin(name = "org.apache.log4j.varia.LevelMatchFilter", category = CATEGORY)
-public class LevelMatchFilterBuilder extends AbstractBuilder implements FilterBuilder {
+public class LevelMatchFilterBuilder extends AbstractBuilder<Filter> implements FilterBuilder {
 
     private static final String LEVEL = "LevelToMatch";
     private static final String ACCEPT_ON_MATCH = "AcceptOnMatch";
@@ -51,7 +51,7 @@ public class LevelMatchFilterBuilder extends AbstractBuilder implements FilterBu
     }
 
     @Override
-    public Filter parseFilter(Element filterElement, XmlConfiguration config) {
+    public Filter parse(Element filterElement, XmlConfiguration config) {
         final Holder<String> level = new Holder<>();
         final Holder<Boolean> acceptOnMatch = new BooleanHolder();
         forEachElement(filterElement.getElementsByTagName("param"), (currentElement) -> {
@@ -70,7 +70,7 @@ public class LevelMatchFilterBuilder extends AbstractBuilder implements FilterBu
     }
 
     @Override
-    public Filter parseFilter(PropertiesConfiguration config) {
+    public Filter parse(PropertiesConfiguration config) {
         String level = getProperty(LEVEL);
         boolean acceptOnMatch = getBooleanProperty(ACCEPT_ON_MATCH);
         return createFilter(level, acceptOnMatch);
