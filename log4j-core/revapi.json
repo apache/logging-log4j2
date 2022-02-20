@@ -15,7 +15,8 @@
             "org\\.apache\\.logging\\.log4j\\.core\\.net\\.TcpSocketManager\\.FactoryData",
             "org\\.apache\\.logging\\.log4j\\.core\\.util\\.CronExpression\\.ValueSet",
             "org\\.apache\\.logging\\.log4j\\.core\\.util\\.datetime\\.FastDatePrinter\\.NumberRule",
-            "org\\.apache\\.logging\\.log4j\\.core\\.util\\.datetime\\.FastDatePrinter\\.Rule"
+            "org\\.apache\\.logging\\.log4j\\.core\\.util\\.datetime\\.FastDatePrinter\\.Rule",
+            "org\\.apache\\.logging\\.log4j\\.core\\.config\\.ConfigurationSource"
           ]
         },
         "packages": {
