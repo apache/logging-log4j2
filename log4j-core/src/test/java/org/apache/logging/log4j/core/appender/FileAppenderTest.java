@@ -102,7 +102,7 @@ public class FileAppenderTest {
         final Layout<String> layout = createPatternLayout();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()
-        .withFileName(FILE_NAME).setName("test")
+            .withFileName(FILE_NAME).setName("test")
             .withImmediateFlush(false).setIgnoreExceptions(false)
             .withBufferedIo(false)
             .withBufferSize(1).setLayout(layout)
