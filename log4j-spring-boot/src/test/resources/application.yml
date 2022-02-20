@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: log4j-spring-boot
+logging:
+  config: classpath:log4j2-springProfile.xml
