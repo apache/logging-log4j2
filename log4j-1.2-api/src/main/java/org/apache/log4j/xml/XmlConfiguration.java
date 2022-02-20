@@ -43,10 +43,12 @@ import org.apache.log4j.spi.AppenderAttachable;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.Filter;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.Filter.Result;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
+import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.w3c.dom.Document;
@@ -87,6 +89,7 @@ public class XmlConfiguration extends Log4j1Configuration {
     private static final String ADDITIVITY_ATTR = "additivity";
     private static final String CONFIG_DEBUG_ATTR = "configDebug";
     private static final String INTERNAL_DEBUG_ATTR = "debug";
+    private static final String THRESHOLD_ATTR = "threshold";
     private static final String EMPTY_STR = "";
     private static final Class<?>[] ONE_STRING_PARAM = new Class[] { String.class };
     private static final String dbfKey = "javax.xml.parsers.DocumentBuilderFactory";
@@ -740,6 +743,13 @@ public class XmlConfiguration extends Log4j1Configuration {
 
         final StatusConfiguration statusConfig = new StatusConfiguration().withStatus(status);
         statusConfig.initialize();
+
+        final String threshold = subst(element.getAttribute(THRESHOLD_ATTR));
+        if (threshold != null) {
+            final org.apache.logging.log4j.Level level = OptionConverter.convertLevel(threshold.trim(),
+                    org.apache.logging.log4j.Level.ALL);
+            addFilter(ThresholdFilter.createFilter(level, Result.NEUTRAL, Result.DENY));
+        }
 
         forEachElement(element.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
