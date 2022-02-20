@@ -16,14 +16,14 @@
  */
 package org.apache.log4j.pattern;
 
+import java.util.List;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.pattern.ConverterKeys;
 import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternConverter;
 import org.apache.logging.log4j.util.Strings;
-
-import java.util.List;
 
 
 /**

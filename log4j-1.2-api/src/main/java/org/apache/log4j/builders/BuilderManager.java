@@ -16,6 +16,11 @@
  */
 package org.apache.log4j.builders;
 
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Properties;
+
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.builders.appender.AppenderBuilder;
@@ -35,11 +40,6 @@ import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.w3c.dom.Element;
-
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Properties;
 
 /**
  *

@@ -17,8 +17,6 @@
 package org.apache.log4j.bridge;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.log4j.Appender;
 import org.apache.logging.log4j.core.Filter;

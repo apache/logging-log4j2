@@ -16,6 +16,8 @@
  */
 package org.apache.log4j.pattern;
 
+import static org.junit.Assert.assertEquals;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
@@ -24,8 +26,6 @@ import org.apache.logging.log4j.test.junit.ThreadContextStackRule;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.Rule;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
 
 public class Log4j1NdcPatternConverterTest {
 

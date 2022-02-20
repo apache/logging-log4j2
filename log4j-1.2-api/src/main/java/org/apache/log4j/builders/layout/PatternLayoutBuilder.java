@@ -16,6 +16,11 @@
  */
 package org.apache.log4j.builders.layout;
 
+import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
+
+import java.util.Properties;
+
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.LayoutWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
@@ -30,11 +35,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import java.util.Properties;
-
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
 
 /**
  * Build a Pattern Layout

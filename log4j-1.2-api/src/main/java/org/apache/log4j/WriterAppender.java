@@ -17,16 +17,16 @@
 
 package org.apache.log4j;
 
-import org.apache.log4j.helpers.QuietWriter;
-import org.apache.log4j.spi.ErrorHandler;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.logging.log4j.status.StatusLogger;
-
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+
+import org.apache.log4j.helpers.QuietWriter;
+import org.apache.log4j.spi.ErrorHandler;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.logging.log4j.status.StatusLogger;
 
 
 /**

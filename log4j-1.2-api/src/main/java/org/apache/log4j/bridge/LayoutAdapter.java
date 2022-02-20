@@ -16,12 +16,12 @@
  */
 package org.apache.log4j.bridge;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.log4j.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Class Description goes here.
