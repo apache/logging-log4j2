@@ -74,9 +74,11 @@ public class FileAppenderTest {
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()
         .withFileName(FILE_NAME).setName("test")
-            .withImmediateFlush(false).setIgnoreExceptions(false)
+            .withImmediateFlush(false)
+            .setIgnoreExceptions(false)
             .withBufferedIo(false)
-            .withBufferSize(1).setLayout(layout)
+            .withBufferSize(1)
+            .setLayout(layout)
             .withCreateOnDemand(createOnDemand)
             .build();
         // @formatter:on
@@ -102,10 +104,13 @@ public class FileAppenderTest {
         final Layout<String> layout = createPatternLayout();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()
-            .withFileName(FILE_NAME).setName("test")
-            .withImmediateFlush(false).setIgnoreExceptions(false)
+            .withFileName(FILE_NAME)
+            .setName("test")
+            .withImmediateFlush(false)
+            .setIgnoreExceptions(false)
             .withBufferedIo(false)
-            .withBufferSize(1).setLayout(layout)
+            .withBufferSize(1)
+            .setLayout(layout)
             .withCreateOnDemand(createOnDemand)
             .build();
         // @formatter:on
@@ -118,10 +123,16 @@ public class FileAppenderTest {
             long prevLen = curLen;
             assertEquals(0, curLen, "File length: " + curLen);
             for (int i = 0; i < 100; ++i) {
-                final LogEvent event = Log4jLogEvent.newBuilder().setLoggerName("TestLogger") //
-                        .setLoggerFqcn(FileAppenderTest.class.getName()).setLevel(Level.INFO) //
-                        .setMessage(new SimpleMessage("Test")).setThreadName(this.getClass().getSimpleName()) //
-                        .setTimeMillis(System.currentTimeMillis()).build();
+                // @formatter:off
+                final LogEvent event = Log4jLogEvent.newBuilder()
+                    .setLoggerName("TestLogger")
+                    .setLoggerFqcn(FileAppenderTest.class.getName())
+                    .setLevel(Level.INFO)
+                    .setMessage(new SimpleMessage("Test"))
+                    .setThreadName(this.getClass().getSimpleName())
+                    .setTimeMillis(System.currentTimeMillis())
+                    .build();
+                // @formatter:on
                 appender.append(event);
                 curLen = file.length();
                 assertTrue(curLen > prevLen, "File length: " + curLen);
@@ -208,10 +219,13 @@ public class FileAppenderTest {
         final Layout<String> layout = createPatternLayout();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()
-        .withFileName(FILE_NAME).setName("test")
-            .withImmediateFlush(false).setIgnoreExceptions(false)
+            .withFileName(FILE_NAME)
+            .setName("test")
+            .withImmediateFlush(false)
+            .setIgnoreExceptions(false)
             .withLocking(locking)
-            .withBufferedIo(false).setLayout(layout)
+            .withBufferedIo(false)
+            .setLayout(layout)
             .withCreateOnDemand(createOnDemand)
             .build();
         // @formatter:on
@@ -231,10 +245,16 @@ public class FileAppenderTest {
                 assertNotEquals(createOnDemand, exists, msg);
             }
             for (int i = 0; i < logEventCount; ++i) {
-                final LogEvent logEvent = Log4jLogEvent.newBuilder().setLoggerName("TestLogger")
-                        .setLoggerFqcn(FileAppenderTest.class.getName()).setLevel(Level.INFO)
-                        .setMessage(new SimpleMessage("Test")).setThreadName(name)
-                        .setTimeMillis(System.currentTimeMillis()).build();
+                // @formatter:off
+                final LogEvent logEvent = Log4jLogEvent.newBuilder()
+                        .setLoggerName("TestLogger")
+                        .setLoggerFqcn(FileAppenderTest.class.getName())
+                        .setLevel(Level.INFO)
+                        .setMessage(new SimpleMessage("Test"))
+                        .setThreadName(name)
+                        .setTimeMillis(System.currentTimeMillis())
+                        .build();
+                // @formatter:on
                 appender.append(logEvent);
                 Thread.sleep(25); // Give up control long enough for another thread/process to occasionally do something.
             }
