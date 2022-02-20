@@ -751,14 +751,14 @@ public class XmlConfiguration extends Log4j1Configuration {
                     parseRoot(currentElement);
                     break;
                 case RENDERER_TAG:
-                    LOGGER.warn("Renderers are not supported by Log4j 2 and will be ignored.");
+                    LOGGER.warn("Log4j 1 renderers are not supported by Log4j 2 and will be ignored.");
                     break;
                 case THROWABLE_RENDERER_TAG:
-                    LOGGER.warn("Throwable Renderers are not supported by Log4j 2 and will be ignored.");
+                    LOGGER.warn("Log4j 1 throwable renderers are not supported by Log4j 2 and will be ignored.");
                     break;
                 case CATEGORY_FACTORY_TAG: 
                 case LOGGER_FACTORY_TAG:
-                    LOGGER.warn("Log4j 1 Logger factories are not supported by Log4j 2 and will be ignored.");
+                    LOGGER.warn("Log4j 1 logger factories are not supported by Log4j 2 and will be ignored.");
                     break;
                 case APPENDER_TAG:
                     Appender appender = parseAppender(currentElement);
