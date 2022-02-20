@@ -17,7 +17,7 @@
 
 package org.apache.log4j.helpers;
 
-import junit.framework.*;
+import junit.framework.TestCase;
 
 
 /**

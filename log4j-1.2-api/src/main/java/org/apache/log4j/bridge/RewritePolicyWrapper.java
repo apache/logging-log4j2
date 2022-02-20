@@ -16,9 +16,9 @@
  */
 package org.apache.log4j.bridge;
 
+import org.apache.log4j.rewrite.RewritePolicy;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.log4j.rewrite.RewritePolicy;
 
 /**
  * Binds a Log4j 2 RewritePolicy to Log4j 1.

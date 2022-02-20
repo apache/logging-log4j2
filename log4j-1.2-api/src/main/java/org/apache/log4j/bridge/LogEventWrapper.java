@@ -16,6 +16,10 @@
  */
 package org.apache.log4j.bridge;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
 import org.apache.log4j.NDC;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.LocationInfo;
@@ -34,10 +38,6 @@ import org.apache.logging.log4j.spi.MutableThreadContextStack;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.TriConsumer;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 
 /**
  * Exposes a Log4j 1 logging event as a Log4j 2 LogEvent.

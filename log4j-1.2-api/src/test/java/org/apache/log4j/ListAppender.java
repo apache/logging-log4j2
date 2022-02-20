@@ -16,12 +16,12 @@
  */
 package org.apache.log4j;
 
-import org.apache.log4j.spi.LoggingEvent;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.log4j.spi.LoggingEvent;
 
 /**
  * Used to test Log4j 1 support.

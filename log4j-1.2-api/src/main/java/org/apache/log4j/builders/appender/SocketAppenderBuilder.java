@@ -23,8 +23,6 @@ import static org.apache.log4j.xml.XmlConfiguration.LAYOUT_TAG;
 import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
 import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;

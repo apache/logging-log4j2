@@ -16,14 +16,15 @@
  */
 package org.apache.log4j.helpers;
 
-import org.apache.log4j.Layout;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.spi.LocationInfo;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
-import java.util.Arrays;
+
+import org.apache.log4j.Layout;
+import org.apache.log4j.spi.LocationInfo;
+import org.apache.log4j.spi.LoggingEvent;
 
 // Contributors:   Nelson Minar <(nelson@monkey.org>
 //                 Igor E. Poteryaev <jah@mail.ru>

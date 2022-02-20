@@ -17,15 +17,14 @@
 
 package org.apache.log4j.helpers;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.TimeZone;
+
 import org.apache.log4j.Layout;
 import org.apache.log4j.LayoutTest;
 import org.apache.log4j.spi.LoggingEvent;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
-import java.util.TimeZone;
-import java.util.Calendar;
 
 /**
  * Tests {@link DateLayout}.

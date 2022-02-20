@@ -17,11 +17,11 @@
 
 package org.apache.log4j.helpers;
 
-import org.apache.log4j.spi.ErrorCode;
-import org.apache.log4j.spi.ErrorHandler;
-
 import java.io.FilterWriter;
 import java.io.Writer;
+
+import org.apache.log4j.spi.ErrorCode;
+import org.apache.log4j.spi.ErrorHandler;
 
 
 /**
