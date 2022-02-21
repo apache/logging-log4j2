@@ -172,4 +172,10 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
         super.testMultipleFilters();
     }
 
+    @Override
+    @Test
+    public void testGlobalThreshold() throws Exception {
+        super.testGlobalThreshold();
+    }
+
 }

@@ -43,6 +43,7 @@ import org.apache.log4j.bridge.FilterAdapter;
 import org.apache.log4j.bridge.FilterWrapper;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
@@ -62,6 +63,7 @@ import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.filter.Filterable;
+import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
@@ -75,7 +77,7 @@ public abstract class AbstractLog4j1ConfigurationTest {
 
     abstract Configuration getConfiguration(String configResourcePrefix) throws URISyntaxException, IOException;
 
-    private LoggerContext configure(String configResourcePrefix) throws URISyntaxException, IOException {
+    protected LoggerContext configure(String configResourcePrefix) throws URISyntaxException, IOException {
         Configurator.reconfigure(getConfiguration(configResourcePrefix));
         return (LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
     }
@@ -505,6 +507,33 @@ public abstract class AbstractLog4j1ConfigurationTest {
             assertEquals(expected, nativeAppender.getEvents().size());
         } finally {
             System.clearProperty("test.tmpDir");
+        }
+    }
+
+    public void testGlobalThreshold() throws Exception {
+        try (final LoggerContext ctx = configure("config-1.2/log4j-global-threshold")) {
+            final Configuration config = ctx.getConfiguration();
+            final Filter filter = config.getFilter();
+            assertTrue(filter instanceof ThresholdFilter);
+            ThresholdFilter thresholdFilter = (ThresholdFilter)filter;
+            assertEquals(Level.INFO, thresholdFilter.getLevel());
+            assertEquals(Filter.Result.NEUTRAL, thresholdFilter.getOnMatch());
+            assertEquals(Filter.Result.DENY, thresholdFilter.getOnMismatch());
+            
+            final Logger logger = LogManager.getLogger(PropertiesConfigurationTest.class);
+            // List appender
+            final Appender appender = config.getAppender("LIST");
+            assertNotNull(appender);
+            final ListAppender legacyAppender = (ListAppender) ((Adapter) appender).getAppender();
+            // Stopped by root logger level
+            logger.trace("TRACE");
+            assertEquals(0, legacyAppender.getEvents().size());
+            // Stopped by global threshold
+            logger.debug("DEBUG");
+            assertEquals(0, legacyAppender.getEvents().size());
+            // Accepted
+            logger.info("INFO");
+            assertEquals(1, legacyAppender.getEvents().size());
         }
     }
 }

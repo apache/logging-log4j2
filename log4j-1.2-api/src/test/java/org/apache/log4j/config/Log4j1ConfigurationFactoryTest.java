@@ -29,11 +29,14 @@ import java.net.URL;
 import org.apache.log4j.layout.Log4j1XmlLayout;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.appender.ConsoleAppender.Target;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.Test;
 
@@ -170,6 +173,19 @@ public class Log4j1ConfigurationFactoryTest extends AbstractLog4j1ConfigurationT
             config.stop();
         } catch (NoClassDefFoundError e) {
             fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testGlobalThreshold() throws Exception {
+        try (final LoggerContext ctx = configure("config-1.2/log4j-global-threshold")) {
+            final Configuration config = ctx.getConfiguration();
+            final Filter filter = config.getFilter();
+            assertTrue(filter instanceof ThresholdFilter);
+            ThresholdFilter thresholdFilter = (ThresholdFilter)filter;
+            assertEquals(Level.INFO, thresholdFilter.getLevel());
+            assertEquals(Filter.Result.NEUTRAL, thresholdFilter.getOnMatch());
+            assertEquals(Filter.Result.DENY, thresholdFilter.getOnMismatch());
         }
     }
 }
