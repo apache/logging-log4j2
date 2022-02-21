@@ -157,7 +157,7 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
         }
         final org.apache.logging.log4j.core.Filter fileFilter = buildFilters(level, filter);
         if (fileName == null) {
-            LOGGER.warn("Unable to create File Appender, no file name provided");
+            LOGGER.error("Unable to create RollingFileAppender, no file name provided");
             return null;
         }
         final String filePattern = fileName + ".%i";

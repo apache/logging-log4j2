@@ -136,7 +136,7 @@ public class FileAppenderBuilder extends AbstractBuilder implements AppenderBuil
         }
         final org.apache.logging.log4j.core.Filter fileFilter = buildFilters(level, filter);
         if (fileName == null) {
-            LOGGER.warn("Unable to create File Appender, no file name provided");
+            LOGGER.error("Unable to create FileAppender, no file name provided");
             return null;
         }
         return new AppenderWrapper(FileAppender.newBuilder()
