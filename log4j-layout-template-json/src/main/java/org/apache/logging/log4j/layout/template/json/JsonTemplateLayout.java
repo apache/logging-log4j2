@@ -287,13 +287,7 @@ public class JsonTemplateLayout implements StringLayout {
             stringBuilder.append(eventDelimiter);
 
             // Write to the destination.
-            if (encoder == null) {
-                final String eventJson = stringBuilder.toString();
-                final byte[] eventJsonBytes = StringEncoder.toBytes(eventJson, charset);
-                destination.writeBytes(eventJsonBytes, 0, eventJsonBytes.length);
-            } else {
-                encoder.encode(stringBuilder, destination);
-            }
+            encoder.encode(stringBuilder, destination);
 
         }
 
