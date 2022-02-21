@@ -19,6 +19,7 @@ package org.apache.log4j.builders.filter;
 import static org.apache.log4j.builders.BuilderManager.CATEGORY;
 import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 
+import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -42,6 +43,14 @@ public class StringMatchFilterBuilder extends AbstractBuilder<Filter> implements
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final String STRING_TO_MATCH = "StringToMatch";
     private static final String ACCEPT_ON_MATCH = "AcceptOnMatch";
+
+    public StringMatchFilterBuilder() {
+        super();
+    }
+
+    public StringMatchFilterBuilder(String prefix, Properties props) {
+        super(prefix, props);
+    }
 
     @Override
     public Filter parse(Element filterElement, XmlConfiguration config) {
@@ -72,7 +81,7 @@ public class StringMatchFilterBuilder extends AbstractBuilder<Filter> implements
 
     private Filter createFilter(String text, boolean acceptOnMatch) {
         if (text == null) {
-            LOGGER.warn("No text provided for StringMatchFilter");
+            LOGGER.error("No text provided for StringMatchFilter");
             return null;
         }
         org.apache.logging.log4j.core.Filter.Result onMatch = acceptOnMatch

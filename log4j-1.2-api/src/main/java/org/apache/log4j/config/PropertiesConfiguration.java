@@ -36,6 +36,7 @@ import org.apache.log4j.PatternLayout;
 import org.apache.log4j.bridge.AppenderAdapter;
 import org.apache.log4j.bridge.AppenderWrapper;
 import org.apache.log4j.bridge.FilterAdapter;
+import org.apache.log4j.builders.BuilderManager;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.Filter;
@@ -498,7 +499,7 @@ public class PropertiesConfiguration extends Log4j1Configuration {
         if (layoutClass == null) {
             return null;
         }
-        Layout layout = manager.parse(layoutClass, layoutPrefix, props, this);
+        Layout layout = manager.parse(layoutClass, layoutPrefix, props, this, BuilderManager.INVALID_LAYOUT);
         if (layout == null) {
             layout = buildLayout(layoutPrefix, layoutClass, appenderName, props);
         }
@@ -574,7 +575,7 @@ public class PropertiesConfiguration extends Log4j1Configuration {
             final String clazz = props.getProperty(entry.getKey());
             Filter filter = null;
             if (clazz != null) {
-                filter = manager.parse(clazz, entry.getKey(), props, this);
+                filter = manager.parse(clazz, entry.getKey(), props, this, BuilderManager.INVALID_FILTER);
                 if (filter == null) {
                     LOGGER.debug("Filter key: [{}] class: [{}] props: {}", entry.getKey(), clazz, entry.getValue());
                     filter = buildFilter(clazz, appenderName, entry.getValue());
