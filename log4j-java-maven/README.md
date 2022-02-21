@@ -1,3 +1,4 @@
+## Java Asynchronous logger with log4j 2
 
 We know Performance is critical for any applications and nobody wants the underlying logging framework to become a bottleneck.
 We want lower logging latency and higher throughput. Also we want to increased the logging performance.
@@ -109,11 +110,7 @@ Path : `src/resources/log4j2.xml`
             <AppenderRef ref="LogToRollingRandomAccessFile"/>
             <AppenderRef ref="LogToConsole"/>
         </AsyncLogger>
-
-        <!-- synchronous loggers -->
-        <Root level="error">
-            <AppenderRef ref="LogToConsole"/>
-        </Root>
+        
     </Loggers>
 </Configuration>
 ```
@@ -192,10 +189,40 @@ public class Log4J2AsyncLoggerException {
 }
 ```
 
-To enable all loggers to asynchronous, we need 2 things :
+To **Enable** all loggers to asynchronous, we need 2 things :
 
- - Need to be present `disruptor` in project class path.
- - Set system property `log4j2.contextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector`
- 
+ 1. Need to be present `disruptor` in project class path.
+ 2. Set system property `log4j2.contextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector`
+
+### **Asynchronous Loggers**
+Now Run the below commands :
+
+It will build a jar `log4j2-1.0.0.jar` file under the `target` Location
+```cmd
+$ mvn clean package
+```
+
+
+Run another commend with Log4j 2 configuration in `debug` status.
+```cmd
+$ java -Dlog4j2.contextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector -jar target/log4j2-1.0.0.jar
+```
+The Output should be l0ok like this in your terminal :
+```cmd
+2022-02-21 16:55:31,637 main DEBUG Registering MBean org.apache.logging.log4j2:type=AsyncContext@464bee09
+2022-02-21 16:55:32,638 main DEBUG Registering MBean org.apache.logging.log4j2:type=AsyncContext@464bee09,component=AsyncLoggerRingBuffer
+2022-02-21 16:55:32,638 main DEBUG Registering MBean org.apache.logging.log4j2:type=AsyncContext@464bee09,component=StatusLogger
+2022-02-21 16:55:32,638 main DEBUG Registering MBean org.apache.logging.log4j2:type=AsyncContext@464bee09,component=ContextSelector
+2022-02-21 16:55:32,638 main DEBUG Registering MBean org.apache.logging.log4j2:type=AsyncContext@464bee09,component=Loggers,name=
+2022-02-21 16:55:32,639 main DEBUG Registering MBean org.apache.logging.log4j2:type=AsyncContext@464bee09,component=Appenders,name=LogToConsole
+2022-02-21 16:55:32,640 main DEBUG Registering MBean org.apache.logging.log4j2:type=AsyncContext@464bee09,component=Appenders,name=LogToRollingFile
+//...
+2022-02-21 16:55:33,020 pool-1-thread-1 DEBUG Stopped LoggerContext[name=AsyncContext@464bee09, org.apache.logging.log4j.core.async.AsyncLoggerContext@45fd9a4d] with status true 
+```
+
+You can optimize the performance of your Java by using The option for asynchronous in Log4J 2 tools.
+Thanks :).
+
 For more detials you can check this link.
-https://logging.apache.org/log4j/2.x/manual/async.html
+[https://logging.apache.org/log4j/2.x/manual/async.html
+](https://logging.apache.org/log4j/2.x/manual/async.html)

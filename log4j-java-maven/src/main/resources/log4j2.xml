@@ -42,8 +42,8 @@
         </AsyncLogger>
 
         <!-- synchronous loggers -->
-        <Root level="error">
-            <AppenderRef ref="LogToConsole"/>
-        </Root>
+<!--        <Root level="error">-->
+<!--            <AppenderRef ref="LogToConsole"/>-->
+<!--        </Root>-->
     </Loggers>
 </Configuration>
