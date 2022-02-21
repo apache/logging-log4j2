@@ -27,6 +27,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
+import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -79,26 +80,65 @@ public class CategoryTest {
         final MockCategory category = new MockCategory("org.example.foo");
         category.setAdditivity(false);
         ((org.apache.logging.log4j.core.Logger) category.getLogger()).addAppender(appender);
+        // Logging a String
         category.info("Hello, World");
-        final List<LogEvent> list = appender.getEvents();
+        List<LogEvent> list = appender.getEvents();
         int events = list.size();
         assertEquals(1, events, "Number of events should be 1, was " + events);
         LogEvent event = list.get(0);
         Message msg = event.getMessage();
         assertNotNull(msg, "No message");
-        assertTrue(msg instanceof ObjectMessage, "Incorrect Message type");
-        Object[] objects = msg.getParameters();
-        assertTrue(objects[0] instanceof String, "Incorrect Object type");
+        // LOG4J2-3080: use message type consistently
+        assertTrue(msg instanceof SimpleMessage, "Incorrect Message type");
+        assertEquals("Hello, World", msg.getFormat());
         appender.clear();
-        category.log(Priority.INFO, "Hello, World");
+        // Logging a String map
+        category.info(Collections.singletonMap("hello", "world"));
+        list = appender.getEvents();
         events = list.size();
-        assertEquals(1, events, "Number of events should be 1, was " + events);
+        assertTrue(events == 1, "Number of events should be 1, was " + events);
+        event = list.get(0);
+        msg = event.getMessage();
+        assertNotNull(msg, "No message");
+        assertTrue(msg instanceof MapMessage, "Incorrect Message type");
+        Object[] objects = msg.getParameters();
+        assertEquals("world", objects[0]);
+        appender.clear();
+        // Logging a generic map
+        category.info(Collections.singletonMap(1234L, "world"));
+        list = appender.getEvents();
+        events = list.size();
+        assertTrue(events == 1, "Number of events should be 1, was " + events);
+        event = list.get(0);
+        msg = event.getMessage();
+        assertNotNull(msg, "No message");
+        assertTrue(msg instanceof MapMessage, "Incorrect Message type");
+        objects = msg.getParameters();
+        assertEquals("world", objects[0]);
+        appender.clear();
+        // Logging an object
+        final Object obj = new Object();
+        category.info(obj);
+        list = appender.getEvents();
+        events = list.size();
+        assertTrue(events == 1, "Number of events should be 1, was " + events);
         event = list.get(0);
         msg = event.getMessage();
         assertNotNull(msg, "No message");
         assertTrue(msg instanceof ObjectMessage, "Incorrect Message type");
         objects = msg.getParameters();
-        assertTrue(objects[0] instanceof String, "Incorrect Object type");
+        assertEquals(obj, objects[0]);
+        appender.clear();
+
+        category.log(Priority.INFO, "Hello, World");
+        list = appender.getEvents();
+        events = list.size();
+        assertTrue(events == 1, "Number of events should be 1, was " + events);
+        event = list.get(0);
+        msg = event.getMessage();
+        assertNotNull(msg, "No message");
+        assertTrue(msg instanceof SimpleMessage, "Incorrect Message type");
+        assertEquals("Hello, World", msg.getFormat());
         appender.clear();
     }
 
@@ -133,7 +173,7 @@ public class CategoryTest {
         final Logger logger = Logger.getLogger("org.example.foo");
         logger.setLevel(Level.ERROR);
         final Priority debug = Level.DEBUG;
-        logger.l7dlog(debug, "Hello, World", new Object[0], null);
+        logger.l7dlog(debug, "Hello, World", Constants.EMPTY_OBJECT_ARRAY, null);
         assertTrue(appender.getEvents().isEmpty());
     }
 
@@ -152,7 +192,7 @@ public class CategoryTest {
         final Priority debug = Level.DEBUG;
         // the next line will throw an exception if the LogManager loggers
         // aren't supported by 1.2 Logger/Category
-        logger.l7dlog(debug, "Hello, World", new Object[0], null);
+        logger.l7dlog(debug, "Hello, World", Constants.EMPTY_OBJECT_ARRAY, null);
         assertTrue(appender.getEvents().isEmpty());
     }
 
