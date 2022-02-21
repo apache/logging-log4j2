@@ -64,13 +64,13 @@ public class TTCCLayoutBuilder extends AbstractBuilder<Layout> implements Layout
             if (currentElement.getTagName().equals(PARAM_TAG)) {
                 switch (getNameAttributeKey(currentElement)) {
                     case THREAD_PRINTING_PARAM:
-                        threadPrinting.set(Boolean.parseBoolean(getValueAttribute(currentElement)));
+                        threadPrinting.set(getBooleanValueAttribute(currentElement));
                         break;
                     case CATEGORY_PREFIXING_PARAM:
-                        categoryPrefixing.set(Boolean.parseBoolean(getValueAttribute(currentElement)));
+                        categoryPrefixing.set(getBooleanValueAttribute(currentElement));
                         break;
                     case CONTEXT_PRINTING_PARAM:
-                        contextPrinting.set(Boolean.parseBoolean(getValueAttribute(currentElement)));
+                        contextPrinting.set(getBooleanValueAttribute(currentElement));
                         break;
                     case DATE_FORMAT_PARAM:
                         dateFormat.set(getValueAttribute(currentElement));

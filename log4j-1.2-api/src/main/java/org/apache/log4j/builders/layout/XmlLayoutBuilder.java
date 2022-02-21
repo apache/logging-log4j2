@@ -55,9 +55,9 @@ public class XmlLayoutBuilder extends AbstractBuilder<Layout> implements LayoutB
         final AtomicBoolean locationInfo = new AtomicBoolean();
         forEachElement(layoutElement.getElementsByTagName(PARAM_TAG), currentElement -> {
             if (PROPERTIES.equalsIgnoreCase(currentElement.getAttribute("name"))) {
-                properties.set(Boolean.parseBoolean(currentElement.getAttribute("value")));
+                properties.set(getBooleanValueAttribute(currentElement));
             } else if (LOCATION_INFO.equalsIgnoreCase(currentElement.getAttribute("name"))) {
-                locationInfo.set(Boolean.parseBoolean(currentElement.getAttribute("value")));
+                locationInfo.set(getBooleanValueAttribute(currentElement));
             }
         });
         return createLayout(properties.get(), locationInfo.get());

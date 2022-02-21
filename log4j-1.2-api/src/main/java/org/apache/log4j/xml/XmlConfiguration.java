@@ -16,6 +16,20 @@
  */
 package org.apache.log4j.xml;
 
+
+import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.function.Consumer;
+import java.util.stream.IntStream;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.FactoryConfigurationError;
+
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
@@ -45,17 +59,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.FactoryConfigurationError;
-import java.io.IOException;
-import java.io.InterruptedIOException;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.function.Consumer;
 
 /**
  * Class Description goes here.
@@ -789,15 +792,9 @@ public class XmlConfiguration extends Log4j1Configuration {
     }
 
     public static void forEachElement(NodeList list, Consumer<Element> consumer) {
-        final int length = list.getLength();
-        for (int loop = 0; loop < length; loop++) {
-            Node currentNode = list.item(loop);
-
-            if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-                Element currentElement = (Element) currentNode;
-                consumer.accept(currentElement);
-            }
-        }
+        IntStream.range(0, list.getLength()).mapToObj(list::item)
+            .filter(node -> node.getNodeType() == Node.ELEMENT_NODE)
+            .forEach(node -> consumer.accept((Element) node));
     }
 
     private interface ParseAction {
