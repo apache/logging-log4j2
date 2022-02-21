@@ -82,7 +82,7 @@ public class Log4jMarkerFactory implements IMarkerFactory {
         if (original == null) {
             throw new IllegalArgumentException("Marker must not be null");
         }
-        return convertMarker(original, new ArrayList<Marker>());
+        return convertMarker(original, new ArrayList<>());
     }
 
     private static org.apache.logging.log4j.Marker convertMarker(final Marker original,

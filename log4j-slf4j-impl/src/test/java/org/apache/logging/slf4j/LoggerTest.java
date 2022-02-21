@@ -92,7 +92,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void debugNoParms() {
+    public void debugNoParams() {
         logger.debug("Debug message {}");
         verify("List", "o.a.l.s.LoggerTest Debug message {} MDC{}" + Strings.LINE_SEPARATOR);
         logger.debug("Debug message {}", (Object[]) null);
@@ -104,7 +104,7 @@ public class LoggerTest {
 
 
     @Test
-    public void debugWithParms() {
+    public void debugWithParams() {
         logger.debug("Hello, {}", "World");
         verify("List", "o.a.l.s.LoggerTest Hello, World MDC{}" + Strings.LINE_SEPARATOR);
     }
