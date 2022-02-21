@@ -163,16 +163,24 @@ dependencies.
 
 $h2 News
 
-Log4j 2.17.1has been released to:
+Log4j 2.17.2 has been released to:
 
-* Address CVE-2021-44832.
-* Other minor bug fixes.
+* Over 50 improvements and fixes to the Log4j 1.x support. Continued testing has shown it is a suitable replacement
+for Log4j 1.x in most cases.
+* Scripting now requires a system property be specified naming the languages the user wishes to allow. The scripting
+engine will not load if the property isn't set.
+* By default, the only remote protocol allowed for loading configuration files is HTTPS. Users can specify a system
+property to allow others or prevent remote loading entirely.
+* Variable resolution has been modified so that only properties defined as properties in the configuration file can be
+recursive. All other Lookups are now non-recursive. This addresses issues users were having resolving lookups specified
+in property definitions for use in the RoutingAppender and RollingFileAppender due to restrictions put in place in 2.17.1.
+* Many other fixes and improvements.
 
-2.17.1 (for Java 8) is a recommended upgrade.
+2.17.2 (for Java 8) is a recommended upgrade.
 
-Log4j $Log4jReleaseVersion is now available for production. The API for Log4j 2 is not compatible with Log4j 1.x, however an adapter is
-available to allow applications to continue to use the Log4j 1.x API. Adapters are also available for Apache Commons
-Logging, SLF4J, and java.util.logging.
+Log4j $Log4jReleaseVersion is now available for production. While the normal API for Log4j 2 is not compatible with
+Log4j 1.x, an adapter is available to allow applications to continue to use the Log4j 1.x API and configuration files.
+Adapters are also available for Apache Commons Logging, SLF4J, and java.util.logging.
 
 Log4j $Log4jReleaseVersion is the latest release of Log4j. As of Log4j 2.13.0 Log4j 2 requires Java 8 or greater at
 runtime. This release contains new features and fixes which can be found

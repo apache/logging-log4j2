@@ -965,6 +965,7 @@ Configuration:
               definition in the rolling file appender below. You then define each of the subcomponents below that
               wrapper element, as the TimeBasedTriggeringPolicy and SizeBasedTriggeringPolicy are defined below.
             </p>
+            <p>
               As of version 2.17.2,
               <tt>rootLogger</tt> and <tt>logger.<var>key</var></tt> properties can be specified to set the
               level and zero or more appender refs to create for that logger. The level and appender refs are
