@@ -235,6 +235,9 @@
       <action issue="LOG4J2-3410" dev="ggregory" type="fix" due-to="Barry Sham, Gary Gregory">
         Log4j 1.2 bridge throws a ClassCastException when logging a Map with non-String keys.
       </action>
+      <action issue="LOG4J2-3407" dev="ggregory" type="fix" due-to="Kenny MacLeod">
+        Log4j 1.2 bridge Check for non-existent appender when parsing properties #761.
+      </action>
       <!-- ADD -->
       <action issue="LOG4J2-3297" dev="rgoers" type="add">
         Limit loading of configuration via a url to https by default.
