@@ -311,4 +311,10 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
         }
     }
 
+    @Override
+    @Test
+    public void testGlobalThreshold() throws Exception {
+        super.testGlobalThreshold();
+    }
+
 }

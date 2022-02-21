@@ -16,6 +16,17 @@
  */
 package org.apache.log4j.config;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.log4j.ListAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -27,23 +38,9 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.util.LazyValue;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test configuration from XML.
@@ -69,7 +66,7 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
 
     @Test
     public void testXML() throws Exception {
-        configure("target/test-classes/log4j1-file.xml");
+        configure("log4j1-file");
         Logger logger = LogManager.getLogger("test");
         logger.debug("This is a test of the root logger");
         File file = new File("target/temp.A1");
@@ -82,7 +79,7 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
 
     @Test
     public void testListAppender() throws Exception {
-        LoggerContext loggerContext = configure("target/test-classes/log4j1-list.xml");
+        LoggerContext loggerContext = configure("log4j1-list");
         Logger logger = LogManager.getLogger("test");
         logger.debug("This is a test of the root logger");
         Configuration configuration = loggerContext.getConfiguration();
@@ -102,18 +99,6 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
         assertTrue(events != null && events.size() > 0, "No events");
         List<String> messages = messageAppender.getMessages();
         assertTrue(messages != null && messages.size() > 0, "No messages");
-    }
-
-    private LoggerContext configure(String configLocation) throws Exception {
-        File file = new File(configLocation);
-        InputStream is = new FileInputStream(file);
-        ConfigurationSource source = new ConfigurationSource(is, file);
-        LoggerContextFactory factory = org.apache.logging.log4j.LogManager.getFactory();
-        LoggerContext context = (LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
-        Configuration configuration = new XmlConfigurationFactory().getConfiguration(context, source);
-        assertNotNull(configuration, "No configuration created");
-        Configurator.reconfigure(configuration);
-        return context;
     }
 
     @Override
@@ -192,6 +177,12 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
     @Test
     public void testMultipleFilters(final @TempDir Path tmpFolder) throws Exception {
         super.testMultipleFilters(tmpFolder);
+    }
+
+    @Override
+    @Test
+    public void testGlobalThreshold() throws Exception {
+        super.testGlobalThreshold();
     }
 
 }

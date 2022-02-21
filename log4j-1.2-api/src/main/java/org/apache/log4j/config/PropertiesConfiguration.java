@@ -39,11 +39,14 @@ import org.apache.log4j.bridge.FilterAdapter;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.Filter;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.Filter.Result;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
+import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
@@ -66,6 +69,7 @@ public class PropertiesConfiguration extends Log4j1Configuration {
      */
     private static final String RESET_KEY = "log4j.reset";
 
+    public static final String THRESHOLD_KEY = "log4j.threshold";
     public static final String DEBUG_KEY = "log4j.debug";
 
     private static final String INTERNAL_ROOT_NAME = "root";
@@ -311,6 +315,12 @@ public class PropertiesConfiguration extends Log4j1Configuration {
         final String reset = properties.getProperty(RESET_KEY);
         if (reset != null && OptionConverter.toBoolean(reset, false)) {
             LogManager.resetConfiguration();
+        }
+
+        final String threshold = OptionConverter.findAndSubst(THRESHOLD_KEY, properties);
+        if (threshold != null) {
+            final Level level = OptionConverter.convertLevel(threshold.trim(), Level.ALL);
+            addFilter(ThresholdFilter.createFilter(level, Result.NEUTRAL, Result.DENY));
         }
 
         configureRoot(properties);

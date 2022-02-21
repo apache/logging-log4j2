@@ -25,8 +25,10 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.TreeMap;
 
+import org.apache.log4j.LogManager;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.Filter.Result;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.appender.NullAppender;
@@ -36,10 +38,12 @@ import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder
 import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
+import org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
+import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
@@ -102,6 +106,13 @@ public class Log4j1ConfigurationParser {
             final String debugValue = getLog4jValue("debug");
             if (Boolean.valueOf(debugValue)) {
                 builder.setStatusLevel(Level.DEBUG);
+            }
+            // global threshold
+            final String threshold = OptionConverter.findAndSubst(PropertiesConfiguration.THRESHOLD_KEY, properties);
+            if (threshold != null) {
+                final Level level = OptionConverter.convertLevel(threshold.trim(), Level.ALL);
+                builder.add(builder.newFilter("ThresholdFilter", Result.NEUTRAL, Result.DENY)
+                        .addAttribute("level", level));
             }
             // Root
             buildRootLogger(getLog4jValue(ROOTCATEGORY));
