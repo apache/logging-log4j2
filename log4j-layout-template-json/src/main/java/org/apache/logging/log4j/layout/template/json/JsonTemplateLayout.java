@@ -73,8 +73,7 @@ public class JsonTemplateLayout implements StringLayout {
 
     private final Recycler<Context> contextRecycler;
 
-    // The class and fields are visible for tests.
-    static final class Context implements AutoCloseable {
+    private static final class Context implements AutoCloseable {
 
         final JsonWriter jsonWriter;
 
@@ -259,36 +258,18 @@ public class JsonTemplateLayout implements StringLayout {
 
     @Override
     public String toSerializable(final LogEvent event) {
-        final Context context = acquireContext();
+
+        // Acquire a context.
+        final Recycler<Context> contextRecycler = this.contextRecycler;
+        final Context context = contextRecycler.acquire();
         final JsonWriter jsonWriter = context.jsonWriter;
         final StringBuilder stringBuilder = jsonWriter.getStringBuilder();
+
+        // Render the JSON.
         try {
             eventResolver.resolve(event, jsonWriter);
             stringBuilder.append(eventDelimiter);
             return stringBuilder.toString();
-        } finally {
-            contextRecycler.release(context);
-        }
-    }
-
-    @Override
-    public void encode(final LogEvent event, final ByteBufferDestination destination) {
-
-        // Acquire a context.
-        final Context context = acquireContext();
-        final JsonWriter jsonWriter = context.jsonWriter;
-        final StringBuilder stringBuilder = jsonWriter.getStringBuilder();
-        final Encoder<StringBuilder> encoder = context.encoder;
-
-        try {
-
-            // Render the JSON.
-            eventResolver.resolve(event, jsonWriter);
-            stringBuilder.append(eventDelimiter);
-
-            // Write to the destination.
-            encoder.encode(stringBuilder, destination);
-
         }
 
         // Release the context.
@@ -298,9 +279,28 @@ public class JsonTemplateLayout implements StringLayout {
 
     }
 
-    // Visible for tests.
-    Context acquireContext() {
-        return contextRecycler.acquire();
+    @Override
+    public void encode(final LogEvent event, final ByteBufferDestination destination) {
+
+        // Acquire a context.
+        final Recycler<Context> contextRecycler = this.contextRecycler;
+        final Context context = contextRecycler.acquire();
+        final JsonWriter jsonWriter = context.jsonWriter;
+        final StringBuilder stringBuilder = jsonWriter.getStringBuilder();
+        final Encoder<StringBuilder> encoder = context.encoder;
+
+        // Render & write the JSON.
+        try {
+            eventResolver.resolve(event, jsonWriter);
+            stringBuilder.append(eventDelimiter);
+            encoder.encode(stringBuilder, destination);
+        }
+
+        // Release the context.
+        finally {
+            contextRecycler.release(context);
+        }
+
     }
 
     @Override
