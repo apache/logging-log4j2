@@ -19,8 +19,10 @@ package org.apache.logging.slf4j;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.MarkerManager;
@@ -36,9 +38,11 @@ public class Log4jMarkerFactory implements IMarkerFactory {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final ConcurrentMap<String, Marker> markerMap = new ConcurrentHashMap<>();
+    private final Set<String> detachedMarkers = new CopyOnWriteArraySet<>();
 
     /**
      * Returns a Log4j Marker that is compatible with SLF4J.
+     *
      * @param name The name of the Marker.
      * @return A Marker.
      */
@@ -63,26 +67,33 @@ public class Log4jMarkerFactory implements IMarkerFactory {
 
     /**
      * Returns a Log4j Marker converted from an existing custom SLF4J Marker.
+     * If the marker has been detached (see {@link Log4jMarkerFactory#detachMarker(String)}),
+     * returns the unmodified marker.
+     *
      * @param marker The SLF4J Marker to convert.
-     * @return A converted Log4j/SLF4J Marker.
+     * @return Same input Marker is it has been detached, a converted Log4j/SLF4J Marker otherwise.
      * @since 2.1
      */
     public Marker getMarker(final Marker marker) {
         if (marker == null) {
             throw new IllegalArgumentException("Marker must not be null");
         }
-        final Marker m = markerMap.get(marker.getName());
+        final String name = marker.getName();
+        if (detachedMarkers.contains(name)) {
+            return marker;
+        }
+        final Marker m = markerMap.get(name);
         if (m != null) {
             return m;
         }
-        return addMarkerIfAbsent(marker.getName(), convertMarker(marker));
+        return addMarkerIfAbsent(name, convertMarker(marker));
     }
 
     private static org.apache.logging.log4j.Marker convertMarker(final Marker original) {
         if (original == null) {
             throw new IllegalArgumentException("Marker must not be null");
         }
-        return convertMarker(original, new ArrayList<Marker>());
+        return convertMarker(original, new ArrayList<>());
     }
 
     private static org.apache.logging.log4j.Marker convertMarker(final Marker original,
@@ -105,6 +116,7 @@ public class Log4jMarkerFactory implements IMarkerFactory {
 
     /**
      * Returns true if the Marker exists.
+     *
      * @param name The Marker name.
      * @return {@code true} if the Marker exists, {@code false} otherwise.
      */
@@ -113,26 +125,19 @@ public class Log4jMarkerFactory implements IMarkerFactory {
         return markerMap.containsKey(name);
     }
 
-    /**
-     * Log4j does not support detached Markers. This method always returns false.
-     * @param name The Marker name.
-     * @return {@code false}
-     */
     @Override
     public boolean detachMarker(final String name) {
-        return false;
+        if (name == null) {
+            return false;
+        }
+        detachedMarkers.add(name);
+        return true;
     }
 
-    /**
-     * Log4j does not support detached Markers for performance reasons. The returned Marker is attached.
-     * @param name The Marker name.
-     * @return The named Marker (unmodified).
-     */
     @Override
     public Marker getDetachedMarker(final String name) {
-        LOGGER.warn("Log4j does not support detached Markers. Returned Marker [{}] will be unchanged.", name);
-        return getMarker(name);
+        final org.apache.logging.log4j.Marker log4jMarker = MarkerManager.getMarker(name);
+        return new Log4jMarker(log4jMarker);
     }
-
 
 }
