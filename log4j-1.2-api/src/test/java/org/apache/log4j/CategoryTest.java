@@ -86,18 +86,46 @@ public class CategoryTest {
         final MockCategory category = new MockCategory("org.example.foo");
         category.setAdditivity(false);
         ((org.apache.logging.log4j.core.Logger) category.getLogger()).addAppender(appender);
+        // Logging a String
         category.info("Hello, World");
-        final List<LogEvent> list = appender.getEvents();
+        List<LogEvent> list = appender.getEvents();
         int events = list.size();
         assertTrue("Number of events should be 1, was " + events, events == 1);
         LogEvent event = list.get(0);
         Message msg = event.getMessage();
         assertNotNull("No message", msg);
-        assertTrue("Incorrect Message type", msg instanceof ObjectMessage);
-        Object[] objects = msg.getParameters();
-        assertTrue("Incorrect Object type", objects[0] instanceof String);
+        // LOG4J2-3080: use message type consistently
+        assertTrue("Incorrect Message type", msg instanceof SimpleMessage);
+        assertEquals("Hello, World", msg.getFormat());
         appender.clear();
-        category.log(Priority.INFO, "Hello, World");
+        // Logging a String map
+        category.info(Collections.singletonMap("hello", "world"));
+        list = appender.getEvents();
+        events = list.size();
+        assertTrue("Number of events should be 1, was " + events, events == 1);
+        event = list.get(0);
+        msg = event.getMessage();
+        assertNotNull("No message", msg);
+        assertTrue("Incorrect Message type", msg instanceof MapMessage);
+        Object[] objects = msg.getParameters();
+        assertEquals("world", objects[0]);
+        appender.clear();
+        // Logging a generic map
+        category.info(Collections.singletonMap(1234L, "world"));
+        list = appender.getEvents();
+        events = list.size();
+        assertTrue("Number of events should be 1, was " + events, events == 1);
+        event = list.get(0);
+        msg = event.getMessage();
+        assertNotNull("No message", msg);
+        assertTrue("Incorrect Message type", msg instanceof MapMessage);
+        objects = msg.getParameters();
+        assertEquals("world", objects[0]);
+        appender.clear();
+        // Logging an object
+        final Object obj = new Object();
+        category.info(obj);
+        list = appender.getEvents();
         events = list.size();
         assertTrue("Number of events should be 1, was " + events, events == 1);
         event = list.get(0);
@@ -105,7 +133,18 @@ public class CategoryTest {
         assertNotNull("No message", msg);
         assertTrue("Incorrect Message type", msg instanceof ObjectMessage);
         objects = msg.getParameters();
-        assertTrue("Incorrect Object type", objects[0] instanceof String);
+        assertEquals(obj, objects[0]);
+        appender.clear();
+
+        category.log(Priority.INFO, "Hello, World");
+        list = appender.getEvents();
+        events = list.size();
+        assertTrue("Number of events should be 1, was " + events, events == 1);
+        event = list.get(0);
+        msg = event.getMessage();
+        assertNotNull("No message", msg);
+        assertTrue("Incorrect Message type", msg instanceof SimpleMessage);
+        assertEquals("Hello, World", msg.getFormat());
         appender.clear();
     }
 
