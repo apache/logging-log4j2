@@ -60,7 +60,7 @@ public class HtmlLayoutBuilder extends AbstractBuilder<Layout> implements Layout
                 if (TITLE_PARAM.equalsIgnoreCase(currentElement.getAttribute("name"))) {
                     title.set(currentElement.getAttribute("value"));
                 } else if (LOCATION_INFO_PARAM.equalsIgnoreCase(currentElement.getAttribute("name"))) {
-                    locationInfo.set(Boolean.parseBoolean(currentElement.getAttribute("value")));
+                    locationInfo.set(getBooleanValueAttribute(currentElement));
                 }
             }
         });

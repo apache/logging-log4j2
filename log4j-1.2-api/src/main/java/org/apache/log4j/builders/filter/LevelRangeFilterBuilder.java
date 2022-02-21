@@ -65,7 +65,7 @@ public class LevelRangeFilterBuilder extends AbstractBuilder<Filter> implements 
                         levelMax.set(getValueAttribute(currentElement));
                         break;
                     case ACCEPT_ON_MATCH:
-                        acceptOnMatch.set(Boolean.parseBoolean(getValueAttribute(currentElement)));
+                        acceptOnMatch.set(getBooleanValueAttribute(currentElement));
                         break;
                 }
             }

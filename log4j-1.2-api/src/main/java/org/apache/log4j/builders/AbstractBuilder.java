@@ -103,6 +103,10 @@ public abstract class AbstractBuilder<T> implements Builder<T> {
         return getBooleanProperty(key, false);
     }
 
+    protected boolean getBooleanValueAttribute(final Element element) {
+        return Boolean.parseBoolean(getValueAttribute(element));
+    }
+
     public int getIntegerProperty(final String key, final int defaultValue) {
         String value = null;
         try {

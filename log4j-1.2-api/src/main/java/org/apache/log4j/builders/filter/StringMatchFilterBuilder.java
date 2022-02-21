@@ -54,7 +54,7 @@ public class StringMatchFilterBuilder extends AbstractBuilder<Filter> implements
                         text.set(getValueAttribute(currentElement));
                         break;
                     case ACCEPT_ON_MATCH:
-                        acceptOnMatch.set(Boolean.parseBoolean(getValueAttribute(currentElement)));
+                        acceptOnMatch.set(getBooleanValueAttribute(currentElement));
                         break;
 
                 }
