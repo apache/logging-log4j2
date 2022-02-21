@@ -72,7 +72,7 @@ public class SortedArrayStringMap implements IndexedStringMap {
     /**
      * An empty array instance to share when the table is not inflated.
      */
-    private static final String[] EMPTY = {};
+    private static final String[] EMPTY = Strings.EMPTY_ARRAY;
     private static final String FROZEN = "Frozen collection cannot be modified";
 
     private transient String[] keys = EMPTY;
@@ -151,7 +151,8 @@ public class SortedArrayStringMap implements IndexedStringMap {
     public SortedArrayStringMap(final Map<String, ?> map) {
         resize(ceilingNextPowerOfTwo(map.size()));
         for (final Map.Entry<String, ?> entry : map.entrySet()) {
-            putValue(entry.getKey(), entry.getValue());
+            // The key might not actually be a String.
+            putValue(Objects.toString(entry.getKey(), null), entry.getValue());
         }
     }
 

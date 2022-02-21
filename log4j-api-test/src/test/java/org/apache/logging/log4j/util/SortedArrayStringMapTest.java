@@ -16,7 +16,15 @@
  */
 package org.apache.logging.log4j.util;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -36,7 +44,7 @@ import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the SortedArrayStringMap class.
@@ -57,6 +65,16 @@ public class SortedArrayStringMapTest {
     @Test
     public void testConstructorIgnoresNull() {
         assertEquals(0, new SortedArrayStringMap((SortedArrayStringMap) null).size());
+    }
+
+    @Test
+    public void testConstructorNonStringKeys() {
+        Map<Object, Integer> map = new HashMap<>(1);
+        map.put(Long.MAX_VALUE, 1);
+        map.put(null, null);
+        SortedArrayStringMap sMap = new SortedArrayStringMap((Map) map);
+        assertEquals(1, (int) sMap.getValue(Long.toString(Long.MAX_VALUE)));
+        assertEquals((Integer) null, sMap.getValue(null));
     }
 
     @Test
