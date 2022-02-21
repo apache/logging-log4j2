@@ -38,6 +38,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Provider;
 import java.security.Security;
+import java.time.ZoneId;
 import java.util.Base64;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -280,6 +281,14 @@ public final class CoreTypeConverters {
         @Override
         public UUID convert(final String s) throws Exception {
             return UUID.fromString(s);
+        }
+    }
+
+    @Plugin(name = "ZoneId", category = TypeConverters.CATEGORY)
+    public static class ZoneIdConverter implements TypeConverter<ZoneId> {
+        @Override
+        public ZoneId convert(final String s) throws Exception {
+            return ZoneId.of(s);
         }
     }
 }
