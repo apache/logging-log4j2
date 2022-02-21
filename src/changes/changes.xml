@@ -238,6 +238,9 @@
       <action issue="LOG4J2-3407" dev="ggregory" type="fix" due-to="Kenny MacLeod">
         Log4j 1.2 bridge Check for non-existent appender when parsing properties #761.
       </action>
+      <action issue="LOG4J2-3407" dev="ggregory" type="fix" due-to="Piotr P. Karwasz">
+        Log4j 1.2 bridge supports global threshold #764.
+      </action>
       <!-- ADD -->
       <action issue="LOG4J2-3297" dev="rgoers" type="add">
         Limit loading of configuration via a url to https by default.
