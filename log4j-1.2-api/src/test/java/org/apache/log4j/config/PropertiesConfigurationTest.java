@@ -114,7 +114,7 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
             assertTrue(filter.getFilter() instanceof NeutralFilterFixture);
         }
     }
-    
+
     @Test
     public void testConsoleAppenderLevelRangeFilter() throws Exception {
         try (LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/LOG4J2-3326.properties")) {
@@ -130,6 +130,15 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
             final LevelRangeFilter defaultFilter = (LevelRangeFilter) filters[1];
             assertEquals(Level.TRACE, defaultFilter.getMinLevel());
       }
+    }
+
+    @Test
+    public void testConfigureAppenderDoesNotExist() throws Exception {
+        // Verify that we tolerate a logger which specifies an appender that does not exist.
+        try (LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/LOG4J2-3407.properties")) {
+            final Configuration configuration = loggerContext.getConfiguration();
+            assertNotNull(configuration);
+        }
     }
 
     @Test
