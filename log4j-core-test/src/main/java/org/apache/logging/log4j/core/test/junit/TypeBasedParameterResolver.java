@@ -16,15 +16,13 @@
  */
 package org.apache.logging.log4j.core.test.junit;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-
+import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import java.lang.reflect.Type;
 
 /**
  * An adapter that resolved a parameter based on its type.
@@ -34,7 +32,7 @@ public abstract class TypeBasedParameterResolver<T> implements ParameterResolver
     private final Type parameterType;
 
     public TypeBasedParameterResolver() {
-        this.parameterType = enclosedTypeOfParameterResolver();
+        parameterType = TypeUtil.getSuperclassTypeParameter(getClass());
     }
 
     @Override
@@ -48,33 +46,6 @@ public abstract class TypeBasedParameterResolver<T> implements ParameterResolver
 
     private Type getParameterType(ParameterContext parameterContext) {
         return parameterContext.getParameter().getParameterizedType();
-    }
-
-    private Type enclosedTypeOfParameterResolver() {
-        ParameterizedType typeBasedParameterResolverSuperclass = findTypeBasedParameterResolverSuperclass(getClass());
-        if (typeBasedParameterResolverSuperclass == null) {
-            String msg = String.format("Failed to discover parameter type supported by %s; "
-                            + "potentially caused by lacking parameterized type in class declaration.",
-                    getClass().getName());
-            fail(msg);
-        }
-        return typeBasedParameterResolverSuperclass.getActualTypeArguments()[0];
-    }
-
-    private ParameterizedType findTypeBasedParameterResolverSuperclass(Class<?> clazz) {
-        Class<?> superclass = clazz.getSuperclass();
-        if (superclass == null || superclass == Object.class) {
-            return null;
-        }
-
-        Type genericSuperclass = clazz.getGenericSuperclass();
-        if (genericSuperclass instanceof ParameterizedType) {
-            Type rawType = ((ParameterizedType) genericSuperclass).getRawType();
-            if (rawType == TypeBasedParameterResolver.class) {
-                return (ParameterizedType) genericSuperclass;
-            }
-        }
-        return findTypeBasedParameterResolverSuperclass(superclass);
     }
 
 }
