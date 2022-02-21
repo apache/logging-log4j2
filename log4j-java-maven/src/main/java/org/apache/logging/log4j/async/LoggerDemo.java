@@ -19,21 +19,38 @@ package org.apache.logging.log4j.async;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class LoggerMain {
+public class LoggerDemo {
 
-    private static final Logger logger = LogManager.getLogger(LoggerMain.class);
+    private static final Logger logger = LogManager.getLogger(LoggerDemo.class);
 
     public static void main(String[] args) {
 
-        logger.debug("Log4j 2 hello");
-        // with Java 8, we can do this, no need to check the log level
-        while (true)//test rolling file
-            logger.debug("hello {}", () -> getValue());
+        LoggerDemo myLog = new LoggerDemo();
 
+        // Previously, need to check the log level log to increase performance
+        myLog.getLog("Log4j2 Log");
+
+        // In Java 8, No need to check the log level, we can do this
+        while (true) //test rolling file
+            logger.debug("Hello print {}", () -> getValue());
     }
 
-    static int getValue() {
-        return 5;
+    private void getLog(String param){
+
+        if(logger.isDebugEnabled()){
+            logger.debug("This is debug log with param : " + param);
+        }
+
+        if(logger.isInfoEnabled()){
+            logger.info("This is info log with param : " + param);
+        }
+
+        logger.warn("This is warn message");
+        logger.error("This is error message");
+        logger.fatal("This is fatal message");
     }
 
+    static String getValue() {
+        return "Debug Log";
+    }
 }
