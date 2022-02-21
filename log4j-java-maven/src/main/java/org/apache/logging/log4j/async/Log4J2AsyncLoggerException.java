@@ -19,9 +19,9 @@ package org.apache.logging.log4j.async;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class LoggerException {
+public class Log4J2AsyncLoggerException {
 
-    private static final Logger logger = LogManager.getLogger(LoggerException.class);
+    private static final Logger logger = LogManager.getLogger(Log4J2AsyncLoggerException.class);
 
     public static void main(String[] args) {
 

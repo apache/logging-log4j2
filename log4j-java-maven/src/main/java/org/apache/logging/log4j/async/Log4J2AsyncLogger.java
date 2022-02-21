@@ -19,20 +19,20 @@ package org.apache.logging.log4j.async;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class LoggerHello {
+public class Log4J2AsyncLogger {
 
-    private static final Logger logger = LogManager.getLogger(LoggerHello.class);
+    private static final Logger logger = LogManager.getLogger(Log4J2AsyncLogger.class);
 
     public static void main(String[] args) {
 
-        LoggerHello myLog = new LoggerHello();
+        Log4J2AsyncLogger myLog = new Log4J2AsyncLogger();
         myLog.getLog("Log4j2 Log");
 
     }
 
     private void getLog(String param){
 
-        logger.info("This is info log");
+        logger.info("This is a info log");
 
         // Previously, need to check the log level log to increase performance
         if(logger.isDebugEnabled()){
@@ -44,7 +44,7 @@ public class LoggerHello {
         }
 
         // In Java 8, No need to check the log level, we can do this
-        while (true) //test rolling file
+        while (true) //for test rolling file
             logger.debug("Hello print {}", () -> getValue());
     }
 

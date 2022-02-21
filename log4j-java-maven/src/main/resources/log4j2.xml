@@ -20,23 +20,8 @@
         <Console name="LogToConsole" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
         </Console>
-
-
-        <RollingFile name="LogToRollingFile" fileName="logs/app.log"
-                     filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
-            <PatternLayout>
-                <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
-            </PatternLayout>
-            <Policies>
-                <TimeBasedTriggeringPolicy/>
-                <SizeBasedTriggeringPolicy size="30 MB"/>
-            </Policies>
-            <DefaultRolloverStrategy max="3"/>
-        </RollingFile>
-
-
         <RollingRandomAccessFile name="LogToRollingRandomAccessFile" fileName="logs/app.log"
-                                 filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+                                 filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log">
             <PatternLayout>
                 <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
             </PatternLayout>
@@ -44,16 +29,19 @@
                 <TimeBasedTriggeringPolicy/>
                 <SizeBasedTriggeringPolicy size="3 MB"/>
             </Policies>
-            <DefaultRolloverStrategy max="3"/>
+            <DefaultRolloverStrategy max="5"/>
         </RollingRandomAccessFile>
 
     </Appenders>
     <Loggers>
-        <!-- avoid duplicated logs with additivity=false -->
-        <Logger name="com.log4j2" level="debug" additivity="false">
+
+        <!--  asynchronous loggers -->
+        <AsyncLogger name="org.apache.logging.log4j.async" level="debug" additivity="false">
             <AppenderRef ref="LogToRollingRandomAccessFile"/>
             <AppenderRef ref="LogToConsole"/>
-        </Logger>
+        </AsyncLogger>
+
+        <!-- synchronous loggers -->
         <Root level="error">
             <AppenderRef ref="LogToConsole"/>
         </Root>
