@@ -53,7 +53,7 @@
     <developer>
       <id>ggregory</id>
       <name>Gary Gregory</name>
-      <email>ggregory at apache.org</email>
+      <email>ggregory@apache.org</email>
       <url>https://www.garygregory.com</url>
       <organization>The Apache Software Foundation</organization>
       <organizationUrl>https://www.apache.org/</organizationUrl>      
@@ -268,7 +268,7 @@
     <!-- Maven site depends on Velocity and the escaping rules are different in newer versions. -->
     <!-- See https://maven.apache.org/plugins/maven-site-plugin/migrate.html -->
     <velocity.plugin.version>1.5</velocity.plugin.version>
-    <asciidoc.plugin.version>1.5.6</asciidoc.plugin.version>
+    <asciidoc.plugin.version>2.2.2</asciidoc.plugin.version>
     <remote.resources.plugin.version>1.5</remote.resources.plugin.version>
     <manifestfile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestfile>
     <maven.compiler.source>1.8</maven.compiler.source>
