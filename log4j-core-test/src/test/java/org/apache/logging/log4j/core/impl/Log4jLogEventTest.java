@@ -16,14 +16,6 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.lang.reflect.Field;
-import java.util.Base64;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -31,9 +23,6 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.test.util.FixedTimeClock;
-import org.apache.logging.log4j.core.time.ClockFactory;
-import org.apache.logging.log4j.core.time.ClockFactoryTest;
-import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.ReusableMessage;
@@ -43,32 +32,25 @@ import org.apache.logging.log4j.util.FilteredObjectInputStream;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledForJreRange;
-import org.junit.jupiter.api.condition.JRE;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
+import java.util.Base64;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisabledForJreRange(min = JRE.JAVA_12, disabledReason = "In java 12+ final cannot be removed.")
 public class Log4jLogEventTest {
 
     private static final Base64.Decoder decoder = Base64.getDecoder();
 
-    @BeforeAll
-    public static void beforeClass() {
-        System.setProperty(ClockFactory.PROPERTY_NAME, FixedTimeClock.class.getName());
-    }
-
-    @AfterAll
-    public static void afterClass() throws IllegalAccessException {
-        ClockFactoryTest.resetClocks();
-    }
-
     @Test
     public void testToImmutableSame() {
-        final LogEvent logEvent = new Log4jLogEvent();
+        final LogEvent logEvent = Log4jLogEvent.newBuilder().build();
         assertSame(logEvent, logEvent.toImmutable());
     }
 
@@ -206,30 +188,8 @@ public class Log4jLogEventTest {
 
     @Test
     public void testTimestampGeneratedByClock() {
-        final LogEvent evt = Log4jLogEvent.newBuilder().build();
+        final LogEvent evt = Log4jLogEvent.newBuilder().setClock(new FixedTimeClock()).build();
         assertEquals(FixedTimeClock.FIXED_TIME, evt.getTimeMillis());
-    }
-
-    @Test
-    public void testInitiallyDummyNanoClock() {
-        assertTrue(Log4jLogEvent.getNanoClock() instanceof DummyNanoClock);
-        assertEquals(0, Log4jLogEvent.getNanoClock().nanoTime(), "initial dummy nanotime");
-    }
-
-    @Test
-    public void testNanoTimeGeneratedByNanoClock() {
-        Log4jLogEvent.setNanoClock(new DummyNanoClock(123));
-        verifyNanoTimeWithAllConstructors(123);
-        Log4jLogEvent.setNanoClock(new DummyNanoClock(87654));
-        verifyNanoTimeWithAllConstructors(87654);
-    }
-
-    private void verifyNanoTimeWithAllConstructors(final long expected) {
-        assertEquals(expected, Log4jLogEvent.getNanoClock().nanoTime());
-
-        assertEquals(expected, new Log4jLogEvent().getNanoTime(), "No-arg constructor");
-        assertEquals(expected, new Log4jLogEvent("l", null, "a", null, null, null, null)
-                .getNanoTime(), "7-arg constructor");
     }
 
     @Test
@@ -397,7 +357,6 @@ public class Log4jLogEventTest {
         assertNull(value, "source in copy");
     }
 
-    @SuppressWarnings("deprecation")
     @Test
     public void testEquals() {
         final StringMap contextData = ContextDataFactory.createContextData();
@@ -516,6 +475,6 @@ public class Log4jLogEventTest {
     @Test
     public void testToString() {
         // Throws an NPE in 2.6.2
-        assertNotNull(new Log4jLogEvent().toString());
+        assertNotNull(Log4jLogEvent.newBuilder().build().toString());
     }
 }

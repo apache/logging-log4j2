@@ -28,7 +28,6 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.util.Booleans;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -251,7 +250,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
 
         return new AsyncLoggerConfig(name, appenderRefs, filter, level,
                 additive, properties, config, includeLocation(includeLocation),
-                config.getComponent(Constants.LOG_EVENT_FACTORY_KEY));
+                config.getComponent(LogEventFactory.KEY));
     }
 
     /**
@@ -274,7 +273,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
             final AppenderRef[] refs, final Property[] properties, final Configuration config, final Filter filter) {
         final String name = loggerName.equals(ROOT) ? Strings.EMPTY : loggerName;
         return new AsyncLoggerConfig(name, Arrays.asList(refs), filter, level, additivity, properties, config,
-                includeLocation(includeLocation), config.getComponent(Constants.LOG_EVENT_FACTORY_KEY));
+                includeLocation(includeLocation), config.getComponent(LogEventFactory.KEY));
     }
 
     // Note: for asynchronous loggers, includeLocation default is FALSE
@@ -313,7 +312,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
             final boolean additive = Booleans.parseBoolean(additivity, true);
             return new AsyncLoggerConfig(LogManager.ROOT_LOGGER_NAME, appenderRefs, filter, actualLevel, additive,
                     properties, config, AsyncLoggerConfig.includeLocation(includeLocation),
-                    config.getComponent(Constants.LOG_EVENT_FACTORY_KEY));
+                    config.getComponent(LogEventFactory.KEY));
         }
     }
 }

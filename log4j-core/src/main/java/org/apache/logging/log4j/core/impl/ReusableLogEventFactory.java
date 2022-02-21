@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import java.util.List;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
@@ -26,9 +24,12 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.async.ThreadNameCachingStrategy;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.time.Clock;
-import org.apache.logging.log4j.core.time.ClockFactory;
+import org.apache.logging.log4j.core.time.NanoClock;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.util.StringMap;
+
+import java.util.List;
 
 /**
  * Garbage-free LogEventFactory that reuses a single mutable log event.
@@ -36,10 +37,19 @@ import org.apache.logging.log4j.util.StringMap;
  */
 public class ReusableLogEventFactory implements LogEventFactory {
     private static final ThreadNameCachingStrategy THREAD_NAME_CACHING_STRATEGY = ThreadNameCachingStrategy.create();
-    private static final Clock CLOCK = ClockFactory.getClock();
 
     private static final ThreadLocal<MutableLogEvent> mutableLogEventThreadLocal = new ThreadLocal<>();
-    private final ContextDataInjector injector = ContextDataInjectorFactory.createInjector();
+
+    private final ContextDataInjector injector;
+    private final Clock clock;
+    private final NanoClock nanoClock;
+
+    @Inject
+    public ReusableLogEventFactory(final ContextDataInjector injector, final Clock clock, final NanoClock nanoClock) {
+        this.injector = injector;
+        this.clock = clock;
+        this.nanoClock = nanoClock;
+    }
 
     /**
      * Creates a log event.
@@ -86,7 +96,7 @@ public class ReusableLogEventFactory implements LogEventFactory {
         result.setLoggerFqcn(fqcn);
         result.setLevel(level == null ? Level.OFF : level);
         result.setMessage(message);
-        result.initTime(CLOCK, Log4jLogEvent.getNanoClock());
+        result.initTime(clock, nanoClock);
         result.setThrown(t);
         result.setSource(location);
         result.setContextData(injector.injectContextData(properties, (StringMap) result.getContextData()));

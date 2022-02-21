@@ -17,11 +17,6 @@
 
 package org.apache.logging.log4j.plugins.di;
 
-import org.apache.logging.log4j.util.ServiceLoaderUtil;
-
-import java.util.Comparator;
-import java.util.ServiceLoader;
-
 public final class DI {
     private DI() {
         throw new IllegalStateException("Utility class");
@@ -38,15 +33,6 @@ public final class DI {
     public static Injector createInjector(final Iterable<?> modules) {
         final var injector = new DefaultInjector();
         modules.forEach(injector::installModule);
-        return injector;
-    }
-
-    public static Injector createInjectorFromServiceLoader() {
-        final var injector = new DefaultInjector();
-        ServiceLoaderUtil.loadServices(Module.class, moduleLayer -> ServiceLoader.load(moduleLayer, Module.class), null)
-                .stream()
-                .sorted(Comparator.comparingInt(Module::getPriority).reversed())
-                .forEachOrdered(module -> module.configure(injector));
         return injector;
     }
 }

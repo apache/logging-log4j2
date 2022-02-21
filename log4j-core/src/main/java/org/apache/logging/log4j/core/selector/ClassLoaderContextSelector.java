@@ -16,6 +16,15 @@
  */
 package org.apache.logging.log4j.core.selector;
 
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.impl.ContextAnchor;
+import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.plugins.Singleton;
+import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.StackLocatorUtil;
+
 import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.util.ArrayList;
@@ -28,12 +37,6 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.impl.ContextAnchor;
-import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.StackLocatorUtil;
-
 /**
  * This ContextSelector chooses a LoggerContext based upon the ClassLoader of the caller. This allows Loggers assigned
  * to static variables to be released along with the classes that own then. Other ContextSelectors will generally cause
@@ -45,6 +48,7 @@ import org.apache.logging.log4j.util.StackLocatorUtil;
  *
  * This ContextSelector should not be used with a Servlet Filter such as the Log4jServletFilter.
  */
+@Singleton
 public class ClassLoaderContextSelector implements ContextSelector, LoggerContextShutdownAware {
 
     private static final AtomicReference<LoggerContext> DEFAULT_CONTEXT = new AtomicReference<>();
@@ -53,6 +57,8 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
 
     protected static final ConcurrentMap<String, AtomicReference<WeakReference<LoggerContext>>> CONTEXT_MAP =
             new ConcurrentHashMap<>();
+
+    @Inject protected Injector injector;
 
     @Override
     public void shutdown(final String fqcn, final ClassLoader loader, final boolean currentContext,
@@ -182,6 +188,12 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
         final ClassLoader loader = loaderOrNull != null ? loaderOrNull : ClassLoader.getSystemClassLoader();
         final String name = toContextMapKey(loader);
         AtomicReference<WeakReference<LoggerContext>> ref = CONTEXT_MAP.get(name);
+        final Injector injector;
+        if (entry != null && entry.getValue() instanceof Injector) {
+            injector = (Injector) entry.getValue();
+        } else {
+            injector = this.injector;
+        }
         if (ref == null) {
             if (configLocation == null) {
                 ClassLoader parent = loader.getParent();
@@ -215,7 +227,7 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
                     } */
                 }
             }
-            final LoggerContext ctx = createContext(name, configLocation);
+            final LoggerContext ctx = createContext(name, configLocation, injector);
             if (entry != null) {
                 ctx.putObject(entry.getKey(), entry.getValue());
             }
@@ -242,7 +254,7 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
             }
             return ctx;
         }
-        ctx = createContext(name, configLocation);
+        ctx = createContext(name, configLocation, injector);
         if (entry != null) {
             ctx.putObject(entry.getKey(), entry.getValue());
         }
@@ -253,7 +265,11 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
     }
 
     protected LoggerContext createContext(final String name, final URI configLocation) {
-        return new LoggerContext(name, null, configLocation);
+        return createContext(name, configLocation, injector);
+    }
+
+    protected LoggerContext createContext(final String name, final URI configLocation, final Injector injector) {
+        return new LoggerContext(name, null, configLocation, injector);
     }
 
     protected String toContextMapKey(final ClassLoader loader) {

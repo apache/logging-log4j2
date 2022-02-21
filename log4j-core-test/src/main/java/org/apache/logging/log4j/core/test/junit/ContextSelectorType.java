@@ -15,34 +15,29 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.util;
+package org.apache.logging.log4j.core.test.junit;
 
-import java.util.function.Supplier;
+import org.apache.logging.log4j.core.selector.ContextSelector;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-public class LazyValue<T> implements Supplier<T> {
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-    public static <T> LazyValue<T> fromSupplier(final Supplier<T> supplier) {
-        return new LazyValue<>(supplier);
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@Documented
+@Inherited
+@Tag("functional")
+@ExtendWith(ContextSelectorCallback.class)
+public @interface ContextSelectorType {
 
-    private final Supplier<T> provider;
-    private volatile T value;
-
-    private LazyValue(final Supplier<T> supplier) {
-        this.provider = supplier;
-    }
-
-    @Override
-    public T get() {
-        T value = this.value;
-        if (value == null) {
-            synchronized (this) {
-                value = this.value;
-                if (value == null) {
-                    this.value = value = provider.get();
-                }
-            }
-        }
-        return value;
-    }
+    /**
+     * Specifies the {@link ContextSelector} class to use for this test class.
+     */
+    Class<? extends ContextSelector> value();
 }

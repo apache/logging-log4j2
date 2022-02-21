@@ -272,8 +272,9 @@ class InjectorTest {
 
     @Test
     void unknownInstanceError() {
-        assertThatThrownBy(() -> DI.createInjector().getInstance(UnknownInstance.class))
-                .hasMessage("No @Inject constructors or no-arg constructor found for " + UnknownInstance.class);
+        final Key<UnknownInstance> key = new Key<>() {};
+        assertThatThrownBy(() -> DI.createInjector().getInstance(key))
+                .hasMessage("No @Inject constructors or no-arg constructor found for " + key);
     }
 
     @Singleton
@@ -601,7 +602,7 @@ class InjectorTest {
         config.getAttributes().put("greeting", "hello");
         rootNode.getChildren().add(config);
         final Injector injector = DI.createInjector(NoOpStringSubstitution.class);
-        injector.configureNode(rootNode);
+        injector.injectNode(rootNode);
         final ConfigurableFactoryObject object = rootNode.getObject();
         assertThat(object).isNotNull();
         assertThat(object.id).isEqualTo(42);
@@ -617,7 +618,7 @@ class InjectorTest {
         final var type = fromClass(DefaultValueTest.class);
         final var node = new Node(null, "root", type);
         final Injector injector = DI.createInjector(NoOpStringSubstitution.class);
-        injector.configureNode(node);
+        injector.injectNode(node);
         final DefaultValueTest test = node.getObject();
         assertThat(test.name).isEqualTo("dog");
         assertThat(test.millis).isEqualTo(1000L);
@@ -701,7 +702,7 @@ class InjectorTest {
         final var type = fromClass(LevelInject.class);
         final var node = new Node(null, "levels", type);
         final Injector injector = DI.createInjector(NoOpStringSubstitution.class);
-        injector.configureNode(node);
+        injector.injectNode(node);
         final LevelInject levelInject = node.getObject();
         assertThat(levelInject.first).isNull();
         assertThat(levelInject.second).isEqualTo(Level.ERROR);

@@ -18,17 +18,14 @@
 
 <Configuration status="off">
   <Appenders>
-    <RandomAccessFile name="RandomAccessFile" fileName="target/NanoTimeToFileTest.log" 
-	    		immediateFlush="true" append="false">
-      <PatternLayout>
-        <Pattern>%N AND %nano AND %m%n</Pattern>
-      </PatternLayout>
-    </RandomAccessFile>
+    <List name="list">
+      <PatternLayout pattern="%N AND %nano AND %m"/>
+    </List>
   </Appenders>
   
   <Loggers>
-    <Root level="info" includeLocation="false">
-      <AppenderRef ref="RandomAccessFile"/>
+    <Root level="info">
+      <AppenderRef ref="list"/>
     </Root>
   </Loggers>
 </Configuration>

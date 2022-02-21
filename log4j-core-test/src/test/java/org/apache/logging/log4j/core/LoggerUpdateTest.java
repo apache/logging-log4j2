@@ -20,9 +20,9 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.core.test.junit.Named;
-import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -46,14 +46,13 @@ public class LoggerUpdateTest {
         List<LogEvent> events = app.getEvents();
         assertEquals(1, events.size(), "Incorrect number of events. Expected 1, actual " + events.size());
         app.clear();
-        final LoggerContext ctx = LoggerContext.getContext(false);
-        final Configuration config = ctx.getConfiguration();
+        final Configuration config = context.getConfiguration();
         final LoggerConfig loggerConfig = config.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
         /* You could also specify the actual logger name as below and it will return the LoggerConfig used by the Logger.
            LoggerConfig loggerConfig = getLoggerConfig("com.apache.test");
         */
         loggerConfig.setLevel(Level.DEBUG);
-        ctx.updateLoggers();  // This causes all Loggers to refetch information from their LoggerConfig.
+        context.updateLoggers();  // This causes all Loggers to refetch information from their LoggerConfig.
         logger.traceEntry();
         events = app.getEvents();
         assertEquals(0, events.size(), "Incorrect number of events. Expected 0, actual " + events.size());

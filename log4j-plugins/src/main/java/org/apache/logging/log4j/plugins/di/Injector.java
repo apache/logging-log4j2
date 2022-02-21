@@ -33,9 +33,9 @@ public interface Injector {
 
     <T> T getInstance(final Node node);
 
-    void configureNode(final Node node);
+    void injectNode(final Node node);
 
-    boolean hasBinding(final Key<?> key);
+    boolean hasNoBindings(final Key<?> key);
 
     void removeBinding(final Key<?> key);
 
@@ -45,9 +45,11 @@ public interface Injector {
 
     void bindScope(final Class<? extends Annotation> scopeType, final Scope scope);
 
-    <T> Injector bindFactory(final Key<T> key, final Supplier<T> factory);
+    void init();
 
-    <T> Injector bindIfMissing(final Key<T> key, final Supplier<T> factory);
+    <T> Injector bindFactory(final Key<? super T> key, final Supplier<T> factory);
 
-    <T> Injector bindInstance(final Key<T> key, final T instance);
+    <T> Injector bindIfMissing(final Key<? super T> key, final Supplier<T> factory);
+
+    <T> Injector bindInstance(final Key<? super T> key, final T instance);
 }

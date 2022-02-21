@@ -17,53 +17,37 @@
 
 package org.apache.logging.log4j.core.osgi;
 
-import java.util.Collection;
-import java.util.Hashtable;
-import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.impl.Log4jProvider;
-import org.apache.logging.log4j.core.impl.ThreadContextDataInjector;
-import org.apache.logging.log4j.core.impl.ThreadContextDataProvider;
-import org.apache.logging.log4j.core.plugins.Log4jPlugins;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.ContextDataProvider;
+import org.apache.logging.log4j.plugins.di.InjectorCallback;
 import org.apache.logging.log4j.plugins.processor.PluginService;
 import org.apache.logging.log4j.spi.Provider;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.ServiceRegistry;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
-import org.osgi.framework.ServiceRegistration;
+import org.osgi.framework.wiring.BundleWiring;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * OSGi BundleActivator.
  */
 public final class Activator implements BundleActivator {
-
-    private static final Logger LOGGER = StatusLogger.getLogger();
-
     private final AtomicReference<BundleContext> contextRef = new AtomicReference<>();
-
-    ServiceRegistration provideRegistration = null;
-    ServiceRegistration pluginRegistration = null;
-    ServiceRegistration contextDataRegistration = null;
 
     @Override
     public void start(final BundleContext context) throws Exception {
-        pluginRegistration = context.registerService(PluginService.class.getName(), new Log4jPlugins(),
-                new Hashtable<>());
-        final Provider provider = new Log4jProvider();
-        final Hashtable<String, String> props = new Hashtable<>();
-        props.put("APIVersion", "2.60");
-        final ContextDataProvider threadContextProvider = new ThreadContextDataProvider();
-        provideRegistration = context.registerService(Provider.class.getName(), provider, props);
-        contextDataRegistration = context.registerService(ContextDataProvider.class.getName(), threadContextProvider,
-                null);
-        loadContextProviders(context);
+        final ServiceRegistry registry = ServiceRegistry.getInstance();
+        final Bundle bundle = context.getBundle();
+        final long bundleId = bundle.getBundleId();
+        final ClassLoader classLoader = bundle.adapt(BundleWiring.class).getClassLoader();
+        registry.registerBundleServices(PluginService.class, bundleId, classLoader);
+        registry.registerBundleServices(Provider.class, bundleId, classLoader);
+        registry.registerBundleServices(ContextDataProvider.class, bundleId, classLoader);
+        registry.registerBundleServices(InjectorCallback.class, bundleId, classLoader);
         // allow the user to override the default ContextSelector (e.g., by using BasicContextSelector for a global cfg)
         if (PropertiesUtil.getProperties().getStringProperty(Constants.LOG4J_CONTEXT_SELECTOR) == null) {
             System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, BundleContextSelector.class.getName());
@@ -73,23 +57,8 @@ public final class Activator implements BundleActivator {
 
     @Override
     public void stop(final BundleContext context) throws Exception {
-        provideRegistration.unregister();
-        pluginRegistration.unregister();
-        contextDataRegistration.unregister();
+        ServiceRegistry.getInstance().unregisterBundleServices(context.getBundle().getBundleId());
         this.contextRef.compareAndSet(context, null);
         LogManager.shutdown(false, true);
-    }
-
-    private static void loadContextProviders(final BundleContext bundleContext) {
-        try {
-            final Collection<ServiceReference<ContextDataProvider>> serviceReferences =
-                    bundleContext.getServiceReferences(ContextDataProvider.class, null);
-            for (final ServiceReference<ContextDataProvider> serviceReference : serviceReferences) {
-                final ContextDataProvider provider = bundleContext.getService(serviceReference);
-                ThreadContextDataInjector.contextDataProviders.add(provider);
-            }
-        } catch (final InvalidSyntaxException ex) {
-            LOGGER.error("Error accessing context data provider", ex);
-        }
     }
 }

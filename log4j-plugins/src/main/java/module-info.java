@@ -30,6 +30,5 @@ module org.apache.logging.log4j.plugins {
     requires static org.osgi.framework;
 
     uses org.apache.logging.log4j.plugins.processor.PluginService;
-    uses org.apache.logging.log4j.plugins.di.Module;
-
+    uses org.apache.logging.log4j.plugins.di.InjectorCallback;
 }

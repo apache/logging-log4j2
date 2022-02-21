@@ -16,30 +16,25 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.test.CoreLoggerContexts;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.time.Clock;
-import org.apache.logging.log4j.core.time.ClockFactory;
-import org.apache.logging.log4j.core.time.ClockFactoryTest;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
-import org.apache.logging.log4j.util.Strings;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.apache.logging.log4j.plugins.Factory;
+import org.apache.logging.log4j.plugins.Named;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledOnJre;
-import org.junit.jupiter.api.condition.JRE;
+import org.opentest4j.AssertionFailedError;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Confirms that if you log a {@link TimestampMessage} then there are no unnecessary calls to {@link Clock}.
@@ -48,51 +43,31 @@ import static org.junit.jupiter.api.Assertions.*;
  * </p>
  */
 @Tag("async")
-@EnabledOnJre(JRE.JAVA_11)
+@ContextSelectorType(AsyncLoggerContextSelector.class)
+@LoggerContextSource("AsyncLoggerTimestampMessageTest.xml")
 public class AsyncLoggerTimestampMessageTest {
 
-    @BeforeAll
-    public static void beforeClass() {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
-                AsyncLoggerContextSelector.class.getName());
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "AsyncLoggerTimestampMessageTest.xml");
-        System.setProperty(ClockFactory.PROPERTY_NAME,
-                PoisonClock.class.getName());
-    }
-
-    @AfterAll
-    public static void afterClass() throws IllegalAccessException {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, Strings.EMPTY);
-        ClockFactoryTest.resetClocks();
+    @Factory
+    public static Clock getClock() {
+        return new PoisonClock();
     }
 
     @Test
-    public void testAsyncLogWritesToLog() throws Exception {
-
-        final File file = new File("target", "AsyncLoggerTimestampMessageTest.log");
-        // System.out.println(f.getAbsolutePath());
-        file.delete();
-        final Logger log = LogManager.getLogger("com.foo.Bar");
-        assertFalse(PoisonClock.called);
+    public void testAsyncLogWritesToLog(final LoggerContext context, @Named final ListAppender list)
+            throws InterruptedException {
+        final Logger log = context.getLogger("com.foo.Bar");
+        assertThat(PoisonClock.invoked).hasValue(null);
         log.info((Message) new TimeMsg("Async logger msg with embedded timestamp", 123456789000L));
-        assertFalse(PoisonClock.called);
-        CoreLoggerContexts.stopLoggerContext(false, file); // stop async thread
-
-        final BufferedReader reader = new BufferedReader(new FileReader(file));
-        final String line1 = reader.readLine();
-        reader.close();
-        file.delete();
-        assertNotNull(line1);
-        assertEquals("123456789000 Async logger msg with embedded timestamp", line1, "line1 correct");
+        assertThat(list.getMessages(1, 1, TimeUnit.SECONDS)).containsExactly("123456789000 Async logger msg with embedded timestamp");
+        assertThat(PoisonClock.invoked).hasValue(null);
     }
 
     public static class PoisonClock implements Clock {
-        public static boolean called = false;
+        static final AtomicReference<AssertionFailedError> invoked = new AtomicReference<>();
+
         @Override
         public long currentTimeMillis() {
-            //throw new RuntimeException("This should not have been called");
-            called = true;
+            invoked.set(new AssertionFailedError("PoisonClock should not have been invoked"));
             return 987654321L;
         }
     }

@@ -140,7 +140,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private final ConfigurationScheduler configurationScheduler;
     private final WatchManager watchManager;
     private AsyncLoggerConfigDisruptor asyncLoggerConfigDisruptor;
-    private NanoClock nanoClock;
     private final WeakReference<LoggerContext> loggerContext;
 
     /**
@@ -154,14 +153,14 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         if (loggerContext != null) {
             injector = loggerContext.getInjector();
         } else {
+            // for NullConfiguration
             injector = DI.createInjector();
-            injector.init(this);
+            injector.init();
         }
         componentMap.put(Configuration.CONTEXT_PROPERTIES, properties);
         pluginManager = new PluginManager(Node.CATEGORY);
         configurationScheduler = injector.getInstance(ConfigurationScheduler.class);
         watchManager = injector.getInstance(WatchManager.class);
-        nanoClock = injector.getInstance(NanoClock.class);
         setState(State.INITIALIZING);
     }
 
@@ -1035,7 +1034,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
         injector.bindInstance(Keys.SUBSTITUTOR_KEY, stringSubstitutionStrategy);
         try {
-            injector.configureNode(node);
+            injector.injectNode(node);
         } finally {
             injector.removeBinding(Keys.SUBSTITUTOR_KEY);
         }
@@ -1043,11 +1042,10 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     /**
      * This method is used by Arbiters to create specific children.
-     * @param type The PluginType.
      * @param node The Node.
      * @return The created object or null;
      */
-    public Object createPluginObject(final PluginType<?> type, final Node node) {
+    public Object createPluginObject(final Node node) {
         if (this.getState().equals(State.INITIALIZING)) {
             injector.bindInstance(Keys.SUBSTITUTOR_KEY, configurationStrSubstitutor::replace);
             try {
@@ -1058,6 +1056,18 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
         LOGGER.warn("Plugin Object creation is not allowed after initialization");
         return null;
+    }
+
+    /**
+     * This method is used by Arbiters to create specific children.
+     * @param type The PluginType.
+     * @param node The Node.
+     * @return The created object or null;
+     * @deprecated use {@link #createPluginObject(Node)}
+     */
+    @Deprecated
+    public Object createPluginObject(final PluginType<?> type, final Node node) {
+        return createPluginObject(node);
     }
 
     private void setParents() {
@@ -1096,11 +1106,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     @Override
     public NanoClock getNanoClock() {
-        return nanoClock;
+        return injector.getInstance(NanoClock.class);
     }
 
     @Override
     public void setNanoClock(final NanoClock nanoClock) {
-        this.nanoClock = Objects.requireNonNull(nanoClock, "nanoClock");
+        injector.bindInstance(NanoClock.KEY, nanoClock);
     }
 }

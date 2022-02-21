@@ -18,17 +18,14 @@
 
 <Configuration status="off">
   <Appenders>
-    <RandomAccessFile name="RandomAccessFile" fileName="target/AsyncLoggerTimestampMessageTest.log"
-	    		immediateFlush="false" append="false">
-      <PatternLayout>
-        <Pattern>%d{UNIX_MILLIS} %m%n</Pattern>
-      </PatternLayout>
-    </RandomAccessFile>
+    <List name="list">
+      <PatternLayout pattern="%d{UNIX_MILLIS} %m"/>
+    </List>
   </Appenders>
   
   <Loggers>
     <Root level="info" includeLocation="false">
-      <AppenderRef ref="RandomAccessFile"/>
+      <AppenderRef ref="list"/>
     </Root>
   </Loggers>
 </Configuration>

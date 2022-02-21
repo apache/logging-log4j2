@@ -16,79 +16,69 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.util.concurrent.TimeUnit;
-
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.CoreLoggerContexts;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.core.time.NanoClock;
 import org.apache.logging.log4j.core.time.SystemNanoClock;
-import org.apache.logging.log4j.util.Strings;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Tag;
+import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
+import org.apache.logging.log4j.plugins.Factory;
+import org.apache.logging.log4j.plugins.Singleton;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-@Tag("functional")
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class Log4jLogEventNanoTimeTest {
 
-    @BeforeAll
-    public static void beforeClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "NanoTimeToFileTest.xml");
-    }
-
-    @AfterAll
-    public static void afterClass() {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, Strings.EMPTY);
-    }
-
-    @Test
-    public void testLog4jLogEventUsesNanoTimeClock() throws Exception {
-        final File file = new File("target", "NanoTimeToFileTest.log");
-        // System.out.println(f.getAbsolutePath());
-        file.delete();
-        final Logger log = LogManager.getLogger("com.foo.Bar");
-        final long before = System.nanoTime();
-        log.info("Use actual System.nanoTime()");
-        assertTrue(Log4jLogEvent.getNanoClock() instanceof SystemNanoClock, "using SystemNanoClock");
-
-        final long DUMMYNANOTIME = 123;
-        Log4jLogEvent.setNanoClock(new DummyNanoClock(DUMMYNANOTIME));
-        log.info("Use dummy nano clock");
-        assertTrue(Log4jLogEvent.getNanoClock() instanceof DummyNanoClock, "using SystemNanoClock");
-
-        CoreLoggerContexts.stopLoggerContext(file); // stop async thread
-
-        String line1;
-        String line2;
-        try (final BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            line1 = reader.readLine();
-            line2 = reader.readLine();
-            // System.out.println(line1);
-            // System.out.println(line2);
+    @LoggerContextSource("NanoTimeToFileTest.xml")
+    static class DefaultTest {
+        @Test
+        void usesActualTimeByDefault(final LoggerContext context, @Named final ListAppender list) {
+            final Logger log = context.getLogger("com.foo.Bar");
+            final long before = System.nanoTime();
+            log.info("Use actual System.nanoTime()");
+            final Configuration configuration = context.getConfiguration();
+            assertThat(configuration.getNanoClock()).isInstanceOf(SystemNanoClock.class);
+            final List<String> messages = list.getMessages();
+            assertThat(messages).hasSize(1);
+            final String line = messages.get(0);
+            final String[] parts = line.split(" AND ");
+            assertThat(parts[0]).isEqualTo(parts[1]);
+            assertThat(parts[2]).isEqualTo("Use actual System.nanoTime()");
+            final long loggedNanoTime = Long.parseLong(parts[0]);
+            assertThat(loggedNanoTime - before).isLessThan(TimeUnit.SECONDS.toNanos(1));
         }
-        file.delete();
-
-        assertNotNull(line1, "line1");
-        assertNotNull(line2, "line2");
-        final String[] line1Parts = line1.split(" AND ");
-        assertEquals("Use actual System.nanoTime()", line1Parts[2]);
-        assertEquals(line1Parts[0], line1Parts[1]);
-        final long loggedNanoTime = Long.parseLong(line1Parts[0]);
-        assertTrue(loggedNanoTime - before < TimeUnit.SECONDS.toNanos(1), "used system nano time");
-
-        final String[] line2Parts = line2.split(" AND ");
-        assertEquals("Use dummy nano clock", line2Parts[2]);
-        assertEquals(String.valueOf(DUMMYNANOTIME), line2Parts[0]);
-        assertEquals(String.valueOf(DUMMYNANOTIME), line2Parts[1]);
     }
 
+    @LoggerContextSource("NanoTimeToFileTest.xml")
+    static class OverrideTest {
+        private static final long DUMMYNANOTIME = 123;
+
+        @Singleton
+        @Factory
+        NanoClock nanoClock() {
+            return new DummyNanoClock(DUMMYNANOTIME);
+        }
+
+        @Test
+        void useOverriddenTime(final LoggerContext context, @Named final ListAppender list) {
+            final Logger log = context.getLogger("com.foo.Bar");
+            final Configuration configuration = context.getConfiguration();
+            log.info("Use dummy nano clock");
+            assertThat(configuration.getNanoClock()).isInstanceOf(DummyNanoClock.class);
+            final List<String> messages = list.getMessages();
+            assertThat(messages).hasSize(1);
+            final String line = messages.get(0);
+            final String[] parts = line.split(" AND ");
+            assertThat(parts[0]).isEqualTo(parts[1]).isEqualTo(String.valueOf(DUMMYNANOTIME));
+            assertThat(parts[2]).isEqualTo("Use dummy nano clock");
+
+        }
+    }
 }

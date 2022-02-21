@@ -97,7 +97,7 @@ public class ScriptArbiter implements Arbiter {
                     continue;
                 }
                 if (Script.class.isAssignableFrom(type.getPluginClass())) {
-                    script = (Script) configuration.createPluginObject(type, child);
+                    script = (Script) configuration.createPluginObject(child);
                     node.getChildren().remove(child);
                     break;
                 }

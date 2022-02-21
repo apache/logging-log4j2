@@ -18,12 +18,13 @@ package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.selector.ContextSelector;
+import org.apache.logging.log4j.core.test.CoreLoggerContexts;
+import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -37,9 +38,7 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @Category(AsyncLoggers.class)
@@ -85,6 +84,7 @@ public class AsyncLoggerCustomSelectorLocationTest {
         assertThat(thirdLine, nullValue());
     }
 
+    @Singleton
     public static final class CustomAsyncContextSelector implements ContextSelector {
         private static final LoggerContext CONTEXT = new AsyncLoggerContext("AsyncDefault");
         @Override

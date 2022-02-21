@@ -24,6 +24,7 @@ import org.apache.logging.log4j.plugins.processor.PluginCache;
 import org.apache.logging.log4j.plugins.processor.PluginEntry;
 import org.apache.logging.log4j.plugins.processor.PluginService;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LazyValue;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.Strings;
 
@@ -51,7 +52,7 @@ public class PluginRegistry {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private static final Supplier<PluginRegistry> INSTANCE = LazyValue.fromSupplier(PluginRegistry::new);
+    private static final Supplier<PluginRegistry> INSTANCE = new LazyValue<>(PluginRegistry::new);
 
     /**
      * Contains plugins found in Log4j2Plugins.dat cache files in the main CLASSPATH.
@@ -296,7 +297,7 @@ public class PluginRegistry {
 
         final long startTime = System.nanoTime();
         final ResolverUtil resolver = new ResolverUtil();
-        final ClassLoader classLoader = LoaderUtil.getClassLoader();
+        final ClassLoader classLoader = LoaderUtil.getClassLoader(getClass(), LoaderUtil.class);
         if (classLoader != null) {
             resolver.setClassLoader(classLoader);
         }

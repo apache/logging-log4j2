@@ -17,11 +17,11 @@
 package org.apache.logging.log4j.plugins.convert;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.plugins.util.LazyValue;
 import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LazyValue;
 import org.apache.logging.log4j.util.ReflectionUtil;
 
 import java.lang.reflect.ParameterizedType;
@@ -42,7 +42,7 @@ import java.util.function.Supplier;
 public class TypeConverterRegistry {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
-    private static final Supplier<TypeConverterRegistry> INSTANCE = LazyValue.fromSupplier(TypeConverterRegistry::new);
+    private static final Supplier<TypeConverterRegistry> INSTANCE = new LazyValue<>(TypeConverterRegistry::new);
 
     private final ConcurrentMap<Type, TypeConverter<?>> registry = new ConcurrentHashMap<>();
 

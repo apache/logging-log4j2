@@ -17,11 +17,12 @@
 
 package org.apache.logging.log4j.plugins.di;
 
-// TODO: provide module for default impls
-public interface Module {
+public interface InjectorCallback {
     void configure(final Injector injector);
 
     default int getPriority() {
         return 0;
     }
+
+    String toString();
 }

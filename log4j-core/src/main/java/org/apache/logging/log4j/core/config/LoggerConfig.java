@@ -36,7 +36,6 @@ import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.impl.ReusableLogEventFactory;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.Booleans;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Node;
@@ -214,7 +213,7 @@ public class LoggerConfig extends AbstractFilterable {
      * Default constructor.
      */
     public LoggerConfig() {
-        this.logEventFactory = new DefaultLogEventFactory();
+        this.logEventFactory = DefaultLogEventFactory.newInstance();
         this.level = Level.ERROR;
         this.name = Strings.EMPTY;
         this.properties = null;
@@ -231,7 +230,7 @@ public class LoggerConfig extends AbstractFilterable {
      * @param additive true if the Logger is additive, false otherwise.
      */
     public LoggerConfig(final String name, final Level level, final boolean additive) {
-        this.logEventFactory = new DefaultLogEventFactory();
+        this.logEventFactory = DefaultLogEventFactory.newInstance();
         this.name = name;
         this.level = level;
         this.additive = additive;
@@ -649,7 +648,7 @@ public class LoggerConfig extends AbstractFilterable {
             final AppenderRef[] refs, final Property[] properties, final Configuration config, final Filter filter) {
         final String name = loggerName.equals(ROOT) ? Strings.EMPTY : loggerName;
         return new LoggerConfig(name, Arrays.asList(refs), filter, level, additivity, properties, config,
-            includeLocation(includeLocation, config), config.getComponent(Constants.LOG_EVENT_FACTORY_KEY));
+            includeLocation(includeLocation, config), config.getComponent(LogEventFactory.KEY));
     }
 
     // Note: for asynchronous loggers, includeLocation default is FALSE,
@@ -809,7 +808,7 @@ public class LoggerConfig extends AbstractFilterable {
 
             return new LoggerConfig(LogManager.ROOT_LOGGER_NAME, appenderRefs, filter, actualLevel, additive,
                     properties, config, includeLocation(includeLocation, config),
-                    config.getComponent(Constants.LOG_EVENT_FACTORY_KEY));
+                    config.getComponent(LogEventFactory.KEY));
         }
     }
 

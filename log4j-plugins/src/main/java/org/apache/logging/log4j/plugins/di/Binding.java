@@ -20,15 +20,15 @@ package org.apache.logging.log4j.plugins.di;
 import java.util.function.Supplier;
 
 class Binding<T> {
-    private final Key<T> key;
+    private final Key<? super T> key;
     private final Supplier<T> supplier;
 
-    private Binding(final Key<T> key, final Supplier<T> supplier) {
+    private Binding(final Key<? super T> key, final Supplier<T> supplier) {
         this.key = key;
         this.supplier = supplier;
     }
 
-    public Key<T> getKey() {
+    public Key<? super T> getKey() {
         return key;
     }
 
@@ -36,11 +36,11 @@ class Binding<T> {
         return supplier;
     }
 
-    public static <T> Binding<T> bind(final Key<T> key, final Supplier<T> supplier) {
+    public static <T> Binding<T> bind(final Key<? super T> key, final Supplier<T> supplier) {
         return new Binding<>(key, supplier);
     }
 
-    public static <T> Binding<T> bind(final Class<T> type, final Supplier<T> supplier) {
+    public static <T> Binding<T> bind(final Class<? super T> type, final Supplier<T> supplier) {
         return new Binding<>(Key.forClass(type), supplier);
     }
 }

@@ -18,32 +18,32 @@ package org.apache.logging.log4j.core.time.internal;
 
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.util.Log4jThread;
+import org.apache.logging.log4j.util.LazyValue;
 
 import java.util.concurrent.locks.LockSupport;
+import java.util.function.Supplier;
 
 /**
  * This Clock implementation is similar to CachedClock. It is slightly faster at
  * the cost of some accuracy.
  */
 public final class CoarseCachedClock implements Clock {
-    private static volatile CoarseCachedClock instance;
-    private static final Object INSTANCE_LOCK = new Object();
+    private static final Supplier<CoarseCachedClock> INSTANCE = new LazyValue<>(CoarseCachedClock::new);
     // ignore IDE complaints; volatile long is fine
     private volatile long millis = System.currentTimeMillis();
 
-    private final Thread updater = new Log4jThread("CoarseCachedClock Updater Thread") {
-        @Override
-        public void run() {
-            while (true) {
-                millis = System.currentTimeMillis();
-
-                // avoid explicit dependency on sun.misc.Util
-                LockSupport.parkNanos(1000 * 1000);
-            }
-        }
-    };
-
     private CoarseCachedClock() {
+        Thread updater = new Log4jThread("CoarseCachedClock Updater Thread") {
+            @Override
+            public void run() {
+                while (true) {
+                    millis = System.currentTimeMillis();
+
+                    // avoid explicit dependency on sun.misc.Util
+                    LockSupport.parkNanos(1000 * 1000);
+                }
+            }
+        };
         updater.setDaemon(true);
         updater.start();
     }
@@ -55,16 +55,7 @@ public final class CoarseCachedClock implements Clock {
      */
     public static CoarseCachedClock instance() {
         // LOG4J2-819: use lazy initialization of threads
-        CoarseCachedClock result = instance;
-        if (result == null) {
-            synchronized (INSTANCE_LOCK) {
-                result = instance;
-                if (result == null) {
-                    instance = result = new CoarseCachedClock();
-                }
-            }
-        }
-        return result;
+        return INSTANCE.get();
     }
 
     /**

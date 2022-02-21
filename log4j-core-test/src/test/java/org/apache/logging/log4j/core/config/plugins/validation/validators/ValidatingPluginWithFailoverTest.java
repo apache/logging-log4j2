@@ -79,7 +79,7 @@ public class ValidatingPluginWithFailoverTest {
         final StatusLogger logger = StatusLogger.getLogger();
         logger.trace("Initializing");
         logger.registerListener(listener);
-        injector.configureNode(node);
+        injector.injectNode(node);
         final FailoverAppender failoverAppender = node.getObject();
 
         verify(listener, times(1)).getStatusLevel();

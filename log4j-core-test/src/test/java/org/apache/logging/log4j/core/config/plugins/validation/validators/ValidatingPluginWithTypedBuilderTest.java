@@ -50,7 +50,7 @@ public class ValidatingPluginWithTypedBuilderTest {
     public void testNullDefaultValue() throws Exception {
         DI.createInjector()
                 .bindFactory(Keys.SUBSTITUTOR_KEY, Function::identity)
-                .configureNode(node);
+                .injectNode(node);
         final ValidatingPluginWithTypedBuilder validatingPlugin = node.getObject();
         assertNull(validatingPlugin);
     }
@@ -60,7 +60,7 @@ public class ValidatingPluginWithTypedBuilderTest {
         node.getAttributes().put("name", "foo");
         DI.createInjector()
                 .bindFactory(Keys.SUBSTITUTOR_KEY, Function::identity)
-                .configureNode(node);
+                .injectNode(node);
         final ValidatingPluginWithTypedBuilder validatingPlugin = node.getObject();
         assertNotNull(validatingPlugin);
         assertEquals("foo", validatingPlugin.getName());

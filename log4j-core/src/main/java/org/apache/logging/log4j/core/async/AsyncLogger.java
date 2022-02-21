@@ -16,8 +16,8 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.util.List;
-
+import com.lmax.disruptor.EventTranslatorVararg;
+import com.lmax.disruptor.dsl.Disruptor;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
@@ -30,9 +30,7 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.ReliabilityStrategy;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
-import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.time.Clock;
-import org.apache.logging.log4j.core.time.ClockFactory;
 import org.apache.logging.log4j.core.time.NanoClock;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
@@ -42,8 +40,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.StringMap;
 
-import com.lmax.disruptor.EventTranslatorVararg;
-import com.lmax.disruptor.dsl.Disruptor;
+import java.util.List;
 
 /**
  * AsyncLogger is a logger designed for high throughput and low latency logging. It does not perform any I/O in the
@@ -71,8 +68,8 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
     // immediate inlining instead of waiting until they are designated "hot enough".
 
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
-    private static final Clock CLOCK = ClockFactory.getClock(); // not reconfigurable
-    private static final ContextDataInjector CONTEXT_DATA_INJECTOR = ContextDataInjectorFactory.createInjector();
+    private final Clock clock; // not reconfigurable
+    private final ContextDataInjector contextDataInjector; // not reconfigurable
 
     private static final ThreadNameCachingStrategy THREAD_NAME_CACHING_STRATEGY = ThreadNameCachingStrategy.create();
 
@@ -95,7 +92,10 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
         super(context, name, messageFactory);
         this.loggerDisruptor = loggerDisruptor;
         includeLocation = privateConfig.loggerConfig.isIncludeLocation();
-        nanoClock = context.getConfiguration().getNanoClock();
+        final Configuration configuration = context.getConfiguration();
+        nanoClock = configuration.getNanoClock();
+        clock = configuration.getComponent(Clock.KEY);
+        contextDataInjector = configuration.getComponent(ContextDataInjector.KEY);
     }
 
     /*
@@ -271,8 +271,9 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
             ThreadContext.getImmutableStack(), //
 
             location,
-            CLOCK, //
-            nanoClock //
+            clock, //
+            nanoClock, //
+            contextDataInjector
         );
     }
 
@@ -288,8 +289,9 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
 
                 // location (expensive to calculate)
                 calcLocationIfRequested(fqcn), //
-                CLOCK, //
-                nanoClock //
+                clock, //
+                nanoClock, //
+                contextDataInjector
         );
     }
 
@@ -415,9 +417,9 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
         event.setValues(asyncLogger, asyncLogger.getName(), marker, fqcn, level, message, thrown,
                 // config properties are taken care of in the EventHandler thread
                 // in the AsyncLogger#actualAsyncLog method
-                CONTEXT_DATA_INJECTOR.injectContextData(null, (StringMap) event.getContextData()),
+                contextDataInjector.injectContextData(null, (StringMap) event.getContextData()),
                 contextStack, currentThread.getId(), threadName, currentThread.getPriority(), location,
-                CLOCK, nanoClock);
+                clock, nanoClock);
     }
 
     /**

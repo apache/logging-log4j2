@@ -24,7 +24,6 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.Reconfigurable;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.ExecutorServices;
@@ -33,7 +32,6 @@ import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
-import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
@@ -78,8 +76,7 @@ public class LoggerContext extends AbstractLifeCycle
     private final LoggerRegistry<Logger> loggerRegistry = new LoggerRegistry<>();
     private final CopyOnWriteArrayList<PropertyChangeListener> propertyChangeListeners = new CopyOnWriteArrayList<>();
     private volatile List<LoggerContextShutdownAware> listeners;
-    private final Injector injector = DI.createInjectorFromServiceLoader()
-            .bindFactory(Key.forClass(LoggerContext.class), () -> this);
+    private final Injector injector;
 
     /**
      * The Configuration is volatile to guarantee that initialization of the Configuration has completed before the
@@ -121,13 +118,17 @@ public class LoggerContext extends AbstractLifeCycle
      * @param configLocn The location of the configuration as a URI.
      */
     public LoggerContext(final String name, final Object externalContext, final URI configLocn) {
+        this(name, externalContext, configLocn, DI.createInjector());
+        injector.init();
+    }
+
+    public LoggerContext(final String name, final Object externalContext, final URI configLocn, final Injector injector) {
         this.contextName = name;
-        if (externalContext == null) {
-            externalMap.remove(EXTERNAL_CONTEXT_KEY);
-        } else {
+        if (externalContext != null) {
             externalMap.put(EXTERNAL_CONTEXT_KEY, externalContext);
         }
         this.configLocation = configLocn;
+        this.injector = injector;
     }
 
     /**
@@ -139,10 +140,13 @@ public class LoggerContext extends AbstractLifeCycle
      * @param configLocn The configuration location.
      */
     public LoggerContext(final String name, final Object externalContext, final String configLocn) {
+        this(name, externalContext, configLocn, DI.createInjector());
+        injector.init();
+    }
+
+    public LoggerContext(final String name, final Object externalContext, final String configLocn, final Injector injector) {
         this.contextName = name;
-        if (externalContext == null) {
-            externalMap.remove(EXTERNAL_CONTEXT_KEY);
-        } else {
+        if (externalContext != null) {
             externalMap.put(EXTERNAL_CONTEXT_KEY, externalContext);
         }
         if (configLocn != null) {
@@ -156,6 +160,7 @@ public class LoggerContext extends AbstractLifeCycle
         } else {
             configLocation = null;
         }
+        this.injector = injector;
     }
 
     public void addShutdownListener(final LoggerContextShutdownAware listener) {
@@ -635,8 +640,6 @@ public class LoggerContext extends AbstractLifeCycle
                 // LOG4J2-716: Android has no java.lang.management
                 LOGGER.error("Could not reconfigure JMX", e);
             }
-            // AsyncLoggers update their nanoClock when the configuration changes
-            Log4jLogEvent.setNanoClock(configuration.getNanoClock());
 
             return prev;
         } finally {

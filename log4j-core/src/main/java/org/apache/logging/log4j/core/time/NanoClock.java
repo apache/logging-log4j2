@@ -18,6 +18,7 @@
 package org.apache.logging.log4j.core.time;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.plugins.di.Key;
 
 /**
  * Provides the {@link LogEvent#getNanoTime() high-resolution time stamp} used in log events.
@@ -25,6 +26,8 @@ import org.apache.logging.log4j.core.LogEvent;
  * @since 2.11
  */
 public interface NanoClock {
+    Key<NanoClock> KEY = new Key<>() {};
+
     /**
      * Returns the current value of the running Java Virtual Machine's high-resolution time source, in nanoseconds.
      *

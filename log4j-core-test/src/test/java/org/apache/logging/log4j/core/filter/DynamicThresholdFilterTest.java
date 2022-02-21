@@ -22,10 +22,10 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
+import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -42,8 +42,11 @@ public class DynamicThresholdFilterTest {
         final KeyValuePair[] pairs = new KeyValuePair[] {
                 new KeyValuePair("testuser", "DEBUG"),
                 new KeyValuePair("JohnDoe", "warn") };
-        final DynamicThresholdFilter filter = DynamicThresholdFilter.createFilter("userid", pairs, Level.ERROR, null,
-                null);
+        final DynamicThresholdFilter filter = DynamicThresholdFilter.newBuilder()
+                .setKey("userid")
+                .setPairs(pairs)
+                .setDefaultThreshold(Level.ERROR)
+                .get();
         filter.start();
         assertTrue(filter.isStarted());
         assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.DEBUG, null, (Object) null, (Throwable) null));
@@ -65,7 +68,13 @@ public class DynamicThresholdFilterTest {
         final KeyValuePair[] pairs = new KeyValuePair[] {
                 new KeyValuePair("testuser", "DEBUG"),
                 new KeyValuePair("JohnDoe", "warn") };
-        final DynamicThresholdFilter filter = DynamicThresholdFilter.createFilter("userid", pairs, Level.ERROR, Filter.Result.ACCEPT, Filter.Result.NEUTRAL);
+        final DynamicThresholdFilter filter = DynamicThresholdFilter.newBuilder()
+                .setKey("userid")
+                .setPairs(pairs)
+                .setDefaultThreshold(Level.ERROR)
+                .setOnMatch(Filter.Result.ACCEPT)
+                .setOnMismatch(Filter.Result.NEUTRAL)
+                .get();
         filter.start();
         assertTrue(filter.isStarted());
         final Object [] replacements = {"one", "two", "three"};

@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.util;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.util.LoaderUtil;
@@ -53,8 +52,6 @@ public final class Constants {
      * Name of the system property to use to identify the LogEvent factory.
      */
     public static final String LOG4J_LOG_EVENT_FACTORY = "Log4jLogEventFactory";
-
-    public static final Key<LogEventFactory> LOG_EVENT_FACTORY_KEY = new Key<>() {};
 
     /**
      * Name of the system property to use to identify the ContextSelector Class.

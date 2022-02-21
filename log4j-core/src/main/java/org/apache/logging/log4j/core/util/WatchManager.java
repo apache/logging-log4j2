@@ -23,7 +23,7 @@ import org.apache.logging.log4j.core.config.ConfigurationScheduler;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.ServiceLoaderUtil;
+import org.apache.logging.log4j.util.ServiceRegistry;
 
 import java.io.File;
 import java.util.Date;
@@ -137,8 +137,8 @@ public class WatchManager extends AbstractLifeCycle {
     @Inject
     public WatchManager(final ConfigurationScheduler scheduler) {
         this.scheduler = Objects.requireNonNull(scheduler, "scheduler");
-        eventServiceList = ServiceLoaderUtil.loadServices(WatchEventService.class,
-                moduleLayer -> ServiceLoader.load(moduleLayer, WatchEventService.class), null);
+        eventServiceList = ServiceRegistry.getInstance()
+                .getServices(WatchEventService.class, layer -> ServiceLoader.load(layer, WatchEventService.class), null);
     }
 
     public void checkFiles() {
