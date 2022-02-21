@@ -19,9 +19,9 @@ package org.apache.logging.log4j.async;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class LoggerExcpetion {
+public class LoggerException {
 
-    private static final Logger logger = LogManager.getLogger(LoggerExcpetion.class);
+    private static final Logger logger = LogManager.getLogger(LoggerException.class);
 
     public static void main(String[] args) {
 
@@ -33,7 +33,7 @@ public class LoggerExcpetion {
     }
 
     static int getException() throws IllegalArgumentException {
-        throw new IllegalArgumentException("Hello Exception!");
+        throw new IllegalArgumentException("Hello, Something Went Wrong. Exception Occured!!");
     }
 
 }
