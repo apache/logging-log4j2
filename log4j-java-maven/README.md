@@ -220,8 +220,8 @@ The Output should be l0ok like this in your terminal :
 2022-02-21 16:55:33,020 pool-1-thread-1 DEBUG Stopped LoggerContext[name=AsyncContext@464bee09, org.apache.logging.log4j.core.async.AsyncLoggerContext@45fd9a4d] with status true 
 ```
 
+So we are done with configuring `asynchronous` logging in Log4j 2 using the `Log4jContextSelector` system property.
 You can optimize the performance of your Java by using The option for asynchronous in Log4J 2 tools.
-Thanks :).
 
 For more detials you can check this link.
 [https://logging.apache.org/log4j/2.x/manual/async.html
