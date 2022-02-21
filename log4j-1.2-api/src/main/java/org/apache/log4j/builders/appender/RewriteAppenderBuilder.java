@@ -33,6 +33,7 @@ import org.apache.log4j.bridge.AppenderWrapper;
 import org.apache.log4j.bridge.RewritePolicyAdapter;
 import org.apache.log4j.bridge.RewritePolicyWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
+import org.apache.log4j.builders.BuilderManager;
 import org.apache.log4j.config.Log4j1Configuration;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.helpers.OptionConverter;
@@ -106,15 +107,16 @@ public class RewriteAppenderBuilder extends AbstractBuilder implements AppenderB
         final Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
         final String policyPrefix = appenderPrefix + ".rewritePolicy";
         final String className = getProperty(policyPrefix);
-        final RewritePolicy policy = configuration.getBuilderManager().parse(className, policyPrefix, props, configuration);
+        final RewritePolicy policy = configuration.getBuilderManager()
+                .parse(className, policyPrefix, props, configuration, BuilderManager.INVALID_REWRITE_POLICY);
         final String level = getProperty(THRESHOLD_PARAM);
         if (appenderRef == null) {
-            LOGGER.warn("No appender references configured for AsyncAppender {}", name);
+            LOGGER.error("No appender references configured for RewriteAppender {}", name);
             return null;
         }
         final Appender appender = configuration.parseAppender(props, appenderRef);
         if (appender == null) {
-            LOGGER.warn("Cannot locate Appender {}", appenderRef);
+            LOGGER.error("Cannot locate Appender {}", appenderRef);
             return null;
         }
         return createAppender(name, level, new String[] {appenderRef}, policy, filter, configuration);
@@ -122,6 +124,10 @@ public class RewriteAppenderBuilder extends AbstractBuilder implements AppenderB
 
     private <T extends Log4j1Configuration> Appender createAppender(final String name, final String level,
             final String[] appenderRefs, final RewritePolicy policy, final Filter filter, final T configuration) {
+        if (appenderRefs.length == 0) {
+            LOGGER.error("No appender references configured for RewriteAppender {}", name);
+            return null;
+        }
         final org.apache.logging.log4j.Level logLevel = OptionConverter.convertLevel(level,
                 org.apache.logging.log4j.Level.TRACE);
         final AppenderRef[] refs = new AppenderRef[appenderRefs.length];
