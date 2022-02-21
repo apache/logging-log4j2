@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.pattern;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
 
@@ -78,7 +79,7 @@ public abstract class NameAbbreviator {
             //  if all blanks and digits
             //
             if (i == number.length()) {
-                return new MaxElementAbbreviator(Integer.parseInt(number),
+                return new MaxElementAbbreviator(Integers.parseInt(number),
                         isNegativeNumber? MaxElementAbbreviator.Strategy.DROP : MaxElementAbbreviator.Strategy.RETAIN);
             }
 

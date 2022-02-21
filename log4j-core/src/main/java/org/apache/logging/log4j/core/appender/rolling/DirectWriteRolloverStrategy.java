@@ -87,7 +87,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
         public DirectWriteRolloverStrategy build() {
             int maxIndex = Integer.MAX_VALUE;
             if (maxFiles != null) {
-                maxIndex = Integer.parseInt(maxFiles);
+                maxIndex = Integers.parseInt(maxFiles);
                 if (maxIndex < 0) {
                     maxIndex = Integer.MAX_VALUE;
                 } else if (maxIndex < 2) {

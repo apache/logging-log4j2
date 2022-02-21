@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,6 +35,7 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.net.Facility;
+import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.junit.UsingAnyThreadContext;
 import org.apache.logging.log4j.message.StructuredDataCollectionMessage;
@@ -41,8 +47,6 @@ import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @UsingAnyThreadContext
 public class Rfc5424LayoutTest {
@@ -137,7 +141,7 @@ public class Rfc5424LayoutTest {
                 final int firstSpacePosition = frame.indexOf(' ');
                 final String messageLength = frame.substring(0, firstSpacePosition);
                 try {
-                    length = Integer.parseInt(messageLength);
+                    length = Integers.parseInt(messageLength);
                     // the ListAppender removes the ending newline, so we expect one less size
                     assertEquals(frameLength, messageLength.length() + length);
                 }
@@ -215,7 +219,7 @@ public class Rfc5424LayoutTest {
                 final int firstSpacePosition = frame.indexOf(' ');
                 final String messageLength = frame.substring(0, firstSpacePosition);
                 try {
-                    length = Integer.parseInt(messageLength);
+                    length = Integers.parseInt(messageLength);
                     // the ListAppender removes the ending newline, so we expect one less size
                     assertEquals(frameLength, messageLength.length() + length);
                 }

@@ -16,10 +16,6 @@
  */
 package org.apache.logging.log4j.layout.template.json.util;
 
-import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.util.LoaderUtil;
-import org.jctools.queues.MpmcArrayQueue;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -28,6 +24,11 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.function.Supplier;
+
+import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.Integers;
+import org.apache.logging.log4j.util.LoaderUtil;
+import org.jctools.queues.MpmcArrayQueue;
 
 public final class RecyclerFactories {
 
@@ -126,7 +127,7 @@ public final class RecyclerFactories {
             capacity = defaultCapacity;
         } else {
             try {
-                capacity = Integer.parseInt(capacityValue.toString());
+                capacity = Integers.parseInt(capacityValue.toString());
             } catch (final NumberFormatException error) {
                 throw new IllegalArgumentException(
                         "failed reading capacity in queueing recycler " +

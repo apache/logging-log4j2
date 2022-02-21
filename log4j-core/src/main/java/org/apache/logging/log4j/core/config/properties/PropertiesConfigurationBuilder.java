@@ -17,7 +17,6 @@
 
 package org.apache.logging.log4j.core.config.properties;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
@@ -43,6 +42,7 @@ import org.apache.logging.log4j.core.config.builder.api.ScriptComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptFileComponentBuilder;
 import org.apache.logging.log4j.core.filter.AbstractFilter.AbstractFilterBuilder;
 import org.apache.logging.log4j.core.util.Builder;
+import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
@@ -124,7 +124,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
         final Properties levelProps = PropertiesUtil.extractSubset(rootProperties, "customLevel");
         if (levelProps.size() > 0) {
             for (final String key : levelProps.stringPropertyNames()) {
-                builder.add(builder.newCustomLevel(key, Integer.parseInt(levelProps.getProperty(key))));
+                builder.add(builder.newCustomLevel(key, Integers.parseInt(levelProps.getProperty(key))));
             }
         }
 

@@ -229,6 +229,9 @@
       <action issue="LOG4J2-3392" dev="ggregory" type="fix" due-to="Gary Gregory">
         Possible NullPointerException in MongoDb4DocumentObject, MongoDbDocumentObject, DefaultNoSqlObject.
       </action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">
+        Trim whitespace before parsing a String into an Integer.
+      </action>
       <!-- ADD -->
       <action issue="LOG4J2-3297" dev="rgoers" type="add">
         Limit loading of configuration via a url to https by default.

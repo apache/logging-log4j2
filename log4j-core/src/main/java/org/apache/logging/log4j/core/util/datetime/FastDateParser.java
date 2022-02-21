@@ -39,6 +39,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.logging.log4j.core.util.Integers;
+
 /**
  * <p>FastDateParser is a fast and thread-safe version of
  * {@link java.text.SimpleDateFormat}.</p>
@@ -775,7 +777,7 @@ public class FastDateParser implements DateParser, Serializable {
                 return false;
             }
 
-            final int value = Integer.parseInt(source.substring(pos.getIndex(), idx));
+            final int value = Integers.parseInt(source.substring(pos.getIndex(), idx));
             pos.setIndex(idx);
 
             calendar.set(field, modify(parser, value));

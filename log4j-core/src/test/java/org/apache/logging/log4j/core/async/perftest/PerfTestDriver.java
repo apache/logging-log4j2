@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
+import org.apache.logging.log4j.core.util.Integers;
 
 /**
  * Runs a sequence of performance tests.
@@ -112,7 +113,7 @@ public class PerfTestDriver {
 
         private int getUserSpecifiedRingBufferSize() {
             try {
-                return Integer.parseInt(System.getProperty("RingBufferSize", "-1"));
+                return Integers.parseInt(System.getProperty("RingBufferSize", "-1"));
             } catch (final Exception ignored) {
                 return -1;
             }
@@ -170,7 +171,7 @@ public class PerfTestDriver {
                     average += Long.parseLong(parts[i++].split("=")[1]);
                     pct99 += Long.parseLong(parts[i++].split("=")[1]);
                     pct99_99 += Long.parseLong(parts[i++].split("=")[1]);
-                    count += Integer.parseInt(parts[i].split("=")[1]);
+                    count += Integers.parseInt(parts[i].split("=")[1]);
                 } else {
                     throughputRowCount++;
                     final String number = line.substring(0, line.indexOf(' '));
@@ -288,7 +289,7 @@ public class PerfTestDriver {
     private static void runPerfTests(final String[] args, final List<Setup> tests) throws IOException,
             InterruptedException, FileNotFoundException {
         final String java = args.length > 0 ? args[0] : "java";
-        final int repeat = args.length > 1 ? Integer.parseInt(args[1]) : 5;
+        final int repeat = args.length > 1 ? Integers.parseInt(args[1]) : 5;
         int x = 0;
         for (final Setup setup : tests) {
             System.out.print(setup.description());

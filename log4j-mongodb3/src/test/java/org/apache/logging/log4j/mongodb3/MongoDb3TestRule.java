@@ -20,6 +20,7 @@ package org.apache.logging.log4j.mongodb3;
 import java.util.Objects;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.logging.log4j.core.util.Integers;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -123,7 +124,7 @@ public class MongoDb3TestRule implements TestRule {
             public void evaluate() throws Throwable {
                 final String value = Objects.requireNonNull(System.getProperty(portSystemPropertyName),
                         "System property '" + portSystemPropertyName + "' is null");
-                final int port = Integer.parseInt(value);
+                final int port = Integers.parseInt(value);
                 mongodExecutable = starter.prepare(
                 // @formatter:off
                         MongodConfig.builder()

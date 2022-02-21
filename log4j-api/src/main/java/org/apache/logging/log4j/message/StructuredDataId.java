@@ -110,7 +110,7 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
 
         if (index > 0) {
             this.name = name.substring(0, index);
-            this.enterpriseNumber = Integer.parseInt(name.substring(index + 1));
+            this.enterpriseNumber = Integer.parseInt(name.substring(index + 1).trim());
         } else {
             this.name = name;
             this.enterpriseNumber = RESERVED;

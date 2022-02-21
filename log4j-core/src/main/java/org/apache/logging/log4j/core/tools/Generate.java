@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.logging.log4j.core.util.Integers;
+
 /**
  * Generates source code for custom or extended logger wrappers.
  * <p>
@@ -1039,7 +1041,7 @@ public final class Generate {
         LevelInfo(final String description) {
             final String[] parts = description.split("=");
             name = parts[0];
-            intLevel = Integer.parseInt(parts[1]);
+            intLevel = Integers.parseInt(parts[1]);
         }
 
         public static List<LevelInfo> parse(final List<String> values, final Class<?> generator) {

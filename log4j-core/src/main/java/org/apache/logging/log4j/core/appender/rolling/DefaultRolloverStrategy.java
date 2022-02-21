@@ -126,7 +126,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
                 useMax = fileIndex == null ? true : fileIndex.equalsIgnoreCase("max");
                 minIndex = MIN_WINDOW_SIZE;
                 if (min != null) {
-                    minIndex = Integer.parseInt(min.trim());
+                    minIndex = Integers.parseInt(min);
                     if (minIndex < 1) {
                         LOGGER.error("Minimum window size too small. Limited to " + MIN_WINDOW_SIZE);
                         minIndex = MIN_WINDOW_SIZE;

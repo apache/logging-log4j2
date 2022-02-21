@@ -131,7 +131,7 @@ public class Unbox {
         final String userPreferredRBSize = PropertiesUtil.getProperties().getStringProperty(propertyName,
                 String.valueOf(RINGBUFFER_MIN_SIZE));
         try {
-            int size = Integer.parseInt(userPreferredRBSize);
+            int size = Integer.parseInt(userPreferredRBSize.trim());
             if (size < RINGBUFFER_MIN_SIZE) {
                 size = RINGBUFFER_MIN_SIZE;
                 LOGGER.warn("Invalid {} {}, using minimum size {}.", propertyName, userPreferredRBSize,

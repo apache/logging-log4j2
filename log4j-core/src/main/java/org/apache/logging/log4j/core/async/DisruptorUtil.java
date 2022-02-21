@@ -106,7 +106,7 @@ final class DisruptorUtil {
         final String userPreferredRBSize = PropertiesUtil.getProperties().getStringProperty(propertyName,
                 String.valueOf(ringBufferSize));
         try {
-            int size = Integer.parseInt(userPreferredRBSize);
+            int size = Integers.parseInt(userPreferredRBSize);
             if (size < RINGBUFFER_MIN_SIZE) {
                 size = RINGBUFFER_MIN_SIZE;
                 LOGGER.warn("Invalid RingBufferSize {}, using minimum size {}.", userPreferredRBSize,

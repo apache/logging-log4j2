@@ -30,6 +30,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.async.DefaultAsyncQueueFullPolicy;
 import org.apache.logging.log4j.core.async.EventRoute;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Loader;
 
 /**
@@ -100,7 +101,7 @@ public class ResponseTimeTest {
                     "and logger library (Log4j1, Log4j2, Logback, JUL)");
             return;
         }
-        final int threadCount = Integer.parseInt(args[0]);
+        final int threadCount = Integers.parseInt(args[0]);
         final double loadMessagesPerSec = Double.parseDouble(args[1]);
         final String loggerLib = args.length > 2 ? args[2] : "Log4j2";
 

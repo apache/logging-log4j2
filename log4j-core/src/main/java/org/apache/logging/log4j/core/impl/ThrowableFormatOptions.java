@@ -23,6 +23,7 @@ import java.util.Scanner;
 import org.apache.logging.log4j.core.pattern.JAnsiTextRenderer;
 import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
 import org.apache.logging.log4j.core.pattern.TextRenderer;
+import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -294,7 +295,7 @@ public final class ThrowableFormatOptions {
                 } else if (option.startsWith("suffix(") && option.endsWith(")")){
                     suffix = option.substring("suffix(".length(), option.length() - 1);
                 } else if (!option.equalsIgnoreCase(FULL)) {
-                    lines = Integer.parseInt(option);
+                    lines = Integers.parseInt(option);
                 }
             }
         }

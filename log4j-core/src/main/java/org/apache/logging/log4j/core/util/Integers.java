@@ -30,6 +30,9 @@ public final class Integers {
 
     /**
      * Parses the string argument as a signed decimal integer.
+     * <p>
+     * The input may be surrounded by whitespace.
+     * </p>
      *
      * @param s a {@code String} containing the {@code int} representation to parse, may be {@code null} or {@code ""}
      * @param defaultValue the return value, use {@code defaultValue} if {@code s} is {@code null} or {@code ""}
@@ -37,7 +40,7 @@ public final class Integers {
      * @throws NumberFormatException if the string does not contain a parsable integer.
      */
     public static int parseInt(final String s, final int defaultValue) {
-        return Strings.isEmpty(s) ? defaultValue : Integer.parseInt(s);
+        return Strings.isEmpty(s) ? defaultValue : Integer.parseInt(s.trim());
     }
 
     /**

@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
+import org.apache.logging.log4j.core.util.Integers;
+
 public class TlsSyslogInputStreamReader extends TlsSyslogInputStreamReaderBase {
     private static final char SPACE = ' ';
 
@@ -86,6 +88,6 @@ public class TlsSyslogInputStreamReader extends TlsSyslogInputStreamReaderBase {
 
     private void calculateNextMessageLength() {
         final byte[] length = Arrays.copyOfRange(lengthBuffer, 0, position);
-        nextMessageLength = Integer.parseInt(new String(length));
+        nextMessageLength = Integers.parseInt(new String(length));
     }
 }

@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Log4jThread;
 
 public class KafkaManager extends AbstractManager {
@@ -72,7 +73,7 @@ public class KafkaManager extends AbstractManager {
 
 		this.key = key;
 
-		this.timeoutMillis = Integer.parseInt(config.getProperty("timeout.ms", DEFAULT_TIMEOUT_MILLIS));
+		this.timeoutMillis = Integers.parseInt(config.getProperty("timeout.ms", DEFAULT_TIMEOUT_MILLIS));
 	}
 
 	@Override

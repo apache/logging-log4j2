@@ -242,7 +242,7 @@ public final class PropertiesUtil {
         final String prop = getStringProperty(name);
         if (prop != null) {
             try {
-                return Integer.parseInt(prop);
+                return Integer.parseInt(prop.trim());
             } catch (final Exception ignored) {
                 // ignore
             }

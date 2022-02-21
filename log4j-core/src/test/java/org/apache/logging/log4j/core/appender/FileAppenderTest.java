@@ -40,6 +40,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.junit.CleanUpFiles;
 import org.apache.logging.log4j.message.SimpleMessage;
@@ -323,7 +324,7 @@ public class FileAppenderTest {
             }
             final String id = args[0];
 
-            final int count = Integer.parseInt(args[1]);
+            final int count = Integers.parseInt(args[1]);
 
             if (count <= 0) {
                 System.out.println("Invalid count value: " + args[1]);

@@ -22,6 +22,7 @@ import java.io.File;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -68,7 +69,7 @@ public class RollingAppenderDeleteScriptTest {
             assertTrue(file.getName() + " starts with 'test-'", file.getName().startsWith("test-"));
             assertTrue(file.getName() + " ends with '.log'", file.getName().endsWith(".log"));
             final String strIndex = file.getName().substring(5, file.getName().indexOf('.'));
-            final int index = Integer.parseInt(strIndex);
+            final int index = Integers.parseInt(strIndex);
             assertTrue(file + " should have odd index", index % 2 == 1);
         }
     }
