@@ -190,9 +190,14 @@ public class JsonTemplateLayoutBenchmark {
 //        System.out.format("Ready?");
 //        System.in.read();
         JsonTemplateLayoutBenchmarkState state = new JsonTemplateLayoutBenchmarkState();
-        int retryCount = 200_000_000;
+        int retryCount = 500_000_000;
         measureEcs(state, retryCount);
         measureJtl(state, retryCount);
+//        while (true) {
+//            measureEcs(state, retryCount);
+//        }
+//        measureEcs(state, retryCount);
+//        measureJtl(state, retryCount);
     }
 
     private static void measureJtl(JsonTemplateLayoutBenchmarkState state, int retryCount) {
