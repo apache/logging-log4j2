@@ -324,6 +324,9 @@
       <action dev="ggregory" type="udpate" due-to="Gary Gregory">
         Bump org.junit-pioneer:junit-pioneer from 1.5.0 to 1.6.1.
       </action>
+      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+        Bump org.apache.activemq:activemq-broker from 5.16.3 to 5.16.4.
+      </action>
 	</release>
     <release version="2.17.1" date="2021-12-27" description="GA Release 2.17.1">
       <!-- FIXES -->

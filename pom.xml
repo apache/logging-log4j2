@@ -285,7 +285,7 @@
     <javax.persistence>2.2.1</javax.persistence>
     <!-- The OSGi API version MUST always be the MINIMUM version Log4j supports -->
     <osgi.api.version>4.3.1</osgi.api.version>
-    <activemq.version>5.16.3</activemq.version>
+    <activemq.version>5.16.4</activemq.version>
     <!-- Allow Clirr severity to be overriden by the command-line option -DminSeverity=level -->
     <minSeverity>info</minSeverity>
     <jctoolsVersion>1.2.1</jctoolsVersion>
