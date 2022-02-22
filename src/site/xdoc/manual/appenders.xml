@@ -2472,7 +2472,6 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           <p>
             Here are a few sample configurations for the NoSQLAppender and MongoDB3 provider:
           </p>
-
             <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="error">
   <Appenders>
@@ -2499,6 +2498,27 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
   <Loggers>
     <Root level="warn">
       <AppenderRef ref="databaseAppender"/>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
+          <p>
+           You can define additional fields to log using <code>KeyValuePair</code> elements, for example:
+          </p>
+          <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+  <Appenders>
+    <NoSql name="MongoDbAppender">
+      <MongoDb3 databaseName="testDb" collectionName="testCollection" server="localhost"
+        port="${sys:MongoDBTestPort:-27017}" />
+      <KeyValuePair key="A" value="1" />
+      <KeyValuePair key="B" value="2" />
+      <KeyValuePair key="env1" value="${env:PATH}" />
+      <KeyValuePair key="env2" value="$${env:PATH}" />
+    </NoSql>
+  </Appenders>
+  <Loggers>
+    <Root level="ALL">
+      <AppenderRef ref="MongoDbAppender" />
     </Root>
   </Loggers>
 </Configuration>]]></pre>
@@ -2566,6 +2586,26 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         connection="mongodb://localhost:${sys:MongoDBTestPort:-27017}/testDb.testCollection" 
         capped="true" 
         collectionSize="1073741824"/>
+    </NoSql>
+  </Appenders>
+  <Loggers>
+    <Root level="ALL">
+      <AppenderRef ref="MongoDbAppender" />
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
+          <p>
+           You can define additional fields to log using <code>KeyValuePair</code> elements, for example:
+          </p>
+          <pre class="prettyprint linenums lang-xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+  <Appenders>
+    <NoSql name="MongoDbAppender">
+      <MongoDb4 connection="mongodb://localhost:${sys:MongoDBTestPort:-27017}/testDb.testCollection" />
+      <KeyValuePair key="A" value="1" />
+      <KeyValuePair key="B" value="2" />
+      <KeyValuePair key="env1" value="${env:PATH}" />
+      <KeyValuePair key="env2" value="$${env:PATH}" />
     </NoSql>
   </Appenders>
   <Loggers>
