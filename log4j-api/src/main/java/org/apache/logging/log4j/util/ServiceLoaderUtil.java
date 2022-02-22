@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.util;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.status.StatusLogger;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -29,7 +26,6 @@ import java.util.function.Predicate;
  * Loads all valid instances of a service.
  */
 public class ServiceLoaderUtil {
-    private static final Logger LOGGER = StatusLogger.getLogger();
 
     public static <S> List<S> loadServices(final Class<S> clazz, final Function<ModuleLayer, ServiceLoader<S>> loader,
             final Predicate<S> validator) {
@@ -55,7 +51,7 @@ public class ServiceLoaderUtil {
                 }
             }
             if (services.size() == 0 && throwable != null) {
-                LOGGER.debug("Unable to retrieve provider from ClassLoader {}", errorClassLoader, throwable);
+                LowLevelLogUtil.logException("Unable to retrieve provider from ClassLoader " + errorClassLoader, throwable);
             }
         } else {
             final ServiceLoader<S> serviceLoader = loader.apply(moduleLayer);

@@ -37,6 +37,9 @@ import java.util.stream.Stream;
 public class ServiceRegistry {
     private static final Supplier<ServiceRegistry> INSTANCE = new LazyValue<>(ServiceRegistry::new);
 
+    /**
+     * Returns the singleton ServiceRegistry instance.
+     */
     public static ServiceRegistry getInstance() {
         return INSTANCE.get();
     }
@@ -57,10 +60,10 @@ public class ServiceRegistry {
      * The {@code loaderCallerContext} parameter is provided to ensure the caller can specify which calling
      * function context to load services.
      *
-     * @param serviceType service class
+     * @param serviceType         service class
      * @param loaderCallerContext function located in same module as caller context to use for loading services
-     * @param validator if non-null, used to validate service instances, removing invalid instances from the returned list
-     * @param <S> type of service
+     * @param validator           if non-null, used to validate service instances, removing invalid instances from the returned list
+     * @param <S>                 type of service
      * @return loaded service instances
      */
     public <S> List<S> getServices(
@@ -76,7 +79,15 @@ public class ServiceRegistry {
                 .distinct().collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public <S> void registerBundleServices(
+    /**
+     * Loads and registers services from an OSGi context.
+     *
+     * @param serviceType       service class
+     * @param bundleId          bundle id to load services from
+     * @param bundleClassLoader bundle ClassLoader to load services from
+     * @param <S>               type of service
+     */
+    public <S> void loadServicesFromBundle(
             final Class<S> serviceType, final long bundleId, final ClassLoader bundleClassLoader) {
         final List<S> services = new ArrayList<>();
         for (final S service : ServiceLoader.load(serviceType, bundleClassLoader)) {
@@ -85,10 +96,23 @@ public class ServiceRegistry {
         registerBundleServices(serviceType, bundleId, services);
     }
 
+    /**
+     * Registers a list of service instances from an OSGi context.
+     *
+     * @param serviceType service class
+     * @param bundleId    bundle id where services are being registered
+     * @param services    list of services to register for this bundle
+     * @param <S>         type of service
+     */
     public <S> void registerBundleServices(final Class<S> serviceType, final long bundleId, final List<S> services) {
         bundleServices.computeIfAbsent(bundleId, ignored -> new ConcurrentHashMap<>()).put(serviceType, services);
     }
 
+    /**
+     * Unregisters all services instances from an OSGi context.
+     *
+     * @param bundleId bundle id where services are being unregistered
+     */
     public void unregisterBundleServices(final long bundleId) {
         bundleServices.remove(bundleId);
     }

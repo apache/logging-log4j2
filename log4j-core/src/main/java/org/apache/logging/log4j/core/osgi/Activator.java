@@ -44,10 +44,10 @@ public final class Activator implements BundleActivator {
         final Bundle bundle = context.getBundle();
         final long bundleId = bundle.getBundleId();
         final ClassLoader classLoader = bundle.adapt(BundleWiring.class).getClassLoader();
-        registry.registerBundleServices(PluginService.class, bundleId, classLoader);
-        registry.registerBundleServices(Provider.class, bundleId, classLoader);
-        registry.registerBundleServices(ContextDataProvider.class, bundleId, classLoader);
-        registry.registerBundleServices(InjectorCallback.class, bundleId, classLoader);
+        registry.loadServicesFromBundle(PluginService.class, bundleId, classLoader);
+        registry.loadServicesFromBundle(Provider.class, bundleId, classLoader);
+        registry.loadServicesFromBundle(ContextDataProvider.class, bundleId, classLoader);
+        registry.loadServicesFromBundle(InjectorCallback.class, bundleId, classLoader);
         // allow the user to override the default ContextSelector (e.g., by using BasicContextSelector for a global cfg)
         if (PropertiesUtil.getProperties().getStringProperty(Constants.LOG4J_CONTEXT_SELECTOR) == null) {
             System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, BundleContextSelector.class.getName());
