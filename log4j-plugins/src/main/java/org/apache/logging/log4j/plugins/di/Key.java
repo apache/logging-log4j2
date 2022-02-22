@@ -21,7 +21,6 @@ import org.apache.logging.log4j.plugins.QualifierType;
 import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
 import org.apache.logging.log4j.plugins.util.AnnotationUtil;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
-import org.apache.logging.log4j.util.Strings;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -134,8 +133,13 @@ public class Key<T> {
                 '}';
     }
 
+    /**
+     * Creates a Key for the class.
+     */
     public static <T> Key<T> forClass(final Class<T> clazz) {
-        return new Key<>(clazz, clazz, null, Strings.EMPTY);
+        return forQualifiedNamedType(getQualifierType(clazz),
+                AnnotatedElementNameProvider.getName(clazz),
+                clazz);
     }
 
     /**

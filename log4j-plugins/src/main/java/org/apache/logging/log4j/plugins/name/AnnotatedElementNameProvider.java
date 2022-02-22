@@ -115,6 +115,19 @@ public interface AnnotatedElementNameProvider<A extends Annotation> {
         return hasName(annotatedType) ? getSpecifiedName(annotatedType).orElse(Strings.EMPTY) : Strings.EMPTY;
     }
 
+    /**
+     * Gets the name of the given annotated class using the corresponding {@link AnnotatedElementNameProvider}
+     * strategy for the named annotation on the class. If no named annotations are present or if no
+     * {@linkplain #getSpecifiedName(Annotation) specified name} is given by the name provider, then an empty
+     * string is returned.
+     *
+     * @param type annotated class to find name for
+     * @return annotated name of class
+     */
+    static String getName(final Class<?> type) {
+        return hasName(type) ? getSpecifiedName(type).orElseGet(type::getName) : Strings.EMPTY;
+    }
+
     private static Optional<String> getSpecifiedName(final AnnotatedElement element) {
         for (final Annotation annotation : element.getAnnotations()) {
             final Optional<String> name = getSpecifiedNameForAnnotation(annotation);
