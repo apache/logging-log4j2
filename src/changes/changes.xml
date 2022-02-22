@@ -330,6 +330,9 @@
       <action dev="ggregory" type="udpate" due-to="Gary Gregory">
         Bump org.jacoco:jacoco-maven-plugin from 0.8.6 to 0.8.7.
       </action>
+      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+        Bump org.apache.maven.plugins:maven-javadoc-plugin from 3.3.1 to 3.3.2.
+      </action>
 	</release>
     <release version="2.17.1" date="2021-12-27" description="GA Release 2.17.1">
       <!-- FIXES -->
