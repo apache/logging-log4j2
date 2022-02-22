@@ -318,6 +318,9 @@
       <action dev="ggregory" type="udpate" due-to="Gary Gregory">
         Bump maven-compiler-plugin from 3.8.1 to 3.9.0.
       </action>
+      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+        Bump org.eclipse.persistence:org.eclipse.persistence.jpa from 2.7.9 to 2.7.10.
+      </action>
 	</release>
     <release version="2.17.1" date="2021-12-27" description="GA Release 2.17.1">
       <!-- FIXES -->
