@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa;
 
+import static org.junit.Assert.assertNull;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -23,11 +25,8 @@ import java.sql.Statement;
 
 import org.apache.logging.log4j.categories.Appenders;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import static org.junit.Assert.*;
 
 @Category(Appenders.Jpa.class)
 public class JpaHsqldbAppenderTest extends AbstractJpaAppenderTest {
@@ -45,7 +44,7 @@ public class JpaHsqldbAppenderTest extends AbstractJpaAppenderTest {
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate("CREATE TABLE jpaBaseLogEntry ( "
                     + "id INTEGER IDENTITY, eventDate DATETIME, instant NVARCHAR(64), level VARCHAR(10), "
-                    + "logger VARCHAR(255), message VARCHAR(1024), exception VARCHAR(1048576)" + " )");
+                    + "logger VARCHAR(255), message VARCHAR(1024), exception VARCHAR(1048576) )");
         }
 
         try (Statement statement = connection.createStatement()) {
@@ -54,7 +53,7 @@ public class JpaHsqldbAppenderTest extends AbstractJpaAppenderTest {
                     + "level VARCHAR(10), loggerName VARCHAR(255), message VARCHAR(1024), thrown VARCHAR(1048576), "
                     + "contextMapJson VARCHAR(1048576), loggerFQCN VARCHAR(1024), "
                     + "contextStack VARCHAR(1048576), marker VARCHAR(255), source VARCHAR(2048),"
-                    + "threadId BIGINT, threadName NVARCHAR(255), threadPriority INTEGER" + " )");
+                    + "threadId BIGINT, threadName NVARCHAR(255), threadPriority INTEGER )");
         }
 
         return connection;
