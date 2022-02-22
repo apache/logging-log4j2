@@ -289,7 +289,7 @@
         Bump org.springframework:spring-* from 5.3.13 to 5.3.15.
       </action>
       <action dev="ggregory" type="udpate" due-to="Gary Gregory">
-        Bump de.flapdoodle.embed:de.flapdoodle.embed.mongo from 3.0.0 to 3.2.6. Update tests for binary incompatibilities in APIs.
+        Bump de.flapdoodle.embed:de.flapdoodle.embed.mongo from 3.0.0 to 3.4.1. Update tests for binary incompatibilities in APIs.
       </action>
       <action dev="ggregory" type="udpate" due-to="Gary Gregory">
         Bump org.fusesource.jansi:jansi from 2.3.4 to 2.4.0.
@@ -311,9 +311,6 @@
       </action>
       <action dev="ggregory" type="udpate" due-to="Gary Gregory">
         Bump org.mongodb:mongodb-driver-sync from 4.2.2 to 4.5.0.
-      </action>
-      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
-        Bump de.flapdoodle.embed:de.flapdoodle.embed.mongo from 3.2.6 to 3.2.8.
       </action>
       <action dev="ggregory" type="udpate" due-to="Gary Gregory">
         Bump Woodstox 6.2.6 to 6.2.8.

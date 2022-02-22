@@ -1007,7 +1007,7 @@
         <!-- Testing MongoDB -->
         <groupId>de.flapdoodle.embed</groupId>
         <artifactId>de.flapdoodle.embed.mongo</artifactId>
-        <version>3.3.1</version>
+        <version>3.4.1</version>
         <scope>test</scope>
       </dependency>
       <!-- Testing LDAP -->
