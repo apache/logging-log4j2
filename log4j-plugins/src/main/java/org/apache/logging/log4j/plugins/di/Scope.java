@@ -19,6 +19,13 @@ package org.apache.logging.log4j.plugins.di;
 
 import java.util.function.Supplier;
 
+/**
+ * Scopes control the lifetime of instances with a {@link org.apache.logging.log4j.plugins.ScopeType}.
+ */
 public interface Scope {
+
+    /**
+     * Gets or creates an instance factory for the provided key and unscoped factory in this scope.
+     */
     <T> Supplier<T> get(final Key<T> key, final Supplier<T> unscoped);
 }

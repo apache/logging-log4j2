@@ -67,11 +67,15 @@ public interface NodeVisitor {
     @Target(ElementType.ANNOTATION_TYPE)
     @Retention(RetentionPolicy.RUNTIME)
     @interface Kind {
+        /**
+         * Implementation class of {@link NodeVisitor} to use for the annotation.
+         */
         Class<? extends NodeVisitor> value();
     }
 
     /**
-     * Returns the Key corresponding to the {@link Kind} of {@link NodeVisitor} the annotated element should use.
+     * Returns the Key corresponding to the {@link Kind} of {@link NodeVisitor} the annotated element should use or
+     * {@code null} if none are found.
      */
     static Key<? extends NodeVisitor> keyFor(final AnnotatedElement element) {
         for (final Annotation annotation : element.getAnnotations()) {
