@@ -240,12 +240,20 @@ public class JsonTemplateLayout implements StringLayout {
             try {
                 TextEncoderHelper.encodeText(charsetEncoder, charBuffer, byteBuffer, source, destination);
             } catch (final Exception error) {
-                StatusLogger
-                        .getLogger()
-                        .error("TextEncoderHelper.encodeText() failure", error);
-                final byte[] bytes = source.toString().getBytes(charset);
-                destination.writeBytes(bytes, 0, bytes.length);
+                fallbackEncode(charset, source, destination, error);
             }
+        }
+
+        private /* for JIT-ergonomics: */ static void fallbackEncode(
+                final Charset charset,
+                final StringBuilder source,
+                final ByteBufferDestination destination,
+                final Exception error) {
+            StatusLogger
+                    .getLogger()
+                    .error("TextEncoderHelper.encodeText() failure", error);
+            final byte[] bytes = source.toString().getBytes(charset);
+            destination.writeBytes(bytes, 0, bytes.length);
         }
 
     }

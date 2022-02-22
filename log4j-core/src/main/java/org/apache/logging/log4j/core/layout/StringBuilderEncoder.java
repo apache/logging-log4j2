@@ -89,7 +89,7 @@ public class StringBuilderEncoder implements Encoder<StringBuilder> {
         return threadLocalState;
     }
 
-    private void logEncodeTextException(final Exception ex, final StringBuilder text) {
+    private static void logEncodeTextException(final Exception ex, final StringBuilder text) {
         StatusLogger.getLogger().error("Recovering from StringBuilderEncoder.encode('{}') error: {}", text, ex, ex);
     }
 
