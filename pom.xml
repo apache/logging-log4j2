@@ -258,7 +258,7 @@
     <rat.plugin.version>0.13</rat.plugin.version>
     <pdf.plugin.version>1.2</pdf.plugin.version>
     <cobertura.plugin.version>2.7</cobertura.plugin.version>
-    <jacoco.plugin.version>0.8.6</jacoco.plugin.version>
+    <jacoco.plugin.version>0.8.7</jacoco.plugin.version>
     <release.plugin.version>2.5.3</release.plugin.version>
     <scm.plugin.version>1.9.5</scm.plugin.version>
     <jxr.plugin.version>3.1.1</jxr.plugin.version>

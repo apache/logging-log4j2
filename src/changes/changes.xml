@@ -327,6 +327,9 @@
       <action dev="ggregory" type="udpate" due-to="Gary Gregory">
         Bump org.apache.activemq:activemq-broker from 5.16.3 to 5.16.4.
       </action>
+      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+        Bump org.jacoco:jacoco-maven-plugin from 0.8.6 to 0.8.7.
+      </action>
 	</release>
     <release version="2.17.1" date="2021-12-27" description="GA Release 2.17.1">
       <!-- FIXES -->
