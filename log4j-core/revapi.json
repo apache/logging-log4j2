@@ -4,6 +4,7 @@
     "configuration": {
       "elements": {
         "exclude": [
+          "class com\\.lmax\\.disruptor\\.dsl\\.Disruptor",
           "class org\\.apache\\.logging\\.log4j\\.corel\\.impl\\.ContextAnchor",
           "class org\\.apache\\.logging\\.log4j\\.core\\.appender\\.db\\.AbstractDatabaseManager\\.AbstractFactoryData",
           "class org\\.apache\\.logging\\.log4j\\.core\\.async\\.AsyncLoggerDisruptor",
@@ -16,6 +17,10 @@
           "class org\\.apache\\.logging\\.log4j\\.core\\.util\\.datetime\\.FastDatePrinter\\.NumberRule",
           "class org\\.apache\\.logging\\.log4j\\.core\\.util\\.datetime\\.FastDatePrinter\\.Rule",
           "class org\\.apache\\.logging\\.log4j\\.core\\.config\\.ConfigurationSource",
+          {
+            "matcher": "java-package",
+            "match": "/com\\.fasterxml\\.jackson(\\..*)?/"
+          },
           {
             "matcher": "java-package",
             "match": "/org\\.apache\\.logging\\.log4j\\.core\\.jmx(\\..*)?/"
