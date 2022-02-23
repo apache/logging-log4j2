@@ -35,8 +35,6 @@ public interface Injector {
 
     void injectNode(final Node node);
 
-    boolean hasNoBindings(final Key<?> key);
-
     void removeBinding(final Key<?> key);
 
     void installModule(final Object module);

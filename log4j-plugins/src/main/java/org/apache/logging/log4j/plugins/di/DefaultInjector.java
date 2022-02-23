@@ -100,11 +100,6 @@ class DefaultInjector implements Injector {
     }
 
     @Override
-    public boolean hasNoBindings(final Key<?> key) {
-        return !keyBindings.containsKey(key);
-    }
-
-    @Override
     public void removeBinding(final Key<?> key) {
         keyBindings.remove(key);
     }
