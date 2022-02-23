@@ -1,31 +1,34 @@
 [
   {
-    "extension": "revapi.java",
+    "extension": "revapi.filter",
     "configuration": {
-      "filter": {
-        "classes": {
-          "exclude": [
-            "org\\.apache\\.logging\\.log4j\\.corel\\.impl\\.ContextAnchor",
-            "org\\.apache\\.logging\\.log4j\\.core\\.appender\\.db\\.AbstractDatabaseManager\\.AbstractFactoryData",
-            "org\\.apache\\.logging\\.log4j\\.core\\.async\\.AsyncLoggerDisruptor",
-            "org\\.apache\\.logging\\.log4j\\.core\\.async\\.RingBufferLogEvent\\.Factory",
-            "org\\.apache\\.logging\\.log4j\\.core\\.layout\\.AbstractJacksonLayout",
-            "org\\.apache\\.logging\\.log4j\\.core\\.layout\\.AbstractJacksonLayout\\.ResolvableKeyValuePair",
-            "org\\.apache\\.logging\\.log4j\\.core\\.net\\.SmtpManager\\.FactoryData",
-            "org\\.apache\\.logging\\.log4j\\.core\\.net\\.TcpSocketManager\\.FactoryData",
-            "org\\.apache\\.logging\\.log4j\\.core\\.util\\.CronExpression\\.ValueSet",
-            "org\\.apache\\.logging\\.log4j\\.core\\.util\\.datetime\\.FastDatePrinter\\.NumberRule",
-            "org\\.apache\\.logging\\.log4j\\.core\\.util\\.datetime\\.FastDatePrinter\\.Rule",
-            "org\\.apache\\.logging\\.log4j\\.core\\.config\\.ConfigurationSource"
-          ]
-        },
-        "packages": {
-          "exclude": [
-            "org.apache.logging.log4j.core.jmx",
-            "org.apache.logging.log4j.core.jackson",
-            "org.apache.logging.log4j.core.time.internal"
-          ]
-        }
+      "elements": {
+        "exclude": [
+          "class org\\.apache\\.logging\\.log4j\\.corel\\.impl\\.ContextAnchor",
+          "class org\\.apache\\.logging\\.log4j\\.core\\.appender\\.db\\.AbstractDatabaseManager\\.AbstractFactoryData",
+          "class org\\.apache\\.logging\\.log4j\\.core\\.async\\.AsyncLoggerDisruptor",
+          "class org\\.apache\\.logging\\.log4j\\.core\\.async\\.RingBufferLogEvent\\.Factory",
+          "class org\\.apache\\.logging\\.log4j\\.core\\.layout\\.AbstractJacksonLayout",
+          "class org\\.apache\\.logging\\.log4j\\.core\\.layout\\.AbstractJacksonLayout\\.ResolvableKeyValuePair",
+          "class org\\.apache\\.logging\\.log4j\\.core\\.net\\.SmtpManager\\.FactoryData",
+          "class org\\.apache\\.logging\\.log4j\\.core\\.net\\.TcpSocketManager\\.FactoryData",
+          "class org\\.apache\\.logging\\.log4j\\.core\\.util\\.CronExpression\\.ValueSet",
+          "class org\\.apache\\.logging\\.log4j\\.core\\.util\\.datetime\\.FastDatePrinter\\.NumberRule",
+          "class org\\.apache\\.logging\\.log4j\\.core\\.util\\.datetime\\.FastDatePrinter\\.Rule",
+          "class org\\.apache\\.logging\\.log4j\\.core\\.config\\.ConfigurationSource",
+          {
+            "matcher": "java-package",
+            "match": "/org\\.apache\\.logging\\.log4j\\.core\\.jmx(\\..*)?/"
+          },
+          {
+            "matcher": "java-package",
+            "match": "/org\\.apache\\.logging\\.log4j\\.core\\.jackson(\\..*)?/"
+          },
+          {
+            "matcher": "java-package",
+            "match": "/org\\.apache\\.logging\\.log4j\\.core\\.time.internal(\\..*)?/"
+          }
+        ]
       }
     }
   },

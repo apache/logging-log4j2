@@ -1861,7 +1861,19 @@
                     <path>revapi.json</path>
                   </analysisConfigurationFiles>
                   <analysisConfiguration><![CDATA[
-[
+[  {
+     "extension": "revapi.filter",
+      "configuration": {
+      "elements": {
+        "include": [
+         {
+           "matcher": "java-package",
+           "match": "/org\\.apache\\.logging\\.log4j(\\..*)?/"
+         }
+        ]
+      }
+    }
+  },
   {
      "extension": "revapi.java",
      "configuration": {
@@ -1872,21 +1884,7 @@
        "reportUsesFor": [
           "java.missing.newClass",
           "java.class.nonPublicPartOfAPI"
-       ],
-       "filter": {
-         "classes": {
-           "regex": true,
-           "include": [
-             "org\\.apache\\.logging\\.log4j(\\..+)?"
-           ]
-         },
-         "packages": {
-           "regex": true,
-           "include": [
-             "org\\.apache\\.logging\\.log4j(\\..+)?"
-           ]
-         }
-       }
+       ]
      }
   },
   {

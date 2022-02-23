@@ -32,7 +32,7 @@
     <projectDir>/log4j-spring-boot</projectDir>
     <module.name>org.apache.logging.log4j.spring.boot</module.name>
     <maven.doap.skip>true</maven.doap.skip>
-    <revapi>skip</revapi>
+    <revapi.skip>true</revapi.skip>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -291,14 +291,6 @@
         <version>${pmd.plugin.version}</version>
         <configuration>
           <targetJdk>${maven.compiler.target}</targetJdk>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.revapi</groupId>
-        <artifactId>revapi-maven-plugin</artifactId>
-        <version>${revapi.plugin.version}</version>
-        <configuration>
-          <skip>true</skip>
         </configuration>
       </plugin>
     </plugins>

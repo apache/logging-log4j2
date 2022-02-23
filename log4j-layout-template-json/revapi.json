@@ -1,15 +1,17 @@
 [
   {
-    "extension": "revapi.java",
+    "extension": "revapi.filter",
     "configuration": {
-      "filter": {
-        "classes": {
-          "exclude": [
-            "org\\.apache\\.logging\\.log4j\\.layout\\.template\\.json\\.resolver\\.TemplateResolverConfig",
-            "org\\.apache\\.logging\\.log4j\\.layout\\.template\\.json\\.resolver\\.TemplateResolverContext",
-            "org\\.apache\\.logging\\.log4j\\.layout\\.template\\.json\\.resolver\\.TemplateResolverFactory"
-          ]
-        }
+      "elements": {
+        "exclude": [
+          "class org\\.apache\\.logging\\.log4j\\.layout\\.template\\.json\\.resolver\\.TemplateResolverConfig",
+          "class org\\.apache\\.logging\\.log4j\\.layout\\.template\\.json\\.resolver\\.TemplateResolverContext",
+          "class org\\.apache\\.logging\\.log4j\\.layout\\.template\\.json\\.resolver\\.TemplateResolverFactory",
+          {
+            "matcher": "java-package",
+            "match": "/org\\.apache\\.logging\\.log4j\\.core(\\..*)?/"
+          }
+        ]
       }
     }
   },

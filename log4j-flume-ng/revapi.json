@@ -1,0 +1,27 @@
+[
+  {
+    "extension": "revapi.filter",
+    "configuration": {
+      "elements": {
+        "exclude": [
+          {
+            "matcher": "java-package",
+            "match": "/org\\.apache\\.logging\\.log4j/"
+          },
+          {
+            "matcher": "java-package",
+            "match": "/org\\.apache\\.logging\\.log4j\\.message(\\..*)?/"
+          },
+          {
+            "matcher": "java-package",
+            "match": "/org\\.apache\\.logging\\.log4j\\.util(\\..*)?/"
+          },
+          {
+            "matcher": "java-package",
+            "match": "/org\\.apache\\.logging\\.log4j\\.core(\\..*)?/"
+          }
+        ]
+      }
+    }
+  }
+]

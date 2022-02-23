@@ -4,7 +4,7 @@
     "configuration": {
       "elements": {
         "exclude": [
-          "class org\\.apache\\.logging\\.log4j\\.taglib\\.Log4jTaglibLogger"
+          "class org\\.apache\\.logging\\.log4j\\.spi\\.LoggerContext",
         ]
       }
     }
