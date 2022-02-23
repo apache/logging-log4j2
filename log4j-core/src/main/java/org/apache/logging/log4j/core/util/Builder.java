@@ -17,6 +17,8 @@
 
 package org.apache.logging.log4j.core.util;
 
+import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
+
 /**
  * A type of builder that can be used to configure and create a instances using a Java DSL instead of
  * through a configuration file. These builders are primarily useful for internal code and unit tests, but they can
@@ -42,4 +44,17 @@ public interface Builder<T> {
      * object.
      */
     T build();
+
+    default boolean isValid() {
+        return PluginBuilder.validateFields(this, getErrorPrefix());
+    }
+
+    /**
+     * Prefix to use to report errors from this builder.
+     * 
+     * @return The prefix of all logged errors.
+     */
+    default String getErrorPrefix() {
+        return "Component";
+    }
 }

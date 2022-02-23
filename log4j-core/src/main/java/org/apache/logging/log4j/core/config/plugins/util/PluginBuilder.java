@@ -166,8 +166,6 @@ public class PluginBuilder implements Builder<Object> {
         final List<Field> fields = TypeUtil.getAllDeclaredFields(builder.getClass());
         AccessibleObject.setAccessible(fields.toArray(EMPTY_FIELD_ARRAY), true);
         final StringBuilder log = new StringBuilder();
-        boolean invalid = false;
-        String reason = "";
         for (final Field field : fields) {
             log.append(log.length() == 0 ? simpleName(builder) + "(" : ", ");
             final Annotation[] annotations = field.getDeclaredAnnotations();
@@ -193,12 +191,26 @@ public class PluginBuilder implements Builder<Object> {
                     }
                 }
             }
+        }
+        final String reason = validateFields(builder, fields);
+        log.append(log.length() == 0 ? builder.getClass().getSimpleName() + "()" : ")");
+        LOGGER.debug(log.toString());
+        if (!reason.isEmpty()) {
+            throw new ConfigurationException("Arguments given for element " + node.getName() + " are invalid: " + reason);
+        }
+        checkForRemainingAttributes();
+        verifyNodeChildrenUsed();
+    }
+
+    private static String validateFields(final Builder<?> builder, final List<Field> fields) throws IllegalAccessException {
+        String reason = "";
+        for (final Field field : fields) {
+            final Annotation[] annotations = field.getDeclaredAnnotations();
             final Collection<ConstraintValidator<?>> validators =
                 ConstraintValidators.findValidators(annotations);
             final Object value = field.get(builder);
             for (final ConstraintValidator<?> validator : validators) {
                 if (!validator.isValid(field.getName(), value)) {
-                    invalid = true;
                     if (!reason.isEmpty()) {
                         reason += ", ";
                     }
@@ -206,13 +218,23 @@ public class PluginBuilder implements Builder<Object> {
                 }
             }
         }
-        log.append(log.length() == 0 ? builder.getClass().getSimpleName() + "()" : ")");
-        LOGGER.debug(log.toString());
-        if (invalid) {
-            throw new ConfigurationException("Arguments given for element " + node.getName() + " are invalid: " + reason);
+        return reason;
+    }
+
+    public static boolean validateFields(final Builder<?> builder, String errorPrefix) {
+        final List<Field> fields = TypeUtil.getAllDeclaredFields(builder.getClass());
+        AccessibleObject.setAccessible(fields.toArray(EMPTY_FIELD_ARRAY), true);
+        try {
+            final String reason = validateFields(builder, fields);
+            if (!reason.isEmpty()) {
+                LOGGER.error("{}: {}", errorPrefix, reason);
+                return false;
+            }
+        } catch (IllegalAccessException e) {
+            LOGGER.error("{}: {}", errorPrefix, e.getMessage(), e);
+            return false;
         }
-        checkForRemainingAttributes();
-        verifyNodeChildrenUsed();
+        return true;
     }
 
     /**
