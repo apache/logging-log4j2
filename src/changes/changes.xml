@@ -29,7 +29,7 @@
          - "update" - Change
          - "remove" - Removed
     -->
-    <release version="2.17.2" date="20YY-MM-DD" description="GA Release 2.17.2">
+    <release version="2.17.2" date="2022-02-23" description="GA Release 2.17.2">
       <!-- FIXES -->
       <action issue="LOG4J2-3304" dev="rgoers" type="fix" due-to="francis-FY">
         Flag LogManager as initiialized if the LoggerFactory is provided as a property.
