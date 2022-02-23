@@ -16,41 +16,32 @@
  */
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
-import java.util.Collection;
-import java.util.Map;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.validation.ConstraintValidator;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
-import org.apache.logging.log4j.core.util.Assert;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.NotBlank;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
 
 /**
- * Validator that checks an object for emptiness. Emptiness is defined here as:
- * <ul>
- * <li>The value {@code null}</li>
- * <li>An object of type {@link CharSequence} with length 0</li>
- * <li>An empty array</li>
- * <li>An empty {@link Collection}</li>
- * <li>An empty {@link Map}</li>
- * </ul>
+ * Validator that checks if a {@link CharSequence} is not entirely composed of
+ * whitespace.
  *
- * @since 2.1
+ * @since 2.18.0
  */
-public class RequiredValidator implements ConstraintValidator<Required> {
+public class NotBlankValidator implements ConstraintValidator<NotBlank> {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private Required annotation;
+    private NotBlank annotation;
 
     @Override
-    public void initialize(final Required anAnnotation) {
+    public void initialize(final NotBlank anAnnotation) {
         this.annotation = anAnnotation;
     }
 
     @Override
     public boolean isValid(final String name, final Object value) {
-        return Assert.isNonEmpty(value) || err(name);
+        return Strings.isNotBlank(name) || err(name);
     }
 
     private boolean err(final String name) {

@@ -145,6 +145,16 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
             return setName(name);
         }
 
+        public String getErrorPrefix() {
+            final Class<?> appenderClass = getClass().getEnclosingClass();
+            final String name = getName();
+            final StringBuilder sb = new StringBuilder(
+                    appenderClass != null ? appenderClass.getSimpleName() : "Appender");
+            if (name != null) {
+                sb.append(" '").append(name).append("'");
+            }
+            return sb.toString();
+        }
     }
 
     public static int parseInt(final String s, final int defaultValue) {

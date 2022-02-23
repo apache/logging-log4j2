@@ -36,6 +36,7 @@ import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.logging.log4j.core.Layout;
@@ -429,6 +430,7 @@ public class FileManager extends OutputStreamManager {
          */
         @Override
         public FileManager createManager(final String name, final FactoryData data) {
+            Objects.requireNonNull(name, "filename is missing");
             final File file = new File(name);
             try {
                 FileUtils.makeParentDirs(file);
