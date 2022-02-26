@@ -15,22 +15,7 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 /**
- * Scope type where provided instances are singletons.
+ * Dependency injection API. Dependency injection enables inversion of control for runtime-configurable instances of classes.
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD})
-@Documented
-@Inherited
-@ScopeType
-public @interface Singleton {
-}
+package org.apache.logging.log4j.plugins.di;

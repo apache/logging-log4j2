@@ -24,12 +24,29 @@ import java.lang.reflect.InaccessibleObjectException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+/**
+ * Represents the calling context in which reflection operations {@link Injector} will be performed in. This allows for
+ * changing the code location where calls to {@link AccessibleObject#setAccessible(boolean)} are performed which depends
+ * on the caller class and its module.
+ */
 @FunctionalInterface
 public interface ReflectionCallerContext {
+    /**
+     * Default caller context where reflection is performed from the log4j-plugins module.
+     */
     ReflectionCallerContext DEFAULT = object -> object.setAccessible(true);
 
+    /**
+     * Invokes {@link AccessibleObject#setAccessible(boolean)} with a value of {@code true}.
+     * Location of implementation for this method determines access rules for reflection operations in {@link Injector}.
+     *
+     * @param object the reflection object to be made accessible
+     */
     void setAccessible(AccessibleObject object);
 
+    /**
+     * Gets the value of the given field on the given instance in this caller context.
+     */
     default Object get(final Field field, final Object instance) {
         if (!field.canAccess(instance)) {
             setAccessible(field);
@@ -41,6 +58,9 @@ public interface ReflectionCallerContext {
         }
     }
 
+    /**
+     * Sets the value of the given field on the given instance in this caller context.
+     */
     default void set(final Field field, final Object instance, final Object value) {
         if (!field.canAccess(instance)) {
             setAccessible(field);
@@ -52,6 +72,9 @@ public interface ReflectionCallerContext {
         }
     }
 
+    /**
+     * Invokes the given method on the given instance in this caller context.
+     */
     default Object invoke(final Method method, final Object instance, final Object... args) throws InvocationTargetException {
         if (!method.canAccess(instance)) {
             setAccessible(method);
@@ -63,6 +86,9 @@ public interface ReflectionCallerContext {
         }
     }
 
+    /**
+     * Invokes the given constructor in this caller context.
+     */
     default <T> T construct(final Constructor<T> constructor, final Object... args)
             throws InvocationTargetException, InstantiationException {
         if (!constructor.canAccess(null)) {

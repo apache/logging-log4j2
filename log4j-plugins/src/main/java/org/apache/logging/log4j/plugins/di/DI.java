@@ -17,22 +17,32 @@
 
 package org.apache.logging.log4j.plugins.di;
 
+import org.apache.logging.log4j.plugins.Factory;
+
+/**
+ * Factory for {@linkplain Injector factory factories}.
+ */
 public final class DI {
     private DI() {
         throw new IllegalStateException("Utility class");
     }
 
+    /**
+     * Creates a new Injector with no bindings.
+     */
+    public static Injector createInjector() {
+        return new DefaultInjector();
+    }
+
+    /**
+     * Creates a new Injector with the provided modules as initial bindings. Modules may be either Class instances or object
+     * instances with {@link Factory}-annotated static methods or methods respectively.
+     */
     public static Injector createInjector(final Object... modules) {
         final var injector = new DefaultInjector();
         for (final Object module : modules) {
             injector.installModule(module);
         }
-        return injector;
-    }
-
-    public static Injector createInjector(final Iterable<?> modules) {
-        final var injector = new DefaultInjector();
-        modules.forEach(injector::installModule);
         return injector;
     }
 }

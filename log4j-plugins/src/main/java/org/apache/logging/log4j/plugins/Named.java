@@ -27,12 +27,19 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * General naming qualifier for injectable objects. The first value given is the primary name while subsequent values are
+ * considered aliases.
+ */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.TYPE_USE})
+@Target({ ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.TYPE_USE })
 @Documented
 @NameProvider(NamedQualifierNameProvider.class)
 @AliasesProvider(NamedQualifierNameProvider.class)
 @QualifierType
 public @interface Named {
+    /**
+     * Name and optional aliases this qualifier corresponds to.
+     */
     String[] value() default {};
 }
