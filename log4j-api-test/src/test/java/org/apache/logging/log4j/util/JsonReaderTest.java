@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.layout.template.json.util;
+package org.apache.logging.log4j.util;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -24,6 +24,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 class JsonReaderTest {
 
@@ -373,6 +374,11 @@ class JsonReaderTest {
                                     put("k2", "v2");
                                     put("k3", Collections.singletonMap("k4", "v4"));
                                 }})));
+    }
+
+    @Test
+    void test_comments() {
+        test("/*comment1*/{\"foo\": /* comment two */\"bar\"}", Map.of("foo", "bar"));
     }
 
     private void test(final String json, final Object expected) {
