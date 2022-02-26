@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
-import org.apache.logging.log4j.util.JsonReader;
+import org.apache.logging.log4j.core.util.JsonReader;
 import org.apache.logging.log4j.util.Strings;
 
 import java.io.File;

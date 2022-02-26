@@ -1,0 +1,42 @@
+{
+  "name": "ConfigTest",
+  "status": "ERROR",
+  "monitorInterval": 5,
+  "Appenders": {
+    "SystemPropertyArbiter": [
+      {
+        "propertyName": "env",
+        "propertyValue": "dev",
+        "Console": {
+          "name": "Out",
+          "PatternLayout": {
+            "pattern": "%m%n"
+          }
+        }
+      },
+      {
+        "propertyName": "env",
+        "propertyValue": "prod",
+        "List": {
+          "name": "Out"
+        }
+      }
+    ]
+  },
+  "Loggers": {
+    "Logger": {
+      "name": "org.apache.test",
+      "level": "trace",
+      "additivity": false,
+      "AppenderRef": {
+        "ref": "Out"
+      }
+    },
+    "Root": {
+      "level": "error",
+      "AppenderRef": {
+        "ref": "Out"
+      }
+    }
+  }
+}

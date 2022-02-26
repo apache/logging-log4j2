@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class BasicArbiterTest {
 
-    static final String CONFIG = "log4j2-arbiters.xml";
+    static final String CONFIG = "log4j2-arbiters.json";
     static LoggerContext loggerContext = null;
 
     @AfterEach

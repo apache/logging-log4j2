@@ -24,12 +24,12 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
+import org.apache.logging.log4j.core.util.JsonReader;
 import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.util.ResolverUtil;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
-import org.apache.logging.log4j.util.JsonReader;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
