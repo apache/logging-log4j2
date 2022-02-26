@@ -29,6 +29,11 @@
          - "update" - Change
          - "remove" - Removed
     -->
+    <release version="2.18.0" date="2022-TBD" description="GA Release 2.18.0">
+      <action issue="LOG4J2-3413" date="2022-02-26" type="fix" due-to="Piotr Karwasz">
+        Fix resolution of non-Log4j properties.
+      </action>
+    </release>
     <release version="2.17.2" date="2022-02-23" description="GA Release 2.17.2">
       <!-- FIXES -->
       <action issue="LOG4J2-3304" dev="rgoers" type="fix" due-to="francis-FY">
