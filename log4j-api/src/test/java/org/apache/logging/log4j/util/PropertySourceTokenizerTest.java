@@ -44,6 +44,10 @@ public class PropertySourceTokenizerTest {
             {"log4j2-dashed-propertyName", Arrays.asList("dashed", "property", "name")},
             {"Log4jProperty_with.all-the/separators", Arrays.asList("property", "with", "all", "the", "separators")},
             {"org.apache.logging.log4j.config.property", Arrays.asList("config", "property")},
+            // LOG4J2-3413
+            {"level", Collections.emptyList()},
+            {"user.home", Collections.emptyList()},
+            {"CATALINA_BASE", Collections.emptyList()}
         };
     }
 
