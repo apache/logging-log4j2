@@ -187,22 +187,25 @@ public final class JsonReader {
     private void skipWhiteSpace() {
         boolean inComment = false;
         do {
-            if (!inComment && readChar == '/') {
-                if (readChar() == '*') {
-                    inComment = true;
-                } else {
-                    unreadChar();
-                }
-            } else if (inComment && readChar == '*') {
-                if (readChar() == '/') {
-                    inComment = false;
-                } else {
-                    unreadChar();
-                }
-            } else if (!inComment && !Character.isWhitespace(readChar)) {
-                break;
+            if (inComment) {
+                if (readChar == '*') {
+                    if (readChar() == '/') {
+                        inComment = false;
+                    } else {
+                        unreadChar();
+                    }
+                } // else continue
+            } else {
+                if (readChar == '/') {
+                    if (readChar() == '*') {
+                        inComment = true;
+                    } else {
+                        unreadChar();
+                    }
+                } else if (!Character.isWhitespace(readChar)) {
+                    break;
+                } // else continue
             }
-
         } while (readChar() != CharacterIterator.DONE);
     }
 
