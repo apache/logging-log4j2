@@ -49,10 +49,9 @@ public class ValidatingPluginWithGenericSubclassFoo1BuilderTest {
 
     @Test
     public void testNullDefaultValue() throws Exception {
-        DI.createInjector()
+        final PluginWithGenericSubclassFoo1Builder validatingPlugin = DI.createInjector()
                 .bindFactory(Keys.SUBSTITUTOR_KEY, Function::identity)
-                .injectNode(node);
-        final PluginWithGenericSubclassFoo1Builder validatingPlugin = node.getObject();
+                .getInstance(node);
         assertNull(validatingPlugin);
     }
 
@@ -60,10 +59,9 @@ public class ValidatingPluginWithGenericSubclassFoo1BuilderTest {
     public void testNonNullValue() throws Exception {
         node.getAttributes().put("thing", "thing1");
         node.getAttributes().put("foo1", "foo1");
-        DI.createInjector()
+        final PluginWithGenericSubclassFoo1Builder validatingPlugin = DI.createInjector()
                 .bindFactory(Keys.SUBSTITUTOR_KEY, Function::identity)
-                .injectNode(node);
-        final PluginWithGenericSubclassFoo1Builder validatingPlugin = node.getObject();
+                .getInstance(node);
         assertNotNull(validatingPlugin);
         assertEquals("thing1", validatingPlugin.getThing());
         assertEquals("foo1", validatingPlugin.getFoo1());

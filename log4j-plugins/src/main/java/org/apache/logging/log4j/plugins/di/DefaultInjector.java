@@ -96,7 +96,8 @@ class DefaultInjector implements Injector {
 
     @Override
     public <T> T getInstance(final Node node) {
-        return TypeUtil.cast(createPluginObject(node));
+        configure(node);
+        return node.getObject();
     }
 
     @Override
@@ -116,50 +117,6 @@ class DefaultInjector implements Injector {
     @Override
     public void setCallerContext(final ReflectionCallerContext callerContext) {
         this.callerContext = callerContext;
-    }
-
-    @Override
-    public void injectNode(final Node node) {
-        final PluginType<?> type = node.getType();
-        if (type != null && type.isDeferChildren()) {
-            node.setObject(createPluginObject(node));
-        } else {
-            node.getChildren().forEach(this::injectNode);
-            if (type == null) {
-                if (node.getParent() == null) {
-                    LOGGER.error("Unable to locate plugin for node {}", node.getName());
-                }
-            } else {
-                node.setObject(createPluginObject(node));
-            }
-        }
-        final Map<String, String> attrs = node.getAttributes();
-        if (!attrs.isEmpty()) {
-            final StringBuilder sb = new StringBuilder();
-            for (final String key : attrs.keySet()) {
-                if (sb.length() == 0) {
-                    sb.append(node.getName());
-                    sb.append(" contains ");
-                    if (attrs.size() == 1) {
-                        sb.append("an invalid element or attribute ");
-                    } else {
-                        sb.append("invalid attributes ");
-                    }
-                } else {
-                    sb.append(", ");
-                }
-                StringBuilders.appendDqValue(sb, key);
-            }
-            LOGGER.error(sb.toString());
-        }
-        final List<Node> children = node.getChildren();
-        if (!(type == null || type.isDeferChildren() || children.isEmpty())) {
-            for (final Node child : children) {
-                final String nodeType = node.getType().getElementName();
-                final String start = nodeType.equals(node.getName()) ? node.getName() : nodeType + ' ' + node.getName();
-                LOGGER.error("{} has no parameter that matches element {}", start, child.getName());
-            }
-        }
     }
 
     @Override
@@ -255,7 +212,50 @@ class DefaultInjector implements Injector {
         return bindings;
     }
 
-    private Object createPluginObject(final Node node) {
+    private void configure(final Node node) {
+        final PluginType<?> type = node.getType();
+        if (type != null && type.isDeferChildren()) {
+            inject(node);
+        } else {
+            node.getChildren().forEach(this::configure);
+            if (type == null) {
+                if (node.getParent() == null) {
+                    LOGGER.error("Unable to locate plugin for node {}", node.getName());
+                }
+            } else {
+                inject(node);
+            }
+        }
+        final Map<String, String> attrs = node.getAttributes();
+        if (!attrs.isEmpty()) {
+            final StringBuilder sb = new StringBuilder();
+            for (final String key : attrs.keySet()) {
+                if (sb.length() == 0) {
+                    sb.append(node.getName());
+                    sb.append(" contains ");
+                    if (attrs.size() == 1) {
+                        sb.append("an invalid element or attribute ");
+                    } else {
+                        sb.append("invalid attributes ");
+                    }
+                } else {
+                    sb.append(", ");
+                }
+                StringBuilders.appendDqValue(sb, key);
+            }
+            LOGGER.error(sb.toString());
+        }
+        final List<Node> children = node.getChildren();
+        if (!(type == null || type.isDeferChildren() || children.isEmpty())) {
+            for (final Node child : children) {
+                final String nodeType = node.getType().getElementName();
+                final String start = nodeType.equals(node.getName()) ? node.getName() : nodeType + ' ' + node.getName();
+                LOGGER.error("{} has no parameter that matches element {}", start, child.getName());
+            }
+        }
+    }
+
+    private void inject(final Node node) {
         final PluginType<?> type = node.getType();
         final Class<?> pluginClass = type.getPluginClass();
         final List<Node> children = node.getChildren();
@@ -263,38 +263,37 @@ class DefaultInjector implements Injector {
         if (Map.class.isAssignableFrom(pluginClass)) {
             final Map<String, Object> map = new LinkedHashMap<>(children.size());
             children.forEach(child -> map.put(child.getName(), child.getObject()));
-            return map;
+            node.setObject(map);
+            return;
         }
         // support for plugin classes that implement Collection; unused in Log4j, but possibly used by custom plugins
         if (Collection.class.isAssignableFrom(pluginClass)) {
             final List<Object> list = new ArrayList<>(children.size());
             children.forEach(child -> list.add(child.getObject()));
-            return list;
+            node.setObject(list);
+            return;
         }
         final String elementName = type.getElementName();
         if (!PluginValidator.validatePlugin(pluginClass, elementName)) {
-            LOGGER.error("Could not create plugin of type {} for element {} due to constraint violations", pluginClass,
+            LOGGER.error("Could not configure plugin of type {} for element {} due to constraint violations", pluginClass,
                     elementName);
-            return null;
+            return;
         }
         try {
             final StringBuilder debugLog = new StringBuilder();
             final Object instance = getInjectableInstance(Key.forClass(pluginClass), node, Set.of(), debugLog);
-            final Object configuredInstance;
             if (instance instanceof Supplier<?>) {
                 // configure plugin builder class and obtain plugin from that
                 injectFields(instance.getClass(), node, instance, Set.of(), debugLog);
                 injectMethods(Key.forClass(instance.getClass()), node, instance, Set.of(), debugLog);
-                configuredInstance = ((Supplier<?>) instance).get();
+                node.setObject(((Supplier<?>) instance).get());
             } else {
                 // usually created via static plugin factory method, but otherwise assume this is the final plugin instance
-                configuredInstance = instance;
+                node.setObject(instance);
             }
-            LOGGER.debug("Created plugin element {}[{}]", node.getName(), debugLog);
-            return configuredInstance;
+            LOGGER.debug("Configured plugin element {}[{}]", node.getName(), debugLog);
         } catch (final Throwable e) {
-            LOGGER.error("Could not create plugin element {}: {}", node.getName(), e.toString(), e);
-            return null;
+            LOGGER.error("Could not configure plugin element {}: {}", node.getName(), e.toString(), e);
         }
     }
 
@@ -338,7 +337,7 @@ class DefaultInjector implements Injector {
         }
         final Supplier<T> instanceSupplier = () -> {
             final StringBuilder debugLog = new StringBuilder();
-            final T instance = getInjectableInstance(key, node, chain, debugLog);
+            final T instance = TypeUtil.cast(getInjectableInstance(key, node, chain, debugLog));
             injectFields(key.getRawType(), node, instance, Set.of(), debugLog);
             injectMethods(key, node, instance, chain, debugLog);
             return instance;
@@ -348,9 +347,9 @@ class DefaultInjector implements Injector {
                 ignored -> Binding.bind(key, scope.get(key, instanceSupplier))).getSupplier());
     }
 
-    private <T> T getInjectableInstance(
-            final Key<T> key, final Node node, final Set<Key<?>> chain, final StringBuilder debugLog) {
-        final Class<T> rawType = key.getRawType();
+    private Object getInjectableInstance(
+            final Key<?> key, final Node node, final Set<Key<?>> chain, final StringBuilder debugLog) {
+        final Class<?> rawType = key.getRawType();
         return findStaticFactoryMethods(rawType)
                 .min(Comparator.comparingInt(Method::getParameterCount).thenComparing(Method::getReturnType, (c1, c2) -> {
                     if (c1.equals(c2)) {
@@ -366,7 +365,7 @@ class DefaultInjector implements Injector {
                 .map(method -> {
                     final Object[] parameters = getParameters(key, node, method, chain, debugLog);
                     try {
-                        return TypeUtil.<T>cast(callerContext.invoke(method, null, parameters));
+                        return callerContext.invoke(method, null, parameters);
                     } catch (final InvocationTargetException e) {
                         final Throwable cause = e.getTargetException();
                         throw new PluginException("Error while invoking " + method + ": " + cause.getMessage(), cause);
@@ -379,9 +378,9 @@ class DefaultInjector implements Injector {
                     if (injectConstructors.size() > 1) {
                         throw new PluginException("Multiple @Inject constructors found in " + rawType);
                     }
-                    Constructor<T> constructor;
+                    Constructor<?> constructor;
                     if (injectConstructors.size() == 1) {
-                        constructor = TypeUtil.cast(injectConstructors.get(0));
+                        constructor = injectConstructors.get(0);
                     } else {
                         try {
                             constructor = rawType.getDeclaredConstructor();

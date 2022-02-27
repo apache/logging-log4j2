@@ -48,20 +48,18 @@ public class ValidatingPluginWithGenericBuilderTest {
 
     @Test
     public void testNullDefaultValue() throws Exception {
-        DI.createInjector()
+        final ValidatingPluginWithGenericBuilder validatingPlugin = DI.createInjector()
                 .bindFactory(Keys.SUBSTITUTOR_KEY, Function::identity)
-                .injectNode(node);
-        final ValidatingPluginWithGenericBuilder validatingPlugin = node.getObject();
+                .getInstance(node);
         assertNull(validatingPlugin);
     }
 
     @Test
     public void testNonNullValue() throws Exception {
         node.getAttributes().put("name", "foo");
-        DI.createInjector()
+        final ValidatingPluginWithGenericBuilder validatingPlugin = DI.createInjector()
                 .bindFactory(Keys.SUBSTITUTOR_KEY, Function::identity)
-                .injectNode(node);
-        final ValidatingPluginWithGenericBuilder validatingPlugin = node.getObject();
+                .getInstance(node);
         assertNotNull(validatingPlugin);
         assertEquals("foo", validatingPlugin.getName());
     }

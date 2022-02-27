@@ -47,20 +47,18 @@ public class RequiredValidatorTest {
 
     @Test
     public void testNullDefaultValue() throws Exception {
-        DI.createInjector()
+        final ValidatingPlugin validatingPlugin = DI.createInjector()
                 .bindFactory(Keys.SUBSTITUTOR_KEY, Function::identity)
-                .injectNode(node);
-        final ValidatingPlugin validatingPlugin = node.getObject();
+                .getInstance(node);
         assertNull(validatingPlugin);
     }
 
     @Test
     public void testNonNullValue() throws Exception {
         node.getAttributes().put("name", "foo");
-        DI.createInjector()
+        final ValidatingPlugin validatingPlugin = DI.createInjector()
                 .bindFactory(Keys.SUBSTITUTOR_KEY, Function::identity)
-                .injectNode(node);
-        final ValidatingPlugin validatingPlugin = node.getObject();
+                .getInstance(node);
         assertEquals("foo", validatingPlugin.getName());
     }
 }

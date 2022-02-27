@@ -60,7 +60,6 @@ public interface NodeVisitor {
     /**
      * Meta annotation to configure how an annotation should be handled during configuration injection.
      *
-     * @see org.apache.logging.log4j.plugins.di.Injector#injectNode(Node)
      * @see org.apache.logging.log4j.plugins.di.Injector#getInstance(Node)
      */
     @Documented

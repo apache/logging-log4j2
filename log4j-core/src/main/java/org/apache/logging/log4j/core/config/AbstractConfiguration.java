@@ -599,7 +599,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 if (Arbiter.class.isAssignableFrom(nodeType.getPluginClass())) {
                     final Arbiter condition = injector.getInstance(child);
                     conditions.add(condition);
-                    child.setObject(condition);
                 } else {
                     LOGGER.error("Invalid Node {} for Select. Must be a Condition",
                             child.getName());
@@ -1034,7 +1033,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
         injector.bindInstance(Keys.SUBSTITUTOR_KEY, stringSubstitutionStrategy);
         try {
-            injector.injectNode(node);
+            injector.getInstance(node);
         } finally {
             injector.removeBinding(Keys.SUBSTITUTOR_KEY);
         }

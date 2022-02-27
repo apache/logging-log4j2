@@ -33,8 +33,6 @@ public interface Injector {
 
     <T> T getInstance(final Node node);
 
-    void injectNode(final Node node);
-
     void removeBinding(final Key<?> key);
 
     void installModule(final Object module);

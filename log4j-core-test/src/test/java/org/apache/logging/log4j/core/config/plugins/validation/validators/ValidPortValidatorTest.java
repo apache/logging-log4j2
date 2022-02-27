@@ -66,10 +66,9 @@ public class ValidPortValidatorTest {
     }
 
     private HostAndPort buildPlugin() {
-        DI.createInjector()
+        return DI.createInjector()
                 .bindFactory(Keys.SUBSTITUTOR_KEY, Function::identity)
-                .injectNode(node);
-        return node.getObject();
+                .getInstance(node);
     }
 
 }

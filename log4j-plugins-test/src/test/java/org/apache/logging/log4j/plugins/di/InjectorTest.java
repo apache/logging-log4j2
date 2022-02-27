@@ -601,9 +601,7 @@ class InjectorTest {
         final Node config = new Node(rootNode, "inner", configurableObject);
         config.getAttributes().put("greeting", "hello");
         rootNode.getChildren().add(config);
-        final Injector injector = DI.createInjector(NoOpStringSubstitution.class);
-        injector.injectNode(rootNode);
-        final ConfigurableFactoryObject object = rootNode.getObject();
+        final ConfigurableFactoryObject object = DI.createInjector(NoOpStringSubstitution.class).getInstance(rootNode);
         assertThat(object).isNotNull();
         assertThat(object.id).isEqualTo(42);
         assertThat(object.name).isEqualTo("adi");
@@ -617,9 +615,7 @@ class InjectorTest {
     void pluginDefaultAttributeValues() {
         final var type = fromClass(DefaultValueTest.class);
         final var node = new Node(null, "root", type);
-        final Injector injector = DI.createInjector(NoOpStringSubstitution.class);
-        injector.injectNode(node);
-        final DefaultValueTest test = node.getObject();
+        final DefaultValueTest test = DI.createInjector(NoOpStringSubstitution.class).getInstance(node);
         assertThat(test.name).isEqualTo("dog");
         assertThat(test.millis).isEqualTo(1000L);
         assertThat(test.enabled).isTrue();
@@ -701,9 +697,7 @@ class InjectorTest {
     void enumInjection() {
         final var type = fromClass(LevelInject.class);
         final var node = new Node(null, "levels", type);
-        final Injector injector = DI.createInjector(NoOpStringSubstitution.class);
-        injector.injectNode(node);
-        final LevelInject levelInject = node.getObject();
+        final LevelInject levelInject = DI.createInjector(NoOpStringSubstitution.class).getInstance(node);
         assertThat(levelInject.first).isNull();
         assertThat(levelInject.second).isEqualTo(Level.ERROR);
     }
