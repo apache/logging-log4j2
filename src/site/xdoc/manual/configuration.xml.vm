@@ -2878,6 +2878,12 @@ public class AwesomeTest {
       that advertises the same language(s) in order for scripting to be enabled. If no languages are specified, which is
       the default, the ScriptManager will not be installed.</td>
   </tr>
+    <tr>
+    <td><a name="log4j2.disableCloudConfigLoggingSystem"/>log4j2.disableCloudConfigLoggingSystem</td>
+    <td></td>
+    <td></td>
+    <td>Disables the usage of the Spring Boot <tt>Log4j2CloudConfigLoggingSystem</tt>. Defaults to <tt>false</tt>.</td>
+  </tr>
 </table>
 
         </subsection>
