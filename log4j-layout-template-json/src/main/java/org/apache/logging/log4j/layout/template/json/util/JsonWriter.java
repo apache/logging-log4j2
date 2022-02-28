@@ -234,20 +234,22 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
         } else {
             writeObjectStart();
             final boolean[] firstEntry = {true};
-            map.forEach((final String key, final Object value) -> {
-                if (key == null) {
-                    throw new IllegalArgumentException("null keys are not allowed");
-                }
-                if (firstEntry[0]) {
-                    firstEntry[0] = false;
-                } else {
-                    writeSeparator();
-                }
-                writeObjectKey(key);
-                writeValue(value);
-            });
+            map.forEach(this::writeStringMap, firstEntry);
             writeObjectEnd();
         }
+    }
+
+    private void writeStringMap(final String key, final Object value, final boolean[] firstEntry) {
+        if (key == null) {
+            throw new IllegalArgumentException("null keys are not allowed");
+        }
+        if (firstEntry[0]) {
+            firstEntry[0] = false;
+        } else {
+            writeSeparator();
+        }
+        writeObjectKey(key);
+        writeValue(value);
     }
 
     public void writeObject(final IndexedReadOnlyStringMap map) {
