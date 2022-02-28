@@ -33,7 +33,10 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.springframework.boot.logging.LogFile;
 import org.springframework.boot.logging.LoggingInitializationContext;
+import org.springframework.boot.logging.LoggingSystem;
+import org.springframework.boot.logging.LoggingSystemFactory;
 import org.springframework.boot.logging.log4j2.Log4J2LoggingSystem;
+import org.springframework.core.annotation.Order;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ResourceUtils;
@@ -57,10 +60,17 @@ import java.util.Properties;
  * Override Spring's implementation of the Log4j 2 Logging System to properly support Spring Cloud Config.
  */
 public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
-    private static final String HTTPS = "https";
+
+    /**
+     * Property that disables the usage of this {@link LoggingSystem}.
+     */
+    public static final String LOG4J2_DISABLE_CLOUD_CONFIG_LOGGING_SYSTEM = "log4j2.disableCloudConfigLoggingSystem";
+
     public static final String ENVIRONMENT_KEY = "SpringEnvironment";
+    private static final String HTTPS = "https";
     private static final String OVERRIDE_PARAM = "override";
     private static final Logger LOGGER = StatusLogger.getLogger();
+    private static final int PRECEDENCE = 0;
 
     public Log4j2CloudConfigLoggingSystem(ClassLoader loader) {
         super(loader);
@@ -208,4 +218,18 @@ public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
     private LoggerContext getLoggerContext() {
         return (LoggerContext) LogManager.getContext(false);
     }
+
+    @Order(PRECEDENCE)
+    public static class Factory implements LoggingSystemFactory {
+
+        @Override
+        public LoggingSystem getLoggingSystem(ClassLoader classLoader) {
+            if (PropertiesUtil.getProperties().getBooleanProperty(LOG4J2_DISABLE_CLOUD_CONFIG_LOGGING_SYSTEM)) {
+                return null;
+            }
+            return new Log4j2CloudConfigLoggingSystem(classLoader);
+        }
+
+    }
+
 }
