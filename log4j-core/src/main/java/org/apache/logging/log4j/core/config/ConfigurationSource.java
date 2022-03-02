@@ -209,15 +209,15 @@ public class ConfigurationSource {
     private boolean isFile() {
         return source == null ? false : source.getFile() != null;
     }
-    
+
     private boolean isURL() {
         return source == null ? false : source.getURI() != null;
     }
-    
+
     private boolean isLocation() {
         return source == null ? false : source.getLocation() != null;
     }
-    
+
     /**
      * Returns the configuration source URL, or {@code null} if this configuration source is based on a file or has
      * neither a file nor an URL.
@@ -368,10 +368,12 @@ public class ConfigurationSource {
 
     private static ConfigurationSource getConfigurationSource(URL url) {
         try {
-            URLConnection urlConnection = url.openConnection();
-            AuthorizationProvider provider = ConfigurationFactory.authorizationProvider(PropertiesUtil.getProperties());
-            provider.addAuthorization(urlConnection);
+            InputStream is = null;
+            long lastModified = 0;
             if (url.getProtocol().equals(HTTPS)) {
+                URLConnection urlConnection = url.openConnection();
+                AuthorizationProvider provider = ConfigurationFactory.authorizationProvider(PropertiesUtil.getProperties());
+                provider.addAuthorization(urlConnection);
                 SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration();
                 if (sslConfiguration != null) {
                     ((HttpsURLConnection) urlConnection).setSSLSocketFactory(sslConfiguration.getSslSocketFactory());
@@ -379,17 +381,25 @@ public class ConfigurationSource {
                         ((HttpsURLConnection) urlConnection).setHostnameVerifier(LaxHostnameVerifier.INSTANCE);
                     }
                 }
+                try {
+                    is = urlConnection.getInputStream();
+                    lastModified = urlConnection.getLastModified();
+                } catch (FileNotFoundException ex) {
+                    ConfigurationFactory.LOGGER.info("Unable to locate file {}, ignoring.", url.toString());
+                    return null;
+                }
+            }
+            else {
+                is = url.openStream();
+            }
+            if (is == null) {
+                return null;
             }
             File file = FileUtils.fileFromUri(url.toURI());
-            try {
-                if (file != null) {
-                    return new ConfigurationSource(urlConnection.getInputStream(), FileUtils.fileFromUri(url.toURI()));
-                } else {
-                    return new ConfigurationSource(urlConnection.getInputStream(), url, urlConnection.getLastModified());
-                }
-            } catch (FileNotFoundException ex) {
-                ConfigurationFactory.LOGGER.info("Unable to locate file {}, ignoring.", url.toString());
-                return null;
+            if (file != null) {
+                return new ConfigurationSource(is, file);
+            } else {
+                return new ConfigurationSource(is, url, lastModified);
             }
         } catch (IOException | URISyntaxException ex) {
             ConfigurationFactory.LOGGER.warn("Error accessing {} due to {}, ignoring.", url.toString(),
