@@ -17,6 +17,8 @@
 
 package org.apache.logging.log4j.core.appender;
 
+import java.io.Serializable;
+
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
@@ -38,8 +40,7 @@ import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.net.SmtpManager;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.util.Booleans;
-
-import java.io.Serializable;
+import org.apache.logging.log4j.core.util.Integers;
 
 /**
  * Send an e-mail when a specific logging event occurs, typically on errors or
@@ -308,7 +309,7 @@ public final class SmtpAppender extends AbstractAppender {
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
         final int smtpPort = AbstractAppender.parseInt(smtpPortStr, 0);
         final boolean isSmtpDebug = Boolean.parseBoolean(smtpDebug);
-        final int bufferSize = bufferSizeStr == null ? DEFAULT_BUFFER_SIZE : Integer.parseInt(bufferSizeStr);
+        final int bufferSize = bufferSizeStr == null ? DEFAULT_BUFFER_SIZE : Integers.parseInt(bufferSizeStr);
 
         if (layout == null) {
             layout = HtmlLayout.createDefaultLayout();

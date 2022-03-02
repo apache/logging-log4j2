@@ -99,4 +99,26 @@ public interface StrLookup {
      * @return the matching value, null if no match
      */
     String lookup(LogEvent event, String key);
+
+    /**
+     * Same as {@link #lookup(String)}, but provides additional metadata describing the result.
+     * Returns null if the key cannot be evaluated, otherwise a {@link LookupResult} wrapping the non-null string value.
+     */
+    default LookupResult evaluate(String key) {
+        String value = lookup(key);
+        return value == null
+                ? null
+                : new DefaultLookupResult(value);
+    }
+
+    /**
+     * Same as {@link #lookup(LogEvent, String)}, but provides additional metadata describing the result.
+     * Returns null if the key cannot be evaluated, otherwise a {@link LookupResult} wrapping the non-null string value.
+     */
+    default LookupResult evaluate(LogEvent event, String key) {
+        String value = lookup(event, key);
+        return value == null
+                ? null
+                : new DefaultLookupResult(value);
+    }
 }

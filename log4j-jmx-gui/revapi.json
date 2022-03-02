@@ -1,0 +1,38 @@
+[
+  {
+    "extension": "revapi.differences",
+    "configuration": {
+      "differences": [
+
+        {
+          "ignore": true,
+          "code": "java.missing.oldClass",
+          "old": "missing-class org.apache.logging.log4j.core.jmx.LoggerContextAdminMBean",
+          "new": "missing-class org.apache.logging.log4j.core.jmx.LoggerContextAdminMBean",
+          "justification": "No idea why revapi is confused."
+        },
+        {
+          "ignore": true,
+          "code": "java.missing.newClass",
+          "old": "missing-class org.apache.logging.log4j.core.jmx.LoggerContextAdminMBean",
+          "new": "missing-class org.apache.logging.log4j.core.jmx.LoggerContextAdminMBean",
+          "justification": "No idea why revapi is confused."
+        },
+        {
+          "ignore": true,
+          "code": "java.missing.oldClass",
+          "old": "missing-class org.apache.logging.log4j.core.jmx.StatusLoggerAdminMBean",
+          "new": "missing-class org.apache.logging.log4j.core.jmx.StatusLoggerAdminMBean",
+          "justification": "No idea why revapi is confused."
+        },
+        {
+          "ignore": true,
+          "code": "java.missing.newClass",
+          "old": "missing-class org.apache.logging.log4j.core.jmx.StatusLoggerAdminMBean",
+          "new": "missing-class org.apache.logging.log4j.core.jmx.StatusLoggerAdminMBean",
+          "justification": "No idea why revapi is confused."
+        }
+      ]
+    }
+  }
+]

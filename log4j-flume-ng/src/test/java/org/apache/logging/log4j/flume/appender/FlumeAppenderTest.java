@@ -45,6 +45,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.AvailablePortFinder;
@@ -383,7 +384,7 @@ public class FlumeAppenderTest {
     @Test
     public void testNotConnected() throws Exception {
         eventSource.stop();
-        final String altPort = Integer.toString(Integer.parseInt(testPort) + 1);
+        final String altPort = Integer.toString(Integers.parseInt(testPort) + 1);
         final Agent[] agents = new Agent[] {
                 Agent.createAgent("localhost", testPort),
                 Agent.createAgent("localhost", altPort) };
@@ -431,7 +432,7 @@ public class FlumeAppenderTest {
 
     @Test
     public void testReconnect() throws Exception {
-        final String altPort = Integer.toString(Integer.parseInt(testPort) + 1);
+        final String altPort = Integer.toString(Integers.parseInt(testPort) + 1);
         final Agent[] agents = new Agent[] {
                 Agent.createAgent("localhost", testPort),
                 Agent.createAgent("localhost", altPort) };

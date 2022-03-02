@@ -60,6 +60,16 @@ public class SortedArrayStringMapTest {
     }
 
     @Test
+    public void testConstructorNonStringKeys() {
+        Map<Object, Integer> map = new HashMap<>(1);
+        map.put(Long.MAX_VALUE, 1);
+        map.put(null, null);
+        SortedArrayStringMap sMap = new SortedArrayStringMap((Map) map);
+        assertEquals(1, (int) sMap.getValue(Long.toString(Long.MAX_VALUE)));
+        assertEquals((Integer) null, sMap.getValue(null));
+    }
+
+    @Test
     public void testToString() {
         final SortedArrayStringMap original = new SortedArrayStringMap();
         original.putValue("a", "avalue");

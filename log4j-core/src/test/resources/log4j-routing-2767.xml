@@ -17,6 +17,10 @@
 
 -->
 <Configuration status="WARN" name="RoutingTest">
+  <Properties>
+    <Property name="filename">target/routing1/routingtest-$${sd:type}.log</Property>
+  </Properties>
+
   <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%m%n"/>
@@ -24,7 +28,7 @@
     <Routing name="Routing">
       <Routes>
         <Route>
-          <RollingFile name="Routing-${sd:type}" fileName="target/routing1/routingtest-${sd:type}.log"
+          <RollingFile name="Routing-${sd:type}" fileName="${filename}"
                        filePattern="target/routing1/test1-${sd:type}.%i.log.gz">
             <PatternLayout>
               <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>

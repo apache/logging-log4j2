@@ -24,13 +24,23 @@ package org.apache.logging.log4j.core.lookup;
 public abstract class AbstractLookup implements StrLookup {
 
     /**
-     * Calls {@code lookup(null, key)} in the super class.
+     * Calls {@code lookup(null, key)} in the implementation.
      *
      * @see StrLookup#lookup(LogEvent, String)
      */
     @Override
     public String lookup(final String key) {
         return lookup(null, key);
+    }
+
+    /**
+     * Calls {@code evaluate(null, key)} in the implementation.
+     *
+     * @see StrLookup#evaluate(LogEvent, String)
+     */
+    @Override
+    public LookupResult evaluate(final String key) {
+        return evaluate(null, key);
     }
 
 }

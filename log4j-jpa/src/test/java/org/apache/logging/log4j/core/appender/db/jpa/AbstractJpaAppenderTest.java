@@ -75,11 +75,12 @@ public abstract class AbstractJpaAppenderTest {
             context.reconfigure();
             StatusLogger.getLogger().reset();
 
-            try (Statement statement = this.connection.createStatement();) {
-                statement.execute("SHUTDOWN");
+            if (this.connection != null) {
+                try (Statement statement = this.connection.createStatement();) {
+                    statement.execute("SHUTDOWN");
+                }
+                this.connection.close();
             }
-
-            this.connection.close();
         }
     }
 

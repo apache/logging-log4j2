@@ -66,12 +66,12 @@
           appenders and filters or manipulate the configuration in any way.
         </p>
         <a name="Architecture"/>
-        <subsection name="Configuration Archhitecture">
+        <subsection name="Configuration Architecture">
           <p>
             In part because support for XML was added first, Log4j's configuration is reflected as a tree structure.
             In fact every configuration dialect, including the ConfigurationBuilder, generates a Node for every
             configuration element. A node is a fairly simple structure that contains a set of attributes, a set of
-            child nodes and a PluginType. It is important to note that every Node must have a corresponding plugn,
+            child nodes and a PluginType. It is important to note that every Node must have a corresponding plugin,
             as the plugin is the component that actually performs the work represented by the node.
           </p>
           <p>
@@ -79,19 +79,19 @@
             that declares what file extensions it supports and what its priority is. Properties have the highest
             precedence with a value of 8, followed by yaml, json and xml. When autoconfiguration is performed Log4j
             will call each of these factories in order to determine which, if any, support the specified configuration
-            file format. If one is found that factory will create the corresponding Configuratoin object and pass the
+            file format. If one is found that factory will create the corresponding Configuration object and pass the
             reference to the configuration data to it.
           </p>
           <p>Every configuration implementation, such as XMLConfiguration, YamlConfiguration, JsonConfiguration, etc.
             has the primary task of converting the configuration text into the Node tree, typically by parsing the
             text with whatever tool is available for that document type. It should be noted that while most of the
-            supported document types are inherintly tree structured, the Java properties syntax is not. Because of the
+            supported document types are inherently tree structured, the Java properties syntax is not. Because of the
             need to convert the syntax into a Node tree the Java properties syntax used by Log4j required all properties
             follow a naming pattern that made the tree structure clear. As a consequence, the Java Properties format
             tends to be more verbose than using a different document type.
           </p>
           <p>
-            Once the Node tree is created control is delegated to AbstractConfiguration, which convertes the Nodes into
+            Once the Node tree is created control is delegated to AbstractConfiguration, which converts the Nodes into
             their respective Java objects using Log4j's Plugin system and provides all the common functionality.
           </p>
         </subsection>
@@ -115,9 +115,9 @@
             pruned.
           </p>
           <p>
-            Arbiters may occur anywhere an element is allowed in the configuration. So an Aribiter could encapsulate
+            Arbiters may occur anywhere an element is allowed in the configuration. So an Arbiter could encapsulate
             something as simple as a single property declaration or a whole set of Appenders or Loggers. Arbiters
-            may also be nested although Arbiters that are the descendant of another arbiter will only be evalued if the
+            may also be nested although Arbiters that are the descendant of another arbiter will only be evaluated if the
             ancestor returned true. The child elements of an Arbiter must be valid elements for whatever element is
             the parent of the Arbiter.
           </p>
@@ -155,7 +155,7 @@
             impact any other Arbiters. This can be cumbersome when you simply want to use one of a set of choices. A
             special plugin named "Select" can be used in this case. Each element under the Select is required to be
             an Arbiter. The first Arbiter that returns a true value will be the one used while others are ignored.
-            If no Arbiter returns true a DefaultAtrbiter may be configured with the default configuration elements.
+            If no Arbiter returns true a DefaultArbiter may be configured with the default configuration elements.
             The DefaultArbiter is an Arbiter that always returns true, so using it outside of a Select would result in
             its configured elements always being included just as if it hadn't been present.
           </p>
@@ -367,6 +367,31 @@ public class Bar {
             Note that status logging is disabled when the default configuration is used.
           </p>
         </subsection>
+        <a name="Configuration From a URI"/>
+        <subsection name="Configuraton From a URI">
+          <p>
+            When <code>log4j2.configurationFile</code> references a URL Log4j will first determine if the URL reference
+            a file using the file protocol. If it does Log4j will validate that the file url is valid and continue
+            processing as previously described. If it contains a protocol other than file then Log4j will inspect
+            the value of the <code>log4j2.Configuration.allowedProtocols</code> system property. If the provided list
+            contains the protocol specified then Log4j will use the URI to locate the specified configuration file. If
+            not an exception will be thrown and an error message will be logged. If no value is provided for the
+            system property it will default to "https". Use of any protocol other than "file" can be prevented by
+            setting the system property value to "_none". This value would be an invalid protocol so cannot conflict
+            with any custom protocols that may be present.
+          </p>
+          <p>
+            Log4j supports access to remote urls that require authentication. Log4j supports basic authentication
+            out of the box. If the <code>log4j2.Configuration.username</code> and <code>log4j2.Configuration.password</code>
+            are specified those values will be used to perform the authentication. If the password is encrypted a custom
+            password decryptor may be supplied by specifying the fully qualified class name in the
+            <code>log4j2.Configuration.passwordDecryptor</code> system property. A custom
+            <code>AuthenticationProvider</code> may be used by setting the
+            <code>log4j2.Configuration.authenticationProvider</code> system property to the fully qualified class name
+            of the provider.
+          </p>
+
+        </subsection>
         <a name="Additivity"/>
         <subsection name="Additivity">
           <p>
@@ -481,7 +506,7 @@ public class Bar {
           </p>
           <p>
             Log4j provides one Advertiser implementation, a 'multicastdns' Advertiser, which advertises appender configuration
-            details via IP multicast using the <a href="http://jmdns.sourceforge.net">http://jmdns.sourceforge.net</a> library.
+            details via IP multicast using the <a href="https://github.com/jmdns/jmdns">JmDNS</a> library.
           </p>
           <p>
             Chainsaw automatically discovers log4j's multicastdns-generated advertisements and displays those discovered
@@ -493,7 +518,7 @@ public class Bar {
             To advertise an appender configuration:
           </p>
             <ul>
-              <li>Add the JmDns library from <a href="http://jmdns.sourceforge.net">http://jmdns.sourceforge.net</a> to the application classpath</li>
+              <li>Add the JmDNS library from <a href="https://github.com/jmdns/jmdns/releases">JmDNS GitHub Releases</a> to the application classpath</li>
               <li>Set the 'advertiser' attribute of the configuration element to 'multicastdns'</li>
               <li>Set the 'advertise' attribute on the appender element to 'true'</li>
               <li>If advertising a FileAppender-based configuration, set the 'advertiseURI' attribute on the appender element to an appropriate URI</li>
@@ -502,7 +527,7 @@ public class Bar {
             FileAppender-based configurations require an additional 'advertiseURI' attribute to be specified on the appender.
             The 'advertiseURI' attribute provides Chainsaw with information on how the file can be accessed.
             For example, the file may be remotely accessible to Chainsaw via ssh/sftp by specifying a Commons VFS
-            (<a href="http://commons.apache.org/proper/commons-vfs/">http://commons.apache.org/proper/commons-vfs/</a>) sftp:// URI,
+            (<a href="https://commons.apache.org/proper/commons-vfs/">https://commons.apache.org/proper/commons-vfs/</a>) sftp:// URI,
             an http:// URI may be used if the file is accessible through a web server, or a file:// URI can be specified
             if accessing the file from a locally-running instance of Chainsaw.
           </p>
@@ -511,7 +536,7 @@ public class Bar {
             automatically tail the log file (notice the file:// advertiseURI):
           </p>
           <p>
-            <b>Please note, you must add the JmDns library from <a href="http://jmdns.sourceforge.net">http://jmdns.sourceforge.net</a>
+            <b>Please note, you must add the JmDns library from <a href="https://jmdns.sourceforge.net">https://jmdns.sourceforge.net</a>
             to your application classpath in order to advertise with the 'multicastdns' advertiser.</b>
           </p>
           <pre class="prettyprint linenums"><![CDATA[
@@ -926,7 +951,7 @@ Configuration:
               to be defined in sets of properties that begin with <i>component.&lt;.identifier&gt;.</i>. The identifier does not
               have to match the name of the component being defined but must uniquely identify all the attributes and
               subcomponents that are part of the component. If the list of identifiers is not present the
-              identifer must not contain a '.'. Each individual component MUST have a "type" attribute
+              identifier must not contain a '.'. Each individual component MUST have a "type" attribute
               specified that identifies the component's Plugin type.
             </p>
             <p>
@@ -941,8 +966,35 @@ Configuration:
               wrapper element, as the TimeBasedTriggeringPolicy and SizeBasedTriggeringPolicy are defined below.
             </p>
             <p>
+              As of version 2.17.2,
+              <tt>rootLogger</tt> and <tt>logger.<var>key</var></tt> properties can be specified to set the
+              level and zero or more appender refs to create for that logger. The level and appender refs are
+              separated by comma <tt>,</tt> characters with optional whitespace surrounding the comma. The
+              following example demonstrates how the shorthand is expanded when reading properties configurations.
+            </p>
+            <pre class="prettyprint linenums">
+appender.stdout.type = Console
+# ... other appender properties
+appender.file.type = File
+# ... other appender properties
+logger.app = INFO, stdout, file
+logger.app.name = com.example.app
+
+# is equivalent to:
+# appender.stdout.type = Console
+# appender.stdout.name = stdout
+# ...
+appender.file.type = File
+appender.file.name = file
+# ...
+logger.app.name = com.example.app
+logger.app.level = INFO
+logger.app.appenderRef.$1.ref = stdout
+logger.app.appenderRef.$2.ref = file
+            </pre>
+            <p>
               Properties configuration files support the advertiser, monitorInterval, name, packages, shutdownHook,
-              shutdownTimeout, status, verbose, and dest attrbutes. See <a href="#ConfigurationSyntax">Configuration Syntax</a>
+              shutdownTimeout, status, verbose, and dest attributes. See <a href="#ConfigurationSyntax">Configuration Syntax</a>
               for the definitions of these attributes.
             </p>
           <pre class="prettyprint linenums">
@@ -964,7 +1016,7 @@ appender.console.filter.threshold.level = error
 
 appender.rolling.type = RollingFile
 appender.rolling.name = RollingFile
-appender.rolling.fileName = ${filename}
+appender.rolling.fileName = ${dollar}{filename}
 appender.rolling.filePattern = target/rolling2/test1-%d{MM-dd-yy-HH-mm-ss}-%i.log.gz
 appender.rolling.layout.type = PatternLayout
 appender.rolling.layout.pattern = %d %p %C{1.} [%t] %m%n
@@ -977,13 +1029,15 @@ appender.rolling.policies.size.size=100MB
 appender.rolling.strategy.type = DefaultRolloverStrategy
 appender.rolling.strategy.max = 5
 
+logger.rolling = debug, RollingFile
 logger.rolling.name = com.example.my.app
-logger.rolling.level = debug
 logger.rolling.additivity = false
-logger.rolling.appenderRef.rolling.ref = RollingFile
 
-rootLogger.level = info
-rootLogger.appenderRef.stdout.ref = STDOUT
+rootLogger = info, STDOUT
+
+# or using a grouping element:
+# rootLogger.level = info
+# rootLogger.appenderRef.stdout.ref = STDOUT
           </pre>
           <a name="Loggers"/>
           <h4>Configuring Loggers</h4>
@@ -1222,7 +1276,7 @@ rootLogger.appenderRef.stdout.ref = STDOUT
                 <td>jvmrunargs</td>
                 <td>
                   A JVM input argument accessed through JMX, but not a main argument;
-                  see <a class="javadoc" href="http://docs.oracle.com/javase/6/docs/api/java/lang/management/RuntimeMXBean.html#getInputArguments--">RuntimeMXBean.getInputArguments()</a>.
+                  see <a class="javadoc" href="https://docs.oracle.com/javase/6/docs/api/java/lang/management/RuntimeMXBean.html#getInputArguments--">RuntimeMXBean.getInputArguments()</a>.
                   Not available on Android.</td>
               </tr>
               <tr>
@@ -1250,7 +1304,7 @@ rootLogger.appenderRef.stdout.ref = STDOUT
                 <td>System properties. The formats are <code>${dollar}{sys:some.property}</code> and <code>${dollar}{sys:some.property:-default_value}</code>.</td>
               </tr>
             </table>
-          <a name="DefaultProperties"/><h3>Default Properites</h3><p>
+          <a name="DefaultProperties"/><h3>Default Properties</h3><p>
           A default property map can be declared in the configuration file by placing a Properties
           element directly after the Configuration element and before any Loggers, Filters,
           Appenders, etc. are declared. If the value cannot be located in the specified lookup the
@@ -1314,13 +1368,15 @@ rootLogger.appenderRef.stdout.ref = STDOUT
         <a name="Scripts"/>
         <subsection name="Scripts">
           <p>
-            Log4j provides support for <a href="http://docs.oracle.com/javase/6/docs/technotes/guides/scripting/">JSR 223</a>
+            Log4j provides support for <a href="https://docs.oracle.com/javase/6/docs/technotes/guides/scripting/">JSR 223</a>
             scripting languages to be used in some of its components. Any language that provides support for the JSR
             223 scripting engine may be used. A list of the languages and bindings for them can be found at the
             <a href="https://java.net/projects/scripting/sources/svn/show/trunk/engines">Scripting Engine</a> web site.
             However, some of the languages listed there, such as JavaScript, Groovy and Beanshell, directly support the
             JSR 223 scripting framework and only require that the jars for that language be installed.
           </p>
+          <p>As of Log4j 2.17.2 the languages to be supported must be specified as a comma separated list in the
+            <code>log4j2.Script.enableLanguages</code> system property.</p>
           <p>
             The components that support using scripts do so by allowing a &lt;script&gt;, &lt;scriptFile&gt;, or
             &lt;scriptRef&gt; element to be configured on
@@ -1448,7 +1504,7 @@ rootLogger.appenderRef.stdout.ref = STDOUT
         <a name="XInclude"/>
         <subsection name="XInclude">
           <p>
-            XML configuration files can include other files with <a href="http://www.xml.com/lpt/a/1009">XInclude</a>.
+            XML configuration files can include other files with <a href="https://www.xml.com/lpt/a/1009">XInclude</a>.
             Here is an example log4j2.xml file that includes two other files:
           </p>
           <pre class="prettyprint linenums"><![CDATA[
@@ -1519,7 +1575,7 @@ rootLogger.appenderRef.stdout.ref = STDOUT
                   configurations.</li>
                 <li>Filters are aggregated under a CompositeFilter if more than one Filter is defined. Since Filters
                   are not named duplicates may be present.</li>
-                <li>Scripts and ScriptFile references are aggregated. Duplicate definiations replace those in previous
+                <li>Scripts and ScriptFile references are aggregated. Duplicate definitions replace those in previous
                   configurations.</li>
                 <li>Appenders are aggregated. Appenders with the same name are replaced by those in later
                   configurations, including all of the Appender's subcomponents.</li>
@@ -1555,7 +1611,7 @@ rootLogger.appenderRef.stdout.ref = STDOUT
             to be able to diagnose problems in the logging configuration or in the configured components. Since
             logging has not been configured, "normal" logging cannot be used during initialization. In addition,
             normal logging within appenders could create infinite recursion which Log4j will detect and cause
-            the recursive events to be ignored. To accomodate this need, the Log4j 2 API includes a
+            the recursive events to be ignored. To accommodate this need, the Log4j 2 API includes a
             <a class="javadoc" href="../log4j-api/apidocs/org/apache/logging/log4j/status/StatusLogger.html">StatusLogger</a>.
             Components declare an instance of the StatusLogger similar to:
           </p>
@@ -1839,7 +1895,7 @@ public class AwesomeTest {
           <p>
             The following is a list of available global configuration properties. Note that these can only be set once
             per JVM process unlike configuration settings available in configuration files. The <i>Property Name</i>
-            column contains the name used in properties files and system properties; <i>Environemt Variable</i>
+            column contains the name used in properties files and system properties; <i>Environment Variable</i>
             for the equivalent environment variable; and <i>Legacy Property Name</i> for the pre-2.10 name.
           </p>
 <style>
@@ -1957,6 +2013,62 @@ public class AwesomeTest {
       Fully specified class name of a class extending <tt>org.apache.logging.log4j.core
       .config.ConfigurationFactory</tt>.
       If specified, an instance of this class is added to the list of configuration factories.
+    </td>
+  </tr>
+  <tr>
+    <td><a name="configurationAllowedProtocols"/>log4j2.Configuration.allowedProtocols
+      <br />
+      (<a name="log4j.configurationAllowedProtocols"/>log4j.configurationAllowedProtocols)
+    </td>
+    <td>LOG4J_CONFIGURATION_ALLOWED_PROTOCOLS</td>
+    <td>&nbsp;</td>
+    <td>
+      A comma separated list of the protocols that may be used to load a configuration file. The default is https.
+      To completely prevent accessing the configuration via a URL specify a value of "_none".
+    </td>
+  </tr>
+  <tr>
+    <td><a name="configurationAuthorizationProvider"/>log4j2.Configuration.authorizationProvider
+      <br />
+      (<a name="log4j.configurationAuthorizationProvider"/>log4j.configurationAuthorizationProvider
+    </td>
+    <td>LOG4J_CONFIGURATION_AUTHORIZATION_PROVIDER</td>
+    <td>org.apache.logging.log4j.core.util.BasicAuthorizationProvider</td>
+    <td>
+      The fully qualified class name of the AuthorizationProvider.
+    </td>
+  </tr>
+  <tr>
+    <td><a name="configurationPassword"/>log4j2.Configuration.password
+      <br />
+      (<a name="log4j.configurationPassword"/>log4j.configurationPassword
+    </td>
+    <td>LOG4J_CONFIGURATION_PASSWORD</td>
+    <td>&nbsp;</td>
+    <td>
+     The password required to access the remote logging configuration file.
+    </td>
+  </tr>
+  <tr>
+    <td><a name="configurationPasswordDecryptor"/>log4j2.Configuration.passwordDecryptor
+      <br />
+      (<a name="log4j.configurationPasswordDecryptor"/>log4j.configurationPasswordDecryptor
+    </td>
+    <td>LOG4J_CONFIGURATION_PASSWORD_DECRYPTOR</td>
+    <td>&nbsp;</td>
+    <td>
+      If the password is encrypted this class will be used to decrypt it.
+    </td>
+  </tr>
+  <tr>
+    <td><a name="configurationUsername"/>log4j2.Configuration.username
+      <br />
+      (<a name="log4j.configurationUsername"/>log4j.configurationUsername
+    </td>
+    <td>LOG4J_CONFIGURATION_USERNAME</td>
+    <td>&nbsp;</td>
+    <td>
+      The user name required to access the remote logging configuration file.
     </td>
   </tr>
   <tr>
@@ -2757,6 +2869,14 @@ public class AwesomeTest {
     <td></td>
     <td>false</td>
     <td>true or false if the host name should be verified</td>
+  </tr>
+  <tr>
+    <td><a name="log4j2.Script.enableLanguages"/>log4j2.Script.enableLanguages</td>
+    <td></td>
+    <td></td>
+    <td>The list of script languages that are allowed to execute. The names specified must have a ScriptEngine installed
+      that advertises the same language(s) in order for scripting to be enabled. If no languages are specified, which is
+      the default, the ScriptManager will not be installed.</td>
   </tr>
 </table>
 

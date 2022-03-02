@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import static org.apache.logging.log4j.util.Chars.CR;
+import static org.apache.logging.log4j.util.Chars.LF;
+
 import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Stream;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -131,9 +132,9 @@ public final class EncodingPatternConverter extends LogEventPatternConverter {
 
             private String escapeChar(char c) {
                 switch (c) {
-                    case '\r':
+                    case CR:
                         return "\\r";
-                    case '\n':
+                    case LF:
                         return "\\n";
                     case '&':
                         return "&amp;";
@@ -176,7 +177,7 @@ public final class EncodingPatternConverter extends LogEventPatternConverter {
 
                 for (int i = origLength - 1; i >= start; i--) {
                     final char c = toAppendTo.charAt(i);
-                    if (c == '\r' || c == '\n') {
+                    if (c == CR || c == LF) {
                         firstSpecialChar = i;
                         toAppendTo.append(' '); // make room for the escape sequence
                     }
@@ -185,11 +186,11 @@ public final class EncodingPatternConverter extends LogEventPatternConverter {
                 for (int i = origLength - 1, j = toAppendTo.length(); i >= firstSpecialChar; i--) {
                     final char c = toAppendTo.charAt(i);
                     switch (c) {
-                        case '\r':
+                        case CR:
                             toAppendTo.setCharAt(--j, 'r');
                             toAppendTo.setCharAt(--j, '\\');
                             break;
-                        case '\n':
+                        case LF:
                             toAppendTo.setCharAt(--j, 'n');
                             toAppendTo.setCharAt(--j, '\\');
                             break;

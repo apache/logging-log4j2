@@ -79,7 +79,7 @@ public class PoolableConnectionFactoryConfig {
                 : DEFAULT.getDisconnectionSqlCodes().toArray());
 
         @PluginBuilderAttribute
-        private boolean autoCommitOnReturn = DEFAULT.isEnableAutoCommitOnReturn();
+        private boolean autoCommitOnReturn = DEFAULT.isAutoCommitOnReturn();
 
         @PluginBuilderAttribute
         private boolean fastFailValidation = DEFAULT.isFastFailValidation();
@@ -258,7 +258,7 @@ public class PoolableConnectionFactoryConfig {
             poolableConnectionFactory.setDefaultReadOnly(defaultReadOnly);
             poolableConnectionFactory.setDefaultTransactionIsolation(defaultTransactionIsolation);
             poolableConnectionFactory.setDisconnectionSqlCodes(disconnectionSqlCodes);
-            poolableConnectionFactory.setEnableAutoCommitOnReturn(autoCommitOnReturn);
+            poolableConnectionFactory.setAutoCommitOnReturn(autoCommitOnReturn);
             poolableConnectionFactory.setFastFailValidation(fastFailValidation);
             poolableConnectionFactory.setMaxConnLifetimeMillis(maxConnLifetimeMillis);
             poolableConnectionFactory.setMaxOpenPreparedStatements(maxOpenPreparedStatements);

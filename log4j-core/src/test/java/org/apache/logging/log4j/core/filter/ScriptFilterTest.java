@@ -16,8 +16,11 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
+@SetSystemProperty(key = Constants.SCRIPT_LANGUAGES, value = "Groovy, Javascript")
 @LoggerContextSource("log4j-script-filters.xml")
 public class ScriptFilterTest extends AbstractScriptFilterTest {
 }

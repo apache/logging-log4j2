@@ -97,7 +97,7 @@
               </p>
                 <p>
                   To learn more, watch Gil Tene's eye-opening presentation
-                  <a href="http://www.infoq.com/presentations/latency-response-time">How NOT to measure
+                  <a href="https://www.infoq.com/presentations/latency-response-time">How NOT to measure
                     latency</a>.
                 </p>
               </td>
@@ -201,7 +201,7 @@ if (logger.isDebugEnabled()) {
       <p><img src="images/ParamMsgThrpt1-4T.png" /></p>
       <p>The results above are for JUL (java.util.logging) 1.8.0_45, Log4j 2.6, Log4j 1.2.17 and Logback 1.1.7,
         and were obtained with the
-        <a href="http://openjdk.java.net/projects/code-tools/jmh/">JMH</a> Java benchmark harness.
+        <a href="https://github.com/openjdk/jmh">JMH</a> Java benchmark harness.
         See the AsyncAppenderLog4j1Benchmark, AsyncAppenderLog4j2Benchmark, AsyncAppenderLogbackBenchmark,
         AsyncLoggersBenchmark and the MemoryHandlerJULBenchmark source code in the log4j-perf module.
       </p>
@@ -229,7 +229,7 @@ if (logger.isDebugEnabled()) {
       <p><img src="images/AsyncWithLocationThrpt1T-labeled.png" /></p>
       <p>The results above are for JUL (java.util.logging) 1.8.0_45, Log4j 2.6, Log4j 1.2.17 and Logback 1.1.7,
         and were obtained with the
-        <a href="http://openjdk.java.net/projects/code-tools/jmh/">JMH</a> Java benchmark harness.
+        <a href="https://github.com/openjdk/jmh">JMH</a> Java benchmark harness.
         See the AsyncAppenderLog4j1LocationBenchmark, AsyncAppenderLog4j2LocationBenchmark,
         AsyncAppenderLogbackLocationBenchmark, AsyncLoggersLocationBenchmark and the
         MemoryHandlerJULLocationBenchmark source code in the log4j-perf module.
@@ -255,7 +255,7 @@ if (logger.isDebugEnabled()) {
         single-threaded throughput as more threads are added.</em></p>
       <p><img src="images/SyncThroughputLoggerComparisonLinux.png" /></p>
       <p>The synchronous logging throughput results above are obtained with the
-        <a href="http://openjdk.java.net/projects/code-tools/jmh/">JMH</a> Java benchmark harness.
+        <a href="https://github.com/openjdk/jmh">JMH</a> Java benchmark harness.
         See the FileAppenderBenchmark source code in the log4j-perf module.</p>
 
       <h4>Synchronous File Logging - Response Time Comparison</h4>
@@ -296,7 +296,7 @@ TODO
         if a Marker that does have references to other markers matches the requested Marker. </p>
       <p>It appears that coarse-grained synchronization in SLF4J can impact performance in
         multi-threaded scenarios. See
-        <a href="http://jira.qos.ch/browse/SLF4J-240">SLF4J-240</a>.</p>
+        <a href="https://jira.qos.ch/browse/SLF4J-240">SLF4J-240</a>.</p>
       <p><img src="images/MarkerFilterCostComparison.png" /></p>
       <p>Log4j and Logback also support filtering
         on a value in the Log4j ThreadContext vs filtering in Logback on a value in the MDC.
@@ -304,7 +304,7 @@ TODO
         is small for the ThreadContext filter.
       </p><p><img src="images/ThreadContextFilterCostComparison.png" /></p>
       <p>The Filter comparison results above are obtained with the
-        <a href="http://openjdk.java.net/projects/code-tools/jmh/">JMH</a> Java benchmark harness.
+        <a href="https://github.com/openjdk/jmh">JMH</a> Java benchmark harness.
         See the MarkerFilterBenchmark and MDCFilterBenchmark in the log4j-perf module for details on these
         benchmarks.</p>
       <a name="tradeoffs" />
@@ -350,7 +350,7 @@ TODO
       handles lock contention better than Linux.</p>
       <p><img src="images/Log4j2AppenderThroughputComparison-windows.png"/></p>
       <p>The Log4j 2 appender comparison results above are obtained with the
-        <a href="http://openjdk.java.net/projects/code-tools/jmh/">JMH</a> Java benchmark harness.
+        <a href="https://github.com/openjdk/jmh">JMH</a> Java benchmark harness.
         See the Log4j2AppenderComparisonBenchmark source code in the log4j-perf module.</p>
       <!--
       <p>The user should be aware of the following performance issues.</p>

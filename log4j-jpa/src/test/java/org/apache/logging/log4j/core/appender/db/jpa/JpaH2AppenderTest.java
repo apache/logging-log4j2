@@ -22,13 +22,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.apache.logging.log4j.categories.Appenders;
-import org.apache.logging.log4j.util.Strings;
 import org.junit.experimental.categories.Category;
 
 @Category(Appenders.Jpa.class)
 public class JpaH2AppenderTest extends AbstractJpaAppenderTest {
     private static final String USER_ID = "sa";
-    private static final String PASSWORD = Strings.EMPTY;
+    private static final String PASSWORD = "123";
 
     public JpaH2AppenderTest() {
         super("h2");
@@ -41,7 +40,7 @@ public class JpaH2AppenderTest extends AbstractJpaAppenderTest {
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate("CREATE TABLE jpaBaseLogEntry ( "
                     + "id INTEGER IDENTITY, eventDate DATETIME, instant NVARCHAR(64), level NVARCHAR(10), "
-                    + "logger NVARCHAR(255), message NVARCHAR(1024), exception NVARCHAR(1048576)" + " )");
+                    + "logger NVARCHAR(255), message NVARCHAR(1024), exception NVARCHAR(1048576) )");
         }
 
         try (Statement statement = connection.createStatement()) {
@@ -50,7 +49,7 @@ public class JpaH2AppenderTest extends AbstractJpaAppenderTest {
                     + "level NVARCHAR(10), loggerName NVARCHAR(255), message NVARCHAR(1024), "
                     + "thrown NVARCHAR(1048576), contextMapJson NVARCHAR(1048576), loggerFQCN NVARCHAR(1024), "
                     + "contextStack NVARCHAR(1048576), marker NVARCHAR(255), source NVARCHAR(2048),"
-                    + "threadId BIGINT, threadName NVARCHAR(255), threadPriority INTEGER" + " )");
+                    + "threadId BIGINT, threadName NVARCHAR(255), threadPriority INTEGER )");
         }
 
         return connection;

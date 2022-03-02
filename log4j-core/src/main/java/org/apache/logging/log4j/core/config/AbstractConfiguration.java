@@ -220,11 +220,14 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         LOGGER.debug(Version.getProductString() + " initializing configuration {}", this);
         runtimeStrSubstitutor.setConfiguration(this);
         configurationStrSubstitutor.setConfiguration(this);
-        try {
-            scriptManager = new ScriptManager(this, watchManager);
-        } catch (final LinkageError | Exception e) {
-            // LOG4J2-1920 ScriptEngineManager is not available in Android
-            LOGGER.info("Cannot initialize scripting support because this JRE does not support it.", e);
+        String scriptLanguages = PropertiesUtil.getProperties().getStringProperty(Constants.SCRIPT_LANGUAGES);
+        if (scriptLanguages != null) {
+            try {
+                scriptManager = new ScriptManager(this, watchManager, scriptLanguages);
+            } catch (final LinkageError | Exception e) {
+                // LOG4J2-1920 ScriptEngineManager is not available in Android
+                LOGGER.info("Cannot initialize scripting support because this JRE does not support it.", e);
+            }
         }
         pluginManager.collectPlugins(pluginPackages);
         final PluginManager levelPlugins = new PluginManager(Level.CATEGORY);
@@ -711,6 +714,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         setParents();
     }
 
+    public static Level getDefaultLevel() {
+        final String levelName = PropertiesUtil.getProperties().getStringProperty(DefaultConfiguration.DEFAULT_LEVEL,
+                Level.ERROR.name());
+        return Level.valueOf(levelName);
+    }
+
     protected void setToDefault() {
         // LOG4J2-1176 facilitate memory leak investigation
         setName(DefaultConfiguration.DEFAULT_NAME + "@" + Integer.toHexString(hashCode()));
@@ -724,11 +733,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         final LoggerConfig rootLoggerConfig = getRootLogger();
         rootLoggerConfig.addAppender(appender, null, null);
 
-        final Level defaultLevel = Level.ERROR;
-        final String levelName = PropertiesUtil.getProperties().getStringProperty(DefaultConfiguration.DEFAULT_LEVEL,
-                defaultLevel.name());
-        final Level level = Level.valueOf(levelName);
-        rootLoggerConfig.setLevel(level != null ? level : defaultLevel);
+        rootLoggerConfig.setLevel(getDefaultLevel());
     }
 
     /**

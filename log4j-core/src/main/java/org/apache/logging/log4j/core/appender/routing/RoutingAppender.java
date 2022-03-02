@@ -42,6 +42,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.script.AbstractScript;
 import org.apache.logging.log4j.core.script.ScriptManager;
+import org.apache.logging.log4j.core.script.ScriptRef;
 import org.apache.logging.log4j.core.util.Booleans;
 
 /**
@@ -83,6 +84,17 @@ public final class RoutingAppender extends AbstractAppender {
             if (routes == null) {
                 LOGGER.error("No routes defined for RoutingAppender {}", name);
                 return null;
+            }
+            if (defaultRouteScript != null) {
+                if (getConfiguration().getScriptManager() == null) {
+                    LOGGER.error("Script support is not enabled");
+                    return null;
+                }
+                if (!(defaultRouteScript instanceof ScriptRef)) {
+                    if (!getConfiguration().getScriptManager().addScript(defaultRouteScript)) {
+                        return null;
+                    }
+                }
             }
             return new RoutingAppender(name, getFilter(), isIgnoreExceptions(), routes, rewritePolicy,
                     getConfiguration(), purgePolicy, defaultRouteScript, getPropertyArray());
@@ -176,7 +188,6 @@ public final class RoutingAppender extends AbstractAppender {
                 error("No Configuration defined for RoutingAppender; required for Script element.");
             } else {
                 final ScriptManager scriptManager = configuration.getScriptManager();
-                scriptManager.addScript(defaultRouteScript);
                 final Bindings bindings = scriptManager.createBindings(defaultRouteScript);
                 bindings.put(STATIC_VARIABLES_KEY, scriptStaticVariables);
                 final Object object = scriptManager.execute(defaultRouteScript.getName(), bindings);

@@ -20,8 +20,10 @@ package org.apache.logging.log4j.core.appender.rolling.action;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.script.Script;
+import org.apache.logging.log4j.core.util.Constants;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -33,17 +35,18 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Tests the ScriptCondition class.
  */
+@SetSystemProperty(key = Constants.SCRIPT_LANGUAGES, value = "js, javascript, groovy")
 public class ScriptConditionTest {
 
     @Test
     public void testConstructorDisallowsNullScript() {
-        assertThrows(NullPointerException.class, () -> new ScriptCondition(null, new DefaultConfiguration()));
+        assertNull(ScriptCondition.createCondition(null, new DefaultConfiguration()));
     }
 
     @Test
     public void testConstructorDisallowsNullConfig() {
         assertThrows(NullPointerException.class,
-                () -> new ScriptCondition(new Script("test", "js", "print('hi')"), null));
+                () -> ScriptCondition.createCondition(new Script("test", "js", "print('hi')"), null));
     }
 
     @Test
@@ -63,7 +66,7 @@ public class ScriptConditionTest {
         config.initialize(); // creates the ScriptManager
 
         final Script script = new Script("test", "javascript", "pathList;"); // script that returns pathList
-        final ScriptCondition condition = new ScriptCondition(script, config);
+        final ScriptCondition condition = ScriptCondition.createCondition(script, config);
         final List<PathWithAttributes> pathList = new ArrayList<>();
         final Path base = Paths.get("baseDirectory");
         final List<PathWithAttributes> result = condition.selectFilesToDelete(base, pathList);
@@ -83,7 +86,7 @@ public class ScriptConditionTest {
         final String scriptText = "pathList.remove(1);" //
                 + "pathList;";
         final Script script = new Script("test", "javascript", scriptText);
-        final ScriptCondition condition = new ScriptCondition(script, config);
+        final ScriptCondition condition = ScriptCondition.createCondition(script, config);
         final Path base = Paths.get("baseDirectory");
         final List<PathWithAttributes> result = condition.selectFilesToDelete(base, pathList);
         assertSame(result, pathList);
@@ -124,7 +127,7 @@ public class ScriptConditionTest {
                 + "println copy;"
                 + "copy;";
         final Script script = new Script("test", "groovy", scriptText);
-        final ScriptCondition condition = new ScriptCondition(script, config);
+        final ScriptCondition condition = ScriptCondition.createCondition(script, config);
         final Path base = Paths.get("/path");
         final List<PathWithAttributes> result = condition.selectFilesToDelete(base, pathList);
         assertEquals(1, result.size());

@@ -16,17 +16,15 @@
  */
 package org.apache.log4j.builders.layout;
 
+import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.LayoutWrapper;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.xml.XmlConfiguration;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
-
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
 
 /**
  * Build a Pattern Layout
@@ -34,10 +32,8 @@ import static org.apache.log4j.builders.BuilderManager.CATEGORY;
 @Plugin(name = "org.apache.log4j.SimpleLayout", category = CATEGORY)
 public class SimpleLayoutBuilder implements LayoutBuilder {
 
-    private static final Logger LOGGER = StatusLogger.getLogger();
-
     @Override
-    public Layout parseLayout(Element layoutElement, XmlConfiguration config) {
+    public Layout parse(Element layoutElement, XmlConfiguration config) {
         return new LayoutWrapper(PatternLayout.newBuilder()
                 .withPattern("%level - %m%n")
                 .withConfiguration(config)
@@ -45,7 +41,7 @@ public class SimpleLayoutBuilder implements LayoutBuilder {
     }
 
     @Override
-    public Layout parseLayout(PropertiesConfiguration config) {
+    public Layout parse(PropertiesConfiguration config) {
         return new LayoutWrapper(PatternLayout.newBuilder()
                 .withPattern("%level - %m%n")
                 .withConfiguration(config)

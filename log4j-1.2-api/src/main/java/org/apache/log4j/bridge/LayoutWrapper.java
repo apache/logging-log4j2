@@ -26,6 +26,11 @@ public class LayoutWrapper extends Layout {
 
     private final org.apache.logging.log4j.core.Layout<?> layout;
 
+    /**
+     * Constructs a new instance.
+     *
+     * @param layout The layout to wrap.
+     */
     public LayoutWrapper(org.apache.logging.log4j.core.Layout<?> layout) {
         this.layout = layout;
     }
@@ -35,12 +40,22 @@ public class LayoutWrapper extends Layout {
         return layout.toSerializable(((LogEventAdapter)event).getEvent()).toString();
     }
 
+    /**
+     * Unwraps.
+     *
+     * @return The wrapped object.
+     */
+    public org.apache.logging.log4j.core.Layout<?> getLayout() {
+        return this.layout;
+    }
+
     @Override
     public boolean ignoresThrowable() {
         return false;
     }
 
-    public org.apache.logging.log4j.core.Layout<?> getLayout() {
-        return this.layout;
+    @Override
+    public String toString() {
+        return String.format("LayoutWrapper [layout=%s]", layout);
     }
 }

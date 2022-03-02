@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender.db.jpa.converter;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
+import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -67,7 +68,7 @@ public class StackTraceElementAttributeConverter implements AttributeConverter<S
             if (colon > UNKNOWN_SOURCE) {
                 fileName = parenthesisContents.substring(0, colon);
                 try {
-                    lineNumber = Integer.parseInt(parenthesisContents.substring(colon + 1));
+                    lineNumber = Integers.parseInt(parenthesisContents.substring(colon + 1));
                 } catch (final NumberFormatException ignore) {
                     // we don't care
                 }

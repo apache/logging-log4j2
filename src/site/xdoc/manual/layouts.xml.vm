@@ -24,7 +24,7 @@
     </properties>
   #set($dollar = '$')
   #set($sharp = '#')
-  #set($javadocRoot = 'http://docs.oracle.com/javase/6/docs/api')
+  #set($javadocRoot = 'https://docs.oracle.com/javase/6/docs/api')
   #macro(javadoc $path $class)
       <a class="javadoc" href="${javadocRoot}/${path}/${class}.html">${class}</a>
   #end
@@ -346,7 +346,7 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
             See also:
           </p>
           <ul>
-            <li>The <a href="http://docs.graylog.org/en/latest/pages/gelf.html#gelf">GELF specification</a></li>
+            <li>The <a href="https://docs.graylog.org/en/latest/pages/gelf.html#gelf">GELF specification</a></li>
           </ul>
         </subsection>
         <a name="HTMLLayout"/>
@@ -1045,7 +1045,7 @@ WARN  [main]: Message 2</pre>
                   The UNIX time is the difference, in seconds for UNIX and in milliseconds for UNIX_MILLIS, between
                   the current time and midnight, January 1, 1970 UTC. While the time unit is milliseconds, the
                   granularity depends on the operating system
-                  (<a href="http://msdn.microsoft.com/en-us/windows/hardware/gg463266.aspx">Windows</a>).
+                  (<a href="https://msdn.microsoft.com/en-us/windows/hardware/gg463266.aspx">Windows</a>).
                   This is an efficient way to output the event time because only a conversion from long to String
                   takes place, there is no Date formatting involved.
                 </p>
@@ -2157,7 +2157,7 @@ WARN  [main]: Message 2</pre>
           <a name="enable-jansi"></a>
           <h4>ANSI Styling on Windows</h4>
           <p>ANSI escape sequences are supported natively on many platforms but are not by default on Windows. To
-            enable ANSI support add the <a href="http://jansi.fusesource.org/">Jansi</a> jar to your application
+            enable ANSI support add the <a href="https://jansi.fusesource.org/">Jansi</a> jar to your application
             and set property <code>log4j.skipJansi</code> to <code>false</code>.
             This allows Log4j to use Jansi to add ANSI escape codes when writing to the console.
           </p>
@@ -2257,7 +2257,7 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
         <a name="RFC5424Layout"/>
         <subsection name="RFC5424 Layout">
           <p>As the name implies, the Rfc5424Layout formats LogEvents in accordance with
-            <a href="http://tools.ietf.org/html/rfc5424">RFC 5424</a>, the enhanced Syslog specification. Although the specification
+            <a href="https://tools.ietf.org/html/rfc5424">RFC 5424</a>, the enhanced Syslog specification. Although the specification
             is primarily directed at sending messages via Syslog, this format is quite useful for
             other purposes since items are passed in the message as self-describing key/value pairs.
           </p>
@@ -2282,7 +2282,7 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
               <td>enterpriseNumber</td>
               <td>integer</td>
               <td>The IANA enterprise number as described in
-                <a href="http://tools.ietf.org/html/rfc5424#section-7.2.2">RFC 5424</a></td>
+                <a href="https://tools.ietf.org/html/rfc5424#section-7.2.2">RFC 5424</a></td>
             </tr>
             <tr>
               <td>exceptionPattern</td>
@@ -2435,7 +2435,7 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           <h4>Complete well-formed XML vs. fragment XML</h4>
           <p>
           If you configure <code>complete="true"</code>, the appender outputs a well-formed XML document where the
-          default namespace is the Log4j namespace <code>"http://logging.apache.org/log4j/2.0/events"</code>.  By default,
+          default namespace is the Log4j namespace <code>"https://logging.apache.org/log4j/2.0/events"</code>.  By default,
           with <code>complete="false"</code>, you should include the output as an <em>external entity</em> in a
           separate file to form a well-formed XML document, in which case the appender uses
           <code>namespacePrefix</code> with a default of <code>"log4j"</code>.
@@ -2443,52 +2443,52 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
           <p>
           A well-formed XML document follows this pattern:
           </p>
-          <pre class="prettyprint linenums">&lt;Event xmlns="http://logging.apache.org/log4j/2.0/events"
+          <pre class="prettyprint linenums"><![CDATA[<Event xmlns="htthttps://ging.apache.org/log4j/2.0/events"
        level="INFO"
        loggerName="HelloWorld"
        endOfBatch="false"
        thread="main"
        loggerFqcn="org.apache.logging.log4j.spi.AbstractLogger"
        threadId="1"
-       threadPriority="5"&gt;
-  &lt;Instant epochSecond="1493121664" nanoOfSecond="118000000"/>
-  &lt;Marker name="child"&gt;
-    &lt;Parents&gt;
-      &lt;Marker name="parent"&gt;
-        &lt;Parents&gt;
-          &lt;Marker name="grandparent"/&gt;
-        &lt;/Parents&gt;
-      &lt;/Marker&gt;
-    &lt;/Parents&gt;
-  &lt;/Marker&gt;
-  &lt;Message&gt;Hello, world!&lt;/Message&gt;
-  &lt;ContextMap&gt;
-    &lt;item key="bar" value="BAR"/&gt;
-    &lt;item key="foo" value="FOO"/&gt;
-  &lt;/ContextMap&gt;
-  &lt;ContextStack&gt;
-    &lt;ContextStackItem&gt;one&lt;/ContextStackItem&gt;
-    &lt;ContextStackItem&gt;two&lt;/ContextStackItem&gt;
-  &lt;/ContextStack&gt;
-  &lt;Source
+       threadPriority="5">
+  <Instant epochSecond="1493121664" nanoOfSecond="118000000"/>
+  <Marker name="child">
+    <Parents>
+      <Marker name="parent">
+        <Parents>
+          <Marker name="grandparent"/>
+        </Parents>
+      </Marker>
+    </Parents>
+  </Marker>
+  <Message>Hello, world!</Message>
+  <ContextMap>
+    <item key="bar" value="BAR"/>
+    <item key="foo" value="FOO"/>
+  </ContextMap>
+  <ContextStack>
+    <ContextStackItem>one</ContextStackItem>
+    <ContextStackItem>two</ContextStackItem>
+  </ContextStack>
+  <Source
       class="logtest.Main"
       method="main"
       file="Main.java"
-      line="29"/&gt;
-  &lt;Thrown commonElementCount="0" message="error message" name="java.lang.RuntimeException"&gt;
-    &lt;ExtendedStackTrace&gt;
-      &lt;ExtendedStackTraceItem
+      line="29"/>
+  <Thrown commonElementCount="0" message="error message" name="java.lang.RuntimeException">
+    <ExtendedStackTrace>
+      <ExtendedStackTraceItem
           class="logtest.Main"
           method="main"
           file="Main.java"
           line="29"
           exact="true"
           location="classes/"
-          version="?"/&gt;
-    &lt;/ExtendedStackTrace&gt;
-  &lt;/Thrown&gt;
-&lt;/Event&gt;
-</pre>
+          version="?"/>
+    </ExtendedStackTrace>
+  </Thrown>
+</Event>
+]]></pre>
           <p>
           If <code>complete="false"</code>, the appender does not write the XML processing instruction and the root
           element.

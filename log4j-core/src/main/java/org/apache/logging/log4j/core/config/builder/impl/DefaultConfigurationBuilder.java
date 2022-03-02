@@ -60,6 +60,7 @@ import org.apache.logging.log4j.core.config.builder.api.PropertyComponentBuilder
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptFileComponentBuilder;
+import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Throwables;
 
 /**
@@ -561,7 +562,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
 
     @Override
     public ConfigurationBuilder<T> setMonitorInterval(final String intervalSeconds) {
-        monitorInterval = Integer.parseInt(intervalSeconds);
+        monitorInterval = Integers.parseInt(intervalSeconds);
         return this;
     }
 

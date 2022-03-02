@@ -15,6 +15,9 @@
  * limitations under the license.
  */
 { "configuration": { "status": "error", "name": "RoutingTest",
+    "properties": {
+      "property": { "name": "filename", "value" : "target/rolling1/rollingtest-$${sd:type}.log" }
+    },
     "ThresholdFilter": { "level": "debug" },
     "appenders": {
       "Console": { "name": "STDOUT",
@@ -28,7 +31,7 @@
           "Route": [
             {
               "RollingFile": {
-                "name": "Rolling-${sd:type}", "fileName": "target/rolling1/rollingtest-${sd:type}.log",
+                "name": "Rolling-${sd:type}", "fileName": "${filename}",
                 "filePattern": "target/rolling1/test1-${sd:type}.%i.log.gz",
                 "PatternLayout": {"pattern": "%d %p %C{1.} [%t] %m%n"},
                 "SizeBasedTriggeringPolicy": { "size": "500" }

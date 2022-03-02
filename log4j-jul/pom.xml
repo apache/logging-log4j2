@@ -20,8 +20,7 @@
   <parent>
     <artifactId>log4j</artifactId>
     <groupId>org.apache.logging.log4j</groupId>
-    <version>2.17.2-SNAPSHOT</version>
-    <relativePath>../</relativePath>
+    <version>2.17.3-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -121,8 +120,6 @@
                   </goals>
                   <configuration>
                       <excludes>
-                          <exclude>${log4j.skip.test1}</exclude>
-                          <exclude>${log4j.skip.test2}</exclude>
                           <exclude>Log4jBridgeHandlerTest.java</exclude>
                       </excludes>
                   </configuration>

@@ -53,7 +53,7 @@ public class RewriteAppenderTest {
     }
 
     @Test
-    public void testRewrite() throws Exception {
+    public void testRewrite() {
         Logger logger = LogManager.getLogger("test");
         ThreadContext.put("key1", "This is a test");
         ThreadContext.put("hello", "world");

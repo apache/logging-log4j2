@@ -42,6 +42,7 @@ import org.apache.logging.log4j.core.config.builder.api.ScriptComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptFileComponentBuilder;
 import org.apache.logging.log4j.core.filter.AbstractFilter.AbstractFilterBuilder;
 import org.apache.logging.log4j.core.util.Builder;
+import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
@@ -123,7 +124,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
         final Properties levelProps = PropertiesUtil.extractSubset(rootProperties, "customLevel");
         if (levelProps.size() > 0) {
             for (final String key : levelProps.stringPropertyNames()) {
-                builder.add(builder.newCustomLevel(key, Integer.parseInt(levelProps.getProperty(key))));
+                builder.add(builder.newCustomLevel(key, Integers.parseInt(levelProps.getProperty(key))));
             }
         }
 
@@ -170,8 +171,9 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
                 }
             }
         } else {
+
             final Map<String, Properties> loggers = PropertiesUtil
-                    .partitionOnCommonPrefixes(PropertiesUtil.extractSubset(rootProperties, "logger"));
+                    .partitionOnCommonPrefixes(PropertiesUtil.extractSubset(rootProperties, "logger"), true);
             for (final Map.Entry<String, Properties> entry : loggers.entrySet()) {
                 final String name = entry.getKey().trim();
                 if (!name.equals(LoggerConfig.ROOT)) {
@@ -180,7 +182,12 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
             }
         }
 
+        String rootProp = rootProperties.getProperty("rootLogger");
         final Properties props = PropertiesUtil.extractSubset(rootProperties, "rootLogger");
+        if (rootProp != null) {
+            props.setProperty("", rootProp);
+            rootProperties.remove("rootLogger");
+        }
         if (props.size() > 0) {
             builder.add(createRootLogger(props));
         }
@@ -250,6 +257,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
     }
 
     private LoggerComponentBuilder createLogger(final String key, final Properties properties) {
+        final String levelAndRefs = properties.getProperty("");
         final String name = (String) properties.remove(CONFIG_NAME);
         final String location = (String) properties.remove("includeLocation");
         if (Strings.isEmpty(name)) {
@@ -282,10 +290,14 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
         if (!Strings.isEmpty(additivity)) {
             loggerBuilder.addAttribute("additivity", additivity);
         }
+        if (levelAndRefs != null) {
+            loggerBuilder.addAttribute("levelAndRefs", levelAndRefs);
+        }
         return loggerBuilder;
     }
 
     private RootLoggerComponentBuilder createRootLogger(final Properties properties) {
+        final String levelAndRefs = properties.getProperty("");
         final String level = Strings.trimToNull((String) properties.remove("level"));
         final String type = (String) properties.remove(CONFIG_TYPE);
         final String location = (String) properties.remove("includeLocation");
@@ -309,6 +321,9 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
             loggerBuilder = builder.newRootLogger(level);
         }
         addLoggersToComponent(loggerBuilder, properties);
+        if (levelAndRefs != null) {
+            loggerBuilder.addAttribute("levelAndRefs", levelAndRefs);
+        }
         return addFiltersToComponent(loggerBuilder, properties);
     }
 

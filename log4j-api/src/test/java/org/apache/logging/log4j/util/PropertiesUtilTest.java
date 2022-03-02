@@ -45,7 +45,8 @@ public class PropertiesUtilTest {
         assertHasAllProperties(PropertiesUtil.extractSubset(properties, "b."));
         assertHasAllProperties(PropertiesUtil.extractSubset(properties, "c.1"));
         assertHasAllProperties(PropertiesUtil.extractSubset(properties, "dd"));
-        assertEquals(0, properties.size());
+        // One invalid entry remains
+        assertEquals(1, properties.size());
     }
 
     @Test
@@ -118,5 +119,33 @@ public class PropertiesUtilTest {
         String value = System.getProperty("Application");
         assertNotNull(value, "System property was not published");
         assertEquals("Log4j", value);
+    }
+
+    private static final String[][] data = {
+            { null, "org.apache.logging.log4j.level" },
+            { null, "Log4jAnotherProperty" },
+            { null, "log4j2.catalinaBase" },
+            { "ok", "log4j2.configurationFile" },
+            { "ok", "log4j2.defaultStatusLevel" },
+            { "ok", "log4j2.newLevel" },
+            { "ok", "log4j2.asyncLoggerTimeout" },
+            { "ok", "log4j2.asyncLoggerConfigRingBufferSize" },
+            { "ok", "log4j2.disableThreadContext" },
+            { "ok", "log4j2.disableThreadContextStack" },
+            { "ok", "log4j2.disableThreadContextMap" },
+            { "ok", "log4j2.isThreadContextMapInheritable" }
+            };
+
+    /**
+     * LOG4J2-3413: Log4j should only resolve properties that start with a 'log4j'
+     * prefix or similar.
+     */
+    @Test
+    @ResourceLock(value = Resources.SYSTEM_PROPERTIES, mode = ResourceAccessMode.READ)
+    public void testResolvesOnlyLog4jProperties() {
+        final PropertiesUtil util = new PropertiesUtil("Jira3413Test.properties");
+        for (final String[] pair : data) {
+            assertEquals(pair[0], util.getStringProperty(pair[1]));
+        }
     }
 }

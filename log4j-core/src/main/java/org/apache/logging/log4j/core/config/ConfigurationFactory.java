@@ -98,7 +98,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
 
     public static final String LOG4J1_EXPERIMENTAL = "log4j1.compatibility";
 
-    public static final String AUTHORIZATION_PROVIDER = "log4j2.authorizationProvider";
+    public static final String AUTHORIZATION_PROVIDER = "authorizationProvider";
 
     /**
      * Plugin category used to inject a ConfigurationFactory {@link org.apache.logging.log4j.core.config.plugins.Plugin}
@@ -149,6 +149,8 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
     private static final String HTTPS = "https";
     private static final String HTTP = "http";
 
+    private static final String[] PREFIXES = {"log4j2.", "log4j2.Configuration."};
+
     private static volatile AuthorizationProvider authorizationProvider;
 
     /**
@@ -198,7 +200,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
     }
 
     public static AuthorizationProvider authorizationProvider(PropertiesUtil props) {
-        final String authClass = props.getStringProperty(AUTHORIZATION_PROVIDER);
+        final String authClass = props.getStringProperty(PREFIXES, AUTHORIZATION_PROVIDER, null);
         AuthorizationProvider provider = null;
         if (authClass != null) {
             try {

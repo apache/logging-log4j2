@@ -1,13 +1,19 @@
 [
   {
-    "extension": "revapi.java",
+    "extension": "revapi.filter",
     "configuration": {
-      "filter": {
-        "classes": {
-          "exclude": [
-            "org\\.apache\\.logging\\.log4j\\.taglib\\.Log4jTaglibLogger"
-          ]
-        }
+      "elements": {
+        "exclude": [
+          "class org\\.apache\\.logging\\.log4j\\.taglib\\.Log4jTaglibLogger",
+          {
+            "matcher": "java-package",
+            "match": "/org\\.apache\\.logging\\.log4j/"
+          },
+          {
+            "matcher": "java-package",
+            "match": "/org\\.apache\\.logging\\.log4j\\.message(\\..*)?/"
+          }
+        ]
       }
     }
   }

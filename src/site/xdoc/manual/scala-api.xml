@@ -66,7 +66,7 @@ class MyClass extends BaseClass with Logging {
                 <p>
                     Frequently the purpose of logging is to provide information about what is happening in the system,
                     which requires including information about the objects being manipulated. In Scala, you can use
-                    <a href="http://docs.scala-lang.org/overviews/core/string-interpolation.html">string interpolation
+                    <a href="https://docs.scala-lang.org/overviews/core/string-interpolation.html">string interpolation
                     </a>
                     to achieve this:
                 </p>
@@ -86,7 +86,7 @@ logger.debug(s"Logging in user ${user.getName} with birthday ${user.calcBirthday
                     The Logging trait will automatically name the Logger accordingly to the class it is being used in.
                 </p>
 
-              <p>Please see the <a href="http://logging.apache.org/log4j/scala/index.html">Log4j Scala</a> project for more details.</p>
+              <p>Please see the <a href="https://logging.apache.org/log4j/scala/index.html">Log4j Scala</a> project for more details.</p>
 
             </subsection>
         </section>

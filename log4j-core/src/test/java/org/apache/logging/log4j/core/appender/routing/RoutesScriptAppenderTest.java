@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertEquals;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -31,14 +28,19 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
 @Category(Scripts.Groovy.class) // technically only half of these tests require groovy
@@ -54,6 +56,11 @@ public class RoutesScriptAppenderTest {
             { "log4j-routing-script-staticvars-groovy.xml", true },
         };
         // @formatter:on
+    }
+
+    @BeforeClass
+    public static void beforeClass() {
+        System.setProperty(Constants.SCRIPT_LANGUAGES, "Groovy, JavaScript");
     }
 
     @Rule

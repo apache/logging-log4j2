@@ -16,32 +16,64 @@
  */
 package org.apache.log4j.spi;
 
-import java.lang.reflect.InvocationTargetException;
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import org.apache.log4j.Category;
 import org.apache.logging.log4j.util.Strings;
 
 /**
- * Class Description goes here.
+ * Log4j's internal representation of throwables.
  */
-public class ThrowableInformation implements java.io.Serializable {
+public class ThrowableInformation implements Serializable {
 
     static final long serialVersionUID = -4748765566864322735L;
 
     private transient Throwable throwable;
-    private Method toStringList;
+    private transient Category category;
+    private String[] rep;
+    private static final Method TO_STRING_LIST;
 
-    public ThrowableInformation(Throwable throwable) {
-        this.throwable = throwable;
+    static {
         Method method = null;
         try {
-            Class<?> throwables = Class.forName("org.apache.logging.log4j.core.util.Throwables");
+            final Class<?> throwables = Class.forName("org.apache.logging.log4j.core.util.Throwables");
             method = throwables.getMethod("toStringList", Throwable.class);
         } catch (ClassNotFoundException | NoSuchMethodException ex) {
             // Ignore the exception if Log4j-core is not present.
         }
-        this.toStringList = method;
+        TO_STRING_LIST = method;
+    }
+
+    /**
+     * Constructs new instance.
+     *
+     * @since 1.2.15
+     * @param r String representation of throwable.
+     */
+    public ThrowableInformation(final String[] r) {
+        this.rep = rep != null ? r.clone() : null;
+    }
+
+    /**
+     * Constructs new instance.
+     */
+    public ThrowableInformation(final Throwable throwable) {
+        this.throwable = throwable;
+    }
+
+    /**
+     * Constructs a new instance.
+     *
+     * @param throwable throwable, may not be null.
+     * @param category category used to obtain ThrowableRenderer, may be null.
+     * @since 1.2.16
+     */
+    public ThrowableInformation(final Throwable throwable, final Category category) {
+        this(throwable);
+        this.category = category;
+        this.rep = null;
     }
 
     public Throwable getThrowable() {
@@ -49,18 +81,17 @@ public class ThrowableInformation implements java.io.Serializable {
     }
 
     public synchronized String[] getThrowableStrRep() {
-        if (toStringList != null && throwable != null) {
+        if (TO_STRING_LIST != null && throwable != null) {
             try {
                 @SuppressWarnings("unchecked")
-                List<String> elements = (List<String>) toStringList.invoke(null, throwable);
+                final List<String> elements = (List<String>) TO_STRING_LIST.invoke(null, throwable);
                 if (elements != null) {
                     return elements.toArray(Strings.EMPTY_ARRAY);
                 }
-            } catch (IllegalAccessException | InvocationTargetException ex) {
+            } catch (final ReflectiveOperationException ex) {
                 // Ignore the exception.
             }
         }
-        return null;
+        return rep;
     }
 }
-

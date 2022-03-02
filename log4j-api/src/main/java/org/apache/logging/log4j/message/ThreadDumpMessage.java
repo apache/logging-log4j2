@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.message;
 
+import static org.apache.logging.log4j.util.Chars.LF;
+
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
@@ -101,13 +103,13 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
     public void formatTo(final StringBuilder sb) {
         sb.append(title);
         if (title.length() > 0) {
-            sb.append('\n');
+            sb.append(LF);
         }
         for (final Map.Entry<ThreadInformation, StackTraceElement[]> entry : threads.entrySet()) {
             final ThreadInformation info = entry.getKey();
             info.printThreadInfo(sb);
             info.printStack(sb, entry.getValue());
-            sb.append('\n');
+            sb.append(LF);
         }
     }
 

@@ -1,19 +1,17 @@
 [
   {
-    "extension": "revapi.java",
+    "extension": "revapi.filter",
     "configuration": {
-      "filter": {
-        "classes": {
-          "exclude": [
-            "org\\.apache\\.logging\\.log4j\\.util\\.Activator",
-            "org\\.apache\\.logging\\.log4j\\.util\\.LoaderUtil",
-            "org\\.apache\\.logging\\.log4j\\.util\\.PrivateSecurityManagerStackTraceUtil",
-            "org\\.apache\\.logging\\.log4j\\.util\\.PropertiesUtil",
-            "org\\.apache\\.logging\\.log4j\\.util\\.ProviderUtil",
-            "org\\.apache\\.logging\\.log4j\\.util\\.StackLocator",
-            "org\\.apache\\.logging\\.log4j\\.util\\.StackLocatorUtil"
-          ]
-        }
+      "elements": {
+        "exclude": [
+          "class org\\.apache\\.logging\\.log4j\\.util\\.Activator",
+          "class org\\.apache\\.logging\\.log4j\\.util\\.LoaderUtil",
+          "class org\\.apache\\.logging.log4j\\.util\\.PrivateSecurityManagerStackTraceUtil",
+          "class org\\.apache\\.logging\\.log4j\\.util\\.PropertiesUtil",
+          "class org\\.apache\\.logging\\.log4j\\.util\\.ProviderUtil",
+          "class org\\.apache\\.logging.log4j\\.util\\.StackLocator",
+          "class org\\.apache\\.logging\\.log4j\\.util\\.StackLocatorUtil"
+        ]
       }
     }
   },

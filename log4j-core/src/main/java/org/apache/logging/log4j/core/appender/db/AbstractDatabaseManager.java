@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
+import org.apache.logging.log4j.core.config.Configuration;
 
 /**
  * Manager that allows database appenders to have their configuration reloaded without losing events.
@@ -36,7 +37,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
      * Implementations should extend this class for passing data between the getManager method and the manager factory
      * class.
      */
-    protected abstract static class AbstractFactoryData {
+    protected abstract static class AbstractFactoryData extends AbstractManager.AbstractFactoryData {
         private final int bufferSize;
         private final Layout<? extends Serializable> layout;
 
@@ -45,8 +46,20 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
          *
          * @param bufferSize The size of the buffer.
          * @param layout The appender-level layout
+         * @deprecated Use {@link AbstractFactoryData#AbstractFactoryData(Configuration, int, Layout)}.
          */
         protected AbstractFactoryData(final int bufferSize, final Layout<? extends Serializable> layout) {
+            this(null, bufferSize, layout);
+        }
+
+        /**
+         * Constructs the base factory data.
+         * @param configuration Configuration creating this instance.
+         * @param bufferSize The size of the buffer.
+         * @param layout The appender-level layout
+         */
+        protected AbstractFactoryData(final Configuration configuration, final int bufferSize, final Layout<? extends Serializable> layout) {
+            super(configuration);
             this.bufferSize = bufferSize;
             this.layout = layout;
         }
@@ -68,7 +81,9 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
         public Layout<? extends Serializable> getLayout() {
             return layout;
         }
+
     }
+
     /**
      * Implementations should define their own getManager method and call this method from that to create or get
      * existing managers.
@@ -81,11 +96,11 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
      * @param <T> The concrete {@link AbstractFactoryData} type.
      * @return a new or existing manager of the specified type and name.
      */
-    protected static <M extends AbstractDatabaseManager, T extends AbstractFactoryData> M getManager(
-            final String name, final T data, final ManagerFactory<M, T> factory
-    ) {
+    protected static <M extends AbstractDatabaseManager, T extends AbstractFactoryData> M getManager(final String name, final T data,
+        final ManagerFactory<M, T> factory) {
         return AbstractManager.getManager(name, factory, data);
     }
+
     private final ArrayList<LogEvent> buffer;
     private final int bufferSize;
 
@@ -94,29 +109,48 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
     private boolean running;
 
     /**
-     * Instantiates the base manager.
+     * Constructs the base manager.
      *
      * @param name The manager name, which should include any configuration details that one might want to be able to
      *             reconfigure at runtime, such as database name, username, (hashed) password, etc.
      * @param bufferSize The size of the log event buffer.
+     * @deprecated Use {@link AbstractDatabaseManager#AbstractDatabaseManager(String, int, Layout, Configuration)}.
      */
+    @Deprecated
     protected AbstractDatabaseManager(final String name, final int bufferSize) {
         this(name, bufferSize, null);
     }
 
     /**
-     * Instantiates the base manager.
+     * Constructs the base manager.
      *
      * @param name The manager name, which should include any configuration details that one might want to be able to
      *             reconfigure at runtime, such as database name, username, (hashed) password, etc.
      * @param layout the Appender-level layout.
      * @param bufferSize The size of the log event buffer.
+     * @deprecated Use {@link AbstractDatabaseManager#AbstractDatabaseManager(String, int, Layout, Configuration)}.
      */
+    @Deprecated
     protected AbstractDatabaseManager(final String name, final int bufferSize, final Layout<? extends Serializable> layout) {
-        super(null, name);
+        this(name, bufferSize, layout, null);
+    }
+
+    /**
+     * Constructs the base manager.
+     *
+     * @param name The manager name, which should include any configuration details that one might want to be able to
+     *             reconfigure at runtime, such as database name, username, (hashed) password, etc.
+     * @param layout the Appender-level layout.
+     * @param bufferSize The size of the log event buffer.
+     * @param configuration My configuration.
+     */
+    protected AbstractDatabaseManager(final String name, final int bufferSize, final Layout<? extends Serializable> layout, final Configuration configuration) {
+        // null configuration allowed for backward compatibility.
+        // TODO should super track Configuration instead of LoggerContext?
+        super(configuration != null ? configuration.getLoggerContext() : null, name);
         this.bufferSize = bufferSize;
         this.buffer = new ArrayList<>(bufferSize + 1);
-        this.layout = layout;
+        this.layout = layout; // A null layout is allowed.
     }
 
     protected void buffer(final LogEvent event) {

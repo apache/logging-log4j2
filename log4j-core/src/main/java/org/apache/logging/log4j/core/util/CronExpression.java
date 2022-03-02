@@ -549,7 +549,7 @@ public final class CronExpression {
                     case '#':
                         try {
                             i += 4;
-                            nthdayOfWeek = Integer.parseInt(s.substring(i));
+                            nthdayOfWeek = Integers.parseInt(s.substring(i));
                             if (nthdayOfWeek < 1 || nthdayOfWeek > 5) {
                                 throw new Exception();
                             }
@@ -746,7 +746,7 @@ public final class CronExpression {
             }
             i++;
             try {
-                nthdayOfWeek = Integer.parseInt(s.substring(i));
+                nthdayOfWeek = Integers.parseInt(s.substring(i));
                 if (nthdayOfWeek < 1 || nthdayOfWeek > 5) {
                     throw new Exception();
                 }
@@ -1139,14 +1139,14 @@ public final class CronExpression {
         final ValueSet val = new ValueSet();
 
         val.pos = (i < s.length()) ? i : i + 1;
-        val.value = Integer.parseInt(s1.toString());
+        val.value = Integers.parseInt(s1.toString());
         return val;
     }
 
     protected int getNumericValue(final String s, final int i) {
         final int endOfVal = findNextWhiteSpace(i, s);
         final String val = s.substring(i, endOfVal);
-        return Integer.parseInt(val);
+        return Integers.parseInt(val);
     }
 
     protected int getMonthNumber(final String s) {

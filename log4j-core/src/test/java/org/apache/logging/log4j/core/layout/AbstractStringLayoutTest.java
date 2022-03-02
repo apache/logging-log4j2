@@ -15,23 +15,33 @@ package org.apache.logging.log4j.core.layout;/*
  * limitations under the license.
  */
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.nio.charset.Charset;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.core.layout.AbstractStringLayout.Serializer;
+import org.apache.logging.log4j.core.layout.PatternLayout.SerializerBuilder;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests AbstractStringLayout.
  */
 public class AbstractStringLayoutTest {
+
+    // Configuration explicitly null
+    private static final Serializer serializer = new SerializerBuilder().setPattern(DefaultConfiguration.DEFAULT_PATTERN).build();
+
     static class ConcreteStringLayout extends AbstractStringLayout {
         public static int DEFAULT_STRING_BUILDER_SIZE = AbstractStringLayout.DEFAULT_STRING_BUILDER_SIZE;
         public static int MAX_STRING_BUILDER_SIZE = AbstractStringLayout.MAX_STRING_BUILDER_SIZE;
 
         public ConcreteStringLayout() {
-            super(Charset.defaultCharset());
+            // Configuration explicitly null
+            super(null, Charset.defaultCharset(), serializer, serializer);
         }
 
         public static StringBuilder getStringBuilder() {
@@ -75,5 +85,15 @@ public class AbstractStringLayoutTest {
         assertEquals(ConcreteStringLayout.MAX_STRING_BUILDER_SIZE, sb3.capacity(),
                 "capacity, trimmed to MAX_STRING_BUILDER_SIZE");
         assertEquals(0, sb3.length(), "empty, ready for use");
+    }
+
+    @Test
+    public void testNullConfigurationIsAllowed() {
+        try {
+            final ConcreteStringLayout layout = new ConcreteStringLayout();
+            layout.serializeToString(serializer);
+        } catch (NullPointerException e) {
+            fail(e);
+        }
     }
 }

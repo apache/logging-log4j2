@@ -16,6 +16,8 @@
  */
 package org.apache.logging.dumbster.smtp;
 
+import static org.apache.logging.log4j.util.Chars.LF;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -145,12 +147,12 @@ public class SmtpMessage {
                 msg.append(name);
                 msg.append(": ");
                 msg.append(value);
-                msg.append('\n');
+                msg.append(LF);
             }
         }
-        msg.append('\n');
+        msg.append(LF);
         msg.append(body);
-        msg.append('\n');
+        msg.append(LF);
         return msg.toString();
     }
 }

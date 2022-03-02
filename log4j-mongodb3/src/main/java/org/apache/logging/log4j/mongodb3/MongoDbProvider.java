@@ -54,8 +54,9 @@ public final class MongoDbProvider implements NoSqlProvider<MongoDbConnection> {
 
         // @formatter:off
         private static final CodecRegistry CODEC_REGISTRIES = CodecRegistries.fromRegistries(
-                        CodecRegistries.fromCodecs(LevelCodec.INSTANCE),
-                        MongoClient.getDefaultCodecRegistry());
+            MongoClient.getDefaultCodecRegistry(),
+            CodecRegistries.fromCodecs(LevelCodec.INSTANCE),
+            CodecRegistries.fromCodecs(new MongoDbDocumentObjectCodec()));
         // @formatter:on
 
         private static WriteConcern toWriteConcern(final String writeConcernConstant,

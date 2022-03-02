@@ -108,7 +108,7 @@ public class SyslogAppender extends SocketAppender {
         @PluginBuilderAttribute("timestampPrecision")
         private TimestampPrecision timestampPrecision;
 
-        @SuppressWarnings({"resource", "unchecked"})
+        @SuppressWarnings({"resource"})
         @Override
         public SyslogAppender build() {
             final Protocol protocol = getProtocol();
@@ -414,16 +414,16 @@ public class SyslogAppender extends SocketAppender {
 
         // @formatter:off
         return SyslogAppender.<B>newSyslogAppenderBuilder()
-        .withHost(host)
-        .withPort(port)
-        .withProtocol(EnglishEnums.valueOf(Protocol.class, protocolStr))
-        .withSslConfiguration(sslConfiguration)
-        .withConnectTimeoutMillis(connectTimeoutMillis)
-        .withReconnectDelayMillis(reconnectDelayMillis)
-        .withImmediateFail(immediateFail).setName(appName)
-        .withImmediateFlush(immediateFlush).setIgnoreExceptions(ignoreExceptions).setFilter(filter)
+        .setHost(host)
+        .setPort(port)
+        .setProtocol(EnglishEnums.valueOf(Protocol.class, protocolStr))
+        .setSslConfiguration(sslConfiguration)
+        .setConnectTimeoutMillis(connectTimeoutMillis)
+        .setReconnectDelayMillis(reconnectDelayMillis)
+        .setImmediateFail(immediateFail).setName(appName)
+        .setImmediateFlush(immediateFlush).setIgnoreExceptions(ignoreExceptions).setFilter(filter)
                 .setConfiguration(configuration)
-                .withAdvertise(advertise)
+                .setAdvertise(advertise)
                 .setFacility(facility)
                 .setId(id)
                 .setEnterpriseNumber(enterpriseNumber)

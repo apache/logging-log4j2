@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core.tools.picocli;
 
+import static java.util.Locale.ENGLISH;
+import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column.Overflow.SPAN;
+import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column.Overflow.TRUNCATE;
+import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column.Overflow.WRAP;
+
 import java.io.File;
 import java.io.PrintStream;
 import java.lang.annotation.ElementType;
@@ -64,14 +69,11 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.regex.Pattern;
 
+import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help;
 import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.IStyle;
 import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.Style;
 import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.Text;
-
-import static java.util.Locale.ENGLISH;
-import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column.Overflow.SPAN;
-import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column.Overflow.TRUNCATE;
-import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column.Overflow.WRAP;
+import org.apache.logging.log4j.core.util.Integers;
 
 /**
  * <p>
@@ -1752,7 +1754,7 @@ public class CommandLine {
         }
         private static int parseInt(final String str, final int defaultValue) {
             try {
-                return Integer.parseInt(str);
+                return Integers.parseInt(str);
             } catch (final Exception ex) {
                 return defaultValue;
             }

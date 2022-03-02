@@ -406,7 +406,7 @@ public class PropertyConfiguratorTest {
         assertFalse(file.exists());
     }
 
-    void validateNested() {
+    public void validateNested() {
         final Logger logger = Logger.getLogger("org.apache.log4j.PropertyConfiguratorTest");
         final String appenderName = "ROLLING";
         // Appender OK

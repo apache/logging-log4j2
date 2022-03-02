@@ -24,6 +24,8 @@
 <module name="Checker">
     <property name="localeLanguage" value="en"/>
 
+    <property name="cacheFile" value="${checkstyle.cache.file}"/>
+
     <!-- Checks that a package.html file exists for each package.     -->
     <!-- See http://checkstyle.sourceforge.net/config_javadoc.html -->
     <module name="JavadocPackage"/>
@@ -62,33 +64,24 @@
       <property name="fileExtensions" value="java"/>
     </module>
 
-    <!-- Exceptions -->
-    <!--<module name="SuppressionFilter">
-        <property name="file" value="conf/checkstyle-suppressions.xml"/>
-    </module> -->
-    <!--
-    <module name="SuppressionCommentFilter">
-      <property name="offCommentFormat" value="Check\:OFF\: ([\w\|]+)"/>
-      <property name="onCommentFormat" value="Check\:ON\: ([\w\|]+)"/>
-      <property name="checkFormat" value="$1"/>
+    <module name="LineLength">
+        <property name="max" value="120"/>
+        <!-- Ignore import statements -->
+        <property name="ignorePattern" value="^import\s.*$"/>
     </module>
-    -->
-    <module name="SuppressionCommentFilter" />
-    <module name="SuppressWithNearbyCommentFilter"/>
 
     <module name="TreeWalker">
 
-        <property name="cacheFile" value="${checkstyle.cache.file}"/>
-
-        <!-- Ensure that CHECKSTYLE:OFF comments are available to the filter: -->
-        <module name="FileContentsHolder"/>
+        <module name="SuppressionCommentFilter" />
+        <module name="SuppressWithNearbyCommentFilter"/>
 
         <!-- Checks for Javadoc comments.                     -->
         <!-- See http://checkstyle.sf.net/config_javadoc.html -->
         <module name="JavadocMethod">
-            <property name="scope" value="public"/>
-            <property name="allowUndeclaredRTE" value="true"/>
-              <property name="allowMissingJavadoc" value="true"/>
+            <property name="accessModifiers" value="public"/>
+        </module>
+        <module name="MissingJavadocMethodCheck">
+            <property name="allowMissingPropertyJavadoc" value="true"/>
         </module>
         <module name="JavadocType">
             <!-- <property name="authorFormat" value="null"/> -->
@@ -154,11 +147,6 @@
         <!-- Checks for Size Violations.                    -->
         <!-- See http://checkstyle.sf.net/config_sizes.html -->
         <!--<module name="FileLength"/>-->
-        <module name="LineLength">
-            <property name="max" value="120"/>
-            <!-- Ignore import statements -->
-            <property name="ignorePattern" value="^import\s.*$"/>
-        </module>
         <module name="MethodLength"/>
         <module name="ParameterNumber">
             <property name="max" value="15"/>

@@ -25,7 +25,10 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.TreeMap;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.helpers.OptionConverter;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.Filter.Result;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.appender.NullAppender;
@@ -35,12 +38,12 @@ import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder
 import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
+import org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
-import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
-import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
@@ -67,10 +70,10 @@ public class Log4j1ConfigurationParser {
     private static final String ROOTCATEGORY = "rootCategory";
     private static final String TRUE = "true";
     private static final String FALSE = "false";
+    private static final String RELATIVE = "RELATIVE";
+    private static final String NULL = "NULL";
 
     private final Properties properties = new Properties();
-    private StrSubstitutor strSubstitutorProperties;
-    private StrSubstitutor strSubstitutorSystem;
 
     private final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory
             .newConfigurationBuilder();
@@ -90,8 +93,6 @@ public class Log4j1ConfigurationParser {
             throws IOException {
         try {
             properties.load(input);
-            strSubstitutorProperties = new ConfigurationStrSubstitutor(properties);
-            strSubstitutorSystem = new ConfigurationStrSubstitutor(System.getProperties());
             final String rootCategoryValue = getLog4jValue(ROOTCATEGORY);
             final String rootLoggerValue = getLog4jValue(ROOTLOGGER);
             if (rootCategoryValue == null && rootLoggerValue == null) {
@@ -105,6 +106,13 @@ public class Log4j1ConfigurationParser {
             final String debugValue = getLog4jValue("debug");
             if (Boolean.parseBoolean(debugValue)) {
                 builder.setStatusLevel(Level.DEBUG);
+            }
+            // global threshold
+            final String threshold = OptionConverter.findAndSubst(PropertiesConfiguration.THRESHOLD_KEY, properties);
+            if (threshold != null) {
+                final Level level = OptionConverter.convertLevel(threshold.trim(), Level.ALL);
+                builder.add(builder.newFilter("ThresholdFilter", Result.NEUTRAL, Result.DENY)
+                        .addAttribute("level", level));
             }
             // Root
             buildRootLogger(getLog4jValue(ROOTCATEGORY));
@@ -146,13 +154,13 @@ public class Log4j1ConfigurationParser {
         for (final Map.Entry<Object, Object> entry : properties.entrySet()) {
             final Object keyObj = entry.getKey();
             if (keyObj != null) {
-                final String key = keyObj.toString();
+                final String key = keyObj.toString().trim();
                 if (key.startsWith(prefix)) {
                     if (key.indexOf('.', preLength) < 0) {
                         final String name = key.substring(preLength);
                         final Object value = entry.getValue();
                         if (value != null) {
-                            map.put(name, value.toString());
+                            map.put(name, value.toString().trim());
                         }
                     }
                 }
@@ -231,7 +239,7 @@ public class Log4j1ConfigurationParser {
                 RollingFileAppender.PLUGIN_NAME);
         buildFileAppender(appenderName, appenderBuilder);
         final String fileName = getLog4jAppenderValue(appenderName, "File");
-        final String datePattern = getLog4jAppenderValue(appenderName, "DatePattern", fileName + "'.'yyyy-MM-dd");
+        final String datePattern = getLog4jAppenderValue(appenderName, "DatePattern", ".yyyy-MM-dd");
         appenderBuilder.addAttribute("filePattern", fileName + "%d{" + datePattern + "}");
         final ComponentBuilder<?> triggeringPolicy = builder.newComponent("Policies")
                 .addComponent(builder.newComponent("TimeBasedTriggeringPolicy").addAttribute("modulate", true));
@@ -265,12 +273,6 @@ public class Log4j1ConfigurationParser {
         }
     }
 
-    private void buildAttributeWithDefault(final String componentName, final ComponentBuilder<?> componentBuilder,
-            final String sourceAttributeName, final String targetAttributeName, final String defaultValue) {
-        final String attributeValue = getLog4jAppenderValue(componentName, sourceAttributeName, defaultValue);
-        componentBuilder.addAttribute(targetAttributeName, attributeValue);
-    }
-
     private void buildMandatoryAttribute(final String componentName, final ComponentBuilder<?> componentBuilder,
             final String sourceAttributeName, final String targetAttributeName) {
         final String attributeValue = getLog4jAppenderValue(componentName, sourceAttributeName);
@@ -292,8 +294,9 @@ public class Log4j1ConfigurationParser {
             switch (layoutClass) {
             case "org.apache.log4j.PatternLayout":
             case "org.apache.log4j.EnhancedPatternLayout": {
-                final String pattern = getLog4jAppenderValue(name, "layout.ConversionPattern", null)
-
+                String pattern = getLog4jAppenderValue(name, "layout.ConversionPattern", null);
+                if (pattern != null) {
+                    pattern = pattern
                         // Log4j 2's %x (NDC) is not compatible with Log4j 1's
                         // %x
                         // Log4j 1: "foo bar baz"
@@ -307,7 +310,9 @@ public class Log4j1ConfigurationParser {
                         // Log4j 2: "{foo=bar,hoo=boo}"
                         // Use %properties to get the Log4j 1 format
                         .replace("%X", "%properties");
-
+                } else {
+                    pattern = "%m%n";
+                }
                 appenderBuilder.add(newPatternLayout(pattern));
                 break;
             }
@@ -316,7 +321,20 @@ public class Log4j1ConfigurationParser {
                 break;
             }
             case "org.apache.log4j.TTCCLayout": {
-                String pattern = "%r ";
+                String pattern = "";
+                final String dateFormat = getLog4jAppenderValue(name, "layout.DateFormat", RELATIVE);
+                final String timezone = getLog4jAppenderValue(name, "layout.TimeZone", null);
+                if (dateFormat != null) {
+                    if (RELATIVE.equalsIgnoreCase(dateFormat)) {
+                        pattern += "%r ";
+                    } else if (!NULL.equalsIgnoreCase(dateFormat)){
+                        pattern += "%d{" + dateFormat + "}";
+                        if (timezone != null) {
+                            pattern += "{" + timezone + "}";
+                        }
+                        pattern += " ";
+                    }
+                }
                 if (Boolean.parseBoolean(getLog4jAppenderValue(name, "layout.ThreadPrinting", TRUE))) {
                     pattern += "[%t] ";
                 }
@@ -387,13 +405,13 @@ public class Log4j1ConfigurationParser {
         for (final Map.Entry<Object, Object> entry : properties.entrySet()) {
             final Object keyObj = entry.getKey();
             if (keyObj != null) {
-                final String key = keyObj.toString();
+                final String key = keyObj.toString().trim();
                 if (key.startsWith(prefix)) {
                     final String name = key.substring(preLength);
                     final Object value = entry.getValue();
                     if (value != null) {
                         // a Level may be followed by a list of Appender refs.
-                        final String valueStr = value.toString();
+                        final String valueStr = value.toString().trim();
                         final String[] split = valueStr.split(COMMA_DELIMITED_RE);
                         final String level = getLevelString(split, null);
                         if (level == null) {
@@ -422,8 +440,8 @@ public class Log4j1ConfigurationParser {
 
     private String getProperty(final String key) {
         final String value = properties.getProperty(key);
-        final String sysValue = strSubstitutorSystem.replace(value);
-        return strSubstitutorProperties.replace(sysValue);
+        final String substVars = OptionConverter.substVars(value, properties);
+        return substVars == null ? null : substVars.trim();
     }
 
     private String getProperty(final String key, final String defaultValue) {

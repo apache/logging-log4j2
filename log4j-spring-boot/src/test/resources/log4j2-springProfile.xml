@@ -26,12 +26,13 @@
     </SpringProfile>
     <SpringProfile name="prod">
       <List name="Out">
+        <PatternLayout pattern="%m"/>
       </List>
     </SpringProfile>
 
   </Appenders>
   <Loggers>
-    <Logger name="org.apache.test" level="trace" additivity="false">
+    <Logger name="org.apache.logging.log4j.core.springtest" level="trace" additivity="false">
       <AppenderRef ref="Out"/>
     </Logger>
     <Root level="error">

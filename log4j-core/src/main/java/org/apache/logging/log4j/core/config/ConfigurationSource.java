@@ -112,7 +112,7 @@ public class ConfigurationSource {
 
     /**
      * Constructs a new {@code ConfigurationSource} with the specified input stream that originated from the specified
-     * url.
+     * URL.
      *
      * @param stream the input stream, the caller is responsible for closing this resource.
      * @param url the URL where the input stream originated
@@ -126,7 +126,7 @@ public class ConfigurationSource {
 
     /**
      * Constructs a new {@code ConfigurationSource} with the specified input stream that originated from the specified
-     * url.
+     * URL.
      *
      * @param stream the input stream, the caller is responsible for closing this resource.
      * @param url the URL where the input stream originated
@@ -150,7 +150,14 @@ public class ConfigurationSource {
         this(toByteArray(stream), null, 0);
     }
 
-    public ConfigurationSource(final Source source, final byte[] data, long lastModified) throws IOException {
+    /**
+     * Constructs a new {@code ConfigurationSource} with the specified source.
+     *
+     * @param source a Source.
+     * @param data data from the source
+     * @param lastModified when the source was last modified.
+     */
+    public ConfigurationSource(final Source source, final byte[] data, long lastModified) {
         Objects.requireNonNull(source, "source is null");
         this.data = Objects.requireNonNull(data, "data is null");
         this.stream = new ByteArrayInputStream(data);

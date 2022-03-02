@@ -26,9 +26,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -39,7 +36,12 @@ import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.config.plugins.util.ResolverUtil;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
+import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Patterns;
+
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Creates a Node hierarchy from a JSON file.
@@ -88,7 +90,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
                 } else if ("name".equalsIgnoreCase(key)) {
                     setName(value);
                 } else if ("monitorInterval".equalsIgnoreCase(key)) {
-                    monitorIntervalSeconds = Integer.parseInt(value);
+                    monitorIntervalSeconds = Integers.parseInt(value);
                 } else if ("advertiser".equalsIgnoreCase(key)) {
                     createAdvertiser(value, configSource, buffer, "application/json");
                 }

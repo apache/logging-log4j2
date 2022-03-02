@@ -29,16 +29,16 @@
         <subsection name="Introduction">
           <p>Almost every large application includes its own logging or tracing
           API. In conformance with this rule, the E.U.  <a
-          href="http://www.semper.org">SEMPER</a> project decided to write its
+          href="https://www.semper.org">SEMPER</a> project decided to write its
           own tracing API. This was in early 1996. After countless enhancements,
           several incarnations and much work that API has evolved to become
           log4j, a popular logging package for Java. The package is distributed
           under the <a href="../LICENSE">Apache Software License</a>, a
           fully-fledged open source license certified by the <a
-          href="http://www.opensource.org">open source</a> initiative. The
+          href="https://www.opensource.org">open source</a> initiative. The
           latest log4j version, including full-source code, class files and
           documentation can be found at <a
-          href="http://logging.apache.org/log4j/2.x/index.html"><b>http://logging.apache.org/log4j/2.x/index.html</b></a>.
+          href="https://logging.apache.org/log4j/2.x/index.html"><b>https://logging.apache.org/log4j/2.x/index.html</b></a>.
           </p>
 
           <p>Inserting log statements into code is a low-tech method for
@@ -127,14 +127,14 @@
               fixed format. Most Log4j 2 Appenders accept a Layout, allowing the data to
               be transported in any format desired.</li>
             <li>Layouts in Log4j 1.x and Logback return a String. This resulted in the problems
-              discussed at <a href="http://logback.qos.ch/manual/encoders.html">Logback Encoders</a>.
+              discussed at <a href="https://logback.qos.ch/manual/encoders.html">Logback Encoders</a>.
               Log4j 2 takes the simpler approach that <a href="layouts.html">Layouts</a> always return a byte array. This has
               the advantage that it means they can be used in virtually any Appender, not just
               the ones that write to an OutputStream.</li>
             <!-- and coming up: ByteBuffers, too! -->
             <li>The <a href="appenders.html#SyslogAppender">Syslog Appender</a> supports both TCP and UDP as well as
               support for the BSD syslog
-              and the <a href="http://tools.ietf.org/html/rfc5424">RFC 5424</a> formats.</li>
+              and the <a href="https://tools.ietf.org/html/rfc5424">RFC 5424</a> formats.</li>
             <li>Log4j 2 takes advantage of Java 5 concurrency support and performs locking
               at the lowest level possible. Log4j 1.x has known deadlock issues. Many of these
               are fixed in Logback but many Logback classes still require synchronization at
@@ -142,7 +142,7 @@
             <li>It is an Apache Software Foundation project following the community and support
               model used by all ASF projects. If you want to contribute or gain the right to
               commit changes just follow the path outlined at
-              <a href="http://jakarta.apache.org/site/contributing.html">Contributing</a>.</li>
+              <a href="https://jakarta.apache.org/site/contributing.html">Contributing</a>.</li>
           </ol>
         </subsection>
       </section>

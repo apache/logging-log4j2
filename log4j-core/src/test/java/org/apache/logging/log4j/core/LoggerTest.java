@@ -81,6 +81,8 @@ public class LoggerTest {
     org.apache.logging.log4j.Logger logger;
     org.apache.logging.log4j.Logger loggerChild;
     org.apache.logging.log4j.Logger loggerGrandchild;
+    org.apache.logging.log4j.Logger loggerClass;
+
     private final ListAppender app;
 
     private final ListAppender host;
@@ -91,6 +93,7 @@ public class LoggerTest {
         logger = context.getLogger("LoggerTest");
         loggerChild = context.getLogger("LoggerTest.child");
         loggerGrandchild = context.getLogger("LoggerTest.child.grand");
+        loggerClass = context.getLogger(LoggerTest.class);
         this.app = app.clear();
         this.host = host.clear();
         this.noThrown = noThrown.clear();
@@ -117,7 +120,7 @@ public class LoggerTest {
         final List<LogEvent> events = app.getEvents();
         assertEventCount(events, 3);
         assertEquals(
-                "org.apache.logging.log4j.core.LoggerTest.builder(LoggerTest.java:113)", events.get(0).getSource().toString(),
+                "org.apache.logging.log4j.core.LoggerTest.builder(LoggerTest.java:116)", events.get(0).getSource().toString(),
                 "Incorrect location");
         assertEquals(Level.DEBUG, events.get(0).getLevel(), "Incorrect Level");
         MatcherAssert.assertThat("Incorrect message", events.get(1).getMessage().getFormattedMessage(), equalTo("Hello John"));
@@ -140,6 +143,18 @@ public class LoggerTest {
         logger.debug("Debug message");
         final List<LogEvent> events = app.getEvents();
         assertEventCount(events, 1);
+    }
+
+    @Test
+    public void debugChangeLevel_ForClass() {
+        loggerClass.debug("Debug message 1");
+        assertEventCount(app.getEvents(), 1);
+        Configurator.setLevel(LoggerTest.class, Level.OFF);
+        loggerClass.debug("Debug message 2");
+        assertEventCount(app.getEvents(), 1);
+        Configurator.setLevel(LoggerTest.class, Level.DEBUG);
+        loggerClass.debug("Debug message 3");
+        assertEventCount(app.getEvents(), 2);
     }
 
     @Test

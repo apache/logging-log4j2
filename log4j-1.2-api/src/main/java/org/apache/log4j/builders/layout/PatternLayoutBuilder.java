@@ -16,6 +16,11 @@
  */
 package org.apache.log4j.builders.layout;
 
+import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
+
+import java.util.Properties;
+
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.LayoutWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
@@ -31,17 +36,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.util.Properties;
-
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
-
 /**
  * Build a Pattern Layout
  */
 @Plugin(name = "org.apache.log4j.PatternLayout", category = CATEGORY)
 @PluginAliases("org.apache.log4j.EnhancedPatternLayout")
-public class PatternLayoutBuilder extends AbstractBuilder implements LayoutBuilder {
+public class PatternLayoutBuilder extends AbstractBuilder<Layout> implements LayoutBuilder {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final String PATTERN = "ConversionPattern";
@@ -54,7 +54,7 @@ public class PatternLayoutBuilder extends AbstractBuilder implements LayoutBuild
     }
 
     @Override
-    public Layout parseLayout(final Element layoutElement, final XmlConfiguration config) {
+    public Layout parse(final Element layoutElement, final XmlConfiguration config) {
         NodeList params = layoutElement.getElementsByTagName("param");
         final int length = params.getLength();
         String pattern = null;
@@ -74,7 +74,7 @@ public class PatternLayoutBuilder extends AbstractBuilder implements LayoutBuild
     }
 
     @Override
-    public Layout parseLayout(final PropertiesConfiguration config) {
+    public Layout parse(final PropertiesConfiguration config) {
         String pattern = getProperty(PATTERN);
         return createLayout(pattern, config);
     }

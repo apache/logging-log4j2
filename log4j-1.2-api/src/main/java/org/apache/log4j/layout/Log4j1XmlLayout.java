@@ -42,12 +42,15 @@ import org.apache.logging.log4j.util.Strings;
 @Plugin(name = "Log4j1XmlLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class Log4j1XmlLayout extends AbstractStringLayout {
 
+    /** We yield to the \r\n heresy. */
+    private static final String EOL = "\r\n";
+
     private final boolean locationInfo;
     private final boolean properties;
 
     @PluginFactory
     public static Log4j1XmlLayout createLayout(
-            // @formatter:off
+    // @formatter:off
             @PluginAttribute(value = "locationInfo") final boolean locationInfo,
             @PluginAttribute(value = "properties") final boolean properties
             // @formatter:on
@@ -84,8 +87,6 @@ public final class Log4j1XmlLayout extends AbstractStringLayout {
     }
 
     private void formatTo(final LogEvent event, final StringBuilder buf) {
-        // We yield to the \r\n heresy.
-
         buf.append("<log4j:event logger=\"");
         buf.append(Transform.escapeHtmlTags(event.getLoggerName()));
         buf.append("\" timestamp=\"");
@@ -94,28 +95,32 @@ public final class Log4j1XmlLayout extends AbstractStringLayout {
         buf.append(Transform.escapeHtmlTags(String.valueOf(event.getLevel())));
         buf.append("\" thread=\"");
         buf.append(Transform.escapeHtmlTags(event.getThreadName()));
-        buf.append("\">\r\n");
+        buf.append("\">");
+        buf.append(EOL);
 
         buf.append("<log4j:message><![CDATA[");
         // Append the rendered message. Also make sure to escape any existing CDATA sections.
         Transform.appendEscapingCData(buf, event.getMessage().getFormattedMessage());
-        buf.append("]]></log4j:message>\r\n");
+        buf.append("]]></log4j:message>");
+        buf.append(EOL);
 
         final List<String> ndc = event.getContextStack().asList();
         if (!ndc.isEmpty()) {
             buf.append("<log4j:NDC><![CDATA[");
             Transform.appendEscapingCData(buf, Strings.join(ndc, ' '));
-            buf.append("]]></log4j:NDC>\r\n");
+            buf.append("]]></log4j:NDC>");
+            buf.append(EOL);
         }
 
         @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
-		final Throwable thrown = event.getThrown();
+        final Throwable thrown = event.getThrown();
         if (thrown != null) {
             buf.append("<log4j:throwable><![CDATA[");
             final StringWriter w = new StringWriter();
             thrown.printStackTrace(new PrintWriter(w));
             Transform.appendEscapingCData(buf, w.toString());
-            buf.append("]]></log4j:throwable>\r\n");
+            buf.append("]]></log4j:throwable>");
+            buf.append(EOL);
         }
 
         if (locationInfo) {
@@ -129,7 +134,8 @@ public final class Log4j1XmlLayout extends AbstractStringLayout {
                 buf.append(Transform.escapeHtmlTags(source.getFileName()));
                 buf.append("\" line=\"");
                 buf.append(source.getLineNumber());
-                buf.append("\"/>\r\n");
+                buf.append("\"/>");
+                buf.append(EOL);
             }
         }
 
@@ -143,14 +149,18 @@ public final class Log4j1XmlLayout extends AbstractStringLayout {
                         buf.append(Transform.escapeHtmlTags(key));
                         buf.append("\" value=\"");
                         buf.append(Transform.escapeHtmlTags(Objects.toString(val, null)));
-                        buf.append("\"/>\r\n");
+                        buf.append("\"/>");
+                        buf.append(EOL);
                     }
                 });
-                buf.append("</log4j:properties>\r\n");
+                buf.append("</log4j:properties>");
+                buf.append(EOL);
             }
         }
 
-        buf.append("</log4j:event>\r\n\r\n");
+        buf.append("</log4j:event>");
+        buf.append(EOL);
+        buf.append(EOL);
     }
 
 }

@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import static org.apache.logging.log4j.util.Chars.LF;
+import static org.apache.logging.log4j.util.Chars.NUL;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -135,31 +138,31 @@ public final class GelfLayout extends AbstractStringLayout {
         private boolean includeThreadContext = true;
 
         @PluginBuilderAttribute
-        private boolean includeNullDelimiter = false;
+        private boolean includeNullDelimiter;
 
         @PluginBuilderAttribute
-        private boolean includeNewLineDelimiter = false;
+        private boolean includeNewLineDelimiter;
 
         @PluginBuilderAttribute
-        private String threadContextIncludes = null;
+        private String threadContextIncludes;
 
         @PluginBuilderAttribute
-        private String threadContextExcludes = null;
+        private String threadContextExcludes;
 
         @PluginBuilderAttribute
-        private String mapMessageIncludes = null;
+        private String mapMessageIncludes;
 
         @PluginBuilderAttribute
-        private String mapMessageExcludes = null;
+        private String mapMessageExcludes;
 
         @PluginBuilderAttribute
         private boolean includeMapMessage = true;
 
         @PluginBuilderAttribute
-        private boolean omitEmptyFields = false;
+        private boolean omitEmptyFields;
 
         @PluginBuilderAttribute
-        private String messagePattern = null;
+        private String messagePattern;
 
         @PluginBuilderAttribute
         private String threadContextPrefix = "";
@@ -168,7 +171,7 @@ public final class GelfLayout extends AbstractStringLayout {
         private String mapPrefix = "";
 
         @PluginElement("PatternSelector")
-        private PatternSelector patternSelector = null;
+        private PatternSelector patternSelector;
 
         public Builder() {
             setCharset(StandardCharsets.UTF_8);
@@ -655,10 +658,10 @@ public final class GelfLayout extends AbstractStringLayout {
         builder.append(Q);
         builder.append('}');
         if (includeNullDelimiter) {
-            builder.append('\0');
+            builder.append(NUL);
         }
         if (includeNewLineDelimiter) {
-            builder.append('\n');
+            builder.append(LF);
         }
         return builder;
     }

@@ -17,9 +17,9 @@
 
 package org.apache.log4j.spi;
 
-import org.apache.log4j.Appender;
-
 import java.util.Enumeration;
+
+import org.apache.log4j.Appender;
 
 /**
  * Interface for attaching appenders to objects.

@@ -16,13 +16,13 @@
  */
 package org.apache.log4j.or.jms;
 
+import javax.jms.DeliveryMode;
+import javax.jms.JMSException;
+import javax.jms.Message;
+
 import org.apache.log4j.or.ObjectRenderer;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import javax.jms.Message;
-import javax.jms.JMSException;
-import javax.jms.DeliveryMode;
 
 /**
  * Log4j 1.x JMS Message Renderer

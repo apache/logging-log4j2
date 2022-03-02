@@ -185,9 +185,9 @@ Logger y = LogManager.getLogger("wombat");
           with a corresponding global Marker Filter be used instead.
         </p>
         <p>
-          <a href="http://logging.apache.org/log4j/1.2/manual.html">Log4j 1.x</a>
+          <a href="https://logging.apache.org/log4j/1.2/manual.html">Log4j 1.x</a>
           and
-          <a href="http://logback.qos.ch/manual/architecture.html#effectiveLevel">Logback</a>
+          <a href="https://logback.qos.ch/manual/architecture.html#effectiveLevel">Logback</a>
           both have the concept of "Level Inheritance". In Log4j 2, Loggers and LoggerConfigs are two different
           objects so this concept is implemented differently. Each Logger references the
           appropriate LoggerConfig which in turn can reference its parent, thus achieving the same effect.

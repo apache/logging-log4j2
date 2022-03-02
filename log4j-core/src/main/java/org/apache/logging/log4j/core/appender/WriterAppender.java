@@ -16,11 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.io.Serializable;
 import java.io.Writer;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -47,9 +49,13 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
 
         @Override
         public WriterAppender build() {
-            final StringLayout layout = (StringLayout) getLayout();
-            final StringLayout actualLayout = layout != null ? layout : PatternLayout.createDefaultLayout();
-            return new WriterAppender(getName(), actualLayout, getFilter(), getManager(target, follow, actualLayout),
+            final Layout<? extends Serializable> layout = getOrCreateLayout();
+            if (!(layout instanceof StringLayout)) {
+                LOGGER.error("Layout must be a StringLayout to log to ServletContext");
+                return null;
+            }
+            final StringLayout stringLayout = (StringLayout) layout;
+            return new WriterAppender(getName(), stringLayout, getFilter(), getManager(target, follow, stringLayout),
                     isIgnoreExceptions(), getPropertyArray());
         }
 
