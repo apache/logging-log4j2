@@ -266,7 +266,7 @@ public class MyXMLConfiguration extends XMLConfiguration {
     @Override
     protected void doConfigure() {
         super.doConfigure();
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final LoggerContext context = (LoggerContext) LogManager.getContext(false);
         final Configuration config = context.getConfiguration();
         final Layout layout = PatternLayout.createDefaultLayout(config);
         final Appender appender = FileAppender.createAppender("target/test.log", "false", "false", "File", "true",
