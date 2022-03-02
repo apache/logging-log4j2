@@ -242,7 +242,7 @@ public final class PropertiesUtil {
         final String prop = getStringProperty(name);
         if (prop != null) {
             try {
-                return Integer.parseInt(prop);
+                return Integer.parseInt(prop.trim());
             } catch (final Exception ignored) {
                 // ignore
             }
@@ -376,7 +376,7 @@ public final class PropertiesUtil {
      */
     public String getStringProperty(final String name, final String defaultValue) {
         final String prop = getStringProperty(name);
-        return (prop == null) ? defaultValue : prop;
+        return prop == null ? defaultValue : prop;
     }
 
     /**
@@ -549,13 +549,37 @@ public final class PropertiesUtil {
      * @since 2.6
      */
     public static Map<String, Properties> partitionOnCommonPrefixes(final Properties properties) {
+        return partitionOnCommonPrefixes(properties, false);
+    }
+
+    /**
+     * Partitions a properties map based on common key prefixes up to the first period.
+     *
+     * @param properties properties to partition
+     * @param includeBaseKey when true if a key exists with no '.' the key will be included.
+     * @return the partitioned properties where each key is the common prefix (minus the period) and the values are
+     * new property maps without the prefix and period in the key
+     * @since 2.17.2
+     */
+    public static Map<String, Properties> partitionOnCommonPrefixes(final Properties properties,
+            final boolean includeBaseKey) {
         final Map<String, Properties> parts = new ConcurrentHashMap<>();
         for (final String key : properties.stringPropertyNames()) {
-            final String prefix = key.substring(0, key.indexOf('.'));
+            final int idx = key.indexOf('.');
+            if (idx < 0) {
+                if (includeBaseKey) {
+                    if (!parts.containsKey(key)) {
+                        parts.put(key, new Properties());
+                    }
+                    parts.get(key).setProperty("", properties.getProperty(key));
+                }
+                continue;
+            }
+            final String prefix = key.substring(0, idx);
             if (!parts.containsKey(prefix)) {
                 parts.put(prefix, new Properties());
             }
-            parts.get(prefix).setProperty(key.substring(key.indexOf('.') + 1), properties.getProperty(key));
+            parts.get(prefix).setProperty(key.substring(idx + 1), properties.getProperty(key));
         }
         return parts;
     }

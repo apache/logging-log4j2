@@ -20,8 +20,10 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -34,6 +36,11 @@ public class ScriptArbiterTest {
 
     static final String CONFIG = "log4j2-scriptArbiters.xml";
     static LoggerContext loggerContext = null;
+
+    @BeforeAll
+    public static void beforeClass() {
+        System.setProperty(Constants.SCRIPT_LANGUAGES, "Groovy, Javascript");
+    }
 
     @AfterEach
     public void after() {

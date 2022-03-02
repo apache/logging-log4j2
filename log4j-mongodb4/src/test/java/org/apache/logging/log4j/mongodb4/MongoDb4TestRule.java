@@ -20,6 +20,7 @@ package org.apache.logging.log4j.mongodb4;
 import java.util.Objects;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.logging.log4j.core.util.Integers;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -29,7 +30,6 @@ import org.slf4j.LoggerFactory;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 
-import de.flapdoodle.embed.mongo.Command;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodProcess;
 import de.flapdoodle.embed.mongo.MongodStarter;
@@ -38,6 +38,7 @@ import de.flapdoodle.embed.mongo.config.MongodConfig;
 import de.flapdoodle.embed.mongo.config.Net;
 import de.flapdoodle.embed.mongo.config.Timeout;
 import de.flapdoodle.embed.mongo.distribution.Version;
+import de.flapdoodle.embed.mongo.packageresolver.Command;
 import de.flapdoodle.embed.process.runtime.Network;
 
 /**
@@ -121,7 +122,7 @@ public class MongoDb4TestRule implements TestRule {
             public void evaluate() throws Throwable {
                 final String value = Objects.requireNonNull(System.getProperty(portSystemPropertyName),
                         "System property '" + portSystemPropertyName + "' is null");
-                final int port = Integer.parseInt(value);
+                final int port = Integers.parseInt(value);
                 mongodExecutable = starter.prepare(
                 // @formatter:off
                         MongodConfig.builder()

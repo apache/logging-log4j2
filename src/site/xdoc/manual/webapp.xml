@@ -92,7 +92,7 @@
         <p>
           Log4j 2 "just works" in Servlet 3.0 and newer web applications. It is capable of automatically starting when
           the application deploys and shutting down when the application undeploys. Thanks to the
-          <a class="javadoc" href="http://docs.oracle.com/javaee/6/api/javax/servlet/ServletContainerInitializer.html">ServletContainerInitializer</a>
+          <a class="javadoc" href="https://docs.oracle.com/javaee/6/api/javax/servlet/ServletContainerInitializer.html">ServletContainerInitializer</a>
           API added to Servlet 3.0, the relevant <code>Filter</code> and <code>ServletContextListener</code> classes
           can be registered dynamically on web application startup.
         </p>
@@ -191,7 +191,7 @@
         <a name="ContextParams" />
         <p>
           By default, Log4j 2 uses the <code>ServletContext</code>'s
-          <a href="http://docs.oracle.com/javaee/6/api/javax/servlet/ServletContext.html#getServletContextName()">context name</a>
+          <a href="https://docs.oracle.com/javaee/6/api/javax/servlet/ServletContext.html#getServletContextName()">context name</a>
           as the <code>LoggerContext</code> name and uses the standard pattern for locating the Log4j configuration
           file. There are three context parameters that you can use to control this behavior. The first,
           <code>isLog4jContextSelectorNamed</code>, specifies whether the context should be selected using the

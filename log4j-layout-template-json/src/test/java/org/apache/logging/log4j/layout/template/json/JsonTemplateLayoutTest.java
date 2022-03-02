@@ -1455,12 +1455,12 @@ class JsonTemplateLayoutTest {
             // Create the appender.
             final SocketAppender appender = SocketAppender
                     .newBuilder()
-                    .withHost("localhost")
-                    .withBufferedIo(false)
-                    .withPort(port)
-                    .withReconnectDelayMillis(100)
+                    .setHost("localhost")
+                    .setBufferedIo(false)
+                    .setPort(port)
+                    .setReconnectDelayMillis(100)
                     .setName("test")
-                    .withImmediateFail(false)
+                    .setImmediateFail(false)
                     .setIgnoreExceptions(false)
                     .setLayout(layout)
                     .build();

@@ -27,8 +27,18 @@ import org.apache.logging.log4j.message.StructuredDataMessage;
 public class StructuredDataLookup implements StrLookup {
 
     /**
+     * Key to obtain the id of a structured message.
+     */
+    public static final String ID_KEY = "id";
+
+    /**
+     * Key to obtain the type of a structured message.
+     */
+    public static final String TYPE_KEY = "type";
+
+    /**
      * Returns {@code null}. This Lookup plugin does not make sense outside the context of a LogEvent.
-     * @param key  the key to be looked up, may be null
+     * @param key  The key to be looked up, may be null.
      * @return {@code null}
      */
     @Override
@@ -39,7 +49,7 @@ public class StructuredDataLookup implements StrLookup {
     /**
      * Looks up the value for the key using the data in the LogEvent.
      * @param event The current LogEvent.
-     * @param key  the key to be looked up, may be null
+     * @param key  The key to be looked up, may be null.
      * @return The value associated with the key.
      */
     @Override
@@ -48,9 +58,9 @@ public class StructuredDataLookup implements StrLookup {
             return null;
         }
         final StructuredDataMessage msg = (StructuredDataMessage) event.getMessage();
-        if (key.equalsIgnoreCase("id")) {
+        if (ID_KEY.equalsIgnoreCase(key)) {
             return msg.getId().getName();
-        } else if (key.equalsIgnoreCase("type")) {
+        } else if (TYPE_KEY.equalsIgnoreCase(key)) {
             return msg.getType();
         }
         return msg.get(key);

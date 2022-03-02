@@ -67,8 +67,16 @@ The artifacts may be downloaded from https://logging.apache.org/log4j/2.x/downlo
 
 This release contains the changes noted below:
 
-* Address CVE-2021-44832.
-* Other minor fixes.
+* Over 50 improvements and fixes to the Log4j 1.x support. Continued testing has shown it is a suitable replacement
+for Log4j 1.x in most cases.
+* Scripting now requires a system property be specified naming the languages the user wishes to allow. The scripting
+engine will not load if the property isn't set.
+* By default, the only remote protocol allowed for loading configuration files is HTTPS. Users can specify a system
+property to allow others or prevent remote loading entirely.
+* Variable resolution has been modified so that only properties defined as properties in the configuration file can be
+recursive. All other Lookups are now non-recursive. This addresses issues users were having resolving lookups specified
+in property definitions for use in the RoutingAppender and RollingFileAppender due to restrictions put in place in 2.17.1.
+* Many other fixes and improvements.
 
 Due to a break in compatibility in the SLF4J binding, Log4j now ships with two versions of the SLF4J to Log4j adapters.
 log4j-slf4j-impl should be used with SLF4J 1.7.x and earlier and log4j-slf4j18-impl should be used with SLF4J 1.8.x and
@@ -118,8 +126,8 @@ $h3 Removed
 ---
 
 Apache Log4j ${relVersion} requires a minimum of Java 8 to build and run.
-Log4j 2.12.3 is the last release to support Java 7.
-Log4j 2.3.1 is the last release to support Java 6.
+Log4j 2.12.4 is the last release to support Java 7.
+Log4j 2.3.2 is the last release to support Java 6.
 Java 6 and Java 7 are no longer supported by the Log4j team.
 
 For complete information on ${project.name}, including instructions on how to submit bug

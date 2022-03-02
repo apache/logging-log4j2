@@ -46,17 +46,6 @@ public final class ConfigurationStrSubstitutor extends StrSubstitutor {
     }
 
     @Override
-    boolean isRecursiveEvaluationAllowed() {
-        return true;
-    }
-
-    @Override
-    void setRecursiveEvaluationAllowed(final boolean recursiveEvaluationAllowed) {
-        throw new UnsupportedOperationException(
-                "recursiveEvaluationAllowed cannot be modified within ConfigurationStrSubstitutor");
-    }
-
-    @Override
     public String toString() {
         return "ConfigurationStrSubstitutor{" + super.toString() + "}";
     }

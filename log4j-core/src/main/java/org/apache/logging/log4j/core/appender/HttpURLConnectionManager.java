@@ -92,7 +92,7 @@ public class HttpURLConnectionManager extends HttpManager {
         for (final Property header : headers) {
             urlConnection.setRequestProperty(
                 header.getName(),
-                header.isValueNeedsLookup() ? getConfiguration().getStrSubstitutor().replace(event, header.getValue()) : header.getValue());
+                header.evaluate(getConfiguration().getStrSubstitutor()));
         }
         if (sslConfiguration != null) {
             ((HttpsURLConnection)urlConnection).setSSLSocketFactory(sslConfiguration.getSslSocketFactory());

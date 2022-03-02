@@ -16,14 +16,15 @@
  */
 package org.apache.logging.log4j.layout.template.json.util;
 
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+
+import org.apache.logging.log4j.core.util.Integers;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 class JsonReaderTest {
 
@@ -152,7 +153,7 @@ class JsonReaderTest {
             for (final String signedInteger : new String[]{integer, '-' + integer}) {
                 final Object expectedToken =
                         signedInteger.length() < 3
-                                ? Integer.parseInt(signedInteger)
+                                ? Integers.parseInt(signedInteger)
                                 : new BigInteger(signedInteger);
                 test(signedInteger, expectedToken);
             }

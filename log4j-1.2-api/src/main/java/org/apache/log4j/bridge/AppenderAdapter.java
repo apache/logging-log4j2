@@ -17,8 +17,6 @@
 package org.apache.log4j.bridge;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.log4j.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -26,7 +24,6 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.filter.CompositeFilter;
 
 /**
  * Binds a Log4j 1.x Appender to Log4j 2.
@@ -42,20 +39,7 @@ public class AppenderAdapter {
      */
     public AppenderAdapter(Appender appender) {
         this.appender = appender;
-        org.apache.logging.log4j.core.Filter appenderFilter = null;
-        if (appender.getFilter() != null) {
-            if (appender.getFilter().getNext() != null) {
-                org.apache.log4j.spi.Filter filter = appender.getFilter();
-                List<org.apache.logging.log4j.core.Filter> filters = new ArrayList<>();
-                while (filter != null) {
-                    filters.add(new FilterAdapter(filter));
-                    filter = filter.getNext();
-                }
-                appenderFilter = CompositeFilter.createFilters(filters.toArray(Filter.EMPTY_ARRAY));
-            } else {
-                appenderFilter = new FilterAdapter(appender.getFilter());
-            }
-        }
+        final org.apache.logging.log4j.core.Filter appenderFilter = FilterAdapter.convertFilter(appender.getFilter());
         this.adapter = new Adapter(appender.getName(), appenderFilter, null, true, null);
     }
 

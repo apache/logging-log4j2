@@ -52,8 +52,8 @@
     <coverSubTitle>v. ${project.version}</coverSubTitle>
     <coverType>User's Guide</coverType>
     <projectName>${project.name}</projectName>
-    <projectLogo>http://logging.apache.org/log4j/2.x/images/logo.jpg</projectLogo>
+    <projectLogo>https://logging.apache.org/log4j/2.x/images/logo.jpg</projectLogo>
     <companyName>The Apache Software Foundation</companyName>
-    <companyLogo>http://www.apache.org/images/asf_logo_wide.png</companyLogo>
+    <companyLogo>https://www.apache.org/images/asf_logo_wide.png</companyLogo>
   </cover>
 </document>

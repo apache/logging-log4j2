@@ -128,12 +128,12 @@ public class SocketAppenderTest {
             throws Exception {
         // @formatter:off
         final SocketAppender appender = SocketAppender.newBuilder()
-        .withHost("localhost")
-        .withPort(tcpTestServer.getLocalPort())
-        .withReconnectDelayMillis(-1).setName("test")
-                .withImmediateFail(false)
-                .withBufferSize(bufferSize).setLayout((Layout<? extends Serializable>) JsonLayout.newBuilder().setProperties(true).build())
-                .build();
+            .setHost("localhost")
+            .setPort(tcpTestServer.getLocalPort())
+            .setReconnectDelayMillis(-1).setName("test")
+            .setImmediateFail(false)
+            .setBufferSize(bufferSize).setLayout((Layout<? extends Serializable>) JsonLayout.newBuilder().setProperties(true).build())
+            .build();
         // @formatter:on
         appender.start();
         Assert.assertEquals(bufferSize, appender.getManager().getByteBuffer().capacity());
@@ -175,10 +175,10 @@ public class SocketAppenderTest {
     public void testDefaultProtocol() throws Exception {
         // @formatter:off
         final SocketAppender appender = SocketAppender.newBuilder()
-        .withPort(tcpServer.getLocalPort())
-        .withReconnectDelayMillis(-1).setName("test")
-                .withImmediateFail(false).setLayout((Layout<? extends Serializable>) JsonLayout.newBuilder().setProperties(true).build())
-                .build();
+            .setPort(tcpServer.getLocalPort())
+            .setReconnectDelayMillis(-1).setName("test")
+            .setImmediateFail(false).setLayout((Layout<? extends Serializable>) JsonLayout.newBuilder().setProperties(true).build())
+            .build();
         // @formatter:on
         assertNotNull(appender);
         appender.stop();
@@ -194,11 +194,11 @@ public class SocketAppenderTest {
 
         // @formatter:off
         final SocketAppender appender = SocketAppender.newBuilder()
-        .withProtocol(Protocol.UDP)
-        .withPort(tcpServer.getLocalPort())
-        .withReconnectDelayMillis(-1).setName("test")
-                .withImmediateFail(false).setLayout((Layout<? extends Serializable>) JsonLayout.newBuilder().setProperties(true).build())
-                .build();
+            .setProtocol(Protocol.UDP)
+            .setPort(tcpServer.getLocalPort())
+            .setReconnectDelayMillis(-1).setName("test")
+            .setImmediateFail(false).setLayout((Layout<? extends Serializable>) JsonLayout.newBuilder().setProperties(true).build())
+            .build();
         // @formatter:on
         appender.start();
 
@@ -218,11 +218,11 @@ public class SocketAppenderTest {
 
         // @formatter:off
         final SocketAppender appender = SocketAppender.newBuilder()
-        .withHost("localhost")
-        .withPort(DYN_PORT)
-        .withReconnectDelayMillis(100).setName("test")
-                .withImmediateFail(false).setLayout((Layout<? extends Serializable>) JsonLayout.newBuilder().setProperties(true).build())
-                .build();
+            .setHost("localhost")
+            .setPort(DYN_PORT)
+            .setReconnectDelayMillis(100).setName("test")
+            .setImmediateFail(false).setLayout((Layout<? extends Serializable>) JsonLayout.newBuilder().setProperties(true).build())
+            .build();
         // @formatter:on
         appender.start();
         // set appender on root and set level to debug
@@ -247,11 +247,11 @@ public class SocketAppenderTest {
     public void testTcpAppenderNoWait() throws Exception {
         // @formatter:off
         final SocketAppender appender = SocketAppender.newBuilder()
-        .withHost("localhost")
-        .withPort(ERROR_PORT)
-        .withReconnectDelayMillis(100).setName("test")
-                .withImmediateFail(false).setIgnoreExceptions(false).setLayout((Layout<? extends Serializable>) JsonLayout.newBuilder().setProperties(true).build())
-                .build();
+            .setHost("localhost")
+            .setPort(ERROR_PORT)
+            .setReconnectDelayMillis(100).setName("test")
+            .setImmediateFail(false).setIgnoreExceptions(false).setLayout((Layout<? extends Serializable>) JsonLayout.newBuilder().setProperties(true).build())
+            .build();
         // @formatter:on
         appender.start();
         // set appender on root and set level to debug

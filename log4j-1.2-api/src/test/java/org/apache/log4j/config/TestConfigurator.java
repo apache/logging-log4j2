@@ -33,7 +33,7 @@ import org.apache.logging.log4j.core.config.Configurator;
 
 public class TestConfigurator {
 
-    static LoggerContext configure(final String configLocation) throws IOException {
+    public static LoggerContext configure(final String configLocation) throws IOException {
         final Path path = Paths.get(configLocation);
         try (final InputStream inputStream = Files.newInputStream(path)) {
             final ConfigurationSource source = new ConfigurationSource(inputStream, path);

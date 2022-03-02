@@ -41,6 +41,9 @@ public final class Constants {
     public static final boolean ENABLE_THREADLOCALS = !IS_WEB_APP && PropertiesUtil.getProperties().getBooleanProperty(
             "log4j2.enable.threadlocals", true);
 
+    /**
+     * Java major version.
+     */
     public static final int JAVA_MAJOR_VERSION = getMajorVersion();
 
     /**

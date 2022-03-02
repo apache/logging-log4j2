@@ -44,17 +44,6 @@ public final class RuntimeStrSubstitutor extends StrSubstitutor {
     }
 
     @Override
-    boolean isRecursiveEvaluationAllowed() {
-        return false;
-    }
-
-    @Override
-    void setRecursiveEvaluationAllowed(final boolean recursiveEvaluationAllowed) {
-        throw new UnsupportedOperationException(
-                "recursiveEvaluationAllowed cannot be modified within RuntimeStrSubstitutor");
-    }
-
-    @Override
     public String toString() {
         return "RuntimeStrSubstitutor{" + super.toString() + "}";
     }

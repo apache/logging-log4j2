@@ -103,11 +103,11 @@ public final class PatternParser {
      * Constructor.
      *
      * @param config
-     *            The current Configuration.
+     *            The current Configuration or {@code null}.
      * @param converterKey
      *            The key to lookup the converters.
      * @param expected
-     *            The expected base Class of each Converter.
+     *            The expected base Class of each Converter or {@code null}.
      */
     public PatternParser(final Configuration config, final String converterKey, final Class<?> expected) {
         this(config, converterKey, expected, null);
@@ -117,13 +117,13 @@ public final class PatternParser {
      * Constructor.
      *
      * @param config
-     *            The current Configuration.
+     *            The current Configuration or {@code null}.
      * @param converterKey
      *            The key to lookup the converters.
      * @param expectedClass
-     *            The expected base Class of each Converter.
+     *            The expected base Class of each Converter or {@code null}.
      * @param filterClass
-     *            Filter the returned plugins after calling the plugin manager.
+     *            Filter the returned plugins after calling the plugin manager, can be {@code null}.
      */
     public PatternParser(final Configuration config, final String converterKey, final Class<?> expectedClass,
             final Class<?> filterClass) {

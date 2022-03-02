@@ -16,22 +16,24 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.lookup.Interpolator;
+import org.apache.logging.log4j.core.lookup.LookupResult;
 import org.apache.logging.log4j.core.lookup.PropertiesLookup;
 import org.apache.logging.log4j.core.lookup.StrLookup;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 
 /**
  * Handles properties defined in the configuration.
  */
 @Plugin(name = "properties", category = Node.CATEGORY, printObject = true)
 public final class PropertiesPlugin {
+
+    private static final StrSubstitutor UNESCAPING_SUBSTITUTOR = createUnescapingSubstitutor();
 
     private PropertiesPlugin() {
     }
@@ -45,15 +47,62 @@ public final class PropertiesPlugin {
     @PluginFactory
     public static StrLookup configureSubstitutor(@PluginElement("Properties") final Property[] properties,
                                                  @PluginConfiguration final Configuration config) {
-        if (properties == null) {
-            return new Interpolator(config.getProperties());
+        // For backwards compatibility, we unescape all escaped lookups when properties are parsed.
+        // This matches previous behavior for escaped components which were meant to be executed later on.
+        Property[] unescapedProperties = new Property[properties == null ? 0 : properties.length];
+        for (int i = 0; i < unescapedProperties.length; i++) {
+            unescapedProperties[i] = unescape(properties[i]);
         }
-        final Map<String, String> map = new HashMap<>(config.getProperties());
+        return new Interpolator(
+                new PropertiesLookup(unescapedProperties, config.getProperties()),
+                config.getPluginPackages());
+    }
 
-        for (final Property prop : properties) {
-            map.put(prop.getName(), prop.getValue());
+    private static Property unescape(Property input) {
+        return Property.createProperty(
+                input.getName(),
+                unescape(input.getRawValue()),
+                input.getValue());
+    }
+
+    // Visible for testing
+    static String unescape(String input) {
+        return UNESCAPING_SUBSTITUTOR.replace(input);
+    }
+
+    /**
+     * Creates a new {@link StrSubstitutor} which is configured with no lookups and does not handle
+     * defaults. This allows it to unescape one level of escaped lookups without any further processing
+     * or removing replacing {@code ${ctx:foo:-default}} with {@code default}.
+     */
+    private static StrSubstitutor createUnescapingSubstitutor() {
+        StrSubstitutor substitutor = new StrSubstitutor(NullLookup.INSTANCE);
+        substitutor.setValueDelimiter(null);
+        substitutor.setValueDelimiterMatcher(null);
+        return substitutor;
+    }
+
+    private enum NullLookup implements StrLookup {
+        INSTANCE;
+
+        @Override
+        public String lookup(String key) {
+            return null;
         }
 
-        return new Interpolator(new PropertiesLookup(map), config.getPluginPackages());
+        @Override
+        public String lookup(LogEvent event, String key) {
+            return null;
+        }
+
+        @Override
+        public LookupResult evaluate(String key) {
+            return null;
+        }
+
+        @Override
+        public LookupResult evaluate(LogEvent event, String key) {
+            return null;
+        }
     }
 }

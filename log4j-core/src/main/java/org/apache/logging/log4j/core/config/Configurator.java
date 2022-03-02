@@ -337,8 +337,20 @@ public final class Configurator {
      * @return the given logger
      */
     public static Logger setLevel(final Logger logger, final Level level) {
-        setLevel(logger.getName(), level);
+        setLevel(LoggerContext.getContext(StackLocatorUtil.getCallerClassLoader(2), false, null), logger.getName(), level);
         return logger;
+    }
+    
+    /**
+     * Sets a logger's level.
+     *
+     * @param clazz
+     *            the logger
+     * @param level
+     *            the new level
+     */
+    public static void setLevel(final Class<?> clazz, final Level level) {
+        setLevel(LoggerContext.getContext(StackLocatorUtil.getCallerClassLoader(2), false, null), clazz.getName(), level);
     }
     
     private static boolean setLevel(final LoggerConfig loggerConfig, final Level level) {
@@ -347,6 +359,14 @@ public final class Configurator {
             loggerConfig.setLevel(level);
         }
         return set;
+    }
+
+    private static void setLevel(final LoggerContext loggerContext, final String loggerName, final Level level) {
+        if (Strings.isEmpty(loggerName)) {
+            setRootLevel(level, loggerContext);
+        } else if (setLevel(loggerName, level, loggerContext.getConfiguration())) {
+            loggerContext.updateLoggers();
+        }
     }
 
     /**
@@ -379,12 +399,7 @@ public final class Configurator {
      *            the new level
      */
     public static void setLevel(final String loggerName, final Level level) {
-        final LoggerContext loggerContext = LoggerContext.getContext(StackLocatorUtil.getCallerClassLoader(2), false, null);
-        if (Strings.isEmpty(loggerName)) {
-            setRootLevel(level, loggerContext);
-        } else if (setLevel(loggerName, level, loggerContext.getConfiguration())) {
-            loggerContext.updateLoggers();
-        }
+        setLevel(LoggerContext.getContext(StackLocatorUtil.getCallerClassLoader(2), false, null), loggerName, level);
     }
 
     /**
@@ -396,7 +411,7 @@ public final class Configurator {
      *            the new level
      */
     public static void setLevel(final String loggerName, final String level) {
-        setLevel(loggerName, Level.toLevel(level));
+        setLevel(LoggerContext.getContext(StackLocatorUtil.getCallerClassLoader(2), false, null), loggerName, Level.toLevel(level));
     }
 
     private static boolean setLevel(final String loggerName, final Level level, final Configuration config) {

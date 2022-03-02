@@ -16,15 +16,15 @@
  */
 package org.apache.log4j;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import java.util.List;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Test passing MDC values to the Routing appender.
@@ -37,7 +37,7 @@ public class LogWithRouteTest {
     public static final LoggerContextRule CTX = new LoggerContextRule(CONFIG);
 
     @Test
-    public void testMDC() throws Exception {
+    public void testMDC() {
         MDC.put("Type", "Service");
         MDC.put("Name", "John Smith");
         try {

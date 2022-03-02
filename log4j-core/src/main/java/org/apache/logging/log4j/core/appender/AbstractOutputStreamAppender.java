@@ -61,16 +61,34 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
             return immediateFlush;
         }
 
+        public B setImmediateFlush(final boolean immediateFlush) {
+            this.immediateFlush = immediateFlush;
+            return asBuilder();
+        }
+
+        public B setBufferedIo(final boolean bufferedIo) {
+            this.bufferedIo = bufferedIo;
+            return asBuilder();
+        }
+
+        public B setBufferSize(final int bufferSize) {
+            this.bufferSize = bufferSize;
+            return asBuilder();
+        }
+
+        @Deprecated
         public B withImmediateFlush(final boolean immediateFlush) {
             this.immediateFlush = immediateFlush;
             return asBuilder();
         }
 
+        @Deprecated
         public B withBufferedIo(final boolean bufferedIo) {
             this.bufferedIo = bufferedIo;
             return asBuilder();
         }
 
+        @Deprecated
         public B withBufferSize(final int bufferSize) {
             this.bufferSize = bufferSize;
             return asBuilder();

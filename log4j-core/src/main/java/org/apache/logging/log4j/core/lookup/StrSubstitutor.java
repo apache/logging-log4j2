@@ -209,8 +209,6 @@ public class StrSubstitutor implements ConfigurationAware {
      */
     private Configuration configuration;
 
-    private boolean recursiveEvaluationAllowed;
-
     //-----------------------------------------------------------------------
     /**
      * Creates a new instance with defaults for variable prefix and suffix
@@ -392,7 +390,6 @@ public class StrSubstitutor implements ConfigurationAware {
         this.setValueDelimiterMatcher(other.valueDelimiterMatcher);
         this.valueEscapeDelimiterMatcher = other.valueEscapeDelimiterMatcher;
         this.configuration = other.configuration;
-        this.recursiveEvaluationAllowed = other.isRecursiveEvaluationAllowed();
         this.enableSubstitutionInVariables = other.isEnableSubstitutionInVariables();
         this.valueDelimiterString = other.valueDelimiterString;
     }
@@ -1098,7 +1095,8 @@ public class StrSubstitutor implements ConfigurationAware {
                             boolean isCyclic = isCyclicSubstitution(varName, priorVariables);
 
                             // resolve the variable
-                            String varValue = isCyclic ? null : resolveVariable(event, varName, buf, startPos, endPos);
+                            LookupResult resolvedResult = isCyclic ? null : resolveVariable(event, varName, buf, startPos, endPos);
+                            String varValue = resolvedResult == null ? null : resolvedResult.value();
                             if (varValue == null) {
                                 varValue = varDefaultValue;
                             }
@@ -1107,7 +1105,7 @@ public class StrSubstitutor implements ConfigurationAware {
                                 final int varLen = varValue.length();
                                 buf.replace(startPos, endPos, varValue);
                                 altered = true;
-                                int change = isRecursiveEvaluationAllowed()
+                                int change = resolvedResult != null && resolvedResult.isLookupEvaluationAllowedInValue()
                                         ? substitute(event, buf, startPos, varLen, priorVariables)
                                         : 0;
                                 change = change + (varLen - (endPos - startPos));
@@ -1175,14 +1173,14 @@ public class StrSubstitutor implements ConfigurationAware {
      * @param endPos  the end position of the variable including the suffix, valid
      * @return the variable's value or <b>null</b> if the variable is unknown
      */
-    protected String resolveVariable(final LogEvent event, final String variableName, final StringBuilder buf,
+    protected LookupResult resolveVariable(final LogEvent event, final String variableName, final StringBuilder buf,
                                      final int startPos, final int endPos) {
         final StrLookup resolver = getVariableResolver();
         if (resolver == null) {
             return null;
         }
         try {
-            return resolver.lookup(event, variableName);
+            return resolver.evaluate(event, variableName);
         } catch (Throwable t) {
             StatusLogger.getLogger().error("Resolver failed to lookup {}", variableName, t);
             return null;
@@ -1473,14 +1471,6 @@ public class StrSubstitutor implements ConfigurationAware {
      */
     public void setEnableSubstitutionInVariables(final boolean enableSubstitutionInVariables) {
         this.enableSubstitutionInVariables = enableSubstitutionInVariables;
-    }
-
-    boolean isRecursiveEvaluationAllowed() {
-        return recursiveEvaluationAllowed;
-    }
-
-    void setRecursiveEvaluationAllowed(final boolean recursiveEvaluationAllowed) {
-        this.recursiveEvaluationAllowed = recursiveEvaluationAllowed;
     }
 
     private char[] getChars(final StringBuilder sb) {

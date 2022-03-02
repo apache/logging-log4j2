@@ -20,7 +20,7 @@
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
   <appender name="A1" class="org.apache.log4j.FileAppender">
     
-    <param name="File"   value="output/temp.A1" />
+    <param name="File"   value="target/output/temp.A1" />
     <param name="Append" value="false" />	    
     
     <layout class="org.apache.log4j.PatternLayout">
@@ -29,7 +29,7 @@
   </appender>
   
   <appender name="A2" class="org.apache.log4j.FileAppender">
-    <param name="File" value="output/temp.A2" />
+    <param name="File" value="target/output/temp.A2" />
     <param name="Append" value="false" />
     <layout class="org.apache.log4j.TTCCLayout">
       <param name="DateFormat" value="ISO8601" />

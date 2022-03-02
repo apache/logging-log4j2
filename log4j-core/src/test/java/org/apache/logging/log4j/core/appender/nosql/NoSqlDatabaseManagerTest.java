@@ -54,17 +54,22 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NoSqlDatabaseManagerTest {
+    
     @Mock
     private NoSqlConnection<Map<String, Object>, DefaultNoSqlObject> connection;
+    
     @Mock
     private NoSqlProvider<NoSqlConnection<Map<String, Object>, DefaultNoSqlObject>> provider;
+    
     @Mock
     private Message message;
+    
     @Captor
     private ArgumentCaptor<NoSqlObject<Map<String, Object>>> captor;
 
     @Rule
     public final ThreadContextStackRule threadContextRule = new ThreadContextStackRule();
+    
     @Rule
     public final ExpectedException expectedException = ExpectedException.none();
 
@@ -78,7 +83,7 @@ public class NoSqlDatabaseManagerTest {
     @Test
     public void testConnection() {
         try (final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager("name", 0,
-            provider)) {
+            provider, null, null)) {
 
             assertNotNull("The manager should not be null.", manager);
 
@@ -91,7 +96,7 @@ public class NoSqlDatabaseManagerTest {
     @Test
     public void testWriteInternalNotConnected01() {
         try (final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager("name", 0,
-            provider)) {
+            provider, null, null)) {
             expectedException.expect(AppenderLoggingException.class);
             manager.writeInternal(mock(LogEvent.class), null);
         }
@@ -102,7 +107,7 @@ public class NoSqlDatabaseManagerTest {
         given(connection.isClosed()).willReturn(true);
 
         try (final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager("name", 0,
-            provider)) {
+            provider, null, null)) {
 
             manager.startup();
             manager.connectAndStart();
@@ -119,7 +124,7 @@ public class NoSqlDatabaseManagerTest {
         given(message.getFormattedMessage()).willReturn("My formatted message 01.");
 
         try (final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager("name", 0,
-            provider)) {
+            provider, null, null)) {
 
             manager.startup();
             manager.connectAndStart();
@@ -177,7 +182,7 @@ public class NoSqlDatabaseManagerTest {
         given(message.getFormattedMessage()).willReturn("Another cool message 02.");
 
         try (final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager("name", 0,
-            provider)) {
+            provider, null, null)) {
             manager.startup();
 
             manager.connectAndStart();
@@ -275,7 +280,7 @@ public class NoSqlDatabaseManagerTest {
         given(message.getFormattedMessage()).willReturn("Another cool message 02.");
 
         try (final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager("name", 0,
-            provider)) {
+            provider, null, null)) {
             manager.startup();
 
             manager.connectAndStart();

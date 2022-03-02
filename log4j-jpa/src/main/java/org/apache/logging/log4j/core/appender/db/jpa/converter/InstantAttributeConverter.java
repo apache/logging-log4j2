@@ -16,13 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
 
-import org.apache.logging.log4j.core.time.Instant;
-import org.apache.logging.log4j.core.time.MutableInstant;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Strings;
-
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
+
+import org.apache.logging.log4j.core.time.Instant;
+import org.apache.logging.log4j.core.time.MutableInstant;
+import org.apache.logging.log4j.core.util.Integers;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * A JPA 2.1 attribute converter for {@link Instant}s in {@link org.apache.logging.log4j.core.LogEvent}s. This
@@ -48,7 +49,7 @@ public class InstantAttributeConverter implements AttributeConverter<Instant, St
 
         final int pos = s.indexOf(",");
         final long epochSecond = Long.parseLong(s.substring(0, pos));
-        final int nanos = Integer.parseInt(s.substring(pos + 1, s.length()));
+        final int nanos = Integers.parseInt(s.substring(pos + 1, s.length()));
 
         final MutableInstant result = new MutableInstant();
         result.initFromEpochSecond(epochSecond, nanos);

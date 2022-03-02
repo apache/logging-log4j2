@@ -18,13 +18,12 @@ package org.apache.logging.log4j.core.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
@@ -62,21 +61,16 @@ public class ThreadContextDataInjector {
     public static Collection<ContextDataProvider> contextDataProviders =
             new ConcurrentLinkedDeque<>();
 
-    private static volatile List<ContextDataProvider> serviceProviders = null;
-    private static final Lock providerLock = new ReentrantLock();
+    private static final List<ContextDataProvider> SERVICE_PROVIDERS = getServiceProviders();
 
-    public static void initServiceProviders() {
-        if (serviceProviders == null) {
-            providerLock.lock();
-            try {
-                if (serviceProviders == null) {
-                    serviceProviders = getServiceProviders();
-                }
-            } finally {
-                providerLock.unlock();
-            }
-        }
-    }
+    /**
+     * Previously this method allowed ContextDataProviders to be loaded eagerly, now they
+     * are loaded when this class is initialized.
+     *
+     * @deprecated no-op
+     */
+    @Deprecated
+    public static void initServiceProviders() {}
 
     private static List<ContextDataProvider> getServiceProviders() {
         List<ContextDataProvider> providers = new ArrayList<>();
@@ -91,7 +85,7 @@ public class ThreadContextDataInjector {
                 LOGGER.debug("Unable to access Context Data Providers {}", ex.getMessage());
             }
         }
-        return providers;
+        return Collections.unmodifiableList(providers);
     }
 
     /**
@@ -282,11 +276,10 @@ public class ThreadContextDataInjector {
     }
 
     private static List<ContextDataProvider> getProviders() {
-        initServiceProviders();
-        final List<ContextDataProvider> providers = new ArrayList<>(contextDataProviders);
-        if (serviceProviders != null) {
-            providers.addAll(serviceProviders);
-        }
+        final List<ContextDataProvider> providers =
+                new ArrayList<>(contextDataProviders.size() + SERVICE_PROVIDERS.size());
+        providers.addAll(contextDataProviders);
+        providers.addAll(SERVICE_PROVIDERS);
         return providers;
     }
 }

@@ -1,0 +1,44 @@
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+  <appender name="ConsoleCapitalized" class="org.apache.log4j.ConsoleAppender">
+    <param name="Encoding" value="ISO-8859-1" />
+    <param name="Follow" value="true" />
+    <param name="ImmediateFlush" value="false" />
+    <param name="Target" value="System.err" />
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%d{ISO8601} [%t][%c] %-5p: %m%n" />
+    </layout>
+  </appender>
+
+  <appender name="ConsoleJavaStyle" class="org.apache.log4j.ConsoleAppender">
+    <param name="encoding" value="ISO-8859-1" />
+    <param name="follow" value="true" />
+    <param name="immediateFlush" value="false" />
+    <param name="target" value="System.err" />
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="conversionPattern" value="%d{ISO8601} [%t][%c] %-5p: %m%n" />
+    </layout>
+  </appender>
+
+  <root>
+    <priority value="trace" />
+    <appender-ref ref="ConsoleCapitalized" />
+    <appender-ref ref="ConsoleJavaStyle" />
+  </root>
+</log4j:configuration>

@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.config.ConfigurationScheduler;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.HttpWatcher;
 import org.apache.logging.log4j.core.config.Reconfigurable;
+import org.apache.logging.log4j.core.net.UrlConnectionFactory;
 import org.apache.logging.log4j.core.net.ssl.TestConstants;
 import org.apache.logging.log4j.core.util.datetime.FastDateFormat;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -66,6 +67,7 @@ public class WatchHttpTest {
 
     @BeforeClass
     public static void beforeClass() {
+        System.setProperty(UrlConnectionFactory.ALLOWED_PROTOCOLS, "http,https");
         try {
             formatter = FastDateFormat.getInstance("EEE, dd MMM yyyy HH:mm:ss", TimeZone.getTimeZone("UTC"));
         } catch (Exception ex) {

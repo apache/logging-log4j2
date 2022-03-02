@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.util.Booleans;
+import org.apache.logging.log4j.core.util.KeyValuePair;
 
 /**
  * This Appender writes logging events to a NoSQL database using a configured NoSQL provider. It requires
@@ -61,6 +62,9 @@ public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseM
         @PluginElement("NoSqlProvider")
         private NoSqlProvider<?> provider;
 
+        @PluginElement("AdditionalField")
+        private KeyValuePair[] additionalFields;
+
         @SuppressWarnings("resource")
         @Override
         public NoSqlAppender build() {
@@ -72,9 +76,8 @@ public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseM
 
             final String managerName = "noSqlManager{ description=" + name + ", bufferSize=" + bufferSize
                     + ", provider=" + provider + " }";
-
-            final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager(managerName,
-                    bufferSize, provider);
+            final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager(managerName, bufferSize, provider, additionalFields,
+                getConfiguration());
             if (manager == null) {
                 return null;
             }
@@ -129,13 +132,13 @@ public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseM
     @SuppressWarnings("resource")
     @Deprecated
     public static NoSqlAppender createAppender(
-    // @formatter:off
+        // @formatter:off
             final String name,
             final String ignore,
             final Filter filter,
             final String bufferSize,
             final NoSqlProvider<?> provider) {
-    // @formatter:on
+        // @formatter:on
         if (provider == null) {
             LOGGER.error("NoSQL provider not specified for appender [{}].", name);
             return null;
@@ -144,11 +147,9 @@ public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseM
         final int bufferSizeInt = AbstractAppender.parseInt(bufferSize, 0);
         final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
 
-        final String managerName = "noSqlManager{ description=" + name + ", bufferSize=" + bufferSizeInt + ", provider="
-                + provider + " }";
+        final String managerName = "noSqlManager{ description=" + name + ", bufferSize=" + bufferSizeInt + ", provider=" + provider + " }";
 
-        final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager(managerName, bufferSizeInt,
-                provider);
+        final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager(managerName, bufferSizeInt, provider, null, null);
         if (manager == null) {
             return null;
         }

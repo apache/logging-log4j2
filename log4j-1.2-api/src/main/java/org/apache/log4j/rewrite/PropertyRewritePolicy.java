@@ -16,6 +16,11 @@
  */
 package org.apache.log4j.rewrite;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.StringTokenizer;
+
 import org.apache.log4j.bridge.LogEventAdapter;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.LocationInfo;
@@ -24,11 +29,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.StringTokenizer;
 
 /**
  * This policy rewrites events by adding

@@ -20,14 +20,12 @@
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j-spring-cloud-config</artifactId>
-    <version>2.17.2-SNAPSHOT</version>
-    <relativePath>../</relativePath>
+    <version>2.17.3-SNAPSHOT</version>
   </parent>
   <groupId>org.apache.logging.log4j.samples</groupId>
   <artifactId>log4j-spring-cloud-config-samples</artifactId>
   <packaging>pom</packaging>
   <name>Apache Log4j Spring Cloud Config Samples</name>
-  <url>http://maven.apache.org</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <revapi.skip>true</revapi.skip>
@@ -50,7 +48,7 @@
       <dependency>
         <groupId>org.springframework.ws</groupId>
         <artifactId>spring-ws-core</artifactId>
-        <version>2.1.4.RELEASE</version>
+        <version>3.1.2</version>
       </dependency>
       <dependency>
         <groupId>javax.servlet</groupId>

@@ -33,11 +33,14 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.categories.Layouts;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.BasicConfigurationFactory;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.async.RingBufferLogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.MutableLogEvent;
 import org.apache.logging.log4j.core.jackson.Log4jJsonObjectMapper;
@@ -52,6 +55,7 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
+import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -591,7 +595,10 @@ public class JsonLayoutTest {
         assertFalse(str.endsWith("\0"));
     }
 
-    @Test  // LOG4J2-2749
+    /**
+     * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-2749">LOG4J2-2749</a>
+     */
+    @Test
     public void testEmptyValuesAreIgnored() {
         final AbstractJacksonLayout layout = JsonLayout.newBuilder()
                 .setAdditionalFields(new KeyValuePair[] {
@@ -602,6 +609,40 @@ public class JsonLayoutTest {
 
         final String str = layout.toSerializable(LogEventFixtures.createLogEvent());
         assertFalse(str, str.contains("\"empty\""));
+    }
+
+    /**
+     * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-3358">LOG4J2-3358</a>
+     */
+    @Test
+    public void jsonLayout_should_substitute_lookups() {
+
+        // Create the layout.
+        KeyValuePair[] additionalFields = {
+                KeyValuePair
+                        .newBuilder()
+                        .setKey("who")
+                        .setValue("${ctx:WHO}")
+                        .build()
+        };
+        JsonLayout layout = JsonLayout
+                .newBuilder()
+                .setConfiguration(new DefaultConfiguration())
+                .setAdditionalFields(additionalFields)
+                .build();
+
+        // Create a log event containing `WHO` key in MDC.
+        StringMap contextData = ContextDataFactory.createContextData();
+        contextData.putValue("WHO", "mduft");
+        LogEvent logEvent = Log4jLogEvent
+                .newBuilder()
+                .setContextData(contextData)
+                .build();
+
+        // Verify the `WHO` key.
+        String serializedLogEvent = layout.toSerializable(logEvent);
+        assertThat(serializedLogEvent, containsString("\"who\" : \"mduft\""));
+
     }
 
     private String toPropertySeparator(final boolean compact) {

@@ -18,16 +18,20 @@ package org.apache.logging.log4j.core.appender;
 
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.test.appender.ListAppender;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+@SetSystemProperty(key = Constants.SCRIPT_LANGUAGES, value = "Groovy, Javascript")
 public class ScriptAppenderSelectorTest {
 
     @Test

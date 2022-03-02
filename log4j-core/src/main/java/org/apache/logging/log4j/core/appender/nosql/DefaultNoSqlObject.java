@@ -31,6 +31,9 @@ public class DefaultNoSqlObject implements NoSqlObject<Map<String, Object>> {
 
     private final Map<String, Object> map;
 
+    /**
+     * Constructs a new instance.
+     */
     public DefaultNoSqlObject() {
         this.map = new HashMap<>();
     }
@@ -42,22 +45,25 @@ public class DefaultNoSqlObject implements NoSqlObject<Map<String, Object>> {
 
     @Override
     public void set(final String field, final NoSqlObject<Map<String, Object>> value) {
-        this.map.put(field, value.unwrap());
+        this.map.put(field, value != null ? value.unwrap() : null);
     }
 
     @Override
     public void set(final String field, final Object[] values) {
-        this.map.put(field, Arrays.asList(values));
+        this.map.put(field, values != null ? Arrays.asList(values) : null);
     }
 
     @Override
     public void set(final String field, final NoSqlObject<Map<String, Object>>[] values) {
-        final List<Map<String, Object>> list = new ArrayList<>(values.length);
-        for (final NoSqlObject<Map<String, Object>> value : values) {
-            list.add(value.unwrap());
-        }
-        this.map.put(field, list);
-    }
+        if (values == null) {
+            this.map.put(field, null);
+        } else {
+            final List<Map<String, Object>> list = new ArrayList<>(values.length);
+            for (final NoSqlObject<Map<String, Object>> value : values) {
+                list.add(value.unwrap());
+            }
+            this.map.put(field, list);
+        }}
 
     @Override
     public Map<String, Object> unwrap() {

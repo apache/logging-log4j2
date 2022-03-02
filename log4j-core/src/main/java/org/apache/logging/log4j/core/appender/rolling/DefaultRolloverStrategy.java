@@ -126,7 +126,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
                 useMax = fileIndex == null ? true : fileIndex.equalsIgnoreCase("max");
                 minIndex = MIN_WINDOW_SIZE;
                 if (min != null) {
-                    minIndex = Integer.parseInt(min);
+                    minIndex = Integers.parseInt(min);
                     if (minIndex < 1) {
                         LOGGER.error("Minimum window size too small. Limited to " + MIN_WINDOW_SIZE);
                         minIndex = MIN_WINDOW_SIZE;
@@ -134,14 +134,15 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
                 }
                 maxIndex = DEFAULT_WINDOW_SIZE;
                 if (max != null) {
-                    maxIndex = Integer.parseInt(max);
+                    maxIndex = Integer.parseInt(max.trim());
                     if (maxIndex < minIndex) {
                         maxIndex = minIndex < DEFAULT_WINDOW_SIZE ? DEFAULT_WINDOW_SIZE : minIndex;
                         LOGGER.error("Maximum window size must be greater than the minimum windows size. Set to " + maxIndex);
                     }
                 }
             }
-            final int compressionLevel = Integers.parseInt(compressionLevelStr, Deflater.DEFAULT_COMPRESSION);
+            final String trimmedCompressionLevelStr = compressionLevelStr != null ? compressionLevelStr.trim() : compressionLevelStr;
+            final int compressionLevel = Integers.parseInt(trimmedCompressionLevelStr, Deflater.DEFAULT_COMPRESSION);
             // The config object can be null when this object is built programmatically.
             final StrSubstitutor nonNullStrSubstitutor = config != null ? config.getStrSubstitutor() : new StrSubstitutor();
 			return new DefaultRolloverStrategy(minIndex, maxIndex, useMax, compressionLevel, nonNullStrSubstitutor,

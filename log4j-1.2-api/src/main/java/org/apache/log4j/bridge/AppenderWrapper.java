@@ -55,11 +55,7 @@ public class AppenderWrapper implements Appender {
     @Override
     public void addFilter(Filter newFilter) {
         if (appender instanceof AbstractFilterable) {
-            if (newFilter instanceof FilterWrapper) {
-                ((AbstractFilterable) appender).addFilter(((FilterWrapper) newFilter).getFilter());
-            } else {
-                ((AbstractFilterable) appender).addFilter(new FilterAdapter(newFilter));
-            }
+            ((AbstractFilterable) appender).addFilter(FilterAdapter.convertFilter(newFilter));
         } else {
             LOGGER.warn("Unable to add filter to appender {}, it does not support filters", appender.getName());
         }

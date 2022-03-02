@@ -32,6 +32,5 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         web.ignoring().antMatchers("/health")
             .antMatchers("/metrics")
             .antMatchers("/info");
-        getHttp().csrf().disable();
     }
 }

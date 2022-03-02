@@ -16,17 +16,15 @@
  */
 package org.apache.log4j.builders.filter;
 
+import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+
 import org.apache.log4j.bridge.FilterWrapper;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.xml.XmlConfiguration;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.filter.DenyAllFilter;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
-
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
 
 /**
  * Build a Pattern Layout
@@ -34,15 +32,13 @@ import static org.apache.log4j.builders.BuilderManager.CATEGORY;
 @Plugin(name = "org.apache.log4j.varia.DenyAllFilter", category = CATEGORY)
 public class DenyAllFilterBuilder implements FilterBuilder {
 
-    private static final Logger LOGGER = StatusLogger.getLogger();
-
     @Override
-    public Filter parseFilter(Element filterElement, XmlConfiguration config) {
+    public Filter parse(Element filterElement, XmlConfiguration config) {
         return new FilterWrapper(DenyAllFilter.newBuilder().build());
     }
 
     @Override
-    public Filter parseFilter(PropertiesConfiguration config) {
+    public Filter parse(PropertiesConfiguration config) {
         return new FilterWrapper(DenyAllFilter.newBuilder().build());
     }
 }

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -43,6 +44,7 @@ import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.config.plugins.util.ResolverUtil;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
 import org.apache.logging.log4j.core.util.Closer;
+import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.core.util.Throwables;
@@ -130,7 +132,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                 } else if ("schema".equalsIgnoreCase(key)) {
                     schemaResource = value;
                 } else if ("monitorInterval".equalsIgnoreCase(key)) {
-                    monitorIntervalSeconds = Integer.parseInt(value);
+                    monitorIntervalSeconds = Integers.parseInt(value);
                 } else if ("advertiser".equalsIgnoreCase(key)) {
                     createAdvertiser(value, configSource, buffer, "text/xml");
                 }

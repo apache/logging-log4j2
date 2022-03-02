@@ -18,6 +18,8 @@ package org.apache.logging.log4j.core.jackson;
 
 import java.io.IOException;
 
+import org.apache.logging.log4j.core.util.Integers;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
@@ -62,7 +64,7 @@ public final class Log4jStackTraceElementDeserializer extends StdScalarDeseriali
                     } else {
                         // An XML number always comes in a string since there is no syntax help as with JSON.
                         try {
-                            lineNumber = Integer.parseInt(jp.getText().trim());
+                            lineNumber = Integers.parseInt(jp.getText());
                         } catch (final NumberFormatException e) {
                             throw JsonMappingException.from(jp, "Non-numeric token (" + t + ") for property 'line'", e);
                         }

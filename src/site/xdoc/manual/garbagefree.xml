@@ -410,7 +410,7 @@
           </p>
           <p>
             An alternative is to implement the
-            <a href="http://logging.apache.org/log4j/2.x/log4j-api/xref/org/apache/logging/log4j/util/StringBuilderFormattable.html"><tt>org.apache.logging.log4j.util.StringBuilderFormattable</tt></a>
+            <a href="https://logging.apache.org/log4j/2.x/log4j-api/xref/org/apache/logging/log4j/util/StringBuilderFormattable.html"><tt>org.apache.logging.log4j.util.StringBuilderFormattable</tt></a>
             interface.
             If an object is logged that implements this interface, its <tt>formatTo</tt> method is called instead of
             <tt>toString()</tt>.
@@ -560,7 +560,7 @@ public void garbageFree() {
         <p><img src="../images/garbage-free2.6-SyncThroughputLinux.png"
             alt="Throughput of Log4j 2.6 in garbage-free mode is slightly worse than in classic mode, but on par with 2.5 and much better than alternatives logging libraries" /></p>
         <p>The results above are obtained with the
-          <a href="http://openjdk.java.net/projects/code-tools/jmh/">JMH</a> Java benchmark harness.
+          <a href="https://openjdk.java.net/projects/code-tools/jmh/">JMH</a> Java benchmark harness.
           See the FileAppenderBenchmark source code in the log4j-perf module.</p>
       </subsection>
       <a name="UnderTheHood" />

@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.samples.dto.AuditEvent;
 import org.apache.logging.log4j.samples.dto.RequestContext;
 import org.apache.logging.log4j.util.Strings;
@@ -60,7 +61,7 @@ public class LoggingController {
         int numThreads = 1;
         if (Strings.isNotEmpty(threadCount)) {
             try {
-                numThreads = Integer.parseInt(threadCount);
+                numThreads = Integers.parseInt(threadCount);
             } catch (final Exception ex) {
                 System.out.println("Invalid threadCount specified: " + threadCount);
             }

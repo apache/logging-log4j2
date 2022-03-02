@@ -25,20 +25,24 @@ import org.bson.Document;
  * The MongoDB implementation of {@link NoSqlObject} typed to a BSON {@link Document}.
  */
 public final class MongoDbDocumentObject implements NoSqlObject<Document> {
+
     private final Document document;
 
+    /**
+     * Constructs a new instance.
+     */
     public MongoDbDocumentObject() {
         this.document = new Document();
     }
 
     @Override
     public void set(final String field, final NoSqlObject<Document> value) {
-        this.document.append(field, value.unwrap());
+        this.document.append(field, value != null ? value.unwrap() : null);
     }
 
     @Override
     public void set(final String field, final NoSqlObject<Document>[] values) {
-        this.document.append(field, Arrays.asList(values));
+        this.document.append(field, values != null ? Arrays.asList(values) : null);
     }
 
     @Override
@@ -48,7 +52,7 @@ public final class MongoDbDocumentObject implements NoSqlObject<Document> {
 
     @Override
     public void set(final String field, final Object[] values) {
-        this.document.append(field, Arrays.asList(values));
+        this.document.append(field, values != null ? Arrays.asList(values) : null);
     }
 
     @Override

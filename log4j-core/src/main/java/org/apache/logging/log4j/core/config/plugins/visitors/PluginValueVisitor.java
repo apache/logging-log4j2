@@ -49,7 +49,9 @@ public class PluginValueVisitor extends AbstractPluginVisitor<PluginValue> {
         } else {
             rawValue = removeAttributeValue(node.getAttributes(), name);
         }
-        final String value = this.substitutor.replace(event, rawValue);
+        final String value = this.annotation.substitute()
+                ? this.substitutor.replace(event, rawValue)
+                : rawValue;
         StringBuilders.appendKeyDqValue(log, name, value);
         return value;
     }

@@ -64,9 +64,9 @@
             CLASSPATH ahead of<code>log4j-core.jar</code>. This is not recommended; plugin name collisions will cause a
             warning to be emitted. Note that in an OSGi environment, the order that bundles are scanned for plugins
             generally follows the same order that bundles were installed into the framework. See
-            <a class="javadoc" href="http://www.osgi.org/javadoc/r5/core/org/osgi/framework/BundleContext.html#getBundles()">getBundles()</a>
+            <a class="javadoc" href="https://www.osgi.org/javadoc/r5/core/org/osgi/framework/BundleContext.html#getBundles()">getBundles()</a>
             and
-            <a class="javadoc" href="http://www.osgi.org/javadoc/r5/core/org/osgi/framework/SynchronousBundleListener.html">SynchronousBundleListener</a>.
+            <a class="javadoc" href="https://www.osgi.org/javadoc/r5/core/org/osgi/framework/SynchronousBundleListener.html">SynchronousBundleListener</a>.
             In short, name collisions are even more unpredictable in an OSGi environment.
             <!--
             TODO: in future, plugins will be able to be annotated with @Order which can override priorities
@@ -152,7 +152,7 @@
           <h4>Constraint Validators</h4>
             <p>
               Plugin factory fields and parameters can be automatically validated at runtime using constraint validators
-              inspired by the <a href="http://beanvalidation.org/">Bean Validation spec</a>. The following annotations
+              inspired by the <a href="https://beanvalidation.org/">Bean Validation spec</a>. The following annotations
               are bundled in Log4j, but custom
               <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/config/plugins/validation/ConstraintValidator.html">ConstraintValidators</a>
               can be created as well.
@@ -164,7 +164,7 @@
               instances, and empty <code>Map</code> instances.</dd>
               <dt><a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/config/plugins/validation/constraints/ValidHost.html">ValidHost</a></dt>
               <dd>This annotation validates that a value corresponds to a valid hostname. This uses the same validation as
-              <a class="javadoc" href="http://docs.oracle.com/javase/8/docs/api/java/net/InetAddress.html#getByName-java.lang.String-">InetAddress::getByName</a>.</dd>
+              <a class="javadoc" href="https://docs.oracle.com/javase/8/docs/api/java/net/InetAddress.html#getByName-java.lang.String-">InetAddress::getByName</a>.</dd>
               <dt><a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/config/plugins/validation/constraints/ValidPort.html">ValidPort</a></dt>
               <dd>This annotation validates that a value corresponds to a valid port number between 0 and 65535.</dd>
             </dl>
@@ -250,8 +250,8 @@
         <a name="DeveloperNotes"/>
         <p>
           If a plugin class implements
-          <a class="javadoc" href="http://docs.oracle.com/javase/6/docs/api/java/util/Collection.html">Collection</a> or
-          <a class="javadoc" href="http://docs.oracle.com/javase/6/docs/api/java/util/Map.html">Map</a>, then no
+          <a class="javadoc" href="https://docs.oracle.com/javase/6/docs/api/java/util/Collection.html">Collection</a> or
+          <a class="javadoc" href="https://docs.oracle.com/javase/6/docs/api/java/util/Map.html">Map</a>, then no
           factory method is used. Instead, the class is instantiated using the default constructor, and all child
           configuration nodes are added to the <code>Collection</code> or <code>Map</code>.
         </p>

@@ -1,14 +1,30 @@
 [
   {
-    "extension": "revapi.java",
+    "extension": "revapi.filter",
     "configuration": {
-      "filter": {
-        "classes": {
-          "exclude": [
-            "org\\.apache\\.logging\\.log4j\\.web\\.Log4jWebLifeCycle"
-          ]
-        }
+      "elements": {
+        "exclude": [
+          "class org\\.apache\\.logging\\.log4j\\.web\\.Log4jWebLifeCycle",
+          {
+            "matcher": "java-package",
+            "match": "/org\\.apache\\.logging\\.log4j\\.core(\\..*)?/"
+          }
+        ]
       }
+    }
+  },
+  {
+    "extension": "revapi.differences",
+    "configuration": {
+      "differences": [
+        {
+          "ignore": true,
+          "code": "java.class.nonPublicPartOfAPI",
+          "old": "interface org.apache.logging.log4j.web.Log4jWebLifeCycle",
+          "new": "interface org.apache.logging.log4j.web.Log4jWebLifeCycle",
+          "justification": "Internal component"
+        }
+      ]
     }
   }
 ]

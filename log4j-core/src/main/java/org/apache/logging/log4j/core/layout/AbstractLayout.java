@@ -129,7 +129,7 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
      * Constructs a layout with an optional header and footer.
      *
      * @param configuration
-     *            The configuration
+     *            The configuration. May be null.
      * @param header
      *            The header to include when the stream is opened. May be null.
      * @param footer

@@ -23,6 +23,7 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
@@ -73,7 +74,7 @@ public class LevelPatternConverter extends LogEventPatternConverter {
             final String key = pair[0].trim();
             final String value = pair[1].trim();
             if (OPTION_LENGTH.equalsIgnoreCase(key)) {
-                length = Integer.parseInt(value);
+                length = Integers.parseInt(value);
             } else if (OPTION_LOWER.equalsIgnoreCase(key)) {
                 lowerCase = Boolean.parseBoolean(value);
             } else {

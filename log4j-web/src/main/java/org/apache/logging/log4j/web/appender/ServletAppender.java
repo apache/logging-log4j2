@@ -23,13 +23,13 @@ import javax.servlet.ServletContext;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
-import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.web.WebLoggerContextUtils;
 
 /**
@@ -55,10 +55,8 @@ public class ServletAppender extends AbstractAppender {
 				LOGGER.error("No servlet context is available");
 				return null;
 			}
-			Layout<? extends Serializable> layout = getLayout();
-			if (layout == null) {
-				layout = PatternLayout.createDefaultLayout();
-			} else if (!(layout instanceof AbstractStringLayout)) {
+			final Layout<? extends Serializable> layout = getOrCreateLayout();
+			if (!(layout instanceof StringLayout)) {
 				LOGGER.error("Layout must be a StringLayout to log to ServletContext");
 				return null;
 			}

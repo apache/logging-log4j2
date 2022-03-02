@@ -17,6 +17,9 @@
 
 -->
 <Configuration status="OFF" name="RoutingTest">
+  <Properties>
+    <Property name="filename">target/routing1/routingtest-$${sd:type}.log</Property>
+  </Properties>
   <ThresholdFilter level="debug"/>
 
   <Appenders>
@@ -29,7 +32,7 @@
     <Routing name="Routing">
       <Routes pattern="$${sd:type}">
         <Route>
-          <RollingFile name="Routing-${sd:type}" fileName="target/routing1/routingtest-${sd:type}.log"
+          <RollingFile name="Routing-${sd:type}" fileName="${filename}"
                        filePattern="target/routing1/test1-${sd:type}.%i.log.gz">
             <PatternLayout>
               <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>

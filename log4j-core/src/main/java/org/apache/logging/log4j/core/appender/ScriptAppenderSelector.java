@@ -80,7 +80,13 @@ public class ScriptAppenderSelector extends AbstractAppender {
 				return null;
 			}
 			final ScriptManager scriptManager = configuration.getScriptManager();
-			scriptManager.addScript(script);
+			if (scriptManager == null) {
+			    LOGGER.error("Script support is not enabled");
+			    return null;
+            }
+			if (!scriptManager.addScript(script)) {
+			    return null;
+            }
 			final Bindings bindings = scriptManager.createBindings(script);
 			LOGGER.debug("ScriptAppenderSelector '{}' executing {} '{}': {}", name, script.getLanguage(),
 					script.getName(), script.getScriptText());

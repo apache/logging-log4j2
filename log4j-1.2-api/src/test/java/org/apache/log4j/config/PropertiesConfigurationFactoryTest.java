@@ -37,7 +37,7 @@ public class PropertiesConfigurationFactoryTest {
     }
 
     @Test
-    public void testProperties() throws Exception {
+    public void testProperties() {
         Logger logger = LogManager.getLogger("test");
         logger.debug("This is a test of the root logger");
         File file = new File("target/temp.A1");

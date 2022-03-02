@@ -57,6 +57,8 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class SocketAppenderReconnectTest {
 
+    private static final long DEFAULT_POLL_MILLIS = 1_000L;
+    private static final int EPHEMERAL_PORT = 0;
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     /**
@@ -69,9 +71,9 @@ public class SocketAppenderReconnectTest {
         try (final LineReadingTcpServer server = new LineReadingTcpServer()) {
 
             // Start the server.
-            server.start("Main", 0);
+            server.start("Main", EPHEMERAL_PORT);
             final int port = server.serverSocket.getLocalPort();
-
+            
             // Initialize the logger context.
             final LoggerContext loggerContext = initContext(port);
             try {
@@ -106,8 +108,8 @@ public class SocketAppenderReconnectTest {
              final LineReadingTcpServer secondaryServer = new LineReadingTcpServer()) {
 
             // Start servers.
-            primaryServer.start("Primary", 0);
-            secondaryServer.start("Secondary", 0);
+            primaryServer.start("Primary", EPHEMERAL_PORT);
+            secondaryServer.start("Secondary", EPHEMERAL_PORT);
 
             // Mock the host resolver.
             final FixedHostResolver hostResolver = FixedHostResolver.ofServers(primaryServer, secondaryServer);
@@ -117,6 +119,7 @@ public class SocketAppenderReconnectTest {
                 // Initialize the logger context.
                 final LoggerContext loggerContext = initContext(
                         // Passing an invalid port, since the resolution is supposed to be performed by the mocked host resolver anyway.
+                        // Here, 0 does NOT mean an ephemeral port.
                         0);
                 try {
 
@@ -200,7 +203,7 @@ public class SocketAppenderReconnectTest {
 
     private static void awaitUntilSucceeds(final Runnable runnable) {
         // These figures are collected via trial-and-error; nothing scientific to look for here.
-        final long pollIntervalMillis = 1_000L;
+        final long pollIntervalMillis = DEFAULT_POLL_MILLIS;
         final long timeoutSeconds = 120L;
         await()
                 .pollInterval(pollIntervalMillis, TimeUnit.MILLISECONDS)
@@ -233,13 +236,15 @@ public class SocketAppenderReconnectTest {
      */
     private static final class LineReadingTcpServer implements AutoCloseable {
 
-        private volatile boolean running = false;
+        private static final int UNBOUND_PORT = -1;
 
-        private ServerSocket serverSocket = null;
+        private volatile boolean running;
 
-        private Socket clientSocket = null;
+        private ServerSocket serverSocket;
 
-        private Thread readerThread = null;
+        private Socket clientSocket;
+
+        private Thread readerThread;
 
         private final BlockingQueue<String> lines = new LinkedBlockingQueue<>();
 
@@ -250,6 +255,16 @@ public class SocketAppenderReconnectTest {
                 running = true;
                 serverSocket = createServerSocket(port);
                 readerThread = createReaderThread(name);
+                // Make sure the server socket is ready.
+                if (serverSocket.getLocalPort() == UNBOUND_PORT || !serverSocket.isBound()) {
+                    try {
+                        Thread.sleep(DEFAULT_POLL_MILLIS);
+                    } catch (InterruptedException e) {
+                        throw new IllegalStateException(e);
+                    }
+                }
+                assertNotEquals(UNBOUND_PORT, serverSocket.getLocalPort(),
+                    () -> String.format("Server socket is not bound to port %s (0 = ephemeral). This can only happen if a machine runs out of ports.", port));
             }
         }
 
@@ -263,9 +278,8 @@ public class SocketAppenderReconnectTest {
         private Thread createReaderThread(final String name) {
             final String threadName = "LineReadingTcpSocketServerReader-" + name;
             final Thread thread = new Thread(this::acceptClients, threadName);
-            thread.setDaemon(true);     // Avoid blocking JVM exit.
-            thread.setUncaughtExceptionHandler((ignored, error) ->
-                    LOGGER.error("uncaught reader thread exception", error));
+            thread.setDaemon(true); // Avoid blocking JVM exit.
+            thread.setUncaughtExceptionHandler((ignored, error) -> LOGGER.error("uncaught reader thread exception", error));
             thread.start();
             return thread;
         }

@@ -16,7 +16,9 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.apache.logging.log4j.util.Chars;
+import static org.apache.logging.log4j.util.Chars.LF;
+import static org.apache.logging.log4j.util.Chars.SPACE;
+
 import org.apache.logging.log4j.util.StringBuilders;
 
 /**
@@ -84,7 +86,7 @@ class BasicThreadInformation implements ThreadInformation {
      */
     @Override
     public void printThreadInfo(final StringBuilder sb) {
-        StringBuilders.appendDqValue(sb, name).append(Chars.SPACE);
+        StringBuilders.appendDqValue(sb, name).append(SPACE);
         if (isDaemon) {
             sb.append("daemon ");
         }
@@ -92,8 +94,8 @@ class BasicThreadInformation implements ThreadInformation {
         if (threadGroupName != null) {
             StringBuilders.appendKeyDqValue(sb, "group", threadGroupName);
         }
-        sb.append('\n');
-        sb.append("\tThread state: ").append(state.name()).append('\n');
+        sb.append(LF);
+        sb.append("\tThread state: ").append(state.name()).append(LF);
     }
 
     /**
@@ -104,7 +106,7 @@ class BasicThreadInformation implements ThreadInformation {
     @Override
     public void printStack(final StringBuilder sb, final StackTraceElement[] trace) {
         for (final StackTraceElement element : trace) {
-            sb.append("\tat ").append(element).append('\n');
+            sb.append("\tat ").append(element).append(LF);
         }
     }
 }

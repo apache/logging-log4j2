@@ -14,17 +14,18 @@
   ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   ~ See the license for the specific language governing permissions and
   ~ limitations under the license.
-  --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.logging.log4j</groupId>
   <artifactId>log4j</artifactId>
   <packaging>pom</packaging>
   <name>Apache Log4j 2</name>
-  <version>2.17.2-SNAPSHOT</version>
+  <version>2.17.3-SNAPSHOT</version>
   <parent>
     <groupId>org.apache.logging</groupId>
     <artifactId>logging-parent</artifactId>
-    <version>3</version>
+    <version>5</version>
     <relativePath />
   </parent>
   <description>Apache Log4j 2</description>
@@ -52,7 +53,7 @@
     <developer>
       <id>ggregory</id>
       <name>Gary Gregory</name>
-      <email>ggregory at apache.org</email>
+      <email>ggregory@apache.org</email>
       <url>https://www.garygregory.com</url>
       <organization>The Apache Software Foundation</organization>
       <organizationUrl>https://www.apache.org/</organizationUrl>      
@@ -82,7 +83,7 @@
       </roles>
       <timezone>Asia/Tokyo</timezone>
       <properties>
-        <picUrl>http://people.apache.org/~rpopma/img/profilepic.jpg</picUrl>
+        <picUrl>https://people.apache.org/~rpopma/img/profilepic.jpg</picUrl>
       </properties>
     </developer>
     <developer>
@@ -98,9 +99,9 @@
       <id>mattsicker</id>
       <name>Matt Sicker</name>
       <email>mattsicker@apache.org</email>
-      <organization>CloudBees</organization>
+      <organization>Apple</organization>
       <roles>
-        <role>PMC Chair</role>
+        <role>PMC Member</role>
       </roles>
       <timezone>America/Chicago</timezone>
     </developer>
@@ -144,6 +145,15 @@
         <role>PMC Member</role>
       </roles>
       <timezone>Europe/Amsterdam</timezone>
+    </developer>	  
+    <developer>
+      <id>rgrabowski</id>
+      <name>Ron Grabowski</name>
+      <email>rgrabowski@apache.org</email>
+      <roles>
+        <role>PMC Chair</role>
+      </roles>
+      <timezone>America/New_York</timezone>
     </developer>
   </developers>
   <!-- Contributors -->
@@ -164,14 +174,14 @@
       <contributor>
         <name>Michael Vorburger.ch</name>
         <email>vorburger@apache.org</email>
-        <url>http://www.vorburger.ch</url>
+        <url>https://www.vorburger.ch</url>
         <roles>
           <role>https://github.com/apache/logging-log4j2/commits?author=vorburger</role>
           <role>JULer</role>
         </roles>
         <timezone>Europe/Zurich</timezone>
         <properties>
-          <picUrl>http://www.vorburger.ch/michael_vorburger_portrait_in_bay_of_roses_spain_with_bad_lighting.jpg</picUrl>
+          <picUrl>https://www.vorburger.ch/michael_vorburger_portrait_in_bay_of_roses_spain_with_bad_lighting.jpg</picUrl>
         </properties>
       </contributor>
   </contributors>
@@ -183,9 +193,9 @@
       <post>log4j-user@logging.apache.org</post>
       <archive>https://lists.apache.org/list.html?log4j-user@logging.apache.org</archive>
       <otherArchives>
-        <otherArchive>http://mail-archives.apache.org/mod_mbox/logging-log4j-user/</otherArchive>
-        <otherArchive>http://marc.info/?l=log4j-user</otherArchive>
-        <otherArchive>http://dir.gmane.org/gmane.comp.jakarta.log4j.user</otherArchive>
+        <otherArchive>https://mail-archives.apache.org/mod_mbox/logging-log4j-user/</otherArchive>
+        <otherArchive>https://marc.info/?l=log4j-user</otherArchive>
+        <otherArchive>https://dir.gmane.org/gmane.comp.jakarta.log4j.user</otherArchive>
       </otherArchives>
     </mailingList>
     <mailingList>
@@ -195,9 +205,9 @@
       <post>dev@logging.apache.org</post>
       <archive>https://lists.apache.org/list.html?dev@logging.apache.org</archive>
       <otherArchives>
-        <otherArchive>http://mail-archives.apache.org/mod_mbox/logging-dev/</otherArchive>
-        <otherArchive>http://marc.info/?l=dev</otherArchive>
-        <otherArchive>http://dir.gmane.org/gmane.comp.jakarta.log4j.devel</otherArchive>
+        <otherArchive>https://mail-archives.apache.org/mod_mbox/logging-dev/</otherArchive>
+        <otherArchive>https://marc.info/?l=dev</otherArchive>
+        <otherArchive>https://dir.gmane.org/gmane.comp.jakarta.log4j.devel</otherArchive>
       </otherArchives>
     </mailingList>
   </mailingLists>
@@ -210,55 +220,56 @@
   <properties>
     <!-- make sure to update these for each release! -->
     <log4jParentDir>${basedir}</log4jParentDir>
-    <Log4jReleaseVersion>2.17.1</Log4jReleaseVersion>
+    <Log4jReleaseVersion>2.17.2</Log4jReleaseVersion>
     <Log4jReleaseVersionJava7>2.12.4</Log4jReleaseVersionJava7>
     <Log4jReleaseVersionJava6>2.3.2</Log4jReleaseVersionJava6>
-    <Log4jReleaseManager>Matt Sicker</Log4jReleaseManager>
-    <Log4jReleaseKey>D7C92B70FA1C814D</Log4jReleaseKey>
-    <Log4jSigningUserName>mattsicker@apache.org</Log4jSigningUserName>
+    <Log4jReleaseManager>Ralph Goers</Log4jReleaseManager>
+    <Log4jReleaseKey>B3D8E1BA</Log4jReleaseKey>
+    <Log4jSigningUserName>rgoers@apache.org</Log4jSigningUserName>
     <!-- note that any properties you want available in velocity templates must not use periods! -->
-    <slf4jVersion>1.7.25</slf4jVersion>
+    <slf4jVersion>1.7.35</slf4jVersion>
     <logbackVersion>1.2.3</logbackVersion>
     <jackson1Version>1.9.13</jackson1Version>
     <jackson2Version>2.13.1</jackson2Version>
     <spring-boot.version>2.5.7</spring-boot.version>
     <springVersion>5.3.15</springVersion>
-    <kubernetes-client.version>4.6.1</kubernetes-client.version>
+    <kubernetes-client.version>5.12.1</kubernetes-client.version>
     <flumeVersion>1.9.0</flumeVersion>
     <disruptorVersion>3.4.4</disruptorVersion>
     <conversantDisruptorVersion>1.2.15</conversantDisruptorVersion> <!-- Version 1.2.16 requires Java 9 -->
-    <elastic.version>7.16.3</elastic.version>
+    <elastic.version>7.17.0</elastic.version>
     <mongodb3.version>3.12.10</mongodb3.version>
-    <mongodb4.version>4.4.1</mongodb4.version>
+    <mongodb4.version>4.5.0</mongodb4.version>
     <!-- POM for jackson-dataformat-xml 2.13.1 depends on woodstox-core 6.2.7 -->
     <woodstox.version>6.2.8</woodstox.version>
     <groovy.version>3.0.9</groovy.version>
     <compiler.plugin.version>3.9.0</compiler.plugin.version>
     <pmd.plugin.version>3.10.0</pmd.plugin.version>
     <changes.plugin.version>2.12.1</changes.plugin.version>
-    <javadoc.plugin.version>3.3.1</javadoc.plugin.version>
+    <javadoc.plugin.version>3.3.2</javadoc.plugin.version>
     <!-- surefire.plugin.version 2.18 yields http://jira.codehaus.org/browse/SUREFIRE-1121, which is fixed in 2.18.1 -->
     <!-- surefire.plugin.version 2.19 yields https://issues.apache.org/jira/browse/SUREFIRE-1193. -->
     <!-- all versions after 2.13 yield https://issues.apache.org/jira/browse/SUREFIRE-720 -->
     <surefire.plugin.version>3.0.0-M5</surefire.plugin.version>
     <failsafe.plugin.version>3.0.0-M5</failsafe.plugin.version>
-    <checkstyle.plugin.version>3.0.0</checkstyle.plugin.version>
+    <checkstyle.plugin.version>3.1.2</checkstyle.plugin.version>
+    <checkstyle.tool.version>8.45.1</checkstyle.tool.version>
     <deploy.plugin.version>2.8.2</deploy.plugin.version>
     <rat.plugin.version>0.13</rat.plugin.version>
     <pdf.plugin.version>1.2</pdf.plugin.version>
     <cobertura.plugin.version>2.7</cobertura.plugin.version>
-    <jacoco.plugin.version>0.8.6</jacoco.plugin.version>
+    <jacoco.plugin.version>0.8.7</jacoco.plugin.version>
     <release.plugin.version>2.5.3</release.plugin.version>
     <scm.plugin.version>1.9.5</scm.plugin.version>
-    <jxr.plugin.version>2.5</jxr.plugin.version>
-    <revapi.plugin.version>0.11.1</revapi.plugin.version>
+    <jxr.plugin.version>3.1.1</jxr.plugin.version>
+    <revapi.plugin.version>0.14.6</revapi.plugin.version>
     <revapi.skip>false</revapi.skip>
     <clirr.plugin.version>2.8</clirr.plugin.version>
-    <site.plugin.version>3.8.2</site.plugin.version>
+    <site.plugin.version>3.11.0</site.plugin.version>
     <!-- Maven site depends on Velocity and the escaping rules are different in newer versions. -->
     <!-- See https://maven.apache.org/plugins/maven-site-plugin/migrate.html -->
     <velocity.plugin.version>1.5</velocity.plugin.version>
-    <asciidoc.plugin.version>1.5.6</asciidoc.plugin.version>
+    <asciidoc.plugin.version>2.2.2</asciidoc.plugin.version>
     <remote.resources.plugin.version>1.5</remote.resources.plugin.version>
     <manifestfile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestfile>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -274,14 +285,15 @@
     <javax.persistence>2.2.1</javax.persistence>
     <!-- The OSGi API version MUST always be the MINIMUM version Log4j supports -->
     <osgi.api.version>4.3.1</osgi.api.version>
-    <activemq.version>5.16.3</activemq.version>
+    <activemq.version>5.16.4</activemq.version>
     <!-- Allow Clirr severity to be overriden by the command-line option -DminSeverity=level -->
     <minSeverity>info</minSeverity>
     <jctoolsVersion>1.2.1</jctoolsVersion>
     <junitVersion>4.13.2</junitVersion>
     <junitJupiterVersion>5.8.2</junitJupiterVersion>
-    <mockitoVersion>4.2.0</mockitoVersion>
-    <xmlunitVersion>2.8.4</xmlunitVersion>
+    <junitPioneerVersion>1.6.1</junitPioneerVersion>
+    <mockitoVersion>4.3.1</mockitoVersion>
+    <xmlunitVersion>2.9.0</xmlunitVersion>
     <argLine>-Xms256m -Xmx1024m</argLine>
     <javaTargetVersion>1.8</javaTargetVersion>
     <module.name />
@@ -484,7 +496,7 @@
       <dependency>
         <groupId>com.sleepycat</groupId>
         <artifactId>je</artifactId>
-        <version>5.0.73</version>
+        <version>18.3.12</version>
       </dependency>
       <dependency>
         <groupId>org.osgi</groupId>
@@ -736,6 +748,12 @@
         <version>${junitJupiterVersion}</version>
         <scope>test</scope>
       </dependency>
+      <dependency>
+        <groupId>org.junit.platform</groupId>
+        <artifactId>junit-platform-commons</artifactId>
+        <version>1.8.2</version>
+        <scope>test</scope>
+      </dependency>
       <!-- JUnit 4 to 5 migration support -->
       <dependency>
         <groupId>org.junit.jupiter</groupId>
@@ -765,6 +783,12 @@
         <scope>test</scope>
       </dependency>
       <dependency>
+        <groupId>org.junit-pioneer</groupId>
+        <artifactId>junit-pioneer</artifactId>
+        <version>${junitPioneerVersion}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
         <groupId>org.assertj</groupId>
         <artifactId>assertj-core</artifactId>
         <version>3.22.0</version>
@@ -785,7 +809,7 @@
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-utils</artifactId>
-        <version>3.4.0</version>
+        <version>3.4.1</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -868,7 +892,7 @@
       <dependency>
         <groupId>org.eclipse.persistence</groupId>
         <artifactId>org.eclipse.persistence.jpa</artifactId>
-        <version>2.7.9</version>
+        <version>2.7.10</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.persistence</groupId>
@@ -895,7 +919,7 @@
       <dependency>
         <groupId>net.javacrumbs.json-unit</groupId>
         <artifactId>json-unit</artifactId>
-        <version>2.28.0</version>
+        <version>2.32.0</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -920,7 +944,7 @@
       <dependency>
         <groupId>co.elastic.logging</groupId>
         <artifactId>log4j2-ecs-layout</artifactId>
-        <version>1.0.1</version>
+        <version>1.3.2</version>
       </dependency>
       <dependency>
         <groupId>org.elasticsearch.client</groupId>
@@ -957,12 +981,12 @@
       <dependency>
         <groupId>com.google.code.java-allocation-instrumenter</groupId>
         <artifactId>java-allocation-instrumenter</artifactId>
-        <version>3.0.1</version>
+        <version>3.3.0</version>
       </dependency>
       <dependency>
         <groupId>org.hdrhistogram</groupId>
         <artifactId>HdrHistogram</artifactId>
-        <version>2.1.9</version>
+        <version>2.1.12</version>
       </dependency>
       <dependency>
         <groupId>org.apache-extras.beanshell</groupId>
@@ -983,7 +1007,7 @@
         <!-- Testing MongoDB -->
         <groupId>de.flapdoodle.embed</groupId>
         <artifactId>de.flapdoodle.embed.mongo</artifactId>
-        <version>3.2.8</version>
+        <version>3.4.1</version>
         <scope>test</scope>
       </dependency>
       <!-- Testing LDAP -->
@@ -1003,6 +1027,7 @@
     </dependencies>
   </dependencyManagement>
   <build>
+    <defaultGoal>clean verify</defaultGoal>
     <pluginManagement>
       <plugins>
         <plugin>
@@ -1039,6 +1064,13 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
           <version>${checkstyle.plugin.version}</version>
+          <dependencies>
+            <dependency>
+              <groupId>com.puppycrawl.tools</groupId>
+              <artifactId>checkstyle</artifactId>
+              <version>${checkstyle.tool.version}</version>
+            </dependency>
+          </dependencies>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -1153,7 +1185,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
-          <version>3.1.0</version>
+          <version>3.3.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -1188,7 +1220,7 @@
         <plugin>
           <groupId>io.fabric8</groupId>
           <artifactId>docker-maven-plugin</artifactId>
-          <version>0.33.0</version>
+          <version>0.39.0</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -1196,6 +1228,13 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>com.puppycrawl.tools</groupId>
+            <artifactId>checkstyle</artifactId>
+            <version>${checkstyle.tool.version}</version>
+          </dependency>
+        </dependencies>
       </plugin>
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
@@ -1418,6 +1457,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-doap-plugin</artifactId>
         <version>1.2</version>
+        <inherited>false</inherited>
         <dependencies>
           <!-- Fix java.lang.IllegalArgumentException: Invalid version number: Version number may be negative or greater than 255 -->
           <dependency>
@@ -1459,6 +1499,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-changes-plugin</artifactId>
         <version>${changes.plugin.version}</version>
+        <inherited>false</inherited>
         <reportSets>
           <reportSet>
             <reports>
@@ -1806,7 +1847,7 @@
               <dependency>
                 <groupId>org.revapi</groupId>
                 <artifactId>revapi-java</artifactId>
-                <version>0.18.2</version>
+                <version>0.26.1</version>
               </dependency>
             </dependencies>
             <executions>
@@ -1820,7 +1861,19 @@
                     <path>revapi.json</path>
                   </analysisConfigurationFiles>
                   <analysisConfiguration><![CDATA[
-[
+[  {
+     "extension": "revapi.filter",
+      "configuration": {
+      "elements": {
+        "include": [
+         {
+           "matcher": "java-package",
+           "match": "/org\\.apache\\.logging\\.log4j(\\..*)?/"
+         }
+        ]
+      }
+    }
+  },
   {
      "extension": "revapi.java",
      "configuration": {
@@ -1831,21 +1884,7 @@
        "reportUsesFor": [
           "java.missing.newClass",
           "java.class.nonPublicPartOfAPI"
-       ],
-       "filter": {
-         "classes": {
-           "regex": true,
-           "include": [
-             "org\\.apache\\.logging\\.log4j(\\..+)?"
-           ]
-         },
-         "packages": {
-           "regex": true,
-           "include": [
-             "org\\.apache\\.logging\\.log4j(\\..+)?"
-           ]
-         }
-       }
+       ]
      }
   },
   {
@@ -1886,6 +1925,9 @@
             <groupId>org.revapi</groupId>
             <artifactId>revapi-maven-plugin</artifactId>
             <version>${revapi.plugin.version}</version>
+            <configuration>
+              <skip>${revapi.skip}</skip>
+            </configuration>
             <reportSets>
               <reportSet>
                 <inherited>false</inherited>

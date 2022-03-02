@@ -52,6 +52,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.AvailablePortFinder;
@@ -156,7 +157,7 @@ public class FlumePersistentAppenderTest {
             Assert.assertNotNull("Received " + i + " events. Event " + (i + 1) + " is null", event);
             final String value = event.getHeaders().get("counter");
             Assert.assertNotNull("Missing 'counter' in map " + event.getHeaders() + ", i = " + i, value);
-            final int counter = Integer.parseInt(value);
+            final int counter = Integers.parseInt(value);
             if (fields[counter]) {
                 Assert.fail("Duplicate event");
             } else {
@@ -184,7 +185,7 @@ public class FlumePersistentAppenderTest {
             Assert.assertNotNull("Received " + i + " events. Event " + (i + 1) + " is null", event);
             final String value = event.getHeaders().get("counter");
             Assert.assertNotNull("Missing counter", value);
-            final int counter = Integer.parseInt(value);
+            final int counter = Integers.parseInt(value);
             if (fields[counter]) {
                 Assert.fail("Duplicate event");
             } else {
@@ -336,7 +337,7 @@ public class FlumePersistentAppenderTest {
                     + (i + 1) + " is null", event);
                 final String value = event.getHeaders().get("counter");
                 Assert.assertNotNull("Missing counter", value);
-                final int counter = Integer.parseInt(value);
+                final int counter = Integers.parseInt(value);
                 if (fields[counter]) {
                     Assert.fail("Duplicate event");
                 } else {
