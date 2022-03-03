@@ -249,7 +249,7 @@ public class KubernetesLookup extends AbstractLookup {
                 return kubernetesClient.pods().withName(hostName).get();
             }
         } catch (Throwable t) {
-            LOGGER.debug("Unable to locate pod with name {}.", hostName);
+            LOGGER.debug("Unable to locate pod with name {} ({})", hostName, t.getMessage());
         }
         return null;
     }
