@@ -24,8 +24,7 @@ import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.Properties;
-import java.util.Set;
+
 import javax.net.ssl.HttpsURLConnection;
 
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -33,7 +32,6 @@ import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
 import org.apache.logging.log4j.core.util.AuthorizationProvider;
-import org.apache.logging.log4j.core.util.BasicAuthorizationProvider;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
@@ -56,13 +54,13 @@ public class UrlConnectionFactory {
 
     public static HttpURLConnection createConnection(final URL url, final long lastModifiedMillis, final SslConfiguration sslConfiguration)
         throws IOException {
-        PropertiesUtil props = PropertiesUtil.getProperties();
-        List<String> allowed = Arrays.asList(Strings.splitList(props
+        final PropertiesUtil props = PropertiesUtil.getProperties();
+        final List<String> allowed = Arrays.asList(Strings.splitList(props
                 .getStringProperty(ALLOWED_PROTOCOLS, HTTPS).toLowerCase(Locale.ROOT)));
         if (allowed.size() == 1 && NO_PROTOCOLS.equals(allowed.get(0))) {
             throw new ProtocolException("No external protocols have been enabled");
         }
-        String protocol = url.getProtocol();
+        final String protocol = url.getProtocol();
         if (protocol == null) {
             throw new ProtocolException("No protocol was specified on " + url.toString());
         }
@@ -70,6 +68,7 @@ public class UrlConnectionFactory {
             throw new ProtocolException("Protocol " + protocol + " has not been enabled as an allowed protocol");
         }
         final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+
         final AuthorizationProvider provider = ConfigurationFactory.authorizationProvider(props);
         if (provider != null) {
             provider.addAuthorization(urlConnection);
@@ -78,6 +77,8 @@ public class UrlConnectionFactory {
         urlConnection.setDoOutput(true);
         urlConnection.setDoInput(true);
         urlConnection.setRequestMethod("GET");
+        // A "jar:" URL file remains open after the stream is closed, so do not cache it.
+        urlConnection.setUseCaches(false);
         if (connectTimeoutMillis > 0) {
             urlConnection.setConnectTimeout(connectTimeoutMillis);
         }
@@ -106,6 +107,8 @@ public class UrlConnectionFactory {
             urlConnection = createConnection(url, 0, SslConfigurationFactory.getSslConfiguration());
         } else {
             urlConnection = url.openConnection();
+            // A "jar:" URL file remains open after the stream is closed, so do not cache it.
+            urlConnection.setUseCaches(false);
         }
         return urlConnection;
     }

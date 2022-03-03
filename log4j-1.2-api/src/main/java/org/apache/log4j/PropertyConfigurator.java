@@ -382,6 +382,7 @@ public class PropertyConfigurator implements Configurator {
         LogLog.debug("Reading configuration from URL " + url);
         try {
             final URLConnection urlConnection = url.openConnection();
+            // A "jar:" URL file remains open after the stream is closed, so do not cache it.
             urlConnection.setUseCaches(false);
             try (InputStream inputStream = urlConnection.getInputStream()) {
                 return doConfigure(inputStream, loggerRepository, classLoader);

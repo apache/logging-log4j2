@@ -364,6 +364,8 @@ public class ConfigurationSource {
     private static ConfigurationSource getConfigurationSource(final URL url) {
         try {
             final URLConnection urlConnection = url.openConnection();
+            // A "jar:" URL file remains open after the stream is closed, so do not cache it.
+            urlConnection.setUseCaches(false);
             final AuthorizationProvider provider = ConfigurationFactory.authorizationProvider(PropertiesUtil.getProperties());
             provider.addAuthorization(urlConnection);
             if (url.getProtocol().equals(HTTPS)) {
