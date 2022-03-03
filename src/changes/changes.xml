@@ -49,7 +49,7 @@
         Document that the Spring Boot Lookup requires the log4j-spring-boot dependency.
       </action>
       <action issue="LOG4J2-3317" dev="ckozak" type="fix">
-        Fix RoutingAppender backcompat and disallow recursive evaluation of lookup results outside of configuration properties.
+        Fix RoutingAppender backward compatibility and disallow recursive evaluation of lookup results outside of configuration properties.
       </action>
       <action issue="LOG4J2-3333" dev="ckozak" type="fix">
         Fix ThreadContextDataInjector initialization deadlock
