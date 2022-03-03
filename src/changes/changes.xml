@@ -33,6 +33,9 @@
       <action issue="LOG4J2-3413" date="2022-02-26" type="fix" due-to="Piotr Karwasz">
         Fix resolution of non-Log4j properties.
       </action>
+      <action issue="LOG4J2-3423" type="fix" due-to="Radim Tlusty, Gary Gregory">
+        JAR file containing Log4j configuration isn't closed.
+      </action>
     </release>
     <release version="2.17.2" date="2022-02-23" description="GA Release 2.17.2">
       <!-- FIXES -->

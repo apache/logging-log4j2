@@ -185,6 +185,8 @@ public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
 
     private ConfigurationSource getConfigurationSource(URL url) throws IOException, URISyntaxException {
         URLConnection urlConnection = url.openConnection();
+        // A "jar:" URL file remains open after the stream is closed, so do not cache it.
+        urlConnection.setUseCaches(false);
         AuthorizationProvider provider = ConfigurationFactory.authorizationProvider(PropertiesUtil.getProperties());
         provider.addAuthorization(urlConnection);
         if (url.getProtocol().equals(HTTPS)) {
