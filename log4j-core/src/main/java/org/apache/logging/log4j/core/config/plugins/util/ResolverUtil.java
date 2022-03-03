@@ -342,6 +342,8 @@ public class ResolverUtil {
         try {
             connection = (JarURLConnection) url.openConnection();
             if (connection != null) {
+                // A "jar:" URL file remains open after the stream is closed, so do not cache it.
+                connection.setUseCaches(false);
                 try (JarFile jarFile = connection.getJarFile()) {
                     Enumeration<JarEntry> entries = jarFile.entries();
                     while (entries.hasMoreElements()) {

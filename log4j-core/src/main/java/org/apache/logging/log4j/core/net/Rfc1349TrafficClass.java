@@ -29,13 +29,30 @@ package org.apache.logging.log4j.core.net;
  */
 public enum Rfc1349TrafficClass {
 
-    // @formatter:off
+    /**
+     * IPTOS_NORMAL (0x00)
+     */
     IPTOS_NORMAL(0x00),
+
+    /**
+     * IPTOS_LOWCOST (0x02)
+     */
     IPTOS_LOWCOST(0x02),
-    IPTOS_LOWDELAY (0x10),
-    IPTOS_RELIABILITY (0x04),
-    IPTOS_THROUGHPUT (0x08);
-    // @formatter:on
+
+    /**
+     * IPTOS_LOWDELAY (0x10)
+     */
+    IPTOS_LOWDELAY(0x10),
+
+    /**
+     * IPTOS_RELIABILITY (0x04)
+     */
+    IPTOS_RELIABILITY(0x04),
+
+    /**
+     * IPTOS_THROUGHPUT (0x08)
+     */
+    IPTOS_THROUGHPUT(0x08);
 
     private final int trafficClass;
 
@@ -43,6 +60,11 @@ public enum Rfc1349TrafficClass {
         this.trafficClass = trafficClass;
     }
 
+    /**
+     * Gets the value.
+     *
+     * @return the value.
+     */
     public int value() {
         return trafficClass;
     }

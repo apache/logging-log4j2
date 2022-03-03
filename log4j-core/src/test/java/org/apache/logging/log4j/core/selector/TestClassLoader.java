@@ -54,9 +54,11 @@ public class TestClassLoader extends ClassLoader {
             throw new ClassNotFoundException(name);
         }
         try {
-            final URLConnection uc = resource.openConnection();
-            final int len = uc.getContentLength();
-            final InputStream in = new BufferedInputStream(uc.getInputStream());
+            final URLConnection urlConnection = resource.openConnection();
+            // A "jar:" URL file remains open after the stream is closed, so do not cache it.
+            urlConnection.setUseCaches(false);
+            final int len = urlConnection.getContentLength();
+            final InputStream in = new BufferedInputStream(urlConnection.getInputStream());
             final byte[] bytecode = new byte[len];
             try {
                 IOUtils.readFully(in, bytecode);

@@ -137,7 +137,7 @@ public class SyslogAppender extends SocketAppender {
                 return null;
             }
             final AbstractSocketManager manager = createSocketManager(name, protocol, getHost(), getPort(), getConnectTimeoutMillis(),
-                    sslConfiguration, getReconnectDelayMillis(), getImmediateFail(), layout, Constants.ENCODER_BYTE_BUFFER_SIZE, null);
+                    sslConfiguration, getReconnectDelayMillis(), getImmediateFail(), layout, Constants.ENCODER_BYTE_BUFFER_SIZE, getSocketOptions());
 
             return new SyslogAppender(name, layout, getFilter(), isIgnoreExceptions(), isImmediateFlush(), manager,
                     getAdvertise() ? configuration.getAdvertiser() : null, null);

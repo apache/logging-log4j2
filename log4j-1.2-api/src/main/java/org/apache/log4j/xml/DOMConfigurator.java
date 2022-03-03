@@ -145,7 +145,8 @@ public class DOMConfigurator {
     public void doConfigure(final URL url, final LoggerRepository repository) {
         try {
             final URLConnection connection = url.openConnection();
-            connection.setUseCaches(false); // Otherwise, a "jar:" URL file remains open after the stream is closed.
+            // A "jar:" URL file remains open after the stream is closed, so do not cache it.
+            connection.setUseCaches(false);
             try (InputStream inputStream = connection.getInputStream()) {
                 doConfigure(new ConfigurationSource(inputStream, url));
             }
