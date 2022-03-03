@@ -75,7 +75,7 @@ public class HttpURLConnectionManager extends HttpManager {
 
     @Override
     public void send(final Layout<?> layout, final LogEvent event) throws IOException {
-        final HttpURLConnection urlConnection = (HttpURLConnection)url.openConnection();
+        final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         urlConnection.setAllowUserInteraction(false);
         urlConnection.setDoOutput(true);
         urlConnection.setDoInput(true);
@@ -90,15 +90,13 @@ public class HttpURLConnectionManager extends HttpManager {
             urlConnection.setRequestProperty("Content-Type", layout.getContentType());
         }
         for (final Property header : headers) {
-            urlConnection.setRequestProperty(
-                header.getName(),
-                header.evaluate(getConfiguration().getStrSubstitutor()));
+            urlConnection.setRequestProperty(header.getName(), header.evaluate(getConfiguration().getStrSubstitutor()));
         }
         if (sslConfiguration != null) {
-            ((HttpsURLConnection)urlConnection).setSSLSocketFactory(sslConfiguration.getSslSocketFactory());
+            ((HttpsURLConnection) urlConnection).setSSLSocketFactory(sslConfiguration.getSslSocketFactory());
         }
         if (isHttps && !verifyHostname) {
-            ((HttpsURLConnection)urlConnection).setHostnameVerifier(LaxHostnameVerifier.INSTANCE);
+            ((HttpsURLConnection) urlConnection).setHostnameVerifier(LaxHostnameVerifier.INSTANCE);
         }
 
         final byte[] msg = layout.toByteArray(event);
