@@ -36,6 +36,9 @@
       <action issue="LOG4J2-3423" type="fix" due-to="Radim Tlusty, Gary Gregory">
         JAR file containing Log4j configuration isn't closed.
       </action>
+      <action issue="LOG4J2-3425" type="fix" due-to="Jiří Smolík, Gary Gregory">
+        Syslog appender lacks the SocketOptions setting.
+      </action>
     </release>
     <release version="2.17.2" date="2022-02-23" description="GA Release 2.17.2">
       <!-- FIXES -->
