@@ -535,7 +535,7 @@
             <phase>post-integration-test</phase>
             <configuration>
               <target>
-                <property name="spaces" value=" " />
+                <property name="spaces" value="  " />
                 <concat destfile="${project.build.directory}/apache-log4j-${project.version}-src.zip.sha256" append="yes">${spaces}apache-log4j-${project.version}-src.zip</concat>
                 <concat destfile="${project.build.directory}/apache-log4j-${project.version}-src.zip.sha512" append="yes">${spaces}apache-log4j-${project.version}-src.zip</concat>
                 <concat destfile="${project.build.directory}/apache-log4j-${project.version}-src.tar.gz.sha256" append="yes">${spaces}apache-log4j-${project.version}-src.tar.gz</concat>
