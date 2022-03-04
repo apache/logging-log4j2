@@ -21,6 +21,7 @@ import java.util.Objects;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginValue;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
@@ -104,10 +105,7 @@ public final class Property {
      * @return A Property.
      */
     public static Property createProperty(final String name, final String value) {
-        if (name == null) {
-            LOGGER.error("Property name cannot be null");
-        }
-        return new Property(name, value, value);
+        return createProperty(name, value, value);
     }
 
     /**
@@ -118,15 +116,35 @@ public final class Property {
      * @param value The value.
      * @return A Property.
      */
+    public static Property createProperty(
+            final String name,
+            final String rawValue,
+            final String value) {
+        if (name == null) {
+            throw new IllegalArgumentException("Property name cannot be null");
+        }
+        return new Property(name, rawValue, value);
+    }
+
+    /**
+     * Creates a Property.
+     *
+     * @param name The key.
+     * @param rawValue The value without any substitution applied.
+     * @param configuration configuration used to resolve the property value from the rawValue
+     * @return A Property.
+     */
     @PluginFactory
     public static Property createProperty(
             @PluginAttribute("name") final String name,
             @PluginValue(value = "value", substitute = false) final String rawValue,
-            @PluginValue("value") final String value) {
-        if (name == null) {
-            LOGGER.error("Property name cannot be null");
-        }
-        return new Property(name, rawValue, value);
+            @PluginConfiguration final Configuration configuration) {
+        return createProperty(
+                name,
+                rawValue,
+                configuration == null
+                        ? rawValue
+                        : configuration.getStrSubstitutor().replace(rawValue));
     }
 
     @Override
