@@ -33,6 +33,15 @@
   <Loggers>
     <Root level="trace">
       <AppenderRef ref="List" />
+      <Property name="emptyElementKey" />
+      <Property name="emptyAttributeKey" value="" />
+      <Property name="emptyAttributeKey2" value=""></Property>
+      <Property name="elementKey">elementValue</Property>
+      <Property name="attributeKey" value="attributeValue" />
+      <Property name="attributeWithEmptyElementKey" value="attributeValue2"></Property>
+      <Property name="bothElementAndAttributeKey" value="attributeValue3">elementValue3</Property>
+      <Property name="attributeWithLookup" value="${lower:ATTR}"/>
+      <Property name="elementWithLookup">${lower:ELEMENT}</Property>
     </Root>
   </Loggers>
 </Configuration>

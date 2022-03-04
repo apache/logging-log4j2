@@ -18,6 +18,8 @@ package org.apache.logging.log4j.core.config;/*
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.test.appender.ListAppender;
@@ -57,6 +59,58 @@ public class PropertyTest {
                 ",5=elementValue3,m=msg"; // ${sys:bothElementAndAttributeKey}
         assertEquals(expect, messages.get(0));
         app.clear();
+    }
+
+    @Test
+    public void testPropertyValues() {
+        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        StrSubstitutor sub = ctx.getConfiguration().getStrSubstitutor();
+        //<Property name="emptyElementKey" />
+        //<Property name="emptyAttributeKey" value="" />
+        //<Property name="emptyAttributeKey2" value=""></Property>
+        //<Property name="elementKey">elementValue</Property>
+        //<Property name="attributeKey" value="attributeValue" />
+        //<Property name="attributeWithEmptyElementKey" value="attributeValue2"></Property>
+        //<Property name="bothElementAndAttributeKey" value="attributeValue3">elementValue3</Property>
+        assertEquals("", sub.replace("${emptyElementKey}"));
+        assertEquals("", sub.replace("${emptyAttributeKey}"));
+        assertEquals("", sub.replace("${emptyAttributeKey2}"));
+        assertEquals("elementValue", sub.replace("${elementKey}"));
+        assertEquals("attributeValue", sub.replace("${attributeKey}"));
+        assertEquals("attributeValue2", sub.replace("${attributeWithEmptyElementKey}"));
+        assertEquals("elementValue3", sub.replace("${bothElementAndAttributeKey}"));
+    }
+
+    @Test
+    public void testLoggerPropertyValues() throws Exception {
+        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        List<Property> rootLoggerProperties = ctx.getConfiguration()
+                .getLoggerConfig(LoggerConfig.ROOT)
+                .getPropertyList();
+        //<Property name="emptyElementKey" />
+        //<Property name="emptyAttributeKey" value="" />
+        //<Property name="emptyAttributeKey2" value=""></Property>
+        //<Property name="elementKey">elementValue</Property>
+        //<Property name="attributeKey" value="attributeValue" />
+        //<Property name="attributeWithEmptyElementKey" value="attributeValue2"></Property>
+        //<Property name="bothElementAndAttributeKey" value="attributeValue3">elementValue3</Property>
+        assertEquals(9, rootLoggerProperties.size());
+        verifyProperty(rootLoggerProperties.get(0), "emptyElementKey", "", "");
+        verifyProperty(rootLoggerProperties.get(1), "emptyAttributeKey", "", "");
+        verifyProperty(rootLoggerProperties.get(2), "emptyAttributeKey2", "", "");
+        verifyProperty(rootLoggerProperties.get(3), "elementKey", "elementValue", "elementValue");
+        verifyProperty(rootLoggerProperties.get(4), "attributeKey", "attributeValue", "attributeValue");
+        verifyProperty(rootLoggerProperties.get(5), "attributeWithEmptyElementKey", "attributeValue2", "attributeValue2");
+        verifyProperty(rootLoggerProperties.get(6), "bothElementAndAttributeKey", "elementValue3", "elementValue3");
+        verifyProperty(rootLoggerProperties.get(7), "attributeWithLookup", "${lower:ATTR}", "attr");
+        verifyProperty(rootLoggerProperties.get(8), "elementWithLookup", "${lower:ELEMENT}", "element");
+    }
+
+    private static void verifyProperty(
+            Property property, String expectedName, String expectedRawValue, String expectedValue) {
+        assertEquals(expectedName, property.getName());
+        assertEquals(expectedRawValue, property.getRawValue());
+        assertEquals(expectedValue, property.getValue());
     }
 
     @Test
