@@ -42,13 +42,19 @@
       <action issue="LOG4J2-3425" type="fix" due-to="Jiří Smolík, Gary Gregory">
         Syslog appender lacks the SocketOptions setting.
       </action>
+      <action type="fix" dev="pkarwasz">
+        Improve validation and reporting of configuration errors.
+      </action>
+      <action type="fix" dev="pkarwasz">
+        Log4j 1.2 bridge should generate Log4j 2.x messages based on the parameter runtime type.
+      </action>
     </release>
     <release version="2.17.2" date="2022-02-23" description="GA Release 2.17.2">
       <!-- FIXES -->
       <action issue="LOG4J2-3304" dev="rgoers" type="fix" due-to="francis-FY">
         Flag LogManager as initialized if the LoggerFactory is provided as a property.
       </action>
-      <action issue="LOG4J2-3404" dev="ckozak" type="fix" due-to="Piotr Karwasz">
+      <action issue="LOG4J2-3404" dev="ckozak" type="fix" due-to="Piotr P. Karwasz">
         Fix DefaultConfiguration leak in PatternLayout
       </action>
       <action issue="LOG4J2-3405" dev="rgoers" type="fix">
@@ -219,7 +225,7 @@
       <action dev="ggregory" type="fix" due-to="Gary Gregory">
         Log4j 1.2 bridge missing PatternParser.
       </action>
-      <action dev="ggregory" type="fix" due-to="ppkarwasz, Gary Gregory">
+      <action dev="ggregory" type="fix" due-to="Piotr P. Karwasz, Gary Gregory">
         Log4j 1.2 bridge issues with filters #753.
       </action>
       <action dev="ggregory" type="fix" due-to="Gary Gregory">
