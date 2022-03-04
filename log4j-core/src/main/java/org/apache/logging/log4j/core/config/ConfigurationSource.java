@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -62,6 +63,7 @@ public class ConfigurationSource {
      */
     public static final ConfigurationSource COMPOSITE_SOURCE = new ConfigurationSource(Constants.EMPTY_BYTE_ARRAY, null, 0);
     private static final String HTTPS = "https";
+    private static final String JAR = "jar";
 
     private final InputStream stream;
     private volatile byte[] data;
@@ -386,6 +388,11 @@ public class ConfigurationSource {
             try {
                 if (file != null) {
                     return new ConfigurationSource(urlConnection.getInputStream(), FileUtils.fileFromUri(url.toURI()));
+                } else if (JAR.equals(url.getProtocol())) {
+                    // Work around https://bugs.openjdk.java.net/browse/JDK-6956385.
+                    long lastModified = new File(((JarURLConnection)urlConnection).getJarFile().getName())
+                            .lastModified();
+                    return new ConfigurationSource(urlConnection.getInputStream(), url, lastModified);
                 } else {
                     return new ConfigurationSource(urlConnection.getInputStream(), url, urlConnection.getLastModified());
                 }
