@@ -30,16 +30,23 @@ public class FilterAdapter extends AbstractFilter {
     private final Filter filter;
 
     /**
-     * Converts a Log4j 1.x filter into a Log4j 2.x filter.
+     * Adapts a Log4j 1.x filter into a Log4j 2.x filter. Applying this method to
+     * the result of
+     * {@link FilterWrapper#adapt(org.apache.logging.log4j.core.Filter)} should
+     * return the original Log4j 2.x filter.
      * 
-     * @param filter
-     *            a Log4j 1.x filter
-     * @return a Log4j 2.x filter
+     * @param filter a Log4j 1.x filter
+     * @return a Log4j 2.x filter or {@code null} if the parameter is {@code null}
      */
-    public static org.apache.logging.log4j.core.Filter convertFilter(Filter filter) {
+    public static org.apache.logging.log4j.core.Filter adapt(Filter filter) {
+        if (filter instanceof org.apache.logging.log4j.core.Filter) {
+            return (org.apache.logging.log4j.core.Filter) filter;
+        }
+        // Don't unwrap the head of a filter chain
         if (filter instanceof FilterWrapper && filter.getNext() == null) {
             return ((FilterWrapper) filter).getFilter();
-        } else if (filter != null) {
+        }
+        if (filter != null) {
             return new FilterAdapter(filter);
         }
         return null;
@@ -62,12 +69,12 @@ public class FilterAdapter extends AbstractFilter {
         if (first instanceof FilterWrapper && ((FilterWrapper) first).getFilter() instanceof CompositeFilter) {
             composite = (CompositeFilter) ((FilterWrapper) first).getFilter();
         } else {
-            composite = CompositeFilter.createFilters(new org.apache.logging.log4j.core.Filter[] {convertFilter(first)});
+            composite = CompositeFilter.createFilters(new org.apache.logging.log4j.core.Filter[] {adapt(first)});
         }
-        return new FilterWrapper(composite.addFilter(convertFilter(second)));
+        return FilterWrapper.adapt(composite.addFilter(adapt(second)));
     }
 
-    public FilterAdapter(Filter filter) {
+    private FilterAdapter(Filter filter) {
         this.filter = filter;
     }
 

@@ -457,11 +457,7 @@ public class PropertiesConfiguration extends Log4j1Configuration {
             appender = buildAppender(appenderName, className, prefix, layoutPrefix, filterPrefix, props);
         } else {
             registry.put(appenderName, appender);
-            if (appender instanceof AppenderWrapper) {
-                addAppender(((AppenderWrapper) appender).getAppender());
-            } else {
-                addAppender(new AppenderAdapter(appender).getAdapter());
-            }
+            addAppender(AppenderAdapter.adapt(appender));
         }
         return appender;
     }
@@ -485,11 +481,7 @@ public class PropertiesConfiguration extends Log4j1Configuration {
         appender.addFilter(parseAppenderFilters(props, filterPrefix, appenderName));
         final String[] keys = new String[] {layoutPrefix};
         addProperties(appender, keys, props, prefix);
-        if (appender instanceof AppenderWrapper) {
-            addAppender(((AppenderWrapper) appender).getAppender());
-        } else {
-            addAppender(new AppenderAdapter(appender).getAdapter());
-        }
+        addAppender(AppenderAdapter.adapt(appender));
         registry.put(appenderName, appender);
         return appender;
     }

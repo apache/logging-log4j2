@@ -71,15 +71,10 @@ public class SocketAppenderBuilder extends AbstractBuilder implements AppenderBu
 
     private <T extends Log4j1Configuration> Appender createAppender(final String name, final String host, final int port, final Layout layout,
         final Filter filter, final String level, final boolean immediateFlush, final int reconnectDelayMillis, final T configuration) {
-        org.apache.logging.log4j.core.Layout<?> actualLayout = null;
-        if (layout instanceof LayoutWrapper) {
-            actualLayout = ((LayoutWrapper) layout).getLayout();
-        } else if (layout != null) {
-            actualLayout = new LayoutAdapter(layout);
-        }
+        org.apache.logging.log4j.core.Layout<?> actualLayout = LayoutAdapter.adapt(layout);
         final org.apache.logging.log4j.core.Filter actualFilter = buildFilters(level, filter);
         // @formatter:off
-        return new AppenderWrapper(SocketAppender.newBuilder()
+        return AppenderWrapper.adapt(SocketAppender.newBuilder()
             .setHost(host)
             .setPort(port)
             .setReconnectDelayMillis(reconnectDelayMillis)
