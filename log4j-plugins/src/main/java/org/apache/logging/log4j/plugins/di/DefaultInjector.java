@@ -64,14 +64,20 @@ import java.util.stream.Stream;
 class DefaultInjector implements Injector {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private final Map<Key<?>, Binding<?>> keyBindings = new ConcurrentHashMap<>();
+    private final BindingMap bindingMap;
     private final Map<Class<? extends Annotation>, Scope> scopes = new ConcurrentHashMap<>();
     private ReflectionCallerContext callerContext = ReflectionCallerContext.DEFAULT;
 
     DefaultInjector() {
-        final var key = Key.forClass(Injector.class);
-        keyBindings.put(key, Binding.bind(key, () -> this));
+        bindingMap = new BindingMap();
+        bindingMap.put(Key.forClass(Injector.class), () -> this);
         scopes.put(Singleton.class, new SingletonScope());
+    }
+
+    DefaultInjector(final DefaultInjector parent) {
+        bindingMap = new BindingMap(parent.bindingMap);
+        scopes.putAll(parent.scopes);
+        callerContext = parent.callerContext;
     }
 
     @Override
@@ -102,7 +108,7 @@ class DefaultInjector implements Injector {
 
     @Override
     public void removeBinding(final Key<?> key) {
-        keyBindings.remove(key);
+        bindingMap.remove(key);
     }
 
     @Override
@@ -125,6 +131,11 @@ class DefaultInjector implements Injector {
     }
 
     @Override
+    public Scope getScope(final Class<? extends Annotation> scopeType) {
+        return scopes.get(scopeType);
+    }
+
+    @Override
     public void init() {
         final List<InjectorCallback> callbacks = ServiceRegistry.getInstance()
                 .getServices(InjectorCallback.class, layer -> ServiceLoader.load(layer, InjectorCallback.class), null);
@@ -140,20 +151,25 @@ class DefaultInjector implements Injector {
     }
 
     @Override
-    public <T> Injector bindFactory(final Key<? super T> key, final Supplier<T> factory) {
-        keyBindings.put(key, Binding.bind(key, factory));
+    public Injector copy() {
+        return new DefaultInjector(this);
+    }
+
+    @Override
+    public <T> Injector bindFactory(final Key<T> key, final Supplier<? extends T> factory) {
+        bindingMap.put(key, factory::get);
         return this;
     }
 
     @Override
-    public <T> Injector bindIfMissing(final Key<? super T> key, final Supplier<T> factory) {
-        keyBindings.computeIfAbsent(key, ignored -> Binding.bind(key, factory));
+    public <T> Injector bindIfAbsent(final Key<T> key, final Supplier<? extends T> factory) {
+        bindingMap.bindIfAbsent(key, factory::get);
         return this;
     }
 
     @Override
-    public <T> Injector bindInstance(final Key<? super T> key, final T instance) {
-        keyBindings.put(key, Binding.bind(key, () -> instance));
+    public <T> Injector bindInstance(final Key<T> key, final T instance) {
+        bindingMap.put(key, () -> instance);
         return this;
     }
 
@@ -170,7 +186,7 @@ class DefaultInjector implements Injector {
                         providerMethods.add(method);
                         createMethodBindings(module, method).forEach(binding -> {
                             final var key = binding.getKey();
-                            if (keyBindings.putIfAbsent(key, binding) != null) {
+                            if (!bindingMap.putIfAbsent(key, binding.getSupplier())) {
                                 throw new PluginException(String.format(
                                         "Duplicate @Factory method (%s: %s) found for %s", moduleClass, method, key));
                             }
@@ -184,27 +200,27 @@ class DefaultInjector implements Injector {
                 .forEach(method -> createMethodBindings(null, method)
                         .forEach(binding -> {
                             final var key = binding.getKey();
-                            if (keyBindings.putIfAbsent(key, binding) != null) {
+                            if (!bindingMap.putIfAbsent(key, binding.getSupplier())) {
                                 throw new PluginException(String.format(
                                         "Duplicate @Factory method (%s: %s) found for %s", moduleClass, method, key));
                             }
                         }));
     }
 
-    private List<Binding<?>> createMethodBindings(final Object instance, final Method method) {
-        final var primaryKey = Key.forMethod(method);
+    private <T> List<Binding<T>> createMethodBindings(final Object instance, final Method method) {
+        final Key<T> primaryKey = Key.forMethod(method);
         final List<Supplier<?>> parameterFactories = getParameterFactories(primaryKey, null, method, Set.of(primaryKey), null);
-        final Supplier<?> factory = getScope(method).get(primaryKey,
+        final Supplier<T> factory = getScopeForMethod(method).get(primaryKey,
                 () -> {
                     final Object[] parameters = parameterFactories.stream().map(Supplier::get).toArray();
                     try {
-                        return callerContext.invoke(method, instance, parameters);
+                        return TypeUtil.cast(callerContext.invoke(method, instance, parameters));
                     } catch (final InvocationTargetException e) {
                         throw new PluginException("Unable to invoke factory method " + method, e.getTargetException());
                     }
                 });
         final Collection<String> aliases = AnnotatedElementAliasesProvider.getAliases(method);
-        final List<Binding<?>> bindings = new ArrayList<>(1 + aliases.size());
+        final List<Binding<T>> bindings = new ArrayList<>(1 + aliases.size());
         bindings.add(Binding.bind(primaryKey, factory));
         for (final String alias : aliases) {
             bindings.add(Binding.bind(primaryKey.withName(alias), factory));
@@ -325,14 +341,14 @@ class DefaultInjector implements Injector {
 
     private <T> Supplier<T> getFactory(
             final Key<T> key, final Collection<String> aliases, final Node node, final Set<Key<?>> chain) {
-        final Binding<?> existing = keyBindings.get(key);
+        final Binding<T> existing = bindingMap.get(key);
         if (existing != null) {
-            return TypeUtil.cast(existing.getSupplier());
+            return existing.getSupplier();
         }
         for (final String alias : aliases) {
-            final Binding<?> binding = keyBindings.get(key.withName(alias));
+            final Binding<T> binding = bindingMap.get(key.withName(alias));
             if (binding != null) {
-                return TypeUtil.cast(binding.getSupplier());
+                return binding.getSupplier();
             }
         }
         final Supplier<T> instanceSupplier = () -> {
@@ -342,9 +358,8 @@ class DefaultInjector implements Injector {
             injectMethods(key, node, instance, chain, debugLog);
             return instance;
         };
-        final Scope scope = getScope(key.getRawType());
-        return TypeUtil.cast(keyBindings.computeIfAbsent(key,
-                ignored -> Binding.bind(key, scope.get(key, instanceSupplier))).getSupplier());
+        final Scope scope = getScopeForType(key.getRawType());
+        return bindingMap.bindIfAbsent(key, scope.get(key, instanceSupplier));
     }
 
     private Object getInjectableInstance(
@@ -504,12 +519,12 @@ class DefaultInjector implements Injector {
         return factories;
     }
 
-    private Scope getScope(final Method method) {
+    private Scope getScopeForMethod(final Method method) {
         final Annotation methodScope = AnnotationUtil.getMetaAnnotation(method, ScopeType.class);
-        return methodScope != null ? scopes.get(methodScope.annotationType()) : getScope(method.getReturnType());
+        return methodScope != null ? scopes.get(methodScope.annotationType()) : getScopeForType(method.getReturnType());
     }
 
-    private Scope getScope(final Class<?> type) {
+    private Scope getScopeForType(final Class<?> type) {
         final Annotation scope = AnnotationUtil.getMetaAnnotation(type, ScopeType.class);
         return scope != null ? scopes.get(scope.annotationType()) : DefaultScope.INSTANCE;
     }
@@ -565,6 +580,11 @@ class DefaultInjector implements Injector {
         @Override
         public <T> Supplier<T> get(final Key<T> key, final Supplier<T> unscoped) {
             return unscoped;
+        }
+
+        @Override
+        public String toString() {
+            return "[Unscoped]";
         }
     }
 }

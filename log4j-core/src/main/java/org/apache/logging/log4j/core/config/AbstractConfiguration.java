@@ -437,7 +437,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         if (advertiser != null && advertisement != null) {
             advertiser.unadvertise(advertisement);
         }
-        injector.removeBinding(Key.forClass(Configuration.class));
         setStopped();
         LOGGER.debug("Stopped {} OK", this);
         return true;

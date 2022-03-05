@@ -41,11 +41,15 @@ public interface Injector {
 
     void bindScope(final Class<? extends Annotation> scopeType, final Scope scope);
 
+    Scope getScope(final Class<? extends Annotation> scopeType);
+
     void init();
 
-    <T> Injector bindFactory(final Key<? super T> key, final Supplier<T> factory);
+    Injector copy();
 
-    <T> Injector bindIfMissing(final Key<? super T> key, final Supplier<T> factory);
+    <T> Injector bindFactory(final Key<T> key, final Supplier<? extends T> factory);
 
-    <T> Injector bindInstance(final Key<? super T> key, final T instance);
+    <T> Injector bindIfAbsent(final Key<T> key, final Supplier<? extends T> factory);
+
+    <T> Injector bindInstance(final Key<T> key, final T instance);
 }

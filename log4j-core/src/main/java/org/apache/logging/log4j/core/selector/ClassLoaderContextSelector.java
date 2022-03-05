@@ -182,18 +182,23 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
         return Collections.unmodifiableList(list);
     }
 
+    private Injector getOrCopyInjector(final Map.Entry<String, Object> entry) {
+        if (entry != null) {
+            final Object value = entry.getValue();
+            if (value instanceof Injector) {
+                return (Injector) value;
+            }
+        }
+        final Injector injector = this.injector;
+        return injector != null ? injector.copy() : null;
+    }
+
     private LoggerContext locateContext(final ClassLoader loaderOrNull, final Map.Entry<String, Object> entry,
             final URI configLocation) {
         // LOG4J2-477: class loader may be null
         final ClassLoader loader = loaderOrNull != null ? loaderOrNull : ClassLoader.getSystemClassLoader();
         final String name = toContextMapKey(loader);
         AtomicReference<WeakReference<LoggerContext>> ref = CONTEXT_MAP.get(name);
-        final Injector injector;
-        if (entry != null && entry.getValue() instanceof Injector) {
-            injector = (Injector) entry.getValue();
-        } else {
-            injector = this.injector;
-        }
         if (ref == null) {
             if (configLocation == null) {
                 ClassLoader parent = loader.getParent();
@@ -227,7 +232,7 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
                     } */
                 }
             }
-            final LoggerContext ctx = createContext(name, configLocation, injector);
+            final LoggerContext ctx = createContext(name, configLocation, getOrCopyInjector(entry));
             if (entry != null) {
                 ctx.putObject(entry.getKey(), entry.getValue());
             }
@@ -254,7 +259,7 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
             }
             return ctx;
         }
-        ctx = createContext(name, configLocation, injector);
+        ctx = createContext(name, configLocation, getOrCopyInjector(entry));
         if (entry != null) {
             ctx.putObject(entry.getKey(), entry.getValue());
         }
@@ -265,7 +270,8 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
     }
 
     protected LoggerContext createContext(final String name, final URI configLocation) {
-        return createContext(name, configLocation, injector);
+        final Injector injector = this.injector;
+        return createContext(name, configLocation, injector != null ? injector.copy() : null);
     }
 
     protected LoggerContext createContext(final String name, final URI configLocation, final Injector injector) {

@@ -85,26 +85,26 @@ public class DefaultCallback implements InjectorCallback {
         final PropertiesUtil properties = PropertiesUtil.getProperties();
         final var loader = new PropertyLoader(injector, properties, Loader.getClassLoader());
         injector.setCallerContext(CORE_CALLER_CONTEXT);
-        injector.bindIfMissing(ContextSelector.KEY,
+        injector.bindIfAbsent(ContextSelector.KEY,
                         () -> loader.getInstance(Constants.LOG4J_CONTEXT_SELECTOR, ContextSelector.class,
                                 () -> ClassLoaderContextSelector.class))
-                .bindIfMissing(ShutdownCallbackRegistry.KEY,
+                .bindIfAbsent(ShutdownCallbackRegistry.KEY,
                         () -> loader.getInstance(ShutdownCallbackRegistry.SHUTDOWN_CALLBACK_REGISTRY,
                                 ShutdownCallbackRegistry.class,
                                 () -> DefaultShutdownCallbackRegistry.class))
-                .bindIfMissing(Key.forClass(ConfigurationScheduler.class), ConfigurationScheduler::new)
-                .bindIfMissing(Clock.KEY,
+                .bindIfAbsent(Key.forClass(ConfigurationScheduler.class), ConfigurationScheduler::new)
+                .bindIfAbsent(Clock.KEY,
                         () -> {
                             final var property = properties.getStringProperty(ClockFactory.PROPERTY_NAME);
                             if (property == null) {
-                                return new SystemClock();
+                                return logSupportedPrecision(new SystemClock());
                             }
                             final Supplier<Clock> fallback =
                                     () -> loader.getInstance(ClockFactory.PROPERTY_NAME, Clock.class, () -> SystemClock.class);
-                            return CLOCK_ALIASES.getOrDefault(property, fallback).get();
+                            return logSupportedPrecision(CLOCK_ALIASES.getOrDefault(property, fallback).get());
                         })
-                .bindIfMissing(NanoClock.KEY, DummyNanoClock::new)
-                .bindIfMissing(ContextDataInjector.KEY,
+                .bindIfAbsent(NanoClock.KEY, DummyNanoClock::new)
+                .bindIfAbsent(ContextDataInjector.KEY,
                         () -> loader.getInstance("log4j2.ContextDataInjector", ContextDataInjector.class, () -> {
                             final ReadOnlyThreadContextMap threadContextMap = ThreadContext.getThreadContextMap();
 
@@ -118,11 +118,11 @@ public class DefaultCallback implements InjectorCallback {
                             }
                             return ThreadContextDataInjector.ForGarbageFreeThreadContextMap.class;
                         }))
-                .bindIfMissing(LogEventFactory.KEY,
+                .bindIfAbsent(LogEventFactory.KEY,
                         () -> loader.getInstance(Constants.LOG4J_LOG_EVENT_FACTORY, LogEventFactory.class,
                                 () -> Constants.ENABLE_THREADLOCALS ? ReusableLogEventFactory.class :
                                         DefaultLogEventFactory.class))
-                .bindIfMissing(Constants.DEFAULT_STATUS_LEVEL_KEY, () -> {
+                .bindIfAbsent(Constants.DEFAULT_STATUS_LEVEL_KEY, () -> {
                     final String statusLevel =
                             properties.getStringProperty(Constants.LOG4J_DEFAULT_STATUS_LEVEL, Level.ERROR.name());
                     try {
@@ -146,12 +146,6 @@ public class DefaultCallback implements InjectorCallback {
         final String support = clock instanceof PreciseClock ? "supports" : "does not support";
         LOGGER.debug("{} {} precise timestamps.", clock.getClass().getName(), support);
         return clock;
-    }
-
-
-    @Override
-    public int getPriority() {
-        return Integer.MIN_VALUE;
     }
 
     @Override

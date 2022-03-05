@@ -46,6 +46,7 @@ public class Key<T> {
     private final Class<? extends Annotation> qualifierType;
     private final String name;
     private final int hashCode;
+    private String toString;
 
     /**
      * Anonymous subclasses override this constructor to instantiate this Key based on the type given.
@@ -126,11 +127,15 @@ public class Key<T> {
 
     @Override
     public final String toString() {
-        return "Key{" +
-                "type=" + type +
-                ", qualifierType=" + qualifierType +
-                ", name='" + name + '\'' +
-                '}';
+        String string = toString;
+        if (string == null) {
+            toString = string = "Key{" +
+                    "type=" + type.getTypeName() +
+                    ", qualifierType=" + qualifierType +
+                    ", name='" + name + '\'' +
+                    '}';
+        }
+        return string;
     }
 
     /**
