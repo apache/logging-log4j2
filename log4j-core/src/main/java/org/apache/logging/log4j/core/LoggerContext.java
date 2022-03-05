@@ -122,6 +122,14 @@ public class LoggerContext extends AbstractLifeCycle
         injector.init();
     }
 
+    /**
+     * Constructs a LoggerContext with a name, external context, configuration URI, and an Injector.
+     *
+     * @param name context name
+     * @param externalContext external context or null
+     * @param configLocn location of configuration as a URI
+     * @param injector initialized Injector instance
+     */
     public LoggerContext(final String name, final Object externalContext, final URI configLocn, final Injector injector) {
         this.contextName = name;
         if (externalContext != null) {
@@ -144,6 +152,15 @@ public class LoggerContext extends AbstractLifeCycle
         injector.init();
     }
 
+    /**
+     * Constructs a LoggerContext with a name, external context, configuration location string, and an Injector.
+     * The location must be resolvable to a File.
+     *
+     * @param name context name
+     * @param externalContext external context or null
+     * @param configLocn configuration location
+     * @param injector initialized Injector instance
+     */
     public LoggerContext(final String name, final Object externalContext, final String configLocn, final Injector injector) {
         this.contextName = name;
         if (externalContext != null) {
