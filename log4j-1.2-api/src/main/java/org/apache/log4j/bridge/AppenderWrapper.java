@@ -18,6 +18,7 @@ package org.apache.log4j.bridge;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
+import org.apache.log4j.bridge.AppenderAdapter.Adapter;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggingEvent;
@@ -33,6 +34,31 @@ public class AppenderWrapper implements Appender {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
     private final org.apache.logging.log4j.core.Appender appender;
+
+    /**
+     * Adapts a Log4j 2.x appender into a Log4j 1.x appender. Applying this method
+     * on the result of {@link AppenderAdapter#adapt(Appender)} should return the
+     * original Log4j 1.x appender.
+     * 
+     * @param appender a Log4j 2.x appender
+     * @return a Log4j 1.x appender or {@code null} if the parameter is {@code null}
+     */
+    public static Appender adapt(org.apache.logging.log4j.core.Appender appender) {
+        if (appender instanceof Appender) {
+            return (Appender) appender;
+        }
+        if (appender instanceof Adapter) {
+            Adapter adapter = (Adapter) appender;
+            // Don't unwrap an appender with filters
+            if (!adapter.hasFilter()) {
+                return adapter.getAppender();
+            }
+        }
+        if (appender != null) {
+            return new AppenderWrapper(appender);
+        }
+        return null;
+    }
 
     /**
      * Constructs a new instance for a Core Appender.
@@ -55,7 +81,7 @@ public class AppenderWrapper implements Appender {
     @Override
     public void addFilter(Filter newFilter) {
         if (appender instanceof AbstractFilterable) {
-            ((AbstractFilterable) appender).addFilter(FilterAdapter.convertFilter(newFilter));
+            ((AbstractFilterable) appender).addFilter(FilterAdapter.adapt(newFilter));
         } else {
             LOGGER.warn("Unable to add filter to appender {}, it does not support filters", appender.getName());
         }

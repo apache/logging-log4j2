@@ -34,12 +34,34 @@ public class AppenderAdapter {
     private final Adapter adapter;
 
     /**
+     * Adapts a Log4j 1.x appender into a Log4j 2.x appender. Applying this method
+     * on the result of
+     * {@link AppenderWrapper#adapt(org.apache.logging.log4j.core.Appender)} should
+     * return the original Log4j 2.x appender.
+     * 
+     * @param appender a Log4j 1.x appender
+     * @return a Log4j 2.x appender or {@code null} if the parameter is {@code null}
+     */
+    public static org.apache.logging.log4j.core.Appender adapt(Appender appender) {
+        if (appender instanceof org.apache.logging.log4j.core.Appender) {
+            return (org.apache.logging.log4j.core.Appender) appender;
+        }
+        if (appender instanceof AppenderWrapper) {
+            return ((AppenderWrapper) appender).getAppender();
+        }
+        if (appender != null) {
+            return new AppenderAdapter(appender).getAdapter();
+        }
+        return null;
+    }
+
+    /**
      * Constructor.
      * @param appender The Appender to wrap.
      */
-    public AppenderAdapter(Appender appender) {
+    private AppenderAdapter(Appender appender) {
         this.appender = appender;
-        final org.apache.logging.log4j.core.Filter appenderFilter = FilterAdapter.convertFilter(appender.getFilter());
+        final org.apache.logging.log4j.core.Filter appenderFilter = FilterAdapter.adapt(appender.getFilter());
         this.adapter = new Adapter(appender.getName(), appenderFilter, null, true, null);
     }
 

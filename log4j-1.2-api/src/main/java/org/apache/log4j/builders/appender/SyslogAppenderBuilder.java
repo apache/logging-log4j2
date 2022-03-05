@@ -127,12 +127,8 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
         final AtomicReference<String> host = new AtomicReference<>();
         final AtomicInteger port = new AtomicInteger();
         resolveSyslogHost(syslogHost, host, port);
-        org.apache.logging.log4j.core.Layout<? extends Serializable> appenderLayout;
-        if (layout instanceof LayoutWrapper) {
-            appenderLayout = ((LayoutWrapper) layout).getLayout();
-        } else if (layout != null) {
-            appenderLayout = new LayoutAdapter(layout);
-        } else {
+        org.apache.logging.log4j.core.Layout<? extends Serializable> appenderLayout = LayoutAdapter.adapt(layout);
+        if (appenderLayout == null) {
             appenderLayout = SyslogLayout.newBuilder()
                     .setFacility(Facility.toFacility(facility))
                     .setConfiguration(configuration)
@@ -140,7 +136,7 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
         }
 
         final org.apache.logging.log4j.core.Filter fileFilter = buildFilters(level, filter);
-        return new AppenderWrapper(SyslogAppender.newSyslogAppenderBuilder()
+        return AppenderWrapper.adapt(SyslogAppender.newSyslogAppenderBuilder()
                 .setName(name)
                 .setConfiguration(configuration)
                 .setLayout(appenderLayout)

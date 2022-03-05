@@ -130,17 +130,12 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
 
     private <T extends Log4j1Configuration> Appender createAppender(final String name, final Layout layout, final Filter filter,
             final String level, final String target, final boolean immediateFlush, final boolean follow, final T configuration) {
-        org.apache.logging.log4j.core.Layout<?> consoleLayout = null;
+        org.apache.logging.log4j.core.Layout<?> consoleLayout = LayoutAdapter.adapt(layout);
 
-        if (layout instanceof LayoutWrapper) {
-            consoleLayout = ((LayoutWrapper) layout).getLayout();
-        } else if (layout != null) {
-            consoleLayout = new LayoutAdapter(layout);
-        }
         final org.apache.logging.log4j.core.Filter consoleFilter = buildFilters(level, filter);
         final ConsoleAppender.Target consoleTarget = SYSTEM_ERR.equals(target)
                 ? ConsoleAppender.Target.SYSTEM_ERR : ConsoleAppender.Target.SYSTEM_OUT;
-        return new AppenderWrapper(ConsoleAppender.newBuilder()
+        return AppenderWrapper.adapt(ConsoleAppender.newBuilder()
                 .setName(name)
                 .setTarget(consoleTarget)
                 .setFollow(follow)

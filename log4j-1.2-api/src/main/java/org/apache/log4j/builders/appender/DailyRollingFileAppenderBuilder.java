@@ -141,14 +141,9 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
             final String level, final boolean bufferedIo, final int bufferSize, final String datePattern,
             final T configuration, final Clock clock) {
 
-        org.apache.logging.log4j.core.Layout<?> fileLayout = null;
+        org.apache.logging.log4j.core.Layout<?> fileLayout = LayoutAdapter.adapt(layout);
         if (bufferedIo) {
             immediateFlush = false;
-        }
-        if (layout instanceof LayoutWrapper) {
-            fileLayout = ((LayoutWrapper) layout).getLayout();
-        } else if (layout != null) {
-            fileLayout = new LayoutAdapter(layout);
         }
         final org.apache.logging.log4j.core.Filter fileFilter = buildFilters(level, filter);
         if (fileName == null) {
@@ -162,7 +157,7 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
                 .setConfig(configuration)
                 .setMax(Integer.toString(Integer.MAX_VALUE))
                 .build();
-        return new AppenderWrapper(RollingFileAppender.newBuilder()
+        return AppenderWrapper.adapt(RollingFileAppender.newBuilder()
                 .setName(name)
                 .setConfiguration(configuration)
                 .setLayout(fileLayout)

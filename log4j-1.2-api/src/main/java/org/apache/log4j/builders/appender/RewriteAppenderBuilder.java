@@ -141,7 +141,7 @@ public class RewriteAppenderBuilder extends AbstractBuilder implements AppenderB
         } else {
             rewritePolicy = new RewritePolicyAdapter(policy);
         }
-        return new AppenderWrapper(RewriteAppender.createAppender(name, true, refs, configuration,
+        return AppenderWrapper.adapt(RewriteAppender.createAppender(name, true, refs, configuration,
                 rewritePolicy, rewriteFilter));
     }
 }

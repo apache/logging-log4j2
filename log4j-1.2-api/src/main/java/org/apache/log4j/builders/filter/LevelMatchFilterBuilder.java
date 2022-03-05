@@ -83,7 +83,7 @@ public class LevelMatchFilterBuilder extends AbstractBuilder<Filter> implements 
         org.apache.logging.log4j.core.Filter.Result onMatch = acceptOnMatch
                 ? org.apache.logging.log4j.core.Filter.Result.ACCEPT
                 : org.apache.logging.log4j.core.Filter.Result.DENY;
-        return new FilterWrapper(LevelMatchFilter.newBuilder()
+        return FilterWrapper.adapt(LevelMatchFilter.newBuilder()
                 .setLevel(lvl)
                 .setOnMatch(onMatch)
                 .setOnMismatch(org.apache.logging.log4j.core.Filter.Result.NEUTRAL)

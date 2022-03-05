@@ -122,7 +122,7 @@ public class TTCCLayoutBuilder extends AbstractBuilder<Layout> implements Layout
             sb.append("%notEmpty{%ndc }");
         }
         sb.append("- %m%n");
-        return new LayoutWrapper(PatternLayout.newBuilder()
+        return LayoutWrapper.adapt(PatternLayout.newBuilder()
                 .setPattern(sb.toString())
                 .setConfiguration(config)
                 .build());

@@ -71,6 +71,6 @@ public class XmlLayoutBuilder extends AbstractBuilder<Layout> implements LayoutB
     }
 
     private Layout createLayout(boolean properties, boolean locationInfo) {
-        return new LayoutWrapper(Log4j1XmlLayout.createLayout(locationInfo, properties));
+        return LayoutWrapper.adapt(Log4j1XmlLayout.createLayout(locationInfo, properties));
     }
 }

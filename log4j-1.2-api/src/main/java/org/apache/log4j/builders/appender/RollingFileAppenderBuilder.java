@@ -146,14 +146,9 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
             final Filter filter, final boolean append, final boolean bufferedIo, final int bufferSize,
             boolean immediateFlush, final String fileName, final String level, final String maxSize,
             final String maxBackups, final Clock clock) {
-        org.apache.logging.log4j.core.Layout<?> fileLayout = null;
+        org.apache.logging.log4j.core.Layout<?> fileLayout = LayoutAdapter.adapt(layout);
         if (!bufferedIo) {
             immediateFlush = false;
-        }
-        if (layout instanceof LayoutWrapper) {
-            fileLayout = ((LayoutWrapper) layout).getLayout();
-        } else if (layout != null) {
-            fileLayout = new LayoutAdapter(layout);
         }
         final org.apache.logging.log4j.core.Filter fileFilter = buildFilters(level, filter);
         if (fileName == null) {
@@ -168,7 +163,7 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
                 .setConfig(config)
                 .setMax(maxBackups)
                 .build();
-        return new AppenderWrapper(RollingFileAppender.newBuilder()
+        return AppenderWrapper.adapt(RollingFileAppender.newBuilder()
                 .setName(name)
                 .setConfiguration(config)
                 .setLayout(fileLayout)

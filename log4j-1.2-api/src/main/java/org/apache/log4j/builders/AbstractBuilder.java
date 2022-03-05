@@ -83,7 +83,7 @@ public abstract class AbstractBuilder<T> implements Builder<T> {
         if (filter != null) {
             head = FilterAdapter.addFilter(head, filter);
         }
-        return FilterAdapter.convertFilter(head);
+        return FilterAdapter.adapt(head);
     }
 
     private String capitalize(final String value) {

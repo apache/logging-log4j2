@@ -27,6 +27,24 @@ public class LayoutWrapper extends Layout {
     private final org.apache.logging.log4j.core.Layout<?> layout;
 
     /**
+     * Adapts a Log4j 2.x layout into a Log4j 1.x layout. Applying this method to
+     * the result of {@link LayoutAdapter#adapt(Layout)} should return the original
+     * Log4j 1.x layout.
+     * 
+     * @param layout a Log4j 2.x layout
+     * @return a Log4j 1.x layout or {@code null} if the parameter is {@code null}
+     */
+    public static Layout adapt(org.apache.logging.log4j.core.Layout<?> layout) {
+        if (layout instanceof LayoutAdapter) {
+            return ((LayoutAdapter) layout).getLayout();
+        }
+        if (layout != null) {
+            return new LayoutWrapper(layout);
+        }
+        return null;
+    }
+
+    /**
      * Constructs a new instance.
      *
      * @param layout The layout to wrap.
