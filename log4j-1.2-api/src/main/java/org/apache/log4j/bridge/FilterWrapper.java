@@ -27,6 +27,27 @@ public class FilterWrapper extends Filter {
 
     private final org.apache.logging.log4j.core.Filter filter;
 
+    /**
+     * Adapts a Log4j 2.x filter into a Log4j 1.x filter. Applying this method to
+     * the result of {@link FilterAdapter#adapt(Filter)} should return the original
+     * Log4j 1.x filter.
+     * 
+     * @param filter a Log4j 2.x filter
+     * @return a Log4j 1.x filter or {@code null} if the parameter is {@code null}
+     */
+    public static Filter adapt(org.apache.logging.log4j.core.Filter filter) {
+        if (filter instanceof Filter) {
+            return (Filter) filter;
+        }
+        if (filter instanceof FilterAdapter) {
+            return ((FilterAdapter) filter).getFilter();
+        }
+        if (filter != null) {
+            return new FilterWrapper(filter);
+        }
+        return null;
+    }
+
     public FilterWrapper(org.apache.logging.log4j.core.Filter filter) {
         this.filter = filter;
     }

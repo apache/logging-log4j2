@@ -37,13 +37,13 @@ public class NullAppenderBuilder implements AppenderBuilder {
     @Override
     public Appender parseAppender(final Element appenderElement, final XmlConfiguration config) {
         final String name = appenderElement.getAttribute("name");
-        return new AppenderWrapper(NullAppender.createAppender(name));
+        return AppenderWrapper.adapt(NullAppender.createAppender(name));
     }
 
 
     @Override
     public Appender parseAppender(final String name, final String appenderPrefix, final String layoutPrefix,
             final String filterPrefix, final Properties props, final PropertiesConfiguration configuration) {
-        return new AppenderWrapper(NullAppender.createAppender(name));
+        return AppenderWrapper.adapt(NullAppender.createAppender(name));
     }
 }

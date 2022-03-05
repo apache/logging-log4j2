@@ -94,7 +94,7 @@ public class LevelRangeFilterBuilder extends AbstractBuilder<Filter> implements 
                 ? org.apache.logging.log4j.core.Filter.Result.ACCEPT
                 : org.apache.logging.log4j.core.Filter.Result.NEUTRAL;
 
-        return new FilterWrapper(LevelRangeFilter.createFilter(min, max, onMatch,
+        return FilterWrapper.adapt(LevelRangeFilter.createFilter(min, max, onMatch,
                 org.apache.logging.log4j.core.Filter.Result.DENY));
     }
 }

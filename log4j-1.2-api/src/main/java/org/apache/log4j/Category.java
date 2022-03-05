@@ -376,7 +376,7 @@ public class Category implements AppenderAttachable {
         if (appender == null && LogManager.isLog4jCorePresent()) {
             final org.apache.logging.log4j.core.Appender coreAppender = CategoryUtil.getAppenders(logger).get(name);
             if (coreAppender != null) {
-                addAppender(appender = new AppenderWrapper(coreAppender));
+                addAppender(appender = AppenderWrapper.adapt(coreAppender));
             }
         }
         return appender;

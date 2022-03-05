@@ -84,7 +84,7 @@ public class PatternLayoutBuilder extends AbstractBuilder<Layout> implements Lay
             LOGGER.info("No pattern provided for pattern layout, using default pattern");
             pattern = PatternLayout.DEFAULT_CONVERSION_PATTERN;
         }
-        return new LayoutWrapper(PatternLayout.newBuilder()
+        return LayoutWrapper.adapt(PatternLayout.newBuilder()
                 .withPattern(pattern
                         // Log4j 2's %x (NDC) is not compatible with Log4j 1's
                         // %x
