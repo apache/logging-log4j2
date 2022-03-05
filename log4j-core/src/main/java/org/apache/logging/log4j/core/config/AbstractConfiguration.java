@@ -185,8 +185,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     public void setScriptManager(final ScriptManager scriptManager) {
-        injector.bindInstance(Key.forClass(ScriptManager.class), scriptManager);
         this.scriptManager = scriptManager;
+        injector.bindFactory(Key.forClass(ScriptManager.class), () -> this.scriptManager);
     }
 
     public PluginManager getPluginManager() {
@@ -227,7 +227,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @Override
     public void initialize() {
         LOGGER.debug("{} initializing configuration {}", Version.getProductString(), this);
-        injector.bindInstance(Key.forClass(Configuration.class), this);
+        injector.bindFactory(Key.forClass(Configuration.class), () -> this);
         runtimeStrSubstitutor.setConfiguration(this);
         configurationStrSubstitutor.setConfiguration(this);
         try {
@@ -620,7 +620,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
 
     protected void doConfigure() {
-        injector.bindInstance(Keys.SUBSTITUTOR_KEY, configurationStrSubstitutor::replace);
+        injector.bindFactory(Keys.SUBSTITUTOR_KEY, () -> configurationStrSubstitutor::replace);
         processConditionals(rootNode);
         preConfigure(rootNode);
         configurationScheduler.start();
@@ -1030,7 +1030,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         } else {
             stringSubstitutionStrategy = str -> runtimeStrSubstitutor.replace(event, str);
         }
-        injector.bindInstance(Keys.SUBSTITUTOR_KEY, stringSubstitutionStrategy);
+        injector.bindFactory(Keys.SUBSTITUTOR_KEY, () -> stringSubstitutionStrategy);
         try {
             injector.getInstance(node);
         } finally {
@@ -1045,7 +1045,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     public Object createPluginObject(final Node node) {
         if (this.getState().equals(State.INITIALIZING)) {
-            injector.bindInstance(Keys.SUBSTITUTOR_KEY, configurationStrSubstitutor::replace);
+            injector.bindFactory(Keys.SUBSTITUTOR_KEY, () -> configurationStrSubstitutor::replace);
             try {
                 return injector.getInstance(node);
             } finally {
@@ -1109,6 +1109,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     @Override
     public void setNanoClock(final NanoClock nanoClock) {
-        injector.bindInstance(NanoClock.KEY, nanoClock);
+        injector.bindFactory(NanoClock.KEY, () -> nanoClock);
     }
 }

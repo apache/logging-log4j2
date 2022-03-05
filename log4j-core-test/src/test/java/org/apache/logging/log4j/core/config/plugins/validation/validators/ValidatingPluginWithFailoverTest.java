@@ -74,8 +74,8 @@ public class ValidatingPluginWithFailoverTest {
         final StatusListener listener = mock(StatusListener.class);
         when(listener.getStatusLevel()).thenReturn(Level.WARN);
         final Injector injector = DI.createInjector()
-                .bindInstance(Keys.SUBSTITUTOR_KEY, Function.identity())
-                .bindInstance(Key.forClass(Configuration.class), new NullConfiguration());
+                .bindFactory(Keys.SUBSTITUTOR_KEY, Function::identity)
+                .bindFactory(Key.forClass(Configuration.class), NullConfiguration::new);
         final StatusLogger logger = StatusLogger.getLogger();
         logger.trace("Initializing");
         logger.registerListener(listener);

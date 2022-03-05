@@ -66,7 +66,7 @@ class DefaultInjector implements Injector {
 
     private final BindingMap bindingMap;
     private final Map<Class<? extends Annotation>, Scope> scopes = new ConcurrentHashMap<>();
-    private ReflectionCallerContext callerContext = ReflectionCallerContext.DEFAULT;
+    private ReflectiveCallerContext callerContext = ReflectiveCallerContext.DEFAULT;
 
     DefaultInjector() {
         bindingMap = new BindingMap();
@@ -81,23 +81,8 @@ class DefaultInjector implements Injector {
     }
 
     @Override
-    public <T> Supplier<T> getFactory(final Class<T> clazz) {
-        return getFactory(Key.forClass(clazz));
-    }
-
-    @Override
     public <T> Supplier<T> getFactory(final Key<T> key) {
         return getFactory(key, Set.of(), null, Set.of());
-    }
-
-    @Override
-    public <T> T getInstance(final Class<T> clazz) {
-        return getFactory(clazz).get();
-    }
-
-    @Override
-    public <T> T getInstance(final Key<T> key) {
-        return getFactory(key).get();
     }
 
     @Override
@@ -121,7 +106,7 @@ class DefaultInjector implements Injector {
     }
 
     @Override
-    public void setCallerContext(final ReflectionCallerContext callerContext) {
+    public void setCallerContext(final ReflectiveCallerContext callerContext) {
         this.callerContext = callerContext;
     }
 
@@ -164,12 +149,6 @@ class DefaultInjector implements Injector {
     @Override
     public <T> Injector bindIfAbsent(final Key<T> key, final Supplier<? extends T> factory) {
         bindingMap.bindIfAbsent(key, factory::get);
-        return this;
-    }
-
-    @Override
-    public <T> Injector bindInstance(final Key<T> key, final T instance) {
-        bindingMap.put(key, () -> instance);
         return this;
     }
 

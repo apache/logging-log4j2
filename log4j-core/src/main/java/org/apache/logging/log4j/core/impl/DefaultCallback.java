@@ -41,7 +41,7 @@ import org.apache.logging.log4j.plugins.PluginException;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.InjectorCallback;
 import org.apache.logging.log4j.plugins.di.Key;
-import org.apache.logging.log4j.plugins.di.ReflectionCallerContext;
+import org.apache.logging.log4j.plugins.di.ReflectiveCallerContext;
 import org.apache.logging.log4j.spi.CopyOnWrite;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
@@ -52,7 +52,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class DefaultCallback implements InjectorCallback {
-    private static final ReflectionCallerContext CORE_CALLER_CONTEXT = object -> object.setAccessible(true);
+    private static final ReflectiveCallerContext CORE_CALLER_CONTEXT = object -> object.setAccessible(true);
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private static class PropertyLoader {

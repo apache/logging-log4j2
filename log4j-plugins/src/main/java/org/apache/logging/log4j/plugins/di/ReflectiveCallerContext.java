@@ -25,16 +25,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * Represents the calling context in which reflection operations {@link Injector} will be performed in. This allows for
- * changing the code location where calls to {@link AccessibleObject#setAccessible(boolean)} are performed which depends
- * on the caller class and its module.
+ * Represents the calling context {@link Injector} uses for reflection operations. This allows for customizing the caller class
+ * for invocations of {@link AccessibleObject#setAccessible(boolean)}.
  */
 @FunctionalInterface
-public interface ReflectionCallerContext {
+public interface ReflectiveCallerContext {
     /**
      * Default caller context where reflection is performed from the log4j-plugins module.
      */
-    ReflectionCallerContext DEFAULT = object -> object.setAccessible(true);
+    ReflectiveCallerContext DEFAULT = object -> object.setAccessible(true);
 
     /**
      * Invokes {@link AccessibleObject#setAccessible(boolean)} with a value of {@code true}.
