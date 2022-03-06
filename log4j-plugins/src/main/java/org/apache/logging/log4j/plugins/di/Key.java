@@ -81,6 +81,10 @@ public class Key<T> {
         return rawType;
     }
 
+    public String getName() {
+        return name;
+    }
+
     /**
      * Returns a new key using the provided name and the same type and qualifier type as this instance.
      */

@@ -21,6 +21,7 @@ import org.apache.logging.log4j.plugins.FactoryType;
 import org.apache.logging.log4j.plugins.Node;
 
 import java.lang.annotation.Annotation;
+import java.lang.invoke.MethodHandles.Lookup;
 import java.util.function.Supplier;
 
 public interface Injector {
@@ -76,6 +77,8 @@ public interface Injector {
      */
     <T> T getInstance(final Node node);
 
+    void injectMembers(final Object instance);
+
     /**
      * Removes any existing bindings matching the provided key.
      *
@@ -93,11 +96,12 @@ public interface Injector {
     void installModule(final Object module);
 
     /**
-     * Sets the reflective caller context this Injector should use for reflection operations.
+     * Sets the {@link Lookup} used for obtaining MethodHandle and VarHandle instances. A custom caller class
+     * can invoke {@code setLookup(MethodHandles.lookup())} as a typical use case.
      *
-     * @param callerContext strategy for performing reflection operations
+     * @param lookup handle lookup object for access checks
      */
-    void setCallerContext(final ReflectiveCallerContext callerContext);
+    void setLookup(final Lookup lookup);
 
     /**
      * Binds a scope annotation type to the given Scope strategy.

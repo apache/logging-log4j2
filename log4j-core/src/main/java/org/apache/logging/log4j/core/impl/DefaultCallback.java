@@ -41,18 +41,17 @@ import org.apache.logging.log4j.plugins.PluginException;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.InjectorCallback;
 import org.apache.logging.log4j.plugins.di.Key;
-import org.apache.logging.log4j.plugins.di.ReflectiveCallerContext;
 import org.apache.logging.log4j.spi.CopyOnWrite;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
+import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import java.util.function.Supplier;
 
 public class DefaultCallback implements InjectorCallback {
-    private static final ReflectiveCallerContext CORE_CALLER_CONTEXT = object -> object.setAccessible(true);
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private static class PropertyLoader {
@@ -84,7 +83,7 @@ public class DefaultCallback implements InjectorCallback {
     public void configure(final Injector injector) {
         final PropertiesUtil properties = PropertiesUtil.getProperties();
         final var loader = new PropertyLoader(injector, properties, Loader.getClassLoader());
-        injector.setCallerContext(CORE_CALLER_CONTEXT);
+        injector.setLookup(MethodHandles.lookup());
         injector.bindIfAbsent(ContextSelector.KEY,
                         () -> loader.getInstance(Constants.LOG4J_CONTEXT_SELECTOR, ContextSelector.class,
                                 () -> ClassLoaderContextSelector.class))

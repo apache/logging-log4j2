@@ -29,6 +29,7 @@ import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.Strings;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.net.URI;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -38,10 +39,12 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
@@ -114,7 +117,7 @@ public class PluginRegistry {
             // already loaded
             return existing;
         }
-        final Map<String, List<PluginType<?>>> newPluginsByCategory = decodeCacheFiles(LoaderUtil.getClassLoader());
+        final Map<String, List<PluginType<?>>> newPluginsByCategory = decodeCacheFiles(new PluginContext());
         loadPlugins(newPluginsByCategory);
 
         // Note multiple threads could be calling this method concurrently. Both will do the work,
@@ -148,7 +151,7 @@ public class PluginRegistry {
             // already loaded from this classloader
             return existing;
         }
-        final Map<String, List<PluginType<?>>> newPluginsByCategory = decodeCacheFiles(loader);
+        final Map<String, List<PluginType<?>>> newPluginsByCategory = decodeCacheFiles(new PluginContext(loader, MethodHandles.lookup()));
         loadPlugins(loader, newPluginsByCategory);
 
         // Note multiple threads could be calling this method concurrently. Both will do the work,
@@ -212,36 +215,27 @@ public class PluginRegistry {
     public void loadPlugins(ClassLoader classLoader, Map<String, List<PluginType<?>>> map) {
         final long startTime = System.nanoTime();
         final ServiceLoader<PluginService> serviceLoader = ServiceLoader.load(PluginService.class, classLoader);
-        int pluginCount = 0;
+        final AtomicInteger pluginCount = new AtomicInteger();
         for (final PluginService pluginService : serviceLoader) {
-            PluginEntry[] entries = pluginService.getEntries();
-            for (PluginEntry entry : entries) {
-                final PluginType<?> type = new PluginType<>(entry, classLoader);
-                String category = entry.getCategory().toLowerCase();
-                if (!map.containsKey(category)) {
-                    map.put(category, new ArrayList<>());
-                }
-                List<PluginType<?>> list = map.get(category);
-                list.add(type);
-                ++pluginCount;
-            }
+            pluginService.getCategories().forEach((category, plugins) -> {
+                map.computeIfAbsent(category.toLowerCase(Locale.ROOT), ignored -> new ArrayList<>()).addAll(plugins);
+                pluginCount.addAndGet(plugins.size());
+            });
         }
-        final int numPlugins = pluginCount;
+        final int numPlugins = pluginCount.get();
         LOGGER.debug(() -> {
             final long endTime = System.nanoTime();
-            StringBuilder sb = new StringBuilder("Took ");
             final DecimalFormat numFormat = new DecimalFormat("#0.000000");
-            sb.append(numFormat.format((endTime - startTime) * 1e-9));
-            sb.append(" seconds to load ").append(numPlugins);
-            sb.append(" plugins from ").append(classLoader);
-            return sb.toString();
+            return "Took " + numFormat.format((endTime - startTime) * 1e-9) +
+                    " seconds to load " + numPlugins + " plugins from " + classLoader;
         });
     }
 
-    private Map<String, List<PluginType<?>>> decodeCacheFiles(final ClassLoader loader) {
+    private Map<String, List<PluginType<?>>> decodeCacheFiles(final PluginContext context) {
         final long startTime = System.nanoTime();
         final PluginCache cache = new PluginCache();
         try {
+            final ClassLoader loader = context.getClassLoader();
             final Enumeration<URL> resources = loader.getResources(PluginManager.PLUGIN_CACHE_FILE);
             if (resources == null) {
                 LOGGER.info("Plugin preloads not available from class loader {}", loader);
@@ -259,8 +253,7 @@ public class PluginRegistry {
             newPluginsByCategory.put(categoryLowerCase, types);
             for (final Map.Entry<String, PluginEntry> inner : outer.getValue().entrySet()) {
                 final PluginEntry entry = inner.getValue();
-                final String className = entry.getClassName();
-                final PluginType<?> type = new PluginType<>(entry, loader);
+                final PluginType<?> type = new PluginType<>(entry, context.getLookup());
                 types.add(type);
                 ++pluginCount;
             }
@@ -268,12 +261,9 @@ public class PluginRegistry {
         final int numPlugins = pluginCount;
         LOGGER.debug(() -> {
             final long endTime = System.nanoTime();
-            StringBuilder sb = new StringBuilder("Took ");
             final DecimalFormat numFormat = new DecimalFormat("#0.000000");
-            sb.append(numFormat.format((endTime - startTime) * 1e-9));
-            sb.append(" seconds to load ").append(numPlugins);
-            sb.append(" plugins from ").append(loader);
-            return sb.toString();
+            return "Took " + numFormat.format((endTime - startTime) * 1e-9) +
+                    " seconds to load " + numPlugins + " plugins from " + context.getClassLoader();
         });
         return newPluginsByCategory;
     }
@@ -338,12 +328,9 @@ public class PluginRegistry {
         }
         LOGGER.debug(() -> {
             final long endTime = System.nanoTime();
-            StringBuilder sb = new StringBuilder("Took ");
             final DecimalFormat numFormat = new DecimalFormat("#0.000000");
-            sb.append(numFormat.format((endTime - startTime) * 1e-9));
-            sb.append(" seconds to load ").append(resolver.getClasses().size());
-            sb.append(" plugins from package ").append(pkg);
-            return sb.toString();
+            return "Took " + numFormat.format((endTime - startTime) * 1e-9) +
+                    " seconds to load " + resolver.getClasses().size() + " plugins from package " + pkg;
         });
 
         // Note multiple threads could be calling this method concurrently. Both will do the work,

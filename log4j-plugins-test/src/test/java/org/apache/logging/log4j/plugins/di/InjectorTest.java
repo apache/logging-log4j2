@@ -41,6 +41,7 @@ import org.junit.jupiter.api.parallel.Resources;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -588,7 +589,7 @@ class InjectorTest {
         final Plugin plugin = clazz.getAnnotation(Plugin.class);
         final PluginEntry entry = new PluginEntry(plugin.name().toLowerCase(Locale.ROOT), clazz.getName(), plugin.name(),
                 plugin.printObject(), plugin.deferChildren(), plugin.category());
-        return new PluginType<>(entry, clazz, plugin.elementType());
+        return new PluginType<>(entry, clazz, MethodHandles.lookup().in(clazz), plugin.elementType());
     }
 
     @Test
@@ -700,5 +701,30 @@ class InjectorTest {
         final LevelInject levelInject = DI.createInjector(NoOpStringSubstitution.class).getInstance(node);
         assertThat(levelInject.first).isNull();
         assertThat(levelInject.second).isEqualTo(Level.ERROR);
+    }
+
+    @Plugin(name = "MultipleElements", category = "Test")
+    static class MultipleElements {
+        final ConfigurableObject[] objects;
+
+        @Inject
+        MultipleElements(@PluginElement final ConfigurableObject... objects) {
+            this.objects = objects;
+        }
+    }
+
+    @Test
+    void multipleElementInjection() {
+        final var innerType = fromClass(ConfigurableObject.class);
+        final var outerType = fromClass(MultipleElements.class);
+        final var root = new Node(null, "root", outerType);
+        final var child1 = new Node(root, "first", innerType);
+        child1.getAttributes().put("greeting", "g'day");
+        root.getChildren().add(child1);
+        final var child2 = new Node(root, "second", innerType);
+        child2.getAttributes().put("greeting", "alright");
+        root.getChildren().add(child2);
+        final MultipleElements instance = DI.createInjector(NoOpStringSubstitution.class).getInstance(root);
+        assertThat(instance.objects).hasSize(2);
     }
 }

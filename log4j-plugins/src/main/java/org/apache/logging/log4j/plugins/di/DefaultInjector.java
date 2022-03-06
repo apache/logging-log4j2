@@ -26,7 +26,6 @@ import org.apache.logging.log4j.plugins.QualifierType;
 import org.apache.logging.log4j.plugins.ScopeType;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.plugins.name.AnnotatedElementAliasesProvider;
-import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
 import org.apache.logging.log4j.plugins.util.AnnotationUtil;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
@@ -39,10 +38,14 @@ import org.apache.logging.log4j.util.ServiceRegistry;
 import org.apache.logging.log4j.util.StringBuilders;
 
 import java.lang.annotation.Annotation;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodHandles.Lookup;
+import java.lang.invoke.VarHandle;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
@@ -66,7 +69,7 @@ class DefaultInjector implements Injector {
 
     private final BindingMap bindingMap;
     private final Map<Class<? extends Annotation>, Scope> scopes = new ConcurrentHashMap<>();
-    private ReflectiveCallerContext callerContext = ReflectiveCallerContext.DEFAULT;
+    private Lookup lookup = MethodHandles.lookup();
 
     DefaultInjector() {
         bindingMap = new BindingMap();
@@ -74,10 +77,10 @@ class DefaultInjector implements Injector {
         scopes.put(Singleton.class, new SingletonScope());
     }
 
-    DefaultInjector(final DefaultInjector parent) {
-        bindingMap = new BindingMap(parent.bindingMap);
-        scopes.putAll(parent.scopes);
-        callerContext = parent.callerContext;
+    DefaultInjector(final DefaultInjector original) {
+        bindingMap = new BindingMap(original.bindingMap);
+        scopes.putAll(original.scopes);
+        lookup = original.lookup;
     }
 
     @Override
@@ -89,6 +92,13 @@ class DefaultInjector implements Injector {
     public <T> T getInstance(final Node node) {
         configure(node);
         return node.getObject();
+    }
+
+    @Override
+    public void injectMembers(final Object instance) {
+        final Class<?> type = instance.getClass();
+        final Key<?> key = Key.forClass(type);
+        injectMembers(key, null, instance, Set.of(), null);
     }
 
     @Override
@@ -106,8 +116,8 @@ class DefaultInjector implements Injector {
     }
 
     @Override
-    public void setCallerContext(final ReflectiveCallerContext callerContext) {
-        this.callerContext = callerContext;
+    public void setLookup(final Lookup lookup) {
+        this.lookup = lookup;
     }
 
     @Override
@@ -175,29 +185,38 @@ class DefaultInjector implements Injector {
     }
 
     private void registerModuleClass(final Class<?> moduleClass) {
-        findStaticFactoryMethods(moduleClass)
-                .forEach(method -> createMethodBindings(null, method)
-                        .forEach(binding -> {
-                            final var key = binding.getKey();
-                            if (!bindingMap.putIfAbsent(key, binding.getSupplier())) {
-                                throw new PluginException(String.format(
-                                        "Duplicate @Factory method (%s: %s) found for %s", moduleClass, method, key));
-                            }
-                        }));
+        final List<Method> staticFactoryMethods = Stream.of(moduleClass.getDeclaredMethods())
+                .filter(method -> Modifier.isStatic(method.getModifiers()) &&
+                        AnnotationUtil.isMetaAnnotationPresent(method, FactoryType.class))
+                .collect(Collectors.toList());
+        for (final Method method : staticFactoryMethods) {
+            for (final Binding<Object> binding : createMethodBindings(null, method)) {
+                final var key = binding.getKey();
+                if (!bindingMap.putIfAbsent(key, binding.getSupplier())) {
+                    throw new PluginException(String.format(
+                            "Duplicate @Factory method (%s: %s) found for %s", moduleClass, method, key));
+                }
+            }
+        }
     }
 
     private <T> List<Binding<T>> createMethodBindings(final Object instance, final Method method) {
         final Key<T> primaryKey = Key.forMethod(method);
-        final List<Supplier<?>> parameterFactories = getParameterFactories(primaryKey, null, method, Set.of(primaryKey), null);
-        final Supplier<T> factory = getScopeForMethod(method).get(primaryKey,
-                () -> {
-                    final Object[] parameters = parameterFactories.stream().map(Supplier::get).toArray();
-                    try {
-                        return TypeUtil.cast(callerContext.invoke(method, instance, parameters));
-                    } catch (final InvocationTargetException e) {
-                        throw new PluginException("Unable to invoke factory method " + method, e.getTargetException());
-                    }
-                });
+        final List<InjectionPoint<?>> points = InjectionPoint.fromExecutable(method);
+        final MethodHandle handle = getMethodHandle(method, lookup);
+        final MethodHandle boundHandle = Modifier.isStatic(method.getModifiers()) ? handle : handle.bindTo(instance);
+        final var argumentFactories = getArgumentFactories(primaryKey, null, points, Set.of(primaryKey), null);
+        final Supplier<T> unscoped = () -> {
+            final List<Object> args = argumentFactories.entrySet()
+                    .stream()
+                    .flatMap(e -> {
+                        final Object value = e.getValue().get();
+                        return e.getKey().isVarArgs() ? Stream.of((Object[]) value) : Stream.of(value);
+                    })
+                    .collect(Collectors.toList());
+            return TypeUtil.cast(rethrow(() -> boundHandle.invokeWithArguments(args)));
+        };
+        final Supplier<T> factory = getScopeForMethod(method).get(primaryKey, unscoped);
         final Collection<String> aliases = AnnotatedElementAliasesProvider.getAliases(method);
         final List<Binding<T>> bindings = new ArrayList<>(1 + aliases.size());
         bindings.add(Binding.bind(primaryKey, factory));
@@ -276,11 +295,10 @@ class DefaultInjector implements Injector {
         }
         try {
             final StringBuilder debugLog = new StringBuilder();
-            final Object instance = getInjectableInstance(Key.forClass(pluginClass), node, Set.of(), debugLog);
+            final Object instance = getInjectablePluginInstance(node, debugLog);
             if (instance instanceof Supplier<?>) {
                 // configure plugin builder class and obtain plugin from that
-                injectFields(instance.getClass(), node, instance, Set.of(), debugLog);
-                injectMethods(Key.forClass(instance.getClass()), node, instance, Set.of(), debugLog);
+                injectMembers(Key.forClass(instance.getClass()), node, instance, Set.of(), debugLog);
                 node.setObject(((Supplier<?>) instance).get());
             } else {
                 // usually created via static plugin factory method, but otherwise assume this is the final plugin instance
@@ -293,27 +311,19 @@ class DefaultInjector implements Injector {
     }
 
     private <T> Supplier<T> getFactory(
-            final Field field, final Node node, final Set<Key<?>> chain, final StringBuilder debugLog) {
-        final Key<? extends NodeVisitor> visitorKey = NodeVisitor.keyFor(field);
+            final InjectionPoint<T> point, final Node node, final Set<Key<?>> chain, final StringBuilder debugLog) {
+        final AnnotatedElement element = point.getElement();
+        final Key<? extends NodeVisitor> visitorKey = NodeVisitor.keyFor(element);
         final NodeVisitor visitor = visitorKey != null ? getInstance(visitorKey) : null;
         if (visitor != null) {
-            return () -> TypeUtil.cast(visitor.visitField(field, node, debugLog));
+            if (element instanceof Field) {
+                return () -> TypeUtil.cast(visitor.visitField((Field) element, node, debugLog));
+            } else {
+                return () -> TypeUtil.cast(visitor.visitParameter((Parameter) element, node, debugLog));
+            }
         }
-        final Key<T> key = Key.forField(field);
-        final Collection<String> aliases = AnnotatedElementAliasesProvider.getAliases(field);
-        final Key<T> suppliedType = key.getSuppliedType();
-        return suppliedType != null ? getFactory(suppliedType, aliases, node, Set.of()) : getFactory(key, aliases, node, chain);
-    }
-
-    private <T> Supplier<T> getFactory(
-            final Parameter parameter, final Node node, final Set<Key<?>> chain, final StringBuilder debugLog) {
-        final Key<? extends NodeVisitor> visitorKey = NodeVisitor.keyFor(parameter);
-        final NodeVisitor visitor = visitorKey != null ? getInstance(visitorKey) : null;
-        if (visitor != null) {
-            return () -> TypeUtil.cast(visitor.visitParameter(parameter, node, debugLog));
-        }
-        final Key<T> key = Key.forParameter(parameter);
-        final Collection<String> aliases = AnnotatedElementAliasesProvider.getAliases(parameter);
+        final Key<T> key = point.getKey();
+        final Collection<String> aliases = point.getAliases();
         final Key<T> suppliedType = key.getSuppliedType();
         return suppliedType != null ? getFactory(suppliedType, aliases, node, Set.of()) : getFactory(key, aliases, node, chain);
     }
@@ -333,18 +343,20 @@ class DefaultInjector implements Injector {
         final Supplier<T> instanceSupplier = () -> {
             final StringBuilder debugLog = new StringBuilder();
             final T instance = TypeUtil.cast(getInjectableInstance(key, node, chain, debugLog));
-            injectFields(key.getRawType(), node, instance, Set.of(), debugLog);
-            injectMethods(key, node, instance, chain, debugLog);
+            injectMembers(key, node, instance, chain, debugLog);
             return instance;
         };
         final Scope scope = getScopeForType(key.getRawType());
         return bindingMap.bindIfAbsent(key, scope.get(key, instanceSupplier));
     }
 
-    private Object getInjectableInstance(
-            final Key<?> key, final Node node, final Set<Key<?>> chain, final StringBuilder debugLog) {
-        final Class<?> rawType = key.getRawType();
-        return findStaticFactoryMethods(rawType)
+    private Object getInjectablePluginInstance(final Node node, final StringBuilder debugLog) {
+        final PluginType<?> type = node.getType();
+        final Class<?> rawType = type.getPluginClass();
+        final Key<?> key = Key.forClass(rawType);
+        final Executable factory = Stream.of(rawType.getDeclaredMethods())
+                .filter(method -> Modifier.isStatic(method.getModifiers()) &&
+                        AnnotationUtil.isMetaAnnotationPresent(method, FactoryType.class))
                 .min(Comparator.comparingInt(Method::getParameterCount).thenComparing(Method::getReturnType, (c1, c2) -> {
                     if (c1.equals(c2)) {
                         return 0;
@@ -356,134 +368,111 @@ class DefaultInjector implements Injector {
                         return c1.getName().compareTo(c2.getName());
                     }
                 }))
-                .map(method -> {
-                    final Object[] parameters = getParameters(key, node, method, chain, debugLog);
-                    try {
-                        return callerContext.invoke(method, null, parameters);
-                    } catch (final InvocationTargetException e) {
-                        final Throwable cause = e.getTargetException();
-                        throw new PluginException("Error while invoking " + method + ": " + cause.getMessage(), cause);
-                    }
-                })
-                .orElseGet(() -> {
-                    final List<Constructor<?>> injectConstructors = Stream.of(rawType.getDeclaredConstructors())
-                            .filter(constructor -> constructor.isAnnotationPresent(Inject.class))
-                            .collect(Collectors.toList());
-                    if (injectConstructors.size() > 1) {
-                        throw new PluginException("Multiple @Inject constructors found in " + rawType);
-                    }
-                    Constructor<?> constructor;
-                    if (injectConstructors.size() == 1) {
-                        constructor = injectConstructors.get(0);
-                    } else {
-                        try {
-                            constructor = rawType.getDeclaredConstructor();
-                        } catch (final NoSuchMethodException ignored) {
-                            try {
-                                constructor = rawType.getConstructor();
-                            } catch (final NoSuchMethodException ignore) {
-                                final List<Key<?>> keys = new ArrayList<>(chain);
-                                keys.add(0, key);
-                                final String prefix = chain.isEmpty() ? "" : "chain ";
-                                final String keysToString =
-                                        prefix + keys.stream().map(Key::toString).collect(Collectors.joining(" -> "));
-                                throw new PluginException(
-                                        "No @Inject constructors or no-arg constructor found for " + keysToString);
-                            }
-                        }
-                    }
-                    try {
-                        return callerContext.construct(constructor, getParameters(key, node, constructor, chain, debugLog));
-                    } catch (final InvocationTargetException e) {
-                        final Throwable cause = e.getTargetException();
-                        throw new PluginException("Error while invoking " + constructor + ": " + cause.getMessage(), cause);
-                    } catch (final InstantiationException e) {
-                        throw new PluginException("Unable to invoke injectable constructor " + constructor, e);
-                    }
-                });
+                .map(Executable.class::cast)
+                .orElseGet(() -> getInjectableConstructor(key, Set.of()));
+        final List<InjectionPoint<?>> points = InjectionPoint.fromExecutable(factory);
+        final Lookup pluginLookup = type.getPluginLookup();
+        final MethodHandle handle;
+        if (factory instanceof Method) {
+            handle = getMethodHandle((Method) factory, pluginLookup);
+        } else {
+            handle = getConstructorHandle((Constructor<?>) factory, pluginLookup);
+        }
+        final var args = getArguments(key, node, points, Set.of(), debugLog);
+        return rethrow(() -> handle.invokeWithArguments(args));
     }
 
-    private void injectFields(
-            final Class<?> rawType, final Node node, final Object instance, final Set<Key<?>> chain,
-            final StringBuilder debugLog) {
-        for (final Field field : getInjectableFields(rawType)) {
-            final Supplier<?> factory = getFactory(field, node, chain, debugLog);
-            final Object value = Supplier.class == field.getType() ? factory : factory.get();
-            if (value != null) {
-                callerContext.set(field, instance, value);
-            }
-            if (ConstraintValidators.hasConstraints(field)) {
-                final String name = AnnotatedElementNameProvider.getName(field);
-                final Object fieldValue = callerContext.get(field, instance);
-                if (!ConstraintValidators.isValid(field, name, fieldValue)) {
-                    throw new PluginException("Validation failed for field " + field + " with value '" + value + "'");
+    private Object getInjectableInstance(
+            final Key<?> key, final Node node, final Set<Key<?>> chain, final StringBuilder debugLog) {
+        final Constructor<?> constructor = getInjectableConstructor(key, chain);
+        final List<InjectionPoint<?>> points = InjectionPoint.fromExecutable(constructor);
+        final MethodHandle handle = getConstructorHandle(constructor, lookup);
+        final var args = getArguments(key, node, points, chain, debugLog);
+        return rethrow(() -> handle.invokeWithArguments(args));
+    }
+
+    private void injectMembers(
+            final Key<?> key, final Node node, final Object instance, final Set<Key<?>> chain, final StringBuilder debugLog) {
+        injectFields(key.getRawType(), node, instance, debugLog);
+        injectMethods(key, node, instance, chain, debugLog);
+    }
+
+    private void injectFields(final Class<?> rawType, final Node node, final Object instance, final StringBuilder debugLog) {
+        for (Class<?> clazz = rawType; clazz != Object.class; clazz = clazz.getSuperclass()) {
+            for (final Field field : clazz.getDeclaredFields()) {
+                if (isInjectable(field)) {
+                    injectField(field, node, instance, debugLog);
                 }
+            }
+        }
+    }
+
+    private <T> void injectField(final Field field, final Node node, final Object instance, final StringBuilder debugLog) {
+        final Lookup fieldLookup = node != null ? node.getType().getPluginLookup() : lookup.in(instance.getClass());
+        final VarHandle handle = getFieldHandle(field, fieldLookup);
+        final InjectionPoint<T> point = InjectionPoint.forField(field);
+        final Supplier<T> factory = getFactory(point, node, Set.of(), debugLog);
+        final Key<T> key = point.getKey();
+        final Object value = key.getRawType() == Supplier.class ? factory : factory.get();
+        if (value != null) {
+            handle.set(instance, value);
+        }
+        if (ConstraintValidators.hasConstraints(field)) {
+            final Object fieldValue = handle.get(instance);
+            if (!ConstraintValidators.isValid(field, key.getName(), fieldValue)) {
+                throw new PluginException("Validation failed for field " + fieldValue + " with value '" + fieldValue + "'");
             }
         }
     }
 
     private void injectMethods(
-            final Key<?> key, final Node node, final Object instance, final Set<Key<?>> chain,
+            final Key<?> key, final Node node, final Object instance, final Set<Key<?>> chain, final StringBuilder debugLog) {
+        final Class<?> rawType = key.getRawType();
+        final Lookup methodLookup = node != null ? node.getType().getPluginLookup() : lookup.in(instance.getClass());
+        final Map<MethodHandle, List<?>> injectMethodArgs = new LinkedHashMap<>();
+        final List<MethodHandle> injectMethodsWithNoArgs = new ArrayList<>();
+        for (Class<?> clazz = rawType; clazz != Object.class; clazz = clazz.getSuperclass()) {
+            for (final Method method : clazz.getDeclaredMethods()) {
+                if (isInjectable(method)) {
+                    final MethodHandle handle = getMethodHandle(method, methodLookup).bindTo(instance);
+                    if (method.getParameterCount() == 0) {
+                        injectMethodsWithNoArgs.add(handle);
+                    } else {
+                        final List<InjectionPoint<?>> injectionPoints = InjectionPoint.fromExecutable(method);
+                        final List<?> args = getArguments(key, node, injectionPoints, chain, debugLog);
+                        injectMethodArgs.put(handle, args);
+                    }
+                }
+            }
+        }
+        injectMethodArgs.forEach((handle, args) -> rethrow(() -> handle.invokeWithArguments(args)));
+        injectMethodsWithNoArgs.forEach(handle -> rethrow(handle::invoke));
+    }
+
+    private List<Object> getArguments(
+            final Key<?> key, final Node node, final List<InjectionPoint<?>> points, final Set<Key<?>> chain,
             final StringBuilder debugLog) {
-        final List<Method> injectableMethods = getInjectableMethods(key.getRawType());
-        final List<Method> methodsWithParameters = injectableMethods.stream()
-                .filter(method -> method.getParameterCount() > 0)
+        return getArgumentFactories(key, node, points, chain, debugLog)
+                .entrySet()
+                .stream()
+                .flatMap(e -> {
+                    final Object value = e.getValue().get();
+                    return e.getKey().isVarArgs() ? Stream.of((Object[]) value) : Stream.of(value);
+                })
                 .collect(Collectors.toList());
-        for (final Method method : methodsWithParameters) {
-            final Object[] parameters = getParameters(key, node, method, chain, debugLog);
-            try {
-                callerContext.invoke(method, instance, parameters);
-            } catch (final InvocationTargetException e) {
-                final Throwable cause = e.getTargetException();
-                throw new PluginException("Error while invoking " + method + ": " + cause.getMessage(), cause);
-            }
-        }
-        for (final Method method : injectableMethods) {
-            if (method.getParameterCount() == 0) {
-                try {
-                    callerContext.invoke(method, instance);
-                } catch (final InvocationTargetException e) {
-                    final Throwable cause = e.getTargetException();
-                    throw new PluginException("Error while invoking " + method + ": " + cause.getMessage(), cause);
-                }
-            }
-        }
     }
 
-    private Object[] getParameters(
-            final Key<?> key, final Node node, final Executable executable, final Set<Key<?>> chain,
+    private Map<Parameter, Supplier<?>> getArgumentFactories(
+            final Key<?> key, final Node node, final List<InjectionPoint<?>> points, final Set<Key<?>> chain,
             final StringBuilder debugLog) {
-        final List<Supplier<?>> parameterFactories = getParameterFactories(key, node, executable, chain, debugLog);
-        final Object[] parameters = new Object[parameterFactories.size()];
-        for (int i = 0; i < parameters.length; i++) {
-            parameters[i] = parameterFactories.get(i).get();
-        }
-        return parameters;
-    }
-
-    private List<Supplier<?>> getParameterFactories(
-            final Key<?> key, final Node node, final Executable executable, final Set<Key<?>> chain,
-            final StringBuilder debugLog) {
-        final int parameterCount = executable.getParameterCount();
-        if (parameterCount == 0) {
-            return List.of();
-        }
-        final List<Supplier<?>> factories = new ArrayList<>(parameterCount);
-        final Parameter[] parameters = executable.getParameters();
-        for (int i = 0; i < parameterCount; i++) {
-            final Parameter parameter = parameters[i];
-            final Class<?> parameterType = parameter.getType();
-            if (parameterType.equals(Supplier.class)) {
-                factories.add(() -> getFactory(parameter, node, chain, debugLog));
+        final Map<Parameter, Supplier<?>> argFactories = new LinkedHashMap<>();
+        for (final InjectionPoint<?> point : points) {
+            final Key<?> parameterKey = point.getKey();
+            final Parameter parameter = (Parameter) point.getElement();
+            if (parameterKey.getRawType().equals(Supplier.class)) {
+                argFactories.put(parameter, () -> getFactory(point, node, chain, debugLog));
             } else {
-                final var parameterKey = Key.forParameter(parameter);
-                final Set<Key<?>> newChain;
-                if (chain == null || chain.isEmpty()) {
-                    newChain = Set.of(key);
-                } else {
-                    newChain = new LinkedHashSet<>(chain);
-                    newChain.add(key);
-                }
+                final var newChain = chain(chain, key);
                 if (newChain.contains(parameterKey)) {
                     final StringBuilder sb = new StringBuilder("Circular dependency encountered: ");
                     for (final Key<?> chainKey : newChain) {
@@ -492,10 +481,10 @@ class DefaultInjector implements Injector {
                     sb.append(parameterKey);
                     throw new PluginException(sb.toString());
                 }
-                factories.add(() -> getFactory(parameter, node, newChain, debugLog).get());
+                argFactories.put(parameter, () -> getFactory(point, node, newChain, debugLog).get());
             }
         }
-        return factories;
+        return argFactories;
     }
 
     private Scope getScopeForMethod(final Method method) {
@@ -508,24 +497,89 @@ class DefaultInjector implements Injector {
         return scope != null ? scopes.get(scope.annotationType()) : DefaultScope.INSTANCE;
     }
 
-    private static Stream<Method> findStaticFactoryMethods(final Class<?> pluginClass) {
-        return Arrays.stream(pluginClass.getDeclaredMethods())
-                .filter(method -> Modifier.isStatic(method.getModifiers()) &&
-                        AnnotationUtil.isMetaAnnotationPresent(method, FactoryType.class));
+    private static Set<Key<?>> chain(final Set<Key<?>> chain, final Key<?> newKey) {
+        if (chain == null || chain.isEmpty()) {
+            return Set.of(newKey);
+        }
+        final var newChain = new LinkedHashSet<>(chain);
+        newChain.add(newKey);
+        return newChain;
     }
 
-    private static List<Field> getInjectableFields(final Class<?> rawType) {
-        return Stream.<Class<?>>iterate(rawType, clazz -> clazz != Object.class, Class::getSuperclass)
-                .flatMap(clazz -> Stream.of(clazz.getDeclaredFields()))
-                .filter(DefaultInjector::isInjectable)
-                .collect(Collectors.toList());
+    private static VarHandle getFieldHandle(final Field field, final Lookup lookup) {
+        final Class<?> declaringClass = field.getDeclaringClass();
+        try {
+            return lookup.unreflectVarHandle(field);
+        } catch (final IllegalAccessException outer) {
+            try {
+                return MethodHandles.privateLookupIn(declaringClass, lookup).unreflectVarHandle(field);
+            } catch (final IllegalAccessException inner) {
+                final var error = new IllegalAccessError("Cannot access field " + field);
+                error.addSuppressed(inner);
+                error.addSuppressed(outer);
+                throw error;
+            }
+        }
     }
 
-    private static List<Method> getInjectableMethods(final Class<?> rawType) {
-        return Stream.<Class<?>>iterate(rawType, clazz -> clazz != Object.class, Class::getSuperclass)
-                .flatMap(clazz -> Stream.of(clazz.getDeclaredMethods()))
-                .filter(DefaultInjector::isInjectable)
+    private static MethodHandle getMethodHandle(final Method method, final Lookup lookup) {
+        final Class<?> declaringClass = method.getDeclaringClass();
+        try {
+            return lookup.unreflect(method);
+        } catch (final IllegalAccessException outer) {
+            try {
+                return MethodHandles.privateLookupIn(declaringClass, lookup).unreflect(method);
+            } catch (final IllegalAccessException inner) {
+                final var error = new IllegalAccessError("Cannot access method " + method);
+                error.addSuppressed(inner);
+                error.addSuppressed(outer);
+                throw error;
+            }
+        }
+    }
+
+    private static MethodHandle getConstructorHandle(final Constructor<?> constructor, final Lookup lookup) {
+        final Class<?> declaringClass = constructor.getDeclaringClass();
+        try {
+            return lookup.unreflectConstructor(constructor);
+        } catch (final IllegalAccessException outer) {
+            try {
+                return MethodHandles.privateLookupIn(declaringClass, lookup).unreflectConstructor(constructor);
+            } catch (final IllegalAccessException inner) {
+                final var error = new IllegalAccessError("Cannot access constructor " + constructor);
+                error.addSuppressed(inner);
+                error.addSuppressed(outer);
+                throw error;
+            }
+        }
+    }
+
+    private static <T> Constructor<T> getInjectableConstructor(final Key<T> key, final Set<Key<?>> chain) {
+        final Class<T> rawType = key.getRawType();
+        final List<Constructor<?>> injectConstructors = Stream.of(rawType.getDeclaredConstructors())
+                .filter(constructor -> constructor.isAnnotationPresent(Inject.class))
                 .collect(Collectors.toList());
+        if (injectConstructors.size() > 1) {
+            throw new PluginException("Multiple @Inject constructors found in " + rawType);
+        }
+        if (injectConstructors.size() == 1) {
+            return TypeUtil.cast(injectConstructors.get(0));
+        }
+        try {
+            return rawType.getDeclaredConstructor();
+        } catch (final NoSuchMethodException ignored) {
+        }
+        try {
+            return rawType.getConstructor();
+        } catch (final NoSuchMethodException ignored) {
+        }
+        final List<Key<?>> keys = new ArrayList<>(chain);
+        keys.add(0, key);
+        final String prefix = chain.isEmpty() ? "" : "chain ";
+        final String keysToString =
+                prefix + keys.stream().map(Key::toString).collect(Collectors.joining(" -> "));
+        throw new PluginException(
+                "No @Inject constructors or no-arg constructor found for " + keysToString);
     }
 
     private static boolean isInjectable(final Field field) {
@@ -535,8 +589,28 @@ class DefaultInjector implements Injector {
     private static boolean isInjectable(final Method method) {
         return method.isAnnotationPresent(Inject.class) ||
                 !AnnotationUtil.isMetaAnnotationPresent(method, FactoryType.class) &&
-                        Arrays.stream(method.getParameters()).anyMatch(
+                        Stream.of(method.getParameters()).anyMatch(
                                 parameter -> AnnotationUtil.isMetaAnnotationPresent(parameter, QualifierType.class));
+    }
+
+    private static <T> T rethrow(final CheckedSupplier<T> supplier) {
+        try {
+            return supplier.get();
+        } catch (final Throwable e) {
+            rethrow(e);
+            throw new IllegalStateException("unreachable", e);
+        }
+    }
+
+    // type inference and erasure ensures that checked exceptions can be thrown here without being checked anymore
+    @SuppressWarnings("unchecked")
+    private static <T extends Throwable> void rethrow(final Throwable t) throws T {
+        throw (T) t;
+    }
+
+    @FunctionalInterface
+    private interface CheckedSupplier<T> {
+        T get() throws Throwable;
     }
 
     private static class SingletonScope implements Scope {

@@ -34,10 +34,10 @@ import java.lang.annotation.Target;
  * zero args constructor is used if available.
  *
  * <h2>Fields</h2>
- * Both static and non-static fields may be annotated with {@code @Inject}. These fields must not be final.
+ * Only non-final, non-static fields may be annotated with {@code @Inject}.
  *
  * <h2>Methods</h2>
- * Non-abstract methods (both static and non-static) may be annotated with {@code @Inject}. These methods must not
+ * Non-abstract, non-static methods may be annotated with {@code @Inject}. These methods must not
  * declare any type parameters of their own, take zero or more dependencies as arguments, and may return a value which
  * is ignored (e.g., for builder method chaining).
  *

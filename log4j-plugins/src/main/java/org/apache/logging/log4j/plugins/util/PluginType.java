@@ -19,6 +19,8 @@ package org.apache.logging.log4j.plugins.util;
 import org.apache.logging.log4j.plugins.processor.PluginEntry;
 import org.apache.logging.log4j.util.LazyValue;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodHandles.Lookup;
 import java.util.function.Supplier;
 
 /**
@@ -31,6 +33,7 @@ public class PluginType<T> {
 
     private final PluginEntry pluginEntry;
     private final Supplier<Class<T>> pluginClass;
+    private final Supplier<Lookup> pluginLookup;
     private final String elementName;
 
     /**
@@ -41,8 +44,14 @@ public class PluginType<T> {
      * @since 2.1
      */
     public PluginType(final PluginEntry pluginEntry, final Class<T> pluginClass, final String elementName) {
+        this(pluginEntry, pluginClass, MethodHandles.lookup().in(pluginClass), elementName);
+    }
+
+    public PluginType(
+            final PluginEntry pluginEntry, final Class<T> pluginClass, final Lookup pluginLookup, final String elementName) {
         this.pluginEntry = pluginEntry;
         this.pluginClass = () -> pluginClass;
+        this.pluginLookup = () -> pluginLookup;
         this.elementName = elementName;
     }
 
@@ -50,18 +59,19 @@ public class PluginType<T> {
      * The Constructor.
      * @since 3.0
      * @param pluginEntry The PluginEntry.
-     * @param classLoader The ClassLoader to use to load the Plugin.
+     * @param lookup The Lookup to use to load the plugin class.
      */
-    public PluginType(final PluginEntry pluginEntry, final ClassLoader classLoader) {
+    public PluginType(final PluginEntry pluginEntry, final Lookup lookup) {
         this.pluginEntry = pluginEntry;
         this.pluginClass = new LazyValue<>(() -> {
             try {
-                return TypeUtil.cast(classLoader.loadClass(pluginEntry.getClassName()));
-            } catch (ClassNotFoundException | LinkageError e) {
+                return TypeUtil.cast(lookup.findClass(pluginEntry.getClassName()));
+            } catch (ClassNotFoundException | IllegalAccessException e) {
                 throw new IllegalStateException("No class named " + pluginEntry.getClassName() +
                         " located for element " + pluginEntry.getName(), e);
             }
         });
+        this.pluginLookup = new LazyValue<>(() -> lookup.in(pluginClass.get()));
         this.elementName = pluginEntry.getName();
     }
 
@@ -72,6 +82,10 @@ public class PluginType<T> {
 
     public Class<T> getPluginClass() {
         return pluginClass.get();
+    }
+
+    public Lookup getPluginLookup() {
+        return pluginLookup.get();
     }
 
     public String getElementName() {
