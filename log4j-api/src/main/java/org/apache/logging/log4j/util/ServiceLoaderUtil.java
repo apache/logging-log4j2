@@ -31,6 +31,8 @@ import org.apache.logging.log4j.status.StatusLogger;
 
 public class ServiceLoaderUtil {
 
+    private static boolean USE_HK2_SERVICE_LOCATOR = LoaderUtil.isClassAvailable("org.glassfish.hk2.osgiresourcelocator.ServiceLoader");
+
     private static Logger getLogger() {
         return StatusLogger.getLogger();
     }
@@ -93,6 +95,9 @@ public class ServiceLoaderUtil {
         for (final ClassLoader loader : LoaderUtil.getClassLoaders()) {
             addServices(serviceType, loader, logger, services);
         }
+        if (USE_HK2_SERVICE_LOCATOR) {
+            addOsgiServices(serviceType, services);
+        }
         return services;
     }
 
@@ -119,6 +124,14 @@ public class ServiceLoaderUtil {
                     logger.accept(e);
                 }
             }
+        }
+    }
+
+    private static <T> void addOsgiServices(final Class<T> serviceType, final Collection<T> services) {
+        final Iterable<? extends T> iterable = org.glassfish.hk2.osgiresourcelocator.ServiceLoader
+                .lookupProviderInstances(serviceType);
+        if (iterable != null) {
+            iterable.forEach(services::add);
         }
     }
 }

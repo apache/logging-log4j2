@@ -95,6 +95,10 @@
       <groupId>org.junit-pioneer</groupId>
       <artifactId>junit-pioneer</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.glassfish.hk2</groupId>
+      <artifactId>osgi-resource-locator</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -251,6 +255,7 @@
             <Export-Package>org.apache.logging.log4j.*</Export-Package>
             <Import-Package>
               sun.reflect;resolution:=optional,
+              org.glassfish.hk2.osgiresourcelocator;version="[2.5,3.0)";resolution:=optional,
               *
             </Import-Package>
             <Bundle-Activator>org.apache.logging.log4j.util.Activator</Bundle-Activator>
