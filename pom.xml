@@ -253,6 +253,7 @@
     <surefire.plugin.version>3.0.0-M5</surefire.plugin.version>
     <failsafe.plugin.version>3.0.0-M5</failsafe.plugin.version>
     <checkstyle.plugin.version>3.1.2</checkstyle.plugin.version>
+    <!-- checkstyle 10.0 requires Java 11 -->
     <checkstyle.tool.version>8.45.1</checkstyle.tool.version>
     <deploy.plugin.version>2.8.2</deploy.plugin.version>
     <rat.plugin.version>0.13</rat.plugin.version>
