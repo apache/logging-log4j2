@@ -214,7 +214,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             return filter;
         }
 
-        public B withtFilter(Filter filter) {
+        public B withFilter(Filter filter) {
             this.filter = filter;
             return asBuilder();
         }
@@ -884,7 +884,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 return filter;
             }
 
-            public B withtFilter(Filter filter) {
+            public B withFilter(Filter filter) {
                 this.filter = filter;
                 return asBuilder();
             }
