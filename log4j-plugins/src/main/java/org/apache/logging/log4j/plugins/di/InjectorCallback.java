@@ -17,12 +17,29 @@
 
 package org.apache.logging.log4j.plugins.di;
 
+/**
+ * Provides a ServiceLoader class for configuring an {@link Injector} when initialized. When {@link Injector#init()} is invoked,
+ * all service instances are sorted by {@link #getOrder()} in the natural integer order (from negative to positive), and each
+ * service is provided an instance of the Injector via {@link #configure(Injector)}. This extension is provided for lower level
+ * control of default bindings, overriding bindings, and otherwise examining the state of an Injector.
+ */
 public interface InjectorCallback {
+
+    /**
+     * Configures the provided Injector. Service providers must implement this method to perform any callback logic on the
+     * initializing Injector.
+     */
     void configure(final Injector injector);
 
-    default int getPriority() {
+    /**
+     * Returns the order of this callback. Callbacks are invoked in {@link Integer#compare(int, int)} order.
+     */
+    default int getOrder() {
         return 0;
     }
 
+    /**
+     * Returns a human-readable description of this callback.
+     */
     String toString();
 }

@@ -134,7 +134,7 @@ class DefaultInjector implements Injector {
     public void init() {
         final List<InjectorCallback> callbacks = ServiceRegistry.getInstance()
                 .getServices(InjectorCallback.class, layer -> ServiceLoader.load(layer, InjectorCallback.class), null);
-        callbacks.sort(Comparator.comparingInt(InjectorCallback::getPriority).reversed()
+        callbacks.sort(Comparator.comparingInt(InjectorCallback::getOrder).reversed()
                 .thenComparing(listener -> listener.getClass().getName()));
         for (final InjectorCallback callback : callbacks) {
             try {
