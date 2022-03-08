@@ -429,7 +429,6 @@ class DefaultInjector implements Injector {
             final Key<?> key, final Node node, final Object instance, final Set<Key<?>> chain, final StringBuilder debugLog) {
         final Class<?> rawType = key.getRawType();
         final Lookup methodLookup = node != null ? node.getType().getPluginLookup() : lookup.in(instance.getClass());
-        final Map<MethodHandle, List<?>> injectMethodArgs = new LinkedHashMap<>();
         final List<MethodHandle> injectMethodsWithNoArgs = new ArrayList<>();
         for (Class<?> clazz = rawType; clazz != Object.class; clazz = clazz.getSuperclass()) {
             for (final Method method : clazz.getDeclaredMethods()) {
@@ -440,12 +439,11 @@ class DefaultInjector implements Injector {
                     } else {
                         final List<InjectionPoint<?>> injectionPoints = InjectionPoint.fromExecutable(method);
                         final List<?> args = getArguments(key, node, injectionPoints, chain, debugLog);
-                        injectMethodArgs.put(handle, args);
+                        rethrow(() -> handle.invokeWithArguments(args));
                     }
                 }
             }
         }
-        injectMethodArgs.forEach((handle, args) -> rethrow(() -> handle.invokeWithArguments(args)));
         injectMethodsWithNoArgs.forEach(handle -> rethrow(handle::invoke));
     }
 
