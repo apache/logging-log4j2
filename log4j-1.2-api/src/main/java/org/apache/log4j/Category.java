@@ -324,7 +324,7 @@ public class Category implements AppenderAttachable {
     }
 
     public void forcedLog(final String fqcn, final Priority level, final Object message, final Throwable t) {
-        final org.apache.logging.log4j.Level lvl = org.apache.logging.log4j.Level.toLevel(level.toString());
+        final org.apache.logging.log4j.Level lvl = level.getVersion2Level();
         final Message msg = createMessage(message);
         if (logger instanceof ExtendedLogger) {
             ((ExtendedLogger) logger).logMessage(fqcn, lvl, null, msg, t);
@@ -513,7 +513,7 @@ public class Category implements AppenderAttachable {
     }
 
     public boolean isEnabledFor(final Priority level) {
-        return isEnabledFor(org.apache.logging.log4j.Level.toLevel(level.toString()));
+        return isEnabledFor(level.getVersion2Level());
     }
 
     public boolean isErrorEnabled() {
@@ -661,17 +661,17 @@ public class Category implements AppenderAttachable {
     }
 
     public void setLevel(final Level level) {
-        setLevel(getLevelStr(level));
+        setLevel(level != null ? level.getVersion2Level() : null);
     }
 
-    private void setLevel(final String levelStr) {
+    private void setLevel(final org.apache.logging.log4j.Level level) {
         if (LogManager.isLog4jCorePresent()) {
-            CategoryUtil.setLevel(logger, org.apache.logging.log4j.Level.toLevel(levelStr));
+            CategoryUtil.setLevel(logger, level);
         }
     }
 
     public void setPriority(final Priority priority) {
-        setLevel(getLevelStr(priority));
+        setLevel(priority != null ? priority.getVersion2Level() : null);
     }
 
     public void setResourceBundle(final ResourceBundle bundle) {

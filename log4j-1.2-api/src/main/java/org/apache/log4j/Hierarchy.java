@@ -29,6 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.legacy.core.ContextUtil;
 import org.apache.log4j.or.ObjectRenderer;
 import org.apache.log4j.or.RendererMap;
@@ -460,7 +461,7 @@ public class Hierarchy implements LoggerRepository, RendererSupport, ThrowableRe
      */
     @Override
     public void setThreshold(final String levelStr) {
-        final Level level = Level.toLevel(levelStr, null);
+        final Level level = OptionConverter.toLevel(levelStr, null);
         if (level != null) {
             setThreshold(level);
         } else {

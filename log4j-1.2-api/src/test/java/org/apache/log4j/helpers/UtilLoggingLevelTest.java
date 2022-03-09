@@ -17,29 +17,41 @@
 
 package org.apache.log4j.helpers;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.List;
+import java.util.stream.Stream;
+
+import org.apache.log4j.Level;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 
 /**
  * Unit tests for UtilLoggingLevel.
  */
-public class UtilLoggingLevelTest extends TestCase {
-
-    /**
-     * Create new instance of test.
-     *
-     * @param testName test name
-     */
-    public UtilLoggingLevelTest(final String testName) {
-        super(testName);
-    }
+public class UtilLoggingLevelTest {
 
     /**
      * Test toLevel("fiNeSt").
      */
     public void testToLevelFINEST() {
-        assertSame(UtilLoggingLevel.FINEST, UtilLoggingLevel.toLevel("fiNeSt"));
+        assertEquals(UtilLoggingLevel.FINEST, UtilLoggingLevel.toLevel("fiNeSt"));
     }
 
+    static Stream<Arguments> namesAndLevels() {
+        return UtilLoggingLevel.getAllPossibleLevels()
+                .stream()
+                .map(level -> Arguments.of(level.toString() + "#" + UtilLoggingLevel.class.getName(), level));
+    }
+
+    @ParameterizedTest
+    @MethodSource("namesAndLevels")
+    public void testOptionConverterToLevel(final String name, final UtilLoggingLevel level) {
+        assertEquals(level, OptionConverter.toLevel(name, Level.ALL));
+        // Comparison of Log4j 2.x levels
+        assertEquals(level.getVersion2Level(), org.apache.logging.log4j.Level.getLevel(name));
+    }
 }
 

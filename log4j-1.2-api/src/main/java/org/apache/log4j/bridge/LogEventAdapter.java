@@ -22,13 +22,13 @@ import java.util.Set;
 
 import org.apache.log4j.Category;
 import org.apache.log4j.Level;
+import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Throwables;
-import org.apache.logging.log4j.spi.StandardLevel;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
@@ -100,24 +100,7 @@ public class LogEventAdapter extends LoggingEvent {
      */
     @Override
     public Level getLevel() {
-        switch (StandardLevel.getStandardLevel(event.getLevel().intLevel())) {
-            case TRACE:
-                return Level.TRACE;
-            case DEBUG:
-                return Level.DEBUG;
-            case INFO:
-                return Level.INFO;
-            case WARN:
-                return Level.WARN;
-            case FATAL:
-                return Level.FATAL;
-            case OFF:
-                return Level.OFF;
-            case ALL:
-                return Level.ALL;
-            default:
-                return Level.ERROR;
-        }
+        return OptionConverter.convertLevel(event.getLevel());
     }
 
     /**
