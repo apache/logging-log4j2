@@ -339,17 +339,9 @@ public class ConfigurationSource {
             return null;
         }
         try {
-            URL url = configLocation.toURL();
-            URLConnection urlConnection = UrlConnectionFactory.createConnection(url);
-            InputStream is = urlConnection.getInputStream();
-            long lastModified = urlConnection.getLastModified();
-            return new ConfigurationSource(is, configLocation.toURL(), lastModified);
-        } catch (final FileNotFoundException ex) {
-            ConfigurationFactory.LOGGER.warn("Could not locate file {}", configLocation.toString());
+            return getConfigurationSource(configLocation.toURL());
         } catch (final MalformedURLException ex) {
             ConfigurationFactory.LOGGER.error("Invalid URL {}", configLocation.toString(), ex);
-        } catch (final Exception ex) {
-            ConfigurationFactory.LOGGER.error("Unable to access {}", configLocation.toString(), ex);
         }
         return null;
     }
@@ -370,21 +362,8 @@ public class ConfigurationSource {
 
     private static ConfigurationSource getConfigurationSource(URL url) {
         try {
-            URLConnection urlConnection = url.openConnection();
-            // A "jar:" URL file remains open after the stream is closed, so do not cache it.
-            urlConnection.setUseCaches(false);
-            AuthorizationProvider provider = ConfigurationFactory.authorizationProvider(PropertiesUtil.getProperties());
-            provider.addAuthorization(urlConnection);
-            if (url.getProtocol().equals(HTTPS)) {
-                SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration();
-                if (sslConfiguration != null) {
-                    ((HttpsURLConnection) urlConnection).setSSLSocketFactory(sslConfiguration.getSslSocketFactory());
-                    if (!sslConfiguration.isVerifyHostName()) {
-                        ((HttpsURLConnection) urlConnection).setHostnameVerifier(LaxHostnameVerifier.INSTANCE);
-                    }
-                }
-            }
             File file = FileUtils.fileFromUri(url.toURI());
+            URLConnection urlConnection = UrlConnectionFactory.createConnection(url);
             try {
                 if (file != null) {
                     return new ConfigurationSource(urlConnection.getInputStream(), FileUtils.fileFromUri(url.toURI()));
