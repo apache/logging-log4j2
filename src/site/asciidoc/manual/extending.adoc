@@ -62,6 +62,17 @@ file named "log4j2.LogManager.properties" to the name of the
 LoggerContextFactory class to use. The properties file must be on the
 classpath.
 
+[#InjectorCallback]
+== InjectorCallback
+InjectorCallback services are called by an link:../log4j-plugins/apidocs/org/apache/logging/log4j/plugins/di/Injector.html[`Injector`] when its `init()` method is invoked.
+These callback services are invoked in order using `InjectorCallback::getOrder` and the natural integer comparator.
+Callbacks may examine the current state of the invoking `Injector` as well as make changes to bindings or provide default bindings.
+Backwards compatibility with system property based methods for configuring various extensions are handled through a default callback with order 0 which allows for making customizations before or after the defaults are set up.
+Callback classes must have a no-args constructor and need to be defined in two places:
+
+1.  Add the fully qualified class name of the callback class to a file named `META-INF/services/org.apache.logging.log4j.plugins.di.InjectorCallback`.
+2.  For compatibility with Java modules, add a line to `module-info.java` containing `provides org.apache.logging.log4j.plugins.di.InjectorCallback with my.fully.qualified.ClassName;`.
+
 [#ContextSelector]
 == ContextSelector
 
@@ -71,9 +82,10 @@ LoggerContext factory]. They perform the actual work of locating or
 creating a LoggerContext, which is the anchor for Loggers and their
 configuration. ContextSelectors are free to implement any mechanism they
 desire to manage LoggerContexts. The default Log4jContextFactory checks
-for the presence of a System Property named "Log4jContextSelector". If
-found, the property is expected to contain the name of the Class that
-implements the ContextSelector to be used.
+for the presence of an `Injector` binding for `ContextSelector`.
+If none are defined, the System Property named "Log4jContextSelector" is checked.
+If found, the property is expected to contain the name of the Class that implements the ContextSelector to be used.
+This class is then used for creating `ContextSelector` instances.
 
 Log4j provides five ContextSelectors:
 
@@ -187,10 +199,9 @@ public static class RootLogger extends LoggerConfig {
 [#LogEventFactory]
 == LogEventFactory
 
-A `LogEventFactory` is used to generate LogEvents. Applications may
-replace the standard `LogEventFactory` by setting the value of the system
-property `log4j2.logEventFactory` to the name of the custom `LogEventFactory`
-class.
+A `LogEventFactory` is used to generate LogEvents.
+Applications may replace the standard `LogEventFactory` by binding a factory for `LogEventFactory` in `Injector`.
+If no binding is already present, the value of the system property `log4j2.logEventFactory` is checked for the name of the custom `LogEventFactory` class.
 
 Note: When log4j is configured to have link:async.html#AllAsync[all
 loggers asynchronous], log events are pre-allocated in a ring buffer and
@@ -314,9 +325,9 @@ public final class ThresholdFilter extends AbstractFilter {
 
     /**
      * Create a ThresholdFilter.
-     * @param loggerLevel The log Level.
-     * @param match The action to take on a match.
-     * @param mismatch The action to take on a mismatch.
+     * @param level The log Level.
+     * @param onMatch The action to take on a match.
+     * @param onMismatch The action to take on a mismatch.
      * @return The created ThresholdFilter.
      */
     @PluginFactory
@@ -480,8 +491,7 @@ with many constructor parameters_ in _Effective Java_ by Joshua Bloch).
 There are some other advantages to using an annotated builder class over
 an annotated factory method:
 
-* Attribute names don't need to be specified if they match the field
-name or the method name with `set` or `with` prefixes stripped.
+* Attribute names don't need to be specified if they match the field name or the parameter name.
 * Default values can be specified in code rather than through an
 annotation (also allowing a runtime-calculated default value which isn't
 allowed in annotations).
@@ -568,7 +578,6 @@ parsed, a plugin builder will be used if available, otherwise a plugin
 factory method will be used as a fallback. If a plugin contains neither
 factory, then it cannot be used from a configuration file (it can still
 be used programmatically of course).
-// TODO: this will be simplified
 
 Here is an example of using a plugin factory versus a plugin builder
 programmatically:

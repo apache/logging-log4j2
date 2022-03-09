@@ -127,25 +127,17 @@ Custom plugins that conform to the rules laid out in the next paragraph
 may simply be referenced in the configuration, provided they are
 appropriate configured to be loaded by the PluginManager.
 
-Core plugins follow a few simple dependency injection rules for binding
-`Configuration` parameters into a factory entry point. Each plugin must
-declare a static method annotated with `@PluginFactory`.
-This method can either list all options as method parameters, or it can return
-a new `Builder<T>` instance where options are available as either single-argument
-`setFoo` or `withFoo` methods or fields. There are a few different attribute types
-available to denote `Configuration` data that are injected by the plugin
-framework. These are available as annotations that can either be used on the
-method parameters to return an instance of the plugin, or they can be used on the
-returned builder class's methods or fields. Each annotation may include the
-name that must be present in the configuration in order to match the
-configuration item to its respective parameter. If no name is specified, then
-the name used is as follows:
+Core plugins support a few different dependency injection rules for binding configuration node data and other injectable classes into a plugin instance.
+Each plugin must declare a static method annotated with `@Factory` or `@PluginFactory` or contain an `@Inject`-annotated constructor or no-args constructor.
+These static factory method or `@Inject` constructor parameters are used for initial dependency injection.
+When a static factory method returns a type that implements `java.util.function.Supplier<T>` such as through `Builder<T>`, then that supplier instance first has its members injected before invoking `Supplier::get` to obtain the resulting plugin instance.
+Injection points in the static factory method, its returned builder instance, or in the plugin's `@Inject` constructor are matched by generic declared types, the qualifier annotation type if present, and the name of the injection point (possibly an empty string if unnamed).
+Qualifier annotations are annotations annotated with `QualifierType` such as `@Named`, `@PluginAttribute`, `PluginBuilderAttribute`, `@PluginElement`, `@PluginValue`, etc.
 
-* When annotated on a parameter, this will use the parameter name.
-* When annotated on a single argument method, if the method name is prefixed by
-  `set` or `with`, this will use the remainder of the method name. Otherwise, the
-  full method name is used.
-* When annotated on a field, this will used the field name.
+Dependency injection is supported for fields, constructors, and methods.
+An injectable field is a field annotated with `@Inject` or a qualifier annotation.
+An injectable constructor is a constructor annotated with `@Inject`.
+An injectable method is a method annotated with `@Inject` or a non-factory method with at least one qualified parameter.
 
 There are dozens of plugins in Log4j Core that can be
 used as examples for more complex scenarios including hierarchical
