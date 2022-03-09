@@ -51,6 +51,9 @@
       <action issue="LOG4J2-3426" dev="pkarwasz" type="fix" due-to="Pooja Pandey, Piotr P. Karwasz">
         Log4j 1.2 bridge should not wrap components unnecessarily.
       </action>
+      <action issue="LOG4J2-3427" dev="pkarwasz" type="update">
+        Improves ServiceLoader support on servlet containers.
+      </action>
     </release>
     <release version="2.17.2" date="2022-02-23" description="GA Release 2.17.2">
       <!-- FIXES -->
