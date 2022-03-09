@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.net;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.JarURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -77,8 +78,6 @@ public class UrlConnectionFactory {
         urlConnection.setDoOutput(true);
         urlConnection.setDoInput(true);
         urlConnection.setRequestMethod("GET");
-        // A "jar:" URL file remains open after the stream is closed, so do not cache it.
-        urlConnection.setUseCaches(false);
         if (connectTimeoutMillis > 0) {
             urlConnection.setConnectTimeout(connectTimeoutMillis);
         }
@@ -107,12 +106,13 @@ public class UrlConnectionFactory {
             urlConnection = createConnection(url, 0, SslConfigurationFactory.getSslConfiguration());
         } else {
             urlConnection = url.openConnection();
-            // A "jar:" URL file remains open after the stream is closed, so do not cache it.
-            urlConnection.setUseCaches(false);
+            if (urlConnection instanceof JarURLConnection) {
+                // A "jar:" URL file remains open after the stream is closed, so do not cache it.
+                urlConnection.setUseCaches(false);
+            }
         }
         return urlConnection;
     }
-
 
     private static boolean isXml(final String type) {
         return type.equalsIgnoreCase("xml");

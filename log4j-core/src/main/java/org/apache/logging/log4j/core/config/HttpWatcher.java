@@ -135,6 +135,8 @@ public class HttpWatcher extends AbstractWatcher {
                 }
             } catch (final IOException ioe) {
                 LOGGER.error("Error accessing configuration at {}: {}", url, ioe.getMessage());
+            } finally {
+                urlConnection.disconnect();
             }
         } catch (final IOException ioe) {
             LOGGER.error("Error connecting to configuration at {}: {}", url, ioe.getMessage());

@@ -332,17 +332,9 @@ public class ConfigurationSource {
             return null;
         }
         try {
-            final URL url = configLocation.toURL();
-            final URLConnection urlConnection = UrlConnectionFactory.createConnection(url);
-            final InputStream is = urlConnection.getInputStream();
-            final long lastModified = urlConnection.getLastModified();
-            return new ConfigurationSource(is, configLocation.toURL(), lastModified);
-        } catch (final FileNotFoundException ex) {
-            ConfigurationFactory.LOGGER.warn("Could not locate file {}", configLocation.toString());
+            return getConfigurationSource(configLocation.toURL());
         } catch (final MalformedURLException ex) {
             ConfigurationFactory.LOGGER.error("Invalid URL {}", configLocation.toString(), ex);
-        } catch (final Exception ex) {
-            ConfigurationFactory.LOGGER.error("Unable to access {}", configLocation.toString(), ex);
         }
         return null;
     }

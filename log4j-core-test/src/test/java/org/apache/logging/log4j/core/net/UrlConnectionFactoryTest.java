@@ -16,18 +16,33 @@
  */
 package org.apache.logging.log4j.core.net;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
+import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
+import static javax.servlet.http.HttpServletResponse.SC_NOT_MODIFIED;
+import static javax.servlet.http.HttpServletResponse.SC_OK;
+import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.management.ManagementFactory;
+import java.lang.management.OperatingSystemMXBean;
 import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URL;
 import java.nio.file.Files;
 import java.util.Base64;
 import java.util.Enumeration;
-import java.util.Properties;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,16 +53,11 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import com.sun.management.UnixOperatingSystemMXBean;
 
 /**
  * Tests the UrlConnectionFactory
@@ -60,9 +70,6 @@ public class UrlConnectionFactoryTest {
     private static Server server;
     private static Base64.Decoder decoder = Base64.getDecoder();
     private static int port;
-    private static final int NOT_MODIFIED = 304;
-    private static final int NOT_AUTHORIZED = 401;
-    private static final int OK = 200;
     private static final int BUF_SIZE = 1024;
 
     @BeforeAll
@@ -110,15 +117,16 @@ public class UrlConnectionFactoryTest {
         assertNotNull(source, "No ConfigurationSource returned");
         InputStream is = source.getInputStream();
         assertNotNull(is, "No data returned");
+        is.close();
         long lastModified = source.getLastModified();
         int result = verifyNotModified(uri, lastModified);
-        assertEquals(NOT_MODIFIED, result,"File was modified");
+        assertEquals(SC_NOT_MODIFIED, result,"File was modified");
         File file = new File("target/test-classes/log4j2-config.xml");
         if (!file.setLastModified(System.currentTimeMillis())) {
             fail("Unable to set last modified time");
         }
         result = verifyNotModified(uri, lastModified);
-        assertEquals(OK, result,"File was not modified");
+        assertEquals(SC_OK, result,"File was not modified");
     }
 
     private int verifyNotModified(URI uri, long lastModifiedMillis) throws Exception {
@@ -130,8 +138,32 @@ public class UrlConnectionFactoryTest {
             return urlConnection.getResponseCode();
         } catch (final IOException ioe) {
             LOGGER.error("Error accessing configuration at {}: {}", uri, ioe.getMessage());
-            return 500;
+            return SC_INTERNAL_SERVER_ERROR;
         }
+    }
+
+    @Test
+    public void testNoJarFileLeak() throws Exception {
+        final URL url = new File("target/test-classes/jarfile.jar").toURI().toURL();
+        // Retrieve using 'file:'
+        URL jarUrl = new URL("jar:" + url.toString() + "!/config/console.xml");
+        long expected = getOpenFileDescriptorCount();
+        UrlConnectionFactory.createConnection(jarUrl).getInputStream().close();
+        assertEquals(expected, getOpenFileDescriptorCount());
+        // Retrieve using 'http:'
+        jarUrl = new URL("jar:http://localhost:" + port + "/jarfile.jar!/config/console.xml");
+        final File tmpDir = new File(System.getProperty("java.io.tmpdir"));
+        expected = tmpDir.list().length;
+        UrlConnectionFactory.createConnection(jarUrl).getInputStream().close();
+        assertEquals(expected, tmpDir.list().length, "File descriptor leak");
+    }
+
+    private long getOpenFileDescriptorCount() {
+        final OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
+        if (os instanceof UnixOperatingSystemMXBean) {
+            return ((UnixOperatingSystemMXBean) os).getOpenFileDescriptorCount();
+        }
+        return 0L;
     }
 
     public static class TestServlet extends DefaultServlet {
@@ -143,7 +175,7 @@ public class UrlConnectionFactoryTest {
                 HttpServletResponse response) throws ServletException, IOException {
             Enumeration<String> headers = request.getHeaders(HttpHeader.AUTHORIZATION.toString());
             if (headers == null) {
-                response.sendError(401, "No Auth header");
+                response.sendError(SC_UNAUTHORIZED, "No Auth header");
                 return;
             }
             while (headers.hasMoreElements()) {
@@ -151,26 +183,31 @@ public class UrlConnectionFactoryTest {
                 assertTrue(authData.startsWith(BASIC), "Not a Basic auth header");
                 String credentials = new String(decoder.decode(authData.substring(BASIC.length())));
                 if (!expectedCreds.equals(credentials)) {
-                    response.sendError(401, "Invalid credentials");
+                    response.sendError(SC_UNAUTHORIZED, "Invalid credentials");
                     return;
                 }
             }
-            if (request.getServletPath().equals("/log4j2-config.xml")) {
-                File file = new File("target/test-classes/log4j2-config.xml");
+            final String servletPath = request.getServletPath();
+            if (servletPath != null) {
+                final File file = new File("target/test-classes" + servletPath);
+                if (!file.exists()) {
+                    response.sendError(SC_NOT_FOUND);
+                    return;
+                }
                 long modifiedSince = request.getDateHeader(HttpHeader.IF_MODIFIED_SINCE.toString());
                 long lastModified = (file.lastModified() / 1000) * 1000;
                 LOGGER.debug("LastModified: {}, modifiedSince: {}", lastModified, modifiedSince);
                 if (modifiedSince > 0 && lastModified <= modifiedSince) {
-                    response.setStatus(304);
+                    response.setStatus(SC_NOT_MODIFIED);
                     return;
                 }
                 response.setDateHeader(HttpHeader.LAST_MODIFIED.toString(), lastModified);
                 response.setContentLengthLong(file.length());
                 Files.copy(file.toPath(), response.getOutputStream());
                 response.getOutputStream().flush();
-                response.setStatus(200);
+                response.setStatus(SC_OK);
             } else {
-                response.sendError(400, "Unsupported request");
+                response.sendError(SC_BAD_REQUEST, "Unsupported request");
             }
         }
     }

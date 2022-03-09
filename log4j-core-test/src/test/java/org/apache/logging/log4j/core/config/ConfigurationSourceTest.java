@@ -17,11 +17,23 @@
 
 package org.apache.logging.log4j.core.config;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.lang.management.OperatingSystemMXBean;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import org.apache.logging.log4j.core.net.UrlConnectionFactory;
+import org.junit.jupiter.api.Test;
+
+import com.sun.management.UnixOperatingSystemMXBean;
 
 public class ConfigurationSourceTest {
 
@@ -29,5 +41,37 @@ public class ConfigurationSourceTest {
     public void testJira_LOG4J2_2770_byteArray() throws Exception {
         ConfigurationSource configurationSource = new ConfigurationSource(new ByteArrayInputStream(new byte[] { 'a', 'b' }));
         assertNotNull(configurationSource.resetInputStream());
+    }
+
+    /**
+     * Checks if the usage of 'jar:' URLs does not increase the file descriptor
+     * count and the jar file can be deleted.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testNoJarFileLeak() throws Exception {
+        final Path original = Paths.get("target", "test-classes", "jarfile.jar");
+        final Path copy = Paths.get("target", "test-classes", "jarfile-copy.jar");
+        Files.copy(original, copy);
+        final URL jarUrl = new URL("jar:" + copy.toUri().toURL() + "!/config/console.xml");
+        final long expected = getOpenFileDescriptorCount();
+        UrlConnectionFactory.createConnection(jarUrl).getInputStream().close();
+        // This can only fail on UNIX
+        assertEquals(expected, getOpenFileDescriptorCount());
+        // This can only fail on Windows
+        try {
+            Files.delete(copy);
+        } catch (IOException e) {
+            fail(e);
+        }
+    }
+
+    private long getOpenFileDescriptorCount() {
+        final OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
+        if (os instanceof UnixOperatingSystemMXBean) {
+            return ((UnixOperatingSystemMXBean) os).getOpenFileDescriptorCount();
+        }
+        return 0L;
     }
 }
