@@ -47,6 +47,7 @@ import org.apache.log4j.spi.RendererSupport;
 import org.apache.log4j.spi.ThrowableRenderer;
 import org.apache.log4j.spi.ThrowableRendererSupport;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.net.UrlConnectionFactory;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 
 /**
@@ -381,9 +382,7 @@ public class PropertyConfigurator implements Configurator {
     Configuration doConfigure(final URL url, final LoggerRepository loggerRepository, final ClassLoader classLoader) {
         LogLog.debug("Reading configuration from URL " + url);
         try {
-            final URLConnection urlConnection = url.openConnection();
-            // A "jar:" URL file remains open after the stream is closed, so do not cache it.
-            urlConnection.setUseCaches(false);
+            final URLConnection urlConnection = UrlConnectionFactory.createConnection(url);
             try (InputStream inputStream = urlConnection.getInputStream()) {
                 return doConfigure(inputStream, loggerRepository, classLoader);
             }
