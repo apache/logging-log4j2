@@ -54,6 +54,9 @@
       <action issue="LOG4J2-3427" dev="pkarwasz" type="update">
         Improves ServiceLoader support on servlet containers.
       </action>
+      <action issue="LOG4J2-3418" dev="pkarwasz" type="fix">
+        Fixes Spring Boot logging system registration in a multi-application environment.
+      </action>
     </release>
     <release version="2.17.2" date="2022-02-23" description="GA Release 2.17.2">
       <!-- FIXES -->
