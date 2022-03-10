@@ -17,23 +17,11 @@
 
 package org.apache.log4j;
 
-import org.apache.log4j.spi.LoggingEvent;
-
-public class CustomNoopAppender extends AppenderSkeleton {
+public class CustomFileAppender extends FileAppender {
 
     private boolean booleanA;
     private int intA;
     private String stringA;
-
-    @Override
-    protected void append(final LoggingEvent event) {
-        // Noop
-    }
-
-    @Override
-    public void close() {
-        // Noop
-    }
 
     public boolean getBooleanA() {
         return booleanA;
@@ -45,11 +33,6 @@ public class CustomNoopAppender extends AppenderSkeleton {
 
     public String getStringA() {
         return stringA;
-    }
-
-    @Override
-    public boolean requiresLayout() {
-        return false;
     }
 
     public void setBooleanA(final boolean booleanA) {

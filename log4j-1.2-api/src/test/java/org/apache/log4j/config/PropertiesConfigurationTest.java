@@ -168,7 +168,7 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
 
     @Test
     public void testProperties() throws Exception {
-        try (LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/log4j1-file.properties")) {
+        try (LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/log4j1-file-1.properties")) {
             final Logger logger = LogManager.getLogger("test");
             logger.debug("This is a test of the root logger");
             File file = new File("target/temp.A1");
