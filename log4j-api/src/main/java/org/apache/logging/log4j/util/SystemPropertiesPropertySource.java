@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.util;
 
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -28,7 +29,7 @@ import java.util.Properties;
  */
 public class SystemPropertiesPropertySource implements PropertySource {
 
-	private static final int DEFAULT_PRIORITY = 100;
+	private static final int DEFAULT_PRIORITY = 0;
 	private static final String PREFIX = "log4j2.";
 
 	@Override
@@ -66,6 +67,29 @@ public class SystemPropertiesPropertySource implements PropertySource {
 	@Override
 	public CharSequence getNormalForm(final Iterable<? extends CharSequence> tokens) {
 		return PREFIX + Util.joinAsCamelCase(tokens);
+	}
+
+	@Override
+	public Collection<String> getPropertyNames() {
+		try {
+			return System.getProperties().stringPropertyNames();
+		} catch (final SecurityException e) {
+			return PropertySource.super.getPropertyNames();
+		}
+	}
+
+	@Override
+	public String getProperty(String key) {
+		try {
+			return System.getProperty(key);
+		} catch (final SecurityException e) {
+			return PropertySource.super.getProperty(key);
+		}
+	}
+
+	@Override
+	public boolean containsProperty(String key) {
+		return getProperty(key) != null;
 	}
 
 }

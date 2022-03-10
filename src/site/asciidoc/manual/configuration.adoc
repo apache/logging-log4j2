@@ -1877,8 +1877,21 @@ by default:
 |===
 |Source |Priority |Description
 
-|Environment Variables
+|Spring Boot Properties
 |-100
+|This property source is enabled only if the Java application uses Spring Boot and the
+`log4j-spring` module is present. It resolves properties using a Spring
+link:https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/core/env/Environment.html[Environment].
+
+|System Properties
+|0
+|All properties can be set using normal system
+property patterns. These have the lowest numerical priority among commonly available property sources
+and can override included `log4j2.component.properties` files or environment variables. If a `log4j2.system.properties` file is available on the classpath its contents are
+sourced into Java system properties at Log4j startup.
+
+|Environment Variables
+|100
 |Environment variables are all prefixed
 with `LOG4J_`, are in all caps, and words are all separated by
 underscores. Only this naming scheme is support for environment
@@ -1886,17 +1899,10 @@ variables as there were no old naming schemes to maintain compatibility
 with.
 
 |`log4j2.component.properties` file
-|0
-|Including this file on the
-classpath can be used as an alternative to providing properties as
-system properties. This has priority over system properties, but they
-can be overridden by environment variables as described above.
-
-|System Properties
-|100
-|All properties can be set using normal system
-property patterns. These have the lowest priority and can be overridden
-by included properties files or environment variables.
+|200
+|Including this file on the classpath can be used as an alternative to providing properties as system
+properties. This is the property source with highest numerical priority and can be used to provide
+default values that can be overridden by the system administrator.
 |===
 
 The following is a list of available global configuration properties.

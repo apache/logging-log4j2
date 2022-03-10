@@ -24,6 +24,8 @@ import org.springframework.core.env.Environment;
  */
 public class SpringPropertySource extends SpringEnvironmentHolder implements PropertySource {
 
+    private static final int DEFAULT_PRIORITY = -100;
+
     /**
      * System properties take precedence followed by properties in Log4j properties files. Spring properties
      * follow.
@@ -31,7 +33,7 @@ public class SpringPropertySource extends SpringEnvironmentHolder implements Pro
      */
     @Override
     public int getPriority() {
-        return -50;
+        return DEFAULT_PRIORITY ;
     }
 
     @Override

@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.util;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -30,12 +31,18 @@ import java.util.Map;
 public class EnvironmentPropertySource implements PropertySource {
 
 	private static final String PREFIX = "LOG4J_";
-	private static final int DEFAULT_PRIORITY = -100;
+	private static final int DEFAULT_PRIORITY = 100;
 
 	@Override
 	public int getPriority() {
 		return DEFAULT_PRIORITY;
 	}
+
+    private void logException(SecurityException e) {
+        // There is no status logger yet.
+        LowLevelLogUtil.logException(
+                "The system environment variables are not available to Log4j due to security restrictions: " + e, e);
+    }
 
 	@Override
 	public void forEach(final BiConsumer<String, String> action) {
@@ -43,10 +50,7 @@ public class EnvironmentPropertySource implements PropertySource {
 		try {
 			getenv = System.getenv();
 		} catch (final SecurityException e) {
-			// There is no status logger yet.
-			LowLevelLogUtil.logException(
-					"The system environment variables are not available to Log4j due to security restrictions: " + e,
-					e);
+			logException(e);
 			return;
 		}
 		for (final Map.Entry<String, String> entry : getenv.entrySet()) {
@@ -68,4 +72,35 @@ public class EnvironmentPropertySource implements PropertySource {
 		}
 		return sb.toString();
 	}
+
+    @Override
+    public Collection<String> getPropertyNames() {
+        try {
+            return System.getenv().keySet();
+        } catch (final SecurityException e) {
+            logException(e);
+            return PropertySource.super.getPropertyNames();
+        }
+    }
+
+    @Override
+    public String getProperty(String key) {
+        try {
+            return System.getenv(key);
+        } catch (final SecurityException e) {
+            logException(e);
+            return PropertySource.super.getProperty(key);
+        }
+    }
+
+    @Override
+    public boolean containsProperty(String key) {
+        try {
+            return System.getenv().containsKey(key);
+        } catch (final SecurityException e) {
+            logException(e);
+            return PropertySource.super.containsProperty(key);
+        }
+    }
+
 }
