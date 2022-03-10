@@ -19,6 +19,8 @@ package org.apache.logging.log4j.util;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -35,7 +37,7 @@ public interface PropertySource {
 
     /**
      * Returns the order in which this PropertySource has priority. A higher value means that the source will be
-     * applied later so as to take precedence over other property sources.
+     * searched later and can be overridden by other property sources.
      *
      * @return priority value
      */
@@ -47,6 +49,15 @@ public interface PropertySource {
      * @param action action to perform on each key/value pair
      */
     default void forEach(BiConsumer<String, String> action) {
+    }
+
+    /**
+     * Returns the list of all property names.
+     * 
+     * @return list of property names
+     */
+    default Collection<String> getPropertyNames() {
+        return Collections.emptySet();
     }
 
     /**
