@@ -48,9 +48,4 @@ public class PropertyFilePropertySource extends PropertiesPropertySource {
         return props;
     }
 
-    @Override
-    public int getPriority() {
-        return 0;
-    }
-
 }

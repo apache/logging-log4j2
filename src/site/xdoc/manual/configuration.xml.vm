@@ -1866,8 +1866,27 @@ public class AwesomeTest {
               <th>Description</th>
             </tr>
             <tr>
-              <td>Environment Variables</td>
+              <td>Spring Boot Properties</td>
               <td>-100</td>
+              <td>
+                This property source is enabled only if the Java application uses Spring Boot and the
+                <code>log4j-spring</code> module is present. It resolves properties using a Spring
+                <a href="https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/core/env/Environment.html">Environment</a>. 
+              </td>
+            </tr>
+            <tr>
+              <td>System Properties</td>
+              <td>0</td>
+              <td>
+                All properties can be set using normal system property patterns. These have the lowest numerical priority 
+                among commonly available property sources and can override properties files or environment variables.
+                If a <code>log4j2.system.properties</code> file is available on the classpath its contents are
+                sourced into Java system properties at Log4j startup.
+              </td>
+            </tr>
+            <tr>
+              <td>Environment Variables</td>
+              <td>100</td>
               <td>
                 Environment variables are all prefixed with <code>LOG4J_</code>, are in all caps, and words are all
                 separated by underscores. Only this naming scheme is support for environment variables as there were
@@ -1876,19 +1895,11 @@ public class AwesomeTest {
             </tr>
             <tr>
               <td><code>log4j2.component.properties</code> file</td>
-              <td>0</td>
+              <td>200</td>
               <td>
                 Including this file on the classpath can be used as an alternative to providing properties as system
-                properties. This has priority over system properties, but they can be overridden by environment
-                variables as described above.
-              </td>
-            </tr>
-            <tr>
-              <td>System Properties</td>
-              <td>100</td>
-              <td>
-                All properties can be set using normal system property patterns. These have the lowest priority and
-                can be overridden by included properties files or environment variables.
+                properties. This is the property source with highest numerical priority and can be used to provide
+                default values that can be overridden by the system administrator.
               </td>
             </tr>
           </table>
