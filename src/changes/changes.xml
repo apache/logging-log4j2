@@ -30,6 +30,7 @@
          - "remove" - Removed
     -->
     <release version="2.17.3" date="2022-TBD" description="GA Release 2.18.0">
+      <!-- FIXES -->
       <action issue="LOG4J2-3424" dev="ckozak" type="fix">
         Properties defined in configuration using a value attribute (as opposed to element) are read correctly.
       </action>
@@ -56,6 +57,9 @@
       </action>
       <action issue="LOG4J2-3418" dev="pkarwasz" type="fix">
         Fixes Spring Boot logging system registration in a multi-application environment.
+      </action>
+      <action issue="LOG4J2-3040" dev="ggregory" type="fix" due-to="LF-Lin">
+        Avoid ClassCastException in JeroMqManager with custom LoggerContextFactory #791
       </action>
     </release>
     <release version="2.17.2" date="2022-02-23" description="GA Release 2.17.2">
