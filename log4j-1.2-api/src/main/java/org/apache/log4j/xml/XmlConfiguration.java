@@ -677,9 +677,9 @@ public class XmlConfiguration extends Log4j1Configuration {
             String className = subst(element.getAttribute(CLASS_ATTR));
             final Level level;
             if (EMPTY_STR.equals(className)) {
-                level = OptionConverter.toLevel(priStr, Level.DEBUG);
+                level = OptionConverter.toLevel(priStr, DEFAULT_LEVEL);
             } else {
-                level = OptionConverter.toLevel(className, priStr, Level.DEBUG);
+                level = OptionConverter.toLevel(className, priStr, DEFAULT_LEVEL);
             }
             logger.setLevel(level != null ? level.getVersion2Level() : null);
         }

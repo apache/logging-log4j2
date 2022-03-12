@@ -31,6 +31,7 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import org.apache.log4j.bridge.FilterAdapter;
+import org.apache.log4j.config.Log4j1Configuration;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.config.PropertySetter;
 import org.apache.log4j.helpers.FileWatchdog;
@@ -580,7 +581,7 @@ public class PropertyConfigurator implements Configurator {
                     logger.setLevel(null);
                 }
             } else {
-                logger.setLevel(OptionConverter.toLevel(levelStr, (Level) Level.DEBUG));
+                logger.setLevel(OptionConverter.toLevel(levelStr, Log4j1Configuration.DEFAULT_LEVEL));
             }
             LogLog.debug("Category " + loggerName + " set to " + logger.getLevel());
         }
