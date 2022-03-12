@@ -39,7 +39,7 @@ public abstract class AbstractWatcher implements Watcher {
         this.reconfigurable = reconfigurable;
         this.configurationListeners = configurationListeners;
         this.threadFactory = configurationListeners != null ?
-            Log4jThreadFactory.createDaemonThreadFactory("ConfiguratonFileWatcher") : null;
+            Log4jThreadFactory.createDaemonThreadFactory("ConfigurationFileWatcher") : null;
     }
 
     @Override
