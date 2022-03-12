@@ -59,7 +59,11 @@
         Fixes Spring Boot logging system registration in a multi-application environment.
       </action>
       <action issue="LOG4J2-3040" dev="ggregory" type="fix" due-to="LF-Lin">
-        Avoid ClassCastException in JeroMqManager with custom LoggerContextFactory #791
+        Avoid ClassCastException in JeroMqManager with custom LoggerContextFactory #791.
+      </action>
+      <!-- UPDATES -->
+      <action issue="LOG4J2-3428" dev="ggregory" type="fix" due-to="LF-Lin">
+        Update 3rd party dependencies for 2.17.3.
       </action>
     </release>
     <release version="2.17.2" date="2022-02-23" description="GA Release 2.17.2">
