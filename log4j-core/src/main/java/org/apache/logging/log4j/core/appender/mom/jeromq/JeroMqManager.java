@@ -61,7 +61,7 @@ public class JeroMqManager extends AbstractManager {
 
         final boolean enableShutdownHook = PropertiesUtil.getProperties().getBooleanProperty(
             SYS_PROPERTY_ENABLE_SHUTDOWN_HOOK, true);
-        if (enableShutdownHook) {
+        if (enableShutdownHook && LogManager.getFactory() instanceof ShutdownCallbackRegistry) {
             SHUTDOWN_HOOK = ((ShutdownCallbackRegistry) LogManager.getFactory()).addShutdownCallback(CONTEXT::close);
         } else {
             SHUTDOWN_HOOK = null;
