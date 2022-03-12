@@ -261,7 +261,7 @@
     <cobertura.plugin.version>2.7</cobertura.plugin.version>
     <jacoco.plugin.version>0.8.7</jacoco.plugin.version>
     <release.plugin.version>2.5.3</release.plugin.version>
-    <scm.plugin.version>1.9.5</scm.plugin.version>
+    <scm.plugin.version>1.12.2</scm.plugin.version>
     <jxr.plugin.version>3.1.1</jxr.plugin.version>
     <revapi.skip>false</revapi.skip>
     <clirr.plugin.version>2.8</clirr.plugin.version>
