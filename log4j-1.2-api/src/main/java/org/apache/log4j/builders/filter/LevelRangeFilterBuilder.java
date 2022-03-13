@@ -26,6 +26,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.apache.log4j.bridge.FilterWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
 import org.apache.log4j.config.PropertiesConfiguration;
+import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.xml.XmlConfiguration;
 import org.apache.logging.log4j.Level;
@@ -85,10 +86,10 @@ public class LevelRangeFilterBuilder extends AbstractBuilder<Filter> implements 
         Level max = Level.FATAL;
         Level min = Level.TRACE;
         if (levelMax != null) {
-            max = Level.toLevel(levelMax, Level.FATAL);
+            max = OptionConverter.toLevel(levelMax, org.apache.log4j.Level.FATAL).getVersion2Level();
         }
         if (levelMin != null) {
-            min = Level.toLevel(levelMin, Level.DEBUG);
+            min = OptionConverter.toLevel(levelMin, org.apache.log4j.Level.DEBUG).getVersion2Level();
         }
         org.apache.logging.log4j.core.Filter.Result onMatch = acceptOnMatch
                 ? org.apache.logging.log4j.core.Filter.Result.ACCEPT

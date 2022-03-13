@@ -215,7 +215,7 @@ public class UtilLoggingLevel extends Level {
             return INFO;
         }
 
-        if (s.equals("CONFI")) {
+        if (s.equals("CONFIG")) {
             return CONFIG;
         }
 

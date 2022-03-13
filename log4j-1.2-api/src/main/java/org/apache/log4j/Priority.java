@@ -96,6 +96,7 @@ public class Priority {
     transient int level;
     transient String levelStr;
     transient int syslogEquivalent;
+    transient org.apache.logging.log4j.Level version2Level;
 
     /**
      * Default constructor for deserialization.
@@ -148,6 +149,14 @@ public class Priority {
         return syslogEquivalent;
     }
 
+    /**
+     * Gets the Log4j 2.x level associated with this priority
+     * 
+     * @return a Log4j 2.x level.
+     */
+    public org.apache.logging.log4j.Level getVersion2Level() {
+        return version2Level;
+    }
 
     /**
      * Returns {@code true} if this level has a higher or equal
