@@ -23,12 +23,16 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.apache.log4j.Level;
+import org.apache.log4j.Priority;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.spi.StandardLevel;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -53,6 +57,27 @@ public class OptionConverter {
     static int DELIM_START_LEN = 2;
     static int DELIM_STOP_LEN = 1;
     private static final Logger LOGGER = StatusLogger.getLogger();
+    /**
+     * A Log4j 1.x level above or equal to this value is considered as OFF.
+     */
+    static final int MAX_CUTOFF_LEVEL = Priority.FATAL_INT
+            + 100 * (StandardLevel.FATAL.intLevel() - StandardLevel.OFF.intLevel() - 1) + 1;
+    /**
+     * A Log4j 1.x level below or equal to this value is considered as ALL.
+     * 
+     * Log4j 2.x ALL to TRACE interval is shorter. This is {@link Priority#ALL_INT}
+     * plus the difference.
+     */
+    static final int MIN_CUTOFF_LEVEL = Priority.ALL_INT + Level.TRACE_INT
+            - (Priority.ALL_INT + StandardLevel.ALL.intLevel()) + StandardLevel.TRACE.intLevel();
+    /**
+     * Cache of currently known levels.
+     */
+    static final ConcurrentMap<String, Level> LEVELS = new ConcurrentHashMap<>();
+    /**
+     * Postfix for all Log4j 2.x level names.
+     */
+    private static final String LOG4J2_LEVEL_CLASS = org.apache.logging.log4j.Level.class.getName();
 
     private static final CharMap[] charMap = new CharMap[] {
         new CharMap('n', '\n'),
@@ -75,55 +100,91 @@ public class OptionConverter {
         return a;
     }
 
-    public static  org.apache.logging.log4j.Level convertLevel(final Level level) {
-        if (level == null) {
-            return org.apache.logging.log4j.Level.ERROR;
+    static int toLog4j2Level(final int v1Level) {
+        // I don't believe anyone uses values much bigger than FATAL
+        if (v1Level >= MAX_CUTOFF_LEVEL) {
+            return StandardLevel.OFF.intLevel();
         }
-        if (level.isGreaterOrEqual(Level.FATAL)) {
-            return org.apache.logging.log4j.Level.FATAL;
-        } else if (level.isGreaterOrEqual(Level.ERROR)) {
-            return org.apache.logging.log4j.Level.ERROR;
-        } else if (level.isGreaterOrEqual(Level.WARN)) {
-            return org.apache.logging.log4j.Level.WARN;
-        } else if (level.isGreaterOrEqual(Level.INFO)) {
-            return org.apache.logging.log4j.Level.INFO;
-        } else if (level.isGreaterOrEqual(Level.DEBUG)) {
-            return org.apache.logging.log4j.Level.DEBUG;
-        } else if (level.isGreaterOrEqual(Level.TRACE)) {
-            return org.apache.logging.log4j.Level.TRACE;
+        // Linear transformation up to debug: CUTOFF_LEVEL -> OFF, DEBUG -> DEBUG
+        if (v1Level > Priority.DEBUG_INT) {
+            final int offset = Math.round((v1Level - Priority.DEBUG_INT) / 100.0f);
+            return StandardLevel.DEBUG.intLevel() - offset;
         }
-        return org.apache.logging.log4j.Level.ALL;
+        // Steeper linear transformation
+        if (v1Level > Level.TRACE_INT) {
+            final int offset = Math.round((v1Level - Level.TRACE_INT) / 50.0f);
+            return StandardLevel.TRACE.intLevel() - offset;
+        }
+        if (v1Level > MIN_CUTOFF_LEVEL) {
+            final int offset = Level.TRACE_INT - v1Level;
+            return StandardLevel.TRACE.intLevel() + offset;
+        }
+        return StandardLevel.ALL.intLevel();
     }
 
+    static int toLog4j1Level(int v2Level) {
+        if (v2Level == StandardLevel.ALL.intLevel()) {
+            return Priority.ALL_INT;
+        }
+        if (v2Level > StandardLevel.TRACE.intLevel()) {
+            return MIN_CUTOFF_LEVEL + (StandardLevel.ALL.intLevel() - v2Level);
+        }
+        // Inflating by 50
+        if (v2Level > StandardLevel.DEBUG.intLevel()) {
+            return Level.TRACE_INT + 50 * (StandardLevel.TRACE.intLevel() - v2Level);
+        }
+        // Inflating by 100
+        if (v2Level > StandardLevel.OFF.intLevel()) {
+            return Priority.DEBUG_INT + 100 * (StandardLevel.DEBUG.intLevel() - v2Level);
+        }
+        return Priority.OFF_INT;
+    }
 
+    static int toSyslogLevel(int v2Level) {
+        if (v2Level <= StandardLevel.FATAL.intLevel()) {
+            return 0;
+        }
+        if (v2Level <= StandardLevel.ERROR.intLevel()) {
+            return 3 - (3 * (StandardLevel.ERROR.intLevel() - v2Level))
+                    / (StandardLevel.ERROR.intLevel() - StandardLevel.FATAL.intLevel());
+        }
+        if (v2Level <= StandardLevel.WARN.intLevel()) {
+            return 4;
+        }
+        if (v2Level <= StandardLevel.INFO.intLevel()) {
+            return 6 - (2 * (StandardLevel.INFO.intLevel() - v2Level))
+                    / (StandardLevel.INFO.intLevel() - StandardLevel.WARN.intLevel());
+        }
+        return 7;
+    }
+
+    public static org.apache.logging.log4j.Level createLevel(final Priority level) {
+        final String name = level.toString().toUpperCase() + "#" + level.getClass().getName();
+        return org.apache.logging.log4j.Level.forName(name, toLog4j2Level(level.toInt()));
+    }
+
+    public static org.apache.logging.log4j.Level convertLevel(final Priority level) {
+        return level != null ? level.getVersion2Level() : org.apache.logging.log4j.Level.ERROR;
+    }
+
+    /**
+     * @param level
+     * @return
+     */
     public static Level convertLevel(final org.apache.logging.log4j.Level level) {
-        if (level == null) {
-            return Level.ERROR;
+        // level is standard or was created by Log4j 1.x custom level
+        Level actualLevel = toLevel(level.name(), null);
+        // level was created by Log4j 2.x
+        if (actualLevel == null) {
+            actualLevel = toLevel(LOG4J2_LEVEL_CLASS, level.name(), null);
         }
-        switch (level.getStandardLevel()) {
-            case FATAL:
-                return Level.FATAL;
-            case WARN:
-                return Level.WARN;
-            case INFO:
-                return Level.INFO;
-            case DEBUG:
-                return Level.DEBUG;
-            case TRACE:
-                return Level.TRACE;
-            case ALL:
-                return Level.ALL;
-            case OFF:
-                return Level.OFF;
-            default:
-                return Level.ERROR;
-        }
+        return actualLevel != null ? actualLevel : Level.ERROR;
     }
 
     public static org.apache.logging.log4j.Level convertLevel(final String level,
             final org.apache.logging.log4j.Level defaultLevel) {
-        final Level l = toLevel(level, null);
-        return l != null ? convertLevel(l) : defaultLevel;
+        final Level actualLevel = toLevel(level, null);
+        return actualLevel != null ? actualLevel.getVersion2Level() : defaultLevel;
     }
 
     public static String convertSpecialChars(final String s) {
@@ -472,24 +533,37 @@ public class OptionConverter {
     }
 
     /**
-     * Converts a standard or custom priority level to a Level
-     * object.  <p> If <code>value</code> is of form
-     * "level#classname", then the specified class' toLevel method
-     * is called to process the specified level string; if no '#'
-     * character is present, then the default {@link org.apache.log4j.Level}
-     * class is used to process the level value.
+     * Converts a standard or custom priority level to a Level object.
+     * <p>
+     * If <code>value</code> is of form "level#classname", then the specified class'
+     * toLevel method is called to process the specified level string; if no '#'
+     * character is present, then the default {@link org.apache.log4j.Level} class
+     * is used to process the level value.
+     * </p>
+     * 
+     * <p>
+     * As a special case, if the <code>value</code> parameter is equal to the string
+     * "NULL", then the value <code>null</code> will be returned.
+     * </p>
+     * 
+     * <p>
+     * As a Log4j 2.x extension, a {@code value}
+     * "level#org.apache.logging.log4j.Level" retrieves the corresponding custom
+     * Log4j 2.x level.
+     * </p>
      *
-     * <p>As a special case, if the <code>value</code> parameter is
-     * equal to the string "NULL", then the value <code>null</code> will
-     * be returned.
+     * <p>
+     * If any error occurs while converting the value to a level, the
+     * <code>defaultValue</code> parameter, which may be <code>null</code>, is
+     * returned.
+     * </p>
      *
-     * <p> If any error occurs while converting the value to a level,
-     * the <code>defaultValue</code> parameter, which may be
-     * <code>null</code>, is returned.
-     *
-     * <p> Case of <code>value</code> is insignificant for the level level, but is
+     * <p>
+     * Case of <code>value</code> is insignificant for the level level, but is
      * significant for the class name part, if present.
-     * @param value The value to convert.
+     * </p>
+     * 
+     * @param value        The value to convert.
      * @param defaultValue The default value.
      * @return the value of the result.
      *
@@ -501,6 +575,10 @@ public class OptionConverter {
         }
 
         value = value.trim();
+        final Level cached = LEVELS.get(value);
+        if (cached != null) {
+            return cached;
+        }
 
         final int hashIndex = value.indexOf('#');
         if (hashIndex == -1) {
@@ -508,22 +586,54 @@ public class OptionConverter {
                 return null;
             }
             // no class name specified : use standard Level class
-            return Level.toLevel(value, defaultValue);
+            final Level standardLevel = Level.toLevel(value, defaultValue);
+            if (standardLevel != null && value.equals(standardLevel.toString())) {
+                LEVELS.putIfAbsent(value, standardLevel);
+            }
+            return standardLevel;
         }
-
-        Level result = defaultValue;
 
         final String clazz = value.substring(hashIndex + 1);
         final String levelName = value.substring(0, hashIndex);
+
+        final Level customLevel = toLevel(clazz, levelName, defaultValue);
+        if (customLevel != null && levelName.equals(customLevel.toString())
+                && clazz.equals(customLevel.getClass().getName())) {
+            LEVELS.putIfAbsent(value, customLevel);
+        }
+        return customLevel;
+    }
+
+    /**
+     * Converts a custom priority level to a Level object.
+     * 
+     * <p>
+     * If {@code clazz} has the special value "org.apache.logging.log4j.Level" a
+     * wrapper of the corresponding Log4j 2.x custom level object is returned.
+     * </p>
+     * 
+     * @param clazz        a custom level class,
+     * @param levelName    the name of the level,
+     * @param defaultValue the value to return in case an error occurs,
+     * @return the value of the result.
+     */
+    public static Level toLevel(final String clazz, final String levelName, final Level defaultValue) {
 
         // This is degenerate case but you never know.
         if ("NULL".equalsIgnoreCase(levelName)) {
             return null;
         }
 
-        LOGGER.debug("toLevel" + ":class=[" + clazz + "]"
-                + ":pri=[" + levelName + "]");
+        LOGGER.debug("toLevel" + ":class=[" + clazz + "]" + ":pri=[" + levelName + "]");
 
+        // Support for levels defined in Log4j2.
+        if (LOG4J2_LEVEL_CLASS.equals(clazz)) {
+            final org.apache.logging.log4j.Level v2Level = org.apache.logging.log4j.Level.getLevel(levelName.toUpperCase());
+            if (v2Level != null) {
+                return new LevelWrapper(v2Level);
+            }
+            return defaultValue;
+        }
         try {
             final Class<?> customLevel = LoaderUtil.loadClass(clazz);
 
@@ -537,7 +647,7 @@ public class OptionConverter {
             final Object[] params = new Object[]{levelName, defaultValue};
             final Object o = toLevelMethod.invoke(null, params);
 
-            result = (Level) o;
+            return (Level) o;
         } catch (final ClassNotFoundException e) {
             LOGGER.warn("custom level class [" + clazz + "] not found.");
         } catch (final NoSuchMethodException e) {
@@ -560,12 +670,22 @@ public class OptionConverter {
             LOGGER.warn("class [" + clazz + "], level [" + levelName +
                     "] conversion failed.", e);
         }
-        return result;
+        return defaultValue;
     }
 
     /**
      * OptionConverter is a static class.
      */
     private OptionConverter() {
+    }
+
+    private static class LevelWrapper extends Level {
+
+        private static final long serialVersionUID = -7693936267612508528L;
+
+        protected LevelWrapper(org.apache.logging.log4j.Level v2Level) {
+            super(toLog4j1Level(v2Level.intLevel()), v2Level.name(), toSyslogLevel(v2Level.intLevel()), v2Level);
+        }
+
     }
 }

@@ -16,6 +16,7 @@
  */
 package org.apache.log4j.config;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.builders.BuilderManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
@@ -35,6 +36,12 @@ public class Log4j1Configuration extends AbstractConfiguration implements Reconf
     public static final String INHERITED = "inherited";
 
     public static final String NULL = "null";
+
+    /**
+     * The effective level used, when the configuration uses a non-existent custom
+     * level.
+     */
+    public static final Level DEFAULT_LEVEL = Level.DEBUG;
 
     protected final BuilderManager manager;
 

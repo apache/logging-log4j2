@@ -265,7 +265,7 @@ public class PropertySetter {
                 return Boolean.FALSE;
             }
         } else if (Priority.class.isAssignableFrom(type)) {
-            return org.apache.log4j.helpers.OptionConverter.toLevel(v, Level.DEBUG);
+            return org.apache.log4j.helpers.OptionConverter.toLevel(v, Log4j1Configuration.DEFAULT_LEVEL);
         } else if (ErrorHandler.class.isAssignableFrom(type)) {
             return OptionConverter.instantiateByClassName(v,
                     ErrorHandler.class, null);
