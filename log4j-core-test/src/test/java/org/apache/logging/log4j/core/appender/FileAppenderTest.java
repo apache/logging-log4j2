@@ -173,11 +173,17 @@ public class FileAppenderTest {
             threadPool.execute(runnable);
         }
         threadPool.shutdown();
-        assertTrue(
-                threadPool.awaitTermination(10, TimeUnit.SECONDS), "The thread pool has not shutdown: " + threadPool);
+        boolean stopped = false;
+        for (int i = 0; i < 20; i++) {
+            // intentional assignment
+            if (stopped = threadPool.awaitTermination(1, TimeUnit.SECONDS)) {
+                break;
+            }
+        }
         if (throwableRef.get() != null) {
             Throwables.rethrow(throwableRef.get());
         }
+        assertTrue(stopped, "The thread pool has not shutdown: " + threadPool);
         verifyFile(threadCount * logEventCount);
     }
 
