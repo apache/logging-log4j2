@@ -19,7 +19,7 @@
 <Configuration name="CassandraAppenderTest">
   <Appenders>
     <Cassandra name="Cassandra" clusterName="Test Cluster" keyspace="test" table="logs" bufferSize="10" batched="true">
-      <SocketAddress host="localhost" port="9042"/>
+      <SocketAddress host="localhost" port="${sys:cassandra.native_transport_port}"/>
       <ColumnMapping name="id" pattern="%uuid{TIME}" type="java.util.UUID"/>
       <ColumnMapping name="timeid" literal="now()"/>
       <ColumnMapping name="message" pattern="%message"/>

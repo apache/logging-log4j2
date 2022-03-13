@@ -18,21 +18,24 @@ package org.apache.logging.log4j.cassandra;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.Permission;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadFactory;
 
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.Session;
 import org.apache.cassandra.service.CassandraDaemon;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
+import org.apache.logging.log4j.test.AvailablePortFinder;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.rules.ExternalResource;
+
+import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.Session;
 
 /**
  * JUnit rule to set up and tear down a Cassandra database instance.
@@ -66,12 +69,18 @@ public class CassandraRule extends ExternalResource {
         Files.createDirectories(root.resolve("data"));
         final Path config = root.resolve("cassandra.yml");
         Files.copy(getClass().getResourceAsStream("/cassandra.yaml"), config);
+        final int nativePort = AvailablePortFinder.getNextAvailable();
+        System.setProperty("cassandra.native_transport_port", Integer.toString(nativePort));
+        System.setProperty("cassandra.storage_port", Integer.toString(AvailablePortFinder.getNextAvailable()));
         System.setProperty("cassandra.config", "file:" + config.toString());
         System.setProperty("cassandra.storagedir", root.toString());
         System.setProperty("cassandra-foreground", "true"); // prevents Cassandra from closing stdout/stderr
         THREAD_FACTORY.newThread(embeddedCassandra).start();
         latch.await();
-        cluster = Cluster.builder().addContactPoints(InetAddress.getLoopbackAddress()).build();
+        cluster = Cluster.builder()
+                .addContactPointsWithPorts(new InetSocketAddress(InetAddress.getLoopbackAddress(), nativePort))
+                .build();
+        
         try (final Session session = cluster.connect()) {
             session.execute("CREATE KEYSPACE " + keyspace + " WITH REPLICATION = " +
                 "{ 'class': 'SimpleStrategy', 'replication_factor': 2 };");
