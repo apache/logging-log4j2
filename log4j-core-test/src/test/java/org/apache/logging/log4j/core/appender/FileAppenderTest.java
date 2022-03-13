@@ -26,6 +26,7 @@ import java.nio.file.Paths;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,6 +35,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.test.junit.CleanUpFiles;
 import org.apache.logging.log4j.message.SimpleMessage;
@@ -124,10 +126,16 @@ public class FileAppenderTest {
             long prevLen = curLen;
             assertEquals(0, curLen, "File length: " + curLen);
             for (int i = 0; i < 100; ++i) {
-                final LogEvent event = Log4jLogEvent.newBuilder().setLoggerName("TestLogger") //
-                        .setLoggerFqcn(FileAppenderTest.class.getName()).setLevel(Level.INFO) //
-                        .setMessage(new SimpleMessage("Test")).setThreadName(this.getClass().getSimpleName()) //
-                        .setTimeMillis(System.currentTimeMillis()).build();
+                // @formatter:off
+                final LogEvent event = Log4jLogEvent.newBuilder()
+                        .setLoggerName("TestLogger")
+                        .setLoggerFqcn(FileAppenderTest.class.getName())
+                        .setLevel(Level.INFO)
+                        .setMessage(new SimpleMessage("Test"))
+                        .setThreadName(this.getClass().getSimpleName())
+                        .setTimeMillis(System.currentTimeMillis())
+                        .build();
+                // @formatter:on
                 appender.append(event);
                 curLen = file.length();
                 assertTrue(curLen > prevLen, "File length: " + curLen);
@@ -158,17 +166,17 @@ public class FileAppenderTest {
     private void testMultipleLockingAppenderThreads(final boolean lock, final int threadCount, boolean createOnDemand)
             throws InterruptedException, Exception {
         final ExecutorService threadPool = Executors.newFixedThreadPool(threadCount);
-        final Exception[] exceptionRef = new Exception[1];
+        final AtomicReference<Throwable> throwableRef = new AtomicReference<>();
         final int logEventCount = 100;
-        final Runnable runnable = new FileWriterRunnable(createOnDemand, lock, logEventCount, exceptionRef);
+        final Runnable runnable = new FileWriterRunnable(createOnDemand, lock, logEventCount, throwableRef);
         for (int i = 0; i < threadCount; ++i) {
             threadPool.execute(runnable);
         }
         threadPool.shutdown();
         assertTrue(
                 threadPool.awaitTermination(10, TimeUnit.SECONDS), "The thread pool has not shutdown: " + threadPool);
-        if (exceptionRef[0] != null) {
-            throw exceptionRef[0];
+        if (throwableRef.get() != null) {
+            Throwables.rethrow(throwableRef.get());
         }
         verifyFile(threadCount * logEventCount);
     }
@@ -240,10 +248,16 @@ public class FileAppenderTest {
                 assertNotEquals(createOnDemand, exists, msg);
             }
             for (int i = 0; i < logEventCount; ++i) {
-                final LogEvent logEvent = Log4jLogEvent.newBuilder().setLoggerName("TestLogger")
-                        .setLoggerFqcn(FileAppenderTest.class.getName()).setLevel(Level.INFO)
-                        .setMessage(new SimpleMessage("Test")).setThreadName(name)
-                        .setTimeMillis(System.currentTimeMillis()).build();
+                // @formatter:off
+                final LogEvent logEvent = Log4jLogEvent.newBuilder()
+                        .setLoggerName("TestLogger")
+                        .setLoggerFqcn(FileAppenderTest.class.getName())
+                        .setLevel(Level.INFO)
+                        .setMessage(new SimpleMessage("Test"))
+                        .setThreadName(name)
+                        .setTimeMillis(System.currentTimeMillis())
+                        .build();
+                // @formatter:on
                 appender.append(logEvent);
                 Thread.sleep(25); // Give up control long enough for another thread/process to occasionally do something.
             }
@@ -275,14 +289,14 @@ public class FileAppenderTest {
         private final boolean createOnDemand;
         private final boolean lock;
         private final int logEventCount;
-        private final Exception[] exceptionRef;
+        private final AtomicReference<Throwable> throwableRef;
 
         public FileWriterRunnable(
-                boolean createOnDemand, final boolean lock, final int logEventCount, final Exception[] exceptionRef) {
+                boolean createOnDemand, final boolean lock, final int logEventCount, final AtomicReference<Throwable> throwableRef) {
             this.createOnDemand = createOnDemand;
             this.lock = lock;
             this.logEventCount = logEventCount;
-            this.exceptionRef = exceptionRef;
+            this.throwableRef = throwableRef;
         }
 
         @Override
@@ -291,9 +305,8 @@ public class FileAppenderTest {
 
             try {
                 writer(lock, logEventCount, thread.getName(), createOnDemand, true);
-            } catch (final Exception e) {
-                exceptionRef[0] = e;
-                Throwables.rethrow(e);
+            } catch (final Throwable e) {
+                throwableRef.set(e);
             }
         }
     }
@@ -308,7 +321,7 @@ public class FileAppenderTest {
             }
             final String id = args[0];
 
-            final int count = Integer.parseInt(args[1]);
+            final int count = Integers.parseInt(args[1]);
 
             if (count <= 0) {
                 System.out.println("Invalid count value: " + args[1]);
