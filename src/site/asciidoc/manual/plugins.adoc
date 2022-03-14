@@ -131,13 +131,8 @@ Core plugins support a few different dependency injection rules for binding conf
 Each plugin must declare a static method annotated with `@Factory` or `@PluginFactory` or contain an `@Inject`-annotated constructor or no-args constructor.
 These static factory method or `@Inject` constructor parameters are used for initial dependency injection.
 When a static factory method returns a type that implements `java.util.function.Supplier<T>` such as through `Builder<T>`, then that supplier instance first has its members injected before invoking `Supplier::get` to obtain the resulting plugin instance.
-Injection points in the static factory method, its returned builder instance, or in the plugin's `@Inject` constructor are matched by generic declared types, the qualifier annotation type if present, and the name of the injection point (possibly an empty string if unnamed).
-Qualifier annotations are annotations annotated with `QualifierType` such as `@Named`, `@PluginAttribute`, `PluginBuilderAttribute`, `@PluginElement`, `@PluginValue`, etc.
-
-Dependency injection is supported for fields, constructors, and methods.
-An injectable field is a field annotated with `@Inject` or a qualifier annotation.
-An injectable constructor is a constructor annotated with `@Inject`.
-An injectable method is a method annotated with `@Inject` or a non-factory method with at least one qualified parameter.
+See link:./dependencyinjection.html[Dependency Injection] for further details on how dependency injection works.
+Plugins are configured using additional plugin qualifier annotations such as `@PluginAttribute`, `@PluginBuilderAttribute`, `@PluginElement`, `@PluginValue`, etc., as described below.
 
 There are dozens of plugins in Log4j Core that can be
 used as examples for more complex scenarios including hierarchical
