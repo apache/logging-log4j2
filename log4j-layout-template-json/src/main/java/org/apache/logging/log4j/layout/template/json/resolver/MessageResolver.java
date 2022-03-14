@@ -134,7 +134,10 @@ public final class MessageResolver implements EventResolver {
             jsonWriter.writeObjectStart();
             jsonWriter.writeObjectKey(fallbackKey);
         }
-        if (message instanceof StringBuilderFormattable) {
+        if (message instanceof CharSequence) {
+            final CharSequence sequence = (CharSequence) message;
+            jsonWriter.writeString(sequence);
+        } else if (message instanceof StringBuilderFormattable) {
             final StringBuilderFormattable formattable =
                     (StringBuilderFormattable) message;
             jsonWriter.writeString(formattable);
