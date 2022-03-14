@@ -168,7 +168,7 @@ public class Log4j1ConfigurationFactoryTest extends AbstractLog4j1ConfigurationT
             assertTrue(appender instanceof ConsoleAppender);
             final Layout<? extends Serializable> layout = appender.getLayout();
             assertTrue(layout instanceof PatternLayout);
-            assertEquals("%level - %m%n", ((PatternLayout)layout).getConversionPattern());
+            assertEquals("%v1Level - %m%n", ((PatternLayout)layout).getConversionPattern());
             // No filter support
             config.start();
             config.stop();

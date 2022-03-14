@@ -271,7 +271,8 @@ public abstract class AbstractLog4j1ConfigurationTest {
 
     public void testConsoleEnhancedPatternLayout() throws Exception {
         final PatternLayout layout = (PatternLayout) testConsole("config-1.2/log4j-console-EnhancedPatternLayout");
-        assertEquals("%d{ISO8601} [%t][%c] %-5p %properties %ndc: %m%n", layout.getConversionPattern());
+        // %p, %X and %x converted to their Log4j 1.x bridge equivalent
+        assertEquals("%d{ISO8601} [%t][%c] %-5v1Level %properties %ndc: %m%n", layout.getConversionPattern());
     }
 
     public void testConsoleHtmlLayout() throws Exception {
@@ -282,17 +283,18 @@ public abstract class AbstractLog4j1ConfigurationTest {
 
     public void testConsolePatternLayout() throws Exception {
         final PatternLayout layout = (PatternLayout) testConsole("config-1.2/log4j-console-PatternLayout");
-        assertEquals("%d{ISO8601} [%t][%c] %-5p: %m%n", layout.getConversionPattern());
+        // %p converted to its Log4j 1.x bridge equivalent
+        assertEquals("%d{ISO8601} [%t][%c] %-5v1Level: %m%n", layout.getConversionPattern());
     }
 
     public void testConsoleSimpleLayout() throws Exception {
         final PatternLayout layout = (PatternLayout) testConsole("config-1.2/log4j-console-SimpleLayout");
-        assertEquals("%level - %m%n", layout.getConversionPattern());
+        assertEquals("%v1Level - %m%n", layout.getConversionPattern());
     }
 
     public void testFileSimpleLayout() throws Exception {
         final PatternLayout layout = (PatternLayout) testFile("config-1.2/log4j-file-SimpleLayout");
-        assertEquals("%level - %m%n", layout.getConversionPattern());
+        assertEquals("%v1Level - %m%n", layout.getConversionPattern());
     }
 
     public void testNullAppender() throws Exception {

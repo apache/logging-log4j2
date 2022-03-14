@@ -301,7 +301,7 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
             assertTrue(appender instanceof ConsoleAppender);
             final Layout<? extends Serializable> layout = appender.getLayout();
             assertTrue(layout instanceof PatternLayout);
-            assertEquals("%level - %m%n", ((PatternLayout)layout).getConversionPattern());
+            assertEquals("%v1Level - %m%n", ((PatternLayout)layout).getConversionPattern());
             final Filter filter = ((Filterable) appender).getFilter();
             assertTrue(filter instanceof DenyAllFilter);
             config.start();
