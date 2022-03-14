@@ -21,7 +21,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.openjdk.jmh.annotations.Benchmark;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.List;
 
@@ -29,70 +28,73 @@ import java.util.List;
  * Benchmark suite for various JSON layouts.
  * <p>
  * You can run this test as follows:
- * <pre>
+ * <pre>{@code
  * java \
  *     -jar log4j-perf/target/benchmarks.jar \
  *     -f 2 \
  *     -wi 3 -w 20s \
  *     -i 5 -r 30s \
  *     -prof gc \
+ *     -prof perfnorm \
+ *     -prof "async:libPath=/path/to/libasyncProfiler.so;output=flamegraph" \
  *     -rf json -rff log4j-perf/target/JsonTemplateLayoutBenchmarkResult.json \
  *     ".*JsonTemplateLayoutBenchmark.*"
- * </pre>
+ * }</pre>
+ * </p>
  */
 public class JsonTemplateLayoutBenchmark {
 
     @Benchmark
-    public static int fullJsonTemplateLayout4JsonLayout(
+    public static int fullJtl4JsonLayout(
             final JsonTemplateLayoutBenchmarkState state) {
         return benchmark(
                 state,
-                state.getJsonTemplateLayout4JsonLayout(),
+                state.getJtl4JsonLayout(),
                 state.getFullLogEvents());
     }
 
     @Benchmark
-    public static int liteJsonTemplateLayout4JsonLayout(
+    public static int liteJtl4JsonLayout(
             final JsonTemplateLayoutBenchmarkState state) {
         return benchmark(
                 state,
-                state.getJsonTemplateLayout4JsonLayout(),
+                state.getJtl4JsonLayout(),
                 state.getLiteLogEvents());
     }
 
     @Benchmark
-    public static int fullJsonTemplateLayout4EcsLayout(
+    public static int fullJtl4EcsLayout(
             final JsonTemplateLayoutBenchmarkState state) {
         return benchmark(
                 state,
-                state.getJsonTemplateLayout4EcsLayout(),
+                state.getJtl4EcsLayout(),
                 state.getFullLogEvents());
     }
 
     @Benchmark
-    public static int liteJsonTemplateLayout4EcsLayout(
+    public static int liteJtl4EcsLayout(
             final JsonTemplateLayoutBenchmarkState state) {
         return benchmark(
                 state,
-                state.getJsonTemplateLayout4EcsLayout(),
+                state.getJtl4EcsLayout(),
                 state.getLiteLogEvents());
     }
 
     @Benchmark
-    public static int fullJsonTemplateLayout4GelfLayout(
+    public static int fullJtl4GelfLayout(
             final JsonTemplateLayoutBenchmarkState state) {
         return benchmark(
                 state,
-                state.getJsonTemplateLayout4GelfLayout(),
+                state.getJtl4GelfLayout(),
                 state.getFullLogEvents());
     }
 
     @Benchmark
-    public static int liteJsonTemplateLayout4GelfLayout(
+    public static int liteJtl4GelfLayout(
             final JsonTemplateLayoutBenchmarkState state) {
         return benchmark(
                 state,
-                state.getJsonTemplateLayout4GelfLayout(),
+                state.getJtl4GelfLayout(),
                 state.getLiteLogEvents());
     }
 
@@ -170,7 +172,7 @@ public class JsonTemplateLayoutBenchmark {
 
     private static int benchmark(
             final JsonTemplateLayoutBenchmarkState state,
-            final Layout<String> layout,
+            final Layout<?> layout,
             final List<LogEvent> logEvents) {
         final int logEventIndex = state.nextLogEventIndex();
         final LogEvent logEvent = logEvents.get(logEventIndex);
@@ -178,42 +180,12 @@ public class JsonTemplateLayoutBenchmark {
     }
 
     private static int benchmark(
-            final Layout<String> layout,
+            final Layout<?> layout,
             final LogEvent logEvent,
             final ByteBufferDestination destination) {
         final ByteBuffer byteBuffer = destination.getByteBuffer();
         layout.encode(logEvent, destination);
         return byteBuffer.position();
-    }
-
-    public static void main(String[] args) throws IOException {
-//        System.out.format("Ready?");
-//        System.in.read();
-        JsonTemplateLayoutBenchmarkState state = new JsonTemplateLayoutBenchmarkState();
-        int retryCount = 500_000_000;
-        measureEcs(state, retryCount);
-        measureJtl(state, retryCount);
-//        while (true) {
-//            measureEcs(state, retryCount);
-//        }
-//        measureEcs(state, retryCount);
-//        measureJtl(state, retryCount);
-    }
-
-    private static void measureJtl(JsonTemplateLayoutBenchmarkState state, int retryCount) {
-        long startInstantNanos = System.nanoTime();
-        for (int i = 0; i < retryCount; i++) {
-            liteJsonTemplateLayout4EcsLayout(state);
-        }
-        System.out.format("%.3fs%n", (System.nanoTime() - startInstantNanos) / 1e9);
-    }
-
-    private static void measureEcs(JsonTemplateLayoutBenchmarkState state, int retryCount) {
-        long startInstantNanos = System.nanoTime();
-        for (int i = 0; i < retryCount; i++) {
-            liteEcsLayout(state);
-        }
-        System.out.format("%.3fs%n", (System.nanoTime() - startInstantNanos) / 1e9);
     }
 
 }
