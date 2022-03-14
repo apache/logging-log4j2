@@ -46,6 +46,9 @@ import java.util.Map;
  */
 public interface Configuration extends Filterable {
 
+    /** Injection key for the current Configuration. */
+    Key<Configuration> KEY = new Key<>() {};
+
     /** Key for storing the Context properties. */
     String CONTEXT_PROPERTIES = "ContextProperties";
 

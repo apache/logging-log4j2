@@ -84,58 +84,10 @@ class DefaultInjector implements Injector {
     }
 
     @Override
-    public <T> Supplier<T> getFactory(final Key<T> key) {
-        return getFactory(key, Set.of(), null, Set.of());
-    }
-
-    @Override
-    public <T> T getInstance(final Node node) {
-        configure(node);
-        return node.getObject();
-    }
-
-    @Override
-    public void injectMembers(final Object instance) {
-        final Class<?> type = instance.getClass();
-        final Key<?> key = Key.forClass(type);
-        injectMembers(key, null, instance, Set.of(), null);
-    }
-
-    @Override
-    public void removeBinding(final Key<?> key) {
-        bindingMap.remove(key);
-    }
-
-    @Override
-    public void installModule(final Object module) {
-        if (module instanceof Class<?>) {
-            registerModuleClass((Class<?>) module);
-        } else {
-            registerModuleInstance(module);
-        }
-    }
-
-    @Override
-    public void setLookup(final Lookup lookup) {
-        this.lookup = lookup;
-    }
-
-    @Override
-    public void bindScope(final Class<? extends Annotation> scopeType, final Scope scope) {
-        scopes.put(scopeType, scope);
-    }
-
-    @Override
-    public Scope getScope(final Class<? extends Annotation> scopeType) {
-        return scopes.get(scopeType);
-    }
-
-    @Override
     public void init() {
         final List<InjectorCallback> callbacks = ServiceRegistry.getInstance()
                 .getServices(InjectorCallback.class, layer -> ServiceLoader.load(layer, InjectorCallback.class), null);
-        callbacks.sort(Comparator.comparingInt(InjectorCallback::getOrder).reversed()
-                .thenComparing(listener -> listener.getClass().getName()));
+        callbacks.sort(InjectorCallback.COMPARATOR);
         for (final InjectorCallback callback : callbacks) {
             try {
                 callback.configure(this);
@@ -151,82 +103,17 @@ class DefaultInjector implements Injector {
     }
 
     @Override
-    public <T> Injector bindFactory(final Key<T> key, final Supplier<? extends T> factory) {
-        bindingMap.put(key, factory::get);
-        return this;
+    public <T> Supplier<T> getFactory(final Key<T> key) {
+        return getFactory(key, Set.of(), null, Set.of());
     }
 
     @Override
-    public <T> Injector bindIfAbsent(final Key<T> key, final Supplier<? extends T> factory) {
-        bindingMap.bindIfAbsent(key, factory::get);
-        return this;
+    public void injectMembers(final Object instance) {
+        injectMembers(Key.forClass(instance.getClass()), null, instance, Set.of(), null);
     }
 
-    private void registerModuleInstance(final Object module) {
-        final Class<?> moduleClass = module.getClass();
-        final List<Method> providerMethods = new ArrayList<>();
-        Stream.<Class<?>>iterate(moduleClass, c -> c != Object.class, Class::getSuperclass)
-                .flatMap(c -> Stream.of(c.getDeclaredMethods()))
-                .filter(method -> AnnotationUtil.isMetaAnnotationPresent(method, FactoryType.class))
-                .forEachOrdered(method -> {
-                    if (method.getDeclaringClass().equals(moduleClass) || providerMethods.stream().noneMatch(m ->
-                            m.getName().equals(method.getName()) &&
-                                    Arrays.equals(m.getParameterTypes(), method.getParameterTypes()))) {
-                        providerMethods.add(method);
-                        createMethodBindings(module, method).forEach(binding -> {
-                            final var key = binding.getKey();
-                            if (!bindingMap.putIfAbsent(key, binding.getSupplier())) {
-                                throw new PluginException(String.format(
-                                        "Duplicate @Factory method (%s: %s) found for %s", moduleClass, method, key));
-                            }
-                        });
-                    }
-                });
-    }
-
-    private void registerModuleClass(final Class<?> moduleClass) {
-        final List<Method> staticFactoryMethods = Stream.of(moduleClass.getDeclaredMethods())
-                .filter(method -> Modifier.isStatic(method.getModifiers()) &&
-                        AnnotationUtil.isMetaAnnotationPresent(method, FactoryType.class))
-                .collect(Collectors.toList());
-        for (final Method method : staticFactoryMethods) {
-            for (final Binding<Object> binding : createMethodBindings(null, method)) {
-                final var key = binding.getKey();
-                if (!bindingMap.putIfAbsent(key, binding.getSupplier())) {
-                    throw new PluginException(String.format(
-                            "Duplicate @Factory method (%s: %s) found for %s", moduleClass, method, key));
-                }
-            }
-        }
-    }
-
-    private <T> List<Binding<T>> createMethodBindings(final Object instance, final Method method) {
-        final Key<T> primaryKey = Key.forMethod(method);
-        final List<InjectionPoint<?>> points = InjectionPoint.fromExecutable(method);
-        final MethodHandle handle = getMethodHandle(method, lookup);
-        final MethodHandle boundHandle = Modifier.isStatic(method.getModifiers()) ? handle : handle.bindTo(instance);
-        final var argumentFactories = getArgumentFactories(primaryKey, null, points, Set.of(primaryKey), null);
-        final Supplier<T> unscoped = () -> {
-            final List<Object> args = argumentFactories.entrySet()
-                    .stream()
-                    .flatMap(e -> {
-                        final Object value = e.getValue().get();
-                        return e.getKey().isVarArgs() ? Stream.of((Object[]) value) : Stream.of(value);
-                    })
-                    .collect(Collectors.toList());
-            return TypeUtil.cast(rethrow(() -> boundHandle.invokeWithArguments(args)));
-        };
-        final Supplier<T> factory = getScopeForMethod(method).get(primaryKey, unscoped);
-        final Collection<String> aliases = AnnotatedElementAliasesProvider.getAliases(method);
-        final List<Binding<T>> bindings = new ArrayList<>(1 + aliases.size());
-        bindings.add(Binding.bind(primaryKey, factory));
-        for (final String alias : aliases) {
-            bindings.add(Binding.bind(primaryKey.withName(alias), factory));
-        }
-        return bindings;
-    }
-
-    private void configure(final Node node) {
+    @Override
+    public <T> T configure(final Node node) {
         final PluginType<?> type = node.getType();
         if (type != null && type.isDeferChildren()) {
             inject(node);
@@ -240,74 +127,45 @@ class DefaultInjector implements Injector {
                 inject(node);
             }
         }
-        final Map<String, String> attrs = node.getAttributes();
-        if (!attrs.isEmpty()) {
-            final StringBuilder sb = new StringBuilder();
-            for (final String key : attrs.keySet()) {
-                if (sb.length() == 0) {
-                    sb.append(node.getName());
-                    sb.append(" contains ");
-                    if (attrs.size() == 1) {
-                        sb.append("an invalid element or attribute ");
-                    } else {
-                        sb.append("invalid attributes ");
-                    }
-                } else {
-                    sb.append(", ");
-                }
-                StringBuilders.appendDqValue(sb, key);
-            }
-            LOGGER.error(sb.toString());
-        }
-        final List<Node> children = node.getChildren();
-        if (!(type == null || type.isDeferChildren() || children.isEmpty())) {
-            for (final Node child : children) {
-                final String nodeType = node.getType().getElementName();
-                final String start = nodeType.equals(node.getName()) ? node.getName() : nodeType + ' ' + node.getName();
-                LOGGER.error("{} has no parameter that matches element {}", start, child.getName());
-            }
+        verifyAttributesConsumed(node);
+        verifyChildrenConsumed(node);
+        return node.getObject();
+    }
+
+    @Override
+    public void registerScope(final Class<? extends Annotation> scopeType, final Scope scope) {
+        scopes.put(scopeType, scope);
+    }
+
+    @Override
+    public Scope getScope(final Class<? extends Annotation> scopeType) {
+        return scopes.get(scopeType);
+    }
+
+    @Override
+    public void registerBundle(final Object bundle) {
+        if (bundle instanceof Class<?>) {
+            registerModuleInstance(getInstance((Class<?>) bundle));
+        } else {
+            registerModuleInstance(bundle);
         }
     }
 
-    private void inject(final Node node) {
-        final PluginType<?> type = node.getType();
-        final Class<?> pluginClass = type.getPluginClass();
-        final List<Node> children = node.getChildren();
-        // support for plugin classes that implement Map; unused in Log4j, but possibly used by custom plugins
-        if (Map.class.isAssignableFrom(pluginClass)) {
-            final Map<String, Object> map = new LinkedHashMap<>(children.size());
-            children.forEach(child -> map.put(child.getName(), child.getObject()));
-            node.setObject(map);
-            return;
-        }
-        // support for plugin classes that implement Collection; unused in Log4j, but possibly used by custom plugins
-        if (Collection.class.isAssignableFrom(pluginClass)) {
-            final List<Object> list = new ArrayList<>(children.size());
-            children.forEach(child -> list.add(child.getObject()));
-            node.setObject(list);
-            return;
-        }
-        final String elementName = type.getElementName();
-        if (!PluginValidator.validatePlugin(pluginClass, elementName)) {
-            LOGGER.error("Could not configure plugin of type {} for element {} due to constraint violations", pluginClass,
-                    elementName);
-            return;
-        }
-        try {
-            final StringBuilder debugLog = new StringBuilder();
-            final Object instance = getInjectablePluginInstance(node, debugLog);
-            if (instance instanceof Supplier<?>) {
-                // configure plugin builder class and obtain plugin from that
-                injectMembers(Key.forClass(instance.getClass()), node, instance, Set.of(), debugLog);
-                node.setObject(((Supplier<?>) instance).get());
-            } else {
-                // usually created via static plugin factory method, but otherwise assume this is the final plugin instance
-                node.setObject(instance);
-            }
-            LOGGER.debug("Configured plugin element {}[{}]", node.getName(), debugLog);
-        } catch (final Throwable e) {
-            LOGGER.error("Could not configure plugin element {}: {}", node.getName(), e.toString(), e);
-        }
+    @Override
+    public <T> Injector registerBinding(final Key<T> key, final Supplier<? extends T> factory) {
+        bindingMap.put(key, factory::get);
+        return this;
+    }
+
+    @Override
+    public <T> Injector registerBindingIfAbsent(final Key<T> key, final Supplier<? extends T> factory) {
+        bindingMap.bindIfAbsent(key, factory::get);
+        return this;
+    }
+
+    @Override
+    public void setLookup(final Lookup lookup) {
+        this.lookup = lookup;
     }
 
     private <T> Supplier<T> getFactory(
@@ -348,38 +206,6 @@ class DefaultInjector implements Injector {
         };
         final Scope scope = getScopeForType(key.getRawType());
         return bindingMap.bindIfAbsent(key, scope.get(key, instanceSupplier));
-    }
-
-    private Object getInjectablePluginInstance(final Node node, final StringBuilder debugLog) {
-        final PluginType<?> type = node.getType();
-        final Class<?> rawType = type.getPluginClass();
-        final Key<?> key = Key.forClass(rawType);
-        final Executable factory = Stream.of(rawType.getDeclaredMethods())
-                .filter(method -> Modifier.isStatic(method.getModifiers()) &&
-                        AnnotationUtil.isMetaAnnotationPresent(method, FactoryType.class))
-                .min(Comparator.comparingInt(Method::getParameterCount).thenComparing(Method::getReturnType, (c1, c2) -> {
-                    if (c1.equals(c2)) {
-                        return 0;
-                    } else if (Supplier.class.isAssignableFrom(c1)) {
-                        return -1;
-                    } else if (Supplier.class.isAssignableFrom(c2)) {
-                        return 1;
-                    } else {
-                        return c1.getName().compareTo(c2.getName());
-                    }
-                }))
-                .map(Executable.class::cast)
-                .orElseGet(() -> getInjectableConstructor(key, Set.of()));
-        final List<InjectionPoint<?>> points = InjectionPoint.fromExecutable(factory);
-        final Lookup pluginLookup = type.getPluginLookup();
-        final MethodHandle handle;
-        if (factory instanceof Method) {
-            handle = getMethodHandle((Method) factory, pluginLookup);
-        } else {
-            handle = getConstructorHandle((Constructor<?>) factory, pluginLookup);
-        }
-        final var args = getArguments(key, node, points, Set.of(), debugLog);
-        return rethrow(() -> handle.invokeWithArguments(args));
     }
 
     private Object getInjectableInstance(
@@ -447,6 +273,127 @@ class DefaultInjector implements Injector {
         injectMethodsWithNoArgs.forEach(handle -> rethrow(handle::invoke));
     }
 
+    private void inject(final Node node) {
+        final PluginType<?> type = node.getType();
+        final Class<?> pluginClass = type.getPluginClass();
+        final List<Node> children = node.getChildren();
+        // support for plugin classes that implement Map; unused in Log4j, but possibly used by custom plugins
+        if (Map.class.isAssignableFrom(pluginClass)) {
+            final Map<String, Object> map = new LinkedHashMap<>(children.size());
+            children.forEach(child -> map.put(child.getName(), child.getObject()));
+            node.setObject(map);
+            return;
+        }
+        // support for plugin classes that implement Collection; unused in Log4j, but possibly used by custom plugins
+        if (Collection.class.isAssignableFrom(pluginClass)) {
+            final List<Object> list = new ArrayList<>(children.size());
+            children.forEach(child -> list.add(child.getObject()));
+            node.setObject(list);
+            return;
+        }
+        final String elementName = type.getElementName();
+        if (!PluginValidator.validatePlugin(pluginClass, elementName)) {
+            LOGGER.error("Could not configure plugin of type {} for element {} due to constraint violations", pluginClass,
+                    elementName);
+            return;
+        }
+        try {
+            final StringBuilder debugLog = new StringBuilder();
+            final Object instance = getInjectablePluginInstance(node, debugLog);
+            if (instance instanceof Supplier<?>) {
+                // configure plugin builder class and obtain plugin from that
+                injectMembers(Key.forClass(instance.getClass()), node, instance, Set.of(), debugLog);
+                node.setObject(((Supplier<?>) instance).get());
+            } else {
+                // usually created via static plugin factory method, but otherwise assume this is the final plugin instance
+                node.setObject(instance);
+            }
+            LOGGER.debug("Configured plugin element {}[{}]", node.getName(), debugLog);
+        } catch (final Throwable e) {
+            LOGGER.error("Could not configure plugin element {}: {}", node.getName(), e.toString(), e);
+        }
+    }
+
+    private Object getInjectablePluginInstance(final Node node, final StringBuilder debugLog) {
+        final PluginType<?> type = node.getType();
+        final Class<?> rawType = type.getPluginClass();
+        final Key<?> key = Key.forClass(rawType);
+        final Executable factory = Stream.of(rawType.getDeclaredMethods())
+                .filter(method -> Modifier.isStatic(method.getModifiers()) &&
+                        AnnotationUtil.isMetaAnnotationPresent(method, FactoryType.class))
+                .min(Comparator.comparingInt(Method::getParameterCount).thenComparing(Method::getReturnType, (c1, c2) -> {
+                    if (c1.equals(c2)) {
+                        return 0;
+                    } else if (Supplier.class.isAssignableFrom(c1)) {
+                        return -1;
+                    } else if (Supplier.class.isAssignableFrom(c2)) {
+                        return 1;
+                    } else {
+                        return c1.getName().compareTo(c2.getName());
+                    }
+                }))
+                .map(Executable.class::cast)
+                .orElseGet(() -> getInjectableConstructor(key, Set.of()));
+        final List<InjectionPoint<?>> points = InjectionPoint.fromExecutable(factory);
+        final Lookup pluginLookup = type.getPluginLookup();
+        final MethodHandle handle;
+        if (factory instanceof Method) {
+            handle = getMethodHandle((Method) factory, pluginLookup);
+        } else {
+            handle = getConstructorHandle((Constructor<?>) factory, pluginLookup);
+        }
+        final var args = getArguments(key, node, points, Set.of(), debugLog);
+        return rethrow(() -> handle.invokeWithArguments(args));
+    }
+
+    private void registerModuleInstance(final Object module) {
+        final Class<?> moduleClass = module.getClass();
+        final List<Method> providerMethods = new ArrayList<>();
+        Stream.<Class<?>>iterate(moduleClass, c -> c != Object.class, Class::getSuperclass)
+                .flatMap(c -> Stream.of(c.getDeclaredMethods()))
+                .filter(method -> AnnotationUtil.isMetaAnnotationPresent(method, FactoryType.class))
+                .forEachOrdered(method -> {
+                    if (method.getDeclaringClass().equals(moduleClass) || providerMethods.stream().noneMatch(m ->
+                            m.getName().equals(method.getName()) &&
+                                    Arrays.equals(m.getParameterTypes(), method.getParameterTypes()))) {
+                        providerMethods.add(method);
+                        createMethodBindings(module, method).forEach(binding -> {
+                            final var key = binding.getKey();
+                            if (!bindingMap.putIfAbsent(key, binding.getSupplier())) {
+                                throw new PluginException(String.format(
+                                        "Duplicate @Factory method (%s: %s) found for %s", moduleClass, method, key));
+                            }
+                        });
+                    }
+                });
+    }
+
+    private <T> List<Binding<T>> createMethodBindings(final Object instance, final Method method) {
+        final Key<T> primaryKey = Key.forMethod(method);
+        final List<InjectionPoint<?>> points = InjectionPoint.fromExecutable(method);
+        final MethodHandle handle = getMethodHandle(method, lookup);
+        final MethodHandle boundHandle = Modifier.isStatic(method.getModifiers()) ? handle : handle.bindTo(instance);
+        final var argumentFactories = getArgumentFactories(primaryKey, null, points, Set.of(primaryKey), null);
+        final Supplier<T> unscoped = () -> {
+            final List<Object> args = argumentFactories.entrySet()
+                    .stream()
+                    .flatMap(e -> {
+                        final Object value = e.getValue().get();
+                        return e.getKey().isVarArgs() ? Stream.of((Object[]) value) : Stream.of(value);
+                    })
+                    .collect(Collectors.toList());
+            return TypeUtil.cast(rethrow(() -> boundHandle.invokeWithArguments(args)));
+        };
+        final Supplier<T> factory = getScopeForMethod(method).get(primaryKey, unscoped);
+        final Collection<String> aliases = AnnotatedElementAliasesProvider.getAliases(method);
+        final List<Binding<T>> bindings = new ArrayList<>(1 + aliases.size());
+        bindings.add(Binding.bind(primaryKey, factory));
+        for (final String alias : aliases) {
+            bindings.add(Binding.bind(primaryKey.withName(alias), factory));
+        }
+        return bindings;
+    }
+
     private List<Object> getArguments(
             final Key<?> key, final Node node, final List<InjectionPoint<?>> points, final Set<Key<?>> chain,
             final StringBuilder debugLog) {
@@ -493,6 +440,39 @@ class DefaultInjector implements Injector {
     private Scope getScopeForType(final Class<?> type) {
         final Annotation scope = AnnotationUtil.getMetaAnnotation(type, ScopeType.class);
         return scope != null ? scopes.get(scope.annotationType()) : DefaultScope.INSTANCE;
+    }
+
+    private static void verifyAttributesConsumed(final Node node) {
+        final Map<String, String> attrs = node.getAttributes();
+        if (!attrs.isEmpty()) {
+            final StringBuilder sb = new StringBuilder();
+            for (final String key : attrs.keySet()) {
+                if (sb.length() == 0) {
+                    sb.append(node.getName());
+                    sb.append(" contains ");
+                    if (attrs.size() == 1) {
+                        sb.append("an invalid element or attribute ");
+                    } else {
+                        sb.append("invalid attributes ");
+                    }
+                } else {
+                    sb.append(", ");
+                }
+                StringBuilders.appendDqValue(sb, key);
+            }
+            LOGGER.error(sb.toString());
+        }
+    }
+
+    private static void verifyChildrenConsumed(final Node node) {
+        final PluginType<?> type = node.getType();
+        if (type != null && !type.isDeferChildren() && node.hasChildren()) {
+            for (final Node child : node.getChildren()) {
+                final String nodeType = node.getType().getElementName();
+                final String start = nodeType.equals(node.getName()) ? node.getName() : nodeType + ' ' + node.getName();
+                LOGGER.error("{} has no field or parameter that matches element {}", start, child.getName());
+            }
+        }
     }
 
     private static Set<Key<?>> chain(final Set<Key<?>> chain, final Key<?> newKey) {

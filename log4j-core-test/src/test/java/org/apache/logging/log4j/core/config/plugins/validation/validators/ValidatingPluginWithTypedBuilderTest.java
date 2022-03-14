@@ -49,8 +49,8 @@ public class ValidatingPluginWithTypedBuilderTest {
     @Test
     public void testNullDefaultValue() throws Exception {
         final ValidatingPluginWithTypedBuilder validatingPlugin = DI.createInjector()
-                .bindFactory(Keys.SUBSTITUTOR_KEY, Function::identity)
-                .getInstance(node);
+                .registerBinding(Keys.SUBSTITUTOR_KEY, Function::identity)
+                .configure(node);
         assertNull(validatingPlugin);
     }
 
@@ -58,8 +58,8 @@ public class ValidatingPluginWithTypedBuilderTest {
     public void testNonNullValue() throws Exception {
         node.getAttributes().put("name", "foo");
         final ValidatingPluginWithTypedBuilder validatingPlugin = DI.createInjector()
-                .bindFactory(Keys.SUBSTITUTOR_KEY, Function::identity)
-                .getInstance(node);
+                .registerBinding(Keys.SUBSTITUTOR_KEY, Function::identity)
+                .configure(node);
         assertNotNull(validatingPlugin);
         assertEquals("foo", validatingPlugin.getName());
     }

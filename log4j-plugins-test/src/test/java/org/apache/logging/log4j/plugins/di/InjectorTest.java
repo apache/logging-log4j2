@@ -424,7 +424,7 @@ class InjectorTest {
     @Test
     void registerCustomScope() {
         final Injector injector = DI.createInjector();
-        injector.bindScope(CustomSingleton.class, new CustomSingletonScope());
+        injector.registerScope(CustomSingleton.class, new CustomSingletonScope());
         final var factory = injector.getFactory(CustomInstance.class);
         assertThat(factory.get()).isSameAs(factory.get()).isSameAs(injector.getInstance(CustomInstance.class));
     }
@@ -602,7 +602,7 @@ class InjectorTest {
         final Node config = new Node(rootNode, "inner", configurableObject);
         config.getAttributes().put("greeting", "hello");
         rootNode.getChildren().add(config);
-        final ConfigurableFactoryObject object = DI.createInjector(NoOpStringSubstitution.class).getInstance(rootNode);
+        final ConfigurableFactoryObject object = DI.createInjector(NoOpStringSubstitution.class).configure(rootNode);
         assertThat(object).isNotNull();
         assertThat(object.id).isEqualTo(42);
         assertThat(object.name).isEqualTo("adi");
@@ -616,7 +616,7 @@ class InjectorTest {
     void pluginDefaultAttributeValues() {
         final var type = fromClass(DefaultValueTest.class);
         final var node = new Node(null, "root", type);
-        final DefaultValueTest test = DI.createInjector(NoOpStringSubstitution.class).getInstance(node);
+        final DefaultValueTest test = DI.createInjector(NoOpStringSubstitution.class).configure(node);
         assertThat(test.name).isEqualTo("dog");
         assertThat(test.millis).isEqualTo(1000L);
         assertThat(test.enabled).isTrue();
@@ -634,10 +634,10 @@ class InjectorTest {
         final var type = fromClass(DangerousPlugin.class);
         final var node = new Node(null, "zone", type);
         final Injector injector = DI.createInjector();
-        final var instance = injector.getInstance(node);
+        final var instance = injector.configure(node);
         assertThat(instance).isNull();
         System.setProperty("enableLoggins", "true");
-        assertDoesNotThrow(() -> injector.getInstance(node));
+        assertDoesNotThrow(() -> injector.configure(node));
         System.clearProperty("enableLoggins");
     }
 
@@ -646,10 +646,10 @@ class InjectorTest {
         final var type = fromClass(ValidatingPluginWithGenericBuilder.class);
         final var node = new Node(null, "test", type);
         final Injector injector = DI.createInjector(NoOpStringSubstitution.class);
-        final Object instance = injector.getInstance(node);
+        final Object instance = injector.configure(node);
         assertThat(instance).isNull();
         node.getAttributes().put("name", "valid");
-        assertDoesNotThrow(() -> injector.getInstance(node));
+        assertDoesNotThrow(() -> injector.configure(node));
     }
 
     @Plugin(name = "ValidatedParameters", category = "Test")
@@ -669,11 +669,11 @@ class InjectorTest {
         final var type = fromClass(ValidatedParameters.class);
         final var node = new Node(null, "config", type);
         final Injector injector = DI.createInjector(NoOpStringSubstitution.class);
-        final Object instance = injector.getInstance(node);
+        final Object instance = injector.configure(node);
         assertThat(instance).isNull();
         node.getAttributes().put("name", "hank");
         node.setValue("propane");
-        final ValidatedParameters parameters = injector.getInstance(node);
+        final ValidatedParameters parameters = injector.configure(node);
         assertThat(parameters.name).isEqualTo("hank");
         assertThat(parameters.value).isEqualTo("propane");
     }
@@ -698,7 +698,7 @@ class InjectorTest {
     void enumInjection() {
         final var type = fromClass(LevelInject.class);
         final var node = new Node(null, "levels", type);
-        final LevelInject levelInject = DI.createInjector(NoOpStringSubstitution.class).getInstance(node);
+        final LevelInject levelInject = DI.createInjector(NoOpStringSubstitution.class).configure(node);
         assertThat(levelInject.first).isNull();
         assertThat(levelInject.second).isEqualTo(Level.ERROR);
     }
@@ -724,7 +724,7 @@ class InjectorTest {
         final var child2 = new Node(root, "second", innerType);
         child2.getAttributes().put("greeting", "alright");
         root.getChildren().add(child2);
-        final MultipleElements instance = DI.createInjector(NoOpStringSubstitution.class).getInstance(root);
+        final MultipleElements instance = DI.createInjector(NoOpStringSubstitution.class).configure(root);
         assertThat(instance.objects).hasSize(2);
     }
 }

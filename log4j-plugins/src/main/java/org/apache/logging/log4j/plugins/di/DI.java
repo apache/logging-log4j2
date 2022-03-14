@@ -35,13 +35,14 @@ public final class DI {
     }
 
     /**
-     * Creates a new Injector with the provided modules as initial bindings. Modules may be either Class instances or object
-     * instances with {@link Factory}-annotated static methods or methods respectively.
+     * Creates a new Injector with the provided bundles as initial bindings. Bundles may be either Class instances or object
+     * instances with {@link Factory}-annotated methods. Classes are dependency-injected before scanning for factory methods
+     * while instances are assumed to be already configured.
      */
-    public static Injector createInjector(final Object... modules) {
+    public static Injector createInjector(final Object... bundles) {
         final var injector = new DefaultInjector();
-        for (final Object module : modules) {
-            injector.installModule(module);
+        for (final Object module : bundles) {
+            injector.registerBundle(module);
         }
         return injector;
     }

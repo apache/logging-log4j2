@@ -48,8 +48,8 @@ public class RequiredValidatorTest {
     @Test
     public void testNullDefaultValue() throws Exception {
         final ValidatingPlugin validatingPlugin = DI.createInjector()
-                .bindFactory(Keys.SUBSTITUTOR_KEY, Function::identity)
-                .getInstance(node);
+                .registerBinding(Keys.SUBSTITUTOR_KEY, Function::identity)
+                .configure(node);
         assertNull(validatingPlugin);
     }
 
@@ -57,8 +57,8 @@ public class RequiredValidatorTest {
     public void testNonNullValue() throws Exception {
         node.getAttributes().put("name", "foo");
         final ValidatingPlugin validatingPlugin = DI.createInjector()
-                .bindFactory(Keys.SUBSTITUTOR_KEY, Function::identity)
-                .getInstance(node);
+                .registerBinding(Keys.SUBSTITUTOR_KEY, Function::identity)
+                .configure(node);
         assertEquals("foo", validatingPlugin.getName());
     }
 }

@@ -37,10 +37,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  *
  */
-@LoggerContextSource(value = "log4j2-config.xml")
 public class LogEventFactoryTest {
 
     @Test
+    @LoggerContextSource(value = "log4j2-config.xml")
     public void testEvent(@Named("List") final ListAppender app, final LoggerContext context) {
         final org.apache.logging.log4j.Logger logger = context.getLogger("org.apache.test.LogEventFactory");
         logger.error("error message");
@@ -76,7 +76,7 @@ public class LogEventFactoryTest {
     }
 
     @Factory
-    public static LogEventFactory logEventFactory(final ContextDataInjector injector) {
+    public LogEventFactory logEventFactory(final ContextDataInjector injector) {
         return new TestLogEventFactory(injector);
     }
 }

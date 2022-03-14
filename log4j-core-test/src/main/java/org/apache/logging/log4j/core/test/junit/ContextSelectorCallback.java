@@ -32,7 +32,7 @@ public class ContextSelectorCallback implements BeforeAllCallback {
         final ContextSelectorType source = testClass.getAnnotation(ContextSelectorType.class);
         if (source != null) {
             final Injector injector = DI.createInjector();
-            injector.bindFactory(ContextSelector.KEY, injector.getFactory(source.value()));
+            injector.registerBinding(ContextSelector.KEY, injector.getFactory(source.value()));
             injector.init();
             final Log4jContextFactory factory = injector.getInstance(Log4jContextFactory.class);
             LogManager.setFactory(factory);

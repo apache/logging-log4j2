@@ -74,12 +74,12 @@ public class ValidatingPluginWithFailoverTest {
         final StatusListener listener = mock(StatusListener.class);
         when(listener.getStatusLevel()).thenReturn(Level.WARN);
         final Injector injector = DI.createInjector()
-                .bindFactory(Keys.SUBSTITUTOR_KEY, Function::identity)
-                .bindFactory(Key.forClass(Configuration.class), NullConfiguration::new);
+                .registerBinding(Keys.SUBSTITUTOR_KEY, Function::identity)
+                .registerBinding(Key.forClass(Configuration.class), NullConfiguration::new);
         final StatusLogger logger = StatusLogger.getLogger();
         logger.trace("Initializing");
         logger.registerListener(listener);
-        final FailoverAppender failoverAppender = injector.getInstance(node);
+        final FailoverAppender failoverAppender = injector.configure(node);
 
         verify(listener, times(1)).getStatusLevel();
         verify(listener, never()).log(any(StatusData.class));

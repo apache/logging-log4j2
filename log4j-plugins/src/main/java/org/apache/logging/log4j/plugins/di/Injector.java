@@ -24,18 +24,26 @@ import java.lang.annotation.Annotation;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.util.function.Supplier;
 
+/**
+ * Central interface for dependency injection operations. An Injector maintains a registry of bindings between {@link Key}s to
+ * {@link Supplier}s along with a registry of {@link Scope}s for different scope annotation types. Injectors may be
+ * {@linkplain #init() initialized} with {@link InjectorCallback} services.
+ */
 public interface Injector {
 
     /**
-     * Gets a factory for instances of the provided class.
-     *
-     * @param clazz class to look up a factory for
-     * @param <T>   return type of factory
-     * @return a factory for the provided class
+     * Initializes this Injector with all registered {@link InjectorCallback} services in
+     * {@linkplain InjectorCallback#getOrder() integral order}.
      */
-    default <T> Supplier<T> getFactory(final Class<T> clazz) {
-        return getFactory(Key.forClass(clazz));
-    }
+    void init();
+
+    /**
+     * Creates a new Injector copied from the current bindings and scopes of this instance. Subsequent changes to this
+     * Injector or the returned copy are independent of each other.
+     *
+     * @return a fresh copy of this instance
+     */
+    Injector copy();
 
     /**
      * Gets a factory for instances that match the given key.
@@ -47,14 +55,14 @@ public interface Injector {
     <T> Supplier<T> getFactory(final Key<T> key);
 
     /**
-     * Gets an instance for the provided class.
+     * Gets a factory for instances of the provided class.
      *
-     * @param clazz class to get or create an instance of
-     * @param <T>   type of instance
-     * @return an instance of the provided class
+     * @param clazz class to look up a factory for
+     * @param <T>   return type of factory
+     * @return a factory for the provided class
      */
-    default <T> T getInstance(final Class<T> clazz) {
-        return getFactory(clazz).get();
+    default <T> Supplier<T> getFactory(final Class<T> clazz) {
+        return getFactory(Key.forClass(clazz));
     }
 
     /**
@@ -69,31 +77,78 @@ public interface Injector {
     }
 
     /**
-     * Creates a configured instance using the provided configuration node.
+     * Gets an instance for the provided class.
      *
-     * @param node root node to create a configured instance using
-     * @param <T>  type of instance the given node configures
-     * @return the configured instance
+     * @param clazz class to get or create an instance of
+     * @param <T>   type of instance
+     * @return an instance of the provided class
      */
-    <T> T getInstance(final Node node);
+    default <T> T getInstance(final Class<T> clazz) {
+        return getFactory(clazz).get();
+    }
 
+    /**
+     * Injects dependencies into the members of the provided instance. Injectable fields are set, then injectable methods are
+     * invoked (first those with parameters, then those without parameters).
+     *
+     * @param instance instance in which to inject member dependencies
+     */
     void injectMembers(final Object instance);
 
     /**
-     * Removes any existing bindings matching the provided key.
+     * Creates a plugin instance using the provided configuration node.
      *
-     * @param key key to remove binding for
+     * @param node configuration node containing a plugin type, attributes, and child nodes to consume for dependency injection
+     * @param <T>  type of instance the given node configures
+     * @return the configured plugin instance
      */
-    void removeBinding(final Key<?> key);
+    <T> T configure(final Node node);
 
     /**
-     * Installs a module into this Injector. A module is an instance of a class with methods annotated with
-     * {@link FactoryType}-annotated annotations. If all factory methods in the module are static, then the
-     * {@link Class} instance may be used directly.
+     * Registers a scope annotation type to the given Scope strategy.
      *
-     * @param module module to install with factory methods for factories
+     * @param scopeType scope annotation type
+     * @param scope     scope strategy to use for the given scope type
      */
-    void installModule(final Object module);
+    void registerScope(final Class<? extends Annotation> scopeType, final Scope scope);
+
+    /**
+     * Gets the registered Scope strategy for the given scope annotation type.
+     *
+     * @param scopeType scope annotation type
+     * @return the registered scope instance for the provided scope type
+     */
+    Scope getScope(final Class<? extends Annotation> scopeType);
+
+    /**
+     * Registers a bundle into this Injector. A bundle is an instance of a class with methods annotated with
+     * {@link FactoryType}-annotated annotations which provide dependency-injected bindings.
+     *
+     * @param bundle bundle to install with factory methods for factories
+     */
+    void registerBundle(final Object bundle);
+
+    /**
+     * Registers a binding between a key and factory. This overwrites any existing binding the key may have had.
+     *
+     * @param key     key of the factory to create a binding with
+     * @param factory the factory to bind to the key
+     * @param <T>     the return type of the factory
+     * @return this Injector (useful for chaining)
+     */
+    <T> Injector registerBinding(final Key<T> key, final Supplier<? extends T> factory);
+
+    /**
+     * Binds a key to a factory only if no bindings for that key already exist. This is useful for registering default
+     * bindings or bridging legacy methods of configuring bindings.
+     *
+     * @param key     key of the factory to create a binding with if none exist
+     * @param factory the factory to bind to the key
+     * @param <T>     the return type of the factory
+     * @return this Injector (useful for chaining)
+     */
+    <T> Injector registerBindingIfAbsent(final Key<T> key, final Supplier<? extends T> factory);
+
 
     /**
      * Sets the {@link Lookup} used for obtaining MethodHandle and VarHandle instances. A custom caller class
@@ -102,53 +157,4 @@ public interface Injector {
      * @param lookup handle lookup object for access checks
      */
     void setLookup(final Lookup lookup);
-
-    /**
-     * Binds a scope annotation type to the given Scope strategy.
-     *
-     * @param scopeType scope annotation type
-     * @param scope     scope strategy to use for the given scope type
-     */
-    void bindScope(final Class<? extends Annotation> scopeType, final Scope scope);
-
-    /**
-     * Gets the Scope strategy for the given scope annotation type.
-     *
-     * @param scopeType scope annotation type
-     * @return the bound scope instance for the provided scope type
-     */
-    Scope getScope(final Class<? extends Annotation> scopeType);
-
-    /**
-     * Initializes this Injector with all registered {@link InjectorCallback} services in priority order.
-     */
-    void init();
-
-    /**
-     * Creates a new Injector copied from the current bindings and scopes of this instance.
-     *
-     * @return a fresh copy of this instance
-     */
-    Injector copy();
-
-    /**
-     * Binds a key to a factory. This overwrites any existing binding the provided key may have already had.
-     *
-     * @param key     key of the factory to create a binding with
-     * @param factory the factory to bind to the key
-     * @param <T>     the return type of the factory
-     * @return this Injector
-     */
-    <T> Injector bindFactory(final Key<T> key, final Supplier<? extends T> factory);
-
-    /**
-     * Binds a key to a factory only if no bindings for that key already exist.
-     *
-     * @param key     key of the factory to create a binding with if none exist
-     * @param factory the factory to bind to the key
-     * @param <T>     the return type of the factory
-     * @return this Injector
-     */
-    <T> Injector bindIfAbsent(final Key<T> key, final Supplier<? extends T> factory);
-
 }

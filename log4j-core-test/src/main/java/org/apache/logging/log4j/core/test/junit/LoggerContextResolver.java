@@ -137,8 +137,7 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
 
         private LoggerContextConfig(final LoggerContextSource source, final ExtensionContext extensionContext) {
             final String displayName = extensionContext.getDisplayName();
-            final Object initialModule = extensionContext.getTestInstance().orElseGet(extensionContext::getRequiredTestClass);
-            final Injector injector = DI.createInjector(initialModule);
+            final Injector injector = extensionContext.getTestInstance().map(DI::createInjector).orElseGet(DI::createInjector);
             injector.init();
             final Class<?> testClass = extensionContext.getRequiredTestClass();
             final ClassLoader classLoader = testClass.getClassLoader();

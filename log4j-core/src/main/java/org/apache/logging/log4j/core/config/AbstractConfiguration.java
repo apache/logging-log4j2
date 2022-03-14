@@ -186,7 +186,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     public void setScriptManager(final ScriptManager scriptManager) {
         this.scriptManager = scriptManager;
-        injector.bindFactory(Key.forClass(ScriptManager.class), () -> this.scriptManager);
+        injector.registerBinding(ScriptManager.KEY, this::getScriptManager);
     }
 
     public PluginManager getPluginManager() {
@@ -227,21 +227,10 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @Override
     public void initialize() {
         LOGGER.debug("{} initializing configuration {}", Version.getProductString(), this);
-        injector.bindFactory(Key.forClass(Configuration.class), () -> this);
+        injector.registerBinding(Configuration.KEY, () -> this);
         runtimeStrSubstitutor.setConfiguration(this);
         configurationStrSubstitutor.setConfiguration(this);
-        try {
-            ServiceRegistry.getInstance()
-                    .getServices(ScriptManagerFactory.class, layer -> ServiceLoader.load(layer, ScriptManagerFactory.class),
-                            null)
-                    .stream()
-                    .findFirst()
-                    .ifPresent(scriptManagerFactory -> scriptManager =
-                            scriptManagerFactory.createScriptManager(this, watchManager));
-        } catch (final LinkageError | Exception e) {
-            // LOG4J2-1920 ScriptEngineManager is not available in Android
-            LOGGER.info("Cannot initialize scripting support because this JRE does not support it.", e);
-        }
+        initializeScriptManager();
         pluginManager.collectPlugins(pluginPackages);
         final PluginManager levelPlugins = new PluginManager(Level.CATEGORY);
         levelPlugins.collectPlugins(pluginPackages);
@@ -262,6 +251,20 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         doConfigure();
         setState(State.INITIALIZED);
         LOGGER.debug("Configuration {} initialized", this);
+    }
+
+    private void initializeScriptManager() {
+        try {
+            ServiceRegistry.getInstance()
+                    .getServices(ScriptManagerFactory.class, layer -> ServiceLoader.load(layer, ScriptManagerFactory.class),
+                            null)
+                    .stream()
+                    .findFirst()
+                    .ifPresent(factory -> setScriptManager(factory.createScriptManager(this, getWatchManager())));
+        } catch (final LinkageError | Exception e) {
+            // LOG4J2-1920 ScriptEngineManager is not available in Android
+            LOGGER.info("Cannot initialize scripting support because this JRE does not support it.", e);
+        }
     }
 
     protected void initializeWatchers(final Reconfigurable reconfigurable, final ConfigurationSource configSource,
@@ -549,7 +552,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                     } else if (Arbiter.class.isAssignableFrom(clazz)) {
                         removeList.add(child);
                         try {
-                            final Arbiter condition = injector.getInstance(child);
+                            final Arbiter condition = injector.configure(child);
                             if (condition.isCondition()) {
                                 addList.addAll(child.getChildren());
                                 processConditionals(child);
@@ -590,13 +593,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     protected List<Node> processSelect(final Node selectNode, final PluginType<?> type) {
         final List<Node> addList = new ArrayList<>();
-        final SelectArbiter select = injector.getInstance(selectNode);
+        final SelectArbiter select = injector.configure(selectNode);
         final List<Arbiter> conditions = new ArrayList<>();
         for (final Node child : selectNode.getChildren()) {
             final PluginType<?> nodeType = child.getType();
             if (nodeType != null) {
                 if (Arbiter.class.isAssignableFrom(nodeType.getPluginClass())) {
-                    final Arbiter condition = injector.getInstance(child);
+                    final Arbiter condition = injector.configure(child);
                     conditions.add(condition);
                 } else {
                     LOGGER.error("Invalid Node {} for Select. Must be a Condition",
@@ -620,7 +623,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
 
     protected void doConfigure() {
-        injector.bindFactory(Keys.SUBSTITUTOR_KEY, () -> configurationStrSubstitutor::replace);
+        injector.registerBinding(Keys.SUBSTITUTOR_KEY, () -> configurationStrSubstitutor::replace);
         processConditionals(rootNode);
         preConfigure(rootNode);
         configurationScheduler.start();
@@ -1030,12 +1033,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         } else {
             stringSubstitutionStrategy = str -> runtimeStrSubstitutor.replace(event, str);
         }
-        injector.bindFactory(Keys.SUBSTITUTOR_KEY, () -> stringSubstitutionStrategy);
-        try {
-            injector.getInstance(node);
-        } finally {
-            injector.removeBinding(Keys.SUBSTITUTOR_KEY);
-        }
+        final Injector injector = this.injector.copy().registerBinding(Keys.SUBSTITUTOR_KEY, () -> stringSubstitutionStrategy);
+        injector.configure(node);
     }
 
     /**
@@ -1045,12 +1044,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     public Object createPluginObject(final Node node) {
         if (this.getState().equals(State.INITIALIZING)) {
-            injector.bindFactory(Keys.SUBSTITUTOR_KEY, () -> configurationStrSubstitutor::replace);
-            try {
-                return injector.getInstance(node);
-            } finally {
-                injector.removeBinding(Keys.SUBSTITUTOR_KEY);
-            }
+            final Injector injector =
+                    this.injector.copy().registerBinding(Keys.SUBSTITUTOR_KEY, () -> configurationStrSubstitutor::replace);
+            return injector.configure(node);
         }
         LOGGER.warn("Plugin Object creation is not allowed after initialization");
         return null;
@@ -1109,6 +1105,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     @Override
     public void setNanoClock(final NanoClock nanoClock) {
-        injector.bindFactory(NanoClock.KEY, () -> nanoClock);
+        injector.registerBinding(NanoClock.KEY, () -> nanoClock);
     }
 }

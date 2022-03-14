@@ -17,6 +17,8 @@
 
 package org.apache.logging.log4j.plugins.di;
 
+import java.util.Comparator;
+
 /**
  * Provides a ServiceLoader class for configuring an {@link Injector} when initialized. When {@link Injector#init()} is invoked,
  * all service instances are sorted by {@link #getOrder()} in the natural integer order (from negative to positive), and each
@@ -24,6 +26,9 @@ package org.apache.logging.log4j.plugins.di;
  * control of default bindings, overriding bindings, and otherwise examining the state of an Injector.
  */
 public interface InjectorCallback {
+
+    Comparator<InjectorCallback> COMPARATOR = Comparator.comparingInt(InjectorCallback::getOrder)
+            .thenComparing(instance -> instance.getClass().getName());
 
     /**
      * Configures the provided Injector. Service providers must implement this method to perform any callback logic on the

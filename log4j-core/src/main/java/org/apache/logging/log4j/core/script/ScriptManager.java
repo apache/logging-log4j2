@@ -16,14 +16,16 @@
  */
 package org.apache.logging.log4j.core.script;
 
-import java.util.Set;
-
 import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.di.Key;
+
+import java.util.Set;
 
 /**
  * Script Manager.
  */
 public interface ScriptManager {
+    Key<ScriptManager> KEY = new Key<>() {};
 
     /**
      * Add scripts defined in the configuration.

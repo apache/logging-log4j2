@@ -21,7 +21,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
-import org.apache.logging.log4j.core.config.ConfigurationScheduler;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.time.Clock;
@@ -40,7 +39,6 @@ import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.plugins.PluginException;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.InjectorCallback;
-import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.spi.CopyOnWrite;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
@@ -84,15 +82,14 @@ public class DefaultCallback implements InjectorCallback {
         final PropertiesUtil properties = PropertiesUtil.getProperties();
         final var loader = new PropertyLoader(injector, properties, Loader.getClassLoader());
         injector.setLookup(MethodHandles.lookup());
-        injector.bindIfAbsent(ContextSelector.KEY,
+        injector.registerBindingIfAbsent(ContextSelector.KEY,
                         () -> loader.getInstance(Constants.LOG4J_CONTEXT_SELECTOR, ContextSelector.class,
                                 () -> ClassLoaderContextSelector.class))
-                .bindIfAbsent(ShutdownCallbackRegistry.KEY,
+                .registerBindingIfAbsent(ShutdownCallbackRegistry.KEY,
                         () -> loader.getInstance(ShutdownCallbackRegistry.SHUTDOWN_CALLBACK_REGISTRY,
                                 ShutdownCallbackRegistry.class,
                                 () -> DefaultShutdownCallbackRegistry.class))
-                .bindIfAbsent(Key.forClass(ConfigurationScheduler.class), ConfigurationScheduler::new)
-                .bindIfAbsent(Clock.KEY,
+                .registerBindingIfAbsent(Clock.KEY,
                         () -> {
                             final var property = properties.getStringProperty(ClockFactory.PROPERTY_NAME);
                             if (property == null) {
@@ -102,8 +99,8 @@ public class DefaultCallback implements InjectorCallback {
                                     () -> loader.getInstance(ClockFactory.PROPERTY_NAME, Clock.class, () -> SystemClock.class);
                             return logSupportedPrecision(CLOCK_ALIASES.getOrDefault(property, fallback).get());
                         })
-                .bindIfAbsent(NanoClock.KEY, DummyNanoClock::new)
-                .bindIfAbsent(ContextDataInjector.KEY,
+                .registerBindingIfAbsent(NanoClock.KEY, DummyNanoClock::new)
+                .registerBindingIfAbsent(ContextDataInjector.KEY,
                         () -> loader.getInstance("log4j2.ContextDataInjector", ContextDataInjector.class, () -> {
                             final ReadOnlyThreadContextMap threadContextMap = ThreadContext.getThreadContextMap();
 
@@ -117,11 +114,11 @@ public class DefaultCallback implements InjectorCallback {
                             }
                             return ThreadContextDataInjector.ForGarbageFreeThreadContextMap.class;
                         }))
-                .bindIfAbsent(LogEventFactory.KEY,
+                .registerBindingIfAbsent(LogEventFactory.KEY,
                         () -> loader.getInstance(Constants.LOG4J_LOG_EVENT_FACTORY, LogEventFactory.class,
                                 () -> Constants.ENABLE_THREADLOCALS ? ReusableLogEventFactory.class :
                                         DefaultLogEventFactory.class))
-                .bindIfAbsent(Constants.DEFAULT_STATUS_LEVEL_KEY, () -> {
+                .registerBindingIfAbsent(Constants.DEFAULT_STATUS_LEVEL_KEY, () -> {
                     final String statusLevel =
                             properties.getStringProperty(Constants.LOG4J_DEFAULT_STATUS_LEVEL, Level.ERROR.name());
                     try {

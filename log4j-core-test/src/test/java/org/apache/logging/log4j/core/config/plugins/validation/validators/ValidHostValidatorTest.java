@@ -70,7 +70,7 @@ public class ValidHostValidatorTest {
 
     private HostAndPort buildPlugin() {
         return DI.createInjector()
-                .bindFactory(Keys.SUBSTITUTOR_KEY, Function::identity)
-                .getInstance(node);
+                .registerBinding(Keys.SUBSTITUTOR_KEY, Function::identity)
+                .configure(node);
     }
 }
