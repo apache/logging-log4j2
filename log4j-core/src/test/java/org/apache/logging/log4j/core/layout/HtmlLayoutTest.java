@@ -24,6 +24,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.logging.log4j.Level;
@@ -267,7 +268,8 @@ public class HtmlLayoutTest {
         // Pattern letter 'X' (upper case) will output 'Z' when the offset to be output would be zero,
         // whereas pattern letter 'x' (lower case) will output '+00', '+0000', or '+00:00'. Log4j2 needs x.
         DateTimeFormatter dateTimeFormatter =
-            DateTimeFormatter.ofPattern(format.getPattern().replace('n', 'S').replace('X', 'x'));
+            DateTimeFormatter.ofPattern(format.getPattern().replace('n', 'S').replace('X', 'x'),
+                    Locale.getDefault());
         String expected = zonedDateTime.format(dateTimeFormatter);
 
         assertEquals("<td>" + expected + "</td>", actual,
