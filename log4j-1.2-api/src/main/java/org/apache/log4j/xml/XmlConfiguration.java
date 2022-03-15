@@ -130,24 +130,10 @@ public class XmlConfiguration extends Log4j1Configuration {
     @Override
     public void doConfigure() throws FactoryConfigurationError {
         ConfigurationSource source = getConfigurationSource();
-        ParseAction action = new ParseAction() {
-            @Override
-            public Document parse(final DocumentBuilder parser) throws SAXException, IOException {
-                @SuppressWarnings("resource") // The ConfigurationSource and its caller manages the InputStream.
-                InputSource inputSource = new InputSource(source.getInputStream());
-                inputSource.setSystemId("dummy://log4j.dtd");
-                return parser.parse(inputSource);
-            }
-
-            @Override
-            public String toString() {
-                return getConfigurationSource().getLocation();
-            }
-        };
-        doConfigure(action);
+        doConfigure(source);
     }
 
-    private void doConfigure(final ParseAction action) throws FactoryConfigurationError {
+    private void doConfigure(ConfigurationSource source) throws FactoryConfigurationError {
         DocumentBuilderFactory dbf;
         try {
             LOGGER.debug("System property is : {}", OptionConverter.getSystemProperty(dbfKey, null));
@@ -167,15 +153,18 @@ public class XmlConfiguration extends Log4j1Configuration {
 
             docBuilder.setErrorHandler(new SAXErrorHandler());
             docBuilder.setEntityResolver(new Log4jEntityResolver());
+            @SuppressWarnings("resource") // The ConfigurationSource and its caller manages the InputStream.
+            final InputSource inputSource = new InputSource(source.getInputStream());
+            inputSource.setSystemId("dummy://log4j.dtd");
 
-            Document doc = action.parse(docBuilder);
+            Document doc = docBuilder.parse(inputSource);
             parse(doc.getDocumentElement());
         } catch (Exception e) {
             if (e instanceof InterruptedException || e instanceof InterruptedIOException) {
                 Thread.currentThread().interrupt();
             }
             // I know this is miserable...
-            LOGGER.error("Could not parse " + action.toString() + ".", e);
+            LOGGER.error("Could not parse {}.", source, e);
         }
     }
 
