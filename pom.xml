@@ -232,7 +232,7 @@
     <jackson1Version>1.9.13</jackson1Version>
     <jackson2Version>2.13.2</jackson2Version>
     <spring-boot.version>2.5.7</spring-boot.version>
-    <springVersion>5.3.16</springVersion>
+    <springVersion>5.3.17</springVersion>
     <kubernetes-client.version>5.12.1</kubernetes-client.version>
     <flumeVersion>1.9.0</flumeVersion>
     <disruptorVersion>3.4.4</disruptorVersion>
@@ -350,7 +350,7 @@
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-core</artifactId>
-        <version>3.8.4</version>
+        <version>3.8.5</version>
       </dependency>
       <dependency>
         <groupId>commons-codec</groupId>
