@@ -136,8 +136,7 @@ public class Log4jMarkerFactory implements IMarkerFactory {
 
     @Override
     public Marker getDetachedMarker(final String name) {
-        final org.apache.logging.log4j.Marker log4jMarker = MarkerManager.getMarker(name);
-        return new Log4jMarker(log4jMarker);
+        return new Log4jMarker(new MarkerManager.Log4jMarker(name));
     }
 
 }
