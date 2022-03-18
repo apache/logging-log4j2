@@ -22,6 +22,7 @@ import org.slf4j.Marker;
 import java.util.Collections;
 import java.util.Iterator;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -117,6 +118,21 @@ class Log4jMarkerFactoryTest {
         // Then, the original marker has been converted (and cached)
         assertNotSame(structuredArg, result);
         assertTrue(result instanceof Log4jMarker); // converted, not the original marker anymore
+    }
+
+    @Test
+    void comparisonDetachedAndNonDetachedMarkers() {
+        // Given
+        Log4jMarkerFactory sut = new Log4jMarkerFactory();
+
+        // When
+        Marker nonDetachedMarker = sut.getMarker("name");
+        Marker detachedMarker = sut.getDetachedMarker("name");
+
+        // Then, the original marker has been converted (and cached)
+        assertNotSame(nonDetachedMarker, detachedMarker);
+        assertTrue(nonDetachedMarker.equals(detachedMarker));
+        assertTrue(detachedMarker.equals(nonDetachedMarker));
     }
 
     private static class StructuredArg implements org.slf4j.Marker {
