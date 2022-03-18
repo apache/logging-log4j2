@@ -129,7 +129,7 @@ class Log4jMarkerFactoryTest {
         Marker nonDetachedMarker = sut.getMarker("name");
         Marker detachedMarker = sut.getDetachedMarker("name");
 
-        // Then, the original marker has been converted (and cached)
+        // Then
         assertNotSame(nonDetachedMarker, detachedMarker);
         assertTrue(nonDetachedMarker.equals(detachedMarker));
         assertTrue(detachedMarker.equals(nonDetachedMarker));
