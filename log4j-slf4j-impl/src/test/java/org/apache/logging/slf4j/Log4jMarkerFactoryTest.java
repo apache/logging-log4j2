@@ -133,6 +133,10 @@ class Log4jMarkerFactoryTest {
         assertNotSame(nonDetachedMarker, detachedMarker);
         assertTrue(nonDetachedMarker.equals(detachedMarker));
         assertTrue(detachedMarker.equals(nonDetachedMarker));
+        assertTrue(detachedMarker instanceof Log4jMarker);
+        assertTrue(nonDetachedMarker instanceof Log4jMarker);
+        assertTrue(((Log4jMarker) detachedMarker).getLog4jMarker().isInstanceOf("name"));
+        assertTrue(((Log4jMarker) nonDetachedMarker).getLog4jMarker().isInstanceOf("name"));
     }
 
     private static class StructuredArg implements org.slf4j.Marker {
