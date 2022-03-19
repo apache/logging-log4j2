@@ -32,16 +32,20 @@ Then, fields that are annotated with `@Inject` or annotated with an annotation t
 Next, methods that are annotated with `@Inject` or have a parameter annotated with a qualifier annotation are invoked using factories matching the `Key<?>` of each parameter.
 Finally, no-arg methods annotated with `@Inject` are invoked which can be useful for post-injection initialization logic.
 
-Bindings may be registered using `Injector::registerBinding` or `Injector::registerBindingIfAbsent` using explicit `Key<T>` instances, or they may be registered as _bundles_ which are instances or injectable `Class<T>` instances that contain one or more annotated factory methods.
+Bindings may be registered using `Injector::registerBinding` or `Injector::registerBindingIfAbsent` using explicit `Key<T>` instances, or they may be registered using `Injector::registerBundle` as _bundles_ which are instances or injectable `Class<T>` instances that contain one or more annotated factory methods.
 Annotated factory methods are non-abstract methods annotated with an annotation that is itself annotated with `@org.apache.logging.log4j.plugins.FactoryType`.
 Built-in factory annotations include `@org.apache.logging.log4j.plugins.Factory` and `@org.apache.logging.log4j.plugins.PluginFactory`.
 
-`Injector` can create plugin objects from a tree of `org.apache.logging.log4j.plugins.Node` instances using `Injector::configure`.
+`Injector` can create `Core` category plugins from a tree of `org.apache.logging.log4j.plugins.Node` instances using `Injector::configure`.
 This allows for node attributes and child nodes to be injected into a plugin class along with any other registered bindings.
 To configure a `Node`, its plugin class is checked for a static method annotated with a factory annotation (such as `@PluginFactory` or `@Factory`) first before falling back to checking for an `@Inject` constructor or a no-args constructor.
 This static factory method or constructor has its parameters injected.
 If the return value of a static plugin factory method implements `java.util.function.Supplier`, then member injection is performed on the instance and the return value of `Supplier::get` is returned instead.
 See link:./plugins.html[Plugins] for more information.
+
+`Injector` can inject members into an arbitrary object instance by using `Injector::injectMembers`.
+This can be useful for injecting Log4j-managed instances into external or application code.
+An `Injector` can be obtained via `LoggerContext::getInjector`.
 
 === Injection Points
 

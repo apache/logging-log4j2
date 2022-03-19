@@ -548,6 +548,12 @@ public class LoggerContext extends AbstractLifeCycle
         return loggerRegistry;
     }
 
+    /**
+     * Gets the Injector.
+     *
+     * @return the Injector
+     * @since 3.0.0
+     */
     public Injector getInjector() {
         return injector;
     }
