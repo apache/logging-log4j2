@@ -21,12 +21,10 @@ import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.PluginAttribute;
-import org.apache.logging.log4j.plugins.PluginException;
 import org.apache.logging.log4j.plugins.convert.TypeConverters;
 import org.apache.logging.log4j.plugins.di.Keys;
 import org.apache.logging.log4j.plugins.name.AnnotatedElementAliasesProvider;
 import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
-import org.apache.logging.log4j.plugins.validation.ConstraintValidators;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
 
@@ -91,10 +89,6 @@ public class PluginAttributeVisitor implements NodeVisitor {
         final Object value = node.removeMatchingAttribute(name, aliases)
                 .map(stringSubstitutionStrategy.andThen(s -> TypeConverters.convert(s, targetType, null, sensitive)))
                 .orElseGet(() -> getDefaultValue(targetType, annotation));
-        if (!ConstraintValidators.isValid(parameter, name, value)) {
-            throw new PluginException("Validation failed for parameter " + parameter + " and value " +
-                    (sensitive ? "(***)" : value));
-        }
         StringBuilders.appendKeyDqValueWithJoiner(debugLog, name, sensitive ? "(***)" : value, ", ");
         return value;
     }

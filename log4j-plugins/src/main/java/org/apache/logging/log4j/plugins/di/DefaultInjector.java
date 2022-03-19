@@ -26,9 +26,11 @@ import org.apache.logging.log4j.plugins.QualifierType;
 import org.apache.logging.log4j.plugins.ScopeType;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.plugins.name.AnnotatedElementAliasesProvider;
+import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
 import org.apache.logging.log4j.plugins.util.AnnotationUtil;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
+import org.apache.logging.log4j.plugins.validation.ConstraintValidationException;
 import org.apache.logging.log4j.plugins.validation.ConstraintValidators;
 import org.apache.logging.log4j.plugins.validation.PluginValidator;
 import org.apache.logging.log4j.plugins.visit.NodeVisitor;
@@ -246,7 +248,7 @@ class DefaultInjector implements Injector {
         if (ConstraintValidators.hasConstraints(field)) {
             final Object fieldValue = handle.get(instance);
             if (!ConstraintValidators.isValid(field, key.getName(), fieldValue)) {
-                throw new PluginException("Validation failed for field " + fieldValue + " with value '" + fieldValue + "'");
+                throw new ConstraintValidationException(field, key.getName(), fieldValue);
             }
         }
     }
@@ -401,8 +403,13 @@ class DefaultInjector implements Injector {
                 .entrySet()
                 .stream()
                 .flatMap(e -> {
+                    final Parameter parameter = e.getKey();
+                    final String name = AnnotatedElementNameProvider.getName(parameter);
                     final Object value = e.getValue().get();
-                    return e.getKey().isVarArgs() ? Stream.of((Object[]) value) : Stream.of(value);
+                    if (!ConstraintValidators.isValid(parameter, name, value)) {
+                        throw new ConstraintValidationException(parameter, name, value);
+                    }
+                    return parameter.isVarArgs() ? Stream.of((Object[]) value) : Stream.of(value);
                 })
                 .collect(Collectors.toList());
     }
@@ -534,6 +541,10 @@ class DefaultInjector implements Injector {
 
     private static <T> Constructor<T> getInjectableConstructor(final Key<T> key, final Set<Key<?>> chain) {
         final Class<T> rawType = key.getRawType();
+        final String name = key.getName();
+        if (!ConstraintValidators.isValid(rawType, name, rawType)) {
+            throw new ConstraintValidationException(rawType, name, rawType);
+        }
         final List<Constructor<?>> injectConstructors = Stream.of(rawType.getDeclaredConstructors())
                 .filter(constructor -> constructor.isAnnotationPresent(Inject.class))
                 .collect(Collectors.toList());

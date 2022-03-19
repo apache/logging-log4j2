@@ -678,6 +678,33 @@ class InjectorTest {
         assertThat(parameters.value).isEqualTo("propane");
     }
 
+    static class ValidatedInjectionPoints {
+        @Required
+        @Named
+        String foo;
+
+        final String bar;
+
+        @Inject
+        ValidatedInjectionPoints(@Required @Named final String bar) {
+            this.bar = bar;
+        }
+    }
+
+    @Test
+    void injectionPointValidation() {
+        final var injector = DI.createInjector();
+        assertThatThrownBy(() -> injector.getInstance(ValidatedInjectionPoints.class))
+                .hasMessageStartingWith("Validation failed");
+        injector.registerBinding(new @Named("foo") Key<>() {}, () -> "hello");
+        assertThatThrownBy(() -> injector.getInstance(ValidatedInjectionPoints.class))
+                .hasMessageStartingWith("Validation failed");
+        injector.registerBinding(new @Named("bar") Key<>() {}, () -> "world");
+        final ValidatedInjectionPoints instance = injector.getInstance(ValidatedInjectionPoints.class);
+        assertThat(instance.foo).isEqualTo("hello");
+        assertThat(instance.bar).isEqualTo("world");
+    }
+
     enum Level {
         ERROR, WARN
     }

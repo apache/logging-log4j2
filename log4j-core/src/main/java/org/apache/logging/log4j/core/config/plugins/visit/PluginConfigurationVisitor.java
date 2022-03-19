@@ -45,7 +45,7 @@ public class PluginConfigurationVisitor implements NodeVisitor {
             StringBuilders.appendKeyDqValueWithJoiner(debugLog, "configuration", configuration, ", ");
             return TypeUtil.cast(configuration);
         } else {
-            LOGGER.warn("Field {} annotated with @PluginConfiguration is not compatible with type {}", field,
+            LOGGER.error("Field {} annotated with @PluginConfiguration is not compatible with type {}", field,
                     configuration.getClass());
             return null;
         }
@@ -57,7 +57,7 @@ public class PluginConfigurationVisitor implements NodeVisitor {
             StringBuilders.appendKeyDqValueWithJoiner(debugLog, "configuration", configuration, ", ");
             return TypeUtil.cast(configuration);
         } else {
-            LOGGER.warn("Parameter {} annotated with @PluginConfiguration is not compatible with type {}", parameter,
+            LOGGER.error("Parameter {} annotated with @PluginConfiguration is not compatible with type {}", parameter,
                     configuration.getClass());
             return null;
         }
