@@ -26,12 +26,12 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests LoggersPlugin.
  */
-@StatusLoggerLevel("OFF")
+@StatusLoggerLevel("ERROR")
 @LoggerContextSource("multipleRootLoggersTest.xml")
 public class LoggersPluginTest {
 
@@ -42,7 +42,7 @@ public class LoggersPluginTest {
         final StatusData data = StatusLogger.getLogger().getStatusData().get(0);
         //System.out.println(data.getFormattedStatus());
 
-        assertEquals(Level.ERROR, data.getLevel());
-        assertTrue(data.getMessage().getFormattedMessage().contains("multiple root loggers"));
+        assertThat(data.getLevel()).isEqualTo(Level.ERROR);
+        assertThat(data.getMessage().getFormattedMessage()).contains("multiple root loggers");
     }
 }

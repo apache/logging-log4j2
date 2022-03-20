@@ -19,17 +19,17 @@ package org.apache.logging.log4j.core.appender.rolling;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.CleanUpDirectories;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RollingDirectTimeNewDirectoryTest {
 
@@ -38,18 +38,12 @@ public class RollingDirectTimeNewDirectoryTest {
     // Note that the path is hardcoded in the configuration!
     private static final String DIR = "target/rolling-folder-direct";
 
-    public static LoggerContextRule loggerContextRule =
-            LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
-
-    @Rule
-    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
-
     @Test
-    public void streamClosedError() throws Exception {
+    @CleanUpDirectories(DIR)
+    @LoggerContextSource(CONFIG)
+    public void streamClosedError(final LoggerContext context) throws Exception {
 
-        final Logger logger =
-                loggerContextRule.getLogger(
-                        RollingDirectTimeNewDirectoryTest.class.getName());
+        final Logger logger = context.getLogger(RollingDirectTimeNewDirectoryTest.class.getName());
 
         for (int i = 0; i < 1000; i++) {
             logger.info("nHq6p9kgfvWfjzDRYbZp");
@@ -67,17 +61,15 @@ public class RollingDirectTimeNewDirectoryTest {
         try {
 
             final int minExpectedLogFolderCount = 2;
-            assertTrue(
-                    "was expecting at least " + minExpectedLogFolderCount + " folders, " +
-                            "found " + logFolders.length,
-                    logFolders.length >= minExpectedLogFolderCount);
+            assertTrue(logFolders.length >= minExpectedLogFolderCount, "was expecting at least " + minExpectedLogFolderCount + " folders, " +
+                    "found " + logFolders.length);
 
             for (File logFolder : logFolders) {
                 File[] logFiles = logFolder.listFiles();
                 if (logFiles != null) {
                     Arrays.sort(logFiles);
                 }
-                assertTrue("empty folder: " + logFolder, logFiles != null && logFiles.length > 0);
+                assertTrue(logFiles != null && logFiles.length > 0, "empty folder: " + logFolder);
             }
 
         } catch (AssertionError error) {

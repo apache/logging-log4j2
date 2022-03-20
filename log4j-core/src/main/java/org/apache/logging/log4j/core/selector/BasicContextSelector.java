@@ -16,18 +16,18 @@
  */
 package org.apache.logging.log4j.core.selector;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
+import org.apache.logging.log4j.plugins.Singleton;
+
+import java.net.URI;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Returns either this Thread's context or the default LoggerContext.
  */
+@Singleton
 public class BasicContextSelector implements ContextSelector {
 
     private static final LoggerContext CONTEXT = new LoggerContext("Default");
@@ -77,9 +77,7 @@ public class BasicContextSelector implements ContextSelector {
 
     @Override
     public List<LoggerContext> getLoggerContexts() {
-        final List<LoggerContext> list = new ArrayList<>();
-        list.add(CONTEXT);
-        return Collections.unmodifiableList(list);
+        return List.of(CONTEXT);
     }
 
 }

@@ -33,6 +33,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.TYPE, ElementType.FIELD})
 @AliasesProvider(PluginAliasesProvider.class)
+@Deprecated(since = "3.0.0")
 public @interface PluginAliases {
 
     String[] value();

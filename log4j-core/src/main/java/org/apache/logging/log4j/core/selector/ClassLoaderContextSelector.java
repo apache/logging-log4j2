@@ -16,6 +16,15 @@
  */
 package org.apache.logging.log4j.core.selector;
 
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.impl.ContextAnchor;
+import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.plugins.Singleton;
+import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.StackLocatorUtil;
+
 import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.util.ArrayList;
@@ -28,12 +37,6 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.impl.ContextAnchor;
-import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.StackLocatorUtil;
-
 /**
  * This ContextSelector chooses a LoggerContext based upon the ClassLoader of the caller. This allows Loggers assigned
  * to static variables to be released along with the classes that own then. Other ContextSelectors will generally cause
@@ -45,6 +48,7 @@ import org.apache.logging.log4j.util.StackLocatorUtil;
  *
  * This ContextSelector should not be used with a Servlet Filter such as the Log4jServletFilter.
  */
+@Singleton
 public class ClassLoaderContextSelector implements ContextSelector, LoggerContextShutdownAware {
 
     private static final AtomicReference<LoggerContext> DEFAULT_CONTEXT = new AtomicReference<>();
@@ -53,6 +57,8 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
 
     protected static final ConcurrentMap<String, AtomicReference<WeakReference<LoggerContext>>> CONTEXT_MAP =
             new ConcurrentHashMap<>();
+
+    @Inject protected Injector injector;
 
     @Override
     public void shutdown(final String fqcn, final ClassLoader loader, final boolean currentContext,
@@ -176,6 +182,17 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
         return Collections.unmodifiableList(list);
     }
 
+    private Injector getOrCopyInjector(final Map.Entry<String, Object> entry) {
+        if (entry != null) {
+            final Object value = entry.getValue();
+            if (value instanceof Injector) {
+                return (Injector) value;
+            }
+        }
+        final Injector injector = this.injector;
+        return injector != null ? injector.copy() : null;
+    }
+
     private LoggerContext locateContext(final ClassLoader loaderOrNull, final Map.Entry<String, Object> entry,
             final URI configLocation) {
         // LOG4J2-477: class loader may be null
@@ -215,7 +232,7 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
                     } */
                 }
             }
-            final LoggerContext ctx = createContext(name, configLocation);
+            final LoggerContext ctx = createContext(name, configLocation, getOrCopyInjector(entry));
             if (entry != null) {
                 ctx.putObject(entry.getKey(), entry.getValue());
             }
@@ -242,7 +259,7 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
             }
             return ctx;
         }
-        ctx = createContext(name, configLocation);
+        ctx = createContext(name, configLocation, getOrCopyInjector(entry));
         if (entry != null) {
             ctx.putObject(entry.getKey(), entry.getValue());
         }
@@ -253,7 +270,12 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
     }
 
     protected LoggerContext createContext(final String name, final URI configLocation) {
-        return new LoggerContext(name, null, configLocation);
+        final Injector injector = this.injector;
+        return createContext(name, configLocation, injector != null ? injector.copy() : null);
+    }
+
+    protected LoggerContext createContext(final String name, final URI configLocation, final Injector injector) {
+        return new LoggerContext(name, null, configLocation, injector);
     }
 
     protected String toContextMapKey(final ClassLoader loader) {

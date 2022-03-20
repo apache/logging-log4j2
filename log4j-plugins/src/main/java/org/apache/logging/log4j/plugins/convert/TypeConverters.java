@@ -19,7 +19,10 @@ package org.apache.logging.log4j.plugins.convert;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.status.StatusLogger;
+
+import java.lang.reflect.Type;
 
 /**
  * Collection of basic TypeConverter implementations. May be used to register additional TypeConverters or find
@@ -55,29 +58,30 @@ public final class TypeConverters {
      *         if no TypeConverter exists for the given class
      */
     public static <T> T convert(final String s, final Class<? extends T> clazz, final Object defaultValue) {
-        @SuppressWarnings("unchecked")
-        final TypeConverter<T> converter = (TypeConverter<T>) TypeConverterRegistry.getInstance().findCompatibleConverter(clazz);
+        return convert(s, clazz, defaultValue, false);
+    }
+
+    public static <T> T convert(final String s, final Type targetType, final Object defaultValue, final boolean sensitive) {
+        final TypeConverter<T> converter =
+                TypeUtil.cast(TypeConverterRegistry.getInstance().findCompatibleConverter(targetType));
         if (s == null) {
-            // don't debug print here, resulting output is hard to understand
-            // LOGGER.debug("Null string given to convert. Using default [{}].", defaultValue);
             return parseDefaultValue(converter, defaultValue);
         }
         try {
             return converter.convert(s);
         } catch (final Exception e) {
-            LOGGER.warn("Error while converting string [{}] to type [{}]. Using default value [{}].", s, clazz,
-                    defaultValue, e);
+            LOGGER.warn("Error while converting string [{}] to type [{}]. Using default value [{}].",
+                    sensitive ? "-redacted-" : s, targetType, defaultValue, e);
             return parseDefaultValue(converter, defaultValue);
         }
     }
 
-    @SuppressWarnings("unchecked")
     private static <T> T parseDefaultValue(final TypeConverter<T> converter, final Object defaultValue) {
         if (defaultValue == null) {
             return null;
         }
         if (!(defaultValue instanceof String)) {
-            return (T) defaultValue;
+            return TypeUtil.cast(defaultValue);
         }
         try {
             return converter.convert((String) defaultValue);

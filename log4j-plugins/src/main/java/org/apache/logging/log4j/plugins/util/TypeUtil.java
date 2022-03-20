@@ -17,15 +17,12 @@
 package org.apache.logging.log4j.plugins.util;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -45,23 +42,6 @@ import java.util.Objects;
 public final class TypeUtil {
 
     private TypeUtil() {
-    }
-
-    /**
-     * Gets all declared fields for the given class (including superclasses).
-     *
-     * @param cls the class to examine
-     * @return all declared fields for the given class (including superclasses).
-     * @see Class#getDeclaredFields()
-     */
-    public static List<Field> getAllDeclaredFields(Class<?> cls) {
-        final List<Field> fields = new ArrayList<>();
-        while (cls != null) {
-            final Field[] declaredFields = cls.getDeclaredFields();
-            fields.addAll(Arrays.asList(declaredFields));
-            cls = cls.getSuperclass();
-        }
-        return fields;
     }
 
     /**
@@ -260,124 +240,6 @@ public final class TypeUtil {
         return Object.class;
     }
 
-    /**
-     * Checks if a type matches another type.
-     */
-    public static boolean typesMatch(final Type required, final Type found) {
-        if (required instanceof Class<?>) {
-            if (found instanceof Class<?>) {
-                return required.equals(found);
-            }
-            if (found instanceof ParameterizedType) {
-                return required.equals(getRawType(found));
-            }
-        }
-        if (required instanceof ParameterizedType) {
-            if (found instanceof Class<?>) {
-                return getRawType(required).equals(found);
-            }
-            if (found instanceof ParameterizedType) {
-                if (!getRawType(required).equals(getRawType(found))) {
-                    return false;
-                }
-                final Type[] requiredArguments = ((ParameterizedType) required).getActualTypeArguments();
-                final Type[] foundArguments = ((ParameterizedType) found).getActualTypeArguments();
-                if (requiredArguments.length != foundArguments.length) {
-                    return false;
-                }
-                for (int i = 0; i < requiredArguments.length; i++) {
-                    if (!typeParametersMatch(requiredArguments[i], foundArguments[i])) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static boolean typeParametersMatch(final Type required, final Type found) {
-        if (required instanceof Class<?> || required instanceof ParameterizedType || required instanceof GenericArrayType) {
-            if (found instanceof Class<?> || found instanceof ParameterizedType || found instanceof GenericArrayType) {
-                return typesMatch(getReferenceType(required), getReferenceType(found));
-            }
-            if (found instanceof TypeVariable<?>) {
-                return typeParametersMatch(required, (TypeVariable<?>) found);
-            }
-        }
-        if (required instanceof WildcardType) {
-            final WildcardType wildcardType = (WildcardType) required;
-            if (found instanceof Class<?> || found instanceof ParameterizedType || found instanceof GenericArrayType) {
-                return typeParametersMatch(wildcardType, found);
-            }
-            if (found instanceof TypeVariable<?>) {
-                return typeParametersMatch(wildcardType, (TypeVariable<?>) found);
-            }
-        }
-        if (required instanceof TypeVariable<?>) {
-            if (found instanceof TypeVariable<?>) {
-                final Type[] foundBounds = getTopBounds(((TypeVariable<?>) found).getBounds());
-                final Type[] requiredBounds = getTopBounds(((TypeVariable<?>) required).getBounds());
-                return areBoundsStricter(foundBounds, requiredBounds);
-            }
-        }
-        return false;
-    }
-
-    private static boolean typeParametersMatch(final Type required, final TypeVariable<?> found) {
-        for (final Type bound : getTopBounds(found.getBounds())) {
-            if (!isAssignable(bound, required)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private static boolean typeParametersMatch(final WildcardType required, final Type found) {
-        return lowerBoundsOfWildcardMatch(required, found) && upperBoundsOfWildcardMatch(required, found);
-    }
-
-    private static boolean typeParametersMatch(final WildcardType required, final TypeVariable<?> found) {
-        final Type[] bounds = getTopBounds(found.getBounds());
-        if (!lowerBoundsOfWildcardMatch(required, bounds)) {
-            return false;
-        }
-        final Type[] upperBounds = required.getUpperBounds();
-        return areBoundsStricter(bounds, upperBounds) || areBoundsStricter(upperBounds, bounds);
-    }
-
-    private static boolean lowerBoundsOfWildcardMatch(final WildcardType required, final Type... found) {
-        final Type[] lowerBounds = required.getLowerBounds();
-        return lowerBounds.length == 0 || areBoundsStricter(found, lowerBounds);
-    }
-
-    private static boolean upperBoundsOfWildcardMatch(final WildcardType required, final Type... found) {
-        return areBoundsStricter(required.getUpperBounds(), found);
-    }
-
-    private static boolean areBoundsStricter(final Type[] upperBounds, final Type[] stricterUpperBounds) {
-        final Type[] stricterBounds = getTopBounds(stricterUpperBounds);
-        for (final Type upperBound : getTopBounds(upperBounds)) {
-            if (!isAssignableFromOneOf(upperBound, stricterBounds)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private static Type[] getTopBounds(final Type[] bounds) {
-        return bounds[0] instanceof TypeVariable<?> ? getTopBounds(((TypeVariable<?>) bounds[0]).getBounds()) : bounds;
-    }
-
-    private static boolean isAssignableFromOneOf(final Type type, final Type... types) {
-        for (final Type t : types) {
-            if (isAssignable(type, t)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private static final Map<Class<?>, Class<?>> PRIMITIVE_BOXED_TYPES = Map.of(
             boolean.class, Boolean.class,
             byte.class, Byte.class,
@@ -399,13 +261,62 @@ public final class TypeUtil {
         return clazz;
     }
 
-    private static Type getReferenceType(final Type type) {
-        return type instanceof Class<?> ? getReferenceType((Class<?>) type) : type;
-    }
-
     public static <T> T cast(final Object o) {
         @SuppressWarnings("unchecked") final T t = (T) o;
         return t;
+    }
+
+    public static Type getSuperclassTypeParameter(final Class<?> type) {
+        final Type genericSuperclass = type.getGenericSuperclass();
+        if (genericSuperclass instanceof ParameterizedType) {
+            return ((ParameterizedType) genericSuperclass).getActualTypeArguments()[0];
+        }
+        throw new IllegalArgumentException(type + " does not have type parameters");
+    }
+
+    public static boolean isEqual(final Type first, final Type second) {
+        if (first == second) {
+            return true;
+        }
+        if (first instanceof Class<?>) {
+            return first.equals(second);
+        }
+        if (first instanceof ParameterizedType) {
+            if (!(second instanceof ParameterizedType)) {
+                return false;
+            }
+            final var firstType = (ParameterizedType) first;
+            final var secondType = (ParameterizedType) second;
+            return Objects.equals(firstType.getOwnerType(), secondType.getOwnerType()) &&
+                    firstType.getRawType().equals(secondType.getRawType()) &&
+                    Arrays.equals(firstType.getActualTypeArguments(), secondType.getActualTypeArguments());
+        }
+        if (first instanceof GenericArrayType) {
+            if (!(second instanceof GenericArrayType)) {
+                return false;
+            }
+            return isEqual(((GenericArrayType) first).getGenericComponentType(),
+                    ((GenericArrayType) second).getGenericComponentType());
+        }
+        if (first instanceof WildcardType) {
+            if (!(second instanceof WildcardType)) {
+                return false;
+            }
+            final var firstType = (WildcardType) first;
+            final var secondType = (WildcardType) second;
+            return Arrays.equals(firstType.getUpperBounds(), secondType.getUpperBounds()) &&
+                    Arrays.equals(firstType.getLowerBounds(), secondType.getLowerBounds());
+        }
+        if (first instanceof TypeVariable<?>) {
+            if (!(second instanceof TypeVariable<?>)) {
+                return false;
+            }
+            final var firstType = (TypeVariable<?>) first;
+            final var secondType = (TypeVariable<?>) second;
+            return firstType.getName().equals(secondType.getName()) &&
+                    firstType.getGenericDeclaration().equals(secondType.getGenericDeclaration());
+        }
+        return false;
     }
 
 }

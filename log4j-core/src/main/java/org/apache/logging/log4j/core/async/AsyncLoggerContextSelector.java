@@ -16,18 +16,21 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.net.URI;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.plugins.Singleton;
+import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.util.PropertiesUtil;
+
+import java.net.URI;
 
 /**
  * {@code ContextSelector} that manages {@code AsyncLoggerContext} instances.
  * <p>
  * As of version 2.5, this class extends ClassLoaderContextSelector for better web app support.
  */
+@Singleton
 public class AsyncLoggerContextSelector extends ClassLoaderContextSelector {
 
     /**
@@ -42,8 +45,8 @@ public class AsyncLoggerContextSelector extends ClassLoaderContextSelector {
     }
 
     @Override
-    protected LoggerContext createContext(final String name, final URI configLocation) {
-        return new AsyncLoggerContext(name, null, configLocation);
+    protected LoggerContext createContext(final String name, final URI configLocation, final Injector injector) {
+        return new AsyncLoggerContext(name, null, configLocation, injector);
     }
 
     @Override

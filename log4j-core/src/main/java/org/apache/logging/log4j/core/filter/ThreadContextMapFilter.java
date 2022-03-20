@@ -16,30 +16,33 @@
  */
 package org.apache.logging.log4j.core.filter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
+import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
-import org.apache.logging.log4j.core.util.KeyValuePair;
-import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * Filter based on a value in the Thread Context Map (MDC).
@@ -49,14 +52,15 @@ import org.apache.logging.log4j.util.ReadOnlyStringMap;
 @PerformanceSensitive("allocation")
 public class ThreadContextMapFilter extends MapFilter {
 
-    private final ContextDataInjector injector = ContextDataInjectorFactory.createInjector();
+    private final ContextDataInjector injector;
     private final String key;
     private final String value;
 
     private final boolean useMap;
 
-    public ThreadContextMapFilter(final Map<String, List<String>> pairs, final boolean oper, final Result onMatch,
-                                  final Result onMismatch) {
+    public ThreadContextMapFilter(
+            final Map<String, List<String>> pairs, final boolean oper, final Result onMatch,
+            final Result onMismatch, final ContextDataInjector injector) {
         super(pairs, oper, onMatch, onMismatch);
         if (pairs.size() == 1) {
             final Iterator<Map.Entry<String, List<String>>> iter = pairs.entrySet().iterator();
@@ -75,6 +79,7 @@ public class ThreadContextMapFilter extends MapFilter {
             this.value = null;
             this.useMap = true;
         }
+        this.injector = injector;
     }
 
     @Override
@@ -194,43 +199,77 @@ public class ThreadContextMapFilter extends MapFilter {
         return filter();
     }
 
-    // TODO Consider refactoring to use AbstractFilter.AbstractFilterBuilder
+    public static class Builder extends AbstractFilterBuilder<Builder> implements Supplier<ThreadContextMapFilter> {
+        private KeyValuePair[] pairs;
+        private String operator;
+        private ContextDataInjector contextDataInjector;
+
+        public Builder setPairs(@Required @PluginElement final KeyValuePair[] pairs) {
+            this.pairs = pairs;
+            return this;
+        }
+
+        public Builder setOperator(@PluginAttribute final String operator) {
+            this.operator = operator;
+            return this;
+        }
+
+        @Inject
+        public Builder setContextDataInjector(final ContextDataInjector contextDataInjector) {
+            this.contextDataInjector = contextDataInjector;
+            return this;
+        }
+
+        @Override
+        public ThreadContextMapFilter get() {
+            if (pairs == null || pairs.length == 0) {
+                LOGGER.error("key and value pairs must be specified for the ThreadContextMapFilter");
+                return null;
+            }
+            final Map<String, List<String>> map = new HashMap<>();
+            for (final KeyValuePair pair : pairs) {
+                final String key = pair.getKey();
+                if (key == null) {
+                    LOGGER.error("A null key is not valid in MapFilter");
+                    continue;
+                }
+                final String value = pair.getValue();
+                if (value == null) {
+                    LOGGER.error("A null value for key " + key + " is not allowed in MapFilter");
+                    continue;
+                }
+                List<String> list = map.get(pair.getKey());
+                if (list != null) {
+                    list.add(value);
+                } else {
+                    list = new ArrayList<>();
+                    list.add(value);
+                    map.put(pair.getKey(), list);
+                }
+            }
+            if (map.isEmpty()) {
+                LOGGER.error("ThreadContextMapFilter is not configured with any valid key value pairs");
+                return null;
+            }
+            final boolean isAnd = operator == null || !operator.equalsIgnoreCase("or");
+            return new ThreadContextMapFilter(map, isAnd, getOnMatch(), getOnMismatch(), contextDataInjector);
+        }
+    }
+
     @PluginFactory
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    @Deprecated(since = "3.0.0", forRemoval = true)
     public static ThreadContextMapFilter createFilter(
-            @PluginElement final KeyValuePair[] pairs,
-            @PluginAttribute final String operator,
-            @PluginAttribute final Result onMatch,
-            @PluginAttribute final Result onMismatch) {
-        if (pairs == null || pairs.length == 0) {
-            LOGGER.error("key and value pairs must be specified for the ThreadContextMapFilter");
-            return null;
-        }
-        final Map<String, List<String>> map = new HashMap<>();
-        for (final KeyValuePair pair : pairs) {
-            final String key = pair.getKey();
-            if (key == null) {
-                LOGGER.error("A null key is not valid in MapFilter");
-                continue;
-            }
-            final String value = pair.getValue();
-            if (value == null) {
-                LOGGER.error("A null value for key " + key + " is not allowed in MapFilter");
-                continue;
-            }
-            List<String> list = map.get(pair.getKey());
-            if (list != null) {
-                list.add(value);
-            } else {
-                list = new ArrayList<>();
-                list.add(value);
-                map.put(pair.getKey(), list);
-            }
-        }
-        if (map.isEmpty()) {
-            LOGGER.error("ThreadContextMapFilter is not configured with any valid key value pairs");
-            return null;
-        }
-        final boolean isAnd = operator == null || !operator.equalsIgnoreCase("or");
-        return new ThreadContextMapFilter(map, isAnd, onMatch, onMismatch);
+            final KeyValuePair[] pairs, final String operator, final Result onMatch, final Result onMismatch) {
+        return newBuilder()
+                .setPairs(pairs)
+                .setOperator(operator)
+                .setOnMatch(onMatch)
+                .setOnMismatch(onMismatch)
+                .setContextDataInjector(ContextDataInjectorFactory.createInjector())
+                .get();
     }
 }

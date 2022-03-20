@@ -17,14 +17,10 @@
 
 package org.apache.logging.log4j.plugins.processor;
 
-import java.io.Serializable;
-
 /**
  * Memento object for storing a plugin entry to a cache file.
  */
-public class PluginEntry implements Serializable {
-    private static final long serialVersionUID = 1L;
-
+public class PluginEntry {
     private String key;
     private String className;
     private String name;

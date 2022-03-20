@@ -17,32 +17,22 @@
 
 package org.apache.log4j;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
-
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 import java.util.Collections;
@@ -50,11 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests of Category.
@@ -65,20 +51,20 @@ public class CategoryTest {
 
     private static ListAppender appender = new ListAppender("List");
 
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         appender.start();
         ConfigurationFactory.setConfigurationFactory(cf);
         LoggerContext.getContext().reconfigure();
     }
 
-    @AfterClass
+    @AfterAll
     public static void cleanupClass() {
         ConfigurationFactory.removeConfigurationFactory(cf);
         appender.stop();
     }
 
-    @Before
+    @BeforeEach
     public void before() {
         appender.clear();
     }
@@ -100,23 +86,23 @@ public class CategoryTest {
         category.info("Hello, World");
         final List<LogEvent> list = appender.getEvents();
         int events = list.size();
-        assertTrue("Number of events should be 1, was " + events, events == 1);
+        assertEquals(1, events, "Number of events should be 1, was " + events);
         LogEvent event = list.get(0);
         Message msg = event.getMessage();
-        assertNotNull("No message", msg);
-        assertTrue("Incorrect Message type", msg instanceof ObjectMessage);
+        assertNotNull(msg, "No message");
+        assertTrue(msg instanceof ObjectMessage, "Incorrect Message type");
         Object[] objects = msg.getParameters();
-        assertTrue("Incorrect Object type", objects[0] instanceof String);
+        assertTrue(objects[0] instanceof String, "Incorrect Object type");
         appender.clear();
         category.log(Priority.INFO, "Hello, World");
         events = list.size();
-        assertTrue("Number of events should be 1, was " + events, events == 1);
+        assertEquals(1, events, "Number of events should be 1, was " + events);
         event = list.get(0);
         msg = event.getMessage();
-        assertNotNull("No message", msg);
-        assertTrue("Incorrect Message type", msg instanceof ObjectMessage);
+        assertNotNull(msg, "No message");
+        assertTrue(msg instanceof ObjectMessage, "Incorrect Message type");
         objects = msg.getParameters();
-        assertTrue("Incorrect Object type", objects[0] instanceof String);
+        assertTrue(objects[0] instanceof String, "Incorrect Object type");
         appender.clear();
     }
 
@@ -128,7 +114,7 @@ public class CategoryTest {
     @Test
     public void testGetChainedPriorityReturnType() throws Exception {
         final Method method = Category.class.getMethod("getChainedPriority", (Class[]) null);
-        assertTrue(method.getReturnType() == Priority.class);
+        assertSame(method.getReturnType(), Priority.class);
     }
 
     /**
@@ -208,12 +194,13 @@ public class CategoryTest {
         ((org.apache.logging.log4j.core.Logger) category.getLogger()).addAppender(appender);
         category.error("Test Message");
         final List<String> msgs = appender.getMessages();
-        assertTrue("Incorrect number of messages. Expected 1 got " + msgs.size(), msgs.size() == 1);
+        assertEquals(1, msgs.size(), "Incorrect number of messages. Expected 1 got " + msgs.size());
         final String msg = msgs.get(0);
         appender.clear();
         final String threadName = Thread.currentThread().getName();
         final String expected = "ERROR o.a.l.CategoryTest [" + threadName + "] Test Message" + Strings.LINE_SEPARATOR;
-        assertTrue("Incorrect message " + Strings.dquote(msg) + " expected " + Strings.dquote(expected), msg.endsWith(expected));
+        assertTrue(msg.endsWith(expected),
+                "Incorrect message " + Strings.dquote(msg) + " expected " + Strings.dquote(expected));
     }
 
     @Test
@@ -292,17 +279,15 @@ public class CategoryTest {
 
         // Verify collected log events.
         final List<LogEvent> events = appender.getEvents();
-        assertEquals("was expecting a single event", 1, events.size());
+        assertEquals(1, events.size(), "was expecting a single event");
         final LogEvent logEvent = events.get(0);
 
         // Verify the collected message.
         final Message message = logEvent.getMessage();
         final Class<? extends Message> actualMessageClass = message.getClass();
-        assertTrue(
-                "was expecting message to be instance of " + expectedMessageClass + ", found: " + actualMessageClass,
-                expectedMessageClass.isAssignableFrom(actualMessageClass));
-        @SuppressWarnings("unchecked")
-        final M typedMessage = (M) message;
+        assertTrue(expectedMessageClass.isAssignableFrom(actualMessageClass),
+                "was expecting message to be instance of " + expectedMessageClass + ", found: " + actualMessageClass);
+        final M typedMessage = TypeUtil.cast(message);
         messageTester.accept(typedMessage);
 
     }

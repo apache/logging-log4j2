@@ -16,6 +16,21 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.time.Clock;
+import org.apache.logging.log4j.core.time.ClockFactory;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.util.PerformanceSensitive;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -23,20 +38,7 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.apache.logging.log4j.core.time.Clock;
-import org.apache.logging.log4j.core.time.ClockFactory;
-import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.plugins.Node;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.util.PerformanceSensitive;
+import java.util.function.Supplier;
 
 /**
  * Filters events that fall within a specified time period in each day.
@@ -44,7 +46,6 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 @Plugin(name = "TimeFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
 @PerformanceSensitive("allocation")
 public final class TimeFilter extends AbstractFilter {
-    private static final Clock CLOCK = ClockFactory.getClock();
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     /**
@@ -73,11 +74,14 @@ public final class TimeFilter extends AbstractFilter {
      */
     private final ZoneId timeZone;
 
+    private final Clock clock;
+
     /*
      * Expose for unit testing.
      */
-    TimeFilter(final LocalTime start, final LocalTime end, final ZoneId timeZone, final Result onMatch,
-               final Result onMismatch, final LocalDate now) {
+    TimeFilter(
+            final LocalTime start, final LocalTime end, final ZoneId timeZone, final Result onMatch,
+            final Result onMismatch, final LocalDate now, final Clock clock) {
         super(onMatch, onMismatch);
         this.startTime = start;
         this.endTime = end;
@@ -96,11 +100,13 @@ public final class TimeFilter extends AbstractFilter {
             endMillis -= difference;
         }
         this.end = endMillis;
+        this.clock = clock;
     }
 
-    private TimeFilter(final LocalTime start, final LocalTime end, final ZoneId timeZone, final Result onMatch,
-                       final Result onMismatch) {
-        this(start, end, timeZone, onMatch, onMismatch, LocalDate.now(timeZone));
+    private TimeFilter(
+            final LocalTime start, final LocalTime end, final ZoneId timeZone, final Result onMatch,
+            final Result onMismatch, final Clock clock) {
+        this(start, end, timeZone, onMatch, onMismatch, LocalDate.now(timeZone), clock);
     }
 
     private synchronized void adjustTimes(final long currentTimeMillis) {
@@ -142,7 +148,7 @@ public final class TimeFilter extends AbstractFilter {
     }
 
     private Result filter() {
-        return filter(CLOCK.currentTimeMillis());
+        return filter(clock.currentTimeMillis());
     }
 
     @Override
@@ -245,20 +251,22 @@ public final class TimeFilter extends AbstractFilter {
      * @param mismatch Action to perform if the action does not match.
      * @return A TimeFilter.
      */
-    // TODO Consider refactoring to use AbstractFilter.AbstractFilterBuilder
-    @PluginFactory
+    @Deprecated(since = "3.0.0", forRemoval = true)
     public static TimeFilter createFilter(
-            @PluginAttribute("start") final String start,
-            @PluginAttribute("end") final String end,
-            @PluginAttribute("timezone") final String tz,
-            @PluginAttribute("onMatch") final Result match,
-            @PluginAttribute("onMismatch") final Result mismatch) {
-        final LocalTime startTime = parseTimestamp(start, LocalTime.MIN);
-        final LocalTime endTime = parseTimestamp(end, LocalTime.MAX);
-        final ZoneId timeZone = tz == null ? ZoneId.systemDefault() : ZoneId.of(tz);
-        final Result onMatch = match == null ? Result.NEUTRAL : match;
-        final Result onMismatch = mismatch == null ? Result.DENY : mismatch;
-        return new TimeFilter(startTime, endTime, timeZone, onMatch, onMismatch);
+            final String start, final String end, final String tz, final Result match, final Result mismatch) {
+        final Builder builder = newBuilder()
+                .setStart(start)
+                .setEnd(end);
+        if (tz != null) {
+            builder.setTimezone(ZoneId.of(tz));
+        }
+        if (match != null) {
+            builder.setOnMatch(match);
+        }
+        if (mismatch != null) {
+            builder.setOnMismatch(mismatch);
+        }
+        return builder.get();
     }
 
     private static LocalTime parseTimestamp(final String timestamp, final LocalTime defaultValue) {
@@ -271,6 +279,50 @@ public final class TimeFilter extends AbstractFilter {
         } catch (final Exception e) {
             LOGGER.warn("Error parsing TimeFilter timestamp value {}", timestamp, e);
             return defaultValue;
+        }
+    }
+
+    @PluginFactory
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    public static class Builder extends AbstractFilterBuilder<Builder> implements Supplier<TimeFilter> {
+        private String start;
+        private String end;
+        @PluginAttribute
+        private ZoneId timezone = ZoneId.systemDefault();
+        private Clock clock;
+
+        public Builder setStart(@PluginAttribute final String start) {
+            this.start = start;
+            return this;
+        }
+
+        public Builder setEnd(@PluginAttribute final String end) {
+            this.end = end;
+            return this;
+        }
+
+        public Builder setTimezone(final ZoneId timezone) {
+            this.timezone = timezone;
+            return this;
+        }
+
+        @Inject
+        public Builder setClock(final Clock clock) {
+            this.clock = clock;
+            return this;
+        }
+
+        @Override
+        public TimeFilter get() {
+            final LocalTime startTime = parseTimestamp(start, LocalTime.MIN);
+            final LocalTime endTime = parseTimestamp(end, LocalTime.MAX);
+            if (clock == null) {
+                clock = ClockFactory.getClock();
+            }
+            return new TimeFilter(startTime, endTime, timezone, getOnMatch(), getOnMismatch(), clock);
         }
     }
 

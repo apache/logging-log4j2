@@ -17,10 +17,6 @@
 
 package org.apache.logging.log4j.core.appender;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.List;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -29,7 +25,12 @@ import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * OutputStreamManager Tests.
@@ -47,10 +48,8 @@ public class OutputStreamManagerTest {
             data = statusData.get(1);
         }
         assertEquals(Level.ERROR, data.getLevel());
-        assertEquals("Could not create plugin of type class org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender for element RollingRandomAccessFile",
+        assertEquals("Could not configure plugin element RollingRandomAccessFile: org.apache.logging.log4j.core.config.ConfigurationException: Configuration has multiple incompatible Appenders pointing to the same resource 'target/multiIncompatibleAppender.log'",
                 data.getMessage().getFormattedMessage());
-        assertEquals("org.apache.logging.log4j.core.config.ConfigurationException: Configuration has multiple incompatible Appenders pointing to the same resource 'target/multiIncompatibleAppender.log'",
-                data.getThrowable().toString());
     }
 
     @Test

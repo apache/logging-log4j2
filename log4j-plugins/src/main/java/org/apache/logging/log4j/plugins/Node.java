@@ -19,9 +19,11 @@ package org.apache.logging.log4j.plugins;
 import org.apache.logging.log4j.plugins.util.PluginType;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * A Configuration node.
@@ -147,6 +149,27 @@ public class Node {
 
     public PluginType<?> getType() {
         return type;
+    }
+
+    /**
+     * Finds and removes the attribute with a name equaling ignoring case either the provided name or one of the provided
+     * aliases.
+     *
+     * @param name    name of attribute to find
+     * @param aliases aliases of attribute to find
+     * @return the removed attribute value if found or empty if no attributes match
+     */
+    public Optional<String> removeMatchingAttribute(final String name, final Collection<String> aliases) {
+        final var iterator = attributes.entrySet().iterator();
+        while (iterator.hasNext()) {
+            final var entry = iterator.next();
+            final String key = entry.getKey();
+            if (key.equalsIgnoreCase(name) || aliases.stream().anyMatch(key::equalsIgnoreCase)) {
+                iterator.remove();
+                return Optional.ofNullable(entry.getValue());
+            }
+        }
+        return Optional.empty();
     }
 
     @Override

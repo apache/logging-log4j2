@@ -20,6 +20,9 @@ package org.apache.logging.log4j.core.test.junit;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.LoggerContextAccessor;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.util.NetUtils;
+import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.plugins.di.Injector;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
@@ -29,7 +32,10 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 
 import java.lang.reflect.Method;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> implements BeforeAllCallback,
         AfterAllCallback, BeforeEachCallback, AfterEachCallback {
@@ -131,8 +137,14 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
 
         private LoggerContextConfig(final LoggerContextSource source, final ExtensionContext extensionContext) {
             final String displayName = extensionContext.getDisplayName();
-            final ClassLoader classLoader = extensionContext.getRequiredTestClass().getClassLoader();
-            context = Configurator.initialize(displayName, classLoader, source.value());
+            final Injector injector = extensionContext.getTestInstance().map(DI::createInjector).orElseGet(DI::createInjector);
+            injector.init();
+            final Class<?> testClass = extensionContext.getRequiredTestClass();
+            final ClassLoader classLoader = testClass.getClassLoader();
+            final String configLocation = source.value();
+            context = Configurator.initialize(displayName, classLoader,
+                    NetUtils.toURI(configLocation), Map.entry(Injector.class.getName(), injector));
+            assertNotNull(context, () -> "No LoggerContext created for " + testClass + " and config file " + configLocation);
             reconfigurationPolicy = source.reconfigure();
             shutdownTimeout = source.timeout();
             unit = source.unit();

@@ -50,4 +50,9 @@ public class DefaultConfiguration extends AbstractConfiguration {
     @Override
     protected void doConfigure() {
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
 }

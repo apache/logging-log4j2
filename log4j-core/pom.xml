@@ -21,7 +21,6 @@
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
     <version>3.0.0-SNAPSHOT</version>
-    <relativePath>../</relativePath>
   </parent>
   <artifactId>log4j-core</artifactId>
   <packaging>jar</packaging>
@@ -179,13 +178,6 @@
             <Export-Package>org.apache.logging.log4j.core.*</Export-Package>
             <Import-Package>
               sun.reflect;resolution:=optional,
-              org.apache.logging.log4j.util,
-              org.apache.logging.log4j.plugins,
-              org.apache.logging.log4j.plugins.convert,
-              org.apache.logging.log4j.plugins.processor,
-              org.apache.logging.log4j.plugins.util,
-              org.apache.logging.log4j.plugins.validation,
-              org.apache.logging.log4j.plugins.inject,
               *
             </Import-Package>
             <Bundle-Activator>org.apache.logging.log4j.core.osgi.Activator</Bundle-Activator>

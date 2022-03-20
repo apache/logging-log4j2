@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.async;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.core.selector.ContextSelector;
+import org.apache.logging.log4j.plugins.Singleton;
 
 import java.net.URI;
 import java.util.Collections;
@@ -28,8 +29,9 @@ import java.util.concurrent.TimeUnit;
 /**
  * Returns either this Thread's context or the default {@link AsyncLoggerContext}.
  * Single-application instances should prefer this implementation over the {@link AsyncLoggerContextSelector}
- * due the the reduced overhead avoiding classloader lookups.
+ * due to the reduced overhead avoiding classloader lookups.
  */
+@Singleton
 public class BasicAsyncLoggerContextSelector implements ContextSelector {
 
     private static final AsyncLoggerContext CONTEXT = new AsyncLoggerContext("AsyncDefault");

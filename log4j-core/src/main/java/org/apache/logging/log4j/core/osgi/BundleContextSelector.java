@@ -16,19 +16,20 @@
  */
 package org.apache.logging.log4j.core.osgi;
 
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.impl.ContextAnchor;
+import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
+import org.apache.logging.log4j.plugins.Singleton;
+import org.apache.logging.log4j.util.StackLocatorUtil;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleReference;
+import org.osgi.framework.FrameworkUtil;
+
 import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.impl.ContextAnchor;
-import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
-import org.apache.logging.log4j.util.StackLocatorUtil;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleReference;
-import org.osgi.framework.FrameworkUtil;
 
 /**
  * ContextSelector for OSGi bundles. This ContextSelector works rather similarly to the
@@ -37,6 +38,7 @@ import org.osgi.framework.FrameworkUtil;
  *
  * @since 2.1
  */
+@Singleton
 public class BundleContextSelector extends ClassLoaderContextSelector {
 
     @Override

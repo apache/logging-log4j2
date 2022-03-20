@@ -16,12 +16,16 @@
  */
 package org.apache.logging.log4j.core.time;
 
+import org.apache.logging.log4j.plugins.di.Key;
+
 /**
  * Provides the time stamp used in log events.
  *
  * @since 2.11
  */
 public interface Clock {
+    Key<Clock> KEY = new Key<>() {};
+
     /**
      * Returns the time in milliseconds since the epoch.
      *

@@ -16,8 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="OFF" dest="target/status.log" name="XMLConfigTest"
-               advertiser="memory">
+<Configuration status="off" name="XMLConfigTest" advertiser="memory">
   <ThresholdFilter level="debug"/>
 
   <Appenders>

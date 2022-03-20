@@ -16,82 +16,72 @@
  */
 package org.apache.logging.log4j.core.time;
 
-import org.apache.commons.lang3.reflect.FieldUtils;
-import org.apache.logging.log4j.core.async.AsyncLogger;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.time.internal.CachedClock;
 import org.apache.logging.log4j.core.time.internal.CoarseCachedClock;
 import org.apache.logging.log4j.core.time.internal.SystemClock;
+import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.plugins.di.Injector;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledOnJre;
-import org.junit.jupiter.api.condition.JRE;
 
-import java.lang.reflect.Field;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-// as of Java 12, final fields can no longer be overwritten via reflection
-@EnabledOnJre({ JRE.JAVA_8, JRE.JAVA_9, JRE.JAVA_10, JRE.JAVA_11 })
 public class ClockFactoryTest {
 
-    public static void resetClocks() throws IllegalAccessException {
-        resetClock(Log4jLogEvent.class);
-        resetClock(AsyncLogger.class);
-    }
-
-    public static void resetClock(final Class<?> clazz) throws IllegalAccessException {
-        System.clearProperty(ClockFactory.PROPERTY_NAME);
-        final Field field = FieldUtils.getField(clazz, "CLOCK", true);
-        FieldUtils.removeFinalModifier(field);
-        FieldUtils.writeStaticField(field, ClockFactory.getClock(), false);
-    }
+    private final Injector injector = DI.createInjector();
 
     @BeforeEach
     public void setUp() throws Exception {
-        resetClocks();
+        System.clearProperty(ClockFactory.PROPERTY_NAME);
     }
 
     @Test
     public void testDefaultIsSystemClock() {
         System.clearProperty(ClockFactory.PROPERTY_NAME);
-        assertSame(SystemClock.class, ClockFactory.getClock().getClass());
+        injector.init();
+        assertThat(injector.getInstance(Clock.class)).isInstanceOf(SystemClock.class);
     }
 
     @Test
     public void testSpecifySystemClockShort() {
         System.setProperty(ClockFactory.PROPERTY_NAME, "SystemClock");
-        assertSame(SystemClock.class, ClockFactory.getClock().getClass());
+        injector.init();
+        assertThat(injector.getInstance(Clock.class)).isInstanceOf(SystemClock.class);
     }
 
     @Test
     public void testSpecifySystemClockLong() {
         System.setProperty(ClockFactory.PROPERTY_NAME, SystemClock.class.getName());
-        assertSame(SystemClock.class, ClockFactory.getClock().getClass());
+        injector.init();
+        assertThat(injector.getInstance(Clock.class)).isInstanceOf(SystemClock.class);
     }
 
     @Test
     public void testSpecifyCachedClockShort() {
         System.setProperty(ClockFactory.PROPERTY_NAME, "CachedClock");
-        assertSame(CachedClock.class, ClockFactory.getClock().getClass());
+        injector.init();
+        assertThat(injector.getInstance(Clock.class)).isInstanceOf(CachedClock.class);
     }
 
     @Test
     public void testSpecifyCachedClockLong() {
         System.setProperty(ClockFactory.PROPERTY_NAME, CachedClock.class.getName());
-        assertSame(CachedClock.class, ClockFactory.getClock().getClass());
+        injector.init();
+        assertThat(injector.getInstance(Clock.class)).isInstanceOf(CachedClock.class);
     }
 
     @Test
     public void testSpecifyCoarseCachedClockShort() {
         System.setProperty(ClockFactory.PROPERTY_NAME, "CoarseCachedClock");
-        assertSame(CoarseCachedClock.class, ClockFactory.getClock().getClass());
+        injector.init();
+        assertThat(injector.getInstance(Clock.class)).isInstanceOf(CoarseCachedClock.class);
     }
 
     @Test
     public void testSpecifyCoarseCachedClockLong() {
         System.setProperty(ClockFactory.PROPERTY_NAME, CoarseCachedClock.class.getName());
-        assertSame(CoarseCachedClock.class, ClockFactory.getClock().getClass());
+        injector.init();
+        assertThat(injector.getInstance(Clock.class)).isInstanceOf(CoarseCachedClock.class);
     }
 
     public static class MyClock implements Clock {
@@ -104,7 +94,8 @@ public class ClockFactoryTest {
     @Test
     public void testCustomClock() {
         System.setProperty(ClockFactory.PROPERTY_NAME, MyClock.class.getName());
-        assertSame(MyClock.class, ClockFactory.getClock().getClass());
+        injector.init();
+        assertThat(injector.getInstance(Clock.class)).isInstanceOf(MyClock.class);
     }
 
 }

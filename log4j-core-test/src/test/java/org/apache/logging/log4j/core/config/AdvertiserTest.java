@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.io.File;
-import java.util.Map;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -28,19 +25,19 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("functional")
 @StatusLoggerLevel("OFF")
 public class AdvertiserTest {
 
     private static final String CONFIG = "log4j-advertiser.xml";
-    private static final String STATUS_LOG = "target/status.log";
 
     @BeforeAll
     public static void setupClass() {
-        final File file = new File(STATUS_LOG);
-        file.delete();
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
         final LoggerContext ctx = LoggerContext.getContext();
         final Configuration config = ctx.getConfiguration();
@@ -60,8 +57,6 @@ public class AdvertiserTest {
         final LoggerContext ctx = LoggerContext.getContext();
         ctx.reconfigure();
         StatusLogger.getLogger().reset();
-        final File file = new File(STATUS_LOG);
-        file.delete();
     }
 
     private void verifyExpectedEntriesAdvertised(final Map<Object, Map<String, String>> entries) {

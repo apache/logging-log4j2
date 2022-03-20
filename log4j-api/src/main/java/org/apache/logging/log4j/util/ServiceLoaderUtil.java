@@ -20,18 +20,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
 import java.util.function.Function;
-
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.status.StatusLogger;
+import java.util.function.Predicate;
 
 /**
  * Loads all valid instances of a service.
  */
 public class ServiceLoaderUtil {
-    private static final Logger LOGGER = StatusLogger.getLogger();
 
-    public static <S> List<S> loadServices(final Class<S> clazz, Function<ModuleLayer, ServiceLoader<S>> loader,
-            Function<S, Boolean> validator) {
+    public static <S> List<S> loadServices(final Class<S> clazz, final Function<ModuleLayer, ServiceLoader<S>> loader,
+            final Predicate<S> validator) {
         final List<S> services = new ArrayList<>();
         final ModuleLayer moduleLayer = ServiceLoaderUtil.class.getModule().getLayer();
         if (moduleLayer == null) {
@@ -42,7 +39,7 @@ public class ServiceLoaderUtil {
                 try {
                     final ServiceLoader<S> serviceLoader = ServiceLoader.load(clazz, classLoader);
                     for (final S service : serviceLoader) {
-                        if (!services.contains(service) && (validator == null || validator.apply(service))) {
+                        if (!services.contains(service) && (validator == null || validator.test(service))) {
                             services.add(service);
                         }
                     }
@@ -54,12 +51,12 @@ public class ServiceLoaderUtil {
                 }
             }
             if (services.size() == 0 && throwable != null) {
-                LOGGER.debug("Unable to retrieve provider from ClassLoader {}", errorClassLoader, throwable);
+                LowLevelLogUtil.logException("Unable to retrieve provider from ClassLoader " + errorClassLoader, throwable);
             }
         } else {
             final ServiceLoader<S> serviceLoader = loader.apply(moduleLayer);
             for (final S service : serviceLoader) {
-                if (!services.contains(service) && (validator == null || validator.apply(service))) {
+                if (!services.contains(service) && (validator == null || validator.test(service))) {
                     services.add(service);
                 }
             }

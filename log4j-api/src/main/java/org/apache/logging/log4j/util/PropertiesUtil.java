@@ -436,18 +436,10 @@ public final class PropertiesUtil {
                 // Access to System Properties is restricted so just skip it.
             }
             sources.add(propertySource);
-			for (final ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
-				try {
-					for (final PropertySource source : ServiceLoader.load(PropertySource.class, classLoader)) {
-						sources.add(source);
-					}
-				} catch (final Throwable ex) {
-					/* Don't log anything to the console. It may not be a problem that a PropertySource
-					 * isn't accessible.
-					 */
-				}
-			}
-
+            final ServiceRegistry registry = ServiceRegistry.getInstance();
+            sources.addAll(registry.getServices(PropertySource.class,
+                    layer -> ServiceLoader.load(layer, PropertySource.class),
+                    null));
             reload();
         }
 

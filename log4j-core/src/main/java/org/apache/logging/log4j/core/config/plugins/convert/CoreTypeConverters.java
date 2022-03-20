@@ -38,6 +38,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Provider;
 import java.security.Security;
+import java.time.ZoneId;
 import java.util.Base64;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -74,17 +75,6 @@ public final class CoreTypeConverters {
     }
 
     /**
-     * Converts a {@link String} into a {@link Boolean}.
-     */
-    @Plugin(name = "Boolean", category = TypeConverters.CATEGORY)
-    public static class BooleanConverter implements TypeConverter<Boolean> {
-        @Override
-        public Boolean convert(final String s) {
-            return Boolean.valueOf(s);
-        }
-    }
-
-    /**
      * Converts a {@link String} into a {@code byte[]}.
      *
      * The supported formats are:
@@ -115,31 +105,6 @@ public final class CoreTypeConverters {
                 bytes = value.getBytes(Charset.defaultCharset());
             }
             return bytes;
-        }
-    }
-
-    /**
-     * Converts a {@link String} into a {@link Byte}.
-     */
-    @Plugin(name = "Byte", category = TypeConverters.CATEGORY)
-    public static class ByteConverter implements TypeConverter<Byte> {
-        @Override
-        public Byte convert(final String s) {
-            return Byte.valueOf(s);
-        }
-    }
-
-    /**
-     * Converts a {@link String} into a {@link Character}.
-     */
-    @Plugin(name = "Character", category = TypeConverters.CATEGORY)
-    public static class CharacterConverter implements TypeConverter<Character> {
-        @Override
-        public Character convert(final String s) {
-            if (s.length() != 1) {
-                throw new IllegalArgumentException("Character string must be of length 1: " + s);
-            }
-            return Character.valueOf(s.toCharArray()[0]);
         }
     }
 
@@ -207,17 +172,6 @@ public final class CoreTypeConverters {
     }
 
     /**
-     * Converts a {@link String} into a {@link Double}.
-     */
-    @Plugin(name = "Double", category = TypeConverters.CATEGORY)
-    public static class DoubleConverter implements TypeConverter<Double> {
-        @Override
-        public Double convert(final String s) {
-            return Double.valueOf(s);
-        }
-    }
-
-    /**
      * Converts a {@link String} into a {@link Duration}.
      * @since 2.5
      */
@@ -241,17 +195,6 @@ public final class CoreTypeConverters {
     }
 
     /**
-     * Converts a {@link String} into a {@link Float}.
-     */
-    @Plugin(name = "Float", category = TypeConverters.CATEGORY)
-    public static class FloatConverter implements TypeConverter<Float> {
-        @Override
-        public Float convert(final String s) {
-            return Float.valueOf(s);
-        }
-    }
-
-    /**
      * Converts a {@link String} into an {@link InetAddress}.
      */
     @Plugin(name = "InetAddress", category = TypeConverters.CATEGORY)
@@ -263,17 +206,6 @@ public final class CoreTypeConverters {
     }
 
     /**
-     * Converts a {@link String} into a {@link Integer}.
-     */
-    @Plugin(name = "Integer", category = TypeConverters.CATEGORY)
-    public static class IntegerConverter implements TypeConverter<Integer> {
-        @Override
-        public Integer convert(final String s) {
-            return Integer.valueOf(s);
-        }
-    }
-
-    /**
      * Converts a {@link String} into a Log4j {@link Level}. Returns {@code null} for invalid level names.
      */
     @Plugin(name = "Level", category = TypeConverters.CATEGORY)
@@ -281,17 +213,6 @@ public final class CoreTypeConverters {
         @Override
         public Level convert(final String s) {
             return Level.valueOf(s);
-        }
-    }
-
-    /**
-     * Converts a {@link String} into a {@link Long}.
-     */
-    @Plugin(name = "Long", category = TypeConverters.CATEGORY)
-    public static class LongConverter implements TypeConverter<Long> {
-        @Override
-        public Long convert(final String s) {
-            return Long.valueOf(s);
         }
     }
 
@@ -330,28 +251,6 @@ public final class CoreTypeConverters {
     }
 
     /**
-     * Converts a {@link String} into a {@link Short}.
-     */
-    @Plugin(name = "Short", category = TypeConverters.CATEGORY)
-    public static class ShortConverter implements TypeConverter<Short> {
-        @Override
-        public Short convert(final String s) {
-            return Short.valueOf(s);
-        }
-    }
-
-    /**
-     * Returns the given {@link String}, no conversion takes place.
-     */
-    @Plugin(name = "String", category = TypeConverters.CATEGORY)
-    public static class StringConverter implements TypeConverter<String> {
-        @Override
-        public String convert(final String s) {
-            return s;
-        }
-    }
-
-    /**
      * Converts a {@link String} into a {@link URI}.
      */
     @Plugin(name = "URI", category = TypeConverters.CATEGORY)
@@ -382,6 +281,14 @@ public final class CoreTypeConverters {
         @Override
         public UUID convert(final String s) throws Exception {
             return UUID.fromString(s);
+        }
+    }
+
+    @Plugin(name = "ZoneId", category = TypeConverters.CATEGORY)
+    public static class ZoneIdConverter implements TypeConverter<ZoneId> {
+        @Override
+        public ZoneId convert(final String s) throws Exception {
+            return ZoneId.of(s);
         }
     }
 }

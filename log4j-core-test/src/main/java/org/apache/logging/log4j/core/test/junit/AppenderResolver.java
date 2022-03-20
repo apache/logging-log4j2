@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.test.junit;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
@@ -30,8 +31,8 @@ class AppenderResolver implements ParameterResolver {
     @Override
     public boolean supportsParameter(
             ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        return Appender.class.isAssignableFrom(parameterContext.getParameter().getType()) && parameterContext
-                .isAnnotated(Named.class);
+        return Appender.class.isAssignableFrom(parameterContext.getParameter().getType()) &&
+                AnnotatedElementNameProvider.hasName(parameterContext.getParameter());
     }
 
     @Override
@@ -41,10 +42,10 @@ class AppenderResolver implements ParameterResolver {
         if (loggerContext == null) {
             throw new ParameterResolutionException("No LoggerContext defined");
         }
-        final String name = parameterContext.findAnnotation(Named.class)
-                .map(Named::value)
-                .map(s -> s.isEmpty() ? parameterContext.getParameter().getName() : s)
-                .orElseThrow(() -> new ParameterResolutionException("No @Named present after checking earlier"));
+        final String name = AnnotatedElementNameProvider.getName(parameterContext.getParameter());
+        if (name.isEmpty()) {
+            throw new ParameterResolutionException("No named annotation present after checking earlier");
+        }
         final Appender appender = loggerContext.getConfiguration().getAppender(name);
         if (appender == null) {
             throw new ParameterResolutionException("No appender named " + name);

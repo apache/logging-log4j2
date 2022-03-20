@@ -156,12 +156,19 @@ public class PluginProcessor extends AbstractProcessor {
         try (final PrintWriter writer = createSourceFile(fqcn)) {
             writer.println("package " + pkg + ".plugins;");
             writer.println("");
+            writer.println("import org.apache.logging.log4j.plugins.di.LookupSelector;");
             writer.println("import org.apache.logging.log4j.plugins.processor.PluginEntry;");
             writer.println("import org.apache.logging.log4j.plugins.processor.PluginService;");
             writer.println("");
+            writer.println("import java.lang.invoke.MethodHandles.Lookup;");
+            writer.println("");
+            writer.println("import static java.lang.invoke.MethodHandles.lookup;");
+            writer.println("import static java.lang.invoke.MethodHandles.privateLookupIn;");
+            writer.println("");
             writer.println("public class Log4jPlugins extends PluginService {");
             writer.println("");
-            writer.println("    private static PluginEntry[] entries = new PluginEntry[] {");
+            writer.println("    private static final Lookup LOOKUP = lookup();");
+            writer.println("    private static final PluginEntry[] ENTRIES = new PluginEntry[] {");
             StringBuilder sb = new StringBuilder();
             int max = list.size() - 1;
             for (int i = 0; i < list.size(); ++i) {
@@ -176,12 +183,14 @@ public class PluginProcessor extends AbstractProcessor {
                 if (i < max) {
                     sb.append(",");
                 }
-                writer.println(sb.toString());
+                writer.println(sb);
                 sb.setLength(0);
             }
             writer.println("    };");
             writer.println("    @Override");
-            writer.println("    public PluginEntry[] getEntries() { return entries;}");
+            writer.println("    public PluginEntry[] getEntries() { return ENTRIES; }");
+            writer.println("    @Override");
+            writer.println("    protected LookupSelector getLookupSelector() { return clazz -> privateLookupIn(clazz, LOOKUP); }");
             writer.println("}");
         }
     }

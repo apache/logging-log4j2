@@ -20,11 +20,30 @@ package org.apache.logging.log4j.plugins.name;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.util.Strings;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
-public class NamedQualifierNameProvider implements AnnotatedElementNameProvider<Named> {
+public class NamedQualifierNameProvider implements AnnotatedElementNameProvider<Named>, AnnotatedElementAliasesProvider<Named> {
     @Override
     public Optional<String> getSpecifiedName(final Named annotation) {
-        return Strings.trimToOptional(annotation.value());
+        final String[] names = annotation.value();
+        if (names == null || names.length == 0) {
+            return Optional.empty();
+        }
+        return Strings.trimToOptional(names[0]);
+    }
+
+    @Override
+    public Collection<String> getAliases(final Named annotation) {
+        final String[] names = annotation.value();
+        if (names == null || names.length <= 1) {
+            return List.of();
+        }
+        final String[] aliases = new String[names.length - 1];
+        for (int i = 0; i < aliases.length; i++) {
+            aliases[i] = names[i + 1].trim();
+        }
+        return List.of(aliases);
     }
 }

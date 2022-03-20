@@ -15,7 +15,7 @@
   ~ See the license for the specific language governing permissions and
   ~ limitations under the license.
   -->
-<Configuration status="off">
+<Configuration>
   <Appenders>
     <List name="List">
       <PatternLayout pattern="1=${sys:elementKey},2=${sys:emptyElementKey},a=${sys:emptyAttributeKey},b=${sys:emptyAttributeKey2},3=${sys:attributeKey},4=${sys:attributeWithEmptyElementKey},5=${sys:bothElementAndAttributeKey},m=%m" />

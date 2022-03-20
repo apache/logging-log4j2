@@ -17,22 +17,15 @@
 package org.apache.logging.log4j.core;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.time.Clock;
-import org.apache.logging.log4j.core.time.ClockFactory;
-import org.apache.logging.log4j.core.time.ClockFactoryTest;
-import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
-import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.apache.logging.log4j.util.Strings;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.apache.logging.log4j.plugins.Factory;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledForJreRange;
-import org.junit.jupiter.api.condition.JRE;
 
 import java.util.List;
 
@@ -46,30 +39,17 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * </p>
  */
 @LoggerContextSource("log4j2-744.xml")
-@DisabledForJreRange(min = JRE.JAVA_12, disabledReason = "In java 12+ final cannot be removed.")
 public class TimestampMessageTest {
-    private ListAppender app;
-
-    public TimestampMessageTest(@Named("List") final ListAppender app) {
-        this.app = app.clear();
-    }
-
-    @BeforeAll
-    public static void beforeClass() {
-        System.setProperty(ClockFactory.PROPERTY_NAME, PoisonClock.class.getName());
-    }
-
-    @AfterAll
-    public static void afterClass() throws IllegalAccessException {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, Strings.EMPTY);
-        ClockFactoryTest.resetClocks();
+    @Factory
+    public static Clock poisonClock() {
+        return new PoisonClock();
     }
 
     @Test
-    public void testTimestampMessage(final LoggerContext context) {
+    public void testTimestampMessage(final LoggerContext context, @Named("List") final ListAppender list) {
         final Logger log = context.getLogger("TimestampMessageTest");
         log.info((Message) new TimeMsg("Message with embedded timestamp", 123456789000L));
-        final List<String> msgs = app.getMessages();
+        final List<String> msgs = list.getMessages();
         assertNotNull(msgs);
         assertEquals(1, msgs.size());
         final String NL = System.lineSeparator();

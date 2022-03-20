@@ -17,18 +17,18 @@
 module org.apache.logging.log4j.plugins {
     exports org.apache.logging.log4j.plugins;
     exports org.apache.logging.log4j.plugins.convert;
+    exports org.apache.logging.log4j.plugins.di;
+    exports org.apache.logging.log4j.plugins.name;
     exports org.apache.logging.log4j.plugins.processor;
     exports org.apache.logging.log4j.plugins.util;
     exports org.apache.logging.log4j.plugins.validation;
     exports org.apache.logging.log4j.plugins.validation.constraints;
     exports org.apache.logging.log4j.plugins.validation.validators;
-    exports org.apache.logging.log4j.plugins.bind;
-    exports org.apache.logging.log4j.plugins.inject;
-    exports org.apache.logging.log4j.plugins.name;
+    exports org.apache.logging.log4j.plugins.visit;
 
     requires org.apache.logging.log4j;
     requires static org.osgi.framework;
 
     uses org.apache.logging.log4j.plugins.processor.PluginService;
-
+    uses org.apache.logging.log4j.plugins.di.InjectorCallback;
 }

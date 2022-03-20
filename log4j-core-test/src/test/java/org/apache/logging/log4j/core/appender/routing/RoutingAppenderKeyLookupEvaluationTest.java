@@ -16,20 +16,21 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
-import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @LoggerContextSource("log4j-routing-lookup.xml")
+@UsingThreadContextMap
 public class RoutingAppenderKeyLookupEvaluationTest {
 
     private static final String KEY = "user";
@@ -59,8 +60,7 @@ public class RoutingAppenderKeyLookupEvaluationTest {
     public void testRoutingNoUser() {
         Logger logger = context.getLogger(getClass());
         logger.warn("no user");
-        String message = app.getMessages().get(0);
-        assertEquals("WARN ${ctx:user} no user", message);
+        assertThat(app.getMessages()).contains("WARN ${ctx:user} no user");
     }
 
     @Test
@@ -68,7 +68,7 @@ public class RoutingAppenderKeyLookupEvaluationTest {
         Logger logger = context.getLogger(getClass());
         ThreadContext.put(KEY, "noRouteExists");
         logger.warn("unmatched user");
-        assertTrue(app.getMessages().isEmpty());
+        assertThat(app.getMessages()).isEmpty();
     }
 
     @Test
@@ -76,8 +76,7 @@ public class RoutingAppenderKeyLookupEvaluationTest {
         Logger logger = context.getLogger(getClass());
         ThreadContext.put(KEY, "${java:version}");
         logger.warn("naughty user");
-        String message = app.getMessages().get(0);
-        assertEquals("WARN ${java:version} naughty user", message);
+        assertThat(app.getMessages()).contains("WARN ${java:version} naughty user");
     }
 
     @Test
@@ -85,8 +84,7 @@ public class RoutingAppenderKeyLookupEvaluationTest {
         Logger logger = context.getLogger(getClass());
         ThreadContext.put(KEY, "${upper:name}");
         logger.warn("naughty user");
-        String message = app.getMessages().get(0);
-        assertEquals("WARN ${upper:name} naughty user", message);
+        assertThat(app.getMessages()).contains("WARN ${upper:name} naughty user");
     }
 
     @Test
@@ -94,6 +92,6 @@ public class RoutingAppenderKeyLookupEvaluationTest {
         Logger logger = context.getLogger(getClass());
         ThreadContext.put(KEY, "NAME");
         logger.warn("unmatched user");
-        assertTrue(app.getMessages().isEmpty());
+        assertThat(app.getMessages()).isEmpty();
     }
 }

@@ -16,12 +16,13 @@
  */
 package org.apache.logging.log4j.plugins.util;
 
-
-import java.util.Collection;
-
+import org.apache.logging.log4j.plugins.di.LookupSelector;
 import org.apache.logging.log4j.plugins.processor.PluginEntry;
-import org.apache.logging.log4j.plugins.validation.ConstraintValidator;
-import org.apache.logging.log4j.plugins.validation.ConstraintValidators;
+import org.apache.logging.log4j.util.LazyValue;
+
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodHandles.Lookup;
+import java.util.function.Supplier;
 
 /**
  * Plugin Descriptor. This is a memento object for Plugin annotations paired to their annotated classes.
@@ -32,8 +33,8 @@ import org.apache.logging.log4j.plugins.validation.ConstraintValidators;
 public class PluginType<T> {
 
     private final PluginEntry pluginEntry;
-    private volatile Class<T> pluginClass;
-    private final ClassLoader classLoader;
+    private final Supplier<Class<T>> pluginClass;
+    private final Supplier<Lookup> pluginLookup;
     private final String elementName;
 
     /**
@@ -44,23 +45,40 @@ public class PluginType<T> {
      * @since 2.1
      */
     public PluginType(final PluginEntry pluginEntry, final Class<T> pluginClass, final String elementName) {
+        this(pluginEntry, pluginClass, MethodHandles.lookup().in(pluginClass), elementName);
+    }
+
+    public PluginType(
+            final PluginEntry pluginEntry, final Class<T> pluginClass, final Lookup pluginLookup, final String elementName) {
         this.pluginEntry = pluginEntry;
-        this.pluginClass = pluginClass;
+        this.pluginClass = () -> pluginClass;
+        this.pluginLookup = () -> pluginLookup;
         this.elementName = elementName;
-        this.classLoader = null;
     }
 
     /**
      * The Constructor.
      * @since 3.0
      * @param pluginEntry The PluginEntry.
-     * @param classLoader The ClassLoader to use to load the Plugin.
      */
-    public PluginType(final PluginEntry pluginEntry, final ClassLoader classLoader) {
+    public PluginType(final PluginEntry pluginEntry, final ClassLoader classLoader, final LookupSelector lookupSelector) {
         this.pluginEntry = pluginEntry;
-        this.classLoader = classLoader;
+        this.pluginClass = new LazyValue<>(() -> {
+            try {
+                return TypeUtil.cast(classLoader.loadClass(pluginEntry.getClassName()));
+            } catch (ClassNotFoundException e) {
+                throw new IllegalStateException("No class named " + pluginEntry.getClassName() +
+                        " located for element " + pluginEntry.getName(), e);
+            }
+        });
+        this.pluginLookup = new LazyValue<>(() -> {
+            try {
+                return lookupSelector.in(pluginClass.get());
+            } catch (final IllegalAccessException e) {
+                throw new IllegalAccessError(e.getMessage());
+            }
+        });
         this.elementName = pluginEntry.getName();
-        this.pluginClass = null;
     }
 
 
@@ -68,17 +86,12 @@ public class PluginType<T> {
         return this.pluginEntry;
     }
 
-    @SuppressWarnings("unchecked")
     public Class<T> getPluginClass() {
-        if (pluginClass == null) {
-            try {
-                pluginClass = (Class<T>) this.classLoader.loadClass(pluginEntry.getClassName());
-            } catch (ClassNotFoundException | LinkageError ex) {
-                throw new IllegalStateException("No class named " + pluginEntry.getClassName() +
-                        " located for element " + elementName, ex);
-            }
-        }
-        return this.pluginClass;
+        return pluginClass.get();
+    }
+
+    public Lookup getPluginLookup() {
+        return pluginLookup.get();
     }
 
     public String getElementName() {
@@ -113,7 +126,7 @@ public class PluginType<T> {
 
     @Override
     public String toString() {
-        return "PluginType [pluginClass=" + pluginClass +
+        return "PluginType [pluginClass=" + pluginClass.get() +
                 ", key=" + pluginEntry.getKey() +
                 ", elementName=" + pluginEntry.getName() +
                 ", isObjectPrintable=" + pluginEntry.isPrintable() +

@@ -23,12 +23,16 @@ import java.lang.reflect.AnnotatedElement;
 public final class AnnotationUtil {
 
     public static boolean isMetaAnnotationPresent(final AnnotatedElement element, final Class<? extends Annotation> metaAnnotation) {
+        return getMetaAnnotation(element, metaAnnotation) != null;
+    }
+
+    public static Annotation getMetaAnnotation(final AnnotatedElement element, final Class<? extends Annotation> metaAnnotation) {
         for (final Annotation annotation : element.getAnnotations()) {
             if (annotation.annotationType().isAnnotationPresent(metaAnnotation)) {
-                return true;
+                return annotation;
             }
         }
-        return false;
+        return null;
     }
 
     private AnnotationUtil() {

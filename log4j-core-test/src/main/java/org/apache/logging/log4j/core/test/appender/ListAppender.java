@@ -198,7 +198,7 @@ public class ListAppender extends AbstractAppender {
 
     /** Returns an immutable snapshot of captured messages */
     public List<String> getMessages() {
-        return Collections.unmodifiableList(new ArrayList<>(messages));
+        return List.copyOf(messages);
     }
 
     /**
@@ -216,7 +216,7 @@ public class ListAppender extends AbstractAppender {
 
     /** Returns an immutable snapshot of captured data */
     public List<byte[]> getData() {
-        return Collections.unmodifiableList(new ArrayList<>(data));
+        return List.copyOf(data);
     }
 
     public static ListAppender createAppender(final String name, final boolean newLine, final boolean raw,
@@ -237,33 +237,27 @@ public class ListAppender extends AbstractAppender {
         private Layout<? extends Serializable> layout;
         private Filter filter;
 
-        @PluginAttribute
-        @Required
-        public Builder setName(final String name) {
+        public Builder setName(@Required @PluginAttribute final String name) {
             this.name = name;
             return this;
         }
 
-        @PluginAttribute
-        public Builder setEntryPerNewLine(final boolean entryPerNewLine) {
+        public Builder setEntryPerNewLine(@PluginAttribute final boolean entryPerNewLine) {
             this.entryPerNewLine = entryPerNewLine;
             return this;
         }
 
-        @PluginAttribute
-        public Builder setRaw(final boolean raw) {
+        public Builder setRaw(@PluginAttribute final boolean raw) {
             this.raw = raw;
             return this;
         }
 
-        @PluginElement
-        public Builder setLayout(final Layout<? extends Serializable> layout) {
+        public Builder setLayout(@PluginElement final Layout<? extends Serializable> layout) {
             this.layout = layout;
             return this;
         }
 
-        @PluginElement
-        public Builder setFilter(final Filter filter) {
+        public Builder setFilter(@PluginElement final Filter filter) {
             this.filter = filter;
             return this;
         }
@@ -283,7 +277,7 @@ public class ListAppender extends AbstractAppender {
      * @see LoggerContextRule#getListAppender(String)
      */
     public static ListAppender getListAppender(final String name) {
-        return ((ListAppender) (LoggerContext.getContext(false)).getConfiguration().getAppender(name));
+        return (LoggerContext.getContext(false)).getConfiguration().getAppender(name);
     }
 
     @Override

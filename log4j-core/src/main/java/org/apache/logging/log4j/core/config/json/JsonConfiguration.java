@@ -16,16 +16,6 @@
  */
 package org.apache.logging.log4j.core.config.json;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -40,6 +30,16 @@ import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.util.ResolverUtil;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Creates a Node hierarchy from a JSON file.
@@ -56,7 +56,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
         final byte[] buffer;
         try {
             try (final InputStream configStream = configSource.getInputStream()) {
-                buffer = toByteArray(configStream);
+                buffer = configStream.readAllBytes();
             }
             final InputStream is = new ByteArrayInputStream(buffer);
             root = getObjectMapper().readTree(is);

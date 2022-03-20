@@ -16,17 +16,20 @@
  */
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
-import org.apache.logging.log4j.core.config.NullConfiguration;
-import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
 import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.plugins.di.Keys;
+import org.apache.logging.log4j.plugins.test.validation.HostAndPort;
 import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
-import org.apache.logging.log4j.plugins.test.validation.HostAndPort;
 import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.function.Function;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @StatusLoggerLevel("OFF")
 public class ValidPortValidatorTest {
@@ -63,10 +66,9 @@ public class ValidPortValidatorTest {
     }
 
     private HostAndPort buildPlugin() {
-        return (HostAndPort) new PluginBuilder(plugin)
-            .setConfiguration(new NullConfiguration())
-            .setConfigurationNode(node)
-            .build();
+        return DI.createInjector()
+                .registerBinding(Keys.SUBSTITUTOR_KEY, Function::identity)
+                .configure(node);
     }
 
 }

@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.util;
 
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
+import org.apache.logging.log4j.plugins.di.Key;
 
 /**
  * Registry used for Runnable shutdown callback instances. Due to differing requirements of how late in the JVM
@@ -33,6 +34,8 @@ public interface ShutdownCallbackRegistry {
      * System property to set to choose the ShutdownCallbackRegistry.
      */
     String SHUTDOWN_CALLBACK_REGISTRY = "log4j.shutdownCallbackRegistry";
+
+    Key<ShutdownCallbackRegistry> KEY = Key.forClass(ShutdownCallbackRegistry.class);
 
     /**
      * System property to set to override the global ability to register shutdown hooks.

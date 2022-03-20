@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.util.List;
-import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -34,6 +31,10 @@ import org.apache.logging.log4j.core.script.ScriptManager;
 import org.apache.logging.log4j.core.time.NanoClock;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.di.Key;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Interface that must be implemented to create a configuration.
@@ -44,6 +45,9 @@ import org.apache.logging.log4j.plugins.Node;
  * @see AbstractConfiguration
  */
 public interface Configuration extends Filterable {
+
+    /** Injection key for the current Configuration. */
+    Key<Configuration> KEY = new Key<>() {};
 
     /** Key for storing the Context properties. */
     String CONTEXT_PROPERTIES = "ContextProperties";
@@ -128,6 +132,8 @@ public interface Configuration extends Filterable {
     void createConfiguration(Node node, LogEvent event);
 
     <T> T getComponent(String name);
+
+    <T> T getComponent(Key<T> key);
 
     void addComponent(String name, Object object);
 
