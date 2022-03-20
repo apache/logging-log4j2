@@ -63,17 +63,18 @@ public class PluginType<T> {
      */
     public PluginType(final PluginEntry pluginEntry, final ClassLoader classLoader, final LookupSelector lookupSelector) {
         this.pluginEntry = pluginEntry;
-        this.pluginClass = new LazyValue<>(() -> {
+        final LazyValue<Class<T>> pluginClass = new LazyValue<>(() -> {
             try {
                 return TypeUtil.cast(classLoader.loadClass(pluginEntry.getClassName()));
-            } catch (ClassNotFoundException e) {
+            } catch (final ClassNotFoundException e) {
                 throw new IllegalStateException("No class named " + pluginEntry.getClassName() +
                         " located for element " + pluginEntry.getName(), e);
             }
         });
-        this.pluginLookup = new LazyValue<>(() -> {
+        this.pluginClass = pluginClass;
+        this.pluginLookup = pluginClass.map(clazz -> {
             try {
-                return lookupSelector.in(pluginClass.get());
+                return lookupSelector.in(clazz);
             } catch (final IllegalAccessException e) {
                 throw new IllegalAccessError(e.getMessage());
             }

@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.util;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -52,7 +53,14 @@ public final class LazyValue<T> implements Supplier<T> {
         return value;
     }
 
-    public synchronized void reset() {
-        value = null;
+    /**
+     * Creates a LazyValue that maps the result of this LazyValue to another value.
+     *
+     * @param function mapping function to transform the result of this lazy value
+     * @param <R>      the return type of the new lazy value
+     * @return the new lazy value
+     */
+    public <R> LazyValue<R> map(final Function<? super T, ? extends R> function) {
+        return new LazyValue<>(() -> function.apply(get()));
     }
 }
