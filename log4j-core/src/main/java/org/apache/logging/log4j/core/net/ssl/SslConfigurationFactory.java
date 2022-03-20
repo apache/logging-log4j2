@@ -46,6 +46,10 @@ public class SslConfigurationFactory {
 
     private static final Supplier<SslConfiguration> SSL_CONFIGURATION = LazyValue.from(() -> {
         final PropertiesUtil props = PropertiesUtil.getProperties();
+        return createSslConfiguration(props);
+    });
+
+    static final SslConfiguration createSslConfiguration(final PropertiesUtil props) {
         KeyStoreConfiguration keyStoreConfiguration = null;
         TrustStoreConfiguration trustStoreConfiguration = null;
         String location = props.getStringProperty(trustStorelocation);
@@ -82,11 +86,11 @@ public class SslConfigurationFactory {
         }
         if (trustStoreConfiguration != null || keyStoreConfiguration != null) {
             final boolean isVerifyHostName = props.getBooleanProperty(verifyHostName, false);
-            return SslConfiguration.createSSLConfiguration("https", keyStoreConfiguration,
+            return SslConfiguration.createSSLConfiguration(null, keyStoreConfiguration,
                     trustStoreConfiguration, isVerifyHostName);
         }
         return null;
-    });
+    }
 
     public static SslConfiguration getSslConfiguration() {
         return SSL_CONFIGURATION.get();

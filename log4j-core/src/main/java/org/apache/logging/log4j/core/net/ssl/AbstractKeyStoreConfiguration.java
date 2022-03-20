@@ -32,6 +32,8 @@ import org.apache.logging.log4j.core.util.NetUtils;
  * Configuration of the KeyStore
  */
 public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> {
+    static final char[] DEFAULT_PASSWORD = "changeit".toCharArray();
+
     private final KeyStore keyStore;
     private final String keyStoreType;
 
@@ -54,7 +56,7 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
                 final KeyStore ks = KeyStore.getInstance(this.keyStoreType);
                 final char[] password = this.getPassword();
                 try {
-                    ks.load(fin, password);
+                    ks.load(fin, password != null ? password : DEFAULT_PASSWORD);
                 } finally {
                     if (password != null) {
                         Arrays.fill(password, '\0');
