@@ -30,9 +30,9 @@ import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
 import org.apache.logging.log4j.plugins.util.AnnotationUtil;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
+import org.apache.logging.log4j.plugins.validation.Constraint;
 import org.apache.logging.log4j.plugins.validation.ConstraintValidationException;
-import org.apache.logging.log4j.plugins.validation.ConstraintValidators;
-import org.apache.logging.log4j.plugins.validation.PluginValidator;
+import org.apache.logging.log4j.plugins.validation.ConstraintValidator;
 import org.apache.logging.log4j.plugins.visit.NodeVisitor;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LazyValue;
@@ -51,6 +51,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -212,11 +214,31 @@ class DefaultInjector implements Injector {
 
     private Object getInjectableInstance(
             final Key<?> key, final Node node, final Set<Key<?>> chain, final StringBuilder debugLog) {
+        final Class<?> rawType = key.getRawType();
+        validate(rawType, key.getName(), rawType);
         final Constructor<?> constructor = getInjectableConstructor(key, chain);
         final List<InjectionPoint<?>> points = InjectionPoint.fromExecutable(constructor);
         final MethodHandle handle = getConstructorHandle(constructor, lookup);
         final var args = getArguments(key, node, points, chain, debugLog);
         return rethrow(() -> handle.invokeWithArguments(args));
+    }
+
+    private void validate(final AnnotatedElement element, final String name, final Object value) {
+        int errors = 0;
+        for (final Annotation annotation : element.getAnnotations()) {
+            final Class<? extends Annotation> annotationType = annotation.annotationType();
+            final Constraint constraint = annotationType.getAnnotation(Constraint.class);
+            if (constraint != null && isCompatibleValidator(constraint, annotationType)) {
+                final ConstraintValidator<? extends Annotation> validator = getInstance(constraint.value());
+                initializeConstraintValidator(validator, annotation);
+                if (!validator.isValid(name, value)) {
+                    errors++;
+                }
+            }
+        }
+        if (errors > 0) {
+            throw new ConstraintValidationException(element, name, value);
+        }
     }
 
     private void injectMembers(
@@ -245,11 +267,9 @@ class DefaultInjector implements Injector {
         if (value != null) {
             handle.set(instance, value);
         }
-        if (ConstraintValidators.hasConstraints(field)) {
+        if (AnnotationUtil.isMetaAnnotationPresent(field, Constraint.class)) {
             final Object fieldValue = handle.get(instance);
-            if (!ConstraintValidators.isValid(field, key.getName(), fieldValue)) {
-                throw new ConstraintValidationException(field, key.getName(), fieldValue);
-            }
+            validate(field, key.getName(), fieldValue);
         }
     }
 
@@ -293,13 +313,8 @@ class DefaultInjector implements Injector {
             node.setObject(list);
             return;
         }
-        final String elementName = type.getElementName();
-        if (!PluginValidator.validatePlugin(pluginClass, elementName)) {
-            LOGGER.error("Could not configure plugin of type {} for element {} due to constraint violations", pluginClass,
-                    elementName);
-            return;
-        }
         try {
+            validate(pluginClass, type.getElementName(), pluginClass);
             final StringBuilder debugLog = new StringBuilder();
             final Object instance = getInjectablePluginInstance(node, debugLog);
             if (instance instanceof Supplier<?>) {
@@ -406,9 +421,7 @@ class DefaultInjector implements Injector {
                     final Parameter parameter = e.getKey();
                     final String name = AnnotatedElementNameProvider.getName(parameter);
                     final Object value = e.getValue().get();
-                    if (!ConstraintValidators.isValid(parameter, name, value)) {
-                        throw new ConstraintValidationException(parameter, name, value);
-                    }
+                    validate(parameter, name, value);
                     return parameter.isVarArgs() ? Stream.of((Object[]) value) : Stream.of(value);
                 })
                 .collect(Collectors.toList());
@@ -447,6 +460,25 @@ class DefaultInjector implements Injector {
     private Scope getScopeForType(final Class<?> type) {
         final Annotation scope = AnnotationUtil.getMetaAnnotation(type, ScopeType.class);
         return scope != null ? scopes.get(scope.annotationType()) : DefaultScope.INSTANCE;
+    }
+
+    private static boolean isCompatibleValidator(final Constraint constraint, final Class<? extends Annotation> annotationType) {
+        for (final Type type : constraint.value().getGenericInterfaces()) {
+            if (type instanceof ParameterizedType) {
+                ParameterizedType parameterizedType = (ParameterizedType) type;
+                if (parameterizedType.getRawType() == ConstraintValidator.class &&
+                        parameterizedType.getActualTypeArguments()[0] == annotationType) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private static void initializeConstraintValidator(final ConstraintValidator<? extends Annotation> validator, final Annotation annotation) {
+        // runtime type checking ensures this raw type usage is correct
+        ((ConstraintValidator) validator).initialize(annotation);
     }
 
     private static void verifyAttributesConsumed(final Node node) {
@@ -541,10 +573,6 @@ class DefaultInjector implements Injector {
 
     private static <T> Constructor<T> getInjectableConstructor(final Key<T> key, final Set<Key<?>> chain) {
         final Class<T> rawType = key.getRawType();
-        final String name = key.getName();
-        if (!ConstraintValidators.isValid(rawType, name, rawType)) {
-            throw new ConstraintValidationException(rawType, name, rawType);
-        }
         final List<Constructor<?>> injectConstructors = Stream.of(rawType.getDeclaredConstructors())
                 .filter(constructor -> constructor.isAnnotationPresent(Inject.class))
                 .collect(Collectors.toList());

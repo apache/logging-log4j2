@@ -23,10 +23,6 @@ import java.lang.reflect.AnnotatedElement;
 
 public class ConstraintValidationException extends PluginException {
     public ConstraintValidationException(final AnnotatedElement element, final String name, final Object value) {
-        this(element, name, value, false);
-    }
-
-    public ConstraintValidationException(final AnnotatedElement element, final String name, final Object value, final boolean sensitive) {
-        super("Validation failed for " + name + " (source: " + element + ") and value " + (sensitive ? "(***)" : value));
+        super("Validation failed for " + name + " (source: " + element + ") and value " + value);
     }
 }

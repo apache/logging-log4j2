@@ -20,9 +20,12 @@ import java.lang.annotation.Annotation;
 
 /**
  * Interface that {@link Constraint} annotations must implement to perform validation logic.
+ * Implementations of this may be {@linkplain org.apache.logging.log4j.plugins.Inject injectable}, though any dependencies
+ * injected into a constraint validator cannot rely on constraint validation due to cyclical references.
  *
  * @param <A> the {@link Constraint} annotation this interface validates.
  * @since 2.1
+ * @see ConstraintValidationException
  */
 public interface ConstraintValidator<A extends Annotation> {
 
