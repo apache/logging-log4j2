@@ -31,6 +31,19 @@
          - "remove" - Removed
     -->
     <release version="3.0.0" date="2021-MM-DD" description="GA Release 3.0.0">
+      <action issue="LOG4J2-2854" dev="mattsicker" type="add">
+        Create standardized dependency injection API. This is supported in several plugin categories and other configurable
+        instances previously defined via system properties.
+      </action>
+      <action issue="LOG4J2-2852" dev="mattsicker" type="add">
+        Add scopes API for customizing plugin instance lifecycle.
+      </action>
+      <action issue="LOG4J2-2853" dev="mattsicker" type="add">
+        Add qualifier annotations for distinguishing instances of the same type.
+      </action>
+      <action issue="LOG4J2-1188" dev="mattsicker" type="add">
+        Allow plugins to be created through more flexible dependency injection patterns.
+      </action>
       <action issue="LOG4J2-3307" dev="rgoers" type="update">
         Move Scripting to its own module.
       </action>
