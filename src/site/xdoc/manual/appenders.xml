@@ -5003,8 +5003,10 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           <tr>
             <td>protocol</td>
             <td>String</td>
-            <td><code>SSL</code> if omitted.
-            See also <a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#SSLContext">Standard names</a>.</td>
+            <td>The SSL protocol to use, <code>TLS</code> if omitted. A single value may enable multiple protocols,
+              see the <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#SSLContext">JVM documentation</a>
+              for details.
+            </td>
           </tr>
           <tr>
             <td>KeyStore</td>

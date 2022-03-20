@@ -16,12 +16,15 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
+import java.security.KeyStore;
+
 /**
  *
  */
 public class SslConfigurationDefaults {
 
-    public static final String KEYSTORE_TYPE = "JKS";
-    public static final String PROTOCOL = "SSL";
+    public static final String KEYSTORE_TYPE = KeyStore.getDefaultType();
+    // "TLS" uses all protocols available except those excluded in "jdk.tls.disabledAlgorithms"
+    public static final String PROTOCOL = "TLS";
 
 }
