@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.plugins.util;
 
+import org.apache.logging.log4j.plugins.di.LookupSelector;
 import org.apache.logging.log4j.plugins.processor.PluginEntry;
 import org.apache.logging.log4j.util.LazyValue;
 
@@ -59,19 +60,24 @@ public class PluginType<T> {
      * The Constructor.
      * @since 3.0
      * @param pluginEntry The PluginEntry.
-     * @param lookup The Lookup to use to load the plugin class.
      */
-    public PluginType(final PluginEntry pluginEntry, final Lookup lookup) {
+    public PluginType(final PluginEntry pluginEntry, final ClassLoader classLoader, final LookupSelector lookupSelector) {
         this.pluginEntry = pluginEntry;
         this.pluginClass = new LazyValue<>(() -> {
             try {
-                return TypeUtil.cast(lookup.findClass(pluginEntry.getClassName()));
-            } catch (ClassNotFoundException | IllegalAccessException e) {
+                return TypeUtil.cast(classLoader.loadClass(pluginEntry.getClassName()));
+            } catch (ClassNotFoundException e) {
                 throw new IllegalStateException("No class named " + pluginEntry.getClassName() +
                         " located for element " + pluginEntry.getName(), e);
             }
         });
-        this.pluginLookup = new LazyValue<>(() -> lookup.in(pluginClass.get()));
+        this.pluginLookup = new LazyValue<>(() -> {
+            try {
+                return lookupSelector.in(pluginClass.get());
+            } catch (final IllegalAccessException e) {
+                throw new IllegalAccessError(e.getMessage());
+            }
+        });
         this.elementName = pluginEntry.getName();
     }
 

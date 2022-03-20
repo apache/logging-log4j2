@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.plugins.processor;
 
+import org.apache.logging.log4j.plugins.di.LookupSelector;
 import org.apache.logging.log4j.plugins.util.PluginType;
 
-import java.lang.invoke.MethodHandles.Lookup;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -37,17 +37,18 @@ public abstract class PluginService {
 
     public PluginService() {
         PluginEntry[] entries = getEntries();
+        ClassLoader classLoader = getClass().getClassLoader();
         for (PluginEntry entry : entries) {
             String category = entry.getCategory().toLowerCase();
             List<PluginType<?>> list = categories.computeIfAbsent(category, ignored -> new ArrayList<>());
-            PluginType<?> type = new PluginType<>(entry, getLookup());
+            PluginType<?> type = new PluginType<>(entry, classLoader, getLookupSelector());
             list.add(type);
         }
     }
 
     public abstract PluginEntry[] getEntries();
 
-    protected abstract Lookup getLookup();
+    protected abstract LookupSelector getLookupSelector();
 
     public Map<String, List<PluginType<?>>> getCategories() {
         return Collections.unmodifiableMap(categories);
