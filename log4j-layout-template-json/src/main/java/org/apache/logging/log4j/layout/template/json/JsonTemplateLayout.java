@@ -24,18 +24,10 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.layout.Encoder;
-import org.apache.logging.log4j.core.layout.LockingStringBuilderEncoder;
-import org.apache.logging.log4j.core.layout.StringBuilderEncoder;
+import org.apache.logging.log4j.core.layout.TextEncoderHelper;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.StringEncoder;
-import org.apache.logging.log4j.layout.template.json.resolver.EventResolverContext;
-import org.apache.logging.log4j.layout.template.json.resolver.EventResolverFactories;
-import org.apache.logging.log4j.layout.template.json.resolver.EventResolverFactory;
-import org.apache.logging.log4j.layout.template.json.resolver.EventResolverInterceptor;
-import org.apache.logging.log4j.layout.template.json.resolver.EventResolverInterceptors;
-import org.apache.logging.log4j.layout.template.json.resolver.EventResolverStringSubstitutor;
-import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolver;
-import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolvers;
+import org.apache.logging.log4j.layout.template.json.resolver.*;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.apache.logging.log4j.layout.template.json.util.Recycler;
 import org.apache.logging.log4j.layout.template.json.util.RecyclerFactory;
@@ -44,9 +36,14 @@ import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
+import java.nio.charset.CodingErrorAction;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -71,8 +68,7 @@ public class JsonTemplateLayout implements StringLayout {
 
     private final Recycler<Context> contextRecycler;
 
-    // The class and fields are visible for tests.
-    static final class Context implements AutoCloseable {
+    private static final class Context implements AutoCloseable {
 
         final JsonWriter jsonWriter;
 
@@ -204,19 +200,57 @@ public class JsonTemplateLayout implements StringLayout {
             final JsonWriter jsonWriter) {
         return () -> {
             final JsonWriter clonedJsonWriter = jsonWriter.clone();
-            final Encoder<StringBuilder> encoder = createStringBuilderEncoder(charset);
+            final Encoder<StringBuilder> encoder = new StringBuilderEncoder(charset);
             return new Context(clonedJsonWriter, encoder);
         };
     }
 
-    private static Encoder<StringBuilder> createStringBuilderEncoder(
-            final Charset charset) {
-        if (Constants.ENABLE_DIRECT_ENCODERS) {
-            return Constants.ENABLE_THREADLOCALS
-                    ? new StringBuilderEncoder(charset)
-                    : new LockingStringBuilderEncoder(charset);
+    /**
+     * {@link org.apache.logging.log4j.core.layout.StringBuilderEncoder} clone replacing thread-local allocations with instance fields.
+     */
+    private static final class StringBuilderEncoder implements Encoder<StringBuilder> {
+
+        private final Charset charset;
+
+        private final CharsetEncoder charsetEncoder;
+
+        private final CharBuffer charBuffer;
+
+        private final ByteBuffer byteBuffer;
+
+        private StringBuilderEncoder(final Charset charset) {
+            this.charset = charset;
+            this.charsetEncoder = charset
+                    .newEncoder()
+                    .onMalformedInput(CodingErrorAction.REPLACE)
+                    .onUnmappableCharacter(CodingErrorAction.REPLACE);
+            this.charBuffer = CharBuffer.allocate(Constants.ENCODER_CHAR_BUFFER_SIZE);
+            this.byteBuffer = ByteBuffer.allocate(Constants.ENCODER_BYTE_BUFFER_SIZE);
         }
-        return null;
+
+        @Override
+        public void encode(
+                final StringBuilder source,
+                final ByteBufferDestination destination) {
+            try {
+                TextEncoderHelper.encodeText(charsetEncoder, charBuffer, byteBuffer, source, destination);
+            } catch (final Exception error) {
+                fallbackEncode(charset, source, destination, error);
+            }
+        }
+
+        private /* for JIT-ergonomics: */ static void fallbackEncode(
+                final Charset charset,
+                final StringBuilder source,
+                final ByteBufferDestination destination,
+                final Exception error) {
+            StatusLogger
+                    .getLogger()
+                    .error("TextEncoderHelper.encodeText() failure", error);
+            final byte[] bytes = source.toString().getBytes(charset);
+            destination.writeBytes(bytes, 0, bytes.length);
+        }
+
     }
 
     @Override
@@ -227,42 +261,18 @@ public class JsonTemplateLayout implements StringLayout {
 
     @Override
     public String toSerializable(final LogEvent event) {
-        final Context context = acquireContext();
+
+        // Acquire a context.
+        final Recycler<Context> contextRecycler = this.contextRecycler;
+        final Context context = contextRecycler.acquire();
         final JsonWriter jsonWriter = context.jsonWriter;
         final StringBuilder stringBuilder = jsonWriter.getStringBuilder();
+
+        // Render the JSON.
         try {
             eventResolver.resolve(event, jsonWriter);
             stringBuilder.append(eventDelimiter);
             return stringBuilder.toString();
-        } finally {
-            contextRecycler.release(context);
-        }
-    }
-
-    @Override
-    public void encode(final LogEvent event, final ByteBufferDestination destination) {
-
-        // Acquire a context.
-        final Context context = acquireContext();
-        final JsonWriter jsonWriter = context.jsonWriter;
-        final StringBuilder stringBuilder = jsonWriter.getStringBuilder();
-        final Encoder<StringBuilder> encoder = context.encoder;
-
-        try {
-
-            // Render the JSON.
-            eventResolver.resolve(event, jsonWriter);
-            stringBuilder.append(eventDelimiter);
-
-            // Write to the destination.
-            if (encoder == null) {
-                final String eventJson = stringBuilder.toString();
-                final byte[] eventJsonBytes = StringEncoder.toBytes(eventJson, charset);
-                destination.writeBytes(eventJsonBytes, 0, eventJsonBytes.length);
-            } else {
-                encoder.encode(stringBuilder, destination);
-            }
-
         }
 
         // Release the context.
@@ -272,9 +282,28 @@ public class JsonTemplateLayout implements StringLayout {
 
     }
 
-    // Visible for tests.
-    Context acquireContext() {
-        return contextRecycler.acquire();
+    @Override
+    public void encode(final LogEvent event, final ByteBufferDestination destination) {
+
+        // Acquire a context.
+        final Recycler<Context> contextRecycler = this.contextRecycler;
+        final Context context = contextRecycler.acquire();
+        final JsonWriter jsonWriter = context.jsonWriter;
+        final StringBuilder stringBuilder = jsonWriter.getStringBuilder();
+        final Encoder<StringBuilder> encoder = context.encoder;
+
+        // Render & write the JSON.
+        try {
+            eventResolver.resolve(event, jsonWriter);
+            stringBuilder.append(eventDelimiter);
+            encoder.encode(stringBuilder, destination);
+        }
+
+        // Release the context.
+        finally {
+            contextRecycler.release(context);
+        }
+
     }
 
     @Override

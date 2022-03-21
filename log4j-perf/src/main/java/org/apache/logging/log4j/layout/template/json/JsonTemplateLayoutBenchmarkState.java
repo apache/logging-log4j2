@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.layout.template.json;
 
 import co.elastic.logging.log4j2.EcsLayout;
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
@@ -34,48 +35,51 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-@State(Scope.Benchmark)
+@State(Scope.Thread)
 public class JsonTemplateLayoutBenchmarkState {
 
     private static final Configuration CONFIGURATION = new DefaultConfiguration();
 
     private static final Charset CHARSET = StandardCharsets.UTF_8;
 
+    private static final int LOG_EVENT_COUNT = 1_000;
+
     private final ByteBufferDestination byteBufferDestination;
 
-    private final JsonTemplateLayout jsonTemplateLayout4JsonLayout;
+    private final Layout<?> jtl4JsonLayout;
 
-    private final JsonTemplateLayout jsonTemplateLayout4EcsLayout;
+    private final Layout<?> jtl4EcsLayout;
 
-    private final JsonTemplateLayout jsonTemplateLayout4GelfLayout;
+    private final Layout<?> jtl4GelfLayout;
 
-    private final JsonLayout defaultJsonLayout;
+    private final Layout<?> defaultJsonLayout;
 
-    private final JsonLayout customJsonLayout;
+    private final Layout<?> customJsonLayout;
 
-    private final EcsLayout ecsLayout;
+    private final Layout<?> ecsLayout;
 
-    private final GelfLayout gelfLayout;
+    private final Layout<?> gelfLayout;
 
     private final List<LogEvent> fullLogEvents;
 
     private final List<LogEvent> liteLogEvents;
 
+    private int logEventIndex = 0;
+
     public JsonTemplateLayoutBenchmarkState() {
         this.byteBufferDestination = new BlackHoleByteBufferDestination(1024 * 512);
-        this.jsonTemplateLayout4JsonLayout = createJsonTemplateLayout4JsonLayout();
-        this.jsonTemplateLayout4EcsLayout = createJsonTemplateLayout4EcsLayout();
-        this.jsonTemplateLayout4GelfLayout = createJsonTemplateLayout4GelfLayout();
+        this.jtl4JsonLayout = createJtl4JsonLayout();
+        this.jtl4EcsLayout = createJtl4EcsLayout();
+        this.jtl4GelfLayout = createJtl4GelfLayout();
         this.defaultJsonLayout = createDefaultJsonLayout();
         this.customJsonLayout = createCustomJsonLayout();
         this.ecsLayout = createEcsLayout();
         this.gelfLayout = createGelfLayout();
-        int logEventCount = 1_000;
-        this.fullLogEvents = LogEventFixture.createFullLogEvents(logEventCount);
-        this.liteLogEvents = LogEventFixture.createLiteLogEvents(logEventCount);
+        this.fullLogEvents = LogEventFixture.createFullLogEvents(LOG_EVENT_COUNT);
+        this.liteLogEvents = LogEventFixture.createLiteLogEvents(LOG_EVENT_COUNT);
     }
 
-    private static JsonTemplateLayout createJsonTemplateLayout4JsonLayout() {
+    private static JsonTemplateLayout createJtl4JsonLayout() {
         return JsonTemplateLayout
                 .newBuilder()
                 .setConfiguration(CONFIGURATION)
@@ -85,7 +89,7 @@ public class JsonTemplateLayoutBenchmarkState {
                 .build();
     }
 
-    private static JsonTemplateLayout createJsonTemplateLayout4EcsLayout() {
+    private static JsonTemplateLayout createJtl4EcsLayout() {
         final EventTemplateAdditionalField[] additionalFields =
                 new EventTemplateAdditionalField[]{
                         EventTemplateAdditionalField
@@ -104,7 +108,7 @@ public class JsonTemplateLayoutBenchmarkState {
                 .build();
     }
 
-    private static JsonTemplateLayout createJsonTemplateLayout4GelfLayout() {
+    private static JsonTemplateLayout createJtl4GelfLayout() {
         return JsonTemplateLayout
                 .newBuilder()
                 .setConfiguration(CONFIGURATION)
@@ -173,31 +177,31 @@ public class JsonTemplateLayoutBenchmarkState {
         return byteBufferDestination;
     }
 
-    JsonTemplateLayout getJsonTemplateLayout4JsonLayout() {
-        return jsonTemplateLayout4JsonLayout;
+    Layout<?> getJtl4JsonLayout() {
+        return jtl4JsonLayout;
     }
 
-    JsonTemplateLayout getJsonTemplateLayout4EcsLayout() {
-        return jsonTemplateLayout4EcsLayout;
+    Layout<?> getJtl4EcsLayout() {
+        return jtl4EcsLayout;
     }
 
-    JsonTemplateLayout getJsonTemplateLayout4GelfLayout() {
-        return jsonTemplateLayout4GelfLayout;
+    Layout<?> getJtl4GelfLayout() {
+        return jtl4GelfLayout;
     }
 
-    JsonLayout getDefaultJsonLayout() {
+    Layout<?> getDefaultJsonLayout() {
         return defaultJsonLayout;
     }
 
-    JsonLayout getCustomJsonLayout() {
+    Layout<?> getCustomJsonLayout() {
         return customJsonLayout;
     }
 
-    EcsLayout getEcsLayout() {
+    Layout<?> getEcsLayout() {
         return ecsLayout;
     }
 
-    GelfLayout getGelfLayout() {
+    Layout<?> getGelfLayout() {
         return gelfLayout;
     }
 
@@ -207,6 +211,12 @@ public class JsonTemplateLayoutBenchmarkState {
 
     List<LogEvent> getLiteLogEvents() {
         return liteLogEvents;
+    }
+
+    int nextLogEventIndex() {
+        final int currentLogEventIndex = logEventIndex;
+        logEventIndex = (logEventIndex + 1) % LOG_EVENT_COUNT;
+        return currentLogEventIndex;
     }
 
 }
