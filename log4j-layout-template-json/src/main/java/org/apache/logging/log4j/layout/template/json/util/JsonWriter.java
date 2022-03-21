@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.layout.template.json.util;
 
-import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.StringMap;
@@ -27,6 +26,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 
 /**
  * A simple JSON writer with support for common Java data types.
@@ -234,20 +234,22 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
         } else {
             writeObjectStart();
             final boolean[] firstEntry = {true};
-            map.forEach((final String key, final Object value) -> {
-                if (key == null) {
-                    throw new IllegalArgumentException("null keys are not allowed");
-                }
-                if (firstEntry[0]) {
-                    firstEntry[0] = false;
-                } else {
-                    writeSeparator();
-                }
-                writeObjectKey(key);
-                writeValue(value);
-            });
+            map.forEach(this::writeStringMap, firstEntry);
             writeObjectEnd();
         }
+    }
+
+    private void writeStringMap(final String key, final Object value, final boolean[] firstEntry) {
+        if (key == null) {
+            throw new IllegalArgumentException("null keys are not allowed");
+        }
+        if (firstEntry[0]) {
+            firstEntry[0] = false;
+        } else {
+            writeSeparator();
+        }
+        writeObjectKey(key);
+        writeValue(value);
     }
 
     public void writeObject(final IndexedReadOnlyStringMap map) {

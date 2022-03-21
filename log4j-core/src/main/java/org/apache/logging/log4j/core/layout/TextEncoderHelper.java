@@ -48,11 +48,9 @@ public class TextEncoderHelper {
      * @param byteBuf thread-local buffer to temporarily hold converted bytes before copying them to the destination
      * @param text the text to convert and write to the destination
      * @param destination the destination to write the bytes to
-     * @throws CharacterCodingException if conversion failed
      */
-    static void encodeText(final CharsetEncoder charsetEncoder, final CharBuffer charBuf, final ByteBuffer byteBuf,
-            final StringBuilder text, final ByteBufferDestination destination)
-            throws CharacterCodingException {
+    public static void encodeText(final CharsetEncoder charsetEncoder, final CharBuffer charBuf, final ByteBuffer byteBuf,
+            final StringBuilder text, final ByteBufferDestination destination) {
         charsetEncoder.reset();
         if (text.length() > charBuf.capacity()) {
             encodeChunkedText(charsetEncoder, charBuf, byteBuf, text, destination);
