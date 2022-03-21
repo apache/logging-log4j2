@@ -53,7 +53,7 @@ public class ThrowableInformation implements Serializable {
      * @param r String representation of throwable.
      */
     public ThrowableInformation(final String[] r) {
-        this.rep = rep != null ? r.clone() : null;
+        this.rep = r != null ? r.clone() : null;
     }
 
     /**
