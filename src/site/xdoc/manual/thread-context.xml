@@ -31,7 +31,7 @@
           <h4>Introduction</h4>
           <p>Log4j introduced the concept of the Mapped Diagnostic Context or MDC. It has been documented and
             discussed in numerous places including
-            <a href="https://veerasundar.com/blog/2009/10/log4j-mdc-mapped-diagnostic-context-what-and-why/">Log4j MDC: What and Why</a> and
+            <a href="https://veerasundar.com/blog/log4j-mdc-mapped-diagnostic-context-what-and-why/">Log4j MDC: What and Why</a> and
             <a href="https://blog.f12.no/wp/2004/12/09/log4j-and-the-mapped-diagnostic-context/">Log4j and the Mapped Diagnostic Context</a>.
             In addition, Log4j 1.x provides support for a Nested Diagnostic Context or NDC. It too has been documented
             and discussed in various places such as
