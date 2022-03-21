@@ -21,7 +21,7 @@ Ralph Goers <rgoers@apache.org>; Gary Gregory <ggregory@apache.org>
 
 Log4j introduced the concept of the Mapped Diagnostic Context or MDC. It
 has been documented and discussed in numerous places including
-http://veerasundar.com/blog/2009/10/log4j-mdc-mapped-diagnostic-context-what-and-why/[Log4j
+https://veerasundar.com/blog/log4j-mdc-mapped-diagnostic-context-what-and-why/[Log4j
 MDC: What and Why] and
 http://blog.f12.no/wp/2004/12/09/log4j-and-the-mapped-diagnostic-context/[Log4j
 and the Mapped Diagnostic Context]. In addition, Log4j 1.x provides
