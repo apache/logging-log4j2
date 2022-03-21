@@ -17,8 +17,14 @@
 
 package org.apache.logging.log4j.core;
 
+import org.apache.logging.log4j.plugins.Named;
+import org.apache.logging.log4j.plugins.di.Key;
+import org.apache.logging.log4j.plugins.util.PluginManager;
+
 public class Core {
 
     public static final String CATEGORY_NAME = "Core";
+
+    public static final Key<PluginManager> PLUGIN_MANAGER_KEY = new @Named(CATEGORY_NAME) Key<>() {};
 
 }

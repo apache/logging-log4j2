@@ -20,6 +20,7 @@ package org.apache.logging.log4j.plugins.di;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.FactoryType;
 import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.PluginException;
 import org.apache.logging.log4j.plugins.QualifierType;
@@ -28,6 +29,7 @@ import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.plugins.name.AnnotatedElementAliasesProvider;
 import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
 import org.apache.logging.log4j.plugins.util.AnnotationUtil;
+import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.plugins.validation.Constraint;
@@ -192,15 +194,16 @@ class DefaultInjector implements Injector {
 
     private <T> Supplier<T> getFactory(
             final Key<T> key, final Collection<String> aliases, final Node node, final Set<Key<?>> chain) {
-        final Binding<T> existing = bindingMap.get(key);
+        final Binding<T> existing = bindingMap.get(key, aliases);
         if (existing != null) {
             return existing.getSupplier();
         }
-        for (final String alias : aliases) {
-            final Binding<T> binding = bindingMap.get(key.withName(alias));
-            if (binding != null) {
-                return binding.getSupplier();
-            }
+        final Class<T> rawType = key.getRawType();
+        final Scope scope = getScopeForType(rawType);
+        if (rawType == PluginManager.class && key.getQualifierType() == Named.class) {
+            final Supplier<T> factory = () -> TypeUtil.cast(new PluginManager(key.getName()));
+            bindingMap.put(key, scope.get(key, factory));
+            return bindingMap.get(key, aliases).getSupplier();
         }
         final Supplier<T> instanceSupplier = () -> {
             final StringBuilder debugLog = new StringBuilder();
@@ -208,7 +211,6 @@ class DefaultInjector implements Injector {
             injectMembers(key, node, instance, chain, debugLog);
             return instance;
         };
-        final Scope scope = getScopeForType(key.getRawType());
         return bindingMap.bindIfAbsent(key, scope.get(key, instanceSupplier));
     }
 

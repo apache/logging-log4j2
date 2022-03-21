@@ -77,12 +77,20 @@ public class Key<T> {
         hashCode = Objects.hash(type, qualifierType, name.toLowerCase(Locale.ROOT));
     }
 
+    public Type getType() {
+        return type;
+    }
+
     public final Class<T> getRawType() {
         return rawType;
     }
 
     public String getName() {
         return name;
+    }
+
+    public Class<? extends Annotation> getQualifierType() {
+        return qualifierType;
     }
 
     /**

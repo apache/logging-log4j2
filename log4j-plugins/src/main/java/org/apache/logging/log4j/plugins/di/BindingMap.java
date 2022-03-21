@@ -20,6 +20,7 @@ package org.apache.logging.log4j.plugins.di;
 
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
@@ -35,8 +36,17 @@ class BindingMap {
         this.bindings = new ConcurrentHashMap<>(bindings.bindings);
     }
 
-    public <T> Binding<T> get(final Key<T> key) {
-        return TypeUtil.cast(bindings.get(key));
+    public <T> Binding<T> get(final Key<T> key, final Collection<String> aliases) {
+        var binding = bindings.get(key);
+        if (binding == null) {
+            for (final String alias : aliases) {
+                binding = bindings.get(key.withName(alias));
+                if (binding != null) {
+                    break;
+                }
+            }
+        }
+        return TypeUtil.cast(binding);
     }
 
     public <T> void put(final Key<T> key, final Supplier<T> factory) {

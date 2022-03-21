@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.config;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -43,11 +44,11 @@ import org.apache.logging.log4j.core.script.ScriptManager;
 import org.apache.logging.log4j.core.script.ScriptManagerFactory;
 import org.apache.logging.log4j.core.time.NanoClock;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.core.util.Watcher;
 import org.apache.logging.log4j.core.util.WatcherFactory;
+import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
@@ -56,6 +57,7 @@ import org.apache.logging.log4j.plugins.di.Keys;
 import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
+import org.apache.logging.log4j.util.LazyValue;
 import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ServiceRegistry;
@@ -131,9 +133,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private ConcurrentMap<String, LoggerConfig> loggerConfigs = new ConcurrentHashMap<>();
     private List<CustomLevelConfig> customLevels = List.of();
     private final ConcurrentMap<String, String> properties = new ConcurrentHashMap<>();
-    private final StrLookup tempLookup = new Interpolator(properties);
-    private final StrSubstitutor runtimeStrSubstitutor = new RuntimeStrSubstitutor(tempLookup);
-    private final StrSubstitutor configurationStrSubstitutor = new ConfigurationStrSubstitutor(runtimeStrSubstitutor);
+    private final StrLookup tempLookup;
+    private final StrSubstitutor runtimeStrSubstitutor;
+    private final StrSubstitutor configurationStrSubstitutor;
     private LoggerConfig root = new LoggerConfig();
     private final ConcurrentMap<String, Object> componentMap = new ConcurrentHashMap<>();
     private final ConfigurationSource configurationSource;
@@ -158,7 +160,10 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             injector.init();
         }
         componentMap.put(Configuration.CONTEXT_PROPERTIES, properties);
-        pluginManager = new PluginManager(Node.CATEGORY);
+        tempLookup = new Interpolator(new PropertiesLookup(properties), this);
+        runtimeStrSubstitutor = new RuntimeStrSubstitutor(tempLookup);
+        configurationStrSubstitutor = new ConfigurationStrSubstitutor(runtimeStrSubstitutor);
+        pluginManager = injector.getInstance(Core.PLUGIN_MANAGER_KEY);
         configurationScheduler = injector.getInstance(ConfigurationScheduler.class);
         watchManager = injector.getInstance(WatchManager.class);
         setState(State.INITIALIZING);
@@ -195,6 +200,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     public void setPluginManager(final PluginManager pluginManager) {
         this.pluginManager = pluginManager;
+        injector.registerBinding(Core.PLUGIN_MANAGER_KEY, this::getPluginManager);
     }
 
     @Override
@@ -232,16 +238,17 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         configurationStrSubstitutor.setConfiguration(this);
         initializeScriptManager();
         pluginManager.collectPlugins(pluginPackages);
-        final PluginManager levelPlugins = new PluginManager(Level.CATEGORY);
+        final PluginManager levelPlugins = injector.getInstance(new @Named(Level.CATEGORY) Key<>() {});
         levelPlugins.collectPlugins(pluginPackages);
         final Map<String, PluginType<?>> plugins = levelPlugins.getPlugins();
         if (plugins != null) {
             for (final PluginType<?> type : plugins.values()) {
+                final Class<?> pluginClass = type.getPluginClass();
                 try {
                     // Cause the class to be initialized if it isn't already.
-                    Loader.initializeClass(type.getPluginClass().getName(), type.getPluginClass().getClassLoader());
+                    Class.forName(pluginClass.getName(), true, pluginClass.getClassLoader());
                 } catch (final Exception e) {
-                    LOGGER.error("Unable to initialize {} due to {}", type.getPluginClass().getName(), e.getClass()
+                    LOGGER.error("Unable to initialize {} due to {}", pluginClass.getName(), e.getClass()
                             .getSimpleName(), e);
                 }
             }
@@ -292,7 +299,14 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private void monitorSource(final Reconfigurable reconfigurable, final ConfigurationSource configSource) {
         if (configSource.getLastModified() > 0) {
             final Source cfgSource = new Source(configSource);
-            final Watcher watcher = WatcherFactory.getInstance(pluginPackages)
+            final Key<WatcherFactory> key = Key.forClass(WatcherFactory.class);
+            injector.registerBindingIfAbsent(key, new LazyValue<>(() -> {
+                final PluginManager pluginManager = injector.getInstance(Watcher.PLUGIN_MANAGER_KEY);
+                pluginManager.collectPlugins(pluginPackages);
+                final Map<String, PluginType<?>> watcherPlugins = pluginManager.getPlugins();
+                return new WatcherFactory(watcherPlugins);
+            }));
+            final Watcher watcher = injector.getInstance(key)
                     .newWatcher(cfgSource, this, reconfigurable, listeners, configSource.getLastModified());
             if (watcher != null) {
                 watchManager.watch(cfgSource, watcher);
@@ -638,7 +652,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         } else {
             final Map<String, String> map = this.getComponent(CONTEXT_PROPERTIES);
             final StrLookup lookup = map == null ? null : new PropertiesLookup(map);
-            Interpolator interpolator = new Interpolator(lookup, pluginPackages);
+            Interpolator interpolator = new Interpolator(lookup, this);
             runtimeStrSubstitutor.setVariableResolver(interpolator);
             configurationStrSubstitutor.setVariableResolver(interpolator);
         }

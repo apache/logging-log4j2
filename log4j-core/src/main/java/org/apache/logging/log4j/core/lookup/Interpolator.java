@@ -16,20 +16,21 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import java.util.Collections;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationAware;
+import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.plugins.di.Key;
+import org.apache.logging.log4j.plugins.util.PluginManager;
+import org.apache.logging.log4j.plugins.util.PluginType;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.ReflectionUtil;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.ConfigurationAware;
-import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.util.ReflectionUtil;
-import org.apache.logging.log4j.plugins.util.PluginManager;
-import org.apache.logging.log4j.plugins.util.PluginType;
-import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Proxies other {@link StrLookup}s using a keys within ${} markers.
@@ -53,19 +54,14 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private static final String JMX_LOOKUP = "org.apache.logging.log4j.core.lookup.JmxRuntimeInputArgumentsLookup";
     private static final String JNDI_LOOKUP = "org.apache.logging.log4j.jndi.lookup.JndiLookup";
-    private static final String WEB_LOOKUP = "org.apache.logging.log4j.web.WebLookup";
-    private static final String DOCKER_LOOKUP = "org.apache.logging.log4j.docker.DockerLookup";
-    private static final String SPRING_LOOKUP = "org.apache.logging.log4j.spring.boot.SpringLookup";
-    private static final String KUBERNETES_LOOKUP = "org.apache.logging.log4j.kubernetes.KubernetesLookup";
 
     private final Map<String, StrLookup> strLookupMap = new HashMap<>();
 
     private final StrLookup defaultLookup;
 
     public Interpolator(final StrLookup defaultLookup) {
-        this(defaultLookup, null);
+        this(defaultLookup, List.of());
     }
 
     /**
@@ -76,7 +72,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
      * @since 2.1
      */
     public Interpolator(final StrLookup defaultLookup, final List<String> pluginPackages) {
-        this.defaultLookup = defaultLookup == null ? new PropertiesLookup(new HashMap<String, String>()) : defaultLookup;
+        this.defaultLookup = defaultLookup == null ? new PropertiesLookup(Map.of()) : defaultLookup;
         final PluginManager manager = new PluginManager(CATEGORY);
         manager.collectPlugins(pluginPackages);
         final Map<String, PluginType<?>> plugins = manager.getPlugins();
@@ -93,18 +89,35 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         }
     }
 
+    public Interpolator(final StrLookup defaultLookup, final Configuration configuration) {
+        this.defaultLookup = defaultLookup == null ? new PropertiesLookup(Map.of()) : defaultLookup;
+        final PluginManager pluginManager = configuration.getComponent(StrLookup.PLUGIN_MANAGER_KEY);
+        pluginManager.collectPlugins(configuration.getPluginPackages());
+        for (final Map.Entry<String, PluginType<?>> entry : pluginManager.getPlugins().entrySet()) {
+            try {
+                final Class<? extends StrLookup> strLookupClass = entry.getValue().getPluginClass().asSubclass(StrLookup.class);
+                // TODO: this could use @RequiredProperty on JndiLookup instead
+                if (!strLookupClass.getName().equals(JNDI_LOOKUP) || Constants.JNDI_LOOKUP_ENABLED) {
+                    strLookupMap.put(entry.getKey().toLowerCase(Locale.ROOT), configuration.getComponent(Key.forClass(strLookupClass)));
+                }
+            } catch (final Throwable t) {
+                handleError(entry.getKey(), t);
+            }
+        }
+    }
+
     /**
      * Create the default Interpolator.
      */
     public Interpolator() {
-        this((Map<String, String>) null);
+        this(Map.of());
     }
 
     /**
      * Creates the default Interpolator with the provided properties.
      */
     public Interpolator(final Map<String, String> properties) {
-        this(new PropertiesLookup(properties), Collections.emptyList());
+        this(new PropertiesLookup(properties), List.of());
     }
 
     public StrLookup getDefaultLookup() {

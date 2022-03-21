@@ -16,20 +16,19 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFileWatcher;
 import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.Reconfigurable;
-import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.status.StatusLogger;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Creates Watchers of various types.
@@ -37,26 +36,11 @@ import org.apache.logging.log4j.status.StatusLogger;
 public class WatcherFactory {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
-    private static final PluginManager pluginManager = new PluginManager(Watcher.CATEGORY);
-
-    private static volatile WatcherFactory factory;
 
     private final Map<String, PluginType<?>> plugins;
 
-    private WatcherFactory(final List<String> packages) {
-        pluginManager.collectPlugins(packages);
-        plugins = pluginManager.getPlugins();
-    }
-
-    public static WatcherFactory getInstance(final List<String> packages) {
-        if (factory == null) {
-            synchronized (pluginManager) {
-                if (factory == null) {
-                    factory = new WatcherFactory(packages);
-                }
-            }
-        }
-        return factory;
+    public WatcherFactory(final Map<String, PluginType<?>> watcherPlugins) {
+        plugins = watcherPlugins;
     }
 
     public Watcher newWatcher(final Source source, final Configuration configuration, final Reconfigurable reconfigurable,

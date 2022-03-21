@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
+
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 
 /**
  * Load resources (or images) from various sources.
@@ -192,19 +192,6 @@ public final class Loader {
     }
 
     /**
-     * Loads and initializes a named Class using a given ClassLoader.
-     *
-     * @param className The class name.
-     * @param loader The class loader.
-     * @return The class.
-     * @throws ClassNotFoundException if the class could not be found.
-     */
-    public static Class<?> initializeClass(final String className, final ClassLoader loader)
-            throws ClassNotFoundException {
-        return Class.forName(className, true, loader);
-    }
-
-    /**
      * Loads a named Class using a given ClassLoader.
      *
      * @param className The class name.
@@ -270,33 +257,6 @@ public final class Loader {
     }
 
     /**
-     * Loads and instantiates a class given by a property name.
-     *
-     * @param propertyName The property name to look up a class name for.
-     * @param clazz        The class to cast it to.
-     * @param <T>          The type to cast it to.
-     * @return new instance of the class given in the property or {@code null} if the property was unset.
-     * @throws ClassNotFoundException    if the class isn't available to the usual ClassLoaders
-     * @throws IllegalAccessException    if the class can't be instantiated through a public constructor
-     * @throws InstantiationException    if there was an exception whilst instantiating the class
-     * @throws NoSuchMethodException     if there isn't a no-args constructor on the class
-     * @throws InvocationTargetException if there was an exception whilst constructing the class
-     * @throws ClassCastException        if the constructed object isn't type compatible with {@code T}
-     */
-    public static <T> T newCheckedInstanceOfProperty(final String propertyName, final Class<T> clazz)
-        throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException,
-        IllegalAccessException {
-        final String className = PropertiesUtil.getProperties().getStringProperty(propertyName);
-        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        try {
-            Thread.currentThread().setContextClassLoader(getClassLoader());
-            return LoaderUtil.newCheckedInstanceOfProperty(propertyName, clazz);
-        } finally {
-            Thread.currentThread().setContextClassLoader(contextClassLoader);
-        }
-    }
-
-    /**
      * Loads and instantiates a Class using the default constructor.
      *
      * @param clazz The class.
@@ -337,7 +297,7 @@ public final class Loader {
     }
 
     /**
-     * Loads a class by name. This method respects the {@link #IGNORE_TCCL_PROPERTY} Log4j property. If this property is
+     * Loads a class by name. This method respects the {@link LoaderUtil#IGNORE_TCCL_PROPERTY} Log4j property. If this property is
      * specified and set to anything besides {@code false}, then the default ClassLoader will be used.
      *
      * @param className The class name.
