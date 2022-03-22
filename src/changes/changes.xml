@@ -70,7 +70,7 @@
       <action issue="LOG4J2-3419" dev="pkarwasz" type="add">
         Add support for custom Log4j 1.x levels.
       </action>
-      <action issue="LOG4J2-3439" dev="pkarwasz" type="fix">
+      <action issue="LOG4J2-3439" dev="pkarwasz" type="fix" due-to="Jayesh Netravali, Piotr P. Karwasz">
         Fixes default SslConfiguration, when a custom keystore is used.
       </action>
       <!-- UPDATES -->
