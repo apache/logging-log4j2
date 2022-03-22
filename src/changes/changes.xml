@@ -202,6 +202,9 @@
       <action issue="LOG4J2-3423" type="fix" due-to="Radim Tlusty, Gary Gregory">
         JAR file containing Log4j configuration isn't closed.
       </action>
+      <action issue="LOG4J2-3439" dev="pkarwasz" type="fix">
+        Fixes default SslConfiguration, when a custom keystore is used.
+      </action>
       <action issue="LOG4J2-3359" dev="ggregory" type="fix" due-to="Rajesh, Gary Gregory">
         log4j-1.2-api 2.17.2 throws NullPointerException while removing appender with name as null.
       </action>
