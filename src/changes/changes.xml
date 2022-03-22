@@ -202,7 +202,7 @@
       <action issue="LOG4J2-3423" type="fix" due-to="Radim Tlusty, Gary Gregory">
         JAR file containing Log4j configuration isn't closed.
       </action>
-      <action issue="LOG4J2-3439" dev="pkarwasz" type="fix">
+      <action issue="LOG4J2-3439" dev="pkarwasz" type="fix" due-to="Jayesh Netravali, Piotr P. Karwasz">
         Fixes default SslConfiguration, when a custom keystore is used.
       </action>
       <action issue="LOG4J2-3359" dev="ggregory" type="fix" due-to="Rajesh, Gary Gregory">
