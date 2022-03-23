@@ -16,21 +16,26 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.time.Clock;
+import org.apache.logging.log4j.plugins.Factory;
+import org.apache.logging.log4j.test.junit.CleanUpDirectories;
+import org.hamcrest.Matcher;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.LockSupport;
+
 import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.File;
-
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.hamcrest.Matcher;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  *
@@ -40,22 +45,26 @@ public class RollingAppenderTimeTest {
     private static final String CONFIG = "log4j-rolling2.xml";
     private static final String DIR = "target/rolling2";
 
-    private final LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
+    private final AtomicLong currentTimeMillis = new AtomicLong(System.currentTimeMillis());
 
-    @Rule
-    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
+    @Factory
+    Clock clock() {
+        return currentTimeMillis::get;
+    }
 
     @Test
-    public void testAppender() throws Exception {
-        final Logger logger = loggerContextRule.getLogger();
+    @CleanUpDirectories(DIR)
+    @LoggerContextSource(value = CONFIG, timeout = 10)
+    public void testAppender(final LoggerContext context) throws Exception {
+        final Logger logger = context.getLogger(getClass());
         logger.debug("This is test message number 1");
-        Thread.sleep(1500);
+        currentTimeMillis.addAndGet(1500);
         // Trigger the rollover
         for (int i = 0; i < 16; ++i) {
             logger.debug("This is test message number " + i + 1);
         }
         final File dir = new File(DIR);
-        assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
+        assertTrue(dir.exists() && dir.listFiles().length > 0, "Directory not created");
 
         final int MAX_TRIES = 20;
         final Matcher<File[]> hasGzippedFile = hasItemInArray(that(hasName(that(endsWith(".gz")))));
@@ -65,7 +74,7 @@ public class RollingAppenderTimeTest {
                 return; // test succeeded
             }
             logger.debug("Adding additional event " + i);
-            Thread.sleep(100); // Allow time for rollover to complete
+            LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(100)); // Allow time for rollover to complete
         }
         fail("No compressed files found");
     }

@@ -16,15 +16,6 @@
  */
 package org.apache.log4j.builders.appender;
 
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
-import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.LAYOUT_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
-
-import java.util.Properties;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.AppenderWrapper;
@@ -44,9 +35,16 @@ import org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.RolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.TimeBasedTriggeringPolicy;
 import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
+import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
+
+import java.util.Properties;
+
+import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
+import static org.apache.log4j.xml.XmlConfiguration.*;
 
 /**
  * Build a Daily Rolling File Appender
@@ -129,7 +127,7 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
             }
         });
         return createAppender(name, layout.get(), filter.get(), fileName.get(), append.get(), immediateFlush.get(),
-                level.get(), bufferedIo.get(), bufferSize.get(), config);
+                level.get(), bufferedIo.get(), bufferSize.get(), config, config.getComponent(Clock.KEY));
     }
 
     @Override
@@ -144,12 +142,13 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
         boolean bufferedIo = getBooleanProperty(BUFFERED_IO_PARAM);
         int bufferSize = Integer.parseInt(getProperty(BUFFER_SIZE_PARAM, "8192"));
         return createAppender(name, layout, filter, fileName, append, immediateFlush,
-                level, bufferedIo, bufferSize, configuration);
+                level, bufferedIo, bufferSize, configuration, configuration.getComponent(Clock.KEY));
     }
 
-    private <T extends Log4j1Configuration> Appender createAppender(final String name, final Layout layout,
-            final Filter filter, final String fileName, final boolean append, boolean immediateFlush,
-            final String level, final boolean bufferedIo, final int bufferSize, final T configuration) {
+    private <T extends Log4j1Configuration> Appender createAppender(
+            final String name, final Layout layout, final Filter filter, final String fileName, final boolean append,
+            boolean immediateFlush, final String level, final boolean bufferedIo, final int bufferSize, final T configuration,
+            final Clock clock) {
 
         org.apache.logging.log4j.core.Layout<?> fileLayout = null;
         if (bufferedIo) {
@@ -166,7 +165,7 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
             return null;
         }
         String filePattern = fileName + "%d{.yyyy-MM-dd}";
-        TriggeringPolicy timePolicy = TimeBasedTriggeringPolicy.newBuilder().setModulate(true).build();
+        TriggeringPolicy timePolicy = TimeBasedTriggeringPolicy.newBuilder().setClock(clock).setModulate(true).build();
         TriggeringPolicy policy = CompositeTriggeringPolicy.createPolicy(timePolicy);
         RolloverStrategy strategy = DefaultRolloverStrategy.newBuilder()
                 .setConfig(configuration)

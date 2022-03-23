@@ -21,12 +21,15 @@ import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.time.Clock;
+import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -37,6 +40,12 @@ public class RollingDirectTimeNewDirectoryTest {
 
     // Note that the path is hardcoded in the configuration!
     private static final String DIR = "target/rolling-folder-direct";
+    private final AtomicLong currentTimeMillis = new AtomicLong(System.currentTimeMillis());
+
+    @Factory
+    Clock clock() {
+        return currentTimeMillis::get;
+    }
 
     @Test
     @CleanUpDirectories(DIR)
@@ -48,7 +57,7 @@ public class RollingDirectTimeNewDirectoryTest {
         for (int i = 0; i < 1000; i++) {
             logger.info("nHq6p9kgfvWfjzDRYbZp");
         }
-        Thread.sleep(1500);
+        currentTimeMillis.addAndGet(1500);
         for (int i = 0; i < 1000; i++) {
             logger.info("nHq6p9kgfvWfjzDRYbZp");
         }

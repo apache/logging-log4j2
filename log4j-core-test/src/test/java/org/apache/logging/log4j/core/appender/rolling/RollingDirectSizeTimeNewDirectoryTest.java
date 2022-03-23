@@ -20,6 +20,8 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.time.Clock;
+import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.Test;
@@ -30,6 +32,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -46,6 +49,12 @@ public class RollingDirectSizeTimeNewDirectoryTest implements RolloverListener {
     private static final String DIR = "target/rolling-size-time-new-directory";
 
     private final Map<String, AtomicInteger> rolloverFiles = new HashMap<>();
+    private final AtomicLong currentTimeMillis = new AtomicLong(System.currentTimeMillis());
+
+    @Factory
+    Clock clock() {
+        return currentTimeMillis::get;
+    }
 
     @Test
     @CleanUpDirectories(DIR)
@@ -57,7 +66,7 @@ public class RollingDirectSizeTimeNewDirectoryTest implements RolloverListener {
         for (int i = 0; i < 1000; i++) {
             logger.info("nHq6p9kgfvWfjzDRYbZp");
         }
-        Thread.sleep(1500);
+        currentTimeMillis.addAndGet(1500);
         for (int i = 0; i < 1000; i++) {
             logger.info("nHq6p9kgfvWfjzDRYbZp");
         }

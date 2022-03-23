@@ -18,6 +18,8 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.time.Clock;
+import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -43,10 +45,12 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
         @PluginBuilderAttribute
         private int maxRandomDelay = 0;
 
+        private Clock clock;
+
         @Override
         public TimeBasedTriggeringPolicy build() {
             final long maxRandomDelayMillis = TimeUnit.SECONDS.toMillis(maxRandomDelay);
-            return new TimeBasedTriggeringPolicy(interval, modulate, maxRandomDelayMillis);
+            return new TimeBasedTriggeringPolicy(interval, modulate, maxRandomDelayMillis, clock);
         }
 
         public int getInterval() {
@@ -59,6 +63,10 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
 
         public int getMaxRandomDelay() {
             return maxRandomDelay;
+        }
+
+        public Clock getClock() {
+            return clock;
         }
 
         public Builder setInterval(final int interval){
@@ -76,19 +84,27 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
             return this;
         }
 
+        @Inject
+        public Builder setClock(final Clock clock) {
+            this.clock = clock;
+            return this;
+        }
     }
 
     private long nextRolloverMillis;
     private final int interval;
     private final boolean modulate;
     private final long maxRandomDelayMillis;
+    private final Clock clock;
 
     private RollingFileManager manager;
 
-    private TimeBasedTriggeringPolicy(final int interval, final boolean modulate, final long maxRandomDelayMillis) {
+    private TimeBasedTriggeringPolicy(
+            final int interval, final boolean modulate, final long maxRandomDelayMillis, final Clock clock) {
         this.interval = interval;
         this.modulate = modulate;
         this.maxRandomDelayMillis = maxRandomDelayMillis;
+        this.clock = clock;
     }
 
     public int getInterval() {
@@ -108,7 +124,7 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
         this.manager = aManager;
         long current = aManager.getFileTime();
         if (current == 0) {
-            current = System.currentTimeMillis();
+            current = clock.currentTimeMillis();
         }
 
         // LOG4J2-531: call getNextTime twice to force initialization of both prevFileTime and nextFileTime
@@ -130,7 +146,7 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
         if (nowMillis >= nextRolloverMillis) {
             nextRolloverMillis = ThreadLocalRandom.current().nextLong(0, 1 + maxRandomDelayMillis)
                     + manager.getPatternProcessor().getNextTime(nowMillis, interval, modulate);
-            manager.getPatternProcessor().setCurrentFileTime(System.currentTimeMillis());
+            manager.getPatternProcessor().setCurrentFileTime(clock.currentTimeMillis());
             return true;
         }
         return false;

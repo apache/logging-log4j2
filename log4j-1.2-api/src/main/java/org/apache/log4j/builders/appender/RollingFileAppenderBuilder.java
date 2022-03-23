@@ -16,15 +16,6 @@
  */
 package org.apache.log4j.builders.appender;
 
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
-import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.LAYOUT_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
-
-import java.util.Properties;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.AppenderWrapper;
@@ -45,9 +36,16 @@ import org.apache.logging.log4j.core.appender.rolling.RolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.SizeBasedTriggeringPolicy;
 import org.apache.logging.log4j.core.appender.rolling.TimeBasedTriggeringPolicy;
 import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
+import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
+
+import java.util.Properties;
+
+import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
+import static org.apache.log4j.xml.XmlConfiguration.*;
 
 /**
  * Build a File Appender
@@ -150,7 +148,7 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
             }
         });
         return createAppender(name, config, layout.get(), filter.get(), bufferedIo.get(), immediateFlush.get(),
-                fileName.get(), level.get(), maxSize.get(), maxBackups.get());
+                fileName.get(), level.get(), maxSize.get(), maxBackups.get(), config.getComponent(Clock.KEY));
     }
 
     @Override
@@ -165,12 +163,13 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
         String maxSize = getProperty(MAX_SIZE_PARAM);
         String maxBackups = getProperty(MAX_BACKUP_INDEX);
         return createAppender(name, configuration, layout, filter, bufferedIo, immediateFlush, fileName, level, maxSize,
-                maxBackups);
+                maxBackups, configuration.getComponent(Clock.KEY));
     }
 
-    private Appender createAppender(final String name, final Log4j1Configuration config, final Layout layout,
-            final Filter filter, final boolean bufferedIo, boolean immediateFlush, final String fileName,
-            final String level, final String maxSize, final String maxBackups) {
+    private Appender createAppender(
+            final String name, final Log4j1Configuration config, final Layout layout, final Filter filter,
+            final boolean bufferedIo, boolean immediateFlush, final String fileName, final String level, final String maxSize,
+            final String maxBackups, final Clock clock) {
         org.apache.logging.log4j.core.Layout<?> fileLayout = null;
         if (bufferedIo) {
             immediateFlush = true;
@@ -186,9 +185,9 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
             return null;
         }
         String filePattern = fileName + ".%i";
-        TriggeringPolicy timePolicy = TimeBasedTriggeringPolicy.newBuilder().setModulate(true).build();
+        TriggeringPolicy timePolicy = TimeBasedTriggeringPolicy.newBuilder().setClock(clock).setModulate(true).build();
         SizeBasedTriggeringPolicy sizePolicy = SizeBasedTriggeringPolicy.createPolicy(maxSize);
-        CompositeTriggeringPolicy policy = CompositeTriggeringPolicy.createPolicy(sizePolicy);
+        CompositeTriggeringPolicy policy = CompositeTriggeringPolicy.createPolicy(timePolicy, sizePolicy);
         RolloverStrategy strategy = DefaultRolloverStrategy.newBuilder()
                 .setConfig(config)
                 .setMax(maxBackups)
