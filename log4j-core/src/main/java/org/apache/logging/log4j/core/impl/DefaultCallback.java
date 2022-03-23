@@ -45,7 +45,6 @@ import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
-import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -81,7 +80,7 @@ public class DefaultCallback implements InjectorCallback {
     public void configure(final Injector injector) {
         final PropertiesUtil properties = PropertiesUtil.getProperties();
         final var loader = new PropertyLoader(injector, properties, Loader.getClassLoader());
-        injector.setLookup(MethodHandles.lookup());
+        injector.setReflectionAccessor(object -> object.setAccessible(true));
         injector.registerBindingIfAbsent(ContextSelector.KEY,
                         () -> loader.getInstance(Constants.LOG4J_CONTEXT_SELECTOR, ContextSelector.class,
                                 () -> ClassLoaderContextSelector.class))

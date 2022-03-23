@@ -253,8 +253,7 @@ public class PluginRegistry {
             newPluginsByCategory.put(categoryLowerCase, types);
             for (final Map.Entry<String, PluginEntry> inner : outer.getValue().entrySet()) {
                 final PluginEntry entry = inner.getValue();
-                final PluginType<?> type = new PluginType<>(entry, context.getClassLoader(),
-                        clazz -> MethodHandles.privateLookupIn(clazz, context.getLookup()));
+                final PluginType<?> type = new PluginType<>(entry, context.getClassLoader());
                 types.add(type);
                 ++pluginCount;
             }

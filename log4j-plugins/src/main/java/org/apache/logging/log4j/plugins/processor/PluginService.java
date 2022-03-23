@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.plugins.processor;
 
-import org.apache.logging.log4j.plugins.di.LookupSelector;
 import org.apache.logging.log4j.plugins.util.PluginType;
 
 import java.util.ArrayList;
@@ -41,14 +40,12 @@ public abstract class PluginService {
         for (PluginEntry entry : entries) {
             String category = entry.getCategory().toLowerCase();
             List<PluginType<?>> list = categories.computeIfAbsent(category, ignored -> new ArrayList<>());
-            PluginType<?> type = new PluginType<>(entry, classLoader, getLookupSelector());
+            PluginType<?> type = new PluginType<>(entry, classLoader);
             list.add(type);
         }
     }
 
     public abstract PluginEntry[] getEntries();
-
-    protected abstract LookupSelector getLookupSelector();
 
     public Map<String, List<PluginType<?>>> getCategories() {
         return Collections.unmodifiableMap(categories);

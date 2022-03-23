@@ -41,7 +41,6 @@ import org.junit.jupiter.api.parallel.Resources;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -589,7 +588,7 @@ class InjectorTest {
         final Plugin plugin = clazz.getAnnotation(Plugin.class);
         final PluginEntry entry = new PluginEntry(plugin.name().toLowerCase(Locale.ROOT), clazz.getName(), plugin.name(),
                 plugin.printObject(), plugin.deferChildren(), plugin.category());
-        return new PluginType<>(entry, clazz, MethodHandles.lookup().in(clazz), plugin.elementType());
+        return new PluginType<>(entry, clazz, plugin.elementType());
     }
 
     @Test

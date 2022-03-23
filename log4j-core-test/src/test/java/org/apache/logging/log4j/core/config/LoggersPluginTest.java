@@ -43,6 +43,6 @@ public class LoggersPluginTest {
         //System.out.println(data.getFormattedStatus());
 
         assertThat(data.getLevel()).isEqualTo(Level.ERROR);
-        assertThat(data.getMessage().getFormattedMessage()).contains("multiple root loggers");
+        assertThat(data.getMessage().getFormattedMessage()).startsWith("Could not configure plugin element Loggers");
     }
 }

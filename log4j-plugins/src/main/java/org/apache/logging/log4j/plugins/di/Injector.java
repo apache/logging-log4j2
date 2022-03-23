@@ -21,7 +21,6 @@ import org.apache.logging.log4j.plugins.FactoryType;
 import org.apache.logging.log4j.plugins.Node;
 
 import java.lang.annotation.Annotation;
-import java.lang.invoke.MethodHandles.Lookup;
 import java.util.function.Supplier;
 
 /**
@@ -149,12 +148,12 @@ public interface Injector {
      */
     <T> Injector registerBindingIfAbsent(final Key<T> key, final Supplier<? extends T> factory);
 
-
     /**
-     * Sets the {@link Lookup} used for obtaining MethodHandle and VarHandle instances. A custom caller class
-     * can invoke {@code setLookup(MethodHandles.lookup())} as a typical use case.
+     * Sets the {@link ReflectionAccessor} used for invoking {@link java.lang.reflect.AccessibleObject#setAccessible(boolean)}
+     * from an appropriate caller class. Customizing this allows for changing the base module that other modules should
+     * open themselves to.
      *
-     * @param lookup handle lookup object for access checks
+     * @param accessor accessor to use
      */
-    void setLookup(final Lookup lookup);
+    void setReflectionAccessor(final ReflectionAccessor accessor);
 }

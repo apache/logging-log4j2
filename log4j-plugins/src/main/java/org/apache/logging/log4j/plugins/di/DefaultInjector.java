@@ -22,7 +22,6 @@ import org.apache.logging.log4j.plugins.FactoryType;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.Node;
-import org.apache.logging.log4j.plugins.PluginException;
 import org.apache.logging.log4j.plugins.QualifierType;
 import org.apache.logging.log4j.plugins.ScopeType;
 import org.apache.logging.log4j.plugins.Singleton;
@@ -42,14 +41,13 @@ import org.apache.logging.log4j.util.ServiceRegistry;
 import org.apache.logging.log4j.util.StringBuilders;
 
 import java.lang.annotation.Annotation;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodHandles.Lookup;
-import java.lang.invoke.VarHandle;
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
@@ -75,7 +73,7 @@ class DefaultInjector implements Injector {
 
     private final BindingMap bindingMap;
     private final Map<Class<? extends Annotation>, Scope> scopes = new ConcurrentHashMap<>();
-    private Lookup lookup = MethodHandles.lookup();
+    private ReflectionAccessor accessor = object -> object.setAccessible(true);
 
     DefaultInjector() {
         bindingMap = new BindingMap();
@@ -86,7 +84,7 @@ class DefaultInjector implements Injector {
     DefaultInjector(final DefaultInjector original) {
         bindingMap = new BindingMap(original.bindingMap);
         scopes.putAll(original.scopes);
-        lookup = original.lookup;
+        accessor = original.accessor;
     }
 
     @Override
@@ -170,8 +168,15 @@ class DefaultInjector implements Injector {
     }
 
     @Override
-    public void setLookup(final Lookup lookup) {
-        this.lookup = lookup;
+    public void setReflectionAccessor(final ReflectionAccessor accessor) {
+        this.accessor = accessor;
+    }
+
+    private <M extends AccessibleObject & Member> void makeAccessible(final M member, final Object instance) {
+        final boolean isStatic = Modifier.isStatic(member.getModifiers());
+        if (!member.canAccess(isStatic ? null : instance)) {
+            accessor.makeAccessible(member);
+        }
     }
 
     private <T> Supplier<T> getFactory(
@@ -219,10 +224,10 @@ class DefaultInjector implements Injector {
         final Class<?> rawType = key.getRawType();
         validate(rawType, key.getName(), rawType);
         final Constructor<?> constructor = getInjectableConstructor(key, chain);
+        makeAccessible(constructor, null);
         final List<InjectionPoint<?>> points = InjectionPoint.fromExecutable(constructor);
-        final MethodHandle handle = getConstructorHandle(constructor, lookup);
         final var args = getArguments(key, node, points, chain, debugLog);
-        return rethrow(() -> handle.invokeWithArguments(args));
+        return newInstance(constructor, args);
     }
 
     private void validate(final AnnotatedElement element, final String name, final Object value) {
@@ -260,17 +265,16 @@ class DefaultInjector implements Injector {
     }
 
     private <T> void injectField(final Field field, final Node node, final Object instance, final StringBuilder debugLog) {
-        final Lookup fieldLookup = node != null ? node.getType().getPluginLookup() : lookup.in(instance.getClass());
-        final VarHandle handle = getFieldHandle(field, fieldLookup);
+        makeAccessible(field, instance);
         final InjectionPoint<T> point = InjectionPoint.forField(field);
         final Supplier<T> factory = getFactory(point, node, Set.of(), debugLog);
         final Key<T> key = point.getKey();
         final Object value = key.getRawType() == Supplier.class ? factory : factory.get();
         if (value != null) {
-            handle.set(instance, value);
+            setField(field, instance, value);
         }
         if (AnnotationUtil.isMetaAnnotationPresent(field, Constraint.class)) {
-            final Object fieldValue = handle.get(instance);
+            final Object fieldValue = getField(field, instance);
             validate(field, key.getName(), fieldValue);
         }
     }
@@ -278,23 +282,22 @@ class DefaultInjector implements Injector {
     private void injectMethods(
             final Key<?> key, final Node node, final Object instance, final Set<Key<?>> chain, final StringBuilder debugLog) {
         final Class<?> rawType = key.getRawType();
-        final Lookup methodLookup = node != null ? node.getType().getPluginLookup() : lookup.in(instance.getClass());
-        final List<MethodHandle> injectMethodsWithNoArgs = new ArrayList<>();
+        final List<Method> injectMethodsWithNoArgs = new ArrayList<>();
         for (Class<?> clazz = rawType; clazz != Object.class; clazz = clazz.getSuperclass()) {
             for (final Method method : clazz.getDeclaredMethods()) {
                 if (isInjectable(method)) {
-                    final MethodHandle handle = getMethodHandle(method, methodLookup).bindTo(instance);
+                    makeAccessible(method, instance);
                     if (method.getParameterCount() == 0) {
-                        injectMethodsWithNoArgs.add(handle);
+                        injectMethodsWithNoArgs.add(method);
                     } else {
                         final List<InjectionPoint<?>> injectionPoints = InjectionPoint.fromExecutable(method);
-                        final List<?> args = getArguments(key, node, injectionPoints, chain, debugLog);
-                        rethrow(() -> handle.invokeWithArguments(args));
+                        final var args = getArguments(key, node, injectionPoints, chain, debugLog);
+                        invokeMethod(method, instance, args);
                     }
                 }
             }
         }
-        injectMethodsWithNoArgs.forEach(handle -> rethrow(handle::invoke));
+        injectMethodsWithNoArgs.forEach(method -> invokeMethod(method, instance));
     }
 
     private void inject(final Node node) {
@@ -354,15 +357,15 @@ class DefaultInjector implements Injector {
                 .map(Executable.class::cast)
                 .orElseGet(() -> getInjectableConstructor(key, Set.of()));
         final List<InjectionPoint<?>> points = InjectionPoint.fromExecutable(factory);
-        final Lookup pluginLookup = type.getPluginLookup();
-        final MethodHandle handle;
-        if (factory instanceof Method) {
-            handle = getMethodHandle((Method) factory, pluginLookup);
-        } else {
-            handle = getConstructorHandle((Constructor<?>) factory, pluginLookup);
+        if (!factory.canAccess(null)) {
+            accessor.makeAccessible(factory);
         }
         final var args = getArguments(key, node, points, Set.of(), debugLog);
-        return rethrow(() -> handle.invokeWithArguments(args));
+        if (factory instanceof Method) {
+            return invokeMethod((Method) factory, null, args);
+        } else {
+            return newInstance((Constructor<?>) factory, args);
+        }
     }
 
     private void registerModuleInstance(final Object module) {
@@ -379,7 +382,7 @@ class DefaultInjector implements Injector {
                         createMethodBindings(module, method).forEach(binding -> {
                             final var key = binding.getKey();
                             if (!bindingMap.putIfAbsent(key, binding.getSupplier())) {
-                                throw new PluginException(String.format(
+                                throw new InjectException(String.format(
                                         "Duplicate @Factory method (%s: %s) found for %s", moduleClass, method, key));
                             }
                         });
@@ -388,20 +391,22 @@ class DefaultInjector implements Injector {
     }
 
     private <T> List<Binding<T>> createMethodBindings(final Object instance, final Method method) {
+        makeAccessible(method, instance);
         final Key<T> primaryKey = Key.forMethod(method);
         final List<InjectionPoint<?>> points = InjectionPoint.fromExecutable(method);
-        final MethodHandle handle = getMethodHandle(method, lookup);
-        final MethodHandle boundHandle = Modifier.isStatic(method.getModifiers()) ? handle : handle.bindTo(instance);
         final var argumentFactories = getArgumentFactories(primaryKey, null, points, Set.of(primaryKey), null);
         final Supplier<T> unscoped = () -> {
-            final List<Object> args = argumentFactories.entrySet()
+            final var args = argumentFactories.entrySet()
                     .stream()
-                    .flatMap(e -> {
+                    .map(e -> {
+                        final Parameter parameter = e.getKey();
+                        final String name = AnnotatedElementNameProvider.getName(parameter);
                         final Object value = e.getValue().get();
-                        return e.getKey().isVarArgs() ? Stream.of((Object[]) value) : Stream.of(value);
+                        validate(parameter, name, value);
+                        return value;
                     })
-                    .collect(Collectors.toList());
-            return TypeUtil.cast(rethrow(() -> boundHandle.invokeWithArguments(args)));
+                    .toArray();
+            return rethrow(() -> TypeUtil.cast(invokeMethod(method, instance, args)));
         };
         final Supplier<T> factory = getScopeForMethod(method).get(primaryKey, unscoped);
         final Collection<String> aliases = AnnotatedElementAliasesProvider.getAliases(method);
@@ -413,20 +418,20 @@ class DefaultInjector implements Injector {
         return bindings;
     }
 
-    private List<Object> getArguments(
+    private Object[] getArguments(
             final Key<?> key, final Node node, final List<InjectionPoint<?>> points, final Set<Key<?>> chain,
             final StringBuilder debugLog) {
         return getArgumentFactories(key, node, points, chain, debugLog)
                 .entrySet()
                 .stream()
-                .flatMap(e -> {
+                .map(e -> {
                     final Parameter parameter = e.getKey();
                     final String name = AnnotatedElementNameProvider.getName(parameter);
                     final Object value = e.getValue().get();
                     validate(parameter, name, value);
-                    return parameter.isVarArgs() ? Stream.of((Object[]) value) : Stream.of(value);
+                    return value;
                 })
-                .collect(Collectors.toList());
+                .toArray();
     }
 
     private Map<Parameter, Supplier<?>> getArgumentFactories(
@@ -446,7 +451,7 @@ class DefaultInjector implements Injector {
                         sb.append(chainKey).append(" -> ");
                     }
                     sb.append(parameterKey);
-                    throw new PluginException(sb.toString());
+                    throw new InjectException(sb.toString());
                 }
                 argFactories.put(parameter, () -> getFactory(point, node, newChain, debugLog).get());
             }
@@ -464,7 +469,8 @@ class DefaultInjector implements Injector {
         return scope != null ? scopes.get(scope.annotationType()) : DefaultScope.INSTANCE;
     }
 
-    private static boolean isCompatibleValidator(final Constraint constraint, final Class<? extends Annotation> annotationType) {
+    private static boolean isCompatibleValidator(
+            final Constraint constraint, final Class<? extends Annotation> annotationType) {
         for (final Type type : constraint.value().getGenericInterfaces()) {
             if (type instanceof ParameterizedType) {
                 ParameterizedType parameterizedType = (ParameterizedType) type;
@@ -478,7 +484,8 @@ class DefaultInjector implements Injector {
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private static void initializeConstraintValidator(final ConstraintValidator<? extends Annotation> validator, final Annotation annotation) {
+    private static void initializeConstraintValidator(
+            final ConstraintValidator<? extends Annotation> validator, final Annotation annotation) {
         // runtime type checking ensures this raw type usage is correct
         ((ConstraintValidator) validator).initialize(annotation);
     }
@@ -525,61 +532,13 @@ class DefaultInjector implements Injector {
         return newChain;
     }
 
-    private static VarHandle getFieldHandle(final Field field, final Lookup lookup) {
-        final Class<?> declaringClass = field.getDeclaringClass();
-        try {
-            return lookup.unreflectVarHandle(field);
-        } catch (final IllegalAccessException outer) {
-            try {
-                return MethodHandles.privateLookupIn(declaringClass, lookup).unreflectVarHandle(field);
-            } catch (final IllegalAccessException inner) {
-                final var error = new IllegalAccessError("Cannot access field " + field);
-                error.addSuppressed(inner);
-                error.addSuppressed(outer);
-                throw error;
-            }
-        }
-    }
-
-    private static MethodHandle getMethodHandle(final Method method, final Lookup lookup) {
-        final Class<?> declaringClass = method.getDeclaringClass();
-        try {
-            return lookup.unreflect(method);
-        } catch (final IllegalAccessException outer) {
-            try {
-                return MethodHandles.privateLookupIn(declaringClass, lookup).unreflect(method);
-            } catch (final IllegalAccessException inner) {
-                final var error = new IllegalAccessError("Cannot access method " + method);
-                error.addSuppressed(inner);
-                error.addSuppressed(outer);
-                throw error;
-            }
-        }
-    }
-
-    private static MethodHandle getConstructorHandle(final Constructor<?> constructor, final Lookup lookup) {
-        final Class<?> declaringClass = constructor.getDeclaringClass();
-        try {
-            return lookup.unreflectConstructor(constructor);
-        } catch (final IllegalAccessException outer) {
-            try {
-                return MethodHandles.privateLookupIn(declaringClass, lookup).unreflectConstructor(constructor);
-            } catch (final IllegalAccessException inner) {
-                final var error = new IllegalAccessError("Cannot access constructor " + constructor);
-                error.addSuppressed(inner);
-                error.addSuppressed(outer);
-                throw error;
-            }
-        }
-    }
-
     private static <T> Constructor<T> getInjectableConstructor(final Key<T> key, final Set<Key<?>> chain) {
         final Class<T> rawType = key.getRawType();
         final List<Constructor<?>> injectConstructors = Stream.of(rawType.getDeclaredConstructors())
                 .filter(constructor -> constructor.isAnnotationPresent(Inject.class))
                 .collect(Collectors.toList());
         if (injectConstructors.size() > 1) {
-            throw new PluginException("Multiple @Inject constructors found in " + rawType);
+            throw new InjectException("Multiple @Inject constructors found in " + rawType);
         }
         if (injectConstructors.size() == 1) {
             return TypeUtil.cast(injectConstructors.get(0));
@@ -597,7 +556,7 @@ class DefaultInjector implements Injector {
         final String prefix = chain.isEmpty() ? "" : "chain ";
         final String keysToString =
                 prefix + keys.stream().map(Key::toString).collect(Collectors.joining(" -> "));
-        throw new PluginException(
+        throw new InjectException(
                 "No @Inject constructors or no-arg constructor found for " + keysToString);
     }
 
@@ -610,6 +569,50 @@ class DefaultInjector implements Injector {
                 !AnnotationUtil.isMetaAnnotationPresent(method, FactoryType.class) &&
                         Stream.of(method.getParameters()).anyMatch(
                                 parameter -> AnnotationUtil.isMetaAnnotationPresent(parameter, QualifierType.class));
+    }
+
+    private static Object getField(final Field field, final Object instance) {
+        try {
+            return field.get(instance);
+        } catch (final IllegalAccessException e) {
+            throw errorFrom(e);
+        }
+    }
+
+    private static void setField(final Field field, final Object instance, final Object value) {
+        try {
+            field.set(instance, value);
+        } catch (final IllegalAccessException e) {
+            throw errorFrom(e);
+        }
+    }
+
+    private static Object invokeMethod(final Method method, final Object instance, final Object... args) {
+        try {
+            return method.invoke(instance, args);
+        } catch (final InvocationTargetException e) {
+            throw new InjectException(e.getMessage(), e.getCause());
+        } catch (final IllegalAccessException e) {
+            throw errorFrom(e);
+        }
+    }
+
+    private static <T> T newInstance(final Constructor<T> constructor, final Object[] args) {
+        try {
+            return constructor.newInstance(args);
+        } catch (final InvocationTargetException e) {
+            throw new InjectException(e.getMessage(), e.getCause());
+        } catch (final IllegalAccessException e) {
+            throw errorFrom(e);
+        } catch (final InstantiationException e) {
+            throw new InjectException(e.getMessage(), e);
+        }
+    }
+
+    private static IllegalAccessError errorFrom(final IllegalAccessException e) {
+        final IllegalAccessError error = new IllegalAccessError(e.getMessage());
+        error.initCause(e);
+        return error;
     }
 
     private static <T> T rethrow(final CheckedSupplier<T> supplier) {
