@@ -37,7 +37,13 @@ public class PatternLayoutBuilderTest {
                     Arguments.of("%-100p", "%-100v1Level"),
                     Arguments.of("%x", "%ndc"),
                     Arguments.of("%X", "%properties"),
-                    Arguments.of("%.20x", "%.20ndc"))
+                    Arguments.of("%.20x", "%.20ndc"),
+                    Arguments.of("%pid", "%pid"),
+                    Arguments.of("%xEx", "%xEx"),
+                    Arguments.of("%XX", "%XX"),
+                    Arguments.of("%p id", "%v1Level id"),
+                    Arguments.of("%x Ex", "%ndc Ex"),
+                    Arguments.of("%X X", "%properties X"))
                 .stream();
     }
 
