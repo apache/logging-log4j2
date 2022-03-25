@@ -76,4 +76,9 @@ public @interface LoggerContextSource {
      * Specifies the time unit {@link #timeout()} is measured in.
      */
     TimeUnit unit() default TimeUnit.SECONDS;
+
+    /**
+     * Toggles Log4j1 configuration file compatibility mode for XML and properties files.
+     */
+    boolean v1config() default false;
 }

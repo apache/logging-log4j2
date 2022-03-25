@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.test.junit;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.LoggerContextAccessor;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.plugins.di.DI;
@@ -32,6 +33,7 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -141,9 +143,16 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
             injector.init();
             final Class<?> testClass = extensionContext.getRequiredTestClass();
             final ClassLoader classLoader = testClass.getClassLoader();
+            final Map.Entry<String, Object> injectorContext = Map.entry(Injector.class.getName(), injector);
             final String configLocation = source.value();
-            context = Configurator.initialize(displayName, classLoader,
-                    NetUtils.toURI(configLocation), Map.entry(Injector.class.getName(), injector));
+            final URI configUri;
+            if (source.v1config()) {
+                System.setProperty(ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY, configLocation);
+                configUri = null; // handled by system property
+            } else {
+                configUri = configLocation.isEmpty() ? null : NetUtils.toURI(configLocation);
+            }
+            context = Configurator.initialize(displayName, classLoader, configUri, injectorContext);
             assertNotNull(context, () -> "No LoggerContext created for " + testClass + " and config file " + configLocation);
             reconfigurationPolicy = source.reconfigure();
             shutdownTimeout = source.timeout();
@@ -161,7 +170,12 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
 
         @Override
         public void close() {
-            context.stop(shutdownTimeout, unit);
+            try {
+                context.stop(shutdownTimeout, unit);
+            } finally {
+                System.clearProperty(ConfigurationFactory.LOG4J1_EXPERIMENTAL);
+                System.clearProperty(ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY);
+            }
         }
     }
 
