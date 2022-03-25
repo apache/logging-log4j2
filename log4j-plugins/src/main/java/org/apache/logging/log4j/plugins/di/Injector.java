@@ -149,6 +149,13 @@ public interface Injector {
     <T> Injector registerBindingIfAbsent(final Key<T> key, final Supplier<? extends T> factory);
 
     /**
+     * Removes any existing binding for the provided key.
+     *
+     * @param key key to remove previously registered bindings
+     */
+    void removeBinding(final Key<?> key);
+
+    /**
      * Sets the {@link ReflectionAccessor} used for invoking {@link java.lang.reflect.AccessibleObject#setAccessible(boolean)}
      * from an appropriate caller class. Customizing this allows for changing the base module that other modules should
      * open themselves to.

@@ -168,6 +168,11 @@ class DefaultInjector implements Injector {
     }
 
     @Override
+    public void removeBinding(final Key<?> key) {
+        bindingMap.remove(key);
+    }
+
+    @Override
     public void setReflectionAccessor(final ReflectionAccessor accessor) {
         this.accessor = accessor;
     }
