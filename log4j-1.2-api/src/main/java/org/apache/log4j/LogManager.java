@@ -16,10 +16,6 @@
  */
 package org.apache.log4j;
 
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.stream.Collectors;
-
 import org.apache.log4j.legacy.core.ContextUtil;
 import org.apache.log4j.spi.DefaultRepositorySelector;
 import org.apache.log4j.spi.LoggerFactory;
@@ -28,7 +24,12 @@ import org.apache.log4j.spi.NOPLoggerRepository;
 import org.apache.log4j.spi.RepositorySelector;
 import org.apache.log4j.spi.RootLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.StackLocatorUtil;
+
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.stream.Collectors;
 
 /**
  * The main entry point to Log4j 1.
@@ -66,19 +67,10 @@ public final class LogManager {
     private static final boolean LOG4J_CORE_PRESENT;
 
     static {
-        LOG4J_CORE_PRESENT = checkLog4jCore();
-        //
-        // By default we use a DefaultRepositorySelector which always returns 'hierarchy'.
+        LOG4J_CORE_PRESENT = LoaderUtil.isClassAvailable("org.apache.logging.log4j.core.LoggerContext");
+        // By default, we use a DefaultRepositorySelector which always returns 'hierarchy'.
         final Hierarchy hierarchy = new Hierarchy(new RootLogger(Level.DEBUG));
         repositorySelector = new DefaultRepositorySelector(hierarchy);
-    }
-
-    private static boolean checkLog4jCore() {
-        try {
-            return Class.forName("org.apache.logging.log4j.core.LoggerContext") != null;
-        } catch (final Throwable ex) {
-            return false;
-        }
     }
 
     /**
@@ -98,7 +90,7 @@ public final class LogManager {
     /**
      * Gets a LoggerContext.
      *
-     * @param loader The ClassLoader for the context. If null the context will attempt to determine the appropriate
+     * @param classLoader The ClassLoader for the context. If null the context will attempt to determine the appropriate
      *        ClassLoader.
      * @return a LoggerContext.
      */
@@ -210,7 +202,7 @@ public final class LogManager {
         if (selector == null) {
             throw new IllegalArgumentException("RepositorySelector must be non-null.");
         }
-        LogManager.repositorySelector = selector;
+        repositorySelector = selector;
     }
 
     /**
