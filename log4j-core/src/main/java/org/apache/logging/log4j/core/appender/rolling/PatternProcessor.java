@@ -16,12 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
@@ -33,6 +27,12 @@ import org.apache.logging.log4j.core.pattern.FormattingInfo;
 import org.apache.logging.log4j.core.pattern.PatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.status.StatusLogger;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Parses the rollover pattern.
@@ -155,7 +155,7 @@ public class PatternProcessor {
         final long nextTime;
 
         if (frequency == null) {
-            throw new IllegalStateException("Pattern does not contain a date");
+            throw new IllegalStateException("Pattern '" + pattern + "' does not contain a date");
         }
         final Calendar currentCal = Calendar.getInstance();
         currentCal.setTimeInMillis(currentMillis);
