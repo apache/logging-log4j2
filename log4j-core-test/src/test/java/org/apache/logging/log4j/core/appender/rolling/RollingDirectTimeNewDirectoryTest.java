@@ -25,14 +25,15 @@ import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.Test;
+import org.opentest4j.AssertionFailedError;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RollingDirectTimeNewDirectoryTest {
 
@@ -55,10 +56,12 @@ public class RollingDirectTimeNewDirectoryTest {
         final Logger logger = context.getLogger(RollingDirectTimeNewDirectoryTest.class.getName());
 
         for (int i = 0; i < 1000; i++) {
+            currentTimeMillis.incrementAndGet();
             logger.info("nHq6p9kgfvWfjzDRYbZp");
         }
-        currentTimeMillis.addAndGet(1500);
+        currentTimeMillis.addAndGet(500);
         for (int i = 0; i < 1000; i++) {
+            currentTimeMillis.incrementAndGet();
             logger.info("nHq6p9kgfvWfjzDRYbZp");
         }
 
@@ -70,19 +73,18 @@ public class RollingDirectTimeNewDirectoryTest {
         try {
 
             final int minExpectedLogFolderCount = 2;
-            assertTrue(logFolders.length >= minExpectedLogFolderCount, "was expecting at least " + minExpectedLogFolderCount + " folders, " +
-                    "found " + logFolders.length);
+            assertThat(logFolders).hasSizeGreaterThanOrEqualTo(minExpectedLogFolderCount);
 
             for (File logFolder : logFolders) {
                 File[] logFiles = logFolder.listFiles();
                 if (logFiles != null) {
                     Arrays.sort(logFiles);
                 }
-                assertTrue(logFiles != null && logFiles.length > 0, "empty folder: " + logFolder);
+                assertThat(logFiles).isNotNull().isNotEmpty();
             }
 
-        } catch (AssertionError error) {
-            System.out.format("log directory (%s) contents:%n", DIR);
+        } catch (AssertionFailedError error) {
+            StringBuilder sb = new StringBuilder(error.getMessage()).append(" log directory (").append(DIR).append(") contents: [");
             final Iterator<File> fileIterator =
                     FileUtils.iterateFilesAndDirs(
                             logDir, TrueFileFilter.TRUE, TrueFileFilter.TRUE);
@@ -90,10 +92,13 @@ public class RollingDirectTimeNewDirectoryTest {
             while (fileIterator.hasNext()) {
                 totalFileCount++;
                 final File file = fileIterator.next();
-                System.out.format("-> %s (%d)%n", file, file.length());
+                sb.append("-> ").append(file).append(" (").append(file.length()).append(')');
+                if (fileIterator.hasNext()) {
+                    sb.append(", ");
+                }
             }
-            System.out.format("total file count: %d%n", totalFileCount);
-            throw new AssertionError("check failure", error);
+            sb.append("] total file count: ").append(totalFileCount);
+            throw new AssertionFailedError(sb.toString(), error);
         }
 
     }
