@@ -187,7 +187,7 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
         String filePattern = fileName + ".%i";
         TriggeringPolicy timePolicy = TimeBasedTriggeringPolicy.newBuilder().setClock(clock).setModulate(true).build();
         SizeBasedTriggeringPolicy sizePolicy = SizeBasedTriggeringPolicy.createPolicy(maxSize);
-        CompositeTriggeringPolicy policy = CompositeTriggeringPolicy.createPolicy(timePolicy, sizePolicy);
+        CompositeTriggeringPolicy policy = CompositeTriggeringPolicy.createPolicy(sizePolicy);
         RolloverStrategy strategy = DefaultRolloverStrategy.newBuilder()
                 .setConfig(config)
                 .setMax(maxBackups)
