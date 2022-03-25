@@ -53,6 +53,7 @@ public class Log4j1Configuration extends AbstractConfiguration implements Reconf
      */
     @Override
     public void initialize() {
+        injector.registerBinding(Configuration.KEY, () -> this);
         getStrSubstitutor().setConfiguration(this);
         getConfigurationStrSubstitutor().setConfiguration(this);
         super.getScheduler().start();
