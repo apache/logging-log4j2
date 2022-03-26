@@ -20,9 +20,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.plugins.Factory;
+import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
@@ -30,18 +32,20 @@ import org.opentest4j.AssertionFailedError;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class RollingDirectTimeNewDirectoryTest {
+public class RollingDirectTimeNewDirectoryTest implements RolloverListener {
 
     private static final String CONFIG = "log4j-rolling-folder-direct.xml";
 
     // Note that the path is hardcoded in the configuration!
     private static final String DIR = "target/rolling-folder-direct";
     private final AtomicLong currentTimeMillis = new AtomicLong(System.currentTimeMillis());
+    private final CountDownLatch latch = new CountDownLatch(2);
 
     @Factory
     Clock clock() {
@@ -50,8 +54,9 @@ public class RollingDirectTimeNewDirectoryTest {
 
     @Test
     @CleanUpDirectories(DIR)
-    @LoggerContextSource(CONFIG)
-    public void streamClosedError(final LoggerContext context) throws Exception {
+    @LoggerContextSource(value = CONFIG, timeout = 15)
+    public void streamClosedError(final LoggerContext context, @Named("RollingFile") final RollingFileAppender appender) throws Exception {
+        appender.getManager().addRolloverListener(this);
 
         final Logger logger = context.getLogger(RollingDirectTimeNewDirectoryTest.class.getName());
 
@@ -64,6 +69,8 @@ public class RollingDirectTimeNewDirectoryTest {
             currentTimeMillis.incrementAndGet();
             logger.info("nHq6p9kgfvWfjzDRYbZp");
         }
+
+        latch.await();
 
         File logDir = new File(DIR);
         File[] logFolders = logDir.listFiles();
@@ -103,4 +110,12 @@ public class RollingDirectTimeNewDirectoryTest {
 
     }
 
+    @Override
+    public void rolloverTriggered(final String fileName) {
+    }
+
+    @Override
+    public void rolloverComplete(final String fileName) {
+        latch.countDown();
+    }
 }

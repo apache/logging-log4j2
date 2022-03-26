@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -50,6 +51,7 @@ public class RollingDirectSizeTimeNewDirectoryTest implements RolloverListener {
 
     private final Map<String, AtomicInteger> rolloverFiles = new HashMap<>();
     private final AtomicLong currentTimeMillis = new AtomicLong(System.currentTimeMillis());
+    private final CountDownLatch latch = new CountDownLatch(1);
 
     @Factory
     Clock clock() {
@@ -71,6 +73,8 @@ public class RollingDirectSizeTimeNewDirectoryTest implements RolloverListener {
             logger.info("nHq6p9kgfvWfjzDRYbZp");
         }
 
+        latch.await();
+
         assertTrue(rolloverFiles.size() > 1, "A time based rollover did not occur");
         int maxFiles = Collections.max(rolloverFiles.values(), Comparator.comparing(AtomicInteger::get)).get();
         assertTrue(maxFiles > 1, "No size based rollovers occurred");
@@ -87,6 +91,7 @@ public class RollingDirectSizeTimeNewDirectoryTest implements RolloverListener {
         String logDir = file.getParentFile().getName();
         AtomicInteger fileCount = rolloverFiles.computeIfAbsent(logDir, k -> new AtomicInteger(0));
         fileCount.incrementAndGet();
+        latch.countDown();
     }
 }
 
