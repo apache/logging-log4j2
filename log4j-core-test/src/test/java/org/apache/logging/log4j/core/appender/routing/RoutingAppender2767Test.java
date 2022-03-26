@@ -17,21 +17,18 @@
 package org.apache.logging.log4j.core.appender.routing;
 
 import org.apache.logging.log4j.EventLogger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import org.apache.logging.log4j.test.junit.CleanUpFiles;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  *
@@ -40,28 +37,16 @@ public class RoutingAppender2767Test {
     private static final String CONFIG = "log4j-routing-2767.xml";
     private static final String ACTIVITY_LOG_FILE = "target/routing1/routingtest-Service.log";
 
-    private final LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG);
-
-    @Rule
-    public RuleChain rules = loggerContextRule.withCleanFilesRule(ACTIVITY_LOG_FILE);
-
-    @Before
-    public void setUp() throws Exception {
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        this.loggerContextRule.getLoggerContext().stop();
-    }
-
     @Test
+    @CleanUpFiles(ACTIVITY_LOG_FILE)
+    @LoggerContextSource(CONFIG)
     public void routingTest() throws Exception {
         StructuredDataMessage msg = new StructuredDataMessage("Test", "This is a test", "Service");
         EventLogger.logEvent(msg);
         File file = new File(ACTIVITY_LOG_FILE);
-        assertTrue("Activity file was not created", file.exists());
+        assertTrue(file.exists(), "Activity file was not created");
         List<String> lines = Files.lines(file.toPath()).collect(Collectors.toList());
-        assertEquals("Incorrect number of lines", 1, lines.size());
-        assertTrue("Incorrect content", lines.get(0).contains("This is a test"));
+        assertEquals(1, lines.size(), "Incorrect number of lines");
+        assertTrue(lines.get(0).contains("This is a test"), "Incorrect content");
     }
 }
