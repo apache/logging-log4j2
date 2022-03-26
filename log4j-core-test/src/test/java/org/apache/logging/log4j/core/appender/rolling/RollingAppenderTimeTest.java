@@ -32,9 +32,9 @@ import java.util.concurrent.locks.LockSupport;
 
 import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
@@ -61,10 +61,12 @@ public class RollingAppenderTimeTest {
         currentTimeMillis.addAndGet(1500);
         // Trigger the rollover
         for (int i = 0; i < 16; ++i) {
-            logger.debug("This is test message number " + i + 1);
+            logger.debug("This is test message number {}", i + 1);
+            currentTimeMillis.addAndGet(100);
         }
         final File dir = new File(DIR);
-        assertTrue(dir.exists() && dir.listFiles().length > 0, "Directory not created");
+        assertThat(dir).exists().isDirectory();
+        assertThat(dir.listFiles()).isNotEmpty();
 
         final int MAX_TRIES = 20;
         final Matcher<File[]> hasGzippedFile = hasItemInArray(that(hasName(that(endsWith(".gz")))));
@@ -73,7 +75,7 @@ public class RollingAppenderTimeTest {
             if (hasGzippedFile.matches(files)) {
                 return; // test succeeded
             }
-            logger.debug("Adding additional event " + i);
+            logger.debug("Adding additional event {}", i);
             LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(100)); // Allow time for rollover to complete
         }
         fail("No compressed files found");
