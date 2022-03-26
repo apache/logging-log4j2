@@ -123,7 +123,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
 
     @Deprecated(since = "3.0.0", forRemoval = true)
     public static ConfigurationFactory getInstance() {
-        return null;
+        return LoggerContext.getContext(false).getInjector().getInstance(KEY);
     }
 
     public static AuthorizationProvider authorizationProvider(final PropertiesUtil props) {
