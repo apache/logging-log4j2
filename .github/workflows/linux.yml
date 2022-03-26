@@ -1,4 +1,4 @@
-name: build
+name: linux
 
 on:
   push:
@@ -9,11 +9,7 @@ on:
 jobs:
   build:
 
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [ ubuntu-latest, windows-latest, macos-latest ]
+    runs-on: ubuntu-latest
 
     steps:
 
@@ -29,20 +25,8 @@ jobs:
           architecture: x64
           cache: 'maven'
 
-      - name: Inspect environment (Linux)
-        if: runner.os == 'Linux'
-        run: env | grep '^JAVA'
-
-      - name: Inspect environment (Windows)
-        if: runner.os == 'Windows'
-        run: set java
-
-      - name: Inspect environment (MacOS)
-        if: runner.os == 'macOS'
-        run: env | grep '^JAVA'
-
       - name: Build with Maven
-        timeout-minutes: 60
+        timeout-minutes: 90
         shell: bash
         run: |
           ./mvnw \
