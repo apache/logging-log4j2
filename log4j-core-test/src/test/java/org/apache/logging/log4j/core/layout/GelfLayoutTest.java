@@ -20,16 +20,20 @@ import com.fasterxml.jackson.core.io.JsonStringEncoder;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.*;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.layout.GelfLayout.CompressionType;
 import org.apache.logging.log4j.core.lookup.JavaLookup;
 import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
+import org.apache.logging.log4j.core.test.appender.EncodingListAppender;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
-import org.apache.logging.log4j.core.test.appender.EncodingListAppender;
-import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.util.LazyValue;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -42,12 +46,10 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @UsingAnyThreadContext
 public class GelfLayoutTest {
-
-    static ConfigurationFactory configFactory = new BasicConfigurationFactory();
 
     private static final String HOSTNAME = "TheHost";
     private static final String KEY1 = "Key1";
@@ -63,13 +65,13 @@ public class GelfLayoutTest {
 
     @AfterAll
     public static void cleanupClass() {
-        ConfigurationFactory.removeConfigurationFactory(configFactory);
+        LoggerContext.getContext().getInjector().removeBinding(ConfigurationFactory.KEY);
     }
 
     @BeforeAll
     public static void setupClass() {
-        ConfigurationFactory.setConfigurationFactory(configFactory);
         final LoggerContext ctx = LoggerContext.getContext();
+        ctx.getInjector().registerBinding(ConfigurationFactory.KEY, new LazyValue<>(BasicConfigurationFactory::new));
         ctx.reconfigure();
     }
 

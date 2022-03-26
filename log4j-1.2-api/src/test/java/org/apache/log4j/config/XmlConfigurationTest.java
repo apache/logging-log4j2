@@ -16,17 +16,6 @@
  */
 package org.apache.log4j.config;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.log4j.ListAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -36,11 +25,23 @@ import org.apache.log4j.xml.XmlConfigurationFactory;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.apache.logging.log4j.util.LazyValue;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test configuration from XML.
@@ -55,8 +56,11 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
         final InputStream inputStream = ClassLoader.getSystemResourceAsStream(configResource);
         final ConfigurationSource source = new ConfigurationSource(inputStream);
         final LoggerContext context = LoggerContext.getContext(false);
-        final Configuration configuration = new XmlConfigurationFactory().getConfiguration(context, source);
-        assertNotNull("No configuration created", configuration);
+        final Configuration configuration = context.getInjector()
+                .registerBinding(ConfigurationFactory.KEY, new LazyValue<>(XmlConfigurationFactory::new))
+                .getInstance(ConfigurationFactory.KEY)
+                .getConfiguration(context, source);
+        assertNotNull(configuration, "No configuration created");
         configuration.initialize();
         return configuration;
     }
@@ -67,11 +71,11 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
         Logger logger = LogManager.getLogger("test");
         logger.debug("This is a test of the root logger");
         File file = new File("target/temp.A1");
-        assertTrue("File A1 was not created", file.exists());
-        assertTrue("File A1 is empty", file.length() > 0);
+        assertTrue(file.exists(), "File A1 was not created");
+        assertTrue(file.length() > 0, "File A1 is empty");
         file = new File("target/temp.A2");
-        assertTrue("File A2 was not created", file.exists());
-        assertTrue("File A2 is empty", file.length() > 0);
+        assertTrue(file.exists(), "File A2 was not created");
+        assertTrue(file.length() > 0, "File A2 is empty");
     }
 
     @Test
@@ -90,12 +94,12 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
                 eventAppender = (ListAppender) ((AppenderAdapter.Adapter) entry.getValue()).getAppender();
             }
         }
-        assertNotNull("No Event Appender", eventAppender);
-        assertNotNull("No Message Appender", messageAppender);
+        assertNotNull(eventAppender, "No Event Appender");
+        assertNotNull(messageAppender, "No Message Appender");
         List<LoggingEvent> events = eventAppender.getEvents();
-        assertTrue("No events", events != null && events.size() > 0);
+        assertTrue(events != null && events.size() > 0, "No events");
         List<String> messages = messageAppender.getMessages();
-        assertTrue("No messages", messages != null && messages.size() > 0);
+        assertTrue(messages != null && messages.size() > 0, "No messages");
     }
 
     private LoggerContext configure(String configLocation) throws Exception {
@@ -105,7 +109,7 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
         LoggerContextFactory factory = org.apache.logging.log4j.LogManager.getFactory();
         LoggerContext context = (LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
         Configuration configuration = new XmlConfigurationFactory().getConfiguration(context, source);
-        assertNotNull("No configuration created", configuration);
+        assertNotNull(configuration, "No configuration created");
         Configurator.reconfigure(configuration);
         return context;
     }

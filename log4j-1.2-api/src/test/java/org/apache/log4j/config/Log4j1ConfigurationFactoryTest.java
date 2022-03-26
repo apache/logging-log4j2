@@ -16,27 +16,19 @@
  */
 package org.apache.log4j.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import org.apache.log4j.layout.Log4j1XmlLayout;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.appender.ConsoleAppender;
+import org.apache.logging.log4j.core.appender.ConsoleAppender.Target;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.junit.jupiter.api.Test;
 
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import org.apache.log4j.layout.Log4j1XmlLayout;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.appender.ConsoleAppender;
-import org.apache.logging.log4j.core.appender.ConsoleAppender.Target;
-import org.apache.logging.log4j.core.appender.FileAppender;
-import org.apache.logging.log4j.core.appender.NullAppender;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.junit.Ignore;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class Log4j1ConfigurationFactoryTest extends AbstractLog4j1ConfigurationTest {
 
@@ -45,7 +37,7 @@ public class Log4j1ConfigurationFactoryTest extends AbstractLog4j1ConfigurationT
     @Override
     protected Configuration getConfiguration(final String configResource) throws URISyntaxException {
         final URL configLocation = ClassLoader.getSystemResource(configResource + SUFFIX);
-        assertNotNull(configResource, configLocation);
+        assertNotNull(configLocation, configResource);
         final Configuration configuration = new Log4j1ConfigurationFactory().getConfiguration(null, "test", configLocation.toURI());
         assertNotNull(configuration);
         return configuration;
@@ -55,7 +47,8 @@ public class Log4j1ConfigurationFactoryTest extends AbstractLog4j1ConfigurationT
         final Configuration configuration = getConfiguration(configResource);
         final String name = "Console";
         final ConsoleAppender appender = configuration.getAppender(name);
-        assertNotNull("Missing appender '" + name + "' in configuration " + configResource + " → " + configuration, appender);
+        assertNotNull(appender,
+                "Missing appender '" + name + "' in configuration " + configResource + " → " + configuration);
         assertEquals(Target.SYSTEM_ERR, appender.getTarget());
         //
         final LoggerConfig loggerConfig = configuration.getLoggerConfig("com.example.foo");

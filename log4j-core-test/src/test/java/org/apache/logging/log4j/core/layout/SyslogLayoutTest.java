@@ -16,26 +16,27 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import java.util.List;
-import java.util.Locale;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.net.Facility;
-import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
-import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
+import org.apache.logging.log4j.util.LazyValue;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
+import java.util.Locale;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @UsingAnyThreadContext
 public class SyslogLayoutTest {
@@ -53,14 +54,14 @@ public class SyslogLayoutTest {
 
     @BeforeAll
     public static void setupClass() {
-        ConfigurationFactory.setConfigurationFactory(cf);
         final LoggerContext ctx = LoggerContext.getContext();
+        ctx.getInjector().registerBinding(ConfigurationFactory.KEY, new LazyValue<>(BasicConfigurationFactory::new));
         ctx.reconfigure();
     }
 
     @AfterAll
     public static void cleanupClass() {
-        ConfigurationFactory.removeConfigurationFactory(cf);
+        LoggerContext.getContext().getInjector().removeBinding(ConfigurationFactory.KEY);
     }
 
     /**

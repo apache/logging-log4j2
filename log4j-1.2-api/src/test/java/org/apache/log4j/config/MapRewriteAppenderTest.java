@@ -21,39 +21,27 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.bridge.AppenderAdapter;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.junit.After;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test RewriteAppender
  */
+@UsingThreadContextMap
 public class MapRewriteAppenderTest {
 
-    @BeforeClass
-    public static void beforeClass() {
-        System.setProperty(ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY, "target/test-classes/log4j1-mapRewrite.xml");
-    }
-
-    @After
-    public void after() {
-        ThreadContext.clearMap();
-    }
-
     @Test
+    @LoggerContextSource(value = "log4j1-mapRewrite.xml", v1config = true)
     public void testRewrite() throws Exception {
         Logger logger = LogManager.getLogger("test");
         Map<String, String> map = new HashMap<>();
@@ -69,11 +57,11 @@ public class MapRewriteAppenderTest {
                 eventAppender = (ListAppender) ((AppenderAdapter.Adapter) entry.getValue()).getAppender();
             }
         }
-        assertNotNull("No Event Appender", eventAppender);
+        assertNotNull(eventAppender, "No Event Appender");
         List<LoggingEvent> events = eventAppender.getEvents();
-        assertTrue("No events", events != null && events.size() > 0);
-        assertNotNull("No properties in the event", events.get(0).getProperties());
-        assertTrue("Key was not inserted", events.get(0).getProperties().containsKey("hello"));
-        assertEquals("Key value is incorrect", "world", events.get(0).getProperties().get("hello"));
+        assertTrue(events != null && events.size() > 0, "No events");
+        assertNotNull(events.get(0).getProperties(), "No properties in the event");
+        assertTrue(events.get(0).getProperties().containsKey("hello"), "Key was not inserted");
+        assertEquals("world", events.get(0).getProperties().get("hello"), "Key value is incorrect");
     }
 }

@@ -16,19 +16,11 @@
  */
 package org.apache.logging.log4j.core.config.composite;
 
-import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
 import org.apache.logging.log4j.core.util.Loader;
@@ -36,8 +28,16 @@ import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.core.util.Watcher;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.util.ResolverUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
+
+import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A Composite Configuration.
@@ -142,7 +142,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
     public Configuration reconfigure() {
         LOGGER.debug("Reconfiguring composite configuration");
         final List<AbstractConfiguration> configs = new ArrayList<>();
-        final ConfigurationFactory factory = ConfigurationFactory.getInstance();
+        final ConfigurationFactory factory = injector.getInstance(ConfigurationFactory.KEY);
         for (final AbstractConfiguration config : configurations) {
             final ConfigurationSource source = config.getConfigurationSource();
             final URI sourceURI = source.getURI();

@@ -16,11 +16,11 @@
  */
 package org.apache.log4j;
 
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  *
@@ -29,15 +29,13 @@ public class LoggingTest {
 
     private static final String CONFIG = "log4j2-config.xml";
 
-    @ClassRule
-    public static final LoggerContextRule CTX = new LoggerContextRule(CONFIG);
-
     @Test
+    @LoggerContextSource(CONFIG)
     public void testParent() {
         final Logger logger = Logger.getLogger("org.apache.test.logging.Test");
         final Category parent = logger.getParent();
-        assertNotNull("No parent Logger", parent);
-        assertEquals("Incorrect parent logger", "org.apache.test.logging", parent.getName());
+        assertNotNull(parent, "No parent Logger");
+        assertEquals("org.apache.test.logging", parent.getName(), "Incorrect parent logger");
     }
 
 }

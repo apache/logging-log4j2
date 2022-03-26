@@ -16,24 +16,22 @@
  */
 package org.apache.logging.log4j.jackson;
 
-import java.io.IOException;
-
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.test.categories.Layouts;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import org.apache.logging.log4j.Level;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests {@link LevelMixIn}.
  */
-@Category(Layouts.Json.class)
 public abstract class LevelMixInTest {
 
     static class Fixture {
@@ -78,7 +76,7 @@ public abstract class LevelMixInTest {
 
     protected abstract ObjectMapper newObjectMapper();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         log4jObjectMapper = newObjectMapper();
         writer = log4jObjectMapper.writer();
@@ -89,18 +87,18 @@ public abstract class LevelMixInTest {
     public void testContainer() throws IOException {
         final Fixture expected = new Fixture();
         final String str = writer.writeValueAsString(expected);
-        Assert.assertTrue(str.contains("DEBUG"));
+        assertTrue(str.contains("DEBUG"));
         final ObjectReader fixtureReader = log4jObjectMapper.readerFor(Fixture.class);
         final Fixture actual = fixtureReader.readValue(str);
-        Assert.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @Test
     public void testNameOnly() throws IOException {
         final Level expected = Level.getLevel("DEBUG");
         final String str = writer.writeValueAsString(expected);
-        Assert.assertTrue(str.contains("DEBUG"));
+        assertTrue(str.contains("DEBUG"));
         final Level actual = reader.readValue(str);
-        Assert.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 }

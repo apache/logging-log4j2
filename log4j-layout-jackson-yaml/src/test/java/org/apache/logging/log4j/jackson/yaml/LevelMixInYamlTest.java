@@ -17,13 +17,9 @@
 
 package org.apache.logging.log4j.jackson.yaml;
 
-import org.apache.logging.log4j.core.test.categories.Layouts;
-import org.apache.logging.log4j.jackson.LevelMixInTest;
-import org.junit.experimental.categories.Category;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.jackson.LevelMixInTest;
 
-@Category(Layouts.Yaml.class)
 public class LevelMixInYamlTest extends LevelMixInTest {
 
     @Override

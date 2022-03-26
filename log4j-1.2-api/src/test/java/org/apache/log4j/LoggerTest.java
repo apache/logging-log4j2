@@ -17,10 +17,6 @@
 
 package org.apache.log4j;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -29,12 +25,16 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Used for internal unit testing the Logger class.
@@ -51,28 +51,26 @@ public class LoggerTest {
     // A short message.
     static String MSG = "M";
 
-    static ConfigurationFactory configurationFactory = new BasicConfigurationFactory();
-
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() {
         rbUS = ResourceBundle.getBundle("L7D", new Locale("en", "US"));
         assertNotNull(rbUS);
 
         rbFR = ResourceBundle.getBundle("L7D", new Locale("fr", "FR"));
-        assertNotNull("Got a null resource bundle.", rbFR);
+        assertNotNull(rbFR, "Got a null resource bundle.");
 
         rbCH = ResourceBundle.getBundle("L7D", new Locale("fr", "CH"));
-        assertNotNull("Got a null resource bundle.", rbCH);
+        assertNotNull(rbCH, "Got a null resource bundle.");
 
-        ConfigurationFactory.setConfigurationFactory(configurationFactory);
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FACTORY_PROPERTY, BasicConfigurationFactory.class.getName());
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDownClass() {
-        ConfigurationFactory.removeConfigurationFactory(configurationFactory);
+        System.clearProperty(ConfigurationFactory.CONFIGURATION_FACTORY_PROPERTY);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         LoggerContext.getContext().reconfigure();
         a1 = null;
@@ -118,24 +116,25 @@ public class LoggerTest {
     @Test
     public void testAdditivity1() {
         final Logger loggerA = Logger.getLogger("a");
+        assertEquals(Level.DEBUG, loggerA.getLevel());
         final Logger loggerAB = Logger.getLogger("a.b");
-        final CountingAppender coutingAppender = new CountingAppender();
-        coutingAppender.start();
+        final CountingAppender countingAppender = new CountingAppender();
+        countingAppender.start();
         try {
-            ((org.apache.logging.log4j.core.Logger) loggerA.getLogger()).addAppender(coutingAppender);
+            ((org.apache.logging.log4j.core.Logger) loggerA.getLogger()).addAppender(countingAppender);
 
-            assertEquals(0, coutingAppender.counter);
+            assertEquals(0, countingAppender.counter);
             loggerAB.debug(MSG);
-            assertEquals(1, coutingAppender.counter);
+            assertEquals(1, countingAppender.counter);
             loggerAB.info(MSG);
-            assertEquals(2, coutingAppender.counter);
+            assertEquals(2, countingAppender.counter);
             loggerAB.warn(MSG);
-            assertEquals(3, coutingAppender.counter);
+            assertEquals(3, countingAppender.counter);
             loggerAB.error(MSG);
-            assertEquals(4, coutingAppender.counter);
-            coutingAppender.stop();
+            assertEquals(4, countingAppender.counter);
+            countingAppender.stop();
         } finally {
-            ((org.apache.logging.log4j.core.Logger) loggerA.getLogger()).removeAppender(coutingAppender);
+            ((org.apache.logging.log4j.core.Logger) loggerA.getLogger()).removeAppender(countingAppender);
         }
     }
 
@@ -318,7 +317,7 @@ public class LoggerTest {
         final Logger root = Logger.getRootLogger();
         root.setResourceBundle(rbUS);
         ResourceBundle t = root.getResourceBundle();
-        assertTrue(t == rbUS);
+        assertSame(t, rbUS);
 
         final Logger x = Logger.getLogger("x");
         final Logger x_y = Logger.getLogger("x.y");
@@ -338,7 +337,7 @@ public class LoggerTest {
         final Logger root = Logger.getRootLogger();
         root.setResourceBundle(rbUS);
         ResourceBundle t = root.getResourceBundle();
-        assertTrue(t == rbUS);
+        assertSame(t, rbUS);
 
         final Logger x = Logger.getLogger("x");
         final Logger x_y = Logger.getLogger("x.y");
@@ -478,9 +477,9 @@ public class LoggerTest {
             root.log(Priority.INFO, "Test msg2", null);
             root.log(Priority.INFO, "Test msg3");
             final List<String> msgs = appender.getMessages();
-            assertTrue("Incorrect number of messages", msgs.size() == 3);
+            assertEquals(3, msgs.size(), "Incorrect number of messages");
             final String msg = msgs.get(0);
-            assertTrue("Message contains incorrect class name: " + msg, msg.contains(LoggerTest.class.getName()));
+            assertTrue(msg.contains(LoggerTest.class.getName()), "Message contains incorrect class name: " + msg);
             appender.stop();
         } finally {
             ((org.apache.logging.log4j.core.Logger) root.getLogger()).removeAppender(appender);
@@ -502,8 +501,6 @@ public class LoggerTest {
     }
 
     private static class CountingAppender extends AbstractAppender {
-
-        private static final long serialVersionUID = 1L;
 
         int counter;
 

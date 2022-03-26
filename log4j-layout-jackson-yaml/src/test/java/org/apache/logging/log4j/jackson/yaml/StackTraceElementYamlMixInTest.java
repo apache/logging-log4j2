@@ -16,35 +16,28 @@
  */
 package org.apache.logging.log4j.jackson.yaml;
 
-import java.io.IOException;
-
-import org.apache.logging.log4j.core.test.categories.Layouts;
-import org.apache.logging.log4j.jackson.Log4jStackTraceElementDeserializer;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+import org.apache.logging.log4j.jackson.Log4jStackTraceElementDeserializer;
+import org.junit.jupiter.api.Test;
 
-@Category(Layouts.Json.class)
+import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class StackTraceElementYamlMixInTest {
 
     protected String aposToQuotes(final String json) {
         return json.replace("'", "\"");
     }
 
-    private void roundtrip(final ObjectMapper mapper)
-            throws JsonProcessingException, IOException, JsonParseException, JsonMappingException {
+    private void roundtrip(final ObjectMapper mapper) throws IOException {
         final StackTraceElement expected = new StackTraceElement("package.SomeClass", "someMethod", "SomeClass.java",
                 123);
         final String s = mapper.writeValueAsString(expected);
         final StackTraceElement actual = mapper.readValue(s, StackTraceElement.class);
-        Assert.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -59,7 +52,7 @@ public class StackTraceElementYamlMixInTest {
         final StackTraceElement actual = mapper.readValue(
                 "---\nclass: package.SomeClass\nmethod: someMethod\nfile: SomeClass.java\nline: 123\n...",
                 StackTraceElement.class);
-        Assert.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -73,7 +66,7 @@ public class StackTraceElementYamlMixInTest {
         final StackTraceElement actual = mapper.readValue(
                 "---\nclass: package.SomeClass\nmethod: someMethod\nfile: SomeClass.java\nline: 123\n...",
                 StackTraceElement.class);
-        Assert.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @Test

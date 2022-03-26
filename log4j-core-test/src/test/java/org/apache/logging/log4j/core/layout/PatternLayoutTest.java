@@ -16,14 +16,9 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
@@ -31,11 +26,17 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.lookup.MainMapLookup;
-import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
+import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
+import org.apache.logging.log4j.util.LazyValue;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -46,21 +47,12 @@ public class PatternLayoutTest {
             return new String(layout.toByteArray(event));
         }
     }
-    static ConfigurationFactory cf = new BasicConfigurationFactory();
-    static String msgPattern = "%m%n";
-    static String OUTPUT_FILE = "target/output/PatternParser";
     static final String regexPattern = "%replace{%logger %msg}{\\.}{/}";
-
-    static String WITNESS_FILE = "witness/PatternParser";
-
-    public static void cleanupClass() {
-        ConfigurationFactory.removeConfigurationFactory(cf);
-    }
 
     @BeforeAll
     public static void setupClass() {
-        ConfigurationFactory.setConfigurationFactory(cf);
         final LoggerContext ctx = LoggerContext.getContext();
+        ctx.getInjector().registerBinding(ConfigurationFactory.KEY, new LazyValue<>(BasicConfigurationFactory::new));
         ctx.reconfigure();
     }
 

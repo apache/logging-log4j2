@@ -23,34 +23,26 @@ import org.apache.log4j.bridge.AppenderAdapter;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.spi.LoggerContext;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test configuration from XML.
  */
 public class AutoConfigTest {
 
-    @BeforeClass
-    public static void beforeClass() {
-        System.setProperty(ConfigurationFactory.LOG4J1_EXPERIMENTAL, "true");
-    }
-
     @Test
-    public void testListAppender() {
+    @LoggerContextSource(value = "log4j.xml", v1config = true)
+    public void testListAppender(final org.apache.logging.log4j.core.LoggerContext context) {
         Logger logger = LogManager.getLogger("test");
         logger.debug("This is a test of the root logger");
-        LoggerContext loggerContext = org.apache.logging.log4j.LogManager.getContext(false);
-        Configuration configuration = ((org.apache.logging.log4j.core.LoggerContext) loggerContext).getConfiguration();
+        Configuration configuration = context.getConfiguration();
         Map<String, Appender> appenders = configuration.getAppenders();
         ListAppender eventAppender = null;
         ListAppender messageAppender = null;
@@ -61,12 +53,12 @@ public class AutoConfigTest {
                 eventAppender = (ListAppender) ((AppenderAdapter.Adapter) entry.getValue()).getAppender();
             }
         }
-        assertNotNull("No Event Appender", eventAppender);
-        assertNotNull("No Message Appender", messageAppender);
+        assertNotNull(eventAppender, "No Event Appender");
+        assertNotNull(messageAppender, "No Message Appender");
         List<LoggingEvent> events = eventAppender.getEvents();
-        assertTrue("No events", events != null && events.size() > 0);
+        assertTrue(events != null && events.size() > 0, "No events");
         List<String> messages = messageAppender.getMessages();
-        assertTrue("No messages", messages != null && messages.size() > 0);
+        assertTrue(messages != null && messages.size() > 0, "No messages");
     }
 
 }

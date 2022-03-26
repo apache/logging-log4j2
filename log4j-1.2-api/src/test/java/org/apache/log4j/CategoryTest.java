@@ -19,7 +19,6 @@ package org.apache.log4j;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
@@ -47,21 +46,18 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class CategoryTest {
 
-    static ConfigurationFactory cf = new BasicConfigurationFactory();
-
     private static ListAppender appender = new ListAppender("List");
 
     @BeforeAll
     public static void setupClass() {
         appender.start();
-        ConfigurationFactory.setConfigurationFactory(cf);
-        LoggerContext.getContext().reconfigure();
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FACTORY_PROPERTY, BasicConfigurationFactory.class.getName());
     }
 
     @AfterAll
     public static void cleanupClass() {
-        ConfigurationFactory.removeConfigurationFactory(cf);
         appender.stop();
+        System.clearProperty(ConfigurationFactory.CONFIGURATION_FACTORY_PROPERTY);
     }
 
     @BeforeEach

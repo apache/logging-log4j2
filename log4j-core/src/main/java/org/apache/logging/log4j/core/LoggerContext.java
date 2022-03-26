@@ -297,7 +297,7 @@ public class LoggerContext extends AbstractLifeCycle
         if (configLock.tryLock()) {
             try {
                 if (this.isInitialized() || this.isStopped()) {
-                    if (this.configuration.isShutdownHookEnabled()) {
+                    if (config.isShutdownHookEnabled()) {
                         setUpShutdownHook();
                     }
                     this.setStarted();
@@ -714,7 +714,8 @@ public class LoggerContext extends AbstractLifeCycle
         final ClassLoader cl = externalContext instanceof ClassLoader ? (ClassLoader) externalContext : null;
         LOGGER.debug("Reconfiguration started for {} at URI {} with optional ClassLoader: {}",
                 this, configURI, cl);
-        final Configuration instance = ConfigurationFactory.getInstance().getConfiguration(this, contextName, configURI, cl);
+        final Configuration instance =
+                injector.getInstance(ConfigurationFactory.KEY).getConfiguration(this, contextName, configURI, cl);
         if (instance == null) {
             LOGGER.error("Reconfiguration failed: No configuration found for '{}' at '{}' in '{}'", contextName, configURI, cl);
         } else {

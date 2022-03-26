@@ -16,85 +16,73 @@
  */
 package org.apache.logging.log4j.jackson.xml.layout;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.impl.MutableLogEvent;
+import org.apache.logging.log4j.core.lookup.JavaLookup;
+import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.layout.LogEventFixtures;
+import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.jackson.AbstractJacksonLayout;
+import org.apache.logging.log4j.jackson.XmlConstants;
+import org.apache.logging.log4j.jackson.xml.AbstractLogEventXmlMixIn;
+import org.apache.logging.log4j.jackson.xml.Log4jXmlObjectMapper;
+import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
+import org.apache.logging.log4j.util.LazyValue;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.MarkerManager;
-import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.test.categories.Layouts;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
-import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.impl.MutableLogEvent;
-import org.apache.logging.log4j.core.test.layout.LogEventFixtures;
-import org.apache.logging.log4j.core.lookup.JavaLookup;
-import org.apache.logging.log4j.core.util.KeyValuePair;
-import org.apache.logging.log4j.jackson.AbstractJacksonLayout;
-import org.apache.logging.log4j.jackson.XmlConstants;
-import org.apache.logging.log4j.jackson.xml.AbstractLogEventXmlMixIn;
-import org.apache.logging.log4j.jackson.xml.Log4jXmlObjectMapper;
-import org.apache.logging.log4j.test.junit.ThreadContextRule;
-import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link XmlLayout}.
  */
-@Category(Layouts.Xml.class)
+@UsingAnyThreadContext
 public class XmlLayoutTest {
     private static final int NOT_FOUND = -1;
-    private static final String body = "<Message>empty mdc</Message>";
-    static ConfigurationFactory cf = new BasicConfigurationFactory();
-    private static final String markerTag = "<Marker name=\"EVENT\"/>";
 
-    @AfterClass
+    @AfterAll
     public static void cleanupClass() {
-        ConfigurationFactory.removeConfigurationFactory(cf);
+        LoggerContext.getContext().stop();
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() {
-        ConfigurationFactory.setConfigurationFactory(cf);
         final LoggerContext ctx = LoggerContext.getContext();
+        ctx.getInjector().registerBinding(ConfigurationFactory.KEY, new LazyValue<>(BasicConfigurationFactory::new));
         ctx.reconfigure();
     }
-
-    @Rule
-    public final ThreadContextRule threadContextRule = new ThreadContextRule();
 
     LoggerContext ctx = LoggerContext.getContext();
 
     Logger rootLogger = this.ctx.getRootLogger();
 
     private void checkAttribute(final String name, final String value, final boolean compact, final String str) {
-        Assert.assertTrue(str, str.contains(name + "=\"" + value + "\""));
+        assertTrue(str.contains(name + "=\"" + value + "\""), str);
     }
 
     private void checkAttributeName(final String name, final boolean compact, final String str) {
-        Assert.assertTrue(str, str.contains(name + "=\""));
+        assertTrue(str.contains(name + "=\""), str);
     }
 
     private void checkContains(final String expected, final List<String> list) {
@@ -104,17 +92,17 @@ public class XmlLayoutTest {
                 return;
             }
         }
-        Assert.fail("Cannot find " + expected + " in " + list);
+        fail("Cannot find " + expected + " in " + list);
     }
 
     private void checkContextMapElement(final String key, final String value, final boolean compact, final String str) {
         // <item key="MDC.A" value="A_Value"/>
-        assertTrue(str, str.contains(String.format("<item key=\"%s\" value=\"%s\"/>", key, value)));
+        assertTrue(str.contains(String.format("<item key=\"%s\" value=\"%s\"/>", key, value)), str);
     }
 
     private void checkContextStackElement(final String value, final boolean compact, final String str) {
         // <ContextStackItem>stack_msg1</ContextStackItem>
-        assertTrue(str, str.contains(String.format("<ContextStackItem>%s</ContextStackItem>", value)));
+        assertTrue(str.contains(String.format("<ContextStackItem>%s</ContextStackItem>", value)), str);
     }
 
     private void checkElementName(final String name, final boolean compact, final String str,
@@ -123,43 +111,39 @@ public class XmlLayoutTest {
         // start
         final String startStr = withAttributes ? "<" + name + " " : "<" + name + ">";
         final int startPos = str.indexOf(startStr);
-        Assert.assertTrue(String.format("Missing text '%s' in: %s", startStr, str), startPos >= 0);
+        assertTrue(startPos >= 0, String.format("Missing text '%s' in: %s", startStr, str));
         // end
         final String endStr = withChildren ? "</" + name + ">" : "/>";
         final int endPos = str.indexOf(endStr, startPos + startStr.length());
-        Assert.assertTrue(str, endPos >= 0);
+        assertTrue(endPos >= 0, str);
     }
 
     private void checkElementNameAbsent(final String name, final boolean compact, final String str) {
-        Assert.assertFalse(str.contains("<" + name));
+        assertFalse(str.contains("<" + name));
     }
 
     private void checkJsonPropertyOrder(final boolean includeContextStack, final boolean includeContextMap,
             final boolean includeStacktrace, final String str) {
         final JsonPropertyOrder annotation = AbstractLogEventXmlMixIn.class.getAnnotation(JsonPropertyOrder.class);
-        Assert.assertNotNull(annotation);
+        Assertions.assertNotNull(annotation);
         int previousIndex = 0;
         String previousName = null;
         for (final String name : annotation.value()) {
             final int currentIndex = str.indexOf(name);
             if (!includeContextStack && XmlConstants.ELT_CONTEXT_STACK.equals(name)) {
-                Assert.assertTrue(String.format("Unexpected element '%s' in: %s", name, str),
-                        currentIndex == NOT_FOUND);
+                assertEquals(NOT_FOUND, currentIndex, String.format("Unexpected element '%s' in: %s", name, str));
                 break;
             }
             if (!includeContextMap && XmlConstants.ELT_CONTEXT_MAP.equals(name)) {
-                Assert.assertTrue(String.format("Unexpected element '%s' in: %s", name, str),
-                        currentIndex == NOT_FOUND);
+                assertEquals(NOT_FOUND, currentIndex, String.format("Unexpected element '%s' in: %s", name, str));
                 break;
             }
             if (!includeStacktrace && XmlConstants.ELT_EXTENDED_STACK_TRACE.equals(name)) {
-                Assert.assertTrue(String.format("Unexpected element '%s' in: %s", name, str),
-                        currentIndex == NOT_FOUND);
+                assertEquals(NOT_FOUND, currentIndex, String.format("Unexpected element '%s' in: %s", name, str));
                 break;
             }
             if (!includeStacktrace && XmlConstants.ELT_EXTENDED_STACK_TRACE_ITEM.equals(name)) {
-                Assert.assertTrue(String.format("Unexpected element '%s' in: %s", name, str),
-                        currentIndex == NOT_FOUND);
+                assertEquals(NOT_FOUND, currentIndex, String.format("Unexpected element '%s' in: %s", name, str));
                 break;
             }
             // TODO
@@ -194,8 +178,8 @@ public class XmlLayoutTest {
                         new KeyValuePair("KEY2", "${java:runtime}"), })
                 .setCharset(StandardCharsets.UTF_8).setConfiguration(ctx.getConfiguration()).build();
         final String str = layout.toSerializable(LogEventFixtures.createLogEvent());
-        assertTrue(str, str.contains("<KEY1>VALUE1</KEY1>"));
-        assertTrue(str, str.contains("<KEY2>" + new JavaLookup().getRuntime() + "</KEY2>"));
+        assertTrue(str.contains("<KEY1>VALUE1</KEY1>"), str);
+        assertTrue(str.contains("<KEY2>" + new JavaLookup().getRuntime() + "</KEY2>"), str);
     }
 
     @Test
@@ -210,7 +194,7 @@ public class XmlLayoutTest {
         mutableEvent.initFrom(logEvent);
         final String strLogEvent = layout.toSerializable(logEvent);
         final String strMutableEvent = layout.toSerializable(mutableEvent);
-        assertEquals(strMutableEvent, strLogEvent, strMutableEvent);
+        assertEquals(strLogEvent, strMutableEvent, strMutableEvent);
     }
     /**
      * @param includeLocationInfo
@@ -240,9 +224,9 @@ public class XmlLayoutTest {
         final String str = layout.toSerializable(expected);
         // @formatter:on
         // System.out.println(str);
-        assertEquals(str, !compact, str.contains("\n"));
-        assertEquals(str, includeLocationInfo, str.contains("Source"));
-        assertEquals(str, includeContextMap, str.contains("ContextMap"));
+        assertEquals(!compact, str.contains("\n"), str);
+        assertEquals(includeLocationInfo, str.contains("Source"), str);
+        assertEquals(includeContextMap, str.contains("ContextMap"), str);
         final Log4jLogEvent actual = new Log4jXmlObjectMapper().readValue(str, Log4jLogEvent.class);
         LogEventFixtures.assertEqualLogEvents(expected, actual, includeLocationInfo, includeContextMap,
                 includeStacktrace);
@@ -258,15 +242,15 @@ public class XmlLayoutTest {
         //
         assertNull(actual.getThrown());
         // check some attrs
-        assertTrue(str, str.contains("loggerFqcn=\"f.q.c.n\""));
-        assertTrue(str, str.contains("loggerName=\"a.B\""));
+        assertTrue(str.contains("loggerFqcn=\"f.q.c.n\""), str);
+        assertTrue(str.contains("loggerName=\"a.B\""), str);
         // make sure short names are used
-        assertTrue(str, str.contains("<Event "));
+        assertTrue(str.contains("<Event "), str);
         if (includeStacktrace) {
-            assertTrue("Missing \"class=\" in: " + str, str.contains("class="));
-            assertTrue("Missing \"method=\" in: " + str, str.contains("method="));
-            assertTrue("Missing \"file=\" in: " + str, str.contains("file="));
-            assertTrue("Missing \"line=\" in: " + str, str.contains("line="));
+            assertTrue(str.contains("class="), "Missing \"class=\" in: " + str);
+            assertTrue(str.contains("method="), "Missing \"method=\" in: " + str);
+            assertTrue(str.contains("file="), "Missing \"file=\" in: " + str);
+            assertTrue(str.contains("line="), "Missing \"line=\" in: " + str);
         }
         //
         // make sure the names we want are used
@@ -394,8 +378,8 @@ public class XmlLayoutTest {
         final List<String> list = appender.getMessages();
 
         final String string = list.get(0);
-        assertTrue("Incorrect header: " + string, string.equals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
-        assertTrue("Incorrect footer", list.get(list.size() - 1).equals("</Events>"));
+        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", string, "Incorrect header: " + string);
+        assertEquals("</Events>", list.get(list.size() - 1), "Incorrect footer");
         this.checkContains("loggerFqcn=\"" + AbstractLogger.class.getName() + "\"", list);
         this.checkContains("level=\"DEBUG\"", list);
         this.checkContains(">starting mdc pattern test</Message>", list);
@@ -423,7 +407,7 @@ public class XmlLayoutTest {
                 .setThreadName("threadName") //
                 .setTimeMillis(1).build();
         final String str = layout.toSerializable(event);
-        assertTrue(str, str.contains("loggerName=\"a.B\""));
+        assertTrue(str.contains("loggerName=\"a.B\""), str);
     }
 
     @Test
@@ -444,12 +428,12 @@ public class XmlLayoutTest {
     @Test
     public void testStacktraceAsNonString() throws Exception {
         final String str = prepareXMLForStacktraceTests(false);
-        assertTrue(str, str.contains("<ExtendedStackTrace><ExtendedStackTraceItem"));
+        assertTrue(str.contains("<ExtendedStackTrace><ExtendedStackTraceItem"), str);
     }
 
     @Test
     public void testStacktraceAsString() throws Exception {
         final String str = prepareXMLForStacktraceTests(true);
-        assertTrue(str, str.contains("<ExtendedStackTrace>java.lang.NullPointerException"));
+        assertTrue(str.contains("<ExtendedStackTrace>java.lang.NullPointerException"), str);
     }
 }

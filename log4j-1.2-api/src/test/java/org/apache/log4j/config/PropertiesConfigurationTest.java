@@ -16,17 +16,6 @@
  */
 package org.apache.log4j.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.log4j.ListAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -43,8 +32,16 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.filter.Filterable;
 import org.apache.logging.log4j.core.filter.LevelRangeFilter;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test configuration from Properties.
@@ -61,7 +58,7 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
         final ConfigurationSource source = new ConfigurationSource(inputStream);
         final LoggerContext context = LoggerContext.getContext(false);
         final Configuration configuration = new PropertiesConfigurationFactory().getConfiguration(context, source);
-        assertNotNull("No configuration created", configuration);
+        assertNotNull(configuration, "No configuration created");
         configuration.initialize();
         return configuration;
     }
@@ -140,12 +137,12 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
                     eventAppender = (ListAppender) ((AppenderAdapter.Adapter) entry.getValue()).getAppender();
                 }
             }
-            assertNotNull("No Event Appender", eventAppender);
-            assertNotNull("No Message Appender", messageAppender);
+            assertNotNull(eventAppender, "No Event Appender");
+            assertNotNull(messageAppender, "No Message Appender");
             final List<LoggingEvent> events = eventAppender.getEvents();
-            assertTrue("No events", events != null && events.size() > 0);
+            assertTrue(events != null && events.size() > 0, "No events");
             final List<String> messages = messageAppender.getMessages();
-            assertTrue("No messages", messages != null && messages.size() > 0);
+            assertTrue(messages != null && messages.size() > 0, "No messages");
         }
     }
 
@@ -155,11 +152,11 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
             final Logger logger = LogManager.getLogger("test");
             logger.debug("This is a test of the root logger");
             File file = new File("target/temp.A1");
-            assertTrue("File A1 was not created", file.exists());
-            assertTrue("File A1 is empty", file.length() > 0);
+            assertTrue(file.exists(), "File A1 was not created");
+            assertTrue(file.length() > 0, "File A1 is empty");
             file = new File("target/temp.A2");
-            assertTrue("File A2 was not created", file.exists());
-            assertTrue("File A2 is empty", file.length() > 0);
+            assertTrue(file.exists(), "File A2 was not created");
+            assertTrue(file.length() > 0, "File A2 is empty");
         }
     }
 
@@ -173,8 +170,8 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
             assertNotNull(configuration);
             final String name = "FILE_APPENDER";
             final Appender appender = configuration.getAppender(name);
-            assertNotNull(name, appender);
-            assertTrue(appender.getClass().getName(), appender instanceof FileAppender);
+            assertNotNull(appender, name);
+            assertTrue(appender instanceof FileAppender, appender.getClass().getName());
             final FileAppender fileAppender = (FileAppender) appender;
             // Two slashes because that's how the config file is setup.
             assertEquals(testPathLocation + "/hadoop.log", fileAppender.getFileName());

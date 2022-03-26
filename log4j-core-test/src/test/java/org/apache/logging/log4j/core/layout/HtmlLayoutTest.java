@@ -16,10 +16,26 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import static org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedFormat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.AbstractLogEvent;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.time.Instant;
+import org.apache.logging.log4j.core.time.MutableInstant;
+import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
+import org.apache.logging.log4j.util.LazyValue;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.lang.management.ManagementFactory;
 import java.nio.charset.StandardCharsets;
@@ -31,25 +47,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.AbstractLogEvent;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.time.Instant;
-import org.apache.logging.log4j.core.time.MutableInstant;
-import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
-import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
-import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import static org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedFormat;
+import static org.junit.jupiter.api.Assertions.*;
 
 @UsingAnyThreadContext
 public class HtmlLayoutTest {
@@ -85,18 +84,16 @@ public class HtmlLayoutTest {
     private final LoggerContext ctx = LoggerContext.getContext();
     private final Logger root = ctx.getRootLogger();
 
-    static ConfigurationFactory cf = new BasicConfigurationFactory();
-
     @BeforeAll
     public static void setupClass() {
-        ConfigurationFactory.setConfigurationFactory(cf);
         final LoggerContext ctx = LoggerContext.getContext();
+        ctx.getInjector().registerBinding(ConfigurationFactory.KEY, new LazyValue<>(BasicConfigurationFactory::new));
         ctx.reconfigure();
     }
 
     @AfterAll
     public static void cleanupClass() {
-        ConfigurationFactory.removeConfigurationFactory(cf);
+        LoggerContext.getContext().getInjector().removeBinding(ConfigurationFactory.KEY);
     }
 
     private static final String body = "<tr><td bgcolor=\"#993300\" style=\"color:White; font-size : small;\" colspan=\"6\">java.lang.NullPointerException: test";

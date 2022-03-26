@@ -184,7 +184,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
         if (ctx.getState() == LifeCycle.State.INITIALIZED) {
             if (source != null) {
                 ContextAnchor.THREAD_CONTEXT.set(ctx);
-                final Configuration config = ConfigurationFactory.getInstance().getConfiguration(ctx, source);
+                final Configuration config = injector.getInstance(ConfigurationFactory.KEY).getConfiguration(ctx, source);
                 LOGGER.debug("Starting {} from configuration {}", ctx, source);
                 ctx.start(config);
                 ContextAnchor.THREAD_CONTEXT.remove();
@@ -245,7 +245,8 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
         if (ctx.getState() == LifeCycle.State.INITIALIZED) {
             if (configLocation != null || name != null) {
                 ContextAnchor.THREAD_CONTEXT.set(ctx);
-                final Configuration config = ConfigurationFactory.getInstance().getConfiguration(ctx, name, configLocation);
+                final Configuration config =
+                        injector.getInstance(ConfigurationFactory.KEY).getConfiguration(ctx, name, configLocation);
                 LOGGER.debug("Starting {} from configuration at {}", ctx, configLocation);
                 ctx.start(config);
                 ContextAnchor.THREAD_CONTEXT.remove();
@@ -265,7 +266,8 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
         if (ctx.getState() == LifeCycle.State.INITIALIZED) {
             if (configLocation != null || name != null) {
                 ContextAnchor.THREAD_CONTEXT.set(ctx);
-                final Configuration config = ConfigurationFactory.getInstance().getConfiguration(ctx, name, configLocation);
+                final Configuration config =
+                        injector.getInstance(ConfigurationFactory.KEY).getConfiguration(ctx, name, configLocation);
                 LOGGER.debug("Starting {} from configuration at {}", ctx, configLocation);
                 ctx.start(config);
                 ContextAnchor.THREAD_CONTEXT.remove();
@@ -291,7 +293,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
                 ContextAnchor.THREAD_CONTEXT.set(ctx);
                 final List<AbstractConfiguration> configurations = new ArrayList<>(configLocations.size());
                 for (final URI configLocation : configLocations) {
-                    final Configuration currentReadConfiguration = ConfigurationFactory.getInstance()
+                    final Configuration currentReadConfiguration = injector.getInstance(ConfigurationFactory.KEY)
                             .getConfiguration(ctx, name, configLocation);
                     if (currentReadConfiguration != null) {
                         if (currentReadConfiguration instanceof DefaultConfiguration) {

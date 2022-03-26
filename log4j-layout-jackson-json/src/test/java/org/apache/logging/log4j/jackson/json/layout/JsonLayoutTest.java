@@ -16,21 +16,8 @@
  */
 package org.apache.logging.log4j.jackson.json.layout;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
@@ -44,6 +31,7 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.MutableLogEvent;
 import org.apache.logging.log4j.core.lookup.JavaLookup;
 import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.layout.LogEventFixtures;
 import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.apache.logging.log4j.core.time.internal.SystemClock;
@@ -56,20 +44,28 @@ import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
+import org.apache.logging.log4j.util.LazyValue;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Map;
+
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the JsonLayout class.
  */
-@Category(Layouts.Json.class)
+@UsingAnyThreadContext
 public class JsonLayoutTest {
     private static class TestClass {
 		private int value;
@@ -83,21 +79,17 @@ public class JsonLayoutTest {
 		}
 	}
 
-    static ConfigurationFactory cf = new BasicConfigurationFactory();
-
     private static final String DQUOTE = "\"";
 
-    @AfterClass
+    @AfterAll
     public static void cleanupClass() {
-        ConfigurationFactory.removeConfigurationFactory(cf);
-        ThreadContext.clearAll();
+        LoggerContext.getContext().getInjector().removeBinding(ConfigurationFactory.KEY);
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() {
-        ThreadContext.clearAll();
-        ConfigurationFactory.setConfigurationFactory(cf);
         final LoggerContext ctx = LoggerContext.getContext();
+        ctx.getInjector().registerBinding(ConfigurationFactory.KEY, new LazyValue<>(BasicConfigurationFactory::new));
         ctx.reconfigure();
     }
 
@@ -107,7 +99,7 @@ public class JsonLayoutTest {
 
     private void checkAt(final String expected, final int lineIndex, final List<String> list) {
         final String trimedLine = list.get(lineIndex).trim();
-        assertTrue("Incorrect line index " + lineIndex + ": " + Strings.dquote(trimedLine), trimedLine.equals(expected));
+        assertEquals(trimedLine, expected, "Incorrect line index " + lineIndex + ": " + Strings.dquote(trimedLine));
     }
 
     private void checkContains(final String expected, final List<String> list) {
@@ -117,7 +109,7 @@ public class JsonLayoutTest {
                 return;
             }
         }
-        Assert.fail("Cannot find " + expected + " in " + list);
+        fail("Cannot find " + expected + " in " + list);
     }
 
     private void checkMapEntry(final String key, final String value, final boolean compact, final String str,
@@ -126,11 +118,11 @@ public class JsonLayoutTest {
         if (contextMapAslist) {
             // {"key":"KEY", "value":"VALUE"}
             final String expected = String.format("{\"key\":\"%s\",\"value\":\"%s\"}", key, value);
-            assertTrue("Cannot find contextMapAslist " + expected + " in " + str, str.contains(expected));
+            assertTrue(str.contains(expected), "Cannot find contextMapAslist " + expected + " in " + str);
         } else {
             // "KEY":"VALUE"
             final String expected = String.format("\"%s\":\"%s\"", key, value);
-            assertTrue("Cannot find contextMap " + expected + " in " + str, str.contains(expected));
+            assertTrue(str.contains(expected), "Cannot find contextMap " + expected + " in " + str);
         }
     }
 
@@ -138,17 +130,17 @@ public class JsonLayoutTest {
         final String propSep = this.toPropertySeparator(compact);
         // {"key":"MDC.B","value":"B_Value"}
         final String expected = String.format("\"%s\"%s\"%s\"", key, propSep, value);
-        assertTrue("Cannot find " + expected + " in " + str, str.contains(expected));
+        assertTrue(str.contains(expected), "Cannot find " + expected + " in " + str);
     }
 
     private void checkPropertyName(final String name, final boolean compact, final String str) {
         final String propSep = this.toPropertySeparator(compact);
-        assertTrue(str, str.contains(DQUOTE + name + DQUOTE + propSep));
+        assertTrue(str.contains(DQUOTE + name + DQUOTE + propSep), str);
     }
 
     private void checkPropertyNameAbsent(final String name, final boolean compact, final String str) {
         final String propSep = this.toPropertySeparator(compact);
-        assertFalse(str, str.contains(DQUOTE + name + DQUOTE + propSep));
+        assertFalse(str.contains(DQUOTE + name + DQUOTE + propSep), str);
     }
 
     private String prepareJsonForObjectMessageAsJsonObjectTests(final int value, final boolean objectMessageAsJsonObject) {
@@ -199,8 +191,8 @@ public class JsonLayoutTest {
                 .setConfiguration(ctx.getConfiguration())
                 .build();
         final String str = layout.toSerializable(LogEventFixtures.createLogEvent());
-        assertTrue(str, str.contains("\"KEY1\":\"VALUE1\""));
-        assertTrue(str, str.contains("\"KEY2\":\"" + new JavaLookup().getRuntime() + "\""));
+        assertTrue(str.contains("\"KEY1\":\"VALUE1\""), str);
+        assertTrue(str.contains("\"KEY2\":\"" + new JavaLookup().getRuntime() + "\""), str);
     }
 
     @Test
@@ -223,7 +215,7 @@ public class JsonLayoutTest {
         mutableEvent.initFrom(logEvent);
         final String strLogEvent = layout.toSerializable(logEvent);
         final String strMutableEvent = layout.toSerializable(mutableEvent);
-        assertEquals(strMutableEvent, strLogEvent, strMutableEvent);
+        assertEquals(strLogEvent, strMutableEvent, strMutableEvent);
     }
 
     private void testAllFeatures(final boolean locationInfo, final boolean compact, final boolean eventEol,
@@ -247,14 +239,14 @@ public class JsonLayoutTest {
         this.toPropertySeparator(compact);
         if (endOfLine == null) {
             // Just check for \n since \r might or might not be there.
-            assertEquals(str, !compact || eventEol, str.contains("\n"));
+            assertEquals(!compact || eventEol, str.contains("\n"), str);
         }
         else {
-            assertEquals(str, !compact || eventEol, str.contains(endOfLine));
-            assertEquals(str, compact && eventEol, str.endsWith(endOfLine));
+            assertEquals(!compact || eventEol, str.contains(endOfLine), str);
+            assertEquals(compact && eventEol, str.endsWith(endOfLine), str);
         }
-        assertEquals(str, locationInfo, str.contains("source"));
-        assertEquals(str, includeContext, str.contains("contextMap"));
+        assertEquals(locationInfo, str.contains("source"), str);
+        assertEquals(includeContext, str.contains("contextMap"), str);
         final Log4jLogEvent actual = new Log4jJsonObjectMapper(contextMapAslist, includeStacktrace, false, false).readValue(str, Log4jLogEvent.class);
         LogEventFixtures.assertEqualLogEvents(expected, actual, locationInfo, includeContext, includeStacktrace);
         if (includeContext) {
@@ -482,7 +474,7 @@ public class JsonLayoutTest {
                 .setTimeMillis(1).build();
         // @formatter:on
         final String str = layout.toSerializable(expected);
-        assertTrue(str, str.contains("\"loggerName\":\"a.B\""));
+        assertTrue(str.contains("\"loggerName\":\"a.B\""), str);
         final Log4jLogEvent actual = new Log4jJsonObjectMapper(propertiesAsList, true, false, false).readValue(str, Log4jLogEvent.class);
         assertEquals(expected.getLoggerName(), actual.getLoggerName());
         assertEquals(expected, actual);
@@ -510,7 +502,7 @@ public class JsonLayoutTest {
                 .setTimeMillis(1).build();
         final String str = layout.toSerializable(expected);
         final String expectedMessage = "Testing " + TestObj.TO_STRING_VALUE;
-        assertTrue(str, str.contains("\"message\":\"" + expectedMessage + '"'));
+        assertTrue(str.contains("\"message\":\"" + expectedMessage + '"'), str);
         final Log4jLogEvent actual = new Log4jJsonObjectMapper(propertiesAsList, true, false, false).readValue(str, Log4jLogEvent.class);
         assertEquals(expectedMessage, actual.getMessage().getFormattedMessage());
     }
@@ -542,7 +534,7 @@ public class JsonLayoutTest {
             mutableLogEvent.initFrom(expected);
             final String str = layout.toSerializable(mutableLogEvent);
             final String expectedMessage = "Testing " + TestObj.TO_STRING_VALUE;
-            assertTrue(str, str.contains("\"message\":\"" + expectedMessage + '"'));
+            assertTrue(str.contains("\"message\":\"" + expectedMessage + '"'), str);
             final Log4jLogEvent actual = new Log4jJsonObjectMapper(propertiesAsList, true, false, false).readValue(str, Log4jLogEvent.class);
             assertEquals(expectedMessage, actual.getMessage().getFormattedMessage());
         } finally {
@@ -612,25 +604,25 @@ public class JsonLayoutTest {
     @Test
     public void testObjectMessageAsJsonObject() {
     		final String str = prepareJsonForObjectMessageAsJsonObjectTests(1234, true);
-    		assertTrue(str, str.contains("\"message\":{\"value\":1234}"));
+    		assertTrue(str.contains("\"message\":{\"value\":1234}"), str);
     }
 
     @Test
     public void testObjectMessageAsJsonString() {
     		final String str = prepareJsonForObjectMessageAsJsonObjectTests(1234, false);
-		assertTrue(str, str.contains("\"message\":\"" + this.getClass().getCanonicalName() + "$TestClass@"));
+		assertTrue(str.contains("\"message\":\"" + this.getClass().getCanonicalName() + "$TestClass@"), str);
     }
 
     @Test
     public void testStacktraceAsNonString() throws Exception {
         final String str = prepareJsonForStacktraceTests(false);
-        assertTrue(str, str.contains("\"extendedStackTrace\":["));
+        assertTrue(str.contains("\"extendedStackTrace\":["), str);
     }
 
     @Test
     public void testStacktraceAsString() throws Exception {
         final String str = prepareJsonForStacktraceTests(true);
-        assertTrue(str, str.contains("\"extendedStackTrace\":\"java.lang.NullPointerException"));
+        assertTrue(str.contains("\"extendedStackTrace\":\"java.lang.NullPointerException"), str);
     }
 
 	private String toPropertySeparator(final boolean compact) {
@@ -650,7 +642,7 @@ public class JsonLayoutTest {
                 .setConfiguration(ctx.getConfiguration())
                 .build();
         final String str = layout.toSerializable(LogEventFixtures.createLogEvent());
-        assertFalse(str, str.contains("\"empty\""));
+        assertFalse(str.contains("\"empty\""), str);
     }
 
     /**

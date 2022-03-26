@@ -21,6 +21,8 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.DefaultConfigurationFactory;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.time.Clock;
@@ -117,6 +119,7 @@ public class DefaultCallback implements InjectorCallback {
                         () -> loader.getInstance(Constants.LOG4J_LOG_EVENT_FACTORY, LogEventFactory.class,
                                 () -> Constants.ENABLE_THREADLOCALS ? ReusableLogEventFactory.class :
                                         DefaultLogEventFactory.class))
+                .registerBindingIfAbsent(ConfigurationFactory.KEY, injector.getFactory(DefaultConfigurationFactory.class))
                 .registerBindingIfAbsent(Constants.DEFAULT_STATUS_LEVEL_KEY, () -> {
                     final String statusLevel =
                             properties.getStringProperty(Constants.LOG4J_DEFAULT_STATUS_LEVEL, Level.ERROR.name());
