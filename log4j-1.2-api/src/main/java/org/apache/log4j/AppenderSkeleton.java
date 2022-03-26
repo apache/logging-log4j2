@@ -107,7 +107,7 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
     }
 
     @Override
-    public void doAppend(final LoggingEvent event) {
+    public synchronized void doAppend(final LoggingEvent event) {
         // Threshold checks and filtering is performed by the AppenderWrapper.
         append(event);
     }
