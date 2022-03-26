@@ -20,8 +20,8 @@ import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Keys;
 import org.apache.logging.log4j.plugins.test.validation.ValidatingPlugin;
-import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
+import org.apache.logging.log4j.plugins.util.PluginUtil;
 import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,9 +38,7 @@ public class RequiredValidatorTest {
     @SuppressWarnings("unchecked")
     @BeforeEach
     public void setUp() throws Exception {
-        final PluginManager manager = new PluginManager("Test");
-        manager.collectPlugins();
-        PluginType<ValidatingPlugin> plugin = (PluginType<ValidatingPlugin>) manager.getPluginType("Validator");
+        PluginType<ValidatingPlugin> plugin = (PluginType<ValidatingPlugin>) PluginUtil.collectPluginsByCategory("Test").get("validator");
         assertNotNull(plugin, "Rebuild this module to make sure annotation processing kicks in.");
         node = new Node(null, "Validator", plugin);
     }

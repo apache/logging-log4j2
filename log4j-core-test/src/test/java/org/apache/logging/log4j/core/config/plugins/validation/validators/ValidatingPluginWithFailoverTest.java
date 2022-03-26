@@ -28,8 +28,8 @@ import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.di.Keys;
-import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
+import org.apache.logging.log4j.plugins.util.PluginUtil;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -37,6 +37,8 @@ import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Locale;
+import java.util.Map;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -51,15 +53,14 @@ public class ValidatingPluginWithFailoverTest {
     @SuppressWarnings("unchecked")
     @BeforeEach
     public void setUp() throws Exception {
-        final PluginManager manager = new PluginManager(Core.CATEGORY_NAME);
-        manager.collectPlugins();
-        PluginType<FailoverAppender> plugin = (PluginType<FailoverAppender>) manager.getPluginType("failover");
+        final Map<String, PluginType<?>> plugins = PluginUtil.collectPluginsByCategory(Core.CATEGORY_NAME);
+        PluginType<FailoverAppender> plugin = (PluginType<FailoverAppender>) plugins.get("Failover".toLowerCase(Locale.ROOT));
         assertNotNull(plugin, "Rebuild this module to make sure annotation processing kicks in.");
 
         AppenderRef appenderRef = AppenderRef.createAppenderRef("List", Level.ALL, null);
         node = new Node(null, "failover", plugin);
-        Node failoversNode = new Node(node, "Failovers", manager.getPluginType("Failovers"));
-        Node appenderRefNode  = new Node(failoversNode, "appenderRef", manager.getPluginType("appenderRef"));
+        Node failoversNode = new Node(node, "Failovers", plugins.get("Failovers".toLowerCase(Locale.ROOT)));
+        Node appenderRefNode  = new Node(failoversNode, "appenderRef", plugins.get("appenderRef".toLowerCase(Locale.ROOT)));
         appenderRefNode.getAttributes().put("ref", "file");
         appenderRefNode.setObject(appenderRef);
         failoversNode.getChildren().add(appenderRefNode);

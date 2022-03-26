@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
+import org.apache.logging.log4j.plugins.util.PluginUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.ReflectionUtil;
 
@@ -73,9 +74,8 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
      */
     public Interpolator(final StrLookup defaultLookup, final List<String> pluginPackages) {
         this.defaultLookup = defaultLookup == null ? new PropertiesLookup(Map.of()) : defaultLookup;
-        final PluginManager manager = new PluginManager(CATEGORY);
-        manager.collectPlugins(pluginPackages);
-        final Map<String, PluginType<?>> plugins = manager.getPlugins();
+        final Map<String, PluginType<?>> plugins =
+                PluginUtil.collectPluginsByCategoryAndPackage(CATEGORY, pluginPackages);
 
         for (final Map.Entry<String, PluginType<?>> entry : plugins.entrySet()) {
             try {

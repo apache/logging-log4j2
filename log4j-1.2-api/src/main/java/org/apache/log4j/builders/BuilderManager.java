@@ -27,14 +27,13 @@ import org.apache.log4j.rewrite.RewritePolicy;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.xml.XmlConfiguration;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
+import org.apache.logging.log4j.plugins.util.PluginUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.w3c.dom.Element;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
@@ -50,9 +49,7 @@ public class BuilderManager {
     private final Map<String, PluginType<?>> plugins;
 
     public BuilderManager() {
-        final PluginManager manager = new PluginManager(CATEGORY);
-        manager.collectPlugins();
-        plugins = manager.getPlugins();
+        plugins = PluginUtil.collectPluginsByCategory(CATEGORY);
     }
 
     public Appender parseAppender(String className, Element appenderElement, XmlConfiguration config) {

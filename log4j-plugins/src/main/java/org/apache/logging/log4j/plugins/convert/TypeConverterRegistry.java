@@ -17,8 +17,8 @@
 package org.apache.logging.log4j.plugins.convert;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
+import org.apache.logging.log4j.plugins.util.PluginUtil;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LazyValue;
@@ -99,9 +99,7 @@ public class TypeConverterRegistry {
 
     private TypeConverterRegistry() {
         LOGGER.trace("TypeConverterRegistry initializing.");
-        final PluginManager manager = new PluginManager(TypeConverters.CATEGORY);
-        manager.collectPlugins();
-        loadKnownTypeConverters(manager.getPlugins().values());
+        loadKnownTypeConverters(PluginUtil.collectPluginsByCategory(TypeConverters.CATEGORY).values());
         registerPrimitiveTypes();
     }
 

@@ -16,24 +16,6 @@
  */
 package org.apache.logging.log4j.flume.appender;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-
 import com.sleepycat.je.Cursor;
 import com.sleepycat.je.CursorConfig;
 import com.sleepycat.je.Database;
@@ -56,9 +38,27 @@ import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.core.util.SecretKeyProvider;
-import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
+import org.apache.logging.log4j.plugins.util.PluginUtil;
 import org.apache.logging.log4j.util.Strings;
+
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Manager that persists data to Berkeley DB before passing it on to Flume.
@@ -429,9 +429,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                     }
                 }
                 if (key != null) {
-                    final PluginManager manager = new PluginManager("KeyProvider");
-                    manager.collectPlugins();
-                    final Map<String, PluginType<?>> plugins = manager.getPlugins();
+                    final Map<String, PluginType<?>> plugins = PluginUtil.collectPluginsByCategory("KeyProvider");
                     if (plugins != null) {
                         boolean found = false;
                         for (final Map.Entry<String, PluginType<?>> entry : plugins.entrySet()) {

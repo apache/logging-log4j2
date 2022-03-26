@@ -20,12 +20,14 @@ import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Keys;
 import org.apache.logging.log4j.plugins.test.validation.ValidatingPluginWithGenericBuilder;
-import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
+import org.apache.logging.log4j.plugins.util.PluginUtil;
 import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Locale;
+import java.util.Map;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,10 +40,9 @@ public class ValidatingPluginWithGenericBuilderTest {
     @SuppressWarnings("unchecked")
     @BeforeEach
     public void setUp() throws Exception {
-        final PluginManager manager = new PluginManager("Test");
-        manager.collectPlugins();
-        PluginType<ValidatingPluginWithGenericBuilder> plugin =
-                (PluginType<ValidatingPluginWithGenericBuilder>) manager.getPluginType("ValidatingPluginWithGenericBuilder");
+        final Map<String, PluginType<?>> plugins = PluginUtil.collectPluginsByCategory("Test");
+        final var plugin = (PluginType<ValidatingPluginWithGenericBuilder>)
+                plugins.get("ValidatingPluginWithGenericBuilder".toLowerCase(Locale.ROOT));
         assertNotNull(plugin, "Rebuild this module to make sure annotation processing kicks in.");
         node = new Node(null, "Validator", plugin);
     }

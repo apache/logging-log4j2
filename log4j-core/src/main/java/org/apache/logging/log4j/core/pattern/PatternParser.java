@@ -16,6 +16,17 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.time.SystemNanoClock;
+import org.apache.logging.log4j.plugins.Named;
+import org.apache.logging.log4j.plugins.di.Key;
+import org.apache.logging.log4j.plugins.util.PluginManager;
+import org.apache.logging.log4j.plugins.util.PluginType;
+import org.apache.logging.log4j.plugins.util.PluginUtil;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -24,14 +35,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.time.SystemNanoClock;
-import org.apache.logging.log4j.plugins.util.PluginManager;
-import org.apache.logging.log4j.plugins.util.PluginType;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Strings;
 
 /**
  * Most of the work of the {@link org.apache.logging.log4j.core.layout.PatternLayout} class is delegated to the
@@ -128,9 +131,16 @@ public final class PatternParser {
     public PatternParser(final Configuration config, final String converterKey, final Class<?> expectedClass,
             final Class<?> filterClass) {
         this.config = config;
-        final PluginManager manager = new PluginManager(converterKey);
-        manager.collectPlugins(config == null ? null : config.getPluginPackages());
-        final Map<String, PluginType<?>> plugins = manager.getPlugins();
+        final Map<String, PluginType<?>> plugins;
+        if (config == null) {
+            plugins = PluginUtil.collectPluginsByCategory(converterKey);
+        } else {
+            final PluginManager manager = config.getComponent(
+                    Key.forClass(PluginManager.class).withName(converterKey).withQualifierType(Named.class));
+            manager.collectPlugins(config.getPluginPackages());
+            plugins = manager.getPlugins();
+        }
+
         final Map<String, Class<? extends PatternConverter>> converters = new LinkedHashMap<>();
 
         for (final PluginType<?> type : plugins.values()) {
