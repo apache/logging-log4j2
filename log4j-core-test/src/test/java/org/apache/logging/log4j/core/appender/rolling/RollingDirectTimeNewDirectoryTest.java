@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 
@@ -38,6 +39,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@Disabled("https://issues.apache.org/jira/browse/LOG4J2-3449")
 public class RollingDirectTimeNewDirectoryTest implements RolloverListener {
 
     private static final String CONFIG = "log4j-rolling-folder-direct.xml";

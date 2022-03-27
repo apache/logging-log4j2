@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -42,6 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * When the file rolls by time it should create a new directory. When rolling by size it should
  * create multiple files per directory.
  */
+@Disabled("https://issues.apache.org/jira/browse/LOG4J2-3449")
 public class RollingDirectSizeTimeNewDirectoryTest implements RolloverListener {
 
     private static final String CONFIG = "log4j-rolling-size-time-new-directory.xml";
