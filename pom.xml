@@ -1136,7 +1136,7 @@
             <showWarnings>true</showWarnings>
             <verbose>false</verbose>
             <encoding>UTF-8</encoding>
-            <fork>true</fork>
+            <fork>false</fork>
             <meminitial>256</meminitial>
             <maxmem>1024</maxmem>
             <compilerArgs>
