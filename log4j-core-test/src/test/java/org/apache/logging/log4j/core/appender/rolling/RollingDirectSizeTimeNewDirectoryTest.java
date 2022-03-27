@@ -31,7 +31,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Phaser;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -51,7 +51,7 @@ public class RollingDirectSizeTimeNewDirectoryTest implements RolloverListener {
 
     private final Map<String, AtomicInteger> rolloverFiles = new HashMap<>();
     private final AtomicLong currentTimeMillis = new AtomicLong(System.currentTimeMillis());
-    private final CountDownLatch latch = new CountDownLatch(1);
+    private final Phaser phaser = new Phaser(1);
 
     @Factory
     Clock clock() {
@@ -66,14 +66,16 @@ public class RollingDirectSizeTimeNewDirectoryTest implements RolloverListener {
         final Logger logger = context.getLogger(RollingDirectSizeTimeNewDirectoryTest.class);
 
         for (int i = 0; i < 1000; i++) {
+            currentTimeMillis.incrementAndGet();
             logger.info("nHq6p9kgfvWfjzDRYbZp");
         }
-        currentTimeMillis.addAndGet(1500);
+        currentTimeMillis.addAndGet(500);
         for (int i = 0; i < 1000; i++) {
+            currentTimeMillis.incrementAndGet();
             logger.info("nHq6p9kgfvWfjzDRYbZp");
         }
 
-        latch.await();
+        phaser.arriveAndAwaitAdvance();
 
         assertTrue(rolloverFiles.size() > 1, "A time based rollover did not occur");
         int maxFiles = Collections.max(rolloverFiles.values(), Comparator.comparing(AtomicInteger::get)).get();
@@ -82,7 +84,7 @@ public class RollingDirectSizeTimeNewDirectoryTest implements RolloverListener {
 
     @Override
     public void rolloverTriggered(String fileName) {
-
+        phaser.register();
     }
 
     @Override
@@ -91,7 +93,7 @@ public class RollingDirectSizeTimeNewDirectoryTest implements RolloverListener {
         String logDir = file.getParentFile().getName();
         AtomicInteger fileCount = rolloverFiles.computeIfAbsent(logDir, k -> new AtomicInteger(0));
         fileCount.incrementAndGet();
-        latch.countDown();
+        phaser.arriveAndDeregister();
     }
 }
 

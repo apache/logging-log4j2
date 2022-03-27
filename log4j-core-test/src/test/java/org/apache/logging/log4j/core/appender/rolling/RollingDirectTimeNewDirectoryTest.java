@@ -32,7 +32,7 @@ import org.opentest4j.AssertionFailedError;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Phaser;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -45,7 +45,7 @@ public class RollingDirectTimeNewDirectoryTest implements RolloverListener {
     // Note that the path is hardcoded in the configuration!
     private static final String DIR = "target/rolling-folder-direct";
     private final AtomicLong currentTimeMillis = new AtomicLong(System.currentTimeMillis());
-    private final CountDownLatch latch = new CountDownLatch(2);
+    private final Phaser phaser = new Phaser(3);
 
     @Factory
     Clock clock() {
@@ -70,7 +70,7 @@ public class RollingDirectTimeNewDirectoryTest implements RolloverListener {
             logger.info("nHq6p9kgfvWfjzDRYbZp");
         }
 
-        latch.await();
+        phaser.arriveAndAwaitAdvance();
 
         File logDir = new File(DIR);
         File[] logFolders = logDir.listFiles();
@@ -116,6 +116,6 @@ public class RollingDirectTimeNewDirectoryTest implements RolloverListener {
 
     @Override
     public void rolloverComplete(final String fileName) {
-        latch.countDown();
+        phaser.arriveAndDeregister();
     }
 }
