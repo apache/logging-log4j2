@@ -18,6 +18,8 @@
 package org.apache.logging.log4j.plugins.convert;
 
 import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.plugins.di.Injector;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -31,7 +33,7 @@ class TypeConverterRegistryTest {
 
     }
 
-    @Plugin(name = "CustomTestClass1Converter1", category = TypeConverters.CATEGORY)
+    @Plugin(name = "CustomTestClass1Converter1", category = TypeConverter.CATEGORY)
     public static final class CustomTestClass1Converter1
             implements TypeConverter<CustomTestClass1> {
 
@@ -43,7 +45,7 @@ class TypeConverterRegistryTest {
     }
 
     @SuppressWarnings("ComparableType")
-    @Plugin(name = "CustomTestClass1Converter2", category = TypeConverters.CATEGORY)
+    @Plugin(name = "CustomTestClass1Converter2", category = TypeConverter.CATEGORY)
     public static final class CustomTestClass1Converter2
             implements TypeConverter<CustomTestClass1>, Comparable<TypeConverter<?>> {
 
@@ -61,9 +63,9 @@ class TypeConverterRegistryTest {
 
     @Test
     public void testMultipleComparableConverters() {
-        final TypeConverter<?> converter = TypeConverterRegistry
-                .getInstance()
-                .findCompatibleConverter(CustomTestClass1.class);
+        final Injector injector = DI.createInjector();
+        injector.init();
+        final TypeConverter<?> converter = injector.getTypeConverter(CustomTestClass1.class);
         assertThat(converter, instanceOf(CustomTestClass1Converter2.class));
     }
 
@@ -73,7 +75,7 @@ class TypeConverterRegistryTest {
 
     }
 
-    @Plugin(name = "CustomTestClass2Converter1", category = TypeConverters.CATEGORY)
+    @Plugin(name = "CustomTestClass2Converter1", category = TypeConverter.CATEGORY)
     public static final class CustomTestClass2Converter1
             implements TypeConverter<CustomTestClass2> {
 
@@ -84,7 +86,7 @@ class TypeConverterRegistryTest {
 
     }
 
-    @Plugin(name = "CustomTestClass2Converter2", category = TypeConverters.CATEGORY)
+    @Plugin(name = "CustomTestClass2Converter2", category = TypeConverter.CATEGORY)
     public static final class CustomTestClass2Converter2
             implements TypeConverter<CustomTestClass2> {
 
@@ -97,9 +99,9 @@ class TypeConverterRegistryTest {
 
     @Test
     public void testMultipleIncomparableConverters() {
-        final TypeConverter<?> converter = TypeConverterRegistry
-                .getInstance()
-                .findCompatibleConverter(CustomTestClass2.class);
+        final Injector injector = DI.createInjector();
+        injector.init();
+        final TypeConverter<?> converter = injector.getTypeConverter(CustomTestClass2.class);
         assertThat(converter, instanceOf(CustomTestClass2Converter1.class));
     }
 

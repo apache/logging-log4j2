@@ -16,12 +16,13 @@
  */
 package org.apache.logging.log4j.layout.template.json.util;
 
-import org.apache.logging.log4j.plugins.convert.TypeConverter;
-import org.apache.logging.log4j.plugins.convert.TypeConverterRegistry;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
-import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.plugins.convert.TypeConverter;
+import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.plugins.di.Injector;
 import org.assertj.core.api.Assertions;
 import org.jctools.queues.MpmcArrayQueue;
 import org.junit.jupiter.api.Test;
@@ -35,10 +36,10 @@ class RecyclerFactoriesTest {
     @Test
     void test_RecyclerFactoryConverter() throws Exception {
 
+        final Injector injector = DI.createInjector();
+        injector.init();
         // Check if the type converter is registered.
-        final TypeConverter<?> converter = TypeConverterRegistry
-                .getInstance()
-                .findCompatibleConverter(RecyclerFactory.class);
+        final TypeConverter<?> converter = injector.getTypeConverter(RecyclerFactory.class);
         Assertions.assertThat(converter).isNotNull();
 
         // Check dummy recycler factory.

@@ -25,6 +25,7 @@ import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.QualifierType;
 import org.apache.logging.log4j.plugins.ScopeType;
 import org.apache.logging.log4j.plugins.Singleton;
+import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.name.AnnotatedElementAliasesProvider;
 import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
 import org.apache.logging.log4j.plugins.util.AnnotationUtil;
@@ -36,6 +37,7 @@ import org.apache.logging.log4j.plugins.validation.ConstraintValidationException
 import org.apache.logging.log4j.plugins.validation.ConstraintValidator;
 import org.apache.logging.log4j.plugins.visit.NodeVisitor;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.EnglishEnums;
 import org.apache.logging.log4j.util.LazyValue;
 import org.apache.logging.log4j.util.ServiceRegistry;
 import org.apache.logging.log4j.util.StringBuilders;
@@ -63,6 +65,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.UnknownFormatConversionException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -73,6 +76,7 @@ class DefaultInjector implements Injector {
 
     private final BindingMap bindingMap;
     private final Map<Class<? extends Annotation>, Scope> scopes = new ConcurrentHashMap<>();
+    private final Map<Type, TypeConverter<?>> typeConverters = new ConcurrentHashMap<>();
     private ReflectionAccessor accessor = object -> object.setAccessible(true);
 
     DefaultInjector() {
@@ -84,6 +88,7 @@ class DefaultInjector implements Injector {
     DefaultInjector(final DefaultInjector original) {
         bindingMap = new BindingMap(original.bindingMap);
         scopes.putAll(original.scopes);
+        typeConverters.putAll(original.typeConverters);
         accessor = original.accessor;
     }
 
@@ -109,6 +114,40 @@ class DefaultInjector implements Injector {
     @Override
     public <T> Supplier<T> getFactory(final Key<T> key) {
         return getFactory(key, Set.of(), null, Set.of());
+    }
+
+    @Override
+    public TypeConverter<?> getTypeConverter(final Type type) {
+        if (typeConverters.isEmpty()) {
+            synchronized (typeConverters) {
+                if (typeConverters.isEmpty()) {
+                    LOGGER.trace("Initializing type converters");
+                    initializeTypeConverters();
+                }
+            }
+        }
+        final TypeConverter<?> primary = typeConverters.get(type);
+        // cached type converters
+        if (primary != null) {
+            return primary;
+        }
+        // dynamic enum support
+        if (type instanceof Class<?>) {
+            final Class<?> clazz = (Class<?>) type;
+            if (clazz.isEnum()) {
+                return registerTypeConverter(type, s -> EnglishEnums.valueOf(clazz.asSubclass(Enum.class), s));
+            }
+        }
+        // look for compatible converters
+        for (final Map.Entry<Type, TypeConverter<?>> entry : typeConverters.entrySet()) {
+            final Type key = entry.getKey();
+            if (TypeUtil.isAssignable(type, key)) {
+                LOGGER.debug("Found compatible TypeConverter<{}> for type [{}].", key, type);
+                final TypeConverter<?> value = entry.getValue();
+                return registerTypeConverter(type, value);
+            }
+        }
+        throw new UnknownFormatConversionException(type.toString());
     }
 
     @Override
@@ -250,6 +289,83 @@ class DefaultInjector implements Injector {
         }
         if (errors > 0) {
             throw new ConstraintValidationException(element, name, value);
+        }
+    }
+
+    private void initializeTypeConverters() {
+        final PluginManager manager = getInstance(new @Named(TypeConverter.CATEGORY) Key<>() {});
+        manager.collectPlugins();
+        for (final PluginType<?> knownType : manager.getPlugins().values()) {
+            final Class<?> pluginClass = knownType.getPluginClass();
+            final Type type = getTypeConverterSupportedType(pluginClass);
+            final TypeConverter<?> converter = getInstance(pluginClass.asSubclass(TypeConverter.class));
+            registerTypeConverter(type, converter);
+        }
+        registerTypeConverter(Boolean.class, Boolean::valueOf);
+        registerTypeAlias(Boolean.class, Boolean.TYPE);
+        registerTypeConverter(Byte.class, Byte::valueOf);
+        registerTypeAlias(Byte.class, Byte.TYPE);
+        registerTypeConverter(Character.class, s -> {
+            if (s.length() != 1) {
+                throw new IllegalArgumentException("Character string must be of length 1: " + s);
+            }
+            return s.toCharArray()[0];
+        });
+        registerTypeAlias(Character.class, Character.TYPE);
+        registerTypeConverter(Double.class, Double::valueOf);
+        registerTypeAlias(Double.class, Double.TYPE);
+        registerTypeConverter(Float.class, Float::valueOf);
+        registerTypeAlias(Float.class, Float.TYPE);
+        registerTypeConverter(Integer.class, Integer::valueOf);
+        registerTypeAlias(Integer.class, Integer.TYPE);
+        registerTypeConverter(Long.class, Long::valueOf);
+        registerTypeAlias(Long.class, Long.TYPE);
+        registerTypeConverter(Short.class, Short::valueOf);
+        registerTypeAlias(Short.class, Short.TYPE);
+        registerTypeConverter(String.class, s -> s);
+    }
+
+    private TypeConverter<?> registerTypeConverter(final Type type, final TypeConverter<?> converter) {
+        final TypeConverter<?> conflictingConverter = typeConverters.get(type);
+        if (conflictingConverter != null) {
+            final boolean overridable;
+            if (converter instanceof Comparable) {
+                @SuppressWarnings("unchecked")
+                final Comparable<TypeConverter<?>> comparableConverter =
+                        (Comparable<TypeConverter<?>>) converter;
+                overridable = comparableConverter.compareTo(conflictingConverter) < 0;
+            } else if (conflictingConverter instanceof Comparable) {
+                @SuppressWarnings("unchecked")
+                final Comparable<TypeConverter<?>> comparableConflictingConverter =
+                        (Comparable<TypeConverter<?>>) conflictingConverter;
+                overridable = comparableConflictingConverter.compareTo(converter) > 0;
+            } else {
+                overridable = false;
+            }
+            if (overridable) {
+                LOGGER.debug(
+                        "Replacing TypeConverter [{}] for type [{}] with [{}] after comparison.",
+                        conflictingConverter, type, converter);
+                typeConverters.put(type, converter);
+                return converter;
+            } else {
+                LOGGER.warn(
+                        "Ignoring TypeConverter [{}] for type [{}] that conflicts with [{}], since they are not comparable.",
+                        converter, type, conflictingConverter);
+                return conflictingConverter;
+            }
+        } else {
+            typeConverters.put(type, converter);
+            return converter;
+        }
+    }
+
+    private void registerTypeAlias(final Type knownType, final Type aliasType) {
+        final TypeConverter<?> converter = typeConverters.get(knownType);
+        if (converter != null) {
+            typeConverters.put(aliasType, converter);
+        } else {
+            LOGGER.error("Cannot locate type converter for {}", knownType);
         }
     }
 
@@ -493,6 +609,18 @@ class DefaultInjector implements Injector {
             final ConstraintValidator<? extends Annotation> validator, final Annotation annotation) {
         // runtime type checking ensures this raw type usage is correct
         ((ConstraintValidator) validator).initialize(annotation);
+    }
+
+    private static Type getTypeConverterSupportedType(final Class<?> clazz) {
+        for (final Type type : clazz.getGenericInterfaces()) {
+            if (type instanceof ParameterizedType) {
+                final ParameterizedType parameterizedType = (ParameterizedType) type;
+                if (parameterizedType.getRawType() == TypeConverter.class) {
+                    return parameterizedType.getActualTypeArguments()[0];
+                }
+            }
+        }
+        return Void.TYPE;
     }
 
     private static void verifyAttributesConsumed(final Node node) {

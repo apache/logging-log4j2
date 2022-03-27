@@ -20,6 +20,7 @@ package org.apache.logging.log4j.core.config.plugins.visit;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Named;
+import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.Keys;
 
 import java.lang.reflect.AnnotatedElement;
@@ -27,8 +28,10 @@ import java.util.function.Function;
 
 public class PluginBuilderAttributeVisitor extends org.apache.logging.log4j.plugins.visit.PluginBuilderAttributeVisitor {
     @Inject
-    public PluginBuilderAttributeVisitor(@Named(Keys.SUBSTITUTOR_NAME) final Function<String, String> stringSubstitutionStrategy) {
-        super(stringSubstitutionStrategy);
+    public PluginBuilderAttributeVisitor(
+            @Named(Keys.SUBSTITUTOR_NAME) final Function<String, String> stringSubstitutionStrategy,
+            final Injector injector) {
+        super(stringSubstitutionStrategy, injector);
     }
 
     @SuppressWarnings("deprecation")

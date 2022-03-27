@@ -1788,9 +1788,8 @@ package com.acme.logging.log4j.layout.template.json;
 
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
-import org.apache.logging.log4j.plugins.convert.TypeConverters;
 
-@Plugin(name = "AcmeRecyclerFactoryConverter", category = TypeConverters.CATEGORY)
+@Plugin(name = "AcmeRecyclerFactoryConverter", category = TypeConverter.CATEGORY)
 public final class AcmeRecyclerFactoryConverter
         implements TypeConverter<RecyclerFactory>, Comparable<TypeConverter<?>> {
 

@@ -21,7 +21,8 @@ import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.plugins.convert.TypeConverters;
+import org.apache.logging.log4j.plugins.convert.TypeConverter;
+import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.Keys;
 import org.apache.logging.log4j.plugins.name.AnnotatedElementAliasesProvider;
 import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
@@ -36,10 +37,14 @@ import java.util.function.Function;
 
 public class PluginBuilderAttributeVisitor implements NodeVisitor {
     private final Function<String, String> stringSubstitutionStrategy;
+    private final Injector injector;
 
     @Inject
-    public PluginBuilderAttributeVisitor(@Named(Keys.SUBSTITUTOR_NAME) final Function<String, String> stringSubstitutionStrategy) {
+    public PluginBuilderAttributeVisitor(
+            @Named(Keys.SUBSTITUTOR_NAME) final Function<String, String> stringSubstitutionStrategy,
+            final Injector injector) {
         this.stringSubstitutionStrategy = stringSubstitutionStrategy;
+        this.injector = injector;
     }
 
     protected boolean isSensitive(final AnnotatedElement element) {
@@ -51,9 +56,10 @@ public class PluginBuilderAttributeVisitor implements NodeVisitor {
         final String name = AnnotatedElementNameProvider.getName(field);
         final Collection<String> aliases = AnnotatedElementAliasesProvider.getAliases(field);
         final Type targetType = field.getGenericType();
+        final TypeConverter<?> converter = injector.getTypeConverter(targetType);
         final boolean sensitive = isSensitive(field);
         final Object value = node.removeMatchingAttribute(name, aliases)
-                .map(stringSubstitutionStrategy.andThen(s -> TypeConverters.convert(s, targetType, null, sensitive)))
+                .map(stringSubstitutionStrategy.andThen(s -> converter.convert(s, null, sensitive)))
                 .orElse(null);
         StringBuilders.appendKeyDqValueWithJoiner(debugLog, name, sensitive ? "(***)" : value, ", ");
         return value;
@@ -64,9 +70,10 @@ public class PluginBuilderAttributeVisitor implements NodeVisitor {
         final String name = AnnotatedElementNameProvider.getName(parameter);
         final Collection<String> aliases = AnnotatedElementAliasesProvider.getAliases(parameter);
         final Type targetType = parameter.getParameterizedType();
+        final TypeConverter<?> converter = injector.getTypeConverter(targetType);
         final boolean sensitive = isSensitive(parameter);
         final Object value = node.removeMatchingAttribute(name, aliases)
-                .map(stringSubstitutionStrategy.andThen(s -> TypeConverters.convert(s, targetType, null, sensitive)))
+                .map(stringSubstitutionStrategy.andThen(s -> converter.convert(s, null, sensitive)))
                 .orElse(null);
         StringBuilders.appendKeyDqValueWithJoiner(debugLog, name, sensitive ? "(***)" : value, ", ");
         return value;

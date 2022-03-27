@@ -19,8 +19,10 @@ package org.apache.logging.log4j.plugins.di;
 
 import org.apache.logging.log4j.plugins.FactoryType;
 import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.convert.TypeConverter;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.function.Supplier;
 
 /**
@@ -85,6 +87,15 @@ public interface Injector {
     default <T> T getInstance(final Class<T> clazz) {
         return getFactory(clazz).get();
     }
+
+    /**
+     * Gets a TypeConverter for the provided type.
+     *
+     * @param type type to get a converter for
+     * @return a TypeConverter for the provided type
+     * @throws java.util.UnknownFormatConversionException if no converter can be found for the provided type
+     */
+    TypeConverter<?> getTypeConverter(final Type type);
 
     /**
      * Injects dependencies into the members of the provided instance. Injectable fields are set, then injectable methods are

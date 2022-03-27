@@ -17,6 +17,17 @@
 
 package org.apache.logging.log4j.core.config.plugins.convert;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.appender.rolling.action.Duration;
+import org.apache.logging.log4j.core.layout.GelfLayout;
+import org.apache.logging.log4j.core.net.Facility;
+import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.plugins.di.Injector;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -33,17 +44,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.UUID;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.appender.rolling.action.Duration;
-import org.apache.logging.log4j.core.layout.GelfLayout;
-import org.apache.logging.log4j.core.net.Facility;
-import org.apache.logging.log4j.plugins.convert.TypeConverters;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests {@link CoreTypeConverters}.
@@ -216,7 +218,9 @@ public class TypeConvertersTest {
 
     @Test
     public void testConvert() throws Exception {
-        final Object actual = TypeConverters.convert(value, clazz, defaultValue);
+        final Injector injector = DI.createInjector();
+        injector.init();
+        final Object actual = injector.getTypeConverter(clazz).convert(value, defaultValue);
         final String assertionMessage = "\nGiven: " + value + "\nDefault: " + defaultValue;
         if (expected != null && expected instanceof char[]) {
             assertArrayEquals(assertionMessage, (char[]) expected, (char[]) actual);

@@ -22,10 +22,13 @@ import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.convert.TypeConverter;
+import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextStack;
@@ -34,6 +37,7 @@ import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 import java.util.Date;
 import java.util.Locale;
+import java.util.function.Supplier;
 
 /**
  * A configuration element for specifying a database column name mapping.
@@ -74,6 +78,8 @@ public class ColumnMapping {
         @Required(message = "No conversion type provided")
         private Class<?> type = String.class;
 
+        private Injector injector;
+
         @Override
         public ColumnMapping build() {
             if (pattern != null) {
@@ -96,7 +102,7 @@ public class ColumnMapping {
                 LOGGER.error("Only one of 'literal' or 'parameter' can be set on the column mapping {}", this);
                 return null;
             }
-            return new ColumnMapping(name, source, layout, literal, parameter, type);
+            return new ColumnMapping(name, source, layout, literal, parameter, type, () -> injector.getTypeConverter(type));
         }
 
         public Builder setConfiguration(final Configuration configuration) {
@@ -181,6 +187,12 @@ public class ColumnMapping {
             return this;
         }
 
+        @Inject
+        public Builder setInjector(final Injector injector) {
+            this.injector = injector;
+            return this;
+        }
+
         @Override
         public String toString() {
             return "Builder [name=" + name + ", source=" + source + ", literal=" + literal + ", parameter=" + parameter
@@ -206,8 +218,11 @@ public class ColumnMapping {
     private final String parameter;
     private final String source;
     private final Class<?> type;
+    private final Supplier<TypeConverter<?>> typeConverter;
 
-    private ColumnMapping(final String name, final String source, final StringLayout layout, final String literalValue, final String parameter, final Class<?> type) {
+    private ColumnMapping(
+            final String name, final String source, final StringLayout layout, final String literalValue,
+            final String parameter, final Class<?> type, final Supplier<TypeConverter<?>> typeConverter) {
         this.name = name;
         this.nameKey = toKey(name);
         this.source = source;
@@ -215,6 +230,7 @@ public class ColumnMapping {
         this.literalValue = literalValue;
         this.parameter = parameter;
         this.type = type;
+        this.typeConverter = typeConverter;
     }
 
     public StringLayout getLayout() {
@@ -243,6 +259,10 @@ public class ColumnMapping {
 
     public Class<?> getType() {
         return type;
+    }
+
+    public TypeConverter<?> getTypeConverter() {
+        return typeConverter.get();
     }
 
     @Override

@@ -17,29 +17,37 @@
 package org.apache.logging.log4j.core.plugins.convert;
 
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
-import org.apache.logging.log4j.plugins.convert.TypeConverterRegistry;
+import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.plugins.di.Injector;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CoreTypeConvertersTest {
 
+    private final Injector injector = DI.createInjector();
+
+    @BeforeEach
+    void setUp() {
+        injector.init();
+    }
+
     @Test
     public void testFindNullConverter() {
-        assertThrows(NullPointerException.class,
-                () -> TypeConverterRegistry.getInstance().findCompatibleConverter(null));
+        assertThrows(NullPointerException.class, () -> injector.getTypeConverter(null));
     }
 
     @Test
     public void testFindBooleanConverter() throws Exception {
-        final TypeConverter<?> converter = TypeConverterRegistry.getInstance().findCompatibleConverter(Boolean.class);
+        final TypeConverter<?> converter = injector.getTypeConverter(Boolean.class);
         assertNotNull(converter);
         assertTrue((Boolean) converter.convert("TRUE"));
     }
 
     @Test
     public void testFindPrimitiveBooleanConverter() throws Exception {
-        final TypeConverter<?> converter = TypeConverterRegistry.getInstance().findCompatibleConverter(Boolean.TYPE);
+        final TypeConverter<?> converter = injector.getTypeConverter(Boolean.TYPE);
         assertNotNull(converter);
         assertTrue((Boolean) converter.convert("tRUe"));
     }
@@ -48,7 +56,7 @@ public class CoreTypeConvertersTest {
     @Test
     public void testFindCharSequenceConverterUsingStringConverter() throws Exception {
         final TypeConverter<CharSequence> converter = (TypeConverter<CharSequence>)
-            TypeConverterRegistry.getInstance().findCompatibleConverter(CharSequence.class);
+                injector.getTypeConverter(CharSequence.class);
         assertNotNull(converter);
         final CharSequence expected = "This is a test sequence of characters";
         final CharSequence actual = converter.convert(expected.toString());
@@ -59,7 +67,7 @@ public class CoreTypeConvertersTest {
     @Test
     public void testFindNumberConverter() throws Exception {
         final TypeConverter<Number> numberTypeConverter = (TypeConverter<Number>)
-            TypeConverterRegistry.getInstance().findCompatibleConverter(Number.class);
+                injector.getTypeConverter(Number.class);
         assertNotNull(numberTypeConverter);
         // TODO: is there a specific converter this should return?
     }
@@ -71,8 +79,7 @@ public class CoreTypeConvertersTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testFindEnumConverter() throws Exception {
-        final TypeConverter<Foo> fooTypeConverter = (TypeConverter<Foo>)
-            TypeConverterRegistry.getInstance().findCompatibleConverter(Foo.class);
+        final TypeConverter<Foo> fooTypeConverter = (TypeConverter<Foo>) injector.getTypeConverter(Foo.class);
         assertNotNull(fooTypeConverter);
         assertEquals(Foo.I, fooTypeConverter.convert("i"));
         assertEquals(Foo.PITY, fooTypeConverter.convert("pity"));

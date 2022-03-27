@@ -16,6 +16,24 @@
  */
 package org.apache.logging.log4j.jdbc.appender;
 
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.StringLayout;
+import org.apache.logging.log4j.core.appender.AppenderLoggingException;
+import org.apache.logging.log4j.core.appender.ManagerFactory;
+import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
+import org.apache.logging.log4j.core.appender.db.ColumnMapping;
+import org.apache.logging.log4j.core.appender.db.DbAppenderLoggingException;
+import org.apache.logging.log4j.core.util.Closer;
+import org.apache.logging.log4j.core.util.Log4jThread;
+import org.apache.logging.log4j.jdbc.convert.DateTypeConverter;
+import org.apache.logging.log4j.message.MapMessage;
+import org.apache.logging.log4j.spi.ThreadContextMap;
+import org.apache.logging.log4j.spi.ThreadContextStack;
+import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.Strings;
+
 import java.io.Serializable;
 import java.io.StringReader;
 import java.sql.Clob;
@@ -37,25 +55,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
-
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.StringLayout;
-import org.apache.logging.log4j.core.appender.AppenderLoggingException;
-import org.apache.logging.log4j.core.appender.ManagerFactory;
-import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
-import org.apache.logging.log4j.core.appender.db.ColumnMapping;
-import org.apache.logging.log4j.core.appender.db.DbAppenderLoggingException;
-import org.apache.logging.log4j.core.util.Closer;
-import org.apache.logging.log4j.core.util.Log4jThread;
-import org.apache.logging.log4j.jdbc.convert.DateTypeConverter;
-import org.apache.logging.log4j.message.MapMessage;
-import org.apache.logging.log4j.plugins.convert.TypeConverters;
-import org.apache.logging.log4j.spi.ThreadContextMap;
-import org.apache.logging.log4j.spi.ThreadContextStack;
-import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
-import org.apache.logging.log4j.util.ReadOnlyStringMap;
-import org.apache.logging.log4j.util.Strings;
 
 /**
  * An {@link AbstractDatabaseManager} implementation for relational databases accessed via JDBC.
@@ -759,8 +758,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
                         } else if (NClob.class.isAssignableFrom(mapping.getType())) {
                             this.statement.setNClob(j++, new StringReader(layout.toSerializable(event)));
                         } else {
-                            final Object value = TypeConverters.convert(layout.toSerializable(event), mapping.getType(),
-                                    null);
+                            final Object value = mapping.getTypeConverter().convert(layout.toSerializable(event), null);
                             setStatementObject(j++, mapping.getNameKey(), value);
                         }
                     }

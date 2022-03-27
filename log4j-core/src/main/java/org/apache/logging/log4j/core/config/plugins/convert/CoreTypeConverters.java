@@ -22,7 +22,6 @@ import org.apache.logging.log4j.core.appender.rolling.action.Duration;
 import org.apache.logging.log4j.core.util.CronExpression;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
-import org.apache.logging.log4j.plugins.convert.TypeConverters;
 import org.apache.logging.log4j.util.LoaderUtil;
 
 import java.io.File;
@@ -55,7 +54,7 @@ public final class CoreTypeConverters {
     /**
      * Parses a {@link String} into a {@link BigDecimal}.
      */
-    @Plugin(name = "BigDecimal", category = TypeConverters.CATEGORY)
+    @Plugin(name = "BigDecimal", category = TypeConverter.CATEGORY)
     public static class BigDecimalConverter implements TypeConverter<BigDecimal> {
         @Override
         public BigDecimal convert(final String s) {
@@ -66,7 +65,7 @@ public final class CoreTypeConverters {
     /**
      * Parses a {@link String} into a {@link BigInteger}.
      */
-    @Plugin(name = "BigInteger", category = TypeConverters.CATEGORY)
+    @Plugin(name = "BigInteger", category = TypeConverter.CATEGORY)
     public static class BigIntegerConverter implements TypeConverter<BigInteger> {
         @Override
         public BigInteger convert(final String s) {
@@ -84,7 +83,7 @@ public final class CoreTypeConverters {
      * <li>String using {@link Charset#defaultCharset()} [TODO Should this be UTF-8 instead?]</li>
      * </ul>
      */
-    @Plugin(name = "ByteArray", category = TypeConverters.CATEGORY)
+    @Plugin(name = "ByteArray", category = TypeConverter.CATEGORY)
     public static class ByteArrayConverter implements TypeConverter<byte[]> {
 
         private static final String PREFIX_0x = "0x";
@@ -111,7 +110,7 @@ public final class CoreTypeConverters {
     /**
      * Converts a {@link String} into a {@code char[]}.
      */
-    @Plugin(name = "CharacterArray", category = TypeConverters.CATEGORY)
+    @Plugin(name = "CharacterArray", category = TypeConverter.CATEGORY)
     public static class CharArrayConverter implements TypeConverter<char[]> {
         @Override
         public char[] convert(final String s) {
@@ -122,7 +121,7 @@ public final class CoreTypeConverters {
     /**
      * Converts a {@link String} into a {@link Charset}.
      */
-    @Plugin(name = "Charset", category = TypeConverters.CATEGORY)
+    @Plugin(name = "Charset", category = TypeConverter.CATEGORY)
     public static class CharsetConverter implements TypeConverter<Charset> {
         @Override
         public Charset convert(final String s) {
@@ -133,7 +132,7 @@ public final class CoreTypeConverters {
     /**
      * Converts a {@link String} into a {@link Class}.
      */
-    @Plugin(name = "Class", category = TypeConverters.CATEGORY)
+    @Plugin(name = "Class", category = TypeConverter.CATEGORY)
     public static class ClassConverter implements TypeConverter<Class<?>> {
         @Override
         public Class<?> convert(final String s) throws ClassNotFoundException {
@@ -163,7 +162,7 @@ public final class CoreTypeConverters {
         }
     }
 
-    @Plugin(name = "CronExpression", category = TypeConverters.CATEGORY)
+    @Plugin(name = "CronExpression", category = TypeConverter.CATEGORY)
     public static class CronExpressionConverter implements TypeConverter<CronExpression> {
         @Override
         public CronExpression convert(final String s) throws Exception {
@@ -175,7 +174,7 @@ public final class CoreTypeConverters {
      * Converts a {@link String} into a {@link Duration}.
      * @since 2.5
      */
-    @Plugin(name = "Duration", category = TypeConverters.CATEGORY)
+    @Plugin(name = "Duration", category = TypeConverter.CATEGORY)
     public static class DurationConverter implements TypeConverter<Duration> {
         @Override
         public Duration convert(final String s) {
@@ -186,7 +185,7 @@ public final class CoreTypeConverters {
     /**
      * Converts a {@link String} into a {@link File}.
      */
-    @Plugin(name = "File", category = TypeConverters.CATEGORY)
+    @Plugin(name = "File", category = TypeConverter.CATEGORY)
     public static class FileConverter implements TypeConverter<File> {
         @Override
         public File convert(final String s) {
@@ -197,7 +196,7 @@ public final class CoreTypeConverters {
     /**
      * Converts a {@link String} into an {@link InetAddress}.
      */
-    @Plugin(name = "InetAddress", category = TypeConverters.CATEGORY)
+    @Plugin(name = "InetAddress", category = TypeConverter.CATEGORY)
     public static class InetAddressConverter implements TypeConverter<InetAddress> {
         @Override
         public InetAddress convert(final String s) throws Exception {
@@ -208,7 +207,7 @@ public final class CoreTypeConverters {
     /**
      * Converts a {@link String} into a Log4j {@link Level}. Returns {@code null} for invalid level names.
      */
-    @Plugin(name = "Level", category = TypeConverters.CATEGORY)
+    @Plugin(name = "Level", category = TypeConverter.CATEGORY)
     public static class LevelConverter implements TypeConverter<Level> {
         @Override
         public Level convert(final String s) {
@@ -220,7 +219,7 @@ public final class CoreTypeConverters {
      * Converts a {@link String} into a {@link Path}.
      * @since 2.8
      */
-    @Plugin(name = "Path", category = TypeConverters.CATEGORY)
+    @Plugin(name = "Path", category = TypeConverter.CATEGORY)
     public static class PathConverter implements TypeConverter<Path> {
         @Override
         public Path convert(final String s) throws Exception {
@@ -231,7 +230,7 @@ public final class CoreTypeConverters {
     /**
      * Converts a {@link String} into a {@link Pattern}.
      */
-    @Plugin(name = "Pattern", category = TypeConverters.CATEGORY)
+    @Plugin(name = "Pattern", category = TypeConverter.CATEGORY)
     public static class PatternConverter implements TypeConverter<Pattern> {
         @Override
         public Pattern convert(final String s) {
@@ -242,7 +241,7 @@ public final class CoreTypeConverters {
     /**
      * Converts a {@link String} into a {@link Provider}.
      */
-    @Plugin(name = "SecurityProvider", category = TypeConverters.CATEGORY)
+    @Plugin(name = "SecurityProvider", category = TypeConverter.CATEGORY)
     public static class SecurityProviderConverter implements TypeConverter<Provider> {
         @Override
         public Provider convert(final String s) {
@@ -253,7 +252,7 @@ public final class CoreTypeConverters {
     /**
      * Converts a {@link String} into a {@link URI}.
      */
-    @Plugin(name = "URI", category = TypeConverters.CATEGORY)
+    @Plugin(name = "URI", category = TypeConverter.CATEGORY)
     public static class UriConverter implements TypeConverter<URI> {
         @Override
         public URI convert(final String s) throws URISyntaxException {
@@ -264,7 +263,7 @@ public final class CoreTypeConverters {
     /**
      * Converts a {@link String} into a {@link URL}.
      */
-    @Plugin(name = "URL", category = TypeConverters.CATEGORY)
+    @Plugin(name = "URL", category = TypeConverter.CATEGORY)
     public static class UrlConverter implements TypeConverter<URL> {
         @Override
         public URL convert(final String s) throws MalformedURLException {
@@ -276,7 +275,7 @@ public final class CoreTypeConverters {
      * Converts a {@link String} into a {@link UUID}.
      * @since 2.8
      */
-    @Plugin(name = "UUID", category = TypeConverters.CATEGORY)
+    @Plugin(name = "UUID", category = TypeConverter.CATEGORY)
     public static class UuidConverter implements TypeConverter<UUID> {
         @Override
         public UUID convert(final String s) throws Exception {
@@ -284,7 +283,7 @@ public final class CoreTypeConverters {
         }
     }
 
-    @Plugin(name = "ZoneId", category = TypeConverters.CATEGORY)
+    @Plugin(name = "ZoneId", category = TypeConverter.CATEGORY)
     public static class ZoneIdConverter implements TypeConverter<ZoneId> {
         @Override
         public ZoneId convert(final String s) throws Exception {
