@@ -109,8 +109,8 @@ public class CloseableThreadContext {
         }
 
         /**
-         * Pushes new diagnostic context information on to the Thread Context Stack. The information will be popped off when
-         * the instance is closed.
+         * Pushes new diagnostic context information on to the Thread Context Stack.
+         * The information will be popped off when the instance is closed.
          *
          * @param message The new diagnostic context information.
          * @return the instance that will back out the changes when closed.
@@ -122,8 +122,8 @@ public class CloseableThreadContext {
         }
 
         /**
-         * Pushes new diagnostic context information on to the Thread Context Stack. The information will be popped off when
-         * the instance is closed.
+         * Pushes new diagnostic context information on to the Thread Context Stack.
+         * The information will be popped off when the instance is closed.
          *
          * @param message The new diagnostic context information.
          * @param args    Parameters for the message.
@@ -137,8 +137,8 @@ public class CloseableThreadContext {
 
         /**
          * Populates the Thread Context Map with the supplied key/value pair. Any existing key in the
-         * {@link ThreadContext} will be replaced with the supplied value, and restored back to their original value when
-         * the instance is closed.
+         * {@link ThreadContext} will be replaced with the supplied value,
+         * and restored back to their original value when the instance is closed.
          *
          * @param key   The  key to be added
          * @param value The value to be added
@@ -155,8 +155,8 @@ public class CloseableThreadContext {
 
         /**
          * Populates the Thread Context Map with the supplied key/value pairs. Any existing keys in the
-         * {@link ThreadContext} will be replaced with the supplied values, and restored back to their original value when
-         * the instance is closed.
+         * {@link ThreadContext} will be replaced with the supplied values,
+         * and restored back to their original value when the instance is closed.
          *
          * @param values The map of key/value pairs to be added
          * @return a new instance that will back out the changes when closed.
@@ -194,7 +194,8 @@ public class CloseableThreadContext {
          * Values pushed to the {@link ThreadContext} <em>stack</em> will be popped off.
          * </p>
          * <p>
-         * Values put on the {@link ThreadContext} <em>map</em> will be removed, or restored to their original values it they already existed.
+         * Values put on the {@link ThreadContext} <em>map</em> will be removed,
+         * or restored to their original values it they already existed.
          * </p>
          */
         @Override
@@ -204,7 +205,7 @@ public class CloseableThreadContext {
         }
 
         private void closeMap() {
-            for (final Iterator<Map.Entry<String, String>> it = originalValues.entrySet().iterator(); it.hasNext(); ) {
+            for (final Iterator<Map.Entry<String, String>> it = originalValues.entrySet().iterator(); it.hasNext();) {
                 final Map.Entry<String, String> entry = it.next();
                 final String key = entry.getKey();
                 final String originalValue = entry.getValue();

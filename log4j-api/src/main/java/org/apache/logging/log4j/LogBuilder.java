@@ -25,8 +25,8 @@ import org.apache.logging.log4j.util.Supplier;
  * by calling one of the Logger methods that return a LogBuilder.
  */
 public interface LogBuilder {
-
-    public static final LogBuilder NOOP = new LogBuilder() {};
+    /** NOOP Logbuilder */
+    LogBuilder NOOP = new LogBuilder() { };
 
     /**
      * Includes a Marker in the log event. Interface default method does nothing.
