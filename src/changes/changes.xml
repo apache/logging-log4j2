@@ -30,7 +30,11 @@
          - "update" - Change
          - "remove" - Removed
     -->
-    <release version="3.0.0" date="2021-MM-DD" description="GA Release 3.0.0">
+    <release version="3.0.0" date="2022-MM-DD" description="GA Release 3.0.0">
+      <action issue="LOG4J2-3415" dev="mattsicker" type="add">
+        Add built-in JSON configuration parser for a useful structured configuration file format which only requires
+        the `java.base` module.
+      </action>
       <action issue="LOG4J2-2854" dev="mattsicker" type="add">
         Create standardized dependency injection API. This is supported in several plugin categories and other configurable
         instances previously defined via system properties.
