@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.flume.test;
 
+import org.apache.logging.log4j.core.util.SecretKeyProvider;
+import org.apache.logging.log4j.plugins.Plugin;
+
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.core.util.SecretKeyProvider;
 
 /**
  *
  */
-@Plugin(name = "FlumeKeyProvider", category = "KeyProvider", elementType = "SecretKeyProvider", printObject = true)
+@Plugin(name = "FlumeKeyProvider", category = SecretKeyProvider.CATEGORY, elementType = "SecretKeyProvider", printObject = true)
 public class FlumeKeyProvider implements SecretKeyProvider {
 
     private static final byte[] key = new byte[] {-7, -21, -118, -25, -79, 73, 72, -64, 0, 127, -93, -13, -38,

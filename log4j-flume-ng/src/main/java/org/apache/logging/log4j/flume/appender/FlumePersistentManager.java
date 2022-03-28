@@ -38,8 +38,9 @@ import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.core.util.SecretKeyProvider;
+import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
-import org.apache.logging.log4j.plugins.util.PluginUtil;
 import org.apache.logging.log4j.util.Strings;
 
 import javax.crypto.Cipher;
@@ -141,11 +142,10 @@ public class FlumePersistentManager extends FlumeAvroManager {
      * @param dataDir The location of the Berkeley database.
      * @return A FlumeAvroManager.
      */
-    public static FlumePersistentManager getManager(final String name, final Agent[] agents,
-                                                    final Property[] properties, int batchSize, final int retries,
-                                                    final int connectionTimeout, final int requestTimeout,
-                                                    final int delayMillis, final int lockTimeoutRetryCount,
-                                                    final String dataDir) {
+    public static FlumePersistentManager getManager(
+            final String name, final Agent[] agents, final Property[] properties, int batchSize, final int retries,
+            final int connectionTimeout, final int requestTimeout, final int delayMillis, final int lockTimeoutRetryCount,
+            final String dataDir, final Injector injector) {
         if (agents == null || agents.length == 0) {
             throw new IllegalArgumentException("At least one agent is required");
         }
@@ -167,7 +167,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
         sb.append(']');
         sb.append(' ').append(dataDirectory);
         return getManager(sb.toString(), factory, new FactoryData(name, agents, batchSize, retries,
-            connectionTimeout, requestTimeout, delayMillis, lockTimeoutRetryCount, dataDir, properties));
+            connectionTimeout, requestTimeout, delayMillis, lockTimeoutRetryCount, dataDir, properties, injector));
     }
 
     @Override
@@ -344,6 +344,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
         private final int delayMillis;
         private final int lockTimeoutRetryCount;
         private final Property[] properties;
+        private final Injector injector;
 
         /**
          * Constructor.
@@ -352,9 +353,11 @@ public class FlumePersistentManager extends FlumeAvroManager {
          * @param batchSize The number of events to include in a batch.
          * @param dataDir The directory for data.
          */
-        public FactoryData(final String name, final Agent[] agents, final int batchSize, final int retries,
-                           final int connectionTimeout, final int requestTimeout, final int delayMillis,
-                           final int lockTimeoutRetryCount, final String dataDir, final Property[] properties) {
+        public FactoryData(
+                final String name, final Agent[] agents, final int batchSize, final int retries,
+                final int connectionTimeout, final int requestTimeout, final int delayMillis,
+                final int lockTimeoutRetryCount, final String dataDir, final Property[] properties,
+                final Injector injector) {
             this.name = name;
             this.agents = agents;
             this.batchSize = batchSize;
@@ -365,6 +368,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
             this.delayMillis = delayMillis;
             this.lockTimeoutRetryCount = lockTimeoutRetryCount;
             this.properties = properties;
+            this.injector = injector;
         }
     }
 
@@ -429,7 +433,9 @@ public class FlumePersistentManager extends FlumeAvroManager {
                     }
                 }
                 if (key != null) {
-                    final Map<String, PluginType<?>> plugins = PluginUtil.collectPluginsByCategory("KeyProvider");
+                    final PluginManager pluginManager = data.injector.getInstance(SecretKeyProvider.PLUGIN_MANAGER_KEY);
+                    pluginManager.collectPlugins();
+                    final Map<String, PluginType<?>> plugins = pluginManager.getPlugins();
                     if (plugins != null) {
                         boolean found = false;
                         for (final Map.Entry<String, PluginType<?>> entry : plugins.entrySet()) {
@@ -437,7 +443,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                                 found = true;
                                 final Class<?> cl = entry.getValue().getPluginClass();
                                 try {
-                                    final SecretKeyProvider provider = (SecretKeyProvider) cl.newInstance();
+                                    final SecretKeyProvider provider = data.injector.getInstance(cl.asSubclass(SecretKeyProvider.class));
                                     secretKey = provider.getSecretKey();
                                     LOGGER.debug("Persisting events using SecretKeyProvider {}", cl.getName());
                                 } catch (final Exception ex) {

@@ -16,12 +16,20 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import org.apache.logging.log4j.plugins.Named;
+import org.apache.logging.log4j.plugins.di.Key;
+import org.apache.logging.log4j.plugins.util.PluginManager;
+
 import javax.crypto.SecretKey;
 
 /**
  * Factory class to provide a {@link SecretKey} instance.
  */
 public interface SecretKeyProvider {
+
+    String CATEGORY = "KeyProvider";
+
+    Key<PluginManager> PLUGIN_MANAGER_KEY = new @Named(CATEGORY) Key<>() {};
 
     /**
      * Returns this SecretKey.
