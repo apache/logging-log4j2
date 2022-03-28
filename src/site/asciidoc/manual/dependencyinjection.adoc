@@ -140,7 +140,10 @@ The default callback sets up bindings for the following keys if none have been r
 Some of these bindings were previously configured through various system properties which are supported via the default callback and its default bindings, though they can be directly registered via custom callbacks with a negative order value.
 
 * `org.apache.logging.log4j.core.ContextDataInjector`
+* `org.apache.logging.log4j.core.config.ConfigurationFactory`
 * `org.apache.logging.log4j.core.impl.LogEventFactory`
+* `org.apache.logging.log4j.core.lookup.InterpolatorFactory`
+* `org.apache.logging.log4j.core.lookup.StrSubstitutor`
 * `org.apache.logging.log4j.core.selector.ContextSelector`
 * `org.apache.logging.log4j.core.time.Clock`
 * `org.apache.logging.log4j.core.time.NanoClock`
