@@ -34,6 +34,7 @@ import org.apache.log4j.bridge.AppenderWrapper;
 import org.apache.log4j.bridge.LayoutAdapter;
 import org.apache.log4j.bridge.LayoutWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
+import org.apache.log4j.builders.Holder;
 import org.apache.log4j.config.Log4j1Configuration;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.spi.Filter;
@@ -72,12 +73,12 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
     @Override
     public Appender parseAppender(Element appenderElement, XmlConfiguration config) {
         String name = getNameAttribute(appenderElement);
-        AtomicReference<Layout> layout = new AtomicReference<>();
-        AtomicReference<Filter> filter = new AtomicReference<>();
-        AtomicReference<String> facility = new AtomicReference<>();
-        AtomicReference<String> level = new AtomicReference<>();
-        AtomicReference<String> host = new AtomicReference<>();
-        AtomicReference<Protocol> protocol = new AtomicReference<>(Protocol.TCP);
+        Holder<Layout> layout = new Holder<>();
+        Holder<Filter> filter = new Holder<>();
+        Holder<String> facility = new Holder<>(DEFAULT_FACILITY);
+        Holder<String> level = new Holder<>();
+        Holder<String> host = new Holder<>(DEFAULT_HOST + ":" + DEFAULT_PORT);
+        Holder<Protocol> protocol = new Holder<>(Protocol.TCP);
         forEachElement(appenderElement.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
                 case LAYOUT_TAG:
@@ -88,12 +89,11 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
                     break;
                 case PARAM_TAG: {
                     switch (getNameAttributeKey(currentElement)) {
-                        case SYSLOG_HOST_PARAM: {
-                            host.set(getValueAttribute(currentElement));
+                        case SYSLOG_HOST_PARAM:
+                            setString(SYSLOG_HOST_PARAM, currentElement, host);
                             break;
-                        }
                         case FACILITY_PARAM:
-                            facility.set(getValueAttribute(currentElement));
+                            setString(FACILITY_PARAM, currentElement, facility);
                             break;
                         case THRESHOLD_PARAM: {
                             String value = getValueAttribute(currentElement);
