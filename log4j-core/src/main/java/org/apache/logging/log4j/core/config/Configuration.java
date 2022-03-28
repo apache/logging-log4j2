@@ -35,6 +35,7 @@ import org.apache.logging.log4j.plugins.di.Key;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * Interface that must be implemented to create a configuration.
@@ -133,7 +134,11 @@ public interface Configuration extends Filterable {
 
     <T> T getComponent(String name);
 
-    <T> T getComponent(Key<T> key);
+    <T> Supplier<T> getFactory(Key<T> key);
+
+    default <T> T getComponent(Key<T> key) {
+        return getFactory(key).get();
+    }
 
     void addComponent(String name, Object object);
 
