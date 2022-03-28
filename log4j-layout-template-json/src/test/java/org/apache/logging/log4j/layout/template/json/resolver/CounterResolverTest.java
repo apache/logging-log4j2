@@ -18,8 +18,8 @@ package org.apache.logging.log4j.layout.template.json.resolver;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.util.JsonReader;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
-import org.apache.logging.log4j.layout.template.json.util.JsonReader;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;

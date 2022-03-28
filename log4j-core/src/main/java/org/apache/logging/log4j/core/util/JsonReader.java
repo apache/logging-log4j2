@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.layout.template.json.util;
+package org.apache.logging.log4j.core.util;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -185,9 +185,26 @@ public final class JsonReader {
     }
 
     private void skipWhiteSpace() {
+        boolean inComment = false;
         do {
-            if (!Character.isWhitespace(readChar)) {
-                break;
+            if (inComment) {
+                if (readChar == '*') {
+                    if (readChar() == '/') {
+                        inComment = false;
+                    } else {
+                        unreadChar();
+                    }
+                } // else continue
+            } else {
+                if (readChar == '/') {
+                    if (readChar() == '*') {
+                        inComment = true;
+                    } else {
+                        unreadChar();
+                    }
+                } else if (!Character.isWhitespace(readChar)) {
+                    break;
+                } // else continue
             }
         } while (readChar() != CharacterIterator.DONE);
     }
