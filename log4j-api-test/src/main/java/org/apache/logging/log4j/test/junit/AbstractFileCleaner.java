@@ -17,6 +17,10 @@
 
 package org.apache.logging.log4j.test.junit;
 
+import org.junit.jupiter.api.extension.AfterEachCallback;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
+
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.nio.file.Files;
@@ -25,11 +29,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.LockSupport;
 import java.util.stream.Collectors;
-
-import org.junit.jupiter.api.extension.AfterEachCallback;
-import org.junit.jupiter.api.extension.BeforeEachCallback;
-import org.junit.jupiter.api.extension.ExtensionContext;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -38,6 +39,7 @@ abstract class AbstractFileCleaner implements BeforeEachCallback, AfterEachCallb
     private static final int MAX_TRIES = Integer.getInteger("log4j2.junit.fileCleanerMaxTries", 10);
 
     private static final int SLEEP_PERIOD_MILLIS = Integer.getInteger("log4j2.junit.fileCleanerSleepPeriodMillis", 200);
+    private static final int SLEEP_BASE_PERIOD_MILLIS = SLEEP_PERIOD_MILLIS / MAX_TRIES;
 
     @Override
     public void beforeEach(final ExtensionContext context) throws Exception {
@@ -57,7 +59,7 @@ abstract class AbstractFileCleaner implements BeforeEachCallback, AfterEachCallb
         final Map<Path, IOException> failures = new ConcurrentHashMap<>();
         for (final Path path : paths) {
             if (Files.exists(path)) {
-                for (int i = 0; i < MAX_TRIES; i++) {
+                for (int i = 0, sleepMillis = SLEEP_BASE_PERIOD_MILLIS; i < MAX_TRIES; i++, sleepMillis <<= 1) {
                     try {
                         if (delete(path)) {
                             failures.remove(path);
@@ -66,9 +68,8 @@ abstract class AbstractFileCleaner implements BeforeEachCallback, AfterEachCallb
                     } catch (final IOException e) {
                         failures.put(path, e);
                     }
-                    try {
-                        TimeUnit.MILLISECONDS.sleep(SLEEP_PERIOD_MILLIS);
-                    } catch (final InterruptedException ignored) {
+                    LockSupport.parkNanos(path, TimeUnit.MILLISECONDS.toNanos(sleepMillis));
+                    if (Thread.interrupted()) {
                         failures.put(path, new InterruptedIOException());
                         Thread.currentThread().interrupt();
                         break;
