@@ -16,6 +16,18 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -26,10 +38,8 @@ import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
 import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
-import org.apache.logging.log4j.core.net.UrlConnectionFactory;
 import org.apache.logging.log4j.core.util.AuthorizationProvider;
 import org.apache.logging.log4j.core.util.BasicAuthorizationProvider;
-import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.ReflectionUtil;
@@ -37,23 +47,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Factory class for parsed {@link Configuration} objects from a configuration file.
@@ -355,28 +348,9 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
      * @param loader The default ClassLoader to use.
      * @return The InputSource to use to read the configuration.
      */
+    @Deprecated
     protected ConfigurationSource getInputFromString(final String config, final ClassLoader loader) {
-        try {
-            final URL url = new URL(config);
-            URLConnection urlConnection = UrlConnectionFactory.createConnection(url);
-            File file = FileUtils.fileFromUri(url.toURI());
-            if (file != null) {
-                return new ConfigurationSource(urlConnection.getInputStream(), FileUtils.fileFromUri(url.toURI()));
-            }
-            return new ConfigurationSource(urlConnection.getInputStream(), url, urlConnection.getLastModified());
-        } catch (final Exception ex) {
-            final ConfigurationSource source = ConfigurationSource.fromResource(config, loader);
-            if (source == null) {
-                try {
-                    final File file = new File(config);
-                    return new ConfigurationSource(new FileInputStream(file), file);
-                } catch (final FileNotFoundException fnfe) {
-                    // Ignore the exception
-                    LOGGER.catching(Level.DEBUG, fnfe);
-                }
-            }
-            return source;
-        }
+        return ConfigurationSource.fromUri(NetUtils.toURI(config));
     }
 
     /**

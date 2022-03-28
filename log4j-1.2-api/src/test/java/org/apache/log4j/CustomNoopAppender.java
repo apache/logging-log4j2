@@ -21,9 +21,30 @@ import org.apache.log4j.spi.LoggingEvent;
 
 public class CustomNoopAppender extends AppenderSkeleton {
 
+    private boolean booleanA;
+    private int intA;
+    private String stringA;
+
+    @Override
+    protected void append(final LoggingEvent event) {
+        // Noop
+    }
+
     @Override
     public void close() {
         // Noop
+    }
+
+    public boolean getBooleanA() {
+        return booleanA;
+    }
+
+    public int getIntA() {
+        return intA;
+    }
+
+    public String getStringA() {
+        return stringA;
     }
 
     @Override
@@ -31,9 +52,16 @@ public class CustomNoopAppender extends AppenderSkeleton {
         return false;
     }
 
-    @Override
-    protected void append(LoggingEvent event) {
-        // Noop
+    public void setBooleanA(final boolean booleanA) {
+        this.booleanA = booleanA;
+    }
+
+    public void setIntA(final int intA) {
+        this.intA = intA;
+    }
+
+    public void setStringA(final String stringA) {
+        this.stringA = stringA;
     }
 
 }

@@ -17,24 +17,40 @@
 
 package org.apache.logging.log4j.core.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.io.File;
+import java.net.URI;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.OS;
-
-import java.net.URI;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class NetUtilsTest {
 
     @Test
     public void testToUriWithoutBackslashes() {
         final String config = "file:///path/to/something/on/unix";
-        final URI uri = NetUtils.toURI(config);
+        URI uri = NetUtils.toURI(config);
 
         assertNotNull(uri, "The URI should not be null.");
         assertEquals("file:///path/to/something/on/unix", uri.toString(), "The URI is not correct.");
+
+        final String properUriPath = "/path/without/spaces";
+        uri = NetUtils.toURI(properUriPath);
+
+        assertNotNull(uri, "The URI should not be null.");
+        assertEquals(properUriPath, uri.toString(), "The URI is not correct.");
+    }
+
+    @Test
+    public void testToUriUnixWithSpaces() {
+        final String pathWithSpaces = "/ path / with / spaces";
+        final URI uri = NetUtils.toURI(pathWithSpaces);
+
+        assertNotNull(uri, "The URI should not be null.");
+        assertEquals(new File(pathWithSpaces).toURI().toString(), uri.toString(), "The URI is not correct.");
     }
 
     @Test

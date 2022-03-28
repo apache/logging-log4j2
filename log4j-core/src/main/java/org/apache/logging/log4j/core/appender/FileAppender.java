@@ -82,6 +82,9 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
 
         @Override
         public FileAppender build() {
+            if (!isValid()) {
+                return null;
+            }
             boolean bufferedIo = isBufferedIo();
             final int bufferSize = getBufferSize();
             if (locking && bufferedIo) {

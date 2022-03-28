@@ -24,6 +24,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.logging.log4j.Level;
@@ -262,12 +263,19 @@ public class HtmlLayoutTest {
             zonedDateTime = zonedDateTime.withZoneSameInstant(ZoneId.of(timezone));
         }
 
+        // LOG4J2-3019 HtmlLayoutTest.testLayoutWithDatePatternFixedFormat test fails on windows
+        // https://issues.apache.org/jira/browse/LOG4J2-3019
+        // java.time.format.DateTimeFormatterBuilder.toFormatter() defaults to using 
+        // Locale.getDefault(Locale.Category.FORMAT)
+        final Locale formatLocale = Locale.getDefault(Locale.Category.FORMAT);
+        final Locale locale = Locale.getDefault().equals(formatLocale) ? formatLocale : Locale.getDefault();
+        
         // For DateTimeFormatter of jdk,
         // Pattern letter 'S' means fraction-of-second, 'n' means nano-of-second. Log4j2 needs S.
         // Pattern letter 'X' (upper case) will output 'Z' when the offset to be output would be zero,
         // whereas pattern letter 'x' (lower case) will output '+00', '+0000', or '+00:00'. Log4j2 needs x.
         DateTimeFormatter dateTimeFormatter =
-            DateTimeFormatter.ofPattern(format.getPattern().replace('n', 'S').replace('X', 'x'));
+            DateTimeFormatter.ofPattern(format.getPattern().replace('n', 'S').replace('X', 'x'), locale);
         String expected = zonedDateTime.format(dateTimeFormatter);
 
         assertEquals("<td>" + expected + "</td>", actual,

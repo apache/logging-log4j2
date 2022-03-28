@@ -26,7 +26,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 public class SslConfigurationFactory {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
-    private static SslConfiguration sslConfiguration = null;
+    private static SslConfiguration sslConfiguration = createSslConfiguration(PropertiesUtil.getProperties());
 
     private static final String trustStorelocation = "log4j2.trustStoreLocation";
     private static final String trustStorePassword = "log4j2.trustStorePassword";
@@ -42,8 +42,7 @@ public class SslConfigurationFactory {
     private static final String keyStoreKeyManagerFactoryAlgorithm = "log4j2.keyStoreKeyManagerFactoryAlgorithm";
     private static final String verifyHostName = "log4j2.sslVerifyHostName";
 
-    static {
-        PropertiesUtil props = PropertiesUtil.getProperties();
+    static SslConfiguration createSslConfiguration(PropertiesUtil props) {
         KeyStoreConfiguration keyStoreConfiguration = null;
         TrustStoreConfiguration trustStoreConfiguration = null;
         String location = props.getStringProperty(trustStorelocation);
@@ -80,9 +79,10 @@ public class SslConfigurationFactory {
         }
         if (trustStoreConfiguration != null || keyStoreConfiguration != null) {
             boolean isVerifyHostName = props.getBooleanProperty(verifyHostName, false);
-            sslConfiguration = SslConfiguration.createSSLConfiguration("https", keyStoreConfiguration,
+            return SslConfiguration.createSSLConfiguration(null, keyStoreConfiguration,
                 trustStoreConfiguration, isVerifyHostName);
         }
+        return null;
     }
 
     public static SslConfiguration getSslConfiguration() {

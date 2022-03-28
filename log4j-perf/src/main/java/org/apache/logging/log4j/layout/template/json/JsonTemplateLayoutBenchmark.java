@@ -28,158 +28,164 @@ import java.util.List;
  * Benchmark suite for various JSON layouts.
  * <p>
  * You can run this test as follows:
- * <pre>
+ * <pre>{@code
  * java \
  *     -jar log4j-perf/target/benchmarks.jar \
  *     -f 2 \
  *     -wi 3 -w 20s \
  *     -i 5 -r 30s \
  *     -prof gc \
+ *     -prof perfnorm \
+ *     -prof "async:libPath=/path/to/libasyncProfiler.so;output=flamegraph" \
  *     -rf json -rff log4j-perf/target/JsonTemplateLayoutBenchmarkResult.json \
  *     ".*JsonTemplateLayoutBenchmark.*"
- * </pre>
+ * }</pre>
+ * </p>
  */
 public class JsonTemplateLayoutBenchmark {
 
     @Benchmark
-    public static int fullJsonTemplateLayout4JsonLayout(
+    public static int fullJtl4JsonLayout(
             final JsonTemplateLayoutBenchmarkState state) {
         return benchmark(
-                state.getJsonTemplateLayout4JsonLayout(),
-                state.getFullLogEvents(),
-                state.getByteBufferDestination());
+                state,
+                state.getJtl4JsonLayout(),
+                state.getFullLogEvents());
     }
 
     @Benchmark
-    public static int liteJsonTemplateLayout4JsonLayout(
+    public static int liteJtl4JsonLayout(
             final JsonTemplateLayoutBenchmarkState state) {
         return benchmark(
-                state.getJsonTemplateLayout4JsonLayout(),
-                state.getLiteLogEvents(),
-                state.getByteBufferDestination());
+                state,
+                state.getJtl4JsonLayout(),
+                state.getLiteLogEvents());
     }
 
     @Benchmark
-    public static int fullJsonTemplateLayout4EcsLayout(
+    public static int fullJtl4EcsLayout(
             final JsonTemplateLayoutBenchmarkState state) {
         return benchmark(
-                state.getJsonTemplateLayout4EcsLayout(),
-                state.getFullLogEvents(),
-                state.getByteBufferDestination());
+                state,
+                state.getJtl4EcsLayout(),
+                state.getFullLogEvents());
     }
 
     @Benchmark
-    public static int liteJsonTemplateLayout4EcsLayout(
+    public static int liteJtl4EcsLayout(
             final JsonTemplateLayoutBenchmarkState state) {
         return benchmark(
-                state.getJsonTemplateLayout4EcsLayout(),
-                state.getLiteLogEvents(),
-                state.getByteBufferDestination());
+                state,
+                state.getJtl4EcsLayout(),
+                state.getLiteLogEvents());
     }
 
     @Benchmark
-    public static int fullJsonTemplateLayout4GelfLayout(
+    public static int fullJtl4GelfLayout(
             final JsonTemplateLayoutBenchmarkState state) {
         return benchmark(
-                state.getJsonTemplateLayout4GelfLayout(),
-                state.getFullLogEvents(),
-                state.getByteBufferDestination());
+                state,
+                state.getJtl4GelfLayout(),
+                state.getFullLogEvents());
     }
 
     @Benchmark
-    public static int liteJsonTemplateLayout4GelfLayout(
+    public static int liteJtl4GelfLayout(
             final JsonTemplateLayoutBenchmarkState state) {
         return benchmark(
-                state.getJsonTemplateLayout4GelfLayout(),
-                state.getLiteLogEvents(),
-                state.getByteBufferDestination());
+                state,
+                state.getJtl4GelfLayout(),
+                state.getLiteLogEvents());
     }
 
     @Benchmark
     public static int fullDefaultJsonLayout(
             final JsonTemplateLayoutBenchmarkState state) {
         return benchmark(
+                state,
                 state.getDefaultJsonLayout(),
-                state.getFullLogEvents(),
-                state.getByteBufferDestination());
+                state.getFullLogEvents());
     }
 
     @Benchmark
     public static int liteDefaultJsonLayout(
             final JsonTemplateLayoutBenchmarkState state) {
         return benchmark(
+                state,
                 state.getDefaultJsonLayout(),
-                state.getLiteLogEvents(),
-                state.getByteBufferDestination());
+                state.getLiteLogEvents());
     }
 
     @Benchmark
     public static int fullCustomJsonLayout(
             final JsonTemplateLayoutBenchmarkState state) {
         return benchmark(
+                state,
                 state.getCustomJsonLayout(),
-                state.getFullLogEvents(),
-                state.getByteBufferDestination());
+                state.getFullLogEvents());
     }
 
     @Benchmark
     public static int liteCustomJsonLayout(
             final JsonTemplateLayoutBenchmarkState state) {
         return benchmark(
+                state,
                 state.getCustomJsonLayout(),
-                state.getLiteLogEvents(),
-                state.getByteBufferDestination());
+                state.getLiteLogEvents());
     }
 
     @Benchmark
     public static int fullEcsLayout(
             final JsonTemplateLayoutBenchmarkState state) {
         return benchmark(
+                state,
                 state.getEcsLayout(),
-                state.getFullLogEvents(),
-                state.getByteBufferDestination());
+                state.getFullLogEvents());
     }
 
     @Benchmark
     public static int liteEcsLayout(
             final JsonTemplateLayoutBenchmarkState state) {
         return benchmark(
+                state,
                 state.getEcsLayout(),
-                state.getLiteLogEvents(),
-                state.getByteBufferDestination());
+                state.getLiteLogEvents());
     }
 
     @Benchmark
     public static int fullGelfLayout(
             final JsonTemplateLayoutBenchmarkState state) {
         return benchmark(
+                state,
                 state.getGelfLayout(),
-                state.getFullLogEvents(),
-                state.getByteBufferDestination());
+                state.getFullLogEvents());
     }
 
     @Benchmark
     public static int liteGelfLayout(
             final JsonTemplateLayoutBenchmarkState state) {
         return benchmark(
+                state,
                 state.getGelfLayout(),
-                state.getLiteLogEvents(),
-                state.getByteBufferDestination());
+                state.getLiteLogEvents());
     }
 
     private static int benchmark(
-            final Layout<String> layout,
-            final List<LogEvent> logEvents,
+            final JsonTemplateLayoutBenchmarkState state,
+            final Layout<?> layout,
+            final List<LogEvent> logEvents) {
+        final int logEventIndex = state.nextLogEventIndex();
+        final LogEvent logEvent = logEvents.get(logEventIndex);
+        return benchmark(layout, logEvent, state.getByteBufferDestination());
+    }
+
+    private static int benchmark(
+            final Layout<?> layout,
+            final LogEvent logEvent,
             final ByteBufferDestination destination) {
-        // noinspection ForLoopReplaceableByForEach (avoid iterator instantiation)
-        for (int logEventIndex = 0; logEventIndex < logEvents.size(); logEventIndex++) {
-            LogEvent logEvent = logEvents.get(logEventIndex);
-            layout.encode(logEvent, destination);
-        }
         final ByteBuffer byteBuffer = destination.getByteBuffer();
-        final int position = byteBuffer.position();
-        byteBuffer.clear();
-        return position;
+        layout.encode(logEvent, destination);
+        return byteBuffer.position();
     }
 
 }

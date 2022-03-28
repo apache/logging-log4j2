@@ -168,18 +168,24 @@ public class FileAppenderTest {
     private void testMultipleLockingAppenderThreads(final boolean lock, final int threadCount, boolean createOnDemand)
             throws InterruptedException, Exception {
         final ExecutorService threadPool = Executors.newFixedThreadPool(threadCount);
-        final AtomicReference<Exception> exceptionRef = new AtomicReference<>();
+        final AtomicReference<Throwable> throwableRef = new AtomicReference<>();
         final int logEventCount = 100;
-        final Runnable runnable = new FileWriterRunnable(createOnDemand, lock, logEventCount, exceptionRef);
+        final Runnable runnable = new FileWriterRunnable(createOnDemand, lock, logEventCount, throwableRef);
         for (int i = 0; i < threadCount; ++i) {
             threadPool.execute(runnable);
         }
         threadPool.shutdown();
-        assertTrue(
-                threadPool.awaitTermination(10, TimeUnit.SECONDS), "The thread pool has not shutdown: " + threadPool);
-        if (exceptionRef.get() != null) {
-            throw exceptionRef.get();
+        boolean stopped = false;
+        for (int i = 0; i < 20; i++) {
+            // intentional assignment
+            if (stopped = threadPool.awaitTermination(1, TimeUnit.SECONDS)) {
+                break;
+            }
         }
+        if (throwableRef.get() != null) {
+            Throwables.rethrow(throwableRef.get());
+        }
+        assertTrue(stopped, "The thread pool has not shutdown: " + threadPool);
         verifyFile(threadCount * logEventCount);
     }
 
@@ -291,14 +297,14 @@ public class FileAppenderTest {
         private final boolean createOnDemand;
         private final boolean lock;
         private final int logEventCount;
-        private final AtomicReference<Exception> exceptionRef;
+        private final AtomicReference<Throwable> throwableRef;
 
         public FileWriterRunnable(
-                boolean createOnDemand, final boolean lock, final int logEventCount, final AtomicReference<Exception> exceptionRef) {
+                boolean createOnDemand, final boolean lock, final int logEventCount, final AtomicReference<Throwable> throwableRef) {
             this.createOnDemand = createOnDemand;
             this.lock = lock;
             this.logEventCount = logEventCount;
-            this.exceptionRef = exceptionRef;
+            this.throwableRef = throwableRef;
         }
 
         @Override
@@ -307,9 +313,8 @@ public class FileAppenderTest {
 
             try {
                 writer(lock, logEventCount, thread.getName(), createOnDemand, true);
-            } catch (final Exception e) {
-                exceptionRef.set(e);;
-                Throwables.rethrow(e);
+            } catch (final Throwable e) {
+                throwableRef.set(e);
             }
         }
     }

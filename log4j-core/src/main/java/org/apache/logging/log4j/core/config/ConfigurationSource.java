@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -62,6 +63,7 @@ public class ConfigurationSource {
      */
     public static final ConfigurationSource COMPOSITE_SOURCE = new ConfigurationSource(Constants.EMPTY_BYTE_ARRAY, null, 0);
     private static final String HTTPS = "https";
+    private static final String JAR = "jar";
 
     private final InputStream stream;
     private volatile byte[] data;
@@ -337,17 +339,9 @@ public class ConfigurationSource {
             return null;
         }
         try {
-            URL url = configLocation.toURL();
-            URLConnection urlConnection = UrlConnectionFactory.createConnection(url);
-            InputStream is = urlConnection.getInputStream();
-            long lastModified = urlConnection.getLastModified();
-            return new ConfigurationSource(is, configLocation.toURL(), lastModified);
-        } catch (final FileNotFoundException ex) {
-            ConfigurationFactory.LOGGER.warn("Could not locate file {}", configLocation.toString());
+            return getConfigurationSource(configLocation.toURL());
         } catch (final MalformedURLException ex) {
             ConfigurationFactory.LOGGER.error("Invalid URL {}", configLocation.toString(), ex);
-        } catch (final Exception ex) {
-            ConfigurationFactory.LOGGER.error("Unable to access {}", configLocation.toString(), ex);
         }
         return null;
     }
@@ -368,24 +362,16 @@ public class ConfigurationSource {
 
     private static ConfigurationSource getConfigurationSource(URL url) {
         try {
-            URLConnection urlConnection = url.openConnection();
-            // A "jar:" URL file remains open after the stream is closed, so do not cache it.
-            urlConnection.setUseCaches(false);
-            AuthorizationProvider provider = ConfigurationFactory.authorizationProvider(PropertiesUtil.getProperties());
-            provider.addAuthorization(urlConnection);
-            if (url.getProtocol().equals(HTTPS)) {
-                SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration();
-                if (sslConfiguration != null) {
-                    ((HttpsURLConnection) urlConnection).setSSLSocketFactory(sslConfiguration.getSslSocketFactory());
-                    if (!sslConfiguration.isVerifyHostName()) {
-                        ((HttpsURLConnection) urlConnection).setHostnameVerifier(LaxHostnameVerifier.INSTANCE);
-                    }
-                }
-            }
             File file = FileUtils.fileFromUri(url.toURI());
+            URLConnection urlConnection = UrlConnectionFactory.createConnection(url);
             try {
                 if (file != null) {
                     return new ConfigurationSource(urlConnection.getInputStream(), FileUtils.fileFromUri(url.toURI()));
+                } else if (JAR.equals(url.getProtocol())) {
+                    // Work around https://bugs.openjdk.java.net/browse/JDK-6956385.
+                    long lastModified = new File(((JarURLConnection)urlConnection).getJarFile().getName())
+                            .lastModified();
+                    return new ConfigurationSource(urlConnection.getInputStream(), url, lastModified);
                 } else {
                     return new ConfigurationSource(urlConnection.getInputStream(), url, urlConnection.getLastModified());
                 }

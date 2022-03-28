@@ -16,15 +16,21 @@
  */
 package org.apache.logging.log4j.osgi.tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 import org.apache.logging.log4j.osgi.tests.junit.BundleTestInfo;
 import org.apache.logging.log4j.osgi.tests.junit.OsgiRule;
+import org.glassfish.hk2.osgiresourcelocator.ServiceLoader;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -85,6 +91,10 @@ public abstract class AbstractLoadBundleTest {
         return bundleContext.installBundle(apiPath.toUri().toString());
     }
 
+    private Bundle getServiceLoaderBundle() throws BundleException {
+        final URL serviceLocatorUrl = ServiceLoader.class.getProtectionDomain().getCodeSource().getLocation();
+        return bundleContext.installBundle(serviceLocatorUrl.toString());
+    }
 
     protected abstract FrameworkFactory getFactory();
 
@@ -316,4 +326,38 @@ public abstract class AbstractLoadBundleTest {
         uninstall(api, core, compat);
     }
 
+    /**
+     * Tests whether the {@link ServiceLoaderUtil} finds services in other bundles.
+     * 
+     * @throws BundleException
+     * @throws ReflectiveOperationException
+     */
+    @Test
+    public void testServiceLoader() throws BundleException, ReflectiveOperationException {
+        final Bundle api = getApiBundle();
+        final Bundle core = getCoreBundle();
+        final Bundle serviceLoader = getServiceLoaderBundle();
+        assertEquals("serviceLoader is not in RESOLVED state", Bundle.INSTALLED, serviceLoader.getState());
+
+        api.start();
+        core.start();
+        serviceLoader.start();
+
+        final Class<?> serviceLoaderUtil = api.loadClass("org.apache.logging.log4j.util.ServiceLoaderUtil");
+        final Class<?> provider = api.loadClass("org.apache.logging.log4j.spi.Provider");
+        final Method getService = serviceLoaderUtil.getDeclaredMethod("loadServices", Class.class);
+
+        final Object obj = getService.invoke(null, provider);
+        assertEquals("serviceLoader is not in ACTIVE state", Bundle.ACTIVE, serviceLoader.getState());
+        assertTrue(obj instanceof List);
+        @SuppressWarnings("unchecked")
+        final List<Object> services = ((List<Object>) obj);
+        assertEquals(1, services.size());
+        assertEquals("org.apache.logging.log4j.core.impl.Log4jProvider", services.get(0).getClass().getName());
+
+        stop(core, api, serviceLoader);
+        assertEquals("serviceLoader is not in ACTIVE state", Bundle.RESOLVED, serviceLoader.getState());
+        uninstall(serviceLoader, api, core);
+        assertEquals("serviceLoader is not in ACTIVE state", Bundle.UNINSTALLED, serviceLoader.getState());
+    }
 }

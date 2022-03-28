@@ -16,23 +16,33 @@
  */
 package org.apache.logging.log4j.cassandra;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.IOException;
-import java.net.InetAddress;
+import java.lang.reflect.Field;
+import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.Permission;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadFactory;
 
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.Session;
 import org.apache.cassandra.service.CassandraDaemon;
+import org.apache.cassandra.service.CassandraDaemon.Server;
+import org.apache.cassandra.transport.Server.ConnectionTracker;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
+import org.apache.logging.log4j.test.AvailablePortFinder;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.rules.ExternalResource;
+
+import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.Session;
+
+import io.netty.channel.socket.ServerSocketChannel;
 
 /**
  * JUnit rule to set up and tear down a Cassandra database instance.
@@ -42,7 +52,7 @@ public class CassandraRule extends ExternalResource {
     private static final ThreadFactory THREAD_FACTORY = Log4jThreadFactory.createThreadFactory("Cassandra");
 
     private final CountDownLatch latch = new CountDownLatch(1);
-    private final Cancellable embeddedCassandra = new EmbeddedCassandra(latch);
+    private final EmbeddedCassandra embeddedCassandra = new EmbeddedCassandra(latch);
     private final String keyspace;
     private final String tableDdl;
     private Cluster cluster;
@@ -66,12 +76,20 @@ public class CassandraRule extends ExternalResource {
         Files.createDirectories(root.resolve("data"));
         final Path config = root.resolve("cassandra.yml");
         Files.copy(getClass().getResourceAsStream("/cassandra.yaml"), config);
+        System.setProperty("cassandra.native_transport_port", "0");
+        System.setProperty("cassandra.storage_port", "0");
         System.setProperty("cassandra.config", "file:" + config.toString());
         System.setProperty("cassandra.storagedir", root.toString());
         System.setProperty("cassandra-foreground", "true"); // prevents Cassandra from closing stdout/stderr
         THREAD_FACTORY.newThread(embeddedCassandra).start();
         latch.await();
-        cluster = Cluster.builder().addContactPoints(InetAddress.getLoopbackAddress()).build();
+        final InetSocketAddress nativeSocket = embeddedCassandra.getNativeSocket();
+        assertNotNull(nativeSocket);
+        System.setProperty("cassandra.native_transport_port", Integer.toString(nativeSocket.getPort()));
+        cluster = Cluster.builder()
+                .addContactPointsWithPorts(nativeSocket)
+                .build();
+        
         try (final Session session = cluster.connect()) {
             session.execute("CREATE KEYSPACE " + keyspace + " WITH REPLICATION = " +
                 "{ 'class': 'SimpleStrategy', 'replication_factor': 2 };");
@@ -136,6 +154,27 @@ public class CassandraRule extends ExternalResource {
             }
             daemon.start();
             latch.countDown();
+        }
+
+        public InetSocketAddress getNativeSocket() {
+            final Server server = daemon.nativeServer;
+            if (server instanceof org.apache.cassandra.transport.Server) {
+                try {
+                    final Field trackerField = org.apache.cassandra.transport.Server.class.getDeclaredField("connectionTracker");
+                    trackerField.setAccessible(true);
+                    final ConnectionTracker connectionTracker = (ConnectionTracker) trackerField.get(server);
+                    final ServerSocketChannel serverChannel = connectionTracker.allChannels
+                            .stream()
+                            .filter(ServerSocketChannel.class::isInstance)
+                            .map(ServerSocketChannel.class::cast)
+                            .findFirst()
+                            .orElse(null);
+                    return serverChannel.localAddress();
+                } catch (ReflectiveOperationException | ClassCastException e) {
+                    fail(e);
+                }
+            }
+            return null;
         }
     }
 }

@@ -16,6 +16,17 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Constructor;
+import java.nio.charset.Charset;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
@@ -32,11 +43,6 @@ import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.util.Chars;
 import org.apache.logging.log4j.util.PropertiesUtil;
-
-import java.io.*;
-import java.lang.reflect.Constructor;
-import java.nio.charset.Charset;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Appends log events to <code>System.out</code> or <code>System.err</code> using a layout specified by the user. The
@@ -216,6 +222,9 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
 
         @Override
         public ConsoleAppender build() {
+            if (!isValid()) {
+                return null;
+            }
             if (follow && direct) {
                 throw new IllegalArgumentException("Cannot use both follow and direct on ConsoleAppender '" + getName() + "'");
             }

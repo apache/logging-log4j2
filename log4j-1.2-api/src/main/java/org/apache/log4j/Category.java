@@ -307,17 +307,28 @@ public class Category implements AppenderAttachable {
         }
     }
 
+    private static Message createMessage(Object message) {
+        if (message instanceof String) {
+            return new SimpleMessage((String) message);
+        }
+        if (message instanceof CharSequence) {
+            return new SimpleMessage((CharSequence) message);
+        }
+        if (message instanceof Map) {
+            return new MapMessage<>((Map<String, ?>) message);
+        }
+        if (message instanceof Message) {
+            return (Message) message;
+        }
+        return new ObjectMessage(message);
+    }
+
     public void forcedLog(final String fqcn, final Priority level, final Object message, final Throwable t) {
-        final org.apache.logging.log4j.Level lvl = org.apache.logging.log4j.Level.toLevel(level.toString());
+        final org.apache.logging.log4j.Level lvl = level.getVersion2Level();
+        final Message msg = createMessage(message);
         if (logger instanceof ExtendedLogger) {
-            @SuppressWarnings("unchecked")
-            final Message msg = message instanceof Message ? (Message) message
-                : message instanceof Map ? new MapMessage((Map) message) : new ObjectMessage(message);
             ((ExtendedLogger) logger).logMessage(fqcn, lvl, null, msg, t);
         } else {
-            final ObjectRenderer renderer = get(message.getClass());
-            final Message msg = message instanceof Message ? (Message) message
-                : renderer != null ? new RenderedMessage(renderer, message) : new ObjectMessage(message);
             logger.log(lvl, msg, t);
         }
     }
@@ -365,7 +376,7 @@ public class Category implements AppenderAttachable {
         if (appender == null && LogManager.isLog4jCorePresent()) {
             final org.apache.logging.log4j.core.Appender coreAppender = CategoryUtil.getAppenders(logger).get(name);
             if (coreAppender != null) {
-                addAppender(appender = new AppenderWrapper(coreAppender));
+                addAppender(appender = AppenderWrapper.adapt(coreAppender));
             }
         }
         return appender;
@@ -502,7 +513,7 @@ public class Category implements AppenderAttachable {
     }
 
     public boolean isEnabledFor(final Priority level) {
-        return isEnabledFor(org.apache.logging.log4j.Level.toLevel(level.toString()));
+        return isEnabledFor(level.getVersion2Level());
     }
 
     public boolean isErrorEnabled() {
@@ -537,43 +548,25 @@ public class Category implements AppenderAttachable {
 
     public void log(final Priority priority, final Object message) {
         if (isEnabledFor(priority)) {
-            @SuppressWarnings("unchecked")
-            final Message msg = message instanceof Map ? new MapMessage((Map) message) : new ObjectMessage(message);
-            forcedLog(FQCN, priority, msg, null);
+            forcedLog(FQCN, priority, message, null);
         }
     }
 
     public void log(final Priority priority, final Object message, final Throwable t) {
         if (isEnabledFor(priority)) {
-            @SuppressWarnings("unchecked")
-            final Message msg = message instanceof Map ? new MapMessage((Map) message) : new ObjectMessage(message);
-            forcedLog(FQCN, priority, msg, t);
+            forcedLog(FQCN, priority, message, t);
         }
     }
 
     public void log(final String fqcn, final Priority priority, final Object message, final Throwable t) {
         if (isEnabledFor(priority)) {
-            final Message msg = new ObjectMessage(message);
-            forcedLog(fqcn, priority, msg, t);
+            forcedLog(fqcn, priority, message, t);
         }
     }
 
     void maybeLog(final String fqcn, final org.apache.logging.log4j.Level level, final Object message, final Throwable throwable) {
         if (logger.isEnabled(level)) {
-            final Message msg;
-            if (message instanceof String) {
-                msg = new SimpleMessage((String) message);
-            }
-            // SimpleMessage treats String and CharSequence differently, hence this else-if block.
-            else if (message instanceof CharSequence) {
-                msg = new SimpleMessage((CharSequence) message);
-            } else if (message instanceof Map) {
-                @SuppressWarnings("unchecked")
-                final Map<String, ?> map = (Map<String, ?>) message;
-                msg = new MapMessage<>(map);
-            } else {
-                msg = new ObjectMessage(message);
-            }
+            final Message msg = createMessage(message);
             if (logger instanceof ExtendedLogger) {
                 ((ExtendedLogger) logger).logMessage(fqcn, level, null, msg, throwable);
             } else {
@@ -668,17 +661,17 @@ public class Category implements AppenderAttachable {
     }
 
     public void setLevel(final Level level) {
-        setLevel(getLevelStr(level));
+        setLevel(level != null ? level.getVersion2Level() : null);
     }
 
-    private void setLevel(final String levelStr) {
+    private void setLevel(final org.apache.logging.log4j.Level level) {
         if (LogManager.isLog4jCorePresent()) {
-            CategoryUtil.setLevel(logger, org.apache.logging.log4j.Level.toLevel(levelStr));
+            CategoryUtil.setLevel(logger, level);
         }
     }
 
     public void setPriority(final Priority priority) {
-        setLevel(getLevelStr(priority));
+        setLevel(priority != null ? priority.getVersion2Level() : null);
     }
 
     public void setResourceBundle(final ResourceBundle bundle) {

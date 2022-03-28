@@ -18,7 +18,6 @@ package org.apache.logging.log4j.layout.template.json.util;
 
 import org.apache.logging.log4j.core.impl.JdkMapAdapterStringMap;
 import org.apache.logging.log4j.layout.template.json.JacksonFixture;
-import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
@@ -39,6 +38,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 

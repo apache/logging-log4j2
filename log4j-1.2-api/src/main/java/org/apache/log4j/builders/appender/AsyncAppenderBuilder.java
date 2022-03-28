@@ -119,12 +119,12 @@ public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBui
         final String level = getProperty(THRESHOLD_PARAM);
         final int bufferSize = getIntegerProperty(BUFFER_SIZE_PARAM, 1024);
         if (appenderRef == null) {
-            LOGGER.warn("No appender references configured for AsyncAppender {}", name);
+            LOGGER.error("No appender references configured for AsyncAppender {}", name);
             return null;
         }
         final Appender appender = configuration.parseAppender(props, appenderRef);
         if (appender == null) {
-            LOGGER.warn("Cannot locate Appender {}", appenderRef);
+            LOGGER.error("Cannot locate Appender {}", appenderRef);
             return null;
         }
         return createAppender(name, level, new String[]{appenderRef}, blocking, bufferSize, includeLocation, filter,
@@ -134,6 +134,10 @@ public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBui
     private <T extends Log4j1Configuration> Appender createAppender(final String name, final String level,
             final String[] appenderRefs, final boolean blocking, final int bufferSize, final boolean includeLocation,
             final Filter filter, final T configuration) {
+        if (appenderRefs.length == 0) {
+            LOGGER.error("No appender references configured for AsyncAppender {}", name);
+            return null;
+        }
         final org.apache.logging.log4j.Level logLevel = OptionConverter.convertLevel(level,
                 org.apache.logging.log4j.Level.TRACE);
         final AppenderRef[] refs = new AppenderRef[appenderRefs.length];
@@ -142,8 +146,8 @@ public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBui
             refs[index++] = AppenderRef.createAppenderRef(appenderRef, logLevel, null);
         }
         Builder builder = AsyncAppender.newBuilder();
-        builder.setFilter(FilterAdapter.convertFilter(filter));
-        return new AppenderWrapper(builder.setName(name)
+        builder.setFilter(FilterAdapter.adapt(filter));
+        return AppenderWrapper.adapt(builder.setName(name)
                 .setAppenderRefs(refs)
                 .setBlocking(blocking)
                 .setBufferSize(bufferSize)

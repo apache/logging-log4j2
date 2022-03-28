@@ -54,7 +54,7 @@ public class RequiredValidator implements ConstraintValidator<Required> {
     }
 
     private boolean err(final String name) {
-        LOGGER.error(annotation.message() + ": " + name);
+        LOGGER.error(annotation.message(), name);
         return false;
     }
 }

@@ -227,12 +227,12 @@
     <Log4jReleaseKey>B3D8E1BA</Log4jReleaseKey>
     <Log4jSigningUserName>rgoers@apache.org</Log4jSigningUserName>
     <!-- note that any properties you want available in velocity templates must not use periods! -->
-    <slf4jVersion>1.7.35</slf4jVersion>
-    <logbackVersion>1.2.3</logbackVersion>
+    <slf4jVersion>1.7.36</slf4jVersion>
+    <logbackVersion>1.2.11</logbackVersion>
     <jackson1Version>1.9.13</jackson1Version>
-    <jackson2Version>2.13.1</jackson2Version>
+    <jackson2Version>2.13.2</jackson2Version>
     <spring-boot.version>2.5.7</spring-boot.version>
-    <springVersion>5.3.15</springVersion>
+    <springVersion>5.3.17</springVersion>
     <kubernetes-client.version>5.12.1</kubernetes-client.version>
     <flumeVersion>1.9.0</flumeVersion>
     <disruptorVersion>3.4.4</disruptorVersion>
@@ -242,9 +242,9 @@
     <mongodb4.version>4.5.0</mongodb4.version>
     <!-- POM for jackson-dataformat-xml 2.13.1 depends on woodstox-core 6.2.7 -->
     <woodstox.version>6.2.8</woodstox.version>
-    <groovy.version>3.0.9</groovy.version>
+    <groovy.version>3.0.10</groovy.version>
     <compiler.plugin.version>3.9.0</compiler.plugin.version>
-    <pmd.plugin.version>3.10.0</pmd.plugin.version>
+    <pmd.plugin.version>3.16.0</pmd.plugin.version>
     <changes.plugin.version>2.12.1</changes.plugin.version>
     <javadoc.plugin.version>3.3.2</javadoc.plugin.version>
     <!-- surefire.plugin.version 2.18 yields http://jira.codehaus.org/browse/SUREFIRE-1121, which is fixed in 2.18.1 -->
@@ -253,16 +253,16 @@
     <surefire.plugin.version>3.0.0-M5</surefire.plugin.version>
     <failsafe.plugin.version>3.0.0-M5</failsafe.plugin.version>
     <checkstyle.plugin.version>3.1.2</checkstyle.plugin.version>
+    <!-- checkstyle 10.0 requires Java 11 -->
     <checkstyle.tool.version>8.45.1</checkstyle.tool.version>
     <deploy.plugin.version>2.8.2</deploy.plugin.version>
     <rat.plugin.version>0.13</rat.plugin.version>
-    <pdf.plugin.version>1.2</pdf.plugin.version>
+    <pdf.plugin.version>1.5.1</pdf.plugin.version>
     <cobertura.plugin.version>2.7</cobertura.plugin.version>
     <jacoco.plugin.version>0.8.7</jacoco.plugin.version>
     <release.plugin.version>2.5.3</release.plugin.version>
-    <scm.plugin.version>1.9.5</scm.plugin.version>
+    <scm.plugin.version>1.12.2</scm.plugin.version>
     <jxr.plugin.version>3.1.1</jxr.plugin.version>
-    <revapi.plugin.version>0.14.6</revapi.plugin.version>
     <revapi.skip>false</revapi.skip>
     <clirr.plugin.version>2.8</clirr.plugin.version>
     <site.plugin.version>3.11.0</site.plugin.version>
@@ -291,8 +291,8 @@
     <jctoolsVersion>1.2.1</jctoolsVersion>
     <junitVersion>4.13.2</junitVersion>
     <junitJupiterVersion>5.8.2</junitJupiterVersion>
-    <junitPioneerVersion>1.6.1</junitPioneerVersion>
-    <mockitoVersion>4.3.1</mockitoVersion>
+    <junitPioneerVersion>1.6.2</junitPioneerVersion>
+    <mockitoVersion>4.4.0</mockitoVersion>
     <xmlunitVersion>2.9.0</xmlunitVersion>
     <argLine>-Xms256m -Xmx1024m</argLine>
     <javaTargetVersion>1.8</javaTargetVersion>
@@ -350,7 +350,7 @@
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-core</artifactId>
-        <version>3.8.4</version>
+        <version>3.8.5</version>
       </dependency>
       <dependency>
         <groupId>commons-codec</groupId>
@@ -502,6 +502,12 @@
         <groupId>org.osgi</groupId>
         <artifactId>org.osgi.core</artifactId>
         <version>${osgi.api.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.glassfish.hk2</groupId>
+        <artifactId>osgi-resource-locator</artifactId>
+        <version>2.5.0-b42</version>
         <scope>provided</scope>
       </dependency>
       <dependency>
@@ -803,7 +809,7 @@
       <dependency>
         <groupId>org.awaitility</groupId>
         <artifactId>awaitility</artifactId>
-        <version>4.1.1</version>
+        <version>4.2.0</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -1007,7 +1013,7 @@
         <!-- Testing MongoDB -->
         <groupId>de.flapdoodle.embed</groupId>
         <artifactId>de.flapdoodle.embed.mongo</artifactId>
-        <version>3.4.1</version>
+        <version>3.4.3</version>
         <scope>test</scope>
       </dependency>
       <!-- Testing LDAP -->
@@ -1021,7 +1027,7 @@
         <groupId>com.google.guava</groupId>
         <!-- https://javadoc.io/doc/com.google.guava/guava-testlib/latest/com/google/common/testing/TestLogHandler.html used in log4j-to-jul tests -->
         <artifactId>guava-testlib</artifactId>
-        <version>31.0.1-jre</version>
+        <version>31.1-jre</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
@@ -1837,113 +1843,6 @@
       <activation>
         <jdk>[1.8,)</jdk>
       </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.revapi</groupId>
-            <artifactId>revapi-maven-plugin</artifactId>
-            <version>${revapi.plugin.version}</version>
-            <dependencies>
-              <dependency>
-                <groupId>org.revapi</groupId>
-                <artifactId>revapi-java</artifactId>
-                <version>0.26.1</version>
-              </dependency>
-            </dependencies>
-            <executions>
-              <execution>
-                <goals><goal>check</goal></goals>
-                <configuration>
-                  <checkDependencies>false</checkDependencies>
-                  <skip>${revapi.skip}</skip>
-                  <failOnMissingConfigurationFiles>false</failOnMissingConfigurationFiles>
-                  <analysisConfigurationFiles>
-                    <path>revapi.json</path>
-                  </analysisConfigurationFiles>
-                  <analysisConfiguration><![CDATA[
-[  {
-     "extension": "revapi.filter",
-      "configuration": {
-      "elements": {
-        "include": [
-         {
-           "matcher": "java-package",
-           "match": "/org\\.apache\\.logging\\.log4j(\\..*)?/"
-         }
-        ]
-      }
-    }
-  },
-  {
-     "extension": "revapi.java",
-     "configuration": {
-       "missing-classes": {
-         "behavior": "report",
-         "ignoreMissingAnnotations": false
-       },
-       "reportUsesFor": [
-          "java.missing.newClass",
-          "java.class.nonPublicPartOfAPI"
-       ]
-     }
-  },
-  {
-    "extension": "revapi.ignore",
-    "configuration": [
-      {
-  		"code": "java.method.returnTypeTypeParametersChanged",
-  		"old": "method org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder org.apache.logging.log4j.core.appender.OutputStreamAppender::newBuilder()",
-  		"new": "method <B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>> B org.apache.logging.log4j.core.appender.OutputStreamAppender::newBuilder()",
-  		"justification": "The compiler erases types (https://docs.oracle.com/javase/specs/jls/se8/html/jls-4.html#jls-4.6)"
-	  },
-      {
-        "code": "java.generics.elementNowParameterized",
-        "old": "method org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder org.apache.logging.log4j.core.appender.OutputStreamAppender::newBuilder()",
-        "new": "method <B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>> B org.apache.logging.log4j.core.appender.OutputStreamAppender::newBuilder()",
-        "justification": "The compiler erases types (https://docs.oracle.com/javase/specs/jls/se8/html/jls-4.html#jls-4.6)"
-      },
-      {
-        "code": "java.generics.formalTypeParameterAdded",
-        "old": "method org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder org.apache.logging.log4j.core.appender.OutputStreamAppender::newBuilder()",
-        "new": "method <B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>> B org.apache.logging.log4j.core.appender.OutputStreamAppender::newBuilder()",
-        "typeParameter": "B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B extends org.apache.logging.log4j.core.appender.OutputStreamAppender.Builder<B>>",
-        "justification": "The compiler erases types (https://docs.oracle.com/javase/specs/jls/se8/html/jls-4.html#jls-4.6)"
-      }
-    ]
-  }
-]
-              ]]></analysisConfiguration>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-      <reporting>
-        <plugins>
-          <plugin>
-            <groupId>org.revapi</groupId>
-            <artifactId>revapi-maven-plugin</artifactId>
-            <version>${revapi.plugin.version}</version>
-            <configuration>
-              <skip>${revapi.skip}</skip>
-            </configuration>
-            <reportSets>
-              <reportSet>
-                <inherited>false</inherited>
-                <reports>
-                  <report>report-aggregate</report>
-                </reports>
-              </reportSet>
-              <reportSet>
-                <reports>
-                  <report>report</report>
-                </reports>
-              </reportSet>
-            </reportSets>
-          </plugin>
-        </plugins>
-      </reporting>
     </profile>
     <profile>
       <id>java8-doclint-disabled</id>

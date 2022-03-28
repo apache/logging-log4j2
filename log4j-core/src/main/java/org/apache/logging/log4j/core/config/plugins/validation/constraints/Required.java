@@ -38,7 +38,8 @@ import org.apache.logging.log4j.core.config.plugins.validation.validators.Requir
 public @interface Required {
 
     /**
-     * The message to be logged if this constraint is violated. This should normally be overridden.
+     * The message to be logged if this constraint is violated. This should normally
+     * be overridden. It may contain a {} placeholder for the field's name.
      */
-    String message() default "The parameter is null";
+    String message() default "The parameter is null: {}";
 }
