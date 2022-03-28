@@ -27,7 +27,14 @@ import java.util.function.Supplier;
  */
 public final class LazyValue<T> implements Supplier<T> {
 
-    private final Supplier<T> provider;
+    /**
+     * Creates a lazy value using the provided Supplier for initialization.
+     */
+    public static <T> LazyValue<T> from(final Supplier<T> supplier) {
+        return new LazyValue<>(supplier);
+    }
+
+    private final Supplier<T> supplier;
     private volatile T value;
 
     /**
@@ -36,7 +43,7 @@ public final class LazyValue<T> implements Supplier<T> {
      * @param supplier value to lazily initialize
      */
     public LazyValue(final Supplier<T> supplier) {
-        this.provider = supplier;
+        this.supplier = supplier;
     }
 
     @Override
@@ -46,7 +53,7 @@ public final class LazyValue<T> implements Supplier<T> {
             synchronized (this) {
                 value = this.value;
                 if (value == null) {
-                    this.value = value = provider.get();
+                    this.value = value = supplier.get();
                 }
             }
         }
@@ -61,6 +68,6 @@ public final class LazyValue<T> implements Supplier<T> {
      * @return the new lazy value
      */
     public <R> LazyValue<R> map(final Function<? super T, ? extends R> function) {
-        return new LazyValue<>(() -> function.apply(get()));
+        return from(() -> function.apply(get()));
     }
 }
