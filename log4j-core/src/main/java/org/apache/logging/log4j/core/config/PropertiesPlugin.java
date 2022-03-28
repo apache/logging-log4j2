@@ -17,13 +17,14 @@
 package org.apache.logging.log4j.core.config;
 
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.lookup.Interpolator;
+import org.apache.logging.log4j.core.lookup.InterpolatorFactory;
 import org.apache.logging.log4j.core.lookup.PropertiesLookup;
 import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.di.Key;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,6 +57,6 @@ public final class PropertiesPlugin {
                 map.put(prop.getName(), prop.getValue());
             }
         }
-        return new Interpolator(new PropertiesLookup(map), config);
+        return config.getComponent(Key.forClass(InterpolatorFactory.class)).newInterpolator(new PropertiesLookup(map));
     }
 }

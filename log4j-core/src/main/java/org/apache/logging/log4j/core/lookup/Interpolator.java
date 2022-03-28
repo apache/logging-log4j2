@@ -18,20 +18,20 @@ package org.apache.logging.log4j.core.lookup;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationAware;
-import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.plugins.di.Key;
-import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.util.PluginUtil;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LazyValue;
 import org.apache.logging.log4j.util.ReflectionUtil;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * Proxies other {@link StrLookup}s using a keys within ${} markers.
@@ -55,9 +55,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private static final String JNDI_LOOKUP = "org.apache.logging.log4j.jndi.lookup.JndiLookup";
-
-    private final Map<String, StrLookup> strLookupMap = new HashMap<>();
+    private final Map<String, Supplier<StrLookup>> strLookups = new ConcurrentHashMap<>();
 
     private final StrLookup defaultLookup;
 
@@ -73,37 +71,22 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
      * @since 2.1
      */
     public Interpolator(final StrLookup defaultLookup, final List<String> pluginPackages) {
-        this.defaultLookup = defaultLookup == null ? new PropertiesLookup(Map.of()) : defaultLookup;
-        final Map<String, PluginType<?>> plugins =
-                PluginUtil.collectPluginsByCategoryAndPackage(CATEGORY, pluginPackages);
-
-        for (final Map.Entry<String, PluginType<?>> entry : plugins.entrySet()) {
-            try {
-                final Class<? extends StrLookup> clazz = entry.getValue().getPluginClass().asSubclass(StrLookup.class);
-                if (!clazz.getName().equals(JNDI_LOOKUP) || Constants.JNDI_LOOKUP_ENABLED) {
-                    strLookupMap.put(entry.getKey().toLowerCase(), ReflectionUtil.instantiate(clazz));
-                }
-            } catch (final Throwable t) {
-                handleError(entry.getKey(), t);
-            }
-        }
+        this(defaultLookup, PluginUtil.collectPluginsByCategoryAndPackage(CATEGORY, pluginPackages), ReflectionUtil::instantiate);
     }
 
-    public Interpolator(final StrLookup defaultLookup, final Configuration configuration) {
+    public Interpolator(
+            final StrLookup defaultLookup, final Map<String, PluginType<?>> strLookupPlugins,
+            final Function<Class<? extends StrLookup>, StrLookup> pluginLoader) {
         this.defaultLookup = defaultLookup == null ? new PropertiesLookup(Map.of()) : defaultLookup;
-        final PluginManager pluginManager = configuration.getComponent(StrLookup.PLUGIN_MANAGER_KEY);
-        pluginManager.collectPlugins(configuration.getPluginPackages());
-        for (final Map.Entry<String, PluginType<?>> entry : pluginManager.getPlugins().entrySet()) {
+        strLookupPlugins.forEach((key, value) -> {
             try {
-                final Class<? extends StrLookup> strLookupClass = entry.getValue().getPluginClass().asSubclass(StrLookup.class);
-                // TODO: this could use @RequiredProperty on JndiLookup instead
-                if (!strLookupClass.getName().equals(JNDI_LOOKUP) || Constants.JNDI_LOOKUP_ENABLED) {
-                    strLookupMap.put(entry.getKey().toLowerCase(Locale.ROOT), configuration.getComponent(Key.forClass(strLookupClass)));
-                }
+                final Class<? extends StrLookup> strLookupClass = value.getPluginClass().asSubclass(StrLookup.class);
+                final Supplier<StrLookup> strLookupSupplier = LazyValue.from(() -> pluginLoader.apply(strLookupClass));
+                strLookups.put(key.toLowerCase(Locale.ROOT), strLookupSupplier);
             } catch (final Throwable t) {
-                handleError(entry.getKey(), t);
+                handleError(key, t);
             }
-        }
+        });
     }
 
     /**
@@ -125,7 +108,9 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
     }
 
     public Map<String, StrLookup> getStrLookupMap() {
-        return strLookupMap;
+        return strLookups.entrySet()
+                .stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().get()));
     }
 
     private void handleError(final String lookupKey, final Throwable t) {
@@ -182,12 +167,13 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         if (prefixPos >= 0) {
             final String prefix = var.substring(0, prefixPos).toLowerCase(Locale.US);
             final String name = var.substring(prefixPos + 1);
-            final StrLookup lookup = strLookupMap.get(prefix);
-            if (lookup instanceof ConfigurationAware) {
-                ((ConfigurationAware) lookup).setConfiguration(configuration);
-            }
+            final Supplier<StrLookup> lookupSupplier = strLookups.get(prefix);
             String value = null;
-            if (lookup != null) {
+            if (lookupSupplier != null) {
+                final StrLookup lookup = lookupSupplier.get();
+                if (lookup instanceof ConfigurationAware) {
+                    ((ConfigurationAware) lookup).setConfiguration(configuration);
+                }
                 value = event == null ? lookup.lookup(name) : lookup.lookup(event, name);
             }
 
@@ -205,7 +191,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        for (final String name : strLookupMap.keySet()) {
+        for (final String name : strLookups.keySet()) {
             if (sb.length() == 0) {
                 sb.append('{');
             } else {

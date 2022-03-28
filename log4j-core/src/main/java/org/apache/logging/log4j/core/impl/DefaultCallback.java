@@ -23,6 +23,10 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.DefaultConfigurationFactory;
+import org.apache.logging.log4j.core.lookup.Interpolator;
+import org.apache.logging.log4j.core.lookup.InterpolatorFactory;
+import org.apache.logging.log4j.core.lookup.StrLookup;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.time.Clock;
@@ -41,6 +45,8 @@ import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.plugins.PluginException;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.InjectorCallback;
+import org.apache.logging.log4j.plugins.di.Key;
+import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.spi.CopyOnWrite;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
@@ -119,6 +125,14 @@ public class DefaultCallback implements InjectorCallback {
                         () -> loader.getInstance(Constants.LOG4J_LOG_EVENT_FACTORY, LogEventFactory.class,
                                 () -> Constants.ENABLE_THREADLOCALS ? ReusableLogEventFactory.class :
                                         DefaultLogEventFactory.class))
+                .registerBindingIfAbsent(Key.forClass(InterpolatorFactory.class),
+                        () -> defaultLookup -> {
+                            final PluginManager pluginManager = injector.getInstance(StrLookup.PLUGIN_MANAGER_KEY);
+                            pluginManager.collectPlugins();
+                            return new Interpolator(defaultLookup, pluginManager.getPlugins(), injector::getInstance);
+                        })
+                .registerBindingIfAbsent(Key.forClass(StrSubstitutor.class),
+                        () -> new StrSubstitutor(injector.getInstance(InterpolatorFactory.class).newInterpolator(null)))
                 .registerBindingIfAbsent(ConfigurationFactory.KEY, injector.getFactory(DefaultConfigurationFactory.class))
                 .registerBindingIfAbsent(Constants.DEFAULT_STATUS_LEVEL_KEY, () -> {
                     final String statusLevel =

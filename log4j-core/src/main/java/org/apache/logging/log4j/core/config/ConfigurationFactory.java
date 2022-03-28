@@ -20,13 +20,12 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
-import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
-import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
 import org.apache.logging.log4j.core.util.AuthorizationProvider;
 import org.apache.logging.log4j.core.util.BasicAuthorizationProvider;
 import org.apache.logging.log4j.core.util.FileUtils;
+import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -147,7 +146,8 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
         return provider;
     }
 
-    protected final StrSubstitutor substitutor = new ConfigurationStrSubstitutor(new Interpolator());
+    @Inject
+    protected StrSubstitutor substitutor;
 
     protected abstract String[] getSupportedTypes();
 

@@ -35,6 +35,7 @@ import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
 import org.apache.logging.log4j.core.lookup.Interpolator;
+import org.apache.logging.log4j.core.lookup.InterpolatorFactory;
 import org.apache.logging.log4j.core.lookup.PropertiesLookup;
 import org.apache.logging.log4j.core.lookup.RuntimeStrSubstitutor;
 import org.apache.logging.log4j.core.lookup.StrLookup;
@@ -80,6 +81,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * The base Configuration. Many configuration implementations will extend this class.
@@ -133,6 +135,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private ConcurrentMap<String, LoggerConfig> loggerConfigs = new ConcurrentHashMap<>();
     private List<CustomLevelConfig> customLevels = List.of();
     private final ConcurrentMap<String, String> properties = new ConcurrentHashMap<>();
+    private final InterpolatorFactory interpolatorFactory;
     private final StrLookup tempLookup;
     private final StrSubstitutor runtimeStrSubstitutor;
     private final StrSubstitutor configurationStrSubstitutor;
@@ -160,7 +163,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             injector.init();
         }
         componentMap.put(Configuration.CONTEXT_PROPERTIES, properties);
-        tempLookup = new Interpolator(new PropertiesLookup(properties), this);
+        interpolatorFactory = injector.getInstance(InterpolatorFactory.class);
+        tempLookup = interpolatorFactory.newInterpolator(new PropertiesLookup(properties));
         runtimeStrSubstitutor = new RuntimeStrSubstitutor(tempLookup);
         configurationStrSubstitutor = new ConfigurationStrSubstitutor(runtimeStrSubstitutor);
         pluginManager = injector.getInstance(Core.PLUGIN_MANAGER_KEY);
@@ -519,8 +523,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     @Override
-    public <T> T getComponent(final Key<T> key) {
-        return injector.getInstance(key);
+    public <T> Supplier<T> getFactory(final Key<T> key) {
+        return injector.getFactory(key);
     }
 
     @Override
@@ -652,7 +656,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         } else {
             final Map<String, String> map = this.getComponent(CONTEXT_PROPERTIES);
             final StrLookup lookup = map == null ? null : new PropertiesLookup(map);
-            Interpolator interpolator = new Interpolator(lookup, this);
+            Interpolator interpolator = interpolatorFactory.newInterpolator(lookup);
             runtimeStrSubstitutor.setVariableResolver(interpolator);
             configurationStrSubstitutor.setVariableResolver(interpolator);
         }
