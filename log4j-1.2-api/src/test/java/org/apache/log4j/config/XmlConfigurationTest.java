@@ -31,12 +31,14 @@ import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.util.LazyValue;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
@@ -188,8 +190,8 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
 
     @Override
     @Test
-    public void testMultipleFilters() throws Exception {
-        super.testMultipleFilters();
+    public void testMultipleFilters(final @TempDir Path tmpFolder) throws Exception {
+        super.testMultipleFilters(tmpFolder);
     }
 
 }

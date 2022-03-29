@@ -38,9 +38,9 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.ListAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.apache.log4j.bridge.AppenderAdapter.Adapter;
 import org.apache.log4j.bridge.FilterAdapter;
 import org.apache.log4j.bridge.FilterWrapper;
-import org.apache.log4j.bridge.AppenderAdapter.Adapter;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Layout;
@@ -65,13 +65,8 @@ import org.apache.logging.log4j.core.filter.Filterable;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
-import org.junit.Rule;
-import org.junit.rules.TemporaryFolder;
 
 public abstract class AbstractLog4j1ConfigurationTest {
-
-    @Rule
-    public TemporaryFolder tempFolder = TemporaryFolder.builder().assureDeletion().build();
 
     abstract Configuration getConfiguration(String configResourcePrefix) throws URISyntaxException, IOException;
 
@@ -446,9 +441,8 @@ public abstract class AbstractLog4j1ConfigurationTest {
         return count;
     }
 
-    public void testMultipleFilters() throws Exception {
-        final File folder = tempFolder.newFolder();
-        System.setProperty("test.tmpDir", folder.getCanonicalPath());
+    public void testMultipleFilters(final Path folder) throws Exception {
+        System.setProperty("test.tmpDir", folder.toString());
         try (LoggerContext loggerContext = configure("log4j-multipleFilters")) {
             final Configuration configuration = loggerContext.getConfiguration();
             assertNotNull(configuration);
