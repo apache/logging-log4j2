@@ -18,6 +18,7 @@
 package org.apache.logging.log4j.core.appender;
 
 import java.io.Serializable;
+import java.lang.invoke.MethodHandles;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
@@ -36,11 +37,18 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.ValidPort;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
+import org.apache.logging.log4j.core.layout.AbstractStringLayout.Serializer;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
+import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.core.net.MailManager;
+import org.apache.logging.log4j.core.net.MailManager.FactoryData;
+import org.apache.logging.log4j.core.net.MailManagerFactory;
 import org.apache.logging.log4j.core.net.SmtpManager;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.Integers;
+import org.apache.logging.log4j.util.ServiceLoaderUtil;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Send an e-mail when a specific logging event occurs, typically on errors or
@@ -66,12 +74,16 @@ public final class SmtpAppender extends AbstractAppender {
     private static final int DEFAULT_BUFFER_SIZE = 512;
 
     /** The SMTP Manager */
-    private final SmtpManager manager;
+    private final MailManager manager;
 
     private SmtpAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
-            final SmtpManager manager, final boolean ignoreExceptions, final Property[] properties) {
+            final MailManager manager, final boolean ignoreExceptions, final Property[] properties) {
         super(name, filter, layout, ignoreExceptions, properties);
         this.manager = manager;
+    }
+
+    public MailManager getManager() {
+        return manager;
     }
 
     /**
@@ -261,9 +273,25 @@ public final class SmtpAppender extends AbstractAppender {
             if (getFilter() == null) {
                 setFilter(ThresholdFilter.createFilter(null, null, null));
             }
-            final SmtpManager smtpManager = SmtpManager.getSmtpManager(getConfiguration(), to, cc, bcc, from, replyTo,
-                    subject, smtpProtocol, smtpHost, smtpPort, smtpUsername, smtpPassword, smtpDebug,
-                    getFilter().toString(), bufferSize, sslConfiguration);
+            if (Strings.isEmpty(smtpProtocol)) {
+                smtpProtocol = "smtp";
+            }
+            final Serializer subjectSerializer = PatternLayout.newSerializerBuilder()
+                    .setConfiguration(getConfiguration())
+                    .setPattern(subject)
+                    .build();
+            final FactoryData data = new FactoryData(to, cc, bcc, from, replyTo, subject, subjectSerializer,
+                    smtpProtocol, smtpHost, smtpPort, smtpUsername, smtpPassword, smtpDebug, bufferSize,
+                    sslConfiguration, getFilter().toString());
+            final MailManagerFactory factory = ServiceLoaderUtil.loadServices(MailManagerFactory.class, MethodHandles.lookup())
+                    .findAny()
+                    .orElseGet(() -> SmtpManager.FACTORY);
+            final MailManager smtpManager = AbstractManager.getManager(data.getManagerName(), factory, data);
+            if (smtpManager == null) {
+                LOGGER.error("Unabled to instantiate SmtpAppender named {}", getName());
+                return null;
+            }
+
             return new SmtpAppender(getName(), getFilter(), getLayout(), smtpManager, isIgnoreExceptions(), getPropertyArray());
         }
     }
@@ -305,27 +333,15 @@ public final class SmtpAppender extends AbstractAppender {
             LOGGER.error("No name provided for SmtpAppender");
             return null;
         }
-
-        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
-        final int smtpPort = AbstractAppender.parseInt(smtpPortStr, 0);
-        final boolean isSmtpDebug = Boolean.parseBoolean(smtpDebug);
-        final int bufferSize = bufferSizeStr == null ? DEFAULT_BUFFER_SIZE : Integers.parseInt(bufferSizeStr);
-
-        if (layout == null) {
-            layout = HtmlLayout.createDefaultLayout();
-        }
-        if (filter == null) {
-            filter = ThresholdFilter.createFilter(null, null, null);
-        }
-        final Configuration configuration = config != null ? config : new DefaultConfiguration();
-
-        final SmtpManager manager = SmtpManager.getSmtpManager(configuration, to, cc, bcc, from, replyTo, subject, smtpProtocol,
-            smtpHost, smtpPort, smtpUsername, smtpPassword, isSmtpDebug, filter.toString(),  bufferSize, null);
-        if (manager == null) {
-            return null;
-        }
-
-        return new SmtpAppender(name, filter, layout, manager, ignoreExceptions, null);
+        return SmtpAppender.newBuilder()
+                .setIgnoreExceptions(Booleans.parseBoolean(ignore, true))
+                .setSmtpPort(AbstractAppender.parseInt(smtpPortStr, 0))
+                .setSmtpDebug(Boolean.parseBoolean(smtpDebug))
+                .setBufferSize(bufferSizeStr == null ? DEFAULT_BUFFER_SIZE : Integers.parseInt(bufferSizeStr))
+                .setLayout(layout)
+                .setFilter(filter)
+                .setConfiguration(config != null ? config : new DefaultConfiguration())
+                .build();
     }
 
     /**

@@ -15,12 +15,11 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.core.net;
+package org.apache.logging.log4j.smtp;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.SmtpAppender;
@@ -28,20 +27,14 @@ import org.apache.logging.log4j.core.async.RingBufferLogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.MementoMessage;
 import org.apache.logging.log4j.core.impl.MutableLogEvent;
+import org.apache.logging.log4j.core.net.MailManager;
 import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.core.util.DummyNanoClock;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.ReusableSimpleMessage;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 public class SmtpManagerTest {
-
-    @Test
-    public void testCreateManagerName() {
-        String managerName = SmtpManager.createManagerName("to", "cc", null, "from", null, "LOG4J2-3107",
-                "proto", "smtp.log4j.com", 4711, "username", false, "filter");
-        assertEquals("SMTP:to:cc::from::LOG4J2-3107:proto:smtp.log4j.com:4711:username::filter", managerName);
-    }
 
     private void testAdd(LogEvent event) {
         final SmtpAppender appender = SmtpAppender.newBuilder()

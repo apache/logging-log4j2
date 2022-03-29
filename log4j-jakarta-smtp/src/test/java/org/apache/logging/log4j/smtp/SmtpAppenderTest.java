@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.appender;
+package org.apache.logging.log4j.smtp;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -25,10 +25,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Iterator;
 
-import javax.mail.Address;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.internet.InternetAddress;
+import jakarta.mail.Address;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetAddress;
 
 import org.apache.logging.dumbster.smtp.SimpleSmtpServer;
 import org.apache.logging.dumbster.smtp.SmtpMessage;
@@ -37,8 +37,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.categories.Appenders;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.net.MimeMessageBuilder;
-import org.apache.logging.log4j.core.net.SmtpManager;
+import org.apache.logging.log4j.core.appender.SmtpAppender;
 import org.apache.logging.log4j.test.AvailablePortFinder;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -183,6 +182,4 @@ public class SmtpAppenderTest {
         assertFalse(body2.contains("Error with exception"));
         assertTrue(body2.contains("Error message #2"));
     }
-
-    
 }
