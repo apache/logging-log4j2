@@ -26,9 +26,6 @@ import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
@@ -36,13 +33,15 @@ import org.apache.log4j.bridge.AppenderWrapper;
 import org.apache.log4j.bridge.LayoutAdapter;
 import org.apache.log4j.bridge.LayoutWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
+import org.apache.log4j.builders.BooleanHolder;
+import org.apache.log4j.builders.Holder;
 import org.apache.log4j.config.Log4j1Configuration;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.xml.XmlConfiguration;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.SocketAppender;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
 
@@ -82,9 +81,9 @@ public class SocketAppenderBuilder extends AbstractBuilder implements AppenderBu
         final org.apache.logging.log4j.core.Filter actualFilter = buildFilters(level, filter);
         // @formatter:off
         return new AppenderWrapper(SocketAppender.newBuilder()
-            .withHost(host)
-            .withPort(port)
-            .withReconnectDelayMillis(reconnectDelayMillis)
+            .setHost(host)
+            .setPort(port)
+            .setReconnectDelayMillis(reconnectDelayMillis)
             .setName(name)
             .setLayout(actualLayout)
             .setFilter(actualFilter)
@@ -97,13 +96,13 @@ public class SocketAppenderBuilder extends AbstractBuilder implements AppenderBu
     @Override
     public Appender parseAppender(final Element appenderElement, final XmlConfiguration config) {
         final String name = getNameAttribute(appenderElement);
-        final AtomicReference<String> host = new AtomicReference<>("localhost");
-        final AtomicInteger port = new AtomicInteger(DEFAULT_PORT);
-        final AtomicInteger reconnectDelay = new AtomicInteger(DEFAULT_RECONNECTION_DELAY);
-        final AtomicReference<Layout> layout = new AtomicReference<>();
-        final AtomicReference<List<Filter>> filters = new AtomicReference<>(new ArrayList<>());
-        final AtomicReference<String> level = new AtomicReference<>();
-        final AtomicBoolean immediateFlush = new AtomicBoolean(true);
+        final Holder<String> host = new Holder<>("localhost");
+        final Holder<Integer> port = new Holder<>(DEFAULT_PORT);
+        final Holder<Integer> reconnectDelay = new Holder<>(DEFAULT_RECONNECTION_DELAY);
+        final Holder<Layout> layout = new Holder<>();
+        final Holder<List<Filter>> filters = new Holder<>(new ArrayList<>());
+        final Holder<String> level = new Holder<>();
+        final Holder<Boolean> immediateFlush = new BooleanHolder(true);
         forEachElement(appenderElement.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
             case LAYOUT_TAG:
@@ -115,19 +114,19 @@ public class SocketAppenderBuilder extends AbstractBuilder implements AppenderBu
             case PARAM_TAG:
                 switch (getNameAttributeKey(currentElement)) {
                 case HOST_PARAM:
-                    set(HOST_PARAM, currentElement, host);
+                    setString(HOST_PARAM, currentElement, host);
                     break;
                 case PORT_PARAM:
-                    set(PORT_PARAM, currentElement, port);
+                    setInteger(PORT_PARAM, currentElement, port);
                     break;
                 case RECONNECTION_DELAY_PARAM:
-                    set(RECONNECTION_DELAY_PARAM, currentElement, reconnectDelay);
+                    setInteger(RECONNECTION_DELAY_PARAM, currentElement, reconnectDelay);
                     break;
                 case THRESHOLD_PARAM:
-                    set(THRESHOLD_PARAM, currentElement, level);
+                    setString(THRESHOLD_PARAM, currentElement, level);
                     break;
                 case IMMEDIATE_FLUSH_PARAM:
-                    set(IMMEDIATE_FLUSH_PARAM, currentElement, immediateFlush);
+                    setBoolean(IMMEDIATE_FLUSH_PARAM, currentElement, immediateFlush);
                     break;
                 }
                 break;
