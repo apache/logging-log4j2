@@ -303,6 +303,10 @@
     <junitPioneerVersion>1.6.2</junitPioneerVersion>
     <mockitoVersion>4.4.0</mockitoVersion>
     <xmlunitVersion>2.9.0</xmlunitVersion>
+    <javax.activation.version>1.2.0</javax.activation.version>
+    <javax.mail.version>1.6.2</javax.mail.version>
+    <jakarta.activation.version>2.0.1</jakarta.activation.version>
+    <jakarta.mail.version>2.0.1</jakarta.mail.version>
     <argLine>-Xms256m -Xmx1024m</argLine>
     <javaTargetVersion>1.8</javaTargetVersion>
     <module.name />
@@ -698,9 +702,42 @@
       </dependency>
       <!-- Jackson 2 end -->
       <dependency>
+        <groupId>javax.mail</groupId>
+        <artifactId>javax.mail-api</artifactId>
+        <version>${javax.mail.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.activation</groupId>
+        <artifactId>javax.activation-api</artifactId>
+        <version>${javax.activation.version}</version>
+      </dependency>
+      <dependency>
         <groupId>com.sun.mail</groupId>
         <artifactId>javax.mail</artifactId>
-        <version>1.6.2</version>
+        <version>${javax.mail.version}</version>
+        <scope>runtime</scope>
+      </dependency>
+      <dependency>
+        <groupId>jakarta.mail</groupId>
+        <artifactId>jakarta.mail-api</artifactId>
+        <version>${jakarta.mail.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>jakarta.activation</groupId>
+        <artifactId>jakarta.activation-api</artifactId>
+        <version>${jakarta.activation.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.sun.mail</groupId>
+        <artifactId>smtp</artifactId>
+        <version>${jakarta.mail.version}</version>
+        <scope>runtime</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.sun.activation</groupId>
+        <artifactId>jakarta.activation</artifactId>
+        <version>${jakarta.activation.version}</version>
+        <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>org.jboss.spec.javax.jms</groupId>
@@ -1651,6 +1688,7 @@
     <module>log4j-kubernetes</module>
     <module>log4j-spring-boot</module>
     <module>log4j-spring-cloud-config</module>
+    <module>log4j-jakarta-smtp</module>
   </modules>
   <profiles>
     <profile>

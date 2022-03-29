@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.net;
+package org.apache.logging.log4j.smtp;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -22,27 +22,27 @@ import java.io.OutputStream;
 import java.util.Date;
 import java.util.Properties;
 
-import javax.activation.DataSource;
-import javax.mail.Authenticator;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetHeaders;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.mail.internet.MimeUtility;
-import javax.mail.util.ByteArrayDataSource;
 import javax.net.ssl.SSLSocketFactory;
+
+import jakarta.activation.DataSource;
+import jakarta.mail.Authenticator;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.PasswordAuthentication;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
+import jakarta.mail.internet.InternetHeaders;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
+import jakarta.mail.internet.MimeUtility;
+import jakarta.mail.util.ByteArrayDataSource;
 
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.layout.AbstractStringLayout.Serializer;
-import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.core.net.MailManager;
+import org.apache.logging.log4j.core.net.MailManagerFactory;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.util.CyclicBuffer;
 import org.apache.logging.log4j.core.util.NetUtils;
@@ -52,7 +52,6 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * Manager for sending SMTP events.
  */
 public class SmtpManager extends MailManager {
-    public static final SMTPManagerFactory FACTORY = new SMTPManagerFactory();
 
     private final Session session;
 
@@ -85,26 +84,6 @@ public class SmtpManager extends MailManager {
     @Override
     public void add(LogEvent event) {
         buffer.add(event.toImmutable());
-    }
-
-    @Deprecated
-    public static SmtpManager getSmtpManager(
-                                             final Configuration config,
-                                             final String to, final String cc, final String bcc,
-                                             final String from, final String replyTo,
-                                             final String subject, String protocol, final String host,
-                                             final int port, final String username, final String password,
-                                             final boolean isDebug, final String filterName, final int numElements,
-                                             final SslConfiguration sslConfiguration) {
-        final Serializer subjectSerializer = PatternLayout.newSerializerBuilder()
-                .setConfiguration(config)
-                .setPattern(subject)
-                .build();
-        final FactoryData data = new FactoryData(to, cc, bcc, from, replyTo, subject, subjectSerializer, protocol, host,
-                port, username, password, isDebug, numElements, sslConfiguration, filterName);
-
-        return (SmtpManager) getManager(data.getManagerName(), FACTORY, data);
-
     }
 
     @Override
