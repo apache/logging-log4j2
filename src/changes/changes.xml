@@ -76,6 +76,9 @@
       <action issue="LOG4J2-3447" dev="pkarwasz" type="fix" due-to="Pooja Pandey">
         Fixes appender concurrency problems in Log4j 1.x bridge.
       </action>
+      <action issue="LOG4J2-3452" dev="stefanvodita" type="fix" due-to="Stefan Vodita">
+        Fix and test for race condition in FileUtils.mkdir().
+      </action>
       <!-- UPDATES -->
       <action issue="LOG4J2-3428" dev="ggregory" type="fix" due-to="LF-Lin">
         Update 3rd party dependencies for 2.17.3.

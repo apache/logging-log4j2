@@ -17,10 +17,18 @@
 
 package org.apache.logging.log4j.core.util;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -78,4 +86,56 @@ public class FileUtilsTest {
         assertTrue(file.exists(), "file exists");
     }
 
+    @Nested
+    class TestMkdir {
+        final String path = "src/test/resources/test-dir";
+        File testDir;
+
+        @BeforeEach
+        public void createTestFile() throws IOException {
+            testDir = new File(path);
+            deleteTestDir();
+        }
+
+        @AfterEach
+        public void deleteTestDir() throws IOException {
+            org.apache.commons.io.FileUtils.deleteDirectory(testDir);
+        }
+
+        @Test
+        public void testMkdirDoesntExistDontCreate() {
+            assertThrows(IOException.class, () -> FileUtils.mkdir(testDir, false));
+        }
+
+        @Test
+        public void testMkdirFileAlreadyExistsNotDir() throws IOException {
+            Files.createFile(testDir.toPath());
+            assertThrows(IOException.class, () -> FileUtils.mkdir(testDir, true));
+            Files.delete(testDir.toPath());
+        }
+
+        @Test
+        public void testMkdirConcurrent() throws InterruptedException {
+            List<Thread> threads = new ArrayList<>();
+            AtomicBoolean anyThreadThrows = new AtomicBoolean(false);
+            for (int i = 0; i < 10000; i++) {
+                threads.add(new Thread(() -> {
+                    try {
+                        FileUtils.mkdir(testDir, true);
+                    } catch (IOException e) {
+                        anyThreadThrows.set(true);
+                    }
+                }));
+            }
+
+            for (Thread t : threads) {
+                t.start();
+            }
+            for (Thread t : threads) {
+                t.join();
+            }
+
+            assertFalse(anyThreadThrows.get());
+        }
+    }
 }

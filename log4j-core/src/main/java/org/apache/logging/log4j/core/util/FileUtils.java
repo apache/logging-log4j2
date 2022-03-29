@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -112,16 +113,19 @@ public final class FileUtils {
      */
     public static void mkdir(final File dir, final boolean createDirectoryIfNotExisting) throws IOException {
         // commons io FileUtils.forceMkdir would be useful here, we just want to omit this dependency
-        if (!dir.exists()) {
-            if (!createDirectoryIfNotExisting) {
-                throw new IOException("The directory " + dir.getAbsolutePath() + " does not exist.");
-            }
-            if (!dir.mkdirs()) {
-                throw new IOException("Could not create directory " + dir.getAbsolutePath());
-            }
+
+        if (!dir.exists() && !createDirectoryIfNotExisting) {
+            throw new IOException("The directory " + dir.getAbsolutePath() + " does not exist.");
         }
-        if (!dir.isDirectory()) {
-            throw new IOException("File " + dir + " exists and is not a directory. Unable to create directory.");
+
+        try {
+            Files.createDirectories(dir.toPath());
+        } catch (FileAlreadyExistsException e) {
+            if (!dir.isDirectory()) {
+                throw new IOException("File " + dir + " exists and is not a directory. Unable to create directory.");
+            }
+        } catch (Exception e) {
+            throw new IOException("Could not create directory " + dir.getAbsolutePath());
         }
     }
     
