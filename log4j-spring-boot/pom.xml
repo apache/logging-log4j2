@@ -135,7 +135,7 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Export-Package>org.apache.logging.log4j.spring.cloud.config.controller</Export-Package>
+            <Export-Package>*</Export-Package>
           </instructions>
         </configuration>
       </plugin>

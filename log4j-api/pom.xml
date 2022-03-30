@@ -21,7 +21,6 @@
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
     <version>3.0.0-SNAPSHOT</version>
-    <relativePath>../</relativePath>
   </parent>
   <artifactId>log4j-api</artifactId>
   <packaging>jar</packaging>
@@ -109,7 +108,7 @@
               <showWarnings>true</showWarnings>
               <verbose>false</verbose>
               <encoding>UTF-8</encoding>
-              <fork>true</fork>
+              <fork>false</fork>
               <meminitial>256</meminitial>
               <maxmem>1024</maxmem>
               <compilerArgs>
