@@ -23,10 +23,7 @@ import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.plugins.Inject;
-import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.di.Injector;
-import org.apache.logging.log4j.plugins.di.Key;
-import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.util.LazyValue;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -314,9 +311,8 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
                         })
                         .stream();
 
-        final PluginManager manager = injector.getInstance(new @Named(CATEGORY) Key<>() {});
-        manager.collectPlugins();
-        final Stream<? extends ConfigurationFactory> pluginConfigurationFactoryStream = manager.getPlugins()
+        final Stream<? extends ConfigurationFactory> pluginConfigurationFactoryStream = injector.getInstance(PLUGIN_MANAGER_KEY)
+                .getPlugins()
                 .values()
                 .stream()
                 .flatMap(type -> {

@@ -17,7 +17,10 @@
 
 package org.apache.logging.log4j.plugins.convert;
 
+import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.di.Key;
+import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -34,6 +37,8 @@ public interface TypeConverter<T> {
      * The {@link Plugin#category() Plugin Category} to use for {@link TypeConverter} plugins.
      */
     String CATEGORY = "TypeConverter";
+
+    Key<PluginManager> PLUGIN_MANAGER_KEY = new @Named(CATEGORY) Key<>() {};
 
     /**
      * Converts a String to a given type.

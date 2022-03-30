@@ -167,7 +167,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         tempLookup = interpolatorFactory.newInterpolator(new PropertiesLookup(properties));
         runtimeStrSubstitutor = new RuntimeStrSubstitutor(tempLookup);
         configurationStrSubstitutor = new ConfigurationStrSubstitutor(runtimeStrSubstitutor);
-        pluginManager = injector.getInstance(Core.PLUGIN_MANAGER_KEY);
         configurationScheduler = injector.getInstance(ConfigurationScheduler.class);
         watchManager = injector.getInstance(WatchManager.class);
         setState(State.INITIALIZING);
@@ -241,9 +240,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         runtimeStrSubstitutor.setConfiguration(this);
         configurationStrSubstitutor.setConfiguration(this);
         initializeScriptManager();
-        pluginManager.collectPlugins(pluginPackages);
+        injector.registerBindingIfAbsent(Keys.PLUGIN_PACKAGES_KEY, this::getPluginPackages);
+        pluginManager = injector.getInstance(Core.PLUGIN_MANAGER_KEY);
         final PluginManager levelPlugins = injector.getInstance(new @Named(Level.CATEGORY) Key<>() {});
-        levelPlugins.collectPlugins(pluginPackages);
         final Map<String, PluginType<?>> plugins = levelPlugins.getPlugins();
         if (plugins != null) {
             for (final PluginType<?> type : plugins.values()) {
@@ -304,12 +303,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         if (configSource.getLastModified() > 0) {
             final Source cfgSource = new Source(configSource);
             final Key<WatcherFactory> key = Key.forClass(WatcherFactory.class);
-            injector.registerBindingIfAbsent(key, new LazyValue<>(() -> {
-                final PluginManager pluginManager = injector.getInstance(Watcher.PLUGIN_MANAGER_KEY);
-                pluginManager.collectPlugins(pluginPackages);
-                final Map<String, PluginType<?>> watcherPlugins = pluginManager.getPlugins();
-                return new WatcherFactory(watcherPlugins);
-            }));
+            injector.registerBindingIfAbsent(key, LazyValue.from(() ->
+                    new WatcherFactory(injector.getInstance(Watcher.PLUGIN_MANAGER_KEY).getPlugins())));
             final Watcher watcher = injector.getInstance(key)
                     .newWatcher(cfgSource, this, reconfigurable, listeners, configSource.getLastModified());
             if (watcher != null) {

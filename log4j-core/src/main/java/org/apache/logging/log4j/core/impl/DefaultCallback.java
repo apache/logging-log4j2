@@ -46,7 +46,6 @@ import org.apache.logging.log4j.plugins.PluginException;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.InjectorCallback;
 import org.apache.logging.log4j.plugins.di.Key;
-import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.spi.CopyOnWrite;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
@@ -126,11 +125,8 @@ public class DefaultCallback implements InjectorCallback {
                                 () -> Constants.ENABLE_THREADLOCALS ? ReusableLogEventFactory.class :
                                         DefaultLogEventFactory.class))
                 .registerBindingIfAbsent(Key.forClass(InterpolatorFactory.class),
-                        () -> defaultLookup -> {
-                            final PluginManager pluginManager = injector.getInstance(StrLookup.PLUGIN_MANAGER_KEY);
-                            pluginManager.collectPlugins();
-                            return new Interpolator(defaultLookup, pluginManager.getPlugins(), injector::getInstance);
-                        })
+                        () -> defaultLookup -> new Interpolator(defaultLookup,
+                                injector.getInstance(StrLookup.PLUGIN_MANAGER_KEY).getPlugins(), injector::getInstance))
                 .registerBindingIfAbsent(Key.forClass(StrSubstitutor.class),
                         () -> new StrSubstitutor(injector.getInstance(InterpolatorFactory.class).newInterpolator(null)))
                 .registerBindingIfAbsent(ConfigurationFactory.KEY, injector.getFactory(DefaultConfigurationFactory.class))

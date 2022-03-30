@@ -39,7 +39,6 @@ import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.core.util.SecretKeyProvider;
 import org.apache.logging.log4j.plugins.di.Injector;
-import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.util.Strings;
 
@@ -433,9 +432,9 @@ public class FlumePersistentManager extends FlumeAvroManager {
                     }
                 }
                 if (key != null) {
-                    final PluginManager pluginManager = data.injector.getInstance(SecretKeyProvider.PLUGIN_MANAGER_KEY);
-                    pluginManager.collectPlugins();
-                    final Map<String, PluginType<?>> plugins = pluginManager.getPlugins();
+                    final Injector injector = data.injector;
+                    final Map<String, PluginType<?>> plugins =
+                            injector.getInstance(SecretKeyProvider.PLUGIN_MANAGER_KEY).getPlugins();
                     if (plugins != null) {
                         boolean found = false;
                         for (final Map.Entry<String, PluginType<?>> entry : plugins.entrySet()) {
@@ -443,7 +442,8 @@ public class FlumePersistentManager extends FlumeAvroManager {
                                 found = true;
                                 final Class<?> cl = entry.getValue().getPluginClass();
                                 try {
-                                    final SecretKeyProvider provider = data.injector.getInstance(cl.asSubclass(SecretKeyProvider.class));
+                                    final SecretKeyProvider provider =
+                                            injector.getInstance(cl.asSubclass(SecretKeyProvider.class));
                                     secretKey = provider.getSecretKey();
                                     LOGGER.debug("Persisting events using SecretKeyProvider {}", cl.getName());
                                 } catch (final Exception ex) {

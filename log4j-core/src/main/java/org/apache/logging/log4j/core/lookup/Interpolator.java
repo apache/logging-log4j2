@@ -19,11 +19,12 @@ package org.apache.logging.log4j.core.lookup;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.ConfigurationAware;
+import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.di.Keys;
 import org.apache.logging.log4j.plugins.util.PluginType;
-import org.apache.logging.log4j.plugins.util.PluginUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LazyValue;
-import org.apache.logging.log4j.util.ReflectionUtil;
 
 import java.util.List;
 import java.util.Locale;
@@ -55,7 +56,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private final Map<String, Supplier<StrLookup>> strLookups = new ConcurrentHashMap<>();
+    private final Map<String, Supplier<? extends StrLookup>> strLookups = new ConcurrentHashMap<>();
 
     private final StrLookup defaultLookup;
 
@@ -71,7 +72,19 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
      * @since 2.1
      */
     public Interpolator(final StrLookup defaultLookup, final List<String> pluginPackages) {
-        this(defaultLookup, PluginUtil.collectPluginsByCategoryAndPackage(CATEGORY, pluginPackages), ReflectionUtil::instantiate);
+        this.defaultLookup = defaultLookup == null ? new PropertiesLookup(Map.of()) : defaultLookup;
+        final Injector injector = DI.createInjector();
+        injector.registerBinding(Keys.PLUGIN_PACKAGES_KEY, () -> pluginPackages);
+        injector.getInstance(PLUGIN_MANAGER_KEY)
+                .getPlugins()
+                .forEach((key, value) -> {
+                    try {
+                        strLookups.put(key.toLowerCase(Locale.ROOT),
+                                injector.getFactory(value.getPluginClass().asSubclass(StrLookup.class)));
+                    } catch (final Throwable t) {
+                        handleError(key, t);
+                    }
+                });
     }
 
     public Interpolator(
@@ -81,8 +94,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         strLookupPlugins.forEach((key, value) -> {
             try {
                 final Class<? extends StrLookup> strLookupClass = value.getPluginClass().asSubclass(StrLookup.class);
-                final Supplier<StrLookup> strLookupSupplier = LazyValue.from(() -> pluginLoader.apply(strLookupClass));
-                strLookups.put(key.toLowerCase(Locale.ROOT), strLookupSupplier);
+                strLookups.put(key.toLowerCase(Locale.ROOT), LazyValue.from(() -> pluginLoader.apply(strLookupClass)));
             } catch (final Throwable t) {
                 handleError(key, t);
             }
@@ -167,7 +179,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         if (prefixPos >= 0) {
             final String prefix = var.substring(0, prefixPos).toLowerCase(Locale.US);
             final String name = var.substring(prefixPos + 1);
-            final Supplier<StrLookup> lookupSupplier = strLookups.get(prefix);
+            final Supplier<? extends StrLookup> lookupSupplier = strLookups.get(prefix);
             String value = null;
             if (lookupSupplier != null) {
                 final StrLookup lookup = lookupSupplier.get();

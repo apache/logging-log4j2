@@ -250,7 +250,12 @@ class DefaultInjector implements Injector {
         final Class<T> rawType = key.getRawType();
         final Scope scope = getScopeForType(rawType);
         if (rawType == PluginManager.class && key.getQualifierType() == Named.class) {
-            final Supplier<T> factory = () -> TypeUtil.cast(new PluginManager(key.getName()));
+            final Supplier<T> factory = () -> {
+                final var manager = new PluginManager(key.getName());
+                final Binding<List<String>> pluginPackagesBinding = bindingMap.get(Keys.PLUGIN_PACKAGES_KEY, List.of());
+                manager.collectPlugins(pluginPackagesBinding != null ? pluginPackagesBinding.getSupplier().get() : List.of());
+                return TypeUtil.cast(manager);
+            };
             bindingMap.put(key, scope.get(key, factory));
             return bindingMap.get(key, aliases).getSupplier();
         }
@@ -293,8 +298,7 @@ class DefaultInjector implements Injector {
     }
 
     private void initializeTypeConverters() {
-        final PluginManager manager = getInstance(new @Named(TypeConverter.CATEGORY) Key<>() {});
-        manager.collectPlugins();
+        final PluginManager manager = getInstance(TypeConverter.PLUGIN_MANAGER_KEY);
         for (final PluginType<?> knownType : manager.getPlugins().values()) {
             final Class<?> pluginClass = knownType.getPluginClass();
             final Type type = getTypeConverterSupportedType(pluginClass);
