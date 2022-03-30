@@ -16,12 +16,14 @@
  */
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
+import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.di.Keys;
-import org.apache.logging.log4j.plugins.test.validation.HostAndPort;
+import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
-import org.apache.logging.log4j.plugins.util.PluginUtil;
 import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,13 +35,13 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 @StatusLoggerLevel("OFF")
 public class ValidPortValidatorTest {
-    private PluginType<HostAndPort> plugin;
+    private final Injector injector = DI.createInjector().registerBinding(Keys.SUBSTITUTOR_KEY, Function::identity);
     private Node node;
 
-    @SuppressWarnings("unchecked")
     @BeforeEach
     public void setUp() throws Exception {
-        plugin = (PluginType<HostAndPort>) PluginUtil.collectPluginsByCategory("Test").get("hostandport");
+        final PluginManager pluginManager = injector.getInstance(new @Named("Test") Key<>() {});
+        PluginType<?> plugin = pluginManager.getPluginType("HostAndPort");
         assertNotNull(plugin, "Rebuild this module to ensure annotation processing has been done.");
         node = new Node(null, "HostAndPort", plugin);
         node.getAttributes().put("host", "localhost");
@@ -48,25 +50,19 @@ public class ValidPortValidatorTest {
     @Test
     public void testNegativePort() throws Exception {
         node.getAttributes().put("port", "-1");
-        assertNull(buildPlugin());
+        assertNull(injector.configure(node));
     }
 
     @Test
     public void testValidPort() throws Exception {
         node.getAttributes().put("port", "10");
-        assertNotNull(buildPlugin());
+        assertNotNull(injector.configure(node));
     }
 
     @Test
     public void testInvalidPort() throws Exception {
         node.getAttributes().put("port", "1234567890");
-        assertNull(buildPlugin());
-    }
-
-    private HostAndPort buildPlugin() {
-        return DI.createInjector()
-                .registerBinding(Keys.SUBSTITUTOR_KEY, Function::identity)
-                .configure(node);
+        assertNull(injector.configure(node));
     }
 
 }

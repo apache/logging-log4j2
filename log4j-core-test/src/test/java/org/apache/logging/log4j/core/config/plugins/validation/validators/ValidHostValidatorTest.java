@@ -16,12 +16,15 @@
  */
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
+import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.di.Keys;
 import org.apache.logging.log4j.plugins.test.validation.HostAndPort;
+import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
-import org.apache.logging.log4j.plugins.util.PluginUtil;
 import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,27 +36,27 @@ import static org.junit.jupiter.api.Assertions.*;
 @StatusLoggerLevel("OFF")
 public class ValidHostValidatorTest {
 
-    private PluginType<HostAndPort> plugin;
+    private final Injector injector = DI.createInjector().registerBinding(Keys.SUBSTITUTOR_KEY, Function::identity);
     private Node node;
 
-    @SuppressWarnings("unchecked")
     @BeforeEach
     public void setUp() throws Exception {
-        plugin = (PluginType<HostAndPort>) PluginUtil.collectPluginsByCategory("Test").get("hostandport");
+        final PluginManager pluginManager = injector.getInstance(new @Named("Test") Key<>() {});
+        PluginType<?> plugin = pluginManager.getPluginType("HostAndPort");
         assertNotNull(plugin, "Rebuild this module to ensure annotation processing has been done.");
         node = new Node(null, "HostAndPort", plugin);
     }
 
     @Test
     public void testNullHost() throws Exception {
-        assertNull(buildPlugin());
+        assertNull(injector.configure(node));
     }
 
     @Test
     public void testInvalidIpAddress() throws Exception {
         node.getAttributes().put("host", "256.256.256.256");
         node.getAttributes().put("port", "1");
-        final HostAndPort plugin = buildPlugin();
+        final HostAndPort plugin = injector.configure(node);
         assertNull(plugin, "Expected null, but got: " + plugin);
     }
 
@@ -61,14 +64,9 @@ public class ValidHostValidatorTest {
     public void testLocalhost() throws Exception {
         node.getAttributes().put("host", "localhost");
         node.getAttributes().put("port", "1");
-        final HostAndPort hostAndPort = buildPlugin();
+        final HostAndPort hostAndPort = injector.configure(node);
         assertNotNull(hostAndPort);
         assertTrue(hostAndPort.isValid());
     }
 
-    private HostAndPort buildPlugin() {
-        return DI.createInjector()
-                .registerBinding(Keys.SUBSTITUTOR_KEY, Function::identity)
-                .configure(node);
-    }
 }

@@ -16,12 +16,15 @@
  */
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
+import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.di.Keys;
 import org.apache.logging.log4j.plugins.test.validation.ValidatingPlugin;
+import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
-import org.apache.logging.log4j.plugins.util.PluginUtil;
 import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,30 +36,27 @@ import static org.junit.jupiter.api.Assertions.*;
 @StatusLoggerLevel("OFF")
 public class RequiredValidatorTest {
 
+    private final Injector injector = DI.createInjector().registerBinding(Keys.SUBSTITUTOR_KEY, Function::identity);
     private Node node;
 
-    @SuppressWarnings("unchecked")
     @BeforeEach
     public void setUp() throws Exception {
-        PluginType<ValidatingPlugin> plugin = (PluginType<ValidatingPlugin>) PluginUtil.collectPluginsByCategory("Test").get("validator");
-        assertNotNull(plugin, "Rebuild this module to make sure annotation processing kicks in.");
-        node = new Node(null, "Validator", plugin);
+        final PluginManager pluginManager = injector.getInstance(new @Named("Test") Key<>() {});
+        final PluginType<?> pluginType = pluginManager.getPluginType("Validator");
+        assertNotNull(pluginType, "Rebuild this module to make sure annotation processing kicks in.");
+        node = new Node(null, "Validator", pluginType);
     }
 
     @Test
     public void testNullDefaultValue() throws Exception {
-        final ValidatingPlugin validatingPlugin = DI.createInjector()
-                .registerBinding(Keys.SUBSTITUTOR_KEY, Function::identity)
-                .configure(node);
+        final ValidatingPlugin validatingPlugin = injector.configure(node);
         assertNull(validatingPlugin);
     }
 
     @Test
     public void testNonNullValue() throws Exception {
         node.getAttributes().put("name", "foo");
-        final ValidatingPlugin validatingPlugin = DI.createInjector()
-                .registerBinding(Keys.SUBSTITUTOR_KEY, Function::identity)
-                .configure(node);
+        final ValidatingPlugin validatingPlugin = injector.configure(node);
         assertEquals("foo", validatingPlugin.getName());
     }
 }
