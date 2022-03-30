@@ -21,6 +21,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
@@ -88,16 +89,10 @@ public class FileUtilsTest {
 
     @Nested
     class TestMkdir {
-        final String path = "src/test/resources/test-dir";
+        @TempDir
         File testDir;
 
         @BeforeEach
-        public void createTestFile() throws IOException {
-            testDir = new File(path);
-            deleteTestDir();
-        }
-
-        @AfterEach
         public void deleteTestDir() throws IOException {
             org.apache.commons.io.FileUtils.deleteDirectory(testDir);
         }
