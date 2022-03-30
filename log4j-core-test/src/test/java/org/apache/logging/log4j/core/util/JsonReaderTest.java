@@ -18,6 +18,8 @@ package org.apache.logging.log4j.core.util;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -376,9 +378,42 @@ class JsonReaderTest {
                                 }})));
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "/*comment*/{\"foo\":\"bar\"}",
+            "{/*comment*/\"foo\":\"bar\"}",
+            "{\"foo\"/*comment*/:\"bar\"}",
+            "{\"foo\":/*comment*/\"bar\"}",
+            "{\"foo\":\"bar\"/*comment*/}",
+            "{\"foo\":\"bar\"}/*comment*/",
+            "/*\nmulti\nline\ncomment\n*/{\"foo\":\"bar\"}/*comment*/",
+            "{\"foo\"/*comment*/:/*comment*/\"bar\"}",
+            "{\"foo\"/*:*/:/*\"*/\"bar\"}",
+            "{\"foo\"/*\nanother comment*/:\"bar\"}",
+            "{\"foo\":\"bar\"/*\n}{}*/}",
+    })
+    void test_comments(final String json) {
+        test(json, Map.of("foo", "bar"));
+    }
+
     @Test
-    void test_comments() {
-        test("/*comment1*/{\"foo\": /* comment two */\"bar\"}", Map.of("foo", "bar"));
+    void test_unclosed_comments_error() {
+        final String json = "{\"foo\": /*";
+        Assertions
+                .assertThatThrownBy(() -> JsonReader.read(json))
+                .as("json=%s", json)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("premature end of input");
+    }
+
+    @Test
+    void test_unopened_comments_error() {
+        final String json = "{\"foo\": */";
+        Assertions
+                .assertThatThrownBy(() -> JsonReader.read(json))
+                .as("json=%s", json)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("invalid character at index 8: *");
     }
 
     private void test(final String json, final Object expected) {
