@@ -30,6 +30,7 @@ import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.spi.StandardLevel;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Converts a Log4j 2 LogEvent into the components needed by a Log4j 1.x LoggingEvent.
@@ -164,9 +165,8 @@ public class LogEventAdapter extends LoggingEvent {
     public Object getMDC(String key) {
         if (event.getContextData() != null) {
             return event.getContextData().getValue(key);
-        } else {
-            return null;
         }
+        return null;
     }
 
     /**
@@ -205,12 +205,12 @@ public class LogEventAdapter extends LoggingEvent {
     }
 
     /**
-     * Return this event's throwable's string[] representation.
+     * Return this event's throwable's string[] representaion.
      */
     @Override
     public String[] getThrowableStrRep() {
         if (event.getThrown() != null) {
-            return Throwables.toStringList(event.getThrown()).toArray(new String[0]);
+            return Throwables.toStringList(event.getThrown()).toArray(Strings.EMPTY_ARRAY);
         }
         return null;
     }

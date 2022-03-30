@@ -25,7 +25,6 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.TreeMap;
 
-import org.apache.log4j.LogManager;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter.Result;
@@ -38,12 +37,10 @@ import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder
 import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
-import org.apache.logging.log4j.core.config.builder.api.FilterComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.LoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
-import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
@@ -104,7 +101,7 @@ public class Log4j1ConfigurationParser {
             builder.setConfigurationName("Log4j1");
             // DEBUG
             final String debugValue = getLog4jValue("debug");
-            if (Boolean.valueOf(debugValue)) {
+            if (Boolean.parseBoolean(debugValue)) {
                 builder.setStatusLevel(Level.DEBUG);
             }
             // global threshold

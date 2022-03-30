@@ -55,14 +55,14 @@ public class OptionConverter {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private static final CharMap[] charMap = new CharMap[] {
-            new CharMap('n', '\n'),
-            new CharMap('r', '\r'),
-            new CharMap('t', '\t'),
-            new CharMap('f', '\f'),
-            new CharMap('\b', '\b'),
-            new CharMap('\"', '\"'),
-            new CharMap('\'', '\''),
-            new CharMap('\\', '\\')
+        new CharMap('n', '\n'),
+        new CharMap('r', '\r'),
+        new CharMap('t', '\t'),
+        new CharMap('f', '\f'),
+        new CharMap('\b', '\b'),
+        new CharMap('\"', '\"'),
+        new CharMap('\'', '\''),
+        new CharMap('\\', '\\')
     };
 
     public static String[] concatanateArrays(final String[] l, final String[] r) {

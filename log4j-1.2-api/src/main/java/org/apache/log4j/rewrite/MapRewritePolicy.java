@@ -44,11 +44,13 @@ import org.apache.logging.log4j.util.SortedArrayStringMap;
  * <p>
  * The combination of the RewriteAppender and this policy
  * performs the same actions as the MapFilter from log4j 1.3.
+ * </p>
  */
 public class MapRewritePolicy implements RewritePolicy {
     /**
      * {@inheritDoc}
      */
+    @Override
     public LoggingEvent rewrite(final LoggingEvent source) {
         Object msg = source.getMessage();
         if (msg instanceof MapMessage || msg instanceof Map) {
@@ -105,9 +107,8 @@ public class MapRewritePolicy implements RewritePolicy {
                         .build();
             }
             return new LogEventAdapter(event);
-        } else {
-            return source;
         }
+        return source;
 
     }
 

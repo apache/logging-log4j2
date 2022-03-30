@@ -26,13 +26,14 @@ import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.bridge.AppenderWrapper;
 import org.apache.log4j.bridge.FilterAdapter;
 import org.apache.log4j.builders.AbstractBuilder;
-import org.apache.log4j.builders.BooleanHolder;
-import org.apache.log4j.builders.Holder;
 import org.apache.log4j.config.Log4j1Configuration;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.helpers.OptionConverter;
@@ -66,14 +67,14 @@ public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBui
 
     @Override
     public Appender parseAppender(final Element appenderElement, final XmlConfiguration config) {
-        String name = getNameAttribute(appenderElement);
-        Holder<List<String>> appenderRefs = new Holder<>(new ArrayList<>());
-        Holder<Boolean> blocking = new BooleanHolder();
-        Holder<Boolean> includeLocation = new BooleanHolder();
-        Holder<String> level = new Holder<>("trace");
-        Holder<Integer> bufferSize = new Holder<>(1024);
-        Holder<Filter> filter = new Holder<>();
-        forEachElement(appenderElement.getChildNodes(), (currentElement) -> {
+        final String name = getNameAttribute(appenderElement);
+        final AtomicReference<List<String>> appenderRefs = new AtomicReference<>(new ArrayList<>());
+        final AtomicBoolean blocking = new AtomicBoolean();
+        final AtomicBoolean includeLocation = new AtomicBoolean();
+        final AtomicReference<String> level = new AtomicReference<>("trace");
+        final AtomicInteger bufferSize = new AtomicInteger(1024);
+        final AtomicReference<Filter> filter = new AtomicReference<>();
+        forEachElement(appenderElement.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
                 case APPENDER_REF_TAG:
                     final Appender appender = config.findAppenderByReference(currentElement);
@@ -87,16 +88,16 @@ public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBui
                 case PARAM_TAG: {
                     switch (getNameAttributeKey(currentElement)) {
                         case BUFFER_SIZE_PARAM:
-                            setInteger(BUFFER_SIZE_PARAM, currentElement, bufferSize);
+                            set(BUFFER_SIZE_PARAM, currentElement, bufferSize);
                             break;
                         case BLOCKING_PARAM:
-                            setBoolean(BLOCKING_PARAM, currentElement, blocking);
+                            set(BLOCKING_PARAM, currentElement, blocking);
                             break;
                         case INCLUDE_LOCATION_PARAM:
-                            setBoolean(INCLUDE_LOCATION_PARAM, currentElement, includeLocation);
+                            set(INCLUDE_LOCATION_PARAM, currentElement, includeLocation);
                             break;
                         case THRESHOLD_PARAM:
-                            setString(THRESHOLD_PARAM, currentElement, level);
+                            set(THRESHOLD_PARAM, currentElement, level);
                             break;
                     }
                     break;

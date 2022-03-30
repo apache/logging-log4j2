@@ -22,6 +22,9 @@ import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.log4j.bridge.FilterAdapter;
 import org.apache.log4j.bridge.FilterWrapper;
@@ -137,7 +140,7 @@ public abstract class AbstractBuilder<T> implements Builder<T> {
         String value = properties.getProperty(prefix + toJavaKey(key));
         value = value != null ? value : properties.getProperty(prefix + toBeanKey(key), defaultValue);
         value = value != null ? substVars(value) : defaultValue;
-        return value != null ? value : defaultValue;
+        return value != null ? value.trim() : defaultValue;
     }
 
     protected String getValueAttribute(final Element element) {
@@ -146,7 +149,7 @@ public abstract class AbstractBuilder<T> implements Builder<T> {
 
     protected String getValueAttribute(final Element element, final String defaultValue) {
         final String attribute = element.getAttribute(VALUE_ATTR);
-        return substVars(attribute != null ? attribute : defaultValue);
+        return substVars(attribute != null ? attribute.trim() : defaultValue);
     }
 
     protected String substVars(final String value) {
@@ -170,7 +173,7 @@ public abstract class AbstractBuilder<T> implements Builder<T> {
         return new String(chars);
     }
 
-    protected void setBoolean(final String name, final Element element, Holder<Boolean> ref) {
+    protected void set(final String name, final Element element, AtomicBoolean ref) {
         final String value = getValueAttribute(element);
         if (value == null) {
             LOGGER.warn("No value for {} parameter, using default {}", name, ref);
@@ -179,7 +182,7 @@ public abstract class AbstractBuilder<T> implements Builder<T> {
         }
     }
 
-    protected void setInteger(final String name, final Element element, Holder<Integer> ref) {
+    protected void set(final String name, final Element element, AtomicInteger ref) {
         final String value = getValueAttribute(element);
         if (value == null) {
             LOGGER.warn("No value for {} parameter, using default {}", name, ref);
@@ -192,7 +195,7 @@ public abstract class AbstractBuilder<T> implements Builder<T> {
         }
     }
 
-    protected void setString(final String name, final Element element, Holder<String> ref) {
+    protected void set(final String name, final Element element, AtomicReference<String> ref) {
         final String value = getValueAttribute(element);
         if (value == null) {
             LOGGER.warn("No value for {} parameter, using default {}", name, ref);

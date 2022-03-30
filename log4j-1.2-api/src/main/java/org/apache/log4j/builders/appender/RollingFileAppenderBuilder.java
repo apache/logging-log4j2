@@ -16,14 +16,24 @@
  */
 package org.apache.log4j.builders.appender;
 
+import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
+import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.LAYOUT_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
+
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.AppenderWrapper;
 import org.apache.log4j.bridge.LayoutAdapter;
 import org.apache.log4j.bridge.LayoutWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
-import org.apache.log4j.builders.BooleanHolder;
-import org.apache.log4j.builders.Holder;
 import org.apache.log4j.config.Log4j1Configuration;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.spi.Filter;
@@ -41,12 +51,6 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
 
-import java.util.Properties;
-
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
-import static org.apache.log4j.xml.XmlConfiguration.*;
-
 /**
  * Build a File Appender
  */
@@ -61,24 +65,24 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
     public RollingFileAppenderBuilder() {
     }
 
-    public RollingFileAppenderBuilder(String prefix, Properties props) {
-        super(prefix, props);
+    public RollingFileAppenderBuilder(final String prefix, final Properties properties) {
+        super(prefix, properties);
     }
 
     @Override
-    public Appender parseAppender(Element appenderElement, XmlConfiguration config) {
-        String name = getNameAttribute(appenderElement);
-        Holder<Layout> layout = new Holder<>();
-        Holder<Filter> filter = new Holder<>();
-        Holder<String> fileName = new Holder<>();
-        Holder<Boolean> immediateFlush = new BooleanHolder(true);
-        Holder<Boolean> append = new BooleanHolder(true);
-        Holder<Boolean> bufferedIo = new BooleanHolder();
-        Holder<Integer> bufferSize = new Holder<>(8192);
-        Holder<String> maxSize = new Holder<>(DEFAULT_MAX_SIZE);
-        Holder<String> maxBackups = new Holder<>(DEFAULT_MAX_BACKUPS);
-        Holder<String> level = new Holder<>();
-        forEachElement(appenderElement.getChildNodes(), (currentElement) -> {
+    public Appender parseAppender(final Element appenderElement, final XmlConfiguration config) {
+        final String name = getNameAttribute(appenderElement);
+        final AtomicReference<Layout> layout = new AtomicReference<>();
+        final AtomicReference<Filter> filter = new AtomicReference<>();
+        final AtomicReference<String> fileName = new AtomicReference<>();
+        final AtomicBoolean immediateFlush = new AtomicBoolean(true);
+        final AtomicBoolean append = new AtomicBoolean(true);
+        final AtomicBoolean bufferedIo = new AtomicBoolean();
+        final AtomicInteger bufferSize = new AtomicInteger(8192);
+        final AtomicReference<String> maxSize = new AtomicReference<>(DEFAULT_MAX_SIZE);
+        final AtomicReference<String> maxBackups = new AtomicReference<>(DEFAULT_MAX_BACKUPS);
+        final AtomicReference<String> level = new AtomicReference<>();
+        forEachElement(appenderElement.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
                 case LAYOUT_TAG:
                     layout.set(config.parseLayout(currentElement));
@@ -89,28 +93,28 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
                 case PARAM_TAG:
                     switch (getNameAttributeKey(currentElement)) {
                         case FILE_PARAM:
-                            setString(FILE_PARAM, currentElement, fileName);
+                            set(FILE_PARAM, currentElement, fileName);
                             break;
                         case APPEND_PARAM:
-                            setBoolean(APPEND_PARAM, currentElement, append);
+                            set(APPEND_PARAM, currentElement, append);
                             break;
                         case BUFFERED_IO_PARAM:
-                            setBoolean(BUFFERED_IO_PARAM, currentElement, bufferedIo);
+                            set(BUFFERED_IO_PARAM, currentElement, bufferedIo);
                             break;
                         case BUFFER_SIZE_PARAM:
-                            setInteger(BUFFER_SIZE_PARAM, currentElement, bufferSize);
+                            set(BUFFER_SIZE_PARAM, currentElement, bufferSize);
                             break;
                         case MAX_BACKUP_INDEX:
-                            setString(MAX_BACKUP_INDEX, currentElement, maxBackups);
+                            set(MAX_BACKUP_INDEX, currentElement, maxBackups);
                             break;
                         case MAX_SIZE_PARAM:
-                            setString(MAX_SIZE_PARAM, currentElement, maxSize);
+                            set(MAX_SIZE_PARAM, currentElement, maxSize);
                             break;
                         case THRESHOLD_PARAM:
-                            setString(THRESHOLD_PARAM, currentElement, level);
+                            set(THRESHOLD_PARAM, currentElement, level);
                             break;
                         case IMMEDIATE_FLUSH_PARAM:
-                            setBoolean(IMMEDIATE_FLUSH_PARAM, currentElement, immediateFlush);
+                            set(IMMEDIATE_FLUSH_PARAM, currentElement, immediateFlush);
                             break;
                     }
                     break;
@@ -156,11 +160,11 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
             LOGGER.warn("Unable to create File Appender, no file name provided");
             return null;
         }
-        String filePattern = fileName + ".%i";
-        TriggeringPolicy timePolicy = TimeBasedTriggeringPolicy.newBuilder().setClock(clock).setModulate(true).build();
-        SizeBasedTriggeringPolicy sizePolicy = SizeBasedTriggeringPolicy.createPolicy(maxSize);
-        CompositeTriggeringPolicy policy = CompositeTriggeringPolicy.createPolicy(sizePolicy);
-        RolloverStrategy strategy = DefaultRolloverStrategy.newBuilder()
+        final String filePattern = fileName + ".%i";
+        final TriggeringPolicy timePolicy = TimeBasedTriggeringPolicy.newBuilder().setClock(clock).setModulate(true).build();
+        final SizeBasedTriggeringPolicy sizePolicy = SizeBasedTriggeringPolicy.createPolicy(maxSize);
+        final CompositeTriggeringPolicy policy = CompositeTriggeringPolicy.createPolicy(sizePolicy);
+        final RolloverStrategy strategy = DefaultRolloverStrategy.newBuilder()
                 .setConfig(config)
                 .setMax(maxBackups)
                 .build();

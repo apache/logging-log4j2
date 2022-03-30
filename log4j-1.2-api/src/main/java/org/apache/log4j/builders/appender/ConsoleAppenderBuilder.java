@@ -16,7 +16,6 @@
  */
 package org.apache.log4j.builders.appender;
 
-
 import static org.apache.log4j.builders.BuilderManager.CATEGORY;
 import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
 import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
@@ -25,6 +24,8 @@ import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
 import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
@@ -32,8 +33,6 @@ import org.apache.log4j.bridge.AppenderWrapper;
 import org.apache.log4j.bridge.LayoutAdapter;
 import org.apache.log4j.bridge.LayoutWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
-import org.apache.log4j.builders.BooleanHolder;
-import org.apache.log4j.builders.Holder;
 import org.apache.log4j.config.Log4j1Configuration;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.spi.Filter;
@@ -60,20 +59,20 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
     public ConsoleAppenderBuilder() {
     }
 
-    public ConsoleAppenderBuilder(String prefix, Properties props) {
+    public ConsoleAppenderBuilder(final String prefix, final Properties props) {
         super(prefix, props);
     }
 
     @Override
     public Appender parseAppender(final Element appenderElement, final XmlConfiguration config) {
-        String name = getNameAttribute(appenderElement);
-        Holder<String> target = new Holder<>(SYSTEM_OUT);
-        Holder<Layout> layout = new Holder<>();
-        Holder<Filter> filter = new Holder<>();
-        Holder<String> level = new Holder<>();
-        Holder<Boolean> follow = new BooleanHolder();
-        Holder<Boolean> immediateFlush = new BooleanHolder(true);
-        forEachElement(appenderElement.getChildNodes(), (currentElement) -> {
+        final String name = getNameAttribute(appenderElement);
+        final AtomicReference<String> target = new AtomicReference<>(SYSTEM_OUT);
+        final AtomicReference<Layout> layout = new AtomicReference<>();
+        final AtomicReference<Filter> filter = new AtomicReference<>();
+        final AtomicReference<String> level = new AtomicReference<>();
+        final AtomicBoolean follow = new AtomicBoolean();
+        final AtomicBoolean immediateFlush = new AtomicBoolean(true);
+        forEachElement(appenderElement.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
                 case LAYOUT_TAG:
                     layout.set(config.parseLayout(currentElement));
@@ -101,13 +100,13 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
                             }
                             break;
                         case THRESHOLD_PARAM:
-                            setString(THRESHOLD_PARAM, currentElement, level);
+                            set(THRESHOLD_PARAM, currentElement, level);
                             break;
                         case FOLLOW_PARAM:
-                            setBoolean(FOLLOW_PARAM, currentElement, follow);
+                            set(FOLLOW_PARAM, currentElement, follow);
                             break;
                         case IMMEDIATE_FLUSH_PARAM:
-                            setBoolean(IMMEDIATE_FLUSH_PARAM, currentElement, immediateFlush);
+                            set(IMMEDIATE_FLUSH_PARAM, currentElement, immediateFlush);
                             break;
                     }
                     break;

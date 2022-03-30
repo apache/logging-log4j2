@@ -44,11 +44,9 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
      * Create new instance.
      */
     public AppenderSkeleton() {
-        super();
     }
 
     protected AppenderSkeleton(final boolean isActive) {
-        super();
     }
 
     @Override
@@ -115,7 +113,7 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
     }
 
     /**
-     * Set the {@link ErrorHandler} for this Appender.
+     * Sets the {@link ErrorHandler} for this Appender.
      *
      * @since 0.9.0
      */

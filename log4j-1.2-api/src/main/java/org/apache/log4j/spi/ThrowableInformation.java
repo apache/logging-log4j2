@@ -21,7 +21,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import org.apache.log4j.Category;
-import org.apache.logging.log4j.core.util.Throwables;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Log4j's internal representation of throwables.
@@ -59,7 +59,7 @@ public class ThrowableInformation implements Serializable {
     /**
      * Constructs new instance.
      */
-    public ThrowableInformation(Throwable throwable) {
+    public ThrowableInformation(final Throwable throwable) {
         this.throwable = throwable;
     }
 
@@ -76,8 +76,7 @@ public class ThrowableInformation implements Serializable {
         this.rep = null;
     }
 
-    public
-    Throwable getThrowable() {
+    public Throwable getThrowable() {
         return throwable;
     }
 
@@ -87,7 +86,7 @@ public class ThrowableInformation implements Serializable {
                 @SuppressWarnings("unchecked")
                 final List<String> elements = (List<String>) TO_STRING_LIST.invoke(null, throwable);
                 if (elements != null) {
-                    return elements.toArray(new String[0]);
+                    return elements.toArray(Strings.EMPTY_ARRAY);
                 }
             } catch (final ReflectiveOperationException ex) {
                 // Ignore the exception.

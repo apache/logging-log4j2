@@ -202,7 +202,7 @@ public final class LogManager {
         if (selector == null) {
             throw new IllegalArgumentException("RepositorySelector must be non-null.");
         }
-        repositorySelector = selector;
+        LogManager.repositorySelector = selector;
     }
 
     /**

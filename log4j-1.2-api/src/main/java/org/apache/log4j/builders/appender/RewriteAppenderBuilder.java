@@ -16,12 +16,23 @@
  */
 package org.apache.log4j.builders.appender;
 
+import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.config.Log4j1Configuration.APPENDER_REF_TAG;
+import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
+import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.apache.log4j.Appender;
 import org.apache.log4j.bridge.AppenderWrapper;
 import org.apache.log4j.bridge.RewritePolicyAdapter;
 import org.apache.log4j.bridge.RewritePolicyWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
-import org.apache.log4j.builders.Holder;
 import org.apache.log4j.config.Log4j1Configuration;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.helpers.OptionConverter;
@@ -33,21 +44,8 @@ import org.apache.logging.log4j.core.appender.rewrite.RewriteAppender;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
 import org.w3c.dom.Element;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.config.Log4j1Configuration.APPENDER_REF_TAG;
-import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
-import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.NAME_ATTR;
-import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
-import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
-
 
 /**
  * Build an Rewrite Appender
@@ -67,12 +65,12 @@ public class RewriteAppenderBuilder extends AbstractBuilder implements AppenderB
 
     @Override
     public Appender parseAppender(final Element appenderElement, final XmlConfiguration config) {
-        String name = getNameAttribute(appenderElement);
-        Holder<List<String>> appenderRefs = new Holder<>(new ArrayList<>());
-        Holder<RewritePolicy> rewritePolicyHolder = new Holder<>();
-        Holder<String> level = new Holder<>();
-        Holder<Filter> filter = new Holder<>();
-        forEachElement(appenderElement.getChildNodes(), (currentElement) -> {
+        final String name = getNameAttribute(appenderElement);
+        final AtomicReference<List<String>> appenderRefs = new AtomicReference<>(new ArrayList<>());
+        final AtomicReference<RewritePolicy> rewritePolicyHolder = new AtomicReference<>();
+        final AtomicReference<String> level = new AtomicReference<>();
+        final AtomicReference<Filter> filter = new AtomicReference<>();
+        forEachElement(appenderElement.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
                 case APPENDER_REF_TAG:
                     final Appender appender = config.findAppenderByReference(currentElement);
@@ -91,12 +89,12 @@ public class RewriteAppenderBuilder extends AbstractBuilder implements AppenderB
                     break;
                 case PARAM_TAG:
                     if (getNameAttributeKey(currentElement).equalsIgnoreCase(THRESHOLD_PARAM)) {
-                        setString(THRESHOLD_PARAM, currentElement, level);
+                        set(THRESHOLD_PARAM, currentElement, level);
                     }
                     break;
             }
         });
-        return createAppender(name, level.get(), appenderRefs.get().toArray(new String[0]), rewritePolicyHolder.get(),
+        return createAppender(name, level.get(), appenderRefs.get().toArray(Strings.EMPTY_ARRAY), rewritePolicyHolder.get(),
                 filter.get(), config);
     }
 

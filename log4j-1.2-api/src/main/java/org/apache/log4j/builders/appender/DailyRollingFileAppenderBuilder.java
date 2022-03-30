@@ -16,14 +16,24 @@
  */
 package org.apache.log4j.builders.appender;
 
+import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
+import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.LAYOUT_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
+
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.AppenderWrapper;
 import org.apache.log4j.bridge.LayoutAdapter;
 import org.apache.log4j.bridge.LayoutWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
-import org.apache.log4j.builders.BooleanHolder;
-import org.apache.log4j.builders.Holder;
 import org.apache.log4j.config.Log4j1Configuration;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.spi.Filter;
@@ -39,12 +49,6 @@ import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
-
-import java.util.Properties;
-
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
-import static org.apache.log4j.xml.XmlConfiguration.*;
 
 /**
  * Build a Daily Rolling File Appender
@@ -66,17 +70,17 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
 
     @Override
     public Appender parseAppender(final Element appenderElement, final XmlConfiguration config) {
-        String name = getNameAttribute(appenderElement);
-        Holder<Layout> layout = new Holder<>();
-        Holder<Filter> filter = new Holder<>();
-        Holder<String> fileName = new Holder<>();
-        Holder<String> level = new Holder<>();
-        Holder<Boolean> immediateFlush = new BooleanHolder(true);
-        Holder<Boolean> append = new BooleanHolder(true);
-        Holder<Boolean> bufferedIo = new BooleanHolder();
-        Holder<Integer> bufferSize = new Holder<>(8192);
-        Holder<String> datePattern = new Holder<>(DEFAULT_DATE_PATTERN);
-        forEachElement(appenderElement.getChildNodes(), (currentElement) -> {
+        final String name = getNameAttribute(appenderElement);
+        final AtomicReference<Layout> layout = new AtomicReference<>();
+        final AtomicReference<Filter> filter = new AtomicReference<>();
+        final AtomicReference<String> fileName = new AtomicReference<>();
+        final AtomicReference<String> level = new AtomicReference<>();
+        final AtomicBoolean immediateFlush = new AtomicBoolean(true);
+        final AtomicBoolean append = new AtomicBoolean(true);
+        final AtomicBoolean bufferedIo = new AtomicBoolean();
+        final AtomicInteger bufferSize = new AtomicInteger(8192);
+        final AtomicReference<String> datePattern = new AtomicReference<>(DEFAULT_DATE_PATTERN);
+        forEachElement(appenderElement.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
                 case LAYOUT_TAG:
                     layout.set(config.parseLayout(currentElement));
@@ -87,25 +91,25 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
                 case PARAM_TAG:
                     switch (getNameAttributeKey(currentElement)) {
                         case FILE_PARAM:
-                            setString(FILE_PARAM, currentElement, fileName);
+                            set(FILE_PARAM, currentElement, fileName);
                             break;
                         case APPEND_PARAM:
-                            setBoolean(APPEND_PARAM, currentElement, append);
+                            set(APPEND_PARAM, currentElement, append);
                             break;
                         case BUFFERED_IO_PARAM:
-                            setBoolean(BUFFERED_IO_PARAM, currentElement, bufferedIo);
+                            set(BUFFERED_IO_PARAM, currentElement, bufferedIo);
                             break;
                         case BUFFER_SIZE_PARAM:
-                            setInteger(BUFFER_SIZE_PARAM, currentElement, bufferSize);
+                            set(BUFFER_SIZE_PARAM, currentElement, bufferSize);
                             break;
                         case THRESHOLD_PARAM:
-                            setString(THRESHOLD_PARAM, currentElement, level);
+                            set(THRESHOLD_PARAM, currentElement, level);
                             break;
                         case DATE_PATTERN_PARAM:
-                            setString(DATE_PATTERN_PARAM, currentElement, datePattern);
+                            set(DATE_PATTERN_PARAM, currentElement, datePattern);
                             break;
                         case IMMEDIATE_FLUSH_PARAM:
-                            setBoolean(IMMEDIATE_FLUSH_PARAM, currentElement, immediateFlush);
+                            set(IMMEDIATE_FLUSH_PARAM, currentElement, immediateFlush);
                             break;
                     }
                     break;
@@ -134,7 +138,7 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
 
     private <T extends Log4j1Configuration> Appender createAppender(final String name, final Layout layout,
             final Filter filter, final String fileName, final boolean append, boolean immediateFlush,
-            final String level, final boolean bufferedIo, final int bufferSize, String datePattern,
+            final String level, final boolean bufferedIo, final int bufferSize, final String datePattern,
             final T configuration, final Clock clock) {
 
         org.apache.logging.log4j.core.Layout<?> fileLayout = null;
@@ -160,7 +164,6 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
                 .build();
         return new AppenderWrapper(RollingFileAppender.newBuilder()
                 .setName(name)
-                .setAppend(append)
                 .setConfiguration(configuration)
                 .setLayout(fileLayout)
                 .setFilter(fileFilter)

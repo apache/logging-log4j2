@@ -53,8 +53,8 @@ public class Log4j2ListAppenderBuilder extends AbstractBuilder implements Append
     @Override
     public Appender parseAppender(Element element, XmlConfiguration configuration) {
         final String name = getNameAttribute(element);
-        final Holder<Layout> layout = new Holder<>();
-        final Holder<Filter> filter = new Holder<>();
+        final AtomicReference<Layout> layout = new AtomicReference<>();
+        final AtomicReference<Filter> filter = new AtomicReference<>();
         forEachElement(element.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
                 case LAYOUT_TAG :

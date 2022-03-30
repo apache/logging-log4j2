@@ -37,7 +37,7 @@ import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 // @Order(50)
 public class Log4j1ConfigurationFactory extends ConfigurationFactory {
 
-    private static final String[] SUFFIXES = {".properties"};
+    private static final String[] SUFFIXES = { ".properties" };
 
     @Override
     public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {

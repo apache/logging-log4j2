@@ -37,6 +37,7 @@ public class QuietWriter extends FilterWriter {
         setErrorHandler(errorHandler);
     }
 
+    @Override
     public void write(String string) {
         if (string != null) {
             try {
@@ -48,6 +49,7 @@ public class QuietWriter extends FilterWriter {
         }
     }
 
+    @Override
     public void flush() {
         try {
             out.flush();
@@ -62,8 +64,7 @@ public class QuietWriter extends FilterWriter {
         if (eh == null) {
             // This is a programming error on the part of the enclosing appender.
             throw new IllegalArgumentException("Attempted to set null ErrorHandler.");
-        } else {
-            this.errorHandler = eh;
         }
+        this.errorHandler = eh;
     }
 }

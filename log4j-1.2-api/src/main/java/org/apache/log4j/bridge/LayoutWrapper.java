@@ -16,10 +16,8 @@
  */
 package org.apache.log4j.bridge;
 
-
 import org.apache.log4j.Layout;
 import org.apache.log4j.spi.LoggingEvent;
-
 
 /**
  * Bridge between the Log4j 1 Layout and a Log4j 2 Layout.
