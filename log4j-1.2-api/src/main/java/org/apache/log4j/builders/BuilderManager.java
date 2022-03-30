@@ -16,11 +16,6 @@
  */
 package org.apache.log4j.builders;
 
-import java.lang.reflect.Constructor;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Properties;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.builders.appender.AppenderBuilder;
@@ -32,11 +27,19 @@ import org.apache.log4j.rewrite.RewritePolicy;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.xml.XmlConfiguration;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.plugins.Named;
+import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.di.Key;
+import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
-import org.apache.logging.log4j.plugins.util.PluginUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.w3c.dom.Element;
+
+import java.lang.reflect.Constructor;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Properties;
 
 /**
  *
@@ -44,24 +47,23 @@ import org.w3c.dom.Element;
 public class BuilderManager {
 
     public static final String CATEGORY = "Log4j Builder";
+    public static final Key<PluginManager> PLUGIN_MANAGER_KEY = new @Named(CATEGORY) Key<>() {};
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final Class<?>[] CONSTRUCTOR_PARAMS = new Class[] { String.class, Properties.class };
+    private final Injector injector;
     private final Map<String, PluginType<?>> plugins;
 
-    public BuilderManager() {
-        plugins = PluginUtil.collectPluginsByCategory(CATEGORY);
+    public BuilderManager(final Injector injector) {
+        this.injector = injector;
+        plugins = injector.getInstance(PLUGIN_MANAGER_KEY).getPlugins();
     }
 
     public Appender parseAppender(String className, Element appenderElement, XmlConfiguration config) {
         PluginType<?> plugin = plugins.get(className.toLowerCase());
         if (plugin != null) {
-            try {
-                @SuppressWarnings("unchecked")
-                AppenderBuilder builder = (AppenderBuilder) LoaderUtil.newInstanceOf(plugin.getPluginClass());
-                return builder.parseAppender(appenderElement, config);
-            } catch (ReflectiveOperationException ex) {
-                LOGGER.warn("Unable to load plugin: {} due to: {}", plugin.getKey(), ex.getMessage());
-            }
+            final Class<? extends AppenderBuilder> pluginClass = plugin.getPluginClass().asSubclass(AppenderBuilder.class);
+            final AppenderBuilder builder = injector.getInstance(pluginClass);
+            return builder.parseAppender(appenderElement, config);
         }
         return null;
     }
@@ -83,13 +85,9 @@ public class BuilderManager {
     public Filter parseFilter(String className, Element filterElement, XmlConfiguration config) {
         PluginType<?> plugin = plugins.get(className.toLowerCase());
         if (plugin != null) {
-            try {
-                @SuppressWarnings("unchecked")
-                FilterBuilder builder = (FilterBuilder) LoaderUtil.newInstanceOf(plugin.getPluginClass());
-                return builder.parseFilter(filterElement, config);
-            } catch (ReflectiveOperationException ex) {
-                LOGGER.warn("Unable to load plugin: {} due to: {}", plugin.getKey(), ex.getMessage());
-            }
+            final Class<? extends FilterBuilder> pluginClass = plugin.getPluginClass().asSubclass(FilterBuilder.class);
+            final FilterBuilder builder = injector.getInstance(pluginClass);
+            return builder.parseFilter(filterElement, config);
         }
         return null;
     }
@@ -108,16 +106,13 @@ public class BuilderManager {
     public Layout parseLayout(String className, Element layoutElement, XmlConfiguration config) {
         PluginType<?> plugin = plugins.get(className.toLowerCase());
         if (plugin != null) {
-            try {
-                @SuppressWarnings("unchecked")
-                LayoutBuilder builder = (LayoutBuilder) LoaderUtil.newInstanceOf(plugin.getPluginClass());
-                return builder.parseLayout(layoutElement, config);
-            } catch (ReflectiveOperationException ex) {
-                LOGGER.warn("Unable to load plugin: {} due to: {}", plugin.getKey(), ex.getMessage());
-            }
+            final Class<? extends LayoutBuilder> pluginClass = plugin.getPluginClass().asSubclass(LayoutBuilder.class);
+            final LayoutBuilder builder = injector.getInstance(pluginClass);
+            return builder.parseLayout(layoutElement, config);
         }
         return null;
     }
+
     public Layout parseLayout(String className, String layoutPrefix, Properties props, PropertiesConfiguration config) {
         PluginType<?> plugin = plugins.get(className.toLowerCase());
         if (plugin != null) {
@@ -132,16 +127,13 @@ public class BuilderManager {
     public RewritePolicy parseRewritePolicy(String className, Element rewriteElement, XmlConfiguration config) {
         PluginType<?> plugin = plugins.get(className.toLowerCase());
         if (plugin != null) {
-            try {
-                @SuppressWarnings("unchecked")
-                RewritePolicyBuilder builder = (RewritePolicyBuilder) LoaderUtil.newInstanceOf(plugin.getPluginClass());
-                return builder.parseRewritePolicy(rewriteElement, config);
-            } catch (ReflectiveOperationException ex) {
-                LOGGER.warn("Unable to load plugin: {} due to: {}", plugin.getKey(), ex.getMessage());
-            }
+            final Class<? extends RewritePolicyBuilder> pluginClass = plugin.getPluginClass().asSubclass(RewritePolicyBuilder.class);
+            final RewritePolicyBuilder builder = injector.getInstance(pluginClass);
+            return builder.parseRewritePolicy(rewriteElement, config);
         }
         return null;
     }
+
     public RewritePolicy parseRewritePolicy(String className, String policyPrefix, Properties props, PropertiesConfiguration config) {
         PluginType<?> plugin = plugins.get(className.toLowerCase());
         if (plugin != null) {
