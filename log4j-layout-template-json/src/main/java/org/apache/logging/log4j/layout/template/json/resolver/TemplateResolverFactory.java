@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
+import org.apache.logging.log4j.plugins.Named;
+import org.apache.logging.log4j.plugins.di.Key;
+import org.apache.logging.log4j.plugins.util.PluginManager;
+
 /**
  * {@link TemplateResolver} factory.
  *
@@ -28,6 +32,8 @@ public interface TemplateResolverFactory<V, C extends TemplateResolverContext<V,
      * Main plugin category for {@link TemplateResolverFactory} implementations.
      */
     String CATEGORY = "JsonTemplateResolverFactory";
+
+    Key<PluginManager> PLUGIN_MANAGER_KEY = new @Named(CATEGORY) Key<>() {};
 
     /**
      * The targeted value class.

@@ -17,8 +17,8 @@
 package org.apache.logging.log4j.layout.template.json.resolver;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,9 +29,9 @@ public final class EventResolverFactories {
     private EventResolverFactories() {}
 
     public static Map<String, EventResolverFactory> populateResolverFactoryByName(
-            final List<String> pluginPackages) {
+            final Configuration configuration) {
         return TemplateResolverFactories.populateFactoryByName(
-                pluginPackages,
+                configuration,
                 LogEvent.class,
                 EventResolverContext.class);
     }

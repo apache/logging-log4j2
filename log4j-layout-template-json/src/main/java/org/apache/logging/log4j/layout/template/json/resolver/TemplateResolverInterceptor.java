@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
+import org.apache.logging.log4j.plugins.Named;
+import org.apache.logging.log4j.plugins.di.Key;
+import org.apache.logging.log4j.plugins.util.PluginManager;
+
 /**
  * Main {@link TemplateResolver} compilation interception interface.
  *
@@ -28,6 +32,8 @@ public interface TemplateResolverInterceptor<V, C extends TemplateResolverContex
      * Main plugin category for {@link TemplateResolverInterceptor} implementations.
      */
     String CATEGORY = "JsonTemplateResolverInterceptor";
+
+    Key<PluginManager> PLUGIN_MANAGER_KEY = new @Named(CATEGORY) Key<>() {};
 
     /**
      * The targeted value class.

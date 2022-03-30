@@ -27,7 +27,14 @@ import org.apache.logging.log4j.core.layout.Encoder;
 import org.apache.logging.log4j.core.layout.TextEncoderHelper;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.StringEncoder;
-import org.apache.logging.log4j.layout.template.json.resolver.*;
+import org.apache.logging.log4j.layout.template.json.resolver.EventResolverContext;
+import org.apache.logging.log4j.layout.template.json.resolver.EventResolverFactories;
+import org.apache.logging.log4j.layout.template.json.resolver.EventResolverFactory;
+import org.apache.logging.log4j.layout.template.json.resolver.EventResolverInterceptor;
+import org.apache.logging.log4j.layout.template.json.resolver.EventResolverInterceptors;
+import org.apache.logging.log4j.layout.template.json.resolver.EventResolverStringSubstitutor;
+import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolver;
+import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolvers;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.apache.logging.log4j.layout.template.json.util.Recycler;
 import org.apache.logging.log4j.layout.template.json.util.RecyclerFactory;
@@ -114,11 +121,10 @@ public class JsonTemplateLayout implements StringLayout {
             final JsonWriter jsonWriter) {
 
         // Inject resolver factory and interceptor plugins.
-        final List<String> pluginPackages = configuration.getPluginPackages();
         final Map<String, EventResolverFactory> resolverFactoryByName =
-                EventResolverFactories.populateResolverFactoryByName(pluginPackages);
+                EventResolverFactories.populateResolverFactoryByName(configuration);
         final List<EventResolverInterceptor> resolverInterceptors =
-                EventResolverInterceptors.populateInterceptors(pluginPackages);
+                EventResolverInterceptors.populateInterceptors(configuration);
         final EventResolverStringSubstitutor substitutor =
                 new EventResolverStringSubstitutor(configuration.getStrSubstitutor());
 

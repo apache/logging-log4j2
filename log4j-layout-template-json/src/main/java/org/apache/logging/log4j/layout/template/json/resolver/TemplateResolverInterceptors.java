@@ -17,8 +17,9 @@
 package org.apache.logging.log4j.layout.template.json.resolver;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.util.PluginType;
-import org.apache.logging.log4j.plugins.util.PluginUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import java.util.LinkedList;
@@ -42,26 +43,24 @@ public class TemplateResolverInterceptors {
      * respectively.
      */
     public static <V, C extends TemplateResolverContext<V, C>, I extends TemplateResolverInterceptor<V, C>> List<I> populateInterceptors(
-            final List<String> pluginPackages,
+            final Configuration configuration,
             final Class<V> valueClass,
             final Class<C> contextClass) {
 
         // Populate interceptors.
         final Map<String, PluginType<?>> pluginTypeByName =
-                PluginUtil.collectPluginsByCategoryAndPackage(
-                        TemplateResolverInterceptor.CATEGORY,
-                        pluginPackages);
+                configuration.getComponent(TemplateResolverInterceptor.PLUGIN_MANAGER_KEY).getPlugins();
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(
                     "found {} plugins of category \"{}\": {}",
                     pluginTypeByName.size(),
-                    TemplateResolverFactory.CATEGORY,
+                    TemplateResolverInterceptor.CATEGORY,
                     pluginTypeByName.keySet());
         }
 
         // Filter matching interceptors.
         final List<I> interceptors =
-                populateInterceptors(pluginTypeByName, valueClass, contextClass);
+                populateInterceptors(pluginTypeByName, configuration, valueClass, contextClass);
         LOGGER.debug(
                 "{} interceptors matched out of {} for value class {} and context class {}",
                 interceptors.size(),
@@ -74,6 +73,7 @@ public class TemplateResolverInterceptors {
 
     private static <V, C extends TemplateResolverContext<V, C>, I extends TemplateResolverInterceptor<V, C>> List<I> populateInterceptors(
             final Map<String, PluginType<?>> pluginTypeByName,
+            final Configuration configuration,
             final Class<V> valueClass,
             final Class<C> contextClass) {
         final List<I> interceptors = new LinkedList<>();
@@ -84,8 +84,11 @@ public class TemplateResolverInterceptors {
             final boolean pluginClassMatched =
                     TemplateResolverInterceptor.class.isAssignableFrom(pluginClass);
             if (pluginClassMatched) {
+                @SuppressWarnings("rawtypes")
+                final Class<? extends TemplateResolverInterceptor> interceptorClass =
+                        pluginClass.asSubclass(TemplateResolverInterceptor.class);
                 final TemplateResolverInterceptor<?, ?> rawInterceptor =
-                        instantiateInterceptor(pluginName, pluginClass);
+                        configuration.getComponent(Key.forClass(interceptorClass));
                 final I interceptor =
                         castInterceptor(valueClass, contextClass, rawInterceptor);
                 if (interceptor != null) {
@@ -94,20 +97,6 @@ public class TemplateResolverInterceptors {
             }
         }
         return interceptors;
-    }
-
-    private static TemplateResolverInterceptor<?, ?> instantiateInterceptor(
-            final String pluginName,
-            final Class<?> pluginClass) {
-        try {
-            return (TemplateResolverInterceptor<?, ?>)
-                    PluginUtil.instantiatePlugin(pluginClass);
-        } catch (final Exception error) {
-            final String message = String.format(
-                    "failed instantiating resolver interceptor plugin %s of name %s",
-                    pluginClass, pluginName);
-            throw new RuntimeException(message, error);
-        }
     }
 
     private static <V, C extends TemplateResolverContext<V, C>, I extends TemplateResolverInterceptor<V, C>> I castInterceptor(

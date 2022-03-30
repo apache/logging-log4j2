@@ -17,12 +17,12 @@
 package org.apache.logging.log4j.layout.template.json.resolver;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.util.PluginType;
-import org.apache.logging.log4j.plugins.util.PluginUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -42,15 +42,13 @@ public final class TemplateResolverFactories {
      * respectively.
      */
     public static <V, C extends TemplateResolverContext<V, C>, F extends TemplateResolverFactory<V, C>> Map<String, F> populateFactoryByName(
-            final List<String> pluginPackages,
+            final Configuration configuration,
             final Class<V> valueClass,
             final Class<C> contextClass) {
 
         // Populate template resolver factories.
         final Map<String, PluginType<?>> pluginTypeByName =
-                PluginUtil.collectPluginsByCategoryAndPackage(
-                        TemplateResolverFactory.CATEGORY,
-                        pluginPackages);
+                configuration.getComponent(TemplateResolverFactory.PLUGIN_MANAGER_KEY).getPlugins();
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(
                     "found {} plugins of category \"{}\": {}",
@@ -61,7 +59,7 @@ public final class TemplateResolverFactories {
 
         // Filter matching resolver factories.
         final Map<String, F> factoryByName =
-                populateFactoryByName(pluginTypeByName, valueClass, contextClass);
+                populateFactoryByName(pluginTypeByName, configuration, valueClass, contextClass);
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(
                     "matched {} resolver factories out of {} for value class {} and context class {}: {}",
@@ -77,6 +75,7 @@ public final class TemplateResolverFactories {
 
     private static <V, C extends TemplateResolverContext<V, C>, F extends TemplateResolverFactory<V, C>> Map<String, F> populateFactoryByName(
             final Map<String, PluginType<?>> pluginTypeByName,
+            final Configuration configuration,
             final Class<V> valueClass,
             final Class<C> contextClass) {
         final Map<String, F> factoryByName = new LinkedHashMap<>();
@@ -87,8 +86,11 @@ public final class TemplateResolverFactories {
             final boolean pluginClassMatched =
                     TemplateResolverFactory.class.isAssignableFrom(pluginClass);
             if (pluginClassMatched) {
+                @SuppressWarnings("rawtypes")
+                final Class<? extends TemplateResolverFactory> factoryClass =
+                        pluginClass.asSubclass(TemplateResolverFactory.class);
                 final TemplateResolverFactory<?, ?> rawFactory =
-                        instantiateFactory(pluginName, pluginClass);
+                        configuration.getComponent(Key.forClass(factoryClass));
                 final F factory = castFactory(valueClass, contextClass, rawFactory);
                 if (factory != null) {
                     addFactory(factoryByName, factory);
@@ -96,20 +98,6 @@ public final class TemplateResolverFactories {
             }
         }
         return factoryByName;
-    }
-
-    private static TemplateResolverFactory<?, ?> instantiateFactory(
-            final String pluginName,
-            final Class<?> pluginClass) {
-        try {
-            return (TemplateResolverFactory<?, ?>)
-                    PluginUtil.instantiatePlugin(pluginClass);
-        } catch (final Exception error) {
-            final String message = String.format(
-                    "failed instantiating resolver factory plugin %s of name %s",
-                    pluginClass, pluginName);
-            throw new RuntimeException(message, error);
-        }
     }
 
     private static <V, C extends TemplateResolverContext<V, C>, F extends TemplateResolverFactory<V, C>> F castFactory(
