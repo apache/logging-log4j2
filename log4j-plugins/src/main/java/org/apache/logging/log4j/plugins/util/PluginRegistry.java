@@ -29,7 +29,6 @@ import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.Strings;
 
 import java.io.IOException;
-import java.lang.invoke.MethodHandles;
 import java.net.URI;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -117,7 +116,7 @@ public class PluginRegistry {
             // already loaded
             return existing;
         }
-        final Map<String, List<PluginType<?>>> newPluginsByCategory = decodeCacheFiles(new PluginContext());
+        final Map<String, List<PluginType<?>>> newPluginsByCategory = decodeCacheFiles(LoaderUtil.getClassLoader());
         loadPlugins(newPluginsByCategory);
 
         // Note multiple threads could be calling this method concurrently. Both will do the work,
@@ -151,7 +150,7 @@ public class PluginRegistry {
             // already loaded from this classloader
             return existing;
         }
-        final Map<String, List<PluginType<?>>> newPluginsByCategory = decodeCacheFiles(new PluginContext(loader, MethodHandles.lookup()));
+        final Map<String, List<PluginType<?>>> newPluginsByCategory = decodeCacheFiles(loader);
         loadPlugins(loader, newPluginsByCategory);
 
         // Note multiple threads could be calling this method concurrently. Both will do the work,
@@ -231,14 +230,13 @@ public class PluginRegistry {
         });
     }
 
-    private Map<String, List<PluginType<?>>> decodeCacheFiles(final PluginContext context) {
+    private Map<String, List<PluginType<?>>> decodeCacheFiles(final ClassLoader classLoader) {
         final long startTime = System.nanoTime();
         final PluginCache cache = new PluginCache();
         try {
-            final ClassLoader loader = context.getClassLoader();
-            final Enumeration<URL> resources = loader.getResources(PluginManager.PLUGIN_CACHE_FILE);
+            final Enumeration<URL> resources = classLoader.getResources(PluginManager.PLUGIN_CACHE_FILE);
             if (resources == null) {
-                LOGGER.info("Plugin preloads not available from class loader {}", loader);
+                LOGGER.info("Plugin preloads not available from class loader {}", classLoader);
             } else {
                 cache.loadCacheFiles(resources);
             }
@@ -253,7 +251,7 @@ public class PluginRegistry {
             newPluginsByCategory.put(categoryLowerCase, types);
             for (final Map.Entry<String, PluginEntry> inner : outer.getValue().entrySet()) {
                 final PluginEntry entry = inner.getValue();
-                final PluginType<?> type = new PluginType<>(entry, context.getClassLoader());
+                final PluginType<?> type = new PluginType<>(entry, classLoader);
                 types.add(type);
                 ++pluginCount;
             }
@@ -263,7 +261,7 @@ public class PluginRegistry {
             final long endTime = System.nanoTime();
             final DecimalFormat numFormat = new DecimalFormat("#0.000000");
             return "Took " + numFormat.format((endTime - startTime) * 1e-9) +
-                    " seconds to load " + numPlugins + " plugins from " + context.getClassLoader();
+                    " seconds to load " + numPlugins + " plugins from " + classLoader;
         });
         return newPluginsByCategory;
     }
