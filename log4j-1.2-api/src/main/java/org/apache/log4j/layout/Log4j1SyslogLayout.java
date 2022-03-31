@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import org.apache.logging.log4j.core.Layout;
@@ -34,8 +33,9 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Priority;
+import org.apache.logging.log4j.core.pattern.DatePatternConverter;
+import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.util.NetUtils;
-import org.apache.logging.log4j.core.util.datetime.FastDateFormat;
 import org.apache.logging.log4j.util.Chars;
 
 /**
@@ -144,7 +144,8 @@ public final class Log4j1SyslogLayout  extends AbstractStringLayout {
     /**
      * Date format used if header = true.
      */
-    private final FastDateFormat dateFormat = FastDateFormat.getInstance("MMM dd HH:mm:ss", Locale.ENGLISH);
+    private static final String[] dateFormatOptions = {"MMM dd HH:mm:ss", null, "en"};
+    private final LogEventPatternConverter dateConverter =  DatePatternConverter.newInstance(dateFormatOptions);
 
 
     private Log4j1SyslogLayout(final Facility facility, final boolean facilityPrinting, final boolean header,
@@ -176,7 +177,7 @@ public final class Log4j1SyslogLayout  extends AbstractStringLayout {
 
         if (header) {
             final int index = buf.length() + 4;
-            buf.append(dateFormat.format(event.getTimeMillis()));
+            dateConverter.format(event, buf);
             // RFC 3164 says leading space, not leading zero on days 1-9
             if (buf.charAt(index) == '0') {
                 buf.setCharAt(index, Chars.SPACE);
@@ -213,7 +214,7 @@ public final class Log4j1SyslogLayout  extends AbstractStringLayout {
         final Map<String, String> result = new HashMap<>();
         result.put("structured", "false");
         result.put("formatType", "logfilepatternreceiver");
-        result.put("dateFormat", dateFormat.getPattern());
+        result.put("dateFormat", dateFormatOptions[0]);
         if (header) {
         result.put("format", "<LEVEL>TIMESTAMP PROP(HOSTNAME) MESSAGE");
         } else {
