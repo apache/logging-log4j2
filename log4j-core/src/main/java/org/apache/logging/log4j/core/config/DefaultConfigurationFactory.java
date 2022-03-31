@@ -181,10 +181,6 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
             // Ignore the error and try as a String.
             LOGGER.catching(Level.DEBUG, ex);
         }
-        if (source == null) {
-            final ClassLoader loader = LoaderUtil.getThreadContextClassLoader();
-            source = getInputFromString(configLocationStr, loader);
-        }
         if (source != null) {
             for (final ConfigurationFactory factory : configurationFactories.get()) {
                 if (requiredVersion != null && !factory.getVersion().equals(requiredVersion)) {
