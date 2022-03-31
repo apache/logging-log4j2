@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.spi;
 
+import org.apache.logging.log4j.util.BiConsumer;
+import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.TriConsumer;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
-import org.apache.logging.log4j.util.BiConsumer;
-import org.apache.logging.log4j.util.ReadOnlyStringMap;
-import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.TriConsumer;
 
 /**
  * The actual ThreadContext Map. A new ThreadContext Map is created each time it is updated and the Map stored is always
@@ -54,11 +54,11 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
     // (This method is package protected for JUnit tests.)
     static ThreadLocal<Map<String, String>> createThreadLocalMap(final boolean isMapEnabled) {
         if (inheritableMap) {
-            return new InheritableThreadLocal<Map<String, String>>() {
+            return new InheritableThreadLocal<>() {
                 @Override
                 protected Map<String, String> childValue(final Map<String, String> parentValue) {
                     return parentValue != null && isMapEnabled //
-                    ? Collections.unmodifiableMap(new HashMap<>(parentValue)) //
+                            ? Map.copyOf(parentValue) //
                             : null;
                 }
             };
@@ -86,7 +86,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
             return;
         }
         Map<String, String> map = localMap.get();
-        map = map == null ? new HashMap<String, String>(1) : new HashMap<>(map);
+        map = map == null ? new HashMap<>(1) : new HashMap<>(map);
         map.put(key, value);
         localMap.set(Collections.unmodifiableMap(map));
     }
@@ -96,10 +96,8 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
             return;
         }
         Map<String, String> map = localMap.get();
-        map = map == null ? new HashMap<String, String>(m.size()) : new HashMap<>(map);
-        for (final Map.Entry<String, String> e : m.entrySet()) {
-            map.put(e.getKey(), e.getValue());
-        }
+        map = map == null ? new HashMap<>(m.size()) : new HashMap<>(map);
+        map.putAll(m);
         localMap.set(Collections.unmodifiableMap(map));
     }
 
@@ -182,7 +180,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
     @Override
     public Map<String, String> getCopy() {
         final Map<String, String> map = localMap.get();
-        return map == null ? new HashMap<String, String>() : new HashMap<>(map);
+        return map == null ? new HashMap<>() : new HashMap<>(map);
     }
 
     @Override
