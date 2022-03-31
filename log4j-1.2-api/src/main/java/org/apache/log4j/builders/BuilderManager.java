@@ -16,12 +16,6 @@
  */
 package org.apache.log4j.builders;
 
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Properties;
-import java.util.function.Function;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.builders.appender.AppenderBuilder;
@@ -39,8 +33,13 @@ import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.LoaderUtil;
 import org.w3c.dom.Element;
+
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Properties;
+import java.util.function.Function;
 
 /**
  *
@@ -72,7 +71,7 @@ public class BuilderManager {
             if (AbstractBuilder.class.isAssignableFrom(clazz)) {
                 return clazz.getConstructor(CONSTRUCTOR_PARAMS).newInstance(prefix, props);
             }
-            final T builder = LoaderUtil.newInstanceOf(clazz);
+            final T builder = injector.getInstance(clazz);
             // Reasonable message instead of `ClassCastException`
             if (!Builder.class.isAssignableFrom(clazz)) {
                 LOGGER.warn("Unable to load plugin: builder {} does not implement {}", clazz, Builder.class);
@@ -99,13 +98,9 @@ public class BuilderManager {
 
     private <T extends Builder<U>, U> U newInstance(final PluginType<T> plugin, final Function<T, U> consumer) {
         if (plugin != null) {
-            try {
-                final T builder = LoaderUtil.newInstanceOf(plugin.getPluginClass());
-                if (builder != null) {
-                    return consumer.apply(builder);
-                }
-            } catch (final ReflectiveOperationException ex) {
-                LOGGER.warn("Unable to load plugin: {} due to: {}", plugin.getKey(), ex.getMessage());
+            final T builder = injector.getInstance(plugin.getPluginClass());
+            if (builder != null) {
+                return consumer.apply(builder);
             }
         }
         return null;
