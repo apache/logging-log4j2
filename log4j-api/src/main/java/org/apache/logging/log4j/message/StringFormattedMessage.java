@@ -112,6 +112,10 @@ public class StringFormattedMessage implements Message {
     }
 
     protected String formatMessage(final String msgPattern, final Object... args) {
+        if (args != null && args.length == 0) {
+            // Avoids some exceptions for LOG4J2-3458
+            return msgPattern;
+        }
         try {
             return String.format(locale, msgPattern, args);
         } catch (final IllegalFormatException ife) {

@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 import org.apache.logging.log4j.junit.Mutable;
 import org.junit.jupiter.api.Test;
@@ -128,4 +129,25 @@ public class StringFormattedMessageTest {
         assertEquals(expected.getFormattedMessage(), actual.getFormattedMessage());
         assertArrayEquals(expected.getParameters(), actual.getParameters());
     }
+    
+    @Test
+    public void testPercentInMessageNoArgs() {
+        // LOG4J2-3458 LocalizedMessage causes a lot of noise on the console
+        //
+        // ERROR StatusLogger Unable to format msg: C:/Program%20Files/Some%20Company/Some%20Product%20Name/
+        // java.util.UnknownFormatConversionException: Conversion = 'F'
+        // at java.util.Formatter$FormatSpecifier.conversion(Formatter.java:2691)
+        // at java.util.Formatter$FormatSpecifier.<init>(Formatter.java:2720)
+        // at java.util.Formatter.parse(Formatter.java:2560)
+        // at java.util.Formatter.format(Formatter.java:2501)
+        // at java.util.Formatter.format(Formatter.java:2455)
+        // at java.lang.String.format(String.java:2981)
+        // at org.apache.logging.log4j.message.StringFormattedMessage.formatMessage(StringFormattedMessage.java:120)
+        // at org.apache.logging.log4j.message.StringFormattedMessage.getFormattedMessage(StringFormattedMessage.java:88)
+        // at
+        // org.apache.logging.log4j.message.StringFormattedMessageTest.testPercentInMessageNoArgs(StringFormattedMessageTest.java:153)
+        final StringFormattedMessage msg = new StringFormattedMessage("C:/Program%20Files/Some%20Company/Some%20Product%20Name/", new Object[] {});
+        assertEquals("C:/Program%20Files/Some%20Company/Some%20Product%20Name/", msg.getFormattedMessage());
+    }
+
 }
