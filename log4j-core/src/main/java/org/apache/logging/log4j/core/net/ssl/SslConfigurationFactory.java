@@ -18,7 +18,10 @@ package org.apache.logging.log4j.core.net.ssl;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LazyValue;
 import org.apache.logging.log4j.util.PropertiesUtil;
+
+import java.util.function.Supplier;
 
 /**
  * Creates an SSL configuration from Log4j properties.
@@ -26,7 +29,6 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 public class SslConfigurationFactory {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
-    private static SslConfiguration sslConfiguration = null;
 
     private static final String trustStorelocation = "log4j2.trustStore.location";
     private static final String trustStorePassword = "log4j2.trustStore.password";
@@ -42,7 +44,7 @@ public class SslConfigurationFactory {
     private static final String keyStoreKeyManagerFactoryAlgorithm = "log4j2.keyStore.keyManagerFactoryAlgorithm";
     private static final String verifyHostName = "log4j2.ssl.verifyHostName";
 
-    static {
+    private static final Supplier<SslConfiguration> SSL_CONFIGURATION = LazyValue.from(() -> {
         final PropertiesUtil props = PropertiesUtil.getProperties();
         KeyStoreConfiguration keyStoreConfiguration = null;
         TrustStoreConfiguration trustStoreConfiguration = null;
@@ -55,11 +57,11 @@ public class SslConfigurationFactory {
             }
             try {
                 trustStoreConfiguration = TrustStoreConfiguration.createKeyStoreConfiguration(location, passwordChars,
-                    props.getStringProperty(trustStorePasswordEnvVar), props.getStringProperty(trustStorePasswordFile),
-                    props.getStringProperty(trustStoreKeyStoreType), props.getStringProperty(trustStoreKeyManagerFactoryAlgorithm));
+                        props.getStringProperty(trustStorePasswordEnvVar), props.getStringProperty(trustStorePasswordFile),
+                        props.getStringProperty(trustStoreKeyStoreType), props.getStringProperty(trustStoreKeyManagerFactoryAlgorithm));
             } catch (final Exception ex) {
                 LOGGER.warn("Unable to create trust store configuration due to: {} {}", ex.getClass().getName(),
-                    ex.getMessage());
+                        ex.getMessage());
             }
         }
         location = props.getStringProperty(keyStoreLocation);
@@ -71,21 +73,22 @@ public class SslConfigurationFactory {
             }
             try {
                 keyStoreConfiguration = KeyStoreConfiguration.createKeyStoreConfiguration(location, passwordChars,
-                    props.getStringProperty(keyStorePasswordEnvVar), props.getStringProperty(keyStorePasswordFile),
-                    props.getStringProperty(keyStoreType), props.getStringProperty(keyStoreKeyManagerFactoryAlgorithm));
+                        props.getStringProperty(keyStorePasswordEnvVar), props.getStringProperty(keyStorePasswordFile),
+                        props.getStringProperty(keyStoreType), props.getStringProperty(keyStoreKeyManagerFactoryAlgorithm));
             } catch (final Exception ex) {
                 LOGGER.warn("Unable to create key store configuration due to: {} {}", ex.getClass().getName(),
-                    ex.getMessage());
+                        ex.getMessage());
             }
         }
         if (trustStoreConfiguration != null || keyStoreConfiguration != null) {
             final boolean isVerifyHostName = props.getBooleanProperty(verifyHostName, false);
-            sslConfiguration = SslConfiguration.createSSLConfiguration("https", keyStoreConfiguration,
-                trustStoreConfiguration, isVerifyHostName);
+            return SslConfiguration.createSSLConfiguration("https", keyStoreConfiguration,
+                    trustStoreConfiguration, isVerifyHostName);
         }
-    }
+        return null;
+    });
 
     public static SslConfiguration getSslConfiguration() {
-        return sslConfiguration;
+        return SSL_CONFIGURATION.get();
     }
 }
