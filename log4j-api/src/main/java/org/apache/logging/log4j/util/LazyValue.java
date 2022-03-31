@@ -27,6 +27,13 @@ import java.util.function.Supplier;
  */
 public final class LazyValue<T> implements Supplier<T> {
 
+    private static final Object NULL_INSTANCE = new Object();
+
+    @SuppressWarnings("unchecked")
+    private static <T> T nullInstance() {
+        return (T) NULL_INSTANCE;
+    }
+
     /**
      * Creates a lazy value using the provided Supplier for initialization.
      */
@@ -53,11 +60,16 @@ public final class LazyValue<T> implements Supplier<T> {
             synchronized (this) {
                 value = this.value;
                 if (value == null) {
-                    this.value = value = supplier.get();
+                    value = supplier.get();
+                    this.value = value == null ? nullInstance() : value;
                 }
             }
         }
-        return value;
+        return value == NULL_INSTANCE ? null : value;
+    }
+
+    public void set(final T value) {
+        this.value = value;
     }
 
     /**
