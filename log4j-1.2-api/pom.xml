@@ -134,6 +134,8 @@
             <Export-Package>org.apache.log4j.*</Export-Package>
             <Import-Package>
               javax.jms;version="[1.1,2)";resolution:=optional,
+              <!-- used by org.apache.log4j.jmx.Agent -->
+              com.sun.jdmk.comm;resolution:=optional,
               *
             </Import-Package>
           </instructions>
