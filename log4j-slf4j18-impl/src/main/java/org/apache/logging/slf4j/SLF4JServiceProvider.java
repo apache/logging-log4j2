@@ -44,7 +44,7 @@ public class SLF4JServiceProvider implements org.slf4j.spi.SLF4JServiceProvider 
     }
 
     @Override
-    public String getRequesteApiVersion() {
+    public String getRequestedApiVersion() {
         return REQUESTED_API_VERSION;
     }
 
