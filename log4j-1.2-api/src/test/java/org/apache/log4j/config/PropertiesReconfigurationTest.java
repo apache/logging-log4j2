@@ -128,24 +128,15 @@ public class PropertiesReconfigurationTest {
     }
 
     private void checkCustomAppender(final String appenderName, final boolean expectBoolean, final int expectInt, final String expectString) {
-        final Logger logger = LogManager.getLogger("test");
+        final Logger logger = LogManager.getRootLogger();
         final org.apache.log4j.Appender appender = logger.getAppender(appenderName);
         assertNotNull(appender);
         assertCustomNoopAppender(appender, expectBoolean, expectInt, expectString);
         assertCustomNoopAppender(getAppenderFromContext(appenderName), expectBoolean, expectInt, expectString);
     }
 
-    private void checkCustomFileAppender(final boolean expectAppend, final Appender appender) {
-        assertNotNull(appender);
-        final FileAppender fileAppender = (FileAppender) appender;
-        @SuppressWarnings("resource")
-        final FileManager manager = fileAppender.getManager();
-        assertNotNull(manager);
-        assertEquals(expectAppend, manager.isAppend());
-    }
-
     private void checkCustomFileAppender(final String appenderName, final boolean expectBoolean, final int expectInt, final String expectString) {
-        final Logger logger = LogManager.getLogger("test");
+        final Logger logger = LogManager.getRootLogger();
         final org.apache.log4j.Appender appender = logger.getAppender(appenderName);
         assertNotNull(appender);
         assertCustomFileAppender(appender, expectBoolean, expectInt, expectString);
@@ -153,13 +144,14 @@ public class PropertiesReconfigurationTest {
     }
 
     private void checkFileAppender(final boolean expectAppend, final String appenderName) {
-        final Logger logger = LogManager.getLogger("test");
+        final Logger logger = LogManager.getRootLogger();
         final org.apache.log4j.Appender appender = logger.getAppender(appenderName);
         assertNotNull(appender);
         final AppenderWrapper appenderWrapper = (AppenderWrapper) appender;
         checkCoreFileAppender(expectAppend, appenderWrapper.getAppender());
     }
 
+    @SuppressWarnings("unchecked")
     private <T extends org.apache.log4j.Appender> T getAppenderFromContext(final String appenderName) {
         final LoggerContext context = (LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
         final LoggerConfig loggerConfig = context.getConfiguration().getRootLogger();

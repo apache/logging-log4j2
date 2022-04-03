@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Binds a Log4j 1.x Appender to Log4j 2.
@@ -62,7 +63,11 @@ public class AppenderAdapter {
     private AppenderAdapter(Appender appender) {
         this.appender = appender;
         final org.apache.logging.log4j.core.Filter appenderFilter = FilterAdapter.adapt(appender.getFilter());
-        this.adapter = new Adapter(appender.getName(), appenderFilter, null, true, null);
+        String name = appender.getName();
+        if (Strings.isEmpty(name)) {
+            name = String.format("0x%08x", appender.hashCode());
+        }
+        this.adapter = new Adapter(name, appenderFilter, null, true, null);
     }
 
     public Adapter getAdapter() {

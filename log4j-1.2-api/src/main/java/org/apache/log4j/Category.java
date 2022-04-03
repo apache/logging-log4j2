@@ -16,13 +16,18 @@
  */
 package org.apache.log4j;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
 
+import org.apache.log4j.bridge.AppenderAdapter;
 import org.apache.log4j.bridge.AppenderWrapper;
+import org.apache.log4j.bridge.LogEventWrapper;
 import org.apache.log4j.helpers.AppenderAttachableImpl;
 import org.apache.log4j.helpers.NullEnumeration;
 import org.apache.log4j.legacy.core.CategoryUtil;
@@ -32,6 +37,7 @@ import org.apache.log4j.spi.AppenderAttachable;
 import org.apache.log4j.spi.HierarchyEventListener;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.message.LocalizedMessage;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
@@ -194,11 +200,17 @@ public class Category implements AppenderAttachable {
      */
     @Override
     public void addAppender(final Appender appender) {
-        if (aai == null) {
-            aai = new AppenderAttachableImpl();
-        }
-        aai.addAppender(appender);
         if (appender != null) {
+            if (LogManager.isLog4jCorePresent()) {
+                CategoryUtil.addAppender(logger, AppenderAdapter.adapt(appender));
+            } else {
+                synchronized (this) {
+                    if (aai == null) {
+                        aai = new AppenderAttachableImpl();
+                    }
+                    aai.addAppender(appender);
+                }
+            }
             repository.fireAddAppenderEvent(this, appender);
         }
     }
@@ -233,6 +245,10 @@ public class Category implements AppenderAttachable {
      * @param event the event to log.
      */
     public void callAppenders(final LoggingEvent event) {
+        if (LogManager.isLog4jCorePresent()) {
+            CategoryUtil.log(logger, new LogEventWrapper(event));
+            return;
+        }
         int writes = 0;
         for (Category c = this; c != null; c = c.parent) {
             // Protected against simultaneous call to addAppender, removeAppender,...
@@ -353,14 +369,23 @@ public class Category implements AppenderAttachable {
     }
 
     /**
-     * Get the appenders contained in this category as an {@link Enumeration}. If no appenders can be found, then a
-     * {@link NullEnumeration} is returned.
+     * Get all the Log4j 1.x appenders contained in this category as an
+     * {@link Enumeration}. Log4j 2.x appenders are omitted.
      *
      * @return Enumeration An enumeration of the appenders in this category.
      */
     @Override
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings("unchecked")
     public Enumeration getAllAppenders() {
+        if (LogManager.isLog4jCorePresent()) {
+            final Collection<org.apache.logging.log4j.core.Appender> appenders = CategoryUtil.getAppenders(logger)
+                    .values();
+            return Collections.enumeration(appenders.stream()
+                    // omit native Log4j 2.x appenders
+                    .filter(AppenderAdapter.Adapter.class::isInstance)
+                    .map(AppenderWrapper::adapt)
+                    .collect(Collectors.toSet()));
+        }
         return aai == null ? NullEnumeration.getInstance() : aai.getAllAppenders();
     }
 
@@ -372,14 +397,10 @@ public class Category implements AppenderAttachable {
      */
     @Override
     public Appender getAppender(final String name) {
-        Appender appender = aai != null ? aai.getAppender(name) : null;
-        if (appender == null && LogManager.isLog4jCorePresent()) {
-            final org.apache.logging.log4j.core.Appender coreAppender = CategoryUtil.getAppenders(logger).get(name);
-            if (coreAppender != null) {
-                addAppender(appender = AppenderWrapper.adapt(coreAppender));
-            }
+        if (LogManager.isLog4jCorePresent()) {
+            return AppenderWrapper.adapt(CategoryUtil.getAppenders(logger).get(name));
         }
-        return appender;
+        return aai != null ? aai.getAppender(name) : null;
     }
 
     public Priority getChainedPriority() {
