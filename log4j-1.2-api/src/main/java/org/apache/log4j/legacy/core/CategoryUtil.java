@@ -16,14 +16,19 @@
  */
 package org.apache.log4j.legacy.core;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.apache.log4j.bridge.AppenderAdapter;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.spi.LoggerContext;
 
 /**
@@ -40,13 +45,23 @@ public final class CategoryUtil {
     }
 
     /**
-     * Delegates to {@link org.apache.logging.log4j.core.Logger#getAppenders()} if appropriate.
+     * Gets the appenders attached directly to this logger.
      *
      * @param logger The target logger.
      * @return A Map containing the Appender's name as the key and the Appender as the value.
      */
     public static Map<String, Appender> getAppenders(final Logger logger) {
-        return get(logger, asCore(logger)::getAppenders, null);
+        return get(logger, () -> getDirectAppenders(logger), Collections.emptyMap());
+    }
+
+    private static Map<String, Appender> getDirectAppenders(final Logger logger) {
+        return CategoryUtil.getExactLoggerConfig(logger)
+                .map(LoggerConfig::getAppenders)
+                .orElse(Collections.emptyMap());
+    }
+
+    private static Optional<LoggerConfig> getExactLoggerConfig(final Logger logger) {
+        return Optional.of(asCore(logger).get()).filter(lc -> logger.getName().equals(lc.getName()));
     }
 
     /**
@@ -115,6 +130,32 @@ public final class CategoryUtil {
         if (isCore(logger)) {
             asCore(logger).setLevel(level);
         }
+    }
+
+    /**
+     * Adds an appender to the logger. This method requires a check for the presence
+     * of Log4j Core or it will cause a {@code ClassNotFoundException}.
+     * 
+     * @param logger   The target logger.
+     * @param appender A Log4j2 appender.
+     */
+    public static void addAppender(final Logger logger, final Appender appender) {
+        if (appender instanceof AppenderAdapter.Adapter) {
+            appender.start();
+        }
+        asCore(logger).addAppender(appender);
+    }
+
+    /**
+     * Sends the event to all appenders directly connected with the logger. This
+     * method requires a check for the presence of Log4j Core or it will cause a
+     * {@code ClassNotFoundException}.
+     * 
+     * @param logger The target logger.
+     * @param event  The event to send.
+     */
+    public static void log(final Logger logger, final LogEvent event) {
+        getExactLoggerConfig(logger).ifPresent(lc -> lc.log(event));
     }
 
     private CategoryUtil() {

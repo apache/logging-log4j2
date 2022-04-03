@@ -80,4 +80,8 @@ public class ListAppender extends AppenderSkeleton {
         }
         return getMessages();
     }
+
+    public String toString() {
+        return String.format("ListAppender[%s]", getName());
+    }
 }
