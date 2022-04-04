@@ -1333,11 +1333,6 @@
             <artifactId>asciidoctor-maven-plugin</artifactId>
             <version>${asciidoc.plugin.version}</version>
           </dependency>
-          <dependency>
-            <groupId>org.asciidoctor</groupId>
-            <artifactId>asciidoctor-maven-plugin</artifactId>
-            <version>${asciidoc.plugin.version}</version>
-          </dependency>
         </dependencies>
         <configuration>
           <!-- only build English site even on other language OS -->
