@@ -1396,11 +1396,6 @@
             <artifactId>wagon-ssh</artifactId>
             <version>3.1.0</version>
           </dependency>
-          <dependency>
-            <groupId>org.asciidoctor</groupId>
-            <artifactId>asciidoctor-maven-plugin</artifactId>
-            <version>${asciidoc.plugin.version}</version>
-          </dependency>
         </dependencies>
         <configuration>
           <!-- only build English site even on other language OS -->
