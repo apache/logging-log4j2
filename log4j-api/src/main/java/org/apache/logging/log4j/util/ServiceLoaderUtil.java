@@ -86,6 +86,9 @@ public final class ServiceLoaderUtil {
                         loadClassloaderServices(serviceType, lookup, contextClassLoader, verbose));
             }
         }
+        if (OsgiServiceLocator.isAvailable()) {
+            services = Stream.concat(services, OsgiServiceLocator.loadServices(serviceType, lookup, verbose));
+        }
         final Set<Class<?>> classes = new HashSet<>();
         // only the first occurrence of a class
         return services.filter(service -> classes.add(service.getClass()));
