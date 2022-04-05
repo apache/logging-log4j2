@@ -14,6 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
 package org.apache.logging.log4j.util3;
 
 import java.lang.invoke.CallSite;
@@ -23,17 +24,22 @@ import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.Objects;
+import java.util.Iterator;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.Spliterator;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * Loads all valid instances of a service.
+ * This class should be considered internal.
  */
 public final class ServiceLoaderUtil {
 
@@ -88,6 +94,11 @@ public final class ServiceLoaderUtil {
 
     static <T> Stream<T> loadClassloaderServices(final Class<T> serviceType, final Lookup lookup,
             final ClassLoader classLoader, final boolean verbose) {
+        return StreamSupport.stream(new ServiceLoaderSpliterator<T>(serviceType, lookup, classLoader, verbose), false);
+    }
+
+    static <T> Iterable<T> callServiceLoader(Lookup lookup, Class<T> serviceType, ClassLoader classLoader,
+            boolean verbose) {
         try {
             // Creates a lambda in the caller's domain that calls `ServiceLoader`
             final MethodHandle loadHandle = lookup.findStatic(ServiceLoader.class, "load",
@@ -111,22 +122,57 @@ public final class ServiceLoaderUtil {
                         MethodType.methodType(Object.class, PrivilegedAction.class));
                 serviceLoader = (ServiceLoader<T>) privilegedHandle.invoke(action);
             }
-            return serviceLoader.stream().map(provider -> {
-                try {
-                    return provider.get();
-                } catch (ServiceConfigurationError e) {
-                    if (verbose) {
-                        StatusLogger.getLogger().warn("Unable to load service class for service {}", serviceType, e);
-                    }
-                }
-                return null;
-            }).filter(Objects::nonNull);
+            return serviceLoader;
         } catch (Throwable e) {
             if (verbose) {
                 StatusLogger.getLogger().error("Unable to load services for service {}", serviceType, e);
             }
         }
-        return Stream.empty();
+        return Collections.emptyList();
     }
 
+    private static class ServiceLoaderSpliterator<S> implements Spliterator<S> {
+
+        private final Iterator<S> serviceIterator;
+        private final Logger logger;
+        private final String serviceName;
+
+        public ServiceLoaderSpliterator(final Class<S> serviceType, final Lookup lookup, final ClassLoader classLoader,
+                final boolean verbose) {
+            this.serviceIterator = callServiceLoader(lookup, serviceType, classLoader, verbose).iterator();
+            this.logger = verbose ? StatusLogger.getLogger() : null;
+            this.serviceName = serviceType.toString();
+        }
+
+        @Override
+        public boolean tryAdvance(Consumer<? super S> action) {
+            while (serviceIterator.hasNext()) {
+                try {
+                    action.accept(serviceIterator.next());
+                    return true;
+                } catch (ServiceConfigurationError e) {
+                    if (logger != null) {
+                        logger.warn("Unable to load service class for service {}", serviceName, e);
+                    }
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public Spliterator<S> trySplit() {
+            return null;
+        }
+
+        @Override
+        public long estimateSize() {
+            return Long.MAX_VALUE;
+        }
+
+        @Override
+        public int characteristics() {
+            return NONNULL | IMMUTABLE;
+        }
+
+    }
 }

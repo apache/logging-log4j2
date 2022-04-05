@@ -70,8 +70,15 @@ public class ServiceRegistry {
      * @return loaded service instances
      */
     public <S> List<S> getServices(final Class<S> serviceType, final Lookup lookup, final Predicate<S> validator) {
+        return getServices(serviceType, lookup, validator, true);
+    }
+
+    /**
+     * Set 'verbose' to false if the `StatusLogger` is not available yet.
+     */
+    <S> List<S> getServices(final Class<S> serviceType, final Lookup lookup, final Predicate<S> validator, boolean verbose) {
         final List<S> services = cast(mainServices.computeIfAbsent(serviceType,
-                ignored -> ServiceLoaderUtil.loadServices(serviceType, lookup)
+                ignored -> ServiceLoaderUtil.loadServices(serviceType, lookup, false, verbose)
                         .filter(validator != null ? validator : unused -> true)
                         .collect(Collectors.toList())));
         return Stream.concat(services.stream(), bundleServices.values().stream().flatMap(map -> {

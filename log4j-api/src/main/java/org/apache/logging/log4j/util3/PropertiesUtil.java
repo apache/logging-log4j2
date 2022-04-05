@@ -244,7 +244,8 @@ public class PropertiesUtil implements PropertyEnvironment {
             }
             sources.add(propertySource);
             final ServiceRegistry registry = ServiceRegistry.getInstance();
-            sources.addAll(registry.getServices(PropertySource.class, MethodHandles.lookup(), null));
+            // Does not log errors using StatusLogger, which depends on PropertiesUtil being initialized.
+            sources.addAll(registry.getServices(PropertySource.class, MethodHandles.lookup(), null, /*verbose=*/false));
             reload();
         }
 
