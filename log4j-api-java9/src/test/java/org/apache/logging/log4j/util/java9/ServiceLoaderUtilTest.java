@@ -16,13 +16,11 @@
  */
 package org.apache.logging.log4j.util.java9;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.lang.invoke.MethodHandles;
-import java.util.Collections;
 import java.util.List;
-import java.util.ServiceConfigurationError;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.util.PropertySource;
@@ -35,43 +33,21 @@ public class ServiceLoaderUtilTest {
 
     @Test
     public void testServiceResolution() {
-        // Run only if we are a module
-        if (ServiceLoaderUtil.class.getModule().isNamed()) {
-            List<Object> services = Collections.emptyList();
-            // Service from test module
-            try {
-                services = ServiceLoaderUtil.loadServices(Service.class, MethodHandles.lookup())
-                        .collect(Collectors.toList());
-            } catch (ServiceConfigurationError e) {
-                fail(e);
-            }
-            assertEquals(2, services.size(), "Service services");
-            // BetterService from test module
-            services.clear();
-            try {
-                services = ServiceLoaderUtil.loadServices(BetterService.class, MethodHandles.lookup())
-                        .collect(Collectors.toList());
-            } catch (ServiceConfigurationError e) {
-                fail(e);
-            }
-            assertEquals(1, services.size(), "BetterService services");
-            // PropertySource from org.apache.logging.log4j module from this module
-            services.clear();
-            try {
-                services = ServiceLoaderUtil.loadServices(PropertySource.class, MethodHandles.lookup())
-                        .collect(Collectors.toList());
-            } catch (ServiceConfigurationError e) {
-                fail(e);
-            }
-            assertEquals(0, services.size(), "PropertySource services");
-            // PropertySource from within org.apache.logging.log4j module
-            services.clear();
-            try {
-                services = PropertySource.loadPropertySources().collect(Collectors.toList());
-            } catch (ServiceConfigurationError e) {
-                fail(e);
-            }
-            assertEquals(2, services.size(), "PropertySource services");
-        }
+        List<Object> services;
+        // Service from test module
+        services = assertDoesNotThrow(() -> ServiceLoaderUtil.loadServices(Service.class, MethodHandles.lookup())
+                .collect(Collectors.toList()));
+        assertThat(services).hasSize(2);
+        // BetterService from test module
+        services = assertDoesNotThrow(() -> ServiceLoaderUtil.loadServices(BetterService.class, MethodHandles.lookup())
+                .collect(Collectors.toList()));
+        assertThat(services).hasSize(1);
+        // PropertySource from org.apache.logging.log4j module from this module
+        services = assertDoesNotThrow(() -> ServiceLoaderUtil.loadServices(PropertySource.class, MethodHandles.lookup())
+                .collect(Collectors.toList()));
+        assertThat(services).hasSize(0);
+        // PropertySource from within org.apache.logging.log4j module
+        services = assertDoesNotThrow(() -> PropertySource.loadPropertySources().collect(Collectors.toList()));
+        assertThat(services).hasSize(2);
     }
 }

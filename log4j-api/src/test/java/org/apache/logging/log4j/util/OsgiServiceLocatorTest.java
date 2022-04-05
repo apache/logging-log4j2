@@ -14,21 +14,26 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-import org.apache.logging.log4j.util.java9.test.BetterService;
-import org.apache.logging.log4j.util.java9.test.Service;
-import org.apache.logging.log4j.util.java9.test.Service1;
-import org.apache.logging.log4j.util.java9.test.Service2;
+package org.apache.logging.log4j.util;
 
-open module org.apache.logging.log4j.java9test {
-    exports org.apache.logging.log4j.util.java9;
+import java.lang.invoke.MethodHandles;
+import java.util.stream.Stream;
 
-    requires org.apache.logging.log4j;
-    requires transitive org.junit.jupiter.engine;
-    requires transitive org.junit.jupiter.api;
+import org.apache.logging.log4j.spi.Provider;
 
-    uses Service;
-    uses BetterService;
+public class OsgiServiceLocatorTest {
 
-    provides Service with Service1, Service2;
-    provides BetterService with Service2;
+    /**
+     * Used by OSGI {@link AbstractLoadBundleTest} to preserve caller
+     * sensitivity.
+     * 
+     * @return
+     */
+    public static Stream<Provider> loadProviders() {
+        return OsgiServiceLocator.loadServices(Provider.class, MethodHandles.lookup());
+    }
+
+    public static Stream<PropertySource> loadPropertySources() {
+        return OsgiServiceLocator.loadServices(PropertySource.class, MethodHandles.lookup());
+    }
 }

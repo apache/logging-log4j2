@@ -68,10 +68,6 @@
       <artifactId>commons-lang3</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.glassfish.hk2</groupId>
-      <artifactId>osgi-resource-locator</artifactId>
-    </dependency>
   </dependencies>
   <build>
     <plugins>

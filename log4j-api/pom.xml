@@ -95,10 +95,6 @@
       <groupId>org.junit-pioneer</groupId>
       <artifactId>junit-pioneer</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.glassfish.hk2</groupId>
-      <artifactId>osgi-resource-locator</artifactId>
-    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -215,7 +211,7 @@
             </goals>
             <configuration>
               <archive>
-                <manifestFile>${manifestfile}</manifestFile>
+                <manifestFile>${project.build.testOutputDirectory}/META-INF/MANIFEST.MF</manifestFile>
                 <manifestEntries>
                   <Specification-Title>${project.name}</Specification-Title>
                   <Specification-Version>${project.version}</Specification-Version>
@@ -250,18 +246,48 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Export-Package>org.apache.logging.log4j.*</Export-Package>
-            <Import-Package>
-              sun.reflect;resolution:=optional,
-              org.glassfish.hk2.osgiresourcelocator;version="[2.5,3.0)";resolution:=optional,
-              *
-            </Import-Package>
-            <Bundle-Activator>org.apache.logging.log4j.util.Activator</Bundle-Activator>
-            <_fixupmessages>"Classes found in the wrong directory";is:=warning</_fixupmessages>
-          </instructions>
-        </configuration>
+        <executions>
+          <execution>
+            <id>default-manifest</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+            <configuration>
+              <instructions>
+                <Export-Package>org.apache.logging.log4j.*</Export-Package>
+                <Import-Package>
+                  sun.reflect;resolution:=optional,
+                  *
+                </Import-Package>
+                <Bundle-Activator>org.apache.logging.log4j.util.Activator</Bundle-Activator>
+                <_fixupmessages>"Classes found in the wrong directory";is:=warning</_fixupmessages>
+              </instructions>
+            </configuration>
+          </execution>
+          <execution>
+            <id>default-test-manifest</id>
+            <phase>process-test-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+            <configuration>
+              <classifier>tests</classifier>
+              <outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
+              <manifestLocation>${project.build.testOutputDirectory}/META-INF</manifestLocation>
+              <instructions>
+                <Bundle-SymbolicName>${maven-symbolicname}.tests</Bundle-SymbolicName>
+                <Fragment-Host>org.apache.logging.log4j.api</Fragment-Host>
+                <Export-Package>org.apache.logging.log4j.*</Export-Package>
+                <Import-Package></Import-Package>
+              </instructions>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-scr-plugin</artifactId>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
