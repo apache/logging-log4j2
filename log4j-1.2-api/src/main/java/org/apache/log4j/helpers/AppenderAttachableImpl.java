@@ -38,10 +38,10 @@ public class AppenderAttachableImpl implements AppenderAttachable {
     protected Vector appenderList;
 
     @Override
-    public void addAppender(final Appender newAppender) {
-        if (newAppender != null) {
+    public void addAppender(final Appender appender) {
+        if (appender != null) {
             // NullAppender name is null.
-            appenders.put(Objects.toString(newAppender.getName()), newAppender);
+            appenders.put(Objects.toString(appender.getName()), appender);
         }
     }
 
@@ -80,7 +80,7 @@ public class AppenderAttachableImpl implements AppenderAttachable {
 
     @Override
     public boolean isAttached(final Appender appender) {
-        return appenders.containsValue(appender);
+        return appender != null ? appenders.containsValue(appender) : false;
     }
 
     @Override
@@ -90,11 +90,18 @@ public class AppenderAttachableImpl implements AppenderAttachable {
 
     @Override
     public void removeAppender(final Appender appender) {
-        appenders.remove(appender.getName(), appender);
+        if (appender != null) {
+            final String name = appender.getName();
+            if (name != null) {
+                appenders.remove(name, appender);
+            }
+        }
     }
 
     @Override
     public void removeAppender(final String name) {
-        appenders.remove(name);
+        if (name != null) {
+            appenders.remove(name);
+        }
     }
 }
