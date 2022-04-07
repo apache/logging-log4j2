@@ -16,9 +16,14 @@
  */
 package org.apache.logging.log4j;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 public class LevelTest {
 
@@ -37,7 +42,17 @@ public class LevelTest {
         assertNotNull(level);
         assertEquals(level, Level.forName(name, intValue));
         assertEquals(level, Level.getLevel(name));
+        assertEquals(level, Level.toLevel(name));
         assertEquals(intValue, Level.getLevel(name).intLevel());
+    }
+
+    @Test
+    public void testThrowsOnNull() {
+        assertThrowsExactly(IllegalArgumentException.class, () -> Level.forName(null, 100));
+        assertThrowsExactly(IllegalArgumentException.class, () -> Level.getLevel(null));
+        // the intLevel should be checked only if we create a new level
+        assertNull(Level.getLevel("Bar"));
+        assertThrowsExactly(IllegalArgumentException.class, () -> Level.forName("Bar", -1));
     }
 
     @Test
