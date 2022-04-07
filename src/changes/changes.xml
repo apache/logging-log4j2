@@ -85,6 +85,9 @@
       <action issue="LOG4J2-3359" dev="pkarwasz" type="fix" due-to="Tukesh, Piotr P. Karwasz">
         Fixes the syslog appender in Log4j 1.x bridge, when used with a custom layout.
       </action>
+      <action issue="LOG4J2-3359" dev="ggregory" type="fix" due-to="Rajesh, Gary Gregory">
+        log4j-1.2-api 2.17.2 throws NullPointerException while removing appender with name as null.
+      </action>
       <!-- UPDATES -->
       <action issue="LOG4J2-3428" dev="ggregory" type="fix" due-to="LF-Lin">
         Update 3rd party dependencies for 2.17.3.
