@@ -17,7 +17,6 @@
 package org.apache.logging.log4j;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -139,7 +138,7 @@ public final class Level implements Comparable<Level>, Serializable {
         this.name = name;
         this.intLevel = intLevel;
         this.standardLevel = StandardLevel.getStandardLevel(intLevel);
-        if (LEVELS.putIfAbsent(name, this) != null) {
+        if (LEVELS.putIfAbsent(toUpperCase(name.trim()), this) != null) {
             throw new IllegalStateException("Level " + name + " has already been defined.");
         }
     }
@@ -259,15 +258,20 @@ public final class Level implements Comparable<Level>, Serializable {
      * @throws java.lang.IllegalArgumentException if the name is null or intValue is less than zero.
      */
     public static Level forName(final String name, final int intValue) {
-        final Level level = LEVELS.get(name);
+        if (Strings.isEmpty(name)) {
+            throw new IllegalArgumentException("Illegal null or empty Level name.");
+        }
+        final String normalizedName = toUpperCase(name.trim());
+        final Level level = LEVELS.get(normalizedName);
         if (level != null) {
             return level;
         }
         try {
+            // use original capitalization
             return new Level(name, intValue);
         } catch (final IllegalStateException ex) {
             // The level was added by something else so just return that one.
-            return LEVELS.get(name);
+            return LEVELS.get(normalizedName);
         }
     }
 
@@ -276,9 +280,13 @@ public final class Level implements Comparable<Level>, Serializable {
      *
      * @param name The name of the Level.
      * @return The Level or null.
+     * @throws java.lang.IllegalArgumentException if the name is null.
      */
     public static Level getLevel(final String name) {
-        return LEVELS.get(name);
+        if (Strings.isEmpty(name)) {
+            throw new IllegalArgumentException("Illegal null or empty Level name.");
+        }
+        return LEVELS.get(toUpperCase(name.trim()));
     }
 
     /**
