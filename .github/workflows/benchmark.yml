@@ -28,12 +28,12 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       # JDK 11 is needed for the build.
       # Search `maven-toolchains-plugin` usages for details.
       - name: Set up JDK 11
-        uses: actions/setup-java@v2.4.0
+        uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: 11
@@ -44,7 +44,7 @@ jobs:
       # JDK 8 is needed for the build, and it is the primary bytecode target.
       # Hence, JDK 8 is set up after 11, so that JAVA_HOME used by Maven during build will point to 8.
       - name: Set up JDK 8
-        uses: actions/setup-java@v2.3.1
+        uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: 8
@@ -87,7 +87,7 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Download built sources
         uses: actions/download-artifact@v2
@@ -96,7 +96,7 @@ jobs:
           path: log4j-perf/target
 
       - name: Set up JDK ${{ matrix.jdk }}
-        uses: actions/setup-java@v2.4.0
+        uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: ${{ matrix.jdk }}
@@ -192,7 +192,7 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: gh-pages
 
