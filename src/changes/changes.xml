@@ -94,6 +94,9 @@
       <action issue="LOG4J2-3440" dev="pkarwasz" type="add">
         Add support for adding and retrieving appenders in Log4j 1.x bridge.
       </action>
+      <action issue="LOG4J2-3475" dev="jjlin" type="fix" due-to="Jeremy Lin">
+        Add missing message parameterization in RegexFilter.
+      </action>
       <!-- UPDATES -->
       <action issue="LOG4J2-3428" dev="ggregory" type="fix" due-to="LF-Lin">
         Update 3rd party dependencies for 2.17.3.
