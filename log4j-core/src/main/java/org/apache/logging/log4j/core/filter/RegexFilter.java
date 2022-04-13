@@ -33,6 +33,7 @@ import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.ParameterizedMessage;
 
 /**
  * This filter returns the onMatch result if the message matches the regular expression.
@@ -57,7 +58,10 @@ public final class RegexFilter extends AbstractFilter {
     @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
             final Object... params) {
-        return filter(msg);
+        if (useRawMessage || params == null || params.length == 0) {
+            return filter(msg);
+        }
+        return filter(ParameterizedMessage.format(msg, params));
     }
 
     @Override

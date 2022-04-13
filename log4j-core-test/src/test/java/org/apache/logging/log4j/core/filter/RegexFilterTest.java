@@ -81,4 +81,24 @@ public class RegexFilterTest {
         assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (Message) null, (Throwable) null));
         assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, null, (Object[]) null));
     }
+
+    @Test
+    public void testParameterizedMsg() throws Exception {
+        final String msg = "params {} {}";
+        final Object[] params = { "foo", "bar" };
+
+        // match against raw message
+        final RegexFilter rawFilter = RegexFilter.createFilter("params \\{\\} \\{\\}", null,
+                                                               true, // useRawMsg
+                                                               Result.ACCEPT, Result.DENY);
+        final Result rawResult = rawFilter.filter(null, null, null, msg, params);
+        assertThat(rawResult, equalTo(Result.ACCEPT));
+
+        // match against formatted message
+        final RegexFilter fmtFilter = RegexFilter.createFilter("params foo bar", null,
+                                                               false, // useRawMsg
+                                                               Result.ACCEPT, Result.DENY);
+        final Result fmtResult = fmtFilter.filter(null, null, null, msg, params);
+        assertThat(fmtResult, equalTo(Result.ACCEPT));
+    }
 }
