@@ -34,8 +34,12 @@
       <excludes>
         <exclude>**/Dummy.class</exclude>
         <exclude>**/spi/Provider.class</exclude>
+        <exclude>**/status/StatusLogger.class</exclude>
+        <exclude>**/util/EnvironmentPropertySource.class</exclude>
+        <exclude>**/util/LoaderUtil.class</exclude>
         <exclude>**/util/PropertySource.class</exclude>
         <exclude>**/util/PrivateSecurityManagerStackTraceUtil.class</exclude>
+        <exclude>**/util/SystemPropertiesPropertySource.class</exclude>
         <exclude>**/message/ThreadDumpMessage.class</exclude>
         <exclude>**/message/ThreadDumpMessage$ThreadInfoFactory.class</exclude>
       </excludes>

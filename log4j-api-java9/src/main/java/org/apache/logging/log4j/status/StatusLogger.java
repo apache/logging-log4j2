@@ -14,23 +14,25 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-import org.apache.logging.log4j.util.EnvironmentPropertySource;
-import org.apache.logging.log4j.util.PropertySource;
-import org.apache.logging.log4j.util.SystemPropertiesPropertySource;
+package org.apache.logging.log4j.status;
 
-module org.apache.logging.log4j {
-    requires java.base;
+import java.util.concurrent.atomic.AtomicInteger;
 
-    exports org.apache.logging.log4j;
-    exports org.apache.logging.log4j.message;
-    exports org.apache.logging.log4j.simple;
-    exports org.apache.logging.log4j.spi;
-    exports org.apache.logging.log4j.status;
-    exports org.apache.logging.log4j.util;
+/**
+ * This is a dummy class and is only here to allow module-info.java to compile.
+ * It will not be copied into the log4j-api module.
+ */
+public final class StatusLogger {
 
-    uses org.apache.logging.log4j.spi.Provider;
-    uses org.apache.logging.log4j.util.PropertySource;
-    uses org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory;
+    private static final StatusLogger STATUS_LOGGER = new StatusLogger();
 
-    provides PropertySource with EnvironmentPropertySource, SystemPropertiesPropertySource;
+    public void error(String message, Object p0, Object p1) {
+    }
+
+    public void warn(String message, Object p0, Object p1) {
+    }
+
+    public static StatusLogger getLogger() {
+        return STATUS_LOGGER;
+    }
 }

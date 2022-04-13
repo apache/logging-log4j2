@@ -14,23 +14,8 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-import org.apache.logging.log4j.util.EnvironmentPropertySource;
-import org.apache.logging.log4j.util.PropertySource;
-import org.apache.logging.log4j.util.SystemPropertiesPropertySource;
 
-module org.apache.logging.log4j {
-    requires java.base;
+package org.apache.logging.log4j.util.java9.test;
 
-    exports org.apache.logging.log4j;
-    exports org.apache.logging.log4j.message;
-    exports org.apache.logging.log4j.simple;
-    exports org.apache.logging.log4j.spi;
-    exports org.apache.logging.log4j.status;
-    exports org.apache.logging.log4j.util;
-
-    uses org.apache.logging.log4j.spi.Provider;
-    uses org.apache.logging.log4j.util.PropertySource;
-    uses org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory;
-
-    provides PropertySource with EnvironmentPropertySource, SystemPropertiesPropertySource;
+public interface Service {
 }
