@@ -20,23 +20,16 @@ package org.apache.logging.log4j.util;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.Objects;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 import java.util.Set;
-import java.util.Spliterator;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
-/**
- * This class should be considered internal.
- */
 public final class ServiceLoaderUtil {
 
     private static final MethodType LOAD_CLASS_CLASSLOADER = MethodType.methodType(ServiceLoader.class, Class.class,
@@ -93,66 +86,26 @@ public final class ServiceLoaderUtil {
 
     static <T> Stream<T> loadClassloaderServices(final Class<T> serviceType, final Lookup lookup,
             final ClassLoader classLoader, final boolean verbose) {
-        return StreamSupport.stream(new ServiceLoaderSpliterator<T>(serviceType, lookup, classLoader, verbose), false);
-    }
-
-    static <T> Iterable<T> callServiceLoader(Lookup lookup, Class<T> serviceType, ClassLoader classLoader,
-            boolean verbose) {
         try {
             final MethodHandle handle = lookup.findStatic(ServiceLoader.class, "load", LOAD_CLASS_CLASSLOADER);
             final ServiceLoader<T> serviceLoader = (ServiceLoader<T>) handle.invokeExact(serviceType, classLoader);
-            return serviceLoader;
+            return serviceLoader.stream().map(provider -> {
+                try {
+                    return provider.get();
+                } catch (ServiceConfigurationError e) {
+                    if (verbose) {
+                        StatusLogger.getLogger().warn("Unable to load service class for service {}",
+                                serviceType.getClass(), e);
+                    }
+                }
+                return null;
+            }).filter(Objects::nonNull);
         } catch (Throwable e) {
             if (verbose) {
                 StatusLogger.getLogger().error("Unable to load services for service {}", serviceType, e);
             }
         }
-        return Collections.emptyList();
-
+        return Stream.empty();
     }
 
-    private static class ServiceLoaderSpliterator<S> implements Spliterator<S> {
-
-        private final Iterator<S> serviceIterator;
-        private final Logger logger;
-        private final String serviceName;
-
-        public ServiceLoaderSpliterator(final Class<S> serviceType, final Lookup lookup, final ClassLoader classLoader,
-                final boolean verbose) {
-            this.serviceIterator = callServiceLoader(lookup, serviceType, classLoader, verbose).iterator();
-            this.logger = verbose ? StatusLogger.getLogger() : null;
-            this.serviceName = serviceType.toString();
-        }
-
-        @Override
-        public boolean tryAdvance(Consumer<? super S> action) {
-            while (serviceIterator.hasNext()) {
-                try {
-                    action.accept(serviceIterator.next());
-                    return true;
-                } catch (ServiceConfigurationError e) {
-                    if (logger != null) {
-                        logger.warn("Unable to load service class for service {}", serviceName, e);
-                    }
-                }
-            }
-            return false;
-        }
-
-        @Override
-        public Spliterator<S> trySplit() {
-            return null;
-        }
-
-        @Override
-        public long estimateSize() {
-            return Long.MAX_VALUE;
-        }
-
-        @Override
-        public int characteristics() {
-            return NONNULL | IMMUTABLE;
-        }
-
-    }
 }

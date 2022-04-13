@@ -17,26 +17,26 @@
 package org.apache.logging.log4j.core.util;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.lang.invoke.MethodHandles;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.ServiceLoader;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.config.ConfigurationFileWatcher;
 import org.apache.logging.log4j.core.config.ConfigurationScheduler;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.ServiceLoaderUtil;
 
 /**
  * Manages {@link FileWatcher}s.
@@ -134,7 +134,8 @@ public class WatchManager extends AbstractLifeCycle {
 
     public WatchManager(final ConfigurationScheduler scheduler) {
         this.scheduler = Objects.requireNonNull(scheduler, "scheduler");
-        eventServiceList = getEventServices();
+        eventServiceList = ServiceLoaderUtil.loadServices(WatchEventService.class, MethodHandles.lookup(), true)
+                .collect(Collectors.toList());
     }
 
     public void checkFiles() {
@@ -153,22 +154,6 @@ public class WatchManager extends AbstractLifeCycle {
             map.put(entry.getKey(), entry.getValue().getWatcher());
         }
         return map;
-    }
-
-    private List<WatchEventService> getEventServices() {
-        List<WatchEventService> list = new ArrayList<>();
-        for (final ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
-            try {
-                final ServiceLoader<WatchEventService> serviceLoader = ServiceLoader
-                    .load(WatchEventService.class, classLoader);
-                for (final WatchEventService service : serviceLoader) {
-                    list.add(service);
-                }
-            } catch (final Throwable ex) {
-                LOGGER.debug("Unable to retrieve WatchEventService from ClassLoader {}", classLoader, ex);
-            }
-        }
-        return list;
     }
 
     public UUID getId() {

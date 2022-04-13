@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.util;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -63,14 +64,11 @@ public final class ProviderUtil {
     private static volatile ProviderUtil instance;
 
     private ProviderUtil() {
-        for (final ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
-            try {
-                loadProviders(classLoader);
-            } catch (final Throwable ex) {
-                LOGGER.debug("Unable to retrieve provider from ClassLoader {}", classLoader, ex);
-            }
-        }
-        for (final LoaderUtil.UrlResource resource : LoaderUtil.findUrlResources(PROVIDER_RESOURCE)) {
+        ServiceLoaderUtil.loadServices(Provider.class, MethodHandles.lookup(), false)
+                .filter(provider -> validVersion(provider.getVersions()))
+                .forEach(PROVIDERS::add);
+
+        for (final LoaderUtil.UrlResource resource : LoaderUtil.findUrlResources(PROVIDER_RESOURCE, false)) {
             loadProvider(resource.getUrl(), resource.getClassLoader());
         }
     }
@@ -100,18 +98,15 @@ public final class ProviderUtil {
         }
     }
 
-	/**
-	 * 
-	 * @param classLoader null can be used to mark the bootstrap class loader.
-	 */
-	protected static void loadProviders(final ClassLoader classLoader) {
-		final ServiceLoader<Provider> serviceLoader = ServiceLoader.load(Provider.class, classLoader);
-		for (final Provider provider : serviceLoader) {
-			if (validVersion(provider.getVersions()) && !PROVIDERS.contains(provider)) {
-				PROVIDERS.add(provider);
-			}
-		}
-	}
+    /**
+     * 
+     * @param classLoader null can be used to mark the bootstrap class loader.
+     */
+    protected static void loadProviders(final ClassLoader classLoader) {
+        ServiceLoaderUtil.loadClassloaderServices(Provider.class, MethodHandles.lookup(), classLoader, true)
+                .filter(provider -> validVersion(provider.getVersions()))
+                .forEach(PROVIDERS::add);
+    }
 
     /**
      * @deprecated Use {@link #loadProvider(java.net.URL, ClassLoader)} instead. Will be removed in 3.0.

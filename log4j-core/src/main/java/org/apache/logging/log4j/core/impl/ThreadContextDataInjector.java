@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import org.apache.logging.log4j.Logger;
@@ -32,8 +32,8 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.util.ContextDataProvider;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.ServiceLoaderUtil;
 import org.apache.logging.log4j.util.StringMap;
 
 /**
@@ -74,17 +74,8 @@ public class ThreadContextDataInjector {
 
     private static List<ContextDataProvider> getServiceProviders() {
         List<ContextDataProvider> providers = new ArrayList<>();
-        for (final ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
-            try {
-                for (final ContextDataProvider provider : ServiceLoader.load(ContextDataProvider.class, classLoader)) {
-                    if (providers.stream().noneMatch(p -> p.getClass().isAssignableFrom(provider.getClass()))) {
-                        providers.add(provider);
-                    }
-                }
-            } catch (final Throwable ex) {
-                LOGGER.debug("Unable to access Context Data Providers {}", ex.getMessage());
-            }
-        }
+        ServiceLoaderUtil.loadServices(ContextDataProvider.class, MethodHandles.lookup(), false)
+                .forEach(providers::add);
         return Collections.unmodifiableList(providers);
     }
 

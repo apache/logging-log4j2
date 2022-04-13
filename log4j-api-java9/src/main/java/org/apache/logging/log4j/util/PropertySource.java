@@ -14,23 +14,21 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-import org.apache.logging.log4j.util.EnvironmentPropertySource;
-import org.apache.logging.log4j.util.PropertySource;
-import org.apache.logging.log4j.util.SystemPropertiesPropertySource;
+package org.apache.logging.log4j.util;
 
-module org.apache.logging.log4j {
-    requires java.base;
+import java.lang.invoke.MethodHandles;
+import java.util.stream.Stream;
 
-    exports org.apache.logging.log4j;
-    exports org.apache.logging.log4j.message;
-    exports org.apache.logging.log4j.simple;
-    exports org.apache.logging.log4j.spi;
-    exports org.apache.logging.log4j.status;
-    exports org.apache.logging.log4j.util;
+/**
+ * This is a dummy class and is only here to allow module-info.java to compile. It will not
+ * be copied into the log4j-api module.
+ */
+public interface PropertySource {
 
-    uses org.apache.logging.log4j.spi.Provider;
-    uses org.apache.logging.log4j.util.PropertySource;
-    uses org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory;
-
-    provides PropertySource with EnvironmentPropertySource, SystemPropertiesPropertySource;
+    /**
+     * This method's only purpose is to test {@link ServiceLoaderUtil} from inside the module.
+     */
+    public static Stream<PropertySource> loadPropertySources() {
+        return ServiceLoaderUtil.loadServices(PropertySource.class, MethodHandles.lookup());
+    }
 }

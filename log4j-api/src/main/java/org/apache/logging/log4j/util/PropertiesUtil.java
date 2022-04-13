@@ -18,6 +18,7 @@ package org.apache.logging.log4j.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
 import java.nio.charset.Charset;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -50,7 +51,7 @@ public final class PropertiesUtil {
 
     private static final String LOG4J_PROPERTIES_FILE_NAME = "log4j2.component.properties";
     private static final String LOG4J_SYSTEM_PROPERTIES_FILE_NAME = "log4j2.system.properties";
-    private static final PropertiesUtil LOG4J_PROPERTIES = new PropertiesUtil(LOG4J_PROPERTIES_FILE_NAME);
+    private static final PropertiesUtil LOG4J_PROPERTIES = new PropertiesUtil(LOG4J_PROPERTIES_FILE_NAME, false);
 
     private final Environment environment;
 
@@ -70,7 +71,11 @@ public final class PropertiesUtil {
      * @param propertiesFileName the location of properties file to load
      */
     public PropertiesUtil(final String propertiesFileName) {
-        this.environment = new Environment(new PropertyFilePropertySource(propertiesFileName));
+        this(propertiesFileName, true);
+    }
+
+    private PropertiesUtil(final String propertiesFileName, final boolean useTccl) {
+        this.environment = new Environment(new PropertyFilePropertySource(propertiesFileName, useTccl));
     }
 
     /**
@@ -424,7 +429,7 @@ public final class PropertiesUtil {
         private final Map<List<CharSequence>, String> tokenized = new ConcurrentHashMap<>();
 
         private Environment(final PropertySource propertySource) {
-            PropertyFilePropertySource sysProps = new PropertyFilePropertySource(LOG4J_SYSTEM_PROPERTIES_FILE_NAME);
+            PropertyFilePropertySource sysProps = new PropertyFilePropertySource(LOG4J_SYSTEM_PROPERTIES_FILE_NAME, false);
             try {
                 sysProps.forEach((key, value) -> {
                     if (System.getProperty(key) == null) {
@@ -435,17 +440,9 @@ public final class PropertiesUtil {
                 // Access to System Properties is restricted so just skip it.
             }
             sources.add(propertySource);
-			for (final ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
-				try {
-					for (final PropertySource source : ServiceLoader.load(PropertySource.class, classLoader)) {
-						sources.add(source);
-					}
-				} catch (final Throwable ex) {
-					/* Don't log anything to the console. It may not be a problem that a PropertySource
-					 * isn't accessible.
-					 */
-				}
-			}
+            // We don't log anything on the status logger.
+            ServiceLoaderUtil.loadServices(PropertySource.class, MethodHandles.lookup(), false, false)
+                    .forEach(sources::add);
 
             reload();
         }

@@ -18,30 +18,28 @@
 package org.apache.logging.log4j.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.Collections;
 import java.util.List;
 import java.util.ServiceConfigurationError;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.test.BetterService;
 import org.apache.logging.log4j.util.test.Service;
-import org.apache.logging.log4j.util.test.Service1;
-import org.apache.logging.log4j.util.test.Service2;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.SetSystemProperty;
-import org.junitpioneer.jupiter.SetSystemProperty.SetSystemProperties;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
+@Execution(ExecutionMode.SAME_THREAD)
 public class ServiceLoaderUtilTest {
 
     private static final AtomicInteger counter = new AtomicInteger();
@@ -77,7 +75,8 @@ public class ServiceLoaderUtilTest {
         List<Service> services = Collections.emptyList();
         final int warnings = counter.get();
         try {
-            services = ServiceLoaderUtil.loadServices(Service.class, StatusLogger.getLogger()::warn);
+            services = ServiceLoaderUtil.loadServices(Service.class, MethodHandles.lookup(), false)
+                    .collect(Collectors.toList());
         } catch (ServiceConfigurationError e) {
             fail(e);
         }
@@ -86,42 +85,4 @@ public class ServiceLoaderUtilTest {
         assertEquals(warnings + 2, counter.get());
     }
 
-    @Test
-    public void testMultipleServicesPresentWarning() {
-        final int warnings = counter.get();
-        final Service service = ServiceLoaderUtil.getService(Service.class);
-        assertTrue(service instanceof Service1);
-        assertEquals(warnings + 1, counter.get());
-        // No warning
-        final BetterService betterService = ServiceLoaderUtil.getService(BetterService.class);
-        assertTrue(betterService instanceof Service2);
-        assertEquals(warnings + 1, counter.get());
-    }
-
-    @Test
-    @SetSystemProperties({
-            @SetSystemProperty(key = "org.apache.logging.log4j.util.test.Service", value = "org.apache.logging.log4j.util.test.Service2"),
-            @SetSystemProperty(key = "org.apache.logging.log4j.util.test.BetterService", value = "java.lang.String") })
-    public void testOverrideService() {
-        final int warnings = counter.get();
-        // Valid override
-        final Service service = ServiceLoaderUtil.getService(Service.class);
-        assertTrue(service instanceof Service2);
-        assertEquals(warnings, counter.get());
-        // Invalid override
-        final BetterService betterService = ServiceLoaderUtil.getService(BetterService.class);
-        assertEquals(warnings + 1, counter.get());
-        assertTrue(betterService instanceof Service2);
-    }
-
-    @Test
-    @SetSystemProperty(key = "java.lang.String", value = "invalid.String")
-    public void testNonExistingService() {
-        final int warnings = counter.get();
-        assertNull(ServiceLoaderUtil.getService(Double.class));
-        assertEquals(warnings, counter.get());
-        // With manual override
-        assertNull(ServiceLoaderUtil.getService(String.class));
-        assertEquals(warnings + 1, counter.get());
-    }
 }

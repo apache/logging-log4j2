@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.util;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.security.AccessController;
@@ -102,32 +103,6 @@ public final class LoaderUtil {
             }
             final ClassLoader ccl = LoaderUtil.class.getClassLoader();
             return ccl == null && !GET_CLASS_LOADER_DISABLED ? ClassLoader.getSystemClassLoader() : ccl;
-        }
-    }
-
-    public static ClassLoader[] getClassLoaders() {
-        final Collection<ClassLoader> classLoaders = new LinkedHashSet<>();
-        final ClassLoader tcl = getThreadContextClassLoader();
-        if (tcl != null) {
-            classLoaders.add(tcl);
-        }
-        accumulateClassLoaders(LoaderUtil.class.getClassLoader(), classLoaders);
-        accumulateClassLoaders(tcl == null ? null : tcl.getParent(), classLoaders);
-        final ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
-		if (systemClassLoader != null) {
-            classLoaders.add(systemClassLoader);
-        }
-        return classLoaders.toArray(EMPTY_CLASS_LOADER_ARRAY);
-    }
-
-    /**
-     * Adds the provided loader to the loaders collection, and traverses up the tree until either a null
-     * value or a classloader which has already been added is encountered.
-     */
-    private static void accumulateClassLoaders(ClassLoader loader, Collection<ClassLoader> loaders) {
-        // Some implementations may use null to represent the bootstrap class loader.
-        if (loader != null && loaders.add(loader)) {
-            accumulateClassLoaders(loader.getParent(), loaders);
         }
     }
 
@@ -272,7 +247,11 @@ public final class LoaderUtil {
      * @since 2.1
      */
     public static Collection<URL> findResources(final String resource) {
-        final Collection<UrlResource> urlResources = findUrlResources(resource);
+        return findResources(resource, true);
+    }
+
+    static Collection<URL> findResources(final String resource, final boolean useTccl) {
+        final Collection<UrlResource> urlResources = findUrlResources(resource, useTccl);
         final Collection<URL> resources = new LinkedHashSet<>(urlResources.size());
         for (final UrlResource urlResource : urlResources) {
             resources.add(urlResource.getUrl());
@@ -280,10 +259,10 @@ public final class LoaderUtil {
         return resources;
     }
 
-    static Collection<UrlResource> findUrlResources(final String resource) {
+    static Collection<UrlResource> findUrlResources(final String resource, final boolean useTccl) {
         // @formatter:off
         final ClassLoader[] candidates = {
-                getThreadContextClassLoader(), 
+                useTccl ? getThreadContextClassLoader() : null, 
                 LoaderUtil.class.getClassLoader(),
                 GET_CLASS_LOADER_DISABLED ? null : ClassLoader.getSystemClassLoader()};
         // @formatter:on
