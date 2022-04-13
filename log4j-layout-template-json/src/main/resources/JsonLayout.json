@@ -45,7 +45,7 @@
     }
   },
   "contextStack": {
-    "$resolver": "ndc"
+    "$resolver": "mdc"
   },
   "endOfBatch": {
     "$resolver": "endOfBatch"
