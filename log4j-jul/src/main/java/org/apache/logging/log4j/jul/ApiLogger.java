@@ -93,7 +93,7 @@ public class ApiLogger extends Logger {
     @Override
     public void setLevel(final Level newLevel) throws SecurityException {
         StatusLogger.getLogger().error("Cannot set JUL log level through log4j-api: " +
-                "ignoring call to Logger.setLevel(" + newLevel + ")");
+                "ignoring call to Logger.setLevel({})", newLevel);
     }
 
     /**
