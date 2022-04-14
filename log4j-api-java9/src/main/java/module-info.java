@@ -15,6 +15,8 @@
  * limitations under the license.
  */
 module org.apache.logging.log4j {
+    requires java.base;
+
     exports org.apache.logging.log4j;
     exports org.apache.logging.log4j.message;
     exports org.apache.logging.log4j.simple;
