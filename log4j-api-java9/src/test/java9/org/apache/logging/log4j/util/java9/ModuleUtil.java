@@ -16,16 +16,12 @@
  */
 package org.apache.logging.log4j.util.java9;
 
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+public class ModuleUtil {
 
-import org.apache.logging.log4j.util.ProcessIdUtil;
-import org.junit.jupiter.api.Test;
-
-public class ProcessIdUtilTest {
-
-    @Test
-    public void processIdTest() {
-        String processId = ProcessIdUtil.getProcessId();
-        assertNotEquals(processId, ProcessIdUtil.DEFAULT_PROCESSID, "ProcessId is default");
+    /**
+     * Used by reflection from a Java 8 test class.
+     */
+    public static boolean isOnModulePath() {
+        return ModuleUtil.class.getModule().isNamed();
     }
 }
