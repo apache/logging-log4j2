@@ -42,6 +42,7 @@ class JsonLayoutTest {
     private static final JsonLayout JSON_LAYOUT = JsonLayout
             .newBuilder()
             .setConfiguration(CONFIGURATION)
+            .setProperties(true)
             .build();
 
     @Test
@@ -65,12 +66,15 @@ class JsonLayoutTest {
     private static void test(final LogEvent logEvent) {
         final Map<String, Object> jsonTemplateLayoutMap = renderUsingJsonTemplateLayout(logEvent);
         final Map<String, Object> jsonLayoutMap = renderUsingJsonLayout(logEvent);
-        // JsonLayout blindly serializes the Throwable as a POJO, this is,
-        // to say the least, quite wrong, and I ain't gonna try to emulate
-        // this behaviour in JsonTemplateLayout. Hence, discarding the "thrown"
-        // field.
+        // `JsonLayout` blindly serializes the `Throwable` as a POJO, this is, to say the least, quite wrong, and I ain't going to try to emulate this behaviour in `JsonTemplateLayout`.
+        // Hence, discarding the "thrown" field.
         jsonTemplateLayoutMap.remove("thrown");
         jsonLayoutMap.remove("thrown");
+        // When the log event doesn't have any MDC, `JsonLayout` still emits an empty `contextMap` field, whereas `JsonTemplateLayout` totally skips it.
+        // Removing `contextMap` field to avoid discrepancies when there is no MDC to render.
+        if (logEvent.getContextData().isEmpty()) {
+            jsonLayoutMap.remove("contextMap");
+        }
         Assertions.assertThat(jsonTemplateLayoutMap).isEqualTo(jsonLayoutMap);
     }
 

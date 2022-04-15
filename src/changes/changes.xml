@@ -193,6 +193,9 @@
     </release>
     <release version="2.17.3" date="20YY-MM-DD" description="GA Release 2.17.3">
       <!-- FIXES -->
+      <action issue="LOG4J2-3477" dev="vy" type="fix" due-to="filipc">
+        Add the missing context stack to JsonLayout template.
+      </action>
       <action issue="LOG4J2-3458" dev="ggregory" type="fix" due-to="Gary Gregory">
         LocalizedMessage logs misleading errors on the console.
       </action>
