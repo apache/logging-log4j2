@@ -141,6 +141,15 @@
       </roles>
       <timezone>Europe/Amsterdam</timezone>
     </developer>
+    <developer>
+      <id>pkarwasz</id>
+      <name>Piotr P. Karwasz</name>
+      <email>pkarwasz@apache.org</email>
+      <roles>
+	<role>Committer</role>
+      </roles>
+      <timezone>Europe/Warsaw</timezone>
+    </developer>
   </developers>
   <!-- Contributors -->
   <contributors>
