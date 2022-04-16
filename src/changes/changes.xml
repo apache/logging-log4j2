@@ -31,6 +31,9 @@
     -->
     <release version="2.17.3" date="2022-TBD" description="GA Release 2.18.0">
       <!-- FIXES -->
+      <action issue="LOG4J2-3476" dev="rpopma" type="update">
+        Do not throw UnsupportedOperationException when JUL ApiLogger::setLevel is called.
+      </action>
       <action issue="LOG4J2-3477" dev="vy" type="fix" due-to="filipc">
         Add the missing context stack to JsonLayout template.
       </action>
