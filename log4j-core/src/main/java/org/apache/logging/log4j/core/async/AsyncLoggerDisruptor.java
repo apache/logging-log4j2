@@ -17,8 +17,10 @@
 
 package org.apache.logging.log4j.core.async;
 
+import java.util.Objects;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 import com.lmax.disruptor.EventTranslatorVararg;
 import org.apache.logging.log4j.Level;
@@ -51,14 +53,17 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
 
     private volatile Disruptor<RingBufferLogEvent> disruptor;
     private String contextName;
+    private final Supplier<AsyncWaitStrategyFactory> waitStrategyFactorySupplier;
 
     private boolean useThreadLocalTranslator = true;
     private long backgroundThreadId;
     private AsyncQueueFullPolicy asyncQueueFullPolicy;
     private int ringBufferSize;
+    WaitStrategy waitStrategy; // package-protected for testing
 
-    AsyncLoggerDisruptor(final String contextName) {
+    AsyncLoggerDisruptor(final String contextName, final Supplier<AsyncWaitStrategyFactory> waitStrategyFactorySupplier) {
         this.contextName = contextName;
+        this.waitStrategyFactorySupplier = Objects.requireNonNull(waitStrategyFactorySupplier, "waitStrategyFactorySupplier");
     }
 
     public String getContextName() {
@@ -93,7 +98,8 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
         setStarting();
         LOGGER.trace("[{}] AsyncLoggerDisruptor creating new disruptor for this context.", contextName);
         ringBufferSize = DisruptorUtil.calculateRingBufferSize("AsyncLogger.RingBufferSize");
-        final WaitStrategy waitStrategy = DisruptorUtil.createWaitStrategy("AsyncLogger.WaitStrategy");
+        AsyncWaitStrategyFactory factory = waitStrategyFactorySupplier.get(); // get factory from configuration
+        waitStrategy = DisruptorUtil.createWaitStrategy("AsyncLogger.WaitStrategy", factory);
 
         final ThreadFactory threadFactory = new Log4jThreadFactory("AsyncLogger[" + contextName + "]", true, Thread.NORM_PRIORITY) {
             @Override

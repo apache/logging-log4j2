@@ -96,7 +96,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
         }
     };
 
-    private final AsyncLoggerConfigDelegate delegate;
+    final AsyncLoggerConfigDelegate delegate; //package-private for testing
 
     protected AsyncLoggerConfig(final String name,
             final List<AppenderRef> appenders, final Filter filter,

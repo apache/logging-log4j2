@@ -166,10 +166,13 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
     private EventFactory<Log4jEventWrapper> factory;
     private EventTranslatorTwoArg<Log4jEventWrapper, LogEvent, AsyncLoggerConfig> translator;
     private volatile boolean alreadyLoggedWarning;
+    private final AsyncWaitStrategyFactory asyncWaitStrategyFactory;
+    WaitStrategy waitStrategy; // package-protected for testing
 
     private final Object queueFullEnqueueLock = new Object();
 
-    public AsyncLoggerConfigDisruptor() {
+    public AsyncLoggerConfigDisruptor(AsyncWaitStrategyFactory asyncWaitStrategyFactory) {
+        this.asyncWaitStrategyFactory = asyncWaitStrategyFactory; // may be null
     }
 
     // called from AsyncLoggerConfig constructor
@@ -195,7 +198,8 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
         }
         LOGGER.trace("AsyncLoggerConfigDisruptor creating new disruptor for this configuration.");
         ringBufferSize = DisruptorUtil.calculateRingBufferSize("AsyncLoggerConfig.RingBufferSize");
-        final WaitStrategy waitStrategy = DisruptorUtil.createWaitStrategy("AsyncLoggerConfig.WaitStrategy");
+        waitStrategy = DisruptorUtil.createWaitStrategy(
+                "AsyncLoggerConfig.WaitStrategy", asyncWaitStrategyFactory);
 
         final ThreadFactory threadFactory = new Log4jThreadFactory("AsyncLoggerConfig", true, Thread.NORM_PRIORITY) {
             @Override
