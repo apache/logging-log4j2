@@ -21,6 +21,8 @@ on:
       - release-2.x
   pull_request:
 
+permissions: read-all
+
 jobs:
   build:
 

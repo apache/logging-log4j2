@@ -25,7 +25,10 @@ on:
   schedule:
     - cron: '32 12 * * 5'
 
+permissions: read-all
+
 jobs:
+
   analyze:
     name: Analyze
     runs-on: ubuntu-latest
