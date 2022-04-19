@@ -33,16 +33,6 @@ public class AsyncWaitStrategyFactoryConfig {
     public AsyncWaitStrategyFactoryConfig(final String factoryClassName) {
         this.factoryClassName = Objects.requireNonNull(factoryClassName, "factoryClassName");
     }
-//    /**
-//     * Return the AsyncWaitStrategyFactoryConfig
-//     * @param result the AsyncWaitStrategyFactoryConfig.
-//     * @return The AsyncWaitStrategyFactoryConfig.
-//     */
-//    @PluginFactory
-//    public static AsyncWaitStrategyFactoryConfig createAsyncWaitStrategyFactoryConfig(
-//            @PluginElement("AsyncWaitStrategyFactory") final AsyncWaitStrategyFactoryConfig result) {
-//        return result;
-//    }
 
     @PluginBuilderFactory
     public static <B extends AsyncWaitStrategyFactoryConfig.Builder<B>> B newBuilder() {
