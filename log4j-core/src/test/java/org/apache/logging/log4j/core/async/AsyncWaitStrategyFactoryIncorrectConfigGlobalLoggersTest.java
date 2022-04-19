@@ -45,7 +45,8 @@ public class AsyncWaitStrategyFactoryIncorrectConfigGlobalLoggersTest {
 
     @AfterClass
     public static void afterClass() {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, Strings.EMPTY);
+        System.clearProperty(Constants.LOG4J_CONTEXT_SELECTOR);
+        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
     }
 
 
