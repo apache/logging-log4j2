@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration name="async-wait-1" >
-  <!--  packages="org.apache.logging.log4j.core.async" -->
+<Configuration name="async-wait-2">
 
   <AsyncWaitStrategyFactory
-      class="org.apache.logging.log4j.core.async.AsyncWaitStrategyFactoryConfigTest$YieldingWaitStrategyFactory" />
+      class="nonexisting.Factory" />
 
   <Appenders>
     <List name="WaitStrategyAppenderList" />

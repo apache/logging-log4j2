@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration name="async-wait-1" >
+<Configuration name="asyncwait-global1" >
   <!--  packages="org.apache.logging.log4j.core.async" -->
 
   <AsyncWaitStrategyFactory
@@ -10,8 +10,8 @@
   </Appenders>
   
   <Loggers>
-    <AsyncRoot level="info">
+    <Root level="info">
       <AppenderRef ref="WaitStrategyAppenderList"/>
-    </AsyncRoot>
+    </Root>
   </Loggers>
 </Configuration>

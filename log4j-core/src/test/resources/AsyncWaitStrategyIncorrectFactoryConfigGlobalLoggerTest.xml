@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration name="asyncwait-global2">
+
+  <AsyncWaitStrategyFactory
+      class="nonexisting.Factory" />
+
+  <Appenders>
+    <List name="WaitStrategyAppenderList" />
+  </Appenders>
+  
+  <Loggers>
+    <Root level="info">
+      <AppenderRef ref="WaitStrategyAppenderList"/>
+    </Root>
+  </Loggers>
+</Configuration>
