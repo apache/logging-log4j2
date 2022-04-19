@@ -237,6 +237,7 @@
         <item name="Trade-offs" href="/manual/async.html#Trade-offs"/>
         <item name="All Loggers Async" href="/manual/async.html#AllAsync"/>
         <item name="Mixed Sync &amp; Async" href="/manual/async.html#MixedSync-Async"/>
+        <item name="WaitStrategy" href="/manual/async.html#WaitStrategy"/>
         <item name="Location" href="/manual/async.html#Location"/>
         <item name="Performance" href="/manual/async.html#Performance"/>
         <item name="Under The Hood" href="/manual/async.html#UnderTheHood"/>
