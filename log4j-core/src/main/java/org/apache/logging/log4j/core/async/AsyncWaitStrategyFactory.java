@@ -27,7 +27,7 @@ import com.lmax.disruptor.WaitStrategy;
  */
 public interface AsyncWaitStrategyFactory {
     /**
-     * Returns a non-null implementation of the LMAX Disruptor's WaitStrategy interface.
+     * Creates and returns a non-null implementation of the LMAX Disruptor's WaitStrategy interface.
      * This WaitStrategy will be used by Log4j Async Loggers and Async LoggerConfigs.
      *
      * @return the WaitStrategy instance to be used by Async Loggers and Async LoggerConfigs
