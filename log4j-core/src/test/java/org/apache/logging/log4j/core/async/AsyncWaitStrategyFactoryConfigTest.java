@@ -49,7 +49,7 @@ public class AsyncWaitStrategyFactoryConfigTest {
         org.apache.logging.log4j.Logger logger = context.getRootLogger();
 
         AsyncLoggerConfig loggerConfig = (AsyncLoggerConfig) ((org.apache.logging.log4j.core.Logger) logger).get();
-        AsyncLoggerConfigDisruptor delegate = (AsyncLoggerConfigDisruptor) loggerConfig.delegate;
+        AsyncLoggerConfigDisruptor delegate = (AsyncLoggerConfigDisruptor) loggerConfig.getAsyncLoggerConfigDelegate();
         assertEquals(YieldingWaitStrategy.class, delegate.waitStrategy.getClass());
         assertThat("waitstrategy is YieldingWaitStrategy", delegate.waitStrategy instanceof com.lmax.disruptor.YieldingWaitStrategy);
     }
@@ -69,7 +69,7 @@ public class AsyncWaitStrategyFactoryConfigTest {
         org.apache.logging.log4j.Logger logger = context.getRootLogger();
 
         AsyncLoggerConfig loggerConfig = (AsyncLoggerConfig) ((org.apache.logging.log4j.core.Logger) logger).get();
-        AsyncLoggerConfigDisruptor delegate = (AsyncLoggerConfigDisruptor) loggerConfig.delegate;
+        AsyncLoggerConfigDisruptor delegate = (AsyncLoggerConfigDisruptor) loggerConfig.getAsyncLoggerConfigDelegate();
         assertEquals(TimeoutBlockingWaitStrategy.class, delegate.waitStrategy.getClass());
         assertThat("waitstrategy is TimeoutBlockingWaitStrategy", delegate.waitStrategy instanceof TimeoutBlockingWaitStrategy);
     }

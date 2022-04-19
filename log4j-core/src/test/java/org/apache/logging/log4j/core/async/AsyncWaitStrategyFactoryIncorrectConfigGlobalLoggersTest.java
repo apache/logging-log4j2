@@ -17,23 +17,16 @@
 package org.apache.logging.log4j.core.async;
 
 import com.lmax.disruptor.TimeoutBlockingWaitStrategy;
-import com.lmax.disruptor.YieldingWaitStrategy;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.junit.LoggerContextSource;
-import org.apache.logging.log4j.junit.Named;
-import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import java.lang.reflect.Field;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
@@ -56,14 +49,6 @@ public class AsyncWaitStrategyFactoryIncorrectConfigGlobalLoggersTest {
     }
 
 
-    private AsyncLoggerDisruptor extractAsyncLoggerDisruptor(Logger logger) throws NoSuchFieldException, IllegalAccessException {
-        assertThat("logger is AsyncLogger", logger instanceof AsyncLogger);
-        Field f = AsyncLogger.class.getDeclaredField("loggerDisruptor");
-        f.setAccessible(true);
-        AsyncLoggerDisruptor delegate = (AsyncLoggerDisruptor) f.get(logger);
-        return delegate;
-    }
-
     @Test
     public void testIncorrectConfigWaitStrategyFactory() throws Exception {
         final LoggerContext context = (LoggerContext) LogManager.getContext(false);
@@ -72,8 +57,8 @@ public class AsyncWaitStrategyFactoryIncorrectConfigGlobalLoggersTest {
         AsyncWaitStrategyFactory asyncWaitStrategyFactory = context.getConfiguration().getAsyncWaitStrategyFactory();
         assertNull(asyncWaitStrategyFactory);
 
-        Logger logger = context.getRootLogger();
-        AsyncLoggerDisruptor delegate = extractAsyncLoggerDisruptor(logger);
+        AsyncLogger logger = (AsyncLogger) context.getRootLogger();
+        AsyncLoggerDisruptor delegate = logger.getAsyncLoggerDisruptor();
         assertEquals(TimeoutBlockingWaitStrategy.class, delegate.waitStrategy.getClass());
         assertThat("waitstrategy is TimeoutBlockingWaitStrategy", delegate.waitStrategy instanceof TimeoutBlockingWaitStrategy);
     }

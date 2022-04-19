@@ -16,18 +16,12 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import com.lmax.disruptor.TimeoutBlockingWaitStrategy;
-import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.YieldingWaitStrategy;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.junit.LoggerContextSource;
-import org.apache.logging.log4j.junit.Named;
-import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -35,10 +29,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import java.lang.reflect.Field;
-
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Category(AsyncLoggers.class)
@@ -69,17 +60,9 @@ public class AsyncWaitStrategyFactoryConfigGlobalLoggersTest {
         assertEquals(AsyncWaitStrategyFactoryConfigTest.YieldingWaitStrategyFactory.class, asyncWaitStrategyFactory.getClass());
         assertThat("factory is YieldingWaitStrategyFactory", asyncWaitStrategyFactory instanceof AsyncWaitStrategyFactoryConfigTest.YieldingWaitStrategyFactory);
 
-        AsyncLoggerDisruptor delegate = extractAsyncLoggerDisruptor(logger);
+        AsyncLoggerDisruptor delegate = logger.getAsyncLoggerDisruptor();
 
         assertEquals(YieldingWaitStrategy.class, delegate.waitStrategy.getClass());
         assertThat("waitstrategy is YieldingWaitStrategy", delegate.waitStrategy instanceof YieldingWaitStrategy);
-    }
-
-    private AsyncLoggerDisruptor extractAsyncLoggerDisruptor(Logger logger) throws NoSuchFieldException, IllegalAccessException {
-        assertThat("logger is AsyncLogger", logger instanceof AsyncLogger);
-        Field f = AsyncLogger.class.getDeclaredField("loggerDisruptor");
-        f.setAccessible(true);
-        AsyncLoggerDisruptor delegate = (AsyncLoggerDisruptor) f.get(logger);
-        return delegate;
     }
 }

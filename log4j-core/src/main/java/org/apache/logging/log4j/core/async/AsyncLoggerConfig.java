@@ -96,7 +96,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
         }
     };
 
-    final AsyncLoggerConfigDelegate delegate; //package-private for testing
+    private final AsyncLoggerConfigDelegate delegate;
 
     protected AsyncLoggerConfig(final String name,
             final List<AppenderRef> appenders, final Filter filter,
@@ -107,6 +107,11 @@ public class AsyncLoggerConfig extends LoggerConfig {
                 includeLocation);
         delegate = config.getAsyncLoggerConfigDelegate();
         delegate.setLogEventFactory(getLogEventFactory());
+    }
+
+    // package-protected for testing
+    AsyncLoggerConfigDelegate getAsyncLoggerConfigDelegate() {
+        return delegate;
     }
 
     @Override
