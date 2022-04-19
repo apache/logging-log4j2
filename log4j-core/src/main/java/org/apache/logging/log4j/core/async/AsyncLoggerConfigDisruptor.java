@@ -167,12 +167,17 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
     private EventTranslatorTwoArg<Log4jEventWrapper, LogEvent, AsyncLoggerConfig> translator;
     private volatile boolean alreadyLoggedWarning;
     private final AsyncWaitStrategyFactory asyncWaitStrategyFactory;
-    WaitStrategy waitStrategy; // package-protected for testing
+    private WaitStrategy waitStrategy;
 
     private final Object queueFullEnqueueLock = new Object();
 
     public AsyncLoggerConfigDisruptor(AsyncWaitStrategyFactory asyncWaitStrategyFactory) {
         this.asyncWaitStrategyFactory = asyncWaitStrategyFactory; // may be null
+    }
+
+    // package-protected for testing
+    WaitStrategy getWaitStrategy() {
+        return waitStrategy;
     }
 
     // called from AsyncLoggerConfig constructor
