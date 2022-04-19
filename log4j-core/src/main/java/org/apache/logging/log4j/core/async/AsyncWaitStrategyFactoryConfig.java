@@ -86,7 +86,11 @@ public class AsyncWaitStrategyFactoryConfig {
         try {
             @SuppressWarnings("unchecked")
             final Class<? extends AsyncWaitStrategyFactory> klass = (Class<? extends AsyncWaitStrategyFactory>) Loader.loadClass(factoryClassName);
-            return klass.newInstance();
+            if (AsyncWaitStrategyFactory.class.isAssignableFrom(klass)) {
+                return klass.newInstance();
+            }
+            LOGGER.error("Ignoring factory '{}': it is not assignable to AsyncWaitStrategyFactory", factoryClassName);
+            return null;
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
             LOGGER.info("Invalid implementation class name value: error creating AsyncWaitStrategyFactory {}: {}", factoryClassName, e);
             return null;
