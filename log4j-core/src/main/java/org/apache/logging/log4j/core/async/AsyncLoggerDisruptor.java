@@ -59,11 +59,16 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
     private long backgroundThreadId;
     private AsyncQueueFullPolicy asyncQueueFullPolicy;
     private int ringBufferSize;
-    WaitStrategy waitStrategy; // package-protected for testing
+    private WaitStrategy waitStrategy;
 
     AsyncLoggerDisruptor(final String contextName, final Supplier<AsyncWaitStrategyFactory> waitStrategyFactorySupplier) {
         this.contextName = contextName;
         this.waitStrategyFactorySupplier = Objects.requireNonNull(waitStrategyFactorySupplier, "waitStrategyFactorySupplier");
+    }
+
+    // package-protected for testing
+    WaitStrategy getWaitStrategy() {
+        return waitStrategy;
     }
 
     public String getContextName() {

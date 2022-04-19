@@ -63,7 +63,7 @@ public class AsyncWaitStrategyFactoryConfigGlobalLoggersTest {
 
         AsyncLoggerDisruptor delegate = logger.getAsyncLoggerDisruptor();
 
-        assertEquals(YieldingWaitStrategy.class, delegate.waitStrategy.getClass());
-        assertThat("waitstrategy is YieldingWaitStrategy", delegate.waitStrategy instanceof YieldingWaitStrategy);
+        assertEquals(YieldingWaitStrategy.class, delegate.getWaitStrategy().getClass());
+        assertThat("waitstrategy is YieldingWaitStrategy", delegate.getWaitStrategy() instanceof YieldingWaitStrategy);
     }
 }

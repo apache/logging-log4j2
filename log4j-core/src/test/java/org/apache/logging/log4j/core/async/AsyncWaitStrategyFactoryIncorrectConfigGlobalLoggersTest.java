@@ -60,7 +60,7 @@ public class AsyncWaitStrategyFactoryIncorrectConfigGlobalLoggersTest {
 
         AsyncLogger logger = (AsyncLogger) context.getRootLogger();
         AsyncLoggerDisruptor delegate = logger.getAsyncLoggerDisruptor();
-        assertEquals(TimeoutBlockingWaitStrategy.class, delegate.waitStrategy.getClass());
-        assertThat("waitstrategy is TimeoutBlockingWaitStrategy", delegate.waitStrategy instanceof TimeoutBlockingWaitStrategy);
+        assertEquals(TimeoutBlockingWaitStrategy.class, delegate.getWaitStrategy().getClass());
+        assertThat("waitstrategy is TimeoutBlockingWaitStrategy", delegate.getWaitStrategy() instanceof TimeoutBlockingWaitStrategy);
     }
 }
