@@ -311,20 +311,6 @@
     <javaTargetVersion>1.8</javaTargetVersion>
     <module.name />
   </properties>
-  <pluginRepositories>
-    <pluginRepository>
-      <id>apache</id>
-      <url>https://repository.apache.org/content/repositories/releases/</url>
-    </pluginRepository>
-<!--     <pluginRepository> -->
-<!--       <id>apache.snapshots</id> -->
-<!--       <name>Apache snapshots repository</name> -->
-<!--       <url>http://repository.apache.org/content/groups/snapshots</url> -->
-<!--       <snapshots> -->
-<!--         <enabled>true</enabled> -->
-<!--       </snapshots> -->
-<!--     </pluginRepository>     -->
-  </pluginRepositories>
   <dependencyManagement>
     <dependencies>
       <dependency>
