@@ -112,10 +112,12 @@
             </p>
             <p>
               <b>Note 2:</b> the Async Logger Timeout wait strategy (the default) and the Block wait strategy
+              are not garbage-free since they
               cause <tt>java.util.concurrent.locks.AbstractQueuedSynchronizer$Node</tt> objects to be created.
-              The Yield and Sleep wait strategies are garbage-free. (See
+              The Yield and Sleep wait strategies are garbage-free. (For configuring predefined wait strategies, see
               <a href="async.html#SysPropsAllAsync">here</a> and
-              <a href="async.html#SysPropsMixedSync-Async">here</a>.)
+              <a href="async.html#SysPropsMixedSync-Async">here</a>,
+              you may also configure a <a href="async.html#WaitStrategy">custom wait strategy</a>.)
             </p>
           </td></tr></table>
           <h4>Disabling Garbage-free Logging</h4>

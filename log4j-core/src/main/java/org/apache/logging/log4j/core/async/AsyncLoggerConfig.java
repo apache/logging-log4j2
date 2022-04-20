@@ -109,6 +109,11 @@ public class AsyncLoggerConfig extends LoggerConfig {
         delegate.setLogEventFactory(getLogEventFactory());
     }
 
+    // package-protected for testing
+    AsyncLoggerConfigDelegate getAsyncLoggerConfigDelegate() {
+        return delegate;
+    }
+
     @Override
     protected void log(final LogEvent event, final LoggerConfigPredicate predicate) {
         // See LOG4J2-2301

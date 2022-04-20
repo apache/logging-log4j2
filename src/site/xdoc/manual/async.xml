@@ -237,6 +237,7 @@ or
             </td>
             <td>
               Valid values: Block, Timeout, Sleep, Yield.
+              (See also the <a href="#WaitStrategy">Custom WaitStrategy</a> section below.)
               <br />
               <tt>Block</tt> is a strategy that uses a lock and condition variable for the I/O thread waiting for log events.
               Block can be used when throughput and low-latency are not as important as CPU resource.
@@ -461,6 +462,7 @@ or
             </td>
             <td>
               Valid values: Block, Timeout, Sleep, Yield.
+              (See also the <a href="#WaitStrategy">Custom WaitStrategy</a> section below.)
               <br />
               <tt>Block</tt> is a strategy that uses a lock and condition variable for the I/O thread waiting for log events.
               Block can be used when throughput and low-latency are not as important as CPU resource.
@@ -535,6 +537,60 @@ or
             <tt>log4j2.discardThreshold</tt></a>.
         </p>
       </subsection>
+      <a name="WaitStrategy" />
+      <subsection name="Custom WaitStrategy">
+        <p>
+          The system properties mentioned above allow only choice from among a fixed set of predefined WaitStrategies.
+          There may be cases where you want to configure a custom WaitStrategy that is not in this list.
+          This is possible by using a <code>AsyncWaitStrategyFactory</code> element in the Log4j configuration.
+        </p>
+        <p>
+          A configuration that configures a custom WaitStrategy can look as follows:
+        </p>
+        <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+
+  <AsyncWaitStrategyFactory
+      class="my.custom.AsyncWaitStrategyFactory" />
+
+  <Appenders>
+    <File name="MyFile" fileName="logs/app.log">
+      <PatternLayout pattern="%d %p %c{1.} [%t] %m%n" />
+    </File>
+  </Appenders>
+  <Loggers>
+    <AsyncRoot level="info">
+      <AppenderRef ref="MyFile"/>
+    </AsyncRoot>
+  </Loggers>
+</Configuration>]]></pre>
+        <p>
+          The specified class must implement the <code>org.apache.logging.log4j.core.async.AsyncWaitStrategyFactory</code>
+          interface, which is defined as follows:
+        </p>
+        <pre class="prettyprint linenums">
+public interface AsyncWaitStrategyFactory {
+  /**
+  * Returns a non-null implementation of the LMAX Disruptor's WaitStrategy interface.
+  * This WaitStrategy will be used by Log4j Async Loggers and Async LoggerConfigs.
+  *
+  * @return the WaitStrategy instance to be used by Async Loggers and Async LoggerConfigs
+  */
+  WaitStrategy createWaitStrategy();
+}
+        </pre>
+        <p>
+          The specified class must also have a public no-argument constructor;
+          Log4j will instantiate an instance of the specified factory class and use this factory
+          to create the WaitStrategy used by all Async Loggers.
+        </p>
+        <p>
+          WaitStrategy-related system properties are ignored if a <code>AsyncWaitStrategyFactory</code>
+          is configured.
+        </p>
+      </subsection>
+
+
       <a name="Location" />
       <subsection name="Location, location, location...">
         <p>
