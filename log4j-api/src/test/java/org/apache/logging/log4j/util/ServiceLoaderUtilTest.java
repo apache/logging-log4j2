@@ -51,7 +51,10 @@ public class ServiceLoaderUtilTest {
 
         @Override
         public void log(StatusData data) {
-            counter.incrementAndGet();
+            final StackTraceElement stackTraceElement = data.getStackTraceElement();
+            if (stackTraceElement.getClassName().startsWith(ServiceLoaderUtil.class.getName())) {
+                counter.incrementAndGet();
+            }
         }
 
         @Override
