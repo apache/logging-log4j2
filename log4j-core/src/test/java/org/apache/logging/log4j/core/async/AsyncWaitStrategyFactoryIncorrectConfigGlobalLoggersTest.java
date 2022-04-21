@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import com.lmax.disruptor.TimeoutBlockingWaitStrategy;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.LoggerContext;
