@@ -111,9 +111,12 @@
             will result in temporary objects being created during steady-state logging.
             </p>
             <p>
-              <b>Note 2:</b> the Async Logger Timeout wait strategy (the default) and the Block wait strategy
+              <b>Note 2:</b> as of version 2.17.3, the default Async Logger wait strategy used by Log4j
+              (Timeout) is garbage-free. Some of the wait strategies included in LMAX disruptor 3.4.4,
+              especially <tt>TimeoutBlockingWaitStrategy</tt> and <tt>BlockingWaitStrategy</tt> (Block)
               are not garbage-free since they
               cause <tt>java.util.concurrent.locks.AbstractQueuedSynchronizer$Node</tt> objects to be created.
+              The default wait strategy used by Log4j uses a synchronized block instead of a ReentrantLock to avoid this problem.
               The Yield and Sleep wait strategies are garbage-free. (For configuring predefined wait strategies, see
               <a href="async.html#SysPropsAllAsync">here</a> and
               <a href="async.html#SysPropsMixedSync-Async">here</a>,
