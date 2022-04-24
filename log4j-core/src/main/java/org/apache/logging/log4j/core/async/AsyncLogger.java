@@ -516,4 +516,9 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
         }
         return contextData;
     }
+
+    // package-protected for tests
+    AsyncLoggerDisruptor getAsyncLoggerDisruptor() {
+        return loggerDisruptor;
+    }
 }
