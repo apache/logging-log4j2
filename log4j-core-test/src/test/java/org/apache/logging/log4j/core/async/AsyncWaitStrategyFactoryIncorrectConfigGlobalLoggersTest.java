@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.async;
 
 import com.lmax.disruptor.TimeoutBlockingWaitStrategy;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.categories.AsyncLoggers;
+import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Constants;
@@ -28,9 +28,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Category(AsyncLoggers.class)
 public class AsyncWaitStrategyFactoryIncorrectConfigGlobalLoggersTest {
@@ -53,7 +51,7 @@ public class AsyncWaitStrategyFactoryIncorrectConfigGlobalLoggersTest {
     @Test
     public void testIncorrectConfigWaitStrategyFactory() throws Exception {
         final LoggerContext context = (LoggerContext) LogManager.getContext(false);
-        assertThat("context is AsyncLoggerContext", context instanceof AsyncLoggerContext);
+        assertTrue("context is AsyncLoggerContext", context instanceof AsyncLoggerContext);
 
         AsyncWaitStrategyFactory asyncWaitStrategyFactory = context.getConfiguration().getAsyncWaitStrategyFactory();
         assertNull(asyncWaitStrategyFactory);
@@ -61,6 +59,6 @@ public class AsyncWaitStrategyFactoryIncorrectConfigGlobalLoggersTest {
         AsyncLogger logger = (AsyncLogger) context.getRootLogger();
         AsyncLoggerDisruptor delegate = logger.getAsyncLoggerDisruptor();
         assertEquals(TimeoutBlockingWaitStrategy.class, delegate.getWaitStrategy().getClass());
-        assertThat("waitstrategy is TimeoutBlockingWaitStrategy", delegate.getWaitStrategy() instanceof TimeoutBlockingWaitStrategy);
+        assertTrue("waitstrategy is TimeoutBlockingWaitStrategy", delegate.getWaitStrategy() instanceof TimeoutBlockingWaitStrategy);
     }
 }

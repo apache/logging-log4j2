@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.async;
 
 import com.lmax.disruptor.YieldingWaitStrategy;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.categories.AsyncLoggers;
+import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.util.Constants;
@@ -29,8 +29,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.*;
 
 @Category(AsyncLoggers.class)
 public class AsyncWaitStrategyFactoryConfigGlobalLoggersTest {
@@ -55,15 +54,15 @@ public class AsyncWaitStrategyFactoryConfigGlobalLoggersTest {
         final AsyncLogger logger = (AsyncLogger) LogManager.getLogger("com.foo.Bar");
 
         final LoggerContext context = (LoggerContext) LogManager.getContext(false);
-        assertThat("context is AsyncLoggerContext", context instanceof AsyncLoggerContext);
+        assertTrue("context is AsyncLoggerContext", context instanceof AsyncLoggerContext);
 
         AsyncWaitStrategyFactory asyncWaitStrategyFactory = context.getConfiguration().getAsyncWaitStrategyFactory();
         assertEquals(AsyncWaitStrategyFactoryConfigTest.YieldingWaitStrategyFactory.class, asyncWaitStrategyFactory.getClass());
-        assertThat("factory is YieldingWaitStrategyFactory", asyncWaitStrategyFactory instanceof AsyncWaitStrategyFactoryConfigTest.YieldingWaitStrategyFactory);
+        assertTrue("factory is YieldingWaitStrategyFactory", asyncWaitStrategyFactory instanceof AsyncWaitStrategyFactoryConfigTest.YieldingWaitStrategyFactory);
 
         AsyncLoggerDisruptor delegate = logger.getAsyncLoggerDisruptor();
 
         assertEquals(YieldingWaitStrategy.class, delegate.getWaitStrategy().getClass());
-        assertThat("waitstrategy is YieldingWaitStrategy", delegate.getWaitStrategy() instanceof YieldingWaitStrategy);
+        assertTrue("waitstrategy is YieldingWaitStrategy", delegate.getWaitStrategy() instanceof YieldingWaitStrategy);
     }
 }
