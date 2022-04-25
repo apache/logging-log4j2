@@ -37,7 +37,7 @@ public class AsyncWaitStrategyFactoryConfigTest {
     public void testConfigWaitStrategyFactory(final LoggerContext context) throws Exception {
         AsyncWaitStrategyFactory asyncWaitStrategyFactory = context.getConfiguration().getAsyncWaitStrategyFactory();
         assertThat(asyncWaitStrategyFactory.getClass()).isEqualTo(YieldingWaitStrategyFactory.class);
-        assertThat("factory is YieldingWaitStrategyFactory", asyncWaitStrategyFactory instanceof YieldingWaitStrategyFactory);
+        assertThat(asyncWaitStrategyFactory instanceof YieldingWaitStrategyFactory); //"factory is YieldingWaitStrategyFactory"
     }
 
     @Test
@@ -48,7 +48,7 @@ public class AsyncWaitStrategyFactoryConfigTest {
         AsyncLoggerConfig loggerConfig = (AsyncLoggerConfig) ((org.apache.logging.log4j.core.Logger) logger).get();
         AsyncLoggerConfigDisruptor delegate = (AsyncLoggerConfigDisruptor) loggerConfig.getAsyncLoggerConfigDelegate();
         assertThat(delegate.getWaitStrategy().getClass()).isEqualTo(YieldingWaitStrategyFactory.class);
-        assertThat("waitstrategy is YieldingWaitStrategy", delegate.getWaitStrategy() instanceof com.lmax.disruptor.YieldingWaitStrategy);
+        assertThat(delegate.getWaitStrategy() instanceof com.lmax.disruptor.YieldingWaitStrategy);// "waitstrategy is YieldingWaitStrategy");
     }
 
     @Test
@@ -66,7 +66,7 @@ public class AsyncWaitStrategyFactoryConfigTest {
         AsyncLoggerConfig loggerConfig = (AsyncLoggerConfig) ((org.apache.logging.log4j.core.Logger) logger).get();
         AsyncLoggerConfigDisruptor delegate = (AsyncLoggerConfigDisruptor) loggerConfig.getAsyncLoggerConfigDelegate();
         assertThat(delegate.getWaitStrategy().getClass()).isEqualTo(TimeoutBlockingWaitStrategy.class);
-        assertThat("waitstrategy is TimeoutBlockingWaitStrategy", delegate.getWaitStrategy() instanceof TimeoutBlockingWaitStrategy);
+        assertThat(delegate.getWaitStrategy() instanceof TimeoutBlockingWaitStrategy); //"waitstrategy is TimeoutBlockingWaitStrategy"
     }
 
     public static class YieldingWaitStrategyFactory implements AsyncWaitStrategyFactory {
