@@ -24,18 +24,16 @@ import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
-@Category(AsyncLoggers.class)
+@Tag("async")
+@LoggerContextSource("AsyncWaitStrategyFactoryConfigTest.xml")
 public class AsyncWaitStrategyFactoryConfigTest {
 
     @Test
-    @LoggerContextSource("AsyncWaitStrategyFactoryConfigTest.xml")
     public void testConfigWaitStrategyFactory(final LoggerContext context) throws Exception {
         AsyncWaitStrategyFactory asyncWaitStrategyFactory = context.getConfiguration().getAsyncWaitStrategyFactory();
         assertEquals(YieldingWaitStrategyFactory.class, asyncWaitStrategyFactory.getClass());
@@ -43,7 +41,6 @@ public class AsyncWaitStrategyFactoryConfigTest {
     }
 
     @Test
-    @LoggerContextSource("AsyncWaitStrategyFactoryConfigTest.xml")
     public void testWaitStrategy(final LoggerContext context) throws Exception {
 
         org.apache.logging.log4j.Logger logger = context.getRootLogger();
@@ -55,14 +52,12 @@ public class AsyncWaitStrategyFactoryConfigTest {
     }
 
     @Test
-    @LoggerContextSource("AsyncWaitStrategyIncorrectFactoryConfigTest.xml")
     public void testIncorrectConfigWaitStrategyFactory(final LoggerContext context) throws Exception {
         AsyncWaitStrategyFactory asyncWaitStrategyFactory = context.getConfiguration().getAsyncWaitStrategyFactory();
         assertNull(asyncWaitStrategyFactory);
     }
 
     @Test
-    @LoggerContextSource("AsyncWaitStrategyIncorrectFactoryConfigTest.xml")
     public void testIncorrectWaitStrategyFallsBackToDefault(
             @Named("WaitStrategyAppenderList") final ListAppender list1,
             final LoggerContext context) throws Exception {
