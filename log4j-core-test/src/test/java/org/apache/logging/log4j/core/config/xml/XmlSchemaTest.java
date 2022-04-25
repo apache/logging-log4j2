@@ -89,7 +89,6 @@ public class XmlSchemaTest {
         return xml;
     }
 
-    @org.junit.jupiter.api.Disabled("Suppress temporarily: XmlSchemaTest.testXmlSchemaValidation:138 expected: <0> but was: <4>")
     @Test
     public void testXmlSchemaValidation() throws SAXException, IOException {
         final SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
