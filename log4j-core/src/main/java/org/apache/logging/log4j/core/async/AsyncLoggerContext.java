@@ -37,33 +37,33 @@ public class AsyncLoggerContext extends LoggerContext {
 
     public AsyncLoggerContext(final String name) {
         super(name);
-        loggerDisruptor = new AsyncLoggerDisruptor(name);
+        loggerDisruptor = new AsyncLoggerDisruptor(name, () -> getConfiguration().getAsyncWaitStrategyFactory());
     }
 
     public AsyncLoggerContext(final String name, final Object externalContext) {
         super(name, externalContext);
-        loggerDisruptor = new AsyncLoggerDisruptor(name);
+        loggerDisruptor = new AsyncLoggerDisruptor(name, () -> getConfiguration().getAsyncWaitStrategyFactory());
     }
 
     public AsyncLoggerContext(final String name, final Object externalContext, final URI configLocn) {
         super(name, externalContext, configLocn);
-        loggerDisruptor = new AsyncLoggerDisruptor(name);
+        loggerDisruptor = new AsyncLoggerDisruptor(name, () -> getConfiguration().getAsyncWaitStrategyFactory());
     }
 
     public AsyncLoggerContext(final String name, final Object externalContext, final URI configLocn, final Injector injector) {
         super(name, externalContext, configLocn, injector);
-        loggerDisruptor = new AsyncLoggerDisruptor(name);
+        loggerDisruptor = new AsyncLoggerDisruptor(name, () -> getConfiguration().getAsyncWaitStrategyFactory());
     }
 
     public AsyncLoggerContext(final String name, final Object externalContext, final String configLocn) {
         super(name, externalContext, configLocn);
-        loggerDisruptor = new AsyncLoggerDisruptor(name);
+        loggerDisruptor = new AsyncLoggerDisruptor(name, () -> getConfiguration().getAsyncWaitStrategyFactory());
     }
 
     public AsyncLoggerContext(
             final String name, final Object externalContext, final String configLocn, final Injector injector) {
         super(name, externalContext, configLocn, injector);
-        loggerDisruptor = new AsyncLoggerDisruptor(name);
+        loggerDisruptor = new AsyncLoggerDisruptor(name, () -> getConfiguration().getAsyncWaitStrategyFactory());
     }
 
     @Override

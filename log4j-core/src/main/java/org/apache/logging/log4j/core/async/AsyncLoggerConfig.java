@@ -129,6 +129,11 @@ public class AsyncLoggerConfig extends LoggerConfig {
         }
     }
 
+    // package-protected for testing
+    AsyncLoggerConfigDelegate getAsyncLoggerConfigDelegate() {
+        return delegate;
+    }
+
     @Override
     protected void callAppenders(final LogEvent event) {
         super.callAppenders(event);
