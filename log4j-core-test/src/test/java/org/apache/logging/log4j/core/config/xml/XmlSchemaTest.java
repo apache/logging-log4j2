@@ -39,7 +39,6 @@ import javax.xml.validation.Validator;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.mutable.MutableInt;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -90,7 +89,6 @@ public class XmlSchemaTest {
         return xml;
     }
 
-    @Disabled
     @Test
     public void testXmlSchemaValidation() throws SAXException, IOException {
         final SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
