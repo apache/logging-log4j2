@@ -19,7 +19,7 @@
   <parent>
     <groupId>org.apache.logging</groupId>
     <artifactId>logging-parent</artifactId>
-    <version>3</version>
+    <version>5</version>
     <relativePath/>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -29,6 +29,10 @@
   <artifactId>log4j-bom</artifactId>
   <version>3.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
+  <properties>
+    <!-- reproducible build setting -->
+    <project.build.outputTimestamp>10</project.build.outputTimestamp>
+  </properties>
   <dependencyManagement>
     <dependencies>
       <!-- Log4j API -->
