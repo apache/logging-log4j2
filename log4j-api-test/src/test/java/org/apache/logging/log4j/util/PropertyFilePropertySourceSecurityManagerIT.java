@@ -17,23 +17,21 @@
 
 package org.apache.logging.log4j.util;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledForJreRange;
+import org.junit.jupiter.api.condition.JRE;
+import org.junit.jupiter.api.parallel.ResourceLock;
+
 import java.io.FilePermission;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.Permission;
 import java.util.PropertyPermission;
 
-import org.apache.logging.log4j.test.junit.SecurityManagerTestRule;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.jupiter.api.parallel.ResourceLock;
-
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Test related to https://issues.apache.org/jira/browse/LOG4J2-2274.
+ * Test related to <a href="https://issues.apache.org/jira/browse/LOG4J2-2274">LOG4J2-2274</a>.
  * <p>
  * Using a security manager can mess up other tests so this is best used from
  * integration tests (classes that end in "IT" instead of "Test" and
@@ -46,15 +44,13 @@ import static org.junit.Assert.assertTrue;
  * @see PropertyPermission
  */
 @ResourceLock("java.lang.SecurityManager")
+@DisabledForJreRange(min = JRE.JAVA_18) // custom SecurityManager instances throw UnsupportedOperationException
 public class PropertyFilePropertySourceSecurityManagerIT {
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
-        assertTrue(TEST_FIXTURE_PATH, Files.exists(Paths.get(TEST_FIXTURE_PATH)));
+        assertThat(Paths.get(TEST_FIXTURE_PATH)).exists();
     }
-    
-    @Rule
-    public final SecurityManagerTestRule rule = new SecurityManagerTestRule(new TestSecurityManager());
 
     private static final String TEST_FIXTURE_PATH = "src/test/resources/PropertiesUtilTest.properties";
 
@@ -82,7 +78,13 @@ public class PropertyFilePropertySourceSecurityManagerIT {
      */
     @Test
     public void test() {
-        final PropertiesUtil propertiesUtil = new PropertiesUtil(TEST_FIXTURE_PATH);
-        assertNull(propertiesUtil.getStringProperty("a.1"));
+        var existing = System.getSecurityManager();
+        try {
+            System.setSecurityManager(new TestSecurityManager());
+            final PropertiesUtil propertiesUtil = new PropertiesUtil(TEST_FIXTURE_PATH);
+            assertThat(propertiesUtil.getStringProperty("a.1")).isNull();
+        } finally {
+            System.setSecurityManager(existing);
+        }
     }
 }

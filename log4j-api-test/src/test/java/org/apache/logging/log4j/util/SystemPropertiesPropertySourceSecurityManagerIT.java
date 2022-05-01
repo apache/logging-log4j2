@@ -17,18 +17,18 @@
 
 package org.apache.logging.log4j.util;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledForJreRange;
+import org.junit.jupiter.api.condition.JRE;
+import org.junit.jupiter.api.parallel.ResourceLock;
+
 import java.security.Permission;
 import java.util.PropertyPermission;
 
-import org.apache.logging.log4j.test.junit.SecurityManagerTestRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.jupiter.api.parallel.ResourceLock;
-
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Test related to https://issues.apache.org/jira/browse/LOG4J2-2274.
+ * Test related to <a href="https://issues.apache.org/jira/browse/LOG4J2-2274">LOG4J2-2274</a>.
  * <p>
  * Using a security manager can mess up other tests so this is best used from
  * integration tests (classes that end in "IT" instead of "Test" and
@@ -41,10 +41,8 @@ import static org.junit.Assert.assertNull;
  * @see PropertyPermission
  */
 @ResourceLock("java.lang.SecurityManager")
+@DisabledForJreRange(min = JRE.JAVA_18) // custom SecurityManager instances throw UnsupportedOperationException
 public class SystemPropertiesPropertySourceSecurityManagerIT {
-
-	@Rule
-	public final SecurityManagerTestRule rule = new SecurityManagerTestRule(new TestSecurityManager());
 
 	/**
 	 * Always throws a SecurityException for any environment variables permission
@@ -83,7 +81,13 @@ public class SystemPropertiesPropertySourceSecurityManagerIT {
 	 */
 	@Test
 	public void test() {
-		final PropertiesUtil propertiesUtil = new PropertiesUtil("src/test/resources/PropertiesUtilTest.properties");
-		assertNull(propertiesUtil.getStringProperty("a.1"));
+		var existing = System.getSecurityManager();
+		try {
+			System.setSecurityManager(new TestSecurityManager());
+			final PropertiesUtil propertiesUtil = new PropertiesUtil("src/test/resources/PropertiesUtilTest.properties");
+			assertThat(propertiesUtil.getStringProperty("a.1")).isNull();
+		} finally {
+			System.setSecurityManager(existing);
+		}
 	}
 }

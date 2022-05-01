@@ -17,15 +17,15 @@
 
 package org.apache.logging.log4j.util;
 
-import java.security.Permission;
-
-import org.apache.logging.log4j.test.junit.SecurityManagerTestRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledForJreRange;
+import org.junit.jupiter.api.condition.JRE;
 import org.junit.jupiter.api.parallel.ResourceLock;
 
+import java.security.Permission;
+
 /**
- * Tests https://issues.apache.org/jira/browse/LOG4J2-2274.
+ * Tests <a href="https://issues.apache.org/jira/browse/LOG4J2-2274">LOG4J2-2274</a>.
  * <p>
  * Using a security manager can mess up other tests so this is best used from
  * integration tests (classes that end in "IT" instead of "Test" and
@@ -37,10 +37,8 @@ import org.junit.jupiter.api.parallel.ResourceLock;
  * @see System#setSecurityManager(SecurityManager)
  */
 @ResourceLock("java.lang.SecurityManager")
+@DisabledForJreRange(min = JRE.JAVA_18) // custom SecurityManager instances throw UnsupportedOperationException
 public class EnvironmentPropertySourceSecurityManagerIT {
-
-	@Rule
-	public final SecurityManagerTestRule rule = new SecurityManagerTestRule(new TestSecurityManager());
 
 	/**
 	 * Always throws a SecurityException for any environment variables permission
@@ -75,6 +73,12 @@ public class EnvironmentPropertySourceSecurityManagerIT {
 	 */
 	@Test
 	public void test() {
-		PropertiesUtil.getProperties();
+		var existing = System.getSecurityManager();
+		try {
+			System.setSecurityManager(new TestSecurityManager());
+			PropertiesUtil.getProperties();
+		} finally {
+			System.setSecurityManager(existing);
+		}
 	}
 }
