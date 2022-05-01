@@ -16,27 +16,6 @@
  */
 package org.apache.logging.log4j.core.config.xml;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Stream;
-
-import javax.xml.XMLConstants;
-import javax.xml.transform.sax.SAXSource;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
-
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.junit.jupiter.api.Test;
@@ -46,7 +25,26 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.XMLFilterImpl;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import javax.xml.XMLConstants;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class XmlSchemaTest {
 
@@ -63,7 +61,8 @@ public class XmlSchemaTest {
             "log4j12", // log4j 1.x configs
             "perf-CountingNoOpAppender.xml", // uses test-appender CountingNoOp
             "reconfiguration-deadlock.xml", // uses test-appender ReconfigurationDeadlockTestAppender
-            "XmlConfigurationSecurity.xml" //
+            "AsyncWaitStrategy", // uses AsyncWaitStrategyFactory (LOG4J2-3472)
+            "XmlConfigurationSecurity.xml" // used for testing XML parser; shouldn't be parseable in secure settings
     );
 
     private static String capitalizeTags(final String xml) {
@@ -104,7 +103,7 @@ public class XmlSchemaTest {
         };
 
         final MutableInt configs = new MutableInt();
-        final MutableInt failures = new MutableInt();
+        final List<Exception> exceptions = new ArrayList<>();
 
         try (final Stream<Path> testResources = Files.list(Paths.get("src", "test", "resources"))) {
             testResources
@@ -123,18 +122,15 @@ public class XmlSchemaTest {
                         System.out.flush();
 
                         try {
-                            final String xml = fixXml(
-                                    FileUtils.readFileToString(filePath.toFile(), Charset.defaultCharset()));
+                            final String xml = fixXml(Files.readString(filePath));
                             validator.validate(new SAXSource(namespaceAdder,
                                     new InputSource(new ByteArrayInputStream(xml.getBytes()))), null);
                         } catch (final Exception ex) {
-                            System.err.println(ex);
-                            System.err.flush();
-                            failures.increment();
+                            exceptions.add(ex);
                         }
                     });
         }
 
-        assertEquals(0, failures.intValue());
+        assertThat(exceptions).isEmpty();
     }
 }
