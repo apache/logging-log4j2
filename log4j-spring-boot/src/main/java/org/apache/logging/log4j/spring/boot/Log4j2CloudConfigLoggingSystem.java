@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
+import org.apache.logging.log4j.core.net.UrlConnectionFactory;
 import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
@@ -190,20 +191,12 @@ public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
     }
 
     private ConfigurationSource getConfigurationSource(URL url) throws IOException, URISyntaxException {
-        URLConnection urlConnection = url.openConnection();
-        // A "jar:" URL file remains open after the stream is closed, so do not cache it.
-        urlConnection.setUseCaches(false);
         AuthorizationProvider provider = ConfigurationFactory.authorizationProvider(PropertiesUtil.getProperties());
-        provider.addAuthorization(urlConnection);
-        if (url.getProtocol().equals(HTTPS)) {
-            SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration();
-            if (sslConfiguration != null) {
-                ((HttpsURLConnection) urlConnection).setSSLSocketFactory(sslConfiguration.getSslSocketFactory());
-                if (!sslConfiguration.isVerifyHostName()) {
-                    ((HttpsURLConnection) urlConnection).setHostnameVerifier(LaxHostnameVerifier.INSTANCE);
-                }
-            }
-        }
+        SslConfiguration sslConfiguration = url.getProtocol().equals(HTTPS)
+                ? SslConfigurationFactory.getSslConfiguration() : null;
+        URLConnection urlConnection = UrlConnectionFactory.createConnection(url, 0, sslConfiguration,
+                provider);
+
         File file = FileUtils.fileFromUri(url.toURI());
         try {
             if (file != null) {

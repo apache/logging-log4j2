@@ -30,6 +30,13 @@
       <complexType>
          <sequence>
             <choice minOccurs="0">
+               <element name="AsyncWaitStrategyFactory">
+                  <complexType>
+                     <attribute name="class" type="string" use="required"/>
+                  </complexType>
+               </element>
+            </choice>
+            <choice minOccurs="0">
                <element name="CustomLevels" type="tns:CustomLevelsType">
                   <unique name="UniqueCustomLevelName">
                      <selector xpath="tns:CustomLevel" />
@@ -158,7 +165,6 @@
       </complexType>
    </element>
 
-
    <!--
     ================================================================================================================================
     <Configuration><CustomLevels> type and related types
@@ -194,6 +200,7 @@
          <element name="DynamicThresholdFilter" type="tns:DynamicThresholdFilterType" minOccurs="0" />
          <element name="MapFilter" type="tns:MapFilterType" minOccurs="0" />
          <element name="MarkerFilter" type="tns:MarkerFilterType" minOccurs="0" />
+         <element name="MutableThreadContextMapFilter" type="tns:MutableThreadContextMapFilterType" minOccurs="0" />
          <element name="NoMarkerFilter" type="tns:NoMarkerFilterType" minOccurs="0" />
          <element name="RegexFilter" type="tns:RegexFilterType" minOccurs="0" />
          <element name="ScriptFilter" type="tns:ScriptFilterType" minOccurs="0" />
@@ -298,6 +305,35 @@
                   <documentation>
                      Level of messages to be filtered. The default threshold only applies if the log event contains the specified ThreadContext Map
                      item and its value does not match any key in the key/value pairs.
+                  </documentation>
+               </annotation>
+            </attribute>
+         </extension>
+      </complexContent>
+   </complexType>
+
+   <complexType name="MutableThreadContextMapFilterType">
+      <complexContent>
+         <extension base="tns:AbstractFilterType">
+            <attribute name="configLocation" type="string">
+               <annotation>
+                  <documentation>
+                     The location of the configuration for the filter.
+                  </documentation>
+               </annotation>
+            </attribute>
+            <attribute name="pollInterval" type="int">
+               <annotation>
+                  <documentation>
+                     The frequency in seconds that the configuration file should be checked for modifications.
+                  </documentation>
+               </annotation>
+            </attribute>
+            <attribute name="operator" type="string">
+               <annotation>
+                  <documentation>
+                     If the operator is "or" then a match by any one of the key/value pairs will be considered to be a match, otherwise all the
+                     key/value pairs must match.
                   </documentation>
                </annotation>
             </attribute>
