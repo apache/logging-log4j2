@@ -31,6 +31,11 @@
     <docLabel>Core Integration Tests Documentation</docLabel>
     <projectDir>/log4j-core-its</projectDir>
     <revapi.skip>true</revapi.skip>
+    <maven.doap.skip>true</maven.doap.skip>
+    <maven.deploy.skip>true</maven.deploy.skip>
+    <maven.site.skip>true</maven.site.skip>
+    <maven.site.deploy.skip>true</maven.site.deploy.skip>
+    <maven.test.skip>true</maven.test.skip>
   </properties>
   <dependencies>
     <dependency>
@@ -254,12 +259,6 @@
         </executions>
       </plugin>
       <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
         <configuration>
@@ -276,30 +275,6 @@
             org.apache.logging.log4j.core.test.categories.PerformanceTests,
             org.apache.logging.log4j.core.test.categories.Appenders$Jms
           </groups>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <version>${deploy.plugin.version}</version>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-          <skipDeploy>true</skipDeploy>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-doap-plugin</artifactId>
-        <version>1.2</version>
-        <configuration>
-          <skip>true</skip>
         </configuration>
       </plugin>
     </plugins>

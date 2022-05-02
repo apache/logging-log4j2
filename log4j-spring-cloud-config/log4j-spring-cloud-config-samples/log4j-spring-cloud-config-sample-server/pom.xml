@@ -24,20 +24,21 @@
     <java.version>1.8</java.version>
     <spring-cloud.version>Hoxton.SR9</spring-cloud.version>
 
+    <maven.deploy.skip>true</maven.deploy.skip>
+    <maven.site.skip>true</maven.site.skip>
+    <maven.site.deploy.skip>true</maven.site.deploy.skip>
 
     <!-- paths -->
     <sonar.dependencyCheck.reportPath>${project.build.directory}/dependency-check-report.xml
     </sonar.dependencyCheck.reportPath>
 
     <!-- maven plugin versions -->
-    <deploy.plugin.version>2.8.2</deploy.plugin.version>
     <maven.checkstyle.version>3.0.0</maven.checkstyle.version>
     <spotbugs.plugin.version>4.0.4</spotbugs.plugin.version>
     <maven.google.code.findbugs.version>3.0.2</maven.google.code.findbugs.version>
     <maven.google.code.findbugs.findbugs.version>3.0.1</maven.google.code.findbugs.findbugs.version>
     <maven.jacoco.version>0.8.6</maven.jacoco.version>
     <maven.pmd.version>3.9.0</maven.pmd.version>
-    <site.plugin.version>3.4</site.plugin.version>
     <!-- maven plugin config -->
     <pmd.failurePriority>2</pmd.failurePriority>
 
@@ -120,23 +121,6 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
-        <version>${site.plugin.version}</version>
-        <configuration>
-          <skip>true</skip>
-          <skipDeploy>true</skipDeploy>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <version>${deploy.plugin.version}</version>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>com.github.spotbugs</groupId>
         <artifactId>spotbugs-maven-plugin</artifactId>
