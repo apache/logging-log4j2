@@ -31,6 +31,5 @@ jobs:
         run: |
           ./mvnw \
             --show-version --batch-mode --errors --no-transfer-progress \
-            --threads 1C \
             -DtrimStackTrace=false \
             -Dlog4j2.junit.fileCleanerSleepPeriodMillis=1000
