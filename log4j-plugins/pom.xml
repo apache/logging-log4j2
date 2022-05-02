@@ -126,22 +126,14 @@
           <execution>
             <id>default-compile</id>
           </execution>
-          <execution>
-            <id>default-testCompile</id>
-          </execution>
         </executions>
       </plugin>
+
+      <!-- tests are in log4j-plugins-test module -->
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <useModulePath>false</useModulePath>
-          <excludedGroups>
-            org.apache.logging.log4j.categories.PerformanceTests
-          </excludedGroups>
-          <systemPropertyVariables>
-            <org.apache.activemq.SERIALIZABLE_PACKAGES>*</org.apache.activemq.SERIALIZABLE_PACKAGES>
-          </systemPropertyVariables>
-          <argLine>--add-opens java.base/java.net=ALL-UNNAMED</argLine>
+          <skipTests>true</skipTests>
         </configuration>
       </plugin>
       <plugin>
@@ -151,6 +143,7 @@
           <skipTests>true</skipTests>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>

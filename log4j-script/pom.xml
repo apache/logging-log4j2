@@ -128,52 +128,6 @@
           </instructions>
         </configuration>
       </plugin>
-      <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>${surefire.plugin.version}</version>
-          <configuration>
-              <systemPropertyVariables>
-                  <java.awt.headless>true</java.awt.headless>
-              </systemPropertyVariables>
-              <argLine>-Xms256m -Xmx1024m</argLine>
-              <forkCount>1</forkCount>
-              <reuseForks>false</reuseForks>
-          </configuration>
-          <executions>
-              <execution>
-                  <id>default-test</id>
-                  <phase>test</phase>
-                  <goals>
-                      <goal>test</goal>
-                  </goals>
-                  <configuration>
-                      <excludes>
-                          <exclude>${log4j.skip.test1}</exclude>
-                          <exclude>${log4j.skip.test2}</exclude>
-                          <exclude>Log4jBridgeHandlerTest.java</exclude>
-                      </excludes>
-                  </configuration>
-              </execution>
-              <execution>
-                  <!-- this test needs some special configuration, thus its own run -->
-                  <id>bridgeHandler-test</id>
-                  <phase>test</phase>
-                  <goals>
-                      <goal>test</goal>
-                  </goals>
-                  <configuration>
-                      <includes>
-                          <include>Log4jBridgeHandlerTest.java</include>
-                      </includes>
-                      <systemPropertyVariables>
-                          <java.util.logging.config.file>src/test/resources/logging-test.properties</java.util.logging.config.file>
-                          <log4j2.configurationFile>log4j2-julBridge-test.xml</log4j2.configurationFile>
-                      </systemPropertyVariables>
-                  </configuration>
-              </execution>
-          </executions>
-      </plugin>
     </plugins>
   </build>
   <reporting>

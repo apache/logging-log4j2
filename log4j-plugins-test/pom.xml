@@ -151,9 +151,9 @@
           <execution>
             <id>default-testCompile</id>
             <configuration>
-              <compilerArgs>
-                <arg>-ApluginPackage=org.apache.logging.log4j.plugins.convert.test</arg>
-              </compilerArgs>
+              <compilerArguments>
+                <ApluginPackage>org.apache.logging.log4j.plugins.convert.test</ApluginPackage>
+              </compilerArguments>
             </configuration>
           </execution>
         </executions>
@@ -162,12 +162,6 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <useModulePath>false</useModulePath>
-          <excludedGroups>
-            org.apache.logging.log4j.categories.PerformanceTests
-          </excludedGroups>
-          <systemPropertyVariables>
-            <org.apache.activemq.SERIALIZABLE_PACKAGES>*</org.apache.activemq.SERIALIZABLE_PACKAGES>
-          </systemPropertyVariables>
           <argLine>--add-opens java.base/java.net=ALL-UNNAMED</argLine>
         </configuration>
       </plugin>
@@ -250,28 +244,6 @@
             <link>http://www.osgi.org/javadoc/r4v43/core/</link>
             <link>https://commons.apache.org/proper/commons-lang/javadocs/api-release/</link>
           </links>
-          <groups>
-            <group>
-              <title>Core API</title>
-              <packages>org.apache.logging.log4j.core</packages>
-            </group>
-            <group>
-              <title>Configuration</title>
-              <packages>org.apache.logging.log4j.core.config*:org.apache.logging.log4j.core.selector</packages>
-            </group>
-            <group>
-              <title>Core Plugins</title>
-              <packages>org.apache.logging.log4j.core.appender*:org.apache.logging.log4j.core.filter:org.apache.logging.log4j.core.layout:org.apache.logging.log4j.core.lookup:org.apache.logging.log4j.core.pattern:org.apache.logging.log4j.core.script</packages>
-            </group>
-            <group>
-              <title>Tools</title>
-              <packages>org.apache.logging.log4j.core.net*:org.apache.logging.log4j.core.tools</packages>
-            </group>
-            <group>
-              <title>Internals</title>
-              <packages>org.apache.logging.log4j.core.async:org.apache.logging.log4j.core.impl:org.apache.logging.log4j.core.util*:org.apache.logging.log4j.core.osgi:org.apache.logging.log4j.core.jackson:org.apache.logging.log4j.core.jmx</packages>
-            </group>
-          </groups>
         </configuration>
         <reportSets>
           <reportSet>
