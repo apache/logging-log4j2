@@ -234,7 +234,7 @@
     <elastic.version>7.15.2</elastic.version>
     <mongodb3.version>3.12.4</mongodb3.version>
     <mongodb4.version>4.0.3</mongodb4.version>
-    <groovy.version>2.5.15</groovy.version>
+    <groovy.version>4.0.2</groovy.version>
     <compiler.plugin.version>3.8.1</compiler.plugin.version>
     <pmd.plugin.version>3.13.0</pmd.plugin.version>
     <spotbugs.plugin.version>4.0.4</spotbugs.plugin.version>
@@ -1028,19 +1028,19 @@
         <version>2.0b6</version>
       </dependency>
       <dependency>
-        <groupId>org.codehaus.groovy</groupId>
+        <groupId>org.apache.groovy</groupId>
         <artifactId>groovy</artifactId>
         <version>${groovy.version}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>org.codehaus.groovy</groupId>
+        <groupId>org.apache.groovy</groupId>
         <artifactId>groovy-jsr223</artifactId>
         <version>${groovy.version}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>org.codehaus.groovy</groupId>
+        <groupId>org.apache.groovy</groupId>
         <artifactId>groovy-dateutil</artifactId>
         <version>${groovy.version}</version>
         <scope>test</scope>
