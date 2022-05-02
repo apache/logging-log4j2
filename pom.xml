@@ -1743,34 +1743,43 @@
     </site>
   </distributionManagement>
   <modules>
+    <!-- Log4j Bill of Materials -->
+    <module>log4j-bom</module>
+
+    <!-- Logging API -->
     <module>log4j-api</module>
     <module>log4j-api-test</module>
+
+    <!-- Plugin API -->
     <module>log4j-plugins</module>
     <module>log4j-plugin-processor</module>
     <module>log4j-plugins-test</module>
+
+    <!-- Core Provider SDK -->
     <module>log4j-core</module>
     <module>log4j-core-test</module>
-    <module>log4j-gctests</module>
+
+    <!-- Extensions -->
+    <module>log4j-iostreams</module>
+    <module>log4j-jmx-gui</module>
+
+    <!-- Core Plugins -->
+    <module>log4j-script</module>
+    <!-- Layouts -->
     <module>log4j-layout-jackson</module>
     <module>log4j-layout-jackson-json</module>
     <module>log4j-layout-jackson-xml</module>
     <module>log4j-layout-jackson-yaml</module>
     <module>log4j-layout-template-json</module>
-    <module>log4j-core-its</module>
-    <module>log4j-1.2-api</module>
-    <module>log4j-slf4j-impl</module>
-    <module>log4j-slf4j18-impl</module>
-    <module>log4j-to-slf4j</module>
-    <module>log4j-to-jul</module>
-    <module>log4j-jcl</module>
+    <module>log4j-csv</module>
+    <!-- Lookups -->
     <module>log4j-jndi</module>
     <module>log4j-jndi-test</module>
-    <module>log4j-csv</module>
+    <module>log4j-docker</module>
+    <module>log4j-kubernetes</module>
+    <module>log4j-spring-cloud-config</module>
+    <!-- Appenders -->
     <module>log4j-flume-ng</module>
-    <module>log4j-taglib</module>
-    <module>log4j-jmx-gui</module>
-    <module>log4j-samples</module>
-    <module>log4j-bom</module>
     <module>log4j-jdbc</module>
     <module>log4j-jdbc-dbcp2</module>
     <module>log4j-jpa</module>
@@ -1782,21 +1791,32 @@
     <module>log4j-mongodb3</module>
     <module>log4j-mongodb4</module>
     <module>log4j-cassandra</module>
-    <module>log4j-web</module>
-    <module>log4j-jakarta-web</module>
+    <module>log4j-smtp</module>
+
+    <!-- Other Core Tests -->
+    <module>log4j-samples</module>
+    <module>log4j-core-its</module>
+    <module>log4j-gctests</module>
+    <module>log4j-osgi</module>
     <module>log4j-perf</module>
-    <module>log4j-iostreams</module>
+
+    <!-- Logging Library Integrations -->
+    <module>log4j-1.2-api</module>
+    <module>log4j-slf4j-impl</module>
+    <module>log4j-slf4j18-impl</module>
+    <module>log4j-to-slf4j</module>
+    <module>log4j-to-jul</module>
+    <module>log4j-jcl</module>
     <module>log4j-jul</module>
     <module>log4j-jpl</module>
     <module>log4j-liquibase</module>
+
+    <!-- Runtime Integrations -->
+    <module>log4j-web</module>
+    <module>log4j-jakarta-web</module>
+    <module>log4j-taglib</module>
     <module>log4j-appserver</module>
-    <module>log4j-script</module>
-    <module>log4j-smtp</module>
-    <module>log4j-osgi</module>
-    <module>log4j-docker</module>
-    <module>log4j-kubernetes</module>
     <module>log4j-spring-boot</module>
-    <module>log4j-spring-cloud-config</module>
   </modules>
   <profiles>
     <profile>
@@ -1991,6 +2011,30 @@
       <properties>
         <javadoc.opts>-Xdoclint:none</javadoc.opts>
       </properties>
+    </profile>
+    <profile>
+      <id>enable-plugin-annotation-processor</id>
+      <activation>
+        <property>
+          <name>log4j.compilePlugins</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <annotationProcessorPaths combine.children="append">
+                <path>
+                  <groupId>org.apache.logging.log4j</groupId>
+                  <artifactId>log4j-plugin-processor</artifactId>
+                  <version>${project.version}</version>
+                </path>
+              </annotationProcessorPaths>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
   </profiles>
 </project>
