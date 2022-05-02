@@ -376,9 +376,9 @@ public class Bar {
             the value of the <code>log4j2.Configuration.allowedProtocols</code> system property. If the provided list
             contains the protocol specified then Log4j will use the URI to locate the specified configuration file. If
             not an exception will be thrown and an error message will be logged. If no value is provided for the
-            system property it will default to "https". Use of any protocol other than "file" can be prevented by
-            setting the system property value to "_none". This value would be an invalid protocol so cannot conflict
-            with any custom protocols that may be present.
+            system property it will default to "https, file, jar". Use of any protocol other than "file" can be
+            prevented by setting the system property value to "_none". This value would be an invalid protocol so cannot
+            conflict with any custom protocols that may be present.
           </p>
           <p>
             Log4j supports access to remote urls that require authentication. Log4j supports basic authentication
@@ -2023,8 +2023,8 @@ public class AwesomeTest {
     <td>LOG4J_CONFIGURATION_ALLOWED_PROTOCOLS</td>
     <td>&nbsp;</td>
     <td>
-      A comma separated list of the protocols that may be used to load a configuration file. The default is https.
-      To completely prevent accessing the configuration via a URL specify a value of "_none".
+      A comma separated list of the protocols that may be used to load a configuration file. The default is
+      "https, file, jar". To completely prevent accessing the configuration via a URL specify a value of "_none".
     </td>
   </tr>
   <tr>

@@ -41,23 +41,27 @@ import org.apache.logging.log4j.util.Strings;
  */
 public class UrlConnectionFactory {
 
-    private static int DEFAULT_TIMEOUT = 60000;
-    private static int connectTimeoutMillis = DEFAULT_TIMEOUT;
-    private static int readTimeoutMillis = DEFAULT_TIMEOUT;
+    private static final int DEFAULT_TIMEOUT = 60000;
+    private static final int connectTimeoutMillis = DEFAULT_TIMEOUT;
+    private static final int readTimeoutMillis = DEFAULT_TIMEOUT;
     private static final String JSON = "application/json";
     private static final String XML = "application/xml";
     private static final String PROPERTIES = "text/x-java-properties";
     private static final String TEXT = "text/plain";
     private static final String HTTP = "http";
     private static final String HTTPS = "https";
+    private static final String JAR = "jar";
+    private static final String DEFAULT_ALLOWED_PROTOCOLS = "https, file, jar";
     private static final String NO_PROTOCOLS = "_none";
     public static final String ALLOWED_PROTOCOLS = "log4j2.Configuration.allowedProtocols";
 
-    public static HttpURLConnection createConnection(final URL url, final long lastModifiedMillis, final SslConfiguration sslConfiguration)
+    @SuppressWarnings("unchecked")
+    public static <T extends URLConnection> T createConnection(final URL url, final long lastModifiedMillis,
+            final SslConfiguration sslConfiguration, final AuthorizationProvider authorizationProvider)
         throws IOException {
         final PropertiesUtil props = PropertiesUtil.getProperties();
         final List<String> allowed = Arrays.asList(Strings.splitList(props
-                .getStringProperty(ALLOWED_PROTOCOLS, HTTPS).toLowerCase(Locale.ROOT)));
+                .getStringProperty(ALLOWED_PROTOCOLS, DEFAULT_ALLOWED_PROTOCOLS).toLowerCase(Locale.ROOT)));
         if (allowed.size() == 1 && NO_PROTOCOLS.equals(allowed.get(0))) {
             throw new ProtocolException("No external protocols have been enabled");
         }
@@ -68,42 +72,50 @@ public class UrlConnectionFactory {
         if (!allowed.contains(protocol)) {
             throw new ProtocolException("Protocol " + protocol + " has not been enabled as an allowed protocol");
         }
-        final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-
-        final AuthorizationProvider provider = ConfigurationFactory.authorizationProvider(props);
-        if (provider != null) {
-            provider.addAuthorization(urlConnection);
-        }
-        urlConnection.setAllowUserInteraction(false);
-        urlConnection.setDoOutput(true);
-        urlConnection.setDoInput(true);
-        urlConnection.setRequestMethod("GET");
-        if (connectTimeoutMillis > 0) {
-            urlConnection.setConnectTimeout(connectTimeoutMillis);
-        }
-        if (readTimeoutMillis > 0) {
-            urlConnection.setReadTimeout(readTimeoutMillis);
-        }
-        final String[] fileParts = url.getFile().split("\\.");
-        final String type = fileParts[fileParts.length - 1].trim();
-        final String contentType = isXml(type) ? XML : isJson(type) ? JSON : isProperties(type) ? PROPERTIES : TEXT;
-        urlConnection.setRequestProperty("Content-Type", contentType);
-        if (lastModifiedMillis > 0) {
-            urlConnection.setIfModifiedSince(lastModifiedMillis);
-        }
-        if (url.getProtocol().equals(HTTPS) && sslConfiguration != null) {
-            ((HttpsURLConnection) urlConnection).setSSLSocketFactory(sslConfiguration.getSslSocketFactory());
-            if (!sslConfiguration.isVerifyHostName()) {
-                ((HttpsURLConnection) urlConnection).setHostnameVerifier(LaxHostnameVerifier.INSTANCE);
+        URLConnection urlConnection;
+        if (url.getProtocol().equals(HTTP) || url.getProtocol().equals(HTTPS)) {
+            final HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+            if (authorizationProvider != null) {
+                authorizationProvider.addAuthorization(httpURLConnection);
             }
+            httpURLConnection.setAllowUserInteraction(false);
+            httpURLConnection.setDoOutput(true);
+            httpURLConnection.setDoInput(true);
+            httpURLConnection.setRequestMethod("GET");
+            if (connectTimeoutMillis > 0) {
+                httpURLConnection.setConnectTimeout(connectTimeoutMillis);
+            }
+            if (readTimeoutMillis > 0) {
+                httpURLConnection.setReadTimeout(readTimeoutMillis);
+            }
+            final String[] fileParts = url.getFile().split("\\.");
+            final String type = fileParts[fileParts.length - 1].trim();
+            final String contentType = isXml(type) ? XML : isJson(type) ? JSON : isProperties(type) ? PROPERTIES : TEXT;
+            httpURLConnection.setRequestProperty("Content-Type", contentType);
+            if (lastModifiedMillis > 0) {
+                httpURLConnection.setIfModifiedSince(lastModifiedMillis);
+            }
+            if (url.getProtocol().equals(HTTPS) && sslConfiguration != null) {
+                ((HttpsURLConnection) httpURLConnection).setSSLSocketFactory(sslConfiguration.getSslSocketFactory());
+                if (!sslConfiguration.isVerifyHostName()) {
+                    ((HttpsURLConnection) httpURLConnection).setHostnameVerifier(LaxHostnameVerifier.INSTANCE);
+                }
+            }
+            urlConnection = httpURLConnection;
+        } else if (url.getProtocol().equals(JAR)) {
+            urlConnection = url.openConnection();
+            urlConnection.setUseCaches(false);
+        } else {
+            urlConnection = url.openConnection();
         }
-        return urlConnection;
+        return (T) urlConnection;
     }
 
     public static URLConnection createConnection(final URL url) throws IOException {
         URLConnection urlConnection = null;
         if (url.getProtocol().equals(HTTPS) || url.getProtocol().equals(HTTP)) {
-            urlConnection = createConnection(url, 0, SslConfigurationFactory.getSslConfiguration());
+            final AuthorizationProvider provider = ConfigurationFactory.authorizationProvider(PropertiesUtil.getProperties());
+            urlConnection = createConnection(url, 0, SslConfigurationFactory.getSslConfiguration(), provider);
         } else {
             urlConnection = url.openConnection();
             if (urlConnection instanceof JarURLConnection) {

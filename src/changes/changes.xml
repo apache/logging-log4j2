@@ -29,8 +29,17 @@
          - "update" - Change
          - "remove" - Removed
     -->
-    <release version="2.17.3" date="2022-TBD" description="GA Release 2.18.0">
+    <release version="2.18.0" date="2022-TBD" description="GA Release 2.18.0">
       <!-- FIXES -->
+      <action issue="LOG4J2-3481" dev="rgoers" type="fix">
+        HttpWatcher did not pass credentials when polling.
+      </action>
+      <action issue="LOG4J2-3482" dev="rgoers" type="fix">
+        UrlConnectionFactory.createConnection now accepts an AuthorizationProvider as a parameter.
+      </action>
+      <action issue="LOG4J2-3495" dev="rgoers" type="fix">
+        Add MutableThreadContextMapFilter.
+      </action>
       <action issue="LOG4J2-3473" dev="rpopma" type="update">
         Make the default disruptor WaitStrategy used by Async Loggers garbage-free.
       </action>

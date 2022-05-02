@@ -46,8 +46,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.core.util.AuthorizationProvider;
 import org.apache.logging.log4j.core.util.FileUtils;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -71,7 +74,7 @@ public class UrlConnectionFactoryTest {
     private static final String BASIC = "Basic ";
     private static final String expectedCreds = "testuser:password";
     private static Server server;
-    private static Base64.Decoder decoder = Base64.getDecoder();
+    private static final Base64.Decoder decoder = Base64.getDecoder();
     private static int port;
     private static final int BUF_SIZE = 1024;
 
@@ -79,8 +82,8 @@ public class UrlConnectionFactoryTest {
     public static void startServer() throws Exception {
         try {
             server = new Server(0);
-            ServletContextHandler context = new ServletContextHandler();
-            ServletHolder defaultServ = new ServletHolder("default", TestServlet.class);
+            final ServletContextHandler context = new ServletContextHandler();
+            final ServletHolder defaultServ = new ServletHolder("default", TestServlet.class);
             defaultServ.setInitParameter("resourceBase", System.getProperty("user.dir"));
             defaultServ.setInitParameter("dirAllowed", "true");
             context.addServlet(defaultServ, "/");
@@ -105,8 +108,8 @@ public class UrlConnectionFactoryTest {
         System.setProperty("log4j2.Configuration.username", "foo");
         System.setProperty("log4j2.Configuration.password", "bar");
         System.setProperty("log4j2.Configuration.allowedProtocols", "http");
-        URI uri = new URI("http://localhost:" + port + "/log4j2-config.xml");
-        ConfigurationSource source = ConfigurationSource.fromUri(uri);
+        final URI uri = new URI("http://localhost:" + port + "/log4j2-config.xml");
+        final ConfigurationSource source = ConfigurationSource.fromUri(uri);
         assertNull(source, "A ConfigurationSource should not have been returned");
     }
 
@@ -115,13 +118,13 @@ public class UrlConnectionFactoryTest {
         System.setProperty("log4j2.Configuration.username", "testuser");
         System.setProperty("log4j2.Configuration.password", "password");
         System.setProperty("log4j2.Configuration.allowedProtocols", "http");
-        URI uri = new URI("http://localhost:" + port + "/log4j2-config.xml");
-        ConfigurationSource source = ConfigurationSource.fromUri(uri);
+        final URI uri = new URI("http://localhost:" + port + "/log4j2-config.xml");
+        final ConfigurationSource source = ConfigurationSource.fromUri(uri);
         assertNotNull(source, "No ConfigurationSource returned");
-        InputStream is = source.getInputStream();
+        final InputStream is = source.getInputStream();
         assertNotNull(is, "No data returned");
         is.close();
-        long lastModified = source.getLastModified();
+        final long lastModified = source.getLastModified();
         int result = verifyNotModified(uri, lastModified);
         assertEquals(SC_NOT_MODIFIED, result,"File was modified");
         File file = new File("target/test-classes/log4j2-config.xml");
@@ -132,9 +135,9 @@ public class UrlConnectionFactoryTest {
         assertEquals(SC_OK, result,"File was not modified");
     }
 
-    private int verifyNotModified(URI uri, long lastModifiedMillis) throws Exception {
+    private int verifyNotModified(final URI uri, final long lastModifiedMillis) throws Exception {
         final HttpURLConnection urlConnection = UrlConnectionFactory.createConnection(uri.toURL(),
-                lastModifiedMillis, null);
+                lastModifiedMillis, null, null);
         urlConnection.connect();
 
         try {

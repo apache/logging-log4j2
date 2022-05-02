@@ -408,6 +408,88 @@
   </Loggers>
 </Configuration>]]></pre>
         </subsection>
+        <a name="MutableThreadContextMapFilter"/>
+        <subsection name="MutableThreadContextMapFilter (or MutableContextMapFilter)">
+          <p>
+            The MutableThreadContextMapFilter or MutableContextMapFilter allows filtering against data elements that are in the
+            current context. By default this is the ThreadContext Map. The values to compare are defined externally and
+            can be periodically polled for changes.
+          </p>
+          <table>
+            <caption align="top">Mutable Context Map Filter Parameters</caption>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>configLocation</td>
+              <td>String</td>
+              <td>A file path or URI that points to the configuration. See below for a sample configuration.</td>
+            </tr>
+            <tr>
+              <td>pollInterval</td>
+              <td>int</td>
+              <td>The number of seconds to wait before checking to see if the configuration has been modified. When
+                using HTTP or HTTPS the server must support the If-Modified-Since header and return a Last-Modified
+                header containing the date and time the file was last modified. Note that by default only the https,
+                file, and jar protocols are allowed. Support for other protocols can be enabled by specifying them
+                in the log4j2.Configuration.allowedProtocols system property</td>
+            </tr>
+            <tr>
+              <td>operator</td>
+              <td>String</td>
+              <td>If the operator is "or" then a match by any one of the key/value pairs will be considered to be
+                a match, otherwise all the key/value pairs must match.</td>
+            </tr>
+            <tr>
+              <td>onMatch</td>
+              <td>String</td>
+              <td>Action to take when the filter matches. May be ACCEPT, DENY or NEUTRAL. The default value is NEUTRAL.</td>
+            </tr>
+            <tr>
+              <td>onMismatch</td>
+              <td>String</td>
+              <td>Action to take when the filter does not match. May be ACCEPT, DENY or NEUTRAL. The default value is
+                DENY.</td>
+            </tr>
+          </table>
+          <p>
+            A configuration containing the MutableContextMapFilter might look like:
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp" packages="">
+  <MutableContextMapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or"
+    configLocation="http://localhost:8080/threadContextFilter.json" pollInterval="300">
+  </MutableContextMapFilter>
+  <Appenders>
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+      <BurstFilter level="INFO" rate="16" maxBurst="100"/>
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <TimeBasedTriggeringPolicy />
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="RollingFile"/>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
+          <p>
+            The configuration file supplied to the filter should look similar to:
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+{
+  "debugIds": {
+    "loginId": ["rgoers@apache.org", "logging@apache.org"],
+    "accountNumber": ["30510263"]
+  }
+}
+  ]]></pre>
+        </subsection>
         <a name="NoMarkerFilter"/>
         <subsection name="NoMarkerFilter">
           <p>
