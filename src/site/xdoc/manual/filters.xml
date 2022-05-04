@@ -483,7 +483,7 @@
           </p>
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 {
-  "debugIds": {
+  "config": {
     "loginId": ["rgoers@apache.org", "logging@apache.org"],
     "accountNumber": ["30510263"]
   }

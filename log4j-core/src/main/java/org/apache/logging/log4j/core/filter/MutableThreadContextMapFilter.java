@@ -62,6 +62,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class MutableThreadContextMapFilter extends AbstractFilter {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final KeyValuePair[] EMPTY_ARRAY = {};
 
     private volatile Filter filter;
     private final long pollInterval;
@@ -359,7 +360,7 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
                             }
                         }
                         if (pairs.size() > 0) {
-                            configResult.pairs = pairs.toArray(KeyValuePair.EMPTY_ARRAY);
+                            configResult.pairs = pairs.toArray(EMPTY_ARRAY);
                             configResult.status = Status.SUCCESS;
                         } else {
                             configResult.status = Status.EMPTY;
