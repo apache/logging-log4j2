@@ -63,6 +63,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class MutableThreadContextMapFilter extends AbstractFilter {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final KeyValuePair[] EMPTY_ARRAY = new KeyValuePair[0];
 
     private volatile Filter filter;
     private final long pollInterval;
@@ -356,11 +357,12 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
         if (result.getStatus() == Status.SUCCESS) {
             LOGGER.debug("Processing Debug key/value pairs from: {}", source.toString());
             try {
-                final KeyValuePairConfig config = MAPPER.readValue(inputStream, KeyValuePairConfig.class);
-                if (config != null && config.getdebugIds() != null) {
-                    if (config.getdebugIds().size() > 0) {
+                final KeyValuePairConfig keyValuePairConfig = MAPPER.readValue(inputStream, KeyValuePairConfig.class);
+                if (keyValuePairConfig != null) {
+                    final Map<String, String[]> config = keyValuePairConfig.getConfig();
+                    if (config != null && config.size() > 0) {
                         final List<KeyValuePair> pairs = new ArrayList<>();
-                        for (Map.Entry<String, String[]> entry : config.getdebugIds().entrySet()) {
+                        for (Map.Entry<String, String[]> entry : config.entrySet()) {
                             final String key = entry.getKey();
                             for (final String value : entry.getValue()) {
                                 if (value != null) {
@@ -371,7 +373,7 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
                             }
                         }
                         if (pairs.size() > 0) {
-                            configResult.pairs = pairs.toArray(new KeyValuePair[0]);
+                            configResult.pairs = pairs.toArray(EMPTY_ARRAY);
                             configResult.status = Status.SUCCESS;
                         } else {
                             configResult.status = Status.EMPTY;
@@ -380,7 +382,7 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
                         configResult.status = Status.EMPTY;
                     }
                 } else {
-                    LOGGER.warn("No debugIds element in ThreadContextMapFilter configuration");
+                    LOGGER.warn("No config element in MutableThreadContextMapFilter configuration");
                     configResult.status = Status.ERROR;
                 }
             } catch (Exception ex) {

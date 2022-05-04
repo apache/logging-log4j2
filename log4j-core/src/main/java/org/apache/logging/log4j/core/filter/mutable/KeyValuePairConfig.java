@@ -27,20 +27,20 @@ public class KeyValuePairConfig {
      * Map of keys and values for the MutableThreadContextMapFilter. Example file:
      * <pre>
      *   {
-     *     "debugIds": {
+     *     "config": {
      *       "loginId": ["rgoers", "adam"],
      *       "accountNumber": ["30510263"]
      *   }
      * }
      * </pre>
      */
-    private Map<String, String[]> debugIds;
+    private Map<String, String[]> config;
 
-    public Map<String, String[]> getdebugIds() {
-        return debugIds;
+    public Map<String, String[]> getConfig() {
+        return config;
     }
 
-    public void setKeyValuePairs(Map<String, String[]> debugIds) {
-        this.debugIds = debugIds;
+    public void setConfig(Map<String, String[]> config) {
+        this.config = config;
     }
 }
