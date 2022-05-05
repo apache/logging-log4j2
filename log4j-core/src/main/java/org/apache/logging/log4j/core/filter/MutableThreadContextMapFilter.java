@@ -52,6 +52,7 @@ import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -62,8 +63,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @PerformanceSensitive("allocation")
 public class MutableThreadContextMapFilter extends AbstractFilter {
 
-    private static final ObjectMapper MAPPER = new ObjectMapper();
-    private static final KeyValuePair[] EMPTY_ARRAY = new KeyValuePair[0];
+    private static final ObjectMapper MAPPER = new ObjectMapper()
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    private static final KeyValuePair[] EMPTY_ARRAY = {};
 
     private volatile Filter filter;
     private final long pollInterval;
@@ -359,10 +361,10 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
             try {
                 final KeyValuePairConfig keyValuePairConfig = MAPPER.readValue(inputStream, KeyValuePairConfig.class);
                 if (keyValuePairConfig != null) {
-                    final Map<String, String[]> config = keyValuePairConfig.getConfig();
-                    if (config != null && config.size() > 0) {
+                    final Map<String, String[]> configs = keyValuePairConfig.getConfigs();
+                    if (configs != null && configs.size() > 0) {
                         final List<KeyValuePair> pairs = new ArrayList<>();
-                        for (Map.Entry<String, String[]> entry : config.entrySet()) {
+                        for (Map.Entry<String, String[]> entry : configs.entrySet()) {
                             final String key = entry.getKey();
                             for (final String value : entry.getValue()) {
                                 if (value != null) {
@@ -376,6 +378,7 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
                             configResult.pairs = pairs.toArray(EMPTY_ARRAY);
                             configResult.status = Status.SUCCESS;
                         } else {
+                            LOGGER.debug("No configuration data in {}", source.toString());
                             configResult.status = Status.EMPTY;
                         }
                     } else {
@@ -390,6 +393,7 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
                 configResult.status = Status.ERROR;
             }
         } else {
+            LOGGER.warn("No configs element in MutableThreadContextMapFilter configuration");
             configResult.status = result.getStatus();
         }
         return configResult;

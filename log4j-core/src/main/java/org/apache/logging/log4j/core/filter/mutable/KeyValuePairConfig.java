@@ -34,13 +34,13 @@ public class KeyValuePairConfig {
      * }
      * </pre>
      */
-    private Map<String, String[]> config;
+    private Map<String, String[]> configs;
 
-    public Map<String, String[]> getConfig() {
-        return config;
+    public Map<String, String[]> getConfigs() {
+        return configs;
     }
 
-    public void setConfig(Map<String, String[]> config) {
-        this.config = config;
+    public void setConfigs(Map<String, String[]> configs) {
+        this.configs = configs;
     }
 }
