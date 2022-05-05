@@ -51,6 +51,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -61,7 +62,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @PerformanceSensitive("allocation")
 public class MutableThreadContextMapFilter extends AbstractFilter {
 
-    private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final ObjectMapper MAPPER = new ObjectMapper()
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     private static final KeyValuePair[] EMPTY_ARRAY = {};
 
     private volatile Filter filter;
@@ -346,10 +348,10 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
             try {
                 final KeyValuePairConfig keyValuePairConfig = MAPPER.readValue(inputStream, KeyValuePairConfig.class);
                 if (keyValuePairConfig != null) {
-                    final Map<String, String[]> config = keyValuePairConfig.getConfig();
-                    if (config != null && config.size() > 0) {
+                    final Map<String, String[]> configs = keyValuePairConfig.getConfigs();
+                    if (configs != null && configs.size() > 0) {
                         final List<KeyValuePair> pairs = new ArrayList<>();
-                        for (Map.Entry<String, String[]> entry : config.entrySet()) {
+                        for (Map.Entry<String, String[]> entry : configs.entrySet()) {
                             final String key = entry.getKey();
                             for (final String value : entry.getValue()) {
                                 if (value != null) {
@@ -366,10 +368,11 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
                             configResult.status = Status.EMPTY;
                         }
                     } else {
+                        LOGGER.debug("No configuration data in {}", source.toString());
                         configResult.status = Status.EMPTY;
                     }
                 } else {
-                    LOGGER.warn("No config element in MutableThreadContextMapFilter configuration");
+                    LOGGER.warn("No configs element in MutableThreadContextMapFilter configuration");
                     configResult.status = Status.ERROR;
                 }
             } catch (Exception ex) {
