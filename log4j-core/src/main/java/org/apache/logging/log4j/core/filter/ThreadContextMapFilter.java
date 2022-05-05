@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
@@ -36,6 +37,7 @@ import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.StringMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,6 +64,11 @@ public class ThreadContextMapFilter extends MapFilter {
             final Map<String, List<String>> pairs, final boolean oper, final Result onMatch,
             final Result onMismatch, final ContextDataInjector injector) {
         super(pairs, oper, onMatch, onMismatch);
+        // ContextDataFactory looks up a property. The Spring PropertySource may log which will cause recursion.
+        // By initializing the ContextDataFactory here recursion will be prevented.
+        StringMap map = ContextDataFactory.createContextData();
+        LOGGER.debug("Successfully initialized ContextDataFactory by retrieving the context data with {} entries",
+                map.size());
         if (pairs.size() == 1) {
             final Iterator<Map.Entry<String, List<String>>> iter = pairs.entrySet().iterator();
             final Map.Entry<String, List<String>> entry = iter.next();
