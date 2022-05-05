@@ -461,7 +461,7 @@ The configuration file supplied to the filter should look similar to:
 [source,json]
 ----
 {
-  "config": {
+  "configs": {
     "loginId": ["rgoers@apache.org", "logging@apache.org"],
     "accountNumber": ["30510263"]
   }
