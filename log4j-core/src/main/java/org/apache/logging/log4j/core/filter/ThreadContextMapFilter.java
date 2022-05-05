@@ -34,12 +34,15 @@ import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.StringMap;
 
 /**
  * Filter based on a value in the Thread Context Map (MDC).
@@ -48,7 +51,6 @@ import org.apache.logging.log4j.util.ReadOnlyStringMap;
 @PluginAliases("ContextMapFilter")
 @PerformanceSensitive("allocation")
 public class ThreadContextMapFilter extends MapFilter {
-
     private final ContextDataInjector injector = ContextDataInjectorFactory.createInjector();
     private final String key;
     private final String value;
@@ -58,6 +60,11 @@ public class ThreadContextMapFilter extends MapFilter {
     public ThreadContextMapFilter(final Map<String, List<String>> pairs, final boolean oper, final Result onMatch,
                                   final Result onMismatch) {
         super(pairs, oper, onMatch, onMismatch);
+        // ContextDataFactory looks up a property. The Spring PropertySource may log which will cause recursion.
+        // By initializing the ContextDataFactory here recursion will be prevented.
+        StringMap map = ContextDataFactory.createContextData();
+        LOGGER.debug("Successfully initialized ContextDataFactory by retrieving the context data with {} entries",
+                map.size());
         if (pairs.size() == 1) {
             final Iterator<Map.Entry<String, List<String>>> iter = pairs.entrySet().iterator();
             final Map.Entry<String, List<String>> entry = iter.next();

@@ -32,11 +32,13 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.ContextDataInjector;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.StringMap;
 
 /**
  * Compares against a log level that is associated with a context value. By default the context is the
@@ -80,6 +82,11 @@ public final class DynamicThresholdFilter extends AbstractFilter {
     private DynamicThresholdFilter(final String key, final Map<String, Level> pairs, final Level defaultLevel,
                                    final Result onMatch, final Result onMismatch) {
         super(onMatch, onMismatch);
+        // ContextDataFactory looks up a property. The Spring PropertySource may log which will cause recursion.
+        // By initializing the ContextDataFactory here recursion will be prevented.
+        StringMap map = ContextDataFactory.createContextData();
+        LOGGER.debug("Successfully initialized ContextDataFactory by retrieving the context data with {} entries",
+                map.size());
         Objects.requireNonNull(key, "key cannot be null");
         this.key = key;
         this.levelMap = pairs;
