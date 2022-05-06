@@ -145,7 +145,7 @@ jobs:
             -DskipTests=true \
             -DdeployAtEnd=true \
             --settings .github/workflows/maven-settings.xml \
-            deploy:deploy
+            deploy
         env:
           NEXUS_USER: ${{ secrets.NEXUS_USER }}
           NEXUS_PW: ${{ secrets.NEXUS_PW }}
