@@ -138,6 +138,8 @@ jobs:
       - name: Maven "deploy"
         timeout-minutes: 15
         shell: bash
+        # `package install:install deploy:deploy` goal is needed to deploy without configuring the plugin in the POM.
+        # For details see: https://maven.apache.org/plugins/maven-gpg-plugin/examples/deploy-signed-artifacts.html
         run: |
           ./mvnw \
             --show-version --batch-mode --errors --no-transfer-progress \
@@ -146,7 +148,7 @@ jobs:
             -DdeployAtEnd=true \
             --settings .github/workflows/maven-settings.xml \
             --global-toolchains ".github/workflows/maven-toolchains.xml" \
-            deploy
+            package install:install deploy:deploy
         env:
           NEXUS_USER: ${{ secrets.NEXUS_USER }}
           NEXUS_PW: ${{ secrets.NEXUS_PW }}
