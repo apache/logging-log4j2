@@ -97,3 +97,19 @@ jobs:
             -DskipTests \
             --global-toolchains ".github/workflows/maven-toolchains.xml" \
             site
+
+      - name: Maven "deploy"
+        if: github.repository == 'apache/logging-log4j2' && github.ref == 'refs/heads/release-2.x'
+        timeout-minutes: 15
+        shell: bash
+        run: |
+          ./mvnw \
+            --show-version --batch-mode --errors --no-transfer-progress \
+            -Dgpg.skip=true \
+            -DskipTests=true \
+            -DdeployAtEnd=true \
+            --settings .github/workflows/maven-settings.xml \
+            deploy:deploy
+        env:
+          NEXUS_USER: ${{ secrets.NEXUS_USER }}
+          NEXUS_PW: ${{ secrets.NEXUS_PW }}
