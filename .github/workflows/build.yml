@@ -145,6 +145,7 @@ jobs:
             -DskipTests=true \
             -DdeployAtEnd=true \
             --settings .github/workflows/maven-settings.xml \
+            --global-toolchains ".github/workflows/maven-toolchains.xml" \
             deploy
         env:
           NEXUS_USER: ${{ secrets.NEXUS_USER }}
