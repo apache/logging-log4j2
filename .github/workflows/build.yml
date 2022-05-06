@@ -145,10 +145,9 @@ jobs:
             --show-version --batch-mode --errors --no-transfer-progress \
             -Dgpg.skip=true \
             -DskipTests=true \
-            -DdeployAtEnd=true \
             --settings .github/workflows/maven-settings.xml \
             --global-toolchains ".github/workflows/maven-toolchains.xml" \
-            package install:install deploy:deploy
+            deploy
         env:
           NEXUS_USER: ${{ secrets.NEXUS_USER }}
           NEXUS_PW: ${{ secrets.NEXUS_PW }}
