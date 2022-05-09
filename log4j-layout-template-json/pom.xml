@@ -191,8 +191,6 @@
                indeed handles everything in UTF-8 without implicitly
                relying on the system defaults. -->
           <argLine>-Dfile.encoding=US-ASCII</argLine>
-          <forkCount>8C</forkCount>
-          <reuseForks>true</reuseForks>
           <systemPropertyVariables>
             <!-- Enable JUnit 5 parallel execution. -->
             <junit.jupiter.execution.parallel.enabled>true</junit.jupiter.execution.parallel.enabled>
