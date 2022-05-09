@@ -143,7 +143,6 @@ jobs:
         # INFRA-23225 `log4j-bom` is excluded due to 401 errors.
         run: |
           ./mvnw \
-            -pl '!log4j-bom' \
             --show-version --batch-mode --errors --no-transfer-progress \
             -Dgpg.skip=true \
             -DskipTests=true \

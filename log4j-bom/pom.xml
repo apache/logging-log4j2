@@ -28,6 +28,17 @@
   <artifactId>log4j-bom</artifactId>
   <version>2.17.3-SNAPSHOT</version>
   <packaging>pom</packaging>
+
+  <!-- `log4j-bom` doesn't inherit from the room POM, but `org.apache.logging:logging-parent`.
+       Hence Maven repositories need to be explicitly provided for SNAPSHOT artifact deployments. -->
+  <distributionManagement>
+    <snapshotRepository>
+      <id>asf-snapshots</id>
+      <name>ASF snapshot repository</name>
+      <url>https://repository.apache.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
+
   <dependencyManagement>
     <dependencies>
       <!-- Log4j API -->
