@@ -1741,6 +1741,11 @@
       <id>www.example.com</id>
       <url>scp://www.example.com/www/docs/project/</url>
     </site>
+    <snapshotRepository>
+      <id>asf-snapshots</id>
+      <name>ASF snapshot repository</name>
+      <url>https://repository.apache.org/content/repositories/snapshots</url>
+    </snapshotRepository>
   </distributionManagement>
   <modules>
     <!-- Log4j Bill of Materials -->
