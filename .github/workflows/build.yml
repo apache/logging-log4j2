@@ -112,8 +112,10 @@ jobs:
         shell: bash
         # `package install:install deploy:deploy` goal is needed to deploy without configuring the plugin in the POM.
         # For details see: https://maven.apache.org/plugins/maven-gpg-plugin/examples/deploy-signed-artifacts.html
+        # INFRA-23225 `log4j-bom` is excluded due to 401 errors.
         run: |
           ./mvnw \
+            -pl '!log4j-bom' \
             --show-version --batch-mode --errors --no-transfer-progress \
             -Dgpg.skip=true \
             -DskipTests=true \
