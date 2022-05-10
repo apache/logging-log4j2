@@ -139,11 +139,26 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
      * @param enterpriseNumber The enterprise number.
      * @param required The list of keys that are required for this id.
      * @param optional The list of keys that are optional for this id.
+     * @deprecated Use {@link #StructuredDataId(String, String, String[], String[])} instead.
+     */
+    @Deprecated
+    public StructuredDataId(final String name, final int enterpriseNumber, final String[] required,
+                            final String[] optional) {
+        this(name, String.valueOf(enterpriseNumber), required, optional, MAX_LENGTH);
+    }
+
+    /**
+     * A Constructor that helps conformance to RFC 5424.
+     *
+     * @param name The name portion of the id.
+     * @param enterpriseNumber The enterprise number.
+     * @param required The list of keys that are required for this id.
+     * @param optional The list of keys that are optional for this id.
      * @param maxLength The maximum length of the StructuredData Id key.
      * @since 2.9
      */
     public StructuredDataId(final String name, final String enterpriseNumber, final String[] required,
-            final String[] optional, final int maxLength) {
+                            final String[] optional, final int maxLength) {
         if (name == null) {
             throw new IllegalArgumentException("No structured id name was supplied");
         }
@@ -161,6 +176,23 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
         }
         this.required = required;
         this.optional = optional;
+    }
+
+    /**
+     * A Constructor that helps conformance to RFC 5424.
+     *
+     * @param name The name portion of the id.
+     * @param enterpriseNumber The enterprise number.
+     * @param required The list of keys that are required for this id.
+     * @param optional The list of keys that are optional for this id.
+     * @param maxLength The maximum length of the StructuredData Id key.
+     * @since 2.9
+     * @deprecated Use {@link #StructuredDataId(String, String, String[], String[], int)} instead.
+     */
+    @Deprecated
+    public StructuredDataId(final String name, final int enterpriseNumber, final String[] required,
+            final String[] optional, final int maxLength) {
+        this(name, String.valueOf(enterpriseNumber), required, optional, maxLength);
     }
 
     /**
@@ -201,6 +233,19 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
         }
 
         return new StructuredDataId(id, anEnterpriseNumber, req, opt);
+    }
+
+    /**
+     * Creates an id based on the current id.
+     *
+     * @param defaultId The default id to use if this StructuredDataId doesn't have a name.
+     * @param anEnterpriseNumber The enterprise number.
+     * @return a StructuredDataId.
+     * @deprecated Use {@link StructuredDataId#makeId(String, String)} instead
+     */
+    @Deprecated
+    public StructuredDataId makeId(final String defaultId, final int anEnterpriseNumber) {
+        return makeId(defaultId, String.valueOf(anEnterpriseNumber));
     }
 
     /**
@@ -245,7 +290,7 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
      * @return true if the id uses the reserved enterprise number, false otherwise.
      */
     public boolean isReserved() {
-        return enterpriseNumber.equals(RESERVED);
+        return RESERVED.equals(enterpriseNumber);
     }
 
     @Override

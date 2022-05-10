@@ -120,7 +120,7 @@ public class SyslogAppenderTest extends SyslogAppenderTestBase {
             .setProtocol(EnglishEnums.valueOf(Protocol.class, protocol))
             .setReconnectDelayMillis(-1).setName("TestApp").setIgnoreExceptions(false)
             .setId("Audit")
-            .setEnterpriseNumber("18060")
+            .setEnterpriseNumber(18060)
             .setMdcId("RequestContext")
             .setNewLine(newLine)
             .setAppName("TestApp")
