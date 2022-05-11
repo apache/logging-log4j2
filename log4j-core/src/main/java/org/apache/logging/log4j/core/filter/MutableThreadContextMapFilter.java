@@ -244,29 +244,28 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
         public MutableThreadContextMapFilter build() {
             final LastModifiedSource source = getSource(configLocation);
             if (source == null) {
-               return new MutableThreadContextMapFilter(new NoOpFilter(), null, 0,
-                       null, getOnMatch(), getOnMismatch(), configuration);
+                return new MutableThreadContextMapFilter(new NoOpFilter(), null, 0,
+                        null, getOnMatch(), getOnMismatch(), configuration);
             }
             final AuthorizationProvider authorizationProvider =
                     ConfigurationFactory.authorizationProvider(PropertiesUtil.getProperties());
-            final ConfigResult result = getConfig(source, authorizationProvider);
             Filter filter;
-            if (result.status == Status.SUCCESS) {
-                if (result.pairs.length > 0) {
-                    filter = ThreadContextMapFilter.newBuilder()
-                            .setPairs(result.pairs)
-                            .setOperator("or")
-                            .setOnMatch(getOnMatch())
-                            .setOnMismatch(getOnMismatch())
-                            .setContextDataInjector(ContextDataInjectorFactory.createInjector())
-                            .get();
+            if (pollInterval <= 0) {
+                ConfigResult result = getConfig(source, authorizationProvider);
+                if (result.status == Status.SUCCESS) {
+                    if (result.pairs.length > 0) {
+                        filter = ThreadContextMapFilter.createFilter(result.pairs, "or",
+                                getOnMatch(), getOnMismatch());
+                    } else {
+                        filter = new NoOpFilter();
+                    }
+                } else if (result.status == Status.NOT_FOUND || result.status == Status.EMPTY) {
+                    filter = new NoOpFilter();
                 } else {
+                    LOGGER.warn("Unexpected response returned on initial call: {}", result.status);
                     filter = new NoOpFilter();
                 }
-            } else if (result.status == Status.NOT_FOUND || result.status == Status.EMPTY) {
-                filter = new NoOpFilter();
             } else {
-                LOGGER.warn("Unexpected response returned on initial call: {}", result.status);
                 filter = new NoOpFilter();
             }
 
