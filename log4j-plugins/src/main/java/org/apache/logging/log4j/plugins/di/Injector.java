@@ -31,6 +31,7 @@ import java.util.function.Supplier;
  * {@linkplain #init() initialized} with {@link InjectorCallback} services.
  */
 public interface Injector {
+    Key<Injector> KEY = new Key<>() {};
 
     /**
      * Initializes this Injector with all registered {@link InjectorCallback} services in

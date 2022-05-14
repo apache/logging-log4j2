@@ -34,13 +34,13 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.Key;
-import org.apache.logging.log4j.plugins.util.PluginManager;
+import org.apache.logging.log4j.plugins.util.PluginCategory;
 import org.apache.logging.log4j.plugins.util.PluginType;
+import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
 
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.function.Function;
@@ -56,18 +56,18 @@ public class BuilderManager {
     public static final Filter INVALID_FILTER = new FilterWrapper(null);
     public static final Layout INVALID_LAYOUT = new LayoutWrapper(null);
     public static final RewritePolicy INVALID_REWRITE_POLICY = new RewritePolicyWrapper(null);
-    public static final Key<PluginManager> PLUGIN_MANAGER_KEY = new @Named(CATEGORY) Key<>() {};
+    public static final Key<PluginCategory> PLUGIN_CATEGORY_KEY = new @Named(CATEGORY) Key<>() {};
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final Class<?>[] CONSTRUCTOR_PARAMS = new Class[] { String.class, Properties.class };
     private final Injector injector;
-    private final Map<String, PluginType<?>> plugins;
+    private final PluginCategory plugins;
 
     /**
      * Constructs a new instance.
      */
     public BuilderManager(final Injector injector) {
         this.injector = injector;
-        plugins = injector.getInstance(PLUGIN_MANAGER_KEY).getPlugins();
+        plugins = injector.getInstance(PLUGIN_CATEGORY_KEY);
     }
 
     private <T extends Builder<U>, U> T createBuilder(final PluginType<T> plugin, final String prefix, final Properties props) {
@@ -92,7 +92,6 @@ public class BuilderManager {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private <T> PluginType<T> getPlugin(final String className) {
         Objects.requireNonNull(plugins, "plugins");
         Objects.requireNonNull(className, "className");
@@ -101,7 +100,7 @@ public class BuilderManager {
         if (pluginType == null) {
             LOGGER.warn("Unable to load plugin class name {} with key {}", className, key);
         }
-        return (PluginType<T>) pluginType;
+        return TypeUtil.cast(pluginType);
     }
 
     private <T extends Builder<U>, U> U newInstance(final PluginType<T> plugin, final Function<T, U> consumer,

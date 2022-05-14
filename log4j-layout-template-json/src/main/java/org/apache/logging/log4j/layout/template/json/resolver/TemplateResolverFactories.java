@@ -19,12 +19,13 @@ package org.apache.logging.log4j.layout.template.json.resolver;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.plugins.di.Key;
+import org.apache.logging.log4j.plugins.util.PluginCategory;
 import org.apache.logging.log4j.plugins.util.PluginType;
+import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Utility class for {@link TemplateResolverFactory}.
@@ -47,24 +48,24 @@ public final class TemplateResolverFactories {
             final Class<C> contextClass) {
 
         // Populate template resolver factories.
-        final Map<String, PluginType<?>> pluginTypeByName =
-                configuration.getComponent(TemplateResolverFactory.PLUGIN_MANAGER_KEY).getPlugins();
+        final PluginCategory factoryPlugins =
+                configuration.getComponent(TemplateResolverFactory.PLUGIN_CATEGORY_KEY);
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(
                     "found {} plugins of category \"{}\": {}",
-                    pluginTypeByName.size(),
+                    factoryPlugins.size(),
                     TemplateResolverFactory.CATEGORY,
-                    pluginTypeByName.keySet());
+                    factoryPlugins.getPluginKeys());
         }
 
         // Filter matching resolver factories.
         final Map<String, F> factoryByName =
-                populateFactoryByName(pluginTypeByName, configuration, valueClass, contextClass);
+                populateFactoryByName(factoryPlugins, configuration, valueClass, contextClass);
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(
                     "matched {} resolver factories out of {} for value class {} and context class {}: {}",
                     factoryByName.size(),
-                    pluginTypeByName.size(),
+                    factoryPlugins.size(),
                     valueClass,
                     contextClass,
                     factoryByName.keySet());
@@ -74,14 +75,12 @@ public final class TemplateResolverFactories {
     }
 
     private static <V, C extends TemplateResolverContext<V, C>, F extends TemplateResolverFactory<V, C>> Map<String, F> populateFactoryByName(
-            final Map<String, PluginType<?>> pluginTypeByName,
+            final PluginCategory factoryPlugins,
             final Configuration configuration,
             final Class<V> valueClass,
             final Class<C> contextClass) {
         final Map<String, F> factoryByName = new LinkedHashMap<>();
-        final Set<String> pluginNames = pluginTypeByName.keySet();
-        for (final String pluginName : pluginNames) {
-            final PluginType<?> pluginType = pluginTypeByName.get(pluginName);
+        for (final PluginType<?> pluginType : factoryPlugins) {
             final Class<?> pluginClass = pluginType.getPluginClass();
             final boolean pluginClassMatched =
                     TemplateResolverFactory.class.isAssignableFrom(pluginClass);
@@ -111,9 +110,7 @@ public final class TemplateResolverFactories {
         final boolean factoryContextClassMatched =
                 contextClass.isAssignableFrom(factoryContextClass);
         if (factoryValueClassMatched && factoryContextClassMatched) {
-            @SuppressWarnings("unchecked")
-            final F typedFactory = (F) factory;
-            return typedFactory;
+            return TypeUtil.cast(factory);
         }
         return null;
     }

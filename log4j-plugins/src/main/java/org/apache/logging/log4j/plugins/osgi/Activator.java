@@ -17,17 +17,23 @@
 
 package org.apache.logging.log4j.plugins.osgi;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.processor.PluginService;
 import org.apache.logging.log4j.plugins.util.PluginRegistry;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.osgi.framework.*;
+import org.osgi.framework.AdaptPermission;
+import org.osgi.framework.AdminPermission;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleEvent;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.SynchronousBundleListener;
 import org.osgi.framework.wiring.BundleWiring;
 
 import java.security.Permission;
 import java.util.Collection;
-import java.util.Hashtable;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -54,11 +60,12 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
     }
 
     private void loadPlugins(final BundleContext bundleContext) {
+        final PluginRegistry pluginRegistry = PluginRegistry.getInstance();
         try {
             final Collection<ServiceReference<PluginService>> serviceReferences = bundleContext.getServiceReferences(PluginService.class, null);
             for (final ServiceReference<PluginService> serviceReference : serviceReferences) {
                 final PluginService pluginService = bundleContext.getService(serviceReference);
-                PluginRegistry.getInstance().loadFromBundle(pluginService.getCategories(), bundleContext.getBundle().getBundleId());
+                pluginRegistry.loadFromBundle(pluginService.getBundle(), bundleContext.getBundle().getBundleId());
             }
         } catch (final InvalidSyntaxException ex) {
             LOGGER.error("Error accessing Plugins", ex);
@@ -122,7 +129,7 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
         final long bundleId = bundle.getBundleId();
         // LOG4J2-920: don't scan system bundle for plugins
         if (bundle.getState() == Bundle.ACTIVE && bundleId != 0) {
-            LOGGER.trace("Scanning bundle [{}, id=%d] for plugins.", bundle.getSymbolicName(), bundleId);
+            LOGGER.trace("Scanning bundle [{}, id={}] for plugins.", bundle.getSymbolicName(), bundleId);
             PluginRegistry.getInstance().loadFromBundle(bundleId,
                     bundle.adapt(BundleWiring.class).getClassLoader());
         }

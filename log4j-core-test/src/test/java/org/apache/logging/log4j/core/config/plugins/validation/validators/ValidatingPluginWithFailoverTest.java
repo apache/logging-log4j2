@@ -28,7 +28,7 @@ import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.di.Keys;
-import org.apache.logging.log4j.plugins.util.PluginManager;
+import org.apache.logging.log4j.plugins.util.PluginCategory;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusListener;
@@ -51,14 +51,14 @@ public class ValidatingPluginWithFailoverTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        final PluginManager pluginManager = injector.getInstance(Core.PLUGIN_MANAGER_KEY);
-        PluginType<?> plugin = pluginManager.getPluginType("Failover");
+        final PluginCategory category = injector.getInstance(Core.PLUGIN_CATEGORY_KEY);
+        PluginType<?> plugin = category.get("Failover");
         assertNotNull(plugin, "Rebuild this module to make sure annotation processing kicks in.");
 
         AppenderRef appenderRef = AppenderRef.createAppenderRef("List", Level.ALL, null);
         node = new Node(null, "failover", plugin);
-        Node failoversNode = new Node(node, "Failovers", pluginManager.getPluginType("Failovers"));
-        Node appenderRefNode  = new Node(failoversNode, "appenderRef", pluginManager.getPluginType("appenderRef"));
+        Node failoversNode = new Node(node, "Failovers", category.get("Failovers"));
+        Node appenderRefNode  = new Node(failoversNode, "appenderRef", category.get("appenderRef"));
         appenderRefNode.getAttributes().put("ref", "file");
         appenderRefNode.setObject(appenderRef);
         failoversNode.getChildren().add(appenderRefNode);

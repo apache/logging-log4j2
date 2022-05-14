@@ -24,7 +24,6 @@ import org.apache.logging.log4j.core.config.builder.api.Component;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
 import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.plugins.Node;
-import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.util.ResolverUtil;
 
@@ -154,14 +153,9 @@ public class BuiltConfiguration extends AbstractConfiguration {
         }
     }
 
-    @Override
-    public PluginManager getPluginManager() {
-        return pluginManager;
-    }
-
     protected Node convertToNode(final Node parent, final Component component) {
         final String name = component.getPluginType();
-        final PluginType<?> pluginType = pluginManager.getPluginType(name);
+        final PluginType<?> pluginType = corePlugins.get(name);
         final Node node = new Node(parent, name, pluginType);
         node.getAttributes().putAll(component.getAttributes());
         node.setValue(component.getValue());

@@ -23,6 +23,9 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.DefaultConfigurationFactory;
+import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
+import org.apache.logging.log4j.core.config.composite.DefaultMergeStrategy;
+import org.apache.logging.log4j.core.config.composite.MergeStrategy;
 import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.InterpolatorFactory;
 import org.apache.logging.log4j.core.lookup.StrLookup;
@@ -126,10 +129,13 @@ public class DefaultCallback implements InjectorCallback {
                                         DefaultLogEventFactory.class))
                 .registerBindingIfAbsent(Key.forClass(InterpolatorFactory.class),
                         () -> defaultLookup -> new Interpolator(defaultLookup,
-                                injector.getInstance(StrLookup.PLUGIN_MANAGER_KEY).getPlugins(), injector::getInstance))
+                                injector.getInstance(StrLookup.PLUGIN_CATEGORY_KEY), injector::getInstance))
                 .registerBindingIfAbsent(Key.forClass(StrSubstitutor.class),
                         () -> new StrSubstitutor(injector.getInstance(InterpolatorFactory.class).newInterpolator(null)))
                 .registerBindingIfAbsent(ConfigurationFactory.KEY, injector.getFactory(DefaultConfigurationFactory.class))
+                .registerBindingIfAbsent(MergeStrategy.KEY,
+                        () -> loader.getInstance(CompositeConfiguration.MERGE_STRATEGY_PROPERTY, MergeStrategy.class,
+                                () -> DefaultMergeStrategy.class))
                 .registerBindingIfAbsent(Constants.DEFAULT_STATUS_LEVEL_KEY, () -> {
                     final String statusLevel =
                             properties.getStringProperty(Constants.LOG4J_DEFAULT_STATUS_LEVEL, Level.ERROR.name());

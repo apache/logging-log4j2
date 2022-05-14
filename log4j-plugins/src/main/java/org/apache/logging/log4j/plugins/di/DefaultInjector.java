@@ -29,7 +29,8 @@ import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.name.AnnotatedElementAliasesProvider;
 import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
 import org.apache.logging.log4j.plugins.util.AnnotationUtil;
-import org.apache.logging.log4j.plugins.util.PluginManager;
+import org.apache.logging.log4j.plugins.util.PluginCategory;
+import org.apache.logging.log4j.plugins.util.PluginRegistry;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.plugins.validation.Constraint;
@@ -81,7 +82,7 @@ class DefaultInjector implements Injector {
 
     DefaultInjector() {
         bindingMap = new BindingMap();
-        bindingMap.put(Key.forClass(Injector.class), () -> this);
+        bindingMap.put(KEY, () -> this);
         scopes.put(Singleton.class, new SingletonScope());
     }
 
@@ -249,12 +250,16 @@ class DefaultInjector implements Injector {
         }
         final Class<T> rawType = key.getRawType();
         final Scope scope = getScopeForType(rawType);
-        if (rawType == PluginManager.class && key.getQualifierType() == Named.class) {
+        if (rawType == PluginCategory.class && key.getQualifierType() == Named.class) {
             final Supplier<T> factory = () -> {
-                final var manager = new PluginManager(key.getName());
+                final String categoryName = key.getName();
                 final Binding<List<String>> pluginPackagesBinding = bindingMap.get(Keys.PLUGIN_PACKAGES_KEY, List.of());
-                manager.collectPlugins(pluginPackagesBinding != null ? pluginPackagesBinding.getSupplier().get() : List.of());
-                return TypeUtil.cast(manager);
+                final List<String> pluginPackages = pluginPackagesBinding != null ? pluginPackagesBinding.getSupplier().get() : List.of();
+                // TODO: can this be a bean, too? might be tricky in OSGi
+                final var registry = PluginRegistry.getInstance();
+                // Then, iterate over packages registered in PluginManager
+                final var category = registry.getCategory(categoryName, pluginPackages);
+                return TypeUtil.cast(category);
             };
             bindingMap.put(key, scope.get(key, factory));
             return bindingMap.get(key, aliases).getSupplier();
@@ -298,13 +303,13 @@ class DefaultInjector implements Injector {
     }
 
     private void initializeTypeConverters() {
-        final PluginManager manager = getInstance(TypeConverter.PLUGIN_MANAGER_KEY);
-        for (final PluginType<?> knownType : manager.getPlugins().values()) {
+        final PluginCategory category = getInstance(TypeConverter.PLUGIN_CATEGORY_KEY);
+        category.forEach(knownType -> {
             final Class<?> pluginClass = knownType.getPluginClass();
             final Type type = getTypeConverterSupportedType(pluginClass);
             final TypeConverter<?> converter = getInstance(pluginClass.asSubclass(TypeConverter.class));
             registerTypeConverter(type, converter);
-        }
+        });
         registerTypeConverter(Boolean.class, Boolean::valueOf);
         registerTypeAlias(Boolean.class, Boolean.TYPE);
         registerTypeConverter(Byte.class, Byte::valueOf);

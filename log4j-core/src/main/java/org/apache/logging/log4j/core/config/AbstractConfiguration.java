@@ -57,7 +57,7 @@ import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.di.Keys;
-import org.apache.logging.log4j.plugins.util.PluginManager;
+import org.apache.logging.log4j.plugins.util.PluginCategory;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.util.LazyValue;
@@ -106,9 +106,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     protected final List<String> pluginPackages = new ArrayList<>();
 
     /**
-     * The plugin manager.
+     * Core plugins.
      */
-    protected PluginManager pluginManager;
+    protected PluginCategory corePlugins;
 
     /**
      * Shutdown hook is enabled by default.
@@ -200,13 +200,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         injector.registerBinding(ScriptManager.KEY, this::getScriptManager);
     }
 
-    public PluginManager getPluginManager() {
-        return pluginManager;
+    public PluginCategory getCorePlugins() {
+        return corePlugins;
     }
 
-    public void setPluginManager(final PluginManager pluginManager) {
-        this.pluginManager = pluginManager;
-        injector.registerBinding(Core.PLUGIN_MANAGER_KEY, this::getPluginManager);
+    public void setCorePlugins(final PluginCategory corePlugins) {
+        this.corePlugins = corePlugins;
+        injector.registerBinding(Core.PLUGIN_CATEGORY_KEY, this::getCorePlugins);
     }
 
     @Override
@@ -249,21 +249,18 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         configurationStrSubstitutor.setConfiguration(this);
         initializeScriptManager();
         injector.registerBindingIfAbsent(Keys.PLUGIN_PACKAGES_KEY, this::getPluginPackages);
-        pluginManager = injector.getInstance(Core.PLUGIN_MANAGER_KEY);
-        final PluginManager levelPlugins = injector.getInstance(new @Named(Level.CATEGORY) Key<>() {});
-        final Map<String, PluginType<?>> plugins = levelPlugins.getPlugins();
-        if (plugins != null) {
-            for (final PluginType<?> type : plugins.values()) {
-                final Class<?> pluginClass = type.getPluginClass();
-                try {
-                    // Cause the class to be initialized if it isn't already.
-                    Class.forName(pluginClass.getName(), true, pluginClass.getClassLoader());
-                } catch (final Exception e) {
-                    LOGGER.error("Unable to initialize {} due to {}", pluginClass.getName(), e.getClass()
-                            .getSimpleName(), e);
-                }
+        corePlugins = injector.getInstance(Core.PLUGIN_CATEGORY_KEY);
+        final PluginCategory levelPlugins = injector.getInstance(new @Named(Level.CATEGORY) Key<>() {});
+        levelPlugins.forEach(type -> {
+            final Class<?> pluginClass = type.getPluginClass();
+            try {
+                // Cause the class to be initialized if it isn't already.
+                Class.forName(pluginClass.getName(), true, pluginClass.getClassLoader());
+            } catch (final Exception e) {
+                LOGGER.error("Unable to initialize {} due to {}", pluginClass.getName(), e.getClass()
+                        .getSimpleName(), e);
             }
-        }
+        });
         setup();
         setupAdvertisement();
         doConfigure();
@@ -312,7 +309,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             final Source cfgSource = new Source(configSource);
             final Key<WatcherFactory> key = Key.forClass(WatcherFactory.class);
             injector.registerBindingIfAbsent(key, LazyValue.from(() ->
-                    new WatcherFactory(injector.getInstance(Watcher.PLUGIN_MANAGER_KEY).getPlugins())));
+                    new WatcherFactory(injector.getInstance(Watcher.PLUGIN_CATEGORY_KEY))));
             final Watcher watcher = injector.getInstance(key)
                     .newWatcher(cfgSource, this, reconfigurable, listeners, configSource.getLastModified());
             if (watcher != null) {
@@ -512,7 +509,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private void setupAdvertisement() {
         if (advertiserNode != null) {
             final String nodeName = advertiserNode.getName();
-            final PluginType<?> type = pluginManager.getPluginType(nodeName);
+            final PluginType<?> type = corePlugins.get(nodeName);
             if (type != null) {
                 advertiser = injector.getInstance(type.getPluginClass().asSubclass(Advertiser.class));
                 advertisement = advertiser.advertise(advertiserNode.getAttributes());

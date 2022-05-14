@@ -65,7 +65,6 @@ public class PluginType<T> {
         this.elementName = pluginEntry.getName();
     }
 
-
     public PluginEntry getPluginEntry() {
         return this.pluginEntry;
     }
@@ -102,6 +101,10 @@ public class PluginType<T> {
      */
     public String getCategory() {
         return this.pluginEntry.getCategory();
+    }
+
+    public String getName() {
+        return pluginEntry.getName();
     }
 
     @Override

@@ -287,7 +287,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             if (w3cNode instanceof Element) {
                 final Element child = (Element) w3cNode;
                 final String name = getType(child);
-                final PluginType<?> type = pluginManager.getPluginType(name);
+                final PluginType<?> type = corePlugins.get(name);
                 final Node childNode = new Node(node, name, type);
                 constructHierarchy(childNode, child);
                 if (type == null) {

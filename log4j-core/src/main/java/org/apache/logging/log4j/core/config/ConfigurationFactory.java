@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.net.URI;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
@@ -28,10 +26,12 @@ import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.Key;
-import org.apache.logging.log4j.plugins.util.PluginManager;
+import org.apache.logging.log4j.plugins.util.PluginCategory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
+
+import java.net.URI;
 
 /**
  * Factory class for parsed {@link Configuration} objects from a configuration file.
@@ -84,7 +84,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
 
     public static final Key<ConfigurationFactory> KEY = new Key<>() {};
 
-    public static final Key<PluginManager> PLUGIN_MANAGER_KEY = new @Named(CATEGORY) Key<>() {};
+    public static final Key<PluginCategory> PLUGIN_CATEGORY_KEY = new @Named(CATEGORY) Key<>() {};
 
     /**
      * Allows subclasses access to the status logger without creating another instance.

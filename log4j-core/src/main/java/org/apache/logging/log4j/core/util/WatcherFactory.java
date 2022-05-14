@@ -21,13 +21,13 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFileWatcher;
 import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.Reconfigurable;
+import org.apache.logging.log4j.plugins.util.PluginCategory;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -37,9 +37,9 @@ public class WatcherFactory {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private final Map<String, PluginType<?>> plugins;
+    private final PluginCategory plugins;
 
-    public WatcherFactory(final Map<String, PluginType<?>> watcherPlugins) {
+    public WatcherFactory(final PluginCategory watcherPlugins) {
         plugins = watcherPlugins;
     }
 

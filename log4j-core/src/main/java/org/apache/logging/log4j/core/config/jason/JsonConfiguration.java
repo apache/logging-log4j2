@@ -113,7 +113,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
     }
 
     private Node constructNode(final String key, final Node parent, final Map<String, Object> value) {
-        final PluginType<?> pluginType = pluginManager.getPluginType(key);
+        final PluginType<?> pluginType = corePlugins.get(key);
         final Node node = new Node(parent, key, pluginType);
         processAttributes(node, value);
         final List<Node> children = node.getChildren();
@@ -133,7 +133,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
                     if (object instanceof Map<?, ?>) {
                         final Map<String, Object> map = TypeUtil.cast(object);
                         final String type = getType(map).orElse(k);
-                        final PluginType<?> entryType = pluginManager.getPluginType(type);
+                        final PluginType<?> entryType = corePlugins.get(type);
                         final Node child = new Node(node, k, entryType);
                         processAttributes(child, map);
                         if (type.equalsIgnoreCase(k)) {

@@ -22,7 +22,7 @@ import org.apache.logging.log4j.core.config.ConfigurationAware;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.Keys;
-import org.apache.logging.log4j.plugins.util.PluginType;
+import org.apache.logging.log4j.plugins.util.PluginCategory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LazyValue;
 
@@ -75,12 +75,10 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         this.defaultLookup = defaultLookup == null ? new PropertiesLookup(Map.of()) : defaultLookup;
         final Injector injector = DI.createInjector();
         injector.registerBinding(Keys.PLUGIN_PACKAGES_KEY, () -> pluginPackages);
-        injector.getInstance(PLUGIN_MANAGER_KEY)
-                .getPlugins()
+        injector.getInstance(PLUGIN_CATEGORY_KEY)
                 .forEach((key, value) -> {
                     try {
-                        strLookups.put(key.toLowerCase(Locale.ROOT),
-                                injector.getFactory(value.getPluginClass().asSubclass(StrLookup.class)));
+                        strLookups.put(key, injector.getFactory(value.getPluginClass().asSubclass(StrLookup.class)));
                     } catch (final Throwable t) {
                         handleError(key, t);
                     }
@@ -88,13 +86,13 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
     }
 
     public Interpolator(
-            final StrLookup defaultLookup, final Map<String, PluginType<?>> strLookupPlugins,
+            final StrLookup defaultLookup, final PluginCategory strLookupPlugins,
             final Function<Class<? extends StrLookup>, StrLookup> pluginLoader) {
         this.defaultLookup = defaultLookup == null ? new PropertiesLookup(Map.of()) : defaultLookup;
         strLookupPlugins.forEach((key, value) -> {
             try {
                 final Class<? extends StrLookup> strLookupClass = value.getPluginClass().asSubclass(StrLookup.class);
-                strLookups.put(key.toLowerCase(Locale.ROOT), LazyValue.from(() -> pluginLoader.apply(strLookupClass)));
+                strLookups.put(key, LazyValue.from(() -> pluginLoader.apply(strLookupClass)));
             } catch (final Throwable t) {
                 handleError(key, t);
             }

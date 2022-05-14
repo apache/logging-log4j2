@@ -32,19 +32,14 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -52,6 +47,11 @@ import java.util.function.Supplier;
  */
 public class PluginRegistry {
 
+    /**
+     * The location of the plugin cache data file for compatibility with Log4j 2.x plugins.
+     */
+    private static final String PLUGIN_CACHE_FILE =
+            "META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat";
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private static final Supplier<PluginRegistry> INSTANCE = new LazyValue<>(PluginRegistry::new);
@@ -59,20 +59,17 @@ public class PluginRegistry {
     /**
      * Contains plugins found in Log4j2Plugins.dat cache files in the main CLASSPATH.
      */
-    private final AtomicReference<Map<String, List<PluginType<?>>>> pluginsByCategoryRef =
-        new AtomicReference<>();
+    private final AtomicReference<PluginBundle> pluginsByCategoryRef = new AtomicReference<>();
 
     /**
      * Contains plugins found in Log4j2Plugins.dat cache files in OSGi Bundles.
      */
-    private final ConcurrentMap<Long, Map<String, List<PluginType<?>>>> pluginsByCategoryByBundleId =
-        new ConcurrentHashMap<>();
+    private final ConcurrentMap<Long, PluginBundle> pluginsByCategoryByBundleId = new ConcurrentHashMap<>();
 
     /**
      * Contains plugins found by searching for annotated classes at runtime.
      */
-    private final ConcurrentMap<String, Map<String, List<PluginType<?>>>> pluginsByCategoryByPackage =
-        new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, PluginBundle> pluginsByCategoryByPackage = new ConcurrentHashMap<>();
 
     private PluginRegistry() {
     }
@@ -96,13 +93,8 @@ public class PluginRegistry {
         pluginsByCategoryByBundleId.clear();
     }
 
-    /**
-     * Retrieve plugins by their category and bundle id.
-     * @return The Map of plugin maps.
-     * @since 2.1
-     */
-    public Map<Long, Map<String, List<PluginType<?>>>> getPluginsByCategoryByBundleId() {
-        return pluginsByCategoryByBundleId;
+    public void forEachOsgiPluginBundle(final Consumer<? super PluginBundle> consumer) {
+        pluginsByCategoryByBundleId.values().forEach(consumer);
     }
 
     /**
@@ -110,13 +102,13 @@ public class PluginRegistry {
      * @return Map of the List of PluginTypes by category.
      * @since 2.1
      */
-    public Map<String, List<PluginType<?>>> loadFromMainClassLoader() {
-        final Map<String, List<PluginType<?>>> existing = pluginsByCategoryRef.get();
+    public PluginBundle loadFromMainClassLoader() {
+        final var existing = pluginsByCategoryRef.get();
         if (existing != null) {
             // already loaded
             return existing;
         }
-        final Map<String, List<PluginType<?>>> newPluginsByCategory = decodeCacheFiles(LoaderUtil.getClassLoader());
+        final PluginBundle newPluginsByCategory = decodeCacheFiles(LoaderUtil.getClassLoader());
         loadPlugins(newPluginsByCategory);
 
         // Note multiple threads could be calling this method concurrently. Both will do the work,
@@ -144,13 +136,13 @@ public class PluginRegistry {
      * @return the Map of Lists of plugins organized by category.
      * @since 2.1
      */
-    public Map<String, List<PluginType<?>>> loadFromBundle(final long bundleId, final ClassLoader loader) {
-        Map<String, List<PluginType<?>>> existing = pluginsByCategoryByBundleId.get(bundleId);
+    public PluginBundle loadFromBundle(final long bundleId, final ClassLoader loader) {
+        PluginBundle existing = pluginsByCategoryByBundleId.get(bundleId);
         if (existing != null) {
             // already loaded from this classloader
             return existing;
         }
-        final Map<String, List<PluginType<?>>> newPluginsByCategory = decodeCacheFiles(loader);
+        final PluginBundle newPluginsByCategory = decodeCacheFiles(loader);
         loadPlugins(loader, newPluginsByCategory);
 
         // Note multiple threads could be calling this method concurrently. Both will do the work,
@@ -169,15 +161,8 @@ public class PluginRegistry {
      * @param bundleId The bundle Id.
      * @since 3.0
      */
-    public void loadFromBundle(Map<String, List<PluginType<?>>> categories, Long bundleId) {
+    public void loadFromBundle(PluginBundle categories, Long bundleId) {
         pluginsByCategoryByBundleId.put(bundleId, categories);
-        for (Map.Entry<String, List<PluginType<?>>> entry: categories.entrySet()) {
-            if (!categories.containsKey(entry.getKey())) {
-
-                categories.put(entry.getKey(), new LinkedList<>());
-            }
-            categories.get(entry.getKey()).addAll(entry.getValue());
-        }
     }
 
     /**
@@ -185,7 +170,7 @@ public class PluginRegistry {
      * @param map The Map of the lists of plugins organized by category.
      * @since 3.0
      */
-    public void loadPlugins(Map<String, List<PluginType<?>>> map) {
+    public void loadPlugins(PluginBundle map) {
         Throwable throwable = null;
         ClassLoader errorClassLoader = null;
         boolean allFail = true;
@@ -208,18 +193,15 @@ public class PluginRegistry {
     /**
      * Load plugins from a specific ClassLoader.
      * @param classLoader The ClassLoader.
-     * @param map The Map of the list of plugin types organized by category.
+     * @param bundle The PluginBundle to merge discovered plugins to
      * @since 3.0
      */
-    public void loadPlugins(ClassLoader classLoader, Map<String, List<PluginType<?>>> map) {
+    public void loadPlugins(ClassLoader classLoader, PluginBundle bundle) {
         final long startTime = System.nanoTime();
         final ServiceLoader<PluginService> serviceLoader = ServiceLoader.load(PluginService.class, classLoader);
         final AtomicInteger pluginCount = new AtomicInteger();
         for (final PluginService pluginService : serviceLoader) {
-            pluginService.getCategories().forEach((category, plugins) -> {
-                map.computeIfAbsent(category.toLowerCase(Locale.ROOT), ignored -> new ArrayList<>()).addAll(plugins);
-                pluginCount.addAndGet(plugins.size());
-            });
+            pluginService.getBundle().forEach((category, plugins) -> pluginCount.addAndGet(bundle.merge(plugins)));
         }
         final int numPlugins = pluginCount.get();
         LOGGER.debug(() -> {
@@ -230,11 +212,11 @@ public class PluginRegistry {
         });
     }
 
-    private Map<String, List<PluginType<?>>> decodeCacheFiles(final ClassLoader classLoader) {
+    private PluginBundle decodeCacheFiles(final ClassLoader classLoader) {
         final long startTime = System.nanoTime();
         final PluginCache cache = new PluginCache();
         try {
-            final Enumeration<URL> resources = classLoader.getResources(PluginManager.PLUGIN_CACHE_FILE);
+            final Enumeration<URL> resources = classLoader.getResources(PLUGIN_CACHE_FILE);
             if (resources == null) {
                 LOGGER.info("Plugin preloads not available from class loader {}", classLoader);
             } else {
@@ -243,20 +225,15 @@ public class PluginRegistry {
         } catch (final IOException ioe) {
             LOGGER.warn("Unable to preload plugins", ioe);
         }
-        final Map<String, List<PluginType<?>>> newPluginsByCategory = new HashMap<>();
-        int pluginCount = 0;
-        for (final Map.Entry<String, Map<String, PluginEntry>> outer : cache.getAllCategories().entrySet()) {
-            final String categoryLowerCase = outer.getKey();
-            final List<PluginType<?>> types = new ArrayList<>(outer.getValue().size());
-            newPluginsByCategory.put(categoryLowerCase, types);
-            for (final Map.Entry<String, PluginEntry> inner : outer.getValue().entrySet()) {
-                final PluginEntry entry = inner.getValue();
-                final PluginType<?> type = new PluginType<>(entry, classLoader);
-                types.add(type);
-                ++pluginCount;
-            }
-        }
-        final int numPlugins = pluginCount;
+        final PluginBundle newPluginsByCategory = new PluginBundle();
+        final AtomicInteger pluginCount = new AtomicInteger();
+        cache.getAllCategories().forEach((key, outer) ->
+                outer.values().forEach(entry -> {
+                    final PluginType<?> type = new PluginType<>(entry, classLoader);
+                    newPluginsByCategory.add(type);
+                    pluginCount.incrementAndGet();
+                }));
+        final int numPlugins = pluginCount.get();
         LOGGER.debug(() -> {
             final long endTime = System.nanoTime();
             final DecimalFormat numFormat = new DecimalFormat("#0.000000");
@@ -272,12 +249,12 @@ public class PluginRegistry {
      * @return A Map of the lists of plugin types organized by category.
      * @since 2.1
      */
-    public Map<String, List<PluginType<?>>> loadFromPackage(final String pkg) {
+    public PluginBundle loadFromPackage(final String pkg) {
         if (Strings.isBlank(pkg)) {
             // happens when splitting an empty string
-            return Collections.emptyMap();
+            return new PluginBundle();
         }
-        Map<String, List<PluginType<?>>> existing = pluginsByCategoryByPackage.get(pkg);
+        PluginBundle existing = pluginsByCategoryByPackage.get(pkg);
         if (existing != null) {
             // already loaded this package
             return existing;
@@ -291,11 +268,9 @@ public class PluginRegistry {
         }
         resolver.findInPackage(new PluginTest(), pkg);
 
-        final Map<String, List<PluginType<?>>> newPluginsByCategory = new HashMap<>();
+        final PluginBundle newPluginsByCategory = new PluginBundle();
         for (final Class<?> clazz : resolver.getClasses()) {
             final Plugin plugin = clazz.getAnnotation(Plugin.class);
-            final String categoryLowerCase = plugin.category().toLowerCase();
-            List<PluginType<?>> list = newPluginsByCategory.computeIfAbsent(categoryLowerCase, k -> new ArrayList<>());
             final PluginEntry mainEntry = new PluginEntry();
             final String mainElementName = plugin.elementType().equals(
                 Plugin.EMPTY) ? plugin.name() : plugin.elementType();
@@ -306,7 +281,7 @@ public class PluginRegistry {
             mainEntry.setPrintable(plugin.printObject());
             mainEntry.setDefer(plugin.deferChildren());
             final PluginType<?> mainType = new PluginType<>(mainEntry, clazz, mainElementName);
-            list.add(mainType);
+            newPluginsByCategory.add(mainType);
             final PluginAliases pluginAliases = clazz.getAnnotation(PluginAliases.class);
             if (pluginAliases != null) {
                 for (final String alias : pluginAliases.value()) {
@@ -320,7 +295,7 @@ public class PluginRegistry {
                     aliasEntry.setPrintable(plugin.printObject());
                     aliasEntry.setDefer(plugin.deferChildren());
                     final PluginType<?> aliasType = new PluginType<>(aliasEntry, clazz, aliasElementName);
-                    list.add(aliasType);
+                    newPluginsByCategory.add(aliasType);
                 }
             }
         }
@@ -339,6 +314,37 @@ public class PluginRegistry {
             return existing;
         }
         return newPluginsByCategory;
+    }
+
+    /**
+     * Gets the registered plugins for the given category. If additional scan packages are provided, then plugins
+     * are scanned and loaded from there as well.
+     */
+    public PluginCategory getCategory(final String categoryName, List<String> additionalScanPackages) {
+        final var category = new PluginCategory(categoryName);
+        // First, iterate the PluginService services and legacy Log4j2Plugin.dat files found in the main CLASSPATH
+        PluginBundle builtInPlugins = loadFromMainClassLoader();
+        if (builtInPlugins.isEmpty()) {
+            // If we didn't find any plugins above, someone must have messed with the log4j-core.jar.
+            // Search the standard package in the hopes we can find our core plugins.
+            builtInPlugins = loadFromPackage("org.apache.logging.log4j.core");
+        }
+        final AtomicInteger addedCount = new AtomicInteger(category.mergeAll(builtInPlugins.get(categoryName)));
+
+        // Next, iterate OSGi modules that provide plugins as OSGi services
+        forEachOsgiPluginBundle(bundle ->
+                addedCount.addAndGet(category.mergeAll(bundle.get(categoryName))));
+
+        // Finally, iterate over additional packages from configuration
+        if (additionalScanPackages != null) {
+            for (final String pkg : additionalScanPackages) {
+                addedCount.addAndGet(category.mergeAll(loadFromPackage(pkg).get(categoryName)));
+            }
+        }
+
+        LOGGER.debug("Discovered {} new plugins in category '{}'", addedCount.get(), categoryName);
+
+        return category;
     }
 
     /**

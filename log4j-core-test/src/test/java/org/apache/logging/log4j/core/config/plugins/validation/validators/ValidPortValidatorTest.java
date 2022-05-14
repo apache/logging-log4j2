@@ -22,7 +22,7 @@ import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.di.Keys;
-import org.apache.logging.log4j.plugins.util.PluginManager;
+import org.apache.logging.log4j.plugins.util.PluginCategory;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,8 +40,8 @@ public class ValidPortValidatorTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        final PluginManager pluginManager = injector.getInstance(new @Named("Test") Key<>() {});
-        PluginType<?> plugin = pluginManager.getPluginType("HostAndPort");
+        final PluginCategory category = injector.getInstance(new @Named("Test") Key<>() {});
+        PluginType<?> plugin = category.get("HostAndPort");
         assertNotNull(plugin, "Rebuild this module to ensure annotation processing has been done.");
         node = new Node(null, "HostAndPort", plugin);
         node.getAttributes().put("host", "localhost");

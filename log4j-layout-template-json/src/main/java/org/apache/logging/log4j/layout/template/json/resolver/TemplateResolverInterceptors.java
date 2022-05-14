@@ -19,13 +19,13 @@ package org.apache.logging.log4j.layout.template.json.resolver;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.plugins.di.Key;
+import org.apache.logging.log4j.plugins.util.PluginCategory;
 import org.apache.logging.log4j.plugins.util.PluginType;
+import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Utility class for {@link TemplateResolverInterceptor}.
@@ -48,23 +48,23 @@ public class TemplateResolverInterceptors {
             final Class<C> contextClass) {
 
         // Populate interceptors.
-        final Map<String, PluginType<?>> pluginTypeByName =
-                configuration.getComponent(TemplateResolverInterceptor.PLUGIN_MANAGER_KEY).getPlugins();
+        final PluginCategory interceptorPlugins =
+                configuration.getComponent(TemplateResolverInterceptor.PLUGIN_CATEGORY_KEY);
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(
                     "found {} plugins of category \"{}\": {}",
-                    pluginTypeByName.size(),
+                    interceptorPlugins.size(),
                     TemplateResolverInterceptor.CATEGORY,
-                    pluginTypeByName.keySet());
+                    interceptorPlugins.getPluginKeys());
         }
 
         // Filter matching interceptors.
         final List<I> interceptors =
-                populateInterceptors(pluginTypeByName, configuration, valueClass, contextClass);
+                populateInterceptors(interceptorPlugins, configuration, valueClass, contextClass);
         LOGGER.debug(
                 "{} interceptors matched out of {} for value class {} and context class {}",
                 interceptors.size(),
-                pluginTypeByName.size(),
+                interceptorPlugins.size(),
                 valueClass,
                 contextClass);
         return interceptors;
@@ -72,14 +72,12 @@ public class TemplateResolverInterceptors {
     }
 
     private static <V, C extends TemplateResolverContext<V, C>, I extends TemplateResolverInterceptor<V, C>> List<I> populateInterceptors(
-            final Map<String, PluginType<?>> pluginTypeByName,
+            final PluginCategory interceptorPlugins,
             final Configuration configuration,
             final Class<V> valueClass,
             final Class<C> contextClass) {
         final List<I> interceptors = new LinkedList<>();
-        final Set<String> pluginNames = pluginTypeByName.keySet();
-        for (final String pluginName : pluginNames) {
-            final PluginType<?> pluginType = pluginTypeByName.get(pluginName);
+        for (final PluginType<?> pluginType : interceptorPlugins) {
             final Class<?> pluginClass = pluginType.getPluginClass();
             final boolean pluginClassMatched =
                     TemplateResolverInterceptor.class.isAssignableFrom(pluginClass);
@@ -110,9 +108,7 @@ public class TemplateResolverInterceptors {
         final boolean interceptorContextClassMatched =
                 contextClass.isAssignableFrom(interceptorContextClass);
         if (interceptorValueClassMatched && interceptorContextClassMatched) {
-            @SuppressWarnings({"unchecked"})
-            final I typedInterceptor = (I) interceptor;
-            return typedInterceptor;
+            return TypeUtil.cast(interceptor);
         }
         return null;
     }

@@ -23,7 +23,7 @@ import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.di.Keys;
 import org.apache.logging.log4j.plugins.test.validation.PluginWithGenericSubclassFoo1Builder;
-import org.apache.logging.log4j.plugins.util.PluginManager;
+import org.apache.logging.log4j.plugins.util.PluginCategory;
 import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,8 +40,8 @@ public class ValidatingPluginWithGenericSubclassFoo1BuilderTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        final PluginManager pluginManager = injector.getInstance(new @Named("Test") Key<>() {});
-        final var plugin = pluginManager.getPluginType("PluginWithGenericSubclassFoo1Builder");
+        final PluginCategory category = injector.getInstance(new @Named("Test") Key<>() {});
+        final var plugin = category.get("PluginWithGenericSubclassFoo1Builder");
         assertNotNull(plugin, "Rebuild this module to make sure annotation processing kicks in.");
         node = new Node(null, "Validator", plugin);
     }

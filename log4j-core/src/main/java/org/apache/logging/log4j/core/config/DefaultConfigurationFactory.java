@@ -37,8 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Default factory for using a plugin selected based on the configuration source.
@@ -294,44 +292,38 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
     }
 
     private static List<ConfigurationFactory> loadConfigurationFactories(final Injector injector) {
-        final Stream<? extends ConfigurationFactory> primaryConfigurationFactoryStream =
-                Optional.ofNullable(PropertiesUtil.getProperties().getStringProperty(CONFIGURATION_FACTORY_PROPERTY))
-                        .flatMap(DefaultConfigurationFactory::tryLoadFactoryClass)
-                        .map(clazz -> {
-                            try {
-                                return injector.getInstance(clazz);
-                            } catch (final Exception ex) {
-                                LOGGER.error("Unable to create instance of {}", clazz, ex);
-                                return null;
-                            }
-                        })
-                        .stream();
+        final List<ConfigurationFactory> factories = new ArrayList<>();
 
-        final Stream<? extends ConfigurationFactory> pluginConfigurationFactoryStream = injector.getInstance(PLUGIN_MANAGER_KEY)
-                .getPlugins()
-                .values()
-                .stream()
-                .flatMap(type -> {
+        Optional.ofNullable(PropertiesUtil.getProperties().getStringProperty(CONFIGURATION_FACTORY_PROPERTY))
+                .flatMap(DefaultConfigurationFactory::tryLoadFactoryClass)
+                .map(clazz -> {
                     try {
-                        final Class<? extends ConfigurationFactory> clazz =
-                                type.getPluginClass().asSubclass(ConfigurationFactory.class);
-                        return Stream.of(clazz);
-                    } catch (final Exception ex) {
-                        LOGGER.warn("Unable to add class {}", type.getPluginClass(), ex);
-                        return Stream.empty();
-                    }
-                })
-                .sorted(OrderComparator.getInstance())
-                .flatMap(clazz -> {
-                    try {
-                        return Stream.of(injector.getInstance(clazz));
+                        return injector.getInstance(clazz);
                     } catch (final Exception ex) {
                         LOGGER.error("Unable to create instance of {}", clazz, ex);
-                        return Stream.empty();
+                        return null;
                     }
-                });
+                })
+                .ifPresent(factories::add);
 
-        return Stream.concat(primaryConfigurationFactoryStream, pluginConfigurationFactoryStream).collect(Collectors.toList());
+        final List<Class<? extends ConfigurationFactory>> configurationFactoryPluginClasses = new ArrayList<>();
+        injector.getInstance(PLUGIN_CATEGORY_KEY).forEach(type -> {
+            try {
+                configurationFactoryPluginClasses.add(type.getPluginClass().asSubclass(ConfigurationFactory.class));
+            } catch (final Exception ex) {
+                LOGGER.warn("Unable to add class {}", type.getPluginClass(), ex);
+            }
+        });
+        configurationFactoryPluginClasses.sort(OrderComparator.getInstance());
+        configurationFactoryPluginClasses.forEach(clazz -> {
+            try {
+                factories.add(injector.getInstance(clazz));
+            } catch (final Exception ex) {
+                LOGGER.error("Unable to create instance of {}", clazz, ex);
+            }
+        });
+
+        return factories;
     }
 
     private static Optional<Class<? extends ConfigurationFactory>> tryLoadFactoryClass(final String factoryClass) {

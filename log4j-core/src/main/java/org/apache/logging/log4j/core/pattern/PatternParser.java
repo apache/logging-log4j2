@@ -22,7 +22,7 @@ import org.apache.logging.log4j.core.time.SystemNanoClock;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Key;
-import org.apache.logging.log4j.plugins.util.PluginManager;
+import org.apache.logging.log4j.plugins.util.PluginCategory;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
@@ -88,7 +88,7 @@ public final class PatternParser {
 
     private static final int DECIMAL = 10;
 
-    private static final Key<PluginManager> PLUGIN_MANAGER_KEY = Key.forClass(PluginManager.class).withQualifierType(Named.class);
+    private static final Key<PluginCategory> PLUGIN_CATEGORY_KEY = Key.forClass(PluginCategory.class).withQualifierType(Named.class);
 
     private final Configuration config;
 
@@ -133,17 +133,17 @@ public final class PatternParser {
     public PatternParser(final Configuration config, final String converterKey, final Class<?> expectedClass,
             final Class<?> filterClass) {
         this.config = config;
-        final Map<String, PluginType<?>> plugins;
-        final Key<PluginManager> pluginManagerKey = PLUGIN_MANAGER_KEY.withName(converterKey);
+        final PluginCategory plugins;
+        final Key<PluginCategory> pluginCategoryKey = PLUGIN_CATEGORY_KEY.withName(converterKey);
         if (config == null) {
-            plugins = DI.createInjector().getInstance(pluginManagerKey).getPlugins();
+            plugins = DI.createInjector().getInstance(pluginCategoryKey);
         } else {
-            plugins = config.getComponent(pluginManagerKey).getPlugins();
+            plugins = config.getComponent(pluginCategoryKey);
         }
 
         final Map<String, Class<? extends PatternConverter>> converters = new LinkedHashMap<>();
 
-        for (final PluginType<?> type : plugins.values()) {
+        for (final PluginType<?> type : plugins) {
             try {
                 final Class<? extends PatternConverter> clazz = type.getPluginClass().asSubclass(PatternConverter.class);
                 if (filterClass != null && !filterClass.isAssignableFrom(clazz)) {

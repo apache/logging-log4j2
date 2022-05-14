@@ -144,7 +144,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
     }
 
     private Node constructNode(final String name, final Node parent, final JsonNode jsonNode) {
-        final PluginType<?> type = pluginManager.getPluginType(name);
+        final PluginType<?> type = corePlugins.get(name);
         final Node node = new Node(parent, name, type);
         processAttributes(node, jsonNode);
         final Iterator<Map.Entry<String, JsonNode>> iter = jsonNode.fields();
@@ -160,7 +160,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
                     LOGGER.debug("Processing node for array {}", entry.getKey());
                     for (int i = 0; i < n.size(); ++i) {
                         final String pluginType = getType(n.get(i), entry.getKey());
-                        final PluginType<?> entryType = pluginManager.getPluginType(pluginType);
+                        final PluginType<?> entryType = corePlugins.get(pluginType);
                         final Node item = new Node(node, entry.getKey(), entryType);
                         processAttributes(item, n.get(i));
                         if (pluginType.equals(entry.getKey())) {

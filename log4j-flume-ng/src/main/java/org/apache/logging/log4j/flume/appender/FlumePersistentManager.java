@@ -39,6 +39,7 @@ import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.core.util.SecretKeyProvider;
 import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.util.PluginCategory;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.util.Strings;
 
@@ -433,14 +434,14 @@ public class FlumePersistentManager extends FlumeAvroManager {
                 }
                 if (key != null) {
                     final Injector injector = data.injector;
-                    final Map<String, PluginType<?>> plugins =
-                            injector.getInstance(SecretKeyProvider.PLUGIN_MANAGER_KEY).getPlugins();
+                    final PluginCategory plugins =
+                            injector.getInstance(SecretKeyProvider.PLUGIN_CATEGORY_KEY);
                     if (plugins != null) {
                         boolean found = false;
-                        for (final Map.Entry<String, PluginType<?>> entry : plugins.entrySet()) {
-                            if (entry.getKey().equalsIgnoreCase(key)) {
+                        for (final PluginType<?> type : plugins) {
+                            if (key.equalsIgnoreCase(type.getKey())) {
                                 found = true;
-                                final Class<?> cl = entry.getValue().getPluginClass();
+                                final Class<?> cl = type.getPluginClass();
                                 try {
                                     final SecretKeyProvider provider =
                                             injector.getInstance(cl.asSubclass(SecretKeyProvider.class));

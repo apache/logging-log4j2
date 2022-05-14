@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.lookup;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.di.Key;
-import org.apache.logging.log4j.plugins.util.PluginManager;
+import org.apache.logging.log4j.plugins.util.PluginCategory;
 
 /**
  * Lookup a String key to a String value.
@@ -42,7 +42,7 @@ public interface StrLookup {
      */
     String CATEGORY = "Lookup";
 
-    Key<PluginManager> PLUGIN_MANAGER_KEY = new @Named(CATEGORY) Key<>() {};
+    Key<PluginCategory> PLUGIN_CATEGORY_KEY = new @Named(CATEGORY) Key<>() {};
 
     /**
      * Looks up a String key to a String value.
