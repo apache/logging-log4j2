@@ -31,6 +31,10 @@
          - "remove" - Removed
     -->
     <release version="3.0.0" date="2022-MM-DD" description="GA Release 3.0.0">
+      <action issue="LOG4J2-857" dev="mattsicker" type="add">
+        Add `@PluginOrder` annotation to support plugin ordering when two or more plugins within the same category have
+        the same case-insensitive name.
+      </action>
       <action issue="LOG4J2-3441" dev="mattsicker" type="update">
         Defer loading of StrLookup plugin classes until first usage.
       </action>
