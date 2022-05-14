@@ -27,6 +27,14 @@
       <List name="Out">
       </List>
     </SystemPropertyArbiter>
+    <ClassArbiter className="org.apache.logging.log4j.core.config.arbiters.ClassArbiter">
+      <List name="ShouldExist">
+      </List>
+    </ClassArbiter>
+    <ClassArbiter className="org.apache.logging.log4j.core.DoesNotExist">
+      <List name="ShouldNotExist">
+      </List>
+    </ClassArbiter>
 
   </Appenders>
   <Loggers>

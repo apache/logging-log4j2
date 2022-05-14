@@ -25,6 +25,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -59,5 +60,15 @@ public class BasicArbiterTest {
         Appender app = loggerContext.getConfiguration().getAppender("Out");
         assertNotNull(app);
         assertTrue(app instanceof ConsoleAppender);
+    }
+
+    @Test void classArbiterTest() {
+        loggerContext = Configurator.initialize(null, CONFIG);
+        assertNotNull(loggerContext);
+        Appender app = loggerContext.getConfiguration().getAppender("ShouldExist");
+        assertNotNull(app);
+        assertTrue(app instanceof ListAppender);
+        app = loggerContext.getConfiguration().getAppender("ShouldNotExist");
+        assertNull(app);
     }
 }

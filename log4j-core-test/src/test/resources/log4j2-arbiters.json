@@ -21,6 +21,20 @@
           "name": "Out"
         }
       }
+    ],
+    "ClassArbiter": [
+      {
+        "className": "org.apache.logging.log4j.core.config.arbiters.ClassArbiter",
+        "List": {
+          "name": "ShouldExist"
+        }
+      },
+      {
+        "className": "org.apache.logging.log4j.core.DoesNotExist",
+        "List": {
+          "name": "ShouldNotExist"
+        }
+      }
     ]
   },
   "Loggers": {
