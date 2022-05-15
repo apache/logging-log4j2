@@ -24,11 +24,11 @@ extend the PatternLayout class and add them via code. One goal of Log4j
 2 is to make extending it extremely easy through the use of plugins.
 
 In Log4j 2 a plugin is declared by adding a
-link:../log4j-core/apidocs/org/apache/logging/log4j/core/config/plugins/Plugin.html[`@Plugin`]
+link:../log4j-plugins/apidocs/org/apache/logging/log4j/plugins/Plugin.html[`@Plugin`]
 annotation to the class declaration. During initialization the
 link:../log4j-core/apidocs/org/apache/logging/log4j/core/config/Configuration.html[`Configuration`]
 will invoke the
-link:../log4j-core/apidocs/org/apache/logging/log4j/core/config/plugins/util/PluginManager.html[`PluginManager`]
+link:../log4j-plugins/apidocs/org/apache/logging/log4j/plugins/util/PluginRegistry.html[`PluginRegistry`]
 to load the built-in Log4j plugins as well as any custom plugins. The
 `Injector` locates plugins by looking in five places:
 

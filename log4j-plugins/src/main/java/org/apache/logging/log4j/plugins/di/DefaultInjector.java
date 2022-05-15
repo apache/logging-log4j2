@@ -18,11 +18,13 @@
 package org.apache.logging.log4j.plugins.di;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.FactoryType;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.PluginException;
+import org.apache.logging.log4j.plugins.PluginOrder;
 import org.apache.logging.log4j.plugins.QualifierType;
 import org.apache.logging.log4j.plugins.ScopeType;
 import org.apache.logging.log4j.plugins.Singleton;
@@ -250,21 +252,57 @@ class DefaultInjector implements Injector {
         if (existing != null) {
             return existing.getSupplier();
         }
+
         final Class<T> rawType = key.getRawType();
         final Scope scope = getScopeForType(rawType);
+
+        // @Named PluginCategory injection
         if (rawType == PluginCategory.class && key.getQualifierType() == Named.class) {
             final Key<PluginCategory> pluginCategoryKey = TypeUtil.cast(key);
             final Supplier<PluginCategory> pluginCategoryFactory = createPluginCategoryFactory(pluginCategoryKey);
-            bindingMap.put(pluginCategoryKey, pluginCategoryFactory);
+            bindingMap.putIfAbsent(pluginCategoryKey, pluginCategoryFactory);
             return bindingMap.get(key, aliases).getSupplier();
         }
+
+        // @Category Collection<T>/Map<String, T>/Stream<T> injection
+        if (key.getQualifierType() == Category.class) {
+            if (Stream.class.isAssignableFrom(rawType)) {
+                final Key<Stream<T>> streamKey = TypeUtil.cast(key);
+                final Supplier<Stream<T>> streamFactory =
+                        () -> streamPluginInstancesFromCategory(key.getParameterizedTypeArgument(0));
+                bindingMap.putIfAbsent(streamKey, streamFactory);
+            } else if (Set.class.isAssignableFrom(rawType)) {
+                final Key<Set<T>> setKey = TypeUtil.cast(key);
+                final Supplier<Set<T>> setFactory = () -> getPluginSet(key.getParameterizedTypeArgument(0));
+                bindingMap.putIfAbsent(setKey, setFactory);
+            } else if (Map.class.isAssignableFrom(rawType)) {
+                final Key<Map<String, T>> mapKey = TypeUtil.cast(key);
+                final Supplier<Map<String, T>> mapFactory = () -> getPluginMap(key.getParameterizedTypeArgument(1));
+                bindingMap.putIfAbsent(mapKey, mapFactory);
+            } else if (Iterable.class.isAssignableFrom(rawType)) {
+                final Key<Iterable<T>> iterableKey = TypeUtil.cast(key);
+                final Supplier<Iterable<T>> iterableFactory = () -> getPluginList(key.getParameterizedTypeArgument(0));
+                bindingMap.putIfAbsent(iterableKey, iterableFactory);
+            } else if (Optional.class.isAssignableFrom(rawType)) {
+                final Key<Optional<T>> optionalKey = TypeUtil.cast(key);
+                final Supplier<Optional<T>> optionalFactory = () -> getOptionalPlugin(key.getParameterizedTypeArgument(0));
+                bindingMap.putIfAbsent(optionalKey, optionalFactory);
+            } else {
+                throw new InjectException("Cannot inject plugins into " + key);
+            }
+            return bindingMap.get(key, aliases).getSupplier();
+        }
+
+        // Optional<T> injection
         if (rawType == Optional.class) {
             final Key<Optional<T>> optionalKey = TypeUtil.cast(key);
-            final Supplier<Optional<T>> optionalFactory =
-                    createOptionalFactory(key.getParameterizedTypeArgument(0), aliases, node, chain);
+            final Supplier<Optional<T>> optionalFactory = () ->
+                    getOptionalInstance(key.getParameterizedTypeArgument(0), aliases, node, chain);
             bindingMap.put(optionalKey, optionalFactory);
             return bindingMap.get(key, aliases).getSupplier();
         }
+
+        // generic T injection
         final Supplier<T> instanceSupplier = () -> {
             final StringBuilder debugLog = new StringBuilder();
             final T instance = TypeUtil.cast(getInjectableInstance(key, node, chain, debugLog));
@@ -275,24 +313,57 @@ class DefaultInjector implements Injector {
     }
 
     private Supplier<PluginCategory> createPluginCategoryFactory(final Key<PluginCategory> key) {
-        return LazyValue.from(() -> {
-            final String categoryName = key.getName();
-            final Binding<List<String>> pluginPackagesBinding = bindingMap.get(Keys.PLUGIN_PACKAGES_KEY, List.of());
-            final List<String> pluginPackages = pluginPackagesBinding != null ? pluginPackagesBinding.getSupplier().get() : List.of();
-            // TODO: can this be a bean, too? might be tricky in OSGi
-            return PluginRegistry.getInstance().getCategory(categoryName, pluginPackages);
-        });
+        return LazyValue.from(() -> getInstance(PluginRegistry.class).getCategory(key.getName(), getPluginPackages()));
     }
 
-    private <T> Supplier<Optional<T>> createOptionalFactory(
+    private List<String> getPluginPackages() {
+        final Binding<List<String>> pluginPackagesBinding = bindingMap.get(Keys.PLUGIN_PACKAGES_KEY, List.of());
+        return pluginPackagesBinding != null ? pluginPackagesBinding.getSupplier().get() : List.of();
+    }
+
+    private <T> Stream<PluginType<? extends T>> streamPluginsFromCategory(final Key<T> itemKey) {
+        if (itemKey == null) {
+            return Stream.empty();
+        }
+        final PluginCategory category = getInstance(PluginRegistry.class).getCategory(itemKey.getName(), getPluginPackages());
+        final Type type = itemKey.getType();
+        final Class<T> rawType = itemKey.getRawType();
+        return category.stream()
+                .filter(pluginType -> rawType.isInterface() && TypeUtil.isAssignable(type, pluginType.getPluginClass()) ||
+                        TypeUtil.isAssignable(type, pluginType.getPluginClass()))
+                .sorted(Comparator.comparing(PluginType::getPluginClass, PluginOrder.COMPARATOR))
+                .map(TypeUtil::cast);
+    }
+
+    private <T> Stream<T> streamPluginInstancesFromCategory(final Key<T> key) {
+        return streamPluginsFromCategory(key).map(pluginType -> getInstance(pluginType.getPluginClass()));
+    }
+
+    private <T> Set<T> getPluginSet(final Key<T> key) {
+        return streamPluginInstancesFromCategory(key).collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    private <T> Map<String, T> getPluginMap(final Key<T> key) {
+        return streamPluginsFromCategory(key).collect(
+                Collectors.toMap(PluginType::getKey, pluginType -> getInstance(pluginType.getPluginClass()), (lhs, rhs) -> lhs,
+                        LinkedHashMap::new));
+    }
+
+    private <T> List<T> getPluginList(final Key<T> key) {
+        return streamPluginInstancesFromCategory(key).collect(Collectors.toList());
+    }
+
+    public <T> Optional<T> getOptionalPlugin(final Key<T> key) {
+        return streamPluginInstancesFromCategory(key).findFirst();
+    }
+
+    private <T> Optional<T> getOptionalInstance(
             final Key<T> key, final Collection<String> aliases, final Node node, final Set<Key<?>> chain) {
-        return () -> {
-            try {
-                return Optional.ofNullable(getFactory(key, aliases, node, chain).get());
-            } catch (final PluginException e) {
-                return Optional.empty();
-            }
-        };
+        try {
+            return Optional.ofNullable(getFactory(key, aliases, node, chain).get());
+        } catch (final PluginException e) {
+            return Optional.empty();
+        }
     }
 
     private Object getInjectableInstance(
@@ -361,13 +432,11 @@ class DefaultInjector implements Injector {
         if (conflictingConverter != null) {
             final boolean overridable;
             if (converter instanceof Comparable) {
-                @SuppressWarnings("unchecked")
-                final Comparable<TypeConverter<?>> comparableConverter =
+                @SuppressWarnings("unchecked") final Comparable<TypeConverter<?>> comparableConverter =
                         (Comparable<TypeConverter<?>>) converter;
                 overridable = comparableConverter.compareTo(conflictingConverter) < 0;
             } else if (conflictingConverter instanceof Comparable) {
-                @SuppressWarnings("unchecked")
-                final Comparable<TypeConverter<?>> comparableConflictingConverter =
+                @SuppressWarnings("unchecked") final Comparable<TypeConverter<?>> comparableConflictingConverter =
                         (Comparable<TypeConverter<?>>) conflictingConverter;
                 overridable = comparableConflictingConverter.compareTo(converter) > 0;
             } else {

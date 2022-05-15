@@ -20,6 +20,7 @@ package org.apache.logging.log4j.plugins.util;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
+import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.plugins.processor.PluginCache;
 import org.apache.logging.log4j.plugins.processor.PluginEntry;
 import org.apache.logging.log4j.plugins.processor.PluginService;
@@ -41,13 +42,13 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Supplier;
 
 import static org.apache.logging.log4j.util.Unbox.box;
 
 /**
  * Registry singleton for PluginType maps partitioned by source type and then by category names.
  */
+@Singleton
 public class PluginRegistry {
 
     /**
@@ -56,8 +57,6 @@ public class PluginRegistry {
     private static final String PLUGIN_CACHE_FILE =
             "META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat";
     private static final Logger LOGGER = StatusLogger.getLogger();
-
-    private static final Supplier<PluginRegistry> INSTANCE = new LazyValue<>(PluginRegistry::new);
 
     /**
      * Contains plugins found from {@link PluginService} services and legacy Log4j2Plugins.dat cache files in the main CLASSPATH.
@@ -98,19 +97,6 @@ public class PluginRegistry {
      * Contains plugins found by searching for annotated classes at runtime.
      */
     private final Map<String, Categories> pluginCategoriesByPackage = new ConcurrentHashMap<>();
-
-    private PluginRegistry() {
-    }
-
-    /**
-     * Returns the global PluginRegistry instance.
-     *
-     * @return the global PluginRegistry instance.
-     * @since 2.1
-     */
-    public static PluginRegistry getInstance() {
-        return INSTANCE.get();
-    }
 
     /**
      * Resets the registry to an empty state.

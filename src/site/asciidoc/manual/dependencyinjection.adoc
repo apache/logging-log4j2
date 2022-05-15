@@ -141,6 +141,7 @@ Some of these bindings were previously configured through various system propert
 
 * `org.apache.logging.log4j.core.ContextDataInjector`
 * `org.apache.logging.log4j.core.config.ConfigurationFactory`
+* `org.apache.logging.log4j.core.config.composite.MergeStrategy`
 * `org.apache.logging.log4j.core.impl.LogEventFactory`
 * `org.apache.logging.log4j.core.lookup.InterpolatorFactory`
 * `org.apache.logging.log4j.core.lookup.StrSubstitutor`

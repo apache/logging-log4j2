@@ -44,32 +44,20 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private static final SecurityManager SECURITY_MANAGER = System.getSecurityManager();
+    public static final String CORE_MODULE_NAME = "org.apache.logging.log4j.core";
 
     private final AtomicReference<BundleContext> contextRef = new AtomicReference<>();
 
+    private int state = Bundle.UNINSTALLED;
+
+    private ServiceReference<PluginRegistry> pluginRegistryServiceReference;
+    private PluginRegistry pluginRegistry;
+
     @Override
     public void start(final BundleContext bundleContext) throws Exception {
-        loadPlugins(bundleContext);
+        state = Bundle.STARTING;
         bundleContext.addBundleListener(this);
-        final Bundle[] bundles = bundleContext.getBundles();
-        for (final Bundle bundle : bundles) {
-            loadPlugins(bundle);
-        }
-        scanInstalledBundlesForPlugins(bundleContext);
         this.contextRef.compareAndSet(null, bundleContext);
-    }
-
-    private void loadPlugins(final BundleContext bundleContext) {
-        final PluginRegistry pluginRegistry = PluginRegistry.getInstance();
-        try {
-            final Collection<ServiceReference<PluginService>> serviceReferences = bundleContext.getServiceReferences(PluginService.class, null);
-            for (final ServiceReference<PluginService> serviceReference : serviceReferences) {
-                final PluginService pluginService = bundleContext.getService(serviceReference);
-                pluginRegistry.loadFromBundle(bundleContext.getBundle().getBundleId(), pluginService.getCategories());
-            }
-        } catch (final InvalidSyntaxException ex) {
-            LOGGER.error("Error accessing Plugins", ex);
-        }
     }
 
     private void loadPlugins(final Bundle bundle) {
@@ -83,10 +71,17 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
             if (bundleContext == null) {
                 LOGGER.debug("Bundle {} has no context (state={}), skipping loading plugins", bundle.getSymbolicName(), toStateString(bundle.getState()));
             } else {
-                loadPlugins(bundleContext);
+                final Collection<ServiceReference<PluginService>> serviceReferences =
+                        bundleContext.getServiceReferences(PluginService.class, null);
+                for (final ServiceReference<PluginService> serviceReference : serviceReferences) {
+                    final PluginService pluginService = bundleContext.getService(serviceReference);
+                    pluginRegistry.loadFromBundle(bundleContext.getBundle().getBundleId(), pluginService.getCategories());
+                }
             }
         } catch (final SecurityException e) {
             LOGGER.debug("Cannot access bundle [{}] contents. Ignoring.", bundle.getSymbolicName(), e);
+        } catch (final InvalidSyntaxException ex) {
+            LOGGER.error("Error accessing Plugins", ex);
         } catch (final Exception e) {
             LOGGER.warn("Problem checking bundle {} for Log4j 2 provider.", bundle.getSymbolicName(), e);
         }
@@ -117,28 +112,28 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
         }
     }
 
-    private static void scanInstalledBundlesForPlugins(final BundleContext context) {
+    private void scanInstalledBundlesForPlugins(final BundleContext context) {
         final Bundle[] bundles = context.getBundles();
         for (final Bundle bundle : bundles) {
-            // TODO: bundle state can change during this
             scanBundleForPlugins(bundle);
         }
     }
 
-    private static void scanBundleForPlugins(final Bundle bundle) {
+    private void scanBundleForPlugins(final Bundle bundle) {
         final long bundleId = bundle.getBundleId();
         // LOG4J2-920: don't scan system bundle for plugins
         if (bundle.getState() == Bundle.ACTIVE && bundleId != 0) {
             LOGGER.trace("Scanning bundle [{}, id={}] for plugins.", bundle.getSymbolicName(), bundleId);
             final ClassLoader classLoader = bundle.adapt(BundleWiring.class).getClassLoader();
-            PluginRegistry.getInstance().loadFromBundle(bundleId, classLoader);
+            pluginRegistry.loadFromBundle(bundleId, classLoader);
         }
     }
 
-    private static void stopBundlePlugins(final Bundle bundle) {
+    private void stopBundlePlugins(final Bundle bundle) {
         LOGGER.trace("Stopping bundle [{}] plugins.", bundle.getSymbolicName());
-        // TODO: plugin lifecycle code
-        PluginRegistry.getInstance().clearBundlePlugins(bundle.getBundleId());
+        if (pluginRegistry != null) {
+            pluginRegistry.clearBundlePlugins(bundle.getBundleId());
+        }
     }
 
     @Override
@@ -153,15 +148,33 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
 
     @Override
     public void bundleChanged(final BundleEvent event) {
+        final Bundle bundle = event.getBundle();
         switch (event.getType()) {
-            // FIXME: STARTING instead of STARTED?
-            case BundleEvent.STARTED:
-                loadPlugins(event.getBundle());
-                scanBundleForPlugins(event.getBundle());
+            case BundleEvent.STARTING:
+                if (CORE_MODULE_NAME.equals(bundle.getSymbolicName()) && state != Bundle.ACTIVE) {
+                    break;
+                }
                 break;
 
+            case BundleEvent.STARTED:
+                if (CORE_MODULE_NAME.equals(bundle.getSymbolicName()) && state != Bundle.ACTIVE) {
+                    final BundleContext bundleContext = contextRef.get();
+                    pluginRegistryServiceReference =
+                            bundleContext.getServiceReference(PluginRegistry.class);
+                    pluginRegistry = bundleContext.getService(pluginRegistryServiceReference);
+                    scanInstalledBundlesForPlugins(bundleContext);
+                    state = Bundle.ACTIVE;
+                } else if (state == Bundle.ACTIVE) {
+                    loadPlugins(bundle);
+                    scanBundleForPlugins(bundle);
+                }
+
             case BundleEvent.STOPPING:
-                stopBundlePlugins(event.getBundle());
+                if (CORE_MODULE_NAME.equals(bundle.getSymbolicName()) && pluginRegistry != null) {
+                    pluginRegistry = null;
+                    contextRef.get().ungetService(pluginRegistryServiceReference);
+                }
+                stopBundlePlugins(bundle);
                 break;
 
             default:

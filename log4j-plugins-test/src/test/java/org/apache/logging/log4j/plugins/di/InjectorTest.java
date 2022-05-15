@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.plugins.di;
 
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Named;
@@ -31,6 +32,9 @@ import org.apache.logging.log4j.plugins.ScopeType;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.plugins.processor.PluginEntry;
 import org.apache.logging.log4j.plugins.test.validation.ValidatingPluginWithGenericBuilder;
+import org.apache.logging.log4j.plugins.test.validation.generic.BaseBean;
+import org.apache.logging.log4j.plugins.test.validation.generic.BetaBean;
+import org.apache.logging.log4j.plugins.test.validation.generic.GammaBean;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
@@ -41,14 +45,17 @@ import org.junit.jupiter.api.parallel.Resources;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -788,5 +795,33 @@ class InjectorTest {
         assertThat(first.b).isNotNull().isEqualTo(second.b);
         assertThat(first.c).isNotNull().isNotSameAs(second.c);
         assertThat(second.c).isNotNull();
+    }
+
+    /**
+     * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-3496">LOG4J2-3496</a>
+     */
+    static class ContainerPluginBeanInjection {
+        @Category("Bean") Optional<BaseBean> optional;
+        @Category("Bean") Collection<BaseBean> collection;
+        @Category("Bean") Iterable<BaseBean> iterable;
+        @Category("Bean") Set<BaseBean> set;
+        @Category("Bean") Stream<BaseBean> stream;
+        @Category("Bean") List<BaseBean> list;
+        @Category("Bean") Map<String, BaseBean> map;
+    }
+
+    @Test
+    void categoryQualifierInjection() {
+        final ContainerPluginBeanInjection instance = DI.createInjector()
+                .registerBinding(Keys.PLUGIN_PACKAGES_KEY, () -> List.of(BaseBean.class.getPackageName()))
+                .getInstance(ContainerPluginBeanInjection.class);
+        assertThat(instance.list).hasSize(3).first().isInstanceOf(BetaBean.class);
+        assertThat(instance.collection).containsExactlyElementsOf(instance.list);
+        assertThat(instance.iterable).containsExactlyElementsOf(instance.list);
+        assertThat(instance.set).containsExactlyElementsOf(instance.list);
+        assertThat(instance.stream).containsExactlyElementsOf(instance.list);
+        assertThat(instance.map).hasSize(3);
+        assertThat(instance.map.get("gamma")).isInstanceOf(GammaBean.class);
+        assertThat(instance.optional).get().isInstanceOf(BetaBean.class);
     }
 }

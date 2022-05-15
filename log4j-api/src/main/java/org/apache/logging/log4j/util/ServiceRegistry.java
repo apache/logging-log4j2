@@ -105,7 +105,9 @@ public class ServiceRegistry {
      * @param <S>         type of service
      */
     public <S> void registerBundleServices(final Class<S> serviceType, final long bundleId, final List<S> services) {
-        bundleServices.computeIfAbsent(bundleId, ignored -> new ConcurrentHashMap<>()).put(serviceType, services);
+        bundleServices.computeIfAbsent(bundleId, ignored -> new ConcurrentHashMap<>())
+                .computeIfAbsent(serviceType, ignored -> new ArrayList<>())
+                .addAll(cast(services));
     }
 
     /**
