@@ -33,14 +33,17 @@ import java.net.URI;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import static org.apache.logging.log4j.util.Unbox.box;
 
 /**
  * Registry singleton for PluginType maps partitioned by source type and then by category names.
@@ -57,19 +60,44 @@ public class PluginRegistry {
     private static final Supplier<PluginRegistry> INSTANCE = new LazyValue<>(PluginRegistry::new);
 
     /**
-     * Contains plugins found in Log4j2Plugins.dat cache files in the main CLASSPATH.
+     * Contains plugins found from {@link PluginService} services and legacy Log4j2Plugins.dat cache files in the main CLASSPATH.
      */
-    private final AtomicReference<PluginBundle> pluginsByCategoryRef = new AtomicReference<>();
+    private final LazyValue<Categories> mainPluginCategories = LazyValue.from(() -> {
+        final Categories bundle = decodeCacheFiles(LoaderUtil.getClassLoader());
+        Throwable throwable = null;
+        ClassLoader errorClassLoader = null;
+        boolean allFail = true;
+        for (ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
+            try {
+                loadPlugins(classLoader, bundle);
+                allFail = false;
+            } catch (Throwable ex) {
+                if (throwable == null) {
+                    throwable = ex;
+                    errorClassLoader = classLoader;
+                }
+            }
+        }
+        if (allFail && throwable != null) {
+            LOGGER.debug("Unable to retrieve provider from ClassLoader {}", errorClassLoader, throwable);
+        }
+        if (bundle.isEmpty()) {
+            // If we didn't find any plugins above, someone must have messed with the log4j-core.jar.
+            // Search the standard package in the hopes we can find our core plugins.
+            loadFromPackage(bundle, "org.apache.logging.log4j.core");
+        }
+        return bundle;
+    });
 
     /**
-     * Contains plugins found in Log4j2Plugins.dat cache files in OSGi Bundles.
+     * Contains plugins found in PluginService services and legacy Log4j2Plugins.dat cache files in OSGi Bundles.
      */
-    private final ConcurrentMap<Long, PluginBundle> pluginsByCategoryByBundleId = new ConcurrentHashMap<>();
+    private final Map<Long, Categories> pluginCategoriesByBundleId = new ConcurrentHashMap<>();
 
     /**
      * Contains plugins found by searching for annotated classes at runtime.
      */
-    private final ConcurrentMap<String, PluginBundle> pluginsByCategoryByPackage = new ConcurrentHashMap<>();
+    private final Map<String, Categories> pluginCategoriesByPackage = new ConcurrentHashMap<>();
 
     private PluginRegistry() {
     }
@@ -88,36 +116,9 @@ public class PluginRegistry {
      * Resets the registry to an empty state.
      */
     public void clear() {
-        pluginsByCategoryRef.set(null);
-        pluginsByCategoryByPackage.clear();
-        pluginsByCategoryByBundleId.clear();
-    }
-
-    public void forEachOsgiPluginBundle(final Consumer<? super PluginBundle> consumer) {
-        pluginsByCategoryByBundleId.values().forEach(consumer);
-    }
-
-    /**
-     * Retrieve plugins from the main classloader.
-     * @return Map of the List of PluginTypes by category.
-     * @since 2.1
-     */
-    public PluginBundle loadFromMainClassLoader() {
-        final var existing = pluginsByCategoryRef.get();
-        if (existing != null) {
-            // already loaded
-            return existing;
-        }
-        final PluginBundle newPluginsByCategory = decodeCacheFiles(LoaderUtil.getClassLoader());
-        loadPlugins(newPluginsByCategory);
-
-        // Note multiple threads could be calling this method concurrently. Both will do the work,
-        // but only one will be allowed to store the result in the AtomicReference.
-        // Return the map produced by whichever thread won the race, so all callers will get the same result.
-        if (pluginsByCategoryRef.compareAndSet(null, newPluginsByCategory)) {
-            return newPluginsByCategory;
-        }
-        return pluginsByCategoryRef.get();
+        mainPluginCategories.set(null);
+        pluginCategoriesByPackage.clear();
+        pluginCategoriesByBundleId.clear();
     }
 
     /**
@@ -126,82 +127,45 @@ public class PluginRegistry {
      * @since 2.1
      */
     public void clearBundlePlugins(final long bundleId) {
-        pluginsByCategoryByBundleId.remove(bundleId);
+        pluginCategoriesByBundleId.remove(bundleId);
     }
 
     /**
      * Load plugins from a bundle.
      * @param bundleId The bundle id.
      * @param loader The ClassLoader.
-     * @return the Map of Lists of plugins organized by category.
-     * @since 2.1
+     * @since 3.0.0
      */
-    public PluginBundle loadFromBundle(final long bundleId, final ClassLoader loader) {
-        PluginBundle existing = pluginsByCategoryByBundleId.get(bundleId);
-        if (existing != null) {
-            // already loaded from this classloader
-            return existing;
-        }
-        final PluginBundle newPluginsByCategory = decodeCacheFiles(loader);
-        loadPlugins(loader, newPluginsByCategory);
-
-        // Note multiple threads could be calling this method concurrently. Both will do the work,
-        // but only one will be allowed to store the result in the outer map.
-        // Return the inner map produced by whichever thread won the race, so all callers will get the same result.
-        existing = pluginsByCategoryByBundleId.putIfAbsent(bundleId, newPluginsByCategory);
-        if (existing != null) {
-            return existing;
-        }
-        return newPluginsByCategory;
+    public void loadFromBundle(final long bundleId, final ClassLoader loader) {
+        pluginCategoriesByBundleId.computeIfAbsent(bundleId, ignored -> {
+            final Categories bundle = decodeCacheFiles(loader);
+            loadPlugins(loader, bundle);
+            return bundle;
+        });
     }
 
     /**
      * Loads all the plugins in a Bundle.
-     * @param categories All the categories in the bundle.
-     * @param bundleId The bundle Id.
-     * @since 3.0
+     * @param bundleId The bundle id.
+     * @param pluginsByCategory the plugins organized by category
+     * @since 3.0.0
      */
-    public void loadFromBundle(PluginBundle categories, Long bundleId) {
-        pluginsByCategoryByBundleId.put(bundleId, categories);
-    }
-
-    /**
-     * Load plugins across all ClassLoaders.
-     * @param map The Map of the lists of plugins organized by category.
-     * @since 3.0
-     */
-    public void loadPlugins(PluginBundle map) {
-        Throwable throwable = null;
-        ClassLoader errorClassLoader = null;
-        boolean allFail = true;
-        for (ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
-            try {
-                loadPlugins(classLoader, map);
-                allFail = false;
-            } catch (Throwable ex) {
-                if (throwable == null) {
-                    throwable = ex;
-                    errorClassLoader = classLoader;
-                }
-            }
-        }
-        if (allFail && throwable != null) {
-            LOGGER.debug("Unable to retrieve provider from ClassLoader {}", errorClassLoader, throwable);
-        }
+    public void loadFromBundle(final long bundleId, final Map<String, PluginCategory> pluginsByCategory) {
+        pluginCategoriesByBundleId.put(bundleId, new Categories(pluginsByCategory));
     }
 
     /**
      * Load plugins from a specific ClassLoader.
      * @param classLoader The ClassLoader.
-     * @param bundle The PluginBundle to merge discovered plugins to
+     * @param categories The Categories to merge discovered plugins to
      * @since 3.0
      */
-    public void loadPlugins(ClassLoader classLoader, PluginBundle bundle) {
+    private void loadPlugins(ClassLoader classLoader, Categories categories) {
         final long startTime = System.nanoTime();
         final ServiceLoader<PluginService> serviceLoader = ServiceLoader.load(PluginService.class, classLoader);
         final AtomicInteger pluginCount = new AtomicInteger();
         for (final PluginService pluginService : serviceLoader) {
-            pluginService.getBundle().forEach((category, plugins) -> pluginCount.addAndGet(bundle.merge(plugins)));
+            pluginService.getCategories().values().forEach(category -> pluginCount.addAndGet(categories.merge(category)));
         }
         final int numPlugins = pluginCount.get();
         LOGGER.debug(() -> {
@@ -212,7 +176,7 @@ public class PluginRegistry {
         });
     }
 
-    private PluginBundle decodeCacheFiles(final ClassLoader classLoader) {
+    private Categories decodeCacheFiles(final ClassLoader classLoader) {
         final long startTime = System.nanoTime();
         final PluginCache cache = new PluginCache();
         try {
@@ -225,12 +189,12 @@ public class PluginRegistry {
         } catch (final IOException ioe) {
             LOGGER.warn("Unable to preload plugins", ioe);
         }
-        final PluginBundle newPluginsByCategory = new PluginBundle();
+        final Categories categories = new Categories();
         final AtomicInteger pluginCount = new AtomicInteger();
         cache.getAllCategories().forEach((key, outer) ->
                 outer.values().forEach(entry -> {
                     final PluginType<?> type = new PluginType<>(entry, classLoader);
-                    newPluginsByCategory.add(type);
+                    categories.add(type);
                     pluginCount.incrementAndGet();
                 }));
         final int numPlugins = pluginCount.get();
@@ -240,26 +204,14 @@ public class PluginRegistry {
             return "Took " + numFormat.format((endTime - startTime) * 1e-9) +
                     " seconds to load " + numPlugins + " plugins from " + classLoader;
         });
-        return newPluginsByCategory;
+        return categories;
     }
 
-    /**
-     * Load plugin types from a package.
-     * @param pkg The package name.
-     * @return A Map of the lists of plugin types organized by category.
-     * @since 2.1
-     */
-    public PluginBundle loadFromPackage(final String pkg) {
+    private void loadFromPackage(final Categories bundle, final String pkg) {
         if (Strings.isBlank(pkg)) {
             // happens when splitting an empty string
-            return new PluginBundle();
+            return;
         }
-        PluginBundle existing = pluginsByCategoryByPackage.get(pkg);
-        if (existing != null) {
-            // already loaded this package
-            return existing;
-        }
-
         final long startTime = System.nanoTime();
         final ResolverUtil resolver = new ResolverUtil();
         final ClassLoader classLoader = LoaderUtil.getClassLoader(getClass(), LoaderUtil.class);
@@ -268,34 +220,31 @@ public class PluginRegistry {
         }
         resolver.findInPackage(new PluginTest(), pkg);
 
-        final PluginBundle newPluginsByCategory = new PluginBundle();
         for (final Class<?> clazz : resolver.getClasses()) {
             final Plugin plugin = clazz.getAnnotation(Plugin.class);
             final PluginEntry mainEntry = new PluginEntry();
             final String mainElementName = plugin.elementType().equals(
-                Plugin.EMPTY) ? plugin.name() : plugin.elementType();
+                    Plugin.EMPTY) ? plugin.name() : plugin.elementType();
             mainEntry.setKey(plugin.name().toLowerCase());
             mainEntry.setName(plugin.name());
             mainEntry.setCategory(plugin.category());
             mainEntry.setClassName(clazz.getName());
             mainEntry.setPrintable(plugin.printObject());
             mainEntry.setDefer(plugin.deferChildren());
-            final PluginType<?> mainType = new PluginType<>(mainEntry, clazz, mainElementName);
-            newPluginsByCategory.add(mainType);
+            bundle.add(new PluginType<>(mainEntry, clazz, mainElementName));
             final PluginAliases pluginAliases = clazz.getAnnotation(PluginAliases.class);
             if (pluginAliases != null) {
                 for (final String alias : pluginAliases.value()) {
                     final PluginEntry aliasEntry = new PluginEntry();
                     final String aliasElementName = plugin.elementType().equals(
-                        Plugin.EMPTY) ? alias.trim() : plugin.elementType();
+                            Plugin.EMPTY) ? alias.trim() : plugin.elementType();
                     aliasEntry.setKey(alias.trim().toLowerCase());
                     aliasEntry.setName(plugin.name());
                     aliasEntry.setCategory(plugin.category());
                     aliasEntry.setClassName(clazz.getName());
                     aliasEntry.setPrintable(plugin.printObject());
                     aliasEntry.setDefer(plugin.deferChildren());
-                    final PluginType<?> aliasType = new PluginType<>(aliasEntry, clazz, aliasElementName);
-                    newPluginsByCategory.add(aliasType);
+                    bundle.add(new PluginType<>(aliasEntry, clazz, aliasElementName));
                 }
             }
         }
@@ -305,44 +254,36 @@ public class PluginRegistry {
             return "Took " + numFormat.format((endTime - startTime) * 1e-9) +
                     " seconds to load " + resolver.getClasses().size() + " plugins from package " + pkg;
         });
-
-        // Note multiple threads could be calling this method concurrently. Both will do the work,
-        // but only one will be allowed to store the result in the outer map.
-        // Return the inner map produced by whichever thread won the race, so all callers will get the same result.
-        existing = pluginsByCategoryByPackage.putIfAbsent(pkg, newPluginsByCategory);
-        if (existing != null) {
-            return existing;
-        }
-        return newPluginsByCategory;
     }
 
     /**
      * Gets the registered plugins for the given category. If additional scan packages are provided, then plugins
      * are scanned and loaded from there as well.
      */
-    public PluginCategory getCategory(final String categoryName, List<String> additionalScanPackages) {
+    public PluginCategory getCategory(final String categoryName, final List<String> additionalScanPackages) {
         final var category = new PluginCategory(categoryName);
+
         // First, iterate the PluginService services and legacy Log4j2Plugin.dat files found in the main CLASSPATH
-        PluginBundle builtInPlugins = loadFromMainClassLoader();
-        if (builtInPlugins.isEmpty()) {
-            // If we didn't find any plugins above, someone must have messed with the log4j-core.jar.
-            // Search the standard package in the hopes we can find our core plugins.
-            builtInPlugins = loadFromPackage("org.apache.logging.log4j.core");
+        final Categories builtInPlugins = mainPluginCategories.get();
+        if (builtInPlugins != null) {
+            category.mergeAll(builtInPlugins.get(categoryName));
         }
-        final AtomicInteger addedCount = new AtomicInteger(category.mergeAll(builtInPlugins.get(categoryName)));
 
         // Next, iterate OSGi modules that provide plugins as OSGi services
-        forEachOsgiPluginBundle(bundle ->
-                addedCount.addAndGet(category.mergeAll(bundle.get(categoryName))));
+        pluginCategoriesByBundleId.values().forEach(bundle -> category.mergeAll(bundle.get(categoryName)));
 
         // Finally, iterate over additional packages from configuration
         if (additionalScanPackages != null) {
             for (final String pkg : additionalScanPackages) {
-                addedCount.addAndGet(category.mergeAll(loadFromPackage(pkg).get(categoryName)));
+                category.mergeAll(pluginCategoriesByPackage.computeIfAbsent(pkg, ignored -> {
+                    final var bundle = new Categories();
+                    loadFromPackage(bundle, pkg);
+                    return bundle;
+                }).get(categoryName));
             }
         }
 
-        LOGGER.debug("Discovered {} new plugins in category '{}'", addedCount.get(), categoryName);
+        LOGGER.debug("Discovered {} plugins in category '{}'", box(category.size()), categoryName);
 
         return category;
     }
@@ -377,6 +318,53 @@ public class PluginRegistry {
         @Override
         public boolean doesMatchResource() {
             return false;
+        }
+    }
+
+    /**
+     * Bundles plugins by category from a plugin source.
+     */
+    private static class Categories implements Iterable<PluginCategory> {
+        private final Map<String, PluginCategory> categories;
+
+        private Categories() {
+            categories = new LinkedHashMap<>();
+        }
+
+        private Categories(final Map<String, PluginCategory> categories) {
+            this.categories = categories;
+        }
+
+        public boolean isEmpty() {
+            return categories.isEmpty();
+        }
+
+        public int merge(final PluginCategory category) {
+            final PluginCategory existingCategory = getOrCreate(category.getKey());
+            int added = 0;
+            for (final PluginType<?> pluginType : category) {
+                if (existingCategory.add(pluginType)) {
+                    added++;
+                }
+            }
+            return added;
+        }
+
+        public void add(final PluginType<?> pluginType) {
+            getOrCreate(pluginType.getCategory()).put(pluginType);
+        }
+
+        public PluginCategory get(final String category) {
+            return categories.get(category.toLowerCase(Locale.ROOT));
+        }
+
+        public PluginCategory getOrCreate(final String category) {
+            return categories.computeIfAbsent(category.toLowerCase(Locale.ROOT), key -> new PluginCategory(key, category));
+        }
+
+        @Override
+        public Iterator<PluginCategory> iterator() {
+            return categories.values().iterator();
         }
     }
 }

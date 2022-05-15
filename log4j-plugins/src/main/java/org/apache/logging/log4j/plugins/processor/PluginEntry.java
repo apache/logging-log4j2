@@ -26,7 +26,8 @@ public class PluginEntry {
     private String name;
     private boolean printable;
     private boolean defer;
-    private transient String category;
+    private String category;
+    private Class<?>[] interfaces;
 
     public PluginEntry() {
     }
@@ -38,6 +39,18 @@ public class PluginEntry {
         this.printable = printable;
         this.defer = defer;
         this.category = category;
+    }
+
+    public PluginEntry(
+            final String key, final String className, final String name, final boolean printable, final boolean defer,
+            final String category, final Class<?>... interfaces) {
+        this.key = key;
+        this.className = className;
+        this.name = name;
+        this.printable = printable;
+        this.defer = defer;
+        this.category = category;
+        this.interfaces = interfaces;
     }
 
     public String getKey() {
@@ -86,6 +99,14 @@ public class PluginEntry {
 
     public void setCategory(final String category) {
         this.category = category;
+    }
+
+    public Class<?>[] getInterfaces() {
+        return interfaces;
+    }
+
+    public void setInterfaces(final Class<?>... interfaces) {
+        this.interfaces = interfaces;
     }
 
     @Override

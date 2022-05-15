@@ -22,22 +22,23 @@ import org.apache.logging.log4j.plugins.PluginOrder;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.status.StatusLogger;
 
-import java.util.Collection;
+import java.util.AbstractCollection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * Plugin categories are mappings of plugin keys to plugin classes where plugin keys are lower-cased
  * versions of plugin names.
  */
 @Singleton
-public class PluginCategory implements Iterable<PluginType<?>> {
+public class PluginCategory extends AbstractCollection<PluginType<?>> {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final String key;
@@ -48,7 +49,7 @@ public class PluginCategory implements Iterable<PluginType<?>> {
         this(name.toLowerCase(Locale.ROOT), name);
     }
 
-    PluginCategory(final String key, final String name) {
+    public PluginCategory(final String key, final String name) {
         this.key = key;
         this.name = name;
     }
@@ -89,31 +90,10 @@ public class PluginCategory implements Iterable<PluginType<?>> {
     }
 
     /**
-     * Returns an unmodifiable collection of plugin types in this category.
-     */
-    public Collection<PluginType<?>> getPluginTypes() {
-        return Collections.unmodifiableCollection(plugins.values());
-    }
-
-    /**
-     * Returns an unmodifiable map of plugin keys to plugin types in this category.
-     */
-    public Map<String, PluginType<?>> asMap() {
-        return Collections.unmodifiableMap(plugins);
-    }
-
-    /**
      * Gets the plugin type for the provided plugin name (case-insensitive) if available or {@code null}.
      */
     public PluginType<?> get(final String name) {
         return plugins.get(name.toLowerCase(Locale.ROOT));
-    }
-
-    /**
-     * Puts all the provided plugin types into this category.
-     */
-    public void putAll(final Collection<PluginType<?>> pluginTypes) {
-        pluginTypes.forEach(this::put);
     }
 
     /**
@@ -131,6 +111,11 @@ public class PluginCategory implements Iterable<PluginType<?>> {
         LOGGER.trace("Put PluginCategory[{}][{}] = {}", name, key, pluginType);
     }
 
+    @Override
+    public boolean add(final PluginType<?> pluginType) {
+        return pluginType == merge(pluginType.getKey(), pluginType);
+    }
+
     /**
      * Merges the provided plugin type into this category using the given key and returns the merged result.
      * Merging is done by preferring plugins according to {@link PluginOrder} where a conflict occurs with the
@@ -146,17 +131,10 @@ public class PluginCategory implements Iterable<PluginType<?>> {
         return result;
     }
 
-    public int mergeAll(final PluginCategory category) {
+    public void mergeAll(final PluginCategory category) {
         if (category != null) {
-            final AtomicInteger addedCount = new AtomicInteger();
-            category.forEach((pluginKey, pluginType) -> {
-                if (pluginType == merge(pluginKey, pluginType)) {
-                    addedCount.incrementAndGet();
-                }
-            });
-            return addedCount.get();
+            category.forEach(this::merge);
         }
-        return 0;
     }
 
     @Override
@@ -169,5 +147,13 @@ public class PluginCategory implements Iterable<PluginType<?>> {
      */
     public void forEach(final BiConsumer<? super String, ? super PluginType<?>> biConsumer) {
         plugins.forEach(biConsumer);
+    }
+
+    public void forEachMatching(
+            final Predicate<? super PluginType<?>> predicate, final Consumer<? super PluginType<?>> consumer) {
+        plugins.values()
+                .stream()
+                .filter(predicate)
+                .forEach(consumer);
     }
 }

@@ -20,7 +20,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.util.PluginCategory;
-import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -77,23 +76,21 @@ public class TemplateResolverInterceptors {
             final Class<V> valueClass,
             final Class<C> contextClass) {
         final List<I> interceptors = new LinkedList<>();
-        for (final PluginType<?> pluginType : interceptorPlugins) {
-            final Class<?> pluginClass = pluginType.getPluginClass();
-            final boolean pluginClassMatched =
-                    TemplateResolverInterceptor.class.isAssignableFrom(pluginClass);
-            if (pluginClassMatched) {
-                @SuppressWarnings("rawtypes")
-                final Class<? extends TemplateResolverInterceptor> interceptorClass =
-                        pluginClass.asSubclass(TemplateResolverInterceptor.class);
-                final TemplateResolverInterceptor<?, ?> rawInterceptor =
-                        configuration.getComponent(Key.forClass(interceptorClass));
-                final I interceptor =
-                        castInterceptor(valueClass, contextClass, rawInterceptor);
-                if (interceptor != null) {
-                    interceptors.add(interceptor);
+        interceptorPlugins.forEachMatching(
+                pluginType -> pluginType.getImplementedInterfaces().contains(TemplateResolverInterceptor.class),
+                pluginType -> {
+                    @SuppressWarnings("rawtypes")
+                    final Class<? extends TemplateResolverInterceptor> interceptorClass =
+                            pluginType.getPluginClass().asSubclass(TemplateResolverInterceptor.class);
+                    final TemplateResolverInterceptor<?, ?> rawInterceptor =
+                            configuration.getComponent(Key.forClass(interceptorClass));
+                    final I interceptor =
+                            castInterceptor(valueClass, contextClass, rawInterceptor);
+                    if (interceptor != null) {
+                        interceptors.add(interceptor);
+                    }
                 }
-            }
-        }
+        );
         return interceptors;
     }
 

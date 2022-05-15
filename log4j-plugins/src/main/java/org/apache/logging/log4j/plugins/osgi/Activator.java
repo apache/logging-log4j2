@@ -65,7 +65,7 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
             final Collection<ServiceReference<PluginService>> serviceReferences = bundleContext.getServiceReferences(PluginService.class, null);
             for (final ServiceReference<PluginService> serviceReference : serviceReferences) {
                 final PluginService pluginService = bundleContext.getService(serviceReference);
-                pluginRegistry.loadFromBundle(pluginService.getBundle(), bundleContext.getBundle().getBundleId());
+                pluginRegistry.loadFromBundle(bundleContext.getBundle().getBundleId(), pluginService.getCategories());
             }
         } catch (final InvalidSyntaxException ex) {
             LOGGER.error("Error accessing Plugins", ex);
@@ -130,8 +130,8 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
         // LOG4J2-920: don't scan system bundle for plugins
         if (bundle.getState() == Bundle.ACTIVE && bundleId != 0) {
             LOGGER.trace("Scanning bundle [{}, id={}] for plugins.", bundle.getSymbolicName(), bundleId);
-            PluginRegistry.getInstance().loadFromBundle(bundleId,
-                    bundle.adapt(BundleWiring.class).getClassLoader());
+            final ClassLoader classLoader = bundle.adapt(BundleWiring.class).getClassLoader();
+            PluginRegistry.getInstance().loadFromBundle(bundleId, classLoader);
         }
     }
 

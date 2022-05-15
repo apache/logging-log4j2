@@ -44,6 +44,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
@@ -275,6 +276,12 @@ class InjectorTest {
         final Key<UnknownInstance> key = new Key<>() {};
         assertThatThrownBy(() -> DI.createInjector().getInstance(key))
                 .hasMessage("No @Inject constructors or no-arg constructor found for " + key);
+    }
+
+    @Test
+    void optionalUnknownInstance() {
+        final Key<Optional<UnknownInstance>> key = new Key<>() {};
+        assertThat(DI.createInjector().getInstance(key)).isEmpty();
     }
 
     @Singleton
@@ -752,5 +759,34 @@ class InjectorTest {
         root.getChildren().add(child2);
         final MultipleElements instance = DI.createInjector(NoOpStringSubstitution.class).configure(root);
         assertThat(instance.objects).hasSize(2);
+    }
+
+    static class OptionalInjection {
+        @Inject
+        Optional<BeanA> a;
+
+        final BeanB b;
+        BeanC c;
+
+        @Inject
+        OptionalInjection(final Optional<BeanB> b) {
+            this.b = b.orElse(null);
+        }
+
+        @Inject
+        void setC(final Optional<BeanC> c) {
+            this.c = c.orElse(null);
+        }
+    }
+
+    @Test
+    void optionalInjection() {
+        final Injector injector = DI.createInjector();
+        final OptionalInjection first = injector.getInstance(OptionalInjection.class);
+        final OptionalInjection second = injector.getInstance(OptionalInjection.class);
+        assertThat(first.a).isPresent().isEqualTo(second.a);
+        assertThat(first.b).isNotNull().isEqualTo(second.b);
+        assertThat(first.c).isNotNull().isNotSameAs(second.c);
+        assertThat(second.c).isNotNull();
     }
 }

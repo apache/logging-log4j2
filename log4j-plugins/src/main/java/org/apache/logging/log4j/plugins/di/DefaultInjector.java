@@ -22,6 +22,7 @@ import org.apache.logging.log4j.plugins.FactoryType;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.PluginException;
 import org.apache.logging.log4j.plugins.QualifierType;
 import org.apache.logging.log4j.plugins.ScopeType;
 import org.apache.logging.log4j.plugins.Singleton;
@@ -64,6 +65,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.UnknownFormatConversionException;
@@ -251,17 +253,16 @@ class DefaultInjector implements Injector {
         final Class<T> rawType = key.getRawType();
         final Scope scope = getScopeForType(rawType);
         if (rawType == PluginCategory.class && key.getQualifierType() == Named.class) {
-            final Supplier<T> factory = () -> {
-                final String categoryName = key.getName();
-                final Binding<List<String>> pluginPackagesBinding = bindingMap.get(Keys.PLUGIN_PACKAGES_KEY, List.of());
-                final List<String> pluginPackages = pluginPackagesBinding != null ? pluginPackagesBinding.getSupplier().get() : List.of();
-                // TODO: can this be a bean, too? might be tricky in OSGi
-                final var registry = PluginRegistry.getInstance();
-                // Then, iterate over packages registered in PluginManager
-                final var category = registry.getCategory(categoryName, pluginPackages);
-                return TypeUtil.cast(category);
-            };
-            bindingMap.put(key, scope.get(key, factory));
+            final Key<PluginCategory> pluginCategoryKey = TypeUtil.cast(key);
+            final Supplier<PluginCategory> pluginCategoryFactory = createPluginCategoryFactory(pluginCategoryKey);
+            bindingMap.put(pluginCategoryKey, pluginCategoryFactory);
+            return bindingMap.get(key, aliases).getSupplier();
+        }
+        if (rawType == Optional.class) {
+            final Key<Optional<T>> optionalKey = TypeUtil.cast(key);
+            final Supplier<Optional<T>> optionalFactory =
+                    createOptionalFactory(key.getParameterizedTypeArgument(0), aliases, node, chain);
+            bindingMap.put(optionalKey, optionalFactory);
             return bindingMap.get(key, aliases).getSupplier();
         }
         final Supplier<T> instanceSupplier = () -> {
@@ -271,6 +272,27 @@ class DefaultInjector implements Injector {
             return instance;
         };
         return bindingMap.bindIfAbsent(key, scope.get(key, instanceSupplier));
+    }
+
+    private Supplier<PluginCategory> createPluginCategoryFactory(final Key<PluginCategory> key) {
+        return LazyValue.from(() -> {
+            final String categoryName = key.getName();
+            final Binding<List<String>> pluginPackagesBinding = bindingMap.get(Keys.PLUGIN_PACKAGES_KEY, List.of());
+            final List<String> pluginPackages = pluginPackagesBinding != null ? pluginPackagesBinding.getSupplier().get() : List.of();
+            // TODO: can this be a bean, too? might be tricky in OSGi
+            return PluginRegistry.getInstance().getCategory(categoryName, pluginPackages);
+        });
+    }
+
+    private <T> Supplier<Optional<T>> createOptionalFactory(
+            final Key<T> key, final Collection<String> aliases, final Node node, final Set<Key<?>> chain) {
+        return () -> {
+            try {
+                return Optional.ofNullable(getFactory(key, aliases, node, chain).get());
+            } catch (final PluginException e) {
+                return Optional.empty();
+            }
+        };
     }
 
     private Object getInjectableInstance(

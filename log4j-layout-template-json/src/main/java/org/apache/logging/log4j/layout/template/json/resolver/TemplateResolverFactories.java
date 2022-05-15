@@ -20,7 +20,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.util.PluginCategory;
-import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -80,22 +79,19 @@ public final class TemplateResolverFactories {
             final Class<V> valueClass,
             final Class<C> contextClass) {
         final Map<String, F> factoryByName = new LinkedHashMap<>();
-        for (final PluginType<?> pluginType : factoryPlugins) {
-            final Class<?> pluginClass = pluginType.getPluginClass();
-            final boolean pluginClassMatched =
-                    TemplateResolverFactory.class.isAssignableFrom(pluginClass);
-            if (pluginClassMatched) {
-                @SuppressWarnings("rawtypes")
-                final Class<? extends TemplateResolverFactory> factoryClass =
-                        pluginClass.asSubclass(TemplateResolverFactory.class);
-                final TemplateResolverFactory<?, ?> rawFactory =
-                        configuration.getComponent(Key.forClass(factoryClass));
-                final F factory = castFactory(valueClass, contextClass, rawFactory);
-                if (factory != null) {
-                    addFactory(factoryByName, factory);
-                }
-            }
-        }
+        factoryPlugins.forEachMatching(
+                pluginType -> pluginType.getImplementedInterfaces().contains(TemplateResolverFactory.class),
+                pluginType -> {
+                    @SuppressWarnings("rawtypes")
+                    final Class<? extends TemplateResolverFactory> factoryClass =
+                            pluginType.getPluginClass().asSubclass(TemplateResolverFactory.class);
+                    final TemplateResolverFactory<?, ?> rawFactory =
+                            configuration.getComponent(Key.forClass(factoryClass));
+                    final F factory = castFactory(valueClass, contextClass, rawFactory);
+                    if (factory != null) {
+                        addFactory(factoryByName, factory);
+                    }
+                });
         return factoryByName;
     }
 

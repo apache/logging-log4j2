@@ -118,6 +118,13 @@ public class Key<T> {
         return null;
     }
 
+    public final <P> Key<P> getParameterizedTypeArgument(final int arg) {
+        if (type instanceof ParameterizedType) {
+            return forQualifiedNamedType(qualifierType, name, ((ParameterizedType) type).getActualTypeArguments()[arg]);
+        }
+        return null;
+    }
+
     @Override
     public final boolean equals(final Object o) {
         if (o == this) {
