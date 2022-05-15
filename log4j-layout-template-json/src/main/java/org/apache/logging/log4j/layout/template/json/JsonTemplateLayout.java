@@ -20,7 +20,6 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.layout.Encoder;
@@ -28,10 +27,8 @@ import org.apache.logging.log4j.core.layout.TextEncoderHelper;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.StringEncoder;
 import org.apache.logging.log4j.layout.template.json.resolver.EventResolverContext;
-import org.apache.logging.log4j.layout.template.json.resolver.EventResolverFactories;
 import org.apache.logging.log4j.layout.template.json.resolver.EventResolverFactory;
 import org.apache.logging.log4j.layout.template.json.resolver.EventResolverInterceptor;
-import org.apache.logging.log4j.layout.template.json.resolver.EventResolverInterceptors;
 import org.apache.logging.log4j.layout.template.json.resolver.EventResolverStringSubstitutor;
 import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolver;
 import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolvers;
@@ -39,10 +36,13 @@ import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.apache.logging.log4j.layout.template.json.util.Recycler;
 import org.apache.logging.log4j.layout.template.json.util.RecyclerFactory;
 import org.apache.logging.log4j.layout.template.json.util.Uris;
+import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
@@ -52,10 +52,13 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CodingErrorAction;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 @Plugin(name = "JsonTemplateLayout",
         category = Node.CATEGORY,
@@ -121,10 +124,18 @@ public class JsonTemplateLayout implements StringLayout {
             final JsonWriter jsonWriter) {
 
         // Inject resolver factory and interceptor plugins.
+        final List<EventResolverFactory> resolverFactories =
+                configuration.getComponent(new @Category(EventResolverFactory.CATEGORY) Key<>() {});
         final Map<String, EventResolverFactory> resolverFactoryByName =
-                EventResolverFactories.populateResolverFactoryByName(configuration);
+                resolverFactories.stream().collect(
+                        Collectors.toMap(EventResolverFactory::getName, Function.identity(), (factory, conflictingFactory) -> {
+                            final String message = String.format(
+                                    "found resolver factories with overlapping names: %s (%s and %s)",
+                                    factory.getName(), conflictingFactory, factory);
+                            throw new IllegalArgumentException(message);
+                        }, LinkedHashMap::new));
         final List<EventResolverInterceptor> resolverInterceptors =
-                EventResolverInterceptors.populateInterceptors(configuration);
+                configuration.getComponent(new @Category(EventResolverInterceptor.CATEGORY) Key<>() {});
         final EventResolverStringSubstitutor substitutor =
                 new EventResolverStringSubstitutor(configuration.getStrSubstitutor());
 
@@ -337,7 +348,7 @@ public class JsonTemplateLayout implements StringLayout {
         return CONTENT_FORMAT;
     }
 
-    @PluginBuilderFactory
+    @Factory
     @SuppressWarnings("WeakerAccess")
     public static Builder newBuilder() {
         return new Builder();
@@ -631,7 +642,7 @@ public class JsonTemplateLayout implements StringLayout {
             return String.format("%s=%s", key, formattedValue);
         }
 
-        @PluginBuilderFactory
+        @Factory
         public static EventTemplateAdditionalField.Builder newBuilder() {
             return new EventTemplateAdditionalField.Builder();
         }
