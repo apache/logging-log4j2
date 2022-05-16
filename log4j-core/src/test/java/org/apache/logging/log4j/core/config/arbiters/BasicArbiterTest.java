@@ -38,6 +38,7 @@ public class BasicArbiterTest {
     public void after() {
         loggerContext.stop();
         loggerContext = null;
+        System.clearProperty("env");
     }
 
     @Test
@@ -58,5 +59,15 @@ public class BasicArbiterTest {
         Appender app = loggerContext.getConfiguration().getAppender("Out");
         assertNotNull(app);
         assertTrue(app instanceof ConsoleAppender);
+    }
+
+    @Test void classArbiterTest() {
+        loggerContext = Configurator.initialize(null, CONFIG);
+        assertNotNull(loggerContext);
+        Appender app = loggerContext.getConfiguration().getAppender("ShouldExist");
+        assertNotNull(app);
+        assertTrue(app instanceof ListAppender);
+        app = loggerContext.getConfiguration().getAppender("ShouldNotExist");
+        assertNull(app);
     }
 }

@@ -41,8 +41,8 @@ public class ClassArbiter implements Arbiter {
     }
 
     @PluginBuilderFactory
-    public static SystemPropertyArbiter.Builder newBuilder() {
-        return new SystemPropertyArbiter.Builder();
+    public static ClassArbiter.Builder newBuilder() {
+        return new ClassArbiter.Builder();
     }
 
     public static class Builder implements org.apache.logging.log4j.core.util.Builder<ClassArbiter> {

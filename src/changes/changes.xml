@@ -34,6 +34,12 @@
       <action issue="LOG4J2-1376" dev="mneundorfer" type="fix">
         Allow enterprise id to be an OID fragment.
       </action>
+      <action issue="LOG4J2-3506" dev="rgoers" type="update">
+        Support Spring 2.6.x.
+      </action>
+      <action issue="LOG4J2-3493" dev="rgoers" type="fix" due-to="Dmytro Voloshyn">
+        ClassArbiter's newBuilder method referenced the wrong class.
+     </action>
       <action issue="LOG4J2-3481" dev="rgoers" type="fix">
         HttpWatcher did not pass credentials when polling.
       </action>
@@ -124,9 +130,8 @@
       <action issue="LOG4J2-3362" dev="pkarwasz" type="add">
         Add support for Jakarta Mail API in the SMTP appender.
       </action>
-      <!-- UPDATES -->
       <action issue="LOG4J2-3428" dev="ggregory" type="fix" due-to="LF-Lin">
-        Update 3rd party dependencies for 2.17.3.
+        Update 3rd party dependencies for 2.18.0.
       </action>
     </release>
     <release version="2.17.2" date="2022-02-23" description="GA Release 2.17.2">
