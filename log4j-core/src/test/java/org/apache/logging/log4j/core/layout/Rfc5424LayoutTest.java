@@ -18,11 +18,14 @@ package org.apache.logging.log4j.core.layout;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -47,6 +50,8 @@ import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 @UsingAnyThreadContext
 public class Rfc5424LayoutTest {
@@ -508,8 +513,8 @@ public class Rfc5424LayoutTest {
         // set up appender
         final AbstractStringLayout layout = Rfc5424Layout.createLayout(Facility.LOCAL0, "Event", 3692, true, "RequestContext",
             null, null, true, null, "ATM", null, "key1, key2, locale", null, null, null, true, null, null);
-        final ListAppender appender = new ListAppender("List", null, layout, true, false);
 
+        final ListAppender appender = new ListAppender("List", null, layout, true, false);
         appender.start();
 
         // set appender on root and set level to debug
@@ -527,4 +532,61 @@ public class Rfc5424LayoutTest {
             appender.stop();
         }
     }
+
+    @Test
+    void testLayoutBuilder() {
+        for (final Appender appender : root.getAppenders().values()) {
+            root.removeAppender(appender);
+        }
+
+        final AbstractStringLayout layout = new Rfc5424Layout.Rfc5424LayoutBuilder()
+                .setFacility(Facility.LOCAL0)
+                .setId("Event")
+                .setEin("1234.56.7")
+                .setIncludeMDC(true)
+                .setMdcId("RequestContext")
+                .setIncludeNL(true)
+                .setAppName("ATM")
+                .setExcludes("key1, key2, locale")
+                .setUseTLSMessageFormat(true)
+                .build();
+
+        final ListAppender appender = new ListAppender("List", null, layout, true, false);
+        appender.start();
+
+        root.addAppender(appender);
+        root.setLevel(Level.DEBUG);
+        root.info("Hello {}", "World");
+        try {
+            final List<String> list = appender.getMessages();
+            assertTrue(list.size() > 0, "Not enough list entries");
+            final String message =  list.get(0);
+            assertTrue(message.contains("Hello World"),
+                    "Incorrect message. Expected - Hello World, Actual - " + message);
+        } finally {
+            root.removeAppender(appender);
+            appender.stop();
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "123456789", "0", "2147483647", "123.45.6.78.9", "0.0.0.0.0.0.0.0.0.0.0.0.0.0" })
+    void testLayoutBuilderValidEids(String eid) {
+        final AbstractStringLayout layout = new Rfc5424Layout.Rfc5424LayoutBuilder()
+                .setEin(eid)
+                .build();
+
+        assertNotNull(layout);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "abc", "someEid", "-1" })
+    void testLayoutBuilderInvalidEids(String eid) {
+        final AbstractStringLayout layout = new Rfc5424Layout.Rfc5424LayoutBuilder()
+                .setEin(eid)
+                .build();
+
+        assertNull(layout);
+    }
+
 }

@@ -57,7 +57,7 @@ public class SyslogAppender extends SocketAppender {
         private String id;
 
         @PluginBuilderAttribute(value = "enterpriseNumber")
-        private int enterpriseNumber = Rfc5424Layout.DEFAULT_ENTERPRISE_NUMBER;
+        private String enterpriseNumber = Rfc5424Layout.DEFAULT_ENTERPRISE_NUMBER;
 
         @PluginBuilderAttribute(value = "includeMdc")
         private boolean includeMdc = true;
@@ -114,10 +114,26 @@ public class SyslogAppender extends SocketAppender {
             Layout<? extends Serializable> layout = getLayout();
             if (layout == null) {
                 layout = RFC5424.equalsIgnoreCase(format)
-                        ? Rfc5424Layout.createLayout(facility, id, enterpriseNumber, includeMdc, mdcId, mdcPrefix,
-                                eventPrefix, newLine, escapeNL, appName, msgId, excludes, includes, required,
-                                exceptionPattern, useTlsMessageFormat, loggerFields, configuration)
-                        :
+                        ? new Rfc5424Layout.Rfc5424LayoutBuilder()
+                        .setFacility(facility)
+                        .setId(id)
+                        .setEin(enterpriseNumber)
+                        .setIncludeMDC(includeMdc)
+                        .setMdcId(mdcId)
+                        .setMdcPrefix(mdcPrefix)
+                        .setEventPrefix(eventPrefix)
+                        .setIncludeNL(newLine)
+                        .setEscapeNL(escapeNL)
+                        .setAppName(appName)
+                        .setMessageId(msgId)
+                        .setExcludes(excludes)
+                        .setIncludes(includes)
+                        .setRequired(required)
+                        .setExceptionPattern(exceptionPattern)
+                        .setUseTLSMessageFormat(useTlsMessageFormat)
+                        .setLoggerFields(loggerFields)
+                        .setConfig(configuration)
+                        .build() :
                         // @formatter:off
                         SyslogLayout.newBuilder()
                             .setFacility(facility)
@@ -147,7 +163,7 @@ public class SyslogAppender extends SocketAppender {
             return id;
         }
 
-        public int getEnterpriseNumber() {
+        public String getEnterpriseNumber() {
             return enterpriseNumber;
         }
 
@@ -221,8 +237,16 @@ public class SyslogAppender extends SocketAppender {
             return asBuilder();
         }
 
-        public B setEnterpriseNumber(final int enterpriseNumber) {
+        public B setEnterpriseNumber(final String enterpriseNumber) {
             this.enterpriseNumber = enterpriseNumber;
+            return asBuilder();
+        }
+
+        /**
+         * @deprecated Use {@link #setEnterpriseNumber(String)} instead
+         */
+        public B setEnterpriseNumber(final int enterpriseNumber) {
+            this.enterpriseNumber = String.valueOf(enterpriseNumber);
             return asBuilder();
         }
 

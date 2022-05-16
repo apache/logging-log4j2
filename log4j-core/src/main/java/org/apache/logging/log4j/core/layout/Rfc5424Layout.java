@@ -71,9 +71,9 @@ import org.apache.logging.log4j.util.Strings;
 public final class Rfc5424Layout extends AbstractStringLayout {
 
     /**
-     * Not a very good default - it is the Apache Software Foundation's enterprise number.
+     * The default example enterprise number from RFC5424.
      */
-    public static final int DEFAULT_ENTERPRISE_NUMBER = 18060;
+    public static final String DEFAULT_ENTERPRISE_NUMBER = "32473";
     /**
      * The default event id.
      */
@@ -86,6 +86,11 @@ public final class Rfc5424Layout extends AbstractStringLayout {
      * Match characters which require escaping.
      */
     public static final Pattern PARAM_VALUE_ESCAPE_PATTERN = Pattern.compile("[\\\"\\]\\\\]");
+
+    /**
+     * For now, avoid too restrictive OID checks to allow for easier transition
+     */
+    public static final Pattern ENTERPRISE_ID_PATTERN = Pattern.compile("\\d+(\\.\\d+)*");
 
     /**
      * Default MDC ID: {@value} .
@@ -101,7 +106,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
 
     private final Facility facility;
     private final String defaultId;
-    private final int enterpriseNumber;
+    private final String enterpriseNumber;
     private final boolean includeMdc;
     private final String mdcId;
     private final StructuredDataId mdcSdId;
@@ -126,11 +131,11 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     private final Map<String, FieldFormatter> fieldFormatters;
     private final String procId;
 
-    private Rfc5424Layout(final Configuration config, final Facility facility, final String id, final int ein,
-            final boolean includeMDC, final boolean includeNL, final String escapeNL, final String mdcId,
-            final String mdcPrefix, final String eventPrefix, final String appName, final String messageId,
-            final String excludes, final String includes, final String required, final Charset charset,
-            final String exceptionPattern, final boolean useTLSMessageFormat, final LoggerFields[] loggerFields) {
+    private Rfc5424Layout(final Configuration config, final Facility facility, final String id, final String ein,
+              final boolean includeMDC, final boolean includeNL, final String escapeNL, final String mdcId,
+              final String mdcPrefix, final String eventPrefix, final String appName, final String messageId,
+              final String excludes, final String includes, final String required, final Charset charset,
+              final String exceptionPattern, final boolean useTLSMessageFormat, final LoggerFields[] loggerFields) {
         super(charset);
         final PatternParser exceptionParser = createPatternParser(config, ThrowablePatternConverter.class);
         exceptionFormatters = exceptionPattern == null ? null : exceptionParser.parse(exceptionPattern);
@@ -529,11 +534,11 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         } else {
             sb.append(id.getName());
         }
-        int ein = id != null ? id.getEnterpriseNumber() : enterpriseNumber;
-        if (ein < 0) {
+        String ein = id != null ? id.getEnterpriseNumber() : enterpriseNumber;
+        if (StructuredDataId.RESERVED.equals(ein)) {
             ein = enterpriseNumber;
         }
-        if (ein >= 0) {
+        if (!StructuredDataId.RESERVED.equals(ein)) {
             sb.append('@').append(ein);
         }
         return sb.toString();
@@ -604,13 +609,14 @@ public final class Rfc5424Layout extends AbstractStringLayout {
      * @param loggerFields Container for the KeyValuePairs containing the patterns
      * @param config The Configuration. Some Converters require access to the Interpolator.
      * @return An Rfc5424Layout.
+     * @deprecated Use {@link Rfc5424LayoutBuilder instead}
      */
     @PluginFactory
     public static Rfc5424Layout createLayout(
             // @formatter:off
             @PluginAttribute(value = "facility", defaultString = "LOCAL0") final Facility facility,
             @PluginAttribute("id") final String id,
-            @PluginAttribute(value = "enterpriseNumber", defaultInt = DEFAULT_ENTERPRISE_NUMBER)
+            @PluginAttribute(value = "enterpriseNumber", defaultInt = -1)
             final int enterpriseNumber,
             @PluginAttribute(value = "includeMDC", defaultBoolean = true) final boolean includeMDC,
             @PluginAttribute(value = "mdcId", defaultString = DEFAULT_MDCID) final String mdcId,
@@ -634,9 +640,140 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             includes = null;
         }
 
-        return new Rfc5424Layout(config, facility, id, enterpriseNumber, includeMDC, newLine, escapeNL, mdcId,
+        return new Rfc5424Layout(config, facility, id, String.valueOf(enterpriseNumber), includeMDC, newLine, escapeNL, mdcId,
                 mdcPrefix, eventPrefix, appName, msgId, excludes, includes, required, StandardCharsets.UTF_8,
                 exceptionPattern, useTlsMessageFormat, loggerFields);
+    }
+
+    public static class Rfc5424LayoutBuilder {
+        private Configuration config;
+        private Facility facility;
+        private String id;
+        private String ein;
+        private boolean includeMDC;
+        private boolean includeNL;
+        private String escapeNL;
+        private String mdcId;
+        private String mdcPrefix;
+        private String eventPrefix;
+        private String appName;
+        private String messageId;
+        private String excludes;
+        private String includes;
+        private String required;
+        private Charset charset;
+        private String exceptionPattern;
+        private boolean useTLSMessageFormat;
+        private LoggerFields[] loggerFields;
+
+        public Rfc5424LayoutBuilder setConfig(Configuration config) {
+            this.config = config;
+            return this;
+        }
+
+        public Rfc5424LayoutBuilder setFacility(Facility facility) {
+            this.facility = facility;
+            return this;
+        }
+
+        public Rfc5424LayoutBuilder setId(String id) {
+            this.id = id;
+            return this;
+        }
+
+        public Rfc5424LayoutBuilder setEin(String ein) {
+            this.ein = ein;
+            return this;
+        }
+
+        public Rfc5424LayoutBuilder setIncludeMDC(boolean includeMDC) {
+            this.includeMDC = includeMDC;
+            return this;
+        }
+
+        public Rfc5424LayoutBuilder setIncludeNL(boolean includeNL) {
+            this.includeNL = includeNL;
+            return this;
+        }
+
+        public Rfc5424LayoutBuilder setEscapeNL(String escapeNL) {
+            this.escapeNL = escapeNL;
+            return this;
+        }
+
+        public Rfc5424LayoutBuilder setMdcId(String mdcId) {
+            this.mdcId = mdcId;
+            return this;
+        }
+
+        public Rfc5424LayoutBuilder setMdcPrefix(String mdcPrefix) {
+            this.mdcPrefix = mdcPrefix;
+            return this;
+        }
+
+        public Rfc5424LayoutBuilder setEventPrefix(String eventPrefix) {
+            this.eventPrefix = eventPrefix;
+            return this;
+        }
+
+        public Rfc5424LayoutBuilder setAppName(String appName) {
+            this.appName = appName;
+            return this;
+        }
+
+        public Rfc5424LayoutBuilder setMessageId(String messageId) {
+            this.messageId = messageId;
+            return this;
+        }
+
+        public Rfc5424LayoutBuilder setExcludes(String excludes) {
+            this.excludes = excludes;
+            return this;
+        }
+
+        public Rfc5424LayoutBuilder setIncludes(String includes) {
+            this.includes = includes;
+            return this;
+        }
+
+        public Rfc5424LayoutBuilder setRequired(String required) {
+            this.required = required;
+            return this;
+        }
+
+        public Rfc5424LayoutBuilder setCharset(Charset charset) {
+            this.charset = charset;
+            return this;
+        }
+
+        public Rfc5424LayoutBuilder setExceptionPattern(String exceptionPattern) {
+            this.exceptionPattern = exceptionPattern;
+            return this;
+        }
+
+        public Rfc5424LayoutBuilder setUseTLSMessageFormat(boolean useTLSMessageFormat) {
+            this.useTLSMessageFormat = useTLSMessageFormat;
+            return this;
+        }
+
+        public Rfc5424LayoutBuilder setLoggerFields(LoggerFields[] loggerFields) {
+            this.loggerFields = loggerFields;
+            return this;
+        }
+
+        public Rfc5424Layout build() {
+            if (includes != null && excludes != null) {
+                LOGGER.error("mdcIncludes and mdcExcludes are mutually exclusive. Includes wil be ignored");
+                includes = null;
+            }
+
+            if (ein != null && !ENTERPRISE_ID_PATTERN.matcher(ein).matches()) {
+                LOGGER.warn(String.format("provided EID %s is not in valid format!", ein));
+                return null;
+            }
+
+            return new Rfc5424Layout(config, facility, id, ein, includeMDC, includeNL, escapeNL, mdcId, mdcPrefix, eventPrefix, appName, messageId, excludes, includes, required, charset, exceptionPattern, useTLSMessageFormat, loggerFields);
+        }
     }
 
     private class FieldFormatter {
