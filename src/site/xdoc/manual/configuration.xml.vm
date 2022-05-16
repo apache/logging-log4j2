@@ -370,7 +370,7 @@ public class Bar {
         <a name="Configuration From a URI"/>
         <subsection name="Configuration From a URI">
           <p>
-            When <code>log4j2.configurationFile</code> references a URL Log4j will first determine if the URL reference
+            When <code>log4j2.configurationFile</code> references a URL, Log4j will first determine if the URL reference
             a file using the file protocol. If it does Log4j will validate that the file URL is valid and continue
             processing as previously described. If it contains a protocol other than file then Log4j will inspect
             the value of the <code>log4j2.Configuration.allowedProtocols</code> system property. If the provided list
