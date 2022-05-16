@@ -356,10 +356,10 @@ Note that status logging is disabled when the default configuration is
 used.
 
 [#Configuration_From_a_URI]
-== Configuraton From a URI
+== Configuration From a URI
 
-When `log4j2.configurationFile` references a URL Log4j will first determine if the URL reference
-a file using the file protocol. If it does Log4j will validate that the file url is valid and continue
+When `log4j2.configurationFile` references a URL, Log4j will first determine if the URL reference
+a file using the file protocol. If it does Log4j will validate that the file URL is valid and continue
 processing as previously described. If it contains a protocol other than file then Log4j will inspect
 the value of the `log4j2.Configuration.allowedProtocols` system property. If the provided list
 contains the protocol specified then Log4j will use the URI to locate the specified configuration file. If
@@ -368,7 +368,7 @@ system property it will default to "https". Use of any protocol other than "file
 setting the system property value to "_none". This value would be an invalid protocol so cannot conflict
 with any custom protocols that may be present.
 
-Log4j supports access to remote urls that require authentication. Log4j supports basic authentication
+Log4j supports access to remote URLs that require authentication. Log4j supports basic authentication
 out of the box. If the `log4j2.Configuration.username` and `log4j2.Configuration.password`
 are specified those values will be used to perform the authentication. If the password is encrypted a custom
 password decryptor may be supplied by specifying the fully qualified class name in the
@@ -1626,7 +1626,7 @@ file that includes two other files:
 
 Log4j allows multiple configuration files to be used by specifying them
 as a list of comma separated file paths on log4j.configurationFile or,
-when using urls, by adding secondary configuration locations as query
+when using URLs, by adding secondary configuration locations as query
 parameters named "override". The merge logic can be controlled by specifying
 a class that implements the MergeStrategy interface on the log4j.mergeStrategy
 property. The default merge strategy will merge the files using the following rules:
