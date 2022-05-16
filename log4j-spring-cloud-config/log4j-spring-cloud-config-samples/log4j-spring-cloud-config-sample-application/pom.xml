@@ -42,6 +42,13 @@
       <artifactId>log4j-jcl</artifactId>
       <version>${project.version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-spring-boot</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
     <!-- Spring Boot dependencies -->
     <dependency>
       <groupId>org.springframework.boot</groupId>

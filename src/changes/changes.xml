@@ -199,7 +199,9 @@
       </action>
     </release>
     <release version="2.18.0" date="20YY-MM-DD" description="GA Release 2.17.3">
-      <!-- FIXES -->
+      <action issue="LOG4J2-3506" dev="rgoers" type="update">
+        Support Spring 2.6.x.
+      </action>
       <action issue="LOG4J2-3493" dev="rgoers" type="fix" due-to="Dmytro Voloshyn">
         ClassArbiter's newBuilder method referenced the wrong class.
       </action>
@@ -236,7 +238,6 @@
       <action issue="LOG4J2-3475" dev="jjlin" type="fix" due-to="Jeremy Lin">
         Add missing message parameterization in RegexFilter.
       </action>
-      <!-- Additions -->
       <action issue="LOG4J2-3495" dev="rgoers" type="fix">
         Add MutableThreadContextMapFilter.
       </action>

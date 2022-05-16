@@ -38,7 +38,7 @@ public class SpringEnvironmentHolder {
             lock.lock();
             try {
                 if (environment == null) {
-                    Object obj = LogManager.getContext(false).getObject(Log4j2CloudConfigLoggingSystem.ENVIRONMENT_KEY);
+                    Object obj = LogManager.getContext(false).getObject(Log4j2SpringBootLoggingSystem.ENVIRONMENT_KEY);
                     environment = obj instanceof Environment ? (Environment) obj : null;
                 }
             } finally {

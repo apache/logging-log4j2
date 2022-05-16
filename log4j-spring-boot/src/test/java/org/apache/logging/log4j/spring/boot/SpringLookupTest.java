@@ -39,7 +39,7 @@ public class SpringLookupTest {
         env.setDefaultProfiles("one", "two");
         env.setProperty("app.property", "test");
         LoggerContext context = (LoggerContext) LogManager.getContext(false);
-        context.putObject(Log4j2CloudConfigLoggingSystem.ENVIRONMENT_KEY, env);
+        context.putObject(Log4j2SpringBootLoggingSystem.ENVIRONMENT_KEY, env);
         SpringLookup lookup = new SpringLookup();
         String result = lookup.lookup("profiles.active");
         assertNotNull("No active profiles", result);
@@ -66,7 +66,7 @@ public class SpringLookupTest {
         env.setActiveProfiles("test");
         env.setProperty("app.property", "test");
         LoggerContext context = (LoggerContext) LogManager.getContext(false);
-        context.putObject(Log4j2CloudConfigLoggingSystem.ENVIRONMENT_KEY, env);
+        context.putObject(Log4j2SpringBootLoggingSystem.ENVIRONMENT_KEY, env);
 
         StrLookup lookup = new Interpolator();
         String result = lookup.lookup("spring:profiles.active");
