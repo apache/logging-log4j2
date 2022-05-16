@@ -17,10 +17,16 @@
 
 package org.apache.logging.log4j.plugins.di;
 
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Named;
+import org.apache.logging.log4j.util.Strings;
 
+import java.lang.reflect.AnnotatedElement;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 public final class Keys {
     private Keys() {
@@ -32,4 +38,15 @@ public final class Keys {
 
     public static final String PLUGIN_PACKAGES_NAME = "PluginPackages";
     public static final Key<List<String>> PLUGIN_PACKAGES_KEY = new @Named(PLUGIN_PACKAGES_NAME) Key<>() {};
+
+    public static String getCategory(final AnnotatedElement element) {
+        return Optional.ofNullable(element.getAnnotation(Category.class))
+                .map(Category::value)
+                .orElseGet(() -> Stream.of(element.getAnnotations())
+                        .map(annotation -> annotation.annotationType().getAnnotation(Category.class))
+                        .filter(Objects::nonNull)
+                        .findFirst()
+                        .map(Category::value)
+                        .orElse(Strings.EMPTY));
+    }
 }

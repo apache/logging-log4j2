@@ -18,8 +18,9 @@
 package org.apache.logging.log4j.redis.appender;
 
 import org.apache.logging.log4j.core.Core;
-import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import redis.clients.jedis.JedisPoolConfig;
 
@@ -27,7 +28,8 @@ import redis.clients.jedis.JedisPoolConfig;
  * Plugin configuration for {@link redis.clients.jedis.JedisPool} objects, allowing end users to set pool configuration
  * if desired. If not set, will default to JedisPool defaults.
  */
-@Plugin(name = "RedisPoolConfiguration", category = Core.CATEGORY_NAME, printObject = true)
+@Category(Core.CATEGORY_NAME)
+@Plugin(value = "RedisPoolConfiguration", printObject = true)
 class LoggingRedisPoolConfiguration extends JedisPoolConfig {
 
     private LoggingRedisPoolConfiguration() {

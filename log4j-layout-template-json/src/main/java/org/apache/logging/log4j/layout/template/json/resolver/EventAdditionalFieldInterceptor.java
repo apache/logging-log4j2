@@ -18,6 +18,7 @@ package org.apache.logging.log4j.layout.template.json.resolver;
 
 import org.apache.logging.log4j.core.util.JsonReader;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
 
@@ -27,7 +28,8 @@ import java.util.Map;
  * Interceptor to add {@link EventTemplateAdditionalField
  * additional fields} after event template read.
  */
-@Plugin(name = "EventAdditionalFieldInterceptor", category = TemplateResolverInterceptor.CATEGORY)
+@Category(TemplateResolverInterceptor.CATEGORY)
+@Plugin("EventAdditionalFieldInterceptor")
 public class EventAdditionalFieldInterceptor implements EventResolverInterceptor {
 
     private static final EventAdditionalFieldInterceptor INSTANCE =

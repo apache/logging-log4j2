@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.core.util;
 
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
@@ -27,7 +28,8 @@ import org.apache.logging.log4j.plugins.PluginFactory;
  *
  * @since 2.1 implements {@link #hashCode()} and {@link #equals(Object)}
  */
-@Plugin(name = "KeyValuePair", category = Node.CATEGORY, printObject = true)
+@Category(Node.CATEGORY)
+@Plugin(value = "KeyValuePair", printObject = true)
 public final class KeyValuePair {
 
     private final String key;

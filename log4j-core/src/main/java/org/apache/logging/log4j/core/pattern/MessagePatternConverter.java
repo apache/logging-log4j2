@@ -16,26 +16,28 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MultiformatMessage;
+import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.MultiFormatStringBuilderFormattable;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.Strings;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 /**
  * Returns the event's rendered message in a StringBuilder.
  */
-@Plugin(name = "MessagePatternConverter", category = PatternConverter.CATEGORY)
+@Category(PatternConverter.CATEGORY)
+@Plugin("MessagePatternConverter")
 @ConverterKeys({ "m", "msg", "message" })
 @PerformanceSensitive("allocation")
 public class MessagePatternConverter extends LogEventPatternConverter {

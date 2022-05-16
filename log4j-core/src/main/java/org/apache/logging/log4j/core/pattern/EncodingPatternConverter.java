@@ -16,21 +16,23 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import java.util.List;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.EnglishEnums;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.StringBuilders;
+
+import java.util.List;
 
 /**
  * Converter that encodes the output from a pattern using a specified format. Supported formats include HTML
  * (default) and JSON.
  */
-@Plugin(name = "encode", category = PatternConverter.CATEGORY)
+@Category(PatternConverter.CATEGORY)
+@Plugin("encode")
 @ConverterKeys({"enc", "encode"})
 @PerformanceSensitive("allocation")
 public final class EncodingPatternConverter extends LogEventPatternConverter {

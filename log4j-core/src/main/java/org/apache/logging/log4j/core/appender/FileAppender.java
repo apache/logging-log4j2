@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.net.Advertiser;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -35,7 +36,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * File Appender.
  */
-@Plugin(name = FileAppender.PLUGIN_NAME, category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Category(Core.CATEGORY_NAME)
+@Plugin(value = FileAppender.PLUGIN_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class FileAppender extends AbstractOutputStreamAppender<FileManager> {
 
     public static final String PLUGIN_NAME = "File";

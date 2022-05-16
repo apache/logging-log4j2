@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.appender.rolling.RollingRandomAccessFileMan
 import org.apache.logging.log4j.core.appender.rolling.RolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
 import org.apache.logging.log4j.core.net.Advertiser;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -43,7 +44,8 @@ import java.util.zip.Deflater;
  * An appender that writes to random access files and can roll over at
  * intervals.
  */
-@Plugin(name = "RollingRandomAccessFile", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Category(Core.CATEGORY_NAME)
+@Plugin(value = "RollingRandomAccessFile", elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class RollingRandomAccessFileAppender extends AbstractOutputStreamAppender<RollingRandomAccessFileManager> {
 
     public static class Builder<B extends Builder<B>> extends AbstractOutputStreamAppender.Builder<B>

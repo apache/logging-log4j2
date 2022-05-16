@@ -17,11 +17,13 @@
 
 package org.apache.logging.log4j.plugins.test.validation.generic;
 
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.Singleton;
 
-@Plugin(category = "Bean", name = "Alpha")
+@Category("Bean")
+@Plugin("Alpha")
 @Singleton
 public class AlphaBean implements BaseBean {
     @Factory

@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.script;
 
 import org.apache.logging.log4j.core.Core;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -24,7 +25,8 @@ import org.apache.logging.log4j.plugins.PluginFactory;
 /**
  * A  container of Scripts.
  */
-@Plugin(name = "scripts", category = Core.CATEGORY_NAME)
+@Category(Core.CATEGORY_NAME)
+@Plugin("scripts")
 public final class ScriptsPlugin {
 
     private ScriptsPlugin() {

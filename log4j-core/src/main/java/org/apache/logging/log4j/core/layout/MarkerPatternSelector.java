@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
@@ -37,7 +38,8 @@ import java.util.Map;
 /**
  * Selects the pattern to use based on the Marker in the LogEvent.
  */
-@Plugin(name = "MarkerPatternSelector", category = Node.CATEGORY, elementType = PatternSelector.ELEMENT_TYPE, printObject = true)
+@Category(Node.CATEGORY)
+@Plugin(value = "MarkerPatternSelector", elementType = PatternSelector.ELEMENT_TYPE, printObject = true)
 public class MarkerPatternSelector implements PatternSelector {
 
     /**

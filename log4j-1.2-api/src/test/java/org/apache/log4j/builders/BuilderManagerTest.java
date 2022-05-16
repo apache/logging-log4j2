@@ -16,17 +16,18 @@
  */
 package org.apache.log4j.builders;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.Properties;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.varia.StringMatchFilter;
 import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.plugins.di.Injector;
 import org.junit.jupiter.api.Test;
+
+import java.util.Properties;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BuilderManagerTest {
 
@@ -38,7 +39,8 @@ public class BuilderManagerTest {
     @Test
     public void testReturnInvalidValueOnError() {
         final PropertiesConfiguration config = new PropertiesConfiguration(null, null);
-        final BuilderManager manager = new BuilderManager(DI.createInjector());
+        final Injector injector = DI.createInjector();
+        final BuilderManager manager = injector.getInstance(BuilderManager.class);
         final Properties props = new Properties();
         props.setProperty("FILE", FileAppender.class.getName());
         props.setProperty("FILE.filter.1", StringMatchFilter.class.getName());

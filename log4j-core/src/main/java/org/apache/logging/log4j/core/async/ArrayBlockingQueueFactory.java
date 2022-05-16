@@ -16,19 +16,21 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
+
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * Factory for creating instances of {@link ArrayBlockingQueue}.
  *
  * @since 2.7
  */
-@Plugin(name = "ArrayBlockingQueue", category = Node.CATEGORY, elementType = BlockingQueueFactory.ELEMENT_TYPE)
+@Category(Node.CATEGORY)
+@Plugin(value = "ArrayBlockingQueue", elementType = BlockingQueueFactory.ELEMENT_TYPE)
 public class ArrayBlockingQueueFactory<E> implements BlockingQueueFactory<E> {
     @Override
     public BlockingQueue<E> create(final int capacity) {

@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -37,7 +38,8 @@ import java.util.Map;
 /**
  * Selects the pattern to use based on the Level in the LogEvent.
  */
-@Plugin(name = "LevelPatternSelector", category = Node.CATEGORY, elementType = PatternSelector.ELEMENT_TYPE, printObject = true)
+@Category(Node.CATEGORY)
+@Plugin(value = "LevelPatternSelector", elementType = PatternSelector.ELEMENT_TYPE, printObject = true)
 public class LevelPatternSelector implements PatternSelector{
 
     /**

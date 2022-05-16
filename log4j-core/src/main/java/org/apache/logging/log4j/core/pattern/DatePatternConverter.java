@@ -16,6 +16,17 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.time.Instant;
+import org.apache.logging.log4j.core.time.MutableInstant;
+import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
+import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
+import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedFormat;
+import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.util.PerformanceSensitive;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
@@ -23,20 +34,11 @@ import java.util.Objects;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.core.time.Instant;
-import org.apache.logging.log4j.core.time.MutableInstant;
-import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
-import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
-import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedFormat;
-import org.apache.logging.log4j.util.PerformanceSensitive;
-
 /**
  * Converts and formats the event's date in a StringBuilder.
  */
-@Plugin(name = "DatePatternConverter", category = PatternConverter.CATEGORY)
+@Category(PatternConverter.CATEGORY)
+@Plugin("DatePatternConverter")
 @ConverterKeys({"d", "date"})
 @PerformanceSensitive("allocation")
 public final class DatePatternConverter extends LogEventPatternConverter implements ArrayPatternConverter {

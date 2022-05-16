@@ -18,6 +18,7 @@
 package org.apache.logging.log4j.plugins.convert;
 
 import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginOrder;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.junit.jupiter.api.Test;
@@ -33,7 +34,8 @@ class TypeConverterRegistryTest {
 
     }
 
-    @Plugin(name = "CustomTestClass1Converter1", category = TypeConverter.CATEGORY)
+    @TypeConverterCategory
+    @Plugin
     public static final class CustomTestClass1Converter1
             implements TypeConverter<CustomTestClass1> {
 
@@ -45,7 +47,9 @@ class TypeConverterRegistryTest {
     }
 
     @SuppressWarnings("ComparableType")
-    @Plugin(name = "CustomTestClass1Converter2", category = TypeConverter.CATEGORY)
+    @TypeConverterCategory
+    @Plugin
+    @PluginOrder(PluginOrder.FIRST)
     public static final class CustomTestClass1Converter2
             implements TypeConverter<CustomTestClass1>, Comparable<TypeConverter<?>> {
 
@@ -75,7 +79,8 @@ class TypeConverterRegistryTest {
 
     }
 
-    @Plugin(name = "CustomTestClass2Converter1", category = TypeConverter.CATEGORY)
+    @TypeConverterCategory
+    @Plugin
     public static final class CustomTestClass2Converter1
             implements TypeConverter<CustomTestClass2> {
 
@@ -86,7 +91,8 @@ class TypeConverterRegistryTest {
 
     }
 
-    @Plugin(name = "CustomTestClass2Converter2", category = TypeConverter.CATEGORY)
+    @TypeConverterCategory
+    @Plugin
     public static final class CustomTestClass2Converter2
             implements TypeConverter<CustomTestClass2> {
 

@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.config;
 
 import java.util.Objects;
 
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
@@ -29,7 +30,8 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Represents a key/value pair in the configuration.
  */
-@Plugin(name = "property", category = Node.CATEGORY, printObject = true)
+@Category(Node.CATEGORY)
+@Plugin(value = "property", printObject = true)
 public final class Property {
 
     /**

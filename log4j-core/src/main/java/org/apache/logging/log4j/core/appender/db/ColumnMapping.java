@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
@@ -44,7 +45,8 @@ import java.util.function.Supplier;
  *
  * @since 2.8
  */
-@Plugin(name = "ColumnMapping", category = Core.CATEGORY_NAME, printObject = true)
+@Category(Core.CATEGORY_NAME)
+@Plugin(value = "ColumnMapping", printObject = true)
 public class ColumnMapping {
 
     /**

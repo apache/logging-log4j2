@@ -16,12 +16,14 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
+import org.apache.logging.log4j.core.util.Loader;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
-import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import java.util.Objects;
@@ -31,13 +33,14 @@ import java.util.Objects;
  * an instance of the LMAX disruptor WaitStrategy
  * used by Async Loggers in the log4j configuration.
  */
-@Plugin(name = "AsyncWaitStrategyFactory", category = Core.CATEGORY_NAME, printObject = true)
+@Category(Core.CATEGORY_NAME)
+@Plugin(value = "AsyncWaitStrategyFactory", printObject = true)
 public class AsyncWaitStrategyFactoryConfig {
 
     /**
      * Status logger for internal logging.
      */
-    protected static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
+    protected static final Logger LOGGER = StatusLogger.getLogger();
 
     private final String factoryClassName;
 

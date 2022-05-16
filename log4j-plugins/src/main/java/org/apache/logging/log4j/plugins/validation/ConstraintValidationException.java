@@ -21,8 +21,10 @@ import org.apache.logging.log4j.plugins.PluginException;
 
 import java.lang.reflect.AnnotatedElement;
 
+import static org.apache.logging.log4j.message.ParameterizedMessage.deepToString;
+
 public class ConstraintValidationException extends PluginException {
     public ConstraintValidationException(final AnnotatedElement element, final String name, final Object value) {
-        super("Validation failed for " + name + " (source: " + element + ") and value " + value);
+        super("Validation failed for " + name + " (source: " + element + ") and value " + deepToString(value));
     }
 }

@@ -49,11 +49,11 @@ public class PluginCacheTest {
     private void createCategory(PluginCache cache, String categoryName, List<String> entryNames) {
         Map<String, PluginEntry> category = cache.getCategory(categoryName);
         for (String entryName: entryNames) {
-            PluginEntry entry = new PluginEntry();
-            entry.setKey(entryName);
-            entry.setClassName("com.example.Plugin");
-            entry.setName("name");
-            entry.setCategory(categoryName);
+            final PluginEntry entry = PluginEntry.builder()
+                    .setKey(entryName)
+                    .setClassName("com.example.Plugin")
+                    .setCategory(categoryName)
+                    .get();
             category.put(entryName, entry);
         }
     }

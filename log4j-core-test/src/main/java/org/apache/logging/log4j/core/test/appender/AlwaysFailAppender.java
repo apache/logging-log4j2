@@ -20,6 +20,7 @@ import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -28,7 +29,8 @@ import org.apache.logging.log4j.plugins.validation.constraints.Required;
 /**
  *
  */
-@Plugin(name="AlwaysFail", category ="Core", elementType=Appender.ELEMENT_TYPE, printObject=true)
+@Category("Core")
+@Plugin(value = "AlwaysFail", elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class AlwaysFailAppender extends AbstractAppender {
 
     private AlwaysFailAppender(final String name) {

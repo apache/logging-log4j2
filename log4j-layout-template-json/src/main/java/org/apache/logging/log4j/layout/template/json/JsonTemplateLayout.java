@@ -60,8 +60,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-@Plugin(name = "JsonTemplateLayout",
-        category = Node.CATEGORY,
+@Category(Node.CATEGORY)
+@Plugin(value = "JsonTemplateLayout",
         elementType = Layout.ELEMENT_TYPE)
 public class JsonTemplateLayout implements StringLayout {
 
@@ -584,8 +584,8 @@ public class JsonTemplateLayout implements StringLayout {
 
     }
 
-    @Plugin(name = "EventTemplateAdditionalField",
-            category = Node.CATEGORY,
+    @Category(Node.CATEGORY)
+    @Plugin(value = "EventTemplateAdditionalField",
             printObject = true)
     public static final class EventTemplateAdditionalField {
 

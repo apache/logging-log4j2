@@ -49,7 +49,7 @@ public class Log4j1Configuration extends AbstractConfiguration implements Reconf
             int monitorIntervalSeconds) {
         super(loggerContext, configurationSource);
         initializeWatchers(this, configurationSource, monitorIntervalSeconds);
-        manager = new BuilderManager(injector);
+        manager = injector.getInstance(BuilderManager.class);
     }
 
     public BuilderManager getBuilderManager() {

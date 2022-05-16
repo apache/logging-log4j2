@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.layout.Rfc5424Layout;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.Integers;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.PluginAttribute;
@@ -41,7 +42,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * An Appender that uses the Avro protocol to route events to Flume.
  */
-@Plugin(name = "Flume", category = "Core", elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Category("Core")
+@Plugin(value = "Flume", elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class FlumeAppender extends AbstractAppender implements FlumeEventFactory {
 
     private static final String[] EXCLUDED_PACKAGES = {"org.apache.flume", "org.apache.avro"};

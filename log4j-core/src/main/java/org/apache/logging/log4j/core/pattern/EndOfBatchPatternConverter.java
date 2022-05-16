@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
@@ -25,7 +26,8 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  *
  * @since 2.11.0
  */
-@Plugin(name = "EndOfBatchPatternConverter", category = PatternConverter.CATEGORY)
+@Category(PatternConverter.CATEGORY)
+@Plugin("EndOfBatchPatternConverter")
 @ConverterKeys({ "endOfBatch" })
 @PerformanceSensitive("allocation")
 public final class EndOfBatchPatternConverter extends LogEventPatternConverter {

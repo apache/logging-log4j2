@@ -17,6 +17,17 @@
 
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import org.apache.logging.log4j.core.Core;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.logging.log4j.core.script.ScriptConditional;
+import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
+
 import java.io.IOException;
 import java.nio.file.FileVisitor;
 import java.nio.file.Files;
@@ -24,20 +35,11 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.logging.log4j.core.Core;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.script.ScriptConditional;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.plugins.PluginElement;
-import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.core.lookup.StrSubstitutor;
-
 /**
  * Rollover or scheduled action for deleting old log files that are accepted by the specified PathFilters.
  */
-@Plugin(name = "Delete", category = Core.CATEGORY_NAME, printObject = true)
+@Category(Core.CATEGORY_NAME)
+@Plugin(value = "Delete", printObject = true)
 public class DeleteAction extends AbstractPathAction {
 
     private final PathSorter pathSorter;

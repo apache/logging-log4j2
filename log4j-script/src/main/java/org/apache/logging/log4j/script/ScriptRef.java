@@ -17,18 +17,20 @@
 package org.apache.logging.log4j.script;
 
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.script.Script;
 import org.apache.logging.log4j.core.script.ScriptManager;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.plugins.PluginFactory;
 
 /**
  * Contains a reference to a script defined elsewhere in the configuration.
  */
-@Plugin(name = "ScriptRef", category = Node.CATEGORY, printObject = true)
+@Category(Node.CATEGORY)
+@Plugin(value = "ScriptRef", printObject = true)
 public class ScriptRef extends AbstractScript {
 
     private final ScriptManager scriptManager;

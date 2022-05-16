@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -30,7 +31,8 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 /**
  * This filter returns the onMatch result if there is no marker in the LogEvent.
  */
-@Plugin(name = "NoMarkerFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
+@Category(Node.CATEGORY)
+@Plugin(value = "NoMarkerFilter", elementType = Filter.ELEMENT_TYPE, printObject = true)
 @PerformanceSensitive("allocation")
 public final class NoMarkerFilter extends AbstractFilter {
 

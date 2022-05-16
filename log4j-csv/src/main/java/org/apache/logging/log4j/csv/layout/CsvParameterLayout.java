@@ -16,21 +16,22 @@
  */
 package org.apache.logging.log4j.csv.layout;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.QuoteMode;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
 
 /**
  * A Comma-Separated Value (CSV) layout to log event parameters.
@@ -47,7 +48,8 @@ import org.apache.logging.log4j.status.StatusLogger;
  *
  * @since 2.4
  */
-@Plugin(name = "CsvParameterLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
+@Category(Node.CATEGORY)
+@Plugin(value = "CsvParameterLayout", elementType = Layout.ELEMENT_TYPE, printObject = true)
 public class CsvParameterLayout extends AbstractCsvLayout {
 
     public static AbstractCsvLayout createDefaultLayout() {

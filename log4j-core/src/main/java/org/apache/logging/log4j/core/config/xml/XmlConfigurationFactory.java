@@ -21,12 +21,14 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Order;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 
 /**
  * Factory to construct an XmlConfiguration.
  */
-@Plugin(name = "XmlConfigurationFactory", category = ConfigurationFactory.CATEGORY)
+@Category(ConfigurationFactory.CATEGORY)
+@Plugin("XmlConfigurationFactory")
 @Order(5)
 public class XmlConfigurationFactory extends ConfigurationFactory {
 

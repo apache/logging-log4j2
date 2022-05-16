@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.kafka.builder;
 
-import java.net.URI;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -29,11 +27,14 @@ import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 
+import java.net.URI;
+
 /**
  * Normally this would be a plugin. However, we don't want it used for everything so it will be defined
  * via a system property.
  */
-//@Plugin(name = "CustomConfigurationFactory", category = ConfigurationFactory.CATEGORY)
+//@Category(ConfigurationFactory.CATEGORY)
+//@Plugin("CustomConfigurationFactory")
 //@Order(50)
 public class CustomConfigurationFactory extends ConfigurationFactory {
 

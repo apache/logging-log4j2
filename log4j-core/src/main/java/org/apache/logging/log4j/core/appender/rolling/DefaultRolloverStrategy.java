@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.Integers;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -76,7 +77,8 @@ import java.util.zip.Deflater;
  * are discouraged.
  * </p>
  */
-@Plugin(name = "DefaultRolloverStrategy", category = Core.CATEGORY_NAME, printObject = true)
+@Category(Core.CATEGORY_NAME)
+@Plugin(value = "DefaultRolloverStrategy", printObject = true)
 public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
 
     private static final int MIN_WINDOW_SIZE = 1;

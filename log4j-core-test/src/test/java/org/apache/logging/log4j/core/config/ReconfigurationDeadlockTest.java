@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.junit.jupiter.api.AfterEach;
@@ -129,8 +130,8 @@ public class ReconfigurationDeadlockTest {
     /**
      * A dummy appender doing nothing but burning CPU cycles whilst randomly accessing the logger.
      */
-    @Plugin(name = "ReconfigurationDeadlockTestAppender",
-            category = Core.CATEGORY_NAME,
+    @Category(Core.CATEGORY_NAME)
+    @Plugin(value = "ReconfigurationDeadlockTestAppender",
             elementType = Appender.ELEMENT_TYPE,
             printObject = true)
     public static final class TestAppender extends AbstractAppender {

@@ -18,6 +18,7 @@
 package org.apache.logging.log4j.plugin.processor;
 
 import org.apache.logging.log4j.LoggingException;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.processor.PluginEntry;
@@ -28,6 +29,7 @@ import javax.annotation.processing.Messager;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementVisitor;
 import javax.lang.model.element.Modifier;
@@ -56,6 +58,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -174,7 +177,12 @@ public class PluginProcessor extends AbstractProcessor {
                 sb.append("        ").append("new PluginEntry(\"");
                 sb.append(entry.getKey()).append("\", \"");
                 sb.append(entry.getClassName()).append("\", \"");
-                sb.append(entry.getName()).append("\", ");
+                sb.append(entry.getName()).append("\", \"");
+                final String elementName = entry.getElementName();
+                if (elementName != null) {
+                    sb.append(elementName);
+                }
+                sb.append("\", ");
                 sb.append(entry.isPrintable()).append(", ");
                 sb.append(entry.isDefer()).append(", \"");
                 sb.append(entry.getCategory()).append("\"");
@@ -218,6 +226,17 @@ public class PluginProcessor extends AbstractProcessor {
         }
     }
 
+    private static String getCategory(final TypeElement e) {
+        return Optional.ofNullable(e.getAnnotation(Category.class)).map(Category::value).orElseGet(
+                () -> e.getAnnotationMirrors().stream().flatMap(
+                                annotationMirror -> annotationMirror.getAnnotationType().asElement().getAnnotationMirrors().stream())
+                        .filter(annotationMirror -> annotationMirror.getAnnotationType().asElement().getSimpleName()
+                                .contentEquals(Category.class.getSimpleName())).flatMap(
+                                annotationMirror -> annotationMirror.getElementValues().values().stream()
+                                        .map(AnnotationValue::getValue).map(Objects::toString)).findFirst()
+                        .orElse(Plugin.EMPTY));
+    }
+
     /**
      * ElementVisitor to scan the Plugin annotation.
      */
@@ -232,13 +251,20 @@ public class PluginProcessor extends AbstractProcessor {
         @Override
         public PluginEntryMirror visitType(final TypeElement e, final Plugin plugin) {
             Objects.requireNonNull(plugin, "Plugin annotation is null.");
-            final PluginEntry entry = new PluginEntry();
-            entry.setKey(plugin.name().toLowerCase(Locale.US));
-            entry.setClassName(elements.getBinaryName(e).toString());
-            entry.setName(Plugin.EMPTY.equals(plugin.elementType()) ? plugin.name() : plugin.elementType());
-            entry.setPrintable(plugin.printObject());
-            entry.setDefer(plugin.deferChildren());
-            entry.setCategory(plugin.category());
+            String name = plugin.value();
+            if (name.isEmpty()) {
+                name = e.getSimpleName().toString();
+            }
+            final PluginEntry entry = PluginEntry.builder()
+                    .setKey(name.toLowerCase(Locale.ROOT))
+                    // FIXME: use element name here if nonempty and find bug relying on behavior
+                    .setName(name)
+                    .setElementName(plugin.elementType())
+                    .setCategory(getCategory(e))
+                    .setClassName(elements.getBinaryName(e).toString())
+                    .setPrintable(plugin.printObject())
+                    .setDefer(plugin.deferChildren())
+                    .get();
             return new PluginEntryMirror(e, entry);
         }
     }
@@ -299,15 +325,20 @@ public class PluginProcessor extends AbstractProcessor {
             if (aliases == null) {
                 return DEFAULT_VALUE;
             }
+            String name = plugin.value();
+            if (name.isEmpty()) {
+                name = e.getSimpleName().toString();
+            }
+            final PluginEntry.Builder builder = PluginEntry.builder()
+                    .setName(name)
+                    .setElementName(plugin.elementType())
+                    .setCategory(getCategory(e))
+                    .setClassName(elements.getBinaryName(e).toString())
+                    .setPrintable(plugin.printObject())
+                    .setDefer(plugin.deferChildren());
             final Collection<PluginEntryMirror> entries = new ArrayList<>(aliases.value().length);
             for (final String alias : aliases.value()) {
-                final PluginEntry entry = new PluginEntry();
-                entry.setKey(alias.toLowerCase(Locale.US));
-                entry.setClassName(elements.getBinaryName(e).toString());
-                entry.setName(Plugin.EMPTY.equals(plugin.elementType()) ? alias : plugin.elementType());
-                entry.setPrintable(plugin.printObject());
-                entry.setDefer(plugin.deferChildren());
-                entry.setCategory(plugin.category());
+                final PluginEntry entry = builder.setKey(alias.toLowerCase(Locale.ROOT)).get();
                 entries.add(new PluginEntryMirror(e, entry));
             }
             return entries;

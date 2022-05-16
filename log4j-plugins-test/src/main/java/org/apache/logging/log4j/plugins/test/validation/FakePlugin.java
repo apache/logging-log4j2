@@ -17,17 +17,20 @@
 
 package org.apache.logging.log4j.plugins.test.validation;
 
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
 
 /**
  * Test plugin class for unit tests.
  */
-@Plugin(name = "Fake", category = "Test")
-@PluginAliases({"AnotherFake", "StillFake"})
+@Category("Test")
+@Plugin(value = "Fake", deferChildren = true)
+@PluginAliases({ "AnotherFake", "StillFake" })
 public class FakePlugin {
 
-    @Plugin(name = "Nested", category = "Test")
+    @Category("Test")
+    @Plugin("Nested")
     public static class Nested {
     }
 }

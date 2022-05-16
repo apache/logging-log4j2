@@ -20,10 +20,11 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.script.Script;
 import org.apache.logging.log4j.core.script.ScriptBindings;
 import org.apache.logging.log4j.core.script.ScriptManager;
+import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -39,14 +40,15 @@ import static org.apache.logging.log4j.core.appender.routing.RoutingAppender.STA
 /**
  * Contains the individual Route elements.
  */
-@Plugin(name = "Routes", category = Core.CATEGORY_NAME, printObject = true)
+@Category(Core.CATEGORY_NAME)
+@Plugin(value = "Routes", printObject = true)
 public final class Routes {
 
     private static final String LOG_EVENT_KEY = "logEvent";
 
     public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<Routes> {
 
-        @PluginConfiguration
+        @Inject
         private Configuration configuration;
 
         @PluginAttribute

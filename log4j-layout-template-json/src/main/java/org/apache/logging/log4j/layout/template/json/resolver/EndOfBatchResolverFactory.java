@@ -16,13 +16,15 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
 
 /**
  * {@link EndOfBatchResolver} factory.
  */
-@Plugin(name = "EndOfBatchResolverFactory", category = TemplateResolverFactory.CATEGORY)
+@Category(TemplateResolverFactory.CATEGORY)
+@Plugin("EndOfBatchResolverFactory")
 public final class EndOfBatchResolverFactory implements EventResolverFactory {
 
     private static final EndOfBatchResolverFactory INSTANCE =

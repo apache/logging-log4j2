@@ -17,26 +17,25 @@
 
 package org.apache.logging.log4j.script.appender.rolling.action;
 
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Objects;
-
-import javax.script.SimpleBindings;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.appender.rolling.action.PathWithAttributes;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.script.Script;
 import org.apache.logging.log4j.core.script.ScriptBindings;
 import org.apache.logging.log4j.core.script.ScriptConditional;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.script.ScriptManagerImpl;
 import org.apache.logging.log4j.script.ScriptRef;
 import org.apache.logging.log4j.status.StatusLogger;
+
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * A condition of the {@link DeleteAction} where a user-provided script selects the files to delete from a provided
@@ -44,7 +43,8 @@ import org.apache.logging.log4j.status.StatusLogger;
  *
  * @see #createCondition(AbstractScript, Configuration)
  */
-@Plugin(name = "ScriptCondition", category = Core.CATEGORY_NAME, printObject = true)
+@Category(Core.CATEGORY_NAME)
+@Plugin(value = "ScriptCondition", printObject = true)
 public class ScriptCondition implements ScriptConditional {
     private static final Logger LOGGER = StatusLogger.getLogger();
 

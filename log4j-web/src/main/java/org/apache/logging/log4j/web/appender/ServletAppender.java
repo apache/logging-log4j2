@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -34,7 +35,8 @@ import java.io.Serializable;
 /**
  * Logs using the ServletContext's log method
  */
-@Plugin(name = "Servlet", category = "Core", elementType = "appender", printObject = true)
+@Category("Core")
+@Plugin(value = "Servlet", elementType = "appender", printObject = true)
 public class ServletAppender extends AbstractAppender {
 
 	public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>

@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.jdbc.appender.AbstractDriverManagerConnectionSource;
 import org.apache.logging.log4j.jdbc.appender.ConnectionSource;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -42,7 +43,8 @@ import java.util.concurrent.TimeUnit;
  * {@link DriverManager#getConnection(String, String, String)}. The connections are served from an
  * <a href="http://commons.apache.org/proper/commons-dbcp/">Apache Commons DBCP</a> pooling driver.
  */
-@Plugin(name = "PoolingDriver", category = Core.CATEGORY_NAME, elementType = "connectionSource", printObject = true)
+@Category(Core.CATEGORY_NAME)
+@Plugin(value = "PoolingDriver", elementType = "connectionSource", printObject = true)
 public final class PoolingDriverConnectionSource extends AbstractDriverManagerConnectionSource {
 
     /**

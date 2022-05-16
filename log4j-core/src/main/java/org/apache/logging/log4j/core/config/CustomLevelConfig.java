@@ -16,19 +16,21 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.util.Objects;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Core;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 
+import java.util.Objects;
+
 /**
  * Descriptor of a custom Level object that is created via configuration.
  */
-@Plugin(name = "CustomLevel", category = Core.CATEGORY_NAME, printObject = true)
+@Category(Core.CATEGORY_NAME)
+@Plugin(value = "CustomLevel", printObject = true)
 public final class CustomLevelConfig {
 
     private final String levelName;

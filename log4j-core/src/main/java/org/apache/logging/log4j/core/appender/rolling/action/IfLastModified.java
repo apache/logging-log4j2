@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.ClockFactory;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
@@ -38,7 +39,8 @@ import java.util.function.Supplier;
 /**
  * PathCondition that accepts paths that are older than the specified duration.
  */
-@Plugin(name = "IfLastModified", category = Core.CATEGORY_NAME, printObject = true)
+@Category(Core.CATEGORY_NAME)
+@Plugin(value = "IfLastModified", printObject = true)
 public final class IfLastModified implements PathCondition {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private final Clock clock;

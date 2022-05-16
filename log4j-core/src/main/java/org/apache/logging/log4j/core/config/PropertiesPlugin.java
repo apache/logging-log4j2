@@ -20,6 +20,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.lookup.InterpolatorFactory;
 import org.apache.logging.log4j.core.lookup.PropertiesLookup;
 import org.apache.logging.log4j.core.lookup.StrLookup;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -32,7 +33,8 @@ import java.util.Map;
 /**
  * Handles properties defined in the configuration.
  */
-@Plugin(name = "properties", category = Node.CATEGORY, printObject = true)
+@Category(Node.CATEGORY)
+@Plugin(value = "properties", printObject = true)
 public final class PropertiesPlugin {
 
     private PropertiesPlugin() {

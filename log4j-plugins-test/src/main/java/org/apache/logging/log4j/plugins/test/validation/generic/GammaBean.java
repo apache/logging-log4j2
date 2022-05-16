@@ -17,10 +17,12 @@
 
 package org.apache.logging.log4j.plugins.test.validation.generic;
 
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.Singleton;
 
-@Plugin(category = "Bean", name = "Gamma")
+@Category("Bean")
+@Plugin("Gamma")
 @Singleton
 public class GammaBean implements BaseBean {
 }

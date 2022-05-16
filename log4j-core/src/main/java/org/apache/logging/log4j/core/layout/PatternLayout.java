@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.core.pattern.RegexReplacement;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
@@ -43,7 +44,7 @@ import java.util.Map;
 /**
  * A flexible layout configurable with pattern string.
  * <p>
- * The goal of this class is to {@link org.apache.logging.log4j.core.Layout#toByteArray format} a {@link LogEvent} and
+ * The goal of this class is to {@link Layout#toByteArray format} a {@link LogEvent} and
  * return the results. The format of the result depends on the <em>conversion pattern</em>.
  * </p>
  * <p>
@@ -54,7 +55,8 @@ import java.util.Map;
  * See the Log4j Manual for details on the supported pattern converters.
  * </p>
  */
-@Plugin(name = "PatternLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
+@Category(Node.CATEGORY)
+@Plugin(value = "PatternLayout", elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class PatternLayout extends AbstractStringLayout {
 
     /**

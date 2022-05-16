@@ -22,8 +22,8 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFact
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.AuthorizationProvider;
 import org.apache.logging.log4j.core.util.BasicAuthorizationProvider;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Inject;
-import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.util.PluginCategory;
@@ -84,7 +84,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
 
     public static final Key<ConfigurationFactory> KEY = new Key<>() {};
 
-    public static final Key<PluginCategory> PLUGIN_CATEGORY_KEY = new @Named(CATEGORY) Key<>() {};
+    public static final Key<PluginCategory> PLUGIN_CATEGORY_KEY = new @Category(CATEGORY) Key<>() {};
 
     /**
      * Allows subclasses access to the status logger without creating another instance.

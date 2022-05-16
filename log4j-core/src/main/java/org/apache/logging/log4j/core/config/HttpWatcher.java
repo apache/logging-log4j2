@@ -16,34 +16,32 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.io.ByteArrayOutputStream;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
+import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
+import org.apache.logging.log4j.core.util.AbstractWatcher;
+import org.apache.logging.log4j.core.util.AuthorizationProvider;
+import org.apache.logging.log4j.core.util.Source;
+import org.apache.logging.log4j.core.util.Watcher;
+import org.apache.logging.log4j.core.util.internal.HttpInputStreamUtil;
+import org.apache.logging.log4j.core.util.internal.LastModifiedSource;
+import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAliases;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.PropertiesUtil;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.util.AuthorizationProvider;
-import org.apache.logging.log4j.core.util.internal.HttpInputStreamUtil;
-import org.apache.logging.log4j.core.util.internal.LastModifiedSource;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginAliases;
-import org.apache.logging.log4j.core.net.UrlConnectionFactory;
-import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
-import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
-import org.apache.logging.log4j.core.util.AbstractWatcher;
-import org.apache.logging.log4j.core.util.Source;
-import org.apache.logging.log4j.core.util.Watcher;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.PropertiesUtil;
-
 /**
  *
  */
-@Plugin(name = "http", category = Watcher.CATEGORY, elementType = Watcher.ELEMENT_TYPE, printObject = true)
+@Category(Watcher.CATEGORY)
+@Plugin(value = "http", elementType = Watcher.ELEMENT_TYPE, printObject = true)
 @PluginAliases("https")
 public class HttpWatcher extends AbstractWatcher {
 

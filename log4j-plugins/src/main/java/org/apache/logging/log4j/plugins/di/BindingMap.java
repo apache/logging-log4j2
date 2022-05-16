@@ -36,6 +36,10 @@ class BindingMap {
         this.bindings = new ConcurrentHashMap<>(bindings.bindings);
     }
 
+    public <T> Binding<T> get(final Key<T> key) {
+        return TypeUtil.cast(bindings.get(key));
+    }
+
     public <T> Binding<T> get(final Key<T> key, final Collection<String> aliases) {
         var binding = bindings.get(key);
         if (binding == null) {

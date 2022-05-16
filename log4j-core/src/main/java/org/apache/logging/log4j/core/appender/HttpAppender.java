@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
@@ -39,7 +40,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * Sends log events over HTTP.
  */
-@Plugin(name = "Http", category = Node.CATEGORY, elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Category(Node.CATEGORY)
+@Plugin(value = "Http", elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class HttpAppender extends AbstractAppender {
 
     /**

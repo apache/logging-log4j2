@@ -16,28 +16,30 @@
  */
 package org.apache.logging.log4j.docker;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.List;
-import java.util.Map;
-
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.lookup.AbstractLookup;
 import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.docker.model.Container;
 import org.apache.logging.log4j.docker.model.Network;
+import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
  */
-@Plugin(name = "docker", category = StrLookup.CATEGORY)
+@Category(StrLookup.CATEGORY)
+@Plugin("docker")
 public class DockerLookup extends AbstractLookup {
 
     private static final Logger LOGGER = StatusLogger.getLogger();

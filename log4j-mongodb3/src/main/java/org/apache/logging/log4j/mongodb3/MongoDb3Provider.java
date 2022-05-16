@@ -26,6 +26,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.appender.nosql.NoSqlProvider;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
@@ -48,7 +49,8 @@ import java.lang.reflect.Method;
 /**
  * The MongoDB implementation of {@link NoSqlProvider} using the MongoDB driver version 3 API.
  */
-@Plugin(name = "MongoDb3", category = Core.CATEGORY_NAME, printObject = true)
+@Category(Core.CATEGORY_NAME)
+@Plugin(value = "MongoDb3", printObject = true)
 public final class MongoDb3Provider implements NoSqlProvider<MongoDb3Connection> {
 
     public static class Builder<B extends Builder<B>> extends AbstractFilterable.Builder<B>

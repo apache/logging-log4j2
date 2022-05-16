@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.lookup;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.util.LazyValue;
@@ -32,7 +33,8 @@ import java.util.function.Supplier;
  * @see java.lang.management.RuntimeMXBean#getInputArguments()
  * @since 2.1
  */
-@Plugin(name = "jvmrunargs", category = StrLookup.CATEGORY)
+@Category(StrLookup.CATEGORY)
+@Plugin("jvmrunargs")
 public class JmxRuntimeInputArgumentsLookup extends MapLookup {
 
     private static final Supplier<JmxRuntimeInputArgumentsLookup> INSTANCE = LazyValue.from(() -> {

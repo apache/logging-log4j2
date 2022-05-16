@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.jpa.appender;
 
-import java.lang.reflect.Constructor;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
@@ -25,13 +23,16 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseAppender;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.util.Booleans;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.Strings;
+
+import java.lang.reflect.Constructor;
 
 /**
  * This Appender writes logging events to a relational database using the Java Persistence API. It requires a
@@ -40,7 +41,8 @@ import org.apache.logging.log4j.util.Strings;
  *
  * @see AbstractLogEventWrapperEntity
  */
-@Plugin(name = "JPA", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Category(Core.CATEGORY_NAME)
+@Plugin(value = "JPA", elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class JpaAppender extends AbstractDatabaseAppender<JpaDatabaseManager> {
 
     private final String description;

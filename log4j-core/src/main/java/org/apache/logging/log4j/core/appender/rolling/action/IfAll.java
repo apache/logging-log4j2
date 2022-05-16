@@ -16,21 +16,23 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import org.apache.logging.log4j.core.Core;
+import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
+
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 import java.util.Objects;
 
-import org.apache.logging.log4j.core.Core;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginElement;
-import org.apache.logging.log4j.plugins.PluginFactory;
-
 /**
  * Composite {@code PathCondition} that only accepts objects that are accepted by <em>all</em> component conditions.
  * Corresponds to logical "AND".
  */
-@Plugin(name = "IfAll", category = Core.CATEGORY_NAME, printObject = true)
+@Category(Core.CATEGORY_NAME)
+@Plugin(value = "IfAll", printObject = true)
 public final class IfAll implements PathCondition {
 
     private final PathCondition[] components;

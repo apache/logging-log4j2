@@ -24,6 +24,6 @@ import java.util.Optional;
 public class PluginNameProvider implements AnnotatedElementNameProvider<Plugin> {
     @Override
     public Optional<String> getSpecifiedName(final Plugin annotation) {
-        return Optional.of(annotation.name());
+        return Optional.of(annotation.value());
     }
 }

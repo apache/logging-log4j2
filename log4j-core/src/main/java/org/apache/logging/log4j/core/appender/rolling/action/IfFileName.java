@@ -16,6 +16,15 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.Core;
+import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.status.StatusLogger;
+
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -26,14 +35,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Core;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginAttribute;
-import org.apache.logging.log4j.plugins.PluginElement;
-import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.status.StatusLogger;
-
 /**
  * PathCondition that accepts files for deletion if their relative path matches either a glob pattern or a regular
  * expression. If both a regular expression and a glob pattern are specified the glob pattern is used and the regular
@@ -42,7 +43,8 @@ import org.apache.logging.log4j.status.StatusLogger;
  * The regular expression is a pattern as defined by the {@link Pattern} class. A glob is a simplified pattern
  * expression described in {@link FileSystem#getPathMatcher(String)}.
  */
-@Plugin(name = "IfFileName", category = Core.CATEGORY_NAME, printObject = true)
+@Category(Core.CATEGORY_NAME)
+@Plugin(value = "IfFileName", printObject = true)
 public final class IfFileName implements PathCondition {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private final PathMatcher pathMatcher;

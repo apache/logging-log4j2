@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
@@ -32,7 +33,8 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  * This filter returns the onMatch result if the logging level in the event matches the specified logging level
  * exactly.
  */
-@Plugin(name = "LevelMatchFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
+@Category(Node.CATEGORY)
+@Plugin(value = "LevelMatchFilter", elementType = Filter.ELEMENT_TYPE, printObject = true)
 @PerformanceSensitive("allocation")
 public final class LevelMatchFilter extends AbstractFilter {
 

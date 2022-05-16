@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
@@ -48,7 +49,8 @@ import java.util.stream.Stream;
  * {@link ThreadContext}, but users may {@linkplain ContextDataInjectorFactory configure} a custom
  * {@link ContextDataInjector} which obtains context data from some other source.
  */
-@Plugin(name = "DynamicThresholdFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
+@Category(Node.CATEGORY)
+@Plugin(value = "DynamicThresholdFilter", elementType = Filter.ELEMENT_TYPE, printObject = true)
 @PerformanceSensitive("allocation")
 public final class DynamicThresholdFilter extends AbstractFilter {
 

@@ -31,9 +31,9 @@ import org.apache.log4j.rewrite.RewritePolicy;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.xml.XmlConfiguration;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.plugins.Named;
+import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.di.Injector;
-import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.util.PluginCategory;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
@@ -56,7 +56,6 @@ public class BuilderManager {
     public static final Filter INVALID_FILTER = new FilterWrapper(null);
     public static final Layout INVALID_LAYOUT = new LayoutWrapper(null);
     public static final RewritePolicy INVALID_REWRITE_POLICY = new RewritePolicyWrapper(null);
-    public static final Key<PluginCategory> PLUGIN_CATEGORY_KEY = new @Named(CATEGORY) Key<>() {};
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final Class<?>[] CONSTRUCTOR_PARAMS = new Class[] { String.class, Properties.class };
     private final Injector injector;
@@ -65,9 +64,10 @@ public class BuilderManager {
     /**
      * Constructs a new instance.
      */
-    public BuilderManager(final Injector injector) {
+    @Inject
+    public BuilderManager(final Injector injector, @Category(CATEGORY) PluginCategory plugins) {
         this.injector = injector;
-        plugins = injector.getInstance(PLUGIN_CATEGORY_KEY);
+        this.plugins = plugins;
     }
 
     private <T extends Builder<U>, U> T createBuilder(final PluginType<T> plugin, final String prefix, final Properties props) {

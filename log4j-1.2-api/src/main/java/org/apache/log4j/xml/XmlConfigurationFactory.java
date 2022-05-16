@@ -23,20 +23,19 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Order;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Constructs a Configuration usable in Log4j 2 from a Log4j 1 configuration file.
  */
-@Plugin(name = "Log4j1XmlConfigurationFactory", category = ConfigurationFactory.CATEGORY)
+@Category(ConfigurationFactory.CATEGORY)
+@Plugin("Log4j1XmlConfigurationFactory")
 @Order(2)
 public class XmlConfigurationFactory extends ConfigurationFactory {
 
     public static final String FILE_EXTENSION = ".xml";
-
-    private static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
 
     /**
      * File name prefix for test configurations.

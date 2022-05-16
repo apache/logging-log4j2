@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.layout.PatternSelector;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.core.script.ScriptBindings;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
@@ -36,7 +37,6 @@ import org.apache.logging.log4j.script.ScriptManagerImpl;
 import org.apache.logging.log4j.script.ScriptRef;
 import org.apache.logging.log4j.status.StatusLogger;
 
-import javax.script.SimpleBindings;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +46,8 @@ import java.util.Map;
  * to choose between one of the configured patterns. If no key is returned or there is no match the default
  * pattern will be used.
  */
-@Plugin(name = "ScriptPatternSelector", category = Node.CATEGORY, elementType = PatternSelector.ELEMENT_TYPE, printObject = true)
+@Category(Node.CATEGORY)
+@Plugin(value = "ScriptPatternSelector", elementType = PatternSelector.ELEMENT_TYPE, printObject = true)
 public class ScriptPatternSelector implements PatternSelector {
 
     /**

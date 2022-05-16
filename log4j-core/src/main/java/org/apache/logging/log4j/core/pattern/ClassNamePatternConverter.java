@@ -17,13 +17,15 @@
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 
 
 /**
  * Formats the class name of the site of the logging request.
  */
-@Plugin(name = "ClassNamePatternConverter", category = PatternConverter.CATEGORY)
+@Category(PatternConverter.CATEGORY)
+@Plugin("ClassNamePatternConverter")
 @ConverterKeys({ "C", "class" })
 public final class ClassNamePatternConverter extends NamePatternConverter {
 

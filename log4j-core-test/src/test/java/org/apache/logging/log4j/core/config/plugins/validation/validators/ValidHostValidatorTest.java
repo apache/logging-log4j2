@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
-import org.apache.logging.log4j.plugins.Named;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
@@ -41,7 +41,7 @@ public class ValidHostValidatorTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        final PluginCategory category = injector.getInstance(new @Named("Test") Key<>() {});
+        final PluginCategory category = injector.getInstance(new @Category("Test") Key<>() {});
         PluginType<?> plugin = category.get("HostAndPort");
         assertNotNull(plugin, "Rebuild this module to ensure annotation processing has been done.");
         node = new Node(null, "HostAndPort", plugin);

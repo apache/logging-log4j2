@@ -22,6 +22,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -49,7 +50,7 @@ public class PluginCache {
      * @return plugin mapping of names to plugin entries.
      */
     public Map<String, PluginEntry> getCategory(final String category) {
-        final String key = category.toLowerCase();
+        final String key = category.toLowerCase(Locale.ROOT);
         return categories.computeIfAbsent(key, ignored -> new TreeMap<>());
     }
 
@@ -66,17 +67,18 @@ public class PluginCache {
             try (final DataInputStream in = new DataInputStream(new BufferedInputStream(url.openStream()))) {
                 final int count = in.readInt();
                 for (int i = 0; i < count; i++) {
-                    final String category = in.readUTF();
-                    final Map<String, PluginEntry> m = getCategory(category);
+                    final var builder = PluginEntry.builder().setCategory(in.readUTF());
+                    final Map<String, PluginEntry> m = getCategory(builder.getCategory());
                     final int entries = in.readInt();
                     for (int j = 0; j < entries; j++) {
                         // Must always read all parts of the entry, even if not adding, so that the stream progresses
-                        final String key = in.readUTF();
-                        final String className = in.readUTF();
-                        final String name = in.readUTF();
-                        final boolean printable = in.readBoolean();
-                        final boolean defer = in.readBoolean();
-                        m.computeIfAbsent(key, k -> new PluginEntry(k, className, name, printable, defer, category));
+                        final var entry = builder.setKey(in.readUTF())
+                                .setClassName(in.readUTF())
+                                .setName(in.readUTF())
+                                .setPrintable(in.readBoolean())
+                                .setDefer(in.readBoolean())
+                                .get();
+                        m.putIfAbsent(entry.getKey(), entry);
                     }
                 }
             }

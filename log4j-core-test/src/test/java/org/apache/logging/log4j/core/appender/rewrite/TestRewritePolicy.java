@@ -18,14 +18,16 @@ package org.apache.logging.log4j.core.appender.rewrite;
 
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 
 /**
  *
  */
-@Plugin(name = "TestRewritePolicy", category = Core.CATEGORY_NAME, elementType = "rewritePolicy", printObject = true)
+@Category(Core.CATEGORY_NAME)
+@Plugin(value = "TestRewritePolicy", elementType = "rewritePolicy", printObject = true)
 public class TestRewritePolicy implements RewritePolicy {
 
     @Override

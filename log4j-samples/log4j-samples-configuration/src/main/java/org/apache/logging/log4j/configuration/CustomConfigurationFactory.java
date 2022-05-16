@@ -16,19 +16,21 @@
  */
 package org.apache.logging.log4j.configuration;
 
-import java.net.URI;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Order;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
+
+import java.net.URI;
 
 /**
  * Factory to construct a  CustomConfiguration.
  */
-@Plugin(name = "CustomConfigurationFactory", category = ConfigurationFactory.CATEGORY)
+@Category(ConfigurationFactory.CATEGORY)
+@Plugin("CustomConfigurationFactory")
 @Order(50)
 public class CustomConfigurationFactory extends ConfigurationFactory {
 

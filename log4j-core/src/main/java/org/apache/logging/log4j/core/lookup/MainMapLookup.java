@@ -16,10 +16,11 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import java.util.Map;
-
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
+
+import java.util.Map;
 
 /**
  * A map-based lookup for main arguments.
@@ -28,7 +29,8 @@ import org.apache.logging.log4j.plugins.Plugin;
  *
  * @since 2.4
  */
-@Plugin(name = "main", category = StrLookup.CATEGORY)
+@Category(StrLookup.CATEGORY)
+@Plugin("main")
 public class MainMapLookup extends MapLookup {
 
     /**

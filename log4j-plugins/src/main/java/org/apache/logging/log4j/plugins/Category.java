@@ -17,9 +17,6 @@
 
 package org.apache.logging.log4j.plugins;
 
-import org.apache.logging.log4j.plugins.name.CategoryNameProvider;
-import org.apache.logging.log4j.plugins.name.NameProvider;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -27,16 +24,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Qualifier used for matching against injectable plugins in a given category.
+ * Annotations to separate {@link org.apache.logging.log4j.plugins.name.NameProvider} names into namespaces.
+ * For example, the Core category is used with the {@link Node} API, while the TypeConverter
+ * category is used with the {@link org.apache.logging.log4j.plugins.convert.TypeConverter} API.
+ * This can be annotated on another annotation to create an alias annotation for a common category.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE, ElementType.TYPE_USE })
+@Target({ ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE, ElementType.TYPE_USE, ElementType.ANNOTATION_TYPE })
 @Documented
-@QualifierType
-@NameProvider(CategoryNameProvider.class)
 public @interface Category {
     /**
-     * The category to use plugins from.
+     * The category name.
      */
     String value();
 }

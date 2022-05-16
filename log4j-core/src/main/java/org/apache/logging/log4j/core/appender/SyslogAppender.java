@@ -30,6 +30,7 @@ import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -42,7 +43,8 @@ import java.nio.charset.StandardCharsets;
 /**
  * The Syslog Appender.
  */
-@Plugin(name = "Syslog", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Category(Core.CATEGORY_NAME)
+@Plugin(value = "Syslog", elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class SyslogAppender extends SocketAppender {
 
     public static class Builder<B extends Builder<B>> extends AbstractBuilder<B>

@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseAppender;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -42,7 +43,8 @@ import java.io.Serializable;
  * @see NoSqlConnection
  * @see NoSqlProvider
  */
-@Plugin(name = "NoSql", category = "Core", elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Category("Core")
+@Plugin(value = "NoSql", elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseManager<?>> {
 
     /**

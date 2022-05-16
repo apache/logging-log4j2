@@ -16,19 +16,20 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.impl.ThrowableFormatOptions;
+import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.core.util.StringBuilderWriter;
+import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.util.Strings;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.core.impl.ThrowableFormatOptions;
-import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.core.util.StringBuilderWriter;
-import org.apache.logging.log4j.util.Strings;
 
 
 /**
@@ -36,7 +37,8 @@ import org.apache.logging.log4j.util.Strings;
  * unless this converter's option is 'short', where it just outputs the first line of the trace, or if
  * the number of lines to print is explicitly specified.
  */
-@Plugin(name = "ThrowablePatternConverter", category = PatternConverter.CATEGORY)
+@Category(PatternConverter.CATEGORY)
+@Plugin("ThrowablePatternConverter")
 @ConverterKeys({ "ex", "throwable", "exception" })
 public class ThrowablePatternConverter extends LogEventPatternConverter {
 

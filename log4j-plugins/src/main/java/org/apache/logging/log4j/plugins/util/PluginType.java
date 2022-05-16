@@ -32,28 +32,25 @@ public class PluginType<T> {
 
     private final PluginEntry pluginEntry;
     private final Supplier<Class<T>> pluginClass;
-    private final String elementName;
     private final Supplier<Set<Class<?>>> implementedInterfaces;
 
     /**
      * Constructor.
      * @param pluginEntry The PluginEntry.
      * @param pluginClass The plugin Class.
-     * @param elementName The name of the element.
-     * @since 2.1
+     * @since 3.0.0
      */
     public PluginType(
-            final PluginEntry pluginEntry, final Class<T> pluginClass, final String elementName) {
+            final PluginEntry pluginEntry, final Class<T> pluginClass) {
         this.pluginEntry = pluginEntry;
         this.pluginClass = () -> pluginClass;
-        this.elementName = elementName;
         final var interfaces = Set.of(pluginClass.getInterfaces());
         this.implementedInterfaces = () -> interfaces;
     }
 
     /**
      * The Constructor.
-     * @since 3.0
+     * @since 3.0.0
      * @param pluginEntry The PluginEntry.
      */
     public PluginType(final PluginEntry pluginEntry, final ClassLoader classLoader) {
@@ -74,7 +71,6 @@ public class PluginType<T> {
         } else {
             this.implementedInterfaces = classProvider.map(clazz -> Set.of(clazz.getInterfaces()));
         }
-        this.elementName = pluginEntry.getName();
     }
 
     public PluginEntry getPluginEntry() {
@@ -90,7 +86,7 @@ public class PluginType<T> {
     }
 
     public String getElementName() {
-        return this.elementName;
+        return pluginEntry.getElementName();
     }
 
     /**
@@ -127,7 +123,7 @@ public class PluginType<T> {
     public String toString() {
         return "PluginType [pluginClass=" + pluginClass.get() +
                 ", key=" + pluginEntry.getKey() +
-                ", elementName=" + pluginEntry.getName() +
+                ", elementName=" + pluginEntry.getElementName() +
                 ", isObjectPrintable=" + pluginEntry.isPrintable() +
                 ", isDeferChildren==" + pluginEntry.isDefer() +
                 ", category=" + pluginEntry.getCategory() +

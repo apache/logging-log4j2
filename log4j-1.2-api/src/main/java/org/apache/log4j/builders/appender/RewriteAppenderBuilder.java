@@ -16,18 +16,6 @@
  */
 package org.apache.log4j.builders.appender;
 
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.config.Log4j1Configuration.APPENDER_REF_TAG;
-import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
-import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.bridge.AppenderWrapper;
 import org.apache.log4j.bridge.RewritePolicyAdapter;
@@ -40,18 +28,31 @@ import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.rewrite.RewritePolicy;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.xml.XmlConfiguration;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.rewrite.RewriteAppender;
 import org.apache.logging.log4j.core.config.AppenderRef;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 import org.w3c.dom.Element;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.config.Log4j1Configuration.APPENDER_REF_TAG;
+import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
+import static org.apache.log4j.xml.XmlConfiguration.*;
+
 /**
  * Build an Rewrite Appender
  */
-@Plugin(name = "org.apache.log4j.rewrite.RewriteAppender", category = CATEGORY)
+@Category(CATEGORY)
+@Plugin("org.apache.log4j.rewrite.RewriteAppender")
 public class RewriteAppenderBuilder extends AbstractBuilder implements AppenderBuilder {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
@@ -127,8 +128,8 @@ public class RewriteAppenderBuilder extends AbstractBuilder implements AppenderB
             LOGGER.error("No appender references configured for RewriteAppender {}", name);
             return null;
         }
-        final org.apache.logging.log4j.Level logLevel = OptionConverter.convertLevel(level,
-                org.apache.logging.log4j.Level.TRACE);
+        final Level logLevel = OptionConverter.convertLevel(level,
+                Level.TRACE);
         final AppenderRef[] refs = new AppenderRef[appenderRefs.length];
         int index = 0;
         for (final String appenderRef : appenderRefs) {

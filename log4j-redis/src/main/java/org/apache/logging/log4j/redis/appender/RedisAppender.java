@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
@@ -44,7 +45,8 @@ import java.util.concurrent.TimeUnit;
  * Sends log events to a Redis key as a List. All logs are appended to Redis lists via the RPUSH command at keys defined
  * in the configuration.
  */
-@Plugin(name = "Redis", category = Node.CATEGORY, elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Category(Node.CATEGORY)
+@Plugin(value = "Redis", elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class RedisAppender extends AbstractAppender {
 
     // The default port here is the default port for Redis generally.

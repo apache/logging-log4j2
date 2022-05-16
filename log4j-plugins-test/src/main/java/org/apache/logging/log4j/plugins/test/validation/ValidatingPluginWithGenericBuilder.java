@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.plugins.test.validation;
 
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -26,7 +27,8 @@ import java.util.Objects;
 /**
  *
  */
-@Plugin(name = "ValidatingPluginWithGenericBuilder", category = "Test")
+@Category("Test")
+@Plugin("ValidatingPluginWithGenericBuilder")
 public class ValidatingPluginWithGenericBuilder {
 
     private final String name;

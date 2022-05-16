@@ -16,13 +16,6 @@
  */
 package org.apache.log4j.builders.filter;
 
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
-
-import java.util.Properties;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.log4j.bridge.FilterWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
 import org.apache.log4j.config.PropertiesConfiguration;
@@ -31,13 +24,22 @@ import org.apache.log4j.spi.Filter;
 import org.apache.log4j.xml.XmlConfiguration;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.filter.LevelMatchFilter;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.w3c.dom.Element;
+
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 
 /**
  * Build a Level match filter.
  */
-@Plugin(name = "org.apache.log4j.varia.LevelMatchFilter", category = CATEGORY)
+@Category(CATEGORY)
+@Plugin("org.apache.log4j.varia.LevelMatchFilter")
 public class LevelMatchFilterBuilder extends AbstractBuilder<Filter> implements FilterBuilder {
 
     private static final String LEVEL = "LevelToMatch";

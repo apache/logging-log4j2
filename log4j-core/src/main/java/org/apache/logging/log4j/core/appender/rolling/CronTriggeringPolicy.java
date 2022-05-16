@@ -16,27 +16,29 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import java.text.ParseException;
-import java.util.Date;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationScheduler;
 import org.apache.logging.log4j.core.config.CronScheduledFuture;
 import org.apache.logging.log4j.core.config.Scheduled;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
+import org.apache.logging.log4j.core.util.CronExpression;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.core.util.CronExpression;
+
+import java.text.ParseException;
+import java.util.Date;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Rolls a file over based on a cron schedule.
  */
-@Plugin(name = "CronTriggeringPolicy", category = Core.CATEGORY_NAME, printObject = true)
+@Category(Core.CATEGORY_NAME)
+@Plugin(value = "CronTriggeringPolicy", printObject = true)
 @Scheduled
 public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
 

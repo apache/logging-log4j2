@@ -20,11 +20,13 @@ package customplugin;
 import java.util.Collections;
 import java.util.Map;
 
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 
-@Plugin(name = "FixedString", category = "Core", elementType = "plugin", printObject = true)
+@Category("Core")
+@Plugin(value = "FixedString", elementType = "plugin", printObject = true)
 public class FixedString  {
 
     private String fixedString;

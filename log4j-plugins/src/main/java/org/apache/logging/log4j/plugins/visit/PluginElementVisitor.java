@@ -25,6 +25,7 @@ import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StringBuilders;
+import org.apache.logging.log4j.util.Strings;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -72,7 +73,7 @@ public class PluginElementVisitor implements NodeVisitor {
         while (iterator.hasNext()) {
             final Node child = iterator.next();
             final PluginType<?> pluginType = child.getType();
-            final String elementName = pluginType.getElementName();
+            final String elementName = Strings.trimToOptional(pluginType.getElementName()).orElseGet(pluginType::getName);
             if (name.equalsIgnoreCase(elementName) || aliases.stream().anyMatch(elementName::equalsIgnoreCase) ||
                     componentType.isAssignableFrom(pluginType.getPluginClass())) {
                 if (!first) {
@@ -110,7 +111,7 @@ public class PluginElementVisitor implements NodeVisitor {
         while (iterator.hasNext()) {
             final Node child = iterator.next();
             final PluginType<?> pluginType = child.getType();
-            final String elementName = pluginType.getElementName();
+            final String elementName = Strings.trimToOptional(pluginType.getElementName()).orElseGet(pluginType::getName);
             if (name.equalsIgnoreCase(elementName) || aliases.stream().anyMatch(elementName::equalsIgnoreCase) ||
                     TypeUtil.isAssignable(targetType, pluginType.getPluginClass())) {
                 iterator.remove();

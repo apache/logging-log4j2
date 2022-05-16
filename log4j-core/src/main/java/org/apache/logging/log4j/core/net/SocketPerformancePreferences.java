@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.net;
 
 import org.apache.logging.log4j.core.Core;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -31,7 +32,8 @@ import java.net.Socket;
  * The {@link Socket#setPerformancePreferences(int, int, int)} API may not be implemented by a JRE.
  * </p>
  */
-@Plugin(name = "SocketPerformancePreferences", category = Core.CATEGORY_NAME, printObject = true)
+@Category(Core.CATEGORY_NAME)
+@Plugin(value = "SocketPerformancePreferences", printObject = true)
 public class SocketPerformancePreferences implements Builder<SocketPerformancePreferences>, Cloneable {
 
     @PluginFactory

@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.script;
 
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
@@ -25,7 +26,8 @@ import org.apache.logging.log4j.plugins.PluginValue;
 /**
  * Container for the language and body of a script.
  */
-@Plugin(name = ScriptPlugin.PLUGIN_NAME, category = Node.CATEGORY, printObject = true)
+@Category(Node.CATEGORY)
+@Plugin(value = ScriptPlugin.PLUGIN_NAME, printObject = true)
 public class ScriptPlugin extends AbstractScript {
 
     private static final String ATTR_LANGUAGE = "language";

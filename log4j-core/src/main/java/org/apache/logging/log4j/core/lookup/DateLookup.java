@@ -16,22 +16,24 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Formats the current date or the date in the LogEvent. The "key" is used as the format String,
  * following the java.text.SimpleDateFormat date and time pattern strings.
  */
-@Plugin(name = "date", category = StrLookup.CATEGORY)
+@Category(StrLookup.CATEGORY)
+@Plugin("date")
 public class DateLookup implements StrLookup {
 
     private static final Logger LOGGER = StatusLogger.getLogger();

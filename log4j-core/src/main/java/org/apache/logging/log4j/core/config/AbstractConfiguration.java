@@ -51,7 +51,7 @@ import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.core.util.Watcher;
 import org.apache.logging.log4j.core.util.WatcherFactory;
-import org.apache.logging.log4j.plugins.Named;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
@@ -250,7 +250,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         initializeScriptManager();
         injector.registerBindingIfAbsent(Keys.PLUGIN_PACKAGES_KEY, this::getPluginPackages);
         corePlugins = injector.getInstance(Core.PLUGIN_CATEGORY_KEY);
-        final PluginCategory levelPlugins = injector.getInstance(new @Named(Level.CATEGORY) Key<>() {});
+        final PluginCategory levelPlugins = injector.getInstance(new @Category(Level.CATEGORY) Key<>() {});
         levelPlugins.forEach(type -> {
             final Class<?> pluginClass = type.getPluginClass();
             try {

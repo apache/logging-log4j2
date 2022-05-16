@@ -17,10 +17,11 @@
 package org.apache.logging.log4j.core.lookup;
 
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.ContextDataInjector;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
+import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 /**
@@ -28,7 +29,8 @@ import org.apache.logging.log4j.util.ReadOnlyStringMap;
  * {@linkplain ContextDataInjectorFactory configure} a custom {@link ContextDataInjector} which obtains context data
  * from some other source.
  */
-@Plugin(name = "ctx", category = StrLookup.CATEGORY)
+@Category(StrLookup.CATEGORY)
+@Plugin("ctx")
 public class ContextMapLookup implements StrLookup {
 
     private final ContextDataInjector injector = ContextDataInjectorFactory.createInjector();

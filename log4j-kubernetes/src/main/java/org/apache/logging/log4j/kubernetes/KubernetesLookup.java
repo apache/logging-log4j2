@@ -16,29 +16,29 @@
  */
 package org.apache.logging.log4j.kubernetes;
 
-import java.net.URL;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.lookup.AbstractLookup;
-import org.apache.logging.log4j.core.lookup.StrLookup;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.Strings;
-
 import io.fabric8.kubernetes.api.model.Container;
 import io.fabric8.kubernetes.api.model.ContainerStatus;
 import io.fabric8.kubernetes.api.model.Namespace;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.KubernetesClient;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.lookup.AbstractLookup;
+import org.apache.logging.log4j.core.lookup.StrLookup;
+import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.Strings;
+
+import java.net.URL;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 /**
@@ -47,7 +47,8 @@ import io.fabric8.kubernetes.client.KubernetesClient;
  *  labels.podTemplateHash, masterUrl, namespaceId, namespaceName, podId, podIp, podName,
  *  imageId, imageName.
  */
-@Plugin(name = "k8s", category = StrLookup.CATEGORY)
+@Category(StrLookup.CATEGORY)
+@Plugin("k8s")
 public class KubernetesLookup extends AbstractLookup {
 
     private static final Logger LOGGER = StatusLogger.getLogger();

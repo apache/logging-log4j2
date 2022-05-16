@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -38,7 +39,8 @@ import org.apache.logging.log4j.util.StringMap;
 /**
  * This policy modifies events by replacing or possibly adding keys and values to the MapMessage.
  */
-@Plugin(name = "PropertiesRewritePolicy", category = Core.CATEGORY_NAME, elementType = "rewritePolicy", printObject = true)
+@Category(Core.CATEGORY_NAME)
+@Plugin(value = "PropertiesRewritePolicy", elementType = "rewritePolicy", printObject = true)
 public final class PropertiesRewritePolicy implements RewritePolicy {
 
     /**

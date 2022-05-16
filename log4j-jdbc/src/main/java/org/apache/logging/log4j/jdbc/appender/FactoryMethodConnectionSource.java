@@ -16,26 +16,28 @@
  */
 package org.apache.logging.log4j.jdbc.appender;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.Core;
+import org.apache.logging.log4j.core.util.Loader;
+import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
+
+import javax.sql.DataSource;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
-import javax.sql.DataSource;
-
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Core;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginAttribute;
-import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.core.util.Loader;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Strings;
 
 /**
  * A {@link JdbcAppender} connection source that uses a public static factory method to obtain a {@link Connection} or
  * {@link DataSource}.
  */
-@Plugin(name = "ConnectionFactory", category = Core.CATEGORY_NAME, elementType = "connectionSource", printObject = true)
+@Category(Core.CATEGORY_NAME)
+@Plugin(value = "ConnectionFactory", elementType = "connectionSource", printObject = true)
 public final class FactoryMethodConnectionSource extends AbstractConnectionSource {
     private static final Logger LOGGER = StatusLogger.getLogger();
 

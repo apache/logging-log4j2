@@ -26,6 +26,7 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginNode;
 import org.apache.logging.log4j.plugins.PluginValue;
 import org.apache.logging.log4j.plugins.QualifierType;
 import org.apache.logging.log4j.plugins.ScopeType;
@@ -471,7 +472,8 @@ class InjectorTest {
         assertThatThrownBy(() -> injector.getInstance(Function.class)).hasMessageContaining("No @Inject constructors");
     }
 
-    @Plugin(category = "Test", name = "ConfigurableObject", elementType = "inner")
+    @Category("Test")
+    @Plugin(value = "ConfigurableObject", elementType = "inner")
     static class ConfigurableObject {
         final String greeting;
         final Tertiary tertiary;
@@ -487,7 +489,8 @@ class InjectorTest {
         }
     }
 
-    @Plugin(category = "Test", name = "FactoryBuilt", elementType = "config")
+    @Category("Test")
+    @Plugin(value = "FactoryBuilt", elementType = "config")
     static class ConfigurableFactoryObject {
         final int id;
         final String name;
@@ -535,7 +538,8 @@ class InjectorTest {
         }
     }
 
-    @Plugin(name = "HasDefaults", category = "Test", elementType = "defs")
+    @Category("Test")
+    @Plugin(value = "HasDefaults", elementType = "defs")
     static class DefaultValueTest {
         final String name;
         final long millis;
@@ -600,9 +604,16 @@ class InjectorTest {
 
     static <T> PluginType<T> fromClass(final Class<T> clazz) {
         final Plugin plugin = clazz.getAnnotation(Plugin.class);
-        final PluginEntry entry = new PluginEntry(plugin.name().toLowerCase(Locale.ROOT), clazz.getName(), plugin.name(),
-                plugin.printObject(), plugin.deferChildren(), plugin.category());
-        return new PluginType<>(entry, clazz, plugin.elementType());
+        final PluginEntry entry = PluginEntry.builder()
+                .setKey(plugin.value().toLowerCase(Locale.ROOT))
+                .setCategory(Keys.getCategory(clazz))
+                .setName(plugin.value())
+                .setElementName(plugin.elementType())
+                .setClassName(clazz.getName())
+                .setPrintable(plugin.printObject())
+                .setDefer(plugin.deferChildren())
+                .get();
+        return new PluginType<>(entry, clazz);
     }
 
     @Test
@@ -637,7 +648,8 @@ class InjectorTest {
     }
 
     @RequiredProperty(name = "enableLoggins")
-    @Plugin(name = "Dangerous", category = "Test", elementType = "DangerZone")
+    @Category("Test")
+    @Plugin(value = "Dangerous", elementType = "DangerZone")
     static class DangerousPlugin {
     }
 
@@ -665,7 +677,8 @@ class InjectorTest {
         assertDoesNotThrow(() -> injector.configure(node));
     }
 
-    @Plugin(name = "ValidatedParameters", category = "Test")
+    @Category("Test")
+    @Plugin("ValidatedParameters")
     static class ValidatedParameters {
         final String name;
         final String value;
@@ -709,10 +722,12 @@ class InjectorTest {
         final var injector = DI.createInjector();
         assertThatThrownBy(() -> injector.getInstance(ValidatedInjectionPoints.class))
                 .hasMessageStartingWith("Validation failed");
-        injector.registerBinding(new @Named("foo") Key<>() {}, () -> "hello");
+        injector.registerBinding(new @Named("foo") Key<>() {
+        }, () -> "hello");
         assertThatThrownBy(() -> injector.getInstance(ValidatedInjectionPoints.class))
                 .hasMessageStartingWith("Validation failed");
-        injector.registerBinding(new @Named("bar") Key<>() {}, () -> "world");
+        injector.registerBinding(new @Named("bar") Key<>() {
+        }, () -> "world");
         final ValidatedInjectionPoints instance = injector.getInstance(ValidatedInjectionPoints.class);
         assertThat(instance.foo).isEqualTo("hello");
         assertThat(instance.bar).isEqualTo("world");
@@ -722,7 +737,8 @@ class InjectorTest {
         ERROR, WARN
     }
 
-    @Plugin(name = "LevelInjection", category = "Test")
+    @Category("Test")
+    @Plugin("LevelInjection")
     static class LevelInject {
         final Level first;
         final Level second;
@@ -743,7 +759,8 @@ class InjectorTest {
         assertThat(levelInject.second).isEqualTo(Level.ERROR);
     }
 
-    @Plugin(name = "MultipleElements", category = "Test")
+    @Category("Test")
+    @Plugin("MultipleElements")
     static class MultipleElements {
         final ConfigurableObject[] objects;
 
@@ -801,13 +818,13 @@ class InjectorTest {
      * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-3496">LOG4J2-3496</a>
      */
     static class ContainerPluginBeanInjection {
-        @Category("Bean") Optional<BaseBean> optional;
-        @Category("Bean") Collection<BaseBean> collection;
-        @Category("Bean") Iterable<BaseBean> iterable;
-        @Category("Bean") Set<BaseBean> set;
-        @Category("Bean") Stream<BaseBean> stream;
-        @Category("Bean") List<BaseBean> list;
-        @Category("Bean") Map<String, BaseBean> map;
+        @Category("Bean") @Inject Optional<BaseBean> optional;
+        @Category("Bean") @Inject Collection<BaseBean> collection;
+        @Category("Bean") @Inject Iterable<BaseBean> iterable;
+        @Category("Bean") @Inject Set<BaseBean> set;
+        @Category("Bean") @Inject Stream<BaseBean> stream;
+        @Category("Bean") @Inject List<BaseBean> list;
+        @Category("Bean") @Inject Map<String, BaseBean> map;
     }
 
     @Test
@@ -823,5 +840,32 @@ class InjectorTest {
         assertThat(instance.map).hasSize(3);
         assertThat(instance.map.get("gamma")).isInstanceOf(GammaBean.class);
         assertThat(instance.optional).get().isInstanceOf(BetaBean.class);
+    }
+
+    @Category("Test")
+    @Plugin(deferChildren = true)
+    static class DeferChildren {
+        final Node node;
+
+        @Inject
+        DeferChildren(@PluginNode final Node node) {
+            this.node = node;
+        }
+    }
+
+    @Test
+    void deferChildren() {
+        final var outer = fromClass(DeferChildren.class);
+        final var inner = fromClass(ConfigurableObject.class);
+        final var root = new Node(null, "outer", outer);
+        final var child = new Node(root, "child", inner);
+        child.getAttributes().put("greeting", "g'day");
+        final var injector = DI.createInjector(NoOpStringSubstitution.class);
+        final DeferChildren instance = injector.configure(root);
+        assertThat(instance.node).isSameAs(root);
+        assertThat(child.getAttributes()).hasSize(1);
+        final ConfigurableObject configurableObject = injector.configure(child);
+        assertThat(configurableObject.greeting).isEqualTo("g'day");
+        assertThat(child.getAttributes()).isEmpty();
     }
 }

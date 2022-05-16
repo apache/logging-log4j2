@@ -17,13 +17,15 @@
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * Formats the event thread name.
  */
-@Plugin(name = "ThreadPatternConverter", category = PatternConverter.CATEGORY)
+@Category(PatternConverter.CATEGORY)
+@Plugin("ThreadPatternConverter")
 @ConverterKeys({ "t", "tn", "thread", "threadName" })
 @PerformanceSensitive("allocation")
 public final class ThreadNamePatternConverter extends LogEventPatternConverter {

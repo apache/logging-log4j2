@@ -19,13 +19,14 @@ package org.apache.logging.log4j.web;
 // this comment if no longer relevant
 
 import jakarta.servlet.ServletContext;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.lookup.AbstractLookup;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.Strings;
 
-@Plugin(name = "web", category = "Lookup")
+@Category("Lookup")
+@Plugin("web")
 public class WebLookup extends AbstractLookup {
     private static final String ATTR_PREFIX = "attr.";
     private static final String INIT_PARAM_PREFIX = "initParam.";

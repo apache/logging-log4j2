@@ -27,6 +27,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
@@ -42,7 +43,8 @@ import org.apache.logging.log4j.message.ParameterizedMessage;
  * calling Message.getMessageFormat (true) or Message.getFormattedMessage() (false). The default is false.
  *
  */
-@Plugin(name = "RegexFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
+@Category(Node.CATEGORY)
+@Plugin(value = "RegexFilter", elementType = Filter.ELEMENT_TYPE, printObject = true)
 public final class RegexFilter extends AbstractFilter {
 
     private static final int DEFAULT_PATTERN_FLAGS = 0;

@@ -16,6 +16,16 @@
  */
 package org.apache.logging.log4j.script;
 
+import org.apache.logging.log4j.core.util.ExtensionLanguageMapping;
+import org.apache.logging.log4j.core.util.FileUtils;
+import org.apache.logging.log4j.core.util.IOUtils;
+import org.apache.logging.log4j.core.util.NetUtils;
+import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginFactory;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -26,19 +36,11 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.apache.logging.log4j.plugins.Node;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginAttribute;
-import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.core.util.ExtensionLanguageMapping;
-import org.apache.logging.log4j.core.util.FileUtils;
-import org.apache.logging.log4j.core.util.IOUtils;
-import org.apache.logging.log4j.core.util.NetUtils;
-
 /**
  * Container for the language and body of a script file along with the file location.
  */
-@Plugin(name = "ScriptFile", category = Node.CATEGORY, printObject = true)
+@Category(Node.CATEGORY)
+@Plugin(value = "ScriptFile", printObject = true)
 public class ScriptFile extends AbstractScript {
 
     private final Path filePath;

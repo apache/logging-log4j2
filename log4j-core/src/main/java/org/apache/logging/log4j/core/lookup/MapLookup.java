@@ -16,19 +16,21 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.message.MapMessage;
+import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.util.Strings;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.message.MapMessage;
-import org.apache.logging.log4j.util.Strings;
-
 /**
  * A map-based lookup.
  */
-@Plugin(name = "map", category = StrLookup.CATEGORY)
+@Category(StrLookup.CATEGORY)
+@Plugin("map")
 public class MapLookup implements StrLookup {
 
     /**

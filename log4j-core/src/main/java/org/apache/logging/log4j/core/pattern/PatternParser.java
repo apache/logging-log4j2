@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.pattern;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.time.SystemNanoClock;
-import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.util.PluginCategory;
@@ -88,7 +87,7 @@ public final class PatternParser {
 
     private static final int DECIMAL = 10;
 
-    private static final Key<PluginCategory> PLUGIN_CATEGORY_KEY = Key.forClass(PluginCategory.class).withQualifierType(Named.class);
+    private static final Key<PluginCategory> PLUGIN_CATEGORY_KEY = Key.forClass(PluginCategory.class);
 
     private final Configuration config;
 
@@ -134,7 +133,7 @@ public final class PatternParser {
             final Class<?> filterClass) {
         this.config = config;
         final PluginCategory plugins;
-        final Key<PluginCategory> pluginCategoryKey = PLUGIN_CATEGORY_KEY.withName(converterKey);
+        final Key<PluginCategory> pluginCategoryKey = PLUGIN_CATEGORY_KEY.withCategory(converterKey);
         if (config == null) {
             plugins = DI.createInjector().getInstance(pluginCategoryKey);
         } else {

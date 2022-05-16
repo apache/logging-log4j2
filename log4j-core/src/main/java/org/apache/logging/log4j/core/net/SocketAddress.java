@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
@@ -31,7 +32,8 @@ import java.net.InetSocketAddress;
  *
  * @since 2.8
  */
-@Plugin(name = "SocketAddress", category = Node.CATEGORY, printObject = true)
+@Category(Node.CATEGORY)
+@Plugin(value = "SocketAddress", printObject = true)
 public class SocketAddress {
 
     /**

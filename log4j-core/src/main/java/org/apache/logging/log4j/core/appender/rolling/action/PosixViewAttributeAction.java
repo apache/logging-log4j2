@@ -21,6 +21,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.FileUtils;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -46,7 +47,8 @@ import java.util.Set;
  *
  * Allow to define file permissions, user and group for log files on POSIX supported OS.
  */
-@Plugin(name = "PosixViewAttribute", category = Core.CATEGORY_NAME, printObject = true)
+@Category(Core.CATEGORY_NAME)
+@Plugin(value = "PosixViewAttribute", printObject = true)
 public class PosixViewAttributeAction extends AbstractPathAction {
 
     /**

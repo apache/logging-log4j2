@@ -17,12 +17,14 @@
 package org.apache.logging.log4j.core.lookup;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 
 /**
  * Converts values to lower case. The passed in "key" should be the value of another lookup.
  */
-@Plugin(name = "lower", category = StrLookup.CATEGORY)
+@Category(StrLookup.CATEGORY)
+@Plugin("lower")
 public class LowerLookup implements StrLookup {
 
     /**

@@ -17,10 +17,11 @@
 package org.apache.log4j.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.pattern.ConverterKeys;
 import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternConverter;
+import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.TriConsumer;
 
 /**
@@ -28,7 +29,8 @@ import org.apache.logging.log4j.util.TriConsumer;
  * output the entire contents of the properties, or to output the value of a specific key
  * within the property bundle when this pattern converter has the option set.
  */
-@Plugin(name = "Log4j1MdcPatternConverter", category = PatternConverter.CATEGORY)
+@Category(PatternConverter.CATEGORY)
+@Plugin("Log4j1MdcPatternConverter")
 @ConverterKeys({ "properties" })
 public final class Log4j1MdcPatternConverter extends LogEventPatternConverter {
     /**

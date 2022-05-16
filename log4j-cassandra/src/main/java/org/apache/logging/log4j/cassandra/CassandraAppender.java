@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.appender.db.ColumnMapping;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.net.SocketAddress;
 import org.apache.logging.log4j.core.time.Clock;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -37,7 +38,8 @@ import org.apache.logging.log4j.plugins.validation.constraints.Required;
  * @see SocketAddress
  * @see ColumnMapping
  */
-@Plugin(name = "Cassandra", category = Core.CATEGORY_NAME, elementType = CassandraAppender.ELEMENT_TYPE, printObject = true)
+@Category(Core.CATEGORY_NAME)
+@Plugin(value = "Cassandra", elementType = CassandraAppender.ELEMENT_TYPE, printObject = true)
 public class CassandraAppender extends AbstractDatabaseAppender<CassandraManager> {
 
     private CassandraAppender(final String name, final Filter filter, final boolean ignoreExceptions,

@@ -17,12 +17,14 @@
 package org.apache.logging.log4j.core.lookup;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 
 /**
  * Looks up values from the log event.
  */
-@Plugin(name = "event", category = StrLookup.CATEGORY)
+@Category(StrLookup.CATEGORY)
+@Plugin("event")
 public class EventLookup extends AbstractLookup {
 
     /**

@@ -50,8 +50,7 @@ public @interface PluginOrder {
         } else if (rhsOrder != null) {
             return 1;
         } else {
-            // natural ordering
-            return -1;
+            return lhs.getName().compareTo(rhs.getName());
         }
     };
 }

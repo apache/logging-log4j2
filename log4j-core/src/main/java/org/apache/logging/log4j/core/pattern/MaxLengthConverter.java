@@ -17,14 +17,15 @@
 
 package org.apache.logging.log4j.core.pattern;
 
-import java.util.List;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.PerformanceSensitive;
+
+import java.util.List;
 
 /**
  * Max length pattern converter. Limit contained text to a maximum length.
@@ -35,7 +36,8 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  *
  * @author Thies Wellpott
  */
-@Plugin(name = "maxLength", category = PatternConverter.CATEGORY)
+@Category(PatternConverter.CATEGORY)
+@Plugin("maxLength")
 @ConverterKeys({"maxLength", "maxLen"})
 @PerformanceSensitive("allocation")
 public final class MaxLengthConverter extends LogEventPatternConverter {

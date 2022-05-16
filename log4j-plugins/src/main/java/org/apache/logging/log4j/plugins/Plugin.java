@@ -42,15 +42,11 @@ public @interface Plugin {
 
     /**
      * Name of the plugin. Note that this name is case-insensitive.
+     * If no name is provided, then the {@linkplain Class#getSimpleName() simple name} of the annotated class
+     * is used.
      * @return the name of the plugin.
      */
-    String name();
-
-    /**
-     * Category to place the plugin under. Category names are case-sensitive.
-     * @return the category
-     */
-    String category();
+    String value() default EMPTY;
 
     /**
      * Name of the corresponding category of elements this plugin belongs under. For example, {@code appender} would

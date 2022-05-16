@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.util.Booleans;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -65,7 +66,8 @@ import java.util.concurrent.TimeUnit;
  * with immediateFlush=false, there will never be any items left in the buffer;
  * all log events will all be written to disk in a very efficient manner.
  */
-@Plugin(name = "asyncLogger", category = Node.CATEGORY, printObject = true)
+@Category(Node.CATEGORY)
+@Plugin(value = "asyncLogger", printObject = true)
 public class AsyncLoggerConfig extends LoggerConfig {
 
     private static final ThreadLocal<Boolean> ASYNC_LOGGER_ENTERED = ThreadLocal.withInitial(() -> Boolean.FALSE);
@@ -289,7 +291,8 @@ public class AsyncLoggerConfig extends LoggerConfig {
     /**
      * An asynchronous root Logger.
      */
-    @Plugin(name = "asyncRoot", category = Core.CATEGORY_NAME, printObject = true)
+    @Category(Core.CATEGORY_NAME)
+    @Plugin(value = "asyncRoot", printObject = true)
     public static class RootLogger extends LoggerConfig {
 
         @PluginFactory

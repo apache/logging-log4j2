@@ -135,7 +135,8 @@ instantiate the configuration objects from that.
 
 [source,java]
 ----
-@Plugin(name = "XMLConfigurationFactory", category = "ConfigurationFactory")
+@Category("ConfigurationFactory")
+@Plugin("XMLConfigurationFactory")
 @Order(5)
 public class XMLConfigurationFactory extends ConfigurationFactory {
 
@@ -182,7 +183,8 @@ generic `LoggerConfig`.
 
 [source,java]
 ----
-@Plugin(name = "root", category = "Core", printObject = true)
+@Category("Core")
+@Plugin(value = "root", printObject = true)
 public static class RootLogger extends LoggerConfig {
 
     @PluginFactory
@@ -243,7 +245,8 @@ The provided Lookups are documented here: link:./lookups.html[Lookups]
 
 [source,java]
 ----
-@Plugin(name = "sys", category = "Lookup")
+@Category("Lookup")
+@Plugin("sys")
 public class SystemPropertiesLookup implements StrLookup {
 
     /**
@@ -287,7 +290,8 @@ methods resolve to a single filter method.
 
 [source,java]
 ----
-@Plugin(name = "ThresholdFilter", category = "Core", elementType = "filter", printObject = true)
+@Category("Core")
+@Plugin(value = "ThresholdFilter", elementType = "filter", printObject = true)
 public final class ThresholdFilter extends AbstractFilter {
 
     private final Level level;
@@ -365,7 +369,8 @@ pause while the reconfiguration takes place.
 
 [source,java]
 ----
-@Plugin(name = "Stub", category = "Core", elementType = "appender", printObject = true)
+@Category("Core")
+@Plugin(value = "Stub", elementType = "appender", printObject = true)
 public final class StubAppender extends AbstractOutputStreamAppender<StubManager> {
 
     private StubAppender(String name,
@@ -415,7 +420,8 @@ appropriate. The plugin can alternatively use the plugin builder notation.
 
 [source,java]
 ----
-@Plugin(name = "SampleLayout", category = "Core", elementType = "layout", printObject = true)
+@Category("Core")
+@Plugin(value = "SampleLayout", elementType = "layout", printObject = true)
 public class SampleLayout extends AbstractStringLayout {
 
     protected SampleLayout(boolean locationInfo, boolean properties, boolean complete,
@@ -459,7 +465,8 @@ The following shows the skeleton of a Converter plugin.
 
 [source,java]
 ----
-@Plugin(name = "query", category = "Converter")
+@Category("Converter")
+@Plugin("query")
 @ConverterKeys({"q", "query"})
 public final class QueryConverter extends LogEventPatternConverter {
 

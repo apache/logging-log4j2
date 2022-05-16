@@ -16,23 +16,25 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.util.Collection;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.LockSupport;
-
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.jctools.queues.MpscArrayQueue;
 
+import java.util.Collection;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.LockSupport;
+
 /**
  * Factory for creating instances of BlockingQueues backed by JCTools {@link MpscArrayQueue}.
  *
  * @since 2.7
  */
-@Plugin(name = "JCToolsBlockingQueue", category = Node.CATEGORY, elementType = BlockingQueueFactory.ELEMENT_TYPE)
+@Category(Node.CATEGORY)
+@Plugin(value = "JCToolsBlockingQueue", elementType = BlockingQueueFactory.ELEMENT_TYPE)
 public class JCToolsBlockingQueueFactory<E> implements BlockingQueueFactory<E> {
 
     private final WaitStrategy waitStrategy;

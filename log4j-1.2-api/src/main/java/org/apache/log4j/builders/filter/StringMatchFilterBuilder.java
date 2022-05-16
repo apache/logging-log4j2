@@ -16,13 +16,6 @@
  */
 package org.apache.log4j.builders.filter;
 
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
-
-import java.util.Properties;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.log4j.bridge.FilterWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
 import org.apache.log4j.config.PropertiesConfiguration;
@@ -30,14 +23,23 @@ import org.apache.log4j.spi.Filter;
 import org.apache.log4j.xml.XmlConfiguration;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.filter.StringMatchFilter;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
 
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
+
 /**
  * Build a String match filter.
  */
-@Plugin(name = "org.apache.log4j.varia.StringMatchFilter", category = CATEGORY)
+@Category(CATEGORY)
+@Plugin("org.apache.log4j.varia.StringMatchFilter")
 public class StringMatchFilterBuilder extends AbstractBuilder<Filter> implements FilterBuilder {
 
     private static final Logger LOGGER = StatusLogger.getLogger();

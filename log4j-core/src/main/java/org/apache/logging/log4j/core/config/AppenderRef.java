@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.config;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
@@ -29,7 +30,8 @@ import org.apache.logging.log4j.plugins.validation.constraints.Required;
 /**
  * An Appender reference.
  */
-@Plugin(name = "AppenderRef", category = Node.CATEGORY, printObject = true)
+@Category(Node.CATEGORY)
+@Plugin(value = "AppenderRef", printObject = true)
 @PluginAliases("appender-ref")
 public final class AppenderRef {
 

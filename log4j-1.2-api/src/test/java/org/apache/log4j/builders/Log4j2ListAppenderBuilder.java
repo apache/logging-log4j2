@@ -16,31 +16,30 @@
  */
 package org.apache.log4j.builders;
 
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.LAYOUT_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
-
-import java.util.Properties;
-import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.AppenderWrapper;
 import org.apache.log4j.bridge.LayoutAdapter;
-import org.apache.log4j.bridge.LayoutWrapper;
 import org.apache.log4j.builders.appender.AppenderBuilder;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.xml.XmlConfiguration;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.w3c.dom.Element;
+
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.xml.XmlConfiguration.*;
 
 /**
  * Builder for the native Log4j 2.x list appender to be used in the tests.
  */
-@Plugin(name = "org.apache.logging.log4j.test.appender.ListAppender", category = CATEGORY)
+@Category(CATEGORY)
+@Plugin("org.apache.logging.log4j.test.appender.ListAppender")
 public class Log4j2ListAppenderBuilder extends AbstractBuilder implements AppenderBuilder {
 
     public Log4j2ListAppenderBuilder() {

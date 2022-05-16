@@ -18,10 +18,8 @@
 package org.apache.logging.log4j.plugins.di;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.FactoryType;
 import org.apache.logging.log4j.plugins.Inject;
-import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.PluginException;
 import org.apache.logging.log4j.plugins.PluginOrder;
@@ -29,6 +27,7 @@ import org.apache.logging.log4j.plugins.QualifierType;
 import org.apache.logging.log4j.plugins.ScopeType;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
+import org.apache.logging.log4j.plugins.convert.TypeConverterCategory;
 import org.apache.logging.log4j.plugins.name.AnnotatedElementAliasesProvider;
 import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
 import org.apache.logging.log4j.plugins.util.AnnotationUtil;
@@ -78,6 +77,8 @@ import java.util.stream.Stream;
 
 class DefaultInjector implements Injector {
     private static final Logger LOGGER = StatusLogger.getLogger();
+    private static final Set<Class<?>> COLLECTION_INJECTION_TYPES = Set.of(
+            Collection.class, Iterable.class, List.class, Map.class, Optional.class, Set.class, Stream.class);
 
     private final BindingMap bindingMap;
     private final Map<Class<? extends Annotation>, Scope> scopes = new ConcurrentHashMap<>();
@@ -256,16 +257,16 @@ class DefaultInjector implements Injector {
         final Class<T> rawType = key.getRawType();
         final Scope scope = getScopeForType(rawType);
 
-        // @Named PluginCategory injection
-        if (rawType == PluginCategory.class && key.getQualifierType() == Named.class) {
+        // @Category PluginCategory injection
+        if (rawType == PluginCategory.class && !key.getCategory().isEmpty()) {
             final Key<PluginCategory> pluginCategoryKey = TypeUtil.cast(key);
             final Supplier<PluginCategory> pluginCategoryFactory = createPluginCategoryFactory(pluginCategoryKey);
             bindingMap.putIfAbsent(pluginCategoryKey, pluginCategoryFactory);
             return bindingMap.get(key, aliases).getSupplier();
         }
 
-        // @Category Collection<T>/Map<String, T>/Stream<T> injection
-        if (key.getQualifierType() == Category.class) {
+        // Collection<T>/Map<String, T>/Stream<T>/etc. injection
+        if (COLLECTION_INJECTION_TYPES.contains(rawType) && !key.getCategory().isEmpty()) {
             if (Stream.class.isAssignableFrom(rawType)) {
                 final Key<Stream<T>> streamKey = TypeUtil.cast(key);
                 final Supplier<Stream<T>> streamFactory =
@@ -290,7 +291,7 @@ class DefaultInjector implements Injector {
             } else {
                 throw new InjectException("Cannot inject plugins into " + key);
             }
-            return bindingMap.get(key, aliases).getSupplier();
+            return bindingMap.get(key).getSupplier();
         }
 
         // Optional<T> injection
@@ -313,7 +314,7 @@ class DefaultInjector implements Injector {
     }
 
     private Supplier<PluginCategory> createPluginCategoryFactory(final Key<PluginCategory> key) {
-        return LazyValue.from(() -> getInstance(PluginRegistry.class).getCategory(key.getName(), getPluginPackages()));
+        return LazyValue.from(() -> getInstance(PluginRegistry.class).getCategory(key.getCategory(), getPluginPackages()));
     }
 
     private List<String> getPluginPackages() {
@@ -325,7 +326,7 @@ class DefaultInjector implements Injector {
         if (itemKey == null) {
             return Stream.empty();
         }
-        final PluginCategory category = getInstance(PluginRegistry.class).getCategory(itemKey.getName(), getPluginPackages());
+        final PluginCategory category = getInstance(PluginRegistry.class).getCategory(itemKey.getCategory(), getPluginPackages());
         final Type type = itemKey.getType();
         final Class<T> rawType = itemKey.getRawType();
         return category.stream()
@@ -396,13 +397,8 @@ class DefaultInjector implements Injector {
     }
 
     private void initializeTypeConverters() {
-        final PluginCategory category = getInstance(TypeConverter.PLUGIN_CATEGORY_KEY);
-        category.forEach(knownType -> {
-            final Class<?> pluginClass = knownType.getPluginClass();
-            final Type type = getTypeConverterSupportedType(pluginClass);
-            final TypeConverter<?> converter = getInstance(pluginClass.asSubclass(TypeConverter.class));
-            registerTypeConverter(type, converter);
-        });
+        final List<TypeConverter<?>> converters = getPluginList(new @TypeConverterCategory Key<>() {});
+        converters.forEach(converter -> registerTypeConverter(getTypeConverterSupportedType(converter.getClass()), converter));
         registerTypeConverter(Boolean.class, Boolean::valueOf);
         registerTypeAlias(Boolean.class, Boolean.TYPE);
         registerTypeConverter(Byte.class, Byte::valueOf);

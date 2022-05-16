@@ -18,6 +18,7 @@
 package org.apache.logging.log4j.plugins.util;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.Singleton;
@@ -208,29 +209,31 @@ public class PluginRegistry {
 
         for (final Class<?> clazz : resolver.getClasses()) {
             final Plugin plugin = clazz.getAnnotation(Plugin.class);
-            final PluginEntry mainEntry = new PluginEntry();
-            final String mainElementName = plugin.elementType().equals(
-                    Plugin.EMPTY) ? plugin.name() : plugin.elementType();
-            mainEntry.setKey(plugin.name().toLowerCase());
-            mainEntry.setName(plugin.name());
-            mainEntry.setCategory(plugin.category());
-            mainEntry.setClassName(clazz.getName());
-            mainEntry.setPrintable(plugin.printObject());
-            mainEntry.setDefer(plugin.deferChildren());
-            bundle.add(new PluginType<>(mainEntry, clazz, mainElementName));
+            final Category annotation = clazz.getAnnotation(Category.class);
+            final String category = annotation != null ? annotation.value() : Plugin.EMPTY;
+            final String elementType = plugin.elementType();
+            final String name = plugin.value();
+            final String mainElementName = elementType.isEmpty() ? name : elementType;
+            final PluginEntry.Builder builder = PluginEntry.builder()
+                    .setName(name)
+                    .setCategory(category)
+                    .setClassName(clazz.getName())
+                    .setPrintable(plugin.printObject())
+                    .setDefer(plugin.deferChildren());
+            final PluginEntry mainEntry = builder
+                    .setKey(name.toLowerCase(Locale.ROOT))
+                    .setElementName(mainElementName)
+                    .get();
+            bundle.add(new PluginType<>(mainEntry, clazz));
             final PluginAliases pluginAliases = clazz.getAnnotation(PluginAliases.class);
             if (pluginAliases != null) {
                 for (final String alias : pluginAliases.value()) {
-                    final PluginEntry aliasEntry = new PluginEntry();
-                    final String aliasElementName = plugin.elementType().equals(
-                            Plugin.EMPTY) ? alias.trim() : plugin.elementType();
-                    aliasEntry.setKey(alias.trim().toLowerCase());
-                    aliasEntry.setName(plugin.name());
-                    aliasEntry.setCategory(plugin.category());
-                    aliasEntry.setClassName(clazz.getName());
-                    aliasEntry.setPrintable(plugin.printObject());
-                    aliasEntry.setDefer(plugin.deferChildren());
-                    bundle.add(new PluginType<>(aliasEntry, clazz, aliasElementName));
+                    final String aliasElementName = elementType.equals(Plugin.EMPTY) ? alias : elementType;
+                    final PluginEntry aliasEntry = builder
+                            .setKey(alias.toLowerCase(Locale.ROOT))
+                            .setElementName(aliasElementName)
+                            .get();
+                    bundle.add(new PluginType<>(aliasEntry, clazz));
                 }
             }
         }

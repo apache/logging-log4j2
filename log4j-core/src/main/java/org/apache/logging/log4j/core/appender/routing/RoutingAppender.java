@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.script.Script;
 import org.apache.logging.log4j.core.script.ScriptBindings;
 import org.apache.logging.log4j.core.script.ScriptManager;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -49,7 +50,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * the form "$${[key:]token}". The pattern will be resolved each time the Appender is called using
  * the built in StrSubstitutor and the StrLookup plugin that matches the specified key.
  */
-@Plugin(name = "Routing", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Category(Core.CATEGORY_NAME)
+@Plugin(value = "Routing", elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class RoutingAppender extends AbstractAppender {
 
     public static final String STATIC_VARIABLES_KEY = "staticVariables";

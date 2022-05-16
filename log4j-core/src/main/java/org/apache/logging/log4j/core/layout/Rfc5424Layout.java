@@ -16,6 +16,40 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LoggingException;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.TlsSyslogFrame;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
+import org.apache.logging.log4j.core.layout.internal.ExcludeChecker;
+import org.apache.logging.log4j.core.layout.internal.IncludeChecker;
+import org.apache.logging.log4j.core.layout.internal.ListChecker;
+import org.apache.logging.log4j.core.net.Facility;
+import org.apache.logging.log4j.core.net.Priority;
+import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
+import org.apache.logging.log4j.core.pattern.PatternConverter;
+import org.apache.logging.log4j.core.pattern.PatternFormatter;
+import org.apache.logging.log4j.core.pattern.PatternParser;
+import org.apache.logging.log4j.core.pattern.ThrowablePatternConverter;
+import org.apache.logging.log4j.core.util.NetUtils;
+import org.apache.logging.log4j.core.util.Patterns;
+import org.apache.logging.log4j.core.util.ProcessIdUtil;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MessageCollectionMessage;
+import org.apache.logging.log4j.message.StructuredDataCollectionMessage;
+import org.apache.logging.log4j.message.StructuredDataId;
+import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.util.StringBuilders;
+import org.apache.logging.log4j.util.Strings;
+
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -29,45 +63,13 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LoggingException;
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.appender.TlsSyslogFrame;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.layout.internal.ExcludeChecker;
-import org.apache.logging.log4j.core.layout.internal.IncludeChecker;
-import org.apache.logging.log4j.core.layout.internal.ListChecker;
-import org.apache.logging.log4j.plugins.Node;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.plugins.PluginElement;
-import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.core.net.Facility;
-import org.apache.logging.log4j.core.net.Priority;
-import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
-import org.apache.logging.log4j.core.pattern.PatternConverter;
-import org.apache.logging.log4j.core.pattern.PatternFormatter;
-import org.apache.logging.log4j.core.pattern.PatternParser;
-import org.apache.logging.log4j.core.pattern.ThrowablePatternConverter;
-import org.apache.logging.log4j.core.util.NetUtils;
-import org.apache.logging.log4j.core.util.Patterns;
-import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.MessageCollectionMessage;
-import org.apache.logging.log4j.message.StructuredDataCollectionMessage;
-import org.apache.logging.log4j.message.StructuredDataId;
-import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.apache.logging.log4j.core.util.ProcessIdUtil;
-import org.apache.logging.log4j.util.StringBuilders;
-import org.apache.logging.log4j.util.Strings;
-
 /**
  * Formats a log event in accordance with RFC 5424.
  *
  * @see <a href="https://tools.ietf.org/html/rfc5424">RFC 5424</a>
  */
-@Plugin(name = "Rfc5424Layout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
+@Category(Node.CATEGORY)
+@Plugin(value = "Rfc5424Layout", elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class Rfc5424Layout extends AbstractStringLayout {
 
     /**
@@ -261,7 +263,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     }
 
     /**
-     * Formats a {@link org.apache.logging.log4j.core.LogEvent} in conformance with the RFC 5424 Syslog specification.
+     * Formats a {@link LogEvent} in conformance with the RFC 5424 Syslog specification.
      *
      * @param event The LogEvent.
      * @return The RFC 5424 String representation of the LogEvent.

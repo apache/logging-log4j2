@@ -17,13 +17,15 @@
 package org.apache.logging.log4j.core.config.arbiters;
 
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 
 /**
  * Default Condition for a Select Condition.
  */
-@Plugin(name = "DefaultArbiter", category = Node.CATEGORY, elementType = Arbiter.ELEMENT_TYPE,
+@Category(Node.CATEGORY)
+@Plugin(value = "DefaultArbiter", elementType = Arbiter.ELEMENT_TYPE,
         deferChildren = true, printObject = true)
 public class DefaultArbiter implements Arbiter {
 

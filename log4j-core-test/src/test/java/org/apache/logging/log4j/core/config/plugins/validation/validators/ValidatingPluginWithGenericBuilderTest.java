@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
-import org.apache.logging.log4j.plugins.Named;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
@@ -40,7 +40,7 @@ public class ValidatingPluginWithGenericBuilderTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        final PluginCategory category = injector.getInstance(new @Named("Test") Key<>() {});
+        final PluginCategory category = injector.getInstance(new @Category("Test") Key<>() {});
         final var plugin = category.get("ValidatingPluginWithGenericBuilder");
         assertNotNull(plugin, "Rebuild this module to make sure annotation processing kicks in.");
         node = new Node(null, "Validator", plugin);

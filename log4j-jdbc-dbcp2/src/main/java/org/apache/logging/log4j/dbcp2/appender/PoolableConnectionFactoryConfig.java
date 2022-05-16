@@ -20,6 +20,7 @@ package org.apache.logging.log4j.dbcp2.appender;
 import org.apache.commons.dbcp2.PoolableConnectionFactory;
 import org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig;
 import org.apache.logging.log4j.core.Core;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -36,7 +37,8 @@ import java.util.List;
  *
  * @since 2.11.2
  */
-@Plugin(name = "PoolableConnectionFactory", category = Core.CATEGORY_NAME, printObject = true)
+@Category(Core.CATEGORY_NAME)
+@Plugin(value = "PoolableConnectionFactory", printObject = true)
 public class PoolableConnectionFactoryConfig {
 
     public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<PoolableConnectionFactoryConfig> {

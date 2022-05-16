@@ -16,12 +16,6 @@
  */
 package org.apache.log4j.layout;
 
-import java.io.Serializable;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
@@ -32,11 +26,18 @@ import org.apache.logging.log4j.core.net.Priority;
 import org.apache.logging.log4j.core.pattern.DatePatternConverter;
 import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.util.NetUtils;
+import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.util.Chars;
+
+import java.io.Serializable;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Port of the layout used by SyslogAppender in Log4j 1.x. Provided for
@@ -44,7 +45,8 @@ import org.apache.logging.log4j.util.Chars;
  *
  * Originally developed by Ceki G&uuml;lc&uuml; and Anders Kristensen.
  */
-@Plugin(name = "Log4j1SyslogLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
+@Category(Node.CATEGORY)
+@Plugin(value = "Log4j1SyslogLayout", elementType = Layout.ELEMENT_TYPE, printObject = true)
 public final class Log4j1SyslogLayout  extends AbstractStringLayout {
 
     /**
@@ -155,7 +157,7 @@ public final class Log4j1SyslogLayout  extends AbstractStringLayout {
     }
 
     /**
-     * Formats a {@link org.apache.logging.log4j.core.LogEvent} in conformance with the BSD Log record format.
+     * Formats a {@link LogEvent} in conformance with the BSD Log record format.
      *
      * @param event The LogEvent
      * @return the event formatted as a String.

@@ -14,27 +14,20 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.util;
+
+package org.apache.logging.log4j.plugins.convert;
 
 import org.apache.logging.log4j.plugins.Category;
-import org.apache.logging.log4j.plugins.di.Key;
-import org.apache.logging.log4j.plugins.util.PluginCategory;
 
-import javax.crypto.SecretKey;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-/**
- * Factory class to provide a {@link SecretKey} instance.
- */
-public interface SecretKeyProvider {
-
-    String CATEGORY = "KeyProvider";
-
-    Key<PluginCategory> PLUGIN_CATEGORY_KEY = new @Category(CATEGORY) Key<>() {};
-
-    /**
-     * Returns this SecretKey.
-     *
-     * @return the SecretKey.
-     */
-    SecretKey getSecretKey();
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.TYPE_USE})
+@Documented
+@Category("TypeConverter")
+public @interface TypeConverterCategory {
 }
