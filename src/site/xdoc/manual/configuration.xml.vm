@@ -371,7 +371,7 @@ public class Bar {
         <subsection name="Configuration From a URI">
           <p>
             When <code>log4j2.configurationFile</code> references a URL Log4j will first determine if the URL reference
-            a file using the file protocol. If it does Log4j will validate that the file url is valid and continue
+            a file using the file protocol. If it does Log4j will validate that the file URL is valid and continue
             processing as previously described. If it contains a protocol other than file then Log4j will inspect
             the value of the <code>log4j2.Configuration.allowedProtocols</code> system property. If the provided list
             contains the protocol specified then Log4j will use the URI to locate the specified configuration file. If
@@ -381,7 +381,7 @@ public class Bar {
             conflict with any custom protocols that may be present.
           </p>
           <p>
-            Log4j supports access to remote urls that require authentication. Log4j supports basic authentication
+            Log4j supports access to remote URLs that require authentication. Log4j supports basic authentication
             out of the box. If the <code>log4j2.Configuration.username</code> and <code>log4j2.Configuration.password</code>
             are specified those values will be used to perform the authentication. If the password is encrypted a custom
             password decryptor may be supplied by specifying the fully qualified class name in the
@@ -1558,7 +1558,7 @@ rootLogger = info, STDOUT
         <subsection name="Composite Configuration">
             <p>
               Log4j allows multiple configuration files to be used by specifying them as a list of comma separated
-              file paths on log4j.configurationFile or, when using urls, by adding secondary configuration
+              file paths on log4j.configurationFile or, when using URLs, by adding secondary configuration
               locations as query parameters named "override".  The merge logic can be controlled by specifying a class
                 that implements the MergeStrategy interface on the log4j.mergeStrategy property. The default
                 merge strategy will merge the files using the following rules:
