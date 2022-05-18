@@ -86,7 +86,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
             LevelAndRefs container = LoggerConfig.getLevelAndRefs(getLevel(), getRefs(), getLevelAndRefs(),
                     getConfig());
             return new AsyncLoggerConfig(name, container.refs,getFilter(), container.level, isAdditivity(),
-                    getProperties(), getConfig(), includeLocation(getIncludeLocation(), getConfig()), getLogEventFactory());
+                    getProperties(), getConfig(), includeLocation(getIncludeLocation()), getLogEventFactory());
         }
     }
 
@@ -307,8 +307,8 @@ public class AsyncLoggerConfig extends LoggerConfig {
                 LevelAndRefs container = LoggerConfig.getLevelAndRefs(getLevel(), getRefs(), getLevelAndRefs(),
                         getConfig());
                 return new AsyncLoggerConfig(LogManager.ROOT_LOGGER_NAME, container.refs, getFilter(), container.level,
-                        isAdditivity(), getProperties(), getConfig(), includeLocation(getIncludeLocation(),
-                        getConfig()), getLogEventFactory());
+                        isAdditivity(), getProperties(), getConfig(),
+                        AsyncLoggerConfig.includeLocation(getIncludeLocation()), getLogEventFactory());
             }
         }
 

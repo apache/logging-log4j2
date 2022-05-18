@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="OFF">
+  <Appenders>
+    <List name="List"/>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %X{aKey} %m %ex%n</pattern>
+      </PatternLayout>
+    </Console>
+  </Appenders>
+  
+  <Loggers>
+    <AsyncLogger name="com.foo.Bar" level="trace" additivity="false">
+      <AppenderRef ref="List"/>
+    </AsyncLogger>
+    <Root level="info">
+      <AppenderRef ref="Console"/>
+    </Root>
+  </Loggers>
+</Configuration>

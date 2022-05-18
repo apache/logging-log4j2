@@ -199,6 +199,9 @@
       </action>
     </release>
     <release version="2.18.0" date="20YY-MM-DD" description="GA Release 2.17.3">
+      <action issue="LOG4J2-3491" dev="rgoers" type="fix" due-to="Avihai Marchiano">
+        Async Loggers were including the location information by default.
+      </action>
       <action issue="LOG4J2-3506" dev="rgoers" type="update">
         Support Spring 2.6.x.
       </action>
