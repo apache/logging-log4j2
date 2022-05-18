@@ -752,9 +752,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
     }
 
     /**
-     * @deprecated Please use {@link #includeLocation(String, Configuration)}
      */
-    @Deprecated
     protected static boolean includeLocation(final String includeLocationConfigValue) {
         return includeLocation(includeLocationConfigValue, null);
     }

@@ -30,7 +30,9 @@
          - "remove" - Removed
     -->
     <release version="2.18.0" date="2022-TBD" description="GA Release 2.18.0">
-      <!-- FIXES -->
+      <action issue="LOG4J2-3491" dev="rgoers" type="fix" due-to="Avihai Marchiano">
+        Async Loggers were including the location information by default.
+      </action>
       <action issue="LOG4J2-1376" dev="mneundorfer" type="fix">
         Allow enterprise id to be an OID fragment.
       </action>
