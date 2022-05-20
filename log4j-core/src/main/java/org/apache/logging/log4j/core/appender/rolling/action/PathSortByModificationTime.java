@@ -17,8 +17,7 @@
 
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import org.apache.logging.log4j.core.Core;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -28,8 +27,8 @@ import java.io.Serializable;
 /**
  * {@link PathSorter} that sorts path by their LastModified attribute.
  */
-@Category(Core.CATEGORY_NAME)
-@Plugin(value = "SortByModificationTime", printObject = true)
+@Configurable(printObject = true)
+@Plugin("SortByModificationTime")
 public class PathSortByModificationTime implements PathSorter, Serializable {
 
     private static final long serialVersionUID = 1L;

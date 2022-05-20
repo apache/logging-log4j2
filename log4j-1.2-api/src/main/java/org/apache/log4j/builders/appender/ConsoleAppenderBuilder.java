@@ -27,7 +27,7 @@ import org.apache.log4j.spi.Filter;
 import org.apache.log4j.xml.XmlConfiguration;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
@@ -36,14 +36,14 @@ import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
 import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
 import static org.apache.log4j.xml.XmlConfiguration.*;
 
 /**
  * Build a Console Appender
  */
-@Category(CATEGORY)
+@Namespace(NAMESPACE)
 @Plugin("org.apache.log4j.ConsoleAppender")
 public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderBuilder {
 

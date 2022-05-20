@@ -16,9 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -26,8 +25,8 @@ import org.apache.logging.log4j.plugins.PluginFactory;
 /**
  *
  */
-@Category(Core.CATEGORY_NAME)
-@Plugin(value = "SizeBasedTriggeringPolicy", printObject = true)
+@Configurable(printObject = true)
+@Plugin
 public class SizeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
 
     /**

@@ -17,14 +17,13 @@
 package org.apache.logging.log4j.core.appender;
 
 import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Throwables;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -53,8 +52,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * print byte streams.
  * </p>
  */
-@Category(Core.CATEGORY_NAME)
-@Plugin(value = ConsoleAppender.PLUGIN_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Plugin(ConsoleAppender.PLUGIN_NAME)
 public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputStreamManager> {
 
     public static final String PLUGIN_NAME = "Console";

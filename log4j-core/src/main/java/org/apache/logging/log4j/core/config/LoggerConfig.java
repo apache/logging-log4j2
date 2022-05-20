@@ -20,7 +20,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -37,9 +36,8 @@ import org.apache.logging.log4j.core.impl.ReusableLogEventFactory;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Inject;
-import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
@@ -58,8 +56,8 @@ import java.util.Map;
 /**
  * Logger object that is created via configuration.
  */
-@Category(Node.CATEGORY)
-@Plugin(value = "logger", printObject = true)
+@Configurable(printObject = true)
+@Plugin("logger")
 public class LoggerConfig extends AbstractFilterable {
 
     public static final String ROOT = "root";
@@ -677,8 +675,8 @@ public class LoggerConfig extends AbstractFilterable {
     /**
      * The root Logger.
      */
-    @Category(Core.CATEGORY_NAME)
-    @Plugin(value = ROOT, printObject = true)
+    @Configurable(printObject = true)
+    @Plugin(ROOT)
     public static class RootLogger extends LoggerConfig {
 
         @PluginFactory

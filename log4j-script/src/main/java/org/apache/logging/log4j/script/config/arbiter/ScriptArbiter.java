@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginNode;
 import org.apache.logging.log4j.core.script.Script;
 import org.apache.logging.log4j.core.script.ScriptBindings;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.util.PluginType;
@@ -36,9 +36,8 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Condition that evaluates a script.
  */
-@Category(Node.CATEGORY)
-@Plugin(value = "ScriptArbiter", elementType = Arbiter.ELEMENT_TYPE,
-        deferChildren = true, printObject = true)
+@Configurable(elementType = Arbiter.ELEMENT_TYPE, deferChildren = true, printObject = true)
+@Plugin
 public class ScriptArbiter implements Arbiter {
 
     private final Script script;

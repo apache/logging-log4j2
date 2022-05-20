@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.lookup;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 
 import java.util.Map;
@@ -29,7 +28,7 @@ import java.util.Map;
  *
  * @since 2.4
  */
-@Category(StrLookup.CATEGORY)
+@Lookup
 @Plugin("main")
 public class MainMapLookup extends MapLookup {
 

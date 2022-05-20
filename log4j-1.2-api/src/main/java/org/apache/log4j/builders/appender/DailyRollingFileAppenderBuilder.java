@@ -33,7 +33,7 @@ import org.apache.logging.log4j.core.appender.rolling.RolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.TimeBasedTriggeringPolicy;
 import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
 import org.apache.logging.log4j.core.time.Clock;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
@@ -43,14 +43,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
 import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
 import static org.apache.log4j.xml.XmlConfiguration.*;
 
 /**
  * Build a Daily Rolling File Appender
  */
-@Category(CATEGORY)
+@Namespace(NAMESPACE)
 @Plugin("org.apache.log4j.DailyRollingFileAppender")
 public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements AppenderBuilder {
 

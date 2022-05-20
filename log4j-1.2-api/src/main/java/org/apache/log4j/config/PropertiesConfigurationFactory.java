@@ -22,14 +22,14 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Order;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Configures Log4j from a log4j 1 format properties file.
  */
-@Category(ConfigurationFactory.CATEGORY)
+@Namespace(ConfigurationFactory.NAMESPACE)
 @Plugin("Log4j1PropertiesConfigurationFactory")
 @Order(2)
 public class PropertiesConfigurationFactory extends ConfigurationFactory {

@@ -17,9 +17,10 @@
 
 package org.apache.logging.log4j.plugin.processor;
 
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
+import org.apache.logging.log4j.plugins.di.Keys;
 import org.apache.logging.log4j.plugins.processor.PluginService;
 import org.apache.logging.log4j.plugins.test.validation.FakePlugin;
 import org.apache.logging.log4j.plugins.test.validation.plugins.Log4jPlugins;
@@ -37,7 +38,8 @@ public class PluginProcessorTest {
     private static PluginService pluginService;
 
     private final Plugin p = FakePlugin.class.getAnnotation(Plugin.class);
-    private final Category c = FakePlugin.class.getAnnotation(Category.class);
+    private final Configurable c = FakePlugin.class.getAnnotation(Configurable.class);
+    private final String ns = Keys.getNamespace(FakePlugin.class);
 
     @BeforeClass
     public static void setUpClass() {
@@ -47,15 +49,15 @@ public class PluginProcessorTest {
     @Test
     public void testTestCategoryFound() throws Exception {
         assertNotNull("No plugin annotation on FakePlugin.", p);
-        final var testCategory = pluginService.getCategory(c.value());
+        final var namespace = pluginService.getNamespace(ns);
         assertNotEquals("No plugins were found.", 0, pluginService.size());
-        assertNotNull("The category '" + c.value() + "' was not found.", testCategory);
-        assertFalse(testCategory.isEmpty());
+        assertNotNull("The namespace '" + ns + "' was not found.", namespace);
+        assertFalse(namespace.isEmpty());
     }
 
     @Test
     public void testFakePluginFoundWithCorrectInformation() throws Exception {
-        final var testCategory = pluginService.getCategory(c.value());
+        final var testCategory = pluginService.getNamespace(ns);
         assertNotNull(testCategory);
         final PluginType<?> type = testCategory.get(p.value());
         assertNotNull(type);
@@ -66,7 +68,7 @@ public class PluginProcessorTest {
     public void testFakePluginAliasesContainSameInformation() throws Exception {
         final PluginAliases aliases = FakePlugin.class.getAnnotation(PluginAliases.class);
         for (final String alias : aliases.value()) {
-            final var testCategory = pluginService.getCategory(c.value());
+            final var testCategory = pluginService.getNamespace(ns);
             assertNotNull(testCategory);
             final PluginType<?> type = testCategory.get(alias);
             assertNotNull(type);
@@ -78,25 +80,21 @@ public class PluginProcessorTest {
         assertNotNull("The plugin '" + name.toLowerCase() + "' was not found.", fake);
         assertEquals(FakePlugin.class.getName(), fake.getPluginEntry().getClassName());
         assertEquals(name.toLowerCase(), fake.getKey());
-        assertEquals(Plugin.EMPTY, p.elementType());
+        assertEquals(Plugin.EMPTY, c.elementType());
         assertEquals(p.value(), fake.getName());
-        assertEquals(p.printObject(), fake.isObjectPrintable());
-        assertEquals(p.deferChildren(), fake.isDeferChildren());
+        assertEquals(c.printObject(), fake.isObjectPrintable());
+        assertEquals(c.deferChildren(), fake.isDeferChildren());
     }
 
     @Test
     public void testNestedPlugin() throws Exception {
         final Plugin p = FakePlugin.Nested.class.getAnnotation(Plugin.class);
-        final Category c = FakePlugin.Nested.class.getAnnotation(Category.class);
-        final var testCategory = pluginService.getCategory(c.value());
+        final var testCategory = pluginService.getNamespace(Keys.getNamespace(FakePlugin.Nested.class));
         assertNotNull(testCategory);
         final PluginType<?> nested = testCategory.get(p.value());
         assertNotNull(nested);
         assertEquals(p.value().toLowerCase(), nested.getKey());
         assertEquals(FakePlugin.Nested.class.getName(), nested.getPluginEntry().getClassName());
         assertEquals(p.value(), nested.getName());
-        assertEquals(Plugin.EMPTY, p.elementType());
-        assertEquals(p.printObject(), nested.isObjectPrintable());
-        assertEquals(p.deferChildren(), nested.isDeferChildren());
     }
 }

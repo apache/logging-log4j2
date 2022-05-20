@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.plugins.test.validation;
 
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -27,7 +27,7 @@ import java.util.Objects;
 /**
  *
  */
-@Category("Test")
+@Namespace("Test")
 @Plugin("Validator")
 public class ValidatingPlugin {
 

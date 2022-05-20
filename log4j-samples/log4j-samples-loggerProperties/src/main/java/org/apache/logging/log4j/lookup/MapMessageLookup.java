@@ -21,10 +21,9 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.lookup.AbstractLookup;
-import org.apache.logging.log4j.core.lookup.StrLookup;
+import org.apache.logging.log4j.core.lookup.Lookup;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -32,11 +31,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-/**
- *
- */
-
-@Category(StrLookup.CATEGORY)
+@Lookup
 @Plugin("mapMessage")
 public class MapMessageLookup extends AbstractLookup {
 

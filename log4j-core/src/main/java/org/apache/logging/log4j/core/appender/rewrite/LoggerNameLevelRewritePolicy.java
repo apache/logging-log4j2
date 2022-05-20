@@ -17,11 +17,10 @@
 package org.apache.logging.log4j.core.appender.rewrite;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.KeyValuePair;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -36,8 +35,8 @@ import java.util.Map;
  *
  * @since 2.4
  */
-@Category(Core.CATEGORY_NAME)
-@Plugin(value = "LoggerNameLevelRewritePolicy", elementType = "rewritePolicy", printObject = true)
+@Configurable(elementType = "rewritePolicy", printObject = true)
+@Plugin("LoggerNameLevelRewritePolicy")
 public class LoggerNameLevelRewritePolicy implements RewritePolicy {
 
     /**

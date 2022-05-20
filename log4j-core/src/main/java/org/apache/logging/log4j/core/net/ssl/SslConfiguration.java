@@ -16,8 +16,7 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
-import org.apache.logging.log4j.core.Core;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -39,8 +38,8 @@ import java.security.UnrecoverableKeyException;
 /**
  *  SSL Configuration
  */
-@Category(Core.CATEGORY_NAME)
-@Plugin(value = "Ssl", printObject = true)
+@Configurable(printObject = true)
+@Plugin("Ssl")
 public class SslConfiguration {
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
     private final KeyStoreConfiguration keyStoreConfig;

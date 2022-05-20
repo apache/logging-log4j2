@@ -16,9 +16,8 @@
  */
 package org.apache.logging.log4j.jdbc.appender;
 
-import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
 
@@ -32,8 +31,8 @@ import java.sql.DriverManager;
  * itself. This handy to get you off the ground without having to deal with JNDI.
  * </p>
  */
-@Category(Core.CATEGORY_NAME)
-@Plugin(value = "DriverManager", elementType = "connectionSource", printObject = true)
+@Configurable(elementType = "connectionSource", printObject = true)
+@Plugin("DriverManager")
 public class DriverManagerConnectionSource extends AbstractDriverManagerConnectionSource {
 
     /**

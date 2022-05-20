@@ -17,13 +17,12 @@
 package org.apache.logging.log4j.core.lookup;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 
 /**
  * Looks up keys from environment variables.
  */
-@Category(StrLookup.CATEGORY)
+@Lookup
 @Plugin("env")
 public class EnvironmentLookup extends AbstractLookup {
 

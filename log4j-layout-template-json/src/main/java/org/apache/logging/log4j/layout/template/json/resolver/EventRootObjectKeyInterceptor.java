@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.layout.template.json.resolver;
 
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
 
@@ -28,7 +28,7 @@ import java.util.Collections;
  *
  * @see JsonTemplateLayout.Builder#getEventTemplateRootObjectKey()
  */
-@Category(TemplateResolverInterceptor.CATEGORY)
+@Namespace(TemplateResolverInterceptor.CATEGORY)
 @Plugin("EventRootObjectKeyInterceptor")
 public class EventRootObjectKeyInterceptor implements EventResolverInterceptor {
 

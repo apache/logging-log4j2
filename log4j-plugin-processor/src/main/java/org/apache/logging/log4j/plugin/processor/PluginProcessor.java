@@ -18,7 +18,9 @@
 package org.apache.logging.log4j.plugin.processor;
 
 import org.apache.logging.log4j.LoggingException;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Namespace;
+import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.processor.PluginEntry;
@@ -178,14 +180,14 @@ public class PluginProcessor extends AbstractProcessor {
                 sb.append(entry.getKey()).append("\", \"");
                 sb.append(entry.getClassName()).append("\", \"");
                 sb.append(entry.getName()).append("\", \"");
-                final String elementName = entry.getElementName();
+                final String elementName = entry.getElementType();
                 if (elementName != null) {
                     sb.append(elementName);
                 }
                 sb.append("\", ");
                 sb.append(entry.isPrintable()).append(", ");
-                sb.append(entry.isDefer()).append(", \"");
-                sb.append(entry.getCategory()).append("\"");
+                sb.append(entry.isDeferChildren()).append(", \"");
+                sb.append(entry.getNamespace()).append("\"");
                 for (final Name implementedInterface : getImplementedInterfaces(mirror.element.asType())) {
                     sb.append(", ").append(implementedInterface).append(".class");
                 }
@@ -226,12 +228,12 @@ public class PluginProcessor extends AbstractProcessor {
         }
     }
 
-    private static String getCategory(final TypeElement e) {
-        return Optional.ofNullable(e.getAnnotation(Category.class)).map(Category::value).orElseGet(
+    private static String getNamespace(final TypeElement e) {
+        return Optional.ofNullable(e.getAnnotation(Namespace.class)).map(Namespace::value).orElseGet(
                 () -> e.getAnnotationMirrors().stream().flatMap(
                                 annotationMirror -> annotationMirror.getAnnotationType().asElement().getAnnotationMirrors().stream())
                         .filter(annotationMirror -> annotationMirror.getAnnotationType().asElement().getSimpleName()
-                                .contentEquals(Category.class.getSimpleName())).flatMap(
+                                .contentEquals(Namespace.class.getSimpleName())).flatMap(
                                 annotationMirror -> annotationMirror.getElementValues().values().stream()
                                         .map(AnnotationValue::getValue).map(Objects::toString)).findFirst()
                         .orElse(Plugin.EMPTY));
@@ -255,17 +257,20 @@ public class PluginProcessor extends AbstractProcessor {
             if (name.isEmpty()) {
                 name = e.getSimpleName().toString();
             }
-            final PluginEntry entry = PluginEntry.builder()
+            final PluginEntry.Builder builder = PluginEntry.builder()
                     .setKey(name.toLowerCase(Locale.ROOT))
-                    // FIXME: use element name here if nonempty and find bug relying on behavior
                     .setName(name)
-                    .setElementName(plugin.elementType())
-                    .setCategory(getCategory(e))
-                    .setClassName(elements.getBinaryName(e).toString())
-                    .setPrintable(plugin.printObject())
-                    .setDefer(plugin.deferChildren())
-                    .get();
-            return new PluginEntryMirror(e, entry);
+                    .setClassName(elements.getBinaryName(e).toString());
+            Configurable configurable = e.getAnnotation(Configurable.class);
+            if (configurable != null) {
+                builder.setNamespace(Node.CORE_NAMESPACE)
+                        .setElementType(configurable.elementType().isEmpty() ? name : configurable.elementType())
+                        .setDeferChildren(configurable.deferChildren())
+                        .setPrintable(configurable.printObject());
+            } else {
+                builder.setNamespace(getNamespace(e));
+            }
+            return new PluginEntryMirror(e, builder.get());
         }
     }
 
@@ -331,11 +336,16 @@ public class PluginProcessor extends AbstractProcessor {
             }
             final PluginEntry.Builder builder = PluginEntry.builder()
                     .setName(name)
-                    .setElementName(plugin.elementType())
-                    .setCategory(getCategory(e))
-                    .setClassName(elements.getBinaryName(e).toString())
-                    .setPrintable(plugin.printObject())
-                    .setDefer(plugin.deferChildren());
+                    .setClassName(elements.getBinaryName(e).toString());
+            Configurable configurable = e.getAnnotation(Configurable.class);
+            if (configurable != null) {
+                builder.setNamespace(Node.CORE_NAMESPACE)
+                        .setElementType(configurable.elementType().isEmpty() ? name : configurable.elementType())
+                        .setDeferChildren(configurable.deferChildren())
+                        .setPrintable(configurable.printObject());
+            } else {
+                builder.setNamespace(getNamespace(e));
+            }
             final Collection<PluginEntryMirror> entries = new ArrayList<>(aliases.value().length);
             for (final String alias : aliases.value()) {
                 final PluginEntry entry = builder.setKey(alias.toLowerCase(Locale.ROOT)).get();

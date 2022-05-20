@@ -21,8 +21,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Priority;
 import org.apache.logging.log4j.core.util.NetUtils;
-import org.apache.logging.log4j.plugins.Category;
-import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -41,8 +40,8 @@ import java.util.regex.Pattern;
 /**
  * Formats a log event as a BSD Log record.
  */
-@Category(Node.CATEGORY)
-@Plugin(value = "SyslogLayout", elementType = Layout.ELEMENT_TYPE, printObject = true)
+@Configurable(elementType = Layout.ELEMENT_TYPE, printObject = true)
+@Plugin
 public final class SyslogLayout extends AbstractStringLayout {
 
     /**

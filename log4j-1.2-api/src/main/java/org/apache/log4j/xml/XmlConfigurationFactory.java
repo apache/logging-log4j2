@@ -23,14 +23,14 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Order;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Constructs a Configuration usable in Log4j 2 from a Log4j 1 configuration file.
  */
-@Category(ConfigurationFactory.CATEGORY)
+@Namespace(ConfigurationFactory.NAMESPACE)
 @Plugin("Log4j1XmlConfigurationFactory")
 @Order(2)
 public class XmlConfigurationFactory extends ConfigurationFactory {

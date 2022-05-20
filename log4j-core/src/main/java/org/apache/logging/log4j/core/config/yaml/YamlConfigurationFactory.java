@@ -22,10 +22,10 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Order;
 import org.apache.logging.log4j.core.util.Loader;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 
-@Category(ConfigurationFactory.CATEGORY)
+@Namespace(ConfigurationFactory.NAMESPACE)
 @Plugin("YamlConfigurationFactory")
 @Order(7)
 public class YamlConfigurationFactory extends ConfigurationFactory {

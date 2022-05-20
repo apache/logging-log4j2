@@ -26,8 +26,7 @@ import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.core.pattern.RegexReplacement;
-import org.apache.logging.log4j.plugins.Category;
-import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -55,8 +54,8 @@ import java.util.Map;
  * See the Log4j Manual for details on the supported pattern converters.
  * </p>
  */
-@Category(Node.CATEGORY)
-@Plugin(value = "PatternLayout", elementType = Layout.ELEMENT_TYPE, printObject = true)
+@Configurable(elementType = Layout.ELEMENT_TYPE, printObject = true)
+@Plugin
 public final class PatternLayout extends AbstractStringLayout {
 
     /**

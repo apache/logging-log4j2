@@ -200,7 +200,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
         if (type == null) {
             t = "null";
         } else {
-            t = type.getElementName() + ':' + type.getPluginClass();
+            t = type.getElementType() + ':' + type.getPluginClass();
         }
 
         final String p = node.getParent() == null ? "null"

@@ -36,8 +36,9 @@ import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.apache.logging.log4j.layout.template.json.util.Recycler;
 import org.apache.logging.log4j.layout.template.json.util.RecyclerFactory;
 import org.apache.logging.log4j.layout.template.json.util.Uris;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Factory;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
@@ -60,9 +61,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-@Category(Node.CATEGORY)
-@Plugin(value = "JsonTemplateLayout",
-        elementType = Layout.ELEMENT_TYPE)
+@Configurable(elementType = Layout.ELEMENT_TYPE)
+@Plugin
 public class JsonTemplateLayout implements StringLayout {
 
     private static final Map<String, String> CONTENT_FORMAT =
@@ -125,7 +125,7 @@ public class JsonTemplateLayout implements StringLayout {
 
         // Inject resolver factory and interceptor plugins.
         final List<EventResolverFactory> resolverFactories =
-                configuration.getComponent(new @Category(EventResolverFactory.CATEGORY) Key<>() {});
+                configuration.getComponent(new @Namespace(EventResolverFactory.CATEGORY) Key<>() {});
         final Map<String, EventResolverFactory> resolverFactoryByName =
                 resolverFactories.stream().collect(
                         Collectors.toMap(EventResolverFactory::getName, Function.identity(), (factory, conflictingFactory) -> {
@@ -135,7 +135,7 @@ public class JsonTemplateLayout implements StringLayout {
                             throw new IllegalArgumentException(message);
                         }, LinkedHashMap::new));
         final List<EventResolverInterceptor> resolverInterceptors =
-                configuration.getComponent(new @Category(EventResolverInterceptor.CATEGORY) Key<>() {});
+                configuration.getComponent(new @Namespace(EventResolverInterceptor.CATEGORY) Key<>() {});
         final EventResolverStringSubstitutor substitutor =
                 new EventResolverStringSubstitutor(configuration.getStrSubstitutor());
 
@@ -584,9 +584,8 @@ public class JsonTemplateLayout implements StringLayout {
 
     }
 
-    @Category(Node.CATEGORY)
-    @Plugin(value = "EventTemplateAdditionalField",
-            printObject = true)
+    @Configurable(printObject = true)
+    @Plugin("EventTemplateAdditionalField")
     public static final class EventTemplateAdditionalField {
 
         public enum Format { STRING, JSON }

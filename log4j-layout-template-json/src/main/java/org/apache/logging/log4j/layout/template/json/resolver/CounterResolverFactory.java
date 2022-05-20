@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
 
 /**
  * {@link CounterResolver} factory.
  */
-@Category(TemplateResolverFactory.CATEGORY)
+@Namespace(TemplateResolverFactory.CATEGORY)
 @Plugin("CounterResolverFactory")
 public final class CounterResolverFactory implements EventResolverFactory {
 

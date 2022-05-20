@@ -16,9 +16,8 @@
  */
 /**
  * Log4j 2 Filter support. {@link org.apache.logging.log4j.core.Filter} plugins should use the
- * {@linkplain org.apache.logging.log4j.plugins.Category plugin category}
- * {@link org.apache.logging.log4j.plugins.Node#CATEGORY Core} and the
- * {@linkplain org.apache.logging.log4j.plugins.Plugin#elementType() element type}
+ * {@link org.apache.logging.log4j.plugins.Configurable} plugin namespace annotation and the
+ * {@linkplain org.apache.logging.log4j.plugins.Configurable#elementType() element type} value of
  * {@link org.apache.logging.log4j.core.Filter#ELEMENT_TYPE filter}.
  */
 package org.apache.logging.log4j.core.filter;

@@ -16,8 +16,7 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import org.apache.logging.log4j.plugins.Category;
-import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -28,7 +27,7 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * Container of Logger objects.
  */
-@Category(Node.CATEGORY)
+@Configurable
 @Plugin("loggers")
 public final class LoggersPlugin {
 

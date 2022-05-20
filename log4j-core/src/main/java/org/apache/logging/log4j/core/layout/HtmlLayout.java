@@ -22,8 +22,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.pattern.DatePatternConverter;
 import org.apache.logging.log4j.core.util.Transform;
-import org.apache.logging.log4j.plugins.Category;
-import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -48,8 +47,8 @@ import java.util.Date;
  * characters could result in corrupted log files.
  * </p>
  */
-@Category(Node.CATEGORY)
-@Plugin(value = "HtmlLayout", elementType = Layout.ELEMENT_TYPE, printObject = true)
+@Configurable(elementType = Layout.ELEMENT_TYPE, printObject = true)
+@Plugin
 public final class HtmlLayout extends AbstractStringLayout {
 
     /**

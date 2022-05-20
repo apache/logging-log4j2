@@ -28,8 +28,7 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.jackson.AbstractJacksonLayout;
 import org.apache.logging.log4j.jackson.XmlConstants;
-import org.apache.logging.log4j.plugins.Category;
-import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -75,8 +74,8 @@ import java.util.Map;
  * into JSON output. Supports Lookup expressions.
  * </p>
  */
-@Category(Node.CATEGORY)
-@Plugin(value = "JsonLayout", elementType = Layout.ELEMENT_TYPE, printObject = true)
+@Configurable(elementType = Layout.ELEMENT_TYPE, printObject = true)
+@Plugin
 public final class JsonLayout extends AbstractJacksonLayout {
 
     public static class Builder<B extends Builder<B>> extends AbstractJacksonLayout.Builder<B>

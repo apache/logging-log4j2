@@ -17,8 +17,6 @@
 
 package org.apache.logging.log4j.plugins.di;
 
-import org.apache.logging.log4j.plugins.name.AnnotatedElementAliasesProvider;
-
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Field;
@@ -60,13 +58,13 @@ class InjectionPoint<T> {
 
     static <T> InjectionPoint<T> forField(final Field field) {
         final Key<T> key = Key.forField(field);
-        final Collection<String> aliases = AnnotatedElementAliasesProvider.getAliases(field);
+        final Collection<String> aliases = Keys.getAliases(field);
         return new InjectionPoint<>(key, aliases, field, field);
     }
 
     static <T> InjectionPoint<T> forParameter(final Executable executable, final Parameter parameter) {
         final Key<T> key = Key.forParameter(parameter);
-        final Collection<String> aliases = AnnotatedElementAliasesProvider.getAliases(parameter);
+        final Collection<String> aliases = Keys.getAliases(parameter);
         return new InjectionPoint<>(key, aliases, executable, parameter);
     }
 

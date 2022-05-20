@@ -24,7 +24,7 @@ import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.xml.XmlConfiguration;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -34,13 +34,13 @@ import org.w3c.dom.NodeList;
 
 import java.util.Properties;
 
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
 import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
 
 /**
  * Build a Pattern Layout
  */
-@Category(CATEGORY)
+@Namespace(NAMESPACE)
 @Plugin("org.apache.log4j.PatternLayout")
 @PluginAliases("org.apache.log4j.EnhancedPatternLayout")
 public class PatternLayoutBuilder extends AbstractBuilder<Layout> implements LayoutBuilder {

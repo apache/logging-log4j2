@@ -23,46 +23,44 @@ import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import java.util.AbstractCollection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
- * Plugin categories are mappings of plugin keys to plugin classes where plugin keys are lower-cased
+ * Plugin namespaces are mappings of plugin keys to plugin classes where plugin keys are lower-cased
  * versions of plugin names.
  */
 @Singleton
-public class PluginCategory extends AbstractCollection<PluginType<?>> {
+public class PluginNamespace extends AbstractCollection<PluginType<?>> {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final String key;
     private final String name;
     private final Map<String, PluginType<?>> plugins = new LinkedHashMap<>();
 
-    public PluginCategory(final String name) {
+    public PluginNamespace(final String name) {
         this(name.toLowerCase(Locale.ROOT), name);
     }
 
-    public PluginCategory(final String key, final String name) {
+    public PluginNamespace(final String key, final String name) {
         this.key = key;
         this.name = name;
     }
 
     /**
-     * Returns the key corresponding to this plugin category. These keys are lowercase versions of the category name.
+     * Returns the key corresponding to this plugin namespace. These keys are lowercase versions of the namespace name.
      */
     public String getKey() {
         return key;
     }
 
     /**
-     * Returns the name of this plugin category.
+     * Returns the name of this plugin namespace.
      */
     public String getName() {
         return name;
@@ -80,13 +78,6 @@ public class PluginCategory extends AbstractCollection<PluginType<?>> {
      */
     public boolean isEmpty() {
         return plugins.isEmpty();
-    }
-
-    /**
-     * Returns an unmodifiable set of plugin keys in this category.
-     */
-    public Set<String> getPluginKeys() {
-        return Collections.unmodifiableSet(plugins.keySet());
     }
 
     /**
@@ -108,7 +99,7 @@ public class PluginCategory extends AbstractCollection<PluginType<?>> {
      */
     public void put(final String key, final PluginType<?> pluginType) {
         plugins.put(key, pluginType);
-        LOGGER.trace("Put PluginCategory[{}][{}] = {}", name, key, pluginType);
+        LOGGER.trace("Put PluginNamespace[{}][{}] = {}", name, key, pluginType);
     }
 
     @Override
@@ -117,23 +108,23 @@ public class PluginCategory extends AbstractCollection<PluginType<?>> {
     }
 
     /**
-     * Merges the provided plugin type into this category using the given key and returns the merged result.
+     * Merges the provided plugin type into this namespace using the given key and returns the merged result.
      * Merging is done by preferring plugins according to {@link PluginOrder} where a conflict occurs with the
      * same key.
      */
     public PluginType<?> merge(final String key, final PluginType<?> pluginType) {
         final PluginType<?> result = plugins.merge(key, pluginType, (lhs, rhs) -> {
             final int compare = PluginOrder.COMPARATOR.compare(lhs.getPluginClass(), rhs.getPluginClass());
-            LOGGER.debug("PluginCategory merge for key {} with comparison result {}", key, compare);
+            LOGGER.debug("PluginNamespace merge for key {} with comparison result {}", key, compare);
             return compare <= 0 ? lhs : rhs;
         });
-        LOGGER.trace("Merged PluginCategory[{}][{}] = {}", name, key, result);
+        LOGGER.trace("Merged PluginNamespace[{}][{}] = {}", name, key, result);
         return result;
     }
 
-    public void mergeAll(final PluginCategory category) {
-        if (category != null) {
-            category.forEach(this::merge);
+    public void mergeAll(final PluginNamespace namespace) {
+        if (namespace != null) {
+            namespace.forEach(this::merge);
         }
     }
 

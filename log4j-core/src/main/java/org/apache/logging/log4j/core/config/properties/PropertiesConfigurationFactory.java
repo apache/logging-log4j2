@@ -21,7 +21,7 @@ import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Order;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 
 import java.io.IOException;
@@ -33,7 +33,7 @@ import java.util.Properties;
  *
  * @since 2.4
  */
-@Category(ConfigurationFactory.CATEGORY)
+@Namespace(ConfigurationFactory.NAMESPACE)
 @Plugin("PropertiesConfigurationFactory")
 @Order(8)
 public class PropertiesConfigurationFactory extends ConfigurationFactory {

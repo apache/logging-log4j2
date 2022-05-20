@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.pattern;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.MapMessage.MapFormat;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 
 import java.util.Objects;
@@ -30,7 +30,7 @@ import java.util.Objects;
  * java.util.Hashtable.toString(), or to output the value of a specific key
  * within the Map.
  */
-@Category(PatternConverter.CATEGORY)
+@Namespace(PatternConverter.CATEGORY)
 @Plugin("MapPatternConverter")
 @ConverterKeys({ "K", "map", "MAP" })
 public final class MapPatternConverter extends LogEventPatternConverter {

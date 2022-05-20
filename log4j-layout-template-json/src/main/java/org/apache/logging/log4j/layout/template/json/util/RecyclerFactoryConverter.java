@@ -18,12 +18,12 @@ package org.apache.logging.log4j.layout.template.json.util;
 
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
-import org.apache.logging.log4j.plugins.convert.TypeConverterCategory;
+import org.apache.logging.log4j.plugins.convert.TypeConverters;
 
 /**
  * The default string (i.e., recycler factory spec) to {@link RecyclerFactory} type converter.
  */
-@TypeConverterCategory
+@TypeConverters
 @Plugin
 public final class RecyclerFactoryConverter implements TypeConverter<RecyclerFactory> {
 

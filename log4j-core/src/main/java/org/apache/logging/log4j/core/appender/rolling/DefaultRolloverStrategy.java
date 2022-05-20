@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
 import org.apache.logging.log4j.core.appender.rolling.action.CompositeAction;
 import org.apache.logging.log4j.core.appender.rolling.action.FileRenameAction;
@@ -26,7 +25,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.Integers;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -77,8 +76,8 @@ import java.util.zip.Deflater;
  * are discouraged.
  * </p>
  */
-@Category(Core.CATEGORY_NAME)
-@Plugin(value = "DefaultRolloverStrategy", printObject = true)
+@Configurable(printObject = true)
+@Plugin
 public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
 
     private static final int MIN_WINDOW_SIZE = 1;

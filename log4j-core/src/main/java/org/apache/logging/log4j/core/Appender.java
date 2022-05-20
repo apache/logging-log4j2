@@ -37,7 +37,7 @@ import java.io.Serializable;
 public interface Appender extends LifeCycle {
 
     /**
-     * Main {@linkplain org.apache.logging.log4j.plugins.Plugin#elementType() plugin element type} for
+     * Main {@linkplain org.apache.logging.log4j.plugins.Configurable#elementType() plugin element type} for
      * Appender plugins.
      *
      * @since 2.6

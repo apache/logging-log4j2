@@ -21,7 +21,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Order;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 
 import java.net.URI;
@@ -29,7 +29,7 @@ import java.net.URI;
 /**
  * Factory to construct a  CustomConfiguration.
  */
-@Category(ConfigurationFactory.CATEGORY)
+@Namespace(ConfigurationFactory.NAMESPACE)
 @Plugin("CustomConfigurationFactory")
 @Order(50)
 public class CustomConfigurationFactory extends ConfigurationFactory {

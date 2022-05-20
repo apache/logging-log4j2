@@ -21,7 +21,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MultiformatMessage;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.MultiFormatStringBuilderFormattable;
@@ -36,7 +36,7 @@ import java.util.Locale;
 /**
  * Returns the event's rendered message in a StringBuilder.
  */
-@Category(PatternConverter.CATEGORY)
+@Namespace(PatternConverter.CATEGORY)
 @Plugin("MessagePatternConverter")
 @ConverterKeys({ "m", "msg", "message" })
 @PerformanceSensitive("allocation")

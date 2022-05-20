@@ -31,12 +31,13 @@ import java.util.Optional;
 public class Node {
 
     /**
-     * Main plugin category for plugins which are represented as a configuration node. Such plugins tend to be
+     * Main plugin namespace for plugins which are represented as a configuration node. Such plugins tend to be
      * available as XML elements in a configuration file.
      *
      * @since 2.1
+     * @see Configurable
      */
-    public static final String CATEGORY = "Core";
+    public static final String CORE_NAMESPACE = "Core";
 
     private Node parent;
     private final String name;

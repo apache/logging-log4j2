@@ -47,7 +47,7 @@ import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StringMapMessage;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.util.Strings;
@@ -1377,7 +1377,7 @@ class JsonTemplateLayoutTest {
 
     }
 
-    @Category(TemplateResolverFactory.CATEGORY)
+    @Namespace(TemplateResolverFactory.CATEGORY)
     @Plugin("CustomResolverFactory")
     public static final class CustomResolverFactory implements EventResolverFactory {
 

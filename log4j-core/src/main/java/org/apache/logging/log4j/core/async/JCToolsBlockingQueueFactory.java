@@ -16,8 +16,7 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import org.apache.logging.log4j.plugins.Category;
-import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -33,8 +32,8 @@ import java.util.concurrent.locks.LockSupport;
  *
  * @since 2.7
  */
-@Category(Node.CATEGORY)
-@Plugin(value = "JCToolsBlockingQueue", elementType = BlockingQueueFactory.ELEMENT_TYPE)
+@Configurable(elementType = BlockingQueueFactory.ELEMENT_TYPE, printObject = true)
+@Plugin("JCToolsBlockingQueue")
 public class JCToolsBlockingQueueFactory<E> implements BlockingQueueFactory<E> {
 
     private final WaitStrategy waitStrategy;

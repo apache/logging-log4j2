@@ -18,9 +18,9 @@ package org.apache.logging.log4j.core.util;
 
 import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.Reconfigurable;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.di.Key;
-import org.apache.logging.log4j.plugins.util.PluginCategory;
+import org.apache.logging.log4j.plugins.util.PluginNamespace;
 
 import java.util.List;
 
@@ -32,7 +32,7 @@ import java.util.List;
 public interface Watcher {
 
     String CATEGORY = "Watcher";
-    Key<PluginCategory> PLUGIN_CATEGORY_KEY = new @Category(CATEGORY) Key<>() {};
+    Key<PluginNamespace> PLUGIN_CATEGORY_KEY = new @Namespace(CATEGORY) Key<>() {};
     String ELEMENT_TYPE = "watcher";
 
     /**

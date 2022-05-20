@@ -17,13 +17,12 @@
 package org.apache.logging.log4j.core.appender.routing;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.script.Script;
 import org.apache.logging.log4j.core.script.ScriptBindings;
 import org.apache.logging.log4j.core.script.ScriptManager;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
@@ -40,8 +39,8 @@ import static org.apache.logging.log4j.core.appender.routing.RoutingAppender.STA
 /**
  * Contains the individual Route elements.
  */
-@Category(Core.CATEGORY_NAME)
-@Plugin(value = "Routes", printObject = true)
+@Configurable(printObject = true)
+@Plugin
 public final class Routes {
 
     private static final String LOG_EVENT_KEY = "logEvent";

@@ -22,12 +22,11 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.appender.nosql.NoSqlProvider;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -38,8 +37,8 @@ import org.bson.codecs.configuration.CodecRegistry;
  * The MongoDB implementation of {@link NoSqlProvider} using the MongoDB driver
  * version 4 API.
  */
-@Category(Core.CATEGORY_NAME)
-@Plugin(value = "MongoDb4", printObject = true)
+@Configurable(printObject = true)
+@Plugin("MongoDb4")
 public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection> {
 
     public static class Builder<B extends Builder<B>> extends AbstractFilterable.Builder<B>

@@ -21,11 +21,11 @@ package org.apache.logging.log4j.web;
 import jakarta.servlet.ServletContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.lookup.AbstractLookup;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.Strings;
 
-@Category("Lookup")
+@Namespace("Lookup")
 @Plugin("web")
 public class WebLookup extends AbstractLookup {
     private static final String ATTR_PREFIX = "attr.";

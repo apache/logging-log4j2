@@ -15,7 +15,9 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins;
+package org.apache.logging.log4j.plugins.convert;
+
+import org.apache.logging.log4j.plugins.Namespace;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -24,17 +26,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotations to separate {@link org.apache.logging.log4j.plugins.name.NameProvider} names into namespaces.
- * For example, the Core category is used with the {@link Node} API, while the TypeConverter
- * category is used with the {@link org.apache.logging.log4j.plugins.convert.TypeConverter} API.
- * This can be annotated on another annotation to create an alias annotation for a common category.
+ * Plugin namespace for {@link TypeConverter} plugins.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE, ElementType.TYPE_USE, ElementType.ANNOTATION_TYPE })
+@Target({ElementType.TYPE, ElementType.TYPE_USE})
 @Documented
-public @interface Category {
-    /**
-     * The category name.
-     */
-    String value();
+@Namespace("TypeConverter")
+public @interface TypeConverters {
 }

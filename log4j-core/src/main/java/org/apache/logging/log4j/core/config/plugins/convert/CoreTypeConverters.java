@@ -22,7 +22,7 @@ import org.apache.logging.log4j.core.appender.rolling.action.Duration;
 import org.apache.logging.log4j.core.util.CronExpression;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
-import org.apache.logging.log4j.plugins.convert.TypeConverterCategory;
+import org.apache.logging.log4j.plugins.convert.TypeConverters;
 import org.apache.logging.log4j.util.LoaderUtil;
 
 import java.io.File;
@@ -55,7 +55,7 @@ public final class CoreTypeConverters {
     /**
      * Parses a {@link String} into a {@link BigDecimal}.
      */
-    @TypeConverterCategory
+    @TypeConverters
     @Plugin
     public static class BigDecimalConverter implements TypeConverter<BigDecimal> {
         @Override
@@ -67,7 +67,7 @@ public final class CoreTypeConverters {
     /**
      * Parses a {@link String} into a {@link BigInteger}.
      */
-    @TypeConverterCategory
+    @TypeConverters
     @Plugin
     public static class BigIntegerConverter implements TypeConverter<BigInteger> {
         @Override
@@ -86,7 +86,7 @@ public final class CoreTypeConverters {
      * <li>String using {@link Charset#defaultCharset()} [TODO Should this be UTF-8 instead?]</li>
      * </ul>
      */
-    @TypeConverterCategory
+    @TypeConverters
     @Plugin
     public static class ByteArrayConverter implements TypeConverter<byte[]> {
 
@@ -114,7 +114,7 @@ public final class CoreTypeConverters {
     /**
      * Converts a {@link String} into a {@code char[]}.
      */
-    @TypeConverterCategory
+    @TypeConverters
     @Plugin
     public static class CharArrayConverter implements TypeConverter<char[]> {
         @Override
@@ -126,7 +126,7 @@ public final class CoreTypeConverters {
     /**
      * Converts a {@link String} into a {@link Charset}.
      */
-    @TypeConverterCategory
+    @TypeConverters
     @Plugin
     public static class CharsetConverter implements TypeConverter<Charset> {
         @Override
@@ -138,7 +138,7 @@ public final class CoreTypeConverters {
     /**
      * Converts a {@link String} into a {@link Class}.
      */
-    @TypeConverterCategory
+    @TypeConverters
     @Plugin
     public static class ClassConverter implements TypeConverter<Class<?>> {
         @Override
@@ -169,7 +169,7 @@ public final class CoreTypeConverters {
         }
     }
 
-    @TypeConverterCategory
+    @TypeConverters
     @Plugin
     public static class CronExpressionConverter implements TypeConverter<CronExpression> {
         @Override
@@ -183,7 +183,7 @@ public final class CoreTypeConverters {
      *
      * @since 2.5
      */
-    @TypeConverterCategory
+    @TypeConverters
     @Plugin
     public static class DurationConverter implements TypeConverter<Duration> {
         @Override
@@ -195,7 +195,7 @@ public final class CoreTypeConverters {
     /**
      * Converts a {@link String} into a {@link File}.
      */
-    @TypeConverterCategory
+    @TypeConverters
     @Plugin
     public static class FileConverter implements TypeConverter<File> {
         @Override
@@ -207,7 +207,7 @@ public final class CoreTypeConverters {
     /**
      * Converts a {@link String} into an {@link InetAddress}.
      */
-    @TypeConverterCategory
+    @TypeConverters
     @Plugin
     public static class InetAddressConverter implements TypeConverter<InetAddress> {
         @Override
@@ -219,7 +219,7 @@ public final class CoreTypeConverters {
     /**
      * Converts a {@link String} into a Log4j {@link Level}. Returns {@code null} for invalid level names.
      */
-    @TypeConverterCategory
+    @TypeConverters
     @Plugin
     public static class LevelConverter implements TypeConverter<Level> {
         @Override
@@ -233,7 +233,7 @@ public final class CoreTypeConverters {
      *
      * @since 2.8
      */
-    @TypeConverterCategory
+    @TypeConverters
     @Plugin
     public static class PathConverter implements TypeConverter<Path> {
         @Override
@@ -245,7 +245,7 @@ public final class CoreTypeConverters {
     /**
      * Converts a {@link String} into a {@link Pattern}.
      */
-    @TypeConverterCategory
+    @TypeConverters
     @Plugin
     public static class PatternConverter implements TypeConverter<Pattern> {
         @Override
@@ -257,7 +257,7 @@ public final class CoreTypeConverters {
     /**
      * Converts a {@link String} into a {@link Provider}.
      */
-    @TypeConverterCategory
+    @TypeConverters
     @Plugin
     public static class SecurityProviderConverter implements TypeConverter<Provider> {
         @Override
@@ -269,7 +269,7 @@ public final class CoreTypeConverters {
     /**
      * Converts a {@link String} into a {@link URI}.
      */
-    @TypeConverterCategory
+    @TypeConverters
     @Plugin
     public static class UriConverter implements TypeConverter<URI> {
         @Override
@@ -281,7 +281,7 @@ public final class CoreTypeConverters {
     /**
      * Converts a {@link String} into a {@link URL}.
      */
-    @TypeConverterCategory
+    @TypeConverters
     @Plugin
     public static class UrlConverter implements TypeConverter<URL> {
         @Override
@@ -295,7 +295,7 @@ public final class CoreTypeConverters {
      *
      * @since 2.8
      */
-    @TypeConverterCategory
+    @TypeConverters
     @Plugin
     public static class UuidConverter implements TypeConverter<UUID> {
         @Override
@@ -304,7 +304,7 @@ public final class CoreTypeConverters {
         }
     }
 
-    @TypeConverterCategory
+    @TypeConverters
     @Plugin
     public static class ZoneIdConverter implements TypeConverter<ZoneId> {
         @Override

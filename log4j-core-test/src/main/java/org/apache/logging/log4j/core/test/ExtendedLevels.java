@@ -17,13 +17,13 @@
 package org.apache.logging.log4j.core.test;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 
 /**
  *
  */
-@Category(Level.CATEGORY)
+@Namespace(Level.CATEGORY)
 @Plugin("ExtendedLevel")
 public class ExtendedLevels {
 

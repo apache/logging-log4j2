@@ -19,8 +19,7 @@ package org.apache.logging.log4j.plugins.visit;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.Node;
-import org.apache.logging.log4j.plugins.name.AnnotatedElementAliasesProvider;
-import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
+import org.apache.logging.log4j.plugins.di.Keys;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -42,8 +41,8 @@ public class PluginElementVisitor implements NodeVisitor {
 
     @Override
     public Object visitField(final Field field, final Node node, final StringBuilder debugLog) {
-        final String name = AnnotatedElementNameProvider.getName(field);
-        final Collection<String> aliases = AnnotatedElementAliasesProvider.getAliases(field);
+        final String name = Keys.getName(field);
+        final Collection<String> aliases = Keys.getAliases(field);
         final Type targetType = field.getGenericType();
         final Class<?> componentType = getComponentType(targetType);
         return TypeUtil.cast(componentType != null ? parseArrayElement(node, name, aliases, componentType, debugLog) :
@@ -52,8 +51,8 @@ public class PluginElementVisitor implements NodeVisitor {
 
     @Override
     public Object visitParameter(final Parameter parameter, final Node node, final StringBuilder debugLog) {
-        final String name = AnnotatedElementNameProvider.getName(parameter);
-        final Collection<String> aliases = AnnotatedElementAliasesProvider.getAliases(parameter);
+        final String name = Keys.getName(parameter);
+        final Collection<String> aliases = Keys.getAliases(parameter);
         final Type targetType = parameter.getParameterizedType();
         final Class<?> componentType = getComponentType(targetType);
         return TypeUtil.cast(componentType != null ? parseArrayElement(node, name, aliases, componentType, debugLog) :
@@ -73,7 +72,7 @@ public class PluginElementVisitor implements NodeVisitor {
         while (iterator.hasNext()) {
             final Node child = iterator.next();
             final PluginType<?> pluginType = child.getType();
-            final String elementName = Strings.trimToOptional(pluginType.getElementName()).orElseGet(pluginType::getName);
+            final String elementName = Strings.trimToOptional(pluginType.getElementType()).orElseGet(pluginType::getName);
             if (name.equalsIgnoreCase(elementName) || aliases.stream().anyMatch(elementName::equalsIgnoreCase) ||
                     componentType.isAssignableFrom(pluginType.getPluginClass())) {
                 if (!first) {
@@ -111,7 +110,7 @@ public class PluginElementVisitor implements NodeVisitor {
         while (iterator.hasNext()) {
             final Node child = iterator.next();
             final PluginType<?> pluginType = child.getType();
-            final String elementName = Strings.trimToOptional(pluginType.getElementName()).orElseGet(pluginType::getName);
+            final String elementName = Strings.trimToOptional(pluginType.getElementType()).orElseGet(pluginType::getName);
             if (name.equalsIgnoreCase(elementName) || aliases.stream().anyMatch(elementName::equalsIgnoreCase) ||
                     TypeUtil.isAssignable(targetType, pluginType.getPluginClass())) {
                 iterator.remove();

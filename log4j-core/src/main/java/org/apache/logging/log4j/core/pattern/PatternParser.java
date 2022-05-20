@@ -21,7 +21,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.time.SystemNanoClock;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Key;
-import org.apache.logging.log4j.plugins.util.PluginCategory;
+import org.apache.logging.log4j.plugins.util.PluginNamespace;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
@@ -87,7 +87,7 @@ public final class PatternParser {
 
     private static final int DECIMAL = 10;
 
-    private static final Key<PluginCategory> PLUGIN_CATEGORY_KEY = Key.forClass(PluginCategory.class);
+    private static final Key<PluginNamespace> PLUGIN_CATEGORY_KEY = Key.forClass(PluginNamespace.class);
 
     private final Configuration config;
 
@@ -132,8 +132,8 @@ public final class PatternParser {
     public PatternParser(final Configuration config, final String converterKey, final Class<?> expectedClass,
             final Class<?> filterClass) {
         this.config = config;
-        final PluginCategory plugins;
-        final Key<PluginCategory> pluginCategoryKey = PLUGIN_CATEGORY_KEY.withCategory(converterKey);
+        final PluginNamespace plugins;
+        final Key<PluginNamespace> pluginCategoryKey = PLUGIN_CATEGORY_KEY.withNamespace(converterKey);
         if (config == null) {
             plugins = DI.createInjector().getInstance(pluginCategoryKey);
         } else {
@@ -161,7 +161,7 @@ public final class PatternParser {
                     }
                 }
             } catch (final Exception ex) {
-                LOGGER.error("Error processing plugin " + type.getElementName(), ex);
+                LOGGER.error("Error processing plugin " + type.getElementType(), ex);
             }
         }
         converterRules = converters;

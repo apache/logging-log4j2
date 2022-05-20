@@ -20,14 +20,13 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Looks up keys from system properties.
  */
-@Category(StrLookup.CATEGORY)
+@Lookup
 @Plugin("sys")
 public class SystemPropertiesLookup extends AbstractLookup {
 

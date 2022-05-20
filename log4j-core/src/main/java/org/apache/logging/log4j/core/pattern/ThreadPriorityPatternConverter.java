@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
@@ -26,7 +26,7 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  *
  * @since 2.6
  */
-@Category(PatternConverter.CATEGORY)
+@Namespace(PatternConverter.CATEGORY)
 @Plugin("ThreadPriorityPatternConverter")
 @ConverterKeys({ "tp", "threadPriority" })
 @PerformanceSensitive("allocation")

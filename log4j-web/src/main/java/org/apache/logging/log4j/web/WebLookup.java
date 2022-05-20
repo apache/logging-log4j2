@@ -20,7 +20,7 @@ package org.apache.logging.log4j.web;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.lookup.AbstractLookup;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.Strings;
 
@@ -33,7 +33,7 @@ import java.security.Principal;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-@Category("Lookup")
+@Namespace("Lookup")
 @Plugin("web")
 public class WebLookup extends AbstractLookup {
     private static final String SESSION_ATTR_PREFIX = "session.attr.";

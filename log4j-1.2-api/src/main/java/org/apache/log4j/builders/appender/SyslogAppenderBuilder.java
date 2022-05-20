@@ -30,7 +30,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.SyslogAppender;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Protocol;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
@@ -42,14 +42,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
 import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
 import static org.apache.log4j.xml.XmlConfiguration.*;
 
 /**
  * Build a File Appender
  */
-@Category(CATEGORY)
+@Namespace(NAMESPACE)
 @Plugin("org.apache.log4j.net.SyslogAppender")
 public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBuilder {
 

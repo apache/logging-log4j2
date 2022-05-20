@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.plugins.test.validation;
 
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 
-@Category("Test")
+@Namespace("Test")
 @Plugin("PluginWithGenericSubclassFoo1Builder")
 public class PluginWithGenericSubclassFoo1Builder extends AbstractPluginWithGenericBuilder {
 

@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.StringBuilders;
@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * Equals pattern converter.
  */
-@Category(PatternConverter.CATEGORY)
+@Namespace(PatternConverter.CATEGORY)
 @Plugin("equals")
 @ConverterKeys({ "equals" })
 @PerformanceSensitive("allocation")

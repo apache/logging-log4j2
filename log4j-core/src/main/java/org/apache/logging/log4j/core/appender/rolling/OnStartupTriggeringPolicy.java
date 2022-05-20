@@ -16,10 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.util.Loader;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -30,8 +29,8 @@ import java.lang.reflect.Method;
 /**
  * Triggers a rollover on every restart, but only if the file size is greater than zero.
  */
-@Category(Core.CATEGORY_NAME)
-@Plugin(value = "OnStartupTriggeringPolicy", printObject = true)
+@Configurable(printObject = true)
+@Plugin
 public class OnStartupTriggeringPolicy extends AbstractTriggeringPolicy {
 
     private static final long JVM_START_TIME = initStartTime();

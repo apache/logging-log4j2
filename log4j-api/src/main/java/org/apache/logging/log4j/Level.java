@@ -117,10 +117,12 @@ public final class Level implements Comparable<Level>, Serializable {
      */
     public static final Level ALL = new Level("ALL", StandardLevel.ALL.intLevel());
 
+    public static final String NAMESPACE = "Level";
+
     /**
      * @since 2.1
      */
-    public static final String CATEGORY = "Level";
+    public static final String CATEGORY = NAMESPACE;
 
     private static final long serialVersionUID = 1581082L;
 

@@ -18,7 +18,6 @@
 package org.apache.logging.log4j.plugins.di;
 
 import org.apache.logging.log4j.plugins.QualifierType;
-import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
 import org.apache.logging.log4j.plugins.util.AnnotationUtil;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 
@@ -45,7 +44,7 @@ public class Key<T> {
     private final Class<T> rawType;
     private final Class<? extends Annotation> qualifierType;
     private final String name;
-    private final String category;
+    private final String namespace;
     private final int hashCode;
     private String toString;
 
@@ -66,20 +65,20 @@ public class Key<T> {
         final AnnotatedType superclass = getClass().getAnnotatedSuperclass();
         final Annotation qualifier = AnnotationUtil.getMetaAnnotation(superclass, QualifierType.class);
         qualifierType = qualifier != null ? qualifier.annotationType() : null;
-        name = AnnotatedElementNameProvider.getName(superclass);
-        category = Keys.getCategory(superclass);
-        hashCode = Objects.hash(type, qualifierType, name.toLowerCase(Locale.ROOT), category.toLowerCase(Locale.ROOT));
+        name = Keys.getName(superclass);
+        namespace = Keys.getNamespace(superclass);
+        hashCode = Objects.hash(type, qualifierType, name.toLowerCase(Locale.ROOT), namespace.toLowerCase(Locale.ROOT));
     }
 
     private Key(
             final Type type, final Class<T> rawType, final Class<? extends Annotation> qualifierType, final String name,
-            final String category) {
+            final String namespace) {
         this.type = type;
         this.rawType = rawType;
         this.qualifierType = qualifierType;
         this.name = name;
-        this.category = category;
-        hashCode = Objects.hash(type, qualifierType, name.toLowerCase(Locale.ROOT), category.toLowerCase(Locale.ROOT));
+        this.namespace = namespace;
+        hashCode = Objects.hash(type, qualifierType, name.toLowerCase(Locale.ROOT), namespace.toLowerCase(Locale.ROOT));
     }
 
     public Type getType() {
@@ -94,8 +93,8 @@ public class Key<T> {
         return name;
     }
 
-    public String getCategory() {
-        return category;
+    public String getNamespace() {
+        return namespace;
     }
 
     public Class<? extends Annotation> getQualifierType() {
@@ -106,18 +105,18 @@ public class Key<T> {
      * Returns a new key using the provided name and the same type and qualifier type as this instance.
      */
     public final Key<T> withName(final String name) {
-        return new Key<>(type, rawType, qualifierType, name, category);
+        return new Key<>(type, rawType, qualifierType, name, namespace);
     }
 
-    public final Key<T> withCategory(final String category) {
-        return new Key<>(type, rawType, qualifierType, name, category);
+    public final Key<T> withNamespace(final String namespace) {
+        return new Key<>(type, rawType, qualifierType, name, namespace);
     }
 
     /**
      * Returns a new key using the provided qualifier type and the same type and name as this instance.
      */
     public final Key<T> withQualifierType(final Class<? extends Annotation> qualifierType) {
-        return new Key<>(type, rawType, qualifierType, name, category);
+        return new Key<>(type, rawType, qualifierType, name, namespace);
     }
 
     /**
@@ -126,7 +125,7 @@ public class Key<T> {
      */
     public final <P> Key<P> getSuppliedType() {
         if (type instanceof ParameterizedType && Supplier.class.isAssignableFrom(rawType)) {
-            return forQualifiedNamedType(qualifierType, name, ((ParameterizedType) type).getActualTypeArguments()[0], category);
+            return forQualifiedNamedType(qualifierType, name, ((ParameterizedType) type).getActualTypeArguments()[0], namespace);
         }
         return null;
     }
@@ -134,7 +133,7 @@ public class Key<T> {
     public final <P> Key<P> getParameterizedTypeArgument(final int arg) {
         if (type instanceof ParameterizedType) {
             return forQualifiedNamedType(qualifierType, name, ((ParameterizedType) type).getActualTypeArguments()[arg],
-                    category);
+                    namespace);
         }
         return null;
     }
@@ -150,6 +149,7 @@ public class Key<T> {
         final Key<?> that = (Key<?>) o;
         return TypeUtil.isEqual(this.type, that.type) &&
                 this.name.equalsIgnoreCase(that.name) &&
+                this.namespace.equalsIgnoreCase(that.namespace) &&
                 Objects.equals(this.qualifierType, that.qualifierType);
     }
 
@@ -166,7 +166,7 @@ public class Key<T> {
                     "type=" + type.getTypeName() +
                     (qualifierType != null ? ", qualifierType=" + qualifierType.getSimpleName() : "") +
                     ", name='" + name + '\'' +
-                    ", category='" + category + '\'' +
+                    ", category='" + namespace + '\'' +
                     '}';
         }
         return string;
@@ -177,9 +177,9 @@ public class Key<T> {
      */
     public static <T> Key<T> forClass(final Class<T> clazz) {
         return forQualifiedNamedType(getQualifierType(clazz),
-                AnnotatedElementNameProvider.getName(clazz),
+                Keys.getName(clazz),
                 clazz,
-                Keys.getCategory(clazz));
+                Keys.getNamespace(clazz));
     }
 
     /**
@@ -187,9 +187,9 @@ public class Key<T> {
      */
     public static <T> Key<T> forMethod(final Method method) {
         return forQualifiedNamedType(getQualifierType(method),
-                AnnotatedElementNameProvider.getName(method),
+                Keys.getName(method),
                 method.getGenericReturnType(),
-                Keys.getCategory(method));
+                Keys.getNamespace(method));
     }
 
     /**
@@ -197,9 +197,9 @@ public class Key<T> {
      */
     public static <T> Key<T> forParameter(final Parameter parameter) {
         return forQualifiedNamedType(getQualifierType(parameter),
-                AnnotatedElementNameProvider.getName(parameter),
+                Keys.getName(parameter),
                 parameter.getParameterizedType(),
-                Keys.getCategory(parameter));
+                Keys.getNamespace(parameter));
     }
 
     /**
@@ -207,9 +207,9 @@ public class Key<T> {
      */
     public static <T> Key<T> forField(final Field field) {
         return forQualifiedNamedType(getQualifierType(field),
-                AnnotatedElementNameProvider.getName(field),
+                Keys.getName(field),
                 field.getGenericType(),
-                Keys.getCategory(field));
+                Keys.getNamespace(field));
     }
 
     private static <T> Key<T> forQualifiedNamedType(

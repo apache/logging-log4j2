@@ -24,8 +24,7 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.plugins.Category;
-import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -45,8 +44,8 @@ import java.util.Objects;
 /**
  * A Filter that operates on a Map.
  */
-@Category(Node.CATEGORY)
-@Plugin(value = "MapFilter", elementType = Filter.ELEMENT_TYPE, printObject = true)
+@Configurable(elementType = Filter.ELEMENT_TYPE, printObject = true)
+@Plugin
 @PerformanceSensitive("allocation")
 public class MapFilter extends AbstractFilter {
 

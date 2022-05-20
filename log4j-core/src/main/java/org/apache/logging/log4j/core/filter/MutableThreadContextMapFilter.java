@@ -36,8 +36,7 @@ import org.apache.logging.log4j.core.util.internal.HttpInputStreamUtil;
 import org.apache.logging.log4j.core.util.internal.LastModifiedSource;
 import org.apache.logging.log4j.core.util.internal.Status;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.plugins.Category;
-import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.PluginAttribute;
@@ -58,8 +57,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * Filter based on a value in the Thread Context Map (MDC).
  */
-@Category(Node.CATEGORY)
-@Plugin(value = "MutableThreadContextMapFilter", elementType = Filter.ELEMENT_TYPE, printObject = true)
+@Configurable(elementType = Filter.ELEMENT_TYPE, printObject = true)
+@Plugin
 @PluginAliases("MutableContextMapFilter")
 @PerformanceSensitive("allocation")
 public class MutableThreadContextMapFilter extends AbstractFilter {

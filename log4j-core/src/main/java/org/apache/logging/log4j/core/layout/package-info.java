@@ -16,9 +16,8 @@
  */
 /**
  * Log4j 2 Layout support. {@link org.apache.logging.log4j.core.Layout} plugins should use the
- * {@linkplain org.apache.logging.log4j.plugins.Category plugin category}
- * {@link org.apache.logging.log4j.plugins.Node#CATEGORY Core} and the
- * {@linkplain org.apache.logging.log4j.plugins.Plugin#elementType() element type}
+ * {@link org.apache.logging.log4j.plugins.Configurable} plugin namespace annotation with an
+ * {@linkplain org.apache.logging.log4j.plugins.Configurable#elementType() element type} of
  * {@link org.apache.logging.log4j.core.Layout#ELEMENT_TYPE layout}.
  */
 package org.apache.logging.log4j.core.layout;

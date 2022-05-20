@@ -16,8 +16,7 @@
  */
 package org.apache.logging.log4j.core.net;
 
-import org.apache.logging.log4j.core.Core;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -30,8 +29,8 @@ import java.net.SocketException;
 /**
  * Holds all socket options settable via {@link Socket} methods.
  */
-@Category(Core.CATEGORY_NAME)
-@Plugin(value = "SocketOptions", printObject = true)
+@Configurable(printObject = true)
+@Plugin
 public class SocketOptions implements Builder<SocketOptions>, Cloneable {
 
     @PluginFactory

@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.core.util.Watcher;
 import org.apache.logging.log4j.core.util.internal.HttpInputStreamUtil;
 import org.apache.logging.log4j.core.util.internal.LastModifiedSource;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -40,8 +40,8 @@ import java.util.List;
 /**
  *
  */
-@Category(Watcher.CATEGORY)
-@Plugin(value = "http", elementType = Watcher.ELEMENT_TYPE, printObject = true)
+@Namespace(Watcher.CATEGORY)
+@Plugin("http")
 @PluginAliases("https")
 public class HttpWatcher extends AbstractWatcher {
 

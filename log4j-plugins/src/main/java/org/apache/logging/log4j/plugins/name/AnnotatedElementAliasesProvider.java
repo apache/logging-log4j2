@@ -17,30 +17,9 @@
 
 package org.apache.logging.log4j.plugins.name;
 
-import org.apache.logging.log4j.util.ReflectionUtil;
-
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
 import java.util.Collection;
-import java.util.List;
 
 public interface AnnotatedElementAliasesProvider<A extends Annotation> {
-
-    static Collection<String> getAliases(final AnnotatedElement element) {
-        for (final Annotation annotation : element.getAnnotations()) {
-            if (annotation.annotationType().isAnnotationPresent(AliasesProvider.class)) {
-                return getAliasesForAnnotation(annotation);
-            }
-        }
-        return List.of();
-    }
-
-    private static <A extends Annotation> Collection<String> getAliasesForAnnotation(final A annotation) {
-        @SuppressWarnings("unchecked") final var providerType = (Class<AnnotatedElementAliasesProvider<A>>)
-                annotation.annotationType().getAnnotation(AliasesProvider.class).value();
-        final AnnotatedElementAliasesProvider<A> provider = ReflectionUtil.instantiate(providerType);
-        return provider.getAliases(annotation);
-    }
-
     Collection<String> getAliases(final A annotation);
 }

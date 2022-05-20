@@ -26,9 +26,8 @@ import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Inject;
-import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.PluginAttribute;
@@ -50,8 +49,8 @@ import java.util.function.Supplier;
 /**
  * Filter based on a value in the Thread Context Map (MDC).
  */
-@Category(Node.CATEGORY)
-@Plugin(value = "ThreadContextMapFilter", elementType = Filter.ELEMENT_TYPE, printObject = true)
+@Configurable(elementType = Filter.ELEMENT_TYPE, printObject = true)
+@Plugin
 @PluginAliases("ContextMapFilter")
 @PerformanceSensitive("allocation")
 public class ThreadContextMapFilter extends MapFilter {

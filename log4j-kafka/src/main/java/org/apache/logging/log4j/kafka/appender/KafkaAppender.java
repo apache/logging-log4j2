@@ -24,8 +24,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.plugins.Category;
-import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -40,8 +39,8 @@ import java.util.stream.Stream;
 /**
  * Sends log events to an Apache Kafka topic.
  */
-@Category(Node.CATEGORY)
-@Plugin(value = "Kafka", elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Plugin("Kafka")
 public final class KafkaAppender extends AbstractAppender {
 
     /**

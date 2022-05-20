@@ -18,14 +18,13 @@
 package org.apache.logging.log4j.script.appender.rolling.action;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.appender.rolling.action.PathWithAttributes;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.script.Script;
 import org.apache.logging.log4j.core.script.ScriptBindings;
 import org.apache.logging.log4j.core.script.ScriptConditional;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -43,8 +42,8 @@ import java.util.Objects;
  *
  * @see #createCondition(AbstractScript, Configuration)
  */
-@Category(Core.CATEGORY_NAME)
-@Plugin(value = "ScriptCondition", printObject = true)
+@Configurable(printObject = true)
+@Plugin
 public class ScriptCondition implements ScriptConditional {
     private static final Logger LOGGER = StatusLogger.getLogger();
 

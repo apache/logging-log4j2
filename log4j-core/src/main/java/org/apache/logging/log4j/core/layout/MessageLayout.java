@@ -21,8 +21,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.plugins.Category;
-import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
 
@@ -33,8 +32,8 @@ import org.apache.logging.log4j.plugins.PluginFactory;
  * {@link org.apache.logging.log4j.message.StringMapMessage} to a JMS {@link javax.jms.MapMessage}.
  * </p>
  */
-@Category(Node.CATEGORY)
-@Plugin(value = "MessageLayout", elementType = Layout.ELEMENT_TYPE, printObject = true)
+@Configurable(elementType = Layout.ELEMENT_TYPE, printObject = true)
+@Plugin
 public class MessageLayout extends AbstractLayout<Message> {
 
     public MessageLayout() {

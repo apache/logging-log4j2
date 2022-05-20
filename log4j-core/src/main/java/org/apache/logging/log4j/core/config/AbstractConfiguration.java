@@ -51,13 +51,13 @@ import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.core.util.Watcher;
 import org.apache.logging.log4j.core.util.WatcherFactory;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.di.Keys;
-import org.apache.logging.log4j.plugins.util.PluginCategory;
+import org.apache.logging.log4j.plugins.util.PluginNamespace;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.util.LazyValue;
@@ -108,7 +108,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     /**
      * Core plugins.
      */
-    protected PluginCategory corePlugins;
+    protected PluginNamespace corePlugins;
 
     /**
      * Shutdown hook is enabled by default.
@@ -200,13 +200,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         injector.registerBinding(ScriptManager.KEY, this::getScriptManager);
     }
 
-    public PluginCategory getCorePlugins() {
+    public PluginNamespace getCorePlugins() {
         return corePlugins;
     }
 
-    public void setCorePlugins(final PluginCategory corePlugins) {
+    public void setCorePlugins(final PluginNamespace corePlugins) {
         this.corePlugins = corePlugins;
-        injector.registerBinding(Core.PLUGIN_CATEGORY_KEY, this::getCorePlugins);
+        injector.registerBinding(Core.PLUGIN_NAMESPACE_KEY, this::getCorePlugins);
     }
 
     @Override
@@ -249,8 +249,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         configurationStrSubstitutor.setConfiguration(this);
         initializeScriptManager();
         injector.registerBindingIfAbsent(Keys.PLUGIN_PACKAGES_KEY, this::getPluginPackages);
-        corePlugins = injector.getInstance(Core.PLUGIN_CATEGORY_KEY);
-        final PluginCategory levelPlugins = injector.getInstance(new @Category(Level.CATEGORY) Key<>() {});
+        corePlugins = injector.getInstance(Core.PLUGIN_NAMESPACE_KEY);
+        final PluginNamespace levelPlugins = injector.getInstance(new @Namespace(Level.CATEGORY) Key<>() {});
         levelPlugins.forEach(type -> {
             final Class<?> pluginClass = type.getPluginClass();
             try {
@@ -562,7 +562,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             final List<Node> removeList = new ArrayList<>();
             for (final Node child : node.getChildren()) {
                 final PluginType<?> type = child.getType();
-                if (type != null && Arbiter.ELEMENT_TYPE.equals(type.getElementName())) {
+                if (type != null && Arbiter.ELEMENT_TYPE.equals(type.getElementType())) {
                     final Class<?> clazz = type.getPluginClass();
                     if (SelectArbiter.class.isAssignableFrom(clazz)) {
                         removeList.add(child);

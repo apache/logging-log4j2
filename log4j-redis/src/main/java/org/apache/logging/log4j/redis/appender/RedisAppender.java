@@ -24,14 +24,13 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
-import org.apache.logging.log4j.plugins.Category;
-import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
-import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.spi.AbstractLogger;
 
 import java.io.Serializable;
@@ -45,8 +44,8 @@ import java.util.concurrent.TimeUnit;
  * Sends log events to a Redis key as a List. All logs are appended to Redis lists via the RPUSH command at keys defined
  * in the configuration.
  */
-@Category(Node.CATEGORY)
-@Plugin(value = "Redis", elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Plugin("Redis")
 public final class RedisAppender extends AbstractAppender {
 
     // The default port here is the default port for Redis generally.

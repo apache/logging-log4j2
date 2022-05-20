@@ -34,7 +34,7 @@ class TypeConverterRegistryTest {
 
     }
 
-    @TypeConverterCategory
+    @TypeConverters
     @Plugin
     public static final class CustomTestClass1Converter1
             implements TypeConverter<CustomTestClass1> {
@@ -47,7 +47,7 @@ class TypeConverterRegistryTest {
     }
 
     @SuppressWarnings("ComparableType")
-    @TypeConverterCategory
+    @TypeConverters
     @Plugin
     @PluginOrder(PluginOrder.FIRST)
     public static final class CustomTestClass1Converter2
@@ -79,7 +79,7 @@ class TypeConverterRegistryTest {
 
     }
 
-    @TypeConverterCategory
+    @TypeConverters
     @Plugin
     public static final class CustomTestClass2Converter1
             implements TypeConverter<CustomTestClass2> {
@@ -91,7 +91,7 @@ class TypeConverterRegistryTest {
 
     }
 
-    @TypeConverterCategory
+    @TypeConverters
     @Plugin
     public static final class CustomTestClass2Converter2
             implements TypeConverter<CustomTestClass2> {

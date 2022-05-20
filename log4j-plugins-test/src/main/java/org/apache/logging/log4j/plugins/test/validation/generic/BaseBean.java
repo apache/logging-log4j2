@@ -17,9 +17,9 @@
 
 package org.apache.logging.log4j.plugins.test.validation.generic;
 
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 
-@Category("Bean")
+@Namespace("Bean")
 public
 interface BaseBean {
 }

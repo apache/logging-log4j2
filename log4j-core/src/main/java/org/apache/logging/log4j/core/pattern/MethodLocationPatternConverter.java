@@ -17,14 +17,13 @@
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
-
 
 /**
  * Returns the event's line location information in a StringBuilder.
  */
-@Category(PatternConverter.CATEGORY)
+@Namespace(PatternConverter.CATEGORY)
 @Plugin("MethodLocationPatternConverter")
 @ConverterKeys({ "M", "method" })
 public final class MethodLocationPatternConverter extends LogEventPatternConverter {

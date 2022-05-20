@@ -16,24 +16,21 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.net.Advertiser;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Category(Core.CATEGORY_NAME)
-@Plugin(value = "memory", elementType = "advertiser", printObject = false)
+@Configurable(elementType = "advertiser")
+@Plugin("memory")
 public class InMemoryAdvertiser implements Advertiser {
     private static final Map<Object, Map<String, String>> PROPERTIES = new HashMap<>();
 
     public static Map<Object, Map<String, String>> getAdvertisedEntries()
     {
-        final Map<Object, Map<String, String>> result = new HashMap<>();
-        result.putAll(PROPERTIES);
-        return result;
+        return Map.copyOf(PROPERTIES);
     }
 
     @Override

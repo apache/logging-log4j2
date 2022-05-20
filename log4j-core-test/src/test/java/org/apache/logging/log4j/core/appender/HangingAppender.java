@@ -17,12 +17,11 @@
 package org.apache.logging.log4j.core.appender;
 
 import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -32,11 +31,9 @@ import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
-@Category(Core.CATEGORY_NAME)
-@Plugin(value = "Hanging", elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Plugin("Hanging")
 public class HangingAppender extends AbstractAppender {
-
-    private static final long serialVersionUID = 1L;
 
     private final long delay;
     private final long startupDelay;

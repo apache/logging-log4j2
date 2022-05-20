@@ -17,9 +17,8 @@
 package org.apache.logging.log4j.core.appender.rolling.action;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.appender.rolling.FileSize;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -35,8 +34,8 @@ import java.util.List;
 /**
  * PathCondition that accepts paths after the accumulated file size threshold is exceeded during the file tree walk.
  */
-@Category(Core.CATEGORY_NAME)
-@Plugin(value = "IfAccumulatedFileSize", printObject = true)
+@Configurable(printObject = true)
+@Plugin
 public final class IfAccumulatedFileSize implements PathCondition {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private final long thresholdBytes;

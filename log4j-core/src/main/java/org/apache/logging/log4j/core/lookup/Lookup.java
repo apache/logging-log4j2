@@ -15,9 +15,9 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.convert;
+package org.apache.logging.log4j.core.lookup;
 
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -25,9 +25,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Plugin namespace for {@link StrLookup} plugins.
+ */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.TYPE_USE})
+@Target(ElementType.TYPE)
 @Documented
-@Category("TypeConverter")
-public @interface TypeConverterCategory {
+@Namespace(StrLookup.CATEGORY)
+public @interface Lookup {
 }

@@ -14,12 +14,12 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-= Extending Log4j 2
+= Extending Log4j 3
 Ralph Goers <rgoers@apache.org>
 
-Log4j 2 provides numerous ways that it can be manipulated and extended.
+Log4j 3 provides numerous ways that it can be manipulated and extended.
 This section includes an overview of the various ways that are directly
-supported by the Log4j 2 implementation.
+supported by the Log4j 3 implementation.
 
 [#LoggerContextFactory]
 == LoggerContextFactory
@@ -135,7 +135,7 @@ instantiate the configuration objects from that.
 
 [source,java]
 ----
-@Category("ConfigurationFactory")
+@Namespace("ConfigurationFactory")
 @Plugin("XMLConfigurationFactory")
 @Order(5)
 public class XMLConfigurationFactory extends ConfigurationFactory {
@@ -183,8 +183,8 @@ generic `LoggerConfig`.
 
 [source,java]
 ----
-@Category("Core")
-@Plugin(value = "root", printObject = true)
+@Configurable(printObject = true)
+@Plugin("root")
 public static class RootLogger extends LoggerConfig {
 
     @PluginFactory
@@ -234,18 +234,15 @@ to be resolved. The interpolator matches the "prefix" portion of the
 variable name to a registered Lookup and passes control to it to resolve
 the variable.
 
-A Lookup must be declared using a `@Plugin` annotation with a `type` of
-"Lookup". The `name` specified on the `@Plugin` annotation will be used to
-match the prefix. Unlike other Plugins, Lookups do not use a
-`@PluginFactory`. Instead, they are required to provide a constructor that
-accepts no arguments. The example below shows a Lookup that will return
+A Lookup must be declared using a `@Plugin @Lookup` annotation. The `value` specified on the `@Plugin` annotation will be used to
+match the prefix. The example below shows a Lookup that will return
 the value of a System Property.
 
 The provided Lookups are documented here: link:./lookups.html[Lookups]
 
 [source,java]
 ----
-@Category("Lookup")
+@Lookup
 @Plugin("sys")
 public class SystemPropertiesLookup implements StrLookup {
 
@@ -275,8 +272,8 @@ public class SystemPropertiesLookup implements StrLookup {
 
 As might be expected, Filters are used to reject or accept log
 events as they pass through the logging system. A Filter is declared
-using a `@Plugin` annotation of `type` "Core" and an `elementType` of "filter".
-The `name` attribute on the Plugin annotation is used to specify the name
+using a `@Configurable` annotation with an `elementType` of "filter".
+The `value` attribute on the `@Plugin` annotation is used to specify the name
 of the element users should use to enable the Filter. Specifying the
 `printObject` attribute with a value of "true" indicates that a call to
 `toString` will format the arguments to the filter as the configuration is
@@ -290,8 +287,8 @@ methods resolve to a single filter method.
 
 [source,java]
 ----
-@Category("Core")
-@Plugin(value = "ThresholdFilter", elementType = "filter", printObject = true)
+@Configurable(elementType = Filter.ELEMENT_TYPE, printObject = true)
+@Plugin
 public final class ThresholdFilter extends AbstractFilter {
 
     private final Level level;
@@ -348,8 +345,8 @@ public final class ThresholdFilter extends AbstractFilter {
 
 Appenders are passed an event, (usually) invoke a Layout to format the
 event, and then "publish" the event in whatever manner is desired.
-Appenders are declared as Plugins with a `type` of "Core" and an
-`elementType` of "appender". The `name` attribute on the Plugin annotation
+Appenders are declared as `@Configurable` with an
+`elementType` of "appender". The `value` attribute on the `@Plugin` annotation
 specifies the name of the element users must provide in their
 configuration to use the Appender. Appenders should specify `printObject`
 as "true" if the toString method renders the values of the attributes
@@ -369,8 +366,8 @@ pause while the reconfiguration takes place.
 
 [source,java]
 ----
-@Category("Core")
-@Plugin(value = "Stub", elementType = "appender", printObject = true)
+@Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Plugin("Stub")
 public final class StubAppender extends AbstractOutputStreamAppender<StubManager> {
 
     private StubAppender(String name,
@@ -409,8 +406,7 @@ extend `AbstractStringLayout`, which will take care of converting the
 `String` into the required byte array.
 
 Every Layout must declare itself as a plugin using the `@Plugin`
-annotation. The `type` must be "Core", and the `elementType` must be
-"layout". `printObject` should be set to "true" if the plugin's `toString`
+annotation and a `@Configurable` annotation with an `elementType` of "layout". `printObject` should be set to "true" if the plugin's `toString`
 method will provide a representation of the object and its parameters.
 The name of the plugin must match the value users should use to specify
 it as an element in their Appender configuration. The plugin also must
@@ -420,8 +416,8 @@ appropriate. The plugin can alternatively use the plugin builder notation.
 
 [source,java]
 ----
-@Category("Core")
-@Plugin(value = "SampleLayout", elementType = "layout", printObject = true)
+@Configurable(elementType = Layout.ELEMENT_TYPE, printObject = true)
+@Plugin
 public class SampleLayout extends AbstractStringLayout {
 
     protected SampleLayout(boolean locationInfo, boolean properties, boolean complete,
@@ -450,8 +446,7 @@ complex ways. For example, there are several converters that manipulate
 Throwables and format them in various ways.
 
 A PatternConverter must first declare itself as a Plugin using the
-standard `@Plugin` annotation but must specify value of "Converter" on the
-`type` attribute. Furthermore, the Converter must also specify the
+standard `@Plugin` annotation and the `@Namespace` annotation with the value "Converter". Furthermore, the Converter must also specify the
 `@ConverterKeys` annotation to define the tokens that can be specified in
 the pattern (preceded by a '%' character) to identify the Converter.
 
@@ -465,7 +460,7 @@ The following shows the skeleton of a Converter plugin.
 
 [source,java]
 ----
-@Category("Converter")
+@Namespace("Converter")
 @Plugin("query")
 @ConverterKeys({"q", "query"})
 public final class QueryConverter extends LogEventPatternConverter {

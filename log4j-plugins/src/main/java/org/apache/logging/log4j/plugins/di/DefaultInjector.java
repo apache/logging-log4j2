@@ -27,11 +27,9 @@ import org.apache.logging.log4j.plugins.QualifierType;
 import org.apache.logging.log4j.plugins.ScopeType;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
-import org.apache.logging.log4j.plugins.convert.TypeConverterCategory;
-import org.apache.logging.log4j.plugins.name.AnnotatedElementAliasesProvider;
-import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
+import org.apache.logging.log4j.plugins.convert.TypeConverters;
 import org.apache.logging.log4j.plugins.util.AnnotationUtil;
-import org.apache.logging.log4j.plugins.util.PluginCategory;
+import org.apache.logging.log4j.plugins.util.PluginNamespace;
 import org.apache.logging.log4j.plugins.util.PluginRegistry;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
@@ -258,15 +256,15 @@ class DefaultInjector implements Injector {
         final Scope scope = getScopeForType(rawType);
 
         // @Category PluginCategory injection
-        if (rawType == PluginCategory.class && !key.getCategory().isEmpty()) {
-            final Key<PluginCategory> pluginCategoryKey = TypeUtil.cast(key);
-            final Supplier<PluginCategory> pluginCategoryFactory = createPluginCategoryFactory(pluginCategoryKey);
+        if (rawType == PluginNamespace.class && !key.getNamespace().isEmpty()) {
+            final Key<PluginNamespace> pluginCategoryKey = TypeUtil.cast(key);
+            final Supplier<PluginNamespace> pluginCategoryFactory = createPluginCategoryFactory(pluginCategoryKey);
             bindingMap.putIfAbsent(pluginCategoryKey, pluginCategoryFactory);
             return bindingMap.get(key, aliases).getSupplier();
         }
 
         // Collection<T>/Map<String, T>/Stream<T>/etc. injection
-        if (COLLECTION_INJECTION_TYPES.contains(rawType) && !key.getCategory().isEmpty()) {
+        if (COLLECTION_INJECTION_TYPES.contains(rawType) && !key.getNamespace().isEmpty()) {
             if (Stream.class.isAssignableFrom(rawType)) {
                 final Key<Stream<T>> streamKey = TypeUtil.cast(key);
                 final Supplier<Stream<T>> streamFactory =
@@ -313,8 +311,8 @@ class DefaultInjector implements Injector {
         return bindingMap.bindIfAbsent(key, scope.get(key, instanceSupplier));
     }
 
-    private Supplier<PluginCategory> createPluginCategoryFactory(final Key<PluginCategory> key) {
-        return LazyValue.from(() -> getInstance(PluginRegistry.class).getCategory(key.getCategory(), getPluginPackages()));
+    private Supplier<PluginNamespace> createPluginCategoryFactory(final Key<PluginNamespace> key) {
+        return LazyValue.from(() -> getInstance(PluginRegistry.class).getNamespace(key.getNamespace(), getPluginPackages()));
     }
 
     private List<String> getPluginPackages() {
@@ -326,7 +324,7 @@ class DefaultInjector implements Injector {
         if (itemKey == null) {
             return Stream.empty();
         }
-        final PluginCategory category = getInstance(PluginRegistry.class).getCategory(itemKey.getCategory(), getPluginPackages());
+        final PluginNamespace category = getInstance(PluginRegistry.class).getNamespace(itemKey.getNamespace(), getPluginPackages());
         final Type type = itemKey.getType();
         final Class<T> rawType = itemKey.getRawType();
         return category.stream()
@@ -397,7 +395,7 @@ class DefaultInjector implements Injector {
     }
 
     private void initializeTypeConverters() {
-        final List<TypeConverter<?>> converters = getPluginList(new @TypeConverterCategory Key<>() {});
+        final List<TypeConverter<?>> converters = getPluginList(new @TypeConverters Key<>() {});
         converters.forEach(converter -> registerTypeConverter(getTypeConverterSupportedType(converter.getClass()), converter));
         registerTypeConverter(Boolean.class, Boolean::valueOf);
         registerTypeAlias(Boolean.class, Boolean.TYPE);
@@ -536,7 +534,7 @@ class DefaultInjector implements Injector {
             return;
         }
         try {
-            validate(pluginClass, type.getElementName(), pluginClass);
+            validate(pluginClass, type.getElementType(), pluginClass);
             final StringBuilder debugLog = new StringBuilder();
             final Object instance = getInjectablePluginInstance(node, debugLog);
             if (instance instanceof Supplier<?>) {
@@ -617,7 +615,7 @@ class DefaultInjector implements Injector {
                     .stream()
                     .map(e -> {
                         final Parameter parameter = e.getKey();
-                        final String name = AnnotatedElementNameProvider.getName(parameter);
+                        final String name = Keys.getName(parameter);
                         final Object value = e.getValue().get();
                         validate(parameter, name, value);
                         return value;
@@ -626,7 +624,7 @@ class DefaultInjector implements Injector {
             return rethrow(() -> TypeUtil.cast(invokeMethod(method, instance, args)));
         };
         final Supplier<T> factory = getScopeForMethod(method).get(primaryKey, unscoped);
-        final Collection<String> aliases = AnnotatedElementAliasesProvider.getAliases(method);
+        final Collection<String> aliases = Keys.getAliases(method);
         final List<Binding<T>> bindings = new ArrayList<>(1 + aliases.size());
         bindings.add(Binding.bind(primaryKey, factory));
         for (final String alias : aliases) {
@@ -643,7 +641,7 @@ class DefaultInjector implements Injector {
                 .stream()
                 .map(e -> {
                     final Parameter parameter = e.getKey();
-                    final String name = AnnotatedElementNameProvider.getName(parameter);
+                    final String name = Keys.getName(parameter);
                     final Object value = e.getValue().get();
                     validate(parameter, name, value);
                     return value;
@@ -745,7 +743,7 @@ class DefaultInjector implements Injector {
         final PluginType<?> type = node.getType();
         if (type != null && !type.isDeferChildren() && node.hasChildren()) {
             for (final Node child : node.getChildren()) {
-                final String nodeType = node.getType().getElementName();
+                final String nodeType = node.getType().getElementType();
                 final String start = nodeType.equals(node.getName()) ? node.getName() : nodeType + ' ' + node.getName();
                 LOGGER.error("{} has no field or parameter that matches element {}", start, child.getName());
             }

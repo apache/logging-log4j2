@@ -26,8 +26,7 @@ import org.apache.logging.log4j.core.net.Priority;
 import org.apache.logging.log4j.core.pattern.DatePatternConverter;
 import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.util.NetUtils;
-import org.apache.logging.log4j.plugins.Category;
-import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -45,8 +44,8 @@ import java.util.Map;
  *
  * Originally developed by Ceki G&uuml;lc&uuml; and Anders Kristensen.
  */
-@Category(Node.CATEGORY)
-@Plugin(value = "Log4j1SyslogLayout", elementType = Layout.ELEMENT_TYPE, printObject = true)
+@Configurable(elementType = Layout.ELEMENT_TYPE, printObject = true)
+@Plugin
 public final class Log4j1SyslogLayout  extends AbstractStringLayout {
 
     /**

@@ -23,7 +23,7 @@ import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
 import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
 import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedFormat;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * Converts and formats the event's date in a StringBuilder.
  */
-@Category(PatternConverter.CATEGORY)
+@Namespace(PatternConverter.CATEGORY)
 @Plugin("DatePatternConverter")
 @ConverterKeys({"d", "date"})
 @PerformanceSensitive("allocation")

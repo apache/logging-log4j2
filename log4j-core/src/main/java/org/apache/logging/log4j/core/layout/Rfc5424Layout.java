@@ -41,8 +41,7 @@ import org.apache.logging.log4j.message.MessageCollectionMessage;
 import org.apache.logging.log4j.message.StructuredDataCollectionMessage;
 import org.apache.logging.log4j.message.StructuredDataId;
 import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.apache.logging.log4j.plugins.Category;
-import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -68,8 +67,8 @@ import java.util.regex.Pattern;
  *
  * @see <a href="https://tools.ietf.org/html/rfc5424">RFC 5424</a>
  */
-@Category(Node.CATEGORY)
-@Plugin(value = "Rfc5424Layout", elementType = Layout.ELEMENT_TYPE, printObject = true)
+@Configurable(elementType = Layout.ELEMENT_TYPE, printObject = true)
+@Plugin
 public final class Rfc5424Layout extends AbstractStringLayout {
 
     /**

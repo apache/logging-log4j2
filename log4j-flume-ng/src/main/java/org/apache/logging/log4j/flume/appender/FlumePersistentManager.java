@@ -39,7 +39,7 @@ import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.core.util.SecretKeyProvider;
 import org.apache.logging.log4j.plugins.di.Injector;
-import org.apache.logging.log4j.plugins.util.PluginCategory;
+import org.apache.logging.log4j.plugins.util.PluginNamespace;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.util.Strings;
 
@@ -434,7 +434,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                 }
                 if (key != null) {
                     final Injector injector = data.injector;
-                    final PluginCategory plugins =
+                    final PluginNamespace plugins =
                             injector.getInstance(SecretKeyProvider.PLUGIN_CATEGORY_KEY);
                     if (plugins != null) {
                         boolean found = false;

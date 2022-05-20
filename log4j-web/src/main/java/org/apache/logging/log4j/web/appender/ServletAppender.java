@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.web.appender;
 
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -23,7 +24,7 @@ import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -35,8 +36,8 @@ import java.io.Serializable;
 /**
  * Logs using the ServletContext's log method
  */
-@Category("Core")
-@Plugin(value = "Servlet", elementType = "appender", printObject = true)
+@Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Plugin("Servlet")
 public class ServletAppender extends AbstractAppender {
 
 	public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>

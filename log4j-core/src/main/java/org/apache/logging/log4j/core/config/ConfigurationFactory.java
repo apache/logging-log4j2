@@ -22,11 +22,11 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFact
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.AuthorizationProvider;
 import org.apache.logging.log4j.core.util.BasicAuthorizationProvider;
-import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.Key;
-import org.apache.logging.log4j.plugins.util.PluginCategory;
+import org.apache.logging.log4j.plugins.util.PluginNamespace;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -43,7 +43,7 @@ import java.net.URI;
  * <li>An {@link Injector} binding for ConfigurationFactory may be registered.</li>
  * <li>
  * A ConfigurationFactory implementation can be added to the classpath and configured as a plugin in the
- * {@link #CATEGORY ConfigurationFactory} category. The {@link Order} annotation should be used to configure the
+ * {@link #NAMESPACE ConfigurationFactory} category. The {@link Order} annotation should be used to configure the
  * factory to be the first one inspected. See
  * {@linkplain org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory} for an example.</li>
  * </ol>
@@ -80,11 +80,11 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
      *
      * @since 2.1
      */
-    public static final String CATEGORY = "ConfigurationFactory";
+    public static final String NAMESPACE = "ConfigurationFactory";
 
     public static final Key<ConfigurationFactory> KEY = new Key<>() {};
 
-    public static final Key<PluginCategory> PLUGIN_CATEGORY_KEY = new @Category(CATEGORY) Key<>() {};
+    public static final Key<PluginNamespace> PLUGIN_CATEGORY_KEY = new @Namespace(NAMESPACE) Key<>() {};
 
     /**
      * Allows subclasses access to the status logger without creating another instance.

@@ -24,8 +24,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.plugins.Category;
-import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -48,8 +47,8 @@ import java.util.concurrent.TimeUnit;
 // Some methods are synchronized because a ZMQ.Socket is not thread-safe
 // Using a ThreadLocal for the publisher hangs tests on shutdown. There must be
 // some issue on threads owning certain resources as opposed to others.
-@Category(Node.CATEGORY)
-@Plugin(value = "JeroMQ", elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Plugin("JeroMQ")
 public final class JeroMqAppender extends AbstractAppender {
 
     private static final int DEFAULT_BACKLOG = 100;

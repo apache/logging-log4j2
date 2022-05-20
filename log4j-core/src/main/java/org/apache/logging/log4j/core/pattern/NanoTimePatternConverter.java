@@ -17,14 +17,14 @@
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * Converts and formats the event's nanoTime in a StringBuilder.
  */
-@Category(PatternConverter.CATEGORY)
+@Namespace(PatternConverter.CATEGORY)
 @Plugin("NanoTimePatternConverter")
 @ConverterKeys({ "N", "nano" })
 @PerformanceSensitive("allocation")

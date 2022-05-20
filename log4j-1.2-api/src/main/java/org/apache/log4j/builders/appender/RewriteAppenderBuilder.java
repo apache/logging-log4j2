@@ -32,7 +32,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.rewrite.RewriteAppender;
 import org.apache.logging.log4j.core.config.AppenderRef;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
 import static org.apache.log4j.config.Log4j1Configuration.APPENDER_REF_TAG;
 import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
 import static org.apache.log4j.xml.XmlConfiguration.*;
@@ -51,7 +51,7 @@ import static org.apache.log4j.xml.XmlConfiguration.*;
 /**
  * Build an Rewrite Appender
  */
-@Category(CATEGORY)
+@Namespace(NAMESPACE)
 @Plugin("org.apache.log4j.rewrite.RewriteAppender")
 public class RewriteAppenderBuilder extends AbstractBuilder implements AppenderBuilder {
 

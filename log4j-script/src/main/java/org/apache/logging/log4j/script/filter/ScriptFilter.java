@@ -30,8 +30,7 @@ import org.apache.logging.log4j.core.script.ScriptBindings;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.plugins.Category;
-import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -43,8 +42,8 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Returns the onMatch result if the script returns True and returns the onMismatch value otherwise.
  */
-@Category(Node.CATEGORY)
-@Plugin(value = "ScriptFilter", elementType = Filter.ELEMENT_TYPE, printObject = true)
+@Configurable(elementType = Filter.ELEMENT_TYPE, printObject = true)
+@Plugin
 public final class ScriptFilter extends AbstractFilter {
 
     private static final org.apache.logging.log4j.Logger logger = StatusLogger.getLogger();

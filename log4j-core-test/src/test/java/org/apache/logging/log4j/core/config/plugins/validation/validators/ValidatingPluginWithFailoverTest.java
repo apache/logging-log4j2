@@ -28,7 +28,7 @@ import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.di.Keys;
-import org.apache.logging.log4j.plugins.util.PluginCategory;
+import org.apache.logging.log4j.plugins.util.PluginNamespace;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusListener;
@@ -51,7 +51,7 @@ public class ValidatingPluginWithFailoverTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        final PluginCategory category = injector.getInstance(Core.PLUGIN_CATEGORY_KEY);
+        final PluginNamespace category = injector.getInstance(Core.PLUGIN_NAMESPACE_KEY);
         PluginType<?> plugin = category.get("Failover");
         assertNotNull(plugin, "Rebuild this module to make sure annotation processing kicks in.");
 

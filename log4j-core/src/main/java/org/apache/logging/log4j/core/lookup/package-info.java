@@ -17,7 +17,6 @@
 /**
  * Log4j 2 Lookups. These are used in variable interpolation in various configuration attributes.
  * {@link org.apache.logging.log4j.core.lookup.StrLookup} plugins should use the
- * {@linkplain org.apache.logging.log4j.plugins.Category plugin category}
- * {@link org.apache.logging.log4j.core.lookup.StrLookup#CATEGORY Lookup}.
+ * {@link org.apache.logging.log4j.core.lookup.Lookup} plugin namespace annotation.
  */
 package org.apache.logging.log4j.core.lookup;

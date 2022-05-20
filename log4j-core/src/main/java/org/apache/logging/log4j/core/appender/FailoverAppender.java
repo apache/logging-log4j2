@@ -18,14 +18,13 @@ package org.apache.logging.log4j.core.appender;
 
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.PluginAttribute;
@@ -43,8 +42,8 @@ import java.util.concurrent.TimeUnit;
  * to a different appender. Hopefully it is obvious that the Appenders must be configured
  * to not suppress exceptions for the FailoverAppender to work.
  */
-@Category(Core.CATEGORY_NAME)
-@Plugin(value = "Failover", elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Plugin("Failover")
 public final class FailoverAppender extends AbstractAppender {
 
     private static final int DEFAULT_INTERVAL_SECONDS = 60;

@@ -18,7 +18,6 @@ package org.apache.logging.log4j.script.appender;
 
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -29,7 +28,7 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.script.ScriptBindings;
 import org.apache.logging.log4j.core.script.ScriptManager;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -40,8 +39,8 @@ import org.apache.logging.log4j.script.AbstractScript;
 import java.io.Serializable;
 import java.util.Objects;
 
-@Category(Core.CATEGORY_NAME)
-@Plugin(value = "ScriptAppenderSelector", elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Plugin
 public class ScriptAppenderSelector extends AbstractAppender {
 
     /**

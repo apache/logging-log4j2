@@ -16,10 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.time.Clock;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
@@ -31,8 +30,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * Rolls a file over based on time.
  */
-@Category(Core.CATEGORY_NAME)
-@Plugin(value = "TimeBasedTriggeringPolicy", printObject = true)
+@Configurable(printObject = true)
+@Plugin
 public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
 
 

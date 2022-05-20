@@ -21,13 +21,13 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.pattern.ConverterKeys;
 import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternConverter;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 
 /**
  * Outputs the Log4j 1.x level name.
  */
-@Category(PatternConverter.CATEGORY)
+@Namespace(PatternConverter.CATEGORY)
 @Plugin("Log4j1LevelPatternConverter")
 @ConverterKeys({ "v1Level" })
 public class Log4j1LevelPatternConverter extends LogEventPatternConverter {

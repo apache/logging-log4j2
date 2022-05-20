@@ -17,10 +17,11 @@
 
 package org.apache.logging.log4j.plugins.di;
 
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Named;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
@@ -472,8 +473,8 @@ class InjectorTest {
         assertThatThrownBy(() -> injector.getInstance(Function.class)).hasMessageContaining("No @Inject constructors");
     }
 
-    @Category("Test")
-    @Plugin(value = "ConfigurableObject", elementType = "inner")
+    @Namespace("Test")
+    @Plugin
     static class ConfigurableObject {
         final String greeting;
         final Tertiary tertiary;
@@ -489,8 +490,8 @@ class InjectorTest {
         }
     }
 
-    @Category("Test")
-    @Plugin(value = "FactoryBuilt", elementType = "config")
+    @Namespace("Test")
+    @Plugin
     static class ConfigurableFactoryObject {
         final int id;
         final String name;
@@ -538,8 +539,8 @@ class InjectorTest {
         }
     }
 
-    @Category("Test")
-    @Plugin(value = "HasDefaults", elementType = "defs")
+    @Namespace("Test")
+    @Plugin
     static class DefaultValueTest {
         final String name;
         final long millis;
@@ -604,15 +605,19 @@ class InjectorTest {
 
     static <T> PluginType<T> fromClass(final Class<T> clazz) {
         final Plugin plugin = clazz.getAnnotation(Plugin.class);
-        final PluginEntry entry = PluginEntry.builder()
-                .setKey(plugin.value().toLowerCase(Locale.ROOT))
-                .setCategory(Keys.getCategory(clazz))
-                .setName(plugin.value())
-                .setElementName(plugin.elementType())
+        final String name = Keys.getName(clazz);
+        final PluginEntry.Builder builder = PluginEntry.builder()
+                .setKey(name.toLowerCase(Locale.ROOT))
+                .setName(name)
                 .setClassName(clazz.getName())
-                .setPrintable(plugin.printObject())
-                .setDefer(plugin.deferChildren())
-                .get();
+                .setNamespace(Keys.getNamespace(clazz));
+        final Configurable configurable = clazz.getAnnotation(Configurable.class);
+        if (configurable != null) {
+            builder.setElementType(configurable.elementType())
+                    .setPrintable(configurable.printObject())
+                    .setDeferChildren(configurable.deferChildren());
+        }
+        final PluginEntry entry = builder.get();
         return new PluginType<>(entry, clazz);
     }
 
@@ -648,8 +653,8 @@ class InjectorTest {
     }
 
     @RequiredProperty(name = "enableLoggins")
-    @Category("Test")
-    @Plugin(value = "Dangerous", elementType = "DangerZone")
+    @Namespace("Test")
+    @Plugin
     static class DangerousPlugin {
     }
 
@@ -677,8 +682,8 @@ class InjectorTest {
         assertDoesNotThrow(() -> injector.configure(node));
     }
 
-    @Category("Test")
-    @Plugin("ValidatedParameters")
+    @Namespace("Test")
+    @Plugin
     static class ValidatedParameters {
         final String name;
         final String value;
@@ -737,8 +742,8 @@ class InjectorTest {
         ERROR, WARN
     }
 
-    @Category("Test")
-    @Plugin("LevelInjection")
+    @Namespace("Test")
+    @Plugin
     static class LevelInject {
         final Level first;
         final Level second;
@@ -759,8 +764,8 @@ class InjectorTest {
         assertThat(levelInject.second).isEqualTo(Level.ERROR);
     }
 
-    @Category("Test")
-    @Plugin("MultipleElements")
+    @Namespace("Test")
+    @Plugin
     static class MultipleElements {
         final ConfigurableObject[] objects;
 
@@ -818,13 +823,13 @@ class InjectorTest {
      * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-3496">LOG4J2-3496</a>
      */
     static class ContainerPluginBeanInjection {
-        @Category("Bean") @Inject Optional<BaseBean> optional;
-        @Category("Bean") @Inject Collection<BaseBean> collection;
-        @Category("Bean") @Inject Iterable<BaseBean> iterable;
-        @Category("Bean") @Inject Set<BaseBean> set;
-        @Category("Bean") @Inject Stream<BaseBean> stream;
-        @Category("Bean") @Inject List<BaseBean> list;
-        @Category("Bean") @Inject Map<String, BaseBean> map;
+        @Namespace("Bean") @Inject Optional<BaseBean> optional;
+        @Namespace("Bean") @Inject Collection<BaseBean> collection;
+        @Namespace("Bean") @Inject Iterable<BaseBean> iterable;
+        @Namespace("Bean") @Inject Set<BaseBean> set;
+        @Namespace("Bean") @Inject Stream<BaseBean> stream;
+        @Namespace("Bean") @Inject List<BaseBean> list;
+        @Namespace("Bean") @Inject Map<String, BaseBean> map;
     }
 
     @Test
@@ -842,8 +847,7 @@ class InjectorTest {
         assertThat(instance.optional).get().isInstanceOf(BetaBean.class);
     }
 
-    @Category("Test")
-    @Plugin(deferChildren = true)
+    @Configurable(deferChildren = true)
     static class DeferChildren {
         final Node node;
 

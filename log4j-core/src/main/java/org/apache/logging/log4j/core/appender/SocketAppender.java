@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.appender;
 
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -30,7 +29,7 @@ import org.apache.logging.log4j.core.net.SocketOptions;
 import org.apache.logging.log4j.core.net.SslSocketManager;
 import org.apache.logging.log4j.core.net.TcpSocketManager;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
@@ -47,8 +46,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * An Appender that delivers events over socket connections. Supports both TCP and UDP.
  */
-@Category(Core.CATEGORY_NAME)
-@Plugin(value = "Socket", elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Plugin("Socket")
 public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketManager> {
 
     /**

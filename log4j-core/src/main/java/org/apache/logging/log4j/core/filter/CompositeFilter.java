@@ -25,8 +25,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.util.ObjectArrayIterator;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.plugins.Category;
-import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -41,12 +40,12 @@ import java.util.concurrent.TimeUnit;
 /**
  * Composes and invokes one or more filters.
  */
-@Category(Node.CATEGORY)
-@Plugin(value = "filters", printObject = true)
+@Configurable(printObject = true)
+@Plugin("filters")
 @PerformanceSensitive("allocation")
 public final class CompositeFilter extends AbstractLifeCycle implements Iterable<Filter>, Filter {
 
-    private static final Filter[] EMPTY_FILTERS = new Filter[0];
+    private static final Filter[] EMPTY_FILTERS = Filter.EMPTY_ARRAY;
     private final Filter[] filters;
 
     private CompositeFilter() {

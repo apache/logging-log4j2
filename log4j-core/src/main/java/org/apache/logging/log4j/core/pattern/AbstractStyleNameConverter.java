@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.pattern;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
@@ -53,7 +53,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
     /**
      * Black style pattern converter. Adds ANSI color styling to the result of the enclosed pattern.
      */
-    @Category("Converter")
+    @Namespace("Converter")
     @Plugin(Black.NAME)
     @ConverterKeys(Black.NAME)
     public static final class Black extends AbstractStyleNameConverter {
@@ -87,7 +87,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
     /**
      * Blue style pattern converter. Adds ANSI color styling to the result of the enclosed pattern.
      */
-    @Category("Converter")
+    @Namespace("Converter")
     @Plugin(Blue.NAME)
     @ConverterKeys(Blue.NAME)
     public static final class Blue extends AbstractStyleNameConverter {
@@ -121,7 +121,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
     /**
      * Cyan style pattern converter. Adds ANSI color styling to the result of the enclosed pattern.
      */
-    @Category("Converter")
+    @Namespace("Converter")
     @Plugin(Cyan.NAME)
     @ConverterKeys(Cyan.NAME)
     public static final class Cyan extends AbstractStyleNameConverter {
@@ -155,7 +155,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
     /**
      * Green style pattern converter. Adds ANSI color styling to the result of the enclosed pattern.
      */
-    @Category("Converter")
+    @Namespace("Converter")
     @Plugin(Green.NAME)
     @ConverterKeys(Green.NAME)
     public static final class Green extends AbstractStyleNameConverter {
@@ -189,7 +189,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
     /**
      * Magenta style pattern converter. Adds ANSI color styling to the result of the enclosed pattern.
      */
-    @Category("Converter")
+    @Namespace("Converter")
     @Plugin(Magenta.NAME)
     @ConverterKeys(Magenta.NAME)
     public static final class Magenta extends AbstractStyleNameConverter {
@@ -223,7 +223,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
     /**
      * Red style pattern converter. Adds ANSI color styling to the result of the enclosed pattern.
      */
-    @Category("Converter")
+    @Namespace("Converter")
     @Plugin(Red.NAME)
     @ConverterKeys(Red.NAME)
     public static final class Red extends AbstractStyleNameConverter {
@@ -257,7 +257,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
     /**
      * White style pattern converter. Adds ANSI color styling to the result of the enclosed pattern.
      */
-    @Category("Converter")
+    @Namespace("Converter")
     @Plugin(White.NAME)
     @ConverterKeys(White.NAME)
     public static final class White extends AbstractStyleNameConverter {
@@ -291,7 +291,7 @@ public abstract class AbstractStyleNameConverter extends LogEventPatternConverte
     /**
      * Yellow style pattern converter. Adds ANSI color styling to the result of the enclosed pattern.
      */
-    @Category("Converter")
+    @Namespace("Converter")
     @Plugin(Yellow.NAME)
     @ConverterKeys(Yellow.NAME)
     public static final class Yellow extends AbstractStyleNameConverter {

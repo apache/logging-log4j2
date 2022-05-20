@@ -21,7 +21,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.plugins.Node;
-import org.apache.logging.log4j.plugins.util.PluginCategory;
+import org.apache.logging.log4j.plugins.util.PluginNamespace;
 import org.apache.logging.log4j.plugins.util.PluginType;
 
 import java.util.HashMap;
@@ -113,7 +113,7 @@ public class DefaultMergeStrategy implements MergeStrategy {
      * @param corePlugins The Core plugins to use.
      */
     @Override
-    public void mergeConfigurations(final Node target, final Node source, final PluginCategory corePlugins) {
+    public void mergeConfigurations(final Node target, final Node source, final PluginNamespace corePlugins) {
         for (final Node sourceChildNode : source.getChildren()) {
             final boolean isFilter = isFilterNode(sourceChildNode);
             boolean isMerged = false;
@@ -240,7 +240,7 @@ public class DefaultMergeStrategy implements MergeStrategy {
     }
 
     private void updateFilterNode(final Node target, final Node targetChildNode, final Node sourceChildNode,
-            final PluginCategory corePlugins) {
+            final PluginNamespace corePlugins) {
         if (CompositeFilter.class.isAssignableFrom(targetChildNode.getType().getPluginClass())) {
             final Node node = new Node(targetChildNode, sourceChildNode.getName(), sourceChildNode.getType());
             node.getChildren().addAll(sourceChildNode.getChildren());

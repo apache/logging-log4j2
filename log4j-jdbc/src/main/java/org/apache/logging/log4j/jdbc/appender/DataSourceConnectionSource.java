@@ -17,10 +17,9 @@
 package org.apache.logging.log4j.jdbc.appender;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.jdbc.appender.util.JndiUtil;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -34,8 +33,8 @@ import java.sql.SQLException;
 /**
  * A {@link JdbcAppender} connection source that uses a {@link DataSource} to connect to the database.
  */
-@Category(Core.CATEGORY_NAME)
-@Plugin(value = "DataSource", elementType = "connectionSource", printObject = true)
+@Configurable(elementType = "connectionSource", printObject = true)
+@Plugin("DataSource")
 public final class DataSourceConnectionSource extends AbstractConnectionSource {
     private static final Logger LOGGER = StatusLogger.getLogger();
 

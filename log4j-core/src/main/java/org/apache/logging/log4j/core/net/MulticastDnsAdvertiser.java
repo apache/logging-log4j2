@@ -17,9 +17,8 @@
 package org.apache.logging.log4j.core.net;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.util.Integers;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
@@ -37,8 +36,8 @@ import java.util.Map;
  * will be removed prior to advertisement.
  *
  */
-@Category(Core.CATEGORY_NAME)
-@Plugin(value = "multicastdns", elementType = "advertiser", printObject = false)
+@Configurable(elementType = "advertiser")
+@Plugin("MulticastDns")
 public class MulticastDnsAdvertiser implements Advertiser {
     /**
      * Status logger.

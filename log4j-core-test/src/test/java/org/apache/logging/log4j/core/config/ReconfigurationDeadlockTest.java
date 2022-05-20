@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.config;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -28,7 +27,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.junit.jupiter.api.AfterEach;
@@ -130,10 +129,8 @@ public class ReconfigurationDeadlockTest {
     /**
      * A dummy appender doing nothing but burning CPU cycles whilst randomly accessing the logger.
      */
-    @Category(Core.CATEGORY_NAME)
-    @Plugin(value = "ReconfigurationDeadlockTestAppender",
-            elementType = Appender.ELEMENT_TYPE,
-            printObject = true)
+    @Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
+    @Plugin("ReconfigurationDeadlockTestAppender")
     public static final class TestAppender extends AbstractAppender {
 
         private final Logger logger;

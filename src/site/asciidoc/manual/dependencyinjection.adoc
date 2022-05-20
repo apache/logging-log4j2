@@ -25,7 +25,7 @@ Injector callback services may be registered for customizing the dependency inje
 
 == Overview
 
-The `org.apache.logging.log4j.plugins.di.Injector` runtime keeps a registry of bindings between `Key<T>` and `Supplier<T>`, where `org.apache.logging.log4j.plugins.di.Key<T>` describes an instance type `T`, optional qualifier annotation type, and optional name, and  `java.util.function.Supplier<T>` defines a factory for obtaining instances of `T` matching the corresponding `Key<T>`.
+The `org.apache.logging.log4j.plugins.di.Injector` runtime keeps a registry of bindings between `Key<T>` and `Supplier<T>`, where `org.apache.logging.log4j.plugins.di.Key<T>` describes an instance type `T`, optional qualifier annotation type, and optional name plus namespace, and  `java.util.function.Supplier<T>` defines a factory for obtaining instances of `T` matching the corresponding `Key<T>`.
 To obtain a factory for a given key, if a binding is not already registered for said key, then the raw class of the key (i.e., the `Class<T>` instance from `Key<T>`) is checked for a single constructor annotated with `@org.apache.logging.log4j.plugins.Inject` or a no-arg constructor if no `@Inject` constructor is present.
 The injectable constructor is invoked with arguments which are obtained by looking up factories matching the `Key<?>` of each constructor parameter.
 Then, fields that are annotated with `@Inject` or annotated with an annotation that is itself annotated with `@QualifierType` (i.e., a _qualifier annotation_) are injected from factories matching the `Key<?>` of the field.
@@ -36,7 +36,7 @@ Bindings may be registered using `Injector::registerBinding` or `Injector::regis
 Annotated factory methods are non-abstract methods annotated with an annotation that is itself annotated with `@org.apache.logging.log4j.plugins.FactoryType`.
 Built-in factory annotations include `@org.apache.logging.log4j.plugins.Factory` and `@org.apache.logging.log4j.plugins.PluginFactory`.
 
-`Injector` can create `Core` category plugins from a tree of `org.apache.logging.log4j.plugins.Node` instances using `Injector::configure`.
+`Injector` can create `@Configurable` namespace plugins from a tree of `org.apache.logging.log4j.plugins.Node` instances using `Injector::configure`.
 This allows for node attributes and child nodes to be injected into a plugin class along with any other registered bindings.
 To configure a `Node`, its plugin class is checked for a static method annotated with a factory annotation (such as `@PluginFactory` or `@Factory`) first before falling back to checking for an `@Inject` constructor or a no-args constructor.
 This static factory method or constructor has its parameters injected.
@@ -54,6 +54,7 @@ _Injectable fields_ are fields annotated with `@Inject` or a qualifier annotatio
 _Injectable methods_ are methods annotated with `@Inject` or are not annotated with a factory annotation and have at least one parameter annotated with a qualifier annotation.
 _Injectable constructors_ are constructors annotated with `@Inject`; only one such constructor should exist per class.
 When a field or parameter is annotated with a name-providing annotation (i.e., an annotation annotated with `@org.apache.logging.log4j.plugins.name.NameProvider`), then the provided name or name of the field or parameter are included in the `Key<T>` for the injection point.
+When these elements are annotated with a `@Namespace` annotation or meta-annotation, then that namespace name is included in the `Key<T>` for the injection point.
 Similarly, when a field or parameter is annotated with a qualifier annotation, then that qualifier annotation type is included in the `Key<T>` for the injection point.
 
 An example of each injection point with a no-arg `@Inject` method to show the post-injected state:

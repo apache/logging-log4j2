@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
 
 /**
  * {@link ThreadContextDataResolver} factory.
  */
-@Category(TemplateResolverFactory.CATEGORY)
+@Namespace(TemplateResolverFactory.CATEGORY)
 @Plugin("ThreadContextDataResolverFactory")
 public final class ThreadContextDataResolverFactory implements EventResolverFactory {
 

@@ -34,25 +34,25 @@ public class PluginCacheTest {
         PluginCache cacheA = new PluginCache();
         createCategory(cacheA, "one", Arrays.asList("bravo", "alpha", "charlie"));
         createCategory(cacheA, "two", Arrays.asList("alpha", "charlie", "bravo"));
-        assertEquals(cacheA.getAllCategories().size(), 2);
-        assertEquals(cacheA.getAllCategories().get("one").size(), 3);
-        assertEquals(cacheA.getAllCategories().get("two").size(), 3);
+        assertEquals(cacheA.getAllNamespaces().size(), 2);
+        assertEquals(cacheA.getAllNamespaces().get("one").size(), 3);
+        assertEquals(cacheA.getAllNamespaces().get("two").size(), 3);
         PluginCache cacheB = new PluginCache();
         createCategory(cacheB, "two", Arrays.asList("bravo", "alpha", "charlie"));
         createCategory(cacheB, "one", Arrays.asList("alpha", "charlie", "bravo"));
-        assertEquals(cacheB.getAllCategories().size(), 2);
-        assertEquals(cacheB.getAllCategories().get("one").size(), 3);
-        assertEquals(cacheB.getAllCategories().get("two").size(), 3);
-        assertEquals(Objects.toString(cacheA.getAllCategories()), Objects.toString(cacheB.getAllCategories()));
+        assertEquals(cacheB.getAllNamespaces().size(), 2);
+        assertEquals(cacheB.getAllNamespaces().get("one").size(), 3);
+        assertEquals(cacheB.getAllNamespaces().get("two").size(), 3);
+        assertEquals(Objects.toString(cacheA.getAllNamespaces()), Objects.toString(cacheB.getAllNamespaces()));
     }
 
     private void createCategory(PluginCache cache, String categoryName, List<String> entryNames) {
-        Map<String, PluginEntry> category = cache.getCategory(categoryName);
+        Map<String, PluginEntry> category = cache.getNamespace(categoryName);
         for (String entryName: entryNames) {
             final PluginEntry entry = PluginEntry.builder()
                     .setKey(entryName)
                     .setClassName("com.example.Plugin")
-                    .setCategory(categoryName)
+                    .setNamespace(categoryName)
                     .get();
             category.put(entryName, entry);
         }

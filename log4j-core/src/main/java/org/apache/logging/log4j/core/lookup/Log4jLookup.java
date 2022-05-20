@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.lookup;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -31,7 +30,7 @@ import java.net.URL;
 /**
  * Lookup properties of Log4j
  */
-@Category(StrLookup.CATEGORY)
+@Lookup
 @Plugin("log4j")
 public class Log4jLookup extends AbstractConfigurationAwareLookup {
 

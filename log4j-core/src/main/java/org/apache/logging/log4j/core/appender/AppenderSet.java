@@ -17,9 +17,8 @@
 package org.apache.logging.log4j.core.appender;
 
 import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
@@ -35,8 +34,8 @@ import java.util.Map;
 /**
  * A deferred plugin for appenders.
  */
-@Category(Core.CATEGORY_NAME)
-@Plugin(value = "AppenderSet", printObject = true, deferChildren = true)
+@Configurable(printObject = true, deferChildren = true)
+@Plugin
 public class AppenderSet {
 
     public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<AppenderSet> {
@@ -123,7 +122,7 @@ public class AppenderSet {
             return null;
         }
         node.getAttributes().put("name", sourceAppenderName);
-        if (node.getType().getElementName().equals(Appender.ELEMENT_TYPE)) {
+        if (node.getType().getElementType().equals(Appender.ELEMENT_TYPE)) {
             final Node appNode = new Node(node);
             configuration.createConfiguration(appNode, null);
             if (appNode.getObject() instanceof Appender) {

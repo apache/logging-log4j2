@@ -22,7 +22,7 @@ import org.apache.logging.log4j.core.config.ConfigurationAware;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.Keys;
-import org.apache.logging.log4j.plugins.util.PluginCategory;
+import org.apache.logging.log4j.plugins.util.PluginNamespace;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LazyValue;
 
@@ -86,7 +86,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
     }
 
     public Interpolator(
-            final StrLookup defaultLookup, final PluginCategory strLookupPlugins,
+            final StrLookup defaultLookup, final PluginNamespace strLookupPlugins,
             final Function<Class<? extends StrLookup>, StrLookup> pluginLoader) {
         this.defaultLookup = defaultLookup == null ? new PropertiesLookup(Map.of()) : defaultLookup;
         strLookupPlugins.forEach((key, value) -> {

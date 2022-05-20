@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.di.Key;
-import org.apache.logging.log4j.plugins.util.PluginCategory;
+import org.apache.logging.log4j.plugins.util.PluginNamespace;
 
 import javax.crypto.SecretKey;
 
@@ -29,7 +29,7 @@ public interface SecretKeyProvider {
 
     String CATEGORY = "KeyProvider";
 
-    Key<PluginCategory> PLUGIN_CATEGORY_KEY = new @Category(CATEGORY) Key<>() {};
+    Key<PluginNamespace> PLUGIN_CATEGORY_KEY = new @Namespace(CATEGORY) Key<>() {};
 
     /**
      * Returns this SecretKey.

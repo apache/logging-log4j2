@@ -75,7 +75,7 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
                         bundleContext.getServiceReferences(PluginService.class, null);
                 for (final ServiceReference<PluginService> serviceReference : serviceReferences) {
                     final PluginService pluginService = bundleContext.getService(serviceReference);
-                    pluginRegistry.loadFromBundle(bundleContext.getBundle().getBundleId(), pluginService.getCategories());
+                    pluginRegistry.loadFromBundle(bundleContext.getBundle().getBundleId(), pluginService.getNamespaces());
                 }
             }
         } catch (final SecurityException e) {

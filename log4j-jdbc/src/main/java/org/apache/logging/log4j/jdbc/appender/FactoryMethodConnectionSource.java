@@ -17,9 +17,8 @@
 package org.apache.logging.log4j.jdbc.appender;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.util.Loader;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -36,8 +35,8 @@ import java.sql.SQLException;
  * A {@link JdbcAppender} connection source that uses a public static factory method to obtain a {@link Connection} or
  * {@link DataSource}.
  */
-@Category(Core.CATEGORY_NAME)
-@Plugin(value = "ConnectionFactory", elementType = "connectionSource", printObject = true)
+@Configurable(elementType = "connectionSource", printObject = true)
+@Plugin("ConnectionFactory")
 public final class FactoryMethodConnectionSource extends AbstractConnectionSource {
     private static final Logger LOGGER = StatusLogger.getLogger();
 

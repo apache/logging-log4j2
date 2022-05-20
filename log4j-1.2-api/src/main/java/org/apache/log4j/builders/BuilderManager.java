@@ -31,10 +31,10 @@ import org.apache.log4j.rewrite.RewritePolicy;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.xml.XmlConfiguration;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.plugins.Category;
 import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.di.Injector;
-import org.apache.logging.log4j.plugins.util.PluginCategory;
+import org.apache.logging.log4j.plugins.util.PluginNamespace;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -50,8 +50,8 @@ import java.util.function.Function;
  */
 public class BuilderManager {
 
-    /** Plugin category. */
-    public static final String CATEGORY = "Log4j Builder";
+    /** Plugin namespace. */
+    public static final String NAMESPACE = "Log4j Builder";
     public static final Appender INVALID_APPENDER = new AppenderWrapper(null);
     public static final Filter INVALID_FILTER = new FilterWrapper(null);
     public static final Layout INVALID_LAYOUT = new LayoutWrapper(null);
@@ -59,13 +59,13 @@ public class BuilderManager {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final Class<?>[] CONSTRUCTOR_PARAMS = new Class[] { String.class, Properties.class };
     private final Injector injector;
-    private final PluginCategory plugins;
+    private final PluginNamespace plugins;
 
     /**
      * Constructs a new instance.
      */
     @Inject
-    public BuilderManager(final Injector injector, @Category(CATEGORY) PluginCategory plugins) {
+    public BuilderManager(final Injector injector, @Namespace(NAMESPACE) PluginNamespace plugins) {
         this.injector = injector;
         this.plugins = plugins;
     }

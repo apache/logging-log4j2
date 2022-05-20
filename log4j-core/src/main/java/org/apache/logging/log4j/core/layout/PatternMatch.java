@@ -17,8 +17,7 @@
 
 package org.apache.logging.log4j.core.layout;
 
-import org.apache.logging.log4j.plugins.Category;
-import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -31,8 +30,8 @@ import java.io.Serializable;
  *
  * @since 2.4.1 implements {@link Serializable}
  */
-@Category(Node.CATEGORY)
-@Plugin(value = "PatternMatch", printObject = true)
+@Configurable(printObject = true)
+@Plugin
 public final class PatternMatch {
 
     private final String key;

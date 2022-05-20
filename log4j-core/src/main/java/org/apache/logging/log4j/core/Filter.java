@@ -38,7 +38,7 @@ public interface Filter extends LifeCycle {
     Filter[] EMPTY_ARRAY = {};
     
     /**
-     * Main {@linkplain org.apache.logging.log4j.plugins.Plugin#elementType() plugin element type} for
+     * Main {@linkplain org.apache.logging.log4j.plugins.Configurable#elementType() plugin element type} for
      * Filter plugins.
      *
      * @since 2.1

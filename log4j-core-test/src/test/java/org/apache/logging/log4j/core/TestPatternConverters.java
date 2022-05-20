@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core;
 
 import org.apache.logging.log4j.core.pattern.ConverterKeys;
 import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.StringBuilders;
 
@@ -30,7 +30,7 @@ public final class TestPatternConverters {
     private TestPatternConverters() {
     }
 
-    @Category("Converter")
+    @Namespace("Converter")
     @Plugin("TestParametersPatternConverter")
     @ConverterKeys("testparameters")
     public static final class TestParametersPatternConverter extends LogEventPatternConverter {
@@ -59,7 +59,7 @@ public final class TestPatternConverters {
         }
     }
 
-    @Category("Converter")
+    @Namespace("Converter")
     @Plugin("TestFormatPatternConverter")
     @ConverterKeys("testformat")
     public static final class TestFormatPatternConverter extends LogEventPatternConverter {

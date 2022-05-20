@@ -24,8 +24,7 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.apache.logging.log4j.plugins.Category;
-import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -42,8 +41,8 @@ import java.util.Map;
 /**
  * Filter based on data in a StructuredDataMessage.
  */
-@Category(Node.CATEGORY)
-@Plugin(value = "StructuredDataFilter", elementType = Filter.ELEMENT_TYPE, printObject = true)
+@Configurable(elementType = Filter.ELEMENT_TYPE, printObject = true)
+@Plugin
 @PerformanceSensitive("allocation")
 public final class StructuredDataFilter extends MapFilter {
 

@@ -26,34 +26,34 @@ public class PluginEntry {
     private final String key;
     private final String className;
     private final String name;
-    private final String elementName;
+    private final String elementType;
     private final boolean printable;
-    private final boolean defer;
-    private final String category;
+    private final boolean deferChildren;
+    private final String namespace;
     private final Class<?>[] interfaces;
 
     public PluginEntry(
-            String key, String className, String name, String elementName, boolean printable, boolean defer, String category) {
+            String key, String className, String name, String elementType, boolean printable, boolean deferChildren, String namespace) {
         this.key = key;
         this.className = className;
         this.name = name;
-        this.elementName = elementName;
+        this.elementType = elementType;
         this.printable = printable;
-        this.defer = defer;
-        this.category = category;
+        this.deferChildren = deferChildren;
+        this.namespace = namespace;
         this.interfaces = null;
     }
 
     public PluginEntry(
-            final String key, final String className, final String name, final String elementName, final boolean printable,
-            final boolean defer, final String category, final Class<?>... interfaces) {
+            final String key, final String className, final String name, final String elementType, final boolean printable,
+            final boolean deferChildren, final String namespace, final Class<?>... interfaces) {
         this.key = key;
         this.className = className;
         this.name = name;
-        this.elementName = elementName;
+        this.elementType = elementType;
         this.printable = printable;
-        this.defer = defer;
-        this.category = category;
+        this.deferChildren = deferChildren;
+        this.namespace = namespace;
         this.interfaces = interfaces;
     }
 
@@ -61,10 +61,10 @@ public class PluginEntry {
         key = builder.getKey();
         className = builder.getClassName();
         name = builder.getName();
-        elementName = builder.getElementName();
+        elementType = builder.getElementType();
         printable = builder.isPrintable();
-        defer = builder.isDefer();
-        category = builder.getCategory();
+        deferChildren = builder.isDeferChildren();
+        namespace = builder.getNamespace();
         final Class<?>[] classes = builder.getInterfaces();
         interfaces = classes != null ? classes.clone() : null;
     }
@@ -81,20 +81,20 @@ public class PluginEntry {
         return name;
     }
 
-    public String getElementName() {
-        return elementName;
+    public String getElementType() {
+        return elementType;
     }
 
     public boolean isPrintable() {
         return printable;
     }
 
-    public boolean isDefer() {
-        return defer;
+    public boolean isDeferChildren() {
+        return deferChildren;
     }
 
-    public String getCategory() {
-        return category;
+    public String getNamespace() {
+        return namespace;
     }
 
     public Class<?>[] getInterfaces() {
@@ -104,7 +104,7 @@ public class PluginEntry {
     @Override
     public String toString() {
         return "PluginEntry [key=" + key + ", className=" + className + ", name=" + name + ", printable=" + printable
-                + ", defer=" + defer + ", category=" + category + "]";
+                + ", defer=" + deferChildren + ", namespace=" + namespace + "]";
     }
 
     public static Builder builder() {
@@ -115,10 +115,10 @@ public class PluginEntry {
         private String key;
         private String className;
         private String name;
-        private String elementName;
+        private String elementType;
         private boolean printable;
-        private boolean defer;
-        private String category;
+        private boolean deferChildren;
+        private String namespace;
         private Class<?>[] interfaces;
 
         public String getKey() {
@@ -148,12 +148,12 @@ public class PluginEntry {
             return this;
         }
 
-        public String getElementName() {
-            return elementName;
+        public String getElementType() {
+            return elementType;
         }
 
-        public Builder setElementName(final String elementName) {
-            this.elementName = elementName;
+        public Builder setElementType(final String elementType) {
+            this.elementType = elementType;
             return this;
         }
 
@@ -166,21 +166,21 @@ public class PluginEntry {
             return this;
         }
 
-        public boolean isDefer() {
-            return defer;
+        public boolean isDeferChildren() {
+            return deferChildren;
         }
 
-        public Builder setDefer(final boolean defer) {
-            this.defer = defer;
+        public Builder setDeferChildren(final boolean deferChildren) {
+            this.deferChildren = deferChildren;
             return this;
         }
 
-        public String getCategory() {
-            return category;
+        public String getNamespace() {
+            return namespace;
         }
 
-        public Builder setCategory(final String category) {
-            this.category = category;
+        public Builder setNamespace(final String namespace) {
+            this.namespace = namespace;
             return this;
         }
 

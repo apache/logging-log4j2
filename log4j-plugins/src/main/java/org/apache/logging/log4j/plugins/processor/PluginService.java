@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.plugins.processor;
 
-import org.apache.logging.log4j.plugins.util.PluginCategory;
+import org.apache.logging.log4j.plugins.util.PluginNamespace;
 import org.apache.logging.log4j.plugins.util.PluginType;
 
 import java.util.LinkedHashMap;
@@ -31,32 +31,32 @@ import java.util.Map;
  */
 public abstract class PluginService {
 
-    private final Map<String, PluginCategory> categories = new LinkedHashMap<>();
+    private final Map<String, PluginNamespace> namespaces = new LinkedHashMap<>();
 
     public PluginService() {
         PluginEntry[] entries = getEntries();
         ClassLoader classLoader = getClass().getClassLoader();
         for (PluginEntry entry : entries) {
-            final String category = entry.getCategory();
-            categories.computeIfAbsent(category.toLowerCase(Locale.ROOT), key -> new PluginCategory(key, category))
+            final String namespace = entry.getNamespace();
+            namespaces.computeIfAbsent(namespace.toLowerCase(Locale.ROOT), key -> new PluginNamespace(key, namespace))
                     .merge(entry.getKey(), new PluginType<>(entry, classLoader));
         }
     }
 
     public abstract PluginEntry[] getEntries();
 
-    public Map<String, PluginCategory> getCategories() {
-        return categories;
+    public Map<String, PluginNamespace> getNamespaces() {
+        return namespaces;
     }
 
-    public PluginCategory getCategory(String category) {
-        return categories.get(category.toLowerCase(Locale.ROOT));
+    public PluginNamespace getNamespace(String category) {
+        return namespaces.get(category.toLowerCase(Locale.ROOT));
     }
 
     public int size() {
-        return categories.values()
+        return namespaces.values()
                 .stream()
-                .mapToInt(PluginCategory::size)
+                .mapToInt(PluginNamespace::size)
                 .sum();
     }
 

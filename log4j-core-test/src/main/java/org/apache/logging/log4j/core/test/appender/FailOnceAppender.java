@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.Throwables;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 
@@ -35,8 +35,8 @@ import java.util.function.Supplier;
 /**
  * An {@link Appender} that fails on the first use and works for the rest.
  */
-@Category("Core")
-@Plugin(value = "FailOnce", elementType=Appender.ELEMENT_TYPE, printObject=true)
+@Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Plugin("FailOnce")
 public class FailOnceAppender extends AbstractAppender {
 
     private final Supplier<Throwable> throwableSupplier;

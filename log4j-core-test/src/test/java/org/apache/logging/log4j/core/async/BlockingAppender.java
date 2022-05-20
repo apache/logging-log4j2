@@ -17,14 +17,13 @@
 package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -40,8 +39,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * Appender that can be halted and resumed, for testing queue-full scenarios.
  */
-@Category(Core.CATEGORY_NAME)
-@Plugin(value = "Blocking", elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Plugin("Blocking")
 public class BlockingAppender extends AbstractAppender {
     private static final long serialVersionUID = 1L;
     // logEvents may be nulled to disable event tracking, this is useful in scenarios testing garbage collection.

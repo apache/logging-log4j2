@@ -18,10 +18,11 @@
 package org.apache.logging.log4j.plugins.util;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.Singleton;
+import org.apache.logging.log4j.plugins.di.Keys;
 import org.apache.logging.log4j.plugins.processor.PluginCache;
 import org.apache.logging.log4j.plugins.processor.PluginEntry;
 import org.apache.logging.log4j.plugins.processor.PluginService;
@@ -62,14 +63,14 @@ public class PluginRegistry {
     /**
      * Contains plugins found from {@link PluginService} services and legacy Log4j2Plugins.dat cache files in the main CLASSPATH.
      */
-    private final LazyValue<Categories> mainPluginCategories = LazyValue.from(() -> {
-        final Categories bundle = decodeCacheFiles(LoaderUtil.getClassLoader());
+    private final LazyValue<Namespaces> mainPluginNamespaces = LazyValue.from(() -> {
+        final Namespaces namespaces = decodeCacheFiles(LoaderUtil.getClassLoader());
         Throwable throwable = null;
         ClassLoader errorClassLoader = null;
         boolean allFail = true;
         for (ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
             try {
-                loadPlugins(classLoader, bundle);
+                loadPlugins(classLoader, namespaces);
                 allFail = false;
             } catch (Throwable ex) {
                 if (throwable == null) {
@@ -81,31 +82,31 @@ public class PluginRegistry {
         if (allFail && throwable != null) {
             LOGGER.debug("Unable to retrieve provider from ClassLoader {}", errorClassLoader, throwable);
         }
-        if (bundle.isEmpty()) {
+        if (namespaces.isEmpty()) {
             // If we didn't find any plugins above, someone must have messed with the log4j-core.jar.
             // Search the standard package in the hopes we can find our core plugins.
-            loadFromPackage(bundle, "org.apache.logging.log4j.core");
+            loadFromPackage(namespaces, "org.apache.logging.log4j.core");
         }
-        return bundle;
+        return namespaces;
     });
 
     /**
      * Contains plugins found in PluginService services and legacy Log4j2Plugins.dat cache files in OSGi Bundles.
      */
-    private final Map<Long, Categories> pluginCategoriesByBundleId = new ConcurrentHashMap<>();
+    private final Map<Long, Namespaces> namespacesByBundleId = new ConcurrentHashMap<>();
 
     /**
      * Contains plugins found by searching for annotated classes at runtime.
      */
-    private final Map<String, Categories> pluginCategoriesByPackage = new ConcurrentHashMap<>();
+    private final Map<String, Namespaces> namespacesByPackage = new ConcurrentHashMap<>();
 
     /**
      * Resets the registry to an empty state.
      */
     public void clear() {
-        mainPluginCategories.set(null);
-        pluginCategoriesByPackage.clear();
-        pluginCategoriesByBundleId.clear();
+        mainPluginNamespaces.set(null);
+        namespacesByPackage.clear();
+        namespacesByBundleId.clear();
     }
 
     /**
@@ -114,7 +115,7 @@ public class PluginRegistry {
      * @since 2.1
      */
     public void clearBundlePlugins(final long bundleId) {
-        pluginCategoriesByBundleId.remove(bundleId);
+        namespacesByBundleId.remove(bundleId);
     }
 
     /**
@@ -124,8 +125,8 @@ public class PluginRegistry {
      * @since 3.0.0
      */
     public void loadFromBundle(final long bundleId, final ClassLoader loader) {
-        pluginCategoriesByBundleId.computeIfAbsent(bundleId, ignored -> {
-            final Categories bundle = decodeCacheFiles(loader);
+        namespacesByBundleId.computeIfAbsent(bundleId, ignored -> {
+            final Namespaces bundle = decodeCacheFiles(loader);
             loadPlugins(loader, bundle);
             return bundle;
         });
@@ -134,25 +135,25 @@ public class PluginRegistry {
     /**
      * Loads all the plugins in a Bundle.
      * @param bundleId The bundle id.
-     * @param pluginsByCategory the plugins organized by category
+     * @param namespaces the plugins organized by namespace
      * @since 3.0.0
      */
-    public void loadFromBundle(final long bundleId, final Map<String, PluginCategory> pluginsByCategory) {
-        pluginCategoriesByBundleId.put(bundleId, new Categories(pluginsByCategory));
+    public void loadFromBundle(final long bundleId, final Map<String, PluginNamespace> namespaces) {
+        namespacesByBundleId.put(bundleId, new Namespaces(namespaces));
     }
 
     /**
      * Load plugins from a specific ClassLoader.
      * @param classLoader The ClassLoader.
-     * @param categories The Categories to merge discovered plugins to
+     * @param namespaces The Namespaces to merge discovered plugins to
      * @since 3.0
      */
-    private void loadPlugins(ClassLoader classLoader, Categories categories) {
+    private void loadPlugins(ClassLoader classLoader, Namespaces namespaces) {
         final long startTime = System.nanoTime();
         final ServiceLoader<PluginService> serviceLoader = ServiceLoader.load(PluginService.class, classLoader);
         final AtomicInteger pluginCount = new AtomicInteger();
         for (final PluginService pluginService : serviceLoader) {
-            pluginService.getCategories().values().forEach(category -> pluginCount.addAndGet(categories.merge(category)));
+            pluginService.getNamespaces().values().forEach(category -> pluginCount.addAndGet(namespaces.merge(category)));
         }
         final int numPlugins = pluginCount.get();
         LOGGER.debug(() -> {
@@ -163,7 +164,7 @@ public class PluginRegistry {
         });
     }
 
-    private Categories decodeCacheFiles(final ClassLoader classLoader) {
+    private Namespaces decodeCacheFiles(final ClassLoader classLoader) {
         final long startTime = System.nanoTime();
         final PluginCache cache = new PluginCache();
         try {
@@ -176,12 +177,12 @@ public class PluginRegistry {
         } catch (final IOException ioe) {
             LOGGER.warn("Unable to preload plugins", ioe);
         }
-        final Categories categories = new Categories();
+        final Namespaces namespaces = new Namespaces();
         final AtomicInteger pluginCount = new AtomicInteger();
-        cache.getAllCategories().forEach((key, outer) ->
+        cache.getAllNamespaces().forEach((key, outer) ->
                 outer.values().forEach(entry -> {
                     final PluginType<?> type = new PluginType<>(entry, classLoader);
-                    categories.add(type);
+                    namespaces.add(type);
                     pluginCount.incrementAndGet();
                 }));
         final int numPlugins = pluginCount.get();
@@ -191,10 +192,10 @@ public class PluginRegistry {
             return "Took " + numFormat.format((endTime - startTime) * 1e-9) +
                     " seconds to load " + numPlugins + " plugins from " + classLoader;
         });
-        return categories;
+        return namespaces;
     }
 
-    private void loadFromPackage(final Categories bundle, final String pkg) {
+    private void loadFromPackage(final Namespaces bundle, final String pkg) {
         if (Strings.isBlank(pkg)) {
             // happens when splitting an empty string
             return;
@@ -208,30 +209,31 @@ public class PluginRegistry {
         resolver.findInPackage(new PluginTest(), pkg);
 
         for (final Class<?> clazz : resolver.getClasses()) {
-            final Plugin plugin = clazz.getAnnotation(Plugin.class);
-            final Category annotation = clazz.getAnnotation(Category.class);
-            final String category = annotation != null ? annotation.value() : Plugin.EMPTY;
-            final String elementType = plugin.elementType();
-            final String name = plugin.value();
-            final String mainElementName = elementType.isEmpty() ? name : elementType;
+            final String name = Keys.getName(clazz);
+            final String namespace = Keys.getNamespace(clazz);
             final PluginEntry.Builder builder = PluginEntry.builder()
                     .setName(name)
-                    .setCategory(category)
-                    .setClassName(clazz.getName())
-                    .setPrintable(plugin.printObject())
-                    .setDefer(plugin.deferChildren());
-            final PluginEntry mainEntry = builder
-                    .setKey(name.toLowerCase(Locale.ROOT))
-                    .setElementName(mainElementName)
-                    .get();
+                    .setNamespace(namespace)
+                    .setClassName(clazz.getName());
+            final Configurable configurable = clazz.getAnnotation(Configurable.class);
+            final String elementType;
+            if (configurable != null) {
+                elementType = configurable.elementType();
+                builder.setElementType(elementType.isEmpty() ? name : elementType)
+                        .setPrintable(configurable.printObject())
+                        .setDeferChildren(configurable.deferChildren());
+            } else {
+                elementType = Strings.EMPTY;
+            }
+            final PluginEntry mainEntry = builder.setKey(name.toLowerCase(Locale.ROOT)).get();
             bundle.add(new PluginType<>(mainEntry, clazz));
             final PluginAliases pluginAliases = clazz.getAnnotation(PluginAliases.class);
             if (pluginAliases != null) {
                 for (final String alias : pluginAliases.value()) {
-                    final String aliasElementName = elementType.equals(Plugin.EMPTY) ? alias : elementType;
+                    final String aliasElementType = elementType.isEmpty() ? alias : elementType;
                     final PluginEntry aliasEntry = builder
                             .setKey(alias.toLowerCase(Locale.ROOT))
-                            .setElementName(aliasElementName)
+                            .setElementType(aliasElementType)
                             .get();
                     bundle.add(new PluginType<>(aliasEntry, clazz));
                 }
@@ -246,35 +248,35 @@ public class PluginRegistry {
     }
 
     /**
-     * Gets the registered plugins for the given category. If additional scan packages are provided, then plugins
+     * Gets the registered plugins for the given namespace. If additional scan packages are provided, then plugins
      * are scanned and loaded from there as well.
      */
-    public PluginCategory getCategory(final String categoryName, final List<String> additionalScanPackages) {
-        final var category = new PluginCategory(categoryName);
+    public PluginNamespace getNamespace(final String namespace, final List<String> additionalScanPackages) {
+        final var pluginNamespace = new PluginNamespace(namespace);
 
         // First, iterate the PluginService services and legacy Log4j2Plugin.dat files found in the main CLASSPATH
-        final Categories builtInPlugins = mainPluginCategories.get();
+        final Namespaces builtInPlugins = mainPluginNamespaces.get();
         if (builtInPlugins != null) {
-            category.mergeAll(builtInPlugins.get(categoryName));
+            pluginNamespace.mergeAll(builtInPlugins.get(namespace));
         }
 
         // Next, iterate OSGi modules that provide plugins as OSGi services
-        pluginCategoriesByBundleId.values().forEach(bundle -> category.mergeAll(bundle.get(categoryName)));
+        namespacesByBundleId.values().forEach(bundle -> pluginNamespace.mergeAll(bundle.get(namespace)));
 
         // Finally, iterate over additional packages from configuration
         if (additionalScanPackages != null) {
             for (final String pkg : additionalScanPackages) {
-                category.mergeAll(pluginCategoriesByPackage.computeIfAbsent(pkg, ignored -> {
-                    final var bundle = new Categories();
+                pluginNamespace.mergeAll(namespacesByPackage.computeIfAbsent(pkg, ignored -> {
+                    final var bundle = new Namespaces();
                     loadFromPackage(bundle, pkg);
                     return bundle;
-                }).get(categoryName));
+                }).get(namespace));
             }
         }
 
-        LOGGER.debug("Discovered {} plugins in category '{}'", box(category.size()), categoryName);
+        LOGGER.debug("Discovered {} plugins in namespace '{}'", box(pluginNamespace.size()), namespace);
 
-        return category;
+        return pluginNamespace;
     }
 
     /**
@@ -311,16 +313,16 @@ public class PluginRegistry {
     }
 
     /**
-     * Bundles plugins by category from a plugin source.
+     * Bundles plugins by namespace from a plugin source.
      */
-    private static class Categories implements Iterable<PluginCategory> {
-        private final Map<String, PluginCategory> categories;
+    private static class Namespaces implements Iterable<PluginNamespace> {
+        private final Map<String, PluginNamespace> categories;
 
-        private Categories() {
+        private Namespaces() {
             categories = new LinkedHashMap<>();
         }
 
-        private Categories(final Map<String, PluginCategory> categories) {
+        private Namespaces(final Map<String, PluginNamespace> categories) {
             this.categories = categories;
         }
 
@@ -328,8 +330,8 @@ public class PluginRegistry {
             return categories.isEmpty();
         }
 
-        public int merge(final PluginCategory category) {
-            final PluginCategory existingCategory = getOrCreate(category.getKey());
+        public int merge(final PluginNamespace category) {
+            final PluginNamespace existingCategory = getOrCreate(category.getKey());
             int added = 0;
             for (final PluginType<?> pluginType : category) {
                 if (existingCategory.add(pluginType)) {
@@ -340,19 +342,19 @@ public class PluginRegistry {
         }
 
         public void add(final PluginType<?> pluginType) {
-            getOrCreate(pluginType.getCategory()).put(pluginType);
+            getOrCreate(pluginType.getNamespace()).put(pluginType);
         }
 
-        public PluginCategory get(final String category) {
+        public PluginNamespace get(final String category) {
             return categories.get(category.toLowerCase(Locale.ROOT));
         }
 
-        public PluginCategory getOrCreate(final String category) {
-            return categories.computeIfAbsent(category.toLowerCase(Locale.ROOT), key -> new PluginCategory(key, category));
+        public PluginNamespace getOrCreate(final String category) {
+            return categories.computeIfAbsent(category.toLowerCase(Locale.ROOT), key -> new PluginNamespace(key, category));
         }
 
         @Override
-        public Iterator<PluginCategory> iterator() {
+        public Iterator<PluginNamespace> iterator() {
             return categories.values().iterator();
         }
     }

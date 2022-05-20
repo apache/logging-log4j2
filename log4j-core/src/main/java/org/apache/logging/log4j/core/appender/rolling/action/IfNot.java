@@ -16,8 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import org.apache.logging.log4j.core.Core;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -29,8 +28,8 @@ import java.util.Objects;
 /**
  * Wrapper {@code PathCondition} that accepts objects that are rejected by the wrapped component filter.
  */
-@Category(Core.CATEGORY_NAME)
-@Plugin(value = "IfNot", printObject = true)
+@Configurable(printObject = true)
+@Plugin
 public final class IfNot implements PathCondition {
 
     private final PathCondition negate;

@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.StringBuilders;
@@ -26,7 +26,7 @@ import org.apache.logging.log4j.util.StringBuilders;
 /**
  * Returns events' full marker string in a StringBuilder.
  */
-@Category(PatternConverter.CATEGORY)
+@Namespace(PatternConverter.CATEGORY)
 @Plugin("MarkerPatternConverter")
 @ConverterKeys({ "marker" })
 @PerformanceSensitive("allocation")

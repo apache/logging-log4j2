@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
-import org.apache.logging.log4j.plugins.Category;
-import org.apache.logging.log4j.plugins.Named;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.di.Keys;
 import org.apache.logging.log4j.plugins.test.validation.ValidatingPlugin;
-import org.apache.logging.log4j.plugins.util.PluginCategory;
+import org.apache.logging.log4j.plugins.util.PluginNamespace;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +41,7 @@ public class RequiredValidatorTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        final PluginCategory category = injector.getInstance(new @Category("Test") Key<>() {});
+        final PluginNamespace category = injector.getInstance(new @Namespace("Test") Key<>() {});
         final PluginType<?> pluginType = category.get("Validator");
         assertNotNull(pluginType, "Rebuild this module to make sure annotation processing kicks in.");
         node = new Node(null, "Validator", pluginType);

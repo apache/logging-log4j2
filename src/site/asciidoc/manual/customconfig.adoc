@@ -103,8 +103,8 @@ files provided.
 
 [source,java]
 ----
-@Category(ConfigurationFactory.CATEGORY)
-@Plugin("CustomConfigurationFactory")
+@Namespace(ConfigurationFactory.NAMESPACE)
+@Plugin
 @Order(50)
 public class CustomConfigurationFactory extends ConfigurationFactory {
 
@@ -239,7 +239,7 @@ an `Appender` and a `LoggerConfig` to the configuration.
 
 [source,java]
 ----
-@Category("ConfigurationFactory")
+@Namespace("ConfigurationFactory")
 @Plugin("MyXMLConfigurationFactory")
 @Order(10)
 public class MyXMLConfigurationFactory extends ConfigurationFactory {

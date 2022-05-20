@@ -21,14 +21,14 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
 
-@Category("Core")
-@Plugin(value = "FixedString", elementType = "layout", printObject = true)
+@Configurable(elementType = "layout", printObject = true)
+@Plugin("FixedString")
 public class FixedStringLayout extends AbstractStringLayout {
 
     private String fixedString;

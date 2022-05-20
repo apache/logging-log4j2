@@ -18,7 +18,7 @@ package org.apache.logging.log4j.couchdb;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.nosql.NoSqlProvider;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -38,8 +38,8 @@ import java.lang.reflect.Method;
 /**
  * The Apache CouchDB implementation of {@link NoSqlProvider}.
  */
-@Category("Core")
-@Plugin(value = "CouchDB", printObject = true)
+@Configurable(printObject = true)
+@Plugin("CouchDB")
 public final class CouchDbProvider implements NoSqlProvider<CouchDbConnection> {
     private static final int HTTP = 80;
     private static final int HTTPS = 443;

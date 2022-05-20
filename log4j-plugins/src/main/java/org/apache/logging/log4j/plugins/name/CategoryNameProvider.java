@@ -17,14 +17,14 @@
 
 package org.apache.logging.log4j.plugins.name;
 
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.util.Strings;
 
 import java.util.Optional;
 
-public class CategoryNameProvider implements AnnotatedElementNameProvider<Category> {
+public class CategoryNameProvider implements AnnotatedElementNameProvider<Namespace> {
     @Override
-    public Optional<String> getSpecifiedName(final Category annotation) {
+    public Optional<String> getSpecifiedName(final Namespace annotation) {
         return Strings.trimToOptional(annotation.value());
     }
 }

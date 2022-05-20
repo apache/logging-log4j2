@@ -82,6 +82,6 @@ can be done at the class or method level:
         // ...
     }
 
-Various pre-defined categories are defined in `org.apache.logging.log4j.categories` in `log4j-core` test.
+Various pre-defined namespaces are defined in `org.apache.logging.log4j.namespaces` in `log4j-core` test.
 If you only want to run your test as part of the `maven-failsafe-plugin` integration tests phase, then simply name
 your test `FooIT` instead of `FooTest` for automatic configuration.

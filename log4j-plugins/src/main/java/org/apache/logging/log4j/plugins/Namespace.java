@@ -14,11 +14,8 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.plugins;
 
-import org.apache.logging.log4j.plugins.name.NameProvider;
-import org.apache.logging.log4j.plugins.name.PluginNameProvider;
-import org.apache.logging.log4j.util.Strings;
+package org.apache.logging.log4j.plugins;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -27,25 +24,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation that identifies a Class as a Plugin.
+ * Annotations to separate {@link org.apache.logging.log4j.plugins.name.NameProvider} names into namespaces.
+ * For example, the {@linkplain Configurable Core namespace} is used with the {@link Node} API, while the TypeConverter
+ * namespace is used with the {@link org.apache.logging.log4j.plugins.convert.TypeConverter} API.
+ * This can be annotated on another annotation to create an alias annotation for a common namespace.
  */
-@Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-@NameProvider(PluginNameProvider.class)
-public @interface Plugin {
-
+@Target({ ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE, ElementType.TYPE_USE, ElementType.ANNOTATION_TYPE })
+@Documented
+public @interface Namespace {
     /**
-     * Value of the elementType when none is specified.
+     * The category name.
      */
-    String EMPTY = Strings.EMPTY;
-
-    /**
-     * Name of the plugin. Note that this name is case-insensitive.
-     * If no name is provided, then the {@linkplain Class#getSimpleName() simple name} of the annotated class
-     * is used.
-     * @return the name of the plugin.
-     */
-    String value() default EMPTY;
-
+    String value();
 }

@@ -23,7 +23,7 @@ import org.apache.log4j.config.Log4j1Configuration;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.xml.XmlConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.w3c.dom.Element;
 
@@ -31,14 +31,14 @@ import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
 import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
 import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 
 /**
  * Build a Pattern Layout
  */
-@Category(CATEGORY)
+@Namespace(NAMESPACE)
 @Plugin("org.apache.log4j.TTCCLayout")
 public class TTCCLayoutBuilder extends AbstractBuilder<Layout> implements LayoutBuilder {
 

@@ -26,8 +26,7 @@ import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.jms.appender.JmsManager.JmsManagerConfiguration;
-import org.apache.logging.log4j.plugins.Category;
-import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
@@ -43,8 +42,8 @@ import java.util.concurrent.TimeUnit;
  * Generic JMS Appender plugin for both queues and topics. This Appender replaces the previous split ones. However,
  * configurations set up for the 2.0 version of the JMS appenders will still work.
  */
-@Category(Node.CATEGORY)
-@Plugin(value = "JMS", elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Plugin("JMS")
 @PluginAliases({ "JMSQueue", "JMSTopic" })
 public class JmsAppender extends AbstractAppender {
 

@@ -24,8 +24,6 @@ import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.Keys;
-import org.apache.logging.log4j.plugins.name.AnnotatedElementAliasesProvider;
-import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
 import org.apache.logging.log4j.plugins.visit.NodeVisitor;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
@@ -73,8 +71,8 @@ public class PluginAttributeVisitor implements NodeVisitor {
 
     @Override
     public Object visitField(final Field field, final Node node, final StringBuilder debugLog) {
-        final String name = AnnotatedElementNameProvider.getName(field);
-        final Collection<String> aliases = AnnotatedElementAliasesProvider.getAliases(field);
+        final String name = Keys.getName(field);
+        final Collection<String> aliases = Keys.getAliases(field);
         final Type targetType = field.getGenericType();
         final TypeConverter<?> converter = injector.getTypeConverter(targetType);
         final PluginAttribute annotation = field.getAnnotation(PluginAttribute.class);
@@ -88,8 +86,8 @@ public class PluginAttributeVisitor implements NodeVisitor {
 
     @Override
     public Object visitParameter(final Parameter parameter, final Node node, final StringBuilder debugLog) {
-        final String name = AnnotatedElementNameProvider.getName(parameter);
-        final Collection<String> aliases = AnnotatedElementAliasesProvider.getAliases(parameter);
+        final String name = Keys.getName(parameter);
+        final Collection<String> aliases = Keys.getAliases(parameter);
         final Type targetType = parameter.getParameterizedType();
         final TypeConverter<?> converter = injector.getTypeConverter(targetType);
         final PluginAttribute annotation = parameter.getAnnotation(PluginAttribute.class);

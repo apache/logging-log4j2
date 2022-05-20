@@ -17,8 +17,7 @@
 package org.apache.logging.log4j.core.appender.rolling.action;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Core;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -43,8 +42,8 @@ import java.util.regex.Pattern;
  * The regular expression is a pattern as defined by the {@link Pattern} class. A glob is a simplified pattern
  * expression described in {@link FileSystem#getPathMatcher(String)}.
  */
-@Category(Core.CATEGORY_NAME)
-@Plugin(value = "IfFileName", printObject = true)
+@Configurable(printObject = true)
+@Plugin
 public final class IfFileName implements PathCondition {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private final PathMatcher pathMatcher;

@@ -85,8 +85,8 @@ public class PluginType<T> {
         return implementedInterfaces.get();
     }
 
-    public String getElementName() {
-        return pluginEntry.getElementName();
+    public String getElementType() {
+        return pluginEntry.getElementType();
     }
 
     /**
@@ -103,16 +103,16 @@ public class PluginType<T> {
     }
 
     public boolean isDeferChildren() {
-        return this.pluginEntry.isDefer();
+        return this.pluginEntry.isDeferChildren();
     }
 
     /**
-     * Return the plugin category.
-     * @return the Plugin category.
+     * Return the plugin namespace.
+     * @return the Plugin namespace.
      * @since 2.1
      */
-    public String getCategory() {
-        return this.pluginEntry.getCategory();
+    public String getNamespace() {
+        return this.pluginEntry.getNamespace();
     }
 
     public String getName() {
@@ -123,10 +123,10 @@ public class PluginType<T> {
     public String toString() {
         return "PluginType [pluginClass=" + pluginClass.get() +
                 ", key=" + pluginEntry.getKey() +
-                ", elementName=" + pluginEntry.getElementName() +
+                ", elementType=" + pluginEntry.getElementType() +
                 ", isObjectPrintable=" + pluginEntry.isPrintable() +
-                ", isDeferChildren==" + pluginEntry.isDefer() +
-                ", category=" + pluginEntry.getCategory() +
+                ", isDeferChildren==" + pluginEntry.isDeferChildren() +
+                ", namespace=" + pluginEntry.getNamespace() +
                 "]";
     }
 }

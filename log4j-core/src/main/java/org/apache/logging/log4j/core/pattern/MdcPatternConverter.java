@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
@@ -31,7 +31,7 @@ import org.apache.logging.log4j.util.TriConsumer;
  * within the property bundle
  * when this pattern converter has the option set.
  */
-@Category(PatternConverter.CATEGORY)
+@Namespace(PatternConverter.CATEGORY)
 @Plugin("MdcPatternConverter")
 @ConverterKeys({ "X", "mdc", "MDC" })
 @PerformanceSensitive("allocation")

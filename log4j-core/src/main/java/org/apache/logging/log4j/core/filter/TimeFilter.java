@@ -24,9 +24,8 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.ClockFactory;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Inject;
-import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -44,8 +43,8 @@ import java.util.function.Supplier;
 /**
  * Filters events that fall within a specified time period in each day.
  */
-@Category(Node.CATEGORY)
-@Plugin(value = "TimeFilter", elementType = Filter.ELEMENT_TYPE, printObject = true)
+@Configurable(elementType = Filter.ELEMENT_TYPE, printObject = true)
+@Plugin
 @PerformanceSensitive("allocation")
 public final class TimeFilter extends AbstractFilter {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");

@@ -17,12 +17,11 @@
 package org.apache.logging.log4j.core.appender.db;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
@@ -45,8 +44,8 @@ import java.util.function.Supplier;
  *
  * @since 2.8
  */
-@Category(Core.CATEGORY_NAME)
-@Plugin(value = "ColumnMapping", printObject = true)
+@Configurable(printObject = true)
+@Plugin
 public class ColumnMapping {
 
     /**

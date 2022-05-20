@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.appender.routing;
 
 import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
@@ -28,7 +27,7 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.script.Script;
 import org.apache.logging.log4j.core.script.ScriptBindings;
 import org.apache.logging.log4j.core.script.ScriptManager;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -50,8 +49,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * the form "$${[key:]token}". The pattern will be resolved each time the Appender is called using
  * the built in StrSubstitutor and the StrLookup plugin that matches the specified key.
  */
-@Category(Core.CATEGORY_NAME)
-@Plugin(value = "Routing", elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Plugin("Routing")
 public final class RoutingAppender extends AbstractAppender {
 
     public static final String STATIC_VARIABLES_KEY = "staticVariables";
@@ -322,7 +321,7 @@ public final class RoutingAppender extends AbstractAppender {
     private Appender createAppender(final Route route, final LogEvent event) {
         final Node routeNode = route.getNode();
         for (final Node node : routeNode.getChildren()) {
-            if (node.getType().getElementName().equals(Appender.ELEMENT_TYPE)) {
+            if (node.getType().getElementType().equals(Appender.ELEMENT_TYPE)) {
                 final Node appNode = new Node(node);
                 configuration.createConfiguration(appNode, event);
                 if (appNode.getObject() instanceof Appender) {

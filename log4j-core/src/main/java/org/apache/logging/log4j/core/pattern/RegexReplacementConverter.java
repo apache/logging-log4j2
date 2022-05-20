@@ -21,14 +21,14 @@ import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.plugins.Category;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
 /**
  * Replacement pattern converter.
  */
-@Category(PatternConverter.CATEGORY)
+@Namespace(PatternConverter.CATEGORY)
 @Plugin("replace")
 @ConverterKeys({ "replace" })
 public final class RegexReplacementConverter extends LogEventPatternConverter {
