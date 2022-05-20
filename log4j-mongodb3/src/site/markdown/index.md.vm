@@ -30,7 +30,7 @@ $h1 MongoDB appender
       <dependency>
         <groupId>org.mongodb</groupId>
         <artifactId>mongo-java-driver</artifactId>
-        <version>2.12.3</version>
+        <version>3.12.11</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
