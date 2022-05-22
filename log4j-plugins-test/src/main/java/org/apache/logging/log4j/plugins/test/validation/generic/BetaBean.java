@@ -18,13 +18,13 @@
 package org.apache.logging.log4j.plugins.test.validation.generic;
 
 import org.apache.logging.log4j.plugins.Namespace;
+import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginOrder;
 import org.apache.logging.log4j.plugins.Singleton;
 
 @Namespace("Bean")
 @Plugin("Beta")
-@PluginOrder(PluginOrder.FIRST)
+@Ordered(Ordered.FIRST)
 @Singleton
 public class BetaBean implements BaseBean {
 }

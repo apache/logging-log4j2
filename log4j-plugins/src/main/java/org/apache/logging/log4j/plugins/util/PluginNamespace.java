@@ -18,7 +18,7 @@
 package org.apache.logging.log4j.plugins.util;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.plugins.PluginOrder;
+import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -109,12 +109,12 @@ public class PluginNamespace extends AbstractCollection<PluginType<?>> {
 
     /**
      * Merges the provided plugin type into this namespace using the given key and returns the merged result.
-     * Merging is done by preferring plugins according to {@link PluginOrder} where a conflict occurs with the
+     * Merging is done by preferring plugins according to {@link Ordered} where a conflict occurs with the
      * same key.
      */
     public PluginType<?> merge(final String key, final PluginType<?> pluginType) {
         final PluginType<?> result = plugins.merge(key, pluginType, (lhs, rhs) -> {
-            final int compare = PluginOrder.COMPARATOR.compare(lhs.getPluginClass(), rhs.getPluginClass());
+            final int compare = OrderedComparator.INSTANCE.compare(lhs.getPluginClass(), rhs.getPluginClass());
             LOGGER.debug("PluginNamespace merge for key {} with comparison result {}", key, compare);
             return compare <= 0 ? lhs : rhs;
         });

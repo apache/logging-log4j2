@@ -17,9 +17,11 @@
 
 package org.apache.logging.log4j.plugins.di;
 
+import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.QualifierType;
 import org.apache.logging.log4j.plugins.util.AnnotationUtil;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
+import org.apache.logging.log4j.util.Strings;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -34,7 +36,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 /**
- * Type with an optional {@link QualifierType} type, name, and category. Keys are used for binding to and looking up instance
+ * Type with an optional {@link QualifierType} type, name, and namespace. Keys are used for binding to and looking up instance
  * factories via {@link Injector}.
  *
  * @param <T> type of key
@@ -45,6 +47,7 @@ public class Key<T> {
     private final Class<? extends Annotation> qualifierType;
     private final String name;
     private final String namespace;
+    private final int order;
     private final int hashCode;
     private String toString;
 
@@ -67,21 +70,23 @@ public class Key<T> {
         qualifierType = qualifier != null ? qualifier.annotationType() : null;
         name = Keys.getName(superclass);
         namespace = Keys.getNamespace(superclass);
+        order = getOrder(superclass);
         hashCode = Objects.hash(type, qualifierType, name.toLowerCase(Locale.ROOT), namespace.toLowerCase(Locale.ROOT));
     }
 
     private Key(
             final Type type, final Class<T> rawType, final Class<? extends Annotation> qualifierType, final String name,
-            final String namespace) {
+            final String namespace, final int order) {
         this.type = type;
         this.rawType = rawType;
         this.qualifierType = qualifierType;
         this.name = name;
         this.namespace = namespace;
+        this.order = order;
         hashCode = Objects.hash(type, qualifierType, name.toLowerCase(Locale.ROOT), namespace.toLowerCase(Locale.ROOT));
     }
 
-    public Type getType() {
+    public final Type getType() {
         return type;
     }
 
@@ -89,34 +94,34 @@ public class Key<T> {
         return rawType;
     }
 
-    public String getName() {
+    public final String getName() {
         return name;
     }
 
-    public String getNamespace() {
+    public final String getNamespace() {
         return namespace;
     }
 
-    public Class<? extends Annotation> getQualifierType() {
-        return qualifierType;
+    public final int getOrder() {
+        return order;
     }
 
     /**
      * Returns a new key using the provided name and the same type and qualifier type as this instance.
      */
     public final Key<T> withName(final String name) {
-        return new Key<>(type, rawType, qualifierType, name, namespace);
+        return new Key<>(type, rawType, qualifierType, name, namespace, order);
     }
 
     public final Key<T> withNamespace(final String namespace) {
-        return new Key<>(type, rawType, qualifierType, name, namespace);
+        return new Key<>(type, rawType, qualifierType, name, namespace, order);
     }
 
     /**
      * Returns a new key using the provided qualifier type and the same type and name as this instance.
      */
     public final Key<T> withQualifierType(final Class<? extends Annotation> qualifierType) {
-        return new Key<>(type, rawType, qualifierType, name, namespace);
+        return new Key<>(type, rawType, qualifierType, name, namespace, order);
     }
 
     /**
@@ -125,7 +130,8 @@ public class Key<T> {
      */
     public final <P> Key<P> getSuppliedType() {
         if (type instanceof ParameterizedType && Supplier.class.isAssignableFrom(rawType)) {
-            return forQualifiedNamedType(qualifierType, name, ((ParameterizedType) type).getActualTypeArguments()[0], namespace);
+            return forQualifiedNamedType(qualifierType, name, ((ParameterizedType) type).getActualTypeArguments()[0], namespace,
+                    order);
         }
         return null;
     }
@@ -133,7 +139,7 @@ public class Key<T> {
     public final <P> Key<P> getParameterizedTypeArgument(final int arg) {
         if (type instanceof ParameterizedType) {
             return forQualifiedNamedType(qualifierType, name, ((ParameterizedType) type).getActualTypeArguments()[arg],
-                    namespace);
+                    namespace, order);
         }
         return null;
     }
@@ -162,12 +168,8 @@ public class Key<T> {
     public final String toString() {
         String string = toString;
         if (string == null) {
-            toString = string = "Key{" +
-                    "type=" + type.getTypeName() +
-                    (qualifierType != null ? ", qualifierType=" + qualifierType.getSimpleName() : "") +
-                    ", name='" + name + '\'' +
-                    ", category='" + namespace + '\'' +
-                    '}';
+            toString = string = String.format("Key{namespace='%s', name='%s', type=%s, qualifierType=%s}",
+                    namespace, name, type.getTypeName(), qualifierType != null ? qualifierType.getSimpleName() : Strings.EMPTY);
         }
         return string;
     }
@@ -179,7 +181,8 @@ public class Key<T> {
         return forQualifiedNamedType(getQualifierType(clazz),
                 Keys.getName(clazz),
                 clazz,
-                Keys.getNamespace(clazz));
+                Keys.getNamespace(clazz),
+                getOrder(clazz));
     }
 
     /**
@@ -189,7 +192,8 @@ public class Key<T> {
         return forQualifiedNamedType(getQualifierType(method),
                 Keys.getName(method),
                 method.getGenericReturnType(),
-                Keys.getNamespace(method));
+                Keys.getNamespace(method),
+                getOrder(method));
     }
 
     /**
@@ -199,7 +203,8 @@ public class Key<T> {
         return forQualifiedNamedType(getQualifierType(parameter),
                 Keys.getName(parameter),
                 parameter.getParameterizedType(),
-                Keys.getNamespace(parameter));
+                Keys.getNamespace(parameter),
+                0);
     }
 
     /**
@@ -209,17 +214,24 @@ public class Key<T> {
         return forQualifiedNamedType(getQualifierType(field),
                 Keys.getName(field),
                 field.getGenericType(),
-                Keys.getNamespace(field));
+                Keys.getNamespace(field),
+                0);
     }
 
     private static <T> Key<T> forQualifiedNamedType(
-            final Class<? extends Annotation> qualifierType, final String name, final Type type, final String category) {
+            final Class<? extends Annotation> qualifierType, final String name, final Type type, final String namespace,
+            final int order) {
         final Class<T> rawType = TypeUtil.cast(TypeUtil.getRawType(type));
-        return new Key<>(type, rawType, qualifierType, name, category);
+        return new Key<>(type, rawType, qualifierType, name, namespace, order);
     }
 
     private static Class<? extends Annotation> getQualifierType(final AnnotatedElement element) {
         final Annotation qualifierAnnotation = AnnotationUtil.getMetaAnnotation(element, QualifierType.class);
         return qualifierAnnotation != null ? qualifierAnnotation.annotationType() : null;
+    }
+
+    private static int getOrder(final AnnotatedElement element) {
+        final Ordered annotation = element.getAnnotation(Ordered.class);
+        return annotation != null ? annotation.value() : 0;
     }
 }

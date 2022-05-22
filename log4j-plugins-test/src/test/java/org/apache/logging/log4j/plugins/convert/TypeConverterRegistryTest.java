@@ -17,8 +17,8 @@
 
 package org.apache.logging.log4j.plugins.convert;
 
+import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginOrder;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.junit.jupiter.api.Test;
@@ -49,7 +49,7 @@ class TypeConverterRegistryTest {
     @SuppressWarnings("ComparableType")
     @TypeConverters
     @Plugin
-    @PluginOrder(PluginOrder.FIRST)
+    @Ordered(Ordered.FIRST)
     public static final class CustomTestClass1Converter2
             implements TypeConverter<CustomTestClass1>, Comparable<TypeConverter<?>> {
 

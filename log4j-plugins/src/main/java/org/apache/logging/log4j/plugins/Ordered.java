@@ -22,35 +22,17 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.Comparator;
 
 /**
- * Specifies the order in which the annotated class should be considered in when processing plugins.
+ * Specifies the order in which the annotated element should be considered for dependency injection.
  */
-@Target(ElementType.TYPE)
+@Target({ ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface PluginOrder {
+public @interface Ordered {
     int value();
 
     int FIRST = Integer.MIN_VALUE;
 
     int LAST = Integer.MAX_VALUE;
-
-    Comparator<Class<?>> COMPARATOR = (lhs, rhs) -> {
-        if (lhs == rhs) {
-            return 0;
-        }
-        final PluginOrder lhsOrder = lhs.getAnnotation(PluginOrder.class);
-        final PluginOrder rhsOrder = rhs.getAnnotation(PluginOrder.class);
-        if (lhsOrder != null && rhsOrder != null) {
-            return Integer.compare(lhsOrder.value(), rhsOrder.value());
-        } else if (lhsOrder != null) {
-            return -1;
-        } else if (rhsOrder != null) {
-            return 1;
-        } else {
-            return lhs.getName().compareTo(rhs.getName());
-        }
-    };
 }
