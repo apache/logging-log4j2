@@ -15,22 +15,23 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.core.impl;
+package org.apache.logging.log4j.plugins;
 
-import org.apache.logging.log4j.core.util.Loader;
-import org.apache.logging.log4j.plugins.di.Injector;
-import org.apache.logging.log4j.plugins.di.InjectorCallback;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class DefaultCallback implements InjectorCallback {
-    @Override
-    public void configure(final Injector injector) {
-        injector.setReflectionAccessor(object -> object.setAccessible(true));
-        injector.registerBundle(new DefaultBundle(injector, PropertiesUtil.getProperties(), Loader.getClassLoader()));
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getName();
-    }
+/**
+ * Annotation stereotype for {@link Singleton} and {@link Factory} combined.
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE, ElementType.METHOD })
+@Documented
+@Inherited
+@Singleton
+@FactoryType
+public @interface SingletonFactory {
 }

@@ -16,9 +16,7 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.io.IOException;
-import java.util.Arrays;
-
+import com.lmax.disruptor.EventFactory;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
@@ -28,17 +26,25 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.MementoMessage;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.time.Clock;
-import org.apache.logging.log4j.core.time.NanoClock;
-import org.apache.logging.log4j.core.util.*;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
-import org.apache.logging.log4j.message.*;
+import org.apache.logging.log4j.core.time.NanoClock;
+import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.ParameterConsumer;
+import org.apache.logging.log4j.message.ParameterVisitable;
+import org.apache.logging.log4j.message.ReusableMessage;
+import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.message.TimestampMessage;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
 
-import com.lmax.disruptor.EventFactory;
+import java.io.IOException;
+import java.util.Arrays;
+
+import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 
 /**
  * When the Disruptor is started, the RingBuffer is populated with event objects. These objects are then re-used during
@@ -415,7 +421,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         }
 
         // ensure that excessively long char[] arrays are not kept in memory forever
-        if (Constants.ENABLE_THREADLOCALS) {
+        if (isThreadLocalsEnabled()) {
             StringBuilders.trimToMaxSize(messageText, Constants.MAX_REUSABLE_MESSAGE_SIZE);
 
             if (parameters != null) {

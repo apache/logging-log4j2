@@ -14,17 +14,22 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.async;
 
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.junit.experimental.categories.Category;
+package org.apache.logging.log4j.plugins.condition;
 
-// Note: the different ThreadContextMap implementations cannot be parameterized:
-// ThreadContext initialization will result in static final fields being set in various components.
-// To use a different ThreadContextMap, the test needs to be run in a new JVM.
-@Category(AsyncLoggers.class)
-public class AsyncLoggerConfigThreadContextDefaultTest extends AbstractAsyncThreadContextTestBase {
-    public AsyncLoggerConfigThreadContextDefaultTest() {
-        super(ContextImpl.WEBAPP, Mode.MIXED);
-    }
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+/**
+ * Indicates that a {@link org.apache.logging.log4j.plugins.Factory} method or plugin class will only create a binding
+ * if all the given {@link Condition} classes match the binding's key.
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE, ElementType.ANNOTATION_TYPE, ElementType.METHOD })
+@Documented
+public @interface Conditional {
+    Class<? extends Condition>[] value();
 }

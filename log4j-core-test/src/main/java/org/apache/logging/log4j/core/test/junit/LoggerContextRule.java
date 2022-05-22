@@ -16,9 +16,8 @@
  */
 package org.apache.logging.log4j.core.test.junit;
 
-import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
@@ -26,18 +25,24 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.LoggerContextAccessor;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.selector.ContextSelector;
-import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.util.NetUtils;
+import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.CleanFiles;
 import org.apache.logging.log4j.test.junit.CleanFolders;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
-import static org.junit.Assert.*;
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.Assert.assertNotNull;
 
 /**
  * JUnit {@link TestRule} for constructing a new LoggerContext using a specified configuration file. If the system
@@ -115,15 +120,29 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                if (contextSelectorClass != null) {
-                    System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, contextSelectorClass.getName());
-                }
-                // TODO Consider instead of the above:
-                // LogManager.setFactory(new Log4jContextFactory(LoaderUtil.newInstanceOf(contextSelectorClass)));
                 System.setProperty(SYS_PROP_KEY_CLASS_NAME, description.getClassName());
-                System.setProperty(SYS_PROP_KEY_DISPLAY_NAME, description.getDisplayName());
-                loggerContext = Configurator.initialize(description.getDisplayName(),
-                        description.getTestClass().getClassLoader(), configurationLocation);
+                final String displayName = description.getDisplayName();
+                System.setProperty(SYS_PROP_KEY_DISPLAY_NAME, displayName);
+                final Injector injector = DI.createInjector();
+                if (contextSelectorClass != null) {
+                    injector.registerBinding(ContextSelector.KEY, injector.getFactory(contextSelectorClass));
+                }
+                injector.init();
+                final Log4jContextFactory factory = new Log4jContextFactory(injector);
+                LogManager.setFactory(factory);
+                final String fqcn = getClass().getName();
+                final ClassLoader classLoader = description.getTestClass().getClassLoader();
+
+                if (Strings.isBlank(configurationLocation)) {
+                    loggerContext = factory.getContext(fqcn, classLoader, null, false);
+                } else if (configurationLocation.contains(",")) {
+                    loggerContext = factory.getContext(fqcn, classLoader, null, false, NetUtils.toURIs(configurationLocation),
+                            displayName);
+                } else {
+                    loggerContext = factory.getContext(fqcn, classLoader, null, false, NetUtils.toURI(configurationLocation),
+                            displayName);
+                }
+                assertNotNull("Error initializing LoggerContext", loggerContext);
                 try {
                     base.evaluate();
                 } finally {
@@ -134,7 +153,6 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
                     loggerContext = null;
                     contextSelectorClass = null;
                     StatusLogger.getLogger().reset();
-                    System.clearProperty(Constants.LOG4J_CONTEXT_SELECTOR);
                     System.clearProperty(SYS_PROP_KEY_CLASS_NAME);
                     System.clearProperty(SYS_PROP_KEY_DISPLAY_NAME);
                 }

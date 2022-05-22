@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.async;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -40,8 +41,14 @@ public class AsyncLoggerContextSelector extends ClassLoaderContextSelector {
      * @return {@code true} if all loggers are asynchronous, {@code false} otherwise.
      */
     public static boolean isSelected() {
+        // FIXME(ms): this should check Injector bindings
         return AsyncLoggerContextSelector.class.getName().equals(
                 PropertiesUtil.getProperties().getStringProperty(Constants.LOG4J_CONTEXT_SELECTOR));
+    }
+
+    @Inject
+    public AsyncLoggerContextSelector(final Injector injector) {
+        super(injector);
     }
 
     @Override

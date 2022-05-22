@@ -22,13 +22,14 @@ import org.apache.logging.log4j.plugins.FactoryType;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.PluginException;
-import org.apache.logging.log4j.plugins.PluginOrder;
 import org.apache.logging.log4j.plugins.QualifierType;
 import org.apache.logging.log4j.plugins.ScopeType;
 import org.apache.logging.log4j.plugins.Singleton;
+import org.apache.logging.log4j.plugins.condition.Conditional;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.convert.TypeConverters;
 import org.apache.logging.log4j.plugins.util.AnnotationUtil;
+import org.apache.logging.log4j.plugins.util.OrderedComparator;
 import org.apache.logging.log4j.plugins.util.PluginNamespace;
 import org.apache.logging.log4j.plugins.util.PluginRegistry;
 import org.apache.logging.log4j.plugins.util.PluginType;
@@ -192,9 +193,9 @@ class DefaultInjector implements Injector {
     @Override
     public void registerBundle(final Object bundle) {
         if (bundle instanceof Class<?>) {
-            registerModuleInstance(getInstance((Class<?>) bundle));
+            registerBundleInstance(getInstance((Class<?>) bundle));
         } else {
-            registerModuleInstance(bundle);
+            registerBundleInstance(bundle);
         }
     }
 
@@ -213,6 +214,11 @@ class DefaultInjector implements Injector {
     @Override
     public void removeBinding(final Key<?> key) {
         bindingMap.remove(key);
+    }
+
+    @Override
+    public boolean hasBinding(final Key<?> key) {
+        return bindingMap.get(key) != null;
     }
 
     @Override
@@ -255,12 +261,11 @@ class DefaultInjector implements Injector {
         final Class<T> rawType = key.getRawType();
         final Scope scope = getScopeForType(rawType);
 
-        // @Category PluginCategory injection
+        // @Namespace PluginNamespace injection
         if (rawType == PluginNamespace.class && !key.getNamespace().isEmpty()) {
-            final Key<PluginNamespace> pluginCategoryKey = TypeUtil.cast(key);
-            final Supplier<PluginNamespace> pluginCategoryFactory = createPluginCategoryFactory(pluginCategoryKey);
-            bindingMap.putIfAbsent(pluginCategoryKey, pluginCategoryFactory);
-            return bindingMap.get(key, aliases).getSupplier();
+            final Key<PluginNamespace> pluginNamespaceKey = TypeUtil.cast(key);
+            final Supplier<PluginNamespace> pluginNamespaceFactory = createPluginNamespaceFactory(pluginNamespaceKey);
+            return TypeUtil.cast(bindingMap.merge(pluginNamespaceKey, pluginNamespaceFactory));
         }
 
         // Collection<T>/Map<String, T>/Stream<T>/etc. injection
@@ -268,28 +273,27 @@ class DefaultInjector implements Injector {
             if (Stream.class.isAssignableFrom(rawType)) {
                 final Key<Stream<T>> streamKey = TypeUtil.cast(key);
                 final Supplier<Stream<T>> streamFactory =
-                        () -> streamPluginInstancesFromCategory(key.getParameterizedTypeArgument(0));
-                bindingMap.putIfAbsent(streamKey, streamFactory);
+                        () -> streamPluginInstancesFromNamespace(key.getParameterizedTypeArgument(0));
+                return TypeUtil.cast(bindingMap.merge(streamKey, streamFactory));
             } else if (Set.class.isAssignableFrom(rawType)) {
                 final Key<Set<T>> setKey = TypeUtil.cast(key);
                 final Supplier<Set<T>> setFactory = () -> getPluginSet(key.getParameterizedTypeArgument(0));
-                bindingMap.putIfAbsent(setKey, setFactory);
+                return TypeUtil.cast(bindingMap.merge(setKey, setFactory));
             } else if (Map.class.isAssignableFrom(rawType)) {
                 final Key<Map<String, T>> mapKey = TypeUtil.cast(key);
                 final Supplier<Map<String, T>> mapFactory = () -> getPluginMap(key.getParameterizedTypeArgument(1));
-                bindingMap.putIfAbsent(mapKey, mapFactory);
+                return TypeUtil.cast(bindingMap.merge(mapKey, mapFactory));
             } else if (Iterable.class.isAssignableFrom(rawType)) {
                 final Key<Iterable<T>> iterableKey = TypeUtil.cast(key);
                 final Supplier<Iterable<T>> iterableFactory = () -> getPluginList(key.getParameterizedTypeArgument(0));
-                bindingMap.putIfAbsent(iterableKey, iterableFactory);
+                return TypeUtil.cast(bindingMap.merge(iterableKey, iterableFactory));
             } else if (Optional.class.isAssignableFrom(rawType)) {
                 final Key<Optional<T>> optionalKey = TypeUtil.cast(key);
                 final Supplier<Optional<T>> optionalFactory = () -> getOptionalPlugin(key.getParameterizedTypeArgument(0));
-                bindingMap.putIfAbsent(optionalKey, optionalFactory);
+                return TypeUtil.cast(bindingMap.merge(optionalKey, optionalFactory));
             } else {
                 throw new InjectException("Cannot inject plugins into " + key);
             }
-            return bindingMap.get(key).getSupplier();
         }
 
         // Optional<T> injection
@@ -297,8 +301,7 @@ class DefaultInjector implements Injector {
             final Key<Optional<T>> optionalKey = TypeUtil.cast(key);
             final Supplier<Optional<T>> optionalFactory = () ->
                     getOptionalInstance(key.getParameterizedTypeArgument(0), aliases, node, chain);
-            bindingMap.put(optionalKey, optionalFactory);
-            return bindingMap.get(key, aliases).getSupplier();
+            return TypeUtil.cast(bindingMap.merge(optionalKey, optionalFactory));
         }
 
         // generic T injection
@@ -308,10 +311,10 @@ class DefaultInjector implements Injector {
             injectMembers(key, node, instance, chain, debugLog);
             return instance;
         };
-        return bindingMap.bindIfAbsent(key, scope.get(key, instanceSupplier));
+        return bindingMap.merge(key, scope.get(key, instanceSupplier));
     }
 
-    private Supplier<PluginNamespace> createPluginCategoryFactory(final Key<PluginNamespace> key) {
+    private Supplier<PluginNamespace> createPluginNamespaceFactory(final Key<PluginNamespace> key) {
         return LazyValue.from(() -> getInstance(PluginRegistry.class).getNamespace(key.getNamespace(), getPluginPackages()));
     }
 
@@ -320,40 +323,40 @@ class DefaultInjector implements Injector {
         return pluginPackagesBinding != null ? pluginPackagesBinding.getSupplier().get() : List.of();
     }
 
-    private <T> Stream<PluginType<? extends T>> streamPluginsFromCategory(final Key<T> itemKey) {
+    private <T> Stream<PluginType<? extends T>> streamPluginsFromNamespace(final Key<T> itemKey) {
         if (itemKey == null) {
             return Stream.empty();
         }
-        final PluginNamespace category = getInstance(PluginRegistry.class).getNamespace(itemKey.getNamespace(), getPluginPackages());
+        final PluginNamespace namespace = getInstance(PluginRegistry.class).getNamespace(itemKey.getNamespace(), getPluginPackages());
         final Type type = itemKey.getType();
         final Class<T> rawType = itemKey.getRawType();
-        return category.stream()
+        return namespace.stream()
                 .filter(pluginType -> rawType.isInterface() && TypeUtil.isAssignable(type, pluginType.getPluginClass()) ||
                         TypeUtil.isAssignable(type, pluginType.getPluginClass()))
-                .sorted(Comparator.comparing(PluginType::getPluginClass, PluginOrder.COMPARATOR))
+                .sorted(Comparator.comparing(PluginType::getPluginClass, OrderedComparator.INSTANCE))
                 .map(TypeUtil::cast);
     }
 
-    private <T> Stream<T> streamPluginInstancesFromCategory(final Key<T> key) {
-        return streamPluginsFromCategory(key).map(pluginType -> getInstance(pluginType.getPluginClass()));
+    private <T> Stream<T> streamPluginInstancesFromNamespace(final Key<T> key) {
+        return streamPluginsFromNamespace(key).map(pluginType -> getInstance(pluginType.getPluginClass()));
     }
 
     private <T> Set<T> getPluginSet(final Key<T> key) {
-        return streamPluginInstancesFromCategory(key).collect(Collectors.toCollection(LinkedHashSet::new));
+        return streamPluginInstancesFromNamespace(key).collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     private <T> Map<String, T> getPluginMap(final Key<T> key) {
-        return streamPluginsFromCategory(key).collect(
+        return streamPluginsFromNamespace(key).collect(
                 Collectors.toMap(PluginType::getKey, pluginType -> getInstance(pluginType.getPluginClass()), (lhs, rhs) -> lhs,
                         LinkedHashMap::new));
     }
 
     private <T> List<T> getPluginList(final Key<T> key) {
-        return streamPluginInstancesFromCategory(key).collect(Collectors.toList());
+        return streamPluginInstancesFromNamespace(key).collect(Collectors.toList());
     }
 
     public <T> Optional<T> getOptionalPlugin(final Key<T> key) {
-        return streamPluginInstancesFromCategory(key).findFirst();
+        return streamPluginInstancesFromNamespace(key).findFirst();
     }
 
     private <T> Optional<T> getOptionalInstance(
@@ -555,6 +558,13 @@ class DefaultInjector implements Injector {
         final PluginType<?> type = node.getType();
         final Class<?> rawType = type.getPluginClass();
         final Key<?> key = Key.forClass(rawType);
+        // TODO(ms): this should combine all logical Conditional instances into one Conditional
+        final Conditional conditional = AnnotationUtil.getLogicalAnnotation(rawType, Conditional.class);
+        if (conditional != null && !Stream.of(conditional.value())
+                .map(this::getInstance)
+                .allMatch(condition -> condition.matches(key, rawType))) {
+            return null;
+        }
         final Executable factory = Stream.of(rawType.getDeclaredMethods())
                 .filter(method -> Modifier.isStatic(method.getModifiers()) &&
                         AnnotationUtil.isMetaAnnotationPresent(method, FactoryType.class))
@@ -583,8 +593,8 @@ class DefaultInjector implements Injector {
         }
     }
 
-    private void registerModuleInstance(final Object module) {
-        final Class<?> moduleClass = module.getClass();
+    private void registerBundleInstance(final Object bundle) {
+        final Class<?> moduleClass = bundle.getClass();
         final List<Method> providerMethods = new ArrayList<>();
         Stream.<Class<?>>iterate(moduleClass, c -> c != Object.class, Class::getSuperclass)
                 .flatMap(c -> Stream.of(c.getDeclaredMethods()))
@@ -593,14 +603,11 @@ class DefaultInjector implements Injector {
                     if (method.getDeclaringClass().equals(moduleClass) || providerMethods.stream().noneMatch(m ->
                             m.getName().equals(method.getName()) &&
                                     Arrays.equals(m.getParameterTypes(), method.getParameterTypes()))) {
-                        providerMethods.add(method);
-                        createMethodBindings(module, method).forEach(binding -> {
-                            final var key = binding.getKey();
-                            if (!bindingMap.putIfAbsent(key, binding.getSupplier())) {
-                                throw new InjectException(String.format(
-                                        "Duplicate @Factory method (%s: %s) found for %s", moduleClass, method, key));
-                            }
-                        });
+                        final var bindings = createMethodBindings(bundle, method);
+                        if (!bindings.isEmpty()) {
+                            providerMethods.add(method);
+                            bindings.forEach(binding -> bindingMap.merge(binding.getKey(), binding.getSupplier()));
+                        }
                     }
                 });
     }
@@ -608,6 +615,14 @@ class DefaultInjector implements Injector {
     private <T> List<Binding<T>> createMethodBindings(final Object instance, final Method method) {
         makeAccessible(method, instance);
         final Key<T> primaryKey = Key.forMethod(method);
+        LOGGER.debug("Checking {} on {} for conditions", primaryKey, method);
+        final Conditional conditional = AnnotationUtil.getLogicalAnnotation(method, Conditional.class);
+        if (conditional != null && !Stream.of(conditional.value())
+                .map(this::getInstance)
+                .allMatch(condition -> condition.matches(primaryKey, method))) {
+            LOGGER.debug("One or more conditionals failed on {}; skipping", method);
+            return List.of();
+        }
         final List<InjectionPoint<?>> points = InjectionPoint.fromExecutable(method);
         final var argumentFactories = getArgumentFactories(primaryKey, null, points, Set.of(primaryKey), null);
         final Supplier<T> unscoped = () -> {
@@ -744,7 +759,7 @@ class DefaultInjector implements Injector {
         if (type != null && !type.isDeferChildren() && node.hasChildren()) {
             for (final Node child : node.getChildren()) {
                 final String nodeType = node.getType().getElementType();
-                final String start = nodeType.equals(node.getName()) ? node.getName() : nodeType + ' ' + node.getName();
+                final String start = nodeType.equalsIgnoreCase(node.getName()) ? node.getName() : nodeType + ' ' + node.getName();
                 LOGGER.error("{} has no field or parameter that matches element {}", start, child.getName());
             }
         }

@@ -42,6 +42,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static org.apache.logging.log4j.util.Constants.isWebApp;
+
 /**
  * Factory to locate a ContextSelector and then load a LoggerContext.
  */
@@ -49,9 +51,6 @@ import java.util.Objects;
 public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallbackRegistry {
 
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
-    private static final boolean SHUTDOWN_HOOK_ENABLED =
-        PropertiesUtil.getProperties().getBooleanProperty(ShutdownCallbackRegistry.SHUTDOWN_HOOK_ENABLED, true) &&
-                !Constants.IS_WEB_APP;
 
     private final Injector injector;
     private final ContextSelector selector;
@@ -128,6 +127,10 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
         this.shutdownCallbackRegistry = registry;
         LOGGER.debug("Using ShutdownCallbackRegistry {}", this.shutdownCallbackRegistry.getClass());
         initializeShutdownCallbackRegistry();
+    }
+
+    public Log4jContextFactory(final Injector injector) {
+        this(injector, injector.getInstance(ContextSelector.KEY), injector.getInstance(ShutdownCallbackRegistry.KEY));
     }
 
     private void initializeShutdownCallbackRegistry() {
@@ -388,6 +391,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
     }
 
     public boolean isShutdownHookEnabled() {
-        return SHUTDOWN_HOOK_ENABLED;
+        return !isWebApp() && PropertiesUtil.getProperties()
+                .getBooleanProperty(ShutdownCallbackRegistry.SHUTDOWN_HOOK_ENABLED, true);
     }
 }

@@ -15,22 +15,15 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.core.impl;
+package org.apache.logging.log4j.plugins.condition;
 
-import org.apache.logging.log4j.core.util.Loader;
-import org.apache.logging.log4j.plugins.di.Injector;
-import org.apache.logging.log4j.plugins.di.InjectorCallback;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.plugins.di.Key;
 
-public class DefaultCallback implements InjectorCallback {
-    @Override
-    public void configure(final Injector injector) {
-        injector.setReflectionAccessor(object -> object.setAccessible(true));
-        injector.registerBundle(new DefaultBundle(injector, PropertiesUtil.getProperties(), Loader.getClassLoader()));
-    }
+import java.lang.reflect.AnnotatedElement;
 
-    @Override
-    public String toString() {
-        return getClass().getName();
-    }
+/**
+ * Checks an annotated element to see if it matches some condition.
+ */
+public interface Condition {
+    boolean matches(final Key<?> key, final AnnotatedElement element);
 }

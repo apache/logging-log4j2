@@ -23,6 +23,7 @@ import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
@@ -213,18 +214,21 @@ class InjectorTest {
     }
 
     @Test
-    void ambiguousModuleError() {
-        assertThatThrownBy(() -> DI.createInjector(new Object() {
+    void ambiguousModuleMerge() {
+        final String actual = DI.createInjector(new Object() {
             @Factory
+            @Ordered(Ordered.FIRST)
             String alpha() {
                 return "alpha";
             }
 
             @Factory
+            @Ordered(Ordered.LAST)
             String beta() {
                 return "beta";
             }
-        })).hasMessageContaining("Duplicate @Factory method");
+        }).getInstance(String.class);
+        assertThat(actual).isEqualTo("alpha");
     }
 
     static class CircularBeanA {
@@ -727,12 +731,21 @@ class InjectorTest {
         final var injector = DI.createInjector();
         assertThatThrownBy(() -> injector.getInstance(ValidatedInjectionPoints.class))
                 .hasMessageStartingWith("Validation failed");
-        injector.registerBinding(new @Named("foo") Key<>() {
-        }, () -> "hello");
+    }
+
+    @Test
+    void injectionPointValidationPartial() {
+        final var injector = DI.createInjector()
+                .registerBinding(new @Named("foo") Key<>() {}, () -> "hello");
         assertThatThrownBy(() -> injector.getInstance(ValidatedInjectionPoints.class))
                 .hasMessageStartingWith("Validation failed");
-        injector.registerBinding(new @Named("bar") Key<>() {
-        }, () -> "world");
+    }
+
+    @Test
+    void injectionPointValidationFull() {
+        final var injector = DI.createInjector()
+                .registerBinding(new @Named("foo") Key<>() {}, () -> "hello")
+                .registerBinding(new @Named("bar") Key<>() {}, () -> "world");
         final ValidatedInjectionPoints instance = injector.getInstance(ValidatedInjectionPoints.class);
         assertThat(instance.foo).isEqualTo("hello");
         assertThat(instance.bar).isEqualTo("world");

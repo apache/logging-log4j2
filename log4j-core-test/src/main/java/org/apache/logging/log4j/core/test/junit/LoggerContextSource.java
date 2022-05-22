@@ -81,4 +81,9 @@ public @interface LoggerContextSource {
      * Toggles Log4j1 configuration file compatibility mode for XML and properties files.
      */
     boolean v1config() default false;
+
+    /**
+     * Determines whether to bootstrap a fresh LoggerContextFactory.
+     */
+    boolean bootstrap() default false;
 }

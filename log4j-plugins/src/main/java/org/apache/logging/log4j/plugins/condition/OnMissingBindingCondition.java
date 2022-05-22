@@ -15,22 +15,29 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.core.impl;
+package org.apache.logging.log4j.plugins.condition;
 
-import org.apache.logging.log4j.core.util.Loader;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.di.Injector;
-import org.apache.logging.log4j.plugins.di.InjectorCallback;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.plugins.di.Key;
+import org.apache.logging.log4j.status.StatusLogger;
 
-public class DefaultCallback implements InjectorCallback {
-    @Override
-    public void configure(final Injector injector) {
-        injector.setReflectionAccessor(object -> object.setAccessible(true));
-        injector.registerBundle(new DefaultBundle(injector, PropertiesUtil.getProperties(), Loader.getClassLoader()));
+import java.lang.reflect.AnnotatedElement;
+
+public class OnMissingBindingCondition implements Condition {
+    private static final Logger LOGGER = StatusLogger.getLogger();
+    private final Injector injector;
+
+    @Inject
+    public OnMissingBindingCondition(final Injector injector) {
+        this.injector = injector;
     }
 
     @Override
-    public String toString() {
-        return getClass().getName();
+    public boolean matches(final Key<?> key, final AnnotatedElement element) {
+        final boolean result = !injector.hasBinding(key);
+        LOGGER.debug("ConditionalOnMissingBinding {} for {} on {}", result, key, element);
+        return result;
     }
 }

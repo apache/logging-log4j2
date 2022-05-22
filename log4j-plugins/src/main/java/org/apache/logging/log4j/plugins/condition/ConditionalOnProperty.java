@@ -15,22 +15,23 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.core.impl;
+package org.apache.logging.log4j.plugins.condition;
 
-import org.apache.logging.log4j.core.util.Loader;
-import org.apache.logging.log4j.plugins.di.Injector;
-import org.apache.logging.log4j.plugins.di.InjectorCallback;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class DefaultCallback implements InjectorCallback {
-    @Override
-    public void configure(final Injector injector) {
-        injector.setReflectionAccessor(object -> object.setAccessible(true));
-        injector.registerBundle(new DefaultBundle(injector, PropertiesUtil.getProperties(), Loader.getClassLoader()));
-    }
+/**
+ * Checks if a Log4j property is present or matches a specific non-empty value.
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE, ElementType.ANNOTATION_TYPE, ElementType.METHOD })
+@Documented
+@Conditional(OnPropertyCondition.class)
+public @interface ConditionalOnProperty {
+    String name();
 
-    @Override
-    public String toString() {
-        return getClass().getName();
-    }
+    String value() default "";
 }

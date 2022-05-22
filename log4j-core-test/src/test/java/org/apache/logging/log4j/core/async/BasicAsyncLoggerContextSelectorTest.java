@@ -17,40 +17,26 @@
 package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.util.Constants;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.apache.logging.log4j.core.impl.Log4jContextFactory;
+import org.apache.logging.log4j.core.selector.ContextSelector;
+import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-@Category(AsyncLoggers.class)
+@Tag("async")
+@ContextSelectorType(BasicAsyncLoggerContextSelector.class)
 public class BasicAsyncLoggerContextSelectorTest {
 
     private static final String FQCN = BasicAsyncLoggerContextSelectorTest.class.getName();
 
-    @BeforeClass
-    public static void beforeClass() {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
-                BasicAsyncLoggerContextSelector.class.getName());
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        System.clearProperty(Constants.LOG4J_CONTEXT_SELECTOR);
-    }
-
     @Test
     public void testContextReturnsAsyncLoggerContext() {
-        final BasicAsyncLoggerContextSelector selector = new BasicAsyncLoggerContextSelector();
+        final ContextSelector selector = ((Log4jContextFactory) LogManager.getFactory()).getSelector();
         final LoggerContext context = selector.getContext(FQCN, null, false);
 
         assertTrue(context instanceof AsyncLoggerContext);
@@ -58,7 +44,7 @@ public class BasicAsyncLoggerContextSelectorTest {
 
     @Test
     public void testContext2ReturnsAsyncLoggerContext() {
-        final BasicAsyncLoggerContextSelector selector = new BasicAsyncLoggerContextSelector();
+        final ContextSelector selector = ((Log4jContextFactory) LogManager.getFactory()).getSelector();
         final LoggerContext context = selector.getContext(FQCN, null, false, null);
 
         assertTrue(context instanceof AsyncLoggerContext);
@@ -66,29 +52,24 @@ public class BasicAsyncLoggerContextSelectorTest {
 
     @Test
     public void testLoggerContextsReturnsAsyncLoggerContext() {
-        final BasicAsyncLoggerContextSelector selector = new BasicAsyncLoggerContextSelector();
-
-        List<LoggerContext> list = selector.getLoggerContexts();
-        assertEquals(1, list.size());
-        assertTrue(list.get(0) instanceof AsyncLoggerContext);
+        final ContextSelector selector = ((Log4jContextFactory) LogManager.getFactory()).getSelector();
+        assertThat(selector.getLoggerContexts()).hasExactlyElementsOfTypes(AsyncLoggerContext.class);
 
         selector.getContext(FQCN, null, false);
 
-        list = selector.getLoggerContexts();
-        assertEquals(1, list.size());
-        assertTrue(list.get(0) instanceof AsyncLoggerContext);
+        assertThat(selector.getLoggerContexts()).hasExactlyElementsOfTypes(AsyncLoggerContext.class);
     }
 
     @Test
     public void testContextNameIsAsyncDefault() {
-        final BasicAsyncLoggerContextSelector selector = new BasicAsyncLoggerContextSelector();
+        final ContextSelector selector = ((Log4jContextFactory) LogManager.getFactory()).getSelector();
         final LoggerContext context = selector.getContext(FQCN, null, false);
-        assertEquals("AsyncDefault" , context.getName());
+        assertEquals("AsyncDefault", context.getName());
     }
 
     @Test
     public void testDependentOnClassLoader() {
-        final BasicAsyncLoggerContextSelector selector = new BasicAsyncLoggerContextSelector();
+        final ContextSelector selector = ((Log4jContextFactory) LogManager.getFactory()).getSelector();
         assertFalse(selector.isClassLoaderDependent());
     }
 

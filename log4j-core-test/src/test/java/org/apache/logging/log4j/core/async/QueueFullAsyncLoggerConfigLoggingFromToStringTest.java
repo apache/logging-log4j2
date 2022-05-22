@@ -16,15 +16,11 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.util.List;
-import java.util.Stack;
-import java.util.concurrent.CountDownLatch;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -35,6 +31,10 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
+
+import java.util.List;
+import java.util.Stack;
+import java.util.concurrent.CountDownLatch;
 
 import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.*;
@@ -48,8 +48,6 @@ public class QueueFullAsyncLoggerConfigLoggingFromToStringTest extends QueueFull
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty("log4j2.enable.threadlocals", "true");
-        System.setProperty("log4j2.is.webapp", "false");
         System.setProperty("AsyncLoggerConfig.RingBufferSize", "128");
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
                 "log4j2-queueFullAsyncLoggerConfig.xml");

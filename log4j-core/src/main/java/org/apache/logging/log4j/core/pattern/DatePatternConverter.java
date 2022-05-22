@@ -22,7 +22,6 @@ import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
 import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
 import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedFormat;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.PerformanceSensitive;
@@ -33,6 +32,8 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicReference;
+
+import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 
 /**
  * Converts and formats the event's date in a StringBuilder.
@@ -280,7 +281,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     }
 
     private MutableInstant getMutableInstant() {
-        if (Constants.ENABLE_THREADLOCALS) {
+        if (isThreadLocalsEnabled()) {
             MutableInstant result = threadLocalMutableInstant.get();
             if (result == null) {
                 result = new MutableInstant();
@@ -292,7 +293,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     }
 
     public void format(final Instant instant, final StringBuilder output) {
-        if (Constants.ENABLE_THREADLOCALS) {
+        if (isThreadLocalsEnabled()) {
             formatWithoutAllocation(instant, output);
         } else {
             formatWithoutThreadLocals(instant, output);

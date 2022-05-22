@@ -43,9 +43,9 @@ import java.util.concurrent.atomic.AtomicReference;
  * Loggers associated with classes loaded from different ClassLoaders to be co-mingled. This is a problem if, for
  * example, a web application is undeployed as some of the Loggers being released may be associated with a Class in a
  * parent ClassLoader, which will generally have negative consequences.
- *
+ * <p>
  * The main downside to this ContextSelector is that Configuration is more challenging.
- *
+ * <p>
  * This ContextSelector should not be used with a Servlet Filter such as the Log4jServletFilter.
  */
 @Singleton
@@ -58,11 +58,17 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
     protected static final ConcurrentMap<String, AtomicReference<WeakReference<LoggerContext>>> CONTEXT_MAP =
             new ConcurrentHashMap<>();
 
-    @Inject protected Injector injector;
+    protected final Injector injector;
+
+    @Inject
+    public ClassLoaderContextSelector(final Injector injector) {
+        this.injector = injector;
+    }
 
     @Override
-    public void shutdown(final String fqcn, final ClassLoader loader, final boolean currentContext,
-                         final boolean allContexts) {
+    public void shutdown(
+            final String fqcn, final ClassLoader loader, final boolean currentContext,
+            final boolean allContexts) {
         LoggerContext ctx = null;
         if (currentContext) {
             ctx = ContextAnchor.THREAD_CONTEXT.get();
@@ -124,13 +130,15 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
     }
 
     @Override
-    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext,
+    public LoggerContext getContext(
+            final String fqcn, final ClassLoader loader, final boolean currentContext,
             final URI configLocation) {
         return getContext(fqcn, loader, null, currentContext, configLocation);
     }
 
     @Override
-    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Map.Entry<String, Object> entry,
+    public LoggerContext getContext(
+            final String fqcn, final ClassLoader loader, final Map.Entry<String, Object> entry,
             final boolean currentContext, final URI configLocation) {
         if (currentContext) {
             final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
@@ -193,7 +201,8 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
         return injector != null ? injector.copy() : null;
     }
 
-    private LoggerContext locateContext(final ClassLoader loaderOrNull, final Map.Entry<String, Object> entry,
+    private LoggerContext locateContext(
+            final ClassLoader loaderOrNull, final Map.Entry<String, Object> entry,
             final URI configLocation) {
         // LOG4J2-477: class loader may be null
         final ClassLoader loader = loaderOrNull != null ? loaderOrNull : ClassLoader.getSystemClassLoader();

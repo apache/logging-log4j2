@@ -32,16 +32,15 @@ import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("functional")
 public class EventParameterMemoryLeakTest {
 
     @BeforeAll
     public static void beforeClass() {
-        System.setProperty("log4j2.enable.threadlocals", "true");
         System.setProperty("log4j2.enable.direct.encoders", "true");
-        System.setProperty("log4j2.is.webapp", "false");
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "EventParameterMemoryLeakTest.xml");
     }
 

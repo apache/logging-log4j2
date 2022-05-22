@@ -16,18 +16,17 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * There are two logger.info() calls here.
@@ -45,11 +44,6 @@ import static org.junit.Assert.*;
  * @since 2016-09-14 in recursion
  */
 public class NestedLoggingFromToStringTest {
-
-    @BeforeClass
-    public static void beforeClass() {
-        System.setProperty("log4j2.is.webapp", "false");
-    }
 
     @Rule
     public LoggerContextRule context = new LoggerContextRule("log4j-sync-to-list.xml");

@@ -18,9 +18,9 @@ package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.test.CoreLoggerContexts;
+import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -39,7 +39,6 @@ public class AsyncLoggerConfigWithAsyncEnabledTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty("log4j2.is.webapp", "false");
         System.setProperty("Log4jContextSelector", AsyncLoggerContextSelector.class.getCanonicalName());
         // Reuse the configuration from AsyncLoggerConfigTest4
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "AsyncLoggerConfigTest4.xml");
@@ -47,7 +46,6 @@ public class AsyncLoggerConfigWithAsyncEnabledTest {
 
     @AfterClass
     public static void afterClass() {
-        System.clearProperty("log4j2.is.webapp");
         System.clearProperty("Log4jContextSelector");
     }
 

@@ -14,17 +14,18 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
 package org.apache.logging.log4j.core.async;
 
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
 
-// Note: the different ThreadContextMap implementations cannot be parameterized:
-// ThreadContext initialization will result in static final fields being set in various components.
-// To use a different ThreadContextMap, the test needs to be run in a new JVM.
-@Category(AsyncLoggers.class)
-public class AsyncLoggerConfigThreadContextGarbageFreeTest extends AbstractAsyncThreadContextTestBase {
-    public AsyncLoggerConfigThreadContextGarbageFreeTest() {
-        super(ContextImpl.GARBAGE_FREE, Mode.MIXED);
+/**
+ * Provided as a dedicated test as it depends on cached state during Log4j startup.
+ */
+class GarbageFreeAsyncThreadContextTest {
+    @Test
+    void garbageFreeMixed() throws Exception {
+        AsyncThreadContextTest.doTestAsyncLogWritesToLog(AsyncThreadContextTest.ContextImpl.GARBAGE_FREE,
+                AsyncThreadContextTest.Mode.MIXED, getClass());
     }
 }

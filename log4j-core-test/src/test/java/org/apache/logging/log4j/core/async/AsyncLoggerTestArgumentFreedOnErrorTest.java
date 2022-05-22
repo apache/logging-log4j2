@@ -17,38 +17,36 @@
 package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.GarbageCollectionHelper;
-import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
-import org.apache.logging.log4j.util.Strings;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Category(AsyncLoggers.class)
-public class AsyncLoggerTestArgumentFreedOnError {
+@Tag("async")
+@ContextSelectorType(AsyncLoggerContextSelector.class)
+public class AsyncLoggerTestArgumentFreedOnErrorTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
-        System.setProperty("log4j2.enable.threadlocals", "true");
         System.setProperty("log4j2.enable.direct.encoders", "true");
-        System.setProperty("log4j2.is.webapp", "false");
         System.setProperty("log4j.format.msg.async", "true");
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
-                AsyncLoggerContextSelector.class.getName());
+        PropertiesUtil.getProperties().reload();
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, Strings.EMPTY);
+        System.clearProperty("log4j2.enable.direct.encoders");
+        System.clearProperty("log4j.format.msg.async");
     }
 
     // LOG4J2-2725: events are cleared even after failure
@@ -59,8 +57,8 @@ public class AsyncLoggerTestArgumentFreedOnError {
         log.fatal(new ThrowingMessage(garbageCollectionLatch));
         try (GarbageCollectionHelper gcHelper = new GarbageCollectionHelper()) {
             gcHelper.run();
-            assertTrue("Parameter should have been garbage collected",
-                    garbageCollectionLatch.await(30, TimeUnit.SECONDS));
+            assertTrue(garbageCollectionLatch.await(30, TimeUnit.SECONDS),
+                    "Parameter should have been garbage collected");
         }
     }
 

@@ -18,10 +18,10 @@ package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
+import org.apache.logging.log4j.core.test.CoreLoggerContexts;
+import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.message.AsynchronouslyFormattable;
 import org.apache.logging.log4j.message.Message;
 import org.junit.AfterClass;
@@ -34,16 +34,13 @@ import java.io.File;
 import java.io.FileReader;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @Category(AsyncLoggers.class)
 public class AsyncLoggerConfigErrorOnFormat {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty("log4j2.is.webapp", "false");
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "AsyncLoggerConfigErrorOnFormat.xml");
         // Log4jLogEvent.toString invokes message.toString
         System.setProperty("log4j2.logEventFactory", DefaultLogEventFactory.class.getName());
@@ -51,7 +48,6 @@ public class AsyncLoggerConfigErrorOnFormat {
 
     @AfterClass
     public static void afterClass() {
-        System.clearProperty("log4j2.is.webapp");
         System.clearProperty("log4j2.logEventFactory");
     }
 

@@ -18,41 +18,33 @@ package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.apache.logging.log4j.core.test.CoreLoggerContexts;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Category(AsyncLoggers.class)
-public class AsyncLoggerConfigTest4 {
+@Tag("async")
+public class AsyncLoggerConfig4Test {
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
-        System.setProperty("log4j2.is.webapp", "false");
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "AsyncLoggerConfigTest4.xml");
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        System.clearProperty("log4j2.is.webapp");
     }
 
     @Test
     public void testParameters() throws Exception {
         final File file = new File("target", "AsyncLoggerConfigTest4.log");
-        assertTrue("Deleted old file before test", !file.exists() || file.delete());
+        assertTrue(!file.exists() || file.delete(), "Deleted old file before test");
 
         final Logger log = LogManager.getLogger("com.foo.Bar");
         log.info("Additive logging: {} for the price of {}!", 2, 1);
@@ -67,10 +59,14 @@ public class AsyncLoggerConfigTest4 {
         reader.close();
         file.delete();
 
-        assertThat(line1, containsString("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!"));
-        assertThat(line2, containsString("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!"));
-        assertThat(line3, containsString("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!"));
-        assertThat(line4, containsString("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!"));
-        assertNull("Expected only two lines to be logged", line5);
+        assertThat(line1,
+                containsString("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!"));
+        assertThat(line2,
+                containsString("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!"));
+        assertThat(line3,
+                containsString("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!"));
+        assertThat(line4,
+                containsString("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!"));
+        assertNull(line5, "Expected only two lines to be logged");
     }
 }

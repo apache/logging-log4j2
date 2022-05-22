@@ -22,6 +22,8 @@ import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
+import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
+
 /**
  * Log4j Constants.
  */
@@ -90,7 +92,7 @@ public final class Constants {
      * @since 2.10
      * @deprecated no longer used, lookups are only used when {@code %m{lookups}} is specified
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static final boolean FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS = PropertiesUtil.getProperties().getBooleanProperty(
             "log4j2.formatMsgNoLookups", true);
 
@@ -99,7 +101,8 @@ public final class Constants {
      * "log4j2.is.webapp", or (if this system property is not set) whether the  {@code javax.servlet.Servlet} class
      * is present in the classpath.
      */
-    public static final boolean IS_WEB_APP = org.apache.logging.log4j.util.Constants.IS_WEB_APP;
+    @Deprecated(forRemoval = true)
+    public static final boolean IS_WEB_APP = org.apache.logging.log4j.util.Constants.isWebApp();
 
     /**
      * Kill switch for object pooling in ThreadLocals that enables much of the LOG4J2-1270 no-GC behaviour.
@@ -109,7 +112,8 @@ public final class Constants {
      *
      * @since 2.6
      */
-    public static final boolean ENABLE_THREADLOCALS = org.apache.logging.log4j.util.Constants.ENABLE_THREADLOCALS;
+    @Deprecated(forRemoval = true)
+    public static final boolean ENABLE_THREADLOCALS = isThreadLocalsEnabled();
 
     /**
      * Kill switch for garbage-free Layout behaviour that encodes LogEvents directly into

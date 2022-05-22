@@ -17,11 +17,11 @@
 package org.apache.logging.log4j.spi;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogBuilder;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.internal.DefaultLogBuilder;
-import org.apache.logging.log4j.LogBuilder;
 import org.apache.logging.log4j.message.DefaultFlowMessageFactory;
 import org.apache.logging.log4j.message.EntryMessage;
 import org.apache.logging.log4j.message.FlowMessageFactory;
@@ -204,7 +204,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
             final Class<ReusableMessageFactory> reusableParameterizedMessageFactoryClass,
             final Class<ParameterizedMessageFactory> parameterizedMessageFactoryClass) {
         try {
-            final String fallback = Constants.ENABLE_THREADLOCALS ? reusableParameterizedMessageFactoryClass.getName()
+            final String fallback = Constants.isThreadLocalsEnabled() ? reusableParameterizedMessageFactoryClass.getName()
                     : parameterizedMessageFactoryClass.getName();
             final String clsName = PropertiesUtil.getProperties().getStringProperty(property, fallback);
             return LoaderUtil.loadClass(clsName).asSubclass(MessageFactory.class);
@@ -2862,7 +2862,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     private DefaultLogBuilder getLogBuilder(final Level level) {
         final DefaultLogBuilder builder = logBuilder.get();
-        return Constants.ENABLE_THREADLOCALS && !builder.isInUse() ? builder : new DefaultLogBuilder(this, level);
+        return Constants.isThreadLocalsEnabled() && !builder.isInUse() ? builder : new DefaultLogBuilder(this, level);
     }
 
     private void readObject (final ObjectInputStream s) throws ClassNotFoundException, IOException {
@@ -2876,7 +2876,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         }
     }
 
-    private class LocalLogBuilder extends ThreadLocal<DefaultLogBuilder> {
+    private static class LocalLogBuilder extends ThreadLocal<DefaultLogBuilder> {
         private final AbstractLogger logger;
         LocalLogBuilder(final AbstractLogger logger) {
             this.logger = logger;

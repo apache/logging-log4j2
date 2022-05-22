@@ -18,27 +18,15 @@ package org.apache.logging.log4j.core.selector;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LifeCycle;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
+@ContextSelectorType(BasicContextSelector.class)
 public final class BasicContextSelectorTest {
-
-    @BeforeClass
-    public static void beforeClass() {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
-                BasicContextSelector.class.getName());
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        System.clearProperty(Constants.LOG4J_CONTEXT_SELECTOR);
-    }
 
     @Test
     public void testLogManagerShutdown() {

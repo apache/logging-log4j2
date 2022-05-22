@@ -142,8 +142,12 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
         return provider;
     }
 
-    @Inject
     protected StrSubstitutor substitutor;
+
+    @Inject
+    public void setSubstitutor(final StrSubstitutor substitutor) {
+        this.substitutor = substitutor;
+    }
 
     protected abstract String[] getSupportedTypes();
 

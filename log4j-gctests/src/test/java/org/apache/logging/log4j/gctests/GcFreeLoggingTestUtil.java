@@ -36,6 +36,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
 import static java.lang.System.getProperty;
+import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
+import static org.apache.logging.log4j.util.Constants.isWebApp;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -52,9 +54,9 @@ public enum GcFreeLoggingTestUtil {;
         System.setProperty("log4j2.is.webapp", "false");
         System.setProperty("log4j.configurationFile", configurationFile);
 
-        assertTrue(Constants.ENABLE_THREADLOCALS, "Constants.ENABLE_THREADLOCALS");
+        assertTrue(isThreadLocalsEnabled(), "Constants.ENABLE_THREADLOCALS");
         assertTrue(Constants.ENABLE_DIRECT_ENCODERS, "Constants.ENABLE_DIRECT_ENCODERS");
-        assertFalse(Constants.IS_WEB_APP, "Constants.IS_WEB_APP");
+        assertFalse(isWebApp(), "Constants.IS_WEB_APP");
 
         final MyCharSeq myCharSeq = new MyCharSeq();
         final Marker testGrandParent = MarkerManager.getMarker("testGrandParent");

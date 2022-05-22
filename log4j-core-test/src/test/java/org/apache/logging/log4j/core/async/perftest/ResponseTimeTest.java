@@ -16,6 +16,13 @@
  */
 package org.apache.logging.log4j.core.async.perftest;
 
+import org.HdrHistogram.Histogram;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.async.DefaultAsyncQueueFullPolicy;
+import org.apache.logging.log4j.core.async.EventRoute;
+import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.Loader;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -25,12 +32,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.HdrHistogram.Histogram;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.async.DefaultAsyncQueueFullPolicy;
-import org.apache.logging.log4j.core.async.EventRoute;
-import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.core.util.Loader;
+import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 
 /**
  * Latency test showing both service time and response time.
@@ -140,7 +142,7 @@ public class ResponseTimeTest {
         runLatencyTest(logger, WARMUP_DURATION_MILLIS, WARMUP_COUNT, loadMessagesPerSec, idleStrategy,
                 warmupServiceTmHistograms, warmupResponseTmHistograms, threadCount);
         System.out.println("-----------------Warmup done. load=" + loadMessagesPerSec);
-        if (!Constants.ENABLE_DIRECT_ENCODERS || !Constants.ENABLE_THREADLOCALS) {
+        if (!Constants.ENABLE_DIRECT_ENCODERS || !isThreadLocalsEnabled()) {
             //System.gc();
             //Thread.sleep(5000);
         }

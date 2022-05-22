@@ -17,10 +17,11 @@
 
 package org.apache.logging.log4j.core.test.junit;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.LoggerContextAccessor;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
@@ -132,6 +133,7 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
     }
 
     private static class LoggerContextConfig implements AutoCloseable, LoggerContextAccessor {
+        private static final String FQCN = LoggerContextConfig.class.getName();
         private final LoggerContext context;
         private final ReconfigurationPolicy reconfigurationPolicy;
         private final long shutdownTimeout;
@@ -141,6 +143,13 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
             final String displayName = extensionContext.getDisplayName();
             final Injector injector = extensionContext.getTestInstance().map(DI::createInjector).orElseGet(DI::createInjector);
             injector.init();
+            final Log4jContextFactory loggerContextFactory;
+            if (source.bootstrap()) {
+                loggerContextFactory = new Log4jContextFactory(injector);
+                LogManager.setFactory(loggerContextFactory);
+            } else {
+                loggerContextFactory = (Log4jContextFactory) LogManager.getFactory();
+            }
             final Class<?> testClass = extensionContext.getRequiredTestClass();
             final ClassLoader classLoader = testClass.getClassLoader();
             final Map.Entry<String, Object> injectorContext = Map.entry(Injector.class.getName(), injector);
@@ -152,7 +161,7 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
             } else {
                 configUri = configLocation.isEmpty() ? null : NetUtils.toURI(configLocation);
             }
-            context = Configurator.initialize(displayName, classLoader, configUri, injectorContext);
+            context = loggerContextFactory.getContext(FQCN, classLoader, injectorContext, false, configUri, displayName);
             assertNotNull(context, () -> "No LoggerContext created for " + testClass + " and config file " + configLocation);
             reconfigurationPolicy = source.reconfigure();
             shutdownTimeout = source.timeout();

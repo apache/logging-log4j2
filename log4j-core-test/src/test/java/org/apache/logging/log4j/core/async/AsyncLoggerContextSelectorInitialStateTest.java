@@ -16,18 +16,21 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.plugins.di.Injector;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Category(AsyncLoggers.class)
+@Tag("async")
 public class AsyncLoggerContextSelectorInitialStateTest {
 
     @Test
     public void testLoggerContextsListInitiallyEmpty() {
-        final AsyncLoggerContextSelector selector = new AsyncLoggerContextSelector();
+        final Injector injector = DI.createInjector();
+        injector.init();
+        final AsyncLoggerContextSelector selector = new AsyncLoggerContextSelector(injector);
         assertTrue(selector.getLoggerContexts().isEmpty());
     }
 }

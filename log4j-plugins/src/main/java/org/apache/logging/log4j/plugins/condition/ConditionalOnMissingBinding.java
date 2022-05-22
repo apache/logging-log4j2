@@ -14,17 +14,24 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.async;
 
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.junit.experimental.categories.Category;
+package org.apache.logging.log4j.plugins.condition;
 
-// Note: the different ThreadContextMap implementations cannot be parameterized:
-// ThreadContext initialization will result in static final fields being set in various components.
-// To use a different ThreadContextMap, the test needs to be run in a new JVM.
-@Category(AsyncLoggers.class)
-public class AsyncLoggerConfigThreadContextCopyOnWriteTest extends AbstractAsyncThreadContextTestBase {
-    public AsyncLoggerConfigThreadContextCopyOnWriteTest() {
-        super(ContextImpl.COPY_ON_WRITE, Mode.MIXED);
-    }
+import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.di.Key;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+/**
+ * Checks if a {@linkplain Injector#hasBinding(Key) binding exists} for the annotated element.
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE, ElementType.ANNOTATION_TYPE, ElementType.METHOD })
+@Documented
+@Conditional(OnMissingBindingCondition.class)
+public @interface ConditionalOnMissingBinding {
 }

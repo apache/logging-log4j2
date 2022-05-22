@@ -21,7 +21,8 @@ import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.util.Constants;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  *
@@ -37,6 +38,6 @@ public class PropertyTest {
 
     @Test
     public void testIsWebApp() {
-        assertTrue(Constants.IS_WEB_APP, "When servlet classes are available IS_WEB_APP should default to true");
+        assertTrue(Constants.isWebApp(), "When servlet classes are available IS_WEB_APP should default to true");
     }
 }

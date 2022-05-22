@@ -168,6 +168,11 @@ public interface Injector {
     void removeBinding(final Key<?> key);
 
     /**
+     * Indicates if a binding exists for the provided key.
+     */
+    boolean hasBinding(final Key<?> key);
+
+    /**
      * Sets the {@link ReflectionAccessor} used for invoking {@link java.lang.reflect.AccessibleObject#setAccessible(boolean)}
      * from an appropriate caller class. Customizing this allows for changing the base module that other modules should
      * open themselves to.

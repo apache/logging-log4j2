@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.spi;
 
 import org.apache.logging.log4j.util.BiConsumer;
+import org.apache.logging.log4j.util.LazyBoolean;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.TriConsumer;
@@ -44,16 +45,13 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
     private final boolean useMap;
     private final ThreadLocal<Map<String, String>> localMap;
 
-    private static boolean inheritableMap;
-    
-    static {
-        init();
-    }
+    private static final LazyBoolean inheritableMap = new LazyBoolean(() -> PropertiesUtil.getProperties()
+            .getBooleanProperty(INHERITABLE_MAP));
 
     // LOG4J2-479: by default, use a plain ThreadLocal, only use InheritableThreadLocal if configured.
     // (This method is package protected for JUnit tests.)
     static ThreadLocal<Map<String, String>> createThreadLocalMap(final boolean isMapEnabled) {
-        if (inheritableMap) {
+        if (inheritableMap.getAsBoolean()) {
             return new InheritableThreadLocal<>() {
                 @Override
                 protected Map<String, String> childValue(final Map<String, String> parentValue) {
@@ -67,8 +65,8 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
         return new ThreadLocal<>();
     }
 
-    static void init() {
-        inheritableMap = PropertiesUtil.getProperties().getBooleanProperty(INHERITABLE_MAP);
+    static void init(final PropertiesUtil properties) {
+        inheritableMap.setAsBoolean(properties.getBooleanProperty(INHERITABLE_MAP));
     }
     
     public DefaultThreadContextMap() {

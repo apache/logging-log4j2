@@ -23,24 +23,60 @@ package org.apache.logging.log4j.util;
  */
 public final class Constants {
 
+    private static final LazyBoolean isWebApp = new LazyBoolean(() -> PropertiesUtil.getProperties()
+            .getBooleanProperty("log4j2.is.webapp",
+                    isClassAvailable("javax.servlet.Servlet") || isClassAvailable("jakarta.servlet.Servlet")));
+
     /**
      * {@code true} if we think we are running in a web container, based on the boolean value of system property
      * "log4j2.is.webapp", or (if this system property is not set) whether the  {@code javax.servlet.Servlet} class
      * is present in the classpath.
      */
-    public static final boolean IS_WEB_APP = PropertiesUtil.getProperties().getBooleanProperty(
-            "log4j2.is.webapp", isClassAvailable("javax.servlet.Servlet")
-                    || isClassAvailable("jakarta.servlet.Servlet"));
+    public static boolean isWebApp() {
+        return isWebApp.getAsBoolean();
+    }
+
+    public static void setWebApp(final boolean webApp) {
+        isWebApp.setAsBoolean(webApp);
+    }
+
+    public static void resetWebApp() {
+        isWebApp.reset();
+    }
+
+    /**
+     * @deprecated use {@link #isWebApp()}
+     */
+    @Deprecated(since = "3.0.0", forRemoval = true)
+    public static final boolean IS_WEB_APP = isWebApp();
+
+    private static final LazyBoolean threadLocalsEnabled = new LazyBoolean(
+            () -> !isWebApp() && PropertiesUtil.getProperties().getBooleanProperty("log4j2.enable.threadlocals", true));
 
     /**
      * Kill switch for object pooling in ThreadLocals that enables much of the LOG4J2-1270 no-GC behaviour.
      * <p>
-     * {@code True} for non-{@link #IS_WEB_APP web apps}, disable by setting system property
+     * {@code True} for non-{@link #isWebApp()} web apps}, disable by setting system property
      * "log4j2.enable.threadlocals" to "false".
      * </p>
      */
-    public static final boolean ENABLE_THREADLOCALS = !IS_WEB_APP && PropertiesUtil.getProperties().getBooleanProperty(
-            "log4j2.enable.threadlocals", true);
+    public static boolean isThreadLocalsEnabled() {
+        return threadLocalsEnabled.getAsBoolean();
+    }
+
+    public static void setThreadLocalsEnabled(final boolean enabled) {
+        threadLocalsEnabled.setAsBoolean(enabled);
+    }
+
+    public static void resetThreadLocalsEnabled() {
+        threadLocalsEnabled.reset();
+    }
+
+    /**
+     * @deprecated use {@link #isThreadLocalsEnabled()}
+     */
+    @Deprecated(since = "3.0.0", forRemoval = true)
+    public static final boolean ENABLE_THREADLOCALS = isThreadLocalsEnabled();
 
     public static final int JAVA_MAJOR_VERSION = getMajorVersion();
 

@@ -23,9 +23,8 @@ import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.plugins.Singleton;
+import org.apache.logging.log4j.plugins.SingletonFactory;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
@@ -37,20 +36,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ShutdownCallbackRegistryTest {
 
-    @BeforeAll
-    public static void setUpClass() {
-        System.setProperty("log4j2.is.webapp", "false");
-        System.setProperty(ShutdownCallbackRegistry.SHUTDOWN_CALLBACK_REGISTRY, Registry.class.getName());
-    }
-
-    @AfterAll
-    public static void afterClass() {
-        System.clearProperty(ShutdownCallbackRegistry.SHUTDOWN_CALLBACK_REGISTRY);
-        System.clearProperty("log4j2.is.webapp");
+    @SingletonFactory
+    ShutdownCallbackRegistry shutdownCallbackRegistry() {
+        return new Registry();
     }
 
     @Test
-    @LoggerContextSource("ShutdownCallbackRegistryTest.xml")
+    @LoggerContextSource(value = "ShutdownCallbackRegistryTest.xml", bootstrap = true)
     public void testShutdownCallbackRegistry(final LoggerContext context) {
         assertTrue(context.isStarted(), "LoggerContext should be started");
         assertThat(Registry.CALLBACKS, hasSize(1));
