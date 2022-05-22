@@ -17,8 +17,8 @@
 
 package org.apache.logging.log4j.plugins.di;
 
-import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Named;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.internal.util.BeanUtils;
 import org.apache.logging.log4j.plugins.name.AliasesProvider;
 import org.apache.logging.log4j.plugins.name.AnnotatedElementAliasesProvider;
@@ -37,10 +37,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 public final class Keys {
     private Keys() {
@@ -54,14 +52,9 @@ public final class Keys {
     public static final Key<List<String>> PLUGIN_PACKAGES_KEY = new @Named(PLUGIN_PACKAGES_NAME) Key<>() {};
 
     public static String getNamespace(final AnnotatedElement element) {
-        return Optional.ofNullable(element.getAnnotation(Namespace.class))
+        return Optional.ofNullable(AnnotationUtil.getLogicalAnnotation(element, Namespace.class))
                 .map(Namespace::value)
-                .orElseGet(() -> Stream.of(element.getAnnotations())
-                        .map(annotation -> annotation.annotationType().getAnnotation(Namespace.class))
-                        .filter(Objects::nonNull)
-                        .findFirst()
-                        .map(Namespace::value)
-                        .orElse(Strings.EMPTY));
+                .orElse(Strings.EMPTY);
     }
 
     /**
