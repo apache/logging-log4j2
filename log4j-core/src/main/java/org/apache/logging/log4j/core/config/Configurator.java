@@ -28,7 +28,6 @@ import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.Strings;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -116,20 +115,8 @@ public final class Configurator {
         if (Strings.isBlank(configLocation)) {
             return initialize(name, loader, (URI) null, externalContext);
         }
-        if (configLocation.contains(",")) {
-            final String[] parts = configLocation.split(",");
-            String scheme = null;
-            final List<URI> uris = new ArrayList<>(parts.length);
-            for (final String part : parts) {
-                final URI uri = NetUtils.toURI(scheme != null ? scheme + ":" + part.trim() : part.trim());
-                if (scheme == null && uri.getScheme() != null) {
-                    scheme = uri.getScheme();
-                }
-                uris.add(uri);
-            }
-            return initialize(name, loader, uris, externalContext);
-        }
-        return initialize(name, loader, NetUtils.toURI(configLocation), externalContext);
+        return configLocation.contains(",") ? initialize(name, loader, NetUtils.toURIs(configLocation), externalContext) :
+                initialize(name, loader, NetUtils.toURI(configLocation), externalContext);
     }
 
     /**
