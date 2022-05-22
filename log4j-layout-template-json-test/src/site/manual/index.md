@@ -16,14 +16,13 @@
     limitations under the License.
 -->
 
-# Apache Log4j JSON Template Layout module
+# Apache Log4j JSON Template Layout module tests
 
-This module provides a customizable, efficient, and garbage-free JSON generating Apache Log4j layout.
-It encodes log events according to the structure described by the JSON template provided.
+This module provides tests and test utilities for [the JSON Template Layout](/manual/json-template-layout.html).
 
 ## Requirements
 
-This module was introduced in Log4j 2.14.0.
+This module was introduced in Log4j 3.0.0.
 
 Some features may require optional [dependencies](../runtime-dependencies.html).
 These dependencies are specified in the documentation for those features.

@@ -1776,6 +1776,7 @@
     <module>log4j-layout-jackson-xml</module>
     <module>log4j-layout-jackson-yaml</module>
     <module>log4j-layout-template-json</module>
+    <module>log4j-layout-template-json-test</module>
     <module>log4j-csv</module>
     <!-- Lookups -->
     <module>log4j-jndi</module>
