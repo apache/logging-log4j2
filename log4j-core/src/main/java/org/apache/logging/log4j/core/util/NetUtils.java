@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
+
 import java.io.File;
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -30,10 +34,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
-
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Strings;
 
 /**
  * Networking-related convenience methods.
@@ -209,6 +209,20 @@ public final class NetUtils {
                 return new File(path).toURI();
             }
         }
+    }
+
+    public static List<URI> toURIs(final String path) {
+        final String[] parts = path.split(",");
+        String scheme = null;
+        final List<URI> uris = new ArrayList<>(parts.length);
+        for (final String part : parts) {
+            final URI uri = NetUtils.toURI(scheme != null ? scheme + ":" + part.trim() : part.trim());
+            if (scheme == null && uri.getScheme() != null) {
+                scheme = uri.getScheme();
+            }
+            uris.add(uri);
+        }
+        return uris;
     }
 
 }
