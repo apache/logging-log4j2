@@ -300,7 +300,7 @@
     <jctoolsVersion>1.2.1</jctoolsVersion>
     <junitVersion>4.13.2</junitVersion>
     <junitJupiterVersion>5.8.2</junitJupiterVersion>
-    <junitPioneerVersion>1.6.2</junitPioneerVersion>
+    <junitPioneerVersion>1.7.0</junitPioneerVersion>
     <mockitoVersion>4.4.0</mockitoVersion>
     <xmlunitVersion>2.9.0</xmlunitVersion>
     <javax.activation.version>1.2.0</javax.activation.version>
