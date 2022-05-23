@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.log4j.bridge.FilterAdapter;
@@ -120,6 +121,19 @@ public abstract class AbstractBuilder<T> implements Builder<T> {
         return defaultValue;
     }
 
+    public long getLongProperty(final String key, final long defaultValue) {
+        String value = null;
+        try {
+            value = getProperty(key);
+            if (value != null) {
+                return Long.parseLong(value);
+            }
+        } catch (final Exception ex) {
+            LOGGER.warn("Error converting value {} of {} to a long: {}", value, key, ex.getMessage());
+        }
+        return defaultValue;
+    }
+
     protected String getNameAttribute(final Element element) {
         return element.getAttribute(NAME_ATTR);
     }
@@ -189,6 +203,19 @@ public abstract class AbstractBuilder<T> implements Builder<T> {
         } else {
             try {
                 ref.set(Integer.parseInt(value));
+            } catch (NumberFormatException e) {
+                LOGGER.warn("{} parsing {} parameter, using default {}: {}", e.getClass().getName(), name, ref, e.getMessage(), e);
+            }
+        }
+    }
+
+    protected void set(final String name, final Element element, AtomicLong ref) {
+        final String value = getValueAttribute(element);
+        if (value == null) {
+            LOGGER.warn("No value for {} parameter, using default {}", name, ref);
+        } else {
+            try {
+                ref.set(Long.parseLong(value));
             } catch (NumberFormatException e) {
                 LOGGER.warn("{} parsing {} parameter, using default {}: {}", e.getClass().getName(), name, ref, e.getMessage(), e);
             }

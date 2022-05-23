@@ -43,6 +43,7 @@ import org.apache.log4j.spi.Filter;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter.Result;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.LoggerConfig;
@@ -588,6 +589,14 @@ public class PropertiesConfiguration extends Log4j1Configuration {
             propSetter.activate();
         }
         return filter;
+    }
+
+    public TriggeringPolicy parseTriggeringPolicy(final Properties props, final String policyPrefix) {
+        final String policyClass = OptionConverter.findAndSubst(policyPrefix, props);
+        if (policyClass == null) {
+            return null;
+        }
+        return manager.parse(policyClass, policyPrefix, props, this, null);
     }
 
     private static <T> T newInstanceOf(final String className, final String type) {

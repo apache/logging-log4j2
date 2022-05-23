@@ -132,6 +132,10 @@
       <action issue="LOG4J2-3362" dev="pkarwasz" type="add">
         Add support for Jakarta Mail API in the SMTP appender.
       </action>
+      <action issue="LOG4J2-3483" dev="pkarwasz" type="add">
+        Add support for Apache Extras' RollingFileAppender in Log4j 1.x bridge.
+      </action>
+      <!-- UPDATES -->
       <action issue="LOG4J2-3428" dev="ggregory" type="fix" due-to="LF-Lin">
         Update 3rd party dependencies for 2.18.0.
       </action>
