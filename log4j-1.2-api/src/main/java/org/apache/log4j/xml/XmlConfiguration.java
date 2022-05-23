@@ -44,6 +44,7 @@ import org.apache.log4j.spi.AppenderAttachable;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.Filter;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
 import org.apache.logging.log4j.core.Filter.Result;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
@@ -653,6 +654,12 @@ public class XmlConfiguration extends Log4j1Configuration {
             LOGGER.error("Could not create the Layout. Reported error follows.", e);
         }
         return null;
+    }
+
+    public TriggeringPolicy parseTriggeringPolicy(Element policyElement) {
+        String className = subst(policyElement.getAttribute(CLASS_ATTR));
+        LOGGER.debug("Parsing triggering policy of class: \"{}\"", className);
+        return manager.parseTriggeringPolicy(className, policyElement, this);
     }
 
     /**

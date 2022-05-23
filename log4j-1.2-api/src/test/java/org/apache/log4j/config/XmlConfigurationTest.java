@@ -18,6 +18,7 @@ package org.apache.log4j.config;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,6 +35,11 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.xml.XmlConfigurationFactory;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.RollingFileAppender;
+import org.apache.logging.log4j.core.appender.rolling.CompositeTriggeringPolicy;
+import org.apache.logging.log4j.core.appender.rolling.SizeBasedTriggeringPolicy;
+import org.apache.logging.log4j.core.appender.rolling.TimeBasedTriggeringPolicy;
+import org.apache.logging.log4j.core.appender.rolling.TriggeringPolicy;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.junit.Test;
@@ -48,7 +54,7 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
     @Override
     Configuration getConfiguration(String configResourcePrefix) throws URISyntaxException, IOException {
         final String configResource = configResourcePrefix + SUFFIX;
-        final InputStream inputStream = ClassLoader.getSystemResourceAsStream(configResource);
+        final InputStream inputStream = getResourceAsStream(configResource);
         final ConfigurationSource source = new ConfigurationSource(inputStream);
         final LoggerContext context = LoggerContext.getContext(false);
         final Configuration configuration = new XmlConfigurationFactory().getConfiguration(context, source);
@@ -176,6 +182,24 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
     @Test
     public void testGlobalThreshold() throws Exception {
         super.testGlobalThreshold();
+    }
+
+    @Test
+    public void testEnhancedRollingFileAppender() throws Exception {
+        try (final LoggerContext ctx = configure("config-1.2/log4j-EnhancedRollingFileAppender")) {
+            final Configuration configuration = ctx.getConfiguration();
+            assertNotNull(configuration);
+            testEnhancedRollingFileAppender(configuration);
+            // Only supported through XML configuration
+            final Appender appender = configuration.getAppender("MIXED");
+            assertTrue("is RollingFileAppender", appender instanceof RollingFileAppender);
+            final TriggeringPolicy policy = ((RollingFileAppender) appender).getTriggeringPolicy();
+            assertTrue("is CompositeTriggeringPolicy", policy instanceof CompositeTriggeringPolicy);
+            final TriggeringPolicy[] policies = ((CompositeTriggeringPolicy) policy).getTriggeringPolicies();
+            assertEquals(2, policies.length);
+            assertTrue("is TimeBasedTriggeringPolicy", policies[0] instanceof TimeBasedTriggeringPolicy);
+            assertTrue("is SizeBasedTriggeringPolicy", policies[1] instanceof SizeBasedTriggeringPolicy);
+        }
     }
 
 }
