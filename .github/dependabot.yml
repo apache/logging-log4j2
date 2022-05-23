@@ -16,9 +16,17 @@
 #
 version: 2
 updates:
+# No more than 10 PRs for dependencies with a `test` scope
 - package-ecosystem: maven
   directory: "/"
   schedule:
     interval: daily
-    time: '04:00'
+  allow: development
   open-pull-requests-limit: 10
+# 50 PRs for the remaining dependencies (`compile` and Maven plugins)
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: daily
+  allow: production
+  open-pull-requests-limit: 50
