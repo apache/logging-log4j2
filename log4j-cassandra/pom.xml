@@ -35,7 +35,7 @@
     <projectDir>/log4j-cassandra</projectDir>
     <module.name>org.apache.logging.log4j.cassandra</module.name>
     <maven.doap.skip>true</maven.doap.skip>
-    <cassandra-all.version>2.2.8</cassandra-all.version>
+    <cassandra-all.version>4.0.4</cassandra-all.version>
   </properties>
 
   <dependencies>
