@@ -1273,7 +1273,7 @@
         <plugin>
           <groupId>io.fabric8</groupId>
           <artifactId>docker-maven-plugin</artifactId>
-          <version>0.39.0</version>
+          <version>0.39.1</version>
         </plugin>
       </plugins>
     </pluginManagement>
