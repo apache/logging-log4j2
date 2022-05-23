@@ -63,7 +63,7 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
     @Override
     Configuration getConfiguration(final String configResourcePrefix) throws URISyntaxException, IOException {
         final String configResource = configResourcePrefix + SUFFIX;
-        final InputStream inputStream = ClassLoader.getSystemResourceAsStream(configResource);
+        final InputStream inputStream = getResourceAsStream(configResource);
         final ConfigurationSource source = new ConfigurationSource(inputStream);
         final LoggerContext context = LoggerContext.getContext(false);
         final Configuration configuration = new PropertiesConfigurationFactory().getConfiguration(context, source);
@@ -320,5 +320,14 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
     @Test
     public void testGlobalThreshold() throws Exception {
         super.testGlobalThreshold();
+    }
+
+    @Test
+    public void testEnhancedRollingFileAppender() throws Exception {
+        try (final LoggerContext ctx = configure("config-1.2/log4j-EnhancedRollingFileAppender")) {
+            final Configuration configuration = ctx.getConfiguration();
+            assertNotNull(configuration);
+            testEnhancedRollingFileAppender(configuration);
+        }
     }
 }

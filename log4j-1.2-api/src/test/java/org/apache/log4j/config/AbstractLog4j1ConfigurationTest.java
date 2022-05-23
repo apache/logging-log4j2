@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -70,6 +71,12 @@ import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
 public abstract class AbstractLog4j1ConfigurationTest {
 
     abstract Configuration getConfiguration(String configResourcePrefix) throws URISyntaxException, IOException;
+
+    protected InputStream getResourceAsStream(final String configResource) throws IOException {
+        final InputStream is = getClass().getClassLoader().getResourceAsStream(configResource);
+        assertNotNull(is);
+        return is;
+    }
 
     protected LoggerContext configure(final String configResourcePrefix) throws URISyntaxException, IOException {
         Configurator.reconfigure(getConfiguration(configResourcePrefix));
@@ -549,5 +556,73 @@ public abstract class AbstractLog4j1ConfigurationTest {
             logger.info("INFO");
             assertEquals(1, legacyAppender.getEvents().size());
         }
+    }
+
+    protected void testEnhancedRollingFileAppender(Configuration configuration) {
+        Appender appender;
+        TriggeringPolicy policy;
+        RolloverStrategy strategy;
+        DefaultRolloverStrategy defaultRolloverStrategy;
+        // Time policy with default attributes
+        appender = configuration.getAppender("DEFAULT_TIME");
+        assertTrue("is RollingFileAppender", appender instanceof RollingFileAppender);
+        final RollingFileAppender defaultTime = (RollingFileAppender) appender;
+        assertEquals("append", true, defaultTime.getManager().isAppend());
+        assertEquals("bufferSize", 8192, defaultTime.getManager().getBufferSize());
+        assertEquals("immediateFlush", true, defaultTime.getImmediateFlush());
+        assertEquals("fileName", "target/EnhancedRollingFileAppender/defaultTime.log", defaultTime.getFileName());
+        assertEquals(
+                "filePattern",
+                "target/EnhancedRollingFileAppender/defaultTime.%d{yyyy-MM-dd}.log",
+                defaultTime.getFilePattern());
+        policy = defaultTime.getTriggeringPolicy();
+        assertTrue("is TimeBasedTriggeringPolicy", policy instanceof TimeBasedTriggeringPolicy);
+        // Size policy with default attributes
+        appender = configuration.getAppender("DEFAULT_SIZE");
+        assertTrue("is RollingFileAppender", appender instanceof RollingFileAppender);
+        final RollingFileAppender defaultSize = (RollingFileAppender) appender;
+        assertEquals("append", true, defaultSize.getManager().isAppend());
+        assertEquals("bufferSize", 8192, defaultSize.getManager().getBufferSize());
+        assertEquals("immediateFlush", true, defaultSize.getImmediateFlush());
+        assertEquals("fileName", "target/EnhancedRollingFileAppender/defaultSize.log", defaultSize.getFileName());
+        assertEquals(
+                "filePattern", "target/EnhancedRollingFileAppender/defaultSize.%i.log", defaultSize.getFilePattern());
+        policy = defaultSize.getTriggeringPolicy();
+        assertTrue("is SizeBasedTriggeringPolicy", policy instanceof SizeBasedTriggeringPolicy);
+        assertEquals(10 * 1024 * 1024L, ((SizeBasedTriggeringPolicy) policy).getMaxFileSize());
+        strategy = defaultSize.getManager().getRolloverStrategy();
+        assertTrue("is DefaultRolloverStrategy", strategy instanceof DefaultRolloverStrategy);
+        defaultRolloverStrategy = (DefaultRolloverStrategy) strategy;
+        assertEquals(1, defaultRolloverStrategy.getMinIndex());
+        assertEquals(7, defaultRolloverStrategy.getMaxIndex());
+        // Time policy with custom attributes
+        appender = configuration.getAppender("TIME");
+        assertTrue("is RollingFileAppender", appender instanceof RollingFileAppender);
+        final RollingFileAppender time = (RollingFileAppender) appender;
+        assertEquals("append", false, time.getManager().isAppend());
+        assertEquals("bufferSize", 1000, time.getManager().getBufferSize());
+        assertEquals("immediateFlush", false, time.getImmediateFlush());
+        assertEquals("fileName", "target/EnhancedRollingFileAppender/time.log", time.getFileName());
+        assertEquals(
+                "filePattern", "target/EnhancedRollingFileAppender/time.%d{yyyy-MM-dd}.log", time.getFilePattern());
+        policy = time.getTriggeringPolicy();
+        assertTrue("is TimeBasedTriggeringPolicy", policy instanceof TimeBasedTriggeringPolicy);
+        // Size policy with custom attributes
+        appender = configuration.getAppender("SIZE");
+        assertTrue("is RollingFileAppender", appender instanceof RollingFileAppender);
+        final RollingFileAppender size = (RollingFileAppender) appender;
+        assertEquals("append", false, size.getManager().isAppend());
+        assertEquals("bufferSize", 1000, size.getManager().getBufferSize());
+        assertEquals("immediateFlush", false, size.getImmediateFlush());
+        assertEquals("fileName", "target/EnhancedRollingFileAppender/size.log", size.getFileName());
+        assertEquals("filePattern", "target/EnhancedRollingFileAppender/size.%i.log", size.getFilePattern());
+        policy = size.getTriggeringPolicy();
+        assertTrue("is SizeBasedTriggeringPolicy", policy instanceof SizeBasedTriggeringPolicy);
+        assertEquals(10_000_000L, ((SizeBasedTriggeringPolicy) policy).getMaxFileSize());
+        strategy = size.getManager().getRolloverStrategy();
+        assertTrue("is DefaultRolloverStrategy", strategy instanceof DefaultRolloverStrategy);
+        defaultRolloverStrategy = (DefaultRolloverStrategy) strategy;
+        assertEquals(11, defaultRolloverStrategy.getMinIndex());
+        assertEquals(20, defaultRolloverStrategy.getMaxIndex());
     }
 }

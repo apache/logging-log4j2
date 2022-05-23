@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one or more
+  ~ contributor license agreements.  See the NOTICE file distributed with
+  ~ this work for additional information regarding copyright ownership.
+  ~ The ASF licenses this file to you under the Apache License, Version 2.0
+  ~ (the "License"); you may not use this file except in compliance with
+  ~ the License.  You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+  <appender name="DEFAULT_TIME" class="org.apache.log4j.rolling.RollingFileAppender">
+    <param name="File" value="target/EnhancedRollingFileAppender/defaultTime.log" />
+    <layout class="org.apache.log4j.SimpleLayout" />
+    <rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
+      <param name="FileNamePattern" value="target/EnhancedRollingFileAppender/defaultTime.%d{yyyy-MM-dd}.log" />
+    </rollingPolicy>
+  </appender>
+
+  <appender name="DEFAULT_SIZE" class="org.apache.log4j.rolling.RollingFileAppender">
+    <param name="File" value="target/EnhancedRollingFileAppender/defaultSize.log" />
+    <layout class="org.apache.log4j.SimpleLayout" />
+    <triggeringPolicy class="org.apache.log4j.rolling.SizeBasedTriggeringPolicy" />
+    <rollingPolicy class="org.apache.log4j.rolling.FixedWindowRollingPolicy">
+      <param name="FileNamePattern" value="target/EnhancedRollingFileAppender/defaultSize.%i.log" />
+    </rollingPolicy>
+  </appender>
+
+  <appender name="TIME" class="org.apache.log4j.rolling.RollingFileAppender">
+    <param name="Append" value="false" />
+    <param name="BufferedIO" value="true" />
+    <param name="BufferSize" value="1000" />
+    <param name="File" value="target/EnhancedRollingFileAppender/ignoredTime.log" />
+    <param name="ImmediateFlush" value="false" />
+    <layout class="org.apache.log4j.SimpleLayout" />
+    <triggeringPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy" />
+    <rollingPolicy class="org.apache.log4j.rolling.FixedWindowRollingPolicy">
+      <param name="ActiveFileName" value="target/EnhancedRollingFileAppender/time.log" />
+      <param name="FileNamePattern" value="target/EnhancedRollingFileAppender/time.%d{yyyy-MM-dd}.log" />
+    </rollingPolicy>
+  </appender>
+
+  <appender name="SIZE" class="org.apache.log4j.rolling.RollingFileAppender">
+    <param name="Append" value="false" />
+    <param name="BufferedIO" value="true" />
+    <param name="BufferSize" value="1000" />
+    <param name="File" value="target/EnhancedRollingFileAppender/ignoredSize.log" />
+    <param name="ImmediateFlush" value="false" />
+    <layout class="org.apache.log4j.SimpleLayout" />
+    <triggeringPolicy class="org.apache.log4j.rolling.SizeBasedTriggeringPolicy">
+      <param name="MaxFileSize" value="10000000" />
+    </triggeringPolicy>
+    <rollingPolicy class="org.apache.log4j.rolling.FixedWindowRollingPolicy">
+      <param name="ActiveFileName" value="target/EnhancedRollingFileAppender/size.log" />
+      <param name="FileNamePattern" value="target/EnhancedRollingFileAppender/size.%i.log" />
+      <param name="MinIndex" value="11" />
+      <param name="MaxIndex" value="20" />
+    </rollingPolicy>
+  </appender>
+
+  <!-- This should not work in the original Apache Extras, since TimeBasedRollingPolicy
+       triggers a rollover every second and **must** use itself as rolling policy.
+   -->
+  <appender name="MIXED" class="org.apache.log4j.rolling.RollingFileAppender">
+    <param name="File" value="target/EnhancedRollingFileAppender/mixed.log" />
+    <layout class="org.apache.log4j.SimpleLayout" />
+    <triggeringPolicy class="org.apache.log4j.rolling.CompositeTriggeringPolicy">
+      <triggeringPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy" />
+      <triggeringPolicy class="org.apache.log4j.rolling.SizeBasedTriggeringPolicy" />
+    </triggeringPolicy>
+    <rollingPolicy class="org.apache.log4j.rolling.FixedWindowRollingPolicy">
+      <param name="FileNamePattern" value="target/EnhancedRollingFileAppender/mixed.%d{yyyy-MM-dd}.%i.log" />
+    </rollingPolicy>
+  </appender>
+
+  <root>
+    <priority value="trace" />
+    <appender-ref ref="DEFAULT_TIME" />
+    <appender-ref ref="DEFAULT_SIZE" />
+    <appender-ref ref="TIME" />
+    <appender-ref ref="SIZE" />
+    <appender-ref ref="MIXED" />
+  </root>
+
+</log4j:configuration>
