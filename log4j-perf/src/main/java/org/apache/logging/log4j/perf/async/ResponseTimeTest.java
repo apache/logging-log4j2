@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.async.perftest;
+package org.apache.logging.log4j.perf.async;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -84,14 +84,14 @@ import org.apache.logging.log4j.core.util.Loader;
 // RUN
 // java -XX:+UnlockDiagnosticVMOptions -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintTenuringDistribution
 // -XX:+PrintGCApplicationConcurrentTime -XX:+PrintGCApplicationStoppedTime -XX:GuaranteedSafepointInterval=500000
-// -XX:CompileCommand=dontinline,org.apache.logging.log4j.core.async.perftest.NoOpIdleStrategy::idle
+// -XX:CompileCommand=dontinline,org.apache.logging.log4j.perf.async.NoOpIdleStrategy::idle
 // -cp HdrHistogram-2.1.8.jar:disruptor-3.3.4.jar:log4j-api-2.6-SNAPSHOT.jar:log4j-core-2.6-SNAPSHOT.jar:log4j-core-2.6-SNAPSHOT-tests.jar
 // -DAsyncLogger.WaitStrategy=busyspin -DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
 // -Dlog4j2.enable.threadlocals=true -Dlog4j2.enable.direct.encoders=true
-//  -Xms1G -Xmx1G org.apache.logging.log4j.core.async.perftest.ResponseTimeTest 1 100000
+//  -Xms1G -Xmx1G org.apache.logging.log4j.perf.async.ResponseTimeTest 1 100000
 //
 // RUN recording in Java Flight Recorder:
-// %JAVA_HOME%\bin\java -XX:+UnlockCommercialFeatures -XX:+UnlockDiagnosticVMOptions -XX:+DebugNonSafepoints -XX:+FlightRecorder -XX:StartFlightRecording=duration=10m,filename=replayStats-2.6-latency.jfr -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintTenuringDistribution -XX:+PrintGCApplicationConcurrentTime -XX:+PrintGCApplicationStoppedTime -XX:CompileCommand=dontinline,org.apache.logging.log4j.core.async.perftest.NoOpIdleStrategy::idle -DAsyncLogger.WaitStrategy=yield  -Dorg.apache.logging.log4j.simplelog.StatusLogger.level=TRACE -cp .;HdrHistogram-2.1.8.jar;disruptor-3.3.4.jar;log4j-api-2.6-SNAPSHOT.jar;log4j-core-2.6-SNAPSHOT.jar;log4j-core-2.6-SNAPSHOT-tests.jar org.apache.logging.log4j.core.async.perftest.ResponseTimeTest 1 50000
+// %JAVA_HOME%\bin\java -XX:+UnlockCommercialFeatures -XX:+UnlockDiagnosticVMOptions -XX:+DebugNonSafepoints -XX:+FlightRecorder -XX:StartFlightRecording=duration=10m,filename=replayStats-2.6-latency.jfr -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintTenuringDistribution -XX:+PrintGCApplicationConcurrentTime -XX:+PrintGCApplicationStoppedTime -XX:CompileCommand=dontinline,org.apache.logging.log4j.perf.async.NoOpIdleStrategy::idle -DAsyncLogger.WaitStrategy=yield  -Dorg.apache.logging.log4j.simplelog.StatusLogger.level=TRACE -cp .;HdrHistogram-2.1.8.jar;disruptor-3.3.4.jar;log4j-api-2.6-SNAPSHOT.jar;log4j-core-2.6-SNAPSHOT.jar;log4j-core-2.6-SNAPSHOT-tests.jar org.apache.logging.log4j.perf.async.ResponseTimeTest 1 50000
 public class ResponseTimeTest {
     private static final String LATENCY_MSG = new String(new char[64]);
 
@@ -119,7 +119,7 @@ public class ResponseTimeTest {
 
         // initialize the logger
         final String wrapper = loggerLib.startsWith("Run") ? loggerLib : "Run" + loggerLib;
-        final String loggerWrapperClass = "org.apache.logging.log4j.core.async.perftest." + wrapper;
+        final String loggerWrapperClass = "org.apache.logging.log4j.perf.async." + wrapper;
         final IPerfTestRunner logger = Loader.newCheckedInstanceOf(loggerWrapperClass, IPerfTestRunner.class);
         logger.log("Starting..."); // ensure initialized
         Thread.sleep(100);

@@ -14,13 +14,13 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.async.perftest;
+package org.apache.logging.log4j.perf.async;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.CoreLoggerContexts;
 
-public class RunLog4j1 implements IPerfTestRunner {
-
+public class RunLog4j2 implements IPerfTestRunner {
     final Logger LOGGER = LogManager.getLogger(getClass());
 
     @Override
@@ -34,6 +34,7 @@ public class RunLog4j1 implements IPerfTestRunner {
         final long opsPerSec = (1000L * 1000L * 1000L * lines) / (s2 - s1);
         histogram.addObservation(opsPerSec);
     }
+
 
     @Override
     public void runLatencyTest(final int samples, final Histogram histogram,
@@ -56,10 +57,12 @@ public class RunLog4j1 implements IPerfTestRunner {
         }
     }
 
+
     @Override
     public void shutdown() {
-        LogManager.shutdown();
+        CoreLoggerContexts.stopLoggerContext(); // stop async thread
     }
+
 
     @Override
     public void log(final String finalMessage) {

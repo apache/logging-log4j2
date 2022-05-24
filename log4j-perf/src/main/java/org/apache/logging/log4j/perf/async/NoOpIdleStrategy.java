@@ -14,18 +14,24 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.async.perftest;
+package org.apache.logging.log4j.perf.async;
 
-public interface IPerfTestRunner {
-    String LINE100 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!\"#$%&'()-=^~|\\@`[]{};:+*,.<>/?_123456";
-    String THROUGHPUT_MSG = LINE100 + LINE100 + LINE100 + LINE100
-            + LINE100;
-    String LATENCY_MSG = "Short msg";
+/**
+ * No operation idle strategy.
+ * <p>
+ * This idle strategy should be prevented from being inlined by using a Hotspot compiler command as a JVM argument e.g:
+ * <code>-XX:CompileCommand=dontinline,org.apache.logging.log4j.core.async.perftest.NoOpIdleStrategy::idle</code>
+ * </p>
+ */
+class NoOpIdleStrategy implements IdleStrategy {
 
-    void runThroughputTest(int lines, Histogram histogram);
+    /**
+     * <b>Note</b>: this implementation will result in no safepoint poll once inlined.
+     *
+     * @see IdleStrategy
+     */
+    @Override
+    public void idle() {
 
-    void runLatencyTest(int samples, Histogram histogram, long nanoTimeCost,
-            int threadCount);
-    void shutdown();
-    void log(String finalMessage);
+    }
 }

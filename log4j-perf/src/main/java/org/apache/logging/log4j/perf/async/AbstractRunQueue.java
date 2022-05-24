@@ -14,12 +14,12 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.async.perftest;
+package org.apache.logging.log4j.perf.async;
 
 import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 
-import org.apache.logging.log4j.core.async.perftest.ResponseTimeTest.PrintingAsyncQueueFullPolicy;
+import org.apache.logging.log4j.perf.async.ResponseTimeTest.PrintingAsyncQueueFullPolicy;
 
 public abstract class AbstractRunQueue implements IPerfTestRunner {
 

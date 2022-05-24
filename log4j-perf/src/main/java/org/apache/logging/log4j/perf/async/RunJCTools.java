@@ -14,24 +14,19 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.async.perftest;
+package org.apache.logging.log4j.perf.async;
 
-/**
- * No operation idle strategy.
- * <p>
- * This idle strategy should be prevented from being inlined by using a Hotspot compiler command as a JVM argument e.g:
- * <code>-XX:CompileCommand=dontinline,org.apache.logging.log4j.core.async.perftest.NoOpIdleStrategy::idle</code>
- * </p>
- */
-class NoOpIdleStrategy implements IdleStrategy {
+import java.util.concurrent.BlockingQueue;
 
-    /**
-     * <b>Note</b>: this implementation will result in no safepoint poll once inlined.
-     *
-     * @see IdleStrategy
-     */
+import org.apache.logging.log4j.core.async.JCToolsBlockingQueueFactory;
+import org.apache.logging.log4j.core.async.JCToolsBlockingQueueFactory.WaitStrategy;
+
+public class RunJCTools extends AbstractRunQueue {
+
     @Override
-    public void idle() {
-
+    BlockingQueue<String> createQueue(final int capacity) {
+        return JCToolsBlockingQueueFactory.<String>createFactory(WaitStrategy.SPIN).create(capacity);
     }
+
+
 }

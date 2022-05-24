@@ -14,18 +14,18 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.async.perftest;
+package org.apache.logging.log4j.perf.async;
 
-import java.util.concurrent.BlockingQueue;
+public interface IPerfTestRunner {
+    String LINE100 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!\"#$%&'()-=^~|\\@`[]{};:+*,.<>/?_123456";
+    String THROUGHPUT_MSG = LINE100 + LINE100 + LINE100 + LINE100
+            + LINE100;
+    String LATENCY_MSG = "Short msg";
 
-import org.apache.logging.log4j.core.async.DisruptorBlockingQueueFactory;
+    void runThroughputTest(int lines, Histogram histogram);
 
-import com.conversantmedia.util.concurrent.SpinPolicy;
-
-public class RunConversant extends AbstractRunQueue {
-
-    @Override
-    BlockingQueue<String> createQueue(final int capacity) {
-        return DisruptorBlockingQueueFactory.<String>createFactory(SpinPolicy.SPINNING).create(capacity);
-    }
+    void runLatencyTest(int samples, Histogram histogram, long nanoTimeCost,
+            int threadCount);
+    void shutdown();
+    void log(String finalMessage);
 }

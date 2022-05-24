@@ -14,19 +14,18 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.async.perftest;
+package org.apache.logging.log4j.perf.async;
 
 import java.util.concurrent.BlockingQueue;
 
-import org.apache.logging.log4j.core.async.JCToolsBlockingQueueFactory;
-import org.apache.logging.log4j.core.async.JCToolsBlockingQueueFactory.WaitStrategy;
+import org.apache.logging.log4j.core.async.DisruptorBlockingQueueFactory;
 
-public class RunJCTools extends AbstractRunQueue {
+import com.conversantmedia.util.concurrent.SpinPolicy;
+
+public class RunConversant extends AbstractRunQueue {
 
     @Override
     BlockingQueue<String> createQueue(final int capacity) {
-        return JCToolsBlockingQueueFactory.<String>createFactory(WaitStrategy.SPIN).create(capacity);
+        return DisruptorBlockingQueueFactory.<String>createFactory(SpinPolicy.SPINNING).create(capacity);
     }
-
-
 }
