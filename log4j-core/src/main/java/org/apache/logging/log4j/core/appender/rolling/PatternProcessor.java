@@ -114,6 +114,14 @@ public class PatternProcessor {
         this.currentFileTime = copy.currentFileTime;
     }
 
+    public FormattingInfo[] getPatternFields() {
+        return patternFields;
+    }
+
+    public ArrayPatternConverter[] getPatternConverters() {
+        return patternConverters;
+    }
+
     public void setTimeBased(final boolean isTimeBased) {
         this.isTimeBased = isTimeBased;
     }

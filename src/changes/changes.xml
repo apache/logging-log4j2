@@ -202,6 +202,9 @@
       </action>
     </release>
     <release version="2.18.0" date="20YY-MM-DD" description="GA Release 2.17.3">
+      <action issue="LOG4J2-3432" dev="rgoers" type="fix">
+        SizeBasedTriggeringPolicy would fail to rename files properly when integer pattern contained a leading zero.
+      </action>
       <action issue="LOG4J2-3491" dev="rgoers" type="fix" due-to="Avihai Marchiano">
         Async Loggers were including the location information by default.
       </action>
