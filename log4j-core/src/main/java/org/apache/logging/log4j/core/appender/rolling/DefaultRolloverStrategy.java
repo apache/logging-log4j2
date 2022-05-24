@@ -414,7 +414,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
     private int purgeAscending(final int lowIndex, final int highIndex, final RollingFileManager manager) {
         final SortedMap<Integer, Path> eligibleFiles = getEligibleFiles(manager);
         final int maxFiles = highIndex - lowIndex + 1;
-
+        LOGGER.debug("Eligible files: {}", eligibleFiles);
         boolean renameFiles = !eligibleFiles.isEmpty() && eligibleFiles.lastKey() >= maxIndex;
         while (eligibleFiles.size() >= maxFiles) {
             try {
@@ -475,6 +475,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
         while (eligibleFiles.size() >= maxFiles) {
             try {
                 final Integer key = eligibleFiles.firstKey();
+                LOGGER.debug("Deleting {}", eligibleFiles.get(key).toFile().getAbsolutePath());
                 Files.delete(eligibleFiles.get(key));
                 eligibleFiles.remove(key);
             } catch (final IOException ioe) {
