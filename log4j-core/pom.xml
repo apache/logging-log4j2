@@ -176,13 +176,6 @@
       <version>3.5.7</version>
       <scope>test</scope>
     </dependency>
-    <!-- Log4j 1.2 tests -->
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.17</version>
-      <scope>test</scope>
-    </dependency>
     <!-- SLF4J tests -->
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -348,11 +341,6 @@
     <dependency>
       <groupId>com.google.code.java-allocation-instrumenter</groupId>
       <artifactId>java-allocation-instrumenter</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hdrhistogram</groupId>
-      <artifactId>HdrHistogram</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

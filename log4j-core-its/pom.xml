@@ -176,6 +176,12 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <!-- For Async tests -->
+    <dependency>
+      <groupId>org.hdrhistogram</groupId>
+      <artifactId>HdrHistogram</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
