@@ -246,7 +246,7 @@
     <flumeVersion>1.9.0</flumeVersion>
     <disruptorVersion>3.4.4</disruptorVersion>
     <conversantDisruptorVersion>1.2.15</conversantDisruptorVersion> <!-- Version 1.2.16 requires Java 9 -->
-    <elastic.version>7.17.3</elastic.version>
+    <elastic.version>7.17.4</elastic.version>
     <mongodb3.version>3.12.11</mongodb3.version>
     <mongodb4.version>4.5.0</mongodb4.version>
     <!-- POM for jackson-dataformat-xml 2.13.1 depends on woodstox-core 6.2.7 -->
