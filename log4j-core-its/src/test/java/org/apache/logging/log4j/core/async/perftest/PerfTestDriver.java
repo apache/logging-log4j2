@@ -28,7 +28,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
+import org.apache.logging.log4j.core.util.Integers;
 
 /**
  * Runs a sequence of performance tests.
@@ -36,7 +36,7 @@ import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 public class PerfTestDriver {
     private static final String DEFAULT_WAIT_STRATEGY = "Block";
 
-    enum WaitStrategy {
+    static enum WaitStrategy {
         Sleep,
         Yield,
         Block;
@@ -95,17 +95,17 @@ public class PerfTestDriver {
             // args.add("-XX:+PrintGCApplicationConcurrentTime");
             // args.add("-XX:+PrintSafepointStatistics");
 
-            args.add("-D" + Log4jPropertyKey.Constant.CONFIG_V1_FILE_NAME + '=' + log4jConfig); // 1.2
-            args.add("-D" + Log4jPropertyKey.Constant.CONFIG_LOCATION + '=' + log4jConfig); // 2.x
+            args.add("-Dlog4j.configuration=" + log4jConfig); // log4j 1.2
+            args.add("-Dlog4j.configurationFile=" + log4jConfig); // log4j 2
             args.add("-Dlogback.configurationFile=" + log4jConfig); // logback
 
             final int ringBufferSize = getUserSpecifiedRingBufferSize();
             if (ringBufferSize >= 128) {
-                args.add("-D" + Log4jPropertyKey.Constant.ASYNC_CONFIG_RING_BUFFER_SIZE + '=' + ringBufferSize);
-                args.add("-D" + Log4jPropertyKey.Constant.ASYNC_LOGGER_RING_BUFFER_SIZE + '=' + ringBufferSize);
+                args.add("-DAsyncLoggerConfig.RingBufferSize=" + ringBufferSize);
+                args.add("-DAsyncLogger.RingBufferSize=" + ringBufferSize);
             }
-            args.add("-D" + Log4jPropertyKey.Constant.ASYNC_CONFIG_WAIT_STRATEGY + '=' + wait);
-            args.add("-D" + Log4jPropertyKey.Constant.ASYNC_LOGGER_WAIT_STRATEGY + '=' + wait);
+            args.add("-DAsyncLoggerConfig.WaitStrategy=" + wait);
+            args.add("-DAsyncLogger.WaitStrategy=" + wait);
             if (systemProperties != null) {
                 Collections.addAll(args, systemProperties);
             }
@@ -121,7 +121,7 @@ public class PerfTestDriver {
 
         private int getUserSpecifiedRingBufferSize() {
             try {
-                return Integer.parseInt(System.getProperty("RingBufferSize", "-1"));
+                return Integers.parseInt(System.getProperty("RingBufferSize", "-1"));
             } catch (final Exception ignored) {
                 return -1;
             }
@@ -179,7 +179,7 @@ public class PerfTestDriver {
                     average += Long.parseLong(parts[i++].split("=")[1]);
                     pct99 += Long.parseLong(parts[i++].split("=")[1]);
                     pct99_99 += Long.parseLong(parts[i++].split("=")[1]);
-                    count += Integer.parseInt(parts[i].split("=")[1]);
+                    count += Integers.parseInt(parts[i].split("=")[1]);
                 } else {
                     throughputRowCount++;
                     final String number = line.substring(0, line.indexOf(' '));
@@ -203,14 +203,14 @@ public class PerfTestDriver {
         }
     }
 
-    enum Runner {
+    static enum Runner {
         Log4j12(RunLog4j1.class), //
         Log4j2(RunLog4j2.class), //
         Logback(RunLogback.class);
 
         private final Class<? extends IPerfTestRunner> implementationClass;
 
-        Runner(final Class<? extends IPerfTestRunner> cls) {
+        private Runner(final Class<? extends IPerfTestRunner> cls) {
             this.implementationClass = cls;
         }
     }
@@ -232,13 +232,11 @@ public class PerfTestDriver {
         final List<Setup> tests = new ArrayList<>();
 
         // final String CACHEDCLOCK = "-Dlog4j.Clock=CachedClock";
-        final String SYSCLOCK = asArgument(Log4jPropertyKey.Constant.CONFIG_CLOCK, "SystemClock");
-        final String ALL_ASYNC = asArgument(
-                Log4jPropertyKey.Constant.CONTEXT_SELECTOR_CLASS_NAME, AsyncLoggerContextSelector.class.getName());
+        final String SYSCLOCK = "-Dlog4j.Clock=SystemClock";
+        final String ALL_ASYNC = "-DLog4jContextSelector=" + AsyncLoggerContextSelector.class.getName();
 
-        final String THREADNAME = asArgument(
-                Log4jPropertyKey.Constant.ASYNC_LOGGER_THREAD_NAME_STRATEGY,
-                System.getProperty(Log4jPropertyKey.Constant.ASYNC_LOGGER_THREAD_NAME_STRATEGY, "CACHED"));
+        final String THREADNAME = "-DAsyncLogger.ThreadNameStrategy=" //
+                + System.getProperty("AsyncLogger.ThreadNameStrategy", "CACHED");
 
         // includeLocation=false
         add(tests, 1, "perf3PlainNoLoc.xml", Runner.Log4j2, "Loggers all async", ALL_ASYNC, SYSCLOCK, THREADNAME);
@@ -310,7 +308,7 @@ public class PerfTestDriver {
     private static void runPerfTests(final String[] args, final List<Setup> tests)
             throws IOException, InterruptedException, FileNotFoundException {
         final String java = args.length > 0 ? args[0] : "java";
-        final int repeat = args.length > 1 ? Integer.parseInt(args[1]) : 5;
+        final int repeat = args.length > 1 ? Integers.parseInt(args[1]) : 5;
         int x = 0;
         for (final Setup setup : tests) {
             System.out.print(setup.description());
@@ -384,9 +382,5 @@ public class PerfTestDriver {
         };
         t.start();
         return t;
-    }
-
-    private static String asArgument(final String key, final String value) {
-        return String.format("-D%s=%s", key, value);
     }
 }

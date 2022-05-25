@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.async.perftest;
 
-import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -30,8 +28,8 @@ import org.HdrHistogram.Histogram;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.async.DefaultAsyncQueueFullPolicy;
 import org.apache.logging.log4j.core.async.EventRoute;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Loader;
 
 /**
@@ -111,18 +109,17 @@ public class ResponseTimeTest {
                     + "and logger library (Log4j1, Log4j2, Logback, JUL)");
             return;
         }
-        final int threadCount = Integer.parseInt(args[0]);
+        final int threadCount = Integers.parseInt(args[0]);
         final double loadMessagesPerSec = Double.parseDouble(args[1]);
         final String loggerLib = args.length > 2 ? args[2] : "Log4j2";
 
         // print to console if ringbuffer is full
-        System.setProperty(
-                Log4jPropertyKey.ASYNC_LOGGER_QUEUE_FULL_POLICY.getKey(), PrintingAsyncQueueFullPolicy.class.getName());
-        System.setProperty(Log4jPropertyKey.ASYNC_LOGGER_RING_BUFFER_SIZE.getKey(), String.valueOf(256 * 1024));
-        // System.setProperty(Log4jProperties.CONTEXT_SELECTOR_CLASS_NAME, AsyncLoggerContextSelector.class.getName());
-        // System.setProperty(Log4jProperties.CONFIG_LOCATION, "perf3PlainNoLoc.xml");
-        if (System.getProperty(Log4jPropertyKey.ASYNC_LOGGER_WAIT_STRATEGY.getKey()) == null) {
-            System.setProperty(Log4jPropertyKey.ASYNC_LOGGER_WAIT_STRATEGY.getKey(), "Yield");
+        System.setProperty("log4j2.AsyncQueueFullPolicy", PrintingAsyncQueueFullPolicy.class.getName());
+        System.setProperty("AsyncLogger.RingBufferSize", String.valueOf(256 * 1024));
+        // System.setProperty("Log4jContextSelector", AsyncLoggerContextSelector.class.getName());
+        // System.setProperty("log4j.configurationFile", "perf3PlainNoLoc.xml");
+        if (System.getProperty("AsyncLogger.WaitStrategy") == null) {
+            System.setProperty("AsyncLogger.WaitStrategy", "Yield");
         }
         // for (Object key : System.getProperties().keySet()) {
         //    System.out.println(key + "=" + System.getProperty((String) key));
@@ -163,7 +160,7 @@ public class ResponseTimeTest {
                 warmupResponseTmHistograms,
                 threadCount);
         System.out.println("-----------------Warmup done. load=" + loadMessagesPerSec);
-        if (!Constants.ENABLE_DIRECT_ENCODERS || !isThreadLocalsEnabled()) {
+        if (!Constants.ENABLE_DIRECT_ENCODERS || !Constants.ENABLE_THREADLOCALS) {
             // System.gc();
             // Thread.sleep(5000);
         }
@@ -207,7 +204,7 @@ public class ResponseTimeTest {
     private static void writeToFile(
             final String suffix, final Histogram hist, final int thousandMsgPerSec, final double scale)
             throws IOException {
-        try (final PrintStream pout = new PrintStream(new FileOutputStream(thousandMsgPerSec + "k" + suffix))) {
+        try (PrintStream pout = new PrintStream(new FileOutputStream(thousandMsgPerSec + "k" + suffix))) {
             hist.outputPercentileDistribution(pout, scale);
         }
     }

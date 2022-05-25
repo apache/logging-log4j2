@@ -37,15 +37,12 @@ public class MultiThreadPerfTest extends PerfTest {
         // warmup at least 2 rounds and at most 1 minute
         final Histogram warmupHist = PerfTest.createHistogram();
         final long stop = System.nanoTime() + TimeUnit.MINUTES.toNanos(1);
-        final Runnable run1 = new Runnable() {
-            @Override
-            public void run() {
-                for (int i = 0; i < 10; i++) {
-                    final int LINES = PerfTest.throughput ? 50000 : 200000;
-                    runTest(runner, LINES, null, warmupHist, 2);
-                    if (i > 0 && System.nanoTime() - stop >= 0) {
-                        return;
-                    }
+        final Runnable run1 = () -> {
+            for (int i = 0; i < 10; i++) {
+                final int LINES = PerfTest.throughput ? 50000 : 200000;
+                runTest(runner, LINES, null, warmupHist, 2);
+                if (i > 0 && System.nanoTime() - stop >= 0) {
+                    return;
                 }
             }
         };

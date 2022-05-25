@@ -189,9 +189,7 @@ public final class Histogram {
         maxValue = 0L;
         minValue = Long.MAX_VALUE;
 
-        for (int i = 0, size = counts.length; i < size; i++) {
-            counts[i] = 0L;
-        }
+        Arrays.fill(counts, 0L);
     }
 
     /**

@@ -30,18 +30,15 @@ public abstract class AbstractRunQueue implements IPerfTestRunner {
     private final Thread backGroundThread;
 
     AbstractRunQueue() {
-        backGroundThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (; ; ) {
-                    try {
-                        if (Objects.equals(queue.take(), STOP)) {
-                            break;
-                        }
-                    } catch (final InterruptedException e) {
-                        e.printStackTrace();
+        backGroundThread = new Thread(() -> {
+            for (; ; ) {
+                try {
+                    if (Objects.equals(queue.take(), STOP)) {
                         break;
                     }
+                } catch (final InterruptedException e) {
+                    e.printStackTrace();
+                    break;
                 }
             }
         });

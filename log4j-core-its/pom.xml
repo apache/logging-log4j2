@@ -153,6 +153,12 @@
       <artifactId>wiremock-jre8</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- For Async tests -->
+    <dependency>
+      <groupId>org.hdrhistogram</groupId>
+      <artifactId>HdrHistogram</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
