@@ -215,7 +215,7 @@
   <properties>
     <!-- make sure to update these for each release! -->
     <log4jParentDir>${basedir}</log4jParentDir>
-    <Log4jReleaseVersion>2.10.0</Log4jReleaseVersion>
+    <Log4jReleaseVersion>3.0.0</Log4jReleaseVersion>
     <Log4jReleaseManager>Ralph Goers</Log4jReleaseManager>
     <Log4jReleaseKey>B3D8E1BA</Log4jReleaseKey>
     <!--<Log4jReleaseManager>Matt Sicker</Log4jReleaseManager> -->
@@ -269,6 +269,7 @@
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.release>11</maven.compiler.release>
+    <maven.compiler.parameters>true</maven.compiler.parameters>
     <maven.doap.skip>false</maven.doap.skip>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- 1641056400 = Jan 1 2022, instead of 1969, which shows up in Javadoc -->
@@ -1138,16 +1139,9 @@
           <artifactId>maven-compiler-plugin</artifactId>
           <version>${compiler.plugin.version}</version>
           <configuration>
-            <source>${maven.compiler.source}</source>
-            <target>${maven.compiler.target}</target>
-            <release>${maven.compiler.release}</release>
             <showDeprecation>true</showDeprecation>
             <showWarnings>true</showWarnings>
-            <verbose>false</verbose>
             <encoding>UTF-8</encoding>
-            <fork>false</fork>
-            <meminitial>256</meminitial>
-            <maxmem>1024</maxmem>
             <compilerArgs>
               <arg>-XDcompilePolicy=simple</arg>
               <arg>-Xplugin:ErrorProne</arg>
@@ -1182,8 +1176,6 @@
                 <version>${errorprone.version}</version>
               </path>
             </annotationProcessorPaths>
-            <forceJavacCompilerUse>true</forceJavacCompilerUse>
-            <parameters>true</parameters>
           </configuration>
         </plugin>
         <plugin>
@@ -1353,6 +1345,8 @@
           </systemPropertyVariables>
           <forkCount>1</forkCount>
           <reuseForks>false</reuseForks>
+          <redirectTestOutputToFile>true</redirectTestOutputToFile>
+          <runOrder>failedfirst</runOrder>
         </configuration>
       </plugin>
       <plugin>
