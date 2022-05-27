@@ -14,43 +14,34 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-# Building Log4j 2.x
+# Requirements
 
-To build Log4j 2.x, you need Java 8 and Java 11 compilers, and Apache Maven 3.x.
+* JDK 8 and 9+
+* Apache Maven 3.x
+* A modern Linux, OSX, or Windows host
 
-Log4j 2.x uses the Java 11 compiler in addition to
-the Java version installed in the path. This is accomplished by using Maven's toolchains support.
-You must set environment variables `JAVA_HOME`, `JAVA_HOME_8_X64`, and
-`JAVA_HOME_11_X64`, and then pass the following when invoking Maven.
+<a name="toolchains"></a>
+# Configuring Maven Toolchains
 
-    --global-toolchains ".github/workflows/maven-toolchains.xml"
+Maven Toolchains is used to employ both JDKs during compilation.
+You either need to have a user-level configuration in `~/.m2/toolchains.xml` or explicitly provide one to the Maven: `./mvnw --global-toolchains /path/to/toolchains.xml`.
+See `.github/workflows/maven-toolchains.xml` used by CI for a sample Maven Toolchains configuration.
+Note that this file requires `JAVA_HOME_8_X64` and `JAVA_HOME_11_X64` environment variables to be defined, though these can very well be hardcoded.
 
-To perform the license release audit, a.k.a. "RAT check", run.
+# Building the sources
 
-    mvn apache-rat:check
+You can build and verify the sources as follows:
 
-To install the jars in your local Maven repository, from a command line, run:
+    ./mvnw verify
 
-    mvn clean install
+To speed up build, you can skip verification and increase concurrency:
 
-Once install is run, you can run the Clirr check on the API and 1.2 API modules:
+    ./mvwn -DskipTests -T8C package
 
-    mvn clirr:check -pl log4j-api
+If you want to install generated artifacts to your local Maven repository, replace above `veriy` and/or `package` goals with `install`.
 
-    mvn clirr:check -pl log4j-1.2-api
+# Building the website and manual
 
-Next, to build the site:
+You can build the website and manual as follows:
 
-    mvn site
-
-On Windows, use a local staging directory, for example:
-
-    mvn site:stage-deploy -DstagingSiteURL=file:///%HOMEDRIVE%%HOMEPATH%/log4j
-
-On UNIX, use a local staging directory, for example:
-
-    mvn site:stage-deploy -DstagingSiteURL=file:///$HOME/log4j
-
-To test, run:
-
-    mvn clean install
+    ./mvnw --non-recursive -Dmaven.doap.skip -DskipTests site
