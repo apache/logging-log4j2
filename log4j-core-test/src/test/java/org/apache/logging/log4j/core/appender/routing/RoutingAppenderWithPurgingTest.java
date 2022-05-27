@@ -16,30 +16,29 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import org.apache.logging.log4j.EventLogger;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.jupiter.api.Tag;
+import org.junit.rules.RuleChain;
 
 import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.logging.log4j.EventLogger;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import static org.junit.Assert.*;
 
 /**
  * Tests Routing appender purge facilities
  */
+@Tag("sleepy")
 public class RoutingAppenderWithPurgingTest {
     private static final String CONFIG = "log4j-routing-purge.xml";
     private static final String IDLE_LOG_FILE1 = "target/routing-purge-idle/routingtest-1.log";

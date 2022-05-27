@@ -50,7 +50,8 @@ public final class PropertiesUtil {
 
     private static final String LOG4J_PROPERTIES_FILE_NAME = "log4j2.component.properties";
     private static final String LOG4J_SYSTEM_PROPERTIES_FILE_NAME = "log4j2.system.properties";
-    private static final PropertiesUtil LOG4J_PROPERTIES = new PropertiesUtil(LOG4J_PROPERTIES_FILE_NAME);
+    private static final LazyValue<PropertiesUtil> COMPONENT_PROPERTIES =
+            LazyValue.from(() -> new PropertiesUtil(LOG4J_PROPERTIES_FILE_NAME));
 
     private final Environment environment;
 
@@ -104,7 +105,7 @@ public final class PropertiesUtil {
      * @return the main Log4j PropertiesUtil instance.
      */
     public static PropertiesUtil getProperties() {
-        return LOG4J_PROPERTIES;
+        return COMPONENT_PROPERTIES.get();
     }
 
     /**

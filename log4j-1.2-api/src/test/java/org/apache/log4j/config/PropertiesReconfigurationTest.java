@@ -16,17 +16,6 @@
  */
 package org.apache.log4j.config;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.io.File;
-import java.io.IOException;
-import java.time.Duration;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.lang3.function.FailableConsumer;
 import org.apache.log4j.CustomFileAppender;
 import org.apache.log4j.CustomNoopAppender;
@@ -43,7 +32,16 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Reconfigurable;
-import org.junit.Test;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.time.Duration;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test reconfiguring with an XML configuration.
@@ -88,7 +86,7 @@ public class PropertiesReconfigurationTest {
     private void checkConfigureCustomAppenders(final String configPath, final boolean expectAppend, final int expectInt, final String expectString,
         FailableConsumer<String, IOException> configurator) throws IOException {
         final File file = new File(configPath);
-        assertTrue("No Config file", file.exists());
+        assertTrue(file.exists(), "No Config file");
         try (LoggerContext context = TestConfigurator.configure(file.toString())) {
             final Logger logger = LogManager.getLogger("test");
             logger.info("Hello");
@@ -100,7 +98,7 @@ public class PropertiesReconfigurationTest {
 
     private void checkConfigureFileAppender(final String configPath, final boolean expectAppend) throws IOException {
         final File file = new File(configPath);
-        assertTrue("No Config file", file.exists());
+        assertTrue(file.exists(), "No Config file");
         try (LoggerContext context = TestConfigurator.configure(file.toString())) {
             final Logger logger = LogManager.getLogger("test");
             logger.info("Hello");
@@ -193,12 +191,13 @@ public class PropertiesReconfigurationTest {
     }
 
     @Test
+    @Tag("sleepy")
     public void testTestListener() throws Exception {
         System.setProperty(Log4j1Configuration.MONITOR_INTERVAL, "1");
         final File file = new File(CONFIG_FILE_APPENDER_1);
-        assertTrue("No Config file", file.exists());
+        assertTrue(file.exists(), "No Config file");
         final long configMillis = file.lastModified();
-        assertTrue("Unable to modified file time", file.setLastModified(configMillis - FIVE_MINUTES.toMillis()));
+        assertTrue(file.setLastModified(configMillis - FIVE_MINUTES.toMillis()), "Unable to modified file time");
         try (LoggerContext context = TestConfigurator.configure(file.toString())) {
             final Logger logger = LogManager.getLogger("test");
             logger.info("Hello");
@@ -216,7 +215,7 @@ public class PropertiesReconfigurationTest {
                 fail("Reconfiguration interupted");
             }
             final Configuration updated = context.getConfiguration();
-            assertTrue("Configurations are the same", original != updated);
+            assertNotSame(original, updated, "Configurations are the same");
         }
     }
 }

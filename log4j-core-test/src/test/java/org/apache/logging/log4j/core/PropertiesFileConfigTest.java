@@ -17,10 +17,11 @@
 package org.apache.logging.log4j.core;
 
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.test.junit.Named;
-import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -30,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @LoggerContextSource("log4j-test2.properties")
+@Tag("sleepy")
 public class PropertiesFileConfigTest {
 
     private static final String CONFIG = "target/test-classes/log4j-test2.properties";

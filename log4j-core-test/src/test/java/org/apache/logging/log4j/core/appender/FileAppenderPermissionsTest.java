@@ -23,12 +23,13 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.core.util.FileUtils;
-import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.ExtendedLogger;
+import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -61,6 +62,7 @@ public class FileAppenderPermissionsTest {
 
     @ParameterizedTest
     @CsvSource({ "rwxrwxrwx,true,2", "rw-r--r--,false,3", "rw-------,true,4", "rw-rw----,false,5" })
+    @Tag("sleepy")
     public void testFilePermissionsAPI(final String filePermissions, final boolean createOnDemand, final int fileIndex)
             throws Exception {
         final File file = new File(DIR, "AppenderTest-" + fileIndex + ".log");
@@ -112,6 +114,7 @@ public class FileAppenderPermissionsTest {
 
     @ParameterizedTest
     @CsvSource({ "rwxrwxrwx,2", "rw-r--r--,3", "rw-------,4", "rw-rw----,5" })
+    @Tag("sleepy")
     public void testFileUserGroupAPI(final String filePermissions, final int fileIndex)
             throws Exception {
         final File file = new File(DIR, "AppenderTest-" + (1000 + fileIndex) + ".log");

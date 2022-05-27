@@ -16,9 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
+import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedFormat;
+import org.apache.logging.log4j.test.junit.CleanUpDirectories;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -27,39 +32,32 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
-import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedFormat;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
  */
+@Tag("sleepy")
 public class RollingAppenderDeleteNestedTest {
     private static final String CONFIG = "log4j-rolling-with-custom-delete-nested.xml";
     private static final String DIR = "target/rolling-with-delete-nested/test";
 
-    private final LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
-
-    @Rule
-    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
-
     @Test
-    public void testAppender() throws Exception {
+    @CleanUpDirectories(DIR)
+    @LoggerContextSource(value = CONFIG, timeout = 10)
+    public void testAppender(final LoggerContext context) throws Exception {
         final Path p1 = writeTextTo(DIR + "/my-1.log"); // glob="test-*.log"
         final Path p2 = writeTextTo(DIR + "/my-2.log");
         final Path p3 = writeTextTo(DIR + "/my-3.log");
         final Path p4 = writeTextTo(DIR + "/my-4.log");
         final Path p5 = writeTextTo(DIR + "/my-5.log");
 
-        final Logger logger = loggerContextRule.getLogger();
+        final Logger logger = context.getLogger(getClass());
         for (int i = 0; i < 10; ++i) {
             updateLastModified(p1, p2, p3, p4, p5); // make my-*.log files most recent
 
@@ -69,17 +67,19 @@ public class RollingAppenderDeleteNestedTest {
         Thread.sleep(100); // Allow time for rollover to complete
 
         final File dir = new File(DIR);
-        assertTrue("Dir " + DIR + " should exist", dir.exists());
-        assertTrue("Dir " + DIR + " should contain files", dir.listFiles().length > 0);
+        assertTrue(dir.exists(), "Dir " + DIR + " should exist");
 
         final File[] files = dir.listFiles();
+        assertNotNull(files);
+        assertTrue(files.length > 0, "Dir " + DIR + " should contain files");
         for (final File file : files) {
-            System.out.println(file + " (" + file.length() + "B) "
-                    + FixedDateFormat.create(FixedFormat.ABSOLUTE).format(file.lastModified()));
+            BasicFileAttributes fileAttributes = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+            System.out.println(file + " (" + fileAttributes.size() + "B) "
+                    + FixedDateFormat.create(FixedFormat.ABSOLUTE).format(fileAttributes.lastModifiedTime().toMillis()));
         }
 
         final List<String> expected = Arrays.asList("my-1.log", "my-2.log", "my-3.log", "my-4.log", "my-5.log");
-        assertEquals(Arrays.toString(files), expected.size() + 3, files.length);
+        assertEquals(expected.size() + 3, files.length, Arrays.toString(files));
         for (final File file : files) {
             if (!expected.contains(file.getName()) && !file.getName().startsWith("test-")) {
                 fail("unexpected file" + file);

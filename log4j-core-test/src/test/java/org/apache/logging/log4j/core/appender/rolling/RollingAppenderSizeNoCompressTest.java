@@ -16,9 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.apache.commons.compress.utils.IOUtils;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.CleanUpDirectories;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -28,37 +33,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.compress.utils.IOUtils;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * LOG4J2-1804.
  */
+@Tag("sleepy")
 public class RollingAppenderSizeNoCompressTest {
 
   private static final String CONFIG = "log4j-rolling-size.xml";
 
     private static final String DIR = "target/rolling1";
 
-    public static LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
-
-    @Rule
-    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
-
-    private Logger logger;
-
-    @Before
-    public void setUp() throws Exception {
-        this.logger = loggerContextRule.getLogger(RollingAppenderSizeNoCompressTest.class.getName());
-    }
-
     @Test
-    public void testAppender() throws Exception {
+    @CleanUpDirectories(DIR)
+    @LoggerContextSource(CONFIG)
+    public void testAppender(final Logger logger, final LoggerContext context) throws Exception {
       final List<String> messages = new ArrayList<>();
         for (int i=0; i < 1000; ++i) {
           final String message = "This is test message number " + i;
@@ -68,11 +59,9 @@ public class RollingAppenderSizeNoCompressTest {
               Thread.sleep(500);
             }
         }
-        if (!loggerContextRule.getLoggerContext().stop(30, TimeUnit.SECONDS)) {
-            System.err.println("Could not stop cleanly " + loggerContextRule + " for " + this);
-        }
+        assertTrue(context.stop(30, TimeUnit.SECONDS), () -> "Could not stop cleanly " + context + " for " + this);
         final File dir = new File(DIR);
-        assertTrue("Directory not created", dir.exists());
+        assertTrue(dir.exists(), "Directory not created");
         final File[] files = dir.listFiles();
         assertNotNull(files);
         for (final File file : files) {
@@ -82,16 +71,16 @@ public class RollingAppenderSizeNoCompressTest {
                     IOUtils.copy(fis, baos);
                 } catch (final Exception ex) {
                     ex.printStackTrace();
-                    fail("Unable to read " + file.getAbsolutePath());
+                    Assertions.fail("Unable to read " + file.getAbsolutePath());
                 }
           }
-            final String text = new String(baos.toByteArray(), Charset.defaultCharset());
+            final String text = baos.toString(Charset.defaultCharset());
             final String[] lines = text.split("[\\r\\n]+");
             for (final String line : lines) {
               messages.remove(line);
             }
         }
-        assertTrue("Log messages lost : " + messages.size(), messages.isEmpty());
-        assertTrue("Files not rolled : " + files.length, files.length > 2);
+        assertTrue(messages.isEmpty(), "Log messages lost : " + messages.size());
+        assertTrue(files.length > 2, "Files not rolled : " + files.length);
     }
 }

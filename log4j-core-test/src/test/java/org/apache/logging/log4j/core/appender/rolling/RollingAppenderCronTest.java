@@ -16,14 +16,15 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.RollingFileAppender;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.util.CronExpression;
+import org.apache.logging.log4j.test.junit.CleanUpDirectories;
+import org.hamcrest.Matcher;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -32,39 +33,34 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.appender.RollingFileAppender;
-import org.apache.logging.log4j.core.util.CronExpression;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.hamcrest.Matcher;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
+import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.hasItemInArray;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
  */
+@Tag("sleepy")
 public class RollingAppenderCronTest {
 
     private static final String CONFIG = "log4j-rolling-cron.xml";
     private static final String DIR = "target/rolling-cron";
     private static final String FILE = "target/rolling-cron/rollingtest.log";
 
-    private final LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
-
-    @Rule
-    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
-
     @Test
-    public void testAppender() throws Exception {
+    @CleanUpDirectories(DIR)
+    @LoggerContextSource(value = CONFIG, timeout = 10)
+    public void testAppender(final LoggerContext context) throws Exception {
         // TODO Is there a better way to test than putting the thread to sleep all over the place?
-        final Logger logger = loggerContextRule.getLogger();
+        final Logger logger = context.getLogger(getClass());
         final File file = new File(FILE);
-        assertTrue("Log file does not exist", file.exists());
+        assertTrue(file.exists(), "Log file does not exist");
         logger.debug("This is test message number 1");
         Thread.sleep(2500);
         final File dir = new File(DIR);
-        assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
+        assertTrue(dir.exists() && dir.listFiles().length > 0, "Directory not created");
 
         final int MAX_TRIES = 20;
         final Matcher<File[]> hasGzippedFile = hasItemInArray(that(hasName(that(endsWith(".gz")))));
@@ -95,12 +91,12 @@ public class RollingAppenderCronTest {
             logger.debug("Adding new event {}", i);
         }
         Thread.sleep(1000);
-        final RollingFileAppender app = (RollingFileAppender) loggerContextRule.getLoggerContext().getConfiguration().getAppender("RollingFile");
+        final RollingFileAppender app = context.getConfiguration().getAppender("RollingFile");
         final TriggeringPolicy policy = app.getManager().getTriggeringPolicy();
-        assertNotNull("No triggering policy", policy);
-        assertTrue("Incorrect policy type", policy instanceof CronTriggeringPolicy);
+        assertNotNull(policy, "No triggering policy");
+        assertTrue(policy instanceof CronTriggeringPolicy, "Incorrect policy type");
         final CronExpression expression = ((CronTriggeringPolicy) policy).getCronExpression();
-        assertEquals("Incorrect triggering policy", "* * * ? * *", expression.getCronExpression());
+        assertEquals("* * * ? * *", expression.getCronExpression(), "Incorrect triggering policy");
 
     }
 

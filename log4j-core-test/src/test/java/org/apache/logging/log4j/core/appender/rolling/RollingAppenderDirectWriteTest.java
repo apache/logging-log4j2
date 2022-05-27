@@ -16,6 +16,12 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.CleanUpDirectories;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,48 +29,35 @@ import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.util.zip.GZIPInputStream;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
 import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
  */
+@Tag("sleepy")
 public class RollingAppenderDirectWriteTest {
 
     private static final String CONFIG = "log4j-rolling-direct.xml";
 
     private static final String DIR = "target/rolling-direct";
 
-    public static LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
-
-    @Rule
-    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
-
-    private Logger logger;
-
-    @Before
-    public void setUp() throws Exception {
-        this.logger = loggerContextRule.getLogger(RollingAppenderDirectWriteTest.class.getName());
-    }
-
     @Test
-    public void testAppender() throws Exception {
+    @CleanUpDirectories(DIR)
+    @LoggerContextSource(value = CONFIG, timeout = 10)
+    public void testAppender(final LoggerContext context) throws Exception {
+        final var logger = context.getLogger(getClass());
         int count = 100;
         for (int i=0; i < count; ++i) {
             logger.debug("This is test message number " + i);
         }
         Thread.sleep(50);
         final File dir = new File(DIR);
-        assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
+        assertTrue(dir.exists() && dir.listFiles().length > 0, "Directory not created");
         final File[] files = dir.listFiles();
         assertNotNull(files);
         assertThat(files, hasItemInArray(that(hasName(that(endsWith(".gz"))))));
@@ -79,15 +72,15 @@ public class RollingAppenderDirectWriteTest {
             }
             String line;
             while ((line = reader.readLine()) != null) {
-                assertNotNull("No log event in file " + actual, line);
+                assertNotNull(line, "No log event in file " + actual);
                 String[] parts = line.split((" "));
                 String expected = "test1-" + parts[0];
-                assertTrue("Incorrect file name. Expected file prefix: " + expected + " Actual: " + actual,
-                    actual.startsWith(expected));
+                assertTrue(actual.startsWith(expected),
+                        "Incorrect file name. Expected file prefix: " + expected + " Actual: " + actual);
                 ++found;
             }
             reader.close();
         }
-        assertEquals("Incorrect number of events read. Expected " + count + ", Actual " + found, count, found);
+        assertEquals(count, found, "Incorrect number of events read. Expected " + count + ", Actual " + found);
     }
 }

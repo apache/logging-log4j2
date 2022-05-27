@@ -18,12 +18,12 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.plugins.Named;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.nio.file.DirectoryStream;
@@ -33,11 +33,12 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Validate rolling with a file pattern that contains leading zeros for the increment.
  */
+@Tag("sleepy")
 public class RollingAppenderCountTest {
 
     private static final String SOURCE = "src/test/resources/__files";
@@ -46,52 +47,40 @@ public class RollingAppenderCountTest {
     private static final String FILENAME = "onStartup.log";
     private static final String TARGET = "rolling_test.log.";
 
-    private Logger logger;
-
-    @Rule
-    public LoggerContextRule loggerContextRule;
-
-    public RollingAppenderCountTest() {
-        this.loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        this.logger = this.loggerContextRule.getLogger("LogTest");
-    }
-
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() throws Exception {
-        if (Files.exists(Paths.get(DIR))) {
-            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
+        Path dir = Path.of(DIR);
+        if (Files.exists(dir)) {
+            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(dir)) {
                 for (final Path path : directoryStream) {
                     Files.delete(path);
                 }
-                Files.delete(Paths.get(DIR));
+                Files.delete(dir);
             }
         }
-        File dir = new File(DIR);
-        if (!dir.exists()) {
-            Files.createDirectory(new File(DIR).toPath());
+        if (Files.notExists(dir)) {
+            Files.createDirectory(dir);
         }
-        Path target = Paths.get(DIR, TARGET + System.currentTimeMillis());
+        Path target = dir.resolve(TARGET + System.currentTimeMillis());
         Files.copy(Paths.get(SOURCE, FILENAME), target, StandardCopyOption.COPY_ATTRIBUTES);
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() throws Exception {
         int count = Objects.requireNonNull(new File(DIR).listFiles()).length;
-        assertEquals("Expected 16 files, got " + count, 17, count);
-        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
+        assertEquals(17, count, "Expected 16 files, got " + count);
+        Path dir = Path.of(DIR);
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(dir)) {
             for (final Path path : directoryStream) {
                 Files.delete(path);
             }
         }
-        Files.delete(Paths.get(DIR));
+        Files.delete(dir);
     }
 
     @Test
-    public void testLog() throws Exception {
+    @LoggerContextSource(value = CONFIG, timeout = 10)
+    public void testLog(final @Named("TestLog") Logger logger) throws Exception {
         for (long i = 0; i < 60; ++i) {
             logger.info("Sequence: " + i);
             logger.debug(RandomStringUtils.randomAscii(128, 512));

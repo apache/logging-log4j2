@@ -16,31 +16,33 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.test.CoreLoggerContexts;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.Arrays;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.CoreLoggerContexts;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-import static org.junit.Assert.*;
-
+@Tag("sleepy")
 public class RollingRandomAccessFileAppenderRolloverTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
                 "RollingRandomAccessFileAppenderTest.xml");
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testRollover() throws Exception {
         final File file = new File("target", "RollingRandomAccessFileAppenderTest.log");
         // System.out.println(f.getAbsolutePath());
@@ -58,14 +60,14 @@ public class RollingRandomAccessFileAppenderRolloverTest {
         assertTrue(line1.contains(msg));
         reader.close();
 
-        assertFalse("afterRollover-1.log not created yet", after1.exists());
+        assertFalse(after1.exists(), "afterRollover-1.log not created yet");
 
         String exceed = "Long message that exceeds rollover size... ";
         final char[] padding = new char[250];
         Arrays.fill(padding, 'X');
         exceed += new String(padding);
         log.warn(exceed);
-        assertFalse("exceeded size but afterRollover-1.log not created yet", after1.exists());
+        assertFalse(after1.exists(), "exceeded size but afterRollover-1.log not created yet");
 
         final String trigger = "This message triggers rollover.";
         log.warn(trigger);
@@ -81,26 +83,26 @@ public class RollingRandomAccessFileAppenderRolloverTest {
             Thread.sleep(50);
         }
 
-        assertTrue("afterRollover-1.log created", after1.exists());
+        assertTrue(after1.exists(), "afterRollover-1.log created");
 
         reader = new BufferedReader(new FileReader(file));
         final String new1 = reader.readLine();
-        assertTrue("after rollover only new msg", new1.contains(trigger));
-        assertNull("No more lines", reader.readLine());
+        assertTrue(new1.contains(trigger), "after rollover only new msg");
+        assertNull(reader.readLine(), "No more lines");
         reader.close();
         file.delete();
 
         reader = new BufferedReader(new FileReader(after1));
         final String old1 = reader.readLine();
-        assertTrue("renamed file line 1", old1.contains(msg));
+        assertTrue(old1.contains(msg), "renamed file line 1");
         final String old2 = reader.readLine();
-        assertTrue("renamed file line 2", old2.contains(exceed));
+        assertTrue(old2.contains(exceed), "renamed file line 2");
         String line = reader.readLine();
         if (line != null) {
-            assertTrue("strange...", line.contains("This message triggers rollover."));
+            assertTrue(line.contains("This message triggers rollover."), "strange...");
             line = reader.readLine();
         }
-        assertNull("No more lines", line);
+        assertNull(line, "No more lines");
         reader.close();
         after1.delete();
     }

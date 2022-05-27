@@ -17,46 +17,35 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.CleanUpDirectories;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests
  */
+@Tag("sleepy")
 public class RollingNewDirectoryTest {
     private static final String CONFIG = "log4j-rolling-new-directory.xml";
 
     private static final String DIR = "target/rolling-new-directory";
 
-    public static LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
-
-    @Rule
-    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
-
-    private Logger logger;
-
-    @Before
-    public void setUp() throws Exception {
-        this.logger = loggerContextRule.getLogger(RollingNewDirectoryTest.class.getName());
-    }
-
-
     @Test
-    public void streamClosedError() throws Exception {
+    @CleanUpDirectories(DIR)
+    @LoggerContextSource(value = CONFIG, timeout = 10)
+    public void streamClosedError(final Logger logger) throws Exception {
         for (int i = 0; i < 10; ++i) {
             logger.info("AAA");
             Thread.sleep(300);
         }
         final File dir = new File(DIR);
-        assertNotNull("No directory created", dir);
-        assertTrue("Child irectories not created", dir.exists() && dir.listFiles().length > 2);
+        assertNotNull(dir, "No directory created");
+        assertTrue(dir.exists() && dir.listFiles().length > 2, "Child directories not created");
     }
 }

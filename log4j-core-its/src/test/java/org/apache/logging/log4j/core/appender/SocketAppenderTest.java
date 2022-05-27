@@ -16,10 +16,28 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import com.fasterxml.jackson.databind.MappingIterator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LoggingException;
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.net.Protocol;
+import org.apache.logging.log4j.core.test.AvailablePortFinder;
+import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.Throwables;
+import org.apache.logging.log4j.jackson.json.Log4jJsonObjectMapper;
+import org.apache.logging.log4j.jackson.json.layout.JsonLayout;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -34,34 +52,14 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LoggingException;
-import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.net.Protocol;
-import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.core.util.Throwables;
-import org.apache.logging.log4j.jackson.json.Log4jJsonObjectMapper;
-import org.apache.logging.log4j.jackson.json.layout.JsonLayout;
-import org.apache.logging.log4j.core.test.AvailablePortFinder;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import com.fasterxml.jackson.databind.MappingIterator;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
  */
+@Tag("sleepy")
 public class SocketAppenderTest {
 
     private static final int PORT = AvailablePortFinder.getNextAvailable();
@@ -74,7 +72,7 @@ public class SocketAppenderTest {
     private final LoggerContext context = LoggerContext.getContext();
     private final Logger logger = context.getLogger(SocketAppenderTest.class.getName());
 
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() throws Exception {
         tcpServer = new TcpSocketTestServer(PORT);
         tcpServer.start();
@@ -84,14 +82,14 @@ public class SocketAppenderTest {
         ThreadContext.clearAll();
     }
 
-    @AfterClass
+    @AfterAll
     public static void cleanupClass() {
         tcpServer.shutdown();
         udpServer.shutdown();
         ThreadContext.clearAll();
     }
 
-    @After
+    @AfterEach
     public void teardown() {
         ThreadContext.clearAll();
         removeAndStopAppenders();
@@ -118,7 +116,7 @@ public class SocketAppenderTest {
     }
 
     @Test
-    @Ignore("WIP Bug when this method runs after testTcpAppender1()")
+    @Disabled("WIP Bug when this method runs after testTcpAppender1()")
     public void testTcpAppender2() throws Exception {
         testTcpAppender(tcpServer, logger, Constants.ENCODER_BYTE_BUFFER_SIZE);
     }
@@ -137,7 +135,7 @@ public class SocketAppenderTest {
                 .build();
         // @formatter:on
         appender.start();
-        Assert.assertEquals(bufferSize, appender.getManager().getByteBuffer().capacity());
+        assertEquals(bufferSize, appender.getManager().getByteBuffer().capacity());
 
         // set appender on root and set level to debug
         logger.addAppender(appender);
@@ -159,14 +157,14 @@ public class SocketAppenderTest {
         }
         Thread.sleep(250);
         LogEvent event = tcpTestServer.getQueue().poll(3, TimeUnit.SECONDS);
-        assertNotNull("No event retrieved", event);
-        assertTrue("Incorrect event", event.getMessage().getFormattedMessage().equals("This is a test message"));
-        assertTrue("Message not delivered via TCP", tcpTestServer.getCount() > 0);
+        assertNotNull(event, "No event retrieved");
+        assertEquals("This is a test message", event.getMessage().getFormattedMessage(), "Incorrect event");
+        assertTrue(tcpTestServer.getCount() > 0, "Message not delivered via TCP");
         assertEquals(expectedUuidStr, event.getContextData().getValue(tcKey));
         event = tcpTestServer.getQueue().poll(3, TimeUnit.SECONDS);
-        assertNotNull("No event retrieved", event);
-        assertTrue("Incorrect event", event.getMessage().getFormattedMessage().equals("Throwing an exception"));
-        assertTrue("Message not delivered via TCP", tcpTestServer.getCount() > 1);
+        assertNotNull(event, "No event retrieved");
+        assertTrue(event.getMessage().getFormattedMessage().equals("Throwing an exception"), "Incorrect event");
+        assertTrue(tcpTestServer.getCount() > 1, "Message not delivered via TCP");
         assertEquals(expectedUuidStr, event.getContextStack().pop());
         assertNotNull(event.getThrownProxy());
         assertEquals(expectedExMsg, event.getThrownProxy().getMessage());
@@ -213,9 +211,9 @@ public class SocketAppenderTest {
         logger.setLevel(Level.DEBUG);
         logger.debug("This is a udp message");
         final LogEvent event = udpServer.getQueue().poll(3, TimeUnit.SECONDS);
-        assertNotNull("No event retrieved", event);
-        assertTrue("Incorrect event", event.getMessage().getFormattedMessage().equals("This is a udp message"));
-        assertTrue("Message not delivered via UDP", udpServer.getCount() > 0);
+        assertNotNull(event, "No event retrieved");
+        assertTrue(event.getMessage().getFormattedMessage().equals("This is a udp message"), "Incorrect event");
+        assertTrue(udpServer.getCount() > 0, "Message not delivered via UDP");
     }
 
     @Test
@@ -244,7 +242,7 @@ public class SocketAppenderTest {
             logger.debug("This message is written because a deadlock never.");
 
             final LogEvent event = tcpSocketServer.getQueue().poll(3, TimeUnit.SECONDS);
-            assertNotNull("No event retrieved", event);
+            assertNotNull(event, "No event retrieved");
         } finally {
             tcpSocketServer.shutdown();
         }
@@ -269,14 +267,7 @@ public class SocketAppenderTest {
         logger.setAdditive(false);
         logger.setLevel(Level.DEBUG);
 
-        try {
-            logger.debug("This message is written because a deadlock never.");
-            fail("No Exception was thrown");
-        } catch (final Exception ex) {
-            // TODO: move exception to @Test(expect = Exception.class)
-            // Failure is expected.
-            // ex.printStackTrace();
-        }
+        assertThrows(Exception.class, () -> logger.debug("This message is written because a deadlock never."));
     }
 
     public static class UdpSocketTestServer extends Thread {
@@ -285,7 +276,7 @@ public class SocketAppenderTest {
         private boolean shutdown = false;
         private Thread thread;
         private final CountDownLatch latch = new CountDownLatch(1);
-        private volatile int count = 0;
+        private final AtomicInteger count = new AtomicInteger();
         private final BlockingQueue<LogEvent> queue;
         private final ObjectMapper objectMapper = new Log4jJsonObjectMapper();
 
@@ -296,7 +287,7 @@ public class SocketAppenderTest {
 
         public void reset() {
             queue.clear();
-            count = 0;
+            count.set(0);
         }
 
         public void shutdown() {
@@ -318,7 +309,7 @@ public class SocketAppenderTest {
                 while (!shutdown) {
                     latch.countDown();
                     sock.receive(packet);
-                    ++count;
+                    count.incrementAndGet();
                     final LogEvent event = objectMapper.readValue(packet.getData(), Log4jLogEvent.class);
                     queue.add(event);
                 }
@@ -331,7 +322,7 @@ public class SocketAppenderTest {
         }
 
         public int getCount() {
-            return count;
+            return count.get();
         }
 
         public BlockingQueue<LogEvent> getQueue() {
@@ -343,7 +334,7 @@ public class SocketAppenderTest {
 
         private final ServerSocket serverSocket;
         private volatile boolean shutdown = false;
-        private volatile int count = 0;
+        private final AtomicInteger count = new AtomicInteger();
         private final BlockingQueue<LogEvent> queue;
         private final ObjectMapper objectMapper = new Log4jJsonObjectMapper();
 
@@ -363,7 +354,7 @@ public class SocketAppenderTest {
 
         public void reset() {
             queue.clear();
-            count = 0;
+            count.set(0);
         }
 
         public void shutdown() {
@@ -386,7 +377,7 @@ public class SocketAppenderTest {
                             final MappingIterator<LogEvent> mappingIterator = objectMapper.readerFor(Log4jLogEvent.class).readValues(is);
                             while (mappingIterator.hasNextValue()) {
                                 queue.add(mappingIterator.nextValue());
-                                ++count;
+                                count.incrementAndGet();
                             }
                         }
                     }
@@ -405,7 +396,7 @@ public class SocketAppenderTest {
         }
 
         public int getCount() {
-            return count;
+            return count.get();
         }
     }
 
