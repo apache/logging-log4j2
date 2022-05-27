@@ -23,13 +23,13 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 
-import static org.apache.logging.log4j.core.test.junit.LoggerContextResolver.getParameterLoggerContext;
+import static org.apache.logging.log4j.core.test.junit.LoggerContextResolver.getLoggerContext;
 
 class ConfigurationResolver extends TypeBasedParameterResolver<Configuration> {
     @Override
     public Configuration resolveParameter(
             ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        final LoggerContext loggerContext = getParameterLoggerContext(parameterContext, extensionContext);
+        final LoggerContext loggerContext = getLoggerContext(extensionContext);
         if (loggerContext == null) {
             throw new ParameterResolutionException("No LoggerContext defined");
         }
