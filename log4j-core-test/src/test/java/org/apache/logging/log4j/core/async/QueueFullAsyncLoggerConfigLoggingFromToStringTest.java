@@ -17,55 +17,46 @@
 package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
-import org.junit.runners.BlockJUnit4ClassRunner;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 
 import java.util.List;
 import java.util.Stack;
 import java.util.concurrent.CountDownLatch;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.StringContains.containsString;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests queue full scenarios with AsyncLoggers in configuration.
  */
-@RunWith(BlockJUnit4ClassRunner.class)
-@Category(AsyncLoggers.class)
+@Tag("async")
+@DisabledOnOs(value = OS.WINDOWS, disabledReason = "https://issues.apache.org/jira/browse/LOG4J2-3513")
 public class QueueFullAsyncLoggerConfigLoggingFromToStringTest extends QueueFullAbstractTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         System.setProperty("AsyncLoggerConfig.RingBufferSize", "128");
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "log4j2-queueFullAsyncLoggerConfig.xml");
     }
 
-    @Rule
-    public LoggerContextRule context = new LoggerContextRule(
-            "log4j2-queueFullAsyncLoggerConfig.xml");
-
-    @Before
-    public void before() throws Exception {
-        blockingAppender = context.getRequiredAppender("Blocking", BlockingAppender.class);
-    }
-
-    @Test(timeout = 5000)
-    public void testLoggingFromToStringCausesOutOfOrderMessages() throws InterruptedException {
+    @Test
+    @LoggerContextSource(value = "log4j2-queueFullAsyncLoggerConfig.xml", timeout = 5)
+    public void testLoggingFromToStringCausesOutOfOrderMessages(
+            final LoggerContext context, @Named("Blocking") final BlockingAppender blockingAppender) {
+        this.blockingAppender = blockingAppender;
         //TRACE = true;
-        final Logger logger = LogManager.getLogger(this.getClass());
+        final Logger logger = context.getLogger(this.getClass());
 
         blockingAppender.countDownLatch = new CountDownLatch(1);
         unlocker = new Unlocker(new CountDownLatch(129)); // count slightly different from "pure" async loggers
@@ -93,16 +84,15 @@ public class QueueFullAsyncLoggerConfigLoggingFromToStringTest extends QueueFull
         final Stack<String> actual = transform(blockingAppender.logEvents);
         assertEquals("Logging in toString() #0", actual.pop());
         List<StatusData> statusDataList = StatusLogger.getLogger().getStatusData();
-        assertEquals("Jumped the queue: queue full",
-                "Logging in toString() #128", actual.pop());
+        assertEquals("Logging in toString() #128", actual.pop(), "Jumped the queue: queue full");
         StatusData mostRecentStatusData = statusDataList.get(statusDataList.size() - 1);
-        assertEquals("Expected warn level status message", Level.WARN, mostRecentStatusData.getLevel());
+        assertEquals(Level.WARN, mostRecentStatusData.getLevel(), "Expected warn level status message");
         assertThat(mostRecentStatusData.getFormattedStatus(), containsString(
                 "Log4j2 logged an event out of order to prevent deadlock caused by domain " +
                         "objects logging from their toString method when the async queue is full"));
 
         for (int i = 1; i < 128; i++) {
-            assertEquals("First batch", "Logging in toString() #" + i, actual.pop());
+            assertEquals("Logging in toString() #" + i, actual.pop(), "First batch");
         }
         assertEquals("logging naughty object #0 Who's bad?!", actual.pop());
         assertTrue(actual.isEmpty());
