@@ -16,49 +16,37 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.CleanUpDirectories;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.Random;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
-
 import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * LOG4J2-1804.
  */
+@Tag("sleepy")
 public class RollingAppenderCronAndSizeTest {
 
   private static final String CONFIG = "log4j-rolling-cron-and-size.xml";
 
     private static final String DIR = "target/rolling-cron-size";
 
-    public static LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
-
-    @Rule
-    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
-
-    private Logger logger;
-
-    @Before
-    public void setUp() throws Exception {
-        this.logger = loggerContextRule.getLogger(RollingAppenderCronAndSizeTest.class.getName());
-    }
-
 	@Test
-	public void testAppender() throws Exception {
+	@CleanUpDirectories(DIR)
+	@LoggerContextSource(value = CONFIG, timeout = 10)
+	public void testAppender(final Logger logger) throws Exception {
 		Random rand = new Random();
 		for (int j=0; j < 100; ++j) {
 			int count = rand.nextInt(100);
@@ -69,7 +57,7 @@ public class RollingAppenderCronAndSizeTest {
 		}
 		Thread.sleep(50);
 		final File dir = new File(DIR);
-		assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
+		assertTrue(dir.exists() && dir.listFiles().length > 0, "Directory not created");
 		final File[] files = dir.listFiles();
 		Arrays.sort(files);
 		assertNotNull(files);
@@ -79,16 +67,11 @@ public class RollingAppenderCronAndSizeTest {
 		String previous = "";
 		for (final File file: files) {
 			final String actual = file.getName();
-			StringBuilder padding = new StringBuilder();
-			String length = Long.toString(file.length());
-			for (int i = length.length(); i < 10; ++i) {
-				padding.append(" ");
-			}
-			final String[] fileParts = actual.split("_|\\.");
+			final String[] fileParts = actual.split("[_.]");
 			fileCounter = previous.equals(fileParts[1]) ? ++fileCounter : 1;
 			previous = fileParts[1];
-			assertEquals("Incorrect file name. Expected counter value of " + fileCounter + " in " + actual,
-					Integer.toString(fileCounter), fileParts[2]);
+			assertEquals(Integer.toString(fileCounter), fileParts[2],
+					"Incorrect file name. Expected counter value of " + fileCounter + " in " + actual);
 
 
 		}

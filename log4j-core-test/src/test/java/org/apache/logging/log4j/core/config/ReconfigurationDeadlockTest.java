@@ -34,6 +34,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Tag;
 
 import java.io.File;
 import java.util.List;
@@ -52,6 +53,7 @@ import java.util.stream.IntStream;
  * @see TestAppender
  */
 @LoggerContextSource("reconfiguration-deadlock.xml")
+@Tag("sleepy")
 public class ReconfigurationDeadlockTest {
 
     private static final int WORKER_COUNT = 100;

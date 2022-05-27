@@ -16,6 +16,13 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import org.apache.logging.log4j.core.config.ConfigurationScheduler;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.condition.OS;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.file.Files;
@@ -27,19 +34,15 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.logging.log4j.core.config.ConfigurationScheduler;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledOnOs;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
-import org.junit.jupiter.api.condition.OS;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * Test the WatchManager
  */
 @DisabledOnOs(OS.WINDOWS)
 @EnabledIfSystemProperty(named = "WatchManagerTest.forceRun", matches = "true")
+@Tag("sleepy")
 public class WatchManagerTest {
 
     private final String testFile = "target/testWatchFile";

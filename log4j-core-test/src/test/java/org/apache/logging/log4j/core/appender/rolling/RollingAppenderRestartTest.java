@@ -25,6 +25,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.jupiter.api.Tag;
 import org.junit.rules.RuleChain;
 
 import java.io.File;
@@ -48,6 +49,7 @@ import static org.hamcrest.Matchers.hasItemInArray;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+@Tag("sleepy")
 public class RollingAppenderRestartTest implements RolloverListener {
 
     private static final String CONFIG = "log4j-rolling-restart.xml";
@@ -86,7 +88,7 @@ public class RollingAppenderRestartTest implements RolloverListener {
     @Test
     public void testAppender() throws Exception {
         final Logger logger = loggerContextRule.getLogger();
-        final RollingFileAppender appender = (RollingFileAppender) loggerContextRule.getAppender("RollingFile");
+        final RollingFileAppender appender = loggerContextRule.getAppender("RollingFile");
         assertNotNull("No RollingFile Appender", appender);
         appender.getManager().addRolloverListener(this);
         logger.info("This is test message number 1");

@@ -16,34 +16,27 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.io.File;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.ParameterizedMessage;
+import org.apache.logging.log4j.test.junit.CleanUpFiles;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.ParameterizedMessage;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
-import static org.junit.Assert.*;
-
-@Category(AsyncLoggers.class)
+@Tag("async")
+@Tag("sleepy")
 public class AsyncLoggerConfigTest3 {
 
     @Test
-    public void testNoConcurrentModificationException() throws Exception {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "AsyncLoggerConfigTest2.xml");
-        final File file = new File("target", "AsyncLoggerConfigTest2.log");
-        assertTrue("Deleted old file before test", !file.exists() || file.delete());
-
-        final Logger log = LogManager.getLogger("com.foo.Bar");
+    @CleanUpFiles("target/AsyncLoggerConfigTest2.log")
+    @LoggerContextSource("AsyncLoggerConfigTest2.xml")
+    public void testNoConcurrentModificationException(final Logger log) throws Exception {
         log.info("initial message");
         Thread.sleep(500);
 

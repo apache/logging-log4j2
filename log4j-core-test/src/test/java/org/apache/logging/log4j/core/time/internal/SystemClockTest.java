@@ -16,9 +16,10 @@
  */
 package org.apache.logging.log4j.core.time.internal;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SystemClockTest {
 
@@ -33,6 +34,7 @@ public class SystemClockTest {
     }
 
     @Test
+    @Tag("sleepy")
     public void testAfterWaitStillLessThan2Millis() throws Exception {
         Thread.sleep(100);
         final long millis1 = new SystemClock().currentTimeMillis();

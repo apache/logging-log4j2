@@ -16,10 +16,18 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.apache.commons.compress.compressors.CompressorException;
+import org.apache.commons.compress.compressors.CompressorStreamFactory;
+import org.apache.commons.compress.utils.IOUtils;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.util.Closer;
+import org.apache.logging.log4j.test.junit.CleanUpDirectories;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -36,22 +44,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.compress.compressors.CompressorException;
-import org.apache.commons.compress.compressors.CompressorStreamFactory;
-import org.apache.commons.compress.utils.IOUtils;
-import org.apache.commons.lang3.SystemUtils;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.util.Closer;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Assume;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * LOG4J2-1766.
  */
+@DisabledOnOs(value = OS.MAC, disabledReason = "FileWatcher is not fast enough on macOS for this test")
+@Tag("sleepy")
 public class RollingAppenderTempCompressedFilePatternTest {
 
     private static final String CONFIG = "log4j-rolling-gz-tmp-compress.xml";
@@ -59,23 +58,10 @@ public class RollingAppenderTempCompressedFilePatternTest {
     private static final String DIR = "target/rolling2";
     private static final String DIR_TMP = "target/rolling-tmp";
 
-    public static LoggerContextRule loggerContextRule = LoggerContextRule
-            .createShutdownTimeoutLoggerContextRule(CONFIG);
-
-    @Rule
-    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR, DIR_TMP);
-
-    private Logger logger;
-
-    @Before
-    public void setUp() throws Exception {
-        // Disable this test on MacOS. FileWatcher isn't fast enough to work properly.
-        Assume.assumeTrue(!SystemUtils.IS_OS_MAC_OSX);
-        this.logger = loggerContextRule.getLogger(RollingAppenderTempCompressedFilePatternTest.class.getName());
-    }
-
     @Test
-    public void testAppender() throws Exception {
+    @CleanUpDirectories({ DIR, DIR_TMP })
+    @LoggerContextSource(CONFIG)
+    public void testAppender(final Logger logger, final LoggerContext context) throws Exception {
         final File dirTmp = new File(DIR_TMP);
         dirTmp.mkdirs();
         try (final WatchService watcher = FileSystems.getDefault().newWatchService()) {
@@ -90,11 +76,9 @@ public class RollingAppenderTempCompressedFilePatternTest {
                     Thread.sleep(500);
                 }
             }
-            if (!loggerContextRule.getLoggerContext().stop(30, TimeUnit.SECONDS)) {
-                System.err.println("Could not stop cleanly " + loggerContextRule + " for " + this);
-            }
+            assertTrue(context.stop(30, TimeUnit.SECONDS), () -> "Could not stop cleanly " + context + " for " + this);
             final File dir = new File(DIR);
-            assertTrue("Directory not created", dir.exists());
+            assertTrue(dir.exists(), "Directory not created");
             final File[] files = dir.listFiles();
             assertNotNull(files);
             int gzippedFiles = 0;
@@ -111,12 +95,13 @@ public class RollingAppenderTempCompressedFilePatternTest {
                                         fis);
                             } catch (final CompressorException ce) {
                                 ce.printStackTrace();
-                                fail("Error creating intput stream from " + file.toString() + ": " + ce.getMessage());
+                                fail(
+                                        "Error creating intput stream from " + file.toString() + ": " + ce.getMessage());
                             }
                         } else {
                             in = new FileInputStream(file);
                         }
-                        assertNotNull("No input stream for " + file.getName(), in);
+                        assertNotNull(in, "No input stream for " + file.getName());
                         try {
                             IOUtils.copy(in, baos);
                         } catch (final Exception ex) {
@@ -127,15 +112,15 @@ public class RollingAppenderTempCompressedFilePatternTest {
                 } finally {
                     Closer.close(in);
                 }
-                final String text = new String(baos.toByteArray(), Charset.defaultCharset());
+                final String text = baos.toString(Charset.defaultCharset());
                 final String[] lines = text.split("[\\r\\n]+");
                 for (final String line : lines) {
                     messages.remove(line);
                 }
             }
-            assertTrue("Log messages lost : " + messages.size(), messages.isEmpty());
-            assertTrue("Files not rolled : " + files.length, files.length > 2);
-            assertTrue("Files gzipped not rolled : " + gzippedFiles, gzippedFiles > 0);
+            assertTrue(messages.isEmpty(), "Log messages lost : " + messages.size());
+            assertTrue(files.length > 2, "Files not rolled : " + files.length);
+            assertTrue(gzippedFiles > 0, "Files gzipped not rolled : " + gzippedFiles);
 
             int temporaryFilesCreated = 0;
             key = watcher.take();
@@ -147,9 +132,10 @@ public class RollingAppenderTempCompressedFilePatternTest {
                     temporaryFilesCreated++;
                 }
             }
-            assertTrue("No temporary file created during compression", temporaryFilesCreated > 0);
-            assertEquals("Temporarys file created not equals to compressed files " + temporaryFilesCreated + "/"
-                    + gzippedFiles, gzippedFiles, temporaryFilesCreated);
+            assertTrue(temporaryFilesCreated > 0, "No temporary file created during compression");
+            assertEquals(gzippedFiles, temporaryFilesCreated,
+                    "Temporarys file created not equals to compressed files " + temporaryFilesCreated + "/"
+                            + gzippedFiles);
         }
     }
 }

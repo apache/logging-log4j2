@@ -16,34 +16,38 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.util.List;
-
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.apache.logging.log4j.core.selector.ContextSelector;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.plugins.Named;
+import org.apache.logging.log4j.plugins.SingletonFactory;
+import org.apache.logging.log4j.plugins.di.Injector;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-@Category(AsyncLoggers.class)
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+@Tag("async")
 public class AsyncLoggersWithAsyncAppenderTest {
 
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule("AsyncLoggersWithAsyncAppenderTest.xml",
-        AsyncLoggerContextSelector.class);
+    @SingletonFactory
+    public ContextSelector contextSelector(final Injector injector) {
+        return new AsyncLoggerContextSelector(injector);
+    }
 
     @Test
-    public void testLoggingWorks() throws Exception {
-        final Logger logger = LogManager.getLogger();
+    @LoggerContextSource("AsyncLoggersWithAsyncAppenderTest.xml")
+    public void testLoggingWorks(final Logger logger, @Named("List") final ListAppender appender) throws Exception {
         logger.error("This {} a test", "is");
         logger.warn("Hello {}!", "world");
-        Thread.sleep(100);
-        final List<String> list = context.getListAppender("List").getMessages();
-        assertNotNull("No events generated", list);
-        assertEquals("Incorrect number of events ", 2, list.size());
+        final List<String> list = appender.getMessages(2, 100, TimeUnit.MILLISECONDS);
+        assertNotNull(list, "No events generated");
+        assertEquals(2, list.size(), "Incorrect number of events ");
         String msg = list.get(0);
         String expected = getClass().getName() + " This {} a test - [is] - This is a test";
         assertEquals(expected, msg);

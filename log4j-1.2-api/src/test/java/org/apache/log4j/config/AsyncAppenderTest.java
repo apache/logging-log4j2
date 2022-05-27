@@ -16,12 +16,6 @@
  */
 package org.apache.log4j.config;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-import java.util.Map;
-
 import org.apache.log4j.ListAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -29,11 +23,19 @@ import org.apache.log4j.bridge.AppenderAdapter;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.junit.Test;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test configuration from XML.
  */
+@Tag("sleepy")
 public class AsyncAppenderTest {
 
     @Test
@@ -50,9 +52,9 @@ public class AsyncAppenderTest {
                     messageAppender = (ListAppender) ((AppenderAdapter.Adapter) entry.getValue()).getAppender();
                 }
             }
-            assertNotNull("No Message Appender", messageAppender);
+            assertNotNull(messageAppender, "No Message Appender");
             final List<String> messages = messageAppender.getMessages();
-            assertTrue("No messages", messages != null && messages.size() > 0);
+            assertTrue(messages != null && messages.size() > 0, "No messages");
         }
     }
 
@@ -70,9 +72,9 @@ public class AsyncAppenderTest {
                     messageAppender = (ListAppender) ((AppenderAdapter.Adapter) entry.getValue()).getAppender();
                 }
             }
-            assertNotNull("No Message Appender", messageAppender);
+            assertNotNull(messageAppender, "No Message Appender");
             final List<String> messages = messageAppender.getMessages();
-            assertTrue("No messages", messages != null && messages.size() > 0);
+            assertTrue(messages != null && messages.size() > 0, "No messages");
         }
     }
 }

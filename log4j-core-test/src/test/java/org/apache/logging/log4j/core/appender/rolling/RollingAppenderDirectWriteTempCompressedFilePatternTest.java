@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.CleanUpDirectories;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 
 import java.io.File;
 import java.nio.file.FileSystems;
@@ -33,43 +32,31 @@ import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 
-import org.apache.commons.lang3.SystemUtils;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Assume;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
+import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.hasItemInArray;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * LOG4J2-1766.
  */
+@Tag("sleepy")
+@DisabledOnOs(value = OS.MAC, disabledReason = "FileWatcher is not fast enough on macOS for this test")
 public class RollingAppenderDirectWriteTempCompressedFilePatternTest {
 
     private static final String CONFIG = "log4j-rolling-direct-tmp-compress-folder.xml";
 
     private static final String DIR = "target/rolling-direct";
 
-    public static LoggerContextRule loggerContextRule = LoggerContextRule
-            .createShutdownTimeoutLoggerContextRule(CONFIG);
-
-    @Rule
-    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
-
-    private Logger logger;
-
-    @Before
-    public void setUp() throws Exception {
-        // Disable this test on MacOS. FileWatcher isn't fast enough to work properly.
-        Assume.assumeTrue(!SystemUtils.IS_OS_MAC_OSX);
-        this.logger = loggerContextRule.getLogger(RollingAppenderDirectWriteTest.class.getName());
-    }
-
     @Test
-    public void testAppender() throws Exception {
+    @CleanUpDirectories(DIR)
+    @LoggerContextSource(value = CONFIG, timeout = 10)
+    public void testAppender(final LoggerContext context) throws Exception {
         final File dir = new File(DIR);
         dir.mkdirs();
+        final var logger = context.getLogger(getClass());
         try (final WatchService watcher = FileSystems.getDefault().newWatchService()) {
             WatchKey key = dir.toPath().register(watcher, StandardWatchEventKinds.ENTRY_CREATE);
 
@@ -77,7 +64,7 @@ public class RollingAppenderDirectWriteTempCompressedFilePatternTest {
                 logger.debug("This is test message number " + i);
             }
             Thread.sleep(50);
-            assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
+            assertTrue(dir.exists() && dir.listFiles().length > 0, "Directory not created");
             final File[] files = dir.listFiles();
             assertNotNull(files);
             assertThat(files, hasItemInArray(that(hasName(that(endsWith(".gz"))))));
@@ -96,8 +83,9 @@ public class RollingAppenderDirectWriteTempCompressedFilePatternTest {
                     compressedFiles++;
                 }
             }
-            assertTrue("No temporary file created during compression", temporaryFilesCreated > 0);
-            assertEquals("Temporarys file created not equals to compressed files", compressedFiles, temporaryFilesCreated);
+            assertTrue(temporaryFilesCreated > 0, "No temporary file created during compression");
+            assertEquals(compressedFiles, temporaryFilesCreated,
+                    "Temporary files created not equals to compressed files");
         }
     }
 }

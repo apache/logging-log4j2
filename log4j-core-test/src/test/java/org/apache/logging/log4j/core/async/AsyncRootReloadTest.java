@@ -16,25 +16,22 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.util.FileUtils;
+import org.apache.logging.log4j.test.junit.CleanUpFiles;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.apache.logging.log4j.core.util.FileUtils;
-import org.apache.logging.log4j.test.junit.CleanFiles;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.rules.RuleChain;
-
 /**
  * Tests LOG4J2-807.
  */
-@Category(AsyncLoggers.class)
+@Tag("async")
+@Tag("sleepy")
 public class AsyncRootReloadTest {
 
     private static final String ISSUE = "LOG4J2-807";
@@ -42,15 +39,13 @@ public class AsyncRootReloadTest {
     private static final String LOG = "target/" + ISSUE + ".log";
     private static final String RESOURCE = "classpath:" + ISSUE_CONFIG;
 
-    @ClassRule
-    public static RuleChain rules = RuleChain.outerRule(new CleanFiles(LOG)).around(new LoggerContextRule(RESOURCE));
-
     @Test
-    public void testLog4j2_807() throws InterruptedException, URISyntaxException {
+    @CleanUpFiles(LOG)
+    @LoggerContextSource(RESOURCE)
+    public void testLog4j2_807(final Logger logger) throws InterruptedException, URISyntaxException {
         final URL url = AsyncRootReloadTest.class.getResource("/" + ISSUE_CONFIG);
         final File configFile = FileUtils.fileFromUri(url.toURI());
 
-        final Logger logger = LogManager.getLogger(AsyncRootReloadTest.class);
         logger.info("Log4j configured, will be reconfigured in approx. 5 sec");
 
         configFile.setLastModified(System.currentTimeMillis());

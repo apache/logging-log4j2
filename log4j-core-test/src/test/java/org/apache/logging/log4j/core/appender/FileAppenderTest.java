@@ -16,6 +16,21 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.core.util.Integers;
+import org.apache.logging.log4j.core.util.Throwables;
+import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.test.junit.CleanUpFiles;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,26 +45,13 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.core.util.Integers;
-import org.apache.logging.log4j.core.util.Throwables;
-import org.apache.logging.log4j.test.junit.CleanUpFiles;
-import org.apache.logging.log4j.message.SimpleMessage;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link FileAppender}.
  */
 @CleanUpFiles(FileAppenderTest.FILE_NAME)
+@Tag("sleepy")
 public class FileAppenderTest {
 
     static final String FILE_NAME = "target/fileAppenderTest.log";
