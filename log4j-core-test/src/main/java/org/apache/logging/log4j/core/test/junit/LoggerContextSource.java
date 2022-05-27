@@ -18,6 +18,7 @@
 package org.apache.logging.log4j.core.test.junit;
 
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.junit.jupiter.api.Tag;
@@ -40,6 +41,7 @@ import java.util.concurrent.TimeUnit;
  * <ul>
  *     <li>{@link LoggerContext};</li>
  *     <li>{@link Configuration};</li>
+ *     <li>{@link Logger} (with a {@link Named} annotation to use a different Logger than the test class;</li>
  *     <li>any subclass of {@link Appender} paired with a {@link Named} annotation to select the appender by name.</li>
  * </ul>
  *
@@ -56,6 +58,7 @@ import java.util.concurrent.TimeUnit;
 @ExtendWith(LoggerContextResolver.class)
 @ExtendWith(ConfigurationResolver.class)
 @ExtendWith(AppenderResolver.class)
+@ExtendWith(LoggerResolver.class)
 public @interface LoggerContextSource {
     /**
      * Specifies the name of the configuration file to use for the annotated test.
