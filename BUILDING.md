@@ -20,15 +20,10 @@ To build Log4j 2.x, you need Java 8 and Java 11 compilers, and Apache Maven 3.x.
 
 Log4j 2.x uses the Java 11 compiler in addition to
 the Java version installed in the path. This is accomplished by using Maven's toolchains support.
-Log4j 2 provides sample toolchains XML files in the root folder. This may be used by
-modifying it and installing the file as toolchains.xml in the .m2 folder or by using the
-following when invoking Maven.
+You must set environment variables `JAVA_HOME`, `JAVA_HOME_8_X64`, and
+`JAVA_HOME_11_X64`, and then pass the following when invoking Maven.
 
-```
-[Macintosh] -t ./toolchains-sample-mac.xml
-[Windows] -t ./toolchains-sample-win.xml
-[Linux] -t ./toolchains-sample-linux.xml
-```
+    --global-toolchains ".github/workflows/maven-toolchains.xml"
 
 To perform the license release audit, a.k.a. "RAT check", run.
 
