@@ -52,7 +52,7 @@
     <maven.google.code.findbugs.findbugs.version>3.0.1</maven.google.code.findbugs.findbugs.version>
     <maven.jacoco.version>0.8.8</maven.jacoco.version>
     <maven.pmd.version>3.9.0</maven.pmd.version>
-    <site.plugin.version>3.11.0</site.plugin.version>
+    <site.plugin.version>3.12.0</site.plugin.version>
     <!-- maven plugin config -->
     <pmd.failurePriority>2</pmd.failurePriority>
     <deploy.plugin.version>2.8.2</deploy.plugin.version>
