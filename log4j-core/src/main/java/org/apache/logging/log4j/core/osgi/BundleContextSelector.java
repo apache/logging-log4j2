@@ -89,7 +89,7 @@ public class BundleContextSelector extends ClassLoaderContextSelector {
 
     private LoggerContext getLoggerContext(final Bundle bundle) {
         final String name = Objects.requireNonNull(bundle, "No Bundle provided").getSymbolicName();
-        final AtomicReference<WeakReference<LoggerContext>> ref = CONTEXT_MAP.get(name);
+        final AtomicReference<WeakReference<LoggerContext>> ref = contextMap.get(name);
         if (ref != null && ref.get() != null) {
            return ref.get().get();
         }
@@ -97,7 +97,7 @@ public class BundleContextSelector extends ClassLoaderContextSelector {
     }
 
     private void removeLoggerContext(final LoggerContext context) {
-        CONTEXT_MAP.remove(context.getName());
+        contextMap.remove(context.getName());
     }
 
     @Override
@@ -137,20 +137,20 @@ public class BundleContextSelector extends ClassLoaderContextSelector {
         return lc == null ? getDefault() : lc;
     }
 
-    private static boolean hasContext(final Bundle bundle) {
+    private boolean hasContext(final Bundle bundle) {
         final String name = Objects.requireNonNull(bundle, "No Bundle provided").getSymbolicName();
-        final AtomicReference<WeakReference<LoggerContext>> ref = CONTEXT_MAP.get(name);
+        final AtomicReference<WeakReference<LoggerContext>> ref = contextMap.get(name);
         return ref != null && ref.get() != null && ref.get().get() != null && ref.get().get().isStarted();
     }
 
-    private static LoggerContext locateContext(final Bundle bundle, final URI configLocation) {
+    private LoggerContext locateContext(final Bundle bundle, final URI configLocation) {
         final String name = Objects.requireNonNull(bundle, "No Bundle provided").getSymbolicName();
-        final AtomicReference<WeakReference<LoggerContext>> ref = CONTEXT_MAP.get(name);
+        final AtomicReference<WeakReference<LoggerContext>> ref = contextMap.get(name);
         if (ref == null) {
             final LoggerContext context = new LoggerContext(name, bundle, configLocation);
-            CONTEXT_MAP.putIfAbsent(name,
+            contextMap.putIfAbsent(name,
                 new AtomicReference<>(new WeakReference<>(context)));
-            return CONTEXT_MAP.get(name).get().get();
+            return contextMap.get(name).get().get();
         }
         final WeakReference<LoggerContext> r = ref.get();
         final LoggerContext ctx = r.get();
