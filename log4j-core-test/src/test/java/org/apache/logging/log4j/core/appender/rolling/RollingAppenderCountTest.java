@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.plugins.Named;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -39,6 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * Validate rolling with a file pattern that contains leading zeros for the increment.
  */
 @Tag("sleepy")
+@Disabled("https://issues.apache.org/jira/browse/LOG4J2-3522")
 public class RollingAppenderCountTest {
 
     private static final String SOURCE = "src/test/resources/__files";
