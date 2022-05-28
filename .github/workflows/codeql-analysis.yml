@@ -25,11 +25,6 @@ on:
   schedule:
     - cron: '32 12 * * 5'
 
-permissions:
-  security-events: write
-  actions: read
-  contents: read
-
 jobs:
 
   analyze:
