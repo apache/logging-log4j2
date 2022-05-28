@@ -22,6 +22,7 @@ import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -38,6 +39,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Validate rolling with a file pattern that contains leading zeros for the increment.
  */
+@Ignore("https://issues.apache.org/jira/browse/LOG4J2-3522")
 public class RollingAppenderCountTest {
 
     private static final String SOURCE = "src/test/resources/__files";
