@@ -16,37 +16,24 @@
  */
 package org.apache.logging.log4j;
 
+import org.apache.logging.log4j.test.junit.TestProperties;
 import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.ResourceLock;
-import org.junit.jupiter.api.parallel.Resources;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * Tests {@link ThreadContext}.
  */
-@ResourceLock(Resources.SYSTEM_PROPERTIES)
 @UsingThreadContextMap
+@TestProperties({
+        "disableThreadContext = true",
+        "disableThreadContextMap = true"
+})
 public class NoopThreadContextTest {
-
-    private static final String TRUE = "true";
-    private static final String PROPERY_KEY_ALL = "disableThreadContext";
-    private static final String PROPERY_KEY_MAP = "disableThreadContextMap";
-
-    @BeforeAll
-    public static void before() {
-        System.setProperty(PROPERY_KEY_ALL, TRUE);
-        System.setProperty(PROPERY_KEY_MAP, TRUE);
-        ThreadContext.init();
-    }
-
-    @AfterAll
-    public static void after() {
-        System.clearProperty(PROPERY_KEY_ALL);
-        System.clearProperty(PROPERY_KEY_MAP);
+    @BeforeEach
+    void setUp() {
         ThreadContext.init();
     }
 
@@ -56,6 +43,5 @@ public class NoopThreadContextTest {
         final String value = ThreadContext.get("Test");
         assertNull(value, "value was saved");
     }
-
 
 }

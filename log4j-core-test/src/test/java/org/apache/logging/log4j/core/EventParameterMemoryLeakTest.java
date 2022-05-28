@@ -18,15 +18,15 @@ package org.apache.logging.log4j.core;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
-import org.junit.jupiter.api.BeforeAll;
+import org.apache.logging.log4j.test.junit.TestProperties;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.lang.ref.Cleaner;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -36,13 +36,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("functional")
+@TestProperties({"log4j2.enable.direct.encoders = true", "log4j.configurationFile = EventParameterMemoryLeakTest.xml"})
 public class EventParameterMemoryLeakTest {
-
-    @BeforeAll
-    public static void beforeClass() {
-        System.setProperty("log4j2.enable.direct.encoders", "true");
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "EventParameterMemoryLeakTest.xml");
-    }
 
     @Test
     @SuppressWarnings("UnusedAssignment") // parameter set to null to allow garbage collection
@@ -52,7 +47,9 @@ public class EventParameterMemoryLeakTest {
 
         final Logger log = LogManager.getLogger("com.foo.Bar");
         CountDownLatch latch = new CountDownLatch(1);
-        Object parameter = new ParameterObject("paramValue", latch);
+        final Cleaner cleaner = Cleaner.create();
+        Object parameter = new ParameterObject("paramValue");
+        cleaner.register(parameter, latch::countDown);
         log.info("Message with parameter {}", parameter);
         log.info(parameter);
         log.info("test", new ObjectThrowable(parameter));
@@ -80,21 +77,13 @@ public class EventParameterMemoryLeakTest {
 
     private static final class ParameterObject {
         private final String value;
-        private final CountDownLatch latch;
-        ParameterObject(String value, CountDownLatch latch) {
+        ParameterObject(String value) {
             this.value = value;
-            this.latch = latch;
         }
 
         @Override
         public String toString() {
             return value;
-        }
-
-        @Override
-        protected void finalize() throws Throwable {
-            latch.countDown();
-            super.finalize();
         }
     }
 

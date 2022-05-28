@@ -16,15 +16,12 @@
  */
 package org.apache.logging.log4j;
 
-import org.apache.logging.log4j.test.ThreadContextUtilityClass;
-import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.apache.logging.log4j.test.ThreadContextUtilityClass;
+import org.apache.logging.log4j.test.junit.TestProperties;
+import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.ResourceLock;
-import org.junit.jupiter.api.parallel.Resources;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,20 +29,8 @@ import static org.junit.jupiter.api.Assertions.*;
  * Tests {@link ThreadContext}.
  */
 @UsingAnyThreadContext
-@ResourceLock(Resources.SYSTEM_PROPERTIES)
+@TestProperties(DefaultThreadContextMap.INHERITABLE_MAP + " = true")
 public class ThreadContextInheritanceTest {
-
-    @BeforeAll
-    public static void setupClass() {
-        System.setProperty(DefaultThreadContextMap.INHERITABLE_MAP, "true");
-        ThreadContext.init();
-    }
-
-    @AfterAll
-    public static void tearDownClass() {
-        System.clearProperty(DefaultThreadContextMap.INHERITABLE_MAP);
-        ThreadContext.init();
-    }
 
     @Test
     public void testPush() {
@@ -58,26 +43,19 @@ public class ThreadContextInheritanceTest {
 
     @Test
     public void testInheritanceSwitchedOn() throws Exception {
-        System.setProperty(DefaultThreadContextMap.INHERITABLE_MAP, "true");
-        ThreadContext.init();
-        try {
-            ThreadContext.clearMap();
-            ThreadContext.put("Greeting", "Hello");
-            StringBuilder sb = new StringBuilder();
-            TestThread thread = new TestThread(sb);
-            thread.start();
-            thread.join();
-            String str = sb.toString();
-            assertEquals("Hello", str, "Unexpected ThreadContext value. Expected Hello. Actual " + str);
-            sb = new StringBuilder();
-            thread = new TestThread(sb);
-            thread.start();
-            thread.join();
-            str = sb.toString();
-            assertEquals("Hello", str, "Unexpected ThreadContext value. Expected Hello. Actual " + str);
-        } finally {
-            System.clearProperty(DefaultThreadContextMap.INHERITABLE_MAP);
-        }
+        ThreadContext.put("Greeting", "Hello");
+        StringBuilder sb = new StringBuilder();
+        TestThread thread = new TestThread(sb);
+        thread.start();
+        thread.join();
+        String str = sb.toString();
+        assertEquals("Hello", str, "Unexpected ThreadContext value. Expected Hello. Actual " + str);
+        sb = new StringBuilder();
+        thread = new TestThread(sb);
+        thread.start();
+        thread.join();
+        str = sb.toString();
+        assertEquals("Hello", str, "Unexpected ThreadContext value. Expected Hello. Actual " + str);
     }
 
     @Test
@@ -123,7 +101,6 @@ public class ThreadContextInheritanceTest {
 
     @Test
     public void testRemove() {
-        ThreadContext.clearMap();
         assertNull(ThreadContext.get("testKey"));
         ThreadContext.put("testKey", "testValue");
         assertEquals("testValue", ThreadContext.get("testKey"));
@@ -135,7 +112,6 @@ public class ThreadContextInheritanceTest {
 
     @Test
     public void testContainsKey() {
-        ThreadContext.clearMap();
         assertFalse(ThreadContext.containsKey("testKey"));
         ThreadContext.put("testKey", "testValue");
         assertTrue(ThreadContext.containsKey("testKey"));

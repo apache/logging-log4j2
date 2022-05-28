@@ -18,9 +18,8 @@ package org.apache.logging.log4j.core.appender;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
-import org.junit.jupiter.api.BeforeAll;
+import org.apache.logging.log4j.test.junit.TestProperties;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -33,13 +32,8 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("sleepy")
+@TestProperties("log4j.configurationFile = RollingRandomAccessFileAppenderTest.xml")
 public class RollingRandomAccessFileAppenderRolloverTest {
-
-    @BeforeAll
-    public static void beforeClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "RollingRandomAccessFileAppenderTest.xml");
-    }
 
     @Test
     @Disabled

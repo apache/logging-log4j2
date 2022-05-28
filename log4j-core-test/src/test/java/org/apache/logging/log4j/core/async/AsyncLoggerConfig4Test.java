@@ -18,9 +18,8 @@ package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
-import org.junit.jupiter.api.BeforeAll;
+import org.apache.logging.log4j.test.junit.TestProperties;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -34,12 +33,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("async")
+@TestProperties("log4j2.configurationFile = AsyncLoggerConfigTest4.xml")
 public class AsyncLoggerConfig4Test {
-
-    @BeforeAll
-    public static void beforeClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "AsyncLoggerConfigTest4.xml");
-    }
 
     @Test
     public void testParameters() throws Exception {

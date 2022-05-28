@@ -16,31 +16,17 @@
  */
 package org.apache.logging.log4j.core;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.apache.logging.log4j.test.junit.TestProperties;
+import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
 /**
  *
  */
+@TestProperties("logback.configurationFile = logback-subst.xml")
 public class LogbackSubstitution {
 
-    private static final String LOGBACK_CONF = "logback.configurationFile";
-    private static final String LOGBACK_CONFIG = "logback-subst.xml";
     private final org.slf4j.Logger logger = LoggerFactory.getLogger(LogbackSubstitution.class);
-
-
-
-    @BeforeClass
-    public static void setupClass() {
-        System.setProperty(LOGBACK_CONF, LOGBACK_CONFIG);
-    }
-
-    @AfterClass
-    public static void cleanupClass() {
-        System.clearProperty(LOGBACK_CONF);
-    }
 
     @Test
     public void testSubst() {
