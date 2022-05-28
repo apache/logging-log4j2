@@ -307,6 +307,8 @@
     <argLine>-Xms256m -Xmx1024m</argLine>
     <javaTargetVersion>1.8</javaTargetVersion>
     <module.name />
+    <!-- Dependency versions -->
+    <jetty.version>9.4.46.v20220331</jetty.version>
   </properties>
   <pluginRepositories>
     <pluginRepository>
@@ -1073,6 +1075,12 @@
         <artifactId>guava-testlib</artifactId>
         <version>31.1-jre</version>
         <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-util</artifactId>
+        <version>${jetty.version}</version>
+        <scope>provided</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
