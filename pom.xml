@@ -292,7 +292,7 @@
     <commonsLoggingVersion>1.2</commonsLoggingVersion>
     <javax.persistence>2.2.1</javax.persistence>
     <!-- The OSGi API version MUST always be the MINIMUM version Log4j supports -->
-    <osgi.api.version>4.3.1</osgi.api.version>
+    <osgi.api.version>6.0.0</osgi.api.version>
     <activemq.version>5.17.1</activemq.version>
     <jctoolsVersion>3.3.0</jctoolsVersion>
     <junitVersion>4.13.2</junitVersion>
