@@ -843,7 +843,6 @@ class InjectorTest {
         @Namespace("Bean") @Inject Stream<BaseBean> stream;
         @Namespace("Bean") @Inject List<BaseBean> list;
         @Namespace("Bean") @Inject Map<String, BaseBean> map;
-//        @Namespace("Bean") @Inject Supplier<BaseBean> supplier;
     }
 
     @Test
@@ -859,8 +858,6 @@ class InjectorTest {
         assertThat(instance.map).hasSize(3);
         assertThat(instance.map.get("gamma")).isInstanceOf(GammaBean.class);
         assertThat(instance.optional).get().isInstanceOf(BetaBean.class);
-//        assertThat(instance.supplier).isNotNull();
-//        assertThat(instance.supplier.get()).isInstanceOf(BetaBean.class);
     }
 
     @Configurable(deferChildren = true)
