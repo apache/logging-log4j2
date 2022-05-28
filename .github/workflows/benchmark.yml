@@ -64,7 +64,7 @@ jobs:
             package
 
       - name: Upload built sources
-        uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535    # 3.0.0
+        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8    # 3.0.0
         with:
           name: benchmarks.jar
           path: log4j-perf/target/benchmarks.jar
