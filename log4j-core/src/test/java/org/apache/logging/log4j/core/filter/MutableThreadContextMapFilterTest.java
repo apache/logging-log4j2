@@ -24,8 +24,9 @@ import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Unit test for simple App.
  */
-@Disabled("https://issues.apache.org/jira/browse/LOG4J2-3512")
+@DisabledOnOs(value = OS.WINDOWS, disabledReason = "https://issues.apache.org/jira/browse/LOG4J2-3512")
 public class MutableThreadContextMapFilterTest implements MutableThreadContextMapFilter.FilterConfigUpdateListener {
 
     static final String CONFIG = "log4j2-mutableFilter.xml";
