@@ -35,8 +35,8 @@
     <url>https://issues.apache.org/jira/browse/LOG4J2</url>
   </issueManagement>
   <ciManagement>
-    <system>Jenkins</system>
-    <url>https://ci-builds.apache.org/job/Logging/job/log4j/</url>
+    <system>GitHub Actions</system>
+    <url>https://github.com/apache/logging-log4j2/actions</url>
   </ciManagement>
   <inceptionYear>1999</inceptionYear>
   <developers>
