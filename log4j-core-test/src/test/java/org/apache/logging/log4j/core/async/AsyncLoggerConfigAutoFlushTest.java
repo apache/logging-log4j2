@@ -20,9 +20,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.test.junit.CleanUpFiles;
-import org.apache.logging.log4j.test.junit.TestProperties;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -30,7 +30,7 @@ import java.nio.file.Files;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("async")
-@TestProperties("log4j2.configurationFile = AsyncLoggerConfigAutoFlushTest.xml")
+@SetSystemProperty(key = "log4j2.configurationFile", value = "AsyncLoggerConfigAutoFlushTest.xml")
 public class AsyncLoggerConfigAutoFlushTest {
 
     @Test

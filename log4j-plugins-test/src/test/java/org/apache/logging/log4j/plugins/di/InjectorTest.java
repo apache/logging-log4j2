@@ -843,10 +843,11 @@ class InjectorTest {
         @Namespace("Bean") @Inject Stream<BaseBean> stream;
         @Namespace("Bean") @Inject List<BaseBean> list;
         @Namespace("Bean") @Inject Map<String, BaseBean> map;
+//        @Namespace("Bean") @Inject Supplier<BaseBean> supplier;
     }
 
     @Test
-    void categoryQualifierInjection() {
+    void namespaceQualifierInjection() {
         final ContainerPluginBeanInjection instance = DI.createInjector()
                 .registerBinding(Keys.PLUGIN_PACKAGES_KEY, () -> List.of(BaseBean.class.getPackageName()))
                 .getInstance(ContainerPluginBeanInjection.class);
@@ -858,6 +859,8 @@ class InjectorTest {
         assertThat(instance.map).hasSize(3);
         assertThat(instance.map.get("gamma")).isInstanceOf(GammaBean.class);
         assertThat(instance.optional).get().isInstanceOf(BetaBean.class);
+//        assertThat(instance.supplier).isNotNull();
+//        assertThat(instance.supplier.get()).isInstanceOf(BetaBean.class);
     }
 
     @Configurable(deferChildren = true)

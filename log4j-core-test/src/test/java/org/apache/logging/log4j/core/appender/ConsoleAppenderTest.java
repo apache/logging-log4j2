@@ -23,11 +23,11 @@ import org.apache.logging.log4j.core.appender.ConsoleAppender.Target;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.test.junit.TestProperties;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junitpioneer.jupiter.SetSystemProperty;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -41,7 +41,7 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.atLeastOnce;
 
 @ExtendWith(MockitoExtension.class)
-@TestProperties("log4j.skipJansi = true")
+@SetSystemProperty(key = "log4j.skipJansi", value = "true")
 public class ConsoleAppenderTest {
 
     ByteArrayOutputStream baos;

@@ -18,10 +18,10 @@ package org.apache.logging.log4j;
 
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.test.ThreadContextUtilityClass;
-import org.apache.logging.log4j.test.junit.TestProperties;
 import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Tests {@link ThreadContext}.
  */
 @UsingAnyThreadContext
-@TestProperties(DefaultThreadContextMap.INHERITABLE_MAP + " = true")
+@SetSystemProperty(key = DefaultThreadContextMap.INHERITABLE_MAP, value = "true")
 public class ThreadContextInheritanceTest {
 
     @Test

@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j;
 
-import org.apache.logging.log4j.test.junit.TestProperties;
 import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -27,10 +27,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
  * Tests {@link ThreadContext}.
  */
 @UsingThreadContextMap
-@TestProperties({
-        "disableThreadContext = true",
-        "disableThreadContextMap = true"
-})
+@SetSystemProperty(key = "disableThreadContext", value = "true")
+@SetSystemProperty(key = "disableThreadContextMap", value = "true")
 public class NoopThreadContextTest {
     @BeforeEach
     void setUp() {

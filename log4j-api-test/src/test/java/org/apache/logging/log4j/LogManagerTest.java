@@ -19,9 +19,7 @@ package org.apache.logging.log4j;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.ResourceAccessMode;
-import org.junit.jupiter.api.parallel.ResourceLock;
-import org.junit.jupiter.api.parallel.Resources;
+import org.junitpioneer.jupiter.ReadsSystemProperty;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -29,7 +27,7 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@ResourceLock(value = Resources.SYSTEM_PROPERTIES, mode = ResourceAccessMode.READ)
+@ReadsSystemProperty
 public class LogManagerTest {
 
     @SuppressWarnings("InnerClassMayBeStatic")

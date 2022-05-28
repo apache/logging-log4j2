@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core;
 
-import org.apache.logging.log4j.test.junit.TestProperties;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 import org.slf4j.LoggerFactory;
 
 /**
  *
  */
-@TestProperties("logback.configurationFile = logback-subst.xml")
+@SetSystemProperty(key = "logback.configurationFile", value = "logback-subst.xml")
 public class LogbackSubstitution {
 
     private final org.slf4j.Logger logger = LoggerFactory.getLogger(LogbackSubstitution.class);

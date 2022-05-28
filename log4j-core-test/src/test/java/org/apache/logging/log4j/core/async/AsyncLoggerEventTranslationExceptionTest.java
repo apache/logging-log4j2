@@ -25,10 +25,9 @@ import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ReusableSimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -41,17 +40,8 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @Tag("async")
 @ContextSelectorType(AsyncLoggerContextSelector.class)
+@SetSystemProperty(key = "AsyncLogger.ExceptionHandler", value = "org.apache.logging.log4j.core.async.AsyncLoggerEventTranslationExceptionTest$TestExceptionHandler")
 class AsyncLoggerEventTranslationExceptionTest {
-
-    @BeforeAll
-    public static void beforeAll() {
-        System.setProperty("AsyncLogger.ExceptionHandler", TestExceptionHandler.class.getName());
-    }
-
-    @AfterAll
-    public static void afterAll() {
-        System.clearProperty("AsyncLogger.ExceptionHandler");
-    }
 
     @Test
     void testEventTranslationExceptionDoesNotCauseAsyncEventException() {

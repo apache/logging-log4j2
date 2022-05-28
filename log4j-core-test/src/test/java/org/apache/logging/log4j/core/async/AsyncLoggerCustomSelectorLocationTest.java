@@ -25,9 +25,9 @@ import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.test.junit.CleanUpFiles;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -42,13 +42,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @Tag("async")
 @ContextSelectorType(AsyncLoggerCustomSelectorLocationTest.CustomAsyncContextSelector.class)
 @CleanUpFiles("target/AsyncLoggerCustomSelectorLocationTest.log")
+@SetSystemProperty(key = ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, value = "AsyncLoggerCustomSelectorLocationTest.xml")
 public class AsyncLoggerCustomSelectorLocationTest {
-
-    @BeforeAll
-    public static void beforeClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "AsyncLoggerCustomSelectorLocationTest.xml");
-    }
 
     @Test
     public void testCustomAsyncSelectorLocation() throws Exception {

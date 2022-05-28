@@ -22,9 +22,9 @@ import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.message.AsynchronouslyFormattable;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.test.junit.CleanUpFiles;
-import org.apache.logging.log4j.test.junit.TestProperties;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -36,10 +36,8 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("async")
-@TestProperties({
-        "log4j2.configurationFile = AsyncLoggerConfigErrorOnFormat.xml",
-        "log4j2.logEventFactory = org.apache.logging.log4j.core.impl.DefaultLogEventFactory"
-})
+@SetSystemProperty(key = "log4j2.configurationFile", value = "AsyncLoggerConfigErrorOnFormat.xml")
+@SetSystemProperty(key = "log4j2.logEventFactory", value = "org.apache.logging.log4j.core.impl.DefaultLogEventFactory")
 public class AsyncLoggerConfigErrorOnFormat {
 
     @Test
