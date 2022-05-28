@@ -13,6 +13,7 @@
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
     <version>3.0.0-SNAPSHOT</version>
+    <relativePath>../log4j-parent</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -37,7 +38,6 @@
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-jdbc</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
