@@ -252,7 +252,7 @@
     <!-- POM for jackson-dataformat-xml 2.13.1 depends on woodstox-core 6.2.7 -->
     <woodstox.version>6.2.8</woodstox.version>
     <groovy.version>3.0.10</groovy.version>
-    <compiler.plugin.version>3.9.0</compiler.plugin.version>
+    <compiler.plugin.version>3.10.1</compiler.plugin.version>
     <pmd.plugin.version>3.16.0</pmd.plugin.version>
     <changes.plugin.version>2.12.1</changes.plugin.version>
     <javadoc.plugin.version>3.3.2</javadoc.plugin.version>
