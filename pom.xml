@@ -241,7 +241,7 @@
     <jackson1Version>1.9.13</jackson1Version>
     <jackson2Version>2.13.3</jackson2Version>
     <spring-boot.version>2.6.7</spring-boot.version>
-    <springVersion>5.3.19</springVersion>
+    <springVersion>5.3.20</springVersion>
     <kubernetes-client.version>5.12.2</kubernetes-client.version>
     <flumeVersion>1.9.0</flumeVersion>
     <disruptorVersion>3.4.4</disruptorVersion>
