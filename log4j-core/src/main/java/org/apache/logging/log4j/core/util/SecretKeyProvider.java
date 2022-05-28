@@ -18,9 +18,10 @@ package org.apache.logging.log4j.core.util;
 
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.di.Key;
-import org.apache.logging.log4j.plugins.util.PluginNamespace;
 
 import javax.crypto.SecretKey;
+import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * Factory class to provide a {@link SecretKey} instance.
@@ -29,7 +30,7 @@ public interface SecretKeyProvider {
 
     String CATEGORY = "KeyProvider";
 
-    Key<PluginNamespace> PLUGIN_CATEGORY_KEY = new @Namespace(CATEGORY) Key<>() {};
+    Key<Map<String, Supplier<SecretKeyProvider>>> PLUGIN_MAP_KEY = new @Namespace(CATEGORY) Key<>() {};
 
     /**
      * Returns this SecretKey.

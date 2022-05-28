@@ -39,8 +39,6 @@ import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.core.util.SecretKeyProvider;
 import org.apache.logging.log4j.plugins.di.Injector;
-import org.apache.logging.log4j.plugins.util.PluginNamespace;
-import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.util.Strings;
 
 import javax.crypto.Cipher;
@@ -60,6 +58,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Supplier;
 
 /**
  * Manager that persists data to Berkeley DB before passing it on to Flume.
@@ -434,27 +433,14 @@ public class FlumePersistentManager extends FlumeAvroManager {
                 }
                 if (key != null) {
                     final Injector injector = data.injector;
-                    final PluginNamespace plugins =
-                            injector.getInstance(SecretKeyProvider.PLUGIN_CATEGORY_KEY);
+                    final Map<String, Supplier<SecretKeyProvider>> plugins = injector.getInstance(SecretKeyProvider.PLUGIN_MAP_KEY);
                     if (plugins != null) {
-                        boolean found = false;
-                        for (final PluginType<?> type : plugins) {
-                            if (key.equalsIgnoreCase(type.getKey())) {
-                                found = true;
-                                final Class<?> cl = type.getPluginClass();
-                                try {
-                                    final SecretKeyProvider provider =
-                                            injector.getInstance(cl.asSubclass(SecretKeyProvider.class));
-                                    secretKey = provider.getSecretKey();
-                                    LOGGER.debug("Persisting events using SecretKeyProvider {}", cl.getName());
-                                } catch (final Exception ex) {
-                                    LOGGER.error("Unable to create SecretKeyProvider {}, encryption will be disabled",
-                                        cl.getName());
-                                }
-                                break;
-                            }
-                        }
-                        if (!found) {
+                        final Supplier<SecretKeyProvider> providerFactory = plugins.get(key);
+                        if (providerFactory != null) {
+                            final SecretKeyProvider provider = providerFactory.get();
+                            secretKey = provider.getSecretKey();
+                            LOGGER.debug("Persisting events using SecretKeyProvider {}", provider.getClass().getName());
+                        } else {
                             LOGGER.error("Unable to locate SecretKey provider {}, encryption will be disabled", key);
                         }
                     } else {
