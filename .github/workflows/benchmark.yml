@@ -28,7 +28,7 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748   # 3.0.1
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b   # 3.0.1
 
       # JDK 11 is needed for the build.
       # Search `maven-toolchains-plugin` usages for details.
@@ -87,7 +87,7 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748   # 3.0.1
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b   # 3.0.1
 
       - name: Download built sources
         uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741    # 3.0.0
@@ -192,7 +192,7 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748   # 3.0.1
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b   # 3.0.1
         with:
           ref: gh-pages
 
