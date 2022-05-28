@@ -35,7 +35,6 @@
     <docLabel>Web Documentation</docLabel>
     <projectDir>/log4j-appserver</projectDir>
     <tomcat-juli.version>10.0.21</tomcat-juli.version>
-    <jetty.version>11.0.9</jetty.version> <!--  Jetty 9 requires Java 8 -->
     <module.name>org.apache.logging.log4j.appserver</module.name>
     <maven.doap.skip>true</maven.doap.skip>
   </properties>
@@ -54,8 +53,6 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-util</artifactId>
-      <version>${jetty.version}</version>
-      <scope>provided</scope>
     </dependency>
   </dependencies>
 
