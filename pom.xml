@@ -939,7 +939,7 @@
       <dependency>
         <groupId>com.h2database</groupId>
         <artifactId>h2</artifactId>
-        <version>2.1.212</version>
+        <version>1.4.200</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.persistence</groupId>
@@ -1456,6 +1456,7 @@
         <configuration>
           <consoleOutput>true</consoleOutput>
           <excludes>
+            <exclude>**/target/**/*</exclude>
             <!-- Matches other RAT configurations in this POM -->
             <exclude>src/main/resources/META-INF/services/**/*</exclude>
             <!-- IntelliJ files -->
@@ -1613,6 +1614,7 @@
         <configuration>
           <consoleOutput>true</consoleOutput>
           <excludes>
+            <exclude>**/target/**/*</exclude>
             <!-- Matches other RAT configurations in this POM -->
             <exclude>src/main/resources/META-INF/services/**/*</exclude>
             <!-- IntelliJ files -->
@@ -1797,6 +1799,7 @@
             <configuration>
               <consoleOutput>true</consoleOutput>
               <excludes>
+                <exclude>**/target/**/*</exclude>
                 <!-- Matches other RAT configurations in this POM -->
                 <exclude>src/main/resources/META-INF/services/**/*</exclude>
                 <!-- IntelliJ files -->
