@@ -21,7 +21,6 @@
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
     <version>3.0.0-SNAPSHOT</version>
-    <relativePath>../log4j-parent</relativePath>
   </parent>
   <artifactId>log4j-docker</artifactId>
   <packaging>jar</packaging>
@@ -31,8 +30,8 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j Docker Library Documentation</docLabel>
     <projectDir>/docker</projectDir>
-<!--    <maven.compiler.source>1.8</maven.compiler.source>-->
-<!--    <maven.compiler.target>1.8</maven.compiler.target>-->
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
     <module.name>org.apache.logging.log4j.docker</module.name>
     <maven.doap.skip>true</maven.doap.skip>
   </properties>
