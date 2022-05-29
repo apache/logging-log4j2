@@ -25,22 +25,24 @@ import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.Permission;
+import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadFactory;
 
 import org.apache.cassandra.service.CassandraDaemon;
-import org.apache.cassandra.service.CassandraDaemon.Server;
+import org.apache.cassandra.service.NativeTransportService;
+import org.apache.cassandra.transport.Server;
 import org.apache.cassandra.transport.Server.ConnectionTracker;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
-import org.apache.logging.log4j.test.AvailablePortFinder;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.rules.ExternalResource;
 
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
+import com.datastax.driver.core.SocketOptions;
 
 import io.netty.channel.socket.ServerSocketChannel;
 
@@ -88,6 +90,7 @@ public class CassandraRule extends ExternalResource {
         System.setProperty("cassandra.native_transport_port", Integer.toString(nativeSocket.getPort()));
         cluster = Cluster.builder()
                 .addContactPointsWithPorts(nativeSocket)
+                .withSocketOptions(new SocketOptions().setConnectTimeoutMillis(60000))
                 .build();
         
         try (final Session session = cluster.connect()) {
@@ -107,7 +110,7 @@ public class CassandraRule extends ExternalResource {
 
     private static class EmbeddedCassandra implements Cancellable {
 
-        private final CassandraDaemon daemon = new CassandraDaemon();
+        private final CassandraDaemon daemon = CassandraDaemon.getInstanceForTesting();
         private final CountDownLatch latch;
 
         private EmbeddedCassandra(final CountDownLatch latch) {
@@ -147,6 +150,7 @@ public class CassandraRule extends ExternalResource {
 
         @Override
         public void run() {
+            daemon.applyConfig();
             try {
                 daemon.init(null);
             } catch (final IOException e) {
@@ -157,10 +161,17 @@ public class CassandraRule extends ExternalResource {
         }
 
         public InetSocketAddress getNativeSocket() {
-            final Server server = daemon.nativeServer;
-            if (server instanceof org.apache.cassandra.transport.Server) {
-                try {
-                    final Field trackerField = org.apache.cassandra.transport.Server.class.getDeclaredField("connectionTracker");
+            try {
+                final Field nativeServiceField = CassandraDaemon.class.getDeclaredField("nativeTransportService");
+                nativeServiceField.setAccessible(true);
+                final NativeTransportService nativeService = (NativeTransportService) nativeServiceField.get(daemon);
+                final Field serversField = NativeTransportService.class.getDeclaredField("servers");
+                serversField.setAccessible(true);
+                @SuppressWarnings("unchecked")
+                final Collection<Server> servers = (Collection<Server>) serversField.get(nativeService);
+                if (servers.size() > 0) {
+                    final Server server = servers.iterator().next();
+                    final Field trackerField = Server.class.getDeclaredField("connectionTracker");
                     trackerField.setAccessible(true);
                     final ConnectionTracker connectionTracker = (ConnectionTracker) trackerField.get(server);
                     final ServerSocketChannel serverChannel = connectionTracker.allChannels
@@ -170,9 +181,9 @@ public class CassandraRule extends ExternalResource {
                             .findFirst()
                             .orElse(null);
                     return serverChannel.localAddress();
-                } catch (ReflectiveOperationException | ClassCastException e) {
-                    fail(e);
                 }
+            } catch (ReflectiveOperationException | ClassCastException e) {
+                fail(e);
             }
             return null;
         }
