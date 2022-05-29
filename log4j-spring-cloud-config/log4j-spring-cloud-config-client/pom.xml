@@ -32,6 +32,17 @@
     <projectDir>/log4j-spring-cloud-config-client</projectDir>
     <module.name>org.apache.logging.log4j.spring.cloud.config.client</module.name>
   </properties>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-bom</artifactId>
+        <version>${project.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
   <dependencies>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
