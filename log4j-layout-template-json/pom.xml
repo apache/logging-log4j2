@@ -26,9 +26,10 @@
   </parent>
 
   <artifactId>log4j-layout-template-json</artifactId>
-  <name>Apache Log4j Layout for JSON template</name>
+  <name>Apache Log4j layout for templated JSON encoding</name>
   <description>
-    Apache Log4j Layout for JSON template.
+    JSON Template Layout is a customizable, efficient, and garbage-free JSON generating Apache Log4j layout.
+    It encodes log events according to the structure described by the JSON template provided.
   </description>
 
   <properties>
@@ -47,88 +48,67 @@
     </dependency>
 
     <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core-test</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-layout-jackson-json</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-1.2-api</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
       <groupId>org.jctools</groupId>
       <artifactId>jctools-core</artifactId>
       <optional>true</optional>
-    </dependency>
-
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-params</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>co.elastic.logging</groupId>
-      <artifactId>log4j2-ecs-layout</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>com.google.code.java-allocation-instrumenter</groupId>
-      <artifactId>java-allocation-instrumenter</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.elasticsearch.client</groupId>
-      <artifactId>elasticsearch-rest-high-level-client</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.awaitility</groupId>
-      <artifactId>awaitility</artifactId>
-      <scope>test</scope>
     </dependency>
 
   </dependencies>
 
   <build>
     <plugins>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${compiler.plugin.version}</version>
+        <configuration>
+          <source>${maven.compiler.source}</source>
+          <target>${maven.compiler.target}</target>
+          <release>${maven.compiler.release}</release>
+          <showDeprecation>true</showDeprecation>
+          <showWarnings>true</showWarnings>
+          <verbose>false</verbose>
+          <encoding>UTF-8</encoding>
+          <fork>false</fork>
+          <meminitial>256</meminitial>
+          <maxmem>1024</maxmem>
+          <compilerArgs>
+            <arg>-XDcompilePolicy=simple</arg>
+            <arg>-Xplugin:ErrorProne</arg>
+            <!-- Workaround to access JDK internals needed by Error Prone.
+                 Access is restricted in JEP 396 shipped with Java 16.
+                 For details: https://errorprone.info/docs/installation -->
+            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>
+            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>
+            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</arg>
+            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</arg>
+            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</arg>
+            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>
+            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>
+            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>
+            <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
+            <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>
+          </compilerArgs>
+          <compilerArguments>
+            <Xmaxwarns>10000</Xmaxwarns>
+            <Xlint />
+          </compilerArguments>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>org.apache.logging.log4j</groupId>
+              <artifactId>log4j-plugin-processor</artifactId>
+              <version>${project.version}</version>
+            </path>
+            <path>
+              <groupId>com.google.errorprone</groupId>
+              <artifactId>error_prone_core</artifactId>
+              <version>${errorprone.version}</version>
+            </path>
+          </annotationProcessorPaths>
+          <forceJavacCompilerUse>true</forceJavacCompilerUse>
+          <parameters>true</parameters>
+        </configuration>
         <executions>
           <execution>
             <id>default-compile</id>
@@ -138,28 +118,9 @@
               </compilerArgs>
             </configuration>
           </execution>
-          <execution>
-            <id>default-testCompile</id>
-            <configuration>
-              <compilerArgs>
-                <arg>-ApluginPackage=org.apache.logging.log4j.layout.template.json.test</arg>
-              </compilerArgs>
-            </configuration>
-          </execution>
-          <!--<execution>
-            <id>compile-module-info</id>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <phase>prepare-package</phase>
-            <configuration>
-              <compileSourceRoots>
-                <compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
-              </compileSourceRoots>
-            </configuration>
-          </execution>-->
         </executions>
       </plugin>
+
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
@@ -199,28 +160,6 @@
               </archive>
             </configuration>
           </execution>
-          <execution>
-            <id>default</id>
-            <goals>
-              <goal>test-jar</goal>
-            </goals>
-            <configuration>
-              <archive>
-                <manifestFile>${manifestfile}</manifestFile>
-                <manifestEntries>
-                  <Specification-Title>${project.name}</Specification-Title>
-                  <Specification-Version>${project.version}</Specification-Version>
-                  <Specification-Vendor>${project.organization.name}</Specification-Vendor>
-                  <Implementation-Title>${project.name}</Implementation-Title>
-                  <Implementation-Version>${project.version}</Implementation-Version>
-                  <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-                  <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
-                  <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
-                  <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
-                </manifestEntries>
-              </archive>
-            </configuration>
-          </execution>
         </executions>
       </plugin>
 
@@ -228,30 +167,14 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <!-- Enforcing a non-UTF-8 encoding to check that the layout
-               indeed handles everything in UTF-8 without implicitly
-               relying on the system defaults. -->
-          <argLine>-Dfile.encoding=US-ASCII</argLine>
-          <systemPropertyVariables>
-            <!-- Enable JUnit 5 parallel execution. -->
-            <junit.jupiter.execution.parallel.enabled>true</junit.jupiter.execution.parallel.enabled>
-            <junit.jupiter.execution.parallel.mode.default>concurrent</junit.jupiter.execution.parallel.mode.default>
-          </systemPropertyVariables>
+          <skip>true</skip>
         </configuration>
       </plugin>
 
-      <!-- Disable ITs, which are Docker-dependent, by default. -->
+      <!-- Disable Failsafe since tests go to the `-test` module. -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
         <configuration>
           <skip>true</skip>
         </configuration>
@@ -259,172 +182,6 @@
 
     </plugins>
   </build>
-
-  <profiles>
-    <profile>
-      <id>docker</id>
-      <activation>
-        <activeByDefault>false</activeByDefault>
-      </activation>
-      <build>
-        <plugins>
-
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-failsafe-plugin</artifactId>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>integration-test</goal>
-                  <goal>verify</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <includes>
-                <include>**/*IT.java</include>
-              </includes>
-            </configuration>
-          </plugin>
-
-          <plugin>
-            <groupId>io.fabric8</groupId>
-            <artifactId>docker-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>start</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>start</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>stop</id>
-                <phase>post-integration-test</phase>
-                <goals>
-                  <goal>stop</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <verbose>all</verbose>
-              <startParallel>true</startParallel>
-              <autoCreateCustomNetworks>true</autoCreateCustomNetworks>
-              <images>
-                <image>
-                  <alias>elasticsearch</alias>
-                  <name>elasticsearch:${elastic.version}</name>
-                  <run>
-                    <env>
-                      <discovery.type>single-node</discovery.type>
-                    </env>
-                    <ports>
-                      <port>9200:9200</port>
-                    </ports>
-                    <network>
-                      <mode>custom</mode>
-                      <name>log4j-layout-template-json-network</name>
-                      <alias>elasticsearch</alias>
-                    </network>
-                    <log>
-                      <prefix>[ES]</prefix>
-                      <color>cyan</color>
-                    </log>
-                    <wait>
-                      <log>recovered \[0\] indices into cluster_state</log>
-                      <time>60000</time>
-                    </wait>
-                  </run>
-                </image>
-                <image>
-                  <alias>logstash</alias>
-                  <name>logstash:${elastic.version}</name>
-                  <run>
-                    <dependsOn>
-                      <container>elasticsearch</container>
-                    </dependsOn>
-                    <network>
-                      <mode>custom</mode>
-                      <name>log4j-layout-template-json-network</name>
-                      <alias>logstash</alias>
-                    </network>
-                    <ports>
-                      <port>12222:12222</port>
-                      <port>12345:12345</port>
-                    </ports>
-                    <log>
-                      <prefix>[LS]</prefix>
-                      <color>green</color>
-                    </log>
-                    <entrypoint>
-                      <exec>
-                        <arg>logstash</arg>
-                        <arg>--pipeline.batch.size</arg>
-                        <arg>1</arg>
-                        <arg>-e</arg>
-                        <arg>
-                          <![CDATA[
-                          input {
-                            gelf {
-                              host => "logstash"
-                              use_tcp => true
-                              use_udp => false
-                              port => 12222
-                              type => "gelf"
-                            }
-                            tcp {
-                              port => 12345
-                              codec => json
-                              type => "tcp"
-                            }
-                          }
-
-                          filter {
-                            if [type] == "gelf" {
-                              # These are GELF/Syslog logging levels as defined in RFC 3164.
-                              # Map the integer level to its human readable format.
-                              translate {
-                                field => "[level]"
-                                destination => "[levelName]"
-                                dictionary => {
-                                  "0" => "EMERG"
-                                  "1" => "ALERT"
-                                  "2" => "CRITICAL"
-                                  "3" => "ERROR"
-                                  "4" => "WARN"
-                                  "5" => "NOTICE"
-                                  "6" => "INFO"
-                                  "7" => "DEBUG"
-                                }
-                              }
-                            }
-                          }
-
-                          output {
-                            # (Un)comment for debugging purposes
-                            # stdout { codec => rubydebug }
-                            elasticsearch {
-                              hosts => ["http://elasticsearch:9200"]
-                              index => "log4j"
-                            }
-                          }
-                          ]]>
-                        </arg>
-                      </exec>
-                    </entrypoint>
-                    <wait>
-                      <log>Successfully started Logstash API endpoint</log>
-                      <time>60000</time>
-                    </wait>
-                  </run>
-                </image>
-              </images>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 
   <reporting>
     <plugins>
@@ -451,7 +208,6 @@
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>${checkstyle.plugin.version}</version>
         <configuration>
-          <!--<propertiesLocation>${vfs.parent.dir}/checkstyle.properties</propertiesLocation> -->
           <configLocation>${log4jParentDir}/checkstyle.xml</configLocation>
           <suppressionsLocation>${log4jParentDir}/checkstyle-suppressions.xml</suppressionsLocation>
           <enableRulesSummary>false</enableRulesSummary>
@@ -468,7 +224,7 @@
           <bottom><![CDATA[<p align="center">Copyright &#169; {inceptionYear}-{currentYear} {organizationName}. All Rights Reserved.<br />
             Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, the Apache Logging project logo,
             and the Apache Log4j logo are trademarks of The Apache Software Foundation.</p>]]></bottom>
-          <!-- module link generation is completely broken in the javadoc plugin for a multi-module non-aggregating project -->
+          <!-- Module link generation is completely broken in the javadoc plugin for a multi-module non-aggregating project: -->
           <detectOfflineLinks>false</detectOfflineLinks>
           <linksource>true</linksource>
         </configuration>

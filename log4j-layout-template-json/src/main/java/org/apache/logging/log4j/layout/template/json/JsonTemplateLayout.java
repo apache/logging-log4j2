@@ -26,23 +26,12 @@ import org.apache.logging.log4j.core.layout.Encoder;
 import org.apache.logging.log4j.core.layout.TextEncoderHelper;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.StringEncoder;
-import org.apache.logging.log4j.layout.template.json.resolver.EventResolverContext;
-import org.apache.logging.log4j.layout.template.json.resolver.EventResolverFactory;
-import org.apache.logging.log4j.layout.template.json.resolver.EventResolverInterceptor;
-import org.apache.logging.log4j.layout.template.json.resolver.EventResolverStringSubstitutor;
-import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolver;
-import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolvers;
+import org.apache.logging.log4j.layout.template.json.resolver.*;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.apache.logging.log4j.layout.template.json.util.Recycler;
 import org.apache.logging.log4j.layout.template.json.util.RecyclerFactory;
 import org.apache.logging.log4j.layout.template.json.util.Uris;
-import org.apache.logging.log4j.plugins.Configurable;
-import org.apache.logging.log4j.plugins.Factory;
-import org.apache.logging.log4j.plugins.Namespace;
-import org.apache.logging.log4j.plugins.Node;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.*;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
@@ -52,11 +41,7 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CodingErrorAction;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -356,7 +341,7 @@ public class JsonTemplateLayout implements StringLayout {
 
     @SuppressWarnings({"unused", "WeakerAccess"})
     public static final class Builder
-            implements org.apache.logging.log4j.core.util.Builder<JsonTemplateLayout> {
+            implements org.apache.logging.log4j.plugins.util.Builder<JsonTemplateLayout> {
 
         @PluginConfiguration
         private Configuration configuration;
@@ -647,7 +632,7 @@ public class JsonTemplateLayout implements StringLayout {
         }
 
         public static class Builder
-                implements org.apache.logging.log4j.core.util.Builder<EventTemplateAdditionalField> {
+                implements org.apache.logging.log4j.plugins.util.Builder<EventTemplateAdditionalField> {
 
             @PluginBuilderAttribute
             private String key;

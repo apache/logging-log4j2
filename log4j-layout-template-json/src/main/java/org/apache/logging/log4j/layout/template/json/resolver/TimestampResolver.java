@@ -20,7 +20,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults;
-import org.apache.logging.log4j.layout.template.json.util.InstantFormatter;
+import org.apache.logging.log4j.core.time.InstantFormatter;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 
 import java.util.Locale;

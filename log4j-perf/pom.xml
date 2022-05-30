@@ -88,9 +88,8 @@
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-layout-template-json</artifactId>
+      <artifactId>log4j-layout-template-json-test</artifactId>
       <version>${project.version}</version>
-      <type>test-jar</type>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
