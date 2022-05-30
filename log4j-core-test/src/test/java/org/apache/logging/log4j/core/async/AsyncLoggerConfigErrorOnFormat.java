@@ -18,57 +18,44 @@ package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.message.AsynchronouslyFormattable;
 import org.apache.logging.log4j.message.Message;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.apache.logging.log4j.test.junit.CleanUpFiles;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.nio.file.Files;
+import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Category(AsyncLoggers.class)
+@Tag("async")
+@SetSystemProperty(key = "log4j2.configurationFile", value = "AsyncLoggerConfigErrorOnFormat.xml")
+@SetSystemProperty(key = "log4j2.logEventFactory", value = "org.apache.logging.log4j.core.impl.DefaultLogEventFactory")
 public class AsyncLoggerConfigErrorOnFormat {
 
-    @BeforeClass
-    public static void beforeClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "AsyncLoggerConfigErrorOnFormat.xml");
-        // Log4jLogEvent.toString invokes message.toString
-        System.setProperty("log4j2.logEventFactory", DefaultLogEventFactory.class.getName());
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        System.clearProperty("log4j2.logEventFactory");
-    }
-
     @Test
+    @CleanUpFiles("target/AsyncLoggerConfigErrorOnFormat.log")
     public void testError() throws Exception {
         final File file = new File("target", "AsyncLoggerConfigErrorOnFormat.log");
-        assertTrue("Deleted old file before test", !file.exists() || file.delete());
+        assertTrue(!file.exists() || file.delete(), "Deleted old file before test");
 
         final Logger log = LogManager.getLogger("com.foo.Bar");
         log.info(new ThrowsErrorOnFormatMessage());
         log.info("Second message");
         CoreLoggerContexts.stopLoggerContext(file); // stop async thread
 
-        final BufferedReader reader = new BufferedReader(new FileReader(file));
-        final String line1 = reader.readLine();
-        final String line2 = reader.readLine();
-        reader.close();
-        file.delete();
+        final List<String> lines = Files.readAllLines(file.toPath());
+        final String line1 = lines.get(0);
 
         assertThat(line1, containsString("Second message"));
-        assertNull("Expected only one line", line2);
+        assertThat(lines, hasSize(1));
     }
 
     @AsynchronouslyFormattable // Shouldn't call getFormattedMessage early

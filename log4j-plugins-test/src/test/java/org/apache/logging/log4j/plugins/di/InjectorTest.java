@@ -35,6 +35,7 @@ import org.apache.logging.log4j.plugins.ScopeType;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.plugins.processor.PluginEntry;
 import org.apache.logging.log4j.plugins.test.validation.ValidatingPluginWithGenericBuilder;
+import org.apache.logging.log4j.plugins.test.validation.generic.AlphaBean;
 import org.apache.logging.log4j.plugins.test.validation.generic.BaseBean;
 import org.apache.logging.log4j.plugins.test.validation.generic.BetaBean;
 import org.apache.logging.log4j.plugins.test.validation.generic.GammaBean;
@@ -58,6 +59,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -838,15 +840,21 @@ class InjectorTest {
     static class ContainerPluginBeanInjection {
         @Namespace("Bean") @Inject Optional<BaseBean> optional;
         @Namespace("Bean") @Inject Collection<BaseBean> collection;
+        @Namespace("Bean") @Inject Collection<Supplier<BaseBean>> collectionFactory;
         @Namespace("Bean") @Inject Iterable<BaseBean> iterable;
+        @Namespace("Bean") @Inject Iterable<Supplier<BaseBean>> iterableFactory;
         @Namespace("Bean") @Inject Set<BaseBean> set;
+        @Namespace("Bean") @Inject Set<Supplier<BaseBean>> setFactory;
         @Namespace("Bean") @Inject Stream<BaseBean> stream;
+        @Namespace("Bean") @Inject Stream<Supplier<BaseBean>> streamFactory;
         @Namespace("Bean") @Inject List<BaseBean> list;
+        @Namespace("Bean") @Inject List<Supplier<BaseBean>> listFactory;
         @Namespace("Bean") @Inject Map<String, BaseBean> map;
+        @Namespace("Bean") @Inject Map<String, Supplier<BaseBean>> mapFactory;
     }
 
     @Test
-    void categoryQualifierInjection() {
+    void namespaceQualifierInjection() {
         final ContainerPluginBeanInjection instance = DI.createInjector()
                 .registerBinding(Keys.PLUGIN_PACKAGES_KEY, () -> List.of(BaseBean.class.getPackageName()))
                 .getInstance(ContainerPluginBeanInjection.class);
@@ -858,6 +866,21 @@ class InjectorTest {
         assertThat(instance.map).hasSize(3);
         assertThat(instance.map.get("gamma")).isInstanceOf(GammaBean.class);
         assertThat(instance.optional).get().isInstanceOf(BetaBean.class);
+        assertThat(instance.collectionFactory).hasSize(3);
+        assertThat(instance.collectionFactory.stream().map(Supplier::get).collect(Collectors.toList()))
+                .containsExactlyElementsOf(instance.collection);
+        assertThat(instance.iterableFactory).hasSize(3);
+        assertThat(instance.setFactory).hasSize(3);
+        assertThat(instance.setFactory.stream().map(Supplier::get).collect(Collectors.toList()))
+                .containsExactlyElementsOf(instance.set);
+        assertThat(instance.streamFactory.map(Supplier::get).collect(Collectors.toList()))
+                .containsExactlyElementsOf(instance.list);
+        assertThat(instance.listFactory.stream().map(Supplier::get).collect(Collectors.toList()))
+                .containsExactlyElementsOf(instance.list);
+        assertThat(instance.mapFactory).hasSize(3);
+        assertThat(instance.mapFactory.get("alpha").get()).isInstanceOf(AlphaBean.class);
+        assertThat(instance.mapFactory.get("beta").get()).isInstanceOf(BetaBean.class);
+        assertThat(instance.mapFactory.get("gamma").get()).isInstanceOf(GammaBean.class);
     }
 
     @Configurable(deferChildren = true)

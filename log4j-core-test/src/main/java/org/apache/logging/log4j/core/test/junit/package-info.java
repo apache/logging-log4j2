@@ -16,7 +16,9 @@
  */
 
 /**
- * JUnit helper classes and TestRules.
- * @see org.junit.rules.TestRule
+ * Log4j test fixtures for JUnit 4 and JUnit 5.
+ *
+ * @see org.apache.logging.log4j.core.test.junit.LoggerContextSource JUnit 5 extension
+ * @see org.apache.logging.log4j.core.test.junit.LoggerContextRule JUnit 4 test rule
  */
 package org.apache.logging.log4j.core.test.junit;

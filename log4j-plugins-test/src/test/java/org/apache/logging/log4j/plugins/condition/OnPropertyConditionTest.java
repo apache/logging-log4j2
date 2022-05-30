@@ -22,15 +22,15 @@ import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ResourceLock(Resources.SYSTEM_PROPERTIES)
-@DisabledIfEnvironmentVariable(named = "CI", matches = "true", disabledReason = "https://issues.apache.org/jira/browse/LOG4J2-3521")
+@Disabled //"https://issues.apache.org/jira/browse/LOG4J2-3521"
 class OnPropertyConditionTest {
 
     static class OnProperty {

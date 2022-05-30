@@ -20,9 +20,7 @@ import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.ResourceAccessMode;
-import org.junit.jupiter.api.parallel.ResourceLock;
-import org.junit.jupiter.api.parallel.Resources;
+import org.junitpioneer.jupiter.ReadsSystemProperty;
 
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * @since 2.6
  */
-@ResourceLock(value = Resources.SYSTEM_PROPERTIES, mode = ResourceAccessMode.READ)
+@ReadsSystemProperty
 @UsingAnyThreadContext
 public class CloseableThreadContextTest {
 

@@ -16,44 +16,34 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.apache.logging.log4j.test.junit.CleanUpFiles;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
-import static org.junit.Assert.*;
+import java.io.File;
+import java.nio.file.Files;
 
-@Category(AsyncLoggers.class)
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@Tag("async")
+@SetSystemProperty(key = "log4j2.configurationFile", value = "AsyncLoggerConfigAutoFlushTest.xml")
 public class AsyncLoggerConfigAutoFlushTest {
 
-    @BeforeClass
-    public static void beforeClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "AsyncLoggerConfigAutoFlushTest.xml");
-    }
-
     @Test
+    @CleanUpFiles("target/AsyncLoggerConfigAutoFlushTest.log")
     public void testFlushAtEndOfBatch() throws Exception {
         final File file = new File("target", "AsyncLoggerConfigAutoFlushTest.log");
-        assertTrue("Deleted old file before test", !file.exists() || file.delete());
+        assertTrue(!file.exists() || file.delete(), "Deleted old file before test");
 
         final Logger log = LogManager.getLogger("com.foo.Bar");
         final String msg = "Message flushed with immediate flush=false";
         log.info(msg);
         CoreLoggerContexts.stopLoggerContext(file); // stop async thread
-        final BufferedReader reader = new BufferedReader(new FileReader(file));
-        final String line1 = reader.readLine();
-        reader.close();
-        file.delete();
-        assertNotNull("line1", line1);
-        assertTrue("line1 correct", line1.contains(msg));
+        final String contents = Files.readString(file.toPath());
+        assertTrue(contents.contains(msg), "line1 correct");
     }
 }

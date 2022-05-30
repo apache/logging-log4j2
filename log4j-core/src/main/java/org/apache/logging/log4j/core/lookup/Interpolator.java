@@ -22,15 +22,12 @@ import org.apache.logging.log4j.core.config.ConfigurationAware;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.Keys;
-import org.apache.logging.log4j.plugins.util.PluginNamespace;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.LazyValue;
 
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -85,18 +82,9 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
                 });
     }
 
-    public Interpolator(
-            final StrLookup defaultLookup, final PluginNamespace strLookupPlugins,
-            final Function<Class<? extends StrLookup>, StrLookup> pluginLoader) {
-        this.defaultLookup = defaultLookup == null ? new PropertiesLookup(Map.of()) : defaultLookup;
-        strLookupPlugins.forEach((key, value) -> {
-            try {
-                final Class<? extends StrLookup> strLookupClass = value.getPluginClass().asSubclass(StrLookup.class);
-                strLookups.put(key, LazyValue.from(() -> pluginLoader.apply(strLookupClass)));
-            } catch (final Throwable t) {
-                handleError(key, t);
-            }
-        });
+    public Interpolator(final StrLookup defaultLookup, final Map<String, Supplier<StrLookup>> strLookupPlugins) {
+        this.defaultLookup = defaultLookup;
+        strLookups.putAll(strLookupPlugins);
     }
 
     /**

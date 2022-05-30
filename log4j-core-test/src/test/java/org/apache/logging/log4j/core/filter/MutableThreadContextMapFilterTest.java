@@ -41,7 +41,6 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Unit test for simple App.
  */
-@DisabledOnOs(value = OS.WINDOWS, disabledReason = "https://issues.apache.org/jira/browse/LOG4J2-3512")
 public class MutableThreadContextMapFilterTest implements MutableThreadContextMapFilter.FilterConfigUpdateListener {
 
     static final String CONFIG = "log4j2-mutableFilter.xml";
@@ -82,7 +81,18 @@ public class MutableThreadContextMapFilterTest implements MutableThreadContextMa
         logger.debug("This is a test");
         Assertions.assertEquals(0, ((ListAppender) app).getEvents().size());
         source = new File("target/test-classes/filterConfig.json").toPath();
-        Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
+        String msg = null;
+        boolean copied = false;
+        for (int i = 0; i < 5 && !copied; ++i) {
+            Thread.sleep(100 + (100 * i));
+            try {
+                Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
+                copied = true;
+            } catch (Exception ex) {
+                msg = ex.getMessage();
+            }
+        }
+        assertTrue(copied, "File not copied: " + msg);
         assertNotEquals(fileTime, targetFile.lastModified());
         if (!updated.await(5, TimeUnit.SECONDS)) {
             fail("File update was not detected");

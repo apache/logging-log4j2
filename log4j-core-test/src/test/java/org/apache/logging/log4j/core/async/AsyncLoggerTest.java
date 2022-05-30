@@ -21,9 +21,9 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
 import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -33,13 +33,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("async")
 @ContextSelectorType(AsyncLoggerContextSelector.class)
+@SetSystemProperty(key = ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, value = "AsyncLoggerTest.xml")
 public class AsyncLoggerTest {
-
-    @BeforeAll
-    public static void beforeClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "AsyncLoggerTest.xml");
-    }
 
     @Test
     public void testAsyncLogWritesToLog() throws Exception {

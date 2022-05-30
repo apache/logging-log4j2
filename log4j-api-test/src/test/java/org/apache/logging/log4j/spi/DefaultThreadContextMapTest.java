@@ -18,8 +18,7 @@ package org.apache.logging.log4j.spi;
 
 import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.ResourceLock;
-import org.junit.jupiter.api.parallel.Resources;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -215,23 +214,18 @@ public class DefaultThreadContextMapTest {
     }
 
     @Test
-    @ResourceLock(Resources.SYSTEM_PROPERTIES)
+    @SetSystemProperty(key = DefaultThreadContextMap.INHERITABLE_MAP, value = "false")
     public void testThreadLocalNotInheritableByDefault() {
-        System.clearProperty(DefaultThreadContextMap.INHERITABLE_MAP);
+        ThreadContextMapFactory.init();
         final ThreadLocal<Map<String, String>> threadLocal = DefaultThreadContextMap.createThreadLocalMap(true);
         assertFalse(threadLocal instanceof InheritableThreadLocal<?>);
     }
     
     @Test
-    @ResourceLock(Resources.SYSTEM_PROPERTIES)
+    @SetSystemProperty(key = DefaultThreadContextMap.INHERITABLE_MAP, value = "true")
     public void testThreadLocalInheritableIfConfigured() {
-        System.setProperty(DefaultThreadContextMap.INHERITABLE_MAP, "true");
         ThreadContextMapFactory.init();
-        try {
-            final ThreadLocal<Map<String, String>> threadLocal = DefaultThreadContextMap.createThreadLocalMap(true);
-            assertTrue(threadLocal instanceof InheritableThreadLocal<?>);
-        } finally {
-            System.clearProperty(DefaultThreadContextMap.INHERITABLE_MAP);
-        }
+        final ThreadLocal<Map<String, String>> threadLocal = DefaultThreadContextMap.createThreadLocalMap(true);
+        assertTrue(threadLocal instanceof InheritableThreadLocal<?>);
     }
 }

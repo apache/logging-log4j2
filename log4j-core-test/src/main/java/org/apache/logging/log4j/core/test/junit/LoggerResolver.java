@@ -27,7 +27,7 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 
 import java.lang.reflect.Parameter;
 
-import static org.apache.logging.log4j.core.test.junit.LoggerContextResolver.getParameterLoggerContext;
+import static org.apache.logging.log4j.core.test.junit.LoggerContextResolver.getLoggerContext;
 
 class LoggerResolver implements ParameterResolver {
     @Override
@@ -39,7 +39,7 @@ class LoggerResolver implements ParameterResolver {
     @Override
     public Logger resolveParameter(final ParameterContext parameterContext, final ExtensionContext extensionContext)
             throws ParameterResolutionException {
-        final LoggerContext loggerContext = getParameterLoggerContext(parameterContext, extensionContext);
+        final LoggerContext loggerContext = getLoggerContext(extensionContext);
         if (loggerContext == null) {
             throw new ParameterResolutionException("No LoggerContext defined");
         }

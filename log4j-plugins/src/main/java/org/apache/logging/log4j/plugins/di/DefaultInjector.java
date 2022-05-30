@@ -268,7 +268,7 @@ class DefaultInjector implements Injector {
             return TypeUtil.cast(bindingMap.merge(pluginNamespaceKey, pluginNamespaceFactory));
         }
 
-        // Collection<T>/Map<String, T>/Stream<T>/etc. injection
+        // @Namespace Collection<T>/Map<String, T>/Stream<T>/etc. injection
         if (COLLECTION_INJECTION_TYPES.contains(rawType) && !key.getNamespace().isEmpty()) {
             if (Stream.class.isAssignableFrom(rawType)) {
                 final Key<Stream<T>> streamKey = TypeUtil.cast(key);
@@ -304,7 +304,7 @@ class DefaultInjector implements Injector {
             return TypeUtil.cast(bindingMap.merge(optionalKey, optionalFactory));
         }
 
-        // generic T injection
+        // default namespace generic T injection
         final Supplier<T> instanceSupplier = () -> {
             final StringBuilder debugLog = new StringBuilder();
             final T instance = TypeUtil.cast(getInjectableInstance(key, node, chain, debugLog));
@@ -323,7 +323,7 @@ class DefaultInjector implements Injector {
         return pluginPackagesBinding != null ? pluginPackagesBinding.getSupplier().get() : List.of();
     }
 
-    private <T> Stream<PluginType<? extends T>> streamPluginsFromNamespace(final Key<T> itemKey) {
+    private <T> Stream<PluginType<T>> streamPluginsFromNamespace(final Key<T> itemKey) {
         if (itemKey == null) {
             return Stream.empty();
         }
@@ -338,7 +338,17 @@ class DefaultInjector implements Injector {
     }
 
     private <T> Stream<T> streamPluginInstancesFromNamespace(final Key<T> key) {
-        return streamPluginsFromNamespace(key).map(pluginType -> getInstance(pluginType.getPluginClass()));
+        if (key == null) {
+            return Stream.empty();
+        }
+        if (key.getRawType() == Supplier.class) {
+            final Key<T> itemKey = key.getParameterizedTypeArgument(0);
+            final Stream<Supplier<T>> factoryStream = streamPluginsFromNamespace(itemKey)
+                    .map(pluginType -> getFactory(pluginType.getPluginClass()));
+            return TypeUtil.cast(factoryStream);
+        }
+        return streamPluginsFromNamespace(key)
+                .map(pluginType -> getInstance(pluginType.getPluginClass()));
     }
 
     private <T> Set<T> getPluginSet(final Key<T> key) {
@@ -346,16 +356,27 @@ class DefaultInjector implements Injector {
     }
 
     private <T> Map<String, T> getPluginMap(final Key<T> key) {
-        return streamPluginsFromNamespace(key).collect(
-                Collectors.toMap(PluginType::getKey, pluginType -> getInstance(pluginType.getPluginClass()), (lhs, rhs) -> lhs,
-                        LinkedHashMap::new));
+        if (key.getRawType() == Supplier.class) {
+            final Key<T> itemKey = key.getParameterizedTypeArgument(0);
+            final Map<String, Supplier<T>> map = streamPluginsFromNamespace(itemKey).collect(Collectors.toMap(
+                    PluginType::getKey,
+                    pluginType -> getFactory(pluginType.getPluginClass()),
+                    (lhs, rhs) -> lhs,
+                    LinkedHashMap::new));
+            return TypeUtil.cast(map);
+        }
+        return streamPluginsFromNamespace(key).collect(Collectors.toMap(
+                PluginType::getKey,
+                pluginType -> getInstance(pluginType.getPluginClass()),
+                (lhs, rhs) -> lhs,
+                LinkedHashMap::new));
     }
 
     private <T> List<T> getPluginList(final Key<T> key) {
         return streamPluginInstancesFromNamespace(key).collect(Collectors.toList());
     }
 
-    public <T> Optional<T> getOptionalPlugin(final Key<T> key) {
+    private <T> Optional<T> getOptionalPlugin(final Key<T> key) {
         return streamPluginInstancesFromNamespace(key).findFirst();
     }
 

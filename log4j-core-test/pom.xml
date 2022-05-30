@@ -337,6 +337,7 @@
           <systemPropertyVariables>
             <log4j2.is.webapp>false</log4j2.is.webapp>
           </systemPropertyVariables>
+          <runOrder>random</runOrder>
         </configuration>
       </plugin>
       <plugin>

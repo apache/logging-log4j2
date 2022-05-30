@@ -16,35 +16,31 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import static org.junit.Assert.assertTrue;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.apache.logging.log4j.test.junit.CleanUpFiles;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
-@Category(AsyncLoggers.class)
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@Tag("async")
+@SetSystemProperty(key = "log4j2.logEventFactory", value = "org.apache.logging.log4j.core.impl.ReusableLogEventFactory")
+@SetSystemProperty(key = "log4j2.messageFactory", value = "org.apache.logging.log4j.message.ReusableMessageFactory")
+@SetSystemProperty(key = "log4j2.configurationFile", value = "AsyncAppenderConfigTest-LOG4J2-2032.xml")
 public class AsyncAppenderConfigTest_LOG4J2_2032 {
 
-    @BeforeClass
-    public static void beforeClass() {
-        System.setProperty("Log4jLogEventFactory", "org.apache.logging.log4j.core.impl.ReusableLogEventFactory");
-        System.setProperty("log4j2.messageFactory", "org.apache.logging.log4j.message.ReusableMessageFactory");
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "AsyncAppenderConfigTest-LOG4J2-2032.xml");
-    }
-
     @Test
+    @CleanUpFiles("target/AsyncAppenderConfigTest-LOG4J2-2032.log")
     public void doNotProcessPlaceholdersTwice() throws Exception {
         final File file = new File("target", "AsyncAppenderConfigTest-LOG4J2-2032.log");
-        assertTrue("Deleted old file before test", !file.exists() || file.delete());
+        assertTrue(!file.exists() || file.delete(), "Deleted old file before test");
 
         final Logger log = LogManager.getLogger("com.foo.Bar");
         log.info("Text containing curly braces: {}", "Curly{}");
@@ -53,9 +49,7 @@ public class AsyncAppenderConfigTest_LOG4J2_2032 {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             final String line1 = reader.readLine();
             System.out.println(line1);
-            assertTrue("line1 correct", line1.contains(" Text containing curly braces: Curly{} "));
-        } finally {
-            file.delete();
+            assertTrue(line1.contains(" Text containing curly braces: Curly{} "), "line1 correct");
         }
     }
 

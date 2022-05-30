@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -27,13 +24,15 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junitpioneer.jupiter.SetSystemProperty;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -42,19 +41,8 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.atLeastOnce;
 
 @ExtendWith(MockitoExtension.class)
+@SetSystemProperty(key = "log4j.skipJansi", value = "true")
 public class ConsoleAppenderTest {
-
-    private static final String LOG4J_SKIP_JANSI = "log4j.skipJansi";
-
-    @AfterAll
-    public static void afterClass() {
-        System.clearProperty(LOG4J_SKIP_JANSI);
-    }
-
-    @BeforeAll
-    public static void beforeClass() {
-        System.setProperty(LOG4J_SKIP_JANSI, "true");
-    }
 
     ByteArrayOutputStream baos;
 
@@ -63,7 +51,6 @@ public class ConsoleAppenderTest {
 
     @BeforeEach
     public void before() {
-        System.setProperty(LOG4J_SKIP_JANSI, "true");
         baos = new ByteArrayOutputStream();
     }
 

@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.util.Constants;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 import static org.junit.Assert.assertEquals;
 
 @Category(AsyncLoggers.class)
+@Ignore("https://issues.apache.org/jira/browse/LOG4J2-3523")
 public class AsyncLoggerThreadsTest {
 
     @BeforeClass

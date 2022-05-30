@@ -20,12 +20,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.GarbageCollectionHelper;
 import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -33,21 +31,10 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("async")
+@SetSystemProperty(key = "log4j2.enable.direct.encoders", value = "true")
+@SetSystemProperty(key = "log4j.format.msg.async", value = "true")
 @ContextSelectorType(AsyncLoggerContextSelector.class)
 public class AsyncLoggerTestArgumentFreedOnErrorTest {
-
-    @BeforeAll
-    public static void beforeClass() {
-        System.setProperty("log4j2.enable.direct.encoders", "true");
-        System.setProperty("log4j.format.msg.async", "true");
-        PropertiesUtil.getProperties().reload();
-    }
-
-    @AfterAll
-    public static void afterClass() {
-        System.clearProperty("log4j2.enable.direct.encoders");
-        System.clearProperty("log4j.format.msg.async");
-    }
 
     // LOG4J2-2725: events are cleared even after failure
     @Test

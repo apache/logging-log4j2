@@ -16,21 +16,15 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.CleanUpDirectories;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.test.junit.CleanFolders;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  *
@@ -40,31 +34,15 @@ public class RollingAppenderUncompressedTest {
     private static final String CONFIG = "log4j-rolling4.xml";
     private static final String DIR = "target/rolling4";
 
-    private final Logger logger = LogManager.getLogger(RollingAppenderUncompressedTest.class.getName());
-
-    @ClassRule
-    public static CleanFolders rule = new CleanFolders(CONFIG);
-
-    @BeforeClass
-    public static void setupClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-    }
-
-    @AfterClass
-    public static void cleanupClass() {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        final LoggerContext ctx = LoggerContext.getContext();
-        ctx.reconfigure();
-        StatusLogger.getLogger().reset();
-    }
-
     @Test
-    public void testAppender() throws Exception {
+    @CleanUpDirectories(DIR)
+    @LoggerContextSource(CONFIG)
+    public void testAppender(final Logger logger) throws Exception {
         for (int i=0; i < 100; ++i) {
             logger.debug("This is test message number " + i);
         }
         final File dir = new File(DIR);
-        assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
+        assertTrue(dir.exists() && dir.listFiles().length > 0, "Directory not created");
         final File[] files = dir.listFiles();
         assertNotNull(files);
         boolean found = false;
@@ -75,7 +53,7 @@ public class RollingAppenderUncompressedTest {
                 break;
             }
         }
-        assertTrue("No archived files found", found);
+        assertTrue(found, "No archived files found");
     }
 
 }

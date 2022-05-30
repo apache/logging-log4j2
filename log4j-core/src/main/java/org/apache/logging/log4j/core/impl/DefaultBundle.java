@@ -53,12 +53,14 @@ import org.apache.logging.log4j.plugins.condition.ConditionalOnMissingBinding;
 import org.apache.logging.log4j.plugins.condition.ConditionalOnProperty;
 import org.apache.logging.log4j.plugins.di.InjectException;
 import org.apache.logging.log4j.plugins.di.Injector;
-import org.apache.logging.log4j.plugins.util.PluginNamespace;
 import org.apache.logging.log4j.spi.CopyOnWrite;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
+
+import java.util.Map;
+import java.util.function.Supplier;
 
 import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 
@@ -218,9 +220,9 @@ public class DefaultBundle {
 
     @ConditionalOnMissingBinding
     @SingletonFactory
-    public InterpolatorFactory interpolatorFactory(@Namespace(StrLookup.CATEGORY) final PluginNamespace namespace) {
-        // TODO(ms): inject Map<String, Supplier<StrLookup>> instead of PluginNamespace
-        return defaultLookup -> new Interpolator(defaultLookup, namespace, injector::getInstance);
+    public InterpolatorFactory interpolatorFactory(
+            @Namespace(StrLookup.CATEGORY) final Map<String, Supplier<StrLookup>> strLookupPlugins) {
+        return defaultLookup -> new Interpolator(defaultLookup, strLookupPlugins);
     }
 
     @ConditionalOnMissingBinding

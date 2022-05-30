@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.util;
 
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.parallel.Isolated;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -35,28 +36,19 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @EnabledIfSystemProperty(named = "test", matches = ".*Unbox2ConfigurableTest.*")
 @Isolated
+@SetSystemProperty(key = "log4j.unbox.ringbuffer.size", value = "65")
 public class Unbox2ConfigurableTest {
-    @BeforeAll
-    public static void beforeClass() {
-        System.setProperty("log4j.unbox.ringbuffer.size", "65");
-    }
-
     @AfterAll
     public static void afterClass() throws Exception {
-        System.clearProperty("log4j.unbox.ringbuffer.size");
-
         // ensure subsequent tests (which assume 32 slots) pass
-        final Field field = Unbox.class.getDeclaredField("RINGBUFFER_SIZE");
-        field.setAccessible(true); // make non-private
-
-        final Field modifierField = Field.class.getDeclaredField("modifiers");
-        modifierField.setAccessible(true);
-        modifierField.setInt(field, field.getModifiers() &~ Modifier.FINAL); // make non-final
+        // make non-private
+        final Field field = FieldUtils.getDeclaredField(Unbox.class, "RINGBUFFER_SIZE", true);
+        // make non-final
+        FieldUtils.writeDeclaredField(field, "modifiers", field.getModifiers() &~ Modifier.FINAL);
 
         field.set(null, 32); // reset to default
 
-        final Field threadLocalField = Unbox.class.getDeclaredField("threadLocalState");
-        threadLocalField.setAccessible(true);
+        final Field threadLocalField = FieldUtils.getDeclaredField(Unbox.class, "threadLocalState", true);
         final ThreadLocal<?> threadLocal = (ThreadLocal<?>) threadLocalField.get(null);
         threadLocal.remove();
         threadLocalField.set(null, new ThreadLocal<>());

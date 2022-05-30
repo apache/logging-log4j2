@@ -16,42 +16,28 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.test.CoreLoggerContexts;
+import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
+import org.apache.logging.log4j.test.junit.CleanUpFiles;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.apache.logging.log4j.core.test.CoreLoggerContexts;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.util.Strings;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import static org.junit.Assert.*;
-
-@Category(AsyncLoggers.class)
+@Tag("async")
+@ContextSelectorType(AsyncLoggerContextSelector.class)
+@SetSystemProperty(key = ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, value = "AsyncLoggerLocationTest.xml")
+@CleanUpFiles("target/AsyncLoggerLocationTest.log")
 public class AsyncLoggerLocationTest {
-
-    @BeforeClass
-    public static void beforeClass() {
-        final File file = new File("target", "AsyncLoggerLocationTest.log");
-        file.delete();
-
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
-                AsyncLoggerContextSelector.class.getName());
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "AsyncLoggerLocationTest.xml");
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, Strings.EMPTY);
-    }
 
     @Test
     public void testAsyncLogWritesToLog() throws Exception {
@@ -66,11 +52,11 @@ public class AsyncLoggerLocationTest {
         final String line1 = reader.readLine();
         reader.close();
         file.delete();
-        assertNotNull("line1", line1);
-        assertTrue("line1 correct", line1.contains(msg));
+        assertNotNull(line1, "line1");
+        assertTrue(line1.contains(msg), "line1 correct");
 
         final String location = "testAsyncLogWritesToLog";
-        assertTrue("has location", line1.contains(location));
+        assertTrue(line1.contains(location), "has location");
     }
 
 }
