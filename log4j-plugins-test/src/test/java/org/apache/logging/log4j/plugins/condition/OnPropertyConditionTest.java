@@ -21,16 +21,12 @@ import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.util.PropertiesUtil;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.ResourceLock;
-import org.junit.jupiter.api.parallel.Resources;
+import org.junitpioneer.jupiter.ClearSystemProperty;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@ResourceLock(Resources.SYSTEM_PROPERTIES)
-@Disabled //"https://issues.apache.org/jira/browse/LOG4J2-3521"
 class OnPropertyConditionTest {
 
     static class OnProperty {
@@ -54,28 +50,26 @@ class OnPropertyConditionTest {
         }
     }
 
-    @AfterEach
-    void tearDown() {
-        System.clearProperty("foo.bar");
-        PropertiesUtil.getProperties().reload();
-    }
-
     @Test
+    @ClearSystemProperty(key = "foo.bar")
     void whenPropertyAbsent() {
+        PropertiesUtil.getProperties().reload();
         final String value = DI.createInjector(OnProperty.class).getInstance(String.class);
         assertEquals("goodbye", value);
     }
 
     @Test
+    @SetSystemProperty(key = "foo.bar", value = "whatever")
     void whenPropertyPresent() {
-        System.setProperty("foo.bar", "whatever");
+        PropertiesUtil.getProperties().reload();
         final String value = DI.createInjector(OnProperty.class).getInstance(String.class);
         assertEquals("hello", value);
     }
 
     @Test
+    @SetSystemProperty(key = "foo.bar", value = "true")
     void whenPropertyMatches() {
-        System.setProperty("foo.bar", "true");
+        PropertiesUtil.getProperties().reload();
         final String value = DI.createInjector(OnProperty.class).getInstance(String.class);
         assertEquals("truth", value);
     }
