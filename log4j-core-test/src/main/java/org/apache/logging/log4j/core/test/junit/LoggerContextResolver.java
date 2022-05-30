@@ -31,6 +31,7 @@ import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
+import org.junit.platform.commons.util.AnnotationUtils;
 
 import java.net.URI;
 import java.util.Map;
@@ -45,17 +46,15 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
         final Class<?> testClass = context.getRequiredTestClass();
-        final LoggerContextSource testSource = testClass.getAnnotation(LoggerContextSource.class);
-        if (testSource != null) {
-            setUpLoggerContext(testSource, context);
-        }
+        AnnotationUtils.findAnnotation(testClass, LoggerContextSource.class)
+                .ifPresent(testSource -> setUpLoggerContext(testSource, context));
     }
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
         final Class<?> testClass = context.getRequiredTestClass();
-        if (testClass.isAnnotationPresent(LoggerContextSource.class)) {
-            final ExtensionContext.Store testClassStore = context.getStore(ExtensionContext.Namespace.create(LoggerContextSource.class, testClass));
+        if (AnnotationUtils.isAnnotated(testClass, LoggerContextSource.class)) {
+            final ExtensionContext.Store testClassStore = context.getStore(ExtensionContext.Namespace.create(LoggerContextResolver.class, testClass));
             final LoggerContextAccessor accessor = testClassStore.get(LoggerContextAccessor.class, LoggerContextAccessor.class);
             if (accessor == null) {
                 throw new IllegalStateException(
@@ -66,19 +65,20 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
                 accessor.getLoggerContext().reconfigure();
             }
         }
-        final LoggerContextSource source = context.getRequiredTestMethod().getAnnotation(LoggerContextSource.class);
-        if (source != null) {
-            final LoggerContext loggerContext = setUpLoggerContext(source, context);
-            if (source.reconfigure() == ReconfigurationPolicy.BEFORE_EACH) {
-                loggerContext.reconfigure();
-            }
-        }
+        AnnotationUtils.findAnnotation(context.getRequiredTestMethod(), LoggerContextSource.class)
+                .ifPresent(source -> {
+                    final LoggerContext loggerContext = setUpLoggerContext(source, context);
+                    if (source.reconfigure() == ReconfigurationPolicy.BEFORE_EACH) {
+                        loggerContext.reconfigure();
+                    }
+                });
     }
 
     @Override
     public void afterEach(ExtensionContext context) throws Exception {
-        if (context.getRequiredTestClass().isAnnotationPresent(LoggerContextSource.class)) {
-            final ExtensionContext.Store testClassStore = context.getStore(ExtensionContext.Namespace.create(LoggerContextSource.class, context.getRequiredTestClass()));
+        final Class<?> testClass = context.getRequiredTestClass();
+        if (AnnotationUtils.isAnnotated(testClass, LoggerContextSource.class)) {
+            final ExtensionContext.Store testClassStore = context.getStore(ExtensionContext.Namespace.create(LoggerContextResolver.class, testClass));
             if (testClassStore.get(ReconfigurationPolicy.class, ReconfigurationPolicy.class) == ReconfigurationPolicy.AFTER_EACH) {
                 testClassStore.get(LoggerContextAccessor.class, LoggerContextAccessor.class).getLoggerContext().reconfigure();
             }
@@ -93,9 +93,9 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
 
     static LoggerContext getLoggerContext(ExtensionContext context) {
         final LoggerContextAccessor accessor = context.getTestInstance()
-                .map(instance -> context.getStore(ExtensionContext.Namespace.create(LoggerContextSource.class, instance))
+                .map(instance -> context.getStore(ExtensionContext.Namespace.create(LoggerContextResolver.class, instance))
                         .get(LoggerContextAccessor.class, LoggerContextAccessor.class))
-                .orElseGet(() -> context.getStore(ExtensionContext.Namespace.create(LoggerContextSource.class, context.getRequiredTestClass()))
+                .orElseGet(() -> context.getStore(ExtensionContext.Namespace.create(LoggerContextResolver.class, context.getRequiredTestClass()))
                         .get(LoggerContextAccessor.class, LoggerContextAccessor.class));
         assertNotNull(accessor);
         return accessor.getLoggerContext();
@@ -103,7 +103,7 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
 
     private static ExtensionContext.Store getTestStore(final ExtensionContext context) {
         final Object storeContext = context.getTestInstance().orElseGet(context::getRequiredTestClass);
-        return context.getStore(ExtensionContext.Namespace.create(LoggerContextSource.class, storeContext));
+        return context.getStore(ExtensionContext.Namespace.create(LoggerContextResolver.class, storeContext));
     }
 
     private static LoggerContext setUpLoggerContext(final LoggerContextSource source, final ExtensionContext extensionContext) {
