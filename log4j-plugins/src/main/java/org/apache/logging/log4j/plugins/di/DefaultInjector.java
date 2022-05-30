@@ -331,7 +331,7 @@ class DefaultInjector implements Injector {
         final Type type = itemKey.getType();
         final Class<T> rawType = itemKey.getRawType();
         return namespace.stream()
-                .filter(pluginType -> rawType.isInterface() && TypeUtil.isAssignable(type, pluginType.getPluginClass()) ||
+                .filter(pluginType -> rawType.isInterface() && pluginType.getImplementedInterfaces().contains(rawType) ||
                         TypeUtil.isAssignable(type, pluginType.getPluginClass()))
                 .sorted(Comparator.comparing(PluginType::getPluginClass, OrderedComparator.INSTANCE))
                 .map(TypeUtil::cast);
