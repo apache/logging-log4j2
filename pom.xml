@@ -231,7 +231,6 @@
     <flumeVersion>1.9.0</flumeVersion>
     <disruptorVersion>3.4.4</disruptorVersion>
     <conversantDisruptorVersion>1.2.19</conversantDisruptorVersion>
-    <elastic.version>7.15.2</elastic.version>
     <mongodb3.version>3.12.4</mongodb3.version>
     <mongodb4.version>4.0.3</mongodb4.version>
     <groovy.version>4.0.2</groovy.version>
@@ -858,12 +857,7 @@
       <dependency>
         <groupId>co.elastic.logging</groupId>
         <artifactId>log4j2-ecs-layout</artifactId>
-        <version>1.0.1</version>
-      </dependency>
-      <dependency>
-        <groupId>org.elasticsearch.client</groupId>
-        <artifactId>elasticsearch-rest-high-level-client</artifactId>
-        <version>${elastic.version}</version>
+        <version>1.4.0</version>
       </dependency>
       <!-- Used for testing HttpAppender -->
       <dependency>

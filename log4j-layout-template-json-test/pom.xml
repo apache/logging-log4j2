@@ -106,14 +106,15 @@
     </dependency>
 
     <dependency>
-      <groupId>com.google.code.java-allocation-instrumenter</groupId>
-      <artifactId>java-allocation-instrumenter</artifactId>
+      <groupId>org.elasticsearch.client</groupId>
+      <artifactId>elasticsearch-rest-high-level-client</artifactId>
+      <version>7.17.4</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.elasticsearch.client</groupId>
-      <artifactId>elasticsearch-rest-high-level-client</artifactId>
+      <groupId>com.google.code.java-allocation-instrumenter</groupId>
+      <artifactId>java-allocation-instrumenter</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -298,6 +299,7 @@
               </execution>
             </executions>
             <configuration>
+              <skip>false</skip>
               <includes>
                 <include>**/*IT.java</include>
               </includes>
@@ -330,11 +332,13 @@
               <images>
                 <image>
                   <alias>elasticsearch</alias>
-                  <name>elasticsearch:${elastic.version}</name>
+                  <name>docker.elastic.co/elasticsearch/elasticsearch:8.2.2</name>
                   <run>
                     <env>
+                      <xpack.security.enabled>false</xpack.security.enabled>
                       <discovery.type>single-node</discovery.type>
                     </env>
+                    <memory>1000000000</memory> <!-- 1g -->
                     <ports>
                       <port>9200:9200</port>
                     </ports>
@@ -355,7 +359,7 @@
                 </image>
                 <image>
                   <alias>logstash</alias>
-                  <name>logstash:${elastic.version}</name>
+                  <name>docker.elastic.co/logstash/logstash:8.2.2</name>
                   <run>
                     <dependsOn>
                       <container>elasticsearch</container>
