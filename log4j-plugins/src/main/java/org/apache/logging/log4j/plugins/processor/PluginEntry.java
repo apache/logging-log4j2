@@ -30,6 +30,7 @@ public class PluginEntry {
     private final boolean printable;
     private final boolean deferChildren;
     private final String namespace;
+    private final Class<?>[] interfaces;
 
     public PluginEntry(
             String key, String className, String name, String elementType, boolean printable, boolean deferChildren, String namespace) {
@@ -40,6 +41,20 @@ public class PluginEntry {
         this.printable = printable;
         this.deferChildren = deferChildren;
         this.namespace = namespace;
+        this.interfaces = null;
+    }
+
+    public PluginEntry(
+            final String key, final String className, final String name, final String elementType, final boolean printable,
+            final boolean deferChildren, final String namespace, final Class<?>... interfaces) {
+        this.key = key;
+        this.className = className;
+        this.name = name;
+        this.elementType = elementType;
+        this.printable = printable;
+        this.deferChildren = deferChildren;
+        this.namespace = namespace;
+        this.interfaces = interfaces;
     }
 
     private PluginEntry(final Builder builder) {
@@ -50,6 +65,8 @@ public class PluginEntry {
         printable = builder.isPrintable();
         deferChildren = builder.isDeferChildren();
         namespace = builder.getNamespace();
+        final Class<?>[] classes = builder.getInterfaces();
+        interfaces = classes != null ? classes.clone() : null;
     }
 
     public String getKey() {
@@ -80,6 +97,10 @@ public class PluginEntry {
         return namespace;
     }
 
+    public Class<?>[] getInterfaces() {
+        return interfaces;
+    }
+
     @Override
     public String toString() {
         return "PluginEntry [key=" + key + ", className=" + className + ", name=" + name + ", printable=" + printable
@@ -98,6 +119,7 @@ public class PluginEntry {
         private boolean printable;
         private boolean deferChildren;
         private String namespace;
+        private Class<?>[] interfaces;
 
         public String getKey() {
             return key;
@@ -159,6 +181,15 @@ public class PluginEntry {
 
         public Builder setNamespace(final String namespace) {
             this.namespace = namespace;
+            return this;
+        }
+
+        public Class<?>[] getInterfaces() {
+            return interfaces;
+        }
+
+        public Builder setInterfaces(final Class<?>... interfaces) {
+            this.interfaces = interfaces;
             return this;
         }
 
