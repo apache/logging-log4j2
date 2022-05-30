@@ -18,7 +18,8 @@ package org.apache.logging.log4j;
 
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.test.ThreadContextUtilityClass;
-import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
+import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
+import org.apache.logging.log4j.test.junit.UsingThreadContextStack;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
@@ -28,11 +29,11 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Tests {@link ThreadContext}.
  */
-@UsingAnyThreadContext
 @SetSystemProperty(key = DefaultThreadContextMap.INHERITABLE_MAP, value = "true")
 public class ThreadContextInheritanceTest {
 
     @Test
+    @UsingThreadContextStack
     public void testPush() {
         ThreadContext.push("Hello");
         ThreadContext.push("{} is {}", ThreadContextInheritanceTest.class.getSimpleName(), "running");
@@ -42,7 +43,10 @@ public class ThreadContextInheritanceTest {
     }
 
     @Test
+    @SetSystemProperty(key = DefaultThreadContextMap.INHERITABLE_MAP, value = "true")
+    @UsingThreadContextMap
     public void testInheritanceSwitchedOn() throws Exception {
+        ThreadContext.init();
         ThreadContext.put("Greeting", "Hello");
         StringBuilder sb = new StringBuilder();
         TestThread thread = new TestThread(sb);
@@ -60,46 +64,55 @@ public class ThreadContextInheritanceTest {
 
     @Test
     @Tag("performance")
+    @UsingThreadContextMap
     public void perfTest() {
         ThreadContextUtilityClass.perfTest();
     }
 
     @Test
+    @UsingThreadContextMap
     public void testGetContextReturnsEmptyMapIfEmpty() {
         ThreadContextUtilityClass.testGetContextReturnsEmptyMapIfEmpty();
     }
 
     @Test
+    @UsingThreadContextMap
     public void testGetContextReturnsMutableCopy() {
         ThreadContextUtilityClass.testGetContextReturnsMutableCopy();
     }
 
     @Test
+    @UsingThreadContextMap
     public void testGetImmutableContextReturnsEmptyMapIfEmpty() {
         ThreadContextUtilityClass.testGetImmutableContextReturnsEmptyMapIfEmpty();
     }
 
     @Test
+    @UsingThreadContextMap
     public void testGetImmutableContextReturnsImmutableMapIfNonEmpty() {
         ThreadContextUtilityClass.testGetImmutableContextReturnsImmutableMapIfNonEmpty();
     }
 
     @Test
+    @UsingThreadContextMap
     public void testGetImmutableContextReturnsImmutableMapIfEmpty() {
         ThreadContextUtilityClass.testGetImmutableContextReturnsImmutableMapIfEmpty();
     }
 
     @Test
+    @UsingThreadContextStack
     public void testGetImmutableStackReturnsEmptyStackIfEmpty() {
         ThreadContextUtilityClass.testGetImmutableStackReturnsEmptyStackIfEmpty();
     }
 
     @Test
+    @UsingThreadContextMap
     public void testPut() {
         ThreadContextUtilityClass.testPut();
     }
 
     @Test
+    @UsingThreadContextMap
     public void testRemove() {
         assertNull(ThreadContext.get("testKey"));
         ThreadContext.put("testKey", "testValue");
@@ -111,6 +124,7 @@ public class ThreadContextInheritanceTest {
     }
 
     @Test
+    @UsingThreadContextMap
     public void testContainsKey() {
         assertFalse(ThreadContext.containsKey("testKey"));
         ThreadContext.put("testKey", "testValue");

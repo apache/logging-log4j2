@@ -18,40 +18,82 @@
 package org.apache.logging.log4j.test.junit;
 
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.test.ThreadContextHolder;
 import org.junit.jupiter.api.extension.AfterEachCallback;
+import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.platform.commons.util.AnnotationUtils;
 
-class ThreadContextExtension implements BeforeEachCallback, AfterEachCallback {
+import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.Map;
+
+class ThreadContextExtension implements BeforeAllCallback, BeforeEachCallback, AfterEachCallback {
+    private static class ThreadContextMapStore implements ExtensionContext.Store.CloseableResource {
+        private final Map<String, String> previousMap = ThreadContext.getImmutableContext();
+
+        private ThreadContextMapStore() {
+            ThreadContext.clearMap();
+        }
+
+        @Override
+        public void close() throws Throwable {
+            // TODO LOG4J2-1517 Add ThreadContext.setContext(Map<String, String>)
+            ThreadContext.clearMap();
+            ThreadContext.putAll(previousMap);
+        }
+    }
+
+    private static class ThreadContextStackStore implements ExtensionContext.Store.CloseableResource {
+        private final Collection<String> previousStack = ThreadContext.getImmutableStack();
+
+        private ThreadContextStackStore() {
+            ThreadContext.clearStack();
+        }
+
+        @Override
+        public void close() throws Throwable {
+            ThreadContext.setStack(previousStack);
+        }
+    }
+
+    @Override
+    public void beforeAll(final ExtensionContext context) throws Exception {
+        final Class<?> testClass = context.getRequiredTestClass();
+        final ExtensionContext.Store store = getTestStore(context);
+        if (AnnotationUtils.isAnnotated(testClass, UsingThreadContextMap.class)) {
+            store.put(ThreadContextMapStore.class, new ThreadContextMapStore());
+        }
+        if (AnnotationUtils.isAnnotated(testClass, UsingThreadContextStack.class)) {
+            store.put(ThreadContextStackStore.class, new ThreadContextStackStore());
+        }
+    }
+
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
-        final Class<?> testClass = context.getRequiredTestClass();
-        final ThreadContextHolder holder;
-        if (testClass.isAnnotationPresent(UsingAnyThreadContext.class)) {
-            holder = new ThreadContextHolder(true, true);
-            ThreadContext.clearAll();
-        } else if (testClass.isAnnotationPresent(UsingThreadContextMap.class)) {
-            holder = new ThreadContextHolder(true, false);
-            ThreadContext.clearMap();
-        } else if (testClass.isAnnotationPresent(UsingThreadContextStack.class)) {
-            holder = new ThreadContextHolder(false, true);
-            ThreadContext.clearStack();
-        } else {
-            return;
+        final ExtensionContext.Store store = getTestStore(context);
+        final Method testMethod = context.getRequiredTestMethod();
+        if (AnnotationUtils.isAnnotated(testMethod, UsingThreadContextMap.class)) {
+            store.put(ThreadContextMapStore.class, new ThreadContextMapStore());
         }
-        getStore(context).put(ThreadContextHolder.class, holder);
+        if (AnnotationUtils.isAnnotated(testMethod, UsingThreadContextStack.class)) {
+            store.put(ThreadContextStackStore.class, new ThreadContextStackStore());
+        }
     }
 
     @Override
-    public void afterEach(ExtensionContext context) throws Exception {
-        final ThreadContextHolder holder = getStore(context).get(ThreadContextHolder.class, ThreadContextHolder.class);
-        if (holder != null) {
-            holder.restore();
+    public void afterEach(final ExtensionContext context) throws Exception {
+        final Class<?> testClass = context.getRequiredTestClass();
+        if (AnnotationUtils.isAnnotated(testClass, UsingThreadContextMap.class)) {
+            ThreadContext.clearMap();
+        }
+        if (AnnotationUtils.isAnnotated(testClass, UsingThreadContextStack.class)) {
+            ThreadContext.clearMap();
         }
     }
 
-    private ExtensionContext.Store getStore(ExtensionContext context) {
-        return context.getStore(ExtensionContext.Namespace.create(getClass(), context.getRequiredTestInstance()));
+    private static ExtensionContext.Store getTestStore(final ExtensionContext context) {
+        final Object storeContext = context.getTestInstance().orElseGet(context::getRequiredTestClass);
+        return context.getStore(ExtensionContext.Namespace.create(ThreadContextExtension.class, storeContext));
     }
 }

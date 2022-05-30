@@ -18,7 +18,6 @@
 package org.apache.logging.log4j.test.junit;
 
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junitpioneer.jupiter.ReadsSystemProperty;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -34,10 +33,11 @@ import java.lang.annotation.Target;
  * @since 2.14.0
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @Documented
 @Inherited
+@UsingThreadContextMap
+@UsingThreadContextStack
 @ExtendWith(ThreadContextExtension.class)
-@ReadsSystemProperty
 public @interface UsingAnyThreadContext {
 }
