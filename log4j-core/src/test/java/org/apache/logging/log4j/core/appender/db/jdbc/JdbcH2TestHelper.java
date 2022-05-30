@@ -36,7 +36,7 @@ public class JdbcH2TestHelper {
     /**
      * A JDBC connection string for an H2 database in the Java temporary directory.
      */
-    static final String CONNECTION_STRING_TEMP_DIR = "jdbc:h2:" + getH2Path() + ";TRACE_LEVEL_SYSTEM_OUT=0";
+    static final String CONNECTION_STRING_TEMP_DIR = "jdbc:h2:" + getH2Path() + "/test_log4j;TRACE_LEVEL_SYSTEM_OUT=0";
 
     static final String USER_NAME = "sa";
     static final String PASSWORD = "";
@@ -56,7 +56,7 @@ public class JdbcH2TestHelper {
     };
 
     /** Directory used in configuration files and connection strings. */
-    static final String H2_TEST_RELATIVE_DIR = "h2/test_log4j";
+    static final String H2_TEST_RELATIVE_DIR = "h2";
 
     static void deleteDir() throws IOException {
         final Path resolve = getH2Path();

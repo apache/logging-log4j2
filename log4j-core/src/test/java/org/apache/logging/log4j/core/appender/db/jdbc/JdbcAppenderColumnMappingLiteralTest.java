@@ -51,12 +51,6 @@ public class JdbcAppenderColumnMappingLiteralTest extends AbstractH2Test {
 	}
 
 	protected JdbcAppenderColumnMappingLiteralTest(final JdbcRule jdbcRule) {
-        try {
-            JdbcH2TestHelper.deleteDir();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
 		this.rules = RuleChainFactory.create(jdbcRule, new LoggerContextRule(
 				"org/apache/logging/log4j/core/appender/db/jdbc/log4j2-dm-column-mapping-literal.xml"));
 		this.jdbcRule = jdbcRule;

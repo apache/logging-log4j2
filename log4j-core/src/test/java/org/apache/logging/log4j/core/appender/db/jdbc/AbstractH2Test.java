@@ -18,9 +18,7 @@ package org.apache.logging.log4j.core.appender.db.jdbc;
 
 import java.io.IOException;
 
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 
 /**
@@ -31,12 +29,6 @@ public abstract class AbstractH2Test {
     @AfterClass
     @BeforeClass
     public static void classDeleteDir() throws IOException {
-        JdbcH2TestHelper.deleteDir();
-    }
-
-    @After
-    @Before
-    public void deleteDir() throws IOException {
         JdbcH2TestHelper.deleteDir();
     }
 
