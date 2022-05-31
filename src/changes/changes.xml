@@ -29,7 +29,10 @@
          - "update" - Change
          - "remove" - Removed
     -->
-    <release version="2.18.0" date="2022-TBD" description="GA Release 2.18.0">
+    <release version="2.18.0" date="2022-MM-DD" description="GA Release 2.18.0">
+      <action issue="LOG4J2-3490" dev="rgoers" type="fix">
+        The DirectWriteRolloverStrategy was not detecting the correct index to use during startup.
+      </action>
       <action issue="LOG4J2-3516" dev="rgoers" type="update">
         Move perf tests to log4j-core-its
       </action>
