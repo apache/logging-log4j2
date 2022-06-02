@@ -294,7 +294,7 @@
     <!-- The OSGi API version MUST always be the MINIMUM version Log4j supports -->
     <osgi.api.version>6.0.0</osgi.api.version>
     <activemq.version>5.17.1</activemq.version>
-    <jctoolsVersion>3.3.0</jctoolsVersion>
+    <jctoolsVersion>3.3.1-ea</jctoolsVersion>
     <junitVersion>4.13.2</junitVersion>
     <junitJupiterVersion>5.8.2</junitJupiterVersion>
     <junitPioneerVersion>1.6.2</junitPioneerVersion>
