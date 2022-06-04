@@ -90,7 +90,7 @@ class ThreadContextExtension implements BeforeAllCallback, BeforeEachCallback, A
             ThreadContext.clearMap();
         }
         if (AnnotationUtils.isAnnotated(testClass, UsingThreadContextStack.class)) {
-            ThreadContext.clearMap();
+            ThreadContext.clearStack();
         }
     }
 
