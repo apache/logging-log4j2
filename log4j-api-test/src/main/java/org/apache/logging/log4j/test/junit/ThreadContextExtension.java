@@ -22,6 +22,8 @@ import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
+import org.junit.jupiter.api.extension.ExtensionContext.Store;
 import org.junit.platform.commons.util.AnnotationUtils;
 
 import java.lang.reflect.Method;
@@ -29,7 +31,7 @@ import java.util.Collection;
 import java.util.Map;
 
 class ThreadContextExtension implements BeforeAllCallback, BeforeEachCallback, AfterEachCallback {
-    private static class ThreadContextMapStore implements ExtensionContext.Store.CloseableResource {
+    private static class ThreadContextMapStore implements Store.CloseableResource {
         private final Map<String, String> previousMap = ThreadContext.getImmutableContext();
 
         private ThreadContextMapStore() {
@@ -44,7 +46,7 @@ class ThreadContextExtension implements BeforeAllCallback, BeforeEachCallback, A
         }
     }
 
-    private static class ThreadContextStackStore implements ExtensionContext.Store.CloseableResource {
+    private static class ThreadContextStackStore implements Store.CloseableResource {
         private final Collection<String> previousStack = ThreadContext.getImmutableStack();
 
         private ThreadContextStackStore() {
@@ -60,7 +62,7 @@ class ThreadContextExtension implements BeforeAllCallback, BeforeEachCallback, A
     @Override
     public void beforeAll(final ExtensionContext context) throws Exception {
         final Class<?> testClass = context.getRequiredTestClass();
-        final ExtensionContext.Store store = getTestStore(context);
+        final Store store = getTestStore(context);
         if (AnnotationUtils.isAnnotated(testClass, UsingThreadContextMap.class)) {
             store.put(ThreadContextMapStore.class, new ThreadContextMapStore());
         }
@@ -71,7 +73,7 @@ class ThreadContextExtension implements BeforeAllCallback, BeforeEachCallback, A
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
-        final ExtensionContext.Store store = getTestStore(context);
+        final Store store = getTestStore(context);
         final Method testMethod = context.getRequiredTestMethod();
         if (AnnotationUtils.isAnnotated(testMethod, UsingThreadContextMap.class)) {
             store.put(ThreadContextMapStore.class, new ThreadContextMapStore());
@@ -92,8 +94,9 @@ class ThreadContextExtension implements BeforeAllCallback, BeforeEachCallback, A
         }
     }
 
-    private static ExtensionContext.Store getTestStore(final ExtensionContext context) {
-        final Object storeContext = context.getTestInstance().orElseGet(context::getRequiredTestClass);
-        return context.getStore(ExtensionContext.Namespace.create(ThreadContextExtension.class, storeContext));
+    private static Store getTestStore(final ExtensionContext context) {
+        final Namespace baseNamespace = Namespace.create(ThreadContext.class, context.getRequiredTestClass());
+        final Namespace namespace = context.getTestInstance().map(baseNamespace::append).orElse(baseNamespace);
+        return context.getStore(namespace);
     }
 }
