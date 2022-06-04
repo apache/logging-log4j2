@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
+import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 
 import static org.apache.logging.log4j.core.test.junit.LoggerContextResolver.getLoggerContext;
 

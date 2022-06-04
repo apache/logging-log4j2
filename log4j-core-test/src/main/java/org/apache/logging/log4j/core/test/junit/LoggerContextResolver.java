@@ -31,6 +31,7 @@ import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
+import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 import org.junit.platform.commons.util.AnnotationUtils;
 
 import java.net.URI;
