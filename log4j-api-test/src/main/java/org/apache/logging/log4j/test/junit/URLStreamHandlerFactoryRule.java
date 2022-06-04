@@ -17,16 +17,17 @@
 
 package org.apache.logging.log4j.test.junit;
 
-import java.lang.reflect.Field;
-import java.net.URL;
-import java.net.URLStreamHandler;
-import java.net.URLStreamHandlerFactory;
-import java.util.Hashtable;
-
-import org.junit.Assert;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
+import org.opentest4j.TestAbortedException;
+
+import java.lang.reflect.Field;
+import java.net.URL;
+import java.net.URLStreamHandlerFactory;
+import java.util.Hashtable;
+import java.util.stream.Stream;
 
 /**
  * Installs and restores the URL URLStreamHandlerFactory before and after tests.
@@ -47,18 +48,9 @@ public class URLStreamHandlerFactoryRule implements TestRule {
     private final URLStreamHandlerFactory newURLStreamHandlerFactory;
 
     void clearURLHandlers() throws Exception {
-        final Field handlersFields = URL.class.getDeclaredField("handlers");
-        if (handlersFields != null) {
-            if (!handlersFields.isAccessible()) {
-                handlersFields.setAccessible(true);
-            }
-            @SuppressWarnings("unchecked")
-            final
-            Hashtable<String, URLStreamHandler> handlers = (Hashtable<String, URLStreamHandler>) handlersFields
-                    .get(null);
-            if (handlers != null) {
-                handlers.clear();
-            }
+        final Object handlers = FieldUtils.readDeclaredStaticField(URL.class, "handlers", true);
+        if (handlers instanceof Hashtable<?, ?>) {
+            ((Hashtable<?, ?>) handlers).clear();
         }
     }
 
@@ -67,28 +59,17 @@ public class URLStreamHandlerFactoryRule implements TestRule {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                Field factoryField = null;
-                int matches = 0;
-                URLStreamHandlerFactory oldFactory = null;
-                for (final Field field : URL.class.getDeclaredFields()) {
-                    if (URLStreamHandlerFactory.class.equals(field.getType())) {
-                        factoryField = field;
-                        matches++;
-                        factoryField.setAccessible(true);
-                        oldFactory = (URLStreamHandlerFactory) factoryField.get(null);
-                        break;
-                    }
-                }
-                Assert.assertNotNull("java.net URL does not declare a java.net.URLStreamHandlerFactory field",
-                        factoryField);
-                Assert.assertEquals("java.net.URL declares multiple java.net.URLStreamHandlerFactory fields.", 1,
-                        matches); // FIXME There is a break in the loop so always 0 or 1
+                final Field factoryField = Stream.of(URL.class.getDeclaredFields())
+                        .filter(field -> URLStreamHandlerFactory.class.equals(field.getType()))
+                        .findFirst()
+                        .orElseThrow(() -> new TestAbortedException("java.net URL does not declare a java.net.URLStreamHandlerFactory field"));
+                URLStreamHandlerFactory oldFactory = (URLStreamHandlerFactory) FieldUtils.readStaticField(factoryField, true);
                 URL.setURLStreamHandlerFactory(newURLStreamHandlerFactory);
                 try {
                     base.evaluate();
                 } finally {
                     clearURLHandlers();
-                    factoryField.set(null, null);
+                    FieldUtils.writeStaticField(factoryField, null);
                     URL.setURLStreamHandlerFactory(oldFactory);
                 }
             }
