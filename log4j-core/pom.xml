@@ -444,6 +444,30 @@
             <org.apache.activemq.SERIALIZABLE_PACKAGES>*</org.apache.activemq.SERIALIZABLE_PACKAGES>
           </systemPropertyVariables>
         </configuration>
+        <executions>
+            <execution>
+                <id>default-test</id>
+                <phase>test</phase>
+                <goals>
+                  <goal>test</goal>
+                </goals>
+                <configuration>
+                   <includeJUnit5Engines>junit-jupiter</includeJUnit5Engines>
+                   <forkCount>1C</forkCount>
+                   <runOrder>random</runOrder>
+                </configuration>
+            </execution>
+            <execution>
+                <id>junit4-test</id>
+                <phase>test</phase>
+                <goals>
+                  <goal>test</goal>
+                </goals>
+                <configuration>
+                    <excludeJUnit5Engines>junit-jupiter</excludeJUnit5Engines>
+                </configuration>
+            </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

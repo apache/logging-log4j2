@@ -16,24 +16,35 @@
  */
 package org.apache.logging.log4j.core.filter;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Base64;
 import java.util.Enumeration;
+import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.junit.PrivateDir;
+import org.apache.logging.log4j.junit.SetTestProperty;
+import org.apache.logging.log4j.junit.TestProperties;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.server.Server;
@@ -48,11 +59,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
 /**
  * Unit test for simple App.
  */
@@ -65,8 +71,14 @@ public class HttpThreadContextMapFilterTest implements MutableThreadContextMapFi
     private static int port;
     static final String CONFIG = "log4j2-mutableFilter.xml";
     static LoggerContext loggerContext = null;
-    static final File targetFile = new File("target/test-classes/testConfig.json");
-    static final Path target = targetFile.toPath();
+
+    @TestProperties
+    private static Properties properties;
+
+    @PrivateDir
+    private static Path privateDir;
+    private final Path target = privateDir.resolve("testConfig.json");
+
     CountDownLatch updated = new CountDownLatch(1);
 
 
@@ -84,11 +96,6 @@ public class HttpThreadContextMapFilterTest implements MutableThreadContextMapFi
             // Start Server
             server.start();
             port = ((ServerConnector) server.getConnectors()[0]).getLocalPort();
-            try {
-                Files.deleteIfExists(target);
-            } catch (IOException ioe) {
-                // Ignore this.
-            }
         } catch (Throwable ex) {
             ex.printStackTrace();
             throw ex;
@@ -106,19 +113,22 @@ public class HttpThreadContextMapFilterTest implements MutableThreadContextMapFi
         } catch (IOException ioe) {
             // Ignore this.
         }
+        ThreadContext.clearMap();
         loggerContext.stop();
         loggerContext = null;
     }
 
     @Test
+    @SetTestProperty(key = "logging.auth.username", value = "log4j")
+    @SetTestProperty(key = "logging.auth.password", value = "log4j")
     public void filterTest() throws Exception {
+        // 'allowedProtocols' must be global since it is used in another thread
         System.setProperty("log4j2.Configuration.allowedProtocols", "http");
-        System.setProperty("logging.auth.username", "log4j");
-        System.setProperty("logging.auth.password", "log4j");
-        System.setProperty("configLocation", "http://localhost:" + port + "/testConfig.json");
+        properties.setProperty("configLocation", "http://localhost:" + port + "/testConfig.json");
         ThreadContext.put("loginId", "rgoers");
-        Path source = new File("target/test-classes/emptyConfig.json").toPath();
+        Path source = Paths.get("target/test-classes/emptyConfig.json");
         Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
+        final File targetFile = target.toFile();
         long fileTime = targetFile.lastModified() - 2000;
         assertTrue(targetFile.setLastModified(fileTime));
         loggerContext = Configurator.initialize(null, CONFIG);
@@ -132,7 +142,7 @@ public class HttpThreadContextMapFilterTest implements MutableThreadContextMapFi
         Logger logger = loggerContext.getLogger("Test");
         logger.debug("This is a test");
         Assertions.assertEquals(0, ((ListAppender) app).getEvents().size());
-        source = new File("target/test-classes/filterConfig.json").toPath();
+        source = Paths.get("target/test-classes/filterConfig.json");
         Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
         assertNotEquals(fileTime, targetFile.lastModified());
         if (!updated.await(5, TimeUnit.SECONDS)) {
@@ -169,7 +179,7 @@ public class HttpThreadContextMapFilterTest implements MutableThreadContextMapFi
                 }
             }
             if (request.getServletPath().equals("/testConfig.json")) {
-                File file = new File("target/test-classes/testConfig.json");
+                final File file = privateDir.resolve("testConfig.json").toFile();
                 if (!file.exists()) {
                     response.sendError(404, "File not found");
                     return;

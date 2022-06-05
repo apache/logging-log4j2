@@ -16,27 +16,33 @@
  */
 package org.apache.logging.log4j.core.filter;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.test.appender.ListAppender;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledOnOs;
-import org.junit.jupiter.api.condition.OS;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.junit.PrivateDir;
+import org.apache.logging.log4j.junit.SetTestProperty;
+import org.apache.logging.log4j.junit.TestProperties;
+import org.apache.logging.log4j.test.appender.ListAppender;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for simple App.
@@ -45,8 +51,14 @@ public class MutableThreadContextMapFilterTest implements MutableThreadContextMa
 
     static final String CONFIG = "log4j2-mutableFilter.xml";
     static LoggerContext loggerContext = null;
-    static File targetFile = new File("target/test-classes/testConfig.json");
-    static Path target = targetFile.toPath();
+
+    @TestProperties
+    private static Properties properties;
+
+    @PrivateDir
+    private static Path privateDir;
+    private final Path target = privateDir.resolve("testConfig.json");
+
     CountDownLatch updated = new CountDownLatch(1);
 
     @AfterEach
@@ -62,13 +74,14 @@ public class MutableThreadContextMapFilterTest implements MutableThreadContextMa
     }
 
     @Test
+    @SetTestProperty(key = "log4j2.Configuration.allowedProtocols", value = "http")
     public void filterTest() throws Exception {
-        System.setProperty("configLocation", "target/test-classes/testConfig.json");
+        properties.setProperty("configLocation", target.toString());
         ThreadContext.put("loginId", "rgoers");
-        Path source = new File("target/test-classes/emptyConfig.json").toPath();
+        Path source = Paths.get("target/test-classes/emptyConfig.json");
         Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
-        long fileTime = targetFile.lastModified() - 1000;
-        assertTrue(targetFile.setLastModified(fileTime));
+        final long fileTime = Files.getLastModifiedTime(target).toMillis() - 2000;
+        assertTrue(target.toFile().setLastModified(fileTime));
         loggerContext = Configurator.initialize(null, CONFIG);
         assertNotNull(loggerContext);
         Appender app = loggerContext.getConfiguration().getAppender("List");
@@ -93,7 +106,7 @@ public class MutableThreadContextMapFilterTest implements MutableThreadContextMa
             }
         }
         assertTrue(copied, "File not copied: " + msg);
-        assertNotEquals(fileTime, targetFile.lastModified());
+        assertNotEquals(fileTime, Files.getLastModifiedTime(target).toMillis());
         if (!updated.await(5, TimeUnit.SECONDS)) {
             fail("File update was not detected");
         }

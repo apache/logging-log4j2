@@ -17,7 +17,7 @@
 
 -->
 <Configuration name="ConfigTest" status="ERROR">
-  <MutableThreadContextMapFilter  configLocation="${sys:configLocation}" pollInterval="1" onMatch="ACCEPT" onMismatch="NEUTRAL">
+  <MutableThreadContextMapFilter  configLocation="${test:configLocation}" pollInterval="1" onMatch="ACCEPT" onMismatch="NEUTRAL">
   </MutableThreadContextMapFilter>
   <Appenders>
     <Console name="STDOUT">
