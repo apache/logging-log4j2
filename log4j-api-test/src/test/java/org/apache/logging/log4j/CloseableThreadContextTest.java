@@ -17,8 +17,6 @@
 package org.apache.logging.log4j;
 
 import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.ReadsSystemProperty;
 
@@ -39,12 +37,6 @@ public class CloseableThreadContextTest {
 
     private final String key = "key";
     private final String value = "value";
-
-    @BeforeEach
-    @AfterEach
-    void clearThreadContext() {
-        ThreadContext.clearAll();
-    }
 
     @Test
     public void shouldAddAnEntryToTheMap() {

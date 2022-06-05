@@ -37,7 +37,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @Documented
 @Inherited
-@ExtendWith(ThreadContextExtension.class)
+@ExtendWith(ThreadContextMapExtension.class)
 @ReadsSystemProperty
 public @interface UsingThreadContextMap {
 }

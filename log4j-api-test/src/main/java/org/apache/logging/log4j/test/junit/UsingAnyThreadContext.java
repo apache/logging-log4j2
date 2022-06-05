@@ -17,8 +17,6 @@
 
 package org.apache.logging.log4j.test.junit;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -38,6 +36,5 @@ import java.lang.annotation.Target;
 @Inherited
 @UsingThreadContextMap
 @UsingThreadContextStack
-@ExtendWith(ThreadContextExtension.class)
 public @interface UsingAnyThreadContext {
 }
