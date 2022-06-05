@@ -17,30 +17,31 @@
 
 package org.apache.logging.log4j.plugins.util;
 
-import org.apache.logging.log4j.test.junit.CleanFolders;
-import org.apache.logging.log4j.test.junit.URLStreamHandlerFactoryRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import org.apache.logging.log4j.test.junit.UsingURLStreamHandlerFactory;
+import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.IOException;
-import java.net.*;
-import java.util.Arrays;
+import java.net.Proxy;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.net.URLConnection;
+import java.net.URLStreamHandler;
+import java.net.URLStreamHandlerFactory;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests the ResolverUtil class for custom protocol like bundleresource, vfs, vfszip.
  */
+@UsingURLStreamHandlerFactory(ResolverUtilCustomProtocolTest.NoopURLStreamHandlerFactory.class)
 public class ResolverUtilCustomProtocolTest {
 
-    @Rule
-    public URLStreamHandlerFactoryRule rule = new URLStreamHandlerFactoryRule(new NoopURLStreamHandlerFactory());
-
-    @Rule
-    public RuleChain chain = RuleChain.outerRule(new CleanFolders(ResolverUtilTest.WORK_DIR));
+    static final String WORK_DIR = "target/testpluginsutil";
 
     static class NoopURLStreamHandlerFactory implements URLStreamHandlerFactory {
 
@@ -103,7 +104,7 @@ public class ResolverUtilCustomProtocolTest {
 
         @Override
         protected Enumeration<URL> findResources(final String name) throws IOException {
-            return Collections.enumeration(Arrays.asList(findResource(name)));
+            return Collections.enumeration(List.of(findResource(name)));
         }
     }
 
@@ -177,27 +178,23 @@ public class ResolverUtilCustomProtocolTest {
 
     @Test
     public void testFindInPackageFromVfsDirectoryURL() throws Exception {
-        try (final URLClassLoader cl = ResolverUtilTest.compileAndCreateClassLoader("3")) {
+        try (final URLClassLoader cl = ResolverUtilTest.compileAndCreateClassLoader("3", new File(WORK_DIR))) {
             final ResolverUtil resolverUtil = new ResolverUtil();
             resolverUtil
-                    .setClassLoader(new SingleURLClassLoader(new URL("vfs:/" + ResolverUtilTest.WORK_DIR + "/resolverutil3/customplugin3/"), cl));
+                    .setClassLoader(new SingleURLClassLoader(new URL("vfs:/" + WORK_DIR + "/resolverutil3/customplugin3/"), cl));
             resolverUtil.findInPackage(new PluginRegistry.PluginTest(), "customplugin3");
-            assertEquals("Class not found in packages", 1, resolverUtil.getClasses().size());
-            assertEquals("Unexpected class resolved", cl.loadClass("customplugin3.FixedString3"),
-                    resolverUtil.getClasses().iterator().next());
+            assertThat(resolverUtil.getClasses()).containsOnly(cl.loadClass("customplugin3.FixedString3"));
         }
     }
 
     @Test
     public void testFindInPackageFromVfsJarURL() throws Exception {
-        try (final URLClassLoader cl = ResolverUtilTest.compileJarAndCreateClassLoader("4")) {
+        try (final URLClassLoader cl = ResolverUtilTest.compileJarAndCreateClassLoader("4", new File(WORK_DIR))) {
             final ResolverUtil resolverUtil = new ResolverUtil();
             resolverUtil.setClassLoader(new SingleURLClassLoader(
-                    new URL("vfs:/" + ResolverUtilTest.WORK_DIR + "/resolverutil4/customplugin4.jar/customplugin4/"), cl));
+                    new URL("vfs:/" + WORK_DIR + "/resolverutil4/customplugin4.jar/customplugin4/"), cl));
             resolverUtil.findInPackage(new PluginRegistry.PluginTest(), "customplugin4");
-            assertEquals("Class not found in packages", 1, resolverUtil.getClasses().size());
-            assertEquals("Unexpected class resolved", cl.loadClass("customplugin4.FixedString4"),
-                    resolverUtil.getClasses().iterator().next());
+            assertThat(resolverUtil.getClasses()).containsOnly(cl.loadClass("customplugin4.FixedString4"));
         }
     }
 
