@@ -17,7 +17,9 @@
 package org.apache.logging.log4j.spi;
 
 import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.ClearSystemProperty;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
 import java.util.HashMap;
@@ -185,7 +187,7 @@ public class DefaultThreadContextMapTest {
     }
 
     @Test
-    public void testGetImmutableMapCopyNotAffectdByContextMapChanges() {
+    public void testGetImmutableMapCopyNotAffectedByContextMapChanges() {
         final DefaultThreadContextMap map = new DefaultThreadContextMap(true);
         map.put("key1", "value1");
         assertFalse(map.isEmpty());
@@ -214,8 +216,9 @@ public class DefaultThreadContextMapTest {
     }
 
     @Test
-    @SetSystemProperty(key = DefaultThreadContextMap.INHERITABLE_MAP, value = "false")
+    @ClearSystemProperty(key = DefaultThreadContextMap.INHERITABLE_MAP)
     public void testThreadLocalNotInheritableByDefault() {
+        PropertiesUtil.getProperties().reload();
         ThreadContextMapFactory.init();
         final ThreadLocal<Map<String, String>> threadLocal = DefaultThreadContextMap.createThreadLocalMap(true);
         assertFalse(threadLocal instanceof InheritableThreadLocal<?>);
@@ -224,6 +227,7 @@ public class DefaultThreadContextMapTest {
     @Test
     @SetSystemProperty(key = DefaultThreadContextMap.INHERITABLE_MAP, value = "true")
     public void testThreadLocalInheritableIfConfigured() {
+        PropertiesUtil.getProperties().reload();
         ThreadContextMapFactory.init();
         final ThreadLocal<Map<String, String>> threadLocal = DefaultThreadContextMap.createThreadLocalMap(true);
         assertTrue(threadLocal instanceof InheritableThreadLocal<?>);
