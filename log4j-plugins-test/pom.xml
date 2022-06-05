@@ -239,5 +239,30 @@
       </plugin>
     </plugins>
   </reporting>
+  <profiles>
+    <profile>
+      <id>parallel-tests</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <properties>
+                <configurationParameters>
+                  <!-- LOG4J2-2921: use parallel test execution by default -->
+                  junit.jupiter.execution.parallel.enabled = true
+                  junit.jupiter.execution.parallel.mode.default = concurrent
+                </configurationParameters>
+              </properties>
+              <runOrder>balanced</runOrder>
+              <forkCount>1C</forkCount>
+              <reuseForks>true</reuseForks>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
 
