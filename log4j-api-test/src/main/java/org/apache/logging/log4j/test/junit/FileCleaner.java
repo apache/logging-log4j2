@@ -17,36 +17,23 @@
 
 package org.apache.logging.log4j.test.junit;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.HashSet;
-
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.platform.commons.support.AnnotationSupport;
+
+import java.nio.file.Path;
+import java.util.Collection;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 class FileCleaner extends AbstractFileCleaner {
     @Override
     Collection<Path> getPathsForTest(final ExtensionContext context) {
-        final Collection<Path> paths = new HashSet<>();
-        final CleanUpFiles testClassAnnotation = context.getRequiredTestClass().getAnnotation(CleanUpFiles.class);
-        if (testClassAnnotation != null) {
-            for (final String path : testClassAnnotation.value()) {
-                paths.add(Paths.get(path));
-            }
-        }
-        final CleanUpFiles testMethodAnnotation = context.getRequiredTestMethod().getAnnotation(CleanUpFiles.class);
-        if (testMethodAnnotation != null) {
-            for (final String path : testMethodAnnotation.value()) {
-                paths.add(Paths.get(path));
-            }
-        }
-        return paths;
+        final Stream<CleanUpFiles> testClassAnnotation = AnnotationSupport.findAnnotation(context.getTestClass(), CleanUpFiles.class).stream();
+        final Stream<CleanUpFiles> testMethodAnnotation = AnnotationSupport.findAnnotation(context.getTestMethod(), CleanUpFiles.class).stream();
+        return Stream.concat(testClassAnnotation, testMethodAnnotation)
+                .flatMap(annotation -> Stream.of(annotation.value()))
+                .map(Path::of)
+                .collect(Collectors.toSet());
     }
 
-    @Override
-    boolean delete(final Path path) throws IOException {
-        return Files.deleteIfExists(path);
-    }
 }
