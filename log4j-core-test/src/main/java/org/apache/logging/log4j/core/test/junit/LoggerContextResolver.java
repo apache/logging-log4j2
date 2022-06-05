@@ -29,6 +29,8 @@ import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
+import org.junit.jupiter.api.extension.ExtensionContext.Store;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
@@ -43,6 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> implements BeforeAllCallback,
         BeforeEachCallback, AfterEachCallback {
     private static final String FQCN = LoggerContextResolver.class.getName();
+    private static final Namespace BASE_NAMESPACE = Namespace.create(LoggerContext.class);
 
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
@@ -55,7 +58,7 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
     public void beforeEach(ExtensionContext context) throws Exception {
         final Class<?> testClass = context.getRequiredTestClass();
         if (AnnotationUtils.isAnnotated(testClass, LoggerContextSource.class)) {
-            final ExtensionContext.Store testClassStore = context.getStore(ExtensionContext.Namespace.create(LoggerContextResolver.class, testClass));
+            final Store testClassStore = context.getStore(BASE_NAMESPACE.append(testClass));
             final LoggerContextAccessor accessor = testClassStore.get(LoggerContextAccessor.class, LoggerContextAccessor.class);
             if (accessor == null) {
                 throw new IllegalStateException(
@@ -79,7 +82,7 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
     public void afterEach(ExtensionContext context) throws Exception {
         final Class<?> testClass = context.getRequiredTestClass();
         if (AnnotationUtils.isAnnotated(testClass, LoggerContextSource.class)) {
-            final ExtensionContext.Store testClassStore = context.getStore(ExtensionContext.Namespace.create(LoggerContextResolver.class, testClass));
+            final Store testClassStore = getTestStore(context);
             if (testClassStore.get(ReconfigurationPolicy.class, ReconfigurationPolicy.class) == ReconfigurationPolicy.AFTER_EACH) {
                 testClassStore.get(LoggerContextAccessor.class, LoggerContextAccessor.class).getLoggerContext().reconfigure();
             }
@@ -93,18 +96,14 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
     }
 
     static LoggerContext getLoggerContext(ExtensionContext context) {
-        final LoggerContextAccessor accessor = context.getTestInstance()
-                .map(instance -> context.getStore(ExtensionContext.Namespace.create(LoggerContextResolver.class, instance))
-                        .get(LoggerContextAccessor.class, LoggerContextAccessor.class))
-                .orElseGet(() -> context.getStore(ExtensionContext.Namespace.create(LoggerContextResolver.class, context.getRequiredTestClass()))
-                        .get(LoggerContextAccessor.class, LoggerContextAccessor.class));
+        final Store store = getTestStore(context);
+        final LoggerContextAccessor accessor = store.get(LoggerContextAccessor.class, LoggerContextAccessor.class);
         assertNotNull(accessor);
         return accessor.getLoggerContext();
     }
 
-    private static ExtensionContext.Store getTestStore(final ExtensionContext context) {
-        final Object storeContext = context.getTestInstance().orElseGet(context::getRequiredTestClass);
-        return context.getStore(ExtensionContext.Namespace.create(LoggerContextResolver.class, storeContext));
+    private static Store getTestStore(final ExtensionContext context) {
+        return context.getStore(BASE_NAMESPACE.append(context.getRequiredTestClass()));
     }
 
     private static LoggerContext setUpLoggerContext(final LoggerContextSource source, final ExtensionContext extensionContext) {
@@ -131,13 +130,13 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
         }
         final LoggerContext context = loggerContextFactory.getContext(FQCN, classLoader, injectorContext, false, configUri, displayName);
         assertNotNull(context, () -> "No LoggerContext created for " + testClass + " and config file " + configLocation);
-        final ExtensionContext.Store store = getTestStore(extensionContext);
+        final Store store = getTestStore(extensionContext);
         store.put(ReconfigurationPolicy.class, source.reconfigure());
         store.put(LoggerContextAccessor.class, new ContextHolder(context, source.timeout(), source.unit()));
         return context;
     }
 
-    private static class ContextHolder implements ExtensionContext.Store.CloseableResource, LoggerContextAccessor {
+    private static class ContextHolder implements Store.CloseableResource, LoggerContextAccessor {
         private final LoggerContext context;
         private final long shutdownTimeout;
         private final TimeUnit unit;
