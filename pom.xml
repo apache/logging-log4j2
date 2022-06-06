@@ -253,7 +253,7 @@
     <woodstox.version>6.2.8</woodstox.version>
     <groovy.version>3.0.10</groovy.version>
     <compiler.plugin.version>3.10.1</compiler.plugin.version>
-    <pmd.plugin.version>3.16.0</pmd.plugin.version>
+    <pmd.plugin.version>3.17.0</pmd.plugin.version>
     <changes.plugin.version>2.12.1</changes.plugin.version>
     <javadoc.plugin.version>3.3.2</javadoc.plugin.version>
     <!-- surefire.plugin.version 2.18 yields http://jira.codehaus.org/browse/SUREFIRE-1121, which is fixed in 2.18.1 -->
