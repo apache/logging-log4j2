@@ -14,6 +14,18 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
+/**
+ * <p>Log4j public API for libraries and applications. This module is provided as a portable
+ * {@linkplain org.apache.logging.log4j.Logger logging API} which supports independent
+ * {@linkplain org.apache.logging.log4j.spi.Provider logging provider} backends for configuring
+ * the underlying logging system. The {@link org.apache.logging.log4j} package contains the main APIs for loggers,
+ * markers, logging levels, thread context maps (aka MDC), and thread context stacks (aka NDC).</p>
+ *
+ * <p>Logging provider SPIs are located in {@link org.apache.logging.log4j.spi}. A reference implementation
+ * is given in {@link org.apache.logging.log4j.simple} which is used internally by the
+ * {@linkplain org.apache.logging.log4j.status.StatusLogger status logger API}.</p>
+ */
 module org.apache.logging.log4j {
     exports org.apache.logging.log4j;
     exports org.apache.logging.log4j.message;

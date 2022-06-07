@@ -26,7 +26,12 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * A Configuration node.
+ * Configurations are represented as a tree of Node instances. Each Node may have
+ * {@linkplain #getAttributes() attributes}, {@linkplain #getChildren() children nodes},
+ * an {@linkplain #getValue() optional value} (which is a special kind of attribute for certain configuration file
+ * formats which support the concept), and a {@linkplain #getName() name} which corresponds to a
+ * {@link Plugin} class in the {@linkplain Configurable Core namespace}. Configuration factories parse a configuration
+ * resource into a tree of Nodes with a single root Node.
  */
 public class Node {
 
@@ -62,12 +67,20 @@ public class Node {
         this.type = type;
     }
 
+    /**
+     * Constructs a root node. Root nodes have no defined type, name, or parent node.
+     */
     public Node() {
         this.parent = null;
         this.name = null;
         this.type = null;
     }
 
+    /**
+     * Constructs a fresh copy of the provided Node.
+     *
+     * @param node original node to copy
+     */
     public Node(final Node node) {
         this.parent = node.parent;
         this.name = node.name;

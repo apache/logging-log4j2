@@ -24,22 +24,22 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marks a constructor, field, or method for dependency injection. Constructors are injected first, followed by fields,
+ * <p>Marks a constructor, field, or method for dependency injection. Constructors are injected first, followed by fields,
  * then methods. Superclasses are injected before subclasses. Note that zero-arg methods with this annotation are
- * considered initialization methods which are also invoked during dependency injection.
+ * considered initialization methods which are also invoked during dependency injection.</p>
  *
  * <h2>Constructors</h2>
- * A class can have at most one constructor annotated with {@code @Inject}. This constructor can have zero or more
+ * <p>A class can have at most one constructor annotated with {@code @Inject}. This constructor can have zero or more
  * dependencies as arguments. If a class has no constructors annotated with {@code @Inject}, then its default
- * zero args constructor is used if available.
+ * zero args constructor is used if available.</p>
  *
  * <h2>Fields</h2>
- * Only non-final, non-static fields may be annotated with {@code @Inject}.
+ * <p>Only non-final, non-static fields may be annotated with {@code @Inject}.</p>
  *
  * <h2>Methods</h2>
- * Non-abstract, non-static methods may be annotated with {@code @Inject}. These methods must not
+ * <p>Non-abstract, non-static methods may be annotated with {@code @Inject}. These methods must not
  * declare any type parameters of their own, take zero or more dependencies as arguments, and may return a value which
- * is ignored (e.g., for builder method chaining).
+ * is ignored (e.g., for builder method chaining).</p>
  *
  * @see Named
  * @see Factory

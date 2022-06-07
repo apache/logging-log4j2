@@ -21,6 +21,7 @@
  * such as singleton and dependent instances.
  *
  * @see org.apache.logging.log4j.plugins.Plugin
+ * @see org.apache.logging.log4j.plugins.Namespace
  * @see org.apache.logging.log4j.plugins.PluginFactory
  * @see org.apache.logging.log4j.plugins.Inject
  */

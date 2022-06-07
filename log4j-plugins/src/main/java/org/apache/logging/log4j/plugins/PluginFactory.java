@@ -25,7 +25,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Identifies a static method as a factory to create a plugin or a
+ * Identifies a static method as a factory to create a {@link Configurable} plugin or a
  * {@linkplain org.apache.logging.log4j.plugins.util.Builder builder class} for constructing a plugin.
  * Factory methods should annotate their parameters with {@link PluginAttribute}, {@link PluginElement},
  * {@link PluginValue}, or other plugin annotations annotated with {@link NodeVisitor.Kind}.

@@ -14,6 +14,15 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
+/**
+ * Log4j plugin annotations and dependency injection system.
+ *
+ * @see org.apache.logging.log4j.plugins.Inject
+ * @see org.apache.logging.log4j.plugins.Plugin
+ * @see org.apache.logging.log4j.plugins.PluginFactory
+ * @see org.apache.logging.log4j.plugins.Namespace
+ */
 module org.apache.logging.log4j.plugins {
     exports org.apache.logging.log4j.plugins;
     exports org.apache.logging.log4j.plugins.condition;

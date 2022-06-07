@@ -27,7 +27,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation that identifies a Class as a Plugin.
+ * <p>Annotation that identifies a Class as a Plugin. Plugins are indexed classes with a name that can typically
+ * be used to refer to that plugin class in a configuration. Plugin names must be unique within a plugin
+ * {@link Namespace}. A plugin is identified by its namespace and name, though the type of the plugin may be
+ * used for dependency injection purposes.</p>
+ *
+ * <p>Plugins are indexed by the plugin annotation processor which generates
+ * {@link org.apache.logging.log4j.plugins.processor.PluginService} service provider classes containing essential
+ * plugin metadata. All plugin namespaces support dependency injection, though some namespaces use alternative
+ * factory strategies specific to their plugin types; these plugins will only have their members injected after
+ * that factory returns a new instance.</p>
+ *
+ * @see Inject
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
