@@ -258,23 +258,6 @@
         </configuration>
       </plugin>
 
-      <!-- Disable ITs, which are Docker-dependent, by default. -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-
     </plugins>
   </build>
 
