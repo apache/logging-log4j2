@@ -204,9 +204,15 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
     private static void setFeature(final DocumentBuilderFactory factory, final String featureName, final boolean value) {
         try {
             factory.setFeature(featureName, value);
-        } catch (Exception | LinkageError e) {
-            getStatusLogger().error("Caught {} setting feature {} to {} on DocumentBuilderFactory {}: {}",
-                    e.getClass().getCanonicalName(), featureName, value, factory, e, e);
+            // LOG4J2-3531: Xerces only throw when creating a factory.
+            // In newer versions 'setFeature' does this automatically.
+            factory.newDocumentBuilder();
+        } catch (final ParserConfigurationException e) {
+            LOGGER.warn("The DocumentBuilderFactory [{}] does not support the feature [{}]: {}", factory,
+                    featureName, e);
+        } catch (final AbstractMethodError err) {
+            LOGGER.warn("The DocumentBuilderFactory [{}] is out of date and does not support setFeature: {}", factory,
+                    err);
         }
     }
 
@@ -226,26 +232,8 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             LOGGER.warn("The DocumentBuilderFactory [{}] is out of date and does not support XInclude: {}", factory,
                     err);
         }
-        try {
-            // Alternative: We could specify all features and values with system properties like:
-            // -DLog4j.DocumentBuilderFactory.Feature="http://apache.org/xml/features/xinclude/fixup-base-uris true"
-            factory.setFeature(XINCLUDE_FIXUP_BASE_URIS, true);
-        } catch (final ParserConfigurationException e) {
-            LOGGER.warn("The DocumentBuilderFactory [{}] does not support the feature [{}]: {}", factory,
-                    XINCLUDE_FIXUP_BASE_URIS, e);
-        } catch (@SuppressWarnings("ErrorNotRethrown") final AbstractMethodError err) {
-            LOGGER.warn("The DocumentBuilderFactory [{}] is out of date and does not support setFeature: {}", factory,
-                    err);
-        }
-        try {
-            factory.setFeature(XINCLUDE_FIXUP_LANGUAGE, true);
-        } catch (final ParserConfigurationException e) {
-            LOGGER.warn("The DocumentBuilderFactory [{}] does not support the feature [{}]: {}", factory,
-                    XINCLUDE_FIXUP_LANGUAGE, e);
-        } catch (@SuppressWarnings("ErrorNotRethrown") final AbstractMethodError err) {
-            LOGGER.warn("The DocumentBuilderFactory [{}] is out of date and does not support setFeature: {}", factory,
-                    err);
-        }
+        setFeature(factory, XINCLUDE_FIXUP_BASE_URIS, true);
+        setFeature(factory, XINCLUDE_FIXUP_LANGUAGE, true);
     }
 
     @Override
