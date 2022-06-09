@@ -202,9 +202,6 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
     private static void setFeature(final DocumentBuilderFactory factory, final String featureName, final boolean value) {
         try {
             factory.setFeature(featureName, value);
-            // LOG4J2-3531: Xerces only throw when creating a factory.
-            // In newer versions 'setFeature' does this automatically.
-            factory.newDocumentBuilder();
         } catch (final ParserConfigurationException e) {
             LOGGER.warn("The DocumentBuilderFactory [{}] does not support the feature [{}]: {}", factory,
                     featureName, e);
@@ -224,9 +221,13 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             // Alternative: We set if a system property on the command line is set, for example:
             // -DLog4j.XInclude=true
             factory.setXIncludeAware(true);
-        } catch (final UnsupportedOperationException e) {
+            // LOG4J2-3531: Xerces only checks if the feature is supported when creating a factory. To reproduce:
+            // -Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XML11NonValidatingConfiguration
+            factory.newDocumentBuilder();
+        } catch (final UnsupportedOperationException | ParserConfigurationException e) {
+            factory.setXIncludeAware(false);
             LOGGER.warn("The DocumentBuilderFactory [{}] does not support XInclude: {}", factory, e);
-        } catch (@SuppressWarnings("ErrorNotRethrown") final AbstractMethodError | NoSuchMethodError err) {
+        } catch (final AbstractMethodError | NoSuchMethodError err) {
             LOGGER.warn("The DocumentBuilderFactory [{}] is out of date and does not support XInclude: {}", factory,
                     err);
         }
