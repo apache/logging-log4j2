@@ -35,7 +35,10 @@ import org.apache.logging.log4j.core.filter.LevelRangeFilter;
 import org.w3c.dom.Element;
 
 /**
- * Build a Level match failter.
+ * Build a Level range filter.
+ * In this class, order of {@link Level} is log4j1 way, i.e.,
+ * {@link Level#ALL} and {@link Level#OFF} have minimum and maximum order, respectively.
+ * (see: LOG4J2-2315)
  */
 @Plugin(name = "org.apache.log4j.varia.LevelRangeFilter", category = CATEGORY)
 public class LevelRangeFilterBuilder extends AbstractBuilder<Filter> implements FilterBuilder {
@@ -63,7 +66,7 @@ public class LevelRangeFilterBuilder extends AbstractBuilder<Filter> implements 
                         levelMax.set(getValueAttribute(currentElement));
                         break;
                     case LEVEL_MIN:
-                        levelMax.set(getValueAttribute(currentElement));
+                        levelMin.set(getValueAttribute(currentElement));
                         break;
                     case ACCEPT_ON_MATCH:
                         acceptOnMatch.set(getBooleanValueAttribute(currentElement));
@@ -83,19 +86,23 @@ public class LevelRangeFilterBuilder extends AbstractBuilder<Filter> implements 
     }
 
     private Filter createFilter(String levelMax, String levelMin, boolean acceptOnMatch) {
-        Level max = Level.FATAL;
-        Level min = Level.TRACE;
+        Level max = Level.OFF;
+        Level min = Level.ALL;
         if (levelMax != null) {
-            max = OptionConverter.toLevel(levelMax, org.apache.log4j.Level.FATAL).getVersion2Level();
+            max = OptionConverter.toLevel(levelMax, org.apache.log4j.Level.OFF).getVersion2Level();
         }
         if (levelMin != null) {
-            min = OptionConverter.toLevel(levelMin, org.apache.log4j.Level.DEBUG).getVersion2Level();
+            min = OptionConverter.toLevel(levelMin, org.apache.log4j.Level.ALL).getVersion2Level();
         }
         org.apache.logging.log4j.core.Filter.Result onMatch = acceptOnMatch
                 ? org.apache.logging.log4j.core.Filter.Result.ACCEPT
                 : org.apache.logging.log4j.core.Filter.Result.NEUTRAL;
 
-        return FilterWrapper.adapt(LevelRangeFilter.createFilter(min, max, onMatch,
+        // XXX: LOG4J2-2315
+        // log4j1 order: ALL < TRACE < DEBUG < ... < FATAL < OFF
+        // log4j2 order: ALL > TRACE > DEBUG > ... > FATAL > OFF
+        // So we create as LevelRangeFilter.createFilter(minLevel=max, maxLevel=min, ...)
+        return FilterWrapper.adapt(LevelRangeFilter.createFilter(max, min, onMatch,
                 org.apache.logging.log4j.core.Filter.Result.DENY));
     }
 }
