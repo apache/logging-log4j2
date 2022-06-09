@@ -151,6 +151,9 @@
       <action issue="LOG4J2-3428" dev="ggregory" type="fix" due-to="LF-Lin">
         Update 3rd party dependencies for 2.18.0.
       </action>
+      <action issue="LOG4J2-3531" dev="pkarwasz" type="fix" due-to="Simo Nikula, Piotr P. Karwasz">
+        Fix parsing error, when XInclude is disabled.
+      </action>
     </release>
     <release version="2.17.2" date="2022-02-23" description="GA Release 2.17.2">
       <!-- FIXES -->
