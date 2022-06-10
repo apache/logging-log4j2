@@ -2232,9 +2232,9 @@ at org.apache.logging.log4j.core.pattern.ExtendedThrowableTest.testException(Ext
 </PatternLayout>]]></pre>
           <h5>ScriptPatternSelector</h5>
           <p>
-            The ScriptPatternSelector executes a script as descibed in the <a href="../configuration.html#Scripts">Scripts</a> section of the
+            The ScriptPatternSelector executes a script as described in the <a href="../configuration.html#Scripts">Scripts</a> section of the
             Configuration chapter. The script is passed all the properties configured in the Properties section of the
-            configuration, the StrSubstitutor used by the Confguration in the "substitutor" variables, and the
+            configuration, the StrSubstitutor used by the Configuration in the "substitutor" variables, and the
             log event in the "logEvent" variable, and is expected to return the value of the PatternMatch key that
             should be used, or null if the default pattern should be used.
           </p>
