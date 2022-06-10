@@ -129,6 +129,28 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
             assertEquals(Level.ALL, customFilterReal.getMinLevel());
             final LevelRangeFilter defaultFilter = (LevelRangeFilter) filters[1];
             assertEquals(Level.TRACE, defaultFilter.getMinLevel());
+
+            final ListAppender legacyAppender = (ListAppender) ((AppenderAdapter.Adapter) appender).getAppender();
+            final Logger logger = LogManager.getLogger(PropertiesConfigurationTest.class);
+
+            // denied???
+            logger.trace("TRACE");
+            assertEquals(0, legacyAppender.getEvents().size());
+            // denied???
+            logger.debug("DEBUG");
+            assertEquals(0, legacyAppender.getEvents().size());
+            // denied???
+            logger.info("INFO");
+            assertEquals(0, legacyAppender.getEvents().size());
+            // denied???
+            logger.warn("WARN");
+            assertEquals(0, legacyAppender.getEvents().size());
+            // denied???
+            logger.error("ERROR");
+            assertEquals(0, legacyAppender.getEvents().size());
+            // denied???
+            logger.fatal("FATAL");
+            assertEquals(0, legacyAppender.getEvents().size());
       }
     }
 
