@@ -125,32 +125,37 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
             final Filterable filterable = (Filterable) appender;
             final CompositeFilter filter = (CompositeFilter) filterable.getFilter();
             final org.apache.logging.log4j.core.Filter[] filters = filter.getFiltersArray();
-            final LevelRangeFilter customFilterReal = (LevelRangeFilter) filters[0];
-            // assertEquals(Level.ALL, customFilterReal.getMinLevel());
-            final LevelRangeFilter defaultFilter = (LevelRangeFilter) filters[1];
-            // assertEquals(Level.TRACE, defaultFilter.getMinLevel());
+            final LevelRangeFilter filter1 = (LevelRangeFilter) filters[0];
+            assertEquals(Level.OFF, filter1.getMinLevel());
+            assertEquals(Level.ALL, filter1.getMaxLevel());
+            final LevelRangeFilter filter2 = (LevelRangeFilter) filters[1];
+            assertEquals(Level.ERROR, filter2.getMinLevel());
+            assertEquals(Level.INFO, filter2.getMaxLevel());
+            final LevelRangeFilter filter3 = (LevelRangeFilter) filters[2];
+            assertEquals(Level.OFF, filter3.getMinLevel());
+            assertEquals(Level.ALL, filter3.getMaxLevel());
 
             final ListAppender legacyAppender = (ListAppender) ((AppenderAdapter.Adapter) appender).getAppender();
             final Logger logger = LogManager.getLogger(PropertiesConfigurationTest.class);
 
-            // accept
+            // deny
             logger.trace("TRACE");
-            assertEquals(1, legacyAppender.getEvents().size());
-            // accept
+            assertEquals(0, legacyAppender.getEvents().size());
+            // deny
             logger.debug("DEBUG");
-            assertEquals(2, legacyAppender.getEvents().size());
+            assertEquals(0, legacyAppender.getEvents().size());
             // accept
             logger.info("INFO");
-            assertEquals(3, legacyAppender.getEvents().size());
+            assertEquals(1, legacyAppender.getEvents().size());
             // accept
             logger.warn("WARN");
-            assertEquals(4, legacyAppender.getEvents().size());
+            assertEquals(2, legacyAppender.getEvents().size());
             // accept
             logger.error("ERROR");
-            assertEquals(5, legacyAppender.getEvents().size());
-            // accept
+            assertEquals(3, legacyAppender.getEvents().size());
+            // deny
             logger.fatal("FATAL");
-            assertEquals(6, legacyAppender.getEvents().size());
+            assertEquals(3, legacyAppender.getEvents().size());
       }
     }
 
