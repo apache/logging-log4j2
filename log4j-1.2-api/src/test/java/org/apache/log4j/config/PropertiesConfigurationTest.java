@@ -348,4 +348,9 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
         }
     }
 
+    @Override
+    @Test
+    public void testLevelRangeFilter() throws Exception {
+        super.testLevelRangeFilter();
+    }
 }
