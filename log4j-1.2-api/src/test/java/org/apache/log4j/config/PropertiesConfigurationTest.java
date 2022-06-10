@@ -126,6 +126,7 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
             final CompositeFilter filter = (CompositeFilter) filterable.getFilter();
             final org.apache.logging.log4j.core.Filter[] filters = filter.getFiltersArray();
             final LevelRangeFilter filter1 = (LevelRangeFilter) filters[0];
+            // XXX: LOG4J2-2315
             assertEquals(Level.OFF, filter1.getMinLevel());
             assertEquals(Level.ALL, filter1.getMaxLevel());
             final LevelRangeFilter filter2 = (LevelRangeFilter) filters[1];
