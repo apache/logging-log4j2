@@ -30,6 +30,9 @@
          - "remove" - Removed
     -->
     <release version="2.18.0" date="2022-MM-DD" description="GA Release 2.18.0">
+      <action issue="LOG4J2-3534" dev="yueki1993" type="fix">
+        Fix LevelRangeFilterBuilder to align with log4j1's behavior.
+      </action>
       <action issue="LOG4J2-3527" dev="rgoers" type="fix">
         Don't use Paths.get() to avoid circular file systems.
       </action>

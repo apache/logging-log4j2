@@ -180,6 +180,10 @@ public final class LevelRangeFilter extends AbstractFilter {
         return minLevel;
     }
 
+    public Level getMaxLevel() {
+        return maxLevel;
+    }
+
     @Override
     public String toString() {
         return minLevel.toString();
