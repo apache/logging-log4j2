@@ -66,7 +66,7 @@ public class LevelRangeFilterBuilder extends AbstractBuilder<Filter> implements 
                         levelMax.set(getValueAttribute(currentElement));
                         break;
                     case LEVEL_MIN:
-                        levelMax.set(getValueAttribute(currentElement));
+                        levelMin.set(getValueAttribute(currentElement));
                         break;
                     case ACCEPT_ON_MATCH:
                         acceptOnMatch.set(getBooleanValueAttribute(currentElement));
@@ -86,21 +86,23 @@ public class LevelRangeFilterBuilder extends AbstractBuilder<Filter> implements 
     }
 
     private Filter createFilter(final String levelMax, final String levelMin, final boolean acceptOnMatch) {
-        Level max = Level.FATAL;
-        Level min = Level.TRACE;
+        Level max = Level.OFF;
+        Level min = Level.ALL;
         if (levelMax != null) {
-            max = OptionConverter.toLevel(levelMax, org.apache.log4j.Level.FATAL)
-                    .getVersion2Level();
+            max = OptionConverter.toLevel(levelMax, org.apache.log4j.Level.OFF).getVersion2Level();
         }
         if (levelMin != null) {
-            min = OptionConverter.toLevel(levelMin, org.apache.log4j.Level.DEBUG)
-                    .getVersion2Level();
+            min = OptionConverter.toLevel(levelMin, org.apache.log4j.Level.ALL).getVersion2Level();
         }
         final org.apache.logging.log4j.core.Filter.Result onMatch = acceptOnMatch
                 ? org.apache.logging.log4j.core.Filter.Result.ACCEPT
                 : org.apache.logging.log4j.core.Filter.Result.NEUTRAL;
 
+        // XXX: LOG4J2-2315
+        // log4j1 order: ALL < TRACE < DEBUG < ... < FATAL < OFF
+        // log4j2 order: ALL > TRACE > DEBUG > ... > FATAL > OFF
+        // So we create as LevelRangeFilter.createFilter(minLevel=max, maxLevel=min, ...)
         return FilterWrapper.adapt(
-                LevelRangeFilter.createFilter(min, max, onMatch, org.apache.logging.log4j.core.Filter.Result.DENY));
+                LevelRangeFilter.createFilter(max, min, onMatch, org.apache.logging.log4j.core.Filter.Result.DENY));
     }
 }

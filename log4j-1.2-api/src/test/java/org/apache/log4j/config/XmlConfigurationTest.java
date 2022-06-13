@@ -204,4 +204,10 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
             assertTrue(policies[1] instanceof SizeBasedTriggeringPolicy, "is SizeBasedTriggeringPolicy");
         }
     }
+
+    @Override
+    @Test
+    public void testLevelRangeFilter() throws Exception {
+        super.testLevelRangeFilter();
+    }
 }

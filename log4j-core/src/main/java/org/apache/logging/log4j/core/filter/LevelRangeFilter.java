@@ -265,16 +265,10 @@ public final class LevelRangeFilter extends AbstractFilter {
         return filter(level);
     }
 
-    /**
-     * @return the minimum level threshold
-     */
     public Level getMinLevel() {
         return minLevel;
     }
 
-    /**
-     * @return the maximum level threshold
-     */
     public Level getMaxLevel() {
         return maxLevel;
     }

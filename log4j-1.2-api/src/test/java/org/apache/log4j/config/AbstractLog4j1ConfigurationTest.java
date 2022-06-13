@@ -625,4 +625,33 @@ public abstract class AbstractLog4j1ConfigurationTest {
         assertEquals(11, defaultRolloverStrategy.getMinIndex());
         assertEquals(20, defaultRolloverStrategy.getMaxIndex());
     }
+
+    protected void testLevelRangeFilter() throws Exception {
+        try (final LoggerContext ctx = configure("config-1.2/log4j-LevelRangeFilter")) {
+            final Configuration config = ctx.getConfiguration();
+            final Logger logger = LogManager.getLogger(PropertiesConfigurationTest.class);
+            // List appender
+            final Appender appender = config.getAppender("LIST");
+            assertNotNull(appender);
+            final ListAppender legacyAppender = (ListAppender) ((Adapter) appender).getAppender();
+            // deny
+            logger.trace("TRACE");
+            assertEquals(0, legacyAppender.getEvents().size());
+            // deny
+            logger.debug("DEBUG");
+            assertEquals(0, legacyAppender.getEvents().size());
+            // accept
+            logger.info("INFO");
+            assertEquals(1, legacyAppender.getEvents().size());
+            // accept
+            logger.warn("WARN");
+            assertEquals(2, legacyAppender.getEvents().size());
+            // accept
+            logger.error("ERROR");
+            assertEquals(3, legacyAppender.getEvents().size());
+            // deny
+            logger.fatal("FATAL");
+            assertEquals(3, legacyAppender.getEvents().size());
+        }
+    }
 }
