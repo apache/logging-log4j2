@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import java.awt.Color;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
@@ -320,12 +321,43 @@ public enum AnsiEscape {
         boolean first = true;
         for (final String name : names) {
             try {
-                final AnsiEscape escape = EnglishEnums.valueOf(AnsiEscape.class, name.trim());
                 if (!first) {
                     sb.append(AnsiEscape.SEPARATOR.getCode());
                 }
                 first = false;
-                sb.append(escape.getCode());
+                String hexColor = null;
+                final String trimmedName = name.trim();
+                if (trimmedName.startsWith("#")) {
+                    sb.append("38");
+                    sb.append(SEPARATOR.getCode());
+                    sb.append("2");
+                    sb.append(SEPARATOR.getCode());
+                    hexColor = trimmedName;
+                } else if (trimmedName.startsWith("FG_#")) {
+                    sb.append("38");
+                    sb.append(SEPARATOR.getCode());
+                    sb.append("2");
+                    sb.append(SEPARATOR.getCode());
+                    hexColor = trimmedName.substring(3);
+                } else if (trimmedName.startsWith("BG_#")) {
+                    sb.append("48");
+                    sb.append(SEPARATOR.getCode());
+                    sb.append("2");
+                    sb.append(SEPARATOR.getCode());
+                    hexColor = trimmedName.substring(3);
+                }
+                if (hexColor != null) {
+                    Color color = Color.decode(hexColor);
+                    sb.append(color.getRed());
+                    sb.append(SEPARATOR.getCode());
+                    sb.append(color.getGreen());
+                    sb.append(SEPARATOR.getCode());
+                    sb.append(color.getBlue());
+                    //no separator at the end
+                } else {
+                    final AnsiEscape escape = EnglishEnums.valueOf(AnsiEscape.class, trimmedName);
+                    sb.append(escape.getCode());
+                }
             } catch (final Exception ex) {
                 // Ignore the error.
             }
