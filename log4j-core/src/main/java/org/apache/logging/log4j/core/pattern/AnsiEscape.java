@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import java.awt.Color;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
@@ -347,12 +346,11 @@ public enum AnsiEscape {
                     hexColor = trimmedName.substring(3);
                 }
                 if (hexColor != null) {
-                    Color color = Color.decode(hexColor);
-                    sb.append(color.getRed());
+                    sb.append(Integer.valueOf(hexColor.substring(1, 3), 16));//r
                     sb.append(SEPARATOR.getCode());
-                    sb.append(color.getGreen());
+                    sb.append(Integer.valueOf(hexColor.substring(3, 5), 16));//g
                     sb.append(SEPARATOR.getCode());
-                    sb.append(color.getBlue());
+                    sb.append(Integer.valueOf(hexColor.substring(5, 7), 16));//b
                     //no separator at the end
                 } else {
                     final AnsiEscape escape = EnglishEnums.valueOf(AnsiEscape.class, trimmedName);

@@ -160,6 +160,9 @@
       <action issue="LOG4J2-3531" dev="pkarwasz" type="fix" due-to="Simo Nikula, Piotr P. Karwasz">
         Fix parsing error, when XInclude is disabled.
       </action>
+      <action issue="LOG4J2-3538" dev="pavel_k" type="add" due-to="Pavel_K">
+        Add support for 24 colors in highlighting
+      </action>      
     </release>
     <release version="2.17.2" date="2022-02-23" description="GA Release 2.17.2">
       <!-- FIXES -->

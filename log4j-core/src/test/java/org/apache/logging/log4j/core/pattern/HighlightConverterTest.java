@@ -77,6 +77,36 @@ public class HighlightConverterTest {
     }
 
     @Test
+    public void testLevelNamesHexShort() {
+        final String colorName = "#1cd42b";
+        final String[] options = {"%-5level: %msg", PatternParser.NO_CONSOLE_NO_ANSI + "=false, "
+                + PatternParser.DISABLE_ANSI + "=false, " + "INFO=" + colorName};
+        final HighlightConverter converter = HighlightConverter.newInstance(null, options);
+        assertNotNull(converter);
+
+        final LogEvent event = Log4jLogEvent.newBuilder().setLevel(Level.INFO).setLoggerName("a.b.c").setMessage(
+                new SimpleMessage("")).build();
+        final StringBuilder buffer = new StringBuilder();
+        converter.format(event, buffer);
+        assertEquals("\u001B[38;2;28;212;43mINFO : \u001B[m", buffer.toString());
+    }
+
+    @Test
+    public void testLevelNamesHexFull() {
+        final String colorName = "FG_#1cd42b BG_#000000";
+        final String[] options = {"%-5level: %msg", PatternParser.NO_CONSOLE_NO_ANSI + "=false, "
+                + PatternParser.DISABLE_ANSI + "=false, " + "INFO=" + colorName};
+        final HighlightConverter converter = HighlightConverter.newInstance(null, options);
+        assertNotNull(converter);
+
+        final LogEvent event = Log4jLogEvent.newBuilder().setLevel(Level.INFO).setLoggerName("a.b.c").setMessage(
+                new SimpleMessage("")).build();
+        final StringBuilder buffer = new StringBuilder();
+        converter.format(event, buffer);
+        assertEquals("\u001B[38;2;28;212;43;48;2;0;0;0mINFO : \u001B[m", buffer.toString());
+    }
+
+    @Test
     public void testLevelNamesUnknown() {
         final String colorName = "blue";
         final String[] options = { "%level", PatternParser.NO_CONSOLE_NO_ANSI + "=false, " + PatternParser.DISABLE_ANSI
@@ -96,7 +126,7 @@ public class HighlightConverterTest {
                 toFormattedCharSeq(converter, Level.forName("CUSTOM1", 412)).toString().getBytes());
         assertArrayEquals(new byte[] { 'C', 'U', 'S', 'T', 'O', 'M', '2' },
                 toFormattedCharSeq(converter, Level.forName("CUSTOM2", 512)).toString().getBytes());
-    }    
+    }
 
     @Test
     public void testLevelNamesNone() {
