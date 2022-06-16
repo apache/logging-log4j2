@@ -325,7 +325,7 @@ public enum AnsiEscape {
                 }
                 first = false;
                 String hexColor = null;
-                final String trimmedName = name.trim();
+                final String trimmedName = name.trim().toUpperCase(Locale.ENGLISH);
                 if (trimmedName.startsWith("#")) {
                     sb.append("38");
                     sb.append(SEPARATOR.getCode());
