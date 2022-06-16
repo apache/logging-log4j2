@@ -357,7 +357,7 @@ public enum AnsiEscape {
                     sb.append(escape.getCode());
                 }
             } catch (final Exception ex) {
-                // Ignore the error.
+                StatusLogger.getLogger().warn("The style attribute {} is incorrect.", name, ex);
             }
         }
         sb.append(AnsiEscape.SUFFIX.getCode());
