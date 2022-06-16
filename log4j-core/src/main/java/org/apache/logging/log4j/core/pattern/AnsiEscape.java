@@ -22,6 +22,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.logging.log4j.core.util.Patterns;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.EnglishEnums;
 import org.apache.logging.log4j.util.Strings;
 
