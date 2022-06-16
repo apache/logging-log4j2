@@ -77,6 +77,36 @@ public class HighlightConverterTest {
     }
 
     @Test
+    public void testLevelNamesBrightShort() {
+        final String colorName = "bright_red";
+        final String[] options = {"%-5level: %msg", PatternParser.NO_CONSOLE_NO_ANSI + "=false, "
+                + PatternParser.DISABLE_ANSI + "=false, " + "INFO=" + colorName};
+        final HighlightConverter converter = HighlightConverter.newInstance(null, options);
+        assertNotNull(converter);
+
+        final LogEvent event = Log4jLogEvent.newBuilder().setLevel(Level.INFO).setLoggerName("a.b.c").setMessage(
+                new SimpleMessage("")).build();
+        final StringBuilder buffer = new StringBuilder();
+        converter.format(event, buffer);
+        assertEquals("\u001B[91mINFO : \u001B[m", buffer.toString());
+    }
+
+    @Test
+    public void testLevelNamesBrightFull() {
+        final String colorName = "fg_bright_red bg_bright_blue bold";
+        final String[] options = {"%-5level: %msg", PatternParser.NO_CONSOLE_NO_ANSI + "=false, "
+                + PatternParser.DISABLE_ANSI + "=false, " + "INFO=" + colorName};
+        final HighlightConverter converter = HighlightConverter.newInstance(null, options);
+        assertNotNull(converter);
+
+        final LogEvent event = Log4jLogEvent.newBuilder().setLevel(Level.INFO).setLoggerName("a.b.c").setMessage(
+                new SimpleMessage("")).build();
+        final StringBuilder buffer = new StringBuilder();
+        converter.format(event, buffer);
+        assertEquals("\u001B[91;104;1mINFO : \u001B[m", buffer.toString());
+    }
+
+    @Test
     public void testLevelNamesHexShort() {
         final String colorName = "#1cd42b";
         final String[] options = {"%-5level: %msg", PatternParser.NO_CONSOLE_NO_ANSI + "=false, "

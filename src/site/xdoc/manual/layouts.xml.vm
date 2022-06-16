@@ -1332,12 +1332,21 @@ WARN  [main]: Message 2</pre>
                 <p>You can override the default colors in the optional {style} option. For example:
  #if ($isPDF)
                  <pre>%highlight{%d [%t] %-5level: %msg%n%throwable}
-   {FATAL=white, ERROR=red, WARN=blue, INFO=black,
-    DEBUG=green, TRACE=blue}</pre>
+   {FATAL=white, ERROR=red, WARN=bright_blue, INFO=black,
+    DEBUG=bright_green, TRACE=blue}</pre>
  #else
-                 <pre>%highlight{%d [%t] %-5level: %msg%n%throwable}{FATAL=white, ERROR=red, WARN=blue, INFO=black, DEBUG=green, TRACE=blue}</pre>
+                 <pre>%highlight{%d [%t] %-5level: %msg%n%throwable}{FATAL=white, ERROR=red, WARN=bright_blue, INFO=black, DEBUG=bright_green, TRACE=blue}</pre>
  #end
                 </p>
+                <p>At the same time it is possible to use 24 bit colors. For example:
+ #if ($isPDF)
+                 <pre>%highlight{%d [%t] %-5level: %msg%n%throwable}
+   {FATAL=white, ERROR=red, WARN=bg_#5792e6 fg_#eef26b bold, INFO=black,
+    DEBUG=#3fe0a8, TRACE=blue}</pre>
+ #else
+                 <pre>%highlight{%d [%t] %-5level: %msg%n%throwable}{FATAL=white, ERROR=red, WARN=bg_#5792e6 fg_#eef26b bold, INFO=black, DEBUG=#3fe0a8, TRACE=blue}</pre>
+ #end
+                </p>                
                 <p>You can highlight only the a portion of the log event:
                  <pre>%d [%t] %highlight{%-5level: %msg%n%throwable}</pre>
                 </p>

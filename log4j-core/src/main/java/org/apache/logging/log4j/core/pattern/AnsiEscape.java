@@ -60,8 +60,17 @@ public enum AnsiEscape {
 
     /**
      * Bright general attribute.
+     * 
+     * @deprecated This attribute sets font-weight as "bold" and doesn't set color brightness. Use BOLD if you
+     * need to change font-weight and BRIGHT_* to use a bright color.
+     *
      */
     BRIGHT("1"),
+
+    /**
+     * Bold general attribute.
+     */
+    BOLD("1"),
 
     /**
      * Dim general attribute.
@@ -216,7 +225,127 @@ public enum AnsiEscape {
     /**
      * White background color.
      */
-    BG_WHITE("47");
+    BG_WHITE("47"),
+
+    /**
+     * Bright black foreground color.
+     */
+    BRIGHT_BLACK("90"),
+
+    /**
+     * Bright black foreground color.
+     */
+    FG_BRIGHT_BLACK("90"),
+
+    /**
+     * Bright red foreground color.
+     */
+    BRIGHT_RED("91"),
+
+    /**
+     * Bright red foreground color.
+     */
+    FG_BRIGHT_RED("91"),
+
+    /**
+     * Bright green foreground color.
+     */
+    BRIGHT_GREEN("92"),
+
+    /**
+     * Bright green foreground color.
+     */
+    FG_BRIGHT_GREEN("92"),
+
+    /**
+     * Bright yellow foreground color.
+     */
+    BRIGHT_YELLOW("93"),
+
+    /**
+     * Bright yellow foreground color.
+     */
+    FG_BRIGHT_YELLOW("93"),
+
+    /**
+     * Bright blue foreground color.
+     */
+    BRIGHT_BLUE("94"),
+
+    /**
+     * Bright blue foreground color.
+     */
+    FG_BRIGHT_BLUE("94"),
+
+    /**
+     * Bright magenta foreground color.
+     */
+    BRIGHT_MAGENTA("95"),
+
+    /**
+     * Bright magenta foreground color.
+     */
+    FG_BRIGHT_MAGENTA("95"),
+
+    /**
+     * Bright cyan foreground color.
+     */
+    BRIGHT_CYAN("96"),
+
+    /**
+     * Bright cyan foreground color.
+     */
+    FG_BRIGHT_CYAN("96"),
+
+    /**
+     * Bright white foreground color.
+     */
+    BRIGHT_WHITE("97"),
+
+    /**
+     * Bright white foreground color.
+     */
+    FG_BRIGHT_WHITE("97"),
+
+    /**
+     * Bright black background color.
+     */
+    BG_BRIGHT_BLACK("100"),
+
+    /**
+     * Bright red background color.
+     */
+    BG_BRIGHT_RED("101"),
+
+    /**
+     * Bright green background color.
+     */
+    BG_BRIGHT_GREEN("102"),
+
+    /**
+     * Bright yellow background color.
+     */
+    BG_BRIGHT_YELLOW("103"),
+
+    /**
+     * Bright blue background color.
+     */
+    BG_BRIGHT_BLUE("104"),
+
+    /**
+     * Bright magenta background color.
+     */
+    BG_BRIGHT_MAGENTA("105"),
+
+    /**
+     * Bright cyan background color.
+     */
+    BG_BRIGHT_CYAN("106"),
+
+    /**
+     * Bright white background color.
+     */
+    BG_BRIGHT_WHITE("107");
 
     private static final String DEFAULT_STYLE = CSI.getCode() + SUFFIX.getCode();
 
