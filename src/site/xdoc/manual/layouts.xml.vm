@@ -1338,7 +1338,7 @@ WARN  [main]: Message 2</pre>
                  <pre>%highlight{%d [%t] %-5level: %msg%n%throwable}{FATAL=white, ERROR=red, WARN=bright_blue, INFO=black, DEBUG=bright_green, TRACE=blue}</pre>
  #end
                 </p>
-                <p>At the same time it is possible to use 24 bit colors. For example:
+                <p>At the same time it is possible to use true colors (24 bit) colors. For example:
  #if ($isPDF)
                  <pre>%highlight{%d [%t] %-5level: %msg%n%throwable}
    {FATAL=white, ERROR=red, WARN=bg_#5792e6 fg_#eef26b bold, INFO=black,
