@@ -76,6 +76,10 @@ module org.apache.logging.log4j.core {
     requires static com.fasterxml.jackson.dataformat.yaml;
     requires static org.apache.commons.compress;
     requires static org.fusesource.jansi;
+
+    // sun.misc.Unsafe::invokeCleaner via MemoryMappedFileManager
+    requires static jdk.unsupported;
+
     uses org.apache.logging.log4j.core.util.ContextDataProvider;
     uses org.apache.logging.log4j.core.util.WatchEventService;
     uses org.apache.logging.log4j.core.script.ScriptManagerFactory;

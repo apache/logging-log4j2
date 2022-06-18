@@ -16,12 +16,17 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.util.Closer;
+import org.apache.logging.log4j.core.util.FileUtils;
+import org.apache.logging.log4j.core.util.NullOutputStream;
+import org.apache.logging.log4j.util.ReflectionUtil;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -33,11 +38,6 @@ import java.security.PrivilegedExceptionAction;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.util.Closer;
-import org.apache.logging.log4j.core.util.FileUtils;
-import org.apache.logging.log4j.core.util.NullOutputStream;
 
 //Lines too long...
 //CHECKSTYLE:OFF
@@ -225,9 +225,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
         final long startNanos = System.nanoTime();
         AccessController.doPrivileged((PrivilegedExceptionAction<Object>) () -> {
             final Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
-            final Field unsafeField = unsafeClass.getDeclaredField("theUnsafe");
-            unsafeField.setAccessible(true);
-            final Object unsafe = unsafeField.get(null);
+            final Object unsafe = ReflectionUtil.getStaticFieldValue(unsafeClass.getDeclaredField("theUnsafe"));
             final Method invokeCleaner = unsafeClass.getMethod("invokeCleaner", ByteBuffer.class);
             invokeCleaner.invoke(unsafe, mbb);
             return null;
