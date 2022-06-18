@@ -10,32 +10,28 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.net.URI;
+import java.util.concurrent.CountDownLatch;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
  */
-@Tag("sleepy")
-public class RollingAppenderDirectWriteWithReconfigureTest {
+public class RollingAppenderDirectWriteWithReconfigureTest extends AbstractRollingListenerTest {
 
     private static final String CONFIG = "log4j-rolling-direct-reconfigure.xml";
 
     private static final String DIR = "target/rolling-direct-reconfigure";
 
-    private static final int MAX_TRIES = 10;
+    private final CountDownLatch rollover = new CountDownLatch(1);
 
     @Test
     @CleanUpDirectories(DIR)
@@ -44,22 +40,20 @@ public class RollingAppenderDirectWriteWithReconfigureTest {
         final var logger = context.getLogger(getClass());
         logger.debug("Before reconfigure");
 
-        Configuration config = context.getConfiguration();
         context.setConfigLocation(new URI(CONFIG));
         context.reconfigure();
+        Configuration config = context.getConfiguration();
+        final RollingFileAppender appender = config.getAppender("RollingFile");
+        appender.getManager().addRolloverListener(this);
         logger.debug("Force a rollover");
+        rollover.await();
         final File dir = new File(DIR);
-        for (int i = 0; i < MAX_TRIES; ++i) {
-            Thread.sleep(200);
-            if (config != context.getConfiguration()) {
-                break;
-            }
-        }
+        assertThat(dir).isNotEmptyDirectory();
+        assertThat(dir.listFiles()).hasSize(2);
+    }
 
-        assertTrue(dir.exists(), "Directory not created");
-        final File[] files = dir.listFiles();
-        assertNotNull(files);
-        assertTrue(files.length > 0, "Directory not created");
-        assertThat(files.length, is(equalTo(2)));
+    @Override
+    public void rolloverComplete(final String fileName) {
+        rollover.countDown();
     }
 }
