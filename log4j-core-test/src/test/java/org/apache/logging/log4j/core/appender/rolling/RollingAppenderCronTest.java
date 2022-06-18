@@ -21,83 +21,76 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.util.CronExpression;
+import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
-import org.hamcrest.Matcher;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.CountDownLatch;
 
-import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  *
  */
-@Tag("sleepy")
-public class RollingAppenderCronTest {
+public class RollingAppenderCronTest extends AbstractRollingListenerTest implements PropertyChangeListener {
 
     private static final String CONFIG = "log4j-rolling-cron.xml";
     private static final String DIR = "target/rolling-cron";
     private static final String FILE = "target/rolling-cron/rollingtest.log";
+    private final CountDownLatch rollover = new CountDownLatch(2);
+    private final CountDownLatch reconfigured = new CountDownLatch(1);
 
     @Test
     @CleanUpDirectories(DIR)
     @LoggerContextSource(value = CONFIG, timeout = 10)
-    public void testAppender(final LoggerContext context) throws Exception {
-        // TODO Is there a better way to test than putting the thread to sleep all over the place?
+    public void testAppender(final LoggerContext context, @Named("RollingFile") final RollingFileManager manager) throws Exception {
+        manager.addRolloverListener(this);
         final Logger logger = context.getLogger(getClass());
         final File file = new File(FILE);
-        assertTrue(file.exists(), "Log file does not exist");
+        assertThat(file).exists();
         logger.debug("This is test message number 1");
-        Thread.sleep(2500);
-        final File dir = new File(DIR);
-        assertTrue(dir.exists() && dir.listFiles().length > 0, "Directory not created");
+        currentTimeMillis.addAndGet(2500);
+        rollover.await();
 
-        final int MAX_TRIES = 20;
-        final Matcher<File[]> hasGzippedFile = hasItemInArray(that(hasName(that(endsWith(".gz")))));
-        boolean succeeded = false;
-        for (int i = 0; i < MAX_TRIES; i++) {
-            final File[] files = dir.listFiles();
-            if (hasGzippedFile.matches(files)) {
-                succeeded = true;
-                break;
-            }
-            logger.debug("Sleeping #" + i);
-            Thread.sleep(100); // Allow time for rollover to complete
-        }
-        if (!succeeded) {
-            final File[] files = dir.listFiles();
-            for (final File dirFile : files) {
-                logger.error("Found file: " + dirFile.getPath());
-            }
-            fail("No compressed files found");
-        }
-        final Path src = FileSystems.getDefault().getPath("target/test-classes/log4j-rolling-cron2.xml");
-        try (final OutputStream os = new FileOutputStream("target/test-classes/log4j-rolling-cron.xml")) {
+        final File dir = new File(DIR);
+        assertThat(dir).isNotEmptyDirectory();
+        assertThat(dir).isDirectoryContaining("glob:**.gz");
+
+        final Path src = Path.of("target", "test-classes", "log4j-rolling-cron2.xml");
+        context.addPropertyChangeListener(this);
+        try (OutputStream os = Files.newOutputStream(Path.of("target", "test-classes", "log4j-rolling-cron.xml"))) {
             Files.copy(src, os);
         }
-        Thread.sleep(5000);
+        currentTimeMillis.addAndGet(5000);
         // force a reconfiguration
-        for (int i = 0; i < MAX_TRIES; ++i) {
+        for (int i = 0; i < 20; ++i) {
             logger.debug("Adding new event {}", i);
         }
-        Thread.sleep(1000);
-        final RollingFileAppender app = context.getConfiguration().getAppender("RollingFile");
-        final TriggeringPolicy policy = app.getManager().getTriggeringPolicy();
-        assertNotNull(policy, "No triggering policy");
-        assertTrue(policy instanceof CronTriggeringPolicy, "Incorrect policy type");
+        currentTimeMillis.addAndGet(1000);
+        reconfigured.await();
+        final RollingFileAppender appender = context.getConfiguration().getAppender("RollingFile");
+        final TriggeringPolicy policy = appender.getManager().getTriggeringPolicy();
+        assertThat(policy).isNotNull();
+        assertThat(policy).isInstanceOf(CronTriggeringPolicy.class);
         final CronExpression expression = ((CronTriggeringPolicy) policy).getCronExpression();
         assertEquals("* * * ? * *", expression.getCronExpression(), "Incorrect triggering policy");
 
     }
 
+    @Override
+    public void rolloverComplete(final String fileName) {
+        rollover.countDown();
+    }
+
+    @Override
+    public void propertyChange(final PropertyChangeEvent evt) {
+        reconfigured.countDown();
+    }
 }
