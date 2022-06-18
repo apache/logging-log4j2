@@ -19,43 +19,51 @@ package org.apache.logging.log4j.core.test.junit;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.AbstractManager;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.plugins.di.Keys;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
+import org.junit.platform.commons.support.ReflectionSupport;
 
 import java.lang.reflect.Parameter;
 
 import static org.apache.logging.log4j.core.test.junit.LoggerContextResolver.getLoggerContext;
 
 /**
- * Resolves parameters that implement {@link Appender} and have a {@link org.apache.logging.log4j.plugins.Named}
- * value of the name of the appender.
+ * Resolves parameters that extend {@link AbstractManager} and have a {@link org.apache.logging.log4j.plugins.Named}
+ * parameter of the corresponding appender that uses the manager.
  */
-class AppenderResolver implements ParameterResolver {
+class AppenderManagerResolver implements ParameterResolver {
     @Override
-    public boolean supportsParameter(
-            ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+    public boolean supportsParameter(final ParameterContext parameterContext, final ExtensionContext extensionContext) throws ParameterResolutionException {
         final Parameter parameter = parameterContext.getParameter();
-        return Appender.class.isAssignableFrom(parameter.getType()) && Keys.hasName(parameter);
+        return AbstractManager.class.isAssignableFrom(parameter.getType()) && Keys.hasName(parameter);
     }
 
     @Override
-    public Object resolveParameter(
-            ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+    public Object resolveParameter(final ParameterContext parameterContext, final ExtensionContext extensionContext) throws ParameterResolutionException {
         final LoggerContext loggerContext = getLoggerContext(extensionContext);
         if (loggerContext == null) {
             throw new ParameterResolutionException("No LoggerContext defined");
         }
-        final String name = Keys.getName(parameterContext.getParameter());
-        if (name.isEmpty()) {
-            throw new ParameterResolutionException("No named annotation present after checking earlier");
-        }
-        final Appender appender = loggerContext.getConfiguration().getAppender(name);
+        final Configuration configuration = loggerContext.getConfiguration();
+        final Parameter parameter = parameterContext.getParameter();
+        final String name = Keys.getName(parameter);
+        final Appender appender = configuration.getAppender(name);
         if (appender == null) {
             throw new ParameterResolutionException("No appender named " + name);
         }
-        return appender;
+        final Class<? extends Appender> appenderClass = appender.getClass();
+        final Object manager = ReflectionSupport.findMethod(appenderClass, "getManager")
+                .map(method -> ReflectionSupport.invokeMethod(method, appender))
+                .orElseThrow(() -> new ParameterResolutionException("Cannot find getManager() on appender " + appenderClass));
+        final Class<?> parameterType = parameter.getType();
+        if (!parameterType.isInstance(manager)) {
+            throw new ParameterResolutionException("Expected type " + parameterType + " but got type " + manager.getClass());
+        }
+        return manager;
     }
 }

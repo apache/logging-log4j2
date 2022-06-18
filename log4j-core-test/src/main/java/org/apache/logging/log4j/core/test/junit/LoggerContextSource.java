@@ -20,6 +20,7 @@ package org.apache.logging.log4j.core.test.junit;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,7 +43,8 @@ import java.util.concurrent.TimeUnit;
  *     <li>{@link LoggerContext};</li>
  *     <li>{@link Configuration};</li>
  *     <li>{@link Logger} (with a {@link Named} annotation to use a different Logger than the test class;</li>
- *     <li>any subclass of {@link Appender} paired with a {@link Named} annotation to select the appender by name.</li>
+ *     <li>any subclass of {@link Appender} paired with a {@link Named} annotation to select the appender by name;</li>
+ *     <li>any subclass of {@link AbstractManager} paired with a {@link Named} annotation to select the appender by name.</li>
  * </ul>
  *
  * Tests using this extension will automatically be tagged as {@code functional} to indicate they perform functional tests that
@@ -58,6 +60,7 @@ import java.util.concurrent.TimeUnit;
 @ExtendWith(LoggerContextResolver.class)
 @ExtendWith(ConfigurationResolver.class)
 @ExtendWith(AppenderResolver.class)
+@ExtendWith(AppenderManagerResolver.class)
 @ExtendWith(LoggerResolver.class)
 public @interface LoggerContextSource {
     /**
