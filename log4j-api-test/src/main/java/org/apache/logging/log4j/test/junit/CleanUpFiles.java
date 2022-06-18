@@ -17,8 +17,6 @@
 
 package org.apache.logging.log4j.test.junit;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -26,11 +24,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.junit.jupiter.api.extension.ExtendWith;
+
 /**
  * JUnit extension to automatically clean up a list of files before and after test execution.
  * This will automatically retry deletion up to 10 times per file while pausing for 200ms each time.
- * These can be overridden with system properties {@value AbstractFileCleaner#MAX_TRIES_PROPERTY} and
- * {@value AbstractFileCleaner#SLEEP_PERIOD_MILLIS_PROPERTY}.
+ * These can be overridden with system properties {@code log4j2.junit.fileCleanerMaxTries} and
+ * {@code log4j2.junit.fileCleanerSleepPeriodMillis}.
  *
  * @see FileCleaner
  * @see CleanUpDirectories

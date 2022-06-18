@@ -17,24 +17,54 @@
 
 package org.apache.logging.log4j.test.junit;
 
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.platform.commons.support.AnnotationSupport;
-
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collection;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.HashSet;
+
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 class DirectoryCleaner extends AbstractFileCleaner {
     @Override
     Collection<Path> getPathsForTest(final ExtensionContext context) {
-        final Stream<CleanUpDirectories> testClassAnnotation =
-                AnnotationSupport.findAnnotation(context.getTestClass(), CleanUpDirectories.class).stream();
-        final Stream<CleanUpDirectories> testMethodAnnotation =
-                AnnotationSupport.findAnnotation(context.getTestMethod(), CleanUpDirectories.class).stream();
-        return Stream.concat(testClassAnnotation, testMethodAnnotation)
-                .flatMap(annotation -> Stream.of(annotation.value()))
-                .map(Path::of)
-                .collect(Collectors.toSet());
+        final Collection<Path> paths = new HashSet<>();
+        final CleanUpDirectories testClassAnnotation = context.getRequiredTestClass().getAnnotation(CleanUpDirectories.class);
+        if (testClassAnnotation != null) {
+            for (final String path : testClassAnnotation.value()) {
+                paths.add(Paths.get(path));
+            }
+        }
+        final CleanUpDirectories testMethodAnnotation = context.getRequiredTestMethod().getAnnotation(CleanUpDirectories.class);
+        if (testMethodAnnotation != null) {
+            for (final String path : testMethodAnnotation.value()) {
+                paths.add(Paths.get(path));
+            }
+        }
+        return paths;
+    }
+
+    @Override
+    boolean delete(final Path path) throws IOException {
+        if (Files.exists(path) && Files.isDirectory(path)) {
+            Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+                    Files.deleteIfExists(file);
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
+                    Files.deleteIfExists(dir);
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        }
+        return true;
     }
 }
