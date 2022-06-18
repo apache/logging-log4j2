@@ -18,68 +18,46 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.SecureRandom;
-import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.concurrent.CountDownLatch;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
  */
-@Tag("sleepy")
-public class RollingAppenderCronEvery2DirectTest {
+public class RollingAppenderCronEvery2DirectTest extends AbstractRollingListenerTest {
 
     private static final String CONFIG = "log4j-rolling-cron-every2-direct.xml";
     private static final String DIR = "target/rolling-cron-every2Direct";
-    private static final int LOOP_COUNT = 100;
+    private final CountDownLatch rollover = new CountDownLatch(2);
 
     @Test
     @CleanUpDirectories(DIR)
     @LoggerContextSource(value = CONFIG, timeout = 10)
-    public void testAppender(final Logger logger) throws Exception {
-        // TODO Is there a better way to test than putting the thread to sleep all over the place?
-        final long end = System.currentTimeMillis() + 5000;
-        final Random rand = new SecureRandom();
-        rand.setSeed(end);
+    public void testAppender(final Logger logger, @Named("RollingFile") final RollingFileManager manager) throws Exception {
+        manager.addRolloverListener(this);
+        final long end = currentTimeMillis.get() + 5000;
+        final Random rand = new Random(end);
         int count = 1;
         do {
             logger.debug("Log Message {}", count++);
-            Thread.sleep(10 * rand.nextInt(100));
-        } while (System.currentTimeMillis() < end);
-        final Path dir = Path.of(DIR);
-        assertTrue(Files.exists(dir));
-        try (Stream<Path> stream = Files.list(dir)) {
-            assertTrue(stream.findAny().isPresent(), "Directory not created");
-        }
+            currentTimeMillis.addAndGet(10 * rand.nextInt(100));
+        } while (currentTimeMillis.get() < end);
 
-        final int MAX_TRIES = 20;
-        boolean succeeded = false;
-        for (int i = 0; i < MAX_TRIES; i++) {
-            try (Stream<Path> stream = Files.list(dir)) {
-                if (stream.anyMatch(path -> path.toString().endsWith(".gz"))) {
-                    succeeded = true;
-                    break;
-                }
-            }
-            logger.debug("Sleeping #{}", i);
-            Thread.sleep(100); // Allow time for rollover to complete
-        }
-        if (!succeeded) {
-            try (Stream<Path> stream = Files.list(dir)) {
-                final List<String> fileNames = stream.map(Path::getFileName).map(Path::toString).collect(Collectors.toList());
-                fail("No compressed files found; found: " + fileNames);
-            }
-        }
+        rollover.await();
+        final Path dir = Path.of(DIR);
+        assertThat(dir).isNotEmptyDirectory();
+        assertThat(dir).isDirectoryContaining("glob:**.gz");
     }
 
+    @Override
+    public void rolloverComplete(final String fileName) {
+        rollover.countDown();
+    }
 }
