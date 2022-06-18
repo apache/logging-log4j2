@@ -18,34 +18,41 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.util.concurrent.CountDownLatch;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests
  */
-@Tag("sleepy")
-public class RollingNewDirectoryTest {
+public class RollingNewDirectoryTest extends AbstractRollingListenerTest {
     private static final String CONFIG = "log4j-rolling-new-directory.xml";
 
     private static final String DIR = "target/rolling-new-directory";
+    private final CountDownLatch rollover = new CountDownLatch(3);
 
     @Test
     @CleanUpDirectories(DIR)
     @LoggerContextSource(value = CONFIG, timeout = 10)
-    public void streamClosedError(final Logger logger) throws Exception {
+    public void streamClosedError(final Logger logger, @Named("RollingFile") final RollingFileManager manager) throws Exception {
+        manager.addRolloverListener(this);
         for (int i = 0; i < 10; ++i) {
             logger.info("AAA");
-            Thread.sleep(300);
+            currentTimeMillis.addAndGet(300);
         }
+        rollover.await();
         final File dir = new File(DIR);
-        assertNotNull(dir, "No directory created");
-        assertTrue(dir.exists() && dir.listFiles().length > 2, "Child directories not created");
+        assertThat(dir).isNotEmptyDirectory();
+        assertThat(dir.listFiles()).hasSizeGreaterThan(2);
+    }
+
+    @Override
+    public void rolloverComplete(final String fileName) {
+        rollover.countDown();
     }
 }
