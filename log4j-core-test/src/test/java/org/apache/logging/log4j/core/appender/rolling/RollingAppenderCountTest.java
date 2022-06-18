@@ -20,10 +20,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.plugins.Named;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -32,22 +29,21 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Validate rolling with a file pattern that contains leading zeros for the increment.
  */
-@Tag("sleepy")
-@Disabled("https://issues.apache.org/jira/browse/LOG4J2-3522")
-public class RollingAppenderCountTest {
+public class RollingAppenderCountTest extends AbstractRollingListenerTest {
 
     private static final String SOURCE = "src/test/resources/__files";
     private static final String DIR = "target/rolling_count";
     private static final String CONFIG = "log4j-rolling-count.xml";
     private static final String FILENAME = "onStartup.log";
     private static final String TARGET = "rolling_test.log.";
+    private final CountDownLatch latch = new CountDownLatch(16);
 
     @BeforeAll
     public static void beforeClass() throws Exception {
@@ -67,26 +63,25 @@ public class RollingAppenderCountTest {
         Files.copy(Paths.get(SOURCE, FILENAME), target, StandardCopyOption.COPY_ATTRIBUTES);
     }
 
-    @AfterAll
-    public static void afterClass() throws Exception {
-        int count = Objects.requireNonNull(new File(DIR).listFiles()).length;
-        assertEquals(17, count, "Expected 16 files, got " + count);
-        Path dir = Path.of(DIR);
-        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(dir)) {
-            for (final Path path : directoryStream) {
-                Files.delete(path);
-            }
-        }
-        Files.delete(dir);
-    }
-
     @Test
     @LoggerContextSource(value = CONFIG, timeout = 10)
-    public void testLog(final @Named("TestLog") Logger logger) throws Exception {
+    public void testLog(final @Named("LogTest") Logger logger, @Named("RollingFile") final RollingFileManager manager) throws Exception {
+        manager.addRolloverListener(this);
         for (long i = 0; i < 60; ++i) {
-            logger.info("Sequence: " + i);
-            logger.debug(RandomStringUtils.randomAscii(128, 512));
-            Thread.sleep(250);
+            logger.info("Sequence: {}", i);
+            logger.debug(RandomStringUtils.randomAscii(512));
+            logger.debug(RandomStringUtils.randomAscii(512));
         }
+
+        latch.await();
+
+        final File dir = new File(DIR);
+        assertThat(dir).isNotEmptyDirectory();
+        assertThat(dir.listFiles()).hasSize(17);
+    }
+
+    @Override
+    public void rolloverComplete(final String fileName) {
+        latch.countDown();
     }
 }
