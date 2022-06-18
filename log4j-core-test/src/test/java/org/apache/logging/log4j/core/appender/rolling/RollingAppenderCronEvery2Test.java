@@ -18,69 +18,50 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
-import org.hamcrest.Matcher;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.security.SecureRandom;
+import java.nio.file.Path;
 import java.util.Random;
+import java.util.concurrent.CountDownLatch;
 
-import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
  */
-@Tag("sleepy")
-public class RollingAppenderCronEvery2Test {
+public class RollingAppenderCronEvery2Test extends AbstractRollingListenerTest {
 
     private static final String CONFIG = "log4j-rolling-cron-every2.xml";
     private static final String DIR = "target/rolling-cron-every2";
     private static final String FILE = "target/rolling-cron-every2/rollingtest.log";
+    private final CountDownLatch rollover = new CountDownLatch(3);
 
     @Test
     @CleanUpDirectories(DIR)
     @LoggerContextSource(value = CONFIG, timeout = 10)
-    public void testAppender(final Logger logger) throws Exception {
-        // TODO Is there a better way to test than putting the thread to sleep all over the place?
-        final File file = new File(FILE);
-        assertTrue(file.exists(), "Log file does not exist");
-        final long end = System.currentTimeMillis() + 5000;
-        final Random rand = new SecureRandom();
-        rand.setSeed(end);
+    public void testAppender(final Logger logger, @Named("RollingFile") final RollingFileManager manager) throws Exception {
+        manager.addRolloverListener(this);
+        assertThat(Path.of(FILE)).exists();
+        final long end = currentTimeMillis.get() + 5000;
+        final Random rand = new Random(end);
         int count = 1;
         do {
             logger.debug("Log Message {}", count++);
-            Thread.sleep(10 * rand.nextInt(100));
-        } while (System.currentTimeMillis() < end);
-        final File dir = new File(DIR);
-        assertTrue(dir.exists() && dir.listFiles().length > 0, "Directory not created");
+            currentTimeMillis.addAndGet(10 * rand.nextInt(100));
+        } while (currentTimeMillis.get() < end);
 
-        final int MAX_TRIES = 20;
-        final Matcher<File[]> hasGzippedFile = hasItemInArray(that(hasName(that(endsWith(".gz")))));
-        boolean succeeded = false;
-        for (int i = 0; i < MAX_TRIES; i++) {
-            final File[] files = dir.listFiles();
-            if (hasGzippedFile.matches(files)) {
-                succeeded = true;
-                break;
-            }
-            logger.debug("Sleeping #" + i);
-            Thread.sleep(100); // Allow time for rollover to complete
-        }
-        if (!succeeded) {
-            final File[] files = dir.listFiles();
-            for (final File dirFile : files) {
-                logger.error("Found file: " + dirFile.getPath());
-            }
-            fail("No compressed files found");
-        }
+        rollover.await();
+
+        final Path dir = Path.of(DIR);
+        assertThat(dir).exists();
+        assertThat(dir).isNotEmptyDirectory();
+        assertThat(dir).isDirectoryContaining("glob:**.gz");
     }
 
+    @Override
+    public void rolloverComplete(final String fileName) {
+        rollover.countDown();
+    }
 }
