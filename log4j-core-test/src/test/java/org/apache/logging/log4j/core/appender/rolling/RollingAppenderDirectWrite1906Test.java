@@ -19,36 +19,35 @@ package org.apache.logging.log4j.core.appender.rolling;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  *
  */
-@Tag("sleepy")
-public class RollingAppenderDirectWrite1906Test {
+public class RollingAppenderDirectWrite1906Test extends AbstractRollingListenerTest {
 
     private static final String CONFIG = "log4j-rolling-direct-1906.xml";
 
     private static final String DIR = "target/rolling-direct-1906";
+    private final CountDownLatch rollover = new CountDownLatch(2);
 
     @BeforeAll
     static void beforeAll() {
@@ -58,48 +57,39 @@ public class RollingAppenderDirectWrite1906Test {
     @Test
     @CleanUpDirectories(DIR)
     @LoggerContextSource(value = CONFIG, timeout = 10)
-    public void testAppender(final LoggerContext context) throws Exception {
+    public void testAppender(final LoggerContext context, @Named("RollingFile") final RollingFileManager manager) throws Exception {
+        manager.addRolloverListener(this);
         final var logger = context.getLogger(getClass());
         int count = 100;
-        for (int i=0; i < count; ++i) {
+        for (int i = 0; i < count; ++i) {
             logger.debug("This is test message number " + i);
-            Thread.sleep(50);
+            currentTimeMillis.addAndGet(50);
         }
-        Thread.sleep(50);
-        final File dir = new File(DIR);
-        assertTrue(dir.exists() && dir.listFiles().length > 0, "Directory not created");
-        final File[] files = dir.listFiles();
-        assertNotNull(files);
-        assertThat(files, hasItemInArray(that(hasName(that(endsWith(".log"))))));
-        int found = 0;
-        for (File file: files) {
-            String actual = file.getName();
-            BufferedReader reader = new BufferedReader(new FileReader(file));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                assertNotNull(line, "No log event in file " + actual);
-                String[] parts = line.split((" "));
-                String expected = "rollingfile." + parts[0] + ".log";
+        rollover.await();
+        final Path dir = Path.of(DIR);
+        assertThat(dir).isNotEmptyDirectory();
+        assertThat(dir).isDirectoryContaining("glob:**.log");
 
-                assertEquals(expected, actual, logFileNameError(expected, actual));
-                ++found;
-            }
-            reader.close();
+        try (final Stream<Path> files = Files.list(dir)) {
+            final AtomicInteger found = new AtomicInteger();
+            assertThat(files).allSatisfy(file -> {
+                final String expected = file.getFileName().toString();
+                try (final Stream<String> stream = Files.lines(file)) {
+                    final List<String> lines = stream
+                            .map(line -> String.format("rollingfile.%s.log", line.substring(0, line.indexOf(' '))))
+                            .collect(Collectors.toList());
+                    found.addAndGet(lines.size());
+                    assertThat(lines).allSatisfy(actual -> assertThat(actual).isEqualTo(expected));
+                }
+            });
+            assertEquals(count, found.get(), "Incorrect number of events read. Expected " + count + ", Actual " + found.get());
         }
-        assertEquals(count, found, "Incorrect number of events read. Expected " + count + ", Actual " + found);
-
     }
 
 
-    private String logFileNameError(String expected, String actual) {
-        final List<StatusData> statusData = StatusLogger.getLogger().getStatusData();
-        final StringBuilder sb = new StringBuilder();
-        for (StatusData statusItem : statusData) {
-            sb.append(statusItem.getFormattedStatus());
-            sb.append("\n");
-        }
-        sb.append("Incorrect file name. Expected: ").append(expected).append(" Actual: ").append(actual);
-        return sb.toString();
+    @Override
+    public void rolloverComplete(final String fileName) {
+        rollover.countDown();
     }
 
     private static class NoopStatusListener implements StatusListener {
