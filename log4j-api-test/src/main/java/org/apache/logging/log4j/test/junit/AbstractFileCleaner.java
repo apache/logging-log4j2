@@ -18,7 +18,6 @@
 package org.apache.logging.log4j.test.junit;
 
 import org.apache.commons.io.file.PathUtils;
-import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
@@ -35,18 +34,13 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
-abstract class AbstractFileCleaner implements BeforeEachCallback, AfterEachCallback {
+abstract class AbstractFileCleaner implements BeforeEachCallback {
 
     public static final String MAX_TRIES_PROPERTY = "log4j2.junit.fileCleanerMaxTries";
     public static final String SLEEP_PERIOD_MILLIS_PROPERTY = "log4j2.junit.fileCleanerSleepPeriodMillis";
 
     @Override
     public void beforeEach(final ExtensionContext context) throws Exception {
-        clean(context);
-    }
-
-    @Override
-    public void afterEach(final ExtensionContext context) throws Exception {
         clean(context);
     }
 
