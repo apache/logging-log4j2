@@ -17,34 +17,27 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.util.CronExpression;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
-import org.hamcrest.Matcher;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Calendar;
+import java.time.Duration;
+import java.time.ZonedDateTime;
+import java.util.concurrent.CountDownLatch;
 
-import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
-import static org.hamcrest.Matchers.endsWith;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
- * This test currently takes about a minute to run.
- */
-@Tag("sleepy")
-public class RollingAppenderCronOnceADayTest {
+public class RollingAppenderCronOnceADayTest extends AbstractRollingListenerTest {
 
     private static final int CRON_DELAY = 10;
     private static final String CONFIG = "log4j-rolling-cron-once-a-day.xml";
@@ -55,66 +48,58 @@ public class RollingAppenderCronOnceADayTest {
     private static final String TARGET_TEST_CLASSES = TARGET + "/test-classes";
 
     private static String cronExpression;
-    private static long remainingTime;
+    private static Duration remainingTime;
+    private final CountDownLatch rollover = new CountDownLatch(1);
 
     @BeforeAll
     public static void beforeClass() throws Exception {
-      final Path src = FileSystems.getDefault().getPath(TARGET_TEST_CLASSES, CONFIG);
-      String content = Files.readString(src);
-      final Calendar cal = Calendar.getInstance();
-      cal.add(Calendar.SECOND, CRON_DELAY);
-      remainingTime = cal.getTimeInMillis() - System.currentTimeMillis();
-      cronExpression =  String.format("%d %d %d * * ?",
-          cal.get(Calendar.SECOND),
-          cal.get(Calendar.MINUTE),
-          cal.get(Calendar.HOUR_OF_DAY));
-      content = content.replace("@CRON_EXPR@", cronExpression);
-      Files.write(FileSystems.getDefault()
-            .getPath(TARGET_TEST_CLASSES, CONFIG_TARGET), content.getBytes(StandardCharsets.UTF_8));
-      StatusLogger.getLogger().debug("Cron expression will be " + cronExpression + " in " + remainingTime + "ms");
+        final Path src = FileSystems.getDefault().getPath(TARGET_TEST_CLASSES, CONFIG);
+        String content = Files.readString(src);
+        final ZonedDateTime now = ZonedDateTime.now();
+        final ZonedDateTime end = now.plusSeconds(CRON_DELAY);
+        remainingTime = Duration.between(now, end);
+        cronExpression = String.format("%d %d %d * * ?", end.getSecond(), end.getMinute(), end.getHour());
+        content = content.replace("@CRON_EXPR@", cronExpression);
+        Files.writeString(Path.of(TARGET_TEST_CLASSES, CONFIG_TARGET), content);
+        StatusLogger.getLogger().debug("Cron expression will be " + cronExpression + " in " + remainingTime);
     }
 
     @Test
     @CleanUpDirectories(DIR)
     @LoggerContextSource(value = CONFIG_TARGET, timeout = 10)
-    public void testAppender(final Logger logger, @Named("RollingFile") final RollingFileAppender app) throws Exception {
-        // TODO Is there a better way to test than putting the thread to sleep all over the place?
+    public void testAppender(final Logger logger, @Named("RollingFile") final RollingFileManager manager) throws Exception {
+        manager.addRolloverListener(this);
         final File file = new File(FILE);
         assertTrue(file.exists(), "Log file does not exist");
         logger.debug("This is test message number 1, waiting for rolling");
 
-        final TriggeringPolicy policy = app.getManager().getTriggeringPolicy();
-        assertNotNull(policy, "No triggering policy");
-        assertTrue(policy instanceof CronTriggeringPolicy, "Incorrect policy type");
+        final TriggeringPolicy policy = manager.getTriggeringPolicy();
+        assertThat(policy).isInstanceOf(CronTriggeringPolicy.class);
         final CronExpression expression = ((CronTriggeringPolicy) policy).getCronExpression();
-        assertEquals(cronExpression, expression.getCronExpression(), "Incorrect cron expresion");
+        assertEquals(cronExpression, expression.getCronExpression(), "Incorrect cron expression");
         logger.debug("Cron expression will be {}", expression.getCronExpression());
 
-        // force a reconfiguration
+        // force a rollover
+        final long delta = remainingTime.dividedBy(20).toMillis();
         for (int i = 1; i <= 20; ++i) {
             logger.debug("Adding first event {}", i);
+            currentTimeMillis.addAndGet(delta);
         }
 
-        Thread.sleep(remainingTime);
+        rollover.await();
         final File dir = new File(DIR);
-        assertTrue(dir.exists() && dir.listFiles().length > 0, "Directory not created");
+        assertThat(dir).isNotEmptyDirectory();
 
         for (int i = 1; i < 5; i++) {
-          logger.debug("Adding some more event {}", i);
-          Thread.sleep(1000);
+            logger.debug("Adding some more event {}", i);
+            currentTimeMillis.addAndGet(1000);
         }
-        final Matcher<File> hasGzippedFile = hasName(that(endsWith(".gz")));
-        int count = 0;
-        final File[] files = dir.listFiles();
-        assertNotNull(files);
-        for (final File generatedFile : files) {
-          if (hasGzippedFile.matches(generatedFile)) {
-              count++;
-          }
-        }
-
-        assertNotEquals(0, count, "No compressed files found");
-        assertEquals(1, count, "Multiple files found");
+        assertThat(dir).isDirectoryContaining("glob:**.gz");
+        assertThat(dir.listFiles(pathname -> pathname.getName().endsWith(".gz"))).hasSize(1);
     }
 
+    @Override
+    public void rolloverComplete(final String fileName) {
+        rollover.countDown();
+    }
 }
