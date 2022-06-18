@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.core.appender.rolling;
 
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -25,6 +26,7 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class CronTriggeringPolicyTest {
@@ -79,8 +81,13 @@ public class CronTriggeringPolicyTest {
      */
     @Test
     public void testLoggerContextAndBuilder() {
-        Configurator.initialize(configuration);
-        testBuilder();
+        assertDoesNotThrow(() ->
+        {
+            try (LoggerContext ignored = Configurator.initialize(configuration)) {
+                testBuilder();
+            }
+        });
+
     }
 
     /**
@@ -89,6 +96,7 @@ public class CronTriggeringPolicyTest {
     @Test
     public void testRollingRandomAccessFileAppender() {
         // @formatter:off
+        assertDoesNotThrow(() ->
         RollingRandomAccessFileAppender.newBuilder()
             .setName("test2")
             .setFileName("target/testcmd2.log")
@@ -96,7 +104,7 @@ public class CronTriggeringPolicyTest {
             .setPolicy(createPolicy())
             .setStrategy(createStrategy())
             .setConfiguration(configuration)
-            .build();
+            .build());
         // @formatter:on
     }
 
@@ -106,8 +114,8 @@ public class CronTriggeringPolicyTest {
      */
     @Test
     public void testBuilderSequence() {
-        testBuilder();
-        testBuilder();
+        assertDoesNotThrow(this::testBuilder);
+        assertDoesNotThrow(this::testBuilder);
     }
 
     private void testFactoryMethod() {
@@ -117,6 +125,7 @@ public class CronTriggeringPolicyTest {
         try (RollingFileManager fileManager = RollingFileManager.getFileManager("target/testcmd3.log",
                 "target/testcmd3.log.%d{yyyy-MM-dd}", true, true, triggerPolicy, rolloverStrategy, null,
                 PatternLayout.createDefaultLayout(), 0, true, false, null, null, null, configuration)) {
+            assertNotNull(fileManager);
             // trigger rollover
             fileManager.initialize();
             fileManager.rollover();
@@ -129,12 +138,12 @@ public class CronTriggeringPolicyTest {
      */
     @Test
     public void testFactoryMethodOnce() {
-        testFactoryMethod();
+        assertDoesNotThrow(this::testFactoryMethod);
     }
 
     @Test
     public void testFactoryMethodSequence() {
-        testFactoryMethod();
-        testFactoryMethod();
+        assertDoesNotThrow(this::testFactoryMethod);
+        assertDoesNotThrow(this::testFactoryMethod);
     }
 }
