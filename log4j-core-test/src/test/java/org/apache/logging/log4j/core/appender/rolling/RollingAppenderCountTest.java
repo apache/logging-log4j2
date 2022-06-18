@@ -43,7 +43,7 @@ public class RollingAppenderCountTest extends AbstractRollingListenerTest {
     private static final String CONFIG = "log4j-rolling-count.xml";
     private static final String FILENAME = "onStartup.log";
     private static final String TARGET = "rolling_test.log.";
-    private final CountDownLatch latch = new CountDownLatch(16);
+    private final CountDownLatch rollover = new CountDownLatch(16);
 
     @BeforeAll
     public static void beforeClass() throws Exception {
@@ -73,7 +73,7 @@ public class RollingAppenderCountTest extends AbstractRollingListenerTest {
             logger.debug(RandomStringUtils.randomAscii(512));
         }
 
-        latch.await();
+        rollover.await();
 
         final File dir = new File(DIR);
         assertThat(dir).isNotEmptyDirectory();
@@ -82,6 +82,6 @@ public class RollingAppenderCountTest extends AbstractRollingListenerTest {
 
     @Override
     public void rolloverComplete(final String fileName) {
-        latch.countDown();
+        rollover.countDown();
     }
 }
