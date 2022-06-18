@@ -19,43 +19,29 @@ package org.apache.logging.log4j.core.appender.rolling;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.apache.logging.log4j.core.time.Clock;
-import org.apache.logging.log4j.plugins.Factory;
+import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
-import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.locks.LockSupport;
+import java.util.concurrent.CountDownLatch;
 
-import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  *
  */
-public class RollingAppenderTimeTest {
+public class RollingAppenderTimeTest extends AbstractRollingListenerTest {
 
     private static final String CONFIG = "log4j-rolling2.xml";
     private static final String DIR = "target/rolling2";
-
-    private final AtomicLong currentTimeMillis = new AtomicLong(System.currentTimeMillis());
-
-    @Factory
-    Clock clock() {
-        return currentTimeMillis::get;
-    }
+    private final CountDownLatch rollover = new CountDownLatch(1);
 
     @Test
     @CleanUpDirectories(DIR)
     @LoggerContextSource(value = CONFIG, timeout = 10)
-    public void testAppender(final LoggerContext context) throws Exception {
+    public void testAppender(final LoggerContext context, @Named("RollingFile") final RollingFileManager manager) throws Exception {
+        manager.addRolloverListener(this);
         final Logger logger = context.getLogger(getClass());
         logger.debug("This is test message number 1");
         currentTimeMillis.addAndGet(1500);
@@ -64,20 +50,14 @@ public class RollingAppenderTimeTest {
             logger.debug("This is test message number {}", i + 1);
             currentTimeMillis.addAndGet(100);
         }
+        rollover.await();
         final File dir = new File(DIR);
-        assertThat(dir).exists().isDirectory();
-        assertThat(dir.listFiles()).isNotEmpty();
+        assertThat(dir).isNotEmptyDirectory();
+        assertThat(dir).isDirectoryContaining("glob:**.gz");
+    }
 
-        final int MAX_TRIES = 20;
-        final Matcher<File[]> hasGzippedFile = hasItemInArray(that(hasName(that(endsWith(".gz")))));
-        for (int i = 0; i < MAX_TRIES; i++) {
-            final File[] files = dir.listFiles();
-            if (hasGzippedFile.matches(files)) {
-                return; // test succeeded
-            }
-            logger.debug("Adding additional event {}", i);
-            LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(100)); // Allow time for rollover to complete
-        }
-        fail("No compressed files found");
+    @Override
+    public void rolloverComplete(final String fileName) {
+        rollover.countDown();
     }
 }
