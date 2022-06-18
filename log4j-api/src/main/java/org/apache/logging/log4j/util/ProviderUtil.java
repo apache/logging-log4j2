@@ -16,18 +16,18 @@
  */
 package org.apache.logging.log4j.util;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.spi.Provider;
-import org.apache.logging.log4j.status.StatusLogger;
-
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Properties;
-import java.util.ServiceLoader;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.spi.Provider;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * <em>Consider this class private.</em> Utility class for Log4j {@link Provider}s. When integrating with an application
@@ -63,9 +63,8 @@ public final class ProviderUtil {
 
     private ProviderUtil() {
         PROVIDERS.addAll(ServiceRegistry.getInstance()
-                .getServices(Provider.class, layer -> ServiceLoader.load(layer, Provider.class),
-                        provider -> validVersion(provider.getVersions())));
-        for (final LoaderUtil.UrlResource resource : LoaderUtil.findUrlResources(PROVIDER_RESOURCE)) {
+                .getServices(Provider.class, MethodHandles.lookup(), provider -> validVersion(provider.getVersions())));
+        for (final LoaderUtil.UrlResource resource : LoaderUtil.findUrlResources(PROVIDER_RESOURCE, false)) {
             loadProvider(resource.getUrl(), resource.getClassLoader());
         }
     }

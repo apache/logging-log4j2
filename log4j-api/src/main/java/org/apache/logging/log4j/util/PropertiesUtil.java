@@ -18,12 +18,13 @@ package org.apache.logging.log4j.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodHandles.Lookup;
 import java.nio.charset.Charset;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -73,7 +74,11 @@ public final class PropertiesUtil {
      * @param propertiesFileName the location of properties file to load
      */
     public PropertiesUtil(final String propertiesFileName) {
-        this.environment = new Environment(new PropertyFilePropertySource(propertiesFileName));
+        this(propertiesFileName, true);
+    }
+
+    private PropertiesUtil(final String propertiesFileName, final boolean useTccl) {
+        this.environment = new Environment(new PropertyFilePropertySource(propertiesFileName, useTccl));
     }
 
     /**
@@ -455,9 +460,7 @@ public final class PropertiesUtil {
             }
             sources.add(propertySource);
             final ServiceRegistry registry = ServiceRegistry.getInstance();
-            sources.addAll(registry.getServices(PropertySource.class,
-                    layer -> ServiceLoader.load(layer, PropertySource.class),
-                    null));
+            sources.addAll(registry.getServices(PropertySource.class, MethodHandles.lookup(), null));
             reload();
         }
 

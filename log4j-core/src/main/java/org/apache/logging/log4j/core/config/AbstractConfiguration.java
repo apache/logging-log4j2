@@ -16,6 +16,26 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.lang.invoke.MethodHandles;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
@@ -64,26 +84,6 @@ import org.apache.logging.log4j.util.LazyValue;
 import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ServiceRegistry;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.ServiceLoader;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * The base Configuration. Many configuration implementations will extend this class.
@@ -271,8 +271,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private void initializeScriptManager() {
         try {
             ServiceRegistry.getInstance()
-                    .getServices(ScriptManagerFactory.class, layer -> ServiceLoader.load(layer, ScriptManagerFactory.class),
-                            null)
+                    .getServices(ScriptManagerFactory.class, MethodHandles.lookup(), null)
                     .stream()
                     .findFirst()
                     .ifPresent(factory -> setScriptManager(factory.createScriptManager(this, getWatchManager())));

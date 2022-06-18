@@ -353,7 +353,11 @@ public final class LoaderUtil {
      * @since 2.1
      */
     public static Collection<URL> findResources(final String resource) {
-        final Collection<UrlResource> urlResources = findUrlResources(resource);
+        return findResources(resource, true);
+    }
+
+    static Collection<URL> findResources(final String resource, final boolean useTccl) {
+        final Collection<UrlResource> urlResources = findUrlResources(resource, useTccl);
         final Collection<URL> resources = new LinkedHashSet<>(urlResources.size());
         for (final UrlResource urlResource : urlResources) {
             resources.add(urlResource.getUrl());
@@ -368,7 +372,7 @@ public final class LoaderUtil {
      * @param resource The resource to locate.
      * @return The located resources.
      */
-    static Collection<UrlResource> findUrlResources(final String resource) {
+    static Collection<UrlResource> findUrlResources(final String resource, boolean useTccl) {
         // @formatter:off
         final ClassLoader[] candidates = {
                 getThreadContextClassLoader(),

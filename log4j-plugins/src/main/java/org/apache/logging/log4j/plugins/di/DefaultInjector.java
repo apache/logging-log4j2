@@ -45,6 +45,7 @@ import org.apache.logging.log4j.util.ServiceRegistry;
 import org.apache.logging.log4j.util.StringBuilders;
 
 import java.lang.annotation.Annotation;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
@@ -100,7 +101,7 @@ class DefaultInjector implements Injector {
     @Override
     public void init() {
         final List<InjectorCallback> callbacks = ServiceRegistry.getInstance()
-                .getServices(InjectorCallback.class, layer -> ServiceLoader.load(layer, InjectorCallback.class), null);
+                .getServices(InjectorCallback.class, MethodHandles.lookup(), null);
         callbacks.sort(InjectorCallback.COMPARATOR);
         for (final InjectorCallback callback : callbacks) {
             try {

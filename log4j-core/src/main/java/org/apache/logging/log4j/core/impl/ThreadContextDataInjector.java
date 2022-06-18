@@ -16,6 +16,15 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedDeque;
+
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.config.Property;
@@ -24,15 +33,6 @@ import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.ServiceRegistry;
 import org.apache.logging.log4j.util.StringMap;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ServiceLoader;
-import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * {@code ThreadContextDataInjector} contains a number of strategies for copying key-value pairs from the various
@@ -71,7 +71,7 @@ public class ThreadContextDataInjector {
     private static List<ContextDataProvider> getServiceProviders() {
         final List<ContextDataProvider> providers = new ArrayList<>();
         final List<ContextDataProvider> services = ServiceRegistry.getInstance()
-                .getServices(ContextDataProvider.class, layer -> ServiceLoader.load(layer, ContextDataProvider.class), null);
+                .getServices(ContextDataProvider.class, MethodHandles.lookup(), null);
         for (final ContextDataProvider provider : services) {
             if (providers.stream().noneMatch((p) -> p.getClass().isAssignableFrom(provider.getClass()))) {
                 providers.add(provider);

@@ -17,12 +17,12 @@
 
 package org.apache.logging.log4j.util;
 
+import java.lang.invoke.MethodHandles.Lookup;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -56,27 +56,27 @@ public class ServiceRegistry {
     }
 
     /**
-     * Gets service instances loaded from the calling context and any previously registered bundle services.
-     * The {@code loaderCallerContext} parameter is provided to ensure the caller can specify which calling
-     * function context to load services.
+     * Gets service instances loaded from the calling context and any previously registered bundle services. The {@code loaderCallerContext} parameter is
+     * provided to ensure the caller can specify which calling function context to
+     * load services.
      *
      * @param serviceType         service class
-     * @param loaderCallerContext function located in same module as caller context to use for loading services
-     * @param validator           if non-null, used to validate service instances, removing invalid instances from the returned list
+     * @param loaderCallerContext function located in same module as caller context
+     *                            to use for loading services
+     * @param validator           if non-null, used to validate service instances,
+     *                            removing invalid instances from the returned list
      * @param <S>                 type of service
      * @return loaded service instances
      */
-    public <S> List<S> getServices(
-            final Class<S> serviceType, final Function<ModuleLayer, ServiceLoader<S>> loaderCallerContext,
-            final Predicate<S> validator) {
+    public <S> List<S> getServices(final Class<S> serviceType, final Lookup lookup, final Predicate<S> validator) {
         final List<S> services = cast(mainServices.computeIfAbsent(serviceType,
-                ignored -> ServiceLoaderUtil.loadServices(serviceType, loaderCallerContext, validator)));
-        return Stream.concat(services.stream(), bundleServices.values().stream()
-                        .flatMap(map -> {
-                            final Stream<S> stream = map.getOrDefault(serviceType, List.of()).stream().map(serviceType::cast);
-                            return validator != null ? stream.filter(validator) : stream;
-                        }))
-                .distinct().collect(Collectors.toCollection(ArrayList::new));
+                ignored -> ServiceLoaderUtil.loadServices(serviceType, lookup)
+                        .filter(validator != null ? validator : unused -> true)
+                        .collect(Collectors.toList())));
+        return Stream.concat(services.stream(), bundleServices.values().stream().flatMap(map -> {
+            final Stream<S> stream = map.getOrDefault(serviceType, List.of()).stream().map(serviceType::cast);
+            return validator != null ? stream.filter(validator) : stream;
+        })).distinct().collect(Collectors.toCollection(ArrayList::new));
     }
 
     /**

@@ -29,12 +29,16 @@ import java.util.Properties;
 public class PropertyFilePropertySource extends PropertiesPropertySource {
 
     public PropertyFilePropertySource(final String fileName) {
-        super(loadPropertiesFile(fileName));
+        this(fileName, true);
     }
 
-    private static Properties loadPropertiesFile(final String fileName) {
+    public PropertyFilePropertySource(final String fileName, final boolean useTccl) {
+        super(loadPropertiesFile(fileName, useTccl));
+    }
+
+    private static Properties loadPropertiesFile(final String fileName, final boolean useTccl) {
         final Properties props = new Properties();
-        for (final URL url : LoaderUtil.findResources(fileName)) {
+        for (final URL url : LoaderUtil.findResources(fileName, useTccl)) {
             try (final InputStream in = url.openStream()) {
                 props.load(in);
             } catch (final IOException e) {

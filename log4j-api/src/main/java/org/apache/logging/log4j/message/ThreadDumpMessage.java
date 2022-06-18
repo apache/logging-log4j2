@@ -16,18 +16,18 @@
  */
 package org.apache.logging.log4j.message;
 
+import java.io.InvalidObjectException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
+import java.lang.invoke.MethodHandles;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Supplier;
+
 import org.apache.logging.log4j.util.LazyValue;
 import org.apache.logging.log4j.util.ServiceRegistry;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.Strings;
-
-import java.io.InvalidObjectException;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ServiceLoader;
-import java.util.function.Supplier;
 
 /**
  * Captures information about all running Threads.
@@ -37,7 +37,7 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
     private static final long serialVersionUID = -1103400781608841088L;
     private static final Supplier<ThreadInfoFactory> FACTORY = new LazyValue<>(() -> {
         final var services = ServiceRegistry.getInstance()
-                .getServices(ThreadInfoFactory.class, layer -> ServiceLoader.load(layer, ThreadInfoFactory.class), null);
+                .getServices(ThreadInfoFactory.class, MethodHandles.lookup(), null);
         return services.isEmpty() ? new BasicThreadInfoFactory() : services.get(0);
     });
 
