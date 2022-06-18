@@ -20,45 +20,33 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.apache.logging.log4j.core.time.Clock;
-import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.concurrent.Phaser;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.CountDownLatch;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@Disabled("https://issues.apache.org/jira/browse/LOG4J2-3449")
-public class RollingDirectTimeNewDirectoryTest implements RolloverListener {
+public class RollingDirectTimeNewDirectoryTest extends AbstractRollingListenerTest {
 
     private static final String CONFIG = "log4j-rolling-folder-direct.xml";
 
     // Note that the path is hardcoded in the configuration!
     private static final String DIR = "target/rolling-folder-direct";
-    private final AtomicLong currentTimeMillis = new AtomicLong(System.currentTimeMillis());
-    private final Phaser phaser = new Phaser(3);
-
-    @Factory
-    Clock clock() {
-        return currentTimeMillis::get;
-    }
+    private final CountDownLatch rollover = new CountDownLatch(2);
 
     @Test
     @CleanUpDirectories(DIR)
     @LoggerContextSource(value = CONFIG, timeout = 15)
-    public void streamClosedError(final LoggerContext context, @Named("RollingFile") final RollingFileAppender appender) throws Exception {
-        appender.getManager().addRolloverListener(this);
+    public void streamClosedError(final LoggerContext context, @Named("RollingFile") final RollingFileManager manager) throws Exception {
+        manager.addRolloverListener(this);
 
         final Logger logger = context.getLogger(RollingDirectTimeNewDirectoryTest.class.getName());
 
@@ -72,9 +60,10 @@ public class RollingDirectTimeNewDirectoryTest implements RolloverListener {
             logger.info("nHq6p9kgfvWfjzDRYbZp");
         }
 
-        phaser.arriveAndAwaitAdvance();
+        rollover.await();
 
         File logDir = new File(DIR);
+        assertThat(logDir).isNotEmptyDirectory();
         File[] logFolders = logDir.listFiles();
         assertNotNull(logFolders);
         Arrays.sort(logFolders);
@@ -89,10 +78,10 @@ public class RollingDirectTimeNewDirectoryTest implements RolloverListener {
                 if (logFiles != null) {
                     Arrays.sort(logFiles);
                 }
-                assertThat(logFiles).isNotNull().isNotEmpty();
+                assertThat(logFiles).isNotEmpty();
             }
 
-        } catch (AssertionFailedError error) {
+        } catch (AssertionError error) {
             StringBuilder sb = new StringBuilder(error.getMessage()).append(" log directory (").append(DIR).append(") contents: [");
             final Iterator<File> fileIterator =
                     FileUtils.iterateFilesAndDirs(
@@ -113,11 +102,7 @@ public class RollingDirectTimeNewDirectoryTest implements RolloverListener {
     }
 
     @Override
-    public void rolloverTriggered(final String fileName) {
-    }
-
-    @Override
     public void rolloverComplete(final String fileName) {
-        phaser.arriveAndDeregister();
+        rollover.countDown();
     }
 }
