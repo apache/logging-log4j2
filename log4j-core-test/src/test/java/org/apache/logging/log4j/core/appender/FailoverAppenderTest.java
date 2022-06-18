@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @LoggerContextSource("log4j-failover.xml")
+@Tag("sleepy")
 public class FailoverAppenderTest {
     private final ListAppender app;
     private final FailOnceAppender foApp;
