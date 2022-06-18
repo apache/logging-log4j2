@@ -18,51 +18,52 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.concurrent.CountDownLatch;
 
-import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * LOG4J2-1804.
  */
-@Tag("sleepy")
-public class RollingAppenderCronAndSizeTest {
+public class RollingAppenderCronAndSizeTest extends AbstractRollingListenerTest {
 
   private static final String CONFIG = "log4j-rolling-cron-and-size.xml";
 
     private static final String DIR = "target/rolling-cron-size";
+	// we'll probably roll over more than 30 times, but that's a sufficient amount of test data
+	private final CountDownLatch rollover = new CountDownLatch(30);
 
 	@Test
 	@CleanUpDirectories(DIR)
 	@LoggerContextSource(value = CONFIG, timeout = 10)
-	public void testAppender(final Logger logger) throws Exception {
-		Random rand = new Random();
+	public void testAppender(final Logger logger, @Named("RollingFile") final RollingFileManager manager) throws Exception {
+		manager.addRolloverListener(this);
+		Random rand = new Random(currentTimeMillis.get());
 		for (int j=0; j < 100; ++j) {
 			int count = rand.nextInt(100);
 			for (int i = 0; i < count; ++i) {
-				logger.debug("This is test message number " + i);
+				logger.debug("This is test message number {}", i);
 			}
-			Thread.sleep(rand.nextInt(50));
+			currentTimeMillis.addAndGet(rand.nextInt(50));
 		}
-		Thread.sleep(50);
+
+		rollover.await();
+
 		final File dir = new File(DIR);
-		assertTrue(dir.exists() && dir.listFiles().length > 0, "Directory not created");
+		assertThat(dir).isNotEmptyDirectory();
+		assertThat(dir).isDirectoryContaining("glob:**.log");
 		final File[] files = dir.listFiles();
-		Arrays.sort(files);
 		assertNotNull(files);
-		assertThat(files, hasItemInArray(that(hasName(that(endsWith(".log"))))));
-		int found = 0;
+		Arrays.sort(files);
 		int fileCounter = 0;
 		String previous = "";
 		for (final File file: files) {
@@ -72,9 +73,12 @@ public class RollingAppenderCronAndSizeTest {
 			previous = fileParts[1];
 			assertEquals(Integer.toString(fileCounter), fileParts[2],
 					"Incorrect file name. Expected counter value of " + fileCounter + " in " + actual);
-
-
 		}
 
+	}
+
+	@Override
+	public void rolloverComplete(final String fileName) {
+		rollover.countDown();
 	}
 }
