@@ -160,6 +160,9 @@
       <action issue="LOG4J2-3531" dev="pkarwasz" type="fix" due-to="Simo Nikula, Piotr P. Karwasz">
         Fix parsing error, when XInclude is disabled.
       </action>
+      <action issue="LOG4J2-3537" dev="pavel_k" type="fix" due-to="Pavel_K">
+        Fixes problem with wrong ANSI escape code for bright colors
+      </action>
       <action issue="LOG4J2-3538" dev="pavel_k" type="add" due-to="Pavel_K">
         Add support for 24 colors in highlighting
       </action>      
