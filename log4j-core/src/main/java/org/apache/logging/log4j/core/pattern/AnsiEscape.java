@@ -22,6 +22,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.logging.log4j.core.util.Patterns;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.EnglishEnums;
 import org.apache.logging.log4j.util.Strings;
 
@@ -320,14 +321,44 @@ public enum AnsiEscape {
         boolean first = true;
         for (final String name : names) {
             try {
-                final AnsiEscape escape = EnglishEnums.valueOf(AnsiEscape.class, name.trim());
                 if (!first) {
                     sb.append(AnsiEscape.SEPARATOR.getCode());
                 }
                 first = false;
-                sb.append(escape.getCode());
+                String hexColor = null;
+                final String trimmedName = name.trim().toUpperCase(Locale.ENGLISH);
+                if (trimmedName.startsWith("#")) {
+                    sb.append("38");
+                    sb.append(SEPARATOR.getCode());
+                    sb.append("2");
+                    sb.append(SEPARATOR.getCode());
+                    hexColor = trimmedName;
+                } else if (trimmedName.startsWith("FG_#")) {
+                    sb.append("38");
+                    sb.append(SEPARATOR.getCode());
+                    sb.append("2");
+                    sb.append(SEPARATOR.getCode());
+                    hexColor = trimmedName.substring(3);
+                } else if (trimmedName.startsWith("BG_#")) {
+                    sb.append("48");
+                    sb.append(SEPARATOR.getCode());
+                    sb.append("2");
+                    sb.append(SEPARATOR.getCode());
+                    hexColor = trimmedName.substring(3);
+                }
+                if (hexColor != null) {
+                    sb.append(Integer.valueOf(hexColor.substring(1, 3), 16));//r
+                    sb.append(SEPARATOR.getCode());
+                    sb.append(Integer.valueOf(hexColor.substring(3, 5), 16));//g
+                    sb.append(SEPARATOR.getCode());
+                    sb.append(Integer.valueOf(hexColor.substring(5, 7), 16));//b
+                    //no separator at the end
+                } else {
+                    final AnsiEscape escape = EnglishEnums.valueOf(AnsiEscape.class, trimmedName);
+                    sb.append(escape.getCode());
+                }
             } catch (final Exception ex) {
-                // Ignore the error.
+                StatusLogger.getLogger().warn("The style attribute {} is incorrect.", name, ex);
             }
         }
         sb.append(AnsiEscape.SUFFIX.getCode());
