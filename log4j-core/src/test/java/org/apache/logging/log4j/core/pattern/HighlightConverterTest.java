@@ -76,9 +76,7 @@ public class HighlightConverterTest {
         assertEquals(AnsiEscape.createSequence(colorName), converter.getLevelStyle(Level.DEBUG));
     }
 
-    @Test
-    public void testLevelNamesBrightShort() {
-        final String colorName = "bright_red";
+   private void testLevelNames(final String colorName, final String expectedOutput) {
         final String[] options = {"%-5level: %msg", PatternParser.NO_CONSOLE_NO_ANSI + "=false, "
                 + PatternParser.DISABLE_ANSI + "=false, " + "INFO=" + colorName};
         final HighlightConverter converter = HighlightConverter.newInstance(null, options);
@@ -88,22 +86,26 @@ public class HighlightConverterTest {
                 new SimpleMessage("")).build();
         final StringBuilder buffer = new StringBuilder();
         converter.format(event, buffer);
-        assertEquals("\u001B[91mINFO : \u001B[m", buffer.toString());
+        assertEquals(expectedOutput, buffer.toString());
+   }
+
+    @Test
+    public void testLevelNamesBrightShort() {
+        testLevelNames("bright_red", "\u001B[91mINFO : \u001B[m");
+    }
+
+    public void testLevelNamesHexShort() {
+        testLevelNames("#1cd42b", "\u001B[38;2;28;212;43mINFO : \u001B[m");
     }
 
     @Test
     public void testLevelNamesBrightFull() {
-        final String colorName = "fg_bright_red bg_bright_blue bold";
-        final String[] options = {"%-5level: %msg", PatternParser.NO_CONSOLE_NO_ANSI + "=false, "
-                + PatternParser.DISABLE_ANSI + "=false, " + "INFO=" + colorName};
-        final HighlightConverter converter = HighlightConverter.newInstance(null, options);
-        assertNotNull(converter);
+        testLevelNames("fg_bright_red bg_bright_blue bold", "\u001B[91;104;1mINFO : \u001B[m");
+    }
 
-        final LogEvent event = Log4jLogEvent.newBuilder().setLevel(Level.INFO).setLoggerName("a.b.c").setMessage(
-                new SimpleMessage("")).build();
-        final StringBuilder buffer = new StringBuilder();
-        converter.format(event, buffer);
-        assertEquals("\u001B[91;104;1mINFO : \u001B[m", buffer.toString());
+    @Test
+    public void testLevelNamesHexFull() {
+        testLevelNames("FG_#1cd42b BG_#000000", "\u001B[38;2;28;212;43;48;2;0;0;0mINFO : \u001B[m");
     }
 
     @Test
