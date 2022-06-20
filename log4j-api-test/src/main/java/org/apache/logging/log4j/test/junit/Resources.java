@@ -17,29 +17,15 @@
 
 package org.apache.logging.log4j.test.junit;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
-import org.junit.jupiter.api.parallel.Resources;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
 /**
- * Marks a test class as using {@link org.apache.logging.log4j.spi.ThreadContextMap} APIs. This will automatically clear and
- * restore the thread context map (MDC) for each test invocation.
+ * Constants to use the the {@link ResourceLock} annotation.
  *
- * @since 2.14.0
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD})
-@Documented
-@Inherited
-@ExtendWith(ThreadContextExtension.class)
-@ResourceLock(value = Resources.SYSTEM_PROPERTIES, mode = ResourceAccessMode.READ)
-public @interface UsingThreadContextMap {
+public class Resources {
+
+    public static final String THREAD_CONTEXT = "log4j2.ThreadContext";
+
+    public static final String MARKER_MANAGER = "log4j2.MarkerManager";
 }

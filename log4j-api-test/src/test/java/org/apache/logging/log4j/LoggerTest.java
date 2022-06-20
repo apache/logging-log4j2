@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Properties;
+
 import org.apache.logging.log4j.message.EntryMessage;
 import org.apache.logging.log4j.message.JsonMessage;
 import org.apache.logging.log4j.message.Message;
@@ -28,22 +33,27 @@ import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.spi.MessageFactory2Adapter;
 import org.apache.logging.log4j.test.TestLogger;
+import org.apache.logging.log4j.test.junit.Resources;
+import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Supplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Properties;
+import org.junitpioneer.jupiter.ReadsSystemProperty;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.endsWith;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@ResourceLock("log4j2.MarkerManager")
-@ResourceLock("log4j2.TestLogger")
+@ResourceLock(value = Resources.MARKER_MANAGER, mode = ResourceAccessMode.READ)
+@ReadsSystemProperty
 public class LoggerTest {
 
     private static class TestParameterizedMessageFactory {
@@ -54,7 +64,7 @@ public class LoggerTest {
         // empty
     }
 
-    private final TestLogger logger = (TestLogger) LogManager.getLogger("LoggerTest");
+    private final TestLogger logger = (TestLogger) LogManager.getLogger(LoggerTest.class);
     private final Marker marker = MarkerManager.getMarker("test");
     private final List<String> results = logger.getEntries();
 
@@ -65,12 +75,12 @@ public class LoggerTest {
         logger.atWarn().withThrowable(new Throwable("This is a test")).log((Message) new SimpleMessage("Log4j rocks!"));
         assertEquals(3, results.size());
         assertThat("Incorrect message 1", results.get(0),
-                equalTo(" DEBUG org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:63) Hello"));
+                equalTo(" DEBUG org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:73) Hello"));
         assertThat("Incorrect message 2", results.get(1), equalTo("test ERROR Hello John"));
         assertThat("Incorrect message 3", results.get(2),
                 startsWith(" WARN Log4j rocks! java.lang.Throwable: This is a test"));
         assertThat("Throwable incorrect in message 3", results.get(2),
-                containsString("at org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:65)"));
+                containsString("org.apache.logging.log4j.LoggerTest.builder(LoggerTest.java:75)"));
     }
 
     @Test
@@ -533,8 +543,8 @@ public class LoggerTest {
     }
 
     @Test
+    @UsingThreadContextMap
     public void mdc() {
-
         ThreadContext.put("TestYear", Integer.toString(2010));
         logger.debug("Debug message");
         final String testYear = ThreadContext.get("TestYear");
