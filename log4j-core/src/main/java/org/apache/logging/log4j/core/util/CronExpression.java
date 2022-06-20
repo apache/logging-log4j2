@@ -1098,7 +1098,7 @@ public final class CronExpression {
             case YEAR:
                 return years;
             default:
-                return null;
+                throw new IllegalArgumentException("Unexpected type: " + type);
         }
     }
 
