@@ -24,23 +24,19 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.apache.logging.log4j.ThreadContext;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
-import org.junitpioneer.jupiter.ReadsSystemProperty;
 
 /**
- * Marks a test class as using {@link org.apache.logging.log4j.spi.ThreadContextMap} APIs. This will automatically clear and
- * restore the thread context map (MDC) for each test invocation.
- *
- * @since 2.14.0
+ * Marks a test class that initializes the {@link ThreadContext} class;
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target(ElementType.TYPE)
 @Documented
 @Inherited
-@ExtendWith(ThreadContextMapExtension.class)
-@ReadsSystemProperty
-@ResourceLock(value = Resources.THREAD_CONTEXT, mode = ResourceAccessMode.READ)
-public @interface UsingThreadContextMap {
+@ExtendWith(ThreadContextInitializer.class)
+@ResourceLock(value = Resources.THREAD_CONTEXT, mode = ResourceAccessMode.READ_WRITE)
+public @interface InitializesThreadContext {
 }

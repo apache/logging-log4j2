@@ -16,37 +16,21 @@
  */
 package org.apache.logging.log4j;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.apache.logging.log4j.test.junit.InitializesThreadContext;
+import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.ResourceLock;
-import org.junit.jupiter.api.parallel.Resources;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.Assert.assertNull;
 
 /**
  * Tests {@link ThreadContext}.
  */
-@ResourceLock(Resources.SYSTEM_PROPERTIES)
+@SetSystemProperty(key = "disableThreadContext", value = "true")
+@SetSystemProperty(key = "disableThreadContextMap", value = "true")
+@InitializesThreadContext
+@UsingThreadContextMap
 public class NoopThreadContextTest {
-
-    private static final String TRUE = "true";
-    private static final String PROPERY_KEY_ALL = "disableThreadContext";
-    private static final String PROPERY_KEY_MAP = "disableThreadContextMap";
-
-    @BeforeAll
-    public static void before() {
-        System.setProperty(PROPERY_KEY_ALL, TRUE);
-        System.setProperty(PROPERY_KEY_MAP, TRUE);
-        ThreadContext.init();
-    }
-
-    @AfterAll
-    public static void after() {
-        System.clearProperty(PROPERY_KEY_ALL);
-        System.clearProperty(PROPERY_KEY_MAP);
-        ThreadContext.init();
-    }
 
     @Test
     public void testNoop() {

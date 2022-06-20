@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j;
 
+import java.util.List;
+import java.util.Locale;
+import java.util.Properties;
+
 import org.apache.logging.log4j.message.FormattedMessage;
 import org.apache.logging.log4j.message.JsonMessage;
 import org.apache.logging.log4j.message.LocalizedMessage;
@@ -33,10 +37,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
-
-import java.util.List;
-import java.util.Locale;
-import java.util.Properties;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

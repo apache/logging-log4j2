@@ -17,21 +17,23 @@
 package org.apache.logging.log4j;
 
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
-import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
+import org.apache.logging.log4j.test.junit.InitializesThreadContext;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.ResourceLock;
-import org.junit.jupiter.api.parallel.Resources;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests {@link ThreadContext}.
  */
-@UsingAnyThreadContext
-@ResourceLock(Resources.SYSTEM_PROPERTIES)
+@SetSystemProperty(key = DefaultThreadContextMap.INHERITABLE_MAP, value = "true")
+@InitializesThreadContext
 public class ThreadContextInheritanceTest {
 
     @BeforeAll
