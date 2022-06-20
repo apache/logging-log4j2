@@ -32,16 +32,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @UsingAnyThreadContext
 public class ThreadContextTest {
-    public static void reinitThreadContext() {
-        try {
-            Class<ThreadContext> clazz = ThreadContext.class;
-            Method method = clazz.getDeclaredMethod("init");
-            method.setAccessible(true);
-            method.invoke(null);
-        } catch (Exception ex) {
-            fail("Unable to reinitialize ThreadContext");
-        }
-    }
 
     @Test
     public void testPush() {
