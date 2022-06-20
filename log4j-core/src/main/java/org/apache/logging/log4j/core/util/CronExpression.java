@@ -196,20 +196,20 @@ import java.util.TreeSet;
  */
 public final class CronExpression {
 
-    protected static final int SECOND = 0;
-    protected static final int MINUTE = 1;
-    protected static final int HOUR = 2;
-    protected static final int DAY_OF_MONTH = 3;
-    protected static final int MONTH = 4;
-    protected static final int DAY_OF_WEEK = 5;
-    protected static final int YEAR = 6;
-    protected static final int ALL_SPEC_INT = 99; // '*'
-    protected static final int NO_SPEC_INT = 98; // '?'
-    protected static final Integer ALL_SPEC = ALL_SPEC_INT;
-    protected static final Integer NO_SPEC = NO_SPEC_INT;
+    private static final int SECOND = 0;
+    private static final int MINUTE = 1;
+    private static final int HOUR = 2;
+    private static final int DAY_OF_MONTH = 3;
+    private static final int MONTH = 4;
+    private static final int DAY_OF_WEEK = 5;
+    private static final int YEAR = 6;
+    private static final int ALL_SPEC_INT = 99; // '*'
+    private static final int NO_SPEC_INT = 98; // '?'
+    private static final Integer ALL_SPEC = ALL_SPEC_INT;
+    private static final Integer NO_SPEC = NO_SPEC_INT;
 
-    protected static final Map<String, Integer> monthMap = new HashMap<>(20);
-    protected static final Map<String, Integer> dayMap = new HashMap<>(60);
+    private static final Map<String, Integer> monthMap = new HashMap<>(20);
+    private static final Map<String, Integer> dayMap = new HashMap<>(60);
 
     static {
         monthMap.put("JAN", 0);
@@ -236,20 +236,20 @@ public final class CronExpression {
 
     private final String cronExpression;
     private TimeZone timeZone = null;
-    protected transient TreeSet<Integer> seconds;
-    protected transient TreeSet<Integer> minutes;
-    protected transient TreeSet<Integer> hours;
-    protected transient TreeSet<Integer> daysOfMonth;
-    protected transient TreeSet<Integer> months;
-    protected transient TreeSet<Integer> daysOfWeek;
-    protected transient TreeSet<Integer> years;
+    private transient TreeSet<Integer> seconds;
+    private transient TreeSet<Integer> minutes;
+    private transient TreeSet<Integer> hours;
+    private transient TreeSet<Integer> daysOfMonth;
+    private transient TreeSet<Integer> months;
+    private transient TreeSet<Integer> daysOfWeek;
+    private transient TreeSet<Integer> years;
 
-    protected transient boolean lastdayOfWeek = false;
-    protected transient int nthdayOfWeek = 0;
-    protected transient boolean lastdayOfMonth = false;
-    protected transient boolean nearestWeekday = false;
-    protected transient int lastdayOffset = 0;
-    protected transient boolean expressionParsed = false;
+    private transient boolean lastdayOfWeek = false;
+    private transient int nthdayOfWeek = 0;
+    private transient boolean lastdayOfMonth = false;
+    private transient boolean nearestWeekday = false;
+    private transient int lastdayOffset = 0;
+    private transient boolean expressionParsed = false;
 
     public static final int MAX_YEAR = Calendar.getInstance().get(Calendar.YEAR) + 100;
     public static final Calendar MIN_CAL = Calendar.getInstance();
@@ -412,7 +412,7 @@ public final class CronExpression {
     //
     ////////////////////////////////////////////////////////////////////////////
 
-    protected void buildExpression(final String expression) throws ParseException {
+    private void buildExpression(final String expression) throws ParseException {
         expressionParsed = true;
 
         try {
@@ -498,7 +498,7 @@ public final class CronExpression {
         }
     }
 
-    protected int storeExpressionVals(final int pos, final String s, final int type)
+    private int storeExpressionVals(final int pos, final String s, final int type)
             throws ParseException {
 
         int incr = 0;
@@ -689,7 +689,7 @@ public final class CronExpression {
         return i;
     }
 
-    protected int checkNext(final int pos, final String s, final int val, final int type)
+    private int checkNext(final int pos, final String s, final int val, final int type)
             throws ParseException {
 
         int end = -1;
@@ -866,7 +866,7 @@ public final class CronExpression {
         return buf.toString();
     }
 
-    protected String getExpressionSetSummary(final java.util.Set<Integer> set) {
+    private String getExpressionSetSummary(final java.util.Set<Integer> set) {
 
         if (set.contains(NO_SPEC)) {
             return "?";
@@ -892,7 +892,7 @@ public final class CronExpression {
         return buf.toString();
     }
 
-    protected String getExpressionSetSummary(final java.util.ArrayList<Integer> list) {
+    private String getExpressionSetSummary(final java.util.ArrayList<Integer> list) {
 
         if (list.contains(NO_SPEC)) {
             return "?";
@@ -918,7 +918,7 @@ public final class CronExpression {
         return buf.toString();
     }
 
-    protected int skipWhiteSpace(int i, final String s) {
+    private int skipWhiteSpace(int i, final String s) {
         for (; i < s.length() && (s.charAt(i) == ' ' || s.charAt(i) == '\t'); i++) {
             // empty
         }
@@ -926,7 +926,7 @@ public final class CronExpression {
         return i;
     }
 
-    protected int findNextWhiteSpace(int i, final String s) {
+    private int findNextWhiteSpace(int i, final String s) {
         for (; i < s.length() && (s.charAt(i) != ' ' || s.charAt(i) != '\t'); i++) {
             // empty
         }
@@ -934,7 +934,7 @@ public final class CronExpression {
         return i;
     }
 
-    protected void addToSet(final int val, final int end, int incr, final int type)
+    private void addToSet(final int val, final int end, int incr, final int type)
             throws ParseException {
 
         final TreeSet<Integer> set = getSet(type);
@@ -1102,7 +1102,7 @@ public final class CronExpression {
         }
     }
 
-    protected ValueSet getValue(final int v, final String s, int i) {
+    private ValueSet getValue(final int v, final String s, int i) {
         char c = s.charAt(i);
         final StringBuilder s1 = new StringBuilder(String.valueOf(v));
         while (c >= '0' && c <= '9') {
@@ -1120,13 +1120,13 @@ public final class CronExpression {
         return val;
     }
 
-    protected int getNumericValue(final String s, final int i) {
+    private int getNumericValue(final String s, final int i) {
         final int endOfVal = findNextWhiteSpace(i, s);
         final String val = s.substring(i, endOfVal);
         return Integer.parseInt(val);
     }
 
-    protected int getMonthNumber(final String s) {
+    private int getMonthNumber(final String s) {
         final Integer integer = monthMap.get(s);
 
         if (integer == null) {
@@ -1136,7 +1136,7 @@ public final class CronExpression {
         return integer;
     }
 
-    protected int getDayOfWeekNumber(final String s) {
+    private int getDayOfWeekNumber(final String s) {
         final Integer integer = dayMap.get(s);
 
         if (integer == null) {
@@ -1559,14 +1559,14 @@ public final class CronExpression {
      * @param cal  the calendar to operate on
      * @param hour the hour to set
      */
-    protected void setCalendarHour(final Calendar cal, final int hour) {
+    private void setCalendarHour(final Calendar cal, final int hour) {
         cal.set(java.util.Calendar.HOUR_OF_DAY, hour);
         if (cal.get(java.util.Calendar.HOUR_OF_DAY) != hour && hour != 24) {
             cal.set(java.util.Calendar.HOUR_OF_DAY, hour + 1);
         }
     }
 
-    protected Date getTimeBefore(final Date targetDate) {
+    Date getTimeBefore(final Date targetDate) {
         final Calendar cl = Calendar.getInstance(getTimeZone());
 
         // CronTrigger does not deal with milliseconds, so truncate target
@@ -1640,11 +1640,11 @@ public final class CronExpression {
         return null;
     }
 
-    protected boolean isLeapYear(final int year) {
+    private boolean isLeapYear(final int year) {
         return ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0));
     }
 
-    protected int getLastDayOfMonth(final int monthNum, final int year) {
+    private int getLastDayOfMonth(final int monthNum, final int year) {
 
         switch (monthNum) {
             case 1:
