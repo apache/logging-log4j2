@@ -45,11 +45,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Tests Logger APIs with {@link Supplier}.
  */
 @ResourceLock(Resources.LOCALE)
-@ResourceLock("log4j2.TestLogger")
 @UsingThreadContextMap
 public class LoggerSupplierTest {
 
-    private final TestLogger logger = (TestLogger) LogManager.getLogger("LoggerTest");
+    private final TestLogger logger = (TestLogger) LogManager.getLogger(LoggerSupplierTest.class);
 
     private final List<String> results = logger.getEntries();
 

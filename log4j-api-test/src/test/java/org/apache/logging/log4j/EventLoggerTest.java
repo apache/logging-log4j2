@@ -28,7 +28,6 @@ import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ResourceLock("log4j2.TestLogger")
 @UsingThreadContextMap
 public class EventLoggerTest {
 
