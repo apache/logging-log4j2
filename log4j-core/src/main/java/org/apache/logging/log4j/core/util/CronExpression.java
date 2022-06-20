@@ -254,7 +254,7 @@ public final class CronExpression {
     public static final int MAX_YEAR = Calendar.getInstance().get(Calendar.YEAR) + 100;
     public static final Calendar MIN_CAL = Calendar.getInstance();
     static {
-        MIN_CAL.set(1970, 0, 1);
+        MIN_CAL.set(1970, Calendar.JANUARY, 1);
     }
     public static final Date MIN_DATE = MIN_CAL.getTime();
 
@@ -991,28 +991,28 @@ public final class CronExpression {
             if (stopAt == -1) {
                 stopAt = 59;
             }
-            if (startAt == -1 || startAt == ALL_SPEC_INT) {
+            if (startAt == ALL_SPEC_INT) {
                 startAt = 0;
             }
         } else if (type == HOUR) {
             if (stopAt == -1) {
                 stopAt = 23;
             }
-            if (startAt == -1 || startAt == ALL_SPEC_INT) {
+            if (startAt == ALL_SPEC_INT) {
                 startAt = 0;
             }
         } else if (type == DAY_OF_MONTH) {
             if (stopAt == -1) {
                 stopAt = 31;
             }
-            if (startAt == -1 || startAt == ALL_SPEC_INT) {
+            if (startAt == ALL_SPEC_INT) {
                 startAt = 1;
             }
         } else if (type == MONTH) {
             if (stopAt == -1) {
                 stopAt = 12;
             }
-            if (startAt == -1 || startAt == ALL_SPEC_INT) {
+            if (startAt == ALL_SPEC_INT) {
                 startAt = 1;
             }
         } else if (type == DAY_OF_WEEK) {
@@ -1180,7 +1180,7 @@ public final class CronExpression {
 
             // get second.................................................
             st = seconds.tailSet(sec);
-            if (st != null && st.size() != 0) {
+            if (st.size() != 0) {
                 sec = st.first();
             } else {
                 sec = seconds.first();
@@ -1195,7 +1195,7 @@ public final class CronExpression {
 
             // get minute.................................................
             st = minutes.tailSet(min);
-            if (st != null && st.size() != 0) {
+            if (st.size() != 0) {
                 t = min;
                 min = st.first();
             } else {
@@ -1216,7 +1216,7 @@ public final class CronExpression {
 
             // get hour...................................................
             st = hours.tailSet(hr);
-            if (st != null && st.size() != 0) {
+            if (st.size() != 0) {
                 t = hr;
                 hr = st.first();
             } else {
@@ -1331,7 +1331,7 @@ public final class CronExpression {
                         day = daysOfMonth.first();
                         mon++;
                     }
-                } else if (st != null && st.size() != 0) {
+                } else if (st.size() != 0) {
                     t = day;
                     day = st.first();
                     // make sure we don't over-run a short month, such as february
@@ -1445,7 +1445,7 @@ public final class CronExpression {
                     int dow = daysOfWeek.first(); // desired
                     // d-o-w
                     st = daysOfWeek.tailSet(cDow);
-                    if (st != null && st.size() > 0) {
+                    if (st.size() > 0) {
                         dow = st.first();
                     }
 
@@ -1499,7 +1499,7 @@ public final class CronExpression {
 
             // get month...................................................
             st = months.tailSet(mon);
-            if (st != null && st.size() != 0) {
+            if (st.size() != 0) {
                 t = mon;
                 mon = st.first();
             } else {
@@ -1526,7 +1526,7 @@ public final class CronExpression {
 
             // get year...................................................
             st = years.tailSet(year);
-            if (st != null && st.size() != 0) {
+            if (st.size() != 0) {
                 t = year;
                 year = st.first();
             } else {
@@ -1678,7 +1678,7 @@ public final class CronExpression {
     }
 
 
-    private class ValueSet {
+    private static class ValueSet {
         public int value;
 
         public int pos;
