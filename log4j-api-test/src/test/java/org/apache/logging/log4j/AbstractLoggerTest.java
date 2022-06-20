@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j;
 
+import org.apache.logging.log4j.test.junit.Resources;
 import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
@@ -28,6 +29,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.Supplier;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 
 import java.util.List;
@@ -37,7 +39,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @StatusLoggerLevel("WARN")
-@ResourceLock("log4j2.MarkerManager")
+@ResourceLock(value = Resources.MARKER_MANAGER, mode = ResourceAccessMode.READ)
 public class AbstractLoggerTest {
 
     private static final StringBuilder CHAR_SEQ = new StringBuilder("CharSeq");
@@ -58,7 +60,7 @@ public class AbstractLoggerTest {
 
     private static final Message param = new ParameterizedMessage(pattern, p1, p2);
 
-    private static final Marker MARKER = MarkerManager.getMarker("TEST");
+    private final Marker MARKER = MarkerManager.getMarker("TEST");
     private static final String MARKER_NAME = "TEST";
 
     private static final LogEvent[] EVENTS = new LogEvent[] {
