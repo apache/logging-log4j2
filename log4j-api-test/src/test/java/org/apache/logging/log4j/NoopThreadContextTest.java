@@ -21,13 +21,13 @@ import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * Tests {@link ThreadContext}.
  */
-@SetSystemProperty(key = "disableThreadContext", value = "true")
-@SetSystemProperty(key = "disableThreadContextMap", value = "true")
+@SetSystemProperty(key = "log4j2.disableThreadContext", value = "true")
+@SetSystemProperty(key = "log4j2.disableThreadContextMap", value = "true")
 @InitializesThreadContext
 @UsingThreadContextMap
 public class NoopThreadContextTest {

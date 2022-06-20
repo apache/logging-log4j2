@@ -33,7 +33,7 @@ import org.junit.jupiter.api.parallel.ResourceLock;
  * Marks a test class that initializes the {@link ThreadContext} class;
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Target({ ElementType.TYPE, ElementType.METHOD })
 @Documented
 @Inherited
 @ExtendWith(ThreadContextInitializer.class)

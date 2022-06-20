@@ -31,9 +31,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @UsingAnyThreadContext
 public class ThreadContextTest {
-    public static void reinitThreadContext() {
-        ThreadContext.init();
-    }
 
     @Test
     public void testPush() {

@@ -58,9 +58,11 @@ public class ThreadContextInheritanceTest {
     }
 
     @Test
+
+    @SetSystemProperty(key = DefaultThreadContextMap.INHERITABLE_MAP, value = "true")
+    @InitializesThreadContext
     public void testInheritanceSwitchedOn() throws Exception {
         System.setProperty(DefaultThreadContextMap.INHERITABLE_MAP, "true");
-        ThreadContext.init();
         try {
             ThreadContext.clearMap();
             ThreadContext.put("Greeting", "Hello");

@@ -16,15 +16,20 @@
  */
 package org.apache.logging.log4j.spi;
 
-import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.ResourceLock;
-import org.junit.jupiter.api.parallel.Resources;
-
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.apache.logging.log4j.test.junit.InitializesThreadContext;
+import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
+import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.ClearSystemProperty;
+import org.junitpioneer.jupiter.SetSystemProperty;
+
+import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests the {@code DefaultThreadContextMap} class.
@@ -215,17 +220,18 @@ public class DefaultThreadContextMapTest {
     }
 
     @Test
-    @ResourceLock(Resources.SYSTEM_PROPERTIES)
+    @ClearSystemProperty(key = DefaultThreadContextMap.INHERITABLE_MAP)
+    @InitializesThreadContext
     public void testThreadLocalNotInheritableByDefault() {
-        System.clearProperty(DefaultThreadContextMap.INHERITABLE_MAP);
+        ThreadContextMapFactory.init();
         final ThreadLocal<Map<String, String>> threadLocal = DefaultThreadContextMap.createThreadLocalMap(true);
         assertFalse(threadLocal instanceof InheritableThreadLocal<?>);
     }
     
     @Test
-    @ResourceLock(Resources.SYSTEM_PROPERTIES)
+    @SetSystemProperty(key = DefaultThreadContextMap.INHERITABLE_MAP, value = "true")
+    @InitializesThreadContext
     public void testThreadLocalInheritableIfConfigured() {
-        System.setProperty(DefaultThreadContextMap.INHERITABLE_MAP, "true");
         ThreadContextMapFactory.init();
         try {
             final ThreadLocal<Map<String, String>> threadLocal = DefaultThreadContextMap.createThreadLocalMap(true);
