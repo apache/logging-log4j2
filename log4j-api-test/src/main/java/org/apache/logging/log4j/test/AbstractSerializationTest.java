@@ -16,35 +16,34 @@
  */
 package org.apache.logging.log4j.test;
 
-import java.io.Serializable;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
 import static org.apache.logging.log4j.test.SerializableMatchers.serializesRoundTrip;
 import static org.hamcrest.MatcherAssert.assertThat;
+
+import java.io.Serializable;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Subclasses tests {@link Serializable} objects.
  */
-@RunWith(Parameterized.class)
+@TestInstance(Lifecycle.PER_CLASS)
 public abstract class AbstractSerializationTest {
 
-    private final Serializable serializable;
+    protected abstract Stream<Object> data();
 
-    public AbstractSerializationTest(final Serializable serializable) {
-        super();
-        this.serializable = serializable;
-    }
-
-    @Test
-    public void testSerializationRoundtripEquals() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testSerializationRoundtripEquals(Serializable serializable) {
         assertThat(serializable, serializesRoundTrip(serializable));
     }
 
-    @Test
-    public void testSerializationRoundtripNoException() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testSerializationRoundtripNoException(Serializable serializable) {
         assertThat(serializable, serializesRoundTrip());
     }
 }

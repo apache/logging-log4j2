@@ -16,9 +16,7 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.test.AbstractSerializationTest;
@@ -27,16 +25,11 @@ import org.junit.runners.Parameterized.Parameters;
 public class LoggerSerializationTest extends AbstractSerializationTest {
 
     @Parameters
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-                { new LoggerContext("").getLogger("", null) },
-                { LogManager.getRootLogger() },
-                { LogManager.getLogger() },
-                { LogManager.getLogger("test") } });
-    }
-
-    public LoggerSerializationTest(final Serializable serializable) {
-        super(serializable);
+    protected Stream<Object> data() {
+        return Stream.of(new LoggerContext("").getLogger("", null),
+                LogManager.getRootLogger(),
+                LogManager.getLogger(),
+                LogManager.getLogger("test"));
     }
 
 }

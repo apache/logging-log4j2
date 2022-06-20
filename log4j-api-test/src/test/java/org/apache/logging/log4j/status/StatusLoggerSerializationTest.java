@@ -16,24 +16,16 @@
  */
 package org.apache.logging.log4j.status;
 
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.test.AbstractSerializationTest;
-import org.junit.Ignore;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.Disabled;
 
-@Ignore
+@Disabled
 public class StatusLoggerSerializationTest extends AbstractSerializationTest {
 
-    @Parameters
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { { StatusLogger.getLogger() } });
-    }
-
-    public StatusLoggerSerializationTest(final Serializable serializable) {
-        super(serializable);
+    protected Stream<Object> data() {
+        return Stream.of(StatusLogger.getLogger());
     }
 
 }

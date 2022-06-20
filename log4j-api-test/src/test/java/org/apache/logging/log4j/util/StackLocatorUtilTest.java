@@ -16,19 +16,17 @@
  */
 package org.apache.logging.log4j.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.BlockJUnit4ClassRunner;
-import org.junit.runners.ParentRunner;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.engine.execution.ExecutableInvoker;
+import org.junit.jupiter.engine.execution.InvocationInterceptorChain;
 
-@RunWith(BlockJUnit4ClassRunner.class)
 public class StackLocatorUtilTest {
 
     @Test
@@ -92,8 +90,8 @@ public class StackLocatorUtilTest {
 
     @Test
     public void testGetCallerClassViaName() throws Exception {
-        final Class<?> expected = BlockJUnit4ClassRunner.class;
-        final Class<?> actual = StackLocatorUtil.getCallerClass("org.junit.runners.ParentRunner");
+        final Class<?> expected = ExecutableInvoker.class;
+        final Class<?> actual = StackLocatorUtil.getCallerClass("org.junit.jupiter.engine.execution.InvocationInterceptorChain");
         // if this test fails in the future, it's probably because of a JUnit upgrade; check the new stack trace and
         // update this test accordingly
         assertSame(expected, actual);
@@ -101,8 +99,8 @@ public class StackLocatorUtilTest {
 
     @Test
     public void testGetCallerClassViaAnchorClass() throws Exception {
-        final Class<?> expected = BlockJUnit4ClassRunner.class;
-        final Class<?> actual = StackLocatorUtil.getCallerClass(ParentRunner.class);
+        final Class<?> expected = ExecutableInvoker.class;
+        final Class<?> actual = StackLocatorUtil.getCallerClass(InvocationInterceptorChain.class);
         // if this test fails in the future, it's probably because of a JUnit upgrade; check the new stack trace and
         // update this test accordingly
         assertSame(expected, actual);
@@ -112,8 +110,8 @@ public class StackLocatorUtilTest {
     public void testLocateClass() {
         final ClassLocator locator = new ClassLocator();
         final Class<?> clazz = locator.locateClass();
-        assertNotNull("Could not locate class", clazz);
-        assertEquals("Incorrect class", this.getClass(), clazz);
+        assertNotNull(clazz, "Could not locate class");
+        assertEquals(this.getClass(), clazz, "Incorrect class");
     }
 
 }
