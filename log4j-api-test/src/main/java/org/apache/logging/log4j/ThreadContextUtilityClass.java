@@ -14,14 +14,18 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.test;
+package org.apache.logging.log4j;
 
-import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.util.Timer;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.apache.logging.log4j.util.Timer;
 
 public class ThreadContextUtilityClass {
 
@@ -111,5 +115,9 @@ public class ThreadContextUtilityClass {
         assertNull(ThreadContext.get("testKey"));
         ThreadContext.put("testKey", "testValue");
         assertEquals("testValue", ThreadContext.get("testKey"));
+    }
+
+    public static void reset() {
+        ThreadContext.init();
     }
 }
