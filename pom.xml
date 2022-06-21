@@ -308,7 +308,7 @@
     <javaTargetVersion>1.8</javaTargetVersion>
     <module.name />
     <!-- Used in `log4j-appserver`, so that it does not override `wiremock`'s deps-->
-    <jetty.version>9.4.46.v20220331</jetty.version>
+    <jetty.version>9.4.47.v20220610</jetty.version>
     <netty-all.version>4.1.72.Final</netty-all.version>
   </properties>
   <pluginRepositories>
