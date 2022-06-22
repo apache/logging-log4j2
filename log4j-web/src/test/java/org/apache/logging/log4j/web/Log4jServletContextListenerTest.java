@@ -16,6 +16,15 @@
  */
 package org.apache.logging.log4j.web;
 
+import static org.apache.logging.log4j.web.Log4jServletContextListener.DEFAULT_STOP_TIMEOUT;
+import static org.apache.logging.log4j.web.Log4jServletContextListener.DEFAULT_STOP_TIMEOUT_TIMEUNIT;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.BDDMockito.willThrow;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
@@ -25,12 +34,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.eq;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.BDDMockito.willThrow;
 
 @ExtendWith(MockitoExtension.class)
 public class Log4jServletContextListenerTest {
@@ -63,7 +66,7 @@ public class Log4jServletContextListenerTest {
         this.listener.contextDestroyed(this.event);
 
         then(initializer).should().clearLoggerContext();
-        then(initializer).should().stop();
+        then(initializer).should().stop(DEFAULT_STOP_TIMEOUT, DEFAULT_STOP_TIMEOUT_TIMEUNIT);
     }
 
     @Test

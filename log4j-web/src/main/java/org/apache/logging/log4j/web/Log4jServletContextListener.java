@@ -33,8 +33,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class Log4jServletContextListener implements ServletContextListener {
 
-	private static final int DEFAULT_STOP_TIMEOUT = 30;
-    private static final TimeUnit DEFAULT_STOP_TIMEOUT_TIMEUNIT = TimeUnit.SECONDS;
+    static final int DEFAULT_STOP_TIMEOUT = 30;
+    static final TimeUnit DEFAULT_STOP_TIMEOUT_TIMEUNIT = TimeUnit.SECONDS;
 
 	private static final String KEY_STOP_TIMEOUT = "log4j.stop.timeout";
 	private static final String KEY_STOP_TIMEOUT_TIMEUNIT = "log4j.stop.timeout.timeunit";
