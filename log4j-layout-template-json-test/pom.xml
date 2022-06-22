@@ -258,6 +258,25 @@
         </configuration>
       </plugin>
 
+      <!-- Disable ITs, which are Docker-dependent, by default.
+           Running Docker on all expected environments (OSes, Docker-disabled CI hosts, etc.) is still needs to be worked out.
+           Next to that, certain container images (e.g., ELK stack) require environment-specific limits (e.g., `nofile`). -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+
     </plugins>
   </build>
 
