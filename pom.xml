@@ -315,6 +315,18 @@
         <type>pom</type>
       </dependency>
       <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>${junitJupiterVersion}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.opentest4j</groupId>
+        <artifactId>opentest4j</artifactId>
+        <version>1.2.0</version>
+      </dependency>
+      <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
         <version>${slf4jVersion}</version>
@@ -628,43 +640,21 @@
         <artifactId>jctools-core</artifactId>
         <version>${jctoolsVersion}</version>
       </dependency>
-      <!-- JUnit 5 engine -->
-      <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-api</artifactId>
-        <version>${junitJupiterVersion}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-engine</artifactId>
-        <version>${junitJupiterVersion}</version>
-      </dependency>
       <dependency>
         <groupId>org.junit-pioneer</groupId>
         <artifactId>junit-pioneer</artifactId>
         <version>${junitPioneerVersion}</version>
       </dependency>
-      <!-- JUnit 4 to 5 migration support -->
-      <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-migrationsupport</artifactId>
-        <version>${junitJupiterVersion}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.junit.platform</groupId>
-        <artifactId>junit-platform-commons</artifactId>
-        <version>1.8.2</version>
-      </dependency>
-      <!-- JUnit 5 parameterized test support -->
-      <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-params</artifactId>
-        <version>${junitJupiterVersion}</version>
-      </dependency>
       <!-- Environment and system properties support for Jupiter -->
       <dependency>
         <groupId>uk.org.webcompere</groupId>
         <artifactId>system-stubs-jupiter</artifactId>
+        <version>2.0.1</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>uk.org.webcompere</groupId>
+        <artifactId>system-stubs-core</artifactId>
         <version>2.0.1</version>
         <scope>test</scope>
       </dependency>
@@ -679,12 +669,6 @@
             <artifactId>hamcrest-core</artifactId>
           </exclusion>
         </exclusions>
-      </dependency>
-      <!-- JUnit 4 engine -->
-      <dependency>
-        <groupId>org.junit.vintage</groupId>
-        <artifactId>junit-vintage-engine</artifactId>
-        <version>${junitJupiterVersion}</version>
       </dependency>
       <dependency>
         <groupId>org.assertj</groupId>
@@ -734,54 +718,21 @@
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
-        <artifactId>spring-aop</artifactId>
+        <artifactId>spring-framework-bom</artifactId>
         <version>${springVersion}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-beans</artifactId>
-        <version>${springVersion}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-context</artifactId>
-        <version>${springVersion}</version>
+	<scope>import</scope>
+	<type>pom</type>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-core</artifactId>
-        <version>${springVersion}</version>
+	<version>${springVersion}</version>
         <exclusions>
           <exclusion>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jcl</artifactId>
           </exclusion>
         </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-expression</artifactId>
-        <version>${springVersion}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-oxm</artifactId>
-        <version>${springVersion}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-test</artifactId>
-        <version>${springVersion}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-web</artifactId>
-        <version>${springVersion}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-webmvc</artifactId>
-        <version>${springVersion}</version>
       </dependency>
       <dependency>
         <groupId>io.fabric8</groupId>

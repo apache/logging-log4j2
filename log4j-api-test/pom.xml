@@ -38,18 +38,12 @@
       <artifactId>log4j-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.framework</artifactId>
-      <scope>provided</scope>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.resource</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.vintage</groupId>
-      <artifactId>junit-vintage-engine</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -64,8 +58,16 @@
       <artifactId>junit-platform-commons</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-launcher</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.junit-pioneer</groupId>
       <artifactId>junit-pioneer</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.opentest4j</groupId>
+      <artifactId>opentest4j</artifactId>
     </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
@@ -90,8 +92,12 @@
       <artifactId>jackson-databind</artifactId>
     </dependency>
     <dependency>
-          <groupId>uk.org.webcompere</groupId>
+      <groupId>uk.org.webcompere</groupId>
       <artifactId>system-stubs-jupiter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>uk.org.webcompere</groupId>
+      <artifactId>system-stubs-core</artifactId>
     </dependency>
   </dependencies>
   <build>
