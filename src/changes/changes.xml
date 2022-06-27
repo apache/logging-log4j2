@@ -202,6 +202,12 @@
       </action>
     </release>
     <release version="2.18.0" date="20YY-MM-DD" description="GA Release 2.18.0">
+      <action issue="LOG4J2-3339" dev="rgoers" type="fix">
+        DirectWriteRolloverStrategy should use the current time when creating files.
+      </action>
+      <action issue="LOG4J2-3527" dev="rgoers" type="fix">
+        Don't use Paths.get() to avoid circular file systems.
+      </action>
       <action issue="LOG4J2-3490" dev="rgoers" type="fix">
         The DirectWriteRolloverStrategy was not detecting the correct index to use during startup.
       </action>

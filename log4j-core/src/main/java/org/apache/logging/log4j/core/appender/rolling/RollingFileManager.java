@@ -303,6 +303,7 @@ public class RollingFileManager extends FileManager {
     }
 
 	public synchronized void rollover(final long prevFileTime, final long prevRollTime) {
+        LOGGER.debug("Rollover PrevFileTime: {}, PrevRollTime: {}", prevFileTime, prevRollTime);
 		getPatternProcessor().setPrevFileTime(prevFileTime);
 		getPatternProcessor().setCurrentFileTime(prevRollTime);
 		rollover();
