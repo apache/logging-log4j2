@@ -90,13 +90,13 @@
       <action issue="LOG4J2-3424" dev="ckozak" type="fix">
         Properties defined in configuration using a value attribute (as opposed to element) are read correctly.
       </action>
-      <action issue="LOG4J2-3413" date="2022-02-26" type="fix" due-to="Piotr Karwasz">
+      <action issue="LOG4J2-3413" date="2022-02-26" type="fix" dev="pkarwasz">
         Fix resolution of non-Log4j properties.
       </action>
-      <action issue="LOG4J2-3423" type="fix" due-to="Radim Tlusty, Gary Gregory">
+      <action issue="LOG4J2-3423" type="fix" dev="ggregory" due-to="Radim Tlusty">
         JAR file containing Log4j configuration isn't closed.
       </action>
-      <action issue="LOG4J2-3425" type="fix" due-to="Jiří Smolík, Gary Gregory">
+      <action issue="LOG4J2-3425" type="fix" dev="ggregory" due-to="Jiří Smolík">
         Syslog appender lacks the SocketOptions setting.
       </action>
       <action type="fix" dev="pkarwasz">
@@ -105,7 +105,7 @@
       <action type="fix" dev="pkarwasz">
         Log4j 1.2 bridge should generate Log4j 2.x messages based on the parameter runtime type.
       </action>
-      <action issue="LOG4J2-3426" dev="pkarwasz" type="fix" due-to="Pooja Pandey, Piotr P. Karwasz">
+      <action issue="LOG4J2-3426" dev="pkarwasz" type="fix" due-to="Pooja Pandey">
         Log4j 1.2 bridge should not wrap components unnecessarily.
       </action>
       <action issue="LOG4J2-3427" dev="pkarwasz" type="update">
@@ -123,7 +123,7 @@
       <action issue="LOG4J2-3419" dev="pkarwasz" type="add">
         Add support for custom Log4j 1.x levels.
       </action>
-      <action issue="LOG4J2-3439" dev="pkarwasz" type="fix" due-to="Jayesh Netravali, Piotr P. Karwasz">
+      <action issue="LOG4J2-3439" dev="pkarwasz" type="fix" due-to="Jayesh Netravali">
         Fixes default SslConfiguration, when a custom keystore is used.
       </action>
       <action issue="LOG4J2-3447" dev="pkarwasz" type="fix" due-to="Pooja Pandey">
@@ -132,16 +132,16 @@
       <action issue="LOG4J2-3452" dev="stefanvodita" type="fix" due-to="Stefan Vodita">
         Fix and test for race condition in FileUtils.mkdir().
       </action>
-      <action issue="LOG4J2-3458" dev="ggregory" type="fix" due-to="Gary Gregory">
+      <action issue="LOG4J2-3458" dev="ggregory" type="fix">
         LocalizedMessage logs misleading errors on the console.
       </action>
-      <action issue="LOG4J2-3359" dev="pkarwasz" type="fix" due-to="Tukesh, Piotr P. Karwasz">
+      <action issue="LOG4J2-3359" dev="pkarwasz" type="fix" due-to="Tukesh">
         Fixes the syslog appender in Log4j 1.x bridge, when used with a custom layout.
       </action>
-      <action issue="LOG4J2-3359" dev="ggregory" type="fix" due-to="Rajesh, Gary Gregory">
+      <action issue="LOG4J2-3359" dev="ggregory" type="fix" due-to="Rajesh">
         log4j-1.2-api 2.17.2 throws NullPointerException while removing appender with name as null.
       </action>
-      <action issue="LOG4J2-2872" dev="pkarwasz" type="fix" due-to="Alla Gofman, Piotr P. Karwasz">
+      <action issue="LOG4J2-2872" dev="pkarwasz" type="fix" due-to="Alla Gofman">
         Fix problem with non-uppercase custom levels.
       </action>
       <action issue="LOG4J2-3440" dev="pkarwasz" type="add">
@@ -157,10 +157,10 @@
         Add support for Apache Extras' RollingFileAppender in Log4j 1.x bridge.
       </action>
       <!-- UPDATES -->
-      <action issue="LOG4J2-3428" dev="ggregory" type="fix" due-to="LF-Lin">
+      <action issue="LOG4J2-3428" dev="ggregory" type="fix">
         Update 3rd party dependencies for 2.18.0.
       </action>
-      <action issue="LOG4J2-3531" dev="pkarwasz" type="fix" due-to="Simo Nikula, Piotr P. Karwasz">
+      <action issue="LOG4J2-3531" dev="pkarwasz" type="fix" due-to="Simo Nikula">
         Fix parsing error, when XInclude is disabled.
       </action>
       <action issue="LOG4J2-3537" dev="pavel_k" type="fix" due-to="Pavel_K">
