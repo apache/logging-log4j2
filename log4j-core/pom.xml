@@ -118,9 +118,8 @@
     </dependency>
     <!-- Used for JMS appenders (needs an implementation of course) -->
     <dependency>
-      <groupId>org.jboss.spec.javax.jms</groupId>
-      <artifactId>jboss-jms-api_1.1_spec</artifactId>
-      <scope>provided</scope>
+      <groupId>javax.jms</groupId>
+      <artifactId>javax.jms-api</artifactId>
       <optional>true</optional>
     </dependency>
     <!-- Used for Kafka appender -->
@@ -513,6 +512,7 @@
             <!-- TODO: exclude internal classes from export -->
             <Export-Package>org.apache.logging.log4j.core.*</Export-Package>
             <Import-Package>
+              javax.jms;version="[1.1,3)";resolution:=optional,
               sun.reflect;resolution:=optional,
               *
             </Import-Package>

@@ -159,9 +159,8 @@
     </dependency>
     <!-- Used for JMS appenders (needs an implementation of course) -->
     <dependency>
-      <groupId>org.jboss.spec.javax.jms</groupId>
-      <artifactId>jboss-jms-api_1.1_spec</artifactId>
-      <scope>provided</scope>
+      <groupId>javax.jms</groupId>
+      <artifactId>javax.jms-api</artifactId>
       <optional>true</optional>
     </dependency>
     <!-- JPA, JNDI and JMS tests -->
