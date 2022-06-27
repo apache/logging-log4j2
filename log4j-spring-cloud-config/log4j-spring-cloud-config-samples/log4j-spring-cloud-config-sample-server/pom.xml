@@ -56,7 +56,7 @@
     <!-- maven plugin config -->
     <pmd.failurePriority>2</pmd.failurePriority>
     <deploy.plugin.version>2.8.2</deploy.plugin.version>
-    <rat.plugin.version>0.13</rat.plugin.version>
+    <rat.plugin.version>0.14</rat.plugin.version>
     <maven.doap.skip>true</maven.doap.skip>
   </properties>
 
