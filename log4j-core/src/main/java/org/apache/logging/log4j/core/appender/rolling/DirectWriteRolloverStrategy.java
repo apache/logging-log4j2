@@ -317,6 +317,8 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
             final int fileIndex = eligibleFiles.size() > 0 ? (nextIndex > 0 ? nextIndex :
                     eligibleFiles.lastKey()) : 1;
             final StringBuilder buf = new StringBuilder(255);
+            // LOG4J2-3339 - Always use the current time for new direct write files.
+            manager.getPatternProcessor().setCurrentFileTime(System.currentTimeMillis());
             manager.getPatternProcessor().formatFileName(strSubstitutor, buf, true, fileIndex);
             final int suffixLength = suffixLength(buf.toString());
             final String name = suffixLength > 0 ? buf.substring(0, buf.length() - suffixLength) : buf.toString();
