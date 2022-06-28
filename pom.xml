@@ -250,7 +250,7 @@
     <mongodb3.version>3.12.11</mongodb3.version>
     <mongodb4.version>4.5.0</mongodb4.version>
     <!-- POM for jackson-dataformat-xml 2.13.1 depends on woodstox-core 6.2.7 -->
-    <woodstox.version>6.2.8</woodstox.version>
+    <woodstox.version>6.3.0</woodstox.version>
     <groovy.version>3.0.10</groovy.version>
     <compiler.plugin.version>3.10.1</compiler.plugin.version>
     <pmd.plugin.version>3.16.0</pmd.plugin.version>
