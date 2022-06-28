@@ -65,18 +65,7 @@ temporary objects) while logging. In addition, Log4j 2 will not lose events whil
 
 The artifacts may be downloaded from https://logging.apache.org/log4j/2.x/download.html.
 
-This release contains the changes noted below:
-
-* Over 50 improvements and fixes to the Log4j 1.x support. Continued testing has shown it is a suitable replacement
-for Log4j 1.x in most cases.
-* Scripting now requires a system property be specified naming the languages the user wishes to allow. The scripting
-engine will not load if the property isn't set.
-* By default, the only remote protocol allowed for loading configuration files is HTTPS. Users can specify a system
-property to allow others or prevent remote loading entirely.
-* Variable resolution has been modified so that only properties defined as properties in the configuration file can be
-recursive. All other Lookups are now non-recursive. This addresses issues users were having resolving lookups specified
-in property definitions for use in the RoutingAppender and RollingFileAppender due to restrictions put in place in 2.17.1.
-* Many other fixes and improvements.
+This release primarily contains bug fixes and minor enhancements.
 
 Due to a break in compatibility in the SLF4J binding, Log4j now ships with two versions of the SLF4J to Log4j adapters.
 log4j-slf4j-impl should be used with SLF4J 1.7.x and earlier and log4j-slf4j18-impl should be used with SLF4J 1.8.x and

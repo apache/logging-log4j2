@@ -29,7 +29,7 @@
          - "update" - Change
          - "remove" - Removed
     -->
-    <release version="2.18.0" date="2022-MM-DD" description="GA Release 2.18.0">
+    <release version="2.18.0" date="2022-06-28" description="GA Release 2.18.0">
       <action issue="LOG4J2-3339" dev="rgoers" type="fix">
         DirectWriteRolloverStrategy should use the current time when creating files.
       </action>
@@ -69,7 +69,7 @@
       <action issue="LOG4J2-3482" dev="rgoers" type="fix">
         UrlConnectionFactory.createConnection now accepts an AuthorizationProvider as a parameter.
       </action>
-      <action issue="LOG4J2-3495" dev="rgoers" type="fix">
+      <action issue="LOG4J2-3495" dev="rgoers" type="add">
         Add MutableThreadContextMapFilter.
       </action>
       <action issue="LOG4J2-3473" dev="rpopma" type="update">

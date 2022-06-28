@@ -14,9 +14,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-# Apache Log4j 2.17.2 Release Notes
+# Apache Log4j 2.18.0 Release Notes
 
-The Apache Log4j 2 team is pleased to announce the Log4j 2.17.2 release!
+The Apache Log4j 2 team is pleased to announce the Log4j 2.18.0 release!
 
 Apache Log4j is a well known framework for logging application behavior. Log4j 2 is an upgrade
 to Log4j that provides significant improvements over its predecessor, Log4j 1.x, and provides
@@ -27,191 +27,120 @@ temporary objects) while logging. In addition, Log4j 2 will not lose events whil
 
 The artifacts may be downloaded from https://logging.apache.org/log4j/2.x/download.html.
 
-This release contains the changes noted below:
-
-* Over 50 improvements and fixes to the Log4j 1.x support. Continued testing has shown it is a suitable replacement
-for Log4j 1.x in most cases.
-* Scripting now requires a system property be specified naming the languages the user wishes to allow. The scripting
-engine will not load if the property isn't set.
-* By default, the only remote protocol allowed for loading configuration files is HTTPS. Users can specify a system
-property to allow others or prevent remote loading entirely.
-* Variable resolution has been modified so that only properties defined as properties in the configuration file can be
-recursive. All other Lookups are now non-recursive. This addresses issues users were having resolving lookups specified
-in property definitions for use in the RoutingAppender and RollingFileAppender due to restrictions put in place in 2.17.1.
-* Many other fixes and improvements.
+This release primarily contains bug fixes and minor enhancements.
 
 Due to a break in compatibility in the SLF4J binding, Log4j now ships with two versions of the SLF4J to Log4j adapters.
 log4j-slf4j-impl should be used with SLF4J 1.7.x and earlier and log4j-slf4j18-impl should be used with SLF4J 1.8.x and
 later. SLF4J-2.0.0 alpha releases are not fully supported. See https://issues.apache.org/jira/browse/LOG4J2-2975 and
 https://jira.qos.ch/browse/SLF4J-511.
 
-The Log4j 2.17.2 API, as well as many core components, maintains binary compatibility with previous releases.
+The Log4j 2.18.0 API, as well as many core components, maintains binary compatibility with previous releases.
 
-## GA Release 2.17.2
+## GA Release 2.18.0
 
 Changes in this version include:
 
 ### New Features
-* [LOG4J2-3297](https://issues.apache.org/jira/browse/LOG4J2-3297):
-Limit loading of configuration via a url to https by default.
-* [LOG4J2-2486](https://issues.apache.org/jira/browse/LOG4J2-2486):
-Require log4j2.Script.enableLanguages to be specified to enable scripting for specific languages.
-* [LOG4J2-3303](https://issues.apache.org/jira/browse/LOG4J2-3303):
-Add TB support to FileSize. Thanks to ramananravi.
-* [LOG4J2-3282](https://issues.apache.org/jira/browse/LOG4J2-3282):
-Add the log4j-to-jul JDK Logging Bridge Thanks to Michael Vorburger.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3282):
-Add org.apache.logging.log4j.core.appender.AsyncAppender.getAppenders() to more easily port from org.apache.log4j.AsyncAppender.getAllAppenders().
-* [](https://issues.apache.org/jira/browse/LOG4J2-3282):
-Add Configurator.setLevel(Logger, Level), setLevel(String, String), and setLevel(Class, Level). Thanks to Gary Gregory.
-* [LOG4J2-3341](https://issues.apache.org/jira/browse/LOG4J2-3341):
-Add shorthand syntax for properties configuration format for specifying a logger level and appender refs.
-* [LOG4J2-3391](https://issues.apache.org/jira/browse/LOG4J2-3391):
-Add optional additional fields to NoSQLAppender. Thanks to Gary Gregory.
+* [LOG4J2-3495](https://issues.apache.org/jira/browse/LOG4J2-3495):
+Add MutableThreadContextMapFilter.
+* [LOG4J2-3472](https://issues.apache.org/jira/browse/LOG4J2-3472):
+Add support for custom LMAX disruptor WaitStrategy configuration.
+* [LOG4J2-3419](https://issues.apache.org/jira/browse/LOG4J2-3419):
+Add support for custom Log4j 1.x levels.
+* [LOG4J2-3440](https://issues.apache.org/jira/browse/LOG4J2-3440):
+Add support for adding and retrieving appenders in Log4j 1.x bridge.
+* [LOG4J2-3362](https://issues.apache.org/jira/browse/LOG4J2-3362):
+Add support for Jakarta Mail API in the SMTP appender.
+* [LOG4J2-3483](https://issues.apache.org/jira/browse/LOG4J2-3483):
+Add support for Apache Extras' RollingFileAppender in Log4j 1.x bridge.
+* [LOG4J2-3538](https://issues.apache.org/jira/browse/LOG4J2-3538):
+Add support for 24 colors in highlighting Thanks to Pavel_K.
 
 ### Fixed Bugs
-* [LOG4J2-3304](https://issues.apache.org/jira/browse/LOG4J2-3304):
-Flag LogManager as initiialized if the LoggerFactory is provided as a property. Thanks to francis-FY.
-* [LOG4J2-3404](https://issues.apache.org/jira/browse/LOG4J2-3404):
-Fix DefaultConfiguration leak in PatternLayout Thanks to Piotr Karwasz.
-* [LOG4J2-3405](https://issues.apache.org/jira/browse/LOG4J2-3405):
-Document that the Spring Boot Lookup requires the log4j-spring-boot dependency.
-* [LOG4J2-3317](https://issues.apache.org/jira/browse/LOG4J2-3317):
-Fix RoutingAppender backcompat and disallow recursive evaluation of lookup results outside of configuration properties.
-* [LOG4J2-3333](https://issues.apache.org/jira/browse/LOG4J2-3333):
-Fix ThreadContextDataInjector initialization deadlock
-* [LOG4J2-3358](https://issues.apache.org/jira/browse/LOG4J2-3358):
-Fix substitutions when programmatic configuration is used
-* [LOG4J2-3306](https://issues.apache.org/jira/browse/LOG4J2-3306):
-OptionConverter could cause a StackOverflowError.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3306):
-Log4j 1.2 bridge class ConsoleAppender should extend WriterAppender and provide better compatibility with custom appenders.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3306):
-Log4j 1.2 bridge method NDC.inherit(Stack) should not use generics to provide source compatibility.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3306):
-Log4j 1.2 bridge class PatternLayout is missing constants DEFAULT_CONVERSION_PATTERN and TTCC_CONVERSION_PATTERN.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3306):
-Log4j 1.2 bridge class PropertyConfigurator should implement Configurator.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3306):
-Log4j 1.2 bridge interface Configurator doConfigure() methods should use LoggerRepository, not LoggerContext.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3306):
-Log4j 1.2 bridge class OptionConverter is missing selectAndConfigure() methods.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3306):
-Log4j 1.2 bridge class Category should implement AppenderAttachable.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3306):
-Log4j 1.2 bridge method Category.exists(String) should be static.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3306):
-Log4j 1.2 bridge methods missing in org.apache.log4j.Category: getDefaultHierarchy(), getHierarchy(), getLoggerRepository().
-* [](https://issues.apache.org/jira/browse/LOG4J2-3306):
-Log4j 1.2 bridge class LogManager default constructor should be public.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3306):
-Log4j 1.2 bridge interface org.apache.log4j.spi.RendererSupport was in the wrong package and incomplete.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3306):
-Log4j 1.2 bridge interfaces missing from package org.apache.log4j.spi: ThrowableRenderer, ThrowableRendererSupport, TriggeringEventEvaluator.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3306):
-Log4j 1.2 bridge missing class org.apache.log4j.or.RendererMap.
-* [LOG4J2-3281](https://issues.apache.org/jira/browse/LOG4J2-3281):
-Log4j 1.2 bridge PropertiesConfiguration.buildAppender not adding filters to custom appender.
-* [LOG4J2-3316](https://issues.apache.org/jira/browse/LOG4J2-3316):
-Log4j 1.2 bridge should ignore case in properties file keys.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3316):
-Log4j 1.2 bridge adds org.apache.log4j.component.helpers.Constants.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3316):
-Log4j 1.2 bridge adds org.apache.log4j.helpers.LogLog.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3316):
-Log4j 1.2 bridge adds org.apache.log4j.helpers.Loader.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3316):
-Log4j 1.2 bridge adds org.apache.log4j.spi.RootLogger.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3316):
-Log4j 1.2 bridge class Category is missing some protected instance variables.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3316):
-Log4j 1.2 bridge adds org.apache.log4j.Hierarchy.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3316):
-Log4j 1.2 bridge methods Category.getChainedPriority() and getEffectiveLevel() should not be final.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3316):
-Log4j 1.2 bridge adds org.apache.log4j.spi.NOPLoggerRepository and NOPLogger.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3316):
-Log4j 1.2 bridge adds org.apache.log4j.spi.DefaultRepositorySelector.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3316):
-Log4j 1.2 bridge implements LogManager.getCurrentLoggers() fully.
-* [LOG4J2-3326](https://issues.apache.org/jira/browse/LOG4J2-3326):
-Log4j 1.2 bridge fixes parsing filters in properties configuration file #680. Thanks to Benjamin Röhl, Gary Gregory.
-* [LOG4J2-3326](https://issues.apache.org/jira/browse/LOG4J2-3326):
-Log4j 1.2 bridge missing OptionConverter.instantiateByKey(Properties, String, Class, Object). Thanks to Gary Gregory.
-* [LOG4J2-3326](https://issues.apache.org/jira/browse/LOG4J2-3326):
-Log4j 1.2 bridge class org.apache.log4j.spi.LoggingEvent missing constructors and public instance variable. Thanks to Gary Gregory.
-* [LOG4J2-3328](https://issues.apache.org/jira/browse/LOG4J2-3328):
-Log4j 1.2 bridge does not support system properties in log4j.xml. Thanks to Gary Gregory.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3328):
-Log4j 1.2 bridge now logs a warning instead of throwing an NullPointerException when building a Syslog appender with a missing "SyslogHost" param. Thanks to Gary Gregory.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3328):
-Log4j 1.2 bridge should allow property and XML attributes to start with either an upper-case or lower-case letter. Thanks to Gary Gregory, Piotr P. Karwasz.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3328):
-Log4j 1.2 bridge uses the wrong default values for a TTCCLayout #709. Thanks to Gary Gregory, Piotr P. Karwasz.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3328):
-Log4j 1.2 bridge throws ClassCastException when using SimpleLayout and others #708. Thanks to Gary Gregory, Piotr P. Karwasz.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3328):
-Log4j 1.2 bridge uses the wrong file pattern for rolling file appenders #710. Thanks to Gary Gregory, Piotr P. Karwasz.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3328):
-Log4j 1.2 bridge throws ClassCastException when using SimpleLayout and others #708. Thanks to Gary Gregory, Piotr P. Karwasz.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3328):
-Log4j 1.2 bridge creates a SocketAppender instead of a SyslogAppender. Thanks to Gary Gregory.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3328):
-Log4j 1.2 bridge uses some incorrect default property values in some appenders. Thanks to Piotr P. Karwasz.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3328):
-Log4j 1.2 bridge supports the SocketAppender. Thanks to Gary Gregory.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3328):
-Log4j 1.2 bridge missing DefaultThrowableRenderer. Thanks to Gary Gregory.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3328):
-Log4j 1.2 bridge missing some ThrowableInformation constructors. Thanks to Gary Gregory.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3328):
-Log4j 1.2 bridge missing some LocationInfo constructors. Thanks to Gary Gregory.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3328):
-Log4j 1.2 bridge missed Thanks to Gary Gregory.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3328):
-Log4j 1.2 bridge missed org.apache.log4j.pattern.FormattingInfo. Thanks to Gary Gregory.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3328):
-Log4j 1.2 bridge missed org.apache.log4j.pattern.NameAbbreviator. Thanks to Gary Gregory.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3328):
-Log4j 1.2 bridge missing UtilLoggingLevel. Thanks to Gary Gregory.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3328):
-Log4j 1.2 bridge missing FormattingInfo. Thanks to Gary Gregory.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3328):
-Log4j 1.2 bridge missing PatternConverter. Thanks to Gary Gregory.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3328):
-Log4j 1.2 bridge missing PatternParser. Thanks to Gary Gregory.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3328):
-Log4j 1.2 bridge issues with filters #753. Thanks to ppkarwasz, Gary Gregory.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3328):
-Log4j 1.2 bridge implements most of DOMConfigurator. Thanks to Gary Gregory.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3328):
-JndiManager reverts to 2.17.0 behavior: Read the system property for each call.
-* [LOG4J2-3330](https://issues.apache.org/jira/browse/LOG4J2-3330):
-Configurator.setLevel not fetching the correct LoggerContext. Thanks to Mircea Lemnaru, Gary Gregory.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3330):
-Fix DTD error: Add missing ELEMENT for Marker.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3330):
-Fix log4j-jakarta-web service file #723. Thanks to Gary Gregory, Piotr P. Karwasz.
-* [LOG4J2-3392](https://issues.apache.org/jira/browse/LOG4J2-3392):
-AppenderLoggingException logging any exception to a MongoDB Appender. Thanks to Gary Gregory, Omer U.
-* [LOG4J2-3392](https://issues.apache.org/jira/browse/LOG4J2-3392):
-Possible NullPointerException in MongoDb4DocumentObject, MongoDbDocumentObject, DefaultNoSqlObject. Thanks to Gary Gregory.
-* [](https://issues.apache.org/jira/browse/LOG4J2-3392):
-Trim whitespace before parsing a String into an Integer. Thanks to Gary Gregory.
-* [LOG4J2-3410](https://issues.apache.org/jira/browse/LOG4J2-3410):
-Log4j 1.2 bridge throws a ClassCastException when logging a Map with non-String keys. Thanks to Barry Sham, Gary Gregory.
-* [LOG4J2-3407](https://issues.apache.org/jira/browse/LOG4J2-3407):
-Log4j 1.2 bridge Check for non-existent appender when parsing properties #761. Thanks to Kenny MacLeod.
-* [LOG4J2-3407](https://issues.apache.org/jira/browse/LOG4J2-3407):
-Log4j 1.2 bridge supports global threshold #764. Thanks to Piotr P. Karwasz.
+* [LOG4J2-3339](https://issues.apache.org/jira/browse/LOG4J2-3339):
+DirectWriteRolloverStrategy should use the current time when creating files.
+* [LOG4J2-3534](https://issues.apache.org/jira/browse/LOG4J2-3534):
+Fix LevelRangeFilterBuilder to align with log4j1's behavior.
+* [LOG4J2-3527](https://issues.apache.org/jira/browse/LOG4J2-3527):
+Don't use Paths.get() to avoid circular file systems.
+* [LOG4J2-3490](https://issues.apache.org/jira/browse/LOG4J2-3490):
+The DirectWriteRolloverStrategy was not detecting the correct index to use during startup.
+* [LOG4J2-3432](https://issues.apache.org/jira/browse/LOG4J2-3432):
+SizeBasedTriggeringPolicy would fail to rename files properly when integer pattern contained a leading zero.
+* [LOG4J2-3491](https://issues.apache.org/jira/browse/LOG4J2-3491):
+Async Loggers were including the location information by default. Thanks to Avihai Marchiano.
+* [LOG4J2-1376](https://issues.apache.org/jira/browse/LOG4J2-1376):
+Allow enterprise id to be an OID fragment.
+* [LOG4J2-3493](https://issues.apache.org/jira/browse/LOG4J2-3493):
+ClassArbiter's newBuilder method referenced the wrong class. Thanks to Dmytro Voloshyn.
+* [LOG4J2-3481](https://issues.apache.org/jira/browse/LOG4J2-3481):
+HttpWatcher did not pass credentials when polling.
+* [LOG4J2-3482](https://issues.apache.org/jira/browse/LOG4J2-3482):
+UrlConnectionFactory.createConnection now accepts an AuthorizationProvider as a parameter.
+* [LOG4J2-3477](https://issues.apache.org/jira/browse/LOG4J2-3477):
+Add the missing context stack to JsonLayout template. Thanks to filipc.
+* [LOG4J2-3393](https://issues.apache.org/jira/browse/LOG4J2-3393):
+Improve JsonTemplateLayout performance.
+* [LOG4J2-3424](https://issues.apache.org/jira/browse/LOG4J2-3424):
+Properties defined in configuration using a value attribute (as opposed to element) are read correctly.
+* [LOG4J2-3413](https://issues.apache.org/jira/browse/LOG4J2-3413):
+Fix resolution of non-Log4j properties.
+* [LOG4J2-3423](https://issues.apache.org/jira/browse/LOG4J2-3423):
+JAR file containing Log4j configuration isn't closed. Thanks to Radim Tlusty.
+* [LOG4J2-3425](https://issues.apache.org/jira/browse/LOG4J2-3425):
+Syslog appender lacks the SocketOptions setting. Thanks to Jiří Smolík.
+* [](https://issues.apache.org/jira/browse/LOG4J2-3425):
+Improve validation and reporting of configuration errors.
+* [](https://issues.apache.org/jira/browse/LOG4J2-3425):
+Log4j 1.2 bridge should generate Log4j 2.x messages based on the parameter runtime type.
+* [LOG4J2-3426](https://issues.apache.org/jira/browse/LOG4J2-3426):
+Log4j 1.2 bridge should not wrap components unnecessarily. Thanks to Pooja Pandey.
+* [LOG4J2-3418](https://issues.apache.org/jira/browse/LOG4J2-3418):
+Fixes Spring Boot logging system registration in a multi-application environment.
+* [LOG4J2-3040](https://issues.apache.org/jira/browse/LOG4J2-3040):
+Avoid ClassCastException in JeroMqManager with custom LoggerContextFactory #791. Thanks to LF-Lin.
+* [](https://issues.apache.org/jira/browse/LOG4J2-3040):
+Fix minor typo #792. Thanks to LF-Lin.
+* [LOG4J2-3439](https://issues.apache.org/jira/browse/LOG4J2-3439):
+Fixes default SslConfiguration, when a custom keystore is used. Thanks to Jayesh Netravali.
+* [LOG4J2-3447](https://issues.apache.org/jira/browse/LOG4J2-3447):
+Fixes appender concurrency problems in Log4j 1.x bridge. Thanks to Pooja Pandey.
+* [LOG4J2-3452](https://issues.apache.org/jira/browse/LOG4J2-3452):
+Fix and test for race condition in FileUtils.mkdir(). Thanks to Stefan Vodita.
+* [LOG4J2-3458](https://issues.apache.org/jira/browse/LOG4J2-3458):
+LocalizedMessage logs misleading errors on the console.
+* [LOG4J2-3359](https://issues.apache.org/jira/browse/LOG4J2-3359):
+Fixes the syslog appender in Log4j 1.x bridge, when used with a custom layout. Thanks to Tukesh.
+* [LOG4J2-3359](https://issues.apache.org/jira/browse/LOG4J2-3359):
+log4j-1.2-api 2.17.2 throws NullPointerException while removing appender with name as null. Thanks to Rajesh.
+* [LOG4J2-2872](https://issues.apache.org/jira/browse/LOG4J2-2872):
+Fix problem with non-uppercase custom levels. Thanks to Alla Gofman.
+* [LOG4J2-3475](https://issues.apache.org/jira/browse/LOG4J2-3475):
+Add missing message parameterization in RegexFilter. Thanks to Jeremy Lin.
+* [LOG4J2-3428](https://issues.apache.org/jira/browse/LOG4J2-3428):
+Update 3rd party dependencies for 2.18.0.
+* [LOG4J2-3531](https://issues.apache.org/jira/browse/LOG4J2-3531):
+Fix parsing error, when XInclude is disabled. Thanks to Simo Nikula.
+* [LOG4J2-3537](https://issues.apache.org/jira/browse/LOG4J2-3537):
+Fixes problem with wrong ANSI escape code for bright colors Thanks to Pavel_K.
 
 ### Changes
-* [LOG4J2-3267](https://issues.apache.org/jira/browse/LOG4J2-3267):
-Change modifier of method org.apache.logging.log4j.core.tools.Generate#generate to public (was package private) to facilitate automated code generation.
+* [LOG4J2-3536](https://issues.apache.org/jira/browse/LOG4J2-3536):
+Upgrade the Flume Appender to Flume 1.10.0
+* [LOG4J2-3516](https://issues.apache.org/jira/browse/LOG4J2-3516):
+Move perf tests to log4j-core-its
+* [LOG4J2-3506](https://issues.apache.org/jira/browse/LOG4J2-3506):
+Support Spring 2.6.x.
+* [LOG4J2-3473](https://issues.apache.org/jira/browse/LOG4J2-3473):
+Make the default disruptor WaitStrategy used by Async Loggers garbage-free.
+* [LOG4J2-3476](https://issues.apache.org/jira/browse/LOG4J2-3476):
+Do not throw UnsupportedOperationException when JUL ApiLogger::setLevel is called.
+* [LOG4J2-3427](https://issues.apache.org/jira/browse/LOG4J2-3427):
+Improves ServiceLoader support on servlet containers.
 
 ---
 
-Apache Log4j 2.17.2 requires a minimum of Java 8 to build and run.
+Apache Log4j 2.18.0 requires a minimum of Java 8 to build and run.
 Log4j 2.12.4 is the last release to support Java 7.
 Log4j 2.3.2 is the last release to support Java 6.
 Java 6 and Java 7 are no longer supported by the Log4j team.
