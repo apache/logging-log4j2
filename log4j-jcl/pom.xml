@@ -90,7 +90,7 @@
         <configuration>
           <instructions>
             <Export-Package>org.apache.logging.log4j.jcl</Export-Package>
-            <Require-Capability>osgi.extender;filter:="(osgi.extender=osgi.serviceloader.registrar);resolution:=optional"</Require-Capability>
+            <Require-Capability>osgi.extender;filter:="(osgi.extender=osgi.serviceloader.registrar)";resolution:=optional</Require-Capability>
             <Provide-Capability>osgi.serviceloader;osgi.serviceloader=org.apache.commons.logging.LogFactory</Provide-Capability>
           </instructions>
         </configuration>
