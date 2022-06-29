@@ -21,7 +21,7 @@ jobs:
 
   build:
 
-    if: github.repository == 'apache/logging-log4j2'
+    if: github.repository == 'sullis/logging-log4j2'
 
     runs-on: ubuntu-latest
 
