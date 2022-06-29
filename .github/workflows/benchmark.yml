@@ -15,7 +15,7 @@
 
 name: benchmark
 
-on: [ workflow_dispatch, push, pull ]
+on: [ workflow_dispatch, push, pull_request ]
 
 jobs:
 
