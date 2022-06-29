@@ -40,6 +40,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 @ExtendWith(MockitoExtension.class)
 public class ConsoleAppenderTest {
@@ -144,6 +145,48 @@ public class ConsoleAppenderTest {
         } finally {
             app.stop();
         }
+        assertFalse(app.isStarted(), "Appender did not stop");
+    }
+
+    @Test
+    public void testDirectSystemErr() {
+        testDirectMode(System.err, Target.SYSTEM_ERR, SystemSetter.SYSTEM_ERR);
+    }
+
+    @Test
+    public void testDirectSystemOut() {
+        testDirectMode(System.out, Target.SYSTEM_OUT, SystemSetter.SYSTEM_OUT);
+    }
+
+    private void testDirectMode(final PrintStream ps, final Target target, final SystemSetter systemSetter) {
+        systemSetter.systemSet(psMock);
+        final ConsoleAppender app = ConsoleAppender.newBuilder()
+                                        .setTarget(target)
+                                        .setFollow(false)
+                                        .setDirect(true)
+                                        .setIgnoreExceptions(false)
+                                        .setName("test")
+                                        .build();
+        assertEquals(target, app.getTarget());
+        app.start();
+        try {
+            final LogEvent event = Log4jLogEvent.newBuilder()
+                    .setLoggerName("TestLogger")
+                    .setLoggerFqcn(ConsoleAppenderTest.class.getName())
+                    .setLevel(Level.INFO)
+                    .setMessage(new SimpleMessage("Test"))
+                    .build();
+
+            assertTrue(app.isStarted(), "Appender did not start");
+            try {
+                app.append(event);
+            } finally {
+                systemSetter.systemSet(ps);
+            }
+        } finally {
+            app.stop();
+        }
+        verifyNoInteractions(psMock);
         assertFalse(app.isStarted(), "Appender did not stop");
     }
 
