@@ -16,10 +16,6 @@
  */
 package org.apache.logging.log4j.osgi.tests;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import org.apache.logging.log4j.osgi.tests.junit.BundleTestInfo;
 import org.apache.logging.log4j.osgi.tests.junit.OsgiTestRule;
 import org.junit.Before;
 import org.junit.Rule;
@@ -33,10 +29,6 @@ public abstract class AbstractOsgiTest {
 
     private BundleContext bundleContext;
 
-    private final BundleTestInfo bundleTestInfo;
-
-    private Path here;
-
     @Rule
     public OsgiTestRule osgi = new OsgiTestRule(getFactory());
 
@@ -45,7 +37,6 @@ public abstract class AbstractOsgiTest {
      */
     public AbstractOsgiTest() {
         super();
-        this.bundleTestInfo = new BundleTestInfo();
     }
 
     /**
@@ -54,21 +45,12 @@ public abstract class AbstractOsgiTest {
     @Before
     public void before() {
         bundleContext = osgi.getFramework().getBundleContext();
-        here = Paths.get(".").toAbsolutePath().normalize();
     }
 
     public BundleContext getBundleContext() {
         return bundleContext;
     }
 
-    public BundleTestInfo getBundleTestInfo() {
-        return bundleTestInfo;
-    }
-
     protected abstract FrameworkFactory getFactory();
-
-    public Path getHere() {
-        return here;
-    }
 
 }

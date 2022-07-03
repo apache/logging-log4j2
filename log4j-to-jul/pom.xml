@@ -67,7 +67,7 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Export-Package>org.apache.logging.tojul</Export-Package>
+            <Export-Package>org.apache.logging.log4j.tojul</Export-Package>
           </instructions>
         </configuration>
       </plugin>

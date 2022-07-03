@@ -298,6 +298,12 @@
         <artifactId>log4j-taglib</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <!-- Log4j-to-JUL bridge -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-to-jul</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <!-- SLF4J Adapter -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
