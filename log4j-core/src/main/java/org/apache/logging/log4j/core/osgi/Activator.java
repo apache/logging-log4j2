@@ -18,7 +18,6 @@
 package org.apache.logging.log4j.core.osgi;
 
 import java.util.Collection;
-import java.util.Hashtable;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.logging.log4j.LogManager;
@@ -29,11 +28,10 @@ import org.apache.logging.log4j.core.impl.ThreadContextDataInjector;
 import org.apache.logging.log4j.core.impl.ThreadContextDataProvider;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.ContextDataProvider;
-import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.ProviderActivator;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.InvalidSyntaxException;
@@ -45,24 +43,23 @@ import org.osgi.framework.wiring.BundleWiring;
 /**
  * OSGi BundleActivator.
  */
-public final class Activator implements BundleActivator, SynchronousBundleListener {
+public final class Activator extends ProviderActivator implements SynchronousBundleListener {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final AtomicReference<BundleContext> contextRef = new AtomicReference<>();
 
-    ServiceRegistration provideRegistration = null;
-    ServiceRegistration contextDataRegistration = null;
+    private ServiceRegistration<ContextDataProvider> contextDataRegistration = null;
+
+    public Activator() {
+        super(new Log4jProvider());
+    }
 
     @Override
     public void start(final BundleContext context) throws Exception {
-        final Provider provider = new Log4jProvider();
-        final Hashtable<String, String> props = new Hashtable<>();
-        props.put("APIVersion", "2.60");
+        super.start(context);
         final ContextDataProvider threadContextProvider = new ThreadContextDataProvider();
-        provideRegistration = context.registerService(Provider.class.getName(), provider, props);
-        contextDataRegistration = context.registerService(ContextDataProvider.class.getName(), threadContextProvider,
-                null);
+        contextDataRegistration = context.registerService(ContextDataProvider.class, threadContextProvider, null);
         loadContextProviders(context);
         // allow the user to override the default ContextSelector (e.g., by using BasicContextSelector for a global cfg)
         if (PropertiesUtil.getProperties().getStringProperty(Constants.LOG4J_CONTEXT_SELECTOR) == null) {
@@ -114,10 +111,10 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
 
     @Override
     public void stop(final BundleContext context) throws Exception {
-        provideRegistration.unregister();
         contextDataRegistration.unregister();
         this.contextRef.compareAndSet(context, null);
         LogManager.shutdown();
+        super.stop(context);
     }
 
     @Override
