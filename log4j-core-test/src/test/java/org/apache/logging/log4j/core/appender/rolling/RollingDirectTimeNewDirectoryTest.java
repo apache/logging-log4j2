@@ -34,7 +34,7 @@ import java.util.concurrent.CountDownLatch;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class RollingDirectTimeNewDirectoryTest extends AbstractRollingListenerTest {
+public class RollingDirectTimeNewDirectoryTest implements RolloverListener {
 
     private static final String CONFIG = "log4j-rolling-folder-direct.xml";
 
@@ -50,14 +50,18 @@ public class RollingDirectTimeNewDirectoryTest extends AbstractRollingListenerTe
 
         final Logger logger = context.getLogger(RollingDirectTimeNewDirectoryTest.class.getName());
 
-        for (int i = 0; i < 1000; i++) {
-            currentTimeMillis.incrementAndGet();
-            logger.info("nHq6p9kgfvWfjzDRYbZp");
-        }
-        currentTimeMillis.addAndGet(500);
-        for (int i = 0; i < 1000; i++) {
-            currentTimeMillis.incrementAndGet();
-            logger.info("nHq6p9kgfvWfjzDRYbZp");
+        for (int count = 0; count < 2; ++count) {
+            long start = System.currentTimeMillis();
+            for (int i = 0; i < 50; i++) {
+                logger.info("nHq6p9kgfvWfjzDRYbZp");
+            }
+            long end = System.currentTimeMillis();
+            if (end < start + 1000) {
+                Thread.sleep(start + 1000 - end);
+            }
+            for (int i = 0; i < 50; i++) {
+                logger.info("nHq6p9kgfvWfjzDRYbZp");
+            }
         }
 
         rollover.await();
@@ -99,6 +103,10 @@ public class RollingDirectTimeNewDirectoryTest extends AbstractRollingListenerTe
             throw new AssertionFailedError(sb.toString(), error);
         }
 
+    }
+
+    @Override
+    public void rolloverTriggered(String fileName) {
     }
 
     @Override
