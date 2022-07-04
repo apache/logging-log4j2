@@ -27,22 +27,26 @@ import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  *
  */
-public class RollingAppenderDirectWrite1906Test extends AbstractRollingListenerTest {
+public class RollingAppenderDirectWrite1906Test implements RolloverListener {
 
     private static final String CONFIG = "log4j-rolling-direct-1906.xml";
 
@@ -63,7 +67,7 @@ public class RollingAppenderDirectWrite1906Test extends AbstractRollingListenerT
         int count = 100;
         for (int i = 0; i < count; ++i) {
             logger.debug("This is test message number " + i);
-            currentTimeMillis.addAndGet(50);
+            Thread.sleep(50);
         }
         rollover.await();
         final Path dir = Path.of(DIR);
@@ -86,6 +90,10 @@ public class RollingAppenderDirectWrite1906Test extends AbstractRollingListenerT
         }
     }
 
+    @Override
+    public void rolloverTriggered(String fileName) {
+
+    }
 
     @Override
     public void rolloverComplete(final String fileName) {
