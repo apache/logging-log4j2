@@ -19,10 +19,12 @@ package org.apache.logging.log4j.core.async;
 import java.util.List;
 
 import org.apache.logging.log4j.categories.AsyncLoggers;
+import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import static org.apache.logging.log4j.Level.ERROR;
 import static org.junit.Assert.*;
 
 @Category(AsyncLoggers.class)
@@ -69,5 +71,14 @@ public class AsyncLoggerContextSelectorTest {
     public void testDependentOnClassLoader() {
         final AsyncLoggerContextSelector selector = new AsyncLoggerContextSelector();
         assertTrue(selector.isClassLoaderDependent());
+    }
+
+    @Test
+    public void testRootLoggerIsAsync() {
+        final AsyncLoggerContextSelector selector = new AsyncLoggerContextSelector();
+        final LoggerContext context = selector.getContext(FQCN, null, false);
+        final Logger rootLogger = context.getRootLogger();
+        assertTrue(rootLogger instanceof AsyncLogger);
+        assertEquals(ERROR, rootLogger.getLevel());
     }
 }
