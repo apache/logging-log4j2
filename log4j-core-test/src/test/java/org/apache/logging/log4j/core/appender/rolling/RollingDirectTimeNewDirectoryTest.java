@@ -28,7 +28,10 @@ import org.opentest4j.AssertionFailedError;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,6 +44,8 @@ public class RollingDirectTimeNewDirectoryTest implements RolloverListener {
     // Note that the path is hardcoded in the configuration!
     private static final String DIR = "target/rolling-folder-direct";
     private final CountDownLatch rollover = new CountDownLatch(2);
+    private boolean isFirst = true;
+    private String ignored = null;
 
     @Test
     @CleanUpDirectories(DIR)
@@ -78,6 +83,11 @@ public class RollingDirectTimeNewDirectoryTest implements RolloverListener {
             assertThat(logFolders).hasSizeGreaterThanOrEqualTo(minExpectedLogFolderCount);
 
             for (File logFolder : logFolders) {
+                // It is possible a log file is created at startup and by he time we get here it
+                // has rolled but has no data and so was deleted.
+                if (ignored != null && logFolder.getAbsolutePath().equals(ignored)) {
+                    continue;
+                }
                 File[] logFiles = logFolder.listFiles();
                 if (logFiles != null) {
                     Arrays.sort(logFiles);
@@ -111,6 +121,13 @@ public class RollingDirectTimeNewDirectoryTest implements RolloverListener {
 
     @Override
     public void rolloverComplete(final String fileName) {
+        File file = new File(fileName);
+        if (isFirst && file.length() == 0) {
+            isFirst = false;
+            ignored = file.getParentFile().getAbsolutePath();
+            return;
+        }
+        isFirst = false;
         rollover.countDown();
     }
 }
