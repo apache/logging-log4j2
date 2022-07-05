@@ -172,7 +172,7 @@
     <dependency>
       <groupId>org.jmdns</groupId>
       <artifactId>jmdns</artifactId>
-      <version>3.5.7</version>
+      <version>3.5.8</version>
       <scope>test</scope>
     </dependency>
     <!-- SLF4J tests -->
