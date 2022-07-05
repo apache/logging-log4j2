@@ -153,7 +153,7 @@
     <dependency>
       <groupId>org.jmdns</groupId>
       <artifactId>jmdns</artifactId>
-      <version>3.5.3</version>
+      <version>3.5.8</version>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
