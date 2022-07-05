@@ -228,7 +228,7 @@
     <spring-boot.version>2.6.7</spring-boot.version>
     <springVersion>5.3.19</springVersion>
     <kubernetes-client.version>4.6.1</kubernetes-client.version>
-    <flumeVersion>1.9.0</flumeVersion>
+    <flumeVersion>1.10.0</flumeVersion>
     <disruptorVersion>3.4.4</disruptorVersion>
     <conversantDisruptorVersion>1.2.19</conversantDisruptorVersion>
     <mongodb3.version>3.12.4</mongodb3.version>
@@ -290,6 +290,7 @@
     <argLine>-Xms256m -Xmx1024m</argLine>
     <javaTargetVersion>11</javaTargetVersion>
     <module.name />
+    <netty-all.version>4.1.72.Final</netty-all.version>
   </properties>
   <pluginRepositories>
     <pluginRepository>
@@ -517,6 +518,12 @@
             <artifactId>junit</artifactId>
           </exclusion>
         </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-all</artifactId>
+        <version>${netty-all.version}</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.hadoop</groupId>
