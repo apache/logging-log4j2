@@ -74,11 +74,11 @@ public class SystemPropertyArbiter implements Arbiter {
 
         /**
          * Sets the Property Value.
-         * @param propertyValue the property name.
+         * @param propertyValue the property value.
          * @return this
          */
         public Builder setPropertyValue(final String propertyValue) {
-            this.propertyName = propertyValue;
+            this.propertyValue = propertyValue;
             return asBuilder();
         }
 
