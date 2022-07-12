@@ -201,7 +201,12 @@
 		Fixes incorrect constructor call in LocalizedMessageFactory.
       </action>
     </release>
-    <release version="2.18.0" date="20YY-MM-DD" description="GA Release 2.18.0">
+    <release version="2.18.1" date="2022-MM-DD" description="GA Release 2.18.1">
+      <action issue="LOG4J2-3550" dev="rgoers" type="fix" due-to="DongjianPeng">
+        SystemPropertyAribiter was assigning the value as the name.
+      </action>
+    </release>
+    <release version="2.18.0" date="20YY-06-28" description="GA Release 2.18.0">
       <action issue="LOG4J2-3339" dev="rgoers" type="fix">
         DirectWriteRolloverStrategy should use the current time when creating files.
       </action>
