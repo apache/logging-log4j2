@@ -75,7 +75,7 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
                 final KeyStore ks = KeyStore.getInstance(this.keyStoreType);
                 final char[] password = this.getPasswordAsCharArray();
                 try {
-                    ks.load(fin, password != null ? password : DEFAULT_PASSWORD);
+                    ks.load(fin, password);
                 } finally {
                     if (password != null) {
                         Arrays.fill(password, '\0');
