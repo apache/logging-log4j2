@@ -93,6 +93,7 @@ public class DefaultBundle {
     }
 
     @ConditionalOnProperty(name = Constants.LOG4J_CONTEXT_SELECTOR)
+    @ConditionalOnMissingBinding
     @SingletonFactory
     @Ordered(-100)
     public ContextSelector systemPropertyContextSelector() throws ClassNotFoundException {
@@ -106,6 +107,7 @@ public class DefaultBundle {
     }
 
     @ConditionalOnProperty(name = ShutdownCallbackRegistry.SHUTDOWN_CALLBACK_REGISTRY)
+    @ConditionalOnMissingBinding
     @SingletonFactory
     @Ordered(-100)
     public ShutdownCallbackRegistry systemPropertyShutdownCallbackRegistry() throws ClassNotFoundException {
@@ -119,6 +121,7 @@ public class DefaultBundle {
     }
 
     @ConditionalOnProperty(name = ClockFactory.PROPERTY_NAME, value = "SystemClock")
+    @ConditionalOnMissingBinding
     @SingletonFactory
     @Ordered(-200)
     public Clock systemClock() {
@@ -126,6 +129,7 @@ public class DefaultBundle {
     }
 
     @ConditionalOnProperty(name = ClockFactory.PROPERTY_NAME, value = "SystemMillisClock")
+    @ConditionalOnMissingBinding
     @SingletonFactory
     @Ordered(-200)
     public Clock systemMillisClock() {
@@ -133,6 +137,7 @@ public class DefaultBundle {
     }
 
     @ConditionalOnProperty(name = ClockFactory.PROPERTY_NAME, value = "CachedClock")
+    @ConditionalOnMissingBinding
     @SingletonFactory
     @Ordered(-200)
     public Clock cachedClock() {
@@ -140,6 +145,7 @@ public class DefaultBundle {
     }
 
     @ConditionalOnProperty(name = ClockFactory.PROPERTY_NAME, value = "org.apache.logging.log4j.core.time.internal.CachedClock")
+    @ConditionalOnMissingBinding
     @SingletonFactory
     @Ordered(-200)
     public Clock cachedClockFqcn() {
@@ -147,6 +153,7 @@ public class DefaultBundle {
     }
 
     @ConditionalOnProperty(name = ClockFactory.PROPERTY_NAME, value = "CoarseCachedClock")
+    @ConditionalOnMissingBinding
     @SingletonFactory
     @Ordered(-200)
     public Clock coarseCachedClock() {
@@ -154,6 +161,7 @@ public class DefaultBundle {
     }
 
     @ConditionalOnProperty(name = ClockFactory.PROPERTY_NAME, value = "org.apache.logging.log4j.core.time.internal.CoarseCachedClock")
+    @ConditionalOnMissingBinding
     @SingletonFactory
     @Ordered(-200)
     public Clock coarseCachedClockFqcn() {
@@ -161,6 +169,7 @@ public class DefaultBundle {
     }
 
     @ConditionalOnProperty(name = ClockFactory.PROPERTY_NAME)
+    @ConditionalOnMissingBinding
     @SingletonFactory
     @Ordered(-100)
     public Clock systemPropertyClock() throws ClassNotFoundException {
@@ -180,6 +189,7 @@ public class DefaultBundle {
     }
 
     @ConditionalOnProperty(name = "log4j2.ContextDataInjector")
+    @ConditionalOnMissingBinding
     @Factory
     @Ordered(-100)
     public ContextDataInjector systemPropertyContextDataInjector() throws ClassNotFoundException {
@@ -203,6 +213,7 @@ public class DefaultBundle {
     }
 
     @ConditionalOnProperty(name = Constants.LOG4J_LOG_EVENT_FACTORY)
+    @ConditionalOnMissingBinding
     @SingletonFactory
     @Ordered(-100)
     public LogEventFactory systemPropertyLogEventFactory() throws ClassNotFoundException {
@@ -241,6 +252,7 @@ public class DefaultBundle {
     }
 
     @ConditionalOnProperty(name = CompositeConfiguration.MERGE_STRATEGY_PROPERTY)
+    @ConditionalOnMissingBinding
     @SingletonFactory
     @Ordered(-100)
     public MergeStrategy systemPropertyMergeStrategy() throws ClassNotFoundException {
@@ -254,6 +266,7 @@ public class DefaultBundle {
     }
 
     @ConditionalOnProperty(name = Constants.LOG4J_DEFAULT_STATUS_LEVEL)
+    @ConditionalOnMissingBinding
     @SingletonFactory
     @Named("StatusLogger")
     @Ordered(-100)

@@ -75,7 +75,8 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
     public Log4jContextFactory(final ContextSelector selector) {
         Objects.requireNonNull(selector, "No ContextSelector provided");
         injector = DI.createInjector();
-        injector.registerBinding(ContextSelector.KEY, () -> selector).init();
+        injector.init();
+        injector.registerBinding(ContextSelector.KEY, () -> selector);
         this.selector = injector.getInstance(ContextSelector.KEY);
         this.shutdownCallbackRegistry = injector.getInstance(ShutdownCallbackRegistry.KEY);
         LOGGER.debug("Using ShutdownCallbackRegistry {}", this.shutdownCallbackRegistry.getClass());
@@ -92,7 +93,8 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
     public Log4jContextFactory(final ShutdownCallbackRegistry shutdownCallbackRegistry) {
         Objects.requireNonNull(shutdownCallbackRegistry, "No ShutdownCallbackRegistry provided");
         injector = DI.createInjector();
-        injector.registerBinding(ShutdownCallbackRegistry.KEY, () -> shutdownCallbackRegistry).init();
+        injector.init();
+        injector.registerBinding(ShutdownCallbackRegistry.KEY, () -> shutdownCallbackRegistry);
         this.selector = injector.getInstance(ContextSelector.KEY);
         this.shutdownCallbackRegistry = injector.getInstance(ShutdownCallbackRegistry.KEY);
         LOGGER.debug("Using ShutdownCallbackRegistry {}", this.shutdownCallbackRegistry.getClass());
@@ -111,9 +113,9 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
         Objects.requireNonNull(selector, "No ContextSelector provided");
         Objects.requireNonNull(shutdownCallbackRegistry, "No ShutdownCallbackRegistry provided");
         injector = DI.createInjector();
+        injector.init();
         injector.registerBinding(ContextSelector.KEY, () -> selector)
-                .registerBinding(ShutdownCallbackRegistry.KEY, () -> shutdownCallbackRegistry)
-                .init();
+                .registerBinding(ShutdownCallbackRegistry.KEY, () -> shutdownCallbackRegistry);
         this.selector = injector.getInstance(ContextSelector.KEY);
         this.shutdownCallbackRegistry = injector.getInstance(ShutdownCallbackRegistry.KEY);
         LOGGER.debug("Using ShutdownCallbackRegistry {}", this.shutdownCallbackRegistry.getClass());
