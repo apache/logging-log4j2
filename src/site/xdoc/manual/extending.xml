@@ -553,7 +553,7 @@ ListAppender list2 = ListAppender.newBuilder().setName("List1").setEntryPerNewLi
             to locate and load <code>ContextDataProvider</code> instances. Log4j itself adds the ThreadContextData to
             the LogEvent using <code>org.apache.logging.log4j.core.impl.ThreadContextDataProvider</code>. Custom
             implementations should implement the <code>org.apache.logging.log4j.core.util.ContextDataProvider</code>
-            interface and declare it as a service by defining the implmentation class in a file named
+            interface and declare it as a service by defining the implementation class in a file named
             <code>META-INF/services/org.apache.logging.log4j.core.util.ContextDataProvider</code>.
           </p>
         </subsection>

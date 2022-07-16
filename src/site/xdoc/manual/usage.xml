@@ -116,7 +116,7 @@
   */
   public class Child extends Parent {
 
-      // The name of this Logge will be "org.apache.logging.Child"
+      // The name of this Logger will be "org.apache.logging.Child"
       public Logger childLogger = LogManager.getLogger();
 
       public void childLog(Marker marker) {
@@ -212,7 +212,7 @@
             <li>Logging is performed in Child using the static logger in the parent. Since the method calling the logging
               method is in Child that is the class name that appears.</li>
 
-            <li>Logging is performed in the parent class using the logger of Child. The
+            <li>Logging is performed in the parent class using the logger of the Child. The
               logger name matches the name of the child and so it is printed.</li>
             <li>Logging is performed in the parent class using the logger of the Child. Although
               the method was called against the Child instance it is implemented in Parent so that is what

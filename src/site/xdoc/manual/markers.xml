@@ -93,7 +93,7 @@ public class MyApp {
             </p>
               <ol>
                 <li>Markers must be unique. They are permanently registered by name so care should be taken
-                  to insure that Markers used in your application are distinct from those in the application's
+                  to ensure that Markers used in your application are distinct from those in the application's
                   dependencies, unless that is what is desired.</li>
                 <li>Parent Markers can be added or removed dynamically. However, this is fairly expensive to do.
                   Instead, it is recommended that the parents be identified when obtaining the Marker the first time

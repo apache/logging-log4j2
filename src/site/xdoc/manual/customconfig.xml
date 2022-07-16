@@ -61,7 +61,7 @@
               for the component you want to configure.
             </p>
             <p>
-              For example, the builder does not know what sub-components can be configured on specific components
+              For example, the builder does not know what subcomponents can be configured on specific components
               such as the RollingFileAppender vs. the RoutingAppender. To specify a triggering policy on a 
               RollingFileAppender you would use builder.newComponent().
             </p>

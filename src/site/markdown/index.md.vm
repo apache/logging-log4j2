@@ -147,9 +147,9 @@ See [Logging in the Cloud](manual/cloud.html) for details.
 
 $h3 Compatible with Log4j 1.x
 
-The Log4j-1.2-api module of Log4j 2 provides compatiblity for applications using the Log4j 1 logging methods. As
+The Log4j-1.2-api module of Log4j 2 provides compatibility for applications using the Log4j 1 logging methods. As
 of Log4j 2.13.0 Log4j 2 also provides experimental support for Log4j 1.x configuration files. See
-[Log4j 2 Compatiblity with Log4j 1](manual/compatibility.html) for more information.
+[Log4j 2 Compatibility with Log4j 1](manual/compatibility.html) for more information.
 
 $h2 Documentation
 

@@ -241,7 +241,7 @@ or
               <br />
               <tt>Block</tt> is a strategy that uses a lock and condition variable for the I/O thread waiting for log events.
               Block can be used when throughput and low-latency are not as important as CPU resource.
-              Recommended for resource constrained/virtualised environments.
+              Recommended for resource constrained/virtualized environments.
               <br />
               <tt>Timeout</tt> is a variation of the <tt>Block</tt> strategy that will periodically
               wake up from the lock condition await() call. This ensures that if a notification is missed somehow
@@ -450,7 +450,7 @@ or
               or shrink during the life of the system.
               <p>
                 When the application is logging faster than the underlying appender can keep up with
-                for a long enough time to fill up the queue, the behavious is determined by the
+                for a long enough time to fill up the queue, the behaviour is determined by the
                 <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/async/AsyncQueueFullPolicy.html">AsyncQueueFullPolicy</a>.
               </p>
             </td>
@@ -466,7 +466,7 @@ or
               <br />
               <tt>Block</tt> is a strategy that uses a lock and condition variable for the I/O thread waiting for log events.
               Block can be used when throughput and low-latency are not as important as CPU resource.
-              Recommended for resource constrained/virtualised environments.
+              Recommended for resource constrained/virtualized environments.
               <br />
               <tt>Timeout</tt> is a variation of the <tt>Block</tt> strategy that will periodically
               wake up from the lock condition await() call. This ensures that if a notification is missed somehow
@@ -665,13 +665,13 @@ public interface AsyncWaitStrategyFactory {
           logback-1.0.10, with similar results. For asynchronous appenders, total logging throughput of all
           threads together remains roughly constant when adding more threads.
           Asynchronous loggers make more effective use of the multiple cores
-          available on the machine in multi-threaded scenarios.
+          available on the machine in multithreaded scenarios.
         </p>
         <p>
           <img src="../images/async-throughput-comparison.png" alt="Async loggers have the highest throughput." />
         </p>
         <p>On Solaris 10 (64bit) with JDK1.7.0_06, 4-core Xeon X5570 dual CPU
-          @2.93Ghz with hyperthreading switched on (16 virtual cores):
+          @2.93Ghz with hyper-threading switched on (16 virtual cores):
         </p>
         <table>
           <caption align="top">Throughput per thread in
@@ -769,7 +769,7 @@ public interface AsyncWaitStrategyFactory {
         </table>
         <p />
         <p>On Windows 7 (64bit) with JDK1.7.0_11, 2-core Intel i5-3317u CPU
-          @1.70Ghz with hyperthreading switched on (4 virtual cores):
+          @1.70Ghz with hyper-threading switched on (4 virtual cores):
         </p>
         <table>
           <caption align="top">Throughput per thread in
@@ -974,7 +974,7 @@ public interface AsyncWaitStrategyFactory {
         <p>
           Asynchronous Loggers are implemented using the
           <a href="https://lmax-exchange.github.io/disruptor/">LMAX Disruptor</a>
-          inter-thread messaging library. From the LMAX web site:
+          inter-thread messaging library. From the LMAX website:
         </p>
         <blockquote>
           <p>... using queues to pass data between stages of the system was introducing latency, so we

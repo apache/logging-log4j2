@@ -24,7 +24,7 @@
         <author email="rgoers@apache.org">Ralph Goers</author>
         <author email="ggrgeory@apache.org">Gary Gregory</author>
         <author email="nickwilliams@apache.org">Nick Williams</author>
-        <author email="mattsicker@apache.org">Matt SIcker</author>
+        <author email="mattsicker@apache.org">Matt Sicker</author>
     </properties>
 
     <body>
@@ -63,7 +63,7 @@
           <p>
             By default, AsyncAppender uses
             <a class="javadoc" href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ArrayBlockingQueue.html">java.util.concurrent.ArrayBlockingQueue</a>
-            which does not require any external libraries. Note that multi-threaded applications should exercise care
+            which does not require any external libraries. Note that multithreaded applications should exercise care
             when using this appender as such: the blocking queue is susceptible to lock contention and our
             <a href="../performance.html#asyncLogging">tests showed</a>
             performance may become worse when more threads are logging concurrently.
@@ -443,7 +443,7 @@ CREATE TABLE logs (
                 Can give up to 10x performance boost when the output is redirected to file or other process.
                 Cannot be used with Jansi on Windows. Cannot be used with <code>follow</code>. Output will not respect
                 <code>java.lang.System.setOut()/.setErr()</code> and may get intertwined with other output to
-                <code>java.lang.System.out/.err</code> in a multi-threaded application.
+                <code>java.lang.System.out/.err</code> in a multithreaded application.
                 <i>New since 2.6.2. Be aware that this is a new addition, and it has only been tested with Oracle JVM
                   on Linux and Windows so far.</i></td>
             </tr>
@@ -3292,7 +3292,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
                     <td>interval</td>
                     <td>integer</td>
                     <td>How often a rollover should occur based on the most specific time unit in the date pattern.
-                      For example, with a date pattern with hours as the most specific item and and increment of 4 rollovers
+                      For example, with a date pattern with hours as the most specific item and increment of 4 rollovers
                       would occur every 4 hours.
                       The default value is 1.</td>
                   </tr>
@@ -4223,7 +4223,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 						<td>String</td>
 						<td>
 							The pattern of the file name of the archived log file. The format
-							of the pattern should is dependent on the RolloverStrategu that is used. The DefaultRolloverStrategy
+							of the pattern should is dependent on the RolloverStrategy that is used. The DefaultRolloverStrategy
 							will accept both a date/time pattern compatible with
 							<a
 								href="https://download.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html">
@@ -4428,7 +4428,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
            </p>
            <p>
              You can also configure a RoutingAppender with scripts: you can run a script when the appender starts
-             and when a route is chosen for an log event.
+             and when a route is chosen for a log event.
            </p>
           <table>
             <caption align="top">RoutingAppender Parameters</caption>
