@@ -19,6 +19,8 @@ package org.apache.logging.log4j.core.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.logging.log4j.core.selector.BasicContextSelector;
+import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.plugins.di.Injector;
 import org.junit.jupiter.api.Test;
 
 public class Log4jContextFactoryTest {
@@ -29,11 +31,13 @@ public class Log4jContextFactoryTest {
      */
     @Test
     public void testParameterPriority() {
-        Log4jContextFactory factory = new Log4jContextFactory(new BasicContextSelector());
+        final Injector injector = DI.createInjector();
+        injector.init();
+        Log4jContextFactory factory = new Log4jContextFactory(new BasicContextSelector(injector));
         assertEquals(BasicContextSelector.class, factory.getSelector().getClass());
         factory = new Log4jContextFactory(factory);
         assertEquals(Log4jContextFactory.class, factory.getShutdownCallbackRegistry().getClass());
-        factory = new Log4jContextFactory(new BasicContextSelector(), factory);
+        factory = new Log4jContextFactory(new BasicContextSelector(injector), factory);
         assertEquals(BasicContextSelector.class, factory.getSelector().getClass());
         assertEquals(Log4jContextFactory.class, factory.getShutdownCallbackRegistry().getClass());
     }
