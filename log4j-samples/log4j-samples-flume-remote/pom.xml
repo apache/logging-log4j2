@@ -28,7 +28,7 @@
   <url>http://maven.apache.org</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <deploy.plugin.version>2.8.2</deploy.plugin.version>
+    <deploy.plugin.version>3.0.0</deploy.plugin.version>
     <log4jParentDir>${basedir}/../..</log4jParentDir>
   </properties>
   <dependencies>

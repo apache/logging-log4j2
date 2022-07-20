@@ -264,7 +264,7 @@
     <checkstyle.plugin.version>3.1.2</checkstyle.plugin.version>
     <!-- checkstyle 10.0 requires Java 11 -->
     <checkstyle.tool.version>8.45.1</checkstyle.tool.version>
-    <deploy.plugin.version>2.8.2</deploy.plugin.version>
+    <deploy.plugin.version>3.0.0</deploy.plugin.version>
     <rat.plugin.version>0.13</rat.plugin.version>
     <!-- Do not update the pdf plugin version without verifying the new version works by running mvn site -->
     <pdf.plugin.version>1.2</pdf.plugin.version>

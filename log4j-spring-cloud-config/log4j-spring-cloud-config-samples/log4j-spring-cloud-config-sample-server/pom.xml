@@ -39,7 +39,7 @@
     <log4jParentDir>${basedir}/../../..</log4jParentDir>
     <java.version>1.8</java.version>
     <spring-cloud.version>Hoxton.SR9</spring-cloud.version>
-    <deploy.plugin.version>2.8.2</deploy.plugin.version>
+    <deploy.plugin.version>3.0.0</deploy.plugin.version>
 
     <!-- paths -->
     <sonar.dependencyCheck.reportPath>${project.build.directory}/dependency-check-report.xml
