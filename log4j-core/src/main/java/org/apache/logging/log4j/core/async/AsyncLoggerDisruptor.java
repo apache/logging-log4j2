@@ -95,7 +95,7 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
         ringBufferSize = DisruptorUtil.calculateRingBufferSize("AsyncLogger.RingBufferSize");
         final WaitStrategy waitStrategy = DisruptorUtil.createWaitStrategy("AsyncLogger.WaitStrategy");
 
-        final ThreadFactory threadFactory = new Log4jThreadFactory("AsyncLogger[" + contextName + "]", true, Thread.NORM_PRIORITY) {
+        final ThreadFactory threadFactory = new Log4jThreadFactory("AsyncLogger[" + contextName + "]", true) {
             @Override
             public Thread newThread(final Runnable r) {
                 final Thread result = super.newThread(r);

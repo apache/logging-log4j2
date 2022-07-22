@@ -17,6 +17,8 @@
 
 package org.apache.logging.log4j.core.util;
 
+import org.apache.logging.log4j.util.PropertiesUtil;
+
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -26,6 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @since 2.7
  */
 public class Log4jThreadFactory implements ThreadFactory {
+    public static final String THREAD_PRIORITY = "log4j2.thread.priority";
 
     private static final String PREFIX = "TF-";
 
@@ -37,7 +40,7 @@ public class Log4jThreadFactory implements ThreadFactory {
      * @return a new daemon thread factory.
      */
     public static Log4jThreadFactory createDaemonThreadFactory(final String threadFactoryName) {
-        return new Log4jThreadFactory(threadFactoryName, true, Thread.NORM_PRIORITY);
+        return new Log4jThreadFactory(threadFactoryName, true);
     }
 
     /**
@@ -52,7 +55,7 @@ public class Log4jThreadFactory implements ThreadFactory {
      * @return a new daemon thread factory.
      */
     public static Log4jThreadFactory createThreadFactory(final String threadFactoryName) {
-        return new Log4jThreadFactory(threadFactoryName, false, Thread.NORM_PRIORITY);
+        return new Log4jThreadFactory(threadFactoryName, false);
     }
 
     private static final AtomicInteger FACTORY_NUMBER = new AtomicInteger(1);
@@ -61,6 +64,18 @@ public class Log4jThreadFactory implements ThreadFactory {
     private final ThreadGroup group;
     private final int priority;
     private final String threadNamePrefix;
+
+    /**
+     * Constructs an initialized thread factory.
+     *
+     * @param threadFactoryName
+     *            The thread factory name.
+     * @param daemon
+     *            Whether to create daemon threads.
+     */
+    public Log4jThreadFactory(final String threadFactoryName, final boolean daemon) {
+        this(threadFactoryName, daemon, getThreadPriority());
+    }
 
     /**
      * Constructs an initialized thread factory.
@@ -94,4 +109,8 @@ public class Log4jThreadFactory implements ThreadFactory {
         return thread;
     }
 
+    private static int getThreadPriority() {
+        int result = PropertiesUtil.getProperties().getIntegerProperty(THREAD_PRIORITY, Thread.NORM_PRIORITY);
+        return Math.min(Math.max(Thread.MIN_PRIORITY, result), Thread.MAX_PRIORITY);
+    }
 }
