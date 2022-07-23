@@ -17,19 +17,22 @@
 
 package org.apache.logging.log4j.util;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.ResourceAccessMode;
-import org.junit.jupiter.api.parallel.ResourceLock;
-import org.junit.jupiter.api.parallel.Resources;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Properties;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceAccessMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
+import org.junitpioneer.jupiter.ReadsSystemProperty;
 
 public class PropertiesUtilTest {
 
@@ -147,5 +150,21 @@ public class PropertiesUtilTest {
         for (final String[] pair : data) {
             assertEquals(pair[0], util.getStringProperty(pair[1]));
         }
+    }
+
+    /**
+     * LOG4J2-3559: the fix for LOG4J2-3413 returns the value of 'log4j2.' for each
+     * property not starting with 'log4j'.
+     */
+    @Test
+    @ReadsSystemProperty
+    public void testLog4jProperty() {
+        final Properties props = new Properties();
+        final String incorrect = "log4j2.";
+        final String correct = "not.starting.with.log4j";
+        props.setProperty(incorrect, incorrect);
+        props.setProperty(correct, correct);
+        final PropertiesUtil util = new PropertiesUtil(props);
+        assertEquals(correct, util.getStringProperty(correct));
     }
 }
