@@ -36,6 +36,7 @@ public class PropertiesPropertySourceTest {
             {"log4j2.fooBarProperty", Arrays.asList("foo", "bar", "property")},
             {"log4j2.EXACT", Collections.singletonList("EXACT")},
             {"log4j2.testPropertyName", PropertySource.Util.tokenize("Log4jTestPropertyName")},
+            {null, Collections.emptyList()}
         };
     }
 

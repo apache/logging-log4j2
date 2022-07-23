@@ -64,13 +64,15 @@ public class EnvironmentPropertySource implements PropertySource {
 	@Override
 	public CharSequence getNormalForm(final Iterable<? extends CharSequence> tokens) {
 		final StringBuilder sb = new StringBuilder("LOG4J");
+		boolean empty = true;
 		for (final CharSequence token : tokens) {
+			empty = false;
 			sb.append('_');
 			for (int i = 0; i < token.length(); i++) {
 				sb.append(Character.toUpperCase(token.charAt(i)));
 			}
 		}
-		return sb.toString();
+		return empty ? null : sb.toString();
 	}
 
 	@Override

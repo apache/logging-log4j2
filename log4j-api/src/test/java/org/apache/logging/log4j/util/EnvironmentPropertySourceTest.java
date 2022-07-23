@@ -35,6 +35,7 @@ public class EnvironmentPropertySourceTest {
             {"LOG4J_FOO_BAR_PROPERTY", Arrays.asList("foo", "bar", "property")},
             {"LOG4J_EXACT", Collections.singletonList("EXACT")},
             {"LOG4J_TEST_PROPERTY_NAME", PropertySource.Util.tokenize("Log4jTestPropertyName")},
+            {null, Collections.emptyList()}
         };
     }
 

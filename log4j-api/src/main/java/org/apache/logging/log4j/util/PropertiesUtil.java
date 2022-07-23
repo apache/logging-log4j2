@@ -24,7 +24,6 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -481,19 +480,19 @@ public final class PropertiesUtil {
                 .filter(Objects::nonNull)
                 .forEach(key -> {
                     final List<CharSequence> tokens = PropertySource.Util.tokenize(key);
+                    final boolean hasTokens = !tokens.isEmpty();
                     sources.forEach(source -> {
-                        final String value = source.getProperty(key);
-                        if (value != null) {
+                        if (source.containsProperty(key)) {
+                            final String value = source.getProperty(key);
                             literal.putIfAbsent(key, value);
-                            if (!tokens.isEmpty()) {
+                            if (hasTokens) {
                                 tokenized.putIfAbsent(tokens, value);
                             }
                         }
-                        final CharSequence normalKey = source.getNormalForm(tokens);
-                        if (normalKey != null) {
-                            final String normalValue = source.getProperty(normalKey.toString());
-                            if (normalValue != null) {
-                                normalized.putIfAbsent(key, normalValue);
+                        if (hasTokens) {
+                            final String normalKey = Objects.toString(source.getNormalForm(tokens), null);
+                            if (normalKey != null && source.containsProperty(normalKey)) {
+                                normalized.putIfAbsent(key, source.getProperty(normalKey));
                             }
                         }
                     });
@@ -508,18 +507,16 @@ public final class PropertiesUtil {
                 return literal.get(key);
             }
             final List<CharSequence> tokens = PropertySource.Util.tokenize(key);
+            final boolean hasTokens = !tokens.isEmpty();
             for (final PropertySource source : sources) {
-                final String normalKey = Objects.toString(source.getNormalForm(tokens), null);
-                if (normalKey != null && source.containsProperty(normalKey)) {
-                    final String normalValue = source.getProperty(normalKey);
-                    // Caching previously unknown keys breaks many tests which set and unset system properties
-                    // normalized.put(key, normalValue);
-                    return normalValue;
+                if (hasTokens) {
+                    final String normalKey = Objects.toString(source.getNormalForm(tokens), null);
+                    if (normalKey != null && source.containsProperty(normalKey)) {
+                        return source.getProperty(normalKey);
+                    }
                 }
                 if (source.containsProperty(key)) {
-                    final String value = source.getProperty(key);
-                    // literal.put(key, value);
-                    return value;
+                    return source.getProperty(key);
                 }
             }
             return tokenized.get(tokens);

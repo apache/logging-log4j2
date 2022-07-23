@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.InputStream;
 import java.util.Properties;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -54,7 +55,8 @@ public class PropertiesUtilOrderTest {
 
         @Override
         public CharSequence getNormalForm(Iterable<? extends CharSequence> tokens) {
-            return "log4j2." + PropertySource.Util.joinAsCamelCase(tokens);
+            final CharSequence camelCase = PropertySource.Util.joinAsCamelCase(tokens);
+            return camelCase.length() > 0 ? "log4j2." + camelCase : null;
         }
 
         @Override
@@ -82,11 +84,13 @@ public class PropertiesUtilOrderTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        properties.load(ClassLoader.getSystemResourceAsStream("PropertiesUtilOrderTest.properties"));
+        try (final InputStream is = ClassLoader.getSystemResourceAsStream("PropertiesUtilOrderTest.properties")) {
+            properties.load(is);
+        }
     }
 
     @Test
-    public void normalizedOverrideLegacy() {
+    public void testNormalizedOverrideLegacy() {
         final PropertiesUtil util = new PropertiesUtil(properties);
         final String legacy = "props.legacy";
         final String normalized = "props.normalized";
@@ -105,7 +109,7 @@ public class PropertiesUtilOrderTest {
     }
 
     @Test
-    public void fallsBackToTokenMatching() {
+    public void testFallsBackToTokenMatching() {
         final PropertiesUtil util = new PropertiesUtil(properties);
         for (int i = 1; i <= 4; i++) {
             final String key = "log4j2.tokenBasedProperty" + i;
@@ -118,7 +122,7 @@ public class PropertiesUtilOrderTest {
     }
 
     @Test
-    public void orderOfNormalizedProperties(EnvironmentVariables env, SystemProperties sysProps) {
+    public void testOrderOfNormalizedProperties(EnvironmentVariables env, SystemProperties sysProps) {
         properties.remove("log4j2.normalizedProperty");
         properties.remove("LOG4J_normalized.property");
         final PropertiesUtil util = new PropertiesUtil(properties);
@@ -151,7 +155,7 @@ public class PropertiesUtilOrderTest {
     }
 
     @Test
-    public void highPriorityNonEnumerableSource(SystemProperties sysProps) {
+    public void testHighPriorityNonEnumerableSource(SystemProperties sysProps) {
         // In both datasources
         assertNotNull(properties.getProperty("log4j2.normalizedProperty"));
         assertNotNull(properties.getProperty("log4j.onlyLegacy"));
@@ -188,7 +192,7 @@ public class PropertiesUtilOrderTest {
      * @param sysProps
      */
     @Test
-    public void nullChecks(SystemProperties sysProps) {
+    public void testNullChecks(SystemProperties sysProps) {
         sysProps.set("log4j2.someProperty", "sysProps");
         sysProps.set("Log4jLegacyProperty", "sysProps");
         final PropertiesUtil util = new PropertiesUtil(new NullPropertySource());
