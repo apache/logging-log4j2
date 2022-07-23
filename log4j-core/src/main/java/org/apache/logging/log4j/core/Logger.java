@@ -54,7 +54,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
     private static final long serialVersionUID = 1L;
 
     // Used to avoid allocations for empty varargs
-    private static final Object[] EMPTY_VARARGS = new Object[0];
+    private static final Object[] EMPTY_VARARGS = new Object[] {};
 
     /**
      * Config should be consistent across threads.
