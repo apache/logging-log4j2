@@ -102,6 +102,10 @@ public class Key<T> {
         return namespace;
     }
 
+    /**
+     * Returns the ordinal value of this key. Keys that are otherwise equal can be compared by this
+     * ordinal using the natural integer comparator.
+     */
     public final int getOrder() {
         return order;
     }
@@ -113,6 +117,9 @@ public class Key<T> {
         return new Key<>(type, rawType, qualifierType, name, namespace, order);
     }
 
+    /**
+     * Returns a new key using the provided namespace otherwise populated with the same values as this instance.
+     */
     public final Key<T> withNamespace(final String namespace) {
         return new Key<>(type, rawType, qualifierType, name, namespace, order);
     }
@@ -136,6 +143,10 @@ public class Key<T> {
         return null;
     }
 
+    /**
+     * If this key's type {@code T} is a parameterized type, then this returns a new key corresponding to the
+     * requested parameterized type argument along with the same remaining values as this key.
+     */
     public final <P> Key<P> getParameterizedTypeArgument(final int arg) {
         if (type instanceof ParameterizedType) {
             return forQualifiedNamedType(qualifierType, name, ((ParameterizedType) type).getActualTypeArguments()[arg],

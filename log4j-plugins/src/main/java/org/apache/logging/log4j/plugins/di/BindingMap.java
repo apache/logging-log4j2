@@ -56,6 +56,9 @@ class BindingMap {
         bindings.put(key, Binding.bind(key, factory));
     }
 
+    /**
+     * @see org.apache.logging.log4j.plugins.util.OrderedComparator
+     */
     public <T> Supplier<T> merge(final Key<T> key, final Supplier<T> factory) {
         final Binding<?> newBinding = bindings.merge(key, Binding.bind(key, factory), (oldBinding, binding) ->
                 oldBinding.getKey().getOrder() <= binding.getKey().getOrder() ? oldBinding : binding);
