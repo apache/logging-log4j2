@@ -33,6 +33,9 @@
       <action issue="LOG4J2-3550" dev="rgoers" type="fix" due-to="DongjianPeng">
         SystemPropertyAribiter was assigning the value as the name.
       </action>
+      <action issue="LOG4J2-3560" dev="schlosna" type="fix">
+        Logger$PrivateConfig.filter(Level, Marker, String) was allocating empty varargs array.
+      </action>
     </release>
     <release version="2.18.0" date="2022-06-28" description="GA Release 2.18.0">
       <action issue="LOG4J2-3339" dev="rgoers" type="fix">
