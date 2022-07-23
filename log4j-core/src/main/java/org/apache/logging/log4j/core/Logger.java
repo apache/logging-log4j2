@@ -53,9 +53,6 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
 
     private static final long serialVersionUID = 1L;
 
-    // Used to avoid allocations for empty varargs
-    private static final Object[] EMPTY_VARARGS = new Object[] {};
-
     /**
      * Config should be consistent across threads.
      */
@@ -436,7 +433,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
         boolean filter(final Level level, final Marker marker, final String msg) {
             final Filter filter = config.getFilter();
             if (filter != null) {
-                final Filter.Result r = filter.filter(logger, level, marker, msg, EMPTY_VARARGS);
+                final Filter.Result r = filter.filter(logger, level, marker, msg, (Throwable) null);
                 if (r != Filter.Result.NEUTRAL) {
                     return r == Filter.Result.ACCEPT;
                 }
