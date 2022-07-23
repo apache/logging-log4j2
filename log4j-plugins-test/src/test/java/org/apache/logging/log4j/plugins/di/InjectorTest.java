@@ -145,7 +145,7 @@ class InjectorTest {
         }
     }
 
-    static class QualifiedBeanModule {
+    static class QualifiedBeanBundle {
         @Factory
         @Named("a")
         BeanA beanA() {
@@ -161,7 +161,7 @@ class InjectorTest {
 
     @Test
     void implicitInjectionViaNamedConstructorParameter() {
-        final Injector injector = DI.createInjector(new QualifiedBeanModule());
+        final Injector injector = DI.createInjector(new QualifiedBeanBundle());
         final BeanA defaultBean = injector.getInstance(BeanA.class);
         final BeanA namedBean = injector.getInstance(new @Named("a") Key<>() {});
         final NamedInjection namedInjection = injector.getInstance(NamedInjection.class);
@@ -171,7 +171,7 @@ class InjectorTest {
 
     @Test
     void implicitInjectionViaQualifierMetaAnnotatedParameter() {
-        final QualifiedInjection qualifiedInjection = DI.createInjector(new QualifiedBeanModule())
+        final QualifiedInjection qualifiedInjection = DI.createInjector(new QualifiedBeanBundle())
                 .getInstance(QualifiedInjection.class);
         assertThat(qualifiedInjection.defaultBean).isNotNull().isNotSameAs(qualifiedInjection.qualifiedBean);
         assertThat(qualifiedInjection.qualifiedBean).isNotNull();
@@ -210,13 +210,13 @@ class InjectorTest {
     @Test
     void fieldInjection() {
         final FieldInjection fieldInjection =
-                DI.createInjector(new QualifiedBeanModule()).getInstance(FieldInjection.class);
+                DI.createInjector(new QualifiedBeanBundle()).getInstance(FieldInjection.class);
         assertThat(fieldInjection.a).isNotNull().isNotSameAs(fieldInjection.bean);
         assertThat(fieldInjection.bean).isNotNull();
     }
 
     @Test
-    void ambiguousModuleMerge() {
+    void ambiguousBundleUsesOrdering() {
         final String actual = DI.createInjector(new Object() {
             @Factory
             @Ordered(Ordered.FIRST)
@@ -387,7 +387,7 @@ class InjectorTest {
         assertThat(tertiary.secondary.primary).isNotNull();
     }
 
-    static class AliasModule {
+    static class AliasBundle {
         @Factory
         @Named({ "foo", "bar" })
         String foo() {
@@ -419,7 +419,7 @@ class InjectorTest {
 
     @Test
     void supplierAliases() {
-        final Aliases aliases = DI.createInjector(new AliasModule()).getInstance(Aliases.class);
+        final Aliases aliases = DI.createInjector(new AliasBundle()).getInstance(Aliases.class);
         assertThat(List.of(aliases.foo, aliases.bar, aliases.bar, aliases.constructed, aliases.methodInjected))
                 .allMatch("bar"::equals);
     }
@@ -450,7 +450,7 @@ class InjectorTest {
         assertThat(factory.get()).isSameAs(factory.get()).isSameAs(injector.getInstance(CustomInstance.class));
     }
 
-    static class ClassModule {
+    static class ClassBundle {
         @Factory
         static String string() {
             return "hello";
@@ -458,12 +458,20 @@ class InjectorTest {
     }
 
     @Test
-    void staticProvidesMethodInClassModule() {
-        final String string = DI.createInjector(ClassModule.class).getInstance(String.class);
+    void staticProvidesMethodInClassBundle() {
+        final String string = DI.createInjector(ClassBundle.class).getInstance(String.class);
         assertThat(string).isEqualTo("hello");
     }
 
-    static class UppercaseModule {
+    @Test
+    void bundlesProvideConditionalBindingsByDefault() {
+        final Injector injector = DI.createInjector()
+                .registerBinding(Key.forClass(String.class), () -> "ell");
+        injector.registerBundle(ClassBundle.class);
+        assertThat(injector.getInstance(String.class)).isEqualTo("ell");
+    }
+
+    static class UppercaseBundle {
         @Factory
         @Named(Keys.SUBSTITUTOR_NAME)
         Function<String, String> uppercase() {
@@ -473,7 +481,7 @@ class InjectorTest {
 
     @Test
     void functionGenericsInjection() {
-        final Injector injector = DI.createInjector(new UppercaseModule());
+        final Injector injector = DI.createInjector(new UppercaseBundle());
         final Function<String, String> function = injector.getInstance(Keys.SUBSTITUTOR_KEY);
         assertThat(function.apply("foo")).isEqualTo("FOO");
         assertThatThrownBy(() -> injector.getInstance(Function.class)).hasMessageContaining("No @Inject constructors");
@@ -610,7 +618,6 @@ class InjectorTest {
     }
 
     static <T> PluginType<T> fromClass(final Class<T> clazz) {
-        final Plugin plugin = clazz.getAnnotation(Plugin.class);
         final String name = Keys.getName(clazz);
         final PluginEntry.Builder builder = PluginEntry.builder()
                 .setKey(name.toLowerCase(Locale.ROOT))
