@@ -16,12 +16,16 @@
  */
 
 /**
- * Log4j plugin annotations and dependency injection system.
+ * Log4j plugin annotations and dependency injection system. Plugins encompass a variety of customizable
+ * Log4j interfaces and classes that are addressable by {@linkplain org.apache.logging.log4j.plugins.Named name} or type
+ * including {@linkplain org.apache.logging.log4j.plugins.Configurable configurable plugins} which are created from a
+ * parsed tree of {@linkplain org.apache.logging.log4j.plugins.Node configuration nodes} along with other
+ * {@linkplain org.apache.logging.log4j.plugins.Namespace namespaces} for different dependency injection purposes.
  *
  * @see org.apache.logging.log4j.plugins.Inject
  * @see org.apache.logging.log4j.plugins.Plugin
  * @see org.apache.logging.log4j.plugins.PluginFactory
- * @see org.apache.logging.log4j.plugins.Namespace
+ * @see org.apache.logging.log4j.plugins.di.Injector
  */
 module org.apache.logging.log4j.plugins {
     exports org.apache.logging.log4j.plugins;

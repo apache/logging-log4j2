@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.plugins.di;
 
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.FactoryType;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
@@ -26,16 +27,35 @@ import java.lang.reflect.Type;
 import java.util.function.Supplier;
 
 /**
- * Central interface for dependency injection operations. An Injector maintains a registry of bindings between {@link Key}s to
- * {@link Supplier}s along with a registry of {@link Scope}s for different scope annotation types. Injectors may be
- * {@linkplain #init() initialized} with {@link InjectorCallback} services.
+ * Manages dependency injection of a set of bindings between {@link Key}s and {@link Supplier}s lifecycle-bound to
+ * {@link Scope}s. Keys describe the type, name, namespace, qualifier type, and order of a binding. Suppliers are known
+ * as <i>factories</i>, and factories may have injectable dependencies on other bindings upon creation. Scopes control
+ * the lifecycle of instances returned by a binding's factory.
+ *
+ * <p>When first creating an Injector, invocation of {@link #init()} will invoke all registered {@link InjectorCallback}
+ * services in {@linkplain InjectorCallback#getOrder() numeric order}. These callbacks may register bindings
+ * {@linkplain #registerBinding(Key, Supplier) programmatically} or via {@linkplain #registerBundle(Object) bundle classes},
+ * and set a {@linkplain #setReflectionAccessor(ReflectionAccessor) default reflection accessor} for customizing the
+ * context in which private reflection operations are performed. Additional scopes
+ * {@linkplain #registerScope(Class, Scope) may also be registered}.</p>
+ *
+ * <p>Factories for keys can be looked up {@linkplain #getFactory(Key) by key} or {@linkplain #getFactory(Class) by class}.
+ * Any object created outside this system can have {@linkplain #injectMembers(Object) its members injected}.</p>
+ *
+ * <p>A parsed {@linkplain Node configuration node} can be {@linkplain #configure(Node) configured} using its referenced
+ * plugin class to return the plugin instance. Configuring a node configures its children nodes and consumes its
+ * attributes before returning the plugin instance.</p>
  */
 public interface Injector {
+    /**
+     * The key corresponding to the current Injector.
+     */
     Key<Injector> KEY = new Key<>() {};
 
     /**
      * Initializes this Injector with all registered {@link InjectorCallback} services in
-     * {@linkplain InjectorCallback#getOrder() integral order}.
+     * {@linkplain InjectorCallback#getOrder() integral order}. This method should only be invoked after construction
+     * of a fresh Injector.
      */
     void init();
 
@@ -107,7 +127,13 @@ public interface Injector {
     void injectMembers(final Object instance);
 
     /**
-     * Creates a plugin instance using the provided configuration node.
+     * Creates a plugin instance using the provided configuration node. Unless the plugin
+     * {@linkplain Configurable#deferChildren() defers children nodes}, child nodes are configured first before
+     * configuring this node. Each node's plugin should consume all supported
+     * {@linkplain org.apache.logging.log4j.plugins.PluginAttribute attributes} through dependency injection along with
+     * any other instances that can be provided through
+     * {@linkplain org.apache.logging.log4j.plugins.visit.NodeVisitor node visitor strategies} or general bindings from
+     * {@link #getFactory(Key)}. The end result of {@link Node#getObject()} is returned for convenience.
      *
      * @param node configuration node containing a plugin type, attributes, and child nodes to consume for dependency injection
      * @param <T>  type of instance the given node configures
@@ -133,7 +159,9 @@ public interface Injector {
 
     /**
      * Registers a bundle into this Injector. A bundle is an instance of a class with methods annotated with
-     * {@link FactoryType}-annotated annotations which provide dependency-injected bindings.
+     * {@link FactoryType}-annotated annotations which provide dependency-injected bindings. Bindings registered
+     * via bundles are merged with the existing bindings in this Injector based on the {@linkplain Key#getOrder() order}
+     * of the methods to determine ambiguities.
      *
      * @param bundle bundle to install with factory methods for factories
      */

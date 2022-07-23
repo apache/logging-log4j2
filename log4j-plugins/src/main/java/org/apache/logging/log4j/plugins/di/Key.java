@@ -86,25 +86,38 @@ public class Key<T> {
         hashCode = Objects.hash(type, qualifierType, name.toLowerCase(Locale.ROOT), namespace.toLowerCase(Locale.ROOT));
     }
 
+    /**
+     * Returns the generic type of this key.
+     */
     public final Type getType() {
         return type;
     }
 
+    /**
+     * Returns the raw type of this key corresponding to its generic type.
+     */
     public final Class<T> getRawType() {
         return rawType;
     }
 
+    /**
+     * Returns the name of this key. Names are case-insensitive. If this key has no defined name, then this returns
+     * an empty string.
+     */
     public final String getName() {
         return name;
     }
 
+    /**
+     * Returns the namespace of this key. If this key has no defined namespace, then this returns an empty string.
+     */
     public final String getNamespace() {
         return namespace;
     }
 
     /**
      * Returns the ordinal value of this key. Keys that are otherwise equal can be compared by this
-     * ordinal using the natural integer comparator.
+     * ordinal using the natural integer comparator where ties should default to keeping an existing binding intact.
      */
     public final int getOrder() {
         return order;

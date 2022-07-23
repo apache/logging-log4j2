@@ -67,7 +67,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.UnknownFormatConversionException;
 import java.util.concurrent.ConcurrentHashMap;
@@ -713,12 +712,12 @@ class DefaultInjector implements Injector {
 
     private Scope getScopeForMethod(final Method method) {
         final Annotation methodScope = AnnotationUtil.getMetaAnnotation(method, ScopeType.class);
-        return methodScope != null ? scopes.get(methodScope.annotationType()) : getScopeForType(method.getReturnType());
+        return methodScope != null ? getScope(methodScope.annotationType()) : getScopeForType(method.getReturnType());
     }
 
     private Scope getScopeForType(final Class<?> type) {
         final Annotation scope = AnnotationUtil.getMetaAnnotation(type, ScopeType.class);
-        return scope != null ? scopes.get(scope.annotationType()) : DefaultScope.INSTANCE;
+        return scope != null ? getScope(scope.annotationType()) : DefaultScope.INSTANCE;
     }
 
     private static boolean isCompatibleValidator(
