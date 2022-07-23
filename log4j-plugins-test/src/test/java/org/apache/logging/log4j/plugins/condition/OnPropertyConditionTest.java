@@ -45,7 +45,7 @@ class OnPropertyConditionTest {
             return "hello";
         }
 
-        @ConditionalOnMissingBinding
+        @Ordered(10)
         @Factory
         String backup() {
             return "goodbye";

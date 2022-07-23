@@ -38,7 +38,6 @@ class OnMissingBindingConditionTest {
     }
 
     static class ConditionalFactory {
-        @ConditionalOnMissingBinding
         @Namespace("foo")
         @Named("bar")
         @Factory
