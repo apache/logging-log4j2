@@ -49,7 +49,6 @@ import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.SingletonFactory;
-import org.apache.logging.log4j.plugins.condition.ConditionalOnMissingBinding;
 import org.apache.logging.log4j.plugins.condition.ConditionalOnProperty;
 import org.apache.logging.log4j.plugins.di.InjectException;
 import org.apache.logging.log4j.plugins.di.Injector;
@@ -93,110 +92,95 @@ public class DefaultBundle {
     }
 
     @ConditionalOnProperty(name = Constants.LOG4J_CONTEXT_SELECTOR)
-    @ConditionalOnMissingBinding
     @SingletonFactory
-    @Ordered(-100)
+    @Ordered(100)
     public ContextSelector systemPropertyContextSelector() throws ClassNotFoundException {
         return newInstanceOfProperty(Constants.LOG4J_CONTEXT_SELECTOR, ContextSelector.class);
     }
 
-    @ConditionalOnMissingBinding
     @SingletonFactory
     public ContextSelector defaultContextSelector() {
         return new ClassLoaderContextSelector(injector);
     }
 
     @ConditionalOnProperty(name = ShutdownCallbackRegistry.SHUTDOWN_CALLBACK_REGISTRY)
-    @ConditionalOnMissingBinding
     @SingletonFactory
-    @Ordered(-100)
+    @Ordered(100)
     public ShutdownCallbackRegistry systemPropertyShutdownCallbackRegistry() throws ClassNotFoundException {
         return newInstanceOfProperty(ShutdownCallbackRegistry.SHUTDOWN_CALLBACK_REGISTRY, ShutdownCallbackRegistry.class);
     }
 
-    @ConditionalOnMissingBinding
     @SingletonFactory
     public ShutdownCallbackRegistry defaultShutdownCallbackRegistry() {
         return new DefaultShutdownCallbackRegistry();
     }
 
     @ConditionalOnProperty(name = ClockFactory.PROPERTY_NAME, value = "SystemClock")
-    @ConditionalOnMissingBinding
     @SingletonFactory
-    @Ordered(-200)
+    @Ordered(200)
     public Clock systemClock() {
         return logSupportedPrecision(new SystemClock());
     }
 
     @ConditionalOnProperty(name = ClockFactory.PROPERTY_NAME, value = "SystemMillisClock")
-    @ConditionalOnMissingBinding
     @SingletonFactory
-    @Ordered(-200)
+    @Ordered(200)
     public Clock systemMillisClock() {
         return logSupportedPrecision(new SystemMillisClock());
     }
 
     @ConditionalOnProperty(name = ClockFactory.PROPERTY_NAME, value = "CachedClock")
-    @ConditionalOnMissingBinding
     @SingletonFactory
-    @Ordered(-200)
+    @Ordered(200)
     public Clock cachedClock() {
         return logSupportedPrecision(CachedClock.instance());
     }
 
     @ConditionalOnProperty(name = ClockFactory.PROPERTY_NAME, value = "org.apache.logging.log4j.core.time.internal.CachedClock")
-    @ConditionalOnMissingBinding
     @SingletonFactory
-    @Ordered(-200)
+    @Ordered(200)
     public Clock cachedClockFqcn() {
         return logSupportedPrecision(CachedClock.instance());
     }
 
     @ConditionalOnProperty(name = ClockFactory.PROPERTY_NAME, value = "CoarseCachedClock")
-    @ConditionalOnMissingBinding
     @SingletonFactory
-    @Ordered(-200)
+    @Ordered(200)
     public Clock coarseCachedClock() {
         return logSupportedPrecision(CoarseCachedClock.instance());
     }
 
     @ConditionalOnProperty(name = ClockFactory.PROPERTY_NAME, value = "org.apache.logging.log4j.core.time.internal.CoarseCachedClock")
-    @ConditionalOnMissingBinding
     @SingletonFactory
-    @Ordered(-200)
+    @Ordered(200)
     public Clock coarseCachedClockFqcn() {
         return logSupportedPrecision(CoarseCachedClock.instance());
     }
 
     @ConditionalOnProperty(name = ClockFactory.PROPERTY_NAME)
-    @ConditionalOnMissingBinding
     @SingletonFactory
-    @Ordered(-100)
+    @Ordered(100)
     public Clock systemPropertyClock() throws ClassNotFoundException {
         return logSupportedPrecision(newInstanceOfProperty(ClockFactory.PROPERTY_NAME, Clock.class));
     }
 
-    @ConditionalOnMissingBinding
     @SingletonFactory
     public Clock defaultClock() {
         return new SystemClock();
     }
 
-    @ConditionalOnMissingBinding
     @SingletonFactory
     public NanoClock defaultNanoClock() {
         return new DummyNanoClock();
     }
 
     @ConditionalOnProperty(name = "log4j2.ContextDataInjector")
-    @ConditionalOnMissingBinding
     @Factory
-    @Ordered(-100)
+    @Ordered(100)
     public ContextDataInjector systemPropertyContextDataInjector() throws ClassNotFoundException {
         return newInstanceOfProperty("log4j2.ContextDataInjector", ContextDataInjector.class);
     }
 
-    @ConditionalOnMissingBinding
     @Factory
     public ContextDataInjector defaultContextDataInjector() {
         final ReadOnlyThreadContextMap threadContextMap = ThreadContext.getThreadContextMap();
@@ -213,36 +197,30 @@ public class DefaultBundle {
     }
 
     @ConditionalOnProperty(name = Constants.LOG4J_LOG_EVENT_FACTORY)
-    @ConditionalOnMissingBinding
     @SingletonFactory
-    @Ordered(-100)
+    @Ordered(100)
     public LogEventFactory systemPropertyLogEventFactory() throws ClassNotFoundException {
         return newInstanceOfProperty(Constants.LOG4J_LOG_EVENT_FACTORY, LogEventFactory.class);
     }
 
-    @ConditionalOnMissingBinding
     @SingletonFactory
     public LogEventFactory defaultLogEventFactory(
             final ContextDataInjector injector, final Clock clock, final NanoClock nanoClock) {
-        // TODO(ms): can we combine conditional annotations for @ConditionalOnMissingBinding and @ConditionalOnProperty
         return isThreadLocalsEnabled() ? new ReusableLogEventFactory(injector, clock, nanoClock) :
                 new DefaultLogEventFactory(injector, clock, nanoClock);
     }
 
-    @ConditionalOnMissingBinding
     @SingletonFactory
     public InterpolatorFactory interpolatorFactory(
             @Namespace(StrLookup.CATEGORY) final Map<String, Supplier<StrLookup>> strLookupPlugins) {
         return defaultLookup -> new Interpolator(defaultLookup, strLookupPlugins);
     }
 
-    @ConditionalOnMissingBinding
     @SingletonFactory
     public StrSubstitutor strSubstitutor(final InterpolatorFactory factory) {
         return new StrSubstitutor(factory.newInterpolator(null));
     }
 
-    @ConditionalOnMissingBinding
     @SingletonFactory
     public ConfigurationFactory configurationFactory(final StrSubstitutor substitutor) {
         // TODO(ms): should be able to @Import classes to get @ConditionalOnWhatever on the classes to treat as bundles-ish?
@@ -252,29 +230,25 @@ public class DefaultBundle {
     }
 
     @ConditionalOnProperty(name = CompositeConfiguration.MERGE_STRATEGY_PROPERTY)
-    @ConditionalOnMissingBinding
     @SingletonFactory
-    @Ordered(-100)
+    @Ordered(100)
     public MergeStrategy systemPropertyMergeStrategy() throws ClassNotFoundException {
         return newInstanceOfProperty(CompositeConfiguration.MERGE_STRATEGY_PROPERTY, MergeStrategy.class);
     }
 
-    @ConditionalOnMissingBinding
     @SingletonFactory
     public MergeStrategy defaultMergeStrategy() {
         return new DefaultMergeStrategy();
     }
 
     @ConditionalOnProperty(name = Constants.LOG4J_DEFAULT_STATUS_LEVEL)
-    @ConditionalOnMissingBinding
     @SingletonFactory
     @Named("StatusLogger")
-    @Ordered(-100)
+    @Ordered(100)
     public Level systemPropertyDefaultStatusLevel() {
         return Level.getLevel(properties.getStringProperty(Constants.LOG4J_DEFAULT_STATUS_LEVEL));
     }
 
-    @ConditionalOnMissingBinding
     @SingletonFactory
     @Named("StatusLogger")
     public Level defaultStatusLevel() {
