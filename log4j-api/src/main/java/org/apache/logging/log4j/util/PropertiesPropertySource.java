@@ -58,7 +58,8 @@ public class PropertiesPropertySource implements PropertySource {
 
     @Override
     public CharSequence getNormalForm(final Iterable<? extends CharSequence> tokens) {
-        return PREFIX + Util.joinAsCamelCase(tokens);
+        final CharSequence camelCase = Util.joinAsCamelCase(tokens);
+        return camelCase.length() > 0 ? PREFIX + camelCase : null;
     }
 
     @Override
