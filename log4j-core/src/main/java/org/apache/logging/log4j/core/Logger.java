@@ -431,14 +431,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
         }
 
         boolean filter(final Level level, final Marker marker, final String msg) {
-            final Filter filter = config.getFilter();
-            if (filter != null) {
-                final Filter.Result r = filter.filter(logger, level, marker, msg, (Throwable) null);
-                if (r != Filter.Result.NEUTRAL) {
-                    return r == Filter.Result.ACCEPT;
-                }
-            }
-            return level != null && intLevel >= level.intLevel();
+            return filter(level, marker, msg, (Throwable) null);
         }
 
         boolean filter(final Level level, final Marker marker, final String msg, final Throwable t) {
