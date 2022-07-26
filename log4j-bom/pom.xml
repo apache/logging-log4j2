@@ -53,6 +53,12 @@
         <artifactId>log4j-core</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <!-- SMTP appender -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-jakarta-smtp</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <!-- JSON template layout -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -107,6 +113,12 @@
         <artifactId>log4j-to-slf4j</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <!-- JUL Adapter -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-to-jul</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <!-- Application Service Support -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -117,6 +129,11 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-web</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-jakarta-web</artifactId>
         <version>${project.version}</version>
       </dependency>
       <!-- CouchDB Appender Plugin -->
