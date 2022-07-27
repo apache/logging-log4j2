@@ -20,6 +20,7 @@ package org.apache.logging.log4j.core;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.EnglishEnums;
 
 /**
@@ -298,6 +299,18 @@ public interface Filter extends LifeCycle {
      * @return the Result.
      */
     Result filter(Logger logger, Level level, Marker marker, Message msg, Throwable t);
+
+    /**
+     * Filter an event.
+     * @param logger The Logger.
+     * @param level The event logging Level.
+     * @param marker The Marker for the event or null.
+     * @param msg The Message
+     * @return the Result.
+     */
+    default Result filter(Logger logger, Level level, Marker marker, String msg) {
+        return filter(logger, level, marker, msg, Constants.EMPTY_OBJECT_ARRAY);
+    }
 
     /**
      * Filter an event.

@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -299,7 +300,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
     public Iterator<Filter> getFilters() {
         final Filter filter = privateConfig.loggerConfig.getFilter();
         if (filter == null) {
-            return new ArrayList<Filter>().iterator();
+            return Collections.emptyIterator();
         } else if (filter instanceof CompositeFilter) {
             return ((CompositeFilter) filter).iterator();
         } else {
