@@ -296,7 +296,7 @@
     <activemq.version>5.17.1</activemq.version>
     <jctoolsVersion>3.3.0</jctoolsVersion>
     <junitVersion>4.13.2</junitVersion>
-    <junitJupiterVersion>5.8.2</junitJupiterVersion>
+    <junitJupiterVersion>5.9.0</junitJupiterVersion>
     <junitPioneerVersion>1.6.2</junitPioneerVersion>
     <mockitoVersion>4.4.0</mockitoVersion>
     <xmlunitVersion>2.9.0</xmlunitVersion>
