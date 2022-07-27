@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -172,7 +173,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
 
     @Override
     public boolean isEnabled(final Level level, final Marker marker, final String message) {
-        return privateConfig.filter(level, marker, message, (Throwable) null);
+        return privateConfig.filter(level, marker, message);
     }
 
     @Override
@@ -299,7 +300,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
     public Iterator<Filter> getFilters() {
         final Filter filter = privateConfig.loggerConfig.getFilter();
         if (filter == null) {
-            return new ArrayList<Filter>().iterator();
+            return Collections.emptyIterator();
         } else if (filter instanceof CompositeFilter) {
             return ((CompositeFilter) filter).iterator();
         } else {
@@ -428,6 +429,17 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
         // LOG4J2-151: changed visibility to public
         public void logEvent(final LogEvent event) {
             loggerConfig.log(event);
+        }
+
+        boolean filter(final Level level, final Marker marker, final String msg) {
+            final Filter filter = config.getFilter();
+            if (filter != null) {
+                final Filter.Result r = filter.filter(logger, level, marker, msg);
+                if (r != Filter.Result.NEUTRAL) {
+                    return r == Filter.Result.ACCEPT;
+                }
+            }
+            return level != null && intLevel >= level.intLevel();
         }
 
         boolean filter(final Level level, final Marker marker, final String msg, final Throwable t) {

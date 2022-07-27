@@ -543,9 +543,9 @@ public class LoggerTest {
         final AtomicInteger filterCount = new AtomicInteger();
         context.addFilter(new AbstractFilter() {
             @Override
-            public Result filter(Logger logger, Level level, Marker marker, Object msg, Throwable t) {
+            public Result filter(Logger logger, Level level, Marker marker, String message) {
                 filterCount.getAndIncrement();
-                return super.filter(logger, level, marker, msg, t);
+                return super.filter(logger, level, marker, message);
             }
         });
         final Logger testLogger = context.getLogger("org.apache.logging.log4j.core.LoggerTest");
@@ -554,11 +554,11 @@ public class LoggerTest {
         testLogger.isDebugEnabled();
         assertEquals(1, filterCount.get());
         testLogger.debug("debug enabled");
-        assertEquals(2, filterCount.get());
+        assertEquals(1, filterCount.get()); // only enabled checks hit our filter
         testLogger.isInfoEnabled();
-        assertEquals(3, filterCount.get());
+        assertEquals(2, filterCount.get());
         testLogger.info("debug disabled");
-        assertEquals(4, filterCount.get());
+        assertEquals(2, filterCount.get()); // only enabled checks hit our filter
     }
 }
 
