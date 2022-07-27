@@ -24,7 +24,6 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.core.filter.AbstractFilter;
 import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.junit.ReconfigurationPolicy;
@@ -49,7 +48,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
@@ -122,7 +120,7 @@ public class LoggerTest {
         final List<LogEvent> events = app.getEvents();
         assertEventCount(events, 3);
         assertEquals(
-                "org.apache.logging.log4j.core.LoggerTest.builder(LoggerTest.java:118)", events.get(0).getSource().toString(),
+                "org.apache.logging.log4j.core.LoggerTest.builder(LoggerTest.java:116)", events.get(0).getSource().toString(),
                 "Incorrect location");
         assertEquals(Level.DEBUG, events.get(0).getLevel(), "Incorrect Level");
         MatcherAssert.assertThat("Incorrect message", events.get(1).getMessage().getFormattedMessage(), equalTo("Hello John"));
@@ -536,29 +534,6 @@ public class LoggerTest {
         logger.throwing(new IllegalArgumentException("Test Exception"));
         final List<LogEvent> events = app.getEvents();
         assertEventCount(events, 1);
-    }
-
-    @Test
-    public void isEnabledDoesNotAllocateWithFilter(final LoggerContext context) {
-        final AtomicInteger filterCount = new AtomicInteger();
-        context.addFilter(new AbstractFilter() {
-            @Override
-            public Result filter(Logger logger, Level level, Marker marker, String message) {
-                filterCount.getAndIncrement();
-                return super.filter(logger, level, marker, message);
-            }
-        });
-        final Logger testLogger = context.getLogger("org.apache.logging.log4j.core.LoggerTest");
-
-        assertEquals(0, filterCount.get());
-        testLogger.isDebugEnabled();
-        assertEquals(1, filterCount.get());
-        testLogger.debug("debug enabled");
-        assertEquals(1, filterCount.get()); // only enabled checks hit our filter
-        testLogger.isInfoEnabled();
-        assertEquals(2, filterCount.get());
-        testLogger.info("debug disabled");
-        assertEquals(2, filterCount.get()); // only enabled checks hit our filter
     }
 }
 
