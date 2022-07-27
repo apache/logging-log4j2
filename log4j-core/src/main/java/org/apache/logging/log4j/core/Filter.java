@@ -301,6 +301,32 @@ public interface Filter extends LifeCycle {
 
     /**
      * Filter an event.
+     * @param logger The Logger.
+     * @param level The event logging Level.
+     * @param marker The Marker for the event or null.
+     * @param msg The Message
+     * @param t A Throwable or null.
+     * @return the Result.
+     */
+    default Result filter(Logger logger, Level level, Marker marker, String msg, Throwable t) {
+        return filter(logger, level, marker, (CharSequence) msg, t);
+    }
+
+    /**
+     * Filter an event.
+     * @param logger The Logger.
+     * @param level The event logging Level.
+     * @param marker The Marker for the event or null.
+     * @param msg The Message
+     * @param t A Throwable or null.
+     * @return the Result.
+     */
+    default Result filter(Logger logger, Level level, Marker marker, CharSequence msg, Throwable t) {
+        return filter(logger, level, marker, (Object) msg, t);
+    }
+
+    /**
+     * Filter an event.
      * @param event The Event to filter on.
      * @return the Result.
      */
