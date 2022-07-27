@@ -286,7 +286,7 @@
     <minSeverity>info</minSeverity>
     <jctoolsVersion>3.3.0</jctoolsVersion>
     <junitVersion>4.13.2</junitVersion>
-    <junitJupiterVersion>5.8.2</junitJupiterVersion>
+    <junitJupiterVersion>5.9.0</junitJupiterVersion>
     <junitPioneerVersion>1.5.0</junitPioneerVersion>
     <mockitoVersion>4.2.0</mockitoVersion>
     <byteBuddyVersion>1.11.0</byteBuddyVersion>

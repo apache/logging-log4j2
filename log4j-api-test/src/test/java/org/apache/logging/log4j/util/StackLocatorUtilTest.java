@@ -24,7 +24,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.engine.execution.ExecutableInvoker;
+import org.junit.jupiter.engine.execution.InterceptingExecutableInvoker;
 import org.junit.jupiter.engine.execution.InvocationInterceptorChain;
 
 public class StackLocatorUtilTest {
@@ -90,7 +90,7 @@ public class StackLocatorUtilTest {
 
     @Test
     public void testGetCallerClassViaName() throws Exception {
-        final Class<?> expected = ExecutableInvoker.class;
+        final Class<?> expected = InterceptingExecutableInvoker.class;
         final Class<?> actual = StackLocatorUtil.getCallerClass("org.junit.jupiter.engine.execution.InvocationInterceptorChain");
         // if this test fails in the future, it's probably because of a JUnit upgrade; check the new stack trace and
         // update this test accordingly
@@ -99,7 +99,7 @@ public class StackLocatorUtilTest {
 
     @Test
     public void testGetCallerClassViaAnchorClass() throws Exception {
-        final Class<?> expected = ExecutableInvoker.class;
+        final Class<?> expected = InterceptingExecutableInvoker.class;
         final Class<?> actual = StackLocatorUtil.getCallerClass(InvocationInterceptorChain.class);
         // if this test fails in the future, it's probably because of a JUnit upgrade; check the new stack trace and
         // update this test accordingly
