@@ -33,7 +33,7 @@
       <action issue="LOG4J2-3550" dev="rgoers" type="fix" due-to="DongjianPeng">
         SystemPropertyAribiter was assigning the value as the name.
       </action>
-      <action issue="LOG4J2-3560" dev="schlosna" type="fix">
+      <action issue="LOG4J2-3560" dev="ckozak" type="fix" due-to="David Schlosnagle">
         Logger$PrivateConfig.filter(Level, Marker, String) was allocating empty varargs array.
       </action>
     </release>
