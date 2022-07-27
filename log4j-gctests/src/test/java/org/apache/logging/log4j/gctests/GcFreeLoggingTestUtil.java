@@ -18,6 +18,7 @@ package org.apache.logging.log4j.gctests;
 
 import com.google.monitoring.runtime.instrumentation.AllocationRecorder;
 import com.google.monitoring.runtime.instrumentation.Sampler;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -62,6 +63,7 @@ public enum GcFreeLoggingTestUtil {;
         final Marker testGrandParent = MarkerManager.getMarker("testGrandParent");
         final Marker testParent = MarkerManager.getMarker("testParent").setParents(testGrandParent);
         final Marker test = MarkerManager.getMarker("test").setParents(testParent); // initial creation, value is cached
+        final StringMapMessage mapMessage = new StringMapMessage().with("eventId", "Login");
 
         // initialize LoggerContext etc.
         // This is not steady-state logging and will allocate objects.
@@ -74,6 +76,7 @@ public enum GcFreeLoggingTestUtil {;
         logger.error("Sample error message");
         logger.error("Test parameterized message {}", "param");
         logger.error(new StringMapMessage().with("eventId", "Login")); // initialize GelfLayout's messageStringBuilder
+        singleLoggingIteration(logger, myCharSeq, mapMessage);
         for (int i = 0; i < 256; i++) {
             logger.debug("ensure all ringbuffer slots have been used once"); // allocate MutableLogEvent.messageText
         }
@@ -108,7 +111,6 @@ public enum GcFreeLoggingTestUtil {;
             }
         };
         Thread.sleep(500);
-        final StringMapMessage mapMessage = new StringMapMessage().with("eventId", "Login");
         AllocationRecorder.addSampler(sampler);
 
         // now do some steady-state logging
@@ -118,13 +120,7 @@ public enum GcFreeLoggingTestUtil {;
 
         final int ITERATIONS = 5;
         for (int i = 0; i < ITERATIONS; i++) {
-            logger.error(myCharSeq);
-            logger.error(MarkerManager.getMarker("test"), myCharSeq);
-            logger.error("Test message");
-            logger.error("Test parameterized message {}", "param");
-            logger.error("Test parameterized message {}{}", "param", "param2");
-            logger.error("Test parameterized message {}{}{}", "param", "param2", "abc");
-            logger.error(mapMessage); // LOG4J2-1683
+            singleLoggingIteration(logger, myCharSeq, mapMessage);
             ThreadContext.remove("aKey");
             ThreadContext.put("aKey", "value1");
         }
@@ -132,6 +128,89 @@ public enum GcFreeLoggingTestUtil {;
         samplingEnabled.set(false); // reliably ignore all allocations from now on
         AllocationRecorder.removeSampler(sampler);
         Thread.sleep(100);
+    }
+
+    private static void singleLoggingIteration(
+            final org.apache.logging.log4j.Logger logger,
+            final MyCharSeq myCharSeq,
+            final StringMapMessage mapMessage) {
+        logger.isEnabled(Level.TRACE);
+        logger.isEnabled(Level.TRACE, MarkerManager.getMarker("test"));
+        logger.isTraceEnabled();
+        logger.isTraceEnabled(MarkerManager.getMarker("test"));
+        logger.trace(myCharSeq);
+        logger.trace(MarkerManager.getMarker("test"), myCharSeq);
+        logger.trace("Test message");
+        logger.trace("Test parameterized message {}", "param");
+        logger.trace("Test parameterized message {}{}", "param", "param2");
+        logger.trace("Test parameterized message {}{}{}", "param", "param2", "abc");
+        logger.trace(MarkerManager.getMarker("test"), "Test parameterized message {}{}{}", "param", "param2", "abc");
+        logger.trace(mapMessage); // LOG4J2-1683
+
+        logger.isEnabled(Level.DEBUG);
+        logger.isEnabled(Level.DEBUG, MarkerManager.getMarker("test"));
+        logger.isDebugEnabled();
+        logger.isDebugEnabled(MarkerManager.getMarker("test"));
+        logger.debug(myCharSeq);
+        logger.debug(MarkerManager.getMarker("test"), myCharSeq);
+        logger.debug("Test message");
+        logger.debug("Test parameterized message {}", "param");
+        logger.debug("Test parameterized message {}{}", "param", "param2");
+        logger.debug("Test parameterized message {}{}{}", "param", "param2", "abc");
+        logger.debug(MarkerManager.getMarker("test"), "Test parameterized message {}{}{}", "param", "param2", "abc");
+        logger.debug(mapMessage); // LOG4J2-1683
+
+        logger.isEnabled(Level.INFO);
+        logger.isEnabled(Level.INFO, MarkerManager.getMarker("test"));
+        logger.isInfoEnabled();
+        logger.isInfoEnabled(MarkerManager.getMarker("test"));
+        logger.info(myCharSeq);
+        logger.info(MarkerManager.getMarker("test"), myCharSeq);
+        logger.info("Test message");
+        logger.info("Test parameterized message {}", "param");
+        logger.info("Test parameterized message {}{}", "param", "param2");
+        logger.info("Test parameterized message {}{}{}", "param", "param2", "abc");
+        logger.info(MarkerManager.getMarker("test"), "Test parameterized message {}{}{}", "param", "param2", "abc");
+        logger.info(mapMessage); // LOG4J2-1683
+
+        logger.isEnabled(Level.WARN);
+        logger.isEnabled(Level.WARN, MarkerManager.getMarker("test"));
+        logger.isWarnEnabled();
+        logger.isWarnEnabled(MarkerManager.getMarker("test"));
+        logger.warn(myCharSeq);
+        logger.warn(MarkerManager.getMarker("test"), myCharSeq);
+        logger.warn("Test message");
+        logger.warn("Test parameterized message {}", "param");
+        logger.warn("Test parameterized message {}{}", "param", "param2");
+        logger.warn("Test parameterized message {}{}{}", "param", "param2", "abc");
+        logger.warn(MarkerManager.getMarker("test"), "Test parameterized message {}{}{}", "param", "param2", "abc");
+        logger.warn(mapMessage); // LOG4J2-1683
+
+        logger.isEnabled(Level.ERROR);
+        logger.isEnabled(Level.ERROR, MarkerManager.getMarker("test"));
+        logger.isErrorEnabled();
+        logger.isErrorEnabled(MarkerManager.getMarker("test"));
+        logger.error(myCharSeq);
+        logger.error(MarkerManager.getMarker("test"), myCharSeq);
+        logger.error("Test message");
+        logger.error("Test parameterized message {}", "param");
+        logger.error("Test parameterized message {}{}", "param", "param2");
+        logger.error("Test parameterized message {}{}{}", "param", "param2", "abc");
+        logger.error(MarkerManager.getMarker("test"), "Test parameterized message {}{}{}", "param", "param2", "abc");
+        logger.error(mapMessage); // LOG4J2-1683
+
+        logger.isEnabled(Level.FATAL);
+        logger.isEnabled(Level.FATAL, MarkerManager.getMarker("test"));
+        logger.isFatalEnabled();
+        logger.isFatalEnabled(MarkerManager.getMarker("test"));
+        logger.fatal(myCharSeq);
+        logger.fatal(MarkerManager.getMarker("test"), myCharSeq);
+        logger.fatal("Test message");
+        logger.fatal("Test parameterized message {}", "param");
+        logger.fatal("Test parameterized message {}{}", "param", "param2");
+        logger.fatal("Test parameterized message {}{}{}", "param", "param2", "abc");
+        logger.fatal(MarkerManager.getMarker("test"), "Test parameterized message {}{}{}", "param", "param2", "abc");
+        logger.fatal(mapMessage); // LOG4J2-1683
     }
 
     public static void runTest(final Class<?> cls) throws Exception {
