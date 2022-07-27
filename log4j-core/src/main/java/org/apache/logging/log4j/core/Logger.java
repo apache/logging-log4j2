@@ -172,7 +172,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
 
     @Override
     public boolean isEnabled(final Level level, final Marker marker, final String message) {
-        return privateConfig.filter(level, marker, message);
+        return privateConfig.filter(level, marker, message, (Throwable) null);
     }
 
     @Override
@@ -428,10 +428,6 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
         // LOG4J2-151: changed visibility to public
         public void logEvent(final LogEvent event) {
             loggerConfig.log(event);
-        }
-
-        boolean filter(final Level level, final Marker marker, final String msg) {
-            return filter(level, marker, msg, (Throwable) null);
         }
 
         boolean filter(final Level level, final Marker marker, final String msg, final Throwable t) {
