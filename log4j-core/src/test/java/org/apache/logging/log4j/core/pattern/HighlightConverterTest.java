@@ -20,8 +20,13 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.stream.Stream;
 
 /**
  * Tests the HighlightConverter.
@@ -76,36 +81,28 @@ public class HighlightConverterTest {
         assertEquals(AnsiEscape.createSequence(colorName), converter.getLevelStyle(Level.DEBUG));
     }
 
-   private void testLevelNames(final String colorName, final String expectedOutput) {
-        final String[] options = {"%-5level: %msg", PatternParser.NO_CONSOLE_NO_ANSI + "=false, "
-                + PatternParser.DISABLE_ANSI + "=false, " + "INFO=" + colorName};
+    static Stream<Arguments> colors() {
+        return Stream.of(
+                Arguments.of("bright red","\u001B[1;31m"),
+                Arguments.of("red bright", "\u001B[31;1m"),
+                Arguments.of("bright_red", "\u001B[91m"),
+                Arguments.of("#1cd42b", "\u001B[38;2;28;212;43m"),
+                Arguments.of("fg_bright_red bg_bright_blue bold", "\u001B[91;104;1m"),
+                Arguments.of("FG_#1cd42b BG_#000000", "\u001B[38;2;28;212;43;48;2;0;0;0m"));
+    }
+
+    @ParameterizedTest
+    @MethodSource("colors")
+    public void testColors(final String colorName, final String escape) {
+        final String[] options = { "%-5level: %msg", PatternParser.NO_CONSOLE_NO_ANSI + "=false, "
+                + PatternParser.DISABLE_ANSI + "=false, " + "INFO=" + colorName };
         final HighlightConverter converter = HighlightConverter.newInstance(null, options);
         assertNotNull(converter);
 
-        final LogEvent event = Log4jLogEvent.newBuilder().setLevel(Level.INFO).setLoggerName("a.b.c").setMessage(
-                new SimpleMessage("")).build();
+        final LogEvent event = Log4jLogEvent.newBuilder().setLevel(Level.INFO).build();
         final StringBuilder buffer = new StringBuilder();
         converter.format(event, buffer);
-        assertEquals(expectedOutput, buffer.toString());
-   }
-
-    @Test
-    public void testLevelNamesBrightShort() {
-        testLevelNames("bright_red", "\u001B[91mINFO : \u001B[m");
-    }
-
-    public void testLevelNamesHexShort() {
-        testLevelNames("#1cd42b", "\u001B[38;2;28;212;43mINFO : \u001B[m");
-    }
-
-    @Test
-    public void testLevelNamesBrightFull() {
-        testLevelNames("fg_bright_red bg_bright_blue bold", "\u001B[91;104;1mINFO : \u001B[m");
-    }
-
-    @Test
-    public void testLevelNamesHexFull() {
-        testLevelNames("FG_#1cd42b BG_#000000", "\u001B[38;2;28;212;43;48;2;0;0;0mINFO : \u001B[m");
+        assertEquals(escape + "INFO : \u001B[m", buffer.toString());
     }
 
     @Test

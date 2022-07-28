@@ -36,6 +36,9 @@
       <action issue="LOG4J2-3560" dev="ckozak" type="fix" due-to="David Schlosnagle">
         Logger$PrivateConfig.filter(Level, Marker, String) was allocating empty varargs array.
       </action>
+      <action issue="LOG4J2-3561" dev="pkarwasz" type="fix" due-to="Robert Papp">
+        Allows a space separated list of style specifiers in the %style pattern for consistency with %highlight.
+      </action>
     </release>
     <release version="2.18.0" date="2022-06-28" description="GA Release 2.18.0">
       <action issue="LOG4J2-3339" dev="rgoers" type="fix">

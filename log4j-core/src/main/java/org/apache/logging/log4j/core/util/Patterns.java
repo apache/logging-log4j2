@@ -29,6 +29,11 @@ public final class Patterns {
     public static final String COMMA_SEPARATOR = toWhitespaceSeparator(",");
 
     /**
+     * A pattern string for lists separated by commas with optional whitespace or just whitespace.
+     */
+    public static final String COMMA_SPACE_SEPARATOR = toWhitespaceSeparator("[,\\s]");
+
+    /**
      * The whitespace pattern string.
      */
     public static final String WHITESPACE = "\\s*";

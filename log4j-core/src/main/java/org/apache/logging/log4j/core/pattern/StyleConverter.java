@@ -93,7 +93,7 @@ public final class StyleConverter extends LogEventPatternConverter implements An
         }
         final PatternParser parser = PatternLayout.createPatternParser(config);
         final List<PatternFormatter> formatters = parser.parse(options[0]);
-        final String style = AnsiEscape.createSequence(options[1].split(Patterns.COMMA_SEPARATOR));
+        final String style = AnsiEscape.createSequence(options[1].split(Patterns.COMMA_SPACE_SEPARATOR));
         final boolean disableAnsi = Arrays.toString(options).contains(PatternParser.DISABLE_ANSI + "=true");
         final boolean noConsoleNoAnsi = Arrays.toString(options).contains(PatternParser.NO_CONSOLE_NO_ANSI + "=true");
         final boolean hideAnsi = disableAnsi || (noConsoleNoAnsi && System.console() == null);
