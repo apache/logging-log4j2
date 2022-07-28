@@ -18,17 +18,25 @@ package org.apache.logging.log4j.core.pattern;
 
 import java.util.List;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SetSystemProperty(key = Log4jProperties.JANSI_DISABLED, value = "false")
 public class StyleConverterTest {
@@ -53,5 +61,26 @@ public class StyleConverterTest {
     @Test
     public void testNull() {
         assertNull(StyleConverter.newInstance(null, null));
+    }
+
+    @ParameterizedTest
+    @MethodSource("org.apache.logging.log4j.core.pattern.HighlightConverterTest#colors")
+    public void testHighlightConverterCompatibility(final String color, final String escape) {
+        final StyleConverter converter = StyleConverter.newInstance(null, new String[] { "Hello!", color });
+        final StringBuilder sb = new StringBuilder();
+        final LogEvent event = Log4jLogEvent.newBuilder().setLevel(Level.INFO).build();
+        converter.format(event, sb);
+        assertEquals(escape + "Hello!" + AnsiEscape.getDefaultStyle(), sb.toString());
+    }
+
+    @ParameterizedTest
+    @MethodSource("org.apache.logging.log4j.core.pattern.HighlightConverterTest#colors")
+    public void testLegacyCommaSeparator(final String color, final String escape) {
+        final StyleConverter converter = StyleConverter.newInstance(null,
+                new String[] { "Hello!", color.replaceAll("\\s+", ",") });
+        final StringBuilder sb = new StringBuilder();
+        final LogEvent event = Log4jLogEvent.newBuilder().setLevel(Level.INFO).build();
+        converter.format(event, sb);
+        assertEquals(escape + "Hello!" + AnsiEscape.getDefaultStyle(), sb.toString());
     }
 }
