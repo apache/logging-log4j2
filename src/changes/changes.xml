@@ -39,6 +39,9 @@
       <action issue="LOG4J2-3561" dev="pkarwasz" type="fix" due-to="Robert Papp">
         Allows a space separated list of style specifiers in the %style pattern for consistency with %highlight.
       </action>
+      <action issue="LOG4J2-3564" dev="pkarwasz" type="fix">
+        Fix NPE in `log4j-to-jul` in the case the root logger level is null.
+      </action>
     </release>
     <release version="2.18.0" date="2022-06-28" description="GA Release 2.18.0">
       <action issue="LOG4J2-3339" dev="rgoers" type="fix">

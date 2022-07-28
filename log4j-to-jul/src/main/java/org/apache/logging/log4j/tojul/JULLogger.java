@@ -153,7 +153,8 @@ final class JULLogger extends AbstractLogger {
             return current.getLevel();
         }
         // This is a safety fallback that is typically never reached, because usually the root Logger.getLogger("") has a Level.
-        return Logger.getGlobal().getLevel();
+        // Since JDK 8 the LogManager$RootLogger does not have a default level, just a default effective level of INFO.
+        return java.util.logging.Level.INFO;
     }
 
     private boolean isEnabledFor(final Level level, final Marker marker) {
