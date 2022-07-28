@@ -168,7 +168,6 @@ public class Category implements AppenderAttachable {
     protected Category(final LoggerContext context, final String name) {
         this.name = name;
         this.logger = context.getLogger(name);
-        this.repository = LogManager.getLoggerRepository();
     }
 
     Category(final org.apache.logging.log4j.Logger logger) {
@@ -452,8 +451,12 @@ public class Category implements AppenderAttachable {
             return null;
         }
         final ConcurrentMap<String, Logger> loggers = Hierarchy.getLoggersMap(loggerContext);
-        final Logger parentLogger = loggers.get(parent.getName());
-        return parentLogger == null ? new Category(parent) : parentLogger;
+        Category parentLogger = loggers.get(parent.getName());
+        if (parentLogger == null) {
+            parentLogger = new Category(parent);
+            parentLogger.setHierarchy(getLoggerRepository());
+        }
+        return parentLogger;
     }
 
     public final Level getPriority() {

@@ -89,6 +89,7 @@ public class CategoryTest {
     public void testForcedLog() {
         final MockCategory category = new MockCategory("org.example.foo");
         category.setAdditivity(false);
+        category.setHierarchy(LogManager.getHierarchy());
         ((org.apache.logging.log4j.core.Logger) category.getLogger()).addAppender(appender);
         // Logging a String
         category.info("Hello, World");

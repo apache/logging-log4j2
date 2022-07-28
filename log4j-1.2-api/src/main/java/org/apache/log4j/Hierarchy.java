@@ -96,26 +96,30 @@ public class Hierarchy implements LoggerRepository, RendererSupport, ThrowableRe
         return PrivateLogManager.getContext();
     }
 
-    static Logger getInstance(final LoggerContext context, final String name) {
+    private Logger getInstance(final LoggerContext context, final String name) {
         return getInstance(context, name, LOGGER_ADAPTER);
     }
 
-    static Logger getInstance(final LoggerContext context, final String name, final LoggerFactory factory) {
-        return getLoggersMap(context).computeIfAbsent(name, k -> factory.makeNewLoggerInstance(name));
+    private Logger getInstance(final LoggerContext context, final String name, final LoggerFactory factory) {
+        return getLoggersMap(context).computeIfAbsent(name, k -> {
+            final Logger logger = factory.makeNewLoggerInstance(name);
+            logger.setHierarchy(this);
+            return logger;
+        });
     }
 
-    static Logger getInstance(final LoggerContext context, final String name, final PrivateLoggerAdapter factory) {
-        return getLoggersMap(context).computeIfAbsent(name, k -> factory.newLogger(name, context));
+    private Logger getInstance(final LoggerContext context, final String name, final PrivateLoggerAdapter factory) {
+        return getLoggersMap(context).computeIfAbsent(name, k -> {
+            final Logger logger = factory.newLogger(name, context);
+            logger.setHierarchy(this);
+            return logger;
+        });
     }
 
     static ConcurrentMap<String, Logger> getLoggersMap(final LoggerContext context) {
         synchronized (CONTEXT_MAP) {
             return CONTEXT_MAP.computeIfAbsent(context, k -> new ConcurrentHashMap<>());
         }
-    }
-
-    static Logger getRootLogger(final LoggerContext context) {
-        return getInstance(context, org.apache.logging.log4j.LogManager.ROOT_LOGGER_NAME);
     }
 
     private final LoggerFactory defaultFactory;
