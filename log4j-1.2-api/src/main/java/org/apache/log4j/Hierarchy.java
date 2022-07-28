@@ -99,26 +99,30 @@ public class Hierarchy implements LoggerRepository, RendererSupport, ThrowableRe
         return PrivateLogManager.getContext();
     }
 
-    static Logger getInstance(final LoggerContext context, final String name) {
+    private Logger getInstance(final LoggerContext context, final String name) {
         return getInstance(context, name, LOGGER_ADAPTER);
     }
 
-    static Logger getInstance(final LoggerContext context, final String name, final LoggerFactory factory) {
-        return getLoggersMap(context).computeIfAbsent(name, k -> factory.makeNewLoggerInstance(name));
+    private Logger getInstance(final LoggerContext context, final String name, final LoggerFactory factory) {
+        return getLoggersMap(context).computeIfAbsent(name, k -> {
+            final Logger logger = factory.makeNewLoggerInstance(name);
+            logger.setHierarchy(this);
+            return logger;
+        });
     }
 
-    static Logger getInstance(final LoggerContext context, final String name, final PrivateLoggerAdapter factory) {
-        return getLoggersMap(context).computeIfAbsent(name, k -> factory.newLogger(name, context));
+    private Logger getInstance(final LoggerContext context, final String name, final PrivateLoggerAdapter factory) {
+        return getLoggersMap(context).computeIfAbsent(name, k -> {
+            final Logger logger = factory.newLogger(name, context);
+            logger.setHierarchy(this);
+            return logger;
+        });
     }
 
     static ConcurrentMap<String, Logger> getLoggersMap(final LoggerContext context) {
         synchronized (CONTEXT_MAP) {
             return CONTEXT_MAP.computeIfAbsent(context, k -> new ConcurrentHashMap<>());
         }
-    }
-
-    static Logger getRootLogger(final LoggerContext context) {
-        return getInstance(context, org.apache.logging.log4j.LogManager.ROOT_LOGGER_NAME);
     }
 
     private final LoggerFactory defaultFactory;
@@ -525,87 +529,6 @@ public class Hierarchy implements LoggerRepository, RendererSupport, ThrowableRe
           if (LogManager.isLog4jCorePresent()) {
               ContextUtil.shutdown(context);
           }
-    }
-
-    /**
-     * We update the links for all the children that placed themselves in the provision node 'pn'. The second argument 'cat'
-     * is a reference for the newly created Logger, parent of all the children in 'pn'
-     *
-     * We loop on all the children 'c' in 'pn':
-     *
-     * If the child 'c' has been already linked to a child of 'cat' then there is no need to update 'c'.
-     *
-     * Otherwise, we set cat's parent field to c's parent and set c's parent field to cat.
-     *
-     */
-    final private void updateChildren(final ProvisionNode pn, final Logger logger) {
-        // System.out.println("updateChildren called for " + logger.name);
-        final int last = pn.size();
-
-        for (int i = 0; i < last; i++) {
-            final Logger l = (Logger) pn.elementAt(i);
-            // System.out.println("Updating child " +p.name);
-
-            // Unless this child already points to a correct (lower) parent,
-            // make cat.parent point to l.parent and l.parent to cat.
-            if (!l.parent.name.startsWith(logger.name)) {
-                logger.parent = l.parent;
-                l.parent = logger;
-            }
-        }
-    }
-
-    /**
-     * This method loops through all the *potential* parents of 'cat'. There 3 possible cases:
-     *
-     * 1) No entry for the potential parent of 'cat' exists
-     *
-     * We create a ProvisionNode for this potential parent and insert 'cat' in that provision node.
-     *
-     * 2) There entry is of type Logger for the potential parent.
-     *
-     * The entry is 'cat's nearest existing parent. We update cat's parent field with this entry. We also break from the
-     * loop because updating our parent's parent is our parent's responsibility.
-     *
-     * 3) There entry is of type ProvisionNode for this potential parent.
-     *
-     * We add 'cat' to the list of children for this potential parent.
-     */
-    final private void updateParents(final Logger cat) {
-        final String name = cat.name;
-        final int length = name.length();
-        boolean parentFound = false;
-
-        // System.out.println("UpdateParents called for " + name);
-
-        // if name = "w.x.y.z", loop thourgh "w.x.y", "w.x" and "w", but not "w.x.y.z"
-        for (int i = name.lastIndexOf('.', length - 1); i >= 0; i = name.lastIndexOf('.', i - 1)) {
-            final String substr = name.substring(0, i);
-
-            // System.out.println("Updating parent : " + substr);
-            final CategoryKey key = new CategoryKey(substr); // simple constructor
-            final Object o = ht.get(key);
-            // Create a provision node for a future parent.
-            if (o == null) {
-                // System.out.println("No parent "+substr+" found. Creating ProvisionNode.");
-                final ProvisionNode pn = new ProvisionNode(cat);
-                ht.put(key, pn);
-            } else if (o instanceof Category) {
-                parentFound = true;
-                cat.parent = (Category) o;
-                // System.out.println("Linking " + cat.name + " -> " + ((Category) o).name);
-                break; // no need to update the ancestors of the closest ancestor
-            } else if (o instanceof ProvisionNode) {
-                ((ProvisionNode) o).addElement(cat);
-            } else {
-                final Exception e = new IllegalStateException("unexpected object type " + o.getClass() + " in ht.");
-                e.printStackTrace();
-            }
-        }
-        // If we could not find any existing parents, then link with root.
-        if (!parentFound) {
-            cat.parent = root;
-        }
     }
 
 }
