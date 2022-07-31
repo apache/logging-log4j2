@@ -17,8 +17,18 @@
 
 package org.apache.logging.log4j.core.config;
 
+import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
+import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
+import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
+import org.apache.logging.log4j.core.util.AuthorizationProvider;
+import org.apache.logging.log4j.core.util.FileUtils;
+import org.apache.logging.log4j.core.util.Loader;
+import org.apache.logging.log4j.core.util.Source;
+import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
+
+import javax.net.ssl.HttpsURLConnection;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -32,19 +42,6 @@ import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
-
-import org.apache.logging.log4j.core.net.UrlConnectionFactory;
-import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
-import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
-import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
-import org.apache.logging.log4j.core.util.AuthorizationProvider;
-import org.apache.logging.log4j.core.util.FileUtils;
-import org.apache.logging.log4j.core.util.Loader;
-import org.apache.logging.log4j.core.util.Source;
-import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.PropertiesUtil;
-
-import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Represents the source for the logging configuration.
@@ -146,7 +143,7 @@ public class ConfigurationSource {
      * @throws IOException if an exception occurred reading from the specified stream
      */
     public ConfigurationSource(final InputStream stream) throws IOException {
-        this(toByteArray(stream), null, 0);
+        this(stream.readAllBytes(), null, 0);
     }
 
     public ConfigurationSource(final Source source, final byte[] data, final long lastModified) throws IOException {
@@ -166,26 +163,6 @@ public class ConfigurationSource {
         } else {
             this.source = new Source(url);
         }
-    }
-
-    /**
-     * Returns the contents of the specified {@code InputStream} as a byte array.
-     *
-     * @param inputStream the stream to read
-     * @return the contents of the specified stream
-     * @throws IOException if a problem occurred reading from the stream
-     */
-    private static byte[] toByteArray(final InputStream inputStream) throws IOException {
-        final int buffSize = Math.max(4096, inputStream.available());
-        final ByteArrayOutputStream contents = new ByteArrayOutputStream(buffSize);
-        final byte[] buff = new byte[buffSize];
-
-        int length = inputStream.read(buff);
-        while (length > 0) {
-            contents.write(buff, 0, length);
-            length = inputStream.read(buff);
-        }
-        return contents.toByteArray();
     }
 
     /**
