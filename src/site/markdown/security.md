@@ -54,7 +54,7 @@ Apache Log4j2 vulnerable to RCE via JDBC Appender when attacker controls configu
 | ---------------   | -------- |
 | Severity          | Moderate |
 | Base CVSS Score   | 6.6 (AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H) |
-| Versions Affected | All versions from 2.0-alpha7 to 2.17.0, excluding 2.3.2 and 2.12.4 |
+| Versions Affected | All versions from 2.0-beta7 to 2.17.0, excluding 2.3.2 and 2.12.4 |
 
 ### Description
 Apache Log4j2 versions 2.0-beta7 through 2.17.0 (excluding security fix releases 2.3.2 and 2.12.4) are vulnerable to
@@ -114,7 +114,7 @@ Apache Log4j2 does not always protect from infinite recursion in lookup evaluati
 | ---------------   | -------- |
 | Severity          | Moderate |
 | Base CVSS Score   | 5.9 (AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H) |
-| Versions Affected | All versions from 2.0-beta9 to 2.16.0, excluding 2.12.3 |
+| Versions Affected | All versions from 2.0-alpha1 to 2.16.0, excluding 2.12.3 |
 
 ### Description
 Apache Log4j2 versions 2.0-alpha1 through 2.16.0, excluding 2.12.3, did not protect from uncontrolled recursion from self-referential lookups.
