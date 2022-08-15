@@ -71,8 +71,13 @@ import java.util.regex.PatternSyntaxException;
  * first.
  * <p>
  * If a stringified stack trace truncation takes place, it will be indicated
- * with <tt>suffix</tt>, which by default is set to the configured
+ * with a <tt>suffix</tt>, which by default is set to the configured
  * <tt>truncatedStringSuffix</tt> in the layout, unless explicitly provided.
+ * Every truncation suffix is prefixed with a newline.
+ * <p>
+ * Stringified stack trace truncation operates in <tt>Caused by:</tt> and
+ * <tt>Suppressed:</tt> label blocks. That is, matchers are executed against
+ * each label in isolation.
  * <p>
  * <tt>elementTemplate</tt> is an object describing the template to be used
  * while resolving the {@link StackTraceElement} array. If <tt>stringified</tt>
@@ -138,7 +143,7 @@ import java.util.regex.PatternSyntaxException;
  *   "stackTrace": {
  *     "stringified": {
  *       "truncation": {
- *         "suffix": ">",
+ *         "suffix": "... [truncated]",
  *         "pointMatcherStrings": ["at javax.servlet.http.HttpServlet.service"]
  *       }
  *     }

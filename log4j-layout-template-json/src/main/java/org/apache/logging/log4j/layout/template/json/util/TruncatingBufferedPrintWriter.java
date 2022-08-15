@@ -59,11 +59,6 @@ public final class TruncatingBufferedPrintWriter
         return writer.truncated();
     }
 
-    public int indexOf(final CharSequence seq) {
-        Objects.requireNonNull(seq, "seq");
-        return writer.indexOf(seq);
-    }
-
     @Override
     public int length() {
         return writer.length();
@@ -72,6 +67,18 @@ public final class TruncatingBufferedPrintWriter
     @Override
     public char charAt(final int index) {
         return writer.charAt(index);
+    }
+
+    @Override
+    public PrintWriter append(final CharSequence seq) {
+        writer.append(seq);
+        return this;
+    }
+
+    @Override
+    public PrintWriter append(final CharSequence seq, final int startIndex, final int endIndex) {
+        writer.append(seq, startIndex, endIndex);
+        return this;
     }
 
     @Override
