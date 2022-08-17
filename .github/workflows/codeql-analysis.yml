@@ -89,4 +89,4 @@ jobs:
           --global-toolchains ".github/workflows/maven-toolchains.xml"
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@2ca79b6fa8d3ec278944088b4aa5f46912db5d63    # 2.1.17
+        uses: github/codeql-action/analyze@2ca79b6fa8d3ec278944088b4aa5f46912db5d63    # 2.1.18
