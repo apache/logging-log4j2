@@ -2555,4 +2555,9 @@ defining all message patterns using `%m{nolookups}`.
 |false
 |true or false if the host name should be verified
 
+|[[defaultThreadPriority]]log4j2.defaultThreadPriority
+|LOG4J_DEFAULT_THREAD_PRIORITY
+|Thread.NORM_PRIORITY
+|The priority of log4j2 threads, if not overridden in concrete use cases.
+
 |===

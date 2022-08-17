@@ -17,8 +17,6 @@
 
 package org.apache.logging.log4j.core.util;
 
-import org.apache.logging.log4j.util.PropertiesUtil;
-
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -28,7 +26,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @since 2.7
  */
 public class Log4jThreadFactory implements ThreadFactory {
-    public static final String THREAD_PRIORITY = "log4j2.thread.priority";
 
     private static final String PREFIX = "TF-";
 
@@ -74,7 +71,7 @@ public class Log4jThreadFactory implements ThreadFactory {
      *            Whether to create daemon threads.
      */
     public Log4jThreadFactory(final String threadFactoryName, final boolean daemon) {
-        this(threadFactoryName, daemon, getThreadPriority());
+        this(threadFactoryName, daemon, Constants.getDefaultThreadPriority());
     }
 
     /**
@@ -107,10 +104,5 @@ public class Log4jThreadFactory implements ThreadFactory {
             thread.setPriority(priority);
         }
         return thread;
-    }
-
-    private static int getThreadPriority() {
-        int result = PropertiesUtil.getProperties().getIntegerProperty(THREAD_PRIORITY, Thread.NORM_PRIORITY);
-        return Math.min(Math.max(Thread.MIN_PRIORITY, result), Thread.MAX_PRIORITY);
     }
 }

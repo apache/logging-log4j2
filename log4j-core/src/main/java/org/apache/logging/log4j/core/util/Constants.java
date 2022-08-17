@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -95,6 +96,26 @@ public final class Constants {
             "log4j2.enable.direct.encoders", true); // enable GC-free text encoding by default
             // the alternative is to enable GC-free encoding only by default only when using all-async loggers:
             //AsyncLoggerContextSelector.class.getName().equals(PropertiesUtil.getProperties().getStringProperty(LOG4J_CONTEXT_SELECTOR)));
+
+    /**
+     * Property to override the default priority of threads created by log4j
+     */
+    public static final String DEFAULT_THREAD_PRIORITY = "log4j2.defaultThreadPriority";
+
+    /**
+     * Get the default priority of threads created by log4j
+     * <p>
+     * The default value is {@link Thread#NORM_PRIORITY}
+     * </p>
+     */
+    public static int getDefaultThreadPriority() {
+        int priority = PropertiesUtil.getProperties().getIntegerProperty(DEFAULT_THREAD_PRIORITY, Thread.NORM_PRIORITY);
+        if (priority < Thread.MIN_PRIORITY || priority > Thread.MAX_PRIORITY) {
+            StatusLogger.getLogger().warn("ignoring invalid {}: {}", DEFAULT_THREAD_PRIORITY, priority);
+            priority = Thread.NORM_PRIORITY;
+        }
+        return priority;
+    }
 
     /**
      * Initial StringBuilder size used in RingBuffer LogEvents to store the contents of reusable Messages.

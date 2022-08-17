@@ -68,4 +68,8 @@ public class Log4jThread extends Thread {
         super(group, toThreadName(name));
     }
 
+    {
+        // append some initialization to all constructors
+        setPriority(Constants.getDefaultThreadPriority());
+    }
 }
