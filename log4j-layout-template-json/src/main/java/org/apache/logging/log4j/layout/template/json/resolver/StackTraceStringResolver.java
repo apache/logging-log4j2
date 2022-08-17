@@ -74,8 +74,10 @@ final class StackTraceStringResolver implements StackTraceResolver {
         return regexes
                 .stream()
                 .map(regex -> Pattern.compile(
-                        "^.*(" + regex + ")(.*)$",
-                        Pattern.MULTILINE | Pattern.DOTALL))
+                        ".*?" +                 // Make `.*` lazy with `?` suffix, since we want to find the _first_ match of `regex`.
+                                regex +         // Match the user input.
+                                "(.*)",         // Group that is to be truncated.
+                        Pattern.DOTALL))
                 .collect(Collectors.toList());
     }
 
