@@ -16,10 +16,6 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -27,19 +23,25 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
- * Formats the current date or the date in the LogEvent. The "key" is used as the format String.
+ * Formats the current date or the date in the LogEvent. The "key" is used as the format String,
+ * following the java.text.SimpleDateFormat date and time pattern strings.
  */
-@Plugin(name = "date", category = StrLookup.CATEGORY)
+@Lookup
+@Plugin("date")
 public class DateLookup implements StrLookup {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final Marker LOOKUP = MarkerManager.getMarker("LOOKUP");
 
     /**
-     * Looks up the value of the environment variable.
+     * Looks up the current date.
      * @param key the format to use. If null, the default DateFormat will be used.
-     * @return The value of the environment variable.
+     * @return The formatted current date, never null.
      */
     @Override
     public String lookup(final String key) {
@@ -47,14 +49,14 @@ public class DateLookup implements StrLookup {
     }
 
     /**
-     * Looks up the value of the environment variable.
-     * @param event The current LogEvent (is ignored by this StrLookup).
+     * Looks up the the current date or the date in the LogEvent.
+     * @param event The LogEvent for which the date is returned. If null, current date is returned.
      * @param key the format to use. If null, the default DateFormat will be used.
-     * @return The value of the environment variable.
+     * @return The formatted date, never null.
      */
     @Override
     public String lookup(final LogEvent event, final String key) {
-        return formatDate(event.getTimeMillis(), key);
+        return event == null ? lookup(key) : formatDate(event.getTimeMillis(), key);
     }
 
     private String formatDate(final long date, final String format) {

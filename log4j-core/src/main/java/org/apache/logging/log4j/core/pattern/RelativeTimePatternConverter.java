@@ -19,13 +19,15 @@ package org.apache.logging.log4j.core.pattern;
 import java.lang.management.ManagementFactory;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * Returns the relative time in milliseconds since JVM Startup.
  */
-@Plugin(name = "RelativeTimePatternConverter", category = PatternConverter.CATEGORY)
+@Namespace(PatternConverter.CATEGORY)
+@Plugin("RelativeTimePatternConverter")
 @ConverterKeys({ "r", "relative" })
 @PerformanceSensitive("allocation")
 public class RelativeTimePatternConverter extends LogEventPatternConverter {

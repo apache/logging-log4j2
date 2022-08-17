@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.appender.routing;
 
 import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
@@ -25,14 +24,15 @@ import org.apache.logging.log4j.core.appender.rewrite.RewritePolicy;
 import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.script.AbstractScript;
+import org.apache.logging.log4j.core.script.Script;
+import org.apache.logging.log4j.core.script.ScriptBindings;
 import org.apache.logging.log4j.core.script.ScriptManager;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 
-import javax.script.Bindings;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
@@ -49,7 +49,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * the form "$${[key:]token}". The pattern will be resolved each time the Appender is called using
  * the built in StrSubstitutor and the StrLookup plugin that matches the specified key.
  */
-@Plugin(name = "Routing", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Plugin("Routing")
 public final class RoutingAppender extends AbstractAppender {
 
     public static final String STATIC_VARIABLES_KEY = "staticVariables";
@@ -59,7 +60,7 @@ public final class RoutingAppender extends AbstractAppender {
 
         // Does not work unless the element is called "Script", I wanted "DefaultRounteScript"...
         @PluginElement("Script")
-        private AbstractScript defaultRouteScript;
+        private Script defaultRouteScript;
 
         @PluginElement("Routes")
         private Routes routes;
@@ -84,6 +85,18 @@ public final class RoutingAppender extends AbstractAppender {
                 LOGGER.error("No routes defined for RoutingAppender {}", name);
                 return null;
             }
+            if (defaultRouteScript != null) {
+                ScriptManager scriptManager = getConfiguration().getScriptManager();
+                if (scriptManager == null) {
+                    LOGGER.error("Script support is not enabled");
+                    return null;
+                }
+                if (!scriptManager.isScriptRef(defaultRouteScript)) {
+                    if (!scriptManager.addScript(defaultRouteScript)) {
+                        return null;
+                    }
+                }
+            }
             return new RoutingAppender(name, getFilter(), isIgnoreExceptions(), routes, rewritePolicy,
                     getConfiguration(), purgePolicy, defaultRouteScript, getPropertyArray(), requiresLocation);
         }
@@ -92,7 +105,7 @@ public final class RoutingAppender extends AbstractAppender {
             return routes;
         }
 
-        public AbstractScript getDefaultRouteScript() {
+        public Script getDefaultRouteScript() {
             return defaultRouteScript;
         }
 
@@ -113,7 +126,7 @@ public final class RoutingAppender extends AbstractAppender {
             return asBuilder();
         }
 
-        public B setDefaultRouteScript(@SuppressWarnings("hiding") final AbstractScript defaultRouteScript) {
+        public B setDefaultRouteScript(@SuppressWarnings("hiding") final Script defaultRouteScript) {
             this.defaultRouteScript = defaultRouteScript;
             return asBuilder();
         }
@@ -151,13 +164,13 @@ public final class RoutingAppender extends AbstractAppender {
     private final ConcurrentMap<String, RouteAppenderControl> referencedAppenders = new ConcurrentHashMap<>();
     private final RewritePolicy rewritePolicy;
     private final PurgePolicy purgePolicy;
-    private final AbstractScript defaultRouteScript;
+    private final Script defaultRouteScript;
     private final ConcurrentMap<Object, Object> scriptStaticVariables = new ConcurrentHashMap<>();
     private final Boolean requiresLocation;
 
     private RoutingAppender(final String name, final Filter filter, final boolean ignoreExceptions, final Routes routes,
             final RewritePolicy rewritePolicy, final Configuration configuration, final PurgePolicy purgePolicy,
-            final AbstractScript defaultRouteScript, final Property[] properties, final Boolean requiresLocation) {
+            final Script defaultRouteScript, final Property[] properties, final Boolean requiresLocation) {
         super(name, filter, null, ignoreExceptions, properties);
         this.routes = routes;
         this.configuration = configuration;
@@ -189,7 +202,7 @@ public final class RoutingAppender extends AbstractAppender {
             } else {
                 final ScriptManager scriptManager = configuration.getScriptManager();
                 scriptManager.addScript(defaultRouteScript);
-                final Bindings bindings = scriptManager.createBindings(defaultRouteScript);
+                final ScriptBindings bindings = scriptManager.createBindings(defaultRouteScript);
                 bindings.put(STATIC_VARIABLES_KEY, scriptStaticVariables);
                 final Object object = scriptManager.execute(defaultRouteScript.getName(), bindings);
                 final Route route = routes.getRoute(Objects.toString(object, null));
@@ -308,7 +321,7 @@ public final class RoutingAppender extends AbstractAppender {
     private Appender createAppender(final Route route, final LogEvent event) {
         final Node routeNode = route.getNode();
         for (final Node node : routeNode.getChildren()) {
-            if (node.getType().getElementName().equals(Appender.ELEMENT_TYPE)) {
+            if (node.getType().getElementType().equals(Appender.ELEMENT_TYPE)) {
                 final Node appNode = new Node(node);
                 configuration.createConfiguration(appNode, event);
                 if (appNode.getObject() instanceof Appender) {
@@ -365,7 +378,7 @@ public final class RoutingAppender extends AbstractAppender {
         return defaultRoute;
     }
 
-    public AbstractScript getDefaultRouteScript() {
+    public Script getDefaultRouteScript() {
         return defaultRouteScript;
     }
 

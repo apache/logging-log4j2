@@ -16,16 +16,6 @@
  */
 package org.apache.logging.log4j.core.config.json;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -40,6 +30,16 @@ import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.util.ResolverUtil;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Creates a Node hierarchy from a JSON file.
@@ -56,7 +56,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
         final byte[] buffer;
         try {
             try (final InputStream configStream = configSource.getInputStream()) {
-                buffer = toByteArray(configStream);
+                buffer = configStream.readAllBytes();
             }
             final InputStream is = new ByteArrayInputStream(buffer);
             root = getObjectMapper().readTree(is);
@@ -71,7 +71,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
             int monitorIntervalSeconds = 0;
             for (final Map.Entry<String, String> entry : rootNode.getAttributes().entrySet()) {
                 final String key = entry.getKey();
-                final String value = getStrSubstitutor().replace(entry.getValue());
+                final String value = getConfigurationStrSubstitutor().replace(entry.getValue());
                 // TODO: this duplicates a lot of the XmlConfiguration constructor
                 if ("status".equalsIgnoreCase(key)) {
                     statusConfig.setStatus(value);
@@ -144,7 +144,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
     }
 
     private Node constructNode(final String name, final Node parent, final JsonNode jsonNode) {
-        final PluginType<?> type = pluginManager.getPluginType(name);
+        final PluginType<?> type = corePlugins.get(name);
         final Node node = new Node(parent, name, type);
         processAttributes(node, jsonNode);
         final Iterator<Map.Entry<String, JsonNode>> iter = jsonNode.fields();
@@ -160,7 +160,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
                     LOGGER.debug("Processing node for array {}", entry.getKey());
                     for (int i = 0; i < n.size(); ++i) {
                         final String pluginType = getType(n.get(i), entry.getKey());
-                        final PluginType<?> entryType = pluginManager.getPluginType(pluginType);
+                        final PluginType<?> entryType = corePlugins.get(pluginType);
                         final Node item = new Node(node, entry.getKey(), entryType);
                         processAttributes(item, n.get(i));
                         if (pluginType.equals(entry.getKey())) {
@@ -200,7 +200,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
         if (type == null) {
             t = "null";
         } else {
-            t = type.getElementName() + ':' + type.getPluginClass();
+            t = type.getElementType() + ':' + type.getPluginClass();
         }
 
         final String p = node.getParent() == null ? "null"

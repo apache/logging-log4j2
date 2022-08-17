@@ -38,8 +38,8 @@ public interface PathCondition {
      * @param source What to copy
      * @return a copy, never null.
      */
-    static PathCondition[] copy(PathCondition[] source) {
-        return source == null ? new PathCondition[0] : Arrays.copyOf(source, source.length);
+    static PathCondition[] copy(PathCondition... source) {
+        return source == null || source.length == 0 ? EMPTY_ARRAY : Arrays.copyOf(source, source.length);
     }
 
     /**

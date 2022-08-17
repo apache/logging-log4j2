@@ -23,11 +23,12 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ProviderUtil;
+import org.apache.logging.log4j.util.ReflectionUtil;
 
 /**
  * Creates the ThreadContextMap instance used by the ThreadContext.
  * <p>
- * If {@link Constants#ENABLE_THREADLOCALS Log4j can use ThreadLocals}, a garbage-free StringMap-based context map can
+ * If {@linkplain Constants#isThreadLocalsEnabled() Log4j can use ThreadLocals}, a garbage-free StringMap-based context map can
  * be installed by setting system property {@code log4j2.garbagefree.threadContextMap} to {@code true}.
  * </p><p>
  * Furthermore, any custom {@code ThreadContextMap} can be installed by setting system property
@@ -54,7 +55,7 @@ public final class ThreadContextMapFactory {
     private static String ThreadContextMapName;
 
     static {
-        initPrivate();
+        initPrivate(PropertiesUtil.getProperties());
     }
     
     /**
@@ -62,18 +63,18 @@ public final class ThreadContextMapFactory {
      * and when Log4j is reconfigured.
      */
     public static void init() {
-        CopyOnWriteSortedArrayThreadContextMap.init();
-        GarbageFreeSortedArrayThreadContextMap.init();
-        DefaultThreadContextMap.init();
-        initPrivate();
+        final PropertiesUtil properties = PropertiesUtil.getProperties();
+        CopyOnWriteSortedArrayThreadContextMap.init(properties);
+        GarbageFreeSortedArrayThreadContextMap.init(properties);
+        DefaultThreadContextMap.init(properties);
+        initPrivate(properties);
     }
 
     /**
      * Initializes static variables based on system properties. Normally called when this class is initialized by the VM
      * and when Log4j is reconfigured.
      */
-    private static void initPrivate() {
-        final PropertiesUtil properties = PropertiesUtil.getProperties();
+    private static void initPrivate(final PropertiesUtil properties) {
         ThreadContextMapName = properties.getStringProperty(THREAD_CONTEXT_KEY);
         GcFreeThreadContextKey = properties.getBooleanProperty(GC_FREE_THREAD_CONTEXT_KEY);
     }
@@ -88,7 +89,7 @@ public final class ThreadContextMapFactory {
             try {
                 final Class<?> clazz = cl.loadClass(ThreadContextMapName);
                 if (ThreadContextMap.class.isAssignableFrom(clazz)) {
-                    result = (ThreadContextMap) clazz.newInstance();
+                    result = ReflectionUtil.instantiate(clazz.asSubclass(ThreadContextMap.class));
                 }
             } catch (final ClassNotFoundException cnfe) {
                 LOGGER.error("Unable to locate configured ThreadContextMap {}", ThreadContextMapName);
@@ -103,7 +104,7 @@ public final class ThreadContextMapFactory {
                     final Class<? extends ThreadContextMap> clazz = provider.loadThreadContextMap();
                     if (clazz != null) {
                         try {
-                            result = clazz.newInstance();
+                            result = ReflectionUtil.instantiate(clazz);
                             break;
                         } catch (final Exception e) {
                             LOGGER.error("Unable to locate or load configured ThreadContextMap {}",
@@ -121,7 +122,7 @@ public final class ThreadContextMapFactory {
     }
 
     private static ThreadContextMap createDefaultThreadContextMap() {
-        if (Constants.ENABLE_THREADLOCALS) {
+        if (Constants.isThreadLocalsEnabled()) {
             if (GcFreeThreadContextKey) {
                 return new GarbageFreeSortedArrayThreadContextMap();
             }

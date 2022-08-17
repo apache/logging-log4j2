@@ -17,8 +17,16 @@
 
 package org.apache.logging.log4j.core;
 
+import org.apache.logging.log4j.plugins.Namespace;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.di.Key;
+import org.apache.logging.log4j.plugins.util.PluginNamespace;
+
 public class Core {
 
-    public static final String CATEGORY_NAME = "Core";
+    @Deprecated
+    public static final String CATEGORY_NAME = Node.CORE_NAMESPACE;
+
+    public static final Key<PluginNamespace> PLUGIN_NAMESPACE_KEY = new @Namespace(Node.CORE_NAMESPACE) Key<>() {};
 
 }

@@ -16,50 +16,43 @@
  */
 package org.apache.logging.log4j.csv.layout;
 
-import static org.junit.Assert.assertEquals;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
+import org.apache.logging.log4j.util.LazyValue;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.csv.CSVFormat;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.test.categories.Layouts;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
-import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.test.junit.ThreadContextRule;
-import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link AbstractCsvLayout}.
  *
  * @since 2.4
  */
-@Category(Layouts.Csv.class)
+@UsingAnyThreadContext
 public class CsvLogEventLayoutTest {
-    static ConfigurationFactory cf = new BasicConfigurationFactory();
 
-    @Rule
-    public final ThreadContextRule threadContextRule = new ThreadContextRule();
-
-    @AfterClass
+    @AfterAll
     public static void cleanupClass() {
-        ConfigurationFactory.removeConfigurationFactory(cf);
+        LoggerContext.getContext().getInjector().removeBinding(ConfigurationFactory.KEY);
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() {
-        ConfigurationFactory.setConfigurationFactory(cf);
         final LoggerContext ctx = LoggerContext.getContext();
+        ctx.getInjector().registerBinding(ConfigurationFactory.KEY, new LazyValue<>(BasicConfigurationFactory::new));
         ctx.reconfigure();
     }
 
@@ -123,28 +116,28 @@ public class CsvLogEventLayoutTest {
         final String event0 = list.get(0 + headerOffset);
         final String event1 = list.get(1 + headerOffset);
         final char del = format.getDelimiter();
-        Assert.assertTrue(event0, event0.contains(del + "DEBUG" + del));
+        assertTrue(event0.contains(del + "DEBUG" + del), event0);
         final String quote = del == ',' ? "\"" : "";
-        Assert.assertTrue(event0, event0.contains(del + quote + "one=1, two=2, three=3" + quote + del));
-        Assert.assertTrue(event1, event1.contains(del + "INFO" + del));
+        assertTrue(event0.contains(del + quote + "one=1, two=2, three=3" + quote + del), event0);
+        assertTrue(event1.contains(del + "INFO" + del), event1);
 
         if (hasHeaderSerializer && header == null) {
-            Assert.fail();
+            fail();
         }
         if (!hasHeaderSerializer && header != null) {
-            Assert.fail();
+            fail();
         }
         if (hasFooterSerializer && footer == null) {
-            Assert.fail();
+            fail();
         }
         if (!hasFooterSerializer && footer != null) {
-            Assert.fail();
+            fail();
         }
         if (hasHeaderSerializer) {
-            Assert.assertEquals(list.toString(), header, list.get(0));
+            assertEquals(header, list.get(0), list.toString());
         }
         if (hasFooterSerializer) {
-            Assert.assertEquals(list.toString(), footer, list.get(list.size() - 1));
+            assertEquals(footer, list.get(list.size() - 1), list.toString());
         }
     }
 

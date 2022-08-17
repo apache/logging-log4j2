@@ -20,34 +20,32 @@ import org.apache.log4j.Appender;
 import org.apache.log4j.bridge.AppenderWrapper;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.xml.XmlConfiguration;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.NullAppender;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
 
 import java.util.Properties;
 
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
 
 /**
  * Build a Null Appender
  */
-@Plugin(name = "org.apache.log4j.varia.NullAppender", category = CATEGORY)
+@Namespace(NAMESPACE)
+@Plugin("org.apache.log4j.varia.NullAppender")
 public class NullAppenderBuilder implements AppenderBuilder {
 
-    private static final Logger LOGGER = StatusLogger.getLogger();
-
     @Override
-    public Appender parseAppender(Element appenderElement, XmlConfiguration config) {
-        String name = appenderElement.getAttribute("name");
-        return new AppenderWrapper(NullAppender.createAppender(name));
+    public Appender parseAppender(final Element appenderElement, final XmlConfiguration config) {
+        final String name = appenderElement.getAttribute("name");
+        return AppenderWrapper.adapt(NullAppender.createAppender(name));
     }
 
 
     @Override
     public Appender parseAppender(final String name, final String appenderPrefix, final String layoutPrefix,
             final String filterPrefix, final Properties props, final PropertiesConfiguration configuration) {
-        return new AppenderWrapper(NullAppender.createAppender(name));
+        return AppenderWrapper.adapt(NullAppender.createAppender(name));
     }
 }

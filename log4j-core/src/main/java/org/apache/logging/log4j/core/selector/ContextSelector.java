@@ -16,12 +16,13 @@
  */
 package org.apache.logging.log4j.core.selector;
 
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.plugins.di.Key;
+
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-import org.apache.logging.log4j.core.LoggerContext;
 
 /**
  * Interface used to locate a LoggerContext.
@@ -29,6 +30,8 @@ import org.apache.logging.log4j.core.LoggerContext;
 public interface ContextSelector {
 
     long DEFAULT_STOP_TIMEOUT = 50;
+
+    Key<ContextSelector> KEY = new Key<>() {};
 
     /**
      * Shuts down the LoggerContext.
@@ -79,7 +82,7 @@ public interface ContextSelector {
      */
     default LoggerContext getContext(final String fqcn, final ClassLoader loader, final Map.Entry<String, Object> entry, final boolean currentContext) {
         final LoggerContext lc = getContext(fqcn, loader, currentContext);
-        if (lc != null) {
+        if (entry != null) {
             lc.putObject(entry.getKey(), entry.getValue());
         }
         return lc;
@@ -109,7 +112,7 @@ public interface ContextSelector {
     default LoggerContext getContext(final String fqcn, final ClassLoader loader, final Map.Entry<String, Object> entry,
             final boolean currentContext, final URI configLocation) {
         final LoggerContext lc = getContext(fqcn, loader, currentContext, configLocation);
-        if (lc != null) {
+        if (entry != null) {
             lc.putObject(entry.getKey(), entry.getValue());
         }
         return lc;

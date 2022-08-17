@@ -31,7 +31,6 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 public class StringBuilderEncoder implements Encoder<StringBuilder> {
 
-    private static final int DEFAULT_BYTE_BUFFER_SIZE = 8 * 1024;
     /**
      * This ThreadLocal uses raw and inconvenient Object[] to store three heterogeneous objects (CharEncoder, CharBuffer
      * and ByteBuffer) instead of a custom class, because it needs to contain JDK classes, no custom (Log4j) classes.
@@ -49,7 +48,7 @@ public class StringBuilderEncoder implements Encoder<StringBuilder> {
     private final int byteBufferSize;
 
     public StringBuilderEncoder(final Charset charset) {
-        this(charset, Constants.ENCODER_CHAR_BUFFER_SIZE, DEFAULT_BYTE_BUFFER_SIZE);
+        this(charset, Constants.ENCODER_CHAR_BUFFER_SIZE, Constants.ENCODER_BYTE_BUFFER_SIZE);
     }
 
     public StringBuilderEncoder(final Charset charset, final int charBufferSize, final int byteBufferSize) {
@@ -67,7 +66,7 @@ public class StringBuilderEncoder implements Encoder<StringBuilder> {
             final ByteBuffer byteBuffer = (ByteBuffer) threadLocalState[2];
             TextEncoderHelper.encodeText(charsetEncoder, charBuffer, byteBuffer, source, destination);
         } catch (final Exception ex) {
-            logEncodeTextException(ex, source, destination);
+            logEncodeTextException(ex, source);
             TextEncoderHelper.encodeTextFallBack(charset, source, destination);
         }
     }
@@ -90,8 +89,8 @@ public class StringBuilderEncoder implements Encoder<StringBuilder> {
         return threadLocalState;
     }
 
-    private void logEncodeTextException(final Exception ex, final StringBuilder text,
-            final ByteBufferDestination destination) {
+    private static void logEncodeTextException(final Exception ex, final StringBuilder text) {
         StatusLogger.getLogger().error("Recovering from StringBuilderEncoder.encode('{}') error: {}", text, ex, ex);
     }
+
 }

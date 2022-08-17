@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.FileUtils;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -42,11 +42,12 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * File posix attribute view action.
+ * File POSIX attribute view action.
  *
- * Allow to define file permissions, user and group for log files on posix supported OS.
+ * Allow to define file permissions, user and group for log files on POSIX supported OS.
  */
-@Plugin(name = "PosixViewAttribute", category = Core.CATEGORY_NAME, printObject = true)
+@Configurable(printObject = true)
+@Plugin("PosixViewAttribute")
 public class PosixViewAttributeAction extends AbstractPathAction {
 
     /**
@@ -80,7 +81,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
     }
 
     /**
-     * Builder for the posix view attribute action.
+     * Builder for the POSIX view attribute action.
      */
     public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<PosixViewAttributeAction> {
 
@@ -162,7 +163,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
         }
 
         /**
-         * Define base path to apply condition before execute posix file attribute action.
+         * Define base path to apply condition before execute POSIX file attribute action.
          * @param basePath {@link AbstractPathAction#getBasePath()}
          * @return This builder
          */
@@ -182,7 +183,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
         }
 
         /**
-         * Define max folder depth to search for eligible files to apply posix attribute view.
+         * Define max folder depth to search for eligible files to apply POSIX attribute view.
          * @param maxDepth Max search depth
          * @return This builder
          */
@@ -203,7 +204,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
         }
 
         /**
-         * Define file permissions in posix format to apply during action execution eligible files.
+         * Define file permissions in POSIX format to apply during action execution eligible files.
          *
          * Example:
          * <p>rw-rw-rw
@@ -256,7 +257,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
                 for (final PathCondition pathFilter : conditions) {
                     final Path relative = basePath.relativize(file);
                     if (!pathFilter.accept(basePath, relative, attrs)) {
-                        LOGGER.trace("Not defining posix attribute base={}, relative={}", basePath, relative);
+                        LOGGER.trace("Not defining POSIX attribute base={}, relative={}", basePath, relative);
                         return FileVisitResult.CONTINUE;
                     }
                 }
@@ -267,9 +268,9 @@ public class PosixViewAttributeAction extends AbstractPathAction {
     }
 
     /**
-     * Returns posix file permissions if defined and the OS supports posix file attribute,
+     * Returns POSIX file permissions if defined and the OS supports POSIX file attribute,
      * null otherwise.
-     * @return File posix permissions
+     * @return File POSIX permissions
      * @see PosixFileAttributeView
      */
     public Set<PosixFilePermission> getFilePermissions() {
@@ -287,7 +288,7 @@ public class PosixViewAttributeAction extends AbstractPathAction {
     }
 
     /**
-     * Returns file group if defined and the OS supports posix/group file attribute view,
+     * Returns file group if defined and the OS supports POSIX/group file attribute view,
      * null otherwise.
      * @return File group
      * @see PosixFileAttributeView

@@ -1,12 +1,3 @@
-package org.apache.log4j.config;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.List;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
@@ -23,6 +14,15 @@ import org.junit.runners.Parameterized;
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+
+package org.apache.log4j.config;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
+
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class Log4j1ConfigurationConverterHadoopTest extends AbstractLog4j1ConfigurationConverterTest {

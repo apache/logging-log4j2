@@ -37,12 +37,17 @@ import java.io.Serializable;
 public interface Appender extends LifeCycle {
 
     /**
-     * Main {@linkplain org.apache.logging.log4j.plugins.Plugin#elementType() plugin element type} for
+     * Main {@linkplain org.apache.logging.log4j.plugins.Configurable#elementType() plugin element type} for
      * Appender plugins.
      *
      * @since 2.6
      */
     String ELEMENT_TYPE = "appender";
+    
+    /**
+     * Empty array.
+     */
+    Appender[] EMPTY_ARRAY = {};
 
     /**
      * Logs a LogEvent using whatever logic this Appender wishes to use. It is typically recommended to use a

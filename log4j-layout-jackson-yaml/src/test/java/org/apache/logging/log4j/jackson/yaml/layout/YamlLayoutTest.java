@@ -16,57 +16,54 @@
  */
 package org.apache.logging.log4j.jackson.yaml.layout;
 
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.MutableLogEvent;
-import org.apache.logging.log4j.core.test.layout.LogEventFixtures;
 import org.apache.logging.log4j.core.lookup.JavaLookup;
+import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.layout.LogEventFixtures;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.jackson.AbstractJacksonLayout;
 import org.apache.logging.log4j.jackson.yaml.Log4jYamlObjectMapper;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
+import org.apache.logging.log4j.util.LazyValue;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the YamlLayout class.
  */
-@Category(Layouts.Yaml.class)
+@UsingAnyThreadContext
 public class YamlLayoutTest {
-    static ConfigurationFactory cf = new BasicConfigurationFactory();
 
-    @AfterClass
+    @AfterAll
     public static void cleanupClass() {
-        ConfigurationFactory.removeConfigurationFactory(cf);
-        ThreadContext.clearAll();
+        LoggerContext.getContext().getInjector().removeBinding(ConfigurationFactory.KEY);
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() {
-        ThreadContext.clearAll();
-        ConfigurationFactory.setConfigurationFactory(cf);
         final LoggerContext ctx = LoggerContext.getContext();
+        ctx.getInjector().registerBinding(ConfigurationFactory.KEY, new LazyValue<>(BasicConfigurationFactory::new));
         ctx.reconfigure();
     }
 
@@ -76,7 +73,7 @@ public class YamlLayoutTest {
 
     private void checkAt(final String expected, final int lineIndex, final List<String> list) {
         final String trimedLine = list.get(lineIndex).trim();
-        assertEquals("Incorrect line index " + lineIndex + ": " + Strings.dquote(trimedLine), trimedLine, expected);
+        assertEquals(trimedLine, expected, "Incorrect line index " + lineIndex + ": " + Strings.dquote(trimedLine));
     }
 
     private void checkContains(final String expected, final List<String> list) {
@@ -86,7 +83,7 @@ public class YamlLayoutTest {
                 return;
             }
         }
-        Assert.fail("Cannot find " + expected + " in " + list);
+        fail("Cannot find " + expected + " in " + list);
     }
 
     private void checkMapEntry(final String key, final String value, final boolean compact, final String str) {
@@ -159,7 +156,7 @@ public class YamlLayoutTest {
         mutableEvent.initFrom(logEvent);
         final String strLogEvent = layout.toSerializable(logEvent);
         final String strMutableEvent = layout.toSerializable(mutableEvent);
-        assertEquals(strMutableEvent, strLogEvent, strMutableEvent);
+        assertEquals(strLogEvent, strMutableEvent, strMutableEvent);
     }
 
     private void testAllFeatures(final boolean includeSource, final boolean compact, final boolean eventEol,
@@ -174,9 +171,9 @@ public class YamlLayoutTest {
         final String str = layout.toSerializable(expected);
         // System.out.println(str);
         // Just check for \n since \r might or might not be there.
-        assertEquals(str, !compact || eventEol, str.contains("\n"));
-        assertEquals(str, includeSource, str.contains("source"));
-        assertEquals(str, includeContext, str.contains("contextMap"));
+        assertEquals(!compact || eventEol, str.contains("\n"), str);
+        assertEquals(includeSource, str.contains("source"), str);
+        assertEquals(includeContext, str.contains("contextMap"), str);
         final Log4jLogEvent actual = new Log4jYamlObjectMapper(contextMapAslist, includeStacktrace,false).readValue(str, Log4jLogEvent.class);
         LogEventFixtures.assertEqualLogEvents(expected, actual, includeSource, includeContext, includeStacktrace);
         if (includeContext) {

@@ -24,9 +24,9 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.net.JndiManager;
+import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.jms.appender.JmsManager.JmsManagerConfiguration;
-import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
@@ -42,7 +42,8 @@ import java.util.concurrent.TimeUnit;
  * Generic JMS Appender plugin for both queues and topics. This Appender replaces the previous split ones. However,
  * configurations set up for the 2.0 version of the JMS appenders will still work.
  */
-@Plugin(name = "JMS", category = Node.CATEGORY, elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Plugin("JMS")
 @PluginAliases({ "JMSQueue", "JMSTopic" })
 public class JmsAppender extends AbstractAppender {
 
@@ -96,11 +97,16 @@ public class JmsAppender extends AbstractAppender {
         @SuppressWarnings("resource") // actualJmsManager and jndiManager are managed by the JmsAppender
         @Override
         public JmsAppender build() {
+            if (!Constants.JNDI_JMS_ENABLED) {
+                LOGGER.error("JNDI has not been enabled. The log4j2.enableJndi property must be set to true");
+                return null;
+            }
             JmsManager actualJmsManager = jmsManager;
             JmsManagerConfiguration configuration = null;
             if (actualJmsManager == null) {
-                final Properties jndiProperties = JndiManager.createProperties(factoryName, providerUrl, urlPkgPrefixes,
-                        securityPrincipalName, securityCredentials, null);
+                Properties additionalProperties = null;
+                final Properties jndiProperties = JmsManager.createJndiProperties(factoryName, providerUrl,
+                        urlPkgPrefixes, securityPrincipalName, securityCredentials, additionalProperties);
                 configuration = new JmsManagerConfiguration(jndiProperties, factoryBindingName, destinationBindingName,
                         userName, password, false, reconnectIntervalMillis);
                 actualJmsManager = AbstractManager.getManager(getName(), JmsManager.FACTORY, configuration);

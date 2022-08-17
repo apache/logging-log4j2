@@ -16,12 +16,6 @@
  */
 package org.apache.logging.log4j.core.filter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
@@ -29,22 +23,29 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.core.util.ObjectArrayIterator;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.core.util.ObjectArrayIterator;
-import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.PerformanceSensitive;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Composes and invokes one or more filters.
  */
-@Plugin(name = "filters", category = Node.CATEGORY, printObject = true)
+@Configurable(printObject = true)
+@Plugin("filters")
 @PerformanceSensitive("allocation")
 public final class CompositeFilter extends AbstractLifeCycle implements Iterable<Filter>, Filter {
 
-    private static final Filter[] EMPTY_FILTERS = new Filter[0];
+    private static final Filter[] EMPTY_FILTERS = Filter.EMPTY_ARRAY;
     private final Filter[] filters;
 
     private CompositeFilter() {
@@ -63,9 +64,9 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
         if (filter instanceof CompositeFilter) {
             final int size = this.filters.length + ((CompositeFilter) filter).size();
             final Filter[] copy = Arrays.copyOf(this.filters, size);
-            final int index = this.filters.length;
+            int index = this.filters.length;
             for (final Filter currentFilter : ((CompositeFilter) filter).filters) {
-                copy[index] = currentFilter;
+                copy[index++] = currentFilter;
             }
             return new CompositeFilter(copy);
         }
@@ -90,7 +91,7 @@ public final class CompositeFilter extends AbstractLifeCycle implements Iterable
         } else {
             filterList.remove(filter);
         }
-        return new CompositeFilter(filterList.toArray(new Filter[this.filters.length - 1]));
+        return new CompositeFilter(filterList.toArray(Filter.EMPTY_ARRAY));
     }
 
     @Override

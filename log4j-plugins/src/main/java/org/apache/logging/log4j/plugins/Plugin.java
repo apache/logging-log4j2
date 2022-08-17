@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.plugins;
 
+import org.apache.logging.log4j.plugins.name.NameProvider;
+import org.apache.logging.log4j.plugins.name.PluginNameProvider;
 import org.apache.logging.log4j.util.Strings;
 
 import java.lang.annotation.Documented;
@@ -25,11 +27,23 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation that identifies a Class as a Plugin.
+ * <p>Annotation that identifies a Class as a Plugin. Plugins are indexed classes with a name that can typically
+ * be used to refer to that plugin class in a configuration. Plugin names must be unique within a plugin
+ * {@link Namespace}. A plugin is identified by its namespace and name, though the type of the plugin may be
+ * used for dependency injection purposes.</p>
+ *
+ * <p>Plugins are indexed by the plugin annotation processor which generates
+ * {@link org.apache.logging.log4j.plugins.processor.PluginService} service provider classes containing essential
+ * plugin metadata. All plugin namespaces support dependency injection, though some namespaces use alternative
+ * factory strategies specific to their plugin types; these plugins will only have their members injected after
+ * that factory returns a new instance.</p>
+ *
+ * @see Inject
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+@NameProvider(PluginNameProvider.class)
 public @interface Plugin {
 
     /**
@@ -39,33 +53,10 @@ public @interface Plugin {
 
     /**
      * Name of the plugin. Note that this name is case-insensitive.
+     * If no name is provided, then the {@linkplain Class#getSimpleName() simple name} of the annotated class
+     * is used.
      * @return the name of the plugin.
      */
-    String name();
+    String value() default EMPTY;
 
-    /**
-     * Category to place the plugin under. Category names are case-sensitive.
-     * @return the category
-     */
-    String category();
-
-    /**
-     * Name of the corresponding category of elements this plugin belongs under. For example, {@code appender} would
-     * indicate an Appender plugin which would be in the
-     * {@code <Appenders/>} element of a Configuration.
-     * @return the element's type.
-     */
-    String elementType() default EMPTY;
-
-    /**
-     * Indicates if the plugin class implements a useful {@link Object#toString()} method for use in log messages.
-     * @return true if the object should print nicely.
-     */
-    boolean printObject() default false;
-
-    /**
-     * Indicates if construction and injection of child configuration nodes should be deferred until first use.
-     * @return true if child elements should defer instantiation until they are accessed.
-     */
-    boolean deferChildren() default false;
 }

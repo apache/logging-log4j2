@@ -16,18 +16,20 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import java.util.List;
-
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.plugins.Namespace;
+import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.StringBuilders;
+
+import java.util.List;
 
 /**
  * Equals pattern converter.
  */
-@Plugin(name = "equals", category = PatternConverter.CATEGORY)
+@Namespace(PatternConverter.CATEGORY)
+@Plugin("equals")
 @ConverterKeys({ "equals" })
 @PerformanceSensitive("allocation")
 public final class EqualsReplacementConverter extends EqualsBaseReplacementConverter {

@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -26,10 +23,14 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+
 /**
  * Looks up keys from resource bundles.
  */
-@Plugin(name = "bundle", category = StrLookup.CATEGORY)
+@Lookup
+@Plugin("bundle")
 public class ResourceBundleLookup extends AbstractLookup {
 
     private static final Logger LOGGER = StatusLogger.getLogger();

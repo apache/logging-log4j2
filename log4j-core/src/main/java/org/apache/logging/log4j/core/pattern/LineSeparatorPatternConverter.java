@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.Strings;
@@ -24,7 +25,8 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Formats a line separator.
  */
-@Plugin(name = "LineSeparatorPatternConverter", category = PatternConverter.CATEGORY)
+@Namespace(PatternConverter.CATEGORY)
+@Plugin("LineSeparatorPatternConverter")
 @ConverterKeys({ "n" })
 @PerformanceSensitive("allocation")
 public final class LineSeparatorPatternConverter extends LogEventPatternConverter {
@@ -35,16 +37,10 @@ public final class LineSeparatorPatternConverter extends LogEventPatternConverte
     private static final LineSeparatorPatternConverter INSTANCE = new LineSeparatorPatternConverter();
 
     /**
-     * Line separator.
-     */
-    private final String lineSep;
-
-    /**
      * Private constructor.
      */
     private LineSeparatorPatternConverter() {
         super("Line Sep", "lineSep");
-        lineSep = Strings.LINE_SEPARATOR;
     }
 
     /**
@@ -62,7 +58,20 @@ public final class LineSeparatorPatternConverter extends LogEventPatternConverte
      * {@inheritDoc}
      */
     @Override
-    public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        toAppendTo.append(lineSep);
+    public void format(final LogEvent ignored, final StringBuilder toAppendTo) {
+        toAppendTo.append(Strings.LINE_SEPARATOR);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void format(final Object ignored, final StringBuilder output) {
+        output.append(Strings.LINE_SEPARATOR);
+    }
+
+    @Override
+    public boolean isVariable() {
+        return false;
     }
 }

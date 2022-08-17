@@ -16,17 +16,15 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.lang.invoke.MethodHandles;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -35,12 +33,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.Version;
@@ -49,44 +49,51 @@ import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfig;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfigDelegate;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfigDisruptor;
+import org.apache.logging.log4j.core.async.AsyncWaitStrategyFactory;
+import org.apache.logging.log4j.core.async.AsyncWaitStrategyFactoryConfig;
 import org.apache.logging.log4j.core.config.arbiters.Arbiter;
 import org.apache.logging.log4j.core.config.arbiters.SelectArbiter;
-import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
 import org.apache.logging.log4j.core.lookup.Interpolator;
-import org.apache.logging.log4j.core.lookup.MapLookup;
+import org.apache.logging.log4j.core.lookup.InterpolatorFactory;
+import org.apache.logging.log4j.core.lookup.PropertiesLookup;
+import org.apache.logging.log4j.core.lookup.RuntimeStrSubstitutor;
 import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.net.Advertiser;
-import org.apache.logging.log4j.core.script.AbstractScript;
 import org.apache.logging.log4j.core.script.ScriptManager;
-import org.apache.logging.log4j.core.script.ScriptRef;
-import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
-import org.apache.logging.log4j.core.util.Loader;
-import org.apache.logging.log4j.util.NameUtil;
-import org.apache.logging.log4j.core.util.Source;
+import org.apache.logging.log4j.core.script.ScriptManagerFactory;
 import org.apache.logging.log4j.core.time.NanoClock;
+import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.core.util.Watcher;
 import org.apache.logging.log4j.core.util.WatcherFactory;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Node;
-import org.apache.logging.log4j.plugins.util.PluginManager;
+import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.di.Key;
+import org.apache.logging.log4j.plugins.di.Keys;
+import org.apache.logging.log4j.plugins.util.PluginNamespace;
 import org.apache.logging.log4j.plugins.util.PluginType;
+import org.apache.logging.log4j.plugins.util.TypeUtil;
+import org.apache.logging.log4j.util.LazyValue;
+import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.ServiceRegistry;
 
 /**
  * The base Configuration. Many configuration implementations will extend this class.
  */
 public abstract class AbstractConfiguration extends AbstractFilterable implements Configuration {
 
-    private static final int BUF_SIZE = 16384;
-
     /**
      * The root node of the configuration.
      */
-    protected Node rootNode;
+    protected Node rootNode = new Node();
 
     /**
      * Listeners for configuration changes.
@@ -99,9 +106,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     protected final List<String> pluginPackages = new ArrayList<>();
 
     /**
-     * The plugin manager.
+     * Core plugins.
      */
-    protected PluginManager pluginManager;
+    protected PluginNamespace corePlugins;
 
     /**
      * Shutdown hook is enabled by default.
@@ -111,33 +118,36 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     /**
      * Shutdown timeout in milliseconds.
      */
-    protected long shutdownTimeoutMillis = 0;
+    protected long shutdownTimeoutMillis;
 
     /**
      * The Script manager.
      */
     protected ScriptManager scriptManager;
 
+    protected final Injector injector;
     /**
      * The Advertiser which exposes appender configurations to external systems.
      */
     private Advertiser advertiser = new DefaultAdvertiser();
-    private Node advertiserNode = null;
+    private Node advertiserNode;
     private Object advertisement;
     private String name;
     private ConcurrentMap<String, Appender> appenders = new ConcurrentHashMap<>();
     private ConcurrentMap<String, LoggerConfig> loggerConfigs = new ConcurrentHashMap<>();
-    private List<CustomLevelConfig> customLevels = Collections.emptyList();
+    private List<CustomLevelConfig> customLevels = List.of();
     private final ConcurrentMap<String, String> properties = new ConcurrentHashMap<>();
-    private final StrLookup tempLookup = new Interpolator(properties);
-    private final StrSubstitutor subst = new StrSubstitutor(tempLookup);
+    private final InterpolatorFactory interpolatorFactory;
+    private final StrLookup tempLookup;
+    private final StrSubstitutor runtimeStrSubstitutor;
+    private final StrSubstitutor configurationStrSubstitutor;
     private LoggerConfig root = new LoggerConfig();
     private final ConcurrentMap<String, Object> componentMap = new ConcurrentHashMap<>();
     private final ConfigurationSource configurationSource;
-    private final ConfigurationScheduler configurationScheduler = new ConfigurationScheduler();
-    private final WatchManager watchManager = new WatchManager(configurationScheduler);
+    private final ConfigurationScheduler configurationScheduler;
+    private final WatchManager watchManager;
     private AsyncLoggerConfigDisruptor asyncLoggerConfigDisruptor;
-    private NanoClock nanoClock = new DummyNanoClock();
+    private AsyncWaitStrategyFactory asyncWaitStrategyFactory;
     private final WeakReference<LoggerContext> loggerContext;
 
     /**
@@ -148,11 +158,21 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         // The loggerContext is null for the NullConfiguration class.
         // this.loggerContext = new WeakReference(Objects.requireNonNull(loggerContext, "loggerContext is null"));
         this.configurationSource = Objects.requireNonNull(configurationSource, "configurationSource is null");
+        if (loggerContext != null) {
+            injector = loggerContext.getInjector();
+        } else {
+            // for NullConfiguration
+            injector = DI.createInjector();
+            injector.init();
+        }
         componentMap.put(Configuration.CONTEXT_PROPERTIES, properties);
-        pluginManager = new PluginManager(Node.CATEGORY);
-        rootNode = new Node();
+        interpolatorFactory = injector.getInstance(InterpolatorFactory.class);
+        tempLookup = interpolatorFactory.newInterpolator(new PropertiesLookup(properties));
+        runtimeStrSubstitutor = new RuntimeStrSubstitutor(tempLookup);
+        configurationStrSubstitutor = new ConfigurationStrSubstitutor(runtimeStrSubstitutor);
+        configurationScheduler = injector.getInstance(ConfigurationScheduler.class);
+        watchManager = injector.getInstance(WatchManager.class);
         setState(State.INITIALIZING);
-
     }
 
     @Override
@@ -177,14 +197,16 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     public void setScriptManager(final ScriptManager scriptManager) {
         this.scriptManager = scriptManager;
+        injector.registerBinding(ScriptManager.KEY, this::getScriptManager);
     }
 
-    public PluginManager getPluginManager() {
-        return pluginManager;
+    public PluginNamespace getCorePlugins() {
+        return corePlugins;
     }
 
-    public void setPluginManager(final PluginManager pluginManager) {
-        this.pluginManager = pluginManager;
+    public void setCorePlugins(final PluginNamespace corePlugins) {
+        this.corePlugins = corePlugins;
+        injector.registerBinding(Core.PLUGIN_NAMESPACE_KEY, this::getCorePlugins);
     }
 
     @Override
@@ -206,9 +228,14 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         // lazily instantiate only when requested by AsyncLoggers:
         // loading AsyncLoggerConfigDisruptor requires LMAX Disruptor jar on classpath
         if (asyncLoggerConfigDisruptor == null) {
-            asyncLoggerConfigDisruptor = new AsyncLoggerConfigDisruptor();
+            asyncLoggerConfigDisruptor = new AsyncLoggerConfigDisruptor(asyncWaitStrategyFactory);
         }
         return asyncLoggerConfigDisruptor;
+    }
+
+    @Override
+    public AsyncWaitStrategyFactory getAsyncWaitStrategyFactory() {
+        return asyncWaitStrategyFactory;
     }
 
     /**
@@ -216,29 +243,24 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     @Override
     public void initialize() {
-        LOGGER.debug(Version.getProductString() + " initializing configuration {}", this);
-        subst.setConfiguration(this);
-        try {
-            scriptManager = new ScriptManager(this, watchManager);
-        } catch (final LinkageError | Exception e) {
-            // LOG4J2-1920 ScriptEngineManager is not available in Android
-            LOGGER.info("Cannot initialize scripting support because this JRE does not support it.", e);
-        }
-        pluginManager.collectPlugins(pluginPackages);
-        final PluginManager levelPlugins = new PluginManager(Level.CATEGORY);
-        levelPlugins.collectPlugins(pluginPackages);
-        final Map<String, PluginType<?>> plugins = levelPlugins.getPlugins();
-        if (plugins != null) {
-            for (final PluginType<?> type : plugins.values()) {
-                try {
-                    // Cause the class to be initialized if it isn't already.
-                    Loader.initializeClass(type.getPluginClass().getName(), type.getPluginClass().getClassLoader());
-                } catch (final Exception e) {
-                    LOGGER.error("Unable to initialize {} due to {}", type.getPluginClass().getName(), e.getClass()
-                            .getSimpleName(), e);
-                }
+        LOGGER.debug("{} initializing configuration {}", Version.getProductString(), this);
+        injector.registerBinding(Configuration.KEY, () -> this);
+        runtimeStrSubstitutor.setConfiguration(this);
+        configurationStrSubstitutor.setConfiguration(this);
+        initializeScriptManager();
+        injector.registerBindingIfAbsent(Keys.PLUGIN_PACKAGES_KEY, this::getPluginPackages);
+        corePlugins = injector.getInstance(Core.PLUGIN_NAMESPACE_KEY);
+        final PluginNamespace levelPlugins = injector.getInstance(new @Namespace(Level.CATEGORY) Key<>() {});
+        levelPlugins.forEach(type -> {
+            final Class<?> pluginClass = type.getPluginClass();
+            try {
+                // Cause the class to be initialized if it isn't already.
+                Class.forName(pluginClass.getName(), true, pluginClass.getClassLoader());
+            } catch (final Exception e) {
+                LOGGER.error("Unable to initialize {} due to {}", pluginClass.getName(), e.getClass()
+                        .getSimpleName(), e);
             }
-        }
+        });
         setup();
         setupAdvertisement();
         doConfigure();
@@ -246,16 +268,29 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         LOGGER.debug("Configuration {} initialized", this);
     }
 
+    private void initializeScriptManager() {
+        try {
+            ServiceRegistry.getInstance()
+                    .getServices(ScriptManagerFactory.class, MethodHandles.lookup(), null)
+                    .stream()
+                    .findFirst()
+                    .ifPresent(factory -> setScriptManager(factory.createScriptManager(this, getWatchManager())));
+        } catch (final LinkageError | Exception e) {
+            // LOG4J2-1920 ScriptEngineManager is not available in Android
+            LOGGER.info("Cannot initialize scripting support because this JRE does not support it.", e);
+        }
+    }
+
     protected void initializeWatchers(final Reconfigurable reconfigurable, final ConfigurationSource configSource,
                  final int monitorIntervalSeconds) {
-        if (configSource.getFile() != null || configSource.getURL() != null) {
+        if (configSource != null && (configSource.getFile() != null || configSource.getURL() != null)) {
             if (monitorIntervalSeconds > 0) {
                 watchManager.setIntervalSeconds(monitorIntervalSeconds);
                 if (configSource.getFile() != null) {
                     final Source cfgSource = new Source(configSource);
-                    final long lastModifeid = configSource.getFile().lastModified();
+                    final long lastModified = configSource.getFile().lastModified();
                     final ConfigurationFileWatcher watcher = new ConfigurationFileWatcher(this, reconfigurable,
-                            listeners, lastModifeid);
+                            listeners, lastModified);
                     watchManager.watch(cfgSource, watcher);
                 } else {
                     if (configSource.getURL() != null) {
@@ -271,7 +306,10 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private void monitorSource(final Reconfigurable reconfigurable, final ConfigurationSource configSource) {
         if (configSource.getLastModified() > 0) {
             final Source cfgSource = new Source(configSource);
-            final Watcher watcher = WatcherFactory.getInstance(pluginPackages)
+            final Key<WatcherFactory> key = Key.forClass(WatcherFactory.class);
+            injector.registerBindingIfAbsent(key, LazyValue.from(() ->
+                    new WatcherFactory(injector.getInstance(Watcher.PLUGIN_CATEGORY_KEY))));
+            final Watcher watcher = injector.getInstance(key)
                     .newWatcher(cfgSource, this, reconfigurable, listeners, configSource.getLastModified());
             if (watcher != null) {
                 watchManager.watch(cfgSource, watcher);
@@ -281,7 +319,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
     }
 
-	/**
+    /**
      * Start the configuration.
      */
     @Override
@@ -379,13 +417,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         root.getReliabilityStrategy().beforeStopAppenders();
 
         // Stop the appenders in reverse order in case they still have activity.
-        final Appender[] array = appenders.values().toArray(new Appender[appenders.size()]);
+        final Appender[] array = appenders.values().toArray(Appender.EMPTY_ARRAY);
         final List<Appender> async = getAsyncAppenders(array);
         if (!async.isEmpty()) {
             // LOG4J2-511, LOG4J2-392 stop AsyncAppenders first
             LOGGER.trace("{} stopping {} AsyncAppenders.", cls, async.size());
             for (final Appender appender : async) {
-                ((LifeCycle) appender).stop(timeout, timeUnit);
+                appender.stop(timeout, timeUnit);
             }
         }
 
@@ -393,7 +431,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         int appenderCount = 0;
         for (int i = array.length - 1; i >= 0; --i) {
             if (array[i].isStarted()) { // then stop remaining Appenders
-                ((LifeCycle) array[i]).stop(timeout, timeUnit);
+                array[i].stop(timeout, timeUnit);
                 appenderCount++;
             }
         }
@@ -449,13 +487,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     protected Level getDefaultStatus() {
-        final String statusLevel = PropertiesUtil.getProperties().getStringProperty(
-                Constants.LOG4J_DEFAULT_STATUS_LEVEL, Level.ERROR.name());
-        try {
-            return Level.toLevel(statusLevel);
-        } catch (final Exception ex) {
-            return Level.ERROR;
-        }
+        return injector.getInstance(Constants.DEFAULT_STATUS_LEVEL_KEY);
     }
 
     protected void createAdvertiser(final String advertiserString, final ConfigurationSource configSource,
@@ -476,25 +508,22 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private void setupAdvertisement() {
         if (advertiserNode != null) {
             final String nodeName = advertiserNode.getName();
-            final PluginType<?> type = pluginManager.getPluginType(nodeName);
+            final PluginType<?> type = corePlugins.get(nodeName);
             if (type != null) {
-                final Class<? extends Advertiser> clazz = type.getPluginClass().asSubclass(Advertiser.class);
-                try {
-                    advertiser = clazz.newInstance();
-                    advertisement = advertiser.advertise(advertiserNode.getAttributes());
-                } catch (final InstantiationException e) {
-                    LOGGER.error("InstantiationException attempting to instantiate advertiser: {}", nodeName, e);
-                } catch (final IllegalAccessException e) {
-                    LOGGER.error("IllegalAccessException attempting to instantiate advertiser: {}", nodeName, e);
-                }
+                advertiser = injector.getInstance(type.getPluginClass().asSubclass(Advertiser.class));
+                advertisement = advertiser.advertise(advertiserNode.getAttributes());
             }
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T> T getComponent(final String componentName) {
-        return (T) componentMap.get(componentName);
+        return TypeUtil.cast(componentMap.get(componentName));
+    }
+
+    @Override
+    public <T> Supplier<T> getFactory(final Key<T> key) {
+        return injector.getFactory(key);
     }
 
     @Override
@@ -506,7 +535,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         try {
             for (final Node child : node.getChildren()) {
                 if (child.getType() == null) {
-                    LOGGER.error("Unable to locate plugin type for " + child.getName());
+                    LOGGER.error("Unable to locate plugin type for {}", child.getName());
                     continue;
                 }
                 final Class<?> clazz = child.getType().getPluginClass();
@@ -516,7 +545,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 preConfigure(child);
             }
         } catch (final Exception ex) {
-            LOGGER.error("Error capturing node data for node " + node.getName(), ex);
+            LOGGER.error("Error capturing node data for node {}", node.getName(), ex);
         }
     }
 
@@ -532,7 +561,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             final List<Node> removeList = new ArrayList<>();
             for (final Node child : node.getChildren()) {
                 final PluginType<?> type = child.getType();
-                if (type != null && Arbiter.ELEMENT_TYPE.equals(type.getElementName())) {
+                if (type != null && Arbiter.ELEMENT_TYPE.equals(type.getElementType())) {
                     final Class<?> clazz = type.getPluginClass();
                     if (SelectArbiter.class.isAssignableFrom(clazz)) {
                         removeList.add(child);
@@ -540,7 +569,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                     } else if (Arbiter.class.isAssignableFrom(clazz)) {
                         removeList.add(child);
                         try {
-                            final Arbiter condition = (Arbiter) createPluginObject(type, child, null);
+                            final Arbiter condition = injector.configure(child);
                             if (condition.isCondition()) {
                                 addList.addAll(child.getChildren());
                                 processConditionals(child);
@@ -568,7 +597,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 }
             }
         } catch (final Exception ex) {
-            LOGGER.error("Error capturing node data for node " + node.getName(), ex);
+            LOGGER.error("Error capturing node data for node {}", node.getName(), ex);
         }
     }
 
@@ -581,15 +610,14 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     protected List<Node> processSelect(final Node selectNode, final PluginType<?> type) {
         final List<Node> addList = new ArrayList<>();
-        final SelectArbiter select = (SelectArbiter) createPluginObject(type, selectNode, null);
+        final SelectArbiter select = injector.configure(selectNode);
         final List<Arbiter> conditions = new ArrayList<>();
         for (final Node child : selectNode.getChildren()) {
             final PluginType<?> nodeType = child.getType();
             if (nodeType != null) {
                 if (Arbiter.class.isAssignableFrom(nodeType.getPluginClass())) {
-                    final Arbiter condition = (Arbiter) createPluginObject(nodeType, child, null);
+                    final Arbiter condition = injector.configure(child);
                     conditions.add(condition);
-                    child.setObject(condition);
                 } else {
                     LOGGER.error("Invalid Node {} for Select. Must be a Condition",
                             child.getName());
@@ -612,6 +640,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
 
     protected void doConfigure() {
+        injector.registerBinding(Keys.SUBSTITUTOR_KEY, () -> configurationStrSubstitutor::replace);
         processConditionals(rootNode);
         preConfigure(rootNode);
         configurationScheduler.start();
@@ -619,19 +648,23 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             final Node first = rootNode.getChildren().get(0);
             createConfiguration(first, null);
             if (first.getObject() != null) {
-                subst.setVariableResolver((StrLookup) first.getObject());
+                StrLookup lookup = first.getObject();
+                runtimeStrSubstitutor.setVariableResolver(lookup);
+                configurationStrSubstitutor.setVariableResolver(lookup);
             }
         } else {
             final Map<String, String> map = this.getComponent(CONTEXT_PROPERTIES);
-            final StrLookup lookup = map == null ? null : new MapLookup(map);
-            subst.setVariableResolver(new Interpolator(lookup, pluginPackages));
+            final StrLookup lookup = map == null ? null : new PropertiesLookup(map);
+            Interpolator interpolator = interpolatorFactory.newInterpolator(lookup);
+            runtimeStrSubstitutor.setVariableResolver(interpolator);
+            configurationStrSubstitutor.setVariableResolver(interpolator);
         }
 
         boolean setLoggers = false;
         boolean setRoot = false;
         for (final Node child : rootNode.getChildren()) {
             if (child.getName().equalsIgnoreCase("Properties")) {
-                if (tempLookup == subst.getVariableResolver()) {
+                if (tempLookup == runtimeStrSubstitutor.getVariableResolver()) {
                     LOGGER.error("Properties declaration must be the first element in the configuration");
                 }
                 continue;
@@ -641,14 +674,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 continue;
             }
             if (child.getName().equalsIgnoreCase("Scripts")) {
-                for (final AbstractScript script : child.getObject(AbstractScript[].class)) {
-                    if (script instanceof ScriptRef) {
-                        LOGGER.error("Script reference to {} not added. Scripts definition cannot contain script references",
-                                script.getName());
-                    } else {
-                        if (scriptManager != null) {
-                            scriptManager.addScript(script);
-                        }}
+                if (scriptManager != null) {
+                    scriptManager.addScripts(child);
                 }
             } else if (child.getName().equalsIgnoreCase("Appenders")) {
                 appenders = child.getObject();
@@ -668,6 +695,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 final List<CustomLevelConfig> copy = new ArrayList<>(customLevels);
                 copy.add(child.getObject(CustomLevelConfig.class));
                 customLevels = copy;
+            } else if (child.isInstanceOf(AsyncWaitStrategyFactoryConfig.class)) {
+                AsyncWaitStrategyFactoryConfig awsfc = child.getObject(AsyncWaitStrategyFactoryConfig.class);
+                asyncWaitStrategyFactory = awsfc.createWaitStrategyFactory();
             } else {
                 final List<String> expected = Arrays.asList("\"Appenders\"", "\"Loggers\"", "\"Properties\"",
                         "\"Scripts\"", "\"CustomLevels\"");
@@ -769,9 +799,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * @return the Appender with the specified name or null if the Appender cannot be located.
      */
     @Override
-    @SuppressWarnings("unchecked")
     public <T extends Appender> T getAppender(final String appenderName) {
-        return appenderName != null ? (T) appenders.get(appenderName) : null;
+        return appenderName != null ? TypeUtil.cast(appenders.get(appenderName)) : null;
     }
 
     /**
@@ -798,7 +827,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     @Override
     public StrSubstitutor getStrSubstitutor() {
-        return subst;
+        return runtimeStrSubstitutor;
+    }
+
+    @Override
+    public StrSubstitutor getConfigurationStrSubstitutor() {
+        return configurationStrSubstitutor;
     }
 
     @Override
@@ -1013,22 +1047,29 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     @Override
     public void createConfiguration(final Node node, final LogEvent event) {
-        final PluginType<?> type = node.getType();
-        if (type != null && type.isDeferChildren()) {
-            node.setObject(createPluginObject(type, node, event));
+        final Function<String, String> stringSubstitutionStrategy;
+        if (event == null) {
+            stringSubstitutionStrategy = configurationStrSubstitutor::replace;
         } else {
-            for (final Node child : node.getChildren()) {
-                createConfiguration(child, event);
-            }
-
-            if (type == null) {
-                if (node.getParent() != null) {
-                    LOGGER.error("Unable to locate plugin for {}", node.getName());
-                }
-            } else {
-                node.setObject(createPluginObject(type, node, event));
-            }
+            stringSubstitutionStrategy = str -> runtimeStrSubstitutor.replace(event, str);
         }
+        final Injector injector = this.injector.copy().registerBinding(Keys.SUBSTITUTOR_KEY, () -> stringSubstitutionStrategy);
+        injector.configure(node);
+    }
+
+    /**
+     * This method is used by Arbiters to create specific children.
+     * @param node The Node.
+     * @return The created object or null;
+     */
+    public Object createPluginObject(final Node node) {
+        if (this.getState().equals(State.INITIALIZING)) {
+            final Injector injector =
+                    this.injector.copy().registerBinding(Keys.SUBSTITUTOR_KEY, () -> configurationStrSubstitutor::replace);
+            return injector.configure(node);
+        }
+        LOGGER.warn("Plugin Object creation is not allowed after initialization");
+        return null;
     }
 
     /**
@@ -1036,91 +1077,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * @param type The PluginType.
      * @param node The Node.
      * @return The created object or null;
+     * @deprecated use {@link #createPluginObject(Node)}
      */
+    @Deprecated
     public Object createPluginObject(final PluginType<?> type, final Node node) {
-        if (this.getState().equals(State.INITIALIZING)) {
-            return createPluginObject(type, node, null);
-        } else {
-            LOGGER.warn("Plugin Object creation is not allowed after initialization");
-            return null;
-        }
-    }
-
-    /**
-     * Invokes a static factory method to either create the desired object or to create a builder object that creates
-     * the desired object. In the case of a factory method, it should be annotated with
-     * {@link org.apache.logging.log4j.plugins.PluginFactory}, and each parameter should be annotated with
-     * an appropriate plugin annotation depending on what that parameter describes. Parameters annotated with
-     * {@link org.apache.logging.log4j.plugins.PluginAttribute} must be a type that can be converted from a
-     * string using one of the {@link org.apache.logging.log4j.plugins.convert.TypeConverter TypeConverters}
-     * . Parameters with {@link org.apache.logging.log4j.plugins.PluginElement} may be any plugin class or
-     * an array of a plugin class. Collections and Maps are currently not supported, although the factory method that is
-     * called can create these from an array.
-     *
-     * Plugins can also be created using a builder class that implements
-     * {@link org.apache.logging.log4j.plugins.util.Builder}. In that case, a static method annotated with
-     * {@link org.apache.logging.log4j.plugins.PluginBuilderAttribute} should create the builder class, and
-     * the various fields in the builder class should be annotated similarly to the method parameters. However, instead
-     * of using PluginAttribute, one should use
-     * {@link org.apache.logging.log4j.plugins.PluginBuilderAttribute} where the default value can be
-     * specified as the default field value instead of as an additional annotation parameter.
-     *
-     * In either case, there are also annotations for specifying a
-     * {@link org.apache.logging.log4j.core.config.Configuration} (
-     * {@link org.apache.logging.log4j.core.config.plugins.PluginConfiguration}) or a
-     * {@link org.apache.logging.log4j.plugins.Node} (
-     * {@link org.apache.logging.log4j.plugins.PluginNode}).
-     *
-     * Although the happy path works, more work still needs to be done to log incorrect parameters. These will generally
-     * result in unhelpful InvocationTargetExceptions.
-     *
-     * @param type the type of plugin to create.
-     * @param node the corresponding configuration node for this plugin to create.
-     * @param event the LogEvent that spurred the creation of this plugin
-     * @return the created plugin object or {@code null} if there was an error setting it up.
-     * @see org.apache.logging.log4j.core.config.plugins.util.PluginBuilder
-     * @see org.apache.logging.log4j.plugins.inject.ConfigurationInjector
-     * @see org.apache.logging.log4j.plugins.convert.TypeConverter
-     */
-    private Object createPluginObject(final PluginType<?> type, final Node node, final LogEvent event) {
-        final Class<?> clazz = type.getPluginClass();
-
-        if (Map.class.isAssignableFrom(clazz)) {
-            try {
-                return createPluginMap(node);
-            } catch (final Exception e) {
-                LOGGER.warn("Unable to create Map for {} of class {}", type.getElementName(), clazz, e);
-            }
-        }
-
-        if (Collection.class.isAssignableFrom(clazz)) {
-            try {
-                return createPluginCollection(node);
-            } catch (final Exception e) {
-                LOGGER.warn("Unable to create List for {} of class {}", type.getElementName(), clazz, e);
-            }
-        }
-
-        return new PluginBuilder(type).setConfiguration(this).setConfigurationNode(node).forLogEvent(event).build();
-    }
-
-    private static Map<String, ?> createPluginMap(final Node node) {
-        final Map<String, Object> map = new LinkedHashMap<>();
-        for (final Node child : node.getChildren()) {
-            final Object object = child.getObject();
-            map.put(child.getName(), object);
-        }
-        return map;
-    }
-
-    private static Collection<?> createPluginCollection(final Node node) {
-        final List<Node> children = node.getChildren();
-        final Collection<Object> list = new ArrayList<>(children.size());
-        for (final Node child : children) {
-            final Object object = child.getObject();
-            list.add(object);
-        }
-        return list;
+        return createPluginObject(node);
     }
 
     private void setParents() {
@@ -1150,27 +1111,20 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * @param is the InputStream to read into a byte array buffer.
      * @return a byte array of the InputStream contents.
      * @throws IOException if the {@code read} method of the provided InputStream throws this exception.
+     * @deprecated use {@link InputStream#readAllBytes()}
      */
+    @Deprecated(since = "3.0.0")
     protected static byte[] toByteArray(final InputStream is) throws IOException {
-        final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-
-        int nRead;
-        final byte[] data = new byte[BUF_SIZE];
-
-        while ((nRead = is.read(data, 0, data.length)) != -1) {
-            buffer.write(data, 0, nRead);
-        }
-
-        return buffer.toByteArray();
+        return is.readAllBytes();
     }
 
     @Override
     public NanoClock getNanoClock() {
-        return nanoClock;
+        return injector.getInstance(NanoClock.class);
     }
 
     @Override
     public void setNanoClock(final NanoClock nanoClock) {
-        this.nanoClock = Objects.requireNonNull(nanoClock, "nanoClock");
+        injector.registerBinding(NanoClock.KEY, () -> nanoClock);
     }
 }

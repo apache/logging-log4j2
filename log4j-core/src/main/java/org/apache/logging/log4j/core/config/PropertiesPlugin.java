@@ -16,23 +16,24 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.util.HashMap;
-import java.util.Map;
-
-
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.lookup.Interpolator;
-import org.apache.logging.log4j.core.lookup.MapLookup;
+import org.apache.logging.log4j.core.lookup.InterpolatorFactory;
+import org.apache.logging.log4j.core.lookup.PropertiesLookup;
 import org.apache.logging.log4j.core.lookup.StrLookup;
-import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.di.Key;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Handles properties defined in the configuration.
  */
-@Plugin(name = "properties", category = Node.CATEGORY, printObject = true)
+@Configurable(printObject = true)
+@Plugin("properties")
 public final class PropertiesPlugin {
 
     private PropertiesPlugin() {
@@ -47,15 +48,16 @@ public final class PropertiesPlugin {
     @PluginFactory
     public static StrLookup configureSubstitutor(@PluginElement("Properties") final Property[] properties,
                                                  @PluginConfiguration final Configuration config) {
+        final Map<String, String> map;
         if (properties == null) {
-            return new Interpolator(config.getProperties());
-        }
-        final Map<String, String> map = new HashMap<>(config.getProperties());
+            map = config.getProperties();
+        } else {
+            map = new HashMap<>(config.getProperties());
 
-        for (final Property prop : properties) {
-            map.put(prop.getName(), prop.getValue());
+            for (final Property prop : properties) {
+                map.put(prop.getName(), prop.getValue());
+            }
         }
-
-        return new Interpolator(new MapLookup(map), config.getPluginPackages());
+        return config.getComponent(Key.forClass(InterpolatorFactory.class)).newInterpolator(new PropertiesLookup(map));
     }
 }

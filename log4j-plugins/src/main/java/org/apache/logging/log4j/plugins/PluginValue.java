@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.plugins;
 
-import org.apache.logging.log4j.plugins.inject.InjectorStrategy;
-import org.apache.logging.log4j.plugins.inject.PluginValueInjector;
 import org.apache.logging.log4j.plugins.name.NameProvider;
 import org.apache.logging.log4j.plugins.name.PluginValueNameProvider;
+import org.apache.logging.log4j.plugins.visit.NodeVisitor;
+import org.apache.logging.log4j.plugins.visit.PluginValueVisitor;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -40,8 +40,9 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD})
-@InjectorStrategy(PluginValueInjector.class)
+@NodeVisitor.Kind(PluginValueVisitor.class)
 @NameProvider(PluginValueNameProvider.class)
+@QualifierType
 public @interface PluginValue {
 
     /**

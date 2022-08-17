@@ -1,12 +1,12 @@
 ////
     Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements. See the NOTICE file distributed with
+    contributor license agreements.  See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
     The ASF licenses this file to You under the Apache License, Version 2.0
     (the "License"); you may not use this file except in compliance with
-    the License. You may obtain a copy of the License at
+    the License.  You may obtain a copy of the License at
 
-        https://www.apache.org/licenses/LICENSE-2.0
+         http://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,7 +15,7 @@
     limitations under the License.
 ////
 
-# Apache Log4j Security Vulnerabilities
+= Apache Log4j Security Vulnerabilities
 
 This page lists all the security vulnerabilities fixed in released versions of Apache Log4j 2.
 Each vulnerability is given a link:#Security_Impact_Levels[security impact rating]
@@ -44,7 +44,37 @@ If you have encountered an unlisted security vulnerability or other unexpected b
 that has security impact, or if the descriptions here are incomplete, please report them
 privately to the mailto:private@logging.apache.org[Log4j Security Team]. Thank you.
 
-### Fixed in Log4j 2.13.2
+[#log4j-2-15-0]
+=== Fixed in Log4j 2.15.0
+
+https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44228[CVE-2021-4422]:  Apache Log4j2 JNDI
+features do not protect against attacker controlled LDAP and other JNDI related endpoints.
+
+Severity: Critical
+
+Base CVSS Score: 10.0 CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H
+
+Versions Affected: all versions from 2.0-beta9 to 2.14.1
+
+Descripton: Apache Log4j2 &lt;= 2.14.1 JNDI features used in configuration, log messages, and parameters do not
+protect against attacker controlled LDAP and other JNDI related endpoints. An attacker who can control log
+messages or log message parameters can execute arbitrary code loaded from LDAP servers when message lookup
+substitution is enabled. From log4j 2.15.0, this behavior has been disabled by default.
+
+Mitigation: In releases &gt;= 2.10, this behavior can be mitigated by setting either the system property
+`log4j2.formatMsgNoLookups` or the environment variable `LOG4J_FORMAT_MSG_NO_LOOKUPS` to `true`.
+For releases from 2.7 through 2.14.1 all PatternLayout patterns can be modified to specify the message converter as
+`%m{nolookups}` instead of just `%m`.
+For releases from 2.0-beta9 to 2.7, the only mitigation is to remove the `JndiLookup` class from the classpath:
+`zip -q -d log4j-core-*.jar org/apache/logging/log4j/core/lookup/JndiLookup.class`.
+
+Credit: This issue was discovered by Chen Zhaojun of Alibaba Cloud Security Team.
+
+References: https://issues.apache.org/jira/browse/LOG4J2-3201[https://issues.apache.org/jira/browse/LOG4J2-3201]
+and https://issues.apache.org/jira/browse/LOG4J2-3198[https://issues.apache.org/jira/browse/LOG4J2-3198].
+
+[#log4j-2-13-2]
+=== Fixed in Log4j 2.13.2
 
 https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-9488[CVE-2020-9488]:
 Improper validation of certificate with host mismatch in Apache Log4j SMTP appender.
@@ -75,7 +105,8 @@ Credit: This issues was discovered by Peter Stöckli.
 
 References: https://issues.apache.org/jira/browse/LOG4J2-2819
 
-### Fixed in Log4j 2.8.2
+[#log4j-2-8-2]
+=== Fixed in Log4j 2.8.2
 
 https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-5645[CVE-2017-5645]: Apache Log4j socket
 receiver deserialization vulnerability.
@@ -101,8 +132,8 @@ at Telstra
 
 References: <https://issues.apache.org/jira/browse/LOG4J2-1863>
 
-[#Security_Impact_Levels]
-## Summary of security impact levels for Apache Log4j
+[#impact-levels]
+== Summary of security impact levels for Apache Log4j
 The Apache Log4j Security Team rates the impact of each security flaw that affects Log4j.
 We've chosen a rating scale quite similar to those used by other major vendors in order to
 be consistent. Basically the goal of the rating system is to answer the question "How worried
@@ -114,24 +145,34 @@ need to read the security advisories to find out more about the flaw.
 
 We use the following descriptions to decide on the impact rating to give each vulnerability:
 
-### Critical
+[#impact-levels-critical]
+=== Critical
 A vulnerability rated with a Critical impact is one which could potentially be exploited by
 a remote attacker to get Log4j to execute arbitrary code (either as the user the server is
 running as, or root). These are the sorts of vulnerabilities that could be exploited automatically
 by worms.
 
-### Important
+[#impact-levels-important]
+=== Important
 A vulnerability rated as Important impact is one which could result in the compromise of data
 or availability of the server. For Log4j this includes issues that allow an easy remote denial
 of service (something that is out of proportion to the attack or with a lasting consequence),
 access to arbitrary files outside of the context root, or access to files that should be otherwise
 prevented by limits or authentication.
 
-### Moderate
+[#impact-levels-moderate]
+=== Moderate
 A vulnerability is likely to be rated as Moderate if there is significant mitigation to make the
 issue less of an impact. This might be because the flaw does not affect likely configurations, or
 it is a configuration that isn't widely used.
 
-### Low
+[#impact-levels-low]
+=== Low
 All other security flaws are classed as a Low impact. This rating is used for issues that are believed
 to be extremely hard to exploit, or where an exploit gives minimal consequences.
+
+[#cve-creation]
+== CVE creation process
+
+Found security vulnerabilities are subject to voting (by means of https://logging.apache.org/guidelines.html[_lazy approval_], preferably) before creating a CVE and populating its associated content.
+This procedure involves only the creation of CVEs and blocks neither (vulnerability) fixes, nor releases.

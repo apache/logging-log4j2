@@ -44,6 +44,10 @@
       "field": "stackTrace"
     }
   },
+  "contextMap": {
+    "$resolver": "mdc",
+    "stringified": true
+  },
   "contextStack": {
     "$resolver": "ndc"
   },

@@ -16,14 +16,16 @@
  */
 package org.apache.log4j.helpers;
 
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.Objects;
+import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 import org.apache.log4j.Appender;
 import org.apache.log4j.spi.AppenderAttachable;
 import org.apache.log4j.spi.LoggingEvent;
-
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * Allows Classes to attach Appenders.
@@ -32,26 +34,53 @@ public class AppenderAttachableImpl implements AppenderAttachable {
 
     private final ConcurrentMap<String, Appender> appenders = new ConcurrentHashMap<>();
 
+    /** Array of appenders. TODO */
+    protected Vector appenderList;
+
     @Override
-    public void addAppender(Appender newAppender) {
-        if (newAppender != null) {
-            appenders.put(newAppender.getName(), newAppender);
+    public void addAppender(final Appender appender) {
+        if (appender != null) {
+            // NullAppender name is null.
+            appenders.put(Objects.toString(appender.getName()), appender);
+        }
+    }
+
+    /**
+     * Calls the <code>doAppend</code> method on all attached appenders.
+     *
+     * @param event The event to log.
+     * @return The number of appenders.
+     */
+    public int appendLoopOnAppenders(final LoggingEvent event) {
+        for (final Appender appender : appenders.values()) {
+            appender.doAppend(event);
+        }
+        return appenders.size();
+    }
+
+    /**
+     * Closes all appenders.
+     */
+    public void close() {
+        for (final Appender appender : appenders.values()) {
+            appender.close();
         }
     }
 
     @Override
-    public Enumeration getAllAppenders() {
+    public Enumeration<Appender> getAllAppenders() {
         return Collections.enumeration(appenders.values());
     }
 
     @Override
-    public Appender getAppender(String name) {
-        return appenders.get(name);
+    public Appender getAppender(final String name) {
+        // No null keys allowed in a CHM.
+        return name == null ? null : appenders.get(name);
     }
 
     @Override
-    public boolean isAttached(Appender appender) {
-        return appenders.containsValue(appender);
+    public boolean isAttached(final Appender appender) {
+        return appender != null ? appenders.containsValue(appender) : false;
     }
 
     @Override
@@ -60,30 +89,19 @@ public class AppenderAttachableImpl implements AppenderAttachable {
     }
 
     @Override
-    public void removeAppender(Appender appender) {
-        appenders.remove(appender.getName(), appender);
+    public void removeAppender(final Appender appender) {
+        if (appender != null) {
+            final String name = appender.getName();
+            if (name != null) {
+                appenders.remove(name, appender);
+            }
+        }
     }
 
     @Override
-    public void removeAppender(String name) {
-        appenders.remove(name);
-    }
-
-    /**
-     * Call the <code>doAppend</code> method on all attached appenders.
-     * @param event The event to log.
-     * @return The number of appenders.
-     */
-    public int appendLoopOnAppenders(LoggingEvent event) {
-        for (Appender appender : appenders.values()) {
-            appender.doAppend(event);
-        }
-        return appenders.size();
-    }
-
-    public void close() {
-        for (Appender appender : appenders.values()) {
-            appender.close();
+    public void removeAppender(final String name) {
+        if (name != null) {
+            appenders.remove(name);
         }
     }
 }

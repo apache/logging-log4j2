@@ -16,18 +16,18 @@
  */
 package org.apache.logging.log4j.core.config.arbiters;
 
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Plugin;
+
 import java.util.List;
 import java.util.Optional;
-
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.plugins.Node;
-import org.apache.logging.log4j.plugins.Plugin;
 
 /**
  * Class Description goes here.
  */
-@Plugin(name = "Select", category = Node.CATEGORY, elementType = Arbiter.ELEMENT_TYPE, deferChildren = true,
-        printObject = true)
+@Configurable(elementType = Arbiter.ELEMENT_TYPE, printObject = true, deferChildren = true)
+@Plugin("Select")
 public class SelectArbiter {
 
     public Arbiter evaluateConditions(final List<Arbiter> conditions) {

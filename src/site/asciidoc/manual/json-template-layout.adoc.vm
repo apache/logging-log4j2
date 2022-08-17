@@ -1666,7 +1666,8 @@ import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolverFa
 /**
  * {@link RandomNumberResolver} factory.
  */
-@Plugin(name = "RandomNumberResolverFactory", category = TemplateResolverFactory.CATEGORY)
+@Category(TemplateResolverFactory.CATEGORY)
+@Plugin("RandomNumberResolverFactory")
 public final class RandomNumberResolverFactory implements EventResolverFactory {
 
     private static final RandomNumberResolverFactory INSTANCE =
@@ -1741,7 +1742,8 @@ import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolverIn
 /**
  * Interceptor to add a root object key to the event template.
  */
-@Plugin(name = "EventRootObjectKeyInterceptor", category = TemplateResolverInterceptor.CATEGORY)
+@Category(TemplateResolverInterceptor.CATEGORY)
+@Plugin("EventRootObjectKeyInterceptor")
 public class EventRootObjectKeyInterceptor implements EventResolverInterceptor {
 
     private static final EventRootObjectKeyInterceptor INSTANCE =
@@ -1788,9 +1790,9 @@ package com.acme.logging.log4j.layout.template.json;
 
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
-import org.apache.logging.log4j.plugins.convert.TypeConverters;
 
-@Plugin(name = "AcmeRecyclerFactoryConverter", category = TypeConverters.CATEGORY)
+@Category(TypeConverter.CATEGORY)
+@Plugin("AcmeRecyclerFactoryConverter")
 public final class AcmeRecyclerFactoryConverter
         implements TypeConverter<RecyclerFactory>, Comparable<TypeConverter<?>> {
 

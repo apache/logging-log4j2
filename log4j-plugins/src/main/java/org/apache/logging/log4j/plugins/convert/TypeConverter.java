@@ -17,12 +17,16 @@
 
 package org.apache.logging.log4j.plugins.convert;
 
+import org.apache.logging.log4j.plugins.util.TypeUtil;
+import org.apache.logging.log4j.status.StatusLogger;
+
 /**
  * Interface for doing automatic String conversion to a specific type.
  *
  * @param <T> Converts Strings into the given type {@code T}.
- * @since 2.1 Moved to the {@code convert} package.
+ * @since 3.0.0 Moved to {@code log4j-plugins}.
  */
+@FunctionalInterface
 public interface TypeConverter<T> {
 
     /**
@@ -33,4 +37,31 @@ public interface TypeConverter<T> {
      * @throws Exception thrown when a conversion error occurs
      */
     T convert(String s) throws Exception;
+
+    default T convert(final String string, final Object defaultValue) {
+        return convert(string, defaultValue, false);
+    }
+
+    default T convert(final String string, final Object defaultValue, final boolean sensitive) {
+        if (string != null) {
+            try {
+                return convert(string);
+            } catch (final Exception e) {
+                StatusLogger.getLogger().warn("Unable to convert string [{}]. Using default value [{}].",
+                        sensitive ? "-redacted-" : string, defaultValue, e);
+            }
+        }
+        if (defaultValue == null) {
+            return null;
+        }
+        if (!(defaultValue instanceof String)) {
+            return TypeUtil.cast(defaultValue);
+        }
+        try {
+            return convert((String) defaultValue);
+        } catch (final Exception e) {
+            StatusLogger.getLogger().debug("Unable to parse default value [{}].", defaultValue, e);
+            return null;
+        }
+    }
 }

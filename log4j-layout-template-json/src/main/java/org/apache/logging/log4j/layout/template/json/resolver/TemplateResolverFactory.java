@@ -29,16 +29,6 @@ public interface TemplateResolverFactory<V, C extends TemplateResolverContext<V,
      */
     String CATEGORY = "JsonTemplateResolverFactory";
 
-    /**
-     * The targeted value class.
-     */
-    Class<V> getValueClass();
-
-    /**
-     * The targeted {@link TemplateResolverContext} class.
-     */
-    Class<C> getContextClass();
-
     String getName();
 
     TemplateResolver<V> create(C context, TemplateResolverConfig config);

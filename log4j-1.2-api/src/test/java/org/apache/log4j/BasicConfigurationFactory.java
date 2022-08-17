@@ -16,8 +16,6 @@
  */
 package org.apache.log4j;
 
-import java.net.URI;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
@@ -25,6 +23,8 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+
+import java.net.URI;
 
 /**
  *
@@ -46,9 +46,7 @@ public class BasicConfigurationFactory extends ConfigurationFactory {
         return new BasicConfiguration(loggerContext);
     }
 
-    public class BasicConfiguration extends AbstractConfiguration {
-
-        private static final long serialVersionUID = -2716784321395089563L;
+    public static class BasicConfiguration extends AbstractConfiguration {
 
         private static final String DEFAULT_LEVEL = "org.apache.logging.log4j.level";
 

@@ -34,14 +34,14 @@ public class MDCTestCase {
     }
 
     @Test
-    public void testPut() throws Exception {
+    public void testPut() {
         MDC.put("key", "some value");
         Assert.assertEquals("some value", MDC.get("key"));
         Assert.assertEquals(1, MDC.getContext().size());
     }
 
     @Test
-    public void testRemoveLastKey() throws Exception {
+    public void testRemoveLastKey() {
         MDC.put("key", "some value");
         MDC.remove("key");
     }

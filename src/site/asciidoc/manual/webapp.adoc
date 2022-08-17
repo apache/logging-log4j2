@@ -1,12 +1,12 @@
 ////
     Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements. See the NOTICE file distributed with
+    contributor license agreements.  See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
     The ASF licenses this file to You under the Apache License, Version 2.0
     (the "License"); you may not use this file except in compliance with
-    the License. You may obtain a copy of the License at
+    the License.  You may obtain a copy of the License at
 
-        https://www.apache.org/licenses/LICENSE-2.0
+         http://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -29,6 +29,11 @@ Log4j must be "started" when the web application deploys and "shut down"
 when the web application undeploys. How this works varies depending on
 whether your application is a link:#Servlet-3.0[Servlet 3.0 or newer] or
 link:#Servlet-2.5[Servlet 2.5] web application.
+
+
+Due to the namespace change from `javax` to `jakarta` you need to use
+`log4j-jakarta-web` instead of `log4j-web` for Servlet 5.0 or newer.
+
 
 In either case, you'll need to add the `log4j-web` module to your
 deployment as detailed in the link:../maven-artifacts.html[Maven, Ivy,

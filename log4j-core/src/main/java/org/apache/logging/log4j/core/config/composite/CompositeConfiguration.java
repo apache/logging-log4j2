@@ -16,28 +16,25 @@
  */
 package org.apache.logging.log4j.core.config.composite;
 
-import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
-import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.core.util.Watcher;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.util.ResolverUtil;
+
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A Composite Configuration.
@@ -53,7 +50,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
 
     private final List<? extends AbstractConfiguration> configurations;
 
-    private MergeStrategy mergeStrategy;
+    private final MergeStrategy mergeStrategy;
 
     /**
      * Construct the CompositeConfiguration.
@@ -64,14 +61,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
         super(configurations.get(0).getLoggerContext(), ConfigurationSource.COMPOSITE_SOURCE);
         rootNode = configurations.get(0).getRootNode();
         this.configurations = configurations;
-        final String mergeStrategyClassName = PropertiesUtil.getProperties().getStringProperty(MERGE_STRATEGY_PROPERTY,
-                DefaultMergeStrategy.class.getName());
-        try {
-            mergeStrategy = Loader.newInstanceOf(mergeStrategyClassName);
-        } catch (final ClassNotFoundException | IllegalAccessException | InvocationTargetException |
-                InstantiationException ex) {
-            mergeStrategy = new DefaultMergeStrategy();
-        }
+        mergeStrategy = getComponent(MergeStrategy.KEY);
         for (final AbstractConfiguration config : configurations) {
             mergeStrategy.mergeRootProperties(rootNode, config);
         }
@@ -79,7 +69,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
                 .setStatus(getDefaultStatus());
         for (final Map.Entry<String, String> entry : rootNode.getAttributes().entrySet()) {
             final String key = entry.getKey();
-            final String value = getStrSubstitutor().replace(entry.getValue());
+            final String value = getConfigurationStrSubstitutor().replace(entry.getValue());
             if ("status".equalsIgnoreCase(key)) {
                 statusConfig.setStatus(value.toUpperCase());
             } else if ("dest".equalsIgnoreCase(key)) {
@@ -116,7 +106,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
         for (final AbstractConfiguration sourceConfiguration : configurations.subList(1, configurations.size())) {
             staffChildConfiguration(sourceConfiguration);
             final Node sourceRoot = sourceConfiguration.getRootNode();
-            mergeStrategy.mergeConfigurations(rootNode, sourceRoot, getPluginManager());
+            mergeStrategy.mergeConfigurations(rootNode, sourceRoot, corePlugins);
             if (LOGGER.isEnabled(Level.ALL)) {
                 final StringBuilder sb = new StringBuilder();
                 printNodes("", rootNode, sb);
@@ -142,7 +132,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
     public Configuration reconfigure() {
         LOGGER.debug("Reconfiguring composite configuration");
         final List<AbstractConfiguration> configs = new ArrayList<>();
-        final ConfigurationFactory factory = ConfigurationFactory.getInstance();
+        final ConfigurationFactory factory = injector.getInstance(ConfigurationFactory.KEY);
         for (final AbstractConfiguration config : configurations) {
             final ConfigurationSource source = config.getConfigurationSource();
             final URI sourceURI = source.getURI();
@@ -164,7 +154,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
     }
 
     private void staffChildConfiguration(final AbstractConfiguration childConfiguration) {
-        childConfiguration.setPluginManager(pluginManager);
+        childConfiguration.setCorePlugins(corePlugins);
         childConfiguration.setScriptManager(scriptManager);
         childConfiguration.setup();
     }
@@ -181,7 +171,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
     public String toString() {
         return getClass().getName() + "@" + Integer.toHexString(hashCode()) + " [configurations=" + configurations
                 + ", mergeStrategy=" + mergeStrategy + ", rootNode=" + rootNode + ", listeners=" + listeners
-                + ", pluginPackages=" + pluginPackages + ", pluginManager=" + pluginManager + ", isShutdownHookEnabled="
+                + ", pluginPackages=" + pluginPackages + ", corePlugins=" + corePlugins + ", isShutdownHookEnabled="
                 + isShutdownHookEnabled + ", shutdownTimeoutMillis=" + shutdownTimeoutMillis + ", scriptManager="
                 + scriptManager + "]";
     }

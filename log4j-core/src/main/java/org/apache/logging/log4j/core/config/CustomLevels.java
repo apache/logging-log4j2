@@ -17,19 +17,20 @@
 
 package org.apache.logging.log4j.core.config;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.apache.logging.log4j.core.Core;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Container for CustomLevelConfig objects.
  */
-@Plugin(name = "CustomLevels", category = Core.CATEGORY_NAME, printObject = true)
+@Configurable(printObject = true)
+@Plugin
 public final class CustomLevels {
 
     private final List<CustomLevelConfig> customLevels;

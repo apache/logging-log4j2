@@ -17,11 +17,11 @@
 package org.apache.logging.log4j.spi;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogBuilder;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.internal.DefaultLogBuilder;
-import org.apache.logging.log4j.LogBuilder;
 import org.apache.logging.log4j.message.DefaultFlowMessageFactory;
 import org.apache.logging.log4j.message.EntryMessage;
 import org.apache.logging.log4j.message.FlowMessageFactory;
@@ -204,7 +204,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
             final Class<ReusableMessageFactory> reusableParameterizedMessageFactoryClass,
             final Class<ParameterizedMessageFactory> parameterizedMessageFactoryClass) {
         try {
-            final String fallback = Constants.ENABLE_THREADLOCALS ? reusableParameterizedMessageFactoryClass.getName()
+            final String fallback = Constants.isThreadLocalsEnabled() ? reusableParameterizedMessageFactoryClass.getName()
                     : parameterizedMessageFactoryClass.getName();
             final String clsName = PropertiesUtil.getProperties().getStringProperty(property, fallback);
             return LoaderUtil.loadClass(clsName).asSubclass(MessageFactory.class);
@@ -2036,7 +2036,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         try {
             incrementRecursionDepth();
             log(level, marker, fqcn, location, message, throwable);
-        } catch (final Exception ex) {
+        } catch (Throwable ex) {
             handleLogMessageException(ex, fqcn, message);
         } finally {
             decrementRecursionDepth();
@@ -2131,13 +2131,13 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
                                final StackTraceElement location,
                                final Level level,
                                final Marker marker,
-                               final Message msg,
+                               final Message message,
                                final Throwable throwable) {
         try {
-            log(level, marker, fqcn, location, msg, throwable);
-        } catch (final Exception e) {
+            log(level, marker, fqcn, location, message, throwable);
+        } catch (final Throwable t) {
             // LOG4J2-1990 Log4j2 suppresses all exceptions that occur once application called the logger
-            handleLogMessageException(e, fqcn, msg);
+            handleLogMessageException(t, fqcn, message);
         }
     }
 
@@ -2150,16 +2150,16 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     // LOG4J2-1990 Log4j2 suppresses all exceptions that occur once application called the logger
     // TODO Configuration setting to propagate exceptions back to the caller *if requested*
-    private void handleLogMessageException(final Exception exception, final String fqcn, final Message message) {
-        if (exception instanceof LoggingException) {
-            throw (LoggingException) exception;
+    private void handleLogMessageException(final Throwable throwable, final String fqcn, final Message message) {
+        if (throwable instanceof LoggingException) {
+            throw (LoggingException) throwable;
         }
         StatusLogger.getLogger().warn("{} caught {} logging {}: {}",
                 fqcn,
-                exception.getClass().getName(),
+                throwable.getClass().getName(),
                 message.getClass().getSimpleName(),
                 message.getFormat(),
-                exception);
+                throwable);
     }
 
     @Override
@@ -2781,6 +2781,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     public  LogBuilder atTrace() {
         return atLevel(Level.TRACE);
     }
+
     /**
      * Construct a debug log event.
      * @return a LogBuilder.
@@ -2790,6 +2791,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     public LogBuilder atDebug() {
         return atLevel(Level.DEBUG);
     }
+    
     /**
      * Construct an informational log event.
      * @return a LogBuilder.
@@ -2799,6 +2801,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     public LogBuilder atInfo() {
         return atLevel(Level.INFO);
     }
+    
     /**
      * Construct a warning log event.
      * @return a LogBuilder.
@@ -2808,6 +2811,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     public LogBuilder atWarn() {
         return atLevel(Level.WARN);
     }
+    
     /**
      * Construct an error log event.
      * @return a LogBuilder.
@@ -2817,6 +2821,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     public LogBuilder atError() {
         return atLevel(Level.ERROR);
     }
+    
     /**
      * Construct a fatal log event.
      * @return a LogBuilder.
@@ -2826,8 +2831,9 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     public LogBuilder atFatal() {
         return atLevel(Level.FATAL);
     }
+    
     /**
-     * Construct a fatal log event.
+     * Construct a log event that will always be logged.
      * @return a LogBuilder.
      * @since 2.13.0
      */
@@ -2839,6 +2845,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         }
         return builder.reset(Level.OFF);
     }
+    
     /**
      * Construct a log event.
      * @return a LogBuilder.
@@ -2855,7 +2862,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     private DefaultLogBuilder getLogBuilder(final Level level) {
         final DefaultLogBuilder builder = logBuilder.get();
-        return Constants.ENABLE_THREADLOCALS && !builder.isInUse() ? builder : new DefaultLogBuilder(this, level);
+        return Constants.isThreadLocalsEnabled() && !builder.isInUse() ? builder : new DefaultLogBuilder(this, level);
     }
 
     private void readObject (final ObjectInputStream s) throws ClassNotFoundException, IOException {
@@ -2869,7 +2876,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         }
     }
 
-    private class LocalLogBuilder extends ThreadLocal<DefaultLogBuilder> {
+    private static class LocalLogBuilder extends ThreadLocal<DefaultLogBuilder> {
         private final AbstractLogger logger;
         LocalLogBuilder(final AbstractLogger logger) {
             this.logger = logger;

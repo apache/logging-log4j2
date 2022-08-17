@@ -16,24 +16,6 @@
  */
 package org.apache.logging.log4j.flume.appender;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-
 import com.sleepycat.je.Cursor;
 import com.sleepycat.je.CursorConfig;
 import com.sleepycat.je.Database;
@@ -56,9 +38,27 @@ import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.core.util.SecretKeyProvider;
-import org.apache.logging.log4j.plugins.util.PluginManager;
-import org.apache.logging.log4j.plugins.util.PluginType;
+import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.util.Strings;
+
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Supplier;
 
 /**
  * Manager that persists data to Berkeley DB before passing it on to Flume.
@@ -141,11 +141,10 @@ public class FlumePersistentManager extends FlumeAvroManager {
      * @param dataDir The location of the Berkeley database.
      * @return A FlumeAvroManager.
      */
-    public static FlumePersistentManager getManager(final String name, final Agent[] agents,
-                                                    final Property[] properties, int batchSize, final int retries,
-                                                    final int connectionTimeout, final int requestTimeout,
-                                                    final int delayMillis, final int lockTimeoutRetryCount,
-                                                    final String dataDir) {
+    public static FlumePersistentManager getManager(
+            final String name, final Agent[] agents, final Property[] properties, int batchSize, final int retries,
+            final int connectionTimeout, final int requestTimeout, final int delayMillis, final int lockTimeoutRetryCount,
+            final String dataDir, final Injector injector) {
         if (agents == null || agents.length == 0) {
             throw new IllegalArgumentException("At least one agent is required");
         }
@@ -167,7 +166,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
         sb.append(']');
         sb.append(' ').append(dataDirectory);
         return getManager(sb.toString(), factory, new FactoryData(name, agents, batchSize, retries,
-            connectionTimeout, requestTimeout, delayMillis, lockTimeoutRetryCount, dataDir, properties));
+            connectionTimeout, requestTimeout, delayMillis, lockTimeoutRetryCount, dataDir, properties, injector));
     }
 
     @Override
@@ -344,6 +343,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
         private final int delayMillis;
         private final int lockTimeoutRetryCount;
         private final Property[] properties;
+        private final Injector injector;
 
         /**
          * Constructor.
@@ -352,9 +352,11 @@ public class FlumePersistentManager extends FlumeAvroManager {
          * @param batchSize The number of events to include in a batch.
          * @param dataDir The directory for data.
          */
-        public FactoryData(final String name, final Agent[] agents, final int batchSize, final int retries,
-                           final int connectionTimeout, final int requestTimeout, final int delayMillis,
-                           final int lockTimeoutRetryCount, final String dataDir, final Property[] properties) {
+        public FactoryData(
+                final String name, final Agent[] agents, final int batchSize, final int retries,
+                final int connectionTimeout, final int requestTimeout, final int delayMillis,
+                final int lockTimeoutRetryCount, final String dataDir, final Property[] properties,
+                final Injector injector) {
             this.name = name;
             this.agents = agents;
             this.batchSize = batchSize;
@@ -365,6 +367,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
             this.delayMillis = delayMillis;
             this.lockTimeoutRetryCount = lockTimeoutRetryCount;
             this.properties = properties;
+            this.injector = injector;
         }
     }
 
@@ -429,27 +432,15 @@ public class FlumePersistentManager extends FlumeAvroManager {
                     }
                 }
                 if (key != null) {
-                    final PluginManager manager = new PluginManager("KeyProvider");
-                    manager.collectPlugins();
-                    final Map<String, PluginType<?>> plugins = manager.getPlugins();
+                    final Injector injector = data.injector;
+                    final Map<String, Supplier<SecretKeyProvider>> plugins = injector.getInstance(SecretKeyProvider.PLUGIN_MAP_KEY);
                     if (plugins != null) {
-                        boolean found = false;
-                        for (final Map.Entry<String, PluginType<?>> entry : plugins.entrySet()) {
-                            if (entry.getKey().equalsIgnoreCase(key)) {
-                                found = true;
-                                final Class<?> cl = entry.getValue().getPluginClass();
-                                try {
-                                    final SecretKeyProvider provider = (SecretKeyProvider) cl.newInstance();
-                                    secretKey = provider.getSecretKey();
-                                    LOGGER.debug("Persisting events using SecretKeyProvider {}", cl.getName());
-                                } catch (final Exception ex) {
-                                    LOGGER.error("Unable to create SecretKeyProvider {}, encryption will be disabled",
-                                        cl.getName());
-                                }
-                                break;
-                            }
-                        }
-                        if (!found) {
+                        final Supplier<SecretKeyProvider> providerFactory = plugins.get(key);
+                        if (providerFactory != null) {
+                            final SecretKeyProvider provider = providerFactory.get();
+                            secretKey = provider.getSecretKey();
+                            LOGGER.debug("Persisting events using SecretKeyProvider {}", provider.getClass().getName());
+                        } else {
                             LOGGER.error("Unable to locate SecretKey provider {}, encryption will be disabled", key);
                         }
                     } else {

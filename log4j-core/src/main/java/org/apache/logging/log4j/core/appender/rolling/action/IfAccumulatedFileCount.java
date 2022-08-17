@@ -16,31 +16,32 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import java.nio.file.Path;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Core;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 
+import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * PathCondition that accepts paths after some count threshold is exceeded during the file tree walk.
  */
-@Plugin(name = "IfAccumulatedFileCount", category = Core.CATEGORY_NAME, printObject = true)
+@Configurable(printObject = true)
+@Plugin
 public final class IfAccumulatedFileCount implements PathCondition {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private final int threshold;
     private int count;
     private final PathCondition[] nestedConditions;
 
-    private IfAccumulatedFileCount(final int thresholdParam, final PathCondition[] nestedConditions) {
+    private IfAccumulatedFileCount(final int thresholdParam, final PathCondition... nestedConditions) {
         if (thresholdParam <= 0) {
             throw new IllegalArgumentException("Count must be a positive integer but was " + thresholdParam);
         }

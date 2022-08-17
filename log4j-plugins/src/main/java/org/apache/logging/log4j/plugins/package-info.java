@@ -16,9 +16,13 @@
  */
 
 /**
- * Annotations for Log4j 2 plugins.
+ * Annotations for Log4j plugins. Annotations starting with {@code Plugin} are the primary annotations
+ * used for most plugins, while the remaining annotations are for more generic dependency injection scenarios
+ * such as singleton and dependent instances.
  *
  * @see org.apache.logging.log4j.plugins.Plugin
+ * @see org.apache.logging.log4j.plugins.Namespace
  * @see org.apache.logging.log4j.plugins.PluginFactory
+ * @see org.apache.logging.log4j.plugins.Inject
  */
 package org.apache.logging.log4j.plugins;

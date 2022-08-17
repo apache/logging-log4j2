@@ -16,30 +16,50 @@
  */
 package org.apache.log4j;
 
+import org.apache.logging.log4j.util.StackLocatorUtil;
+
 /**
- * Provided for compatibility with Log4j 1.x.
+ * Configures the package.
+ * 
+ * <p>
+ * For file based configuration, see {@link PropertyConfigurator}. For XML based configuration, see
+ * {@link org.apache.log4j.xml.DOMConfigurator DOMConfigurator}.
+ * </p>
+ * 
+ * @since 0.8.1
  */
 public class BasicConfigurator {
 
-    protected BasicConfigurator() {
-    }
-
+    /**
+     * Adds a {@link ConsoleAppender} that uses {@link PatternLayout} using the
+     * {@link PatternLayout#TTCC_CONVERSION_PATTERN} and prints to <code>System.out</code> to the root category.
+     */
     public static void configure() {
-        LogManager.reconfigure();
+        LogManager.reconfigure(StackLocatorUtil.getCallerClassLoader(2));
     }
 
     /**
-     * No-op implementation.
-     * @param appender The appender.
+     * Adds <code>appender</code> to the root category.
+     *
+     * @param appender The appender to add to the root category.
      */
     public static void configure(final Appender appender) {
-        // no-op
+        LogManager.getRootLogger(StackLocatorUtil.getCallerClassLoader(2)).addAppender(appender);
     }
 
     /**
-     * No-op implementation.
+     * Resets the default hierarchy to its default. It is equivalent to calling
+     * <code>Category.getDefaultHierarchy().resetConfiguration()</code>.
+     *
+     * See {@link Hierarchy#resetConfiguration()} for more details.
      */
     public static void resetConfiguration() {
-        // no-op
+        LogManager.resetConfiguration(StackLocatorUtil.getCallerClassLoader(2));
+    }
+
+    /**
+     * Constructs a new instance.
+     */
+    protected BasicConfigurator() {
     }
 }

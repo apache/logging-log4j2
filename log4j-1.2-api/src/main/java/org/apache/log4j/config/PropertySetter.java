@@ -56,6 +56,7 @@ import java.util.Properties;
  * Otherwise an {@link IntrospectionException} are thrown.
  */
 public class PropertySetter {
+    private static final PropertyDescriptor[] EMPTY_PROPERTY_DESCRIPTOR_ARRAY = {};
     private static final Logger LOGGER = StatusLogger.getLogger();
     protected Object obj;
     protected PropertyDescriptor[] props;
@@ -93,7 +94,7 @@ public class PropertySetter {
             props = bi.getPropertyDescriptors();
         } catch (IntrospectionException ex) {
             LOGGER.error("Failed to introspect {}: {}", obj, ex.getMessage());
-            props = new PropertyDescriptor[0];
+            props = EMPTY_PROPERTY_DESCRIPTOR_ARRAY;
         }
     }
 
@@ -264,7 +265,7 @@ public class PropertySetter {
                 return Boolean.FALSE;
             }
         } else if (Priority.class.isAssignableFrom(type)) {
-            return org.apache.log4j.helpers.OptionConverter.toLevel(v, Level.DEBUG);
+            return org.apache.log4j.helpers.OptionConverter.toLevel(v, Log4j1Configuration.DEFAULT_LEVEL);
         } else if (ErrorHandler.class.isAssignableFrom(type)) {
             return OptionConverter.instantiateByClassName(v,
                     ErrorHandler.class, null);

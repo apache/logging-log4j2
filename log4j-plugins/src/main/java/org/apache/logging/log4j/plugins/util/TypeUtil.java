@@ -16,10 +16,14 @@
  */
 package org.apache.logging.log4j.plugins.util;
 
-import java.lang.reflect.*;
-import java.util.ArrayList;
+import java.lang.reflect.Array;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -40,21 +44,6 @@ public final class TypeUtil {
     private TypeUtil() {
     }
 
-    /**
-     * Gets all declared fields for the given class (including superclasses).
-     *
-     * @param cls the class to examine
-     * @return all declared fields for the given class (including superclasses).
-     * @see Class#getDeclaredFields()
-     */
-    public static List<Field> getAllDeclaredFields(Class<?> cls) {
-        final List<Field> fields = new ArrayList<>();
-        while (cls != null) {
-            fields.addAll(Arrays.asList(cls.getDeclaredFields()));
-            cls = cls.getSuperclass();
-        }
-        return fields;
-    }
     /**
      * Indicates if two {@link Type}s are assignment compatible.
      *
@@ -79,31 +68,40 @@ public final class TypeUtil {
             if (rhs instanceof Class<?>) {
                 // no generics involved
                 final Class<?> rhsClass = (Class<?>) rhs;
-                return lhsClass.isAssignableFrom(rhsClass);
+                // possible for primitive types here
+                return isAssignable(lhsClass, rhsClass);
             }
             if (rhs instanceof ParameterizedType) {
-                // check to see if the parameterized type has the same raw type as the lhs; this is legal
-                final Type rhsRawType = ((ParameterizedType) rhs).getRawType();
-                if (rhsRawType instanceof Class<?>) {
-                    return lhsClass.isAssignableFrom((Class<?>) rhsRawType);
-                }
-            }
-            if (lhsClass.isArray() && rhs instanceof GenericArrayType) {
+                return isAssignable(lhsClass, getRawType(rhs));
+            } else if (lhsClass.isArray() && rhs instanceof GenericArrayType) {
                 // check for compatible array component types
                 return isAssignable(lhsClass.getComponentType(), ((GenericArrayType) rhs).getGenericComponentType());
+            } else if (rhs instanceof TypeVariable<?>) {
+                for (final Type bound : ((TypeVariable<?>) rhs).getBounds()) {
+                    if (isAssignable(lhs, bound)) {
+                        return true;
+                    }
+                }
+            } else {
+                return false;
             }
         }
         // parameterized type on left
         if (lhs instanceof ParameterizedType) {
             final ParameterizedType lhsType = (ParameterizedType) lhs;
             if (rhs instanceof Class<?>) {
-                final Type lhsRawType = lhsType.getRawType();
-                if (lhsRawType instanceof Class<?>) {
-                    return ((Class<?>) lhsRawType).isAssignableFrom((Class<?>) rhs);
-                }
+                return isAssignable(getRawType(lhs), (Class<?>) rhs);
             } else if (rhs instanceof ParameterizedType) {
                 final ParameterizedType rhsType = (ParameterizedType) rhs;
                 return isParameterizedAssignable(lhsType, rhsType);
+            } else if (rhs instanceof TypeVariable<?>) {
+                for (final Type bound : ((TypeVariable<?>) rhs).getBounds()) {
+                    if (isAssignable(lhsType, bound)) {
+                        return true;
+                    }
+                }
+            } else {
+                return false;
             }
         }
         // generic array type on left
@@ -127,6 +125,10 @@ public final class TypeUtil {
         return false;
     }
 
+    private static boolean isAssignable(final Class<?> lhs, final Class<?> rhs) {
+        return getReferenceType(lhs).isAssignableFrom(getReferenceType(rhs));
+    }
+
     private static boolean isParameterizedAssignable(final ParameterizedType lhs, final ParameterizedType rhs) {
         if (lhs.equals(rhs)) {
             // that was easy
@@ -144,8 +146,8 @@ public final class TypeUtil {
             final Type lhsArgument = lhsTypeArguments[i];
             final Type rhsArgument = rhsTypeArguments[i];
             if (!lhsArgument.equals(rhsArgument) &&
-                !(lhsArgument instanceof WildcardType &&
-                    isWildcardAssignable((WildcardType) lhsArgument, rhsArgument))) {
+                    !(lhsArgument instanceof WildcardType &&
+                            isWildcardAssignable((WildcardType) lhsArgument, rhsArgument))) {
                 return false;
             }
         }
@@ -213,4 +215,108 @@ public final class TypeUtil {
     private static boolean isBoundAssignable(final Type lhs, final Type rhs) {
         return (rhs == null) || ((lhs != null) && isAssignable(lhs, rhs));
     }
+
+    /**
+     * Extracts the raw type equivalent of a given type.
+     */
+    public static Class<?> getRawType(final Type type) {
+        if (type instanceof Class<?>) {
+            return (Class<?>) type;
+        }
+        if (type instanceof ParameterizedType) {
+            return getRawType(((ParameterizedType) type).getRawType());
+        }
+        if (type instanceof GenericArrayType) {
+            return Array.newInstance(getRawType(((GenericArrayType) type).getGenericComponentType()), 0).getClass();
+        }
+        if (type instanceof WildcardType) {
+            final Type[] bounds = ((WildcardType) type).getUpperBounds();
+            return bounds.length > 0 ? getRawType(bounds[0]) : Object.class;
+        }
+        if (type instanceof TypeVariable<?>) {
+            final Type[] bounds = ((TypeVariable<?>) type).getBounds();
+            return bounds.length > 0 ? getRawType(bounds[0]) : Object.class;
+        }
+        return Object.class;
+    }
+
+    private static final Map<Class<?>, Class<?>> PRIMITIVE_BOXED_TYPES = Map.of(
+            boolean.class, Boolean.class,
+            byte.class, Byte.class,
+            char.class, Character.class,
+            double.class, Double.class,
+            float.class, Float.class,
+            int.class, Integer.class,
+            long.class, Long.class,
+            short.class, Short.class);
+
+    /**
+     * Returns the reference type for a class. For primitives, this is their boxed equivalent. For other types, this is
+     * the class unchanged.
+     */
+    public static Class<?> getReferenceType(final Class<?> clazz) {
+        if (clazz.isPrimitive()) {
+            return PRIMITIVE_BOXED_TYPES.get(clazz);
+        }
+        return clazz;
+    }
+
+    public static <T> T cast(final Object o) {
+        @SuppressWarnings("unchecked") final T t = (T) o;
+        return t;
+    }
+
+    public static Type getSuperclassTypeParameter(final Class<?> type) {
+        final Type genericSuperclass = type.getGenericSuperclass();
+        if (genericSuperclass instanceof ParameterizedType) {
+            return ((ParameterizedType) genericSuperclass).getActualTypeArguments()[0];
+        }
+        throw new IllegalArgumentException(type + " does not have type parameters");
+    }
+
+    public static boolean isEqual(final Type first, final Type second) {
+        if (first == second) {
+            return true;
+        }
+        if (first instanceof Class<?>) {
+            return first.equals(second);
+        }
+        if (first instanceof ParameterizedType) {
+            if (!(second instanceof ParameterizedType)) {
+                return false;
+            }
+            final var firstType = (ParameterizedType) first;
+            final var secondType = (ParameterizedType) second;
+            return Objects.equals(firstType.getOwnerType(), secondType.getOwnerType()) &&
+                    firstType.getRawType().equals(secondType.getRawType()) &&
+                    Arrays.equals(firstType.getActualTypeArguments(), secondType.getActualTypeArguments());
+        }
+        if (first instanceof GenericArrayType) {
+            if (!(second instanceof GenericArrayType)) {
+                return false;
+            }
+            return isEqual(((GenericArrayType) first).getGenericComponentType(),
+                    ((GenericArrayType) second).getGenericComponentType());
+        }
+        if (first instanceof WildcardType) {
+            if (!(second instanceof WildcardType)) {
+                return false;
+            }
+            final var firstType = (WildcardType) first;
+            final var secondType = (WildcardType) second;
+            return Arrays.equals(firstType.getUpperBounds(), secondType.getUpperBounds()) &&
+                    Arrays.equals(firstType.getLowerBounds(), secondType.getLowerBounds());
+        }
+        if (first instanceof TypeVariable<?>) {
+            if (!(second instanceof TypeVariable<?>)) {
+                return false;
+            }
+            final var firstType = (TypeVariable<?>) first;
+            final var secondType = (TypeVariable<?>) second;
+            return firstType.getName().equals(secondType.getName()) &&
+                    firstType.getGenericDeclaration().equals(secondType.getGenericDeclaration());
+        }
+        return false;
+    }
+
 }

@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
@@ -24,7 +25,8 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  * date pattern for a %d specifier in a file name is different than
  * the %d pattern in pattern layout.
  */
-@Plugin(name = "FileDatePatternConverter", category = "FileConverter")
+@Namespace("FileConverter")
+@Plugin("FileDatePatternConverter")
 @ConverterKeys({ "d", "date" })
 @PerformanceSensitive("allocation")
 public final class FileDatePatternConverter implements ArrayPatternConverter {

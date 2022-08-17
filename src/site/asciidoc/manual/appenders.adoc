@@ -1,12 +1,12 @@
 ////
     Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements. See the NOTICE file distributed with
+    contributor license agreements.  See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
     The ASF licenses this file to You under the Apache License, Version 2.0
     (the "License"); you may not use this file except in compliance with
-    the License. You may obtain a copy of the License at
+    the License.  You may obtain a copy of the License at
 
-        https://www.apache.org/licenses/LICENSE-2.0
+         http://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -1259,6 +1259,10 @@ As of Log4j 2.11.0, JPA support has moved from the existing module
 
 The JMS Appender sends the formatted log event to a JMS Destination.
 
+The JMS Appender requires JNDI support so as of release 2.15.1 this appender will not function unless
+`log4j2.enableJndi=true` is configured as a system property or environment variable. See the
+link:./configuration.html#enableJndi[log4j2.enableJndi] system property.
+
 Note that in Log4j 2.0, this appender was split into a JMSQueueAppender
 and a JMSTopicAppender. Starting in Log4j 2.1, these appenders were
 combined into the JMS Appender which makes no distinction between queues
@@ -1270,6 +1274,13 @@ new `<JMS/>` configuration element.
 [cols=",,,",options="header",]
 |=======================================================================
 |Parameter Name |Type |Default |Description
+|allowdLdapClasses|String|null|A comma separated list of fully qualified class names that may be accessed by LDAP.
+The classes must implement Serializable. Only applies when the JMS Appender By default only Java primative classes
+are allowed.
+|allowdLdapHosts|String|null|A comma separated list of host names or ip addresses that may be accessed by LDAP.
+By default only the local host names and ip addresses are allowed.
+|allowdJndiProtocols|String|null|A comma separated list of protocol names that JNDI will allow. By default only java,
+ldap, and ldaps are the only allowed protocols.
 |factoryBindingName |String |_Required_ |The name to locate in the
 Context that provides the
 https://download.oracle.com/javaee/5/api/javax/jms/ConnectionFactory.html[`ConnectionFactory`].
@@ -2760,7 +2771,9 @@ and falls back to Log4J initialization time instead.)
 SizeBased Triggering Policy
 
 The `SizeBasedTriggeringPolicy` causes a rollover once the file has reached the specified size. The size can be
-specified in bytes, with the suffix KB, MB or GB, for example `20MB`.
+specified in bytes, with the suffix KB, MB, GB, or TB for example `20MB`.
+size.The size may also contain a fractional value such as `1.5 MB`. The size is evaluated
+using the Java root Locale so a period must always be used for the fractional unit.
 When combined with a time based triggering policy the file pattern must contain a `%i`
 otherwise the target file will be overwritten on every rollover as the SizeBased Triggering Policy
 will not cause the timestamp value in the file name to change. When used without a time based
@@ -3247,7 +3260,7 @@ the threshold count has been exceeded).
 |Parameter Name |Type |Description
 |exceeds |String |_Required._ The threshold accumulated file size from
 which files will be deleted. The size can be specified in bytes, with
-the suffix KB, MB or GB, for example `20MB`.
+the suffix KB, MB, GB, or TB, for example `20MB`.
 
 |nestedConditions |PathCondition[] |An optional set of nested
 link:#DeletePathCondition[PathConditions]. If any nested conditions
@@ -3836,8 +3849,7 @@ appender can be used, it is only used as a shorthand.
   <Appenders>
     <Routing name="Routing">
       <Script name="RoutingInit" language="JavaScript"><![CDATA[
-        importPackage(java.lang);
-        System.getProperty("os.name").search("Windows") > -1 ? "ServiceWindows" : "ServiceOther";]]>
+        java.lang.System.getProperty("os.name").search("Windows") > -1 ? "ServiceWindows" : "ServiceOther";]]>
       </Script>
       <Routes>
         <Route key="ServiceOther">
@@ -4095,7 +4107,7 @@ Appender in a link:#FailoverAppender[FailoverAppender].
 == ScriptAppenderSelector
 
 When the configuration is built, the `ScriptAppenderSelector` appender
-calls a `Script` to compute an appender name. Log4j then creates one of
+calls a `ScriptPlugin` to compute an appender name. Log4j then creates one of
 the appender named listed under `AppenderSet` using the name of the
 `ScriptAppenderSelector`. After configuration, Log4j ignores the
 `ScriptAppenderSelector`. Log4j only builds the one selected appender
@@ -4113,8 +4125,7 @@ example, "SelectIt".
   <Appenders>
     <ScriptAppenderSelector name="SelectIt">
       <Script language="JavaScript"><![CDATA[
-        importPackage(java.lang);
-        System.getProperty("os.name").search("Windows") > -1 ? "MyCustomWindowsAppender" : "MySyslogAppender";]]>
+        java.lang.System.getProperty("os.name").search("Windows") > -1 ? "MyCustomWindowsAppender" : "MySyslogAppender";]]>
       </Script>
       <AppenderSet>
         <MyCustomWindowsAppender name="MyAppender" ... />
@@ -4255,9 +4266,10 @@ documents the parameters available for SSL configuration.
 [cols=",,",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
-|protocol |String |`SSL` if omitted. See also
-http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#SSLContext[Standard
-names].
+|protocol |String |The SSL protocol to use, `TLS` if omitted. A single value
+may enable multiple protocoles, see the
+https://docs.oracle.com/en/java/javase/11/docs/specs/security/standard-names.html#sslcontext-algorithms[JVM
+documentation] for details.
 
 |KeyStore |KeyStore |Contains your private keys and certificates, and
 determines which authentication credentials to send to the remote host.
@@ -4511,12 +4523,12 @@ conforms with either the BSD Syslog format or the RFC 5424 format.
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp" packages="">
   <Appenders>
-    <TLSSyslog name="bsd" host="localhost" port="6514">
+    <Syslog name="bsd" host="localhost" port="6514" protocol="SSL">
       <SSL>
         <KeyStore   location="log4j2-keystore.jks" passwordEnvironmentVariable="KEYSTORE_PASSWORD"/>
         <TrustStore location="truststore.jks"      passwordFile="${sys:user.home}/truststore.pwd"/>
       </SSL>
-    </TLSSyslog>
+    </Syslog>
   </Appenders>
   <Loggers>
     <Root level="error">

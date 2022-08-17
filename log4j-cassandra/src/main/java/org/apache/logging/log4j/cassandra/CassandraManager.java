@@ -16,12 +16,6 @@
  */
 package org.apache.logging.log4j.cassandra;
 
-import java.io.Serializable;
-import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import com.datastax.driver.core.BatchStatement;
 import com.datastax.driver.core.BoundStatement;
 import com.datastax.driver.core.Cluster;
@@ -31,13 +25,18 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
 import org.apache.logging.log4j.core.appender.db.ColumnMapping;
-import org.apache.logging.log4j.plugins.convert.TypeConverters;
 import org.apache.logging.log4j.core.net.SocketAddress;
 import org.apache.logging.log4j.jdbc.convert.DateTypeConverter;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextStack;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.Strings;
+
+import java.io.Serializable;
+import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Manager for a Cassandra appender instance.
@@ -99,8 +98,7 @@ public class CassandraManager extends AbstractDatabaseManager {
             } else if (Date.class.isAssignableFrom(columnMapping.getType())) {
                 values[i] = DateTypeConverter.fromMillis(event.getTimeMillis(), columnMapping.getType().asSubclass(Date.class));
             } else {
-                values[i] = TypeConverters.convert(columnMapping.getLayout().toSerializable(event),
-                    columnMapping.getType(), null);
+                values[i] = columnMapping.getTypeConverter().convert(columnMapping.getLayout().toSerializable(event), null);
             }
         }
         final BoundStatement boundStatement = preparedStatement.bind(values);

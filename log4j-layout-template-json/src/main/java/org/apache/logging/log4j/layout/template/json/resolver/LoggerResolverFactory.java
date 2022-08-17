@@ -16,13 +16,15 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
 
 /**
  * {@link LoggerResolver} factory.
  */
-@Plugin(name = "LoggerResolverFactory", category = TemplateResolverFactory.CATEGORY)
+@Namespace(TemplateResolverFactory.CATEGORY)
+@Plugin("LoggerResolverFactory")
 public final class LoggerResolverFactory implements EventResolverFactory {
 
     private static final LoggerResolverFactory INSTANCE = new LoggerResolverFactory();

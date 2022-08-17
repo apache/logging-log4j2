@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.plugins;
 
+import org.apache.logging.log4j.plugins.visit.NodeVisitor;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -23,13 +25,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Identifies a static method as a factory to create a plugin or a
+ * Identifies a static method as a factory to create a {@link Configurable} plugin or a
  * {@linkplain org.apache.logging.log4j.plugins.util.Builder builder class} for constructing a plugin.
  * Factory methods should annotate their parameters with {@link PluginAttribute}, {@link PluginElement},
- * {@link PluginValue}, or other plugin annotations annotated with
- * {@link org.apache.logging.log4j.plugins.inject.InjectorStrategy}.
+ * {@link PluginValue}, or other plugin annotations annotated with {@link NodeVisitor.Kind}.
  * If a factory method returns a builder class, this method should have no arguments; instead, the builder class should
- * annotate its fields or single-parameter methods to inject plugin configuration data.
+ * annotate its fields or parameters in methods to inject plugin configuration data.
  * <p>
  * There can only be one factory method per class.
  * </p>
@@ -37,6 +38,7 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
+@FactoryType
 public @interface PluginFactory {
     // empty
 }

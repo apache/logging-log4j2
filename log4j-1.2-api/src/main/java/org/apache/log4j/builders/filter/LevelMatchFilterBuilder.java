@@ -18,31 +18,30 @@ package org.apache.log4j.builders.filter;
 
 import org.apache.log4j.bridge.FilterWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
-import org.apache.log4j.builders.BooleanHolder;
-import org.apache.log4j.builders.Holder;
 import org.apache.log4j.config.PropertiesConfiguration;
+import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.xml.XmlConfiguration;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.filter.LevelMatchFilter;
-import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.plugins.Namespace;
+import org.apache.logging.log4j.plugins.Plugin;
 import org.w3c.dom.Element;
 
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.xml.XmlConfiguration.*;
-import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
+import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
+import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 
 /**
  * Build a Level match filter.
  */
-@Plugin(name = "org.apache.log4j.varia.LevelMatchFilter", category = CATEGORY)
-public class LevelMatchFilterBuilder extends AbstractBuilder implements FilterBuilder {
+@Namespace(NAMESPACE)
+@Plugin("org.apache.log4j.varia.LevelMatchFilter")
+public class LevelMatchFilterBuilder extends AbstractBuilder<Filter> implements FilterBuilder {
 
-    private static final Logger LOGGER = StatusLogger.getLogger();
     private static final String LEVEL = "LevelToMatch";
     private static final String ACCEPT_ON_MATCH = "AcceptOnMatch";
 
@@ -54,17 +53,17 @@ public class LevelMatchFilterBuilder extends AbstractBuilder implements FilterBu
     }
 
     @Override
-    public Filter parseFilter(Element filterElement, XmlConfiguration config) {
-        final Holder<String> level = new Holder<>();
-        final Holder<Boolean> acceptOnMatch = new BooleanHolder();
-        forEachElement(filterElement.getElementsByTagName("param"), (currentElement) -> {
+    public Filter parse(Element filterElement, XmlConfiguration config) {
+        final AtomicReference<String> level = new AtomicReference<>();
+        final AtomicBoolean acceptOnMatch = new AtomicBoolean();
+        forEachElement(filterElement.getElementsByTagName("param"), currentElement -> {
             if (currentElement.getTagName().equals("param")) {
-                switch (currentElement.getAttribute(NAME_ATTR)) {
+                switch (getNameAttributeKey(currentElement)) {
                     case LEVEL:
-                        level.set(currentElement.getAttribute(VALUE_ATTR));
+                        level.set(getValueAttribute(currentElement));
                         break;
                     case ACCEPT_ON_MATCH:
-                        acceptOnMatch.set(Boolean.parseBoolean(currentElement.getAttribute(VALUE_ATTR)));
+                        acceptOnMatch.set(getBooleanValueAttribute(currentElement));
                         break;
                 }
             }
@@ -73,7 +72,7 @@ public class LevelMatchFilterBuilder extends AbstractBuilder implements FilterBu
     }
 
     @Override
-    public Filter parseFilter(PropertiesConfiguration config) {
+    public Filter parse(PropertiesConfiguration config) {
         String level = getProperty(LEVEL);
         boolean acceptOnMatch = getBooleanProperty(ACCEPT_ON_MATCH);
         return createFilter(level, acceptOnMatch);
@@ -82,12 +81,12 @@ public class LevelMatchFilterBuilder extends AbstractBuilder implements FilterBu
     private Filter createFilter(String level, boolean acceptOnMatch) {
         Level lvl = Level.ERROR;
         if (level != null) {
-            lvl = Level.toLevel(level, Level.ERROR);
+            lvl = OptionConverter.toLevel(level, org.apache.log4j.Level.ERROR).getVersion2Level();
         }
         org.apache.logging.log4j.core.Filter.Result onMatch = acceptOnMatch
                 ? org.apache.logging.log4j.core.Filter.Result.ACCEPT
                 : org.apache.logging.log4j.core.Filter.Result.DENY;
-        return new FilterWrapper(LevelMatchFilter.newBuilder()
+        return FilterWrapper.adapt(LevelMatchFilter.newBuilder()
                 .setLevel(lvl)
                 .setOnMatch(onMatch)
                 .setOnMismatch(org.apache.logging.log4j.core.Filter.Result.NEUTRAL)

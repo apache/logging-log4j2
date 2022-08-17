@@ -23,7 +23,8 @@ import org.apache.logging.log4j.plugins.convert.TypeConverters;
 /**
  * The default string (i.e., recycler factory spec) to {@link RecyclerFactory} type converter.
  */
-@Plugin(name = "RecyclerFactoryConverter", category = TypeConverters.CATEGORY)
+@TypeConverters
+@Plugin
 public final class RecyclerFactoryConverter implements TypeConverter<RecyclerFactory> {
 
     @Override

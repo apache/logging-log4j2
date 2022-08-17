@@ -16,20 +16,21 @@
  */
 package org.apache.log4j.bridge;
 
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.log4j.Category;
 import org.apache.log4j.Level;
+import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Throwables;
-import org.apache.logging.log4j.spi.StandardLevel;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.Set;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Converts a Log4j 2 LogEvent into the components needed by a Log4j 1.x LoggingEvent.
@@ -99,24 +100,7 @@ public class LogEventAdapter extends LoggingEvent {
      */
     @Override
     public Level getLevel() {
-        switch (StandardLevel.getStandardLevel(event.getLevel().intLevel())) {
-            case TRACE:
-                return Level.TRACE;
-            case DEBUG:
-                return Level.DEBUG;
-            case INFO:
-                return Level.INFO;
-            case WARN:
-                return Level.WARN;
-            case FATAL:
-                return Level.FATAL;
-            case OFF:
-                return Level.OFF;
-            case ALL:
-                return Level.ALL;
-            default:
-                return Level.ERROR;
-        }
+        return OptionConverter.convertLevel(event.getLevel());
     }
 
     /**
@@ -164,9 +148,8 @@ public class LogEventAdapter extends LoggingEvent {
     public Object getMDC(String key) {
         if (event.getContextData() != null) {
             return event.getContextData().getValue(key);
-        } else {
-            return null;
         }
+        return null;
     }
 
     /**
@@ -205,12 +188,12 @@ public class LogEventAdapter extends LoggingEvent {
     }
 
     /**
-     * Return this event's throwable's string[] representation.
+     * Return this event's throwable's string[] representaion.
      */
     @Override
     public String[] getThrowableStrRep() {
         if (event.getThrown() != null) {
-            return Throwables.toStringList(event.getThrown()).toArray(new String[0]);
+            return Throwables.toStringList(event.getThrown()).toArray(Strings.EMPTY_ARRAY);
         }
         return null;
     }

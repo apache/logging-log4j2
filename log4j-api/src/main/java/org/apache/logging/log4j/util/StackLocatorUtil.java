@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.util;
 
-import org.apache.logging.log4j.status.StatusLogger;
-
+import java.util.Deque;
 import java.util.NoSuchElementException;
-import java.util.Stack;
 import java.util.function.Predicate;
+
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * <em>Consider this class private.</em> Provides various methods to determine the caller class. <h3>Background</h3>
@@ -71,6 +71,28 @@ public final class StackLocatorUtil {
     }
 
     /**
+     * Gets the ClassLoader of the class that called <em>this</em> method at the location up the call stack by the given
+     * stack frame depth.
+     * <p>
+     * This method returns {@code null} if:
+     * </p>
+     * <ul>
+     * <li>{@code sun.reflect.Reflection.getCallerClass(int)} is not present.</li>
+     * <li>An exception is caught calling {@code sun.reflect.Reflection.getCallerClass(int)}.</li>
+     * <li>Some Class implementations may use null to represent the bootstrap class loader.</li>
+     * </ul>
+     *
+     * @param depth The stack frame count to walk.
+     * @return A class or null.
+     * @throws IndexOutOfBoundsException if depth is negative.
+     */
+    @PerformanceSensitive
+    public static ClassLoader getCallerClassLoader(final int depth) {
+        final Class<?> callerClass = stackLocator.getCallerClass(depth + 1);
+        return callerClass != null ? callerClass.getClassLoader() : null;
+    }
+
+    /**
      * Search for a calling class.
      *
      * @param sentinelClass Sentinel class at which to begin searching
@@ -90,7 +112,7 @@ public final class StackLocatorUtil {
 
     // migrated from ThrowableProxy
     @PerformanceSensitive
-    public static Stack<Class<?>> getCurrentStackTrace() {
+    public static Deque<Class<?>> getCurrentStackTrace() {
         return stackLocator.getCurrentStackTrace();
     }
 

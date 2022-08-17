@@ -16,21 +16,21 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-
-import javax.net.ssl.TrustManagerFactory;
-
-import org.apache.logging.log4j.core.Core;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 
+import javax.net.ssl.TrustManagerFactory;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+
 /**
  * Configuration of the TrustStore
  */
-@Plugin(name = "TrustStore", category = Core.CATEGORY_NAME, printObject = true)
+@Configurable(printObject = true)
+@Plugin("TrustStore")
 public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
 
     private final String trustManagerFactoryAlgorithm;

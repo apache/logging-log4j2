@@ -17,33 +17,34 @@
 
 package org.apache.logging.log4j.core.appender.rolling;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
+
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.status.StatusLogger;
-
 /**
  * FileSize utility class.
  */
 public final class FileSize {
+
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private static final long KB = 1024;
     private static final long MB = KB * KB;
     private static final long GB = KB * MB;
+    private static final long TB = KB * GB;
 
     /**
      * Pattern for string parsing.
      */
     private static final Pattern VALUE_PATTERN =
-        Pattern.compile("([0-9]+([\\.,][0-9]+)?)\\s*(|K|M|G)B?", Pattern.CASE_INSENSITIVE);
+            Pattern.compile("([0-9]+([.,][0-9]+)?)\\s*(|K|M|G|T)B?", Pattern.CASE_INSENSITIVE);
 
-    private FileSize() {
-    }
+    private FileSize() {}
 
     /**
      * Converts a string to a number of bytes. Strings consist of a floating point value followed by
@@ -60,32 +61,43 @@ public final class FileSize {
         // Valid input?
         if (matcher.matches()) {
             try {
-                // Get double precision value
-                final long value = NumberFormat.getNumberInstance(Locale.ROOT).parse(
-                    matcher.group(1)).longValue();
 
-                // Get units specified
-                final String units = matcher.group(3);
+                // Read the quantity.
+                final String quantityString = matcher.group(1);
+                final double quantity = NumberFormat
+                        .getNumberInstance(Locale.ROOT)
+                        .parse(quantityString)
+                        .doubleValue();
 
-                if (units.isEmpty()) {
-                    return value;
-                } else if (units.equalsIgnoreCase("K")) {
-                    return value * KB;
-                } else if (units.equalsIgnoreCase("M")) {
-                    return value * MB;
-                } else if (units.equalsIgnoreCase("G")) {
-                    return value * GB;
+                // Read the unit.
+                final String unit = matcher.group(3);
+
+                // Calculate the number of bytes.
+                if (unit == null || unit.isEmpty()) {
+                    return (long) quantity;
+                } else if (unit.equalsIgnoreCase("K")) {
+                    return (long) (quantity * KB);
+                } else if (unit.equalsIgnoreCase("M")) {
+                    return (long) (quantity * MB);
+                } else if (unit.equalsIgnoreCase("G")) {
+                    return (long) (quantity * GB);
+                } else if (unit.equalsIgnoreCase("T")) {
+                    return (long) (quantity * TB);
                 } else {
                     LOGGER.error("FileSize units not recognized: " + string);
                     return defaultValue;
                 }
-            } catch (final ParseException e) {
-                LOGGER.error("FileSize unable to parse numeric part: " + string, e);
+
+            } catch (final ParseException error) {
+                LOGGER.error("FileSize unable to parse numeric part: " + string, error);
                 return defaultValue;
             }
         }
+
+        // Invalid input, bail out.
         LOGGER.error("FileSize unable to parse bytes: " + string);
         return defaultValue;
+
     }
 
 }

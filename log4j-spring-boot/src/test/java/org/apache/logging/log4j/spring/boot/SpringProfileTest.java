@@ -43,7 +43,7 @@ public class SpringProfileTest {
     public static void before() {
         loggerContext = (LoggerContext) LogManager.getContext(false);
         env = new MockEnvironment();
-        loggerContext.putObject(Log4j2CloudConfigLoggingSystem.ENVIRONMENT_KEY, env);
+        loggerContext.putObject(Log4j2SpringBootLoggingSystem.ENVIRONMENT_KEY, env);
     }
 
 

@@ -17,11 +17,8 @@
 
 package org.apache.logging.log4j.core.config.properties;
 
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationException;
@@ -42,8 +39,14 @@ import org.apache.logging.log4j.core.config.builder.api.ScriptComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ScriptFileComponentBuilder;
 import org.apache.logging.log4j.core.filter.AbstractFilter.AbstractFilterBuilder;
 import org.apache.logging.log4j.plugins.util.Builder;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
+
+import java.util.Map;
+import java.util.Objects;
+import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Helper builder for parsing properties files into a PropertiesConfiguration.
@@ -53,6 +56,7 @@ import org.apache.logging.log4j.util.Strings;
 public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
     implements Builder<PropertiesConfiguration> {
 
+    private static final Logger LOGGER = StatusLogger.getLogger();
     private static final String ADVERTISER_KEY = "advertiser";
     private static final String STATUS_KEY = "status";
     private static final String SHUTDOWN_HOOK = "shutdownHook";
@@ -170,8 +174,9 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
                 }
             }
         } else {
+
             final Map<String, Properties> loggers = PropertiesUtil
-                    .partitionOnCommonPrefixes(PropertiesUtil.extractSubset(rootProperties, "logger"));
+                    .partitionOnCommonPrefixes(PropertiesUtil.extractSubset(rootProperties, "logger"), true);
             for (final Map.Entry<String, Properties> entry : loggers.entrySet()) {
                 final String name = entry.getKey().trim();
                 if (!name.equals(LoggerConfig.ROOT)) {
@@ -180,7 +185,12 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
             }
         }
 
+        final String rootProp = rootProperties.getProperty("rootLogger");
         final Properties props = PropertiesUtil.extractSubset(rootProperties, "rootLogger");
+        if (rootProp != null) {
+            props.setProperty("", rootProp);
+            rootProperties.remove("rootLogger");
+        }
         if (props.size() > 0) {
             builder.add(createRootLogger(props));
         }
@@ -207,10 +217,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
     }
 
     private AppenderComponentBuilder createAppender(final String key, final Properties properties) {
-        final String name = (String) properties.remove(CONFIG_NAME);
-        if (Strings.isEmpty(name)) {
-            throw new ConfigurationException("No name attribute provided for Appender " + key);
-        }
+        final String name = Objects.toString(properties.remove(CONFIG_NAME), key);
         final String type = (String) properties.remove(CONFIG_TYPE);
         if (Strings.isEmpty(type)) {
             throw new ConfigurationException("No type attribute provided for Appender " + key);
@@ -250,6 +257,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
     }
 
     private LoggerComponentBuilder createLogger(final String key, final Properties properties) {
+        final String levelAndRefs = properties.getProperty("");
         final String name = (String) properties.remove(CONFIG_NAME);
         final String location = (String) properties.remove("includeLocation");
         if (Strings.isEmpty(name)) {
@@ -284,10 +292,14 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
         if (!Strings.isEmpty(additivity)) {
             loggerBuilder.addAttribute("additivity", additivity);
         }
+        if (levelAndRefs != null) {
+            loggerBuilder.addAttribute("levelAndRefs", levelAndRefs);
+        }
         return loggerBuilder;
     }
 
     private RootLoggerComponentBuilder createRootLogger(final Properties properties) {
+        final String levelAndRefs = properties.getProperty("");
         final String level = Strings.trimToNull((String) properties.remove("level"));
         final String type = (String) properties.remove(CONFIG_TYPE);
         final String location = (String) properties.remove("includeLocation");
@@ -313,6 +325,9 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
             }
         }
         addLoggersToComponent(loggerBuilder, properties);
+        if (levelAndRefs != null) {
+            loggerBuilder.addAttribute("levelAndRefs", levelAndRefs);
+        }
         return addFiltersToComponent(loggerBuilder, properties);
     }
 

@@ -16,17 +16,25 @@
  */
 package org.apache.logging.log4j.mongodb3;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
+import com.mongodb.WriteConcern;
+import com.mongodb.client.MongoDatabase;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.appender.nosql.NoSqlProvider;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
+import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Namespace;
+import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.plugins.convert.TypeConverters;
+import org.apache.logging.log4j.plugins.convert.TypeConverter;
+import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.plugins.validation.constraints.ValidHost;
 import org.apache.logging.log4j.plugins.validation.constraints.ValidPort;
@@ -36,17 +44,14 @@ import org.apache.logging.log4j.util.Strings;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
-import com.mongodb.MongoCredential;
-import com.mongodb.ServerAddress;
-import com.mongodb.WriteConcern;
-import com.mongodb.client.MongoDatabase;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**
  * The MongoDB implementation of {@link NoSqlProvider} using the MongoDB driver version 3 API.
  */
-@Plugin(name = "MongoDb3", category = Core.CATEGORY_NAME, printObject = true)
+@Configurable(printObject = true)
+@Plugin("MongoDb3")
 public final class MongoDb3Provider implements NoSqlProvider<MongoDb3Connection> {
 
     public static class Builder<B extends Builder<B>> extends AbstractFilterable.Builder<B>
@@ -125,6 +130,8 @@ public final class MongoDb3Provider implements NoSqlProvider<MongoDb3Connection>
         @PluginBuilderAttribute
         private String writeConcernConstantClassName;
 
+        private Injector injector;
+
         @SuppressWarnings("resource")
         @Override
         public MongoDb3Provider build() {
@@ -180,7 +187,8 @@ public final class MongoDb3Provider implements NoSqlProvider<MongoDb3Connection>
                     mongoCredential = MongoCredential.createCredential(userName, databaseName, password.toCharArray());
                 }
                 try {
-                    final int portInt = TypeConverters.convert(port, int.class, DEFAULT_PORT);
+                    final TypeConverter<Integer> converter = TypeUtil.cast(injector.getTypeConverter(Integer.class));
+                    final int portInt = converter.convert(port, DEFAULT_PORT);
                     description += ", server=" + server + ", port=" + portInt;
                     final WriteConcern writeConcern = toWriteConcern(writeConcernConstant, writeConcernConstantClassName);
                     // @formatter:off
@@ -284,6 +292,12 @@ public final class MongoDb3Provider implements NoSqlProvider<MongoDb3Connection>
 
         public B setWriteConcernConstantClassName(final String writeConcernConstantClassName) {
             this.writeConcernConstantClassName = writeConcernConstantClassName;
+            return asBuilder();
+        }
+
+        @Inject
+        public B setInjector(final Injector injector) {
+            this.injector = injector;
             return asBuilder();
         }
     }

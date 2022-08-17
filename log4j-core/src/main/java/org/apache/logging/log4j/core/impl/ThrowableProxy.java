@@ -18,12 +18,12 @@ package org.apache.logging.log4j.core.impl;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
 
 import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
 import org.apache.logging.log4j.core.pattern.TextRenderer;
@@ -48,8 +48,6 @@ import org.apache.logging.log4j.util.Strings;
  */
 public class ThrowableProxy implements Serializable {
 
-    static final ThrowableProxy[] EMPTY_ARRAY = {};
-
     private static final char EOL = '\n';
 
     private static final String EOL_STR = String.valueOf(EOL);
@@ -71,6 +69,8 @@ public class ThrowableProxy implements Serializable {
     private final ThrowableProxy[] suppressedProxies;
 
     private final transient Throwable throwable;
+
+    static final ThrowableProxy[] EMPTY_ARRAY = {};
 
     /**
      * For JSON and XML IO via Jackson.
@@ -107,7 +107,7 @@ public class ThrowableProxy implements Serializable {
         this.message = throwable.getMessage();
         this.localizedMessage = throwable.getLocalizedMessage();
         final Map<String, ThrowableProxyHelper.CacheEntry> map = new HashMap<>();
-        final Stack<Class<?>> stack = StackLocatorUtil.getCurrentStackTrace();
+        final Deque<Class<?>> stack = StackLocatorUtil.getCurrentStackTrace();
         this.extendedStackTrace = ThrowableProxyHelper.toExtendedStackTrace(this, stack, map, null, throwable.getStackTrace());
         final Throwable throwableCause = throwable.getCause();
         final Set<Throwable> causeVisited = new HashSet<>(1);
@@ -126,7 +126,7 @@ public class ThrowableProxy implements Serializable {
      * @param suppressedVisited TODO
      * @param causeVisited      TODO
      */
-    private ThrowableProxy(final Throwable parent, final Stack<Class<?>> stack,
+    private ThrowableProxy(final Throwable parent, final Deque<Class<?>> stack,
                            final Map<String, ThrowableProxyHelper.CacheEntry> map,
                            final Throwable cause, final Set<Throwable> suppressedVisited,
                            final Set<Throwable> causeVisited) {

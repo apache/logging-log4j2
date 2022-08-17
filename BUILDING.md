@@ -14,22 +14,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-# Building Log4j 2
+# Building Log4j 3.x
 
-To build Log4j 2, you need a JDK implementation version 1.8 or greater, JDK 
-version 9, and Apache Maven 3.x.
-
-Log4j 2.x uses the Java 9 compiler in addition to 
-the Java version installed in the path. This is accomplished by using Maven's toolchains support.
-Log4j 2 provides sample toolchains XML files in the root folder. This may be used by 
-modifying it and installing the file as toolchains.xml in the .m2 folder or by using the 
-following when invoking Maven.
-
-```
-[Macintosh] -t ./toolchains-sample-mac.xml 
-[Windows] -t ./toolchains-sample-win.xml 
-[Linux] -t ./toolchains-sample-linux.xml 
-```
+To build Log4j 3.x, you need a JDK implementation version 11 (at least version 11.0.13 if building on macOS) or greater and Apache Maven 3.x.
 
 To perform the license release audit, a.k.a. "RAT check", run.
 
@@ -60,10 +47,3 @@ On UNIX, use a local staging directory, for example:
 To test, run:
 
     mvn clean install
-
-## Testing in Docker
-
-In order to run a clean test using the minimum version of the JDK along with a
-proper Linux environment, run:
-
-    docker build .

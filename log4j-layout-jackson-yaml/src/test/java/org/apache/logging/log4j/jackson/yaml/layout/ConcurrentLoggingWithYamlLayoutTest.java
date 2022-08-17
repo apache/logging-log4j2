@@ -16,8 +16,11 @@
  */
 package org.apache.logging.log4j.jackson.yaml.layout;
 
-import static org.hamcrest.CoreMatchers.startsWith;
-import static org.junit.Assert.assertThat;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.CleanUpFiles;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.nio.charset.Charset;
@@ -27,19 +30,18 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.LockSupport;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.AfterClass;
-import org.junit.ClassRule;
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Like the test for LOG4J2-1769.
  */
 public class ConcurrentLoggingWithYamlLayoutTest {
 
-    private class LoggingThread extends Thread {
+    private static class LoggingThread extends Thread {
         private final Set<Thread> threads;
         private final Logger log;
 
@@ -62,21 +64,15 @@ public class ConcurrentLoggingWithYamlLayoutTest {
         }
     }
 
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule("log4j2-yaml-layout.xml");
-
     private static final String PATH = "target/test-yaml-layout.log";
 
-    @AfterClass
-    public static void after() {
-        new File(PATH).delete();
-    }
-
     @Test
-    public void testConcurrentLogging() throws Throwable {
+    @CleanUpFiles(PATH)
+    @LoggerContextSource("log4j2-yaml-layout.xml")
+    public void testConcurrentLogging(final LoggerContext context) throws Throwable {
         final Logger log = context.getLogger(ConcurrentLoggingWithYamlLayoutTest.class);
-        final Set<Thread> threads = Collections.synchronizedSet(new HashSet<Thread>());
-        final List<Throwable> thrown = Collections.synchronizedList(new ArrayList<Throwable>());
+        final Set<Thread> threads = Collections.synchronizedSet(new HashSet<>());
+        final List<Throwable> thrown = Collections.synchronizedList(new ArrayList<>());
 
         for (int x = 0; x < Runtime.getRuntime().availableProcessors() * 2; x++) {
             final Thread t = new LoggingThread(threads, log);
@@ -84,18 +80,13 @@ public class ConcurrentLoggingWithYamlLayoutTest {
 
             // Appender is configured with ignoreExceptions="false";
             // any exceptions are propagated to the caller, so we can catch them here.
-            t.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-                @Override
-                public void uncaughtException(final Thread t, final Throwable e) {
-                    thrown.add(e);
-                }
-            });
+            t.setUncaughtExceptionHandler((t1, e) -> thrown.add(e));
             t.start();
         }
 
         while (!threads.isEmpty()) {
             log.info("not done going to sleep...");
-            Thread.sleep(10);
+            LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(10));
         }
 
         // if any error occurred, fail this test

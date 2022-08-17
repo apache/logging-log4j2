@@ -32,6 +32,6 @@ public class JdbcAppenderH2FactoryMethodTest extends AbstractJdbcAppenderFactory
     }
 
     public static Connection getConnection() throws SQLException {
-        return JdbcH2TestHelper.getConnectionMem();
+        return JdbcH2TestHelper.getConnectionInMemory();
     }
 }

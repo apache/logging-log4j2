@@ -24,6 +24,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogConfigurationException;
 import org.apache.commons.logging.LogFactory;
 import org.apache.logging.log4j.spi.LoggerAdapter;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Log4j binding for Commons Logging.
@@ -47,7 +48,7 @@ public class LogFactoryImpl extends LogFactory {
 
     @Override
     public String[] getAttributeNames() {
-        return attributes.keySet().toArray(new String[attributes.size()]);
+        return attributes.keySet().toArray(Strings.EMPTY_ARRAY);
     }
 
     @Override

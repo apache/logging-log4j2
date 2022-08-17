@@ -1,12 +1,12 @@
 ////
     Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements. See the NOTICE file distributed with
+    contributor license agreements.  See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
     The ASF licenses this file to You under the Apache License, Version 2.0
     (the "License"); you may not use this file except in compliance with
-    the License. You may obtain a copy of the License at
+    the License.  You may obtain a copy of the License at
 
-        https://www.apache.org/licenses/LICENSE-2.0
+         http://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -247,7 +247,7 @@ convenient preformatted strings using the `java:` prefix.
 `default locale: en_US, platform encoding: Cp1252`
 
 |hw
-|Hardware information, like:
+|System locale and file encoding information, like:
 
 `processors: 4, architecture: amd64-64, instruction sets: amd64`
 
@@ -267,9 +267,21 @@ For example:
 [#JndiLookup]
 == JNDI Lookup
 
+As of Log4j 2.15.1 JNDI operations require that `log4j2.enableJndi=true` be set as a system property or the
+corresponding environment variable for this lookup to function. See the
+link:./configuration.html#enableJndi[log4j2.enableJndi] system property.
+
 The JndiLookup allows variables to be retrieved via JNDI. By default the
 key will be prefixed with java:comp/env/, however if the key contains a
 ":" no prefix will be added.
+
+By default the JNDI Lookup only supports the java, ldap, and ldaps protocols or no protocol. Additional
+protocols may be supported by specifying them on the ``log4j2.allowedJndiProtocols`` property.
+When using LDAP Java classes that implement the Referenceable interface are not supported for security
+reasons. Only the Java primative classes are supported by default as well as any classes specified by the
+``log4j2.allowedLdapClasses`` property. When using LDAP only references to the local host name
+or ip address are supported along with any hosts or ip addresses listed in the
+``log4j2.allowedLdapHosts`` property.
 
 [source,xml]
 ----
@@ -611,7 +623,8 @@ profiles can be an array. If more than one profile is present they will be retur
 list. To retrieve a single item from the array append `[{index}]` to the key. For example, to return the
 first active profile in the list specify `profiles.active[0]`.
 
-This Lookup will return null values until Spring Boot initializes application logging.
+This Lookup will return null values until Spring Boot initializes application logging. The Spring Boot
+Lookup requires the `log4j-spring-boot` jar be included as a dependency.
 
 
 [source,xml]

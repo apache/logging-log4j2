@@ -16,10 +16,8 @@
  */
 package org.apache.log4j.bridge;
 
-
 import org.apache.log4j.Layout;
 import org.apache.log4j.spi.LoggingEvent;
-
 
 /**
  * Bridge between the Log4j 1 Layout and a Log4j 2 Layout.
@@ -28,6 +26,29 @@ public class LayoutWrapper extends Layout {
 
     private final org.apache.logging.log4j.core.Layout<?> layout;
 
+    /**
+     * Adapts a Log4j 2.x layout into a Log4j 1.x layout. Applying this method to
+     * the result of {@link LayoutAdapter#adapt(Layout)} should return the original
+     * Log4j 1.x layout.
+     * 
+     * @param layout a Log4j 2.x layout
+     * @return a Log4j 1.x layout or {@code null} if the parameter is {@code null}
+     */
+    public static Layout adapt(org.apache.logging.log4j.core.Layout<?> layout) {
+        if (layout instanceof LayoutAdapter) {
+            return ((LayoutAdapter) layout).getLayout();
+        }
+        if (layout != null) {
+            return new LayoutWrapper(layout);
+        }
+        return null;
+    }
+
+    /**
+     * Constructs a new instance.
+     *
+     * @param layout The layout to wrap.
+     */
     public LayoutWrapper(org.apache.logging.log4j.core.Layout<?> layout) {
         this.layout = layout;
     }
@@ -37,12 +58,22 @@ public class LayoutWrapper extends Layout {
         return layout.toSerializable(((LogEventAdapter)event).getEvent()).toString();
     }
 
+    /**
+     * Unwraps.
+     *
+     * @return The wrapped object.
+     */
+    public org.apache.logging.log4j.core.Layout<?> getLayout() {
+        return this.layout;
+    }
+
     @Override
     public boolean ignoresThrowable() {
         return false;
     }
 
-    public org.apache.logging.log4j.core.Layout<?> getLayout() {
-        return this.layout;
+    @Override
+    public String toString() {
+        return String.format("LayoutWrapper [layout=%s]", layout);
     }
 }

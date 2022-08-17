@@ -17,20 +17,66 @@
 
 package org.apache.logging.log4j.core.util;
 
-import org.apache.logging.log4j.core.config.ConfigurationSource;
-
 import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Objects;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
+
 /**
- * Represents the source for the logging configuration.
+ * Represents the source for the logging configuration as an immutable object.
  */
 public class Source {
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
-    /**
-     * Captures a URI or File.
-     */
+    private static String normalize(final File file) {
+        try {
+            return file.getCanonicalFile().getAbsolutePath();
+        } catch (final IOException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    private static File toFile(final Path path) {
+        try {
+            return Objects.requireNonNull(path, "path").toFile();
+        } catch (final UnsupportedOperationException e) {
+            return null;
+        }
+    }
+
+    // LOG4J2-3527 - Don't use Paths.get().
+    private static File toFile(final URI uri) {
+        try {
+            final String scheme = Objects.requireNonNull(uri, "uri").getScheme();
+            if (Strings.isBlank(scheme) || scheme.equals("file")) {
+                return new File(uri.getPath());
+            } else {
+                LOGGER.debug("uri does not represent a local file: " + uri);
+                return null;
+            }
+        } catch (final Exception e) {
+            LOGGER.debug("uri is malformed: " + uri.toString());
+            return null;
+        }
+    }
+
+    private static URI toURI(final URL url) {
+        try {
+            return Objects.requireNonNull(url, "url").toURI();
+        } catch (final URISyntaxException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
 
     private final File file;
     private final URI uri;
@@ -38,6 +84,7 @@ public class Source {
 
     /**
      * Constructs a Source from a ConfigurationSource.
+     *
      * @param source The ConfigurationSource.
      */
     public Source(final ConfigurationSource source) {
@@ -53,24 +100,74 @@ public class Source {
      * @param file the file where the input stream originated
      */
     public Source(final File file) {
-        this.file = Objects.requireNonNull(file, "file is null");
-        this.location = file.getAbsolutePath();
-        this.uri = null;
+        this.file = Objects.requireNonNull(file, "file");
+        this.location = normalize(file);
+        this.uri = file.toURI();
+    }
+
+    /**
+     * Constructs a new {@code Source} from the specified Path.
+     *
+     * @param path the Path where the input stream originated
+     */
+    public Source(final Path path) {
+        final Path normPath = Objects.requireNonNull(path, "path").normalize();
+        this.file = toFile(normPath);
+        this.uri = normPath.toUri();
+        this.location = normPath.toString();
     }
 
     /**
      * Constructs a new {@code Source} from the specified URI.
      *
-     * @param uri the URL where the input stream originated
+     * @param uri the URI where the input stream originated
      */
-    public Source(final URI uri, final long lastModified) {
-        this.uri = Objects.requireNonNull(uri, "URI is null");
-        this.location = uri.toString();
-        this.file = null;
+    public Source(final URI uri) {
+        final URI normUri = Objects.requireNonNull(uri, "uri").normalize();
+        this.uri = normUri;
+        this.location = normUri.toString();
+        this.file = toFile(normUri);
     }
 
     /**
-     * Returns the file configuration source, or {@code null} if this configuration source is based on an URL or has
+     * Constructs a new {@code Source} from the specified URI.
+     *
+     * @param uri the URI where the input stream originated
+     * @param lastModified Not used.
+     * @deprecated Use {@link Source#Source(URI)}.
+     */
+    @Deprecated
+    public Source(final URI uri, final long lastModified) {
+        this(uri);
+    }
+
+    /**
+     * Constructs a new {@code Source} from the specified URL.
+     *
+     * @param url the URL where the input stream originated
+     * @throws IllegalArgumentException if this URL is not formatted strictly according to to RFC2396 and cannot be
+     *         converted to a URI.
+     */
+    public Source(final URL url) {
+        this.uri = toURI(url);
+        this.location = uri.toString();
+        this.file = toFile(uri);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof Source)) {
+            return false;
+        }
+        Source other = (Source) obj;
+        return Objects.equals(location, other.location);
+    }
+
+    /**
+     * Gets the file configuration source, or {@code null} if this configuration source is based on an URL or has
      * neither a file nor an URL.
      *
      * @return the configuration source file, or {@code null}
@@ -80,44 +177,54 @@ public class Source {
     }
 
     /**
-     * Returns the configuration source URL, or {@code null} if this configuration source is based on a file or has
-     * neither a file nor an URL.
+     * Gets a string describing the configuration source file or URI, or {@code null} if this configuration source
+     * has neither a file nor an URI.
      *
-     * @return the configuration source URL, or {@code null}
+     * @return a string describing the configuration source file or URI, or {@code null}
+     */
+    public String getLocation() {
+        return location;
+    }
+
+    /**
+     * Gets this source as a Path.
+     *
+     * @return this source as a Path.
+     */
+    public Path getPath() {
+        return file != null ? file.toPath() : uri != null ? Paths.get(uri) : Paths.get(location);
+    }
+
+    /**
+     * Gets the configuration source URI, or {@code null} if this configuration source is based on a file or has
+     * neither a file nor an URI.
+     *
+     * @return the configuration source URI, or {@code null}
      */
     public URI getURI() {
         return uri;
     }
 
     /**
-     * Returns a string describing the configuration source file or URL, or {@code null} if this configuration source
-     * has neither a file nor an URL.
+     * Gets the configuration source URL.
      *
-     * @return a string describing the configuration source file or URL, or {@code null}
+     * @return the configuration source URI, or {@code null}
      */
-    public String getLocation() {
-        return location;
-    }
-
-    @Override
-    public String toString() {
-        return location;
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
+    public URL getURL() {
+        try {
+            return uri.toURL();
+        } catch (final MalformedURLException e) {
+            throw new IllegalStateException(e);
         }
-        if (!(o instanceof Source)) {
-            return false;
-        }
-        final Source source = (Source) o;
-        return Objects.equals(location, source.location);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(location);
+    }
+
+    @Override
+    public String toString() {
+        return location;
     }
 }

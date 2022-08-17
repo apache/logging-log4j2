@@ -20,71 +20,70 @@ import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.AppenderWrapper;
 import org.apache.log4j.bridge.LayoutAdapter;
-import org.apache.log4j.bridge.LayoutWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
-import org.apache.log4j.builders.Holder;
 import org.apache.log4j.config.Log4j1Configuration;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.xml.XmlConfiguration;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
 import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
-import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.LAYOUT_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.NAME_ATTR;
-import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
-import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
+import static org.apache.log4j.xml.XmlConfiguration.*;
 
 /**
  * Build a Console Appender
  */
-@Plugin(name = "org.apache.log4j.ConsoleAppender", category = CATEGORY)
+@Namespace(NAMESPACE)
+@Plugin("org.apache.log4j.ConsoleAppender")
 public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderBuilder {
+
     private static final String SYSTEM_OUT = "System.out";
     private static final String SYSTEM_ERR = "System.err";
-    private static final String TARGET = "target";
+    private static final String TARGET_PARAM = "Target";
+    private static final String FOLLOW_PARAM = "Follow";
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     public ConsoleAppenderBuilder() {
     }
 
-    public ConsoleAppenderBuilder(String prefix, Properties props) {
+    public ConsoleAppenderBuilder(final String prefix, final Properties props) {
         super(prefix, props);
     }
 
     @Override
     public Appender parseAppender(final Element appenderElement, final XmlConfiguration config) {
-        String name = appenderElement.getAttribute(NAME_ATTR);
-        Holder<String> target = new Holder<>(SYSTEM_OUT);
-        Holder<Layout> layout = new Holder<>();
-        Holder<List<Filter>> filters = new Holder<>(new ArrayList<>());
-        Holder<String> level = new Holder<>();
-        forEachElement(appenderElement.getChildNodes(), (currentElement) -> {
+        final String name = getNameAttribute(appenderElement);
+        final AtomicReference<String> target = new AtomicReference<>(SYSTEM_OUT);
+        final AtomicReference<Layout> layout = new AtomicReference<>();
+        final AtomicReference<Filter> filter = new AtomicReference<>();
+        final AtomicReference<String> level = new AtomicReference<>();
+        final AtomicBoolean follow = new AtomicBoolean();
+        final AtomicBoolean immediateFlush = new AtomicBoolean(true);
+        forEachElement(appenderElement.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
                 case LAYOUT_TAG:
                     layout.set(config.parseLayout(currentElement));
                     break;
                 case FILTER_TAG:
-                    filters.get().add(config.parseFilters(currentElement));
+                    config.addFilter(filter, currentElement);
                     break;
                 case PARAM_TAG: {
-                    switch (currentElement.getAttribute(NAME_ATTR)) {
-                        case TARGET: {
-                            String value = currentElement.getAttribute(VALUE_ATTR);
+                    switch (getNameAttributeKey(currentElement)) {
+                        case TARGET_PARAM:
+                            final String value = getValueAttribute(currentElement);
                             if (value == null) {
-                                LOGGER.warn("No value supplied for target parameter. Defaulting to System.out.");
+                                LOGGER.warn("No value supplied for target parameter. Defaulting to " + SYSTEM_OUT);
                             } else {
                                 switch (value) {
                                     case SYSTEM_OUT:
@@ -94,68 +93,54 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
                                         target.set(SYSTEM_ERR);
                                         break;
                                     default:
-                                        LOGGER.warn("Invalid value \"{}\" for target parameter. Using default of System.out",
-                                                value);
+                                        LOGGER.warn("Invalid value \"{}\" for target parameter. Using default of {}", value, SYSTEM_OUT);
                                 }
                             }
                             break;
-                        }
-                        case THRESHOLD_PARAM: {
-                            String value = currentElement.getAttribute(VALUE_ATTR);
-                            if (value == null) {
-                                LOGGER.warn("No value supplied for Threshold parameter, ignoring.");
-                            } else {
-                                level.set(value);
-                            }
+                        case THRESHOLD_PARAM:
+                            set(THRESHOLD_PARAM, currentElement, level);
                             break;
-                        }
+                        case FOLLOW_PARAM:
+                            set(FOLLOW_PARAM, currentElement, follow);
+                            break;
+                        case IMMEDIATE_FLUSH_PARAM:
+                            set(IMMEDIATE_FLUSH_PARAM, currentElement, immediateFlush);
+                            break;
                     }
                     break;
                 }
             }
         });
-        Filter head = null;
-        Filter current = null;
-        for (Filter f : filters.get()) {
-            if (head == null) {
-                head = f;
-                current = f;
-            } else {
-                current.next = f;
-                current = f;
-            }
-        }
-        return createAppender(name, layout.get(), head, level.get(), target.get(), config);
+        return createAppender(name, layout.get(), filter.get(), level.get(), target.get(), immediateFlush.get(), follow.get(), config);
     }
 
     @Override
     public Appender parseAppender(final String name, final String appenderPrefix, final String layoutPrefix,
             final String filterPrefix, final Properties props, final PropertiesConfiguration configuration) {
-        Layout layout = configuration.parseLayout(layoutPrefix, name, props);
-        Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
-        String level = getProperty(THRESHOLD_PARAM);
-        String target = getProperty(TARGET);
-        return createAppender(name, layout, filter, level, target, configuration);
+        final Layout layout = configuration.parseLayout(layoutPrefix, name, props);
+        final Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
+        final String level = getProperty(THRESHOLD_PARAM);
+        final String target = getProperty(TARGET_PARAM);
+        final boolean follow = getBooleanProperty(FOLLOW_PARAM);
+        final boolean immediateFlush = getBooleanProperty(IMMEDIATE_FLUSH_PARAM);
+        return createAppender(name, layout, filter, level, target, immediateFlush, follow, configuration);
     }
 
-    private <T extends Log4j1Configuration> Appender createAppender(String name, Layout layout, Filter filter,
-            String level, String target, T configuration) {
-        org.apache.logging.log4j.core.Layout<?> consoleLayout = null;
+    private <T extends Log4j1Configuration> Appender createAppender(final String name, final Layout layout, final Filter filter,
+            final String level, final String target, final boolean immediateFlush, final boolean follow, final T configuration) {
+        org.apache.logging.log4j.core.Layout<?> consoleLayout = LayoutAdapter.adapt(layout);
 
-        if (layout instanceof LayoutWrapper) {
-            consoleLayout = ((LayoutWrapper) layout).getLayout();
-        } else if (layout != null) {
-            consoleLayout = new LayoutAdapter(layout);
-        }
-        org.apache.logging.log4j.core.Filter consoleFilter = buildFilters(level, filter);
-        ConsoleAppender.Target consoleTarget = SYSTEM_ERR.equals(target)
+        final org.apache.logging.log4j.core.Filter consoleFilter = buildFilters(level, filter);
+        final ConsoleAppender.Target consoleTarget = SYSTEM_ERR.equals(target)
                 ? ConsoleAppender.Target.SYSTEM_ERR : ConsoleAppender.Target.SYSTEM_OUT;
-        return new AppenderWrapper(ConsoleAppender.newBuilder()
+        return AppenderWrapper.adapt(ConsoleAppender.newBuilder()
                 .setName(name)
                 .setTarget(consoleTarget)
+                .setFollow(follow)
                 .setLayout(consoleLayout)
                 .setFilter(consoleFilter)
                 .setConfiguration(configuration)
+                .setImmediateFlush(immediateFlush)
                 .build());
     }
 }

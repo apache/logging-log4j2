@@ -14,7 +14,8 @@
   ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   ~ See the license for the specific language governing permissions and
   ~ limitations under the license.
-  --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.logging.log4j</groupId>
   <artifactId>log4j</artifactId>
@@ -24,7 +25,7 @@
   <parent>
     <groupId>org.apache.logging</groupId>
     <artifactId>logging-parent</artifactId>
-    <version>3</version>
+    <version>5</version>
     <relativePath/>
   </parent>
   <description>Apache Log4j 2</description>
@@ -122,10 +123,32 @@
       <id>ckozak</id>
       <name>Carter Kozak</name>
       <email>ckozak@apache.org</email>
+      <url>https://github.com/carterkozak</url>
       <roles>
         <role>PMC Member</role>
       </roles>
       <timezone>America/New York</timezone>
+      <properties>
+        <picUrl>https://www.gravatar.com/avatar/e057b8f2538a0258f451d9efc8d2f6fa.jpg</picUrl>
+      </properties>
+    </developer>
+    <developer>
+      <id>vy</id>
+      <name>Volkan Yazıcı</name>
+      <email>vy@apache.org</email>
+      <roles>
+        <role>PMC Member</role>
+      </roles>
+      <timezone>Europe/Amsterdam</timezone>
+    </developer>
+    <developer>
+      <id>pkarwasz</id>
+      <name>Piotr P. Karwasz</name>
+      <email>pkarwasz@apache.org</email>
+      <roles>
+	<role>Committer</role>
+      </roles>
+      <timezone>Europe/Warsaw</timezone>
     </developer>
   </developers>
   <!-- Contributors -->
@@ -143,7 +166,20 @@
           <picUrl>https://mir-s3-cdn-cf.behance.net/user/138/403dcf1521581.54d67f8fb01f7.jpg</picUrl>
         </properties>
       </contributor>
-   </contributors>
+      <contributor>
+        <name>Michael Vorburger.ch</name>
+        <email>vorburger@apache.org</email>
+        <url>http://www.vorburger.ch</url>
+        <roles>
+          <role>https://github.com/apache/logging-log4j2/commits?author=vorburger</role>
+          <role>JULer</role>
+        </roles>
+        <timezone>Europe/Zurich</timezone>
+        <properties>
+          <picUrl>http://www.vorburger.ch/michael_vorburger_portrait_in_bay_of_roses_spain_with_bad_lighting.jpg</picUrl>
+        </properties>
+      </contributor>
+  </contributors>
   <mailingLists>
     <mailingList>
       <name>log4j-user</name>
@@ -179,7 +215,7 @@
   <properties>
     <!-- make sure to update these for each release! -->
     <log4jParentDir>${basedir}</log4jParentDir>
-    <Log4jReleaseVersion>2.10.0</Log4jReleaseVersion>
+    <Log4jReleaseVersion>3.0.0</Log4jReleaseVersion>
     <Log4jReleaseManager>Ralph Goers</Log4jReleaseManager>
     <Log4jReleaseKey>B3D8E1BA</Log4jReleaseKey>
     <!--<Log4jReleaseManager>Matt Sicker</Log4jReleaseManager> -->
@@ -189,16 +225,15 @@
     <logbackVersion>1.2.3</logbackVersion>
     <jackson1Version>1.9.13</jackson1Version>
     <jackson2Version>2.12.4</jackson2Version>
-    <spring-boot.version>2.3.6.RELEASE</spring-boot.version>
-    <springVersion>5.3.9</springVersion>
+    <spring-boot.version>2.6.7</spring-boot.version>
+    <springVersion>5.3.19</springVersion>
     <kubernetes-client.version>4.6.1</kubernetes-client.version>
-    <flumeVersion>1.9.0</flumeVersion>
+    <flumeVersion>1.10.0</flumeVersion>
     <disruptorVersion>3.4.4</disruptorVersion>
     <conversantDisruptorVersion>1.2.19</conversantDisruptorVersion>
-    <elastic.version>7.6.2</elastic.version>
     <mongodb3.version>3.12.4</mongodb3.version>
     <mongodb4.version>4.0.3</mongodb4.version>
-    <groovy.version>2.5.6</groovy.version>
+    <groovy.version>4.0.2</groovy.version>
     <compiler.plugin.version>3.8.1</compiler.plugin.version>
     <pmd.plugin.version>3.13.0</pmd.plugin.version>
     <spotbugs.plugin.version>4.0.4</spotbugs.plugin.version>
@@ -233,8 +268,11 @@
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.release>11</maven.compiler.release>
+    <maven.compiler.parameters>true</maven.compiler.parameters>
     <maven.doap.skip>false</maven.doap.skip>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- 1641056400 = Jan 1 2022, instead of 1969, which shows up in Javadoc -->
+    <project.build.outputTimestamp>1641056400</project.build.outputTimestamp>
     <docLabel>Site Documentation</docLabel>
     <projectDir />
     <commonsLoggingVersion>1.2</commonsLoggingVersion>
@@ -245,12 +283,14 @@
     <minSeverity>info</minSeverity>
     <jctoolsVersion>3.3.0</jctoolsVersion>
     <junitVersion>4.13.2</junitVersion>
-    <junitJupiterVersion>5.7.2</junitJupiterVersion>
-    <mockitoVersion>3.9.0</mockitoVersion>
+    <junitJupiterVersion>5.8.2</junitJupiterVersion>
+    <junitPioneerVersion>1.5.0</junitPioneerVersion>
+    <mockitoVersion>4.2.0</mockitoVersion>
     <byteBuddyVersion>1.11.0</byteBuddyVersion>
     <argLine>-Xms256m -Xmx1024m</argLine>
     <javaTargetVersion>11</javaTargetVersion>
     <module.name />
+    <netty-all.version>4.1.72.Final</netty-all.version>
   </properties>
   <pluginRepositories>
     <pluginRepository>
@@ -268,6 +308,25 @@
   </pluginRepositories>
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-bom</artifactId>
+        <version>${project.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>${junitJupiterVersion}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.opentest4j</groupId>
+        <artifactId>opentest4j</artifactId>
+        <version>1.2.0</version>
+      </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
@@ -304,7 +363,7 @@
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-core</artifactId>
-        <version>3.6.0</version>
+        <version>3.8.4</version>
       </dependency>
       <dependency>
         <groupId>commons-codec</groupId>
@@ -317,130 +376,22 @@
         <version>3.12.0</version>
       </dependency>
       <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-classic</artifactId>
-        <version>${logbackVersion}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-classic</artifactId>
-        <version>${logbackVersion}</version>
-        <type>test-jar</type>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-api-test</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-plugins</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-1.2-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-plugins</artifactId>
-        <version>${project.version}</version>
-        <type>test-jar</type>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-api</artifactId>
-        <version>${project.version}</version>
-        <type>test-jar</type>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-layout-template-json</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-core</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-core</artifactId>
-        <version>${project.version}</version>
-        <type>test-jar</type>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-layout-template-json</artifactId>
-        <version>${project.version}</version>
-        <type>test-jar</type>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-slf4j-impl</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-slf4j-impl</artifactId>
-        <version>${project.version}</version>
-        <type>zip</type>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-slf4j18-impl</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-jcl</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
         <groupId>commons-logging</groupId>
         <artifactId>commons-logging</artifactId>
         <version>${commonsLoggingVersion}</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-flume-ng</artifactId>
-        <version>${project.version}</version>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${logbackVersion}</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-iostreams</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-jul</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-jpl</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-taglib</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-web</artifactId>
-        <version>${project.version}</version>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${logbackVersion}</version>
+        <type>test-jar</type>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>com.sleepycat</groupId>
@@ -569,6 +520,12 @@
         </exclusions>
       </dependency>
       <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-all</artifactId>
+        <version>${netty-all.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
         <groupId>org.apache.hadoop</groupId>
         <artifactId>hadoop-core</artifactId>
         <version>1.2.1</version>
@@ -690,25 +647,22 @@
         <artifactId>jctools-core</artifactId>
         <version>${jctoolsVersion}</version>
       </dependency>
-      <!-- JUnit 5 engine -->
       <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-engine</artifactId>
-        <version>${junitJupiterVersion}</version>
+        <groupId>org.junit-pioneer</groupId>
+        <artifactId>junit-pioneer</artifactId>
+        <version>${junitPioneerVersion}</version>
+      </dependency>
+      <!-- Environment and system properties support for Jupiter -->
+      <dependency>
+        <groupId>uk.org.webcompere</groupId>
+        <artifactId>system-stubs-jupiter</artifactId>
+        <version>2.0.1</version>
         <scope>test</scope>
       </dependency>
-      <!-- JUnit 4 to 5 migration support -->
       <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-migrationsupport</artifactId>
-        <version>${junitJupiterVersion}</version>
-        <scope>test</scope>
-      </dependency>
-      <!-- JUnit 5 parameterized test support -->
-      <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-params</artifactId>
-        <version>${junitJupiterVersion}</version>
+        <groupId>uk.org.webcompere</groupId>
+        <artifactId>system-stubs-core</artifactId>
+        <version>2.0.1</version>
         <scope>test</scope>
       </dependency>
       <!-- JUnit 4 API dependency -->
@@ -716,7 +670,6 @@
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>${junitVersion}</version>
-        <scope>test</scope>
         <exclusions>
           <exclusion>
             <groupId>org.hamcrest</groupId>
@@ -724,24 +677,15 @@
           </exclusion>
         </exclusions>
       </dependency>
-      <!-- JUnit 4 engine -->
-      <dependency>
-        <groupId>org.junit.vintage</groupId>
-        <artifactId>junit-vintage-engine</artifactId>
-        <version>${junitJupiterVersion}</version>
-        <scope>test</scope>
-      </dependency>
       <dependency>
         <groupId>org.assertj</groupId>
         <artifactId>assertj-core</artifactId>
-        <version>3.17.1</version>
-        <scope>test</scope>
+        <version>3.21.0</version>
       </dependency>
       <dependency>
         <groupId>org.hamcrest</groupId>
-        <artifactId>hamcrest-all</artifactId>
-        <version>1.3</version>
-        <scope>test</scope>
+        <artifactId>hamcrest</artifactId>
+        <version>2.2</version>
       </dependency>
       <dependency>
         <groupId>org.awaitility</groupId>
@@ -781,54 +725,21 @@
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
-        <artifactId>spring-aop</artifactId>
+        <artifactId>spring-framework-bom</artifactId>
         <version>${springVersion}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-beans</artifactId>
-        <version>${springVersion}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-context</artifactId>
-        <version>${springVersion}</version>
+	<scope>import</scope>
+	<type>pom</type>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-core</artifactId>
-        <version>${springVersion}</version>
+	<version>${springVersion}</version>
         <exclusions>
           <exclusion>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jcl</artifactId>
           </exclusion>
         </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-expression</artifactId>
-        <version>${springVersion}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-oxm</artifactId>
-        <version>${springVersion}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-test</artifactId>
-        <version>${springVersion}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-web</artifactId>
-        <version>${springVersion}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-webmvc</artifactId>
-        <version>${springVersion}</version>
       </dependency>
       <dependency>
         <groupId>io.fabric8</groupId>
@@ -886,7 +797,7 @@
       <dependency>
         <groupId>org.xmlunit</groupId>
         <artifactId>xmlunit-core</artifactId>
-        <version>2.6.2</version>
+        <version>2.8.3</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -911,19 +822,14 @@
       <dependency>
         <groupId>co.elastic.logging</groupId>
         <artifactId>log4j2-ecs-layout</artifactId>
-        <version>1.0.1</version>
-      </dependency>
-      <dependency>
-        <groupId>org.elasticsearch.client</groupId>
-        <artifactId>elasticsearch-rest-high-level-client</artifactId>
-        <version>${elastic.version}</version>
+        <version>1.4.0</version>
       </dependency>
       <!-- Used for testing HttpAppender -->
       <dependency>
         <groupId>com.github.tomakehurst</groupId>
         <artifactId>wiremock</artifactId>
         <scope>test</scope>
-        <version>2.19.0</version>
+        <version>2.27.2</version>
         <exclusions>
           <exclusion>
             <groupId>com.github.jknack</groupId>
@@ -972,15 +878,24 @@
         <version>2.0b6</version>
       </dependency>
       <dependency>
-        <groupId>org.codehaus.groovy</groupId>
-        <artifactId>groovy-jsr223</artifactId>
+        <groupId>org.apache.groovy</groupId>
+        <artifactId>groovy</artifactId>
         <version>${groovy.version}</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>org.codehaus.groovy</groupId>
+        <groupId>org.apache.groovy</groupId>
+        <artifactId>groovy-jsr223</artifactId>
+        <version>${groovy.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.groovy</groupId>
         <artifactId>groovy-dateutil</artifactId>
         <version>${groovy.version}</version>
+        <scope>test</scope>
       </dependency>
+
       <dependency>
         <!-- Testing MongoDB -->
         <groupId>de.flapdoodle.embed</groupId>
@@ -988,9 +903,24 @@
         <version>2.2.0</version>
         <scope>test</scope>
       </dependency>
+      <!-- Testing LDAP -->
+      <dependency>
+        <groupId>org.zapodot</groupId>
+        <artifactId>embedded-ldap-junit</artifactId>
+        <version>0.8.1</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <!-- https://javadoc.io/doc/com.google.guava/guava-testlib/latest/com/google/common/testing/TestLogHandler.html used in log4j-to-jul tests -->
+        <artifactId>guava-testlib</artifactId>
+        <version>31.0.1-jre</version>
+        <scope>test</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <build>
+    <defaultGoal>clean install</defaultGoal>
     <pluginManagement>
       <plugins>
         <plugin>
@@ -1058,16 +988,9 @@
           <artifactId>maven-compiler-plugin</artifactId>
           <version>${compiler.plugin.version}</version>
           <configuration>
-            <source>${maven.compiler.source}</source>
-            <target>${maven.compiler.target}</target>
-            <release>${maven.compiler.release}</release>
             <showDeprecation>true</showDeprecation>
             <showWarnings>true</showWarnings>
-            <verbose>false</verbose>
             <encoding>UTF-8</encoding>
-            <fork>true</fork>
-            <meminitial>256</meminitial>
-            <maxmem>1024</maxmem>
             <compilerArgs>
               <arg>-XDcompilePolicy=simple</arg>
               <arg>-Xplugin:ErrorProne</arg>
@@ -1093,7 +1016,7 @@
             <annotationProcessorPaths>
               <path>
                 <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-plugins</artifactId>
+                <artifactId>log4j-plugin-processor</artifactId>
                 <version>${project.version}</version>
               </path>
               <path>
@@ -1102,8 +1025,6 @@
                 <version>${errorprone.version}</version>
               </path>
             </annotationProcessorPaths>
-            <forceJavacCompilerUse>true</forceJavacCompilerUse>
-            <parameters>true</parameters>
           </configuration>
         </plugin>
         <plugin>
@@ -1216,7 +1137,6 @@
                     <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
                     <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
                     <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
-                    <Automatic-Module-Name>${module.name}</Automatic-Module-Name>
                   </manifestEntries>
                 </archive>
               </configuration>
@@ -1274,6 +1194,8 @@
           </systemPropertyVariables>
           <forkCount>1</forkCount>
           <reuseForks>false</reuseForks>
+          <redirectTestOutputToFile>true</redirectTestOutputToFile>
+          <runOrder>failedfirst</runOrder>
         </configuration>
       </plugin>
       <plugin>
@@ -1325,11 +1247,6 @@
             <groupId>org.apache.maven.wagon</groupId>
             <artifactId>wagon-ssh</artifactId>
             <version>3.1.0</version>
-          </dependency>
-          <dependency>
-            <groupId>org.asciidoctor</groupId>
-            <artifactId>asciidoctor-maven-plugin</artifactId>
-            <version>${asciidoc.plugin.version}</version>
           </dependency>
         </dependencies>
         <configuration>
@@ -1406,6 +1323,7 @@
         <artifactId>apache-rat-plugin</artifactId>
         <version>${rat.plugin.version}</version>
         <configuration>
+          <consoleOutput>true</consoleOutput>
           <excludes>
             <!-- Matches other RAT configurations in this POM -->
             <exclude>src/main/resources/META-INF/services/**/*</exclude>
@@ -1425,10 +1343,11 @@
             <exclude>log4j-distribution/target/**/*</exclude>
             <exclude>log4j-distribution/.project</exclude>
             <exclude>log4j-distribution/.settings/**</exclude>
+            <exclude>**/.toDelete</exclude>
             <exclude>velocity.log</exclude>
             <!-- Other -->
             <exclude>felix-cache/**</exclude>
-            <exclude>RELEASE-NOTES.md</exclude>
+            <exclude>**/*.md</exclude>
             <exclude>**/*.yml</exclude>
             <exclude>**/*.yaml</exclude>
             <exclude>**/*.json</exclude>
@@ -1438,6 +1357,16 @@
             <exclude>**/MANIFEST.MF</exclude>
           </excludes>
         </configuration>
+        <!-- Turn this one once it passes, not before.
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+        -->
       </plugin>
       <!-- DOAP (RDF) metadata generation -->
       <plugin>
@@ -1599,6 +1528,7 @@
         <artifactId>apache-rat-plugin</artifactId>
         <version>${rat.plugin.version}</version>
         <configuration>
+          <consoleOutput>true</consoleOutput>
           <excludes>
             <!-- Matches other RAT configurations in this POM -->
             <exclude>src/main/resources/META-INF/services/**/*</exclude>
@@ -1618,10 +1548,11 @@
             <exclude>log4j-distribution/target/**/*</exclude>
             <exclude>log4j-distribution/.project</exclude>
             <exclude>log4j-distribution/.settings/**</exclude>
+            <exclude>**/.toDelete</exclude>
             <exclude>velocity.log</exclude>
             <!-- Other -->
             <exclude>felix-cache/**</exclude>
-            <exclude>RELEASE-NOTES.txt</exclude>
+            <exclude>**/*.md</exclude>
             <exclude>**/*.yml</exclude>
             <exclude>**/*.yaml</exclude>
             <exclude>**/*.json</exclude>
@@ -1653,29 +1584,51 @@
       <id>www.example.com</id>
       <url>scp://www.example.com/www/docs/project/</url>
     </site>
+    <snapshotRepository>
+      <id>asf-snapshots</id>
+      <name>ASF snapshot repository</name>
+      <url>https://repository.apache.org/content/repositories/snapshots</url>
+    </snapshotRepository>
   </distributionManagement>
   <modules>
+    <!-- Log4j Bill of Materials -->
+    <module>log4j-bom</module>
+
+    <!-- Logging API -->
     <module>log4j-api</module>
+    <module>log4j-api-test</module>
+
+    <!-- Plugin API -->
     <module>log4j-plugins</module>
+    <module>log4j-plugin-processor</module>
+    <module>log4j-plugins-test</module>
+
+    <!-- Core Provider SDK -->
     <module>log4j-core</module>
-    <module>log4j-gctests</module>
+    <module>log4j-core-test</module>
+
+    <!-- Extensions -->
+    <module>log4j-iostreams</module>
+    <module>log4j-jmx-gui</module>
+
+    <!-- Core Plugins -->
+    <module>log4j-script</module>
+    <!-- Layouts -->
     <module>log4j-layout-jackson</module>
     <module>log4j-layout-jackson-json</module>
     <module>log4j-layout-jackson-xml</module>
     <module>log4j-layout-jackson-yaml</module>
     <module>log4j-layout-template-json</module>
-    <module>log4j-core-its</module>
-    <module>log4j-1.2-api</module>
-    <module>log4j-slf4j-impl</module>
-    <module>log4j-slf4j18-impl</module>
-    <module>log4j-to-slf4j</module>
-    <module>log4j-jcl</module>
+    <module>log4j-layout-template-json-test</module>
     <module>log4j-csv</module>
+    <!-- Lookups -->
+    <module>log4j-jndi</module>
+    <module>log4j-jndi-test</module>
+    <module>log4j-docker</module>
+    <module>log4j-kubernetes</module>
+    <module>log4j-spring-cloud-config</module>
+    <!-- Appenders -->
     <module>log4j-flume-ng</module>
-    <module>log4j-taglib</module>
-    <module>log4j-jmx-gui</module>
-    <module>log4j-samples</module>
-    <module>log4j-bom</module>
     <module>log4j-jdbc</module>
     <module>log4j-jdbc-dbcp2</module>
     <module>log4j-jpa</module>
@@ -1687,19 +1640,32 @@
     <module>log4j-mongodb3</module>
     <module>log4j-mongodb4</module>
     <module>log4j-cassandra</module>
-    <module>log4j-web</module>
+    <module>log4j-smtp</module>
+
+    <!-- Other Core Tests -->
+    <module>log4j-samples</module>
+    <module>log4j-core-its</module>
+    <module>log4j-gctests</module>
+    <module>log4j-osgi</module>
     <module>log4j-perf</module>
-    <module>log4j-iostreams</module>
+
+    <!-- Logging Library Integrations -->
+    <module>log4j-1.2-api</module>
+    <module>log4j-slf4j-impl</module>
+    <module>log4j-slf4j18-impl</module>
+    <module>log4j-to-slf4j</module>
+    <module>log4j-to-jul</module>
+    <module>log4j-jcl</module>
     <module>log4j-jul</module>
     <module>log4j-jpl</module>
     <module>log4j-liquibase</module>
+
+    <!-- Runtime Integrations -->
+    <module>log4j-web</module>
+    <module>log4j-jakarta-web</module>
+    <module>log4j-taglib</module>
     <module>log4j-appserver</module>
-    <module>log4j-smtp</module>
-    <module>log4j-osgi</module>
-    <module>log4j-docker</module>
-    <module>log4j-kubernetes</module>
     <module>log4j-spring-boot</module>
-    <module>log4j-spring-cloud-config</module>
   </modules>
   <profiles>
     <profile>
@@ -1795,6 +1761,7 @@
             <artifactId>apache-rat-plugin</artifactId>
             <version>${rat.plugin.version}</version>
             <configuration>
+              <consoleOutput>true</consoleOutput>
               <excludes>
                 <!-- Matches other RAT configurations in this POM -->
                 <exclude>src/main/resources/META-INF/services/**/*</exclude>
@@ -1814,19 +1781,21 @@
                 <exclude>log4j-distribution/target/**/*</exclude>
                 <exclude>log4j-distribution/.project</exclude>
                 <exclude>log4j-distribution/.settings/**</exclude>
+                <exclude>**/.toDelete</exclude>
                 <exclude>velocity.log</exclude>
                 <!-- Other -->
                 <exclude>felix-cache/**</exclude>
-                <exclude>RELEASE-NOTES.md</exclude>
+                <exclude>**/*.md</exclude>
                 <exclude>**/*.yml</exclude>
                 <exclude>**/*.yaml</exclude>
                 <exclude>**/*.json</exclude>
-                <excllude>**/images/*.drawio</excllude>
+                <exclude>**/images/*.drawio</exclude>
                 <exclude>**/fluent-bit.conf</exclude>
                 <exclude>**/rabbitmq.config</exclude>
                 <exclude>**/MANIFEST.MF</exclude>
               </excludes>
             </configuration>
+            <!-- Turn this one once it passes, not before.
             <executions>
               <execution>
                 <phase>verify</phase>
@@ -1835,6 +1804,7 @@
                 </goals>
               </execution>
             </executions>
+            -->
           </plugin>
         </plugins>
       </build>
@@ -1890,6 +1860,30 @@
       <properties>
         <javadoc.opts>-Xdoclint:none</javadoc.opts>
       </properties>
+    </profile>
+    <profile>
+      <id>enable-plugin-annotation-processor</id>
+      <activation>
+        <property>
+          <name>log4j.compilePlugins</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <annotationProcessorPaths combine.children="append">
+                <path>
+                  <groupId>org.apache.logging.log4j</groupId>
+                  <artifactId>log4j-plugin-processor</artifactId>
+                  <version>${project.version}</version>
+                </path>
+              </annotationProcessorPaths>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
   </profiles>
 </project>

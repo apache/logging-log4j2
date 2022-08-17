@@ -17,10 +17,12 @@
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.util.ProcessIdUtil;
+import org.apache.logging.log4j.plugins.Namespace;
+import org.apache.logging.log4j.plugins.Plugin;
 
-@Plugin(name = "ProcessIdPatternConverter", category = "Converter")
+@Namespace("Converter")
+@Plugin("ProcessIdPatternConverter")
 @ConverterKeys({ "pid", "processId" })
 public final class ProcessIdPatternConverter extends LogEventPatternConverter {
     private static final String DEFAULT_DEFAULT_VALUE = "???";

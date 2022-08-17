@@ -27,14 +27,4 @@ import org.apache.logging.log4j.core.LogEvent;
 public interface EventResolverFactory
         extends TemplateResolverFactory<LogEvent, EventResolverContext> {
 
-    @Override
-    default Class<LogEvent> getValueClass() {
-        return LogEvent.class;
-    }
-
-    @Override
-    default Class<EventResolverContext> getContextClass() {
-        return EventResolverContext.class;
-    }
-
 }

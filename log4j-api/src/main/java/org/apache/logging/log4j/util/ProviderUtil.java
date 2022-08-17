@@ -17,11 +17,11 @@
 package org.apache.logging.log4j.util;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Properties;
-import java.util.ServiceLoader;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -39,19 +39,19 @@ public final class ProviderUtil {
     /**
      * Resource name for a Log4j 2 provider properties file.
      */
-    protected static final String PROVIDER_RESOURCE = "META-INF/log4j-provider.properties";
+    private static final String PROVIDER_RESOURCE = "META-INF/log4j-provider.properties";
 
     /**
      * Loaded providers.
      */
-    protected static final Collection<Provider> PROVIDERS = new HashSet<>();
+    static final Collection<Provider> PROVIDERS = new HashSet<>();
 
     /**
      * Guards the ProviderUtil singleton instance from lazy initialization. This is primarily used for OSGi support.
      *
      * @since 2.1
      */
-    protected static final Lock STARTUP_LOCK = new ReentrantLock();
+    static final Lock STARTUP_LOCK = new ReentrantLock();
 
     private static final String API_VERSION = "Log4jAPIVersion";
     private static final String[] COMPATIBLE_API_VERSIONS = {"2.6.0"};
@@ -62,19 +62,14 @@ public final class ProviderUtil {
     private static volatile ProviderUtil instance;
 
     private ProviderUtil() {
-        for (final ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
-            try {
-                loadProviders(classLoader);
-            } catch (final Throwable ex) {
-                LOGGER.debug("Unable to retrieve provider from ClassLoader {}", classLoader, ex);
-            }
-        }
-        for (final LoaderUtil.UrlResource resource : LoaderUtil.findUrlResources(PROVIDER_RESOURCE)) {
+        PROVIDERS.addAll(ServiceRegistry.getInstance()
+                .getServices(Provider.class, MethodHandles.lookup(), provider -> validVersion(provider.getVersions())));
+        for (final LoaderUtil.UrlResource resource : LoaderUtil.findUrlResources(PROVIDER_RESOURCE, false)) {
             loadProvider(resource.getUrl(), resource.getClassLoader());
         }
     }
 
-    protected static void addProvider(final Provider provider) {
+    static void addProvider(final Provider provider) {
         PROVIDERS.add(provider);
         LOGGER.debug("Loaded Provider {}", provider);
     }
@@ -86,7 +81,7 @@ public final class ProviderUtil {
      * @param url the URL to the provider properties file
      * @param cl the ClassLoader to load the provider classes with
      */
-    protected static void loadProvider(final URL url, final ClassLoader cl) {
+    static void loadProvider(final URL url, final ClassLoader cl) {
         try {
             final Properties props = PropertiesUtil.loadClose(url.openStream(), url);
             if (validVersion(props.getProperty(API_VERSION))) {
@@ -96,19 +91,6 @@ public final class ProviderUtil {
             }
         } catch (final IOException e) {
             LOGGER.error("Unable to open {}", url, e);
-        }
-    }
-
-    /**
-     * 
-     * @param classLoader null can be used to mark the bootstrap class loader.
-     */
-    protected static void loadProviders(final ClassLoader classLoader) {
-        final ServiceLoader<Provider> serviceLoader = ServiceLoader.load(Provider.class, classLoader);
-        for (final Provider provider : serviceLoader) {
-            if (validVersion(provider.getVersions()) && !PROVIDERS.contains(provider)) {
-                PROVIDERS.add(provider);
-            }
         }
     }
 
@@ -127,13 +109,13 @@ public final class ProviderUtil {
      *
      * @since 2.1
      */
-    protected static void lazyInit() {
-        // noinspection DoubleCheckedLocking
+    private static void lazyInit() {
         if (instance == null) {
             try {
                 STARTUP_LOCK.lockInterruptibly();
                 try {
                     if (instance == null) {
+                        //noinspection InstantiationOfUtilityClass
                         instance = new ProviderUtil();
                     }
                 } finally {

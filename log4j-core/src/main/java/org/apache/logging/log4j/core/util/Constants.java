@@ -16,13 +16,40 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.plugins.Named;
+import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
+
+import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 
 /**
  * Log4j Constants.
  */
 public final class Constants {
+
+    public static final String JNDI_PREFIX = "log4j2.enableJndi";
+    private static final String JNDI_MANAGER_CLASS = "org.apache.logging.log4j.jndi.JndiManager";
+
+    /**
+     * Check to determine if the JNDI feature is available.
+     * @param subKey The feature to check.
+     * @return true if the feature is available.
+     */
+    private static boolean isJndiEnabled(final String subKey) {
+        return PropertiesUtil.getProperties().getBooleanProperty(JNDI_PREFIX + subKey, false)
+                && isClassAvailable(JNDI_MANAGER_CLASS);
+    }
+
+    public static boolean JNDI_CONTEXT_SELECTOR_ENABLED = isJndiEnabled("ContextSelector");
+
+    public static boolean JNDI_JMS_ENABLED = isJndiEnabled("Jms");
+
+    public static boolean JNDI_LOOKUP_ENABLED = isJndiEnabled("Lookup");
+
+    public static boolean JNDI_JDBC_ENABLED = isJndiEnabled("Jdbc");
 
     /**
      * Name of the system property to use to identify the LogEvent factory.
@@ -38,6 +65,8 @@ public final class Constants {
      * Property name for the default status (internal log4j logging) level to use if not specified in configuration.
      */
     public static final String LOG4J_DEFAULT_STATUS_LEVEL = "Log4jDefaultStatusLevel";
+
+    public static final Key<Level> DEFAULT_STATUS_LEVEL_KEY = new @Named("StatusLogger") Key<>() {};
 
     /**
      * JNDI context name string literal.
@@ -56,20 +85,25 @@ public final class Constants {
             "log4j.format.msg.async", false);
 
     /**
-     * LOG4J2-2109 if {@code true}, MessagePatternConverter will always operate as though
-     * <pre>%m{nolookups}</pre> is configured.
+     * LOG4J2-3198 property which used to globally opt out of lookups in pattern layout message text, however
+     * this is the default and this property is no longer read.
+     *
+     * Deprecated in 2.15.
      *
      * @since 2.10
+     * @deprecated no longer used, lookups are only used when {@code %m{lookups}} is specified
      */
+    @Deprecated(forRemoval = true)
     public static final boolean FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS = PropertiesUtil.getProperties().getBooleanProperty(
-            "log4j2.formatMsgNoLookups", false);
+            "log4j2.formatMsgNoLookups", true);
 
     /**
      * {@code true} if we think we are running in a web container, based on the boolean value of system property
      * "log4j2.is.webapp", or (if this system property is not set) whether the  {@code javax.servlet.Servlet} class
      * is present in the classpath.
      */
-    public static final boolean IS_WEB_APP = org.apache.logging.log4j.util.Constants.IS_WEB_APP;
+    @Deprecated(forRemoval = true)
+    public static final boolean IS_WEB_APP = org.apache.logging.log4j.util.Constants.isWebApp();
 
     /**
      * Kill switch for object pooling in ThreadLocals that enables much of the LOG4J2-1270 no-GC behaviour.
@@ -79,7 +113,8 @@ public final class Constants {
      *
      * @since 2.6
      */
-    public static final boolean ENABLE_THREADLOCALS = org.apache.logging.log4j.util.Constants.ENABLE_THREADLOCALS;
+    @Deprecated(forRemoval = true)
+    public static final boolean ENABLE_THREADLOCALS = isThreadLocalsEnabled();
 
     /**
      * Kill switch for garbage-free Layout behaviour that encodes LogEvents directly into
@@ -159,6 +194,20 @@ public final class Constants {
 
     private static int size(final String property, final int defaultValue) {
         return PropertiesUtil.getProperties().getIntegerProperty(property, defaultValue);
+    }
+
+    /**
+     * Determines if a named Class can be loaded or not.
+     *
+     * @param className The class name.
+     * @return {@code true} if the class could be found or {@code false} otherwise.
+     */
+    private static boolean isClassAvailable(final String className) {
+        try {
+            return LoaderUtil.loadClass(className) != null;
+        } catch (final Throwable e) {
+            return false;
+        }
     }
 
     /**

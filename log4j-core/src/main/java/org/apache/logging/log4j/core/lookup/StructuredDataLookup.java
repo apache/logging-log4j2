@@ -17,13 +17,14 @@
 package org.apache.logging.log4j.core.lookup;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.plugins.Plugin;
 
 /**
- * Looks up keys from {@link org.apache.logging.log4j.message.StructuredDataMessage} log messages.
+ * Looks up keys from {@link StructuredDataMessage} log messages.
  */
-@Plugin(name = "sd", category = StrLookup.CATEGORY)
+@Lookup
+@Plugin("sd")
 public class StructuredDataLookup implements StrLookup {
 
     /**

@@ -1,12 +1,12 @@
 ////
     Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements. See the NOTICE file distributed with
+    contributor license agreements.  See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
     The ASF licenses this file to You under the Apache License, Version 2.0
     (the "License"); you may not use this file except in compliance with
-    the License. You may obtain a copy of the License at
+    the License.  You may obtain a copy of the License at
 
-        https://www.apache.org/licenses/LICENSE-2.0
+         http://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -446,7 +446,7 @@ even any Objects. Log4j can log any Object that implements
 creating garbage.
 
 The
-http://www.slf4j.org/api/org/slf4j/spi/LocationAwareLogger.html#log(org.slf4j.Marker,%20java.lang.String,%20int,%20java.lang.String,%20java.lang.Object%5B%5D,%20java.lang.Throwable)[`org.slf4j.spi.LocationAwareLogger::log`]
+https://www.slf4j.org/api/org/slf4j/spi/LocationAwareLogger.html#log-org.slf4j.Marker-java.lang.String-int-java.lang.String-java.lang.Object:A-java.lang.Throwable-[`org.slf4j.spi.LocationAwareLogger::log`]
 method is not yet implemented in a garbage-free manner in the
 log4j-slf4j-impl binding. It creates a new message object for each call.
 

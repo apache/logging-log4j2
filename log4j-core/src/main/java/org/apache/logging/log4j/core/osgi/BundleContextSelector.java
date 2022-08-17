@@ -16,19 +16,22 @@
  */
 package org.apache.logging.log4j.core.osgi;
 
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.impl.ContextAnchor;
+import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
+import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.plugins.Singleton;
+import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.util.StackLocatorUtil;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleReference;
+import org.osgi.framework.FrameworkUtil;
+
 import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.impl.ContextAnchor;
-import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
-import org.apache.logging.log4j.util.StackLocatorUtil;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleReference;
-import org.osgi.framework.FrameworkUtil;
 
 /**
  * ContextSelector for OSGi bundles. This ContextSelector works rather similarly to the
@@ -37,7 +40,12 @@ import org.osgi.framework.FrameworkUtil;
  *
  * @since 2.1
  */
+@Singleton
 public class BundleContextSelector extends ClassLoaderContextSelector {
+    @Inject
+    public BundleContextSelector(final Injector injector) {
+        super(injector);
+    }
 
     @Override
     public void shutdown(final String fqcn, final ClassLoader loader, final boolean currentContext,
@@ -81,7 +89,7 @@ public class BundleContextSelector extends ClassLoaderContextSelector {
 
     private LoggerContext getLoggerContext(final Bundle bundle) {
         final String name = Objects.requireNonNull(bundle, "No Bundle provided").getSymbolicName();
-        final AtomicReference<WeakReference<LoggerContext>> ref = CONTEXT_MAP.get(name);
+        final AtomicReference<WeakReference<LoggerContext>> ref = contextMap.get(name);
         if (ref != null && ref.get() != null) {
            return ref.get().get();
         }
@@ -89,7 +97,7 @@ public class BundleContextSelector extends ClassLoaderContextSelector {
     }
 
     private void removeLoggerContext(final LoggerContext context) {
-        CONTEXT_MAP.remove(context.getName());
+        contextMap.remove(context.getName());
     }
 
     @Override
@@ -129,20 +137,20 @@ public class BundleContextSelector extends ClassLoaderContextSelector {
         return lc == null ? getDefault() : lc;
     }
 
-    private static boolean hasContext(final Bundle bundle) {
+    private boolean hasContext(final Bundle bundle) {
         final String name = Objects.requireNonNull(bundle, "No Bundle provided").getSymbolicName();
-        final AtomicReference<WeakReference<LoggerContext>> ref = CONTEXT_MAP.get(name);
+        final AtomicReference<WeakReference<LoggerContext>> ref = contextMap.get(name);
         return ref != null && ref.get() != null && ref.get().get() != null && ref.get().get().isStarted();
     }
 
-    private static LoggerContext locateContext(final Bundle bundle, final URI configLocation) {
+    private LoggerContext locateContext(final Bundle bundle, final URI configLocation) {
         final String name = Objects.requireNonNull(bundle, "No Bundle provided").getSymbolicName();
-        final AtomicReference<WeakReference<LoggerContext>> ref = CONTEXT_MAP.get(name);
+        final AtomicReference<WeakReference<LoggerContext>> ref = contextMap.get(name);
         if (ref == null) {
             final LoggerContext context = new LoggerContext(name, bundle, configLocation);
-            CONTEXT_MAP.putIfAbsent(name,
+            contextMap.putIfAbsent(name,
                 new AtomicReference<>(new WeakReference<>(context)));
-            return CONTEXT_MAP.get(name).get().get();
+            return contextMap.get(name).get().get();
         }
         final WeakReference<LoggerContext> r = ref.get();
         final LoggerContext ctx = r.get();

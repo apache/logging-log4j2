@@ -1,12 +1,12 @@
 ////
     Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements. See the NOTICE file distributed with
+    contributor license agreements.  See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
     The ASF licenses this file to You under the Apache License, Version 2.0
     (the "License"); you may not use this file except in compliance with
-    the License. You may obtain a copy of the License at
+    the License.  You may obtain a copy of the License at
 
-        https://www.apache.org/licenses/LICENSE-2.0
+         http://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -43,5 +43,8 @@ projects, we cannot recommend any particular individual for any specific issue.
 
 ==== Committers who accept GitHub Sponsorship
 
-* https://github.com/garydgregory[Gary Gregory]
-* https://github.com/rgoers[Ralph Goers]
+* [Gary Gregory](https://github.com/garydgregory)
+* [Matt Sicker](https://github.com/jvz)
+* [Ralph Goers](https://github.com/rgoers)
+* [Volkan Yazıcı](https://github.com/vy)
+* [Carter Kozak](https://github.com/carterkozak)

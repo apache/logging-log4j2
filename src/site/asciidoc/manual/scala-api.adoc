@@ -1,12 +1,12 @@
 ////
     Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements. See the NOTICE file distributed with
+    contributor license agreements.  See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
     The ASF licenses this file to You under the Apache License, Version 2.0
     (the "License"); you may not use this file except in compliance with
-    the License. You may obtain a copy of the License at
+    the License.  You may obtain a copy of the License at
 
-        https://www.apache.org/licenses/LICENSE-2.0
+         http://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,8 +25,9 @@ API.
 == Requirements
 
 Log4j 2 Scala API is dependent on the Log4j 2 API, Scala runtime library
-and reflection. It currently supports Scala 2.10, 2.11 and 2.12. See
-link:../maven-artifacts.html#Scala_API[instructions] on including this
+and reflection. It currently supports Scala 2.10, 2.11, 2.12 and 2.13.
+Scala 3 support has been recently added.
+See link:../maven-artifacts.html#Scala_API[instructions] on including this
 in an SBT, Maven, Ivy, or Gradle project.
 
 == Example

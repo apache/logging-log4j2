@@ -137,7 +137,7 @@ public final class FileUtils {
     }
 
     /**
-     * Define file posix attribute view on a path/file.
+     * Define file POSIX attribute view on a path/file.
      *
      * @param path Target path
      * @param filePermissions Permissions to apply
@@ -178,9 +178,9 @@ public final class FileUtils {
     }
 
     /**
-     * Check if posix file attribute view is supported on the default FileSystem.
+     * Check if POSIX file attribute view is supported on the default FileSystem.
      *
-     * @return true if posix file attribute view supported, false otherwise
+     * @return true if POSIX file attribute view supported, false otherwise
      */
     public static boolean isFilePosixAttributeViewSupported() {
         return FileSystems.getDefault().supportedFileAttributeViews().contains("posix");

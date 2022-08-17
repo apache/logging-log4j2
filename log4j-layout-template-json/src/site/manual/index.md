@@ -18,15 +18,15 @@
 
 # Apache Log4j JSON Template Layout module
 
-This module provides a customizable and efficient JSON layout.
+This module provides a customizable, efficient, and garbage-free JSON generating Apache Log4j layout.
+It encodes log events according to the structure described by the JSON template provided.
 
 ## Requirements
 
-This module was introduced in Log4j 3.0.0 and requires Jackson.
+This module was introduced in Log4j 2.14.0.
 
 Some features may require optional [dependencies](../runtime-dependencies.html).
 These dependencies are specified in the documentation for those features.
 
-Some Log4j features require external dependencies. See the
-[Dependency Tree](dependencies.html#Dependency_Tree) for the exact list of JAR
-files needed for these features.
+Some Log4j features require external dependencies.
+See the [Dependency Tree](dependencies.html#Dependency_Tree) for the exact list of JAR files needed for these features.

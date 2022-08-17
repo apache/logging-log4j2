@@ -1,12 +1,10 @@
-# [Apache Log4j 2](https://logging.apache.org/log4j/2.x/)
+# [Apache Log4j 3.x](https://logging.apache.org/log4j/2.x/)
 
-Apache Log4j 2 is an upgrade to Log4j that provides significant improvements over its predecessor, Log4j 1.x,
+Apache Log4j 3.x is an upgrade to Log4j that provides significant improvements over its predecessor, Log4j 1.x,
 and provides many of the improvements available in Logback while fixing some inherent problems in Logback's architecture.
 
-[![Jenkins build (3.x)](https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fci-builds.apache.org%2Fjob%2FLogging%2Fjob%2Flog4j%2Fjob%2Fmaster%2F&label=3.x&logo=cloudbees)](https://ci-builds.apache.org/job/Logging/job/log4j/job/master/)
-[![Jenkins build (2.x)](https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fci-builds.apache.org%2Fjob%2FLogging%2Fjob%2Flog4j%2Fjob%2Frelease-2.x%2F&label=2.x&logo=cloudbees)](https://ci-builds.apache.org/job/Logging/job/log4j/job/release-2.x/)
-[![GitHub build (3.x)](https://img.shields.io/github/workflow/status/apache/logging-log4j2/Maven/master?label=3.x&logo=github)](https://github.com/apache/logging-log4j2/actions?query=workflow%3AMaven+branch%3Amaster)
-[![GitHub build (2.x)](https://img.shields.io/github/workflow/status/apache/logging-log4j2/Maven/release-2.x?label=2.x&logo=github)](https://github.com/apache/logging-log4j2/actions?query=workflow%3AMaven+branch%3Arelease-2.x)
+[![GitHub build (3.x)](https://img.shields.io/github/workflow/status/apache/logging-log4j2/build/master?label=3.x&logo=github)](https://github.com/apache/logging-log4j2/actions?query=workflow%3AMaven+branch%3Amaster)
+[![GitHub build (2.x)](https://img.shields.io/github/workflow/status/apache/logging-log4j2/build/release-2.x?label=2.x&logo=github)](https://github.com/apache/logging-log4j2/actions?query=workflow%3AMaven+branch%3Arelease-2.x)
 [![Latest Maven Central release](https://img.shields.io/maven-central/v/org.apache.logging.log4j/log4j-api.svg?logo=java)](http://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api)
 
 
@@ -66,17 +64,17 @@ And an example `log4j2.xml` configuration file:
 
 ## Documentation
 
-The Log4j 2 User's Guide is available [here](https://logging.apache.org/log4j/2.x/manual/index.html) or as a downloadable
+The Log4j 3.x User's Guide is available [here](https://logging.apache.org/log4j/2.x/manual/index.html) or as a downloadable
 [PDF](https://logging.apache.org/log4j/2.x/log4j-users-guide.pdf).
 
 ## Requirements
 
-Log4j 2.4 and greater requires Java 7, versions 2.0-alpha1 to 2.3 required Java 6.
+Log4j 3.0 and greater requires Java 11.
 Some features require optional dependencies; the documentation for these features specifies the dependencies.
 
 ## License
 
-Apache Log4j 2 is distributed under the [Apache License, version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
+Apache Log4j 3.x is distributed under the [Apache License, version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
 
 ## Download
 
@@ -95,7 +93,7 @@ JIRA issue in the Pull Request.
 
 ## Building From Source
 
-Log4j requires Apache Maven 3.x. To build from source and install to your local Maven repository, execute the following:
+Log4j 3.x requires Java 11 (at least version 11.0.13 when building on macOS) and Apache Maven 3.x. To build from source and install to your local Maven repository, execute the following:
 
 ```sh
 mvn install

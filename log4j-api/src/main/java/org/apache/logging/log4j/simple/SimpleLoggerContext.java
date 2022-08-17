@@ -29,10 +29,13 @@ import org.apache.logging.log4j.spi.LoggerRegistry;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
- *
+ * A simple {@link LoggerContext} implementation.
  */
 public class SimpleLoggerContext implements LoggerContext {
 
+    /** Singleton instance. */
+    static final SimpleLoggerContext INSTANCE = new SimpleLoggerContext();
+    
     private static final String SYSTEM_OUT = "system.out";
 
     private static final String SYSTEM_ERR = "system.err";
@@ -53,10 +56,13 @@ public class SimpleLoggerContext implements LoggerContext {
      * lost in a flood of messages without knowing who sends them.
      */
     private final boolean showShortName;
+
     /** Include the current time in the log message */
     private final boolean showDateTime;
+
     /** Include the ThreadContextMap in the log message */
     private final boolean showContextMap;
+    
     /** The date and time format to use in the log message */
     private final String dateTimeFormat;
 
@@ -66,6 +72,9 @@ public class SimpleLoggerContext implements LoggerContext {
 
     private final LoggerRegistry<ExtendedLogger> loggerRegistry = new LoggerRegistry<>();
 
+    /**
+     * Constructs a new initialized instance.
+     */
     public SimpleLoggerContext() {
         props = new PropertiesUtil("log4j2.simplelog.properties");
 
@@ -87,13 +96,17 @@ public class SimpleLoggerContext implements LoggerContext {
             ps = System.out;
         } else {
             try {
-                final FileOutputStream os = new FileOutputStream(fileName);
-                ps = new PrintStream(os);
+                ps = new PrintStream(new FileOutputStream(fileName));
             } catch (final FileNotFoundException fnfe) {
                 ps = System.err;
             }
         }
         this.stream = ps;
+    }
+
+    @Override
+    public Object getExternalContext() {
+        return null;
     }
 
     @Override
@@ -115,13 +128,19 @@ public class SimpleLoggerContext implements LoggerContext {
         return loggerRegistry.getLogger(name, messageFactory);
     }
 
+    /**
+     * Gets the LoggerRegistry.
+     *
+     * @return the LoggerRegistry.
+     * @since 2.17.2
+     */
     @Override
-    public boolean hasLogger(final String name) {
-        return false;
+    public LoggerRegistry<ExtendedLogger> getLoggerRegistry() {
+        return loggerRegistry;
     }
 
     @Override
-    public boolean hasLogger(final String name, final MessageFactory messageFactory) {
+    public boolean hasLogger(final String name) {
         return false;
     }
 
@@ -131,8 +150,8 @@ public class SimpleLoggerContext implements LoggerContext {
     }
 
     @Override
-    public Object getExternalContext() {
-        return null;
+    public boolean hasLogger(final String name, final MessageFactory messageFactory) {
+        return false;
     }
 
 }

@@ -16,21 +16,23 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import java.util.List;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.plugins.Namespace;
+import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.EnglishEnums;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.StringBuilders;
+
+import java.util.List;
 
 /**
  * Converter that encodes the output from a pattern using a specified format. Supported formats include HTML
  * (default) and JSON.
  */
-@Plugin(name = "encode", category = PatternConverter.CATEGORY)
+@Namespace(PatternConverter.CATEGORY)
+@Plugin("encode")
 @ConverterKeys({"enc", "encode"})
 @PerformanceSensitive("allocation")
 public final class EncodingPatternConverter extends LogEventPatternConverter {
@@ -98,42 +100,55 @@ public final class EncodingPatternConverter extends LogEventPatternConverter {
         HTML {
             @Override
             void escape(final StringBuilder toAppendTo, final int start) {
-                for (int i = toAppendTo.length() - 1; i >= start; i--) { // backwards: length may change
+
+                // do this in two passes to keep O(n) time complexity
+
+                final int origLength = toAppendTo.length();
+                int firstSpecialChar = origLength;
+
+                for (int i = origLength - 1; i >= start; i--) {
                     final char c = toAppendTo.charAt(i);
-                    switch (c) {
-                        case '\r':
-                            toAppendTo.setCharAt(i, '\\');
-                            toAppendTo.insert(i + 1, 'r');
-                            break;
-                        case '\n':
-                            toAppendTo.setCharAt(i, '\\');
-                            toAppendTo.insert(i + 1, 'n');
-                            break;
-                        case '&':
-                            toAppendTo.setCharAt(i, '&');
-                            toAppendTo.insert(i + 1, "amp;");
-                            break;
-                        case '<':
-                            toAppendTo.setCharAt(i, '&');
-                            toAppendTo.insert(i + 1, "lt;");
-                            break;
-                        case '>':
-                            toAppendTo.setCharAt(i, '&');
-                            toAppendTo.insert(i + 1, "gt;");
-                            break;
-                        case '"':
-                            toAppendTo.setCharAt(i, '&');
-                            toAppendTo.insert(i + 1, "quot;");
-                            break;
-                        case '\'':
-                            toAppendTo.setCharAt(i, '&');
-                            toAppendTo.insert(i + 1, "apos;");
-                            break;
-                        case '/':
-                            toAppendTo.setCharAt(i, '&');
-                            toAppendTo.insert(i + 1, "#x2F;");
-                            break;
+                    final String escaped = escapeChar(c);
+                    if (escaped != null) {
+                        firstSpecialChar = i;
+                        for (int j = 0; j < escaped.length() - 1; j++) {
+                            toAppendTo.append(' '); // make room for the escape sequence
+                        }
                     }
+                }
+
+                for (int i = origLength - 1, j = toAppendTo.length(); i >= firstSpecialChar; i--) {
+                    final char c = toAppendTo.charAt(i);
+                    final String escaped = escapeChar(c);
+                    if (escaped == null) {
+                        toAppendTo.setCharAt(--j, c);
+                    } else {
+                        toAppendTo.replace(j - escaped.length(), j, escaped);
+                        j -= escaped.length();
+                    }
+                }
+            }
+
+            private String escapeChar(char c) {
+                switch (c) {
+                    case '\r':
+                        return "\\r";
+                    case '\n':
+                        return "\\n";
+                    case '&':
+                        return "&amp;";
+                    case '<':
+                        return "&lt;";
+                    case '>':
+                        return "&gt;";
+                    case '"':
+                        return "&quot;";
+                    case '\'':
+                        return "&apos;";
+                    case '/':
+                        return "&#x2F;";
+                    default:
+                        return null;
                 }
             }
         },
@@ -153,17 +168,33 @@ public final class EncodingPatternConverter extends LogEventPatternConverter {
         CRLF {
             @Override
             void escape(final StringBuilder toAppendTo, final int start) {
-                for (int i = toAppendTo.length() - 1; i >= start; i--) { // backwards: length may change
+
+                // do this in two passes to keep O(n) time complexity
+
+                final int origLength = toAppendTo.length();
+                int firstSpecialChar = origLength;
+
+                for (int i = origLength - 1; i >= start; i--) {
+                    final char c = toAppendTo.charAt(i);
+                    if (c == '\r' || c == '\n') {
+                        firstSpecialChar = i;
+                        toAppendTo.append(' '); // make room for the escape sequence
+                    }
+                }
+
+                for (int i = origLength - 1, j = toAppendTo.length(); i >= firstSpecialChar; i--) {
                     final char c = toAppendTo.charAt(i);
                     switch (c) {
                         case '\r':
-                            toAppendTo.setCharAt(i, '\\');
-                            toAppendTo.insert(i + 1, 'r');
+                            toAppendTo.setCharAt(--j, 'r');
+                            toAppendTo.setCharAt(--j, '\\');
                             break;
                         case '\n':
-                            toAppendTo.setCharAt(i, '\\');
-                            toAppendTo.insert(i + 1, 'n');
+                            toAppendTo.setCharAt(--j, 'n');
+                            toAppendTo.setCharAt(--j, '\\');
                             break;
+                        default:
+                            toAppendTo.setCharAt(--j, c);
                     }
                 }
             }

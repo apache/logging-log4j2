@@ -82,7 +82,7 @@ public class ApiLoggerTest extends AbstractLoggerTest {
         logger.setParent(null);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testSetLevelFails() throws Exception {
         logger.setLevel(null);
     }

@@ -1,13 +1,13 @@
 ////
     Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements. See the NOTICE file distributed with
+    contributor license agreements.  See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
     The ASF licenses this file to You under the Apache License, Version 2.0
     (the "License"); you may not use this file except in compliance with
-    the License. You may obtain a copy of the License at
-    
-        https://www.apache.org/licenses/LICENSE-2.0
-    
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -57,7 +57,7 @@ LoggerConfig if there are no ancestors between itself and the
 descendant LoggerConfig.
 
 For example, the LoggerConfig named `"com.foo"` is a parent of the
-LoggerConfig named`"com.foo.Bar"`. Similarly, `"java"` is a parent of
+LoggerConfig named `"com.foo.Bar"`. Similarly, `"java"` is a parent of
 `"java.util"` and an ancestor of `"java.util.Vector"`. This naming
 scheme should be familiar to most developers.
 
@@ -164,10 +164,17 @@ process the event.
 
 LoggerConfigs will be assigned a Log
 link:../log4j-api/apidocs/org/apache/logging/log4j/Level.html[`Level`].
-The set of built-in levels includes TRACE, DEBUG, INFO, WARN, ERROR, and
-FATAL. Log4j 2 also supports link:customloglevels.html[custom log
+The set of built-in levels includes ALL, TRACE, DEBUG, INFO, WARN, ERROR,
+FATAL, and OFF. Log4j 2 also supports link:customloglevels.html[custom log
 levels]. Another mechanism for getting more granularity is to use
-link:../log4j-api/api.html#Markers[Markers] instead.
+link:../log4j-api/api.html#Markers[Markers] instead. The OFF and ALL
+levels are not intended to be used on calls to the logging API.
+Specifying OFF in the configuration implies no logging events should
+match while specifying ALL would mean all events match, including custom
+events. However, OFF can be used on logging API calls in special cases
+where the event should always be logged regardless of the configuration.
+However, it is generally recommended that a Marker with a corresponding
+global Marker Filter be used instead.
 
 http://logging.apache.org/log4j/1.2/manual.html[Log4j 1.x] and
 http://logback.qos.ch/manual/architecture.html#effectiveLevel[Logback]
@@ -285,7 +292,7 @@ for further processing (Yes) or discarded (No).
 
 |  |`TRACE` |`DEBUG` |`INFO` |`WARN` |`ERROR` |`FATAL` |`OFF`
 
-|`ALL` |✅ |✅ |✅ |✅ |✅ |✅ |❌
+|`ALL` |❌ |❌ |❌ |❌ |❌ |❌ |❌
 
 |`TRACE` |✅ |❌ |❌ |❌ |❌ |❌ |❌
 
@@ -299,7 +306,7 @@ for further processing (Yes) or discarded (No).
 
 |`FATAL` |✅ |✅ |✅ |✅ |✅ |✅ |❌
 
-|`OFF` |❌ |❌ |❌ |❌ |❌ |❌ |❌
+|`OFF` |✅ |✅ |✅ |✅ |✅ |✅ |✅
 |===
 
 === Filter

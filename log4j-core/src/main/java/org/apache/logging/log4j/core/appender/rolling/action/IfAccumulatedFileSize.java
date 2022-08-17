@@ -16,32 +16,33 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import java.nio.file.Path;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.appender.rolling.FileSize;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 
+import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * PathCondition that accepts paths after the accumulated file size threshold is exceeded during the file tree walk.
  */
-@Plugin(name = "IfAccumulatedFileSize", category = Core.CATEGORY_NAME, printObject = true)
+@Configurable(printObject = true)
+@Plugin
 public final class IfAccumulatedFileSize implements PathCondition {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private final long thresholdBytes;
     private long accumulatedSize;
     private final PathCondition[] nestedConditions;
 
-    private IfAccumulatedFileSize(final long thresholdSize, final PathCondition[] nestedConditions) {
+    private IfAccumulatedFileSize(final long thresholdSize, final PathCondition... nestedConditions) {
         if (thresholdSize <= 0) {
             throw new IllegalArgumentException("Count must be a positive integer but was " + thresholdSize);
         }

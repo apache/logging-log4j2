@@ -88,12 +88,7 @@ public class SmtpManager extends AbstractManager {
     }
 
     public void add(LogEvent event) {
-        if (event instanceof Log4jLogEvent && event.getMessage() instanceof ReusableMessage) {
-            ((Log4jLogEvent) event).makeMessageImmutable();
-        } else if (event instanceof MutableLogEvent) {
-            event = ((MutableLogEvent) event).createMemento();
-        }
-        buffer.add(event);
+        buffer.add(event.toImmutable());
     }
 
     public static SmtpManager getSmtpManager(
@@ -182,7 +177,7 @@ public class SmtpManager extends AbstractManager {
             connect(appendEvent);
         }
         try {
-            final LogEvent[] priorEvents = buffer.removeAll();
+            final LogEvent[] priorEvents = removeAllBufferedEvents();
             // LOG4J-310: log appendEvent even if priorEvents is empty
 
             final byte[] rawBytes = formatContentToBytes(priorEvents, appendEvent, layout);
@@ -194,11 +189,17 @@ public class SmtpManager extends AbstractManager {
             final InternetHeaders headers = getHeaders(contentType, encoding);
             final MimeMultipart mp = getMimeMultipart(encodedBytes, headers);
 
-            sendMultipartMessage(message, mp);
+            final String subject = data.subject.toSerializable(appendEvent);
+
+            sendMultipartMessage(message, mp, subject);
         } catch (final MessagingException | IOException | RuntimeException e) {
             logError("Caught exception while sending e-mail notification.", e);
             throw new LoggingException("Error occurred while sending email", e);
         }
+    }
+
+    LogEvent[] removeAllBufferedEvents() {
+        return buffer.removeAll();
     }
 
     protected byte[] formatContentToBytes(final LogEvent[] priorEvents, final LogEvent appendEvent,
@@ -275,10 +276,23 @@ public class SmtpManager extends AbstractManager {
         return mp;
     }
 
+    /**
+     * @deprecated Please use the {@link #sendMultipartMessage(MimeMessage, MimeMultipart, String)} method instead.
+     */
+    @Deprecated
     protected void sendMultipartMessage(final MimeMessage msg, final MimeMultipart mp) throws MessagingException {
         synchronized (msg) {
             msg.setContent(mp);
             msg.setSentDate(new Date());
+            Transport.send(msg);
+        }
+    }
+
+    protected void sendMultipartMessage(final MimeMessage msg, final MimeMultipart mp, final String subject) throws MessagingException {
+        synchronized (msg) {
+            msg.setContent(mp);
+            msg.setSentDate(new Date());
+            msg.setSubject(subject);
             Transport.send(msg);
         }
     }

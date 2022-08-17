@@ -17,6 +17,12 @@
 
 package org.apache.logging.log4j.core.util;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.AbstractLifeCycle;
+import org.apache.logging.log4j.core.LifeCycle;
+import org.apache.logging.log4j.plugins.Singleton;
+import org.apache.logging.log4j.status.StatusLogger;
+
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
@@ -27,18 +33,13 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.AbstractLifeCycle;
-import org.apache.logging.log4j.core.LifeCycle;
-import org.apache.logging.log4j.core.LifeCycle.State;
-import org.apache.logging.log4j.status.StatusLogger;
-
 /**
  * ShutdownRegistrationStrategy that simply uses {@link Runtime#addShutdownHook(Thread)}. If no strategy is specified,
  * this one is used for shutdown hook registration.
  *
  * @since 2.1
  */
+@Singleton
 public class DefaultShutdownCallbackRegistry implements ShutdownCallbackRegistry, LifeCycle, Runnable {
     /** Status logger. */
     protected static final Logger LOGGER = StatusLogger.getLogger();

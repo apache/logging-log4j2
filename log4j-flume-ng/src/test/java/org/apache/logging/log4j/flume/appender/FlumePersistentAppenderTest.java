@@ -36,9 +36,8 @@ import java.util.zip.GZIPInputStream;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
-import org.apache.avro.AvroRemoteException;
-import org.apache.avro.ipc.NettyServer;
-import org.apache.avro.ipc.Responder;
+import org.apache.avro.ipc.Server;
+import org.apache.avro.ipc.netty.NettyServer;
 import org.apache.avro.ipc.specific.SpecificResponder;
 import org.apache.flume.Event;
 import org.apache.flume.event.EventBuilder;
@@ -63,6 +62,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.google.common.base.Preconditions;
+
+import static org.junit.Assert.fail;
 
 /**
  *
@@ -406,17 +407,27 @@ public class FlumePersistentAppenderTest {
     private static class EventCollector implements AvroSourceProtocol {
         private final LinkedBlockingQueue<AvroFlumeEvent> eventQueue = new LinkedBlockingQueue<>();
 
-        private final NettyServer nettyServer;
-
+        private Server server;
 
         public EventCollector(final int port) {
-            final Responder responder = new SpecificResponder(AvroSourceProtocol.class, this);
-            nettyServer = new NettyServer(responder, new InetSocketAddress(HOSTNAME, port));
-            nettyServer.start();
+            try {
+                server = createServer(this, port);
+            } catch (InterruptedException ex) {
+                fail("Server creation was interrrupted");
+            }
+            server.start();
+        }
+
+        private Server createServer(AvroSourceProtocol protocol, final int port) throws InterruptedException {
+
+            server = new NettyServer(new SpecificResponder(AvroSourceProtocol.class, protocol),
+                    new InetSocketAddress(HOSTNAME, port));
+
+            return server;
         }
 
         public void stop() {
-            nettyServer.close();
+            server.close();
         }
 
         public Event poll() {
@@ -435,14 +446,14 @@ public class FlumePersistentAppenderTest {
         }
 
         @Override
-        public Status append(final AvroFlumeEvent event) throws AvroRemoteException {
+        public Status append(final AvroFlumeEvent event) {
             eventQueue.add(event);
             //System.out.println("Received event " + event.getHeaders().get(new org.apache.avro.util.Utf8(FlumeEvent.GUID)));
             return Status.OK;
         }
 
         @Override
-        public Status appendBatch(final List<AvroFlumeEvent> events) throws AvroRemoteException {
+        public Status appendBatch(final List<AvroFlumeEvent> events) {
             Preconditions.checkState(eventQueue.addAll(events));
             for (final AvroFlumeEvent event : events) {
                 // System.out.println("Received event " + event.getHeaders().get(new org.apache.avro.util.Utf8(FlumeEvent.GUID)));

@@ -32,6 +32,8 @@ import org.apache.logging.log4j.util.Strings;
  */
 public class DefaultThreadContextStack implements ThreadContextStack, StringBuilderFormattable {
 
+    private static final Object[] EMPTY_OBJECT_ARRAY = {};
+
     private static final long serialVersionUID = 5050501L;
 
     private static final ThreadLocal<MutableThreadContextStack> STACK = new ThreadLocal<>();
@@ -261,7 +263,7 @@ public class DefaultThreadContextStack implements ThreadContextStack, StringBuil
         if (result == null) {
             return new String[0];
         }
-        return result.toArray(new Object[0]);
+        return result.toArray(EMPTY_OBJECT_ARRAY);
     }
 
     @Override

@@ -35,7 +35,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 
-public class JdbcAppenderColumnMappingPatternTest {
+public class JdbcAppenderColumnMappingPatternTest extends AbstractH2Test {
 
 	@Rule
 	public final RuleChain rules;
@@ -43,8 +43,8 @@ public class JdbcAppenderColumnMappingPatternTest {
 
 	public JdbcAppenderColumnMappingPatternTest() {
 		this(new JdbcRule(JdbcH2TestHelper.TEST_CONFIGURATION_SOURCE_MEM,
-				"CREATE TABLE dsMappingLogEntry (id INTEGER IDENTITY, level VARCHAR(10), logger VARCHAR(255), message VARCHAR(1024), exception CLOB)",
-				"DROP TABLE dsMappingLogEntry"));
+				"CREATE TABLE dsMappingLogEntry (id INTEGER, level VARCHAR(10), logger VARCHAR(255), message VARCHAR(1024), exception CLOB)",
+				"DROP TABLE IF EXISTS dsMappingLogEntry"));
 	}
 
 	protected JdbcAppenderColumnMappingPatternTest(final JdbcRule jdbcRule) {

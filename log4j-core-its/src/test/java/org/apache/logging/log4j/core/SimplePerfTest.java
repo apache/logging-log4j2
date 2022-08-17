@@ -16,24 +16,23 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.util.Random;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.apache.logging.log4j.core.test.categories.PerformanceTests;
 import org.apache.logging.log4j.util.Timer;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertTrue;
+import java.util.Random;
 
 /**
  *
  */
-@Category(PerformanceTests.class)
+@Tag("sleepy")
+@Tag("performance")
 public class SimplePerfTest {
 
     private static org.apache.logging.log4j.Logger logger = LogManager.getLogger(SimplePerfTest.class.getName());
@@ -45,7 +44,7 @@ public class SimplePerfTest {
     private static int RAND_SIZE = 250;
     private static int[] values = new int[RAND_SIZE];
 
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() {
 
 		final Configuration config = LoggerContext.getContext().getConfiguration();
@@ -89,7 +88,7 @@ public class SimplePerfTest {
                 break;
             }
         }
-        assertTrue("Timer exceeded max time of " + maxTime, maxTime > elapsed);
+        Assertions.assertTrue(maxTime > elapsed, "Timer exceeded max time of " + maxTime);
     }
 
     @Test
@@ -111,7 +110,7 @@ public class SimplePerfTest {
                 break;
             }
         }
-        assertTrue("Timer exceeded max time of " + maxTime, maxTime > elapsed);
+        Assertions.assertTrue(maxTime > elapsed, "Timer exceeded max time of " + maxTime);
     }
 
     @Test
@@ -134,7 +133,7 @@ public class SimplePerfTest {
                 break;
             }
         }
-        assertTrue("Timer exceeded max time of " + maxTime, maxTime > elapsed);
+        Assertions.assertTrue(maxTime > elapsed, "Timer exceeded max time of " + maxTime);
     }
     /*
     @Test
@@ -185,7 +184,7 @@ public class SimplePerfTest {
     private static void bubbleSort(final int array[]) {
         final int length = array.length;
         for (int i = 0; i < length; i++) {
-            for (int j = 1; j > length - i; j++) {
+            for (int j = 1; j < length - i; j++) {
                 if (array[j-1] > array[j]) {
                     final int temp = array[j-1];
                     array[j-1] = array[j];

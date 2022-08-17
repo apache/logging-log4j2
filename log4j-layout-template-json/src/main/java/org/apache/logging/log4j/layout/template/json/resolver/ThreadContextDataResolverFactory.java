@@ -16,13 +16,15 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
 
 /**
  * {@link ThreadContextDataResolver} factory.
  */
-@Plugin(name = "ThreadContextDataResolverFactory", category = TemplateResolverFactory.CATEGORY)
+@Namespace(TemplateResolverFactory.CATEGORY)
+@Plugin("ThreadContextDataResolverFactory")
 public final class ThreadContextDataResolverFactory implements EventResolverFactory {
 
     private static final ThreadContextDataResolverFactory INSTANCE =

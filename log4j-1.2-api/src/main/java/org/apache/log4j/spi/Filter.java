@@ -16,23 +16,19 @@
  */
 package org.apache.log4j.spi;
 
-import org.apache.log4j.bridge.FilterAdapter;
-
 /**
  * @since 0.9.0
  */
 public abstract class Filter {
-    private final FilterAdapter adapter;
 
-    public Filter() {
-        FilterAdapter filterAdapter = null;
+    static {
+        boolean temp;
         try {
-            Class.forName("org.apache.logging.log4j.core.Filter");
-            filterAdapter = new FilterAdapter(this);
-        } catch(ClassNotFoundException ex) {
-            // Ignore the exception. Log4j Core is not present.
+            temp = Class.forName("org.apache.logging.log4j.core.Filter") != null;
+        } catch (Exception | LinkageError e) {
+            temp = false;
         }
-        this.adapter = filterAdapter;
+        isCorePresent = temp;
     }
 
     /**
@@ -61,11 +57,14 @@ public abstract class Filter {
     @Deprecated
     public Filter next;
 
+    private static final boolean isCorePresent;
+
     /**
      * Usually filters options become active when set. We provide a
      * default do-nothing implementation for convenience.
      */
     public void activateOptions() {
+        // noop
     }
 
 

@@ -19,31 +19,31 @@ package org.apache.log4j.builders.layout;
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.LayoutWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
-import org.apache.log4j.builders.BooleanHolder;
-import org.apache.log4j.builders.Holder;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.xml.XmlConfiguration;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
-import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.plugins.Namespace;
+import org.apache.logging.log4j.plugins.Plugin;
 import org.w3c.dom.Element;
 
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.xml.XmlConfiguration.*;
+import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
+import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 
 /**
  * Build a Pattern Layout
  */
-@Plugin(name = "org.apache.log4j.HTMLLayout", category = CATEGORY)
-public class HtmlLayoutBuilder extends AbstractBuilder implements LayoutBuilder {
+@Namespace(NAMESPACE)
+@Plugin("org.apache.log4j.HTMLLayout")
+public class HtmlLayoutBuilder extends AbstractBuilder<Layout> implements LayoutBuilder {
 
-    private static final Logger LOGGER = StatusLogger.getLogger();
-
-    private static final String TITLE = "Title";
-    private static final String LOCATION_INFO = "LocationInfo";
+    private static final String DEFAULT_TITLE = "Log4J Log Messages";
+    private static final String TITLE_PARAM = "Title";
+    private static final String LOCATION_INFO_PARAM = "LocationInfo";
 
     public HtmlLayoutBuilder() {
     }
@@ -54,15 +54,15 @@ public class HtmlLayoutBuilder extends AbstractBuilder implements LayoutBuilder 
 
 
     @Override
-    public Layout parseLayout(Element layoutElement, XmlConfiguration config) {
-        final Holder<String> title = new Holder<>();
-        final Holder<Boolean> locationInfo = new BooleanHolder();
-        forEachElement(layoutElement.getElementsByTagName("param"), (currentElement) -> {
+    public Layout parse(Element layoutElement, XmlConfiguration config) {
+        final AtomicReference<String> title = new AtomicReference<>("Log4J Log Messages");
+        final AtomicBoolean locationInfo = new AtomicBoolean();
+        forEachElement(layoutElement.getElementsByTagName("param"), currentElement -> {
             if (currentElement.getTagName().equals(PARAM_TAG)) {
-                if (TITLE.equalsIgnoreCase(currentElement.getAttribute("name"))) {
+                if (TITLE_PARAM.equalsIgnoreCase(currentElement.getAttribute("name"))) {
                     title.set(currentElement.getAttribute("value"));
-                } else if (LOCATION_INFO.equalsIgnoreCase(currentElement.getAttribute("name"))) {
-                    locationInfo.set(Boolean.parseBoolean(currentElement.getAttribute("value")));
+                } else if (LOCATION_INFO_PARAM.equalsIgnoreCase(currentElement.getAttribute("name"))) {
+                    locationInfo.set(getBooleanValueAttribute(currentElement));
                 }
             }
         });
@@ -70,14 +70,14 @@ public class HtmlLayoutBuilder extends AbstractBuilder implements LayoutBuilder 
     }
 
     @Override
-    public Layout parseLayout(PropertiesConfiguration config) {
-        String title = getProperty(TITLE);
-        boolean locationInfo = getBooleanProperty(LOCATION_INFO);
+    public Layout parse(PropertiesConfiguration config) {
+        String title = getProperty(TITLE_PARAM, DEFAULT_TITLE);
+        boolean locationInfo = getBooleanProperty(LOCATION_INFO_PARAM);
         return createLayout(title, locationInfo);
     }
 
     private Layout createLayout(String title, boolean locationInfo) {
-        return new LayoutWrapper(HtmlLayout.newBuilder()
+        return LayoutWrapper.adapt(HtmlLayout.newBuilder()
                 .setTitle(title)
                 .setLocationInfo(locationInfo)
                 .build());

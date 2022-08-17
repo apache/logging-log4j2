@@ -1,12 +1,12 @@
 ////
     Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements. See the NOTICE file distributed with
+    contributor license agreements.  See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
     The ASF licenses this file to You under the Apache License, Version 2.0
     (the "License"); you may not use this file except in compliance with
-    the License. You may obtain a copy of the License at
+    the License.  You may obtain a copy of the License at
 
-        https://www.apache.org/licenses/LICENSE-2.0
+         http://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -115,6 +115,10 @@ cause the container to use JNDI to locate each web application's
 `LoggerContext`. Be sure to set the `isLog4jContextSelectorNamed`
 context parameter to true and also set the `log4jContextName` and
 `log4jConfiguration` context parameters.
+
+The `JndiContextSelector` will not work unless `log4j2.enableJndi=true` is set as a system property
+or environment variable. See the
+link:./configuration.html#enableJndi[log4j2.enableJndi] system property.
 
 The exact method for setting system properties depends on the container.
 For Tomcat, edit `$CATALINA_HOME/conf/catalina.properties`. Consult the

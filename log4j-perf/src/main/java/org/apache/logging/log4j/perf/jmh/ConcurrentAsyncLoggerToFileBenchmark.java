@@ -38,9 +38,9 @@ import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.Threads;
 import org.openjdk.jmh.annotations.Warmup;
 
-import java.io.File;
-import java.util.Collections;
-import java.util.HashMap;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -83,8 +83,8 @@ public class ConcurrentAsyncLoggerToFileBenchmark {
         private Logger logger;
 
         @Setup
-        public final void before() {
-            new File("target/ConcurrentAsyncLoggerToFileBenchmark.log").delete();
+        public final void before() throws IOException {
+            Files.deleteIfExists(Path.of("target", "ConcurrentAsyncLoggerToFileBenchmark.log"));
             System.setProperty("log4j2.is.webapp", "false");
             asyncLoggerType.setProperties();
             queueFullPolicy.setProperties();
@@ -92,22 +92,21 @@ public class ConcurrentAsyncLoggerToFileBenchmark {
         }
 
         @TearDown
-        public final void after() {
+        public final void after() throws IOException {
             ((LifeCycle) LogManager.getContext(false)).stop();
-            new File("target/ConcurrentAsyncLoggerToFileBenchmark.log").delete();
+            Files.deleteIfExists(Path.of("target", "ConcurrentAsyncLoggerToFileBenchmark.log"));
             logger = null;
         }
 
         @SuppressWarnings("unused") // Used by JMH
         public enum QueueFullPolicy {
-            ENQUEUE(Collections.singletonMap("log4j2.AsyncQueueFullPolicy", "Default")),
-            ENQUEUE_UNSYNCHRONIZED(new HashMap<>() {{
-                put("log4j2.AsyncQueueFullPolicy", "Default");
-                put("AsyncLogger.SynchronizeEnqueueWhenQueueFull", "false");
-                put("AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull", "false");
-            }
-            }),
-            SYNCHRONOUS(Collections.singletonMap("log4j2.AsyncQueueFullPolicy",
+            ENQUEUE(Map.of("log4j2.AsyncQueueFullPolicy", "Default")),
+            ENQUEUE_UNSYNCHRONIZED(Map.of(
+                "log4j2.AsyncQueueFullPolicy", "Default",
+                "AsyncLogger.SynchronizeEnqueueWhenQueueFull", "false",
+                "AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull", "false"
+            )),
+            SYNCHRONOUS(Map.of("log4j2.AsyncQueueFullPolicy",
                     SynchronousAsyncQueueFullPolicy.class.getName()));
 
             private final Map<String, String> properties;

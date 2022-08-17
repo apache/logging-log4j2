@@ -22,35 +22,33 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
-/**
- *
- */
 public class PluginCache {
-    private final Map<String, Map<String, PluginEntry>> categories =
+    private final Map<String, Map<String, PluginEntry>> namespaces =
         new TreeMap<>();
 
     /**
-     * Returns all categories of plugins in this cache.
+     * Returns all namespaces of plugins in this cache.
      *
-     * @return all categories of plugins in this cache.
+     * @return all namespaces of plugins in this cache.
      * @since 2.1
      */
-    public Map<String, Map<String, PluginEntry>> getAllCategories() {
-        return categories;
+    public Map<String, Map<String, PluginEntry>> getAllNamespaces() {
+        return namespaces;
     }
 
     /**
-     * Gets or creates a category of plugins.
+     * Gets or creates a namespace of plugins.
      *
-     * @param category name of category to look up.
+     * @param namespace namespace to look up.
      * @return plugin mapping of names to plugin entries.
      */
-    public Map<String, PluginEntry> getCategory(final String category) {
-        final String key = category.toLowerCase();
-        return categories.computeIfAbsent(key, ignored -> new TreeMap<>());
+    public Map<String, PluginEntry> getNamespace(final String namespace) {
+        final String key = namespace.toLowerCase(Locale.ROOT);
+        return namespaces.computeIfAbsent(key, ignored -> new TreeMap<>());
     }
 
     /**
@@ -60,23 +58,24 @@ public class PluginCache {
      * @throws IOException if an I/O exception occurs.
      */
     public void loadCacheFiles(final Enumeration<URL> resources) throws IOException {
-        categories.clear();
+        namespaces.clear();
         while (resources.hasMoreElements()) {
             final URL url = resources.nextElement();
             try (final DataInputStream in = new DataInputStream(new BufferedInputStream(url.openStream()))) {
                 final int count = in.readInt();
                 for (int i = 0; i < count; i++) {
-                    final String category = in.readUTF();
-                    final Map<String, PluginEntry> m = getCategory(category);
+                    final var builder = PluginEntry.builder().setNamespace(in.readUTF());
+                    final Map<String, PluginEntry> m = getNamespace(builder.getNamespace());
                     final int entries = in.readInt();
                     for (int j = 0; j < entries; j++) {
                         // Must always read all parts of the entry, even if not adding, so that the stream progresses
-                        final String key = in.readUTF();
-                        final String className = in.readUTF();
-                        final String name = in.readUTF();
-                        final boolean printable = in.readBoolean();
-                        final boolean defer = in.readBoolean();
-                        m.computeIfAbsent(key, k -> new PluginEntry(k, className, name, printable, defer, category));
+                        final var entry = builder.setKey(in.readUTF())
+                                .setClassName(in.readUTF())
+                                .setName(in.readUTF())
+                                .setPrintable(in.readBoolean())
+                                .setDeferChildren(in.readBoolean())
+                                .get();
+                        m.putIfAbsent(entry.getKey(), entry);
                     }
                 }
             }
@@ -84,11 +83,11 @@ public class PluginCache {
     }
 
     /**
-     * Gets the number of plugin categories registered.
+     * Gets the number of plugin namespaces registered.
      *
-     * @return number of plugin categories in cache.
+     * @return number of plugin namespaces in cache.
      */
     public int size() {
-        return categories.size();
+        return namespaces.size();
     }
 }

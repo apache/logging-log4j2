@@ -16,30 +16,30 @@
  */
 package org.apache.logging.log4j.cassandra;
 
+import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.Row;
+import com.datastax.driver.core.Session;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.MarkerManager;
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.MarkerManager;
-import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.test.categories.Appenders;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.rules.RuleChain;
-
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Integration test for CassandraAppender.
  */
-@Category(Appenders.Cassandra.class)
+@Disabled("https://issues.apache.org/jira/browse/LOG4J2-3384")
 public class CassandraAppenderIT {
 
     private static final String DDL = "CREATE TABLE logs (" +
@@ -54,15 +54,12 @@ public class CassandraAppenderIT {
         "ndc list<text>" +
         ")";
 
-    private static final LoggerContextRule CTX = new LoggerContextRule("CassandraAppenderTest.xml");
-    private static final CassandraRule CASSANDRA = new CassandraRule("test", DDL);
-
-    @ClassRule
-    public static RuleChain rules = RuleChain.outerRule(CASSANDRA).around(CTX);
-
+    @Disabled("Doesn't work in Java 11 at this Cassandra version")
     @Test
-    public void appendManyEvents() throws Exception {
-        final Logger logger = CTX.getLogger();
+    @CassandraFixture(keyspace = "test", setup = DDL)
+    @LoggerContextSource("CassandraAppenderTest.xml")
+    public void appendManyEvents(final LoggerContext context, final Cluster cluster) throws Exception {
+        final Logger logger = context.getLogger(getClass());
         ThreadContext.put("test", "mdc");
         ThreadContext.push("ndc");
         for (int i = 0; i < 20; i++) {
@@ -73,7 +70,7 @@ public class CassandraAppenderIT {
         TimeUnit.SECONDS.sleep(3);
 
         int i = 0;
-        try (final Session session = CASSANDRA.connect()) {
+        try (final Session session = cluster.connect("test")) {
             for (final Row row : session.execute("SELECT * FROM logs")) {
                 assertNotNull(row.get("id", UUID.class));
                 assertNotNull(row.get("timeid", UUID.class));

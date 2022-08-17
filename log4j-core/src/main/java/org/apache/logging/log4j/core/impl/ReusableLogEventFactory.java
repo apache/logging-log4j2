@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import java.util.List;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
@@ -26,9 +24,12 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.async.ThreadNameCachingStrategy;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.time.Clock;
-import org.apache.logging.log4j.core.time.ClockFactory;
+import org.apache.logging.log4j.core.time.NanoClock;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.util.StringMap;
+
+import java.util.List;
 
 /**
  * Garbage-free LogEventFactory that reuses a single mutable log event.
@@ -36,10 +37,19 @@ import org.apache.logging.log4j.util.StringMap;
  */
 public class ReusableLogEventFactory implements LogEventFactory {
     private static final ThreadNameCachingStrategy THREAD_NAME_CACHING_STRATEGY = ThreadNameCachingStrategy.create();
-    private static final Clock CLOCK = ClockFactory.getClock();
 
     private static final ThreadLocal<MutableLogEvent> mutableLogEventThreadLocal = new ThreadLocal<>();
-    private final ContextDataInjector injector = ContextDataInjectorFactory.createInjector();
+
+    private final ContextDataInjector injector;
+    private final Clock clock;
+    private final NanoClock nanoClock;
+
+    @Inject
+    public ReusableLogEventFactory(final ContextDataInjector injector, final Clock clock, final NanoClock nanoClock) {
+        this.injector = injector;
+        this.clock = clock;
+        this.nanoClock = nanoClock;
+    }
 
     /**
      * Creates a log event.
@@ -76,28 +86,17 @@ public class ReusableLogEventFactory implements LogEventFactory {
     public LogEvent createEvent(final String loggerName, final Marker marker,
                                 final String fqcn, final StackTraceElement location, final Level level, final Message message,
                                 final List<Property> properties, final Throwable t) {
-        MutableLogEvent result = mutableLogEventThreadLocal.get();
-        if (result == null || result.reserved) {
-            final boolean initThreadLocal = result == null;
-            result = new MutableLogEvent();
-
-            // usually no need to re-initialize thread-specific fields since the event is stored in a ThreadLocal
-            result.setThreadId(Thread.currentThread().getId());
-            result.setThreadName(Thread.currentThread().getName()); // Thread.getName() allocates Objects on each call
-            result.setThreadPriority(Thread.currentThread().getPriority());
-            if (initThreadLocal) {
-                mutableLogEventThreadLocal.set(result);
-            }
-        }
+        MutableLogEvent result = getOrCreateMutableLogEvent();
         result.reserved = true;
-        result.clear(); // ensure any previously cached values (thrownProxy, source, etc.) are cleared
+        // No need to clear here, values are cleared in release when reserved is set to false.
+        // If the event was dirty we'd create a new one.
 
         result.setLoggerName(loggerName);
         result.setMarker(marker);
         result.setLoggerFqcn(fqcn);
         result.setLevel(level == null ? Level.OFF : level);
         result.setMessage(message);
-        result.initTime(CLOCK, Log4jLogEvent.getNanoClock());
+        result.initTime(clock, nanoClock);
         result.setThrown(t);
         result.setSource(location);
         result.setContextData(injector.injectContextData(properties, (StringMap) result.getContextData()));
@@ -106,6 +105,24 @@ public class ReusableLogEventFactory implements LogEventFactory {
         if (THREAD_NAME_CACHING_STRATEGY == ThreadNameCachingStrategy.UNCACHED) {
             result.setThreadName(Thread.currentThread().getName()); // Thread.getName() allocates Objects on each call
             result.setThreadPriority(Thread.currentThread().getPriority());
+        }
+        return result;
+    }
+
+    private static MutableLogEvent getOrCreateMutableLogEvent() {
+        MutableLogEvent result = mutableLogEventThreadLocal.get();
+        return result == null || result.reserved ? createInstance(result) : result;
+    }
+
+    private static MutableLogEvent createInstance(MutableLogEvent existing) {
+        MutableLogEvent result = new MutableLogEvent();
+
+        // usually no need to re-initialize thread-specific fields since the event is stored in a ThreadLocal
+        result.setThreadId(Thread.currentThread().getId());
+        result.setThreadName(Thread.currentThread().getName()); // Thread.getName() allocates Objects on each call
+        result.setThreadPriority(Thread.currentThread().getPriority());
+        if (existing == null) {
+            mutableLogEventThreadLocal.set(result);
         }
         return result;
     }

@@ -16,12 +16,13 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.plugins.Namespace;
+import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.util.TriConsumer;
 import org.apache.logging.log4j.util.StringBuilders;
+import org.apache.logging.log4j.util.TriConsumer;
 
 /**
  * Able to handle the contents of the LogEvent's MDC and either
@@ -30,7 +31,8 @@ import org.apache.logging.log4j.util.StringBuilders;
  * within the property bundle
  * when this pattern converter has the option set.
  */
-@Plugin(name = "MdcPatternConverter", category = PatternConverter.CATEGORY)
+@Namespace(PatternConverter.CATEGORY)
+@Plugin("MdcPatternConverter")
 @ConverterKeys({ "X", "mdc", "MDC" })
 @PerformanceSensitive("allocation")
 public final class MdcPatternConverter extends LogEventPatternConverter {

@@ -19,22 +19,30 @@ package org.apache.logging.log4j.plugins;
 import org.apache.logging.log4j.plugins.util.PluginType;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
- * A Configuration node.
+ * Configurations are represented as a tree of Node instances. Each Node may have
+ * {@linkplain #getAttributes() attributes}, {@linkplain #getChildren() children nodes},
+ * an {@linkplain #getValue() optional value} (which is a special kind of attribute for certain configuration file
+ * formats which support the concept), and a {@linkplain #getName() name} which corresponds to a
+ * {@link Plugin} class in the {@linkplain Configurable Core namespace}. Configuration factories parse a configuration
+ * resource into a tree of Nodes with a single root Node.
  */
 public class Node {
 
     /**
-     * Main plugin category for plugins which are represented as a configuration node. Such plugins tend to be
+     * Main plugin namespace for plugins which are represented as a configuration node. Such plugins tend to be
      * available as XML elements in a configuration file.
      *
      * @since 2.1
+     * @see Configurable
      */
-    public static final String CATEGORY = "Core";
+    public static final String CORE_NAMESPACE = "Core";
 
     private Node parent;
     private final String name;
@@ -59,12 +67,20 @@ public class Node {
         this.type = type;
     }
 
+    /**
+     * Constructs a root node. Root nodes have no defined type, name, or parent node.
+     */
     public Node() {
         this.parent = null;
         this.name = null;
         this.type = null;
     }
 
+    /**
+     * Constructs a fresh copy of the provided Node.
+     *
+     * @param node original node to copy
+     */
     public Node(final Node node) {
         this.parent = node.parent;
         this.name = node.name;
@@ -147,6 +163,27 @@ public class Node {
 
     public PluginType<?> getType() {
         return type;
+    }
+
+    /**
+     * Finds and removes the attribute with a name equaling ignoring case either the provided name or one of the provided
+     * aliases.
+     *
+     * @param name    name of attribute to find
+     * @param aliases aliases of attribute to find
+     * @return the removed attribute value if found or empty if no attributes match
+     */
+    public Optional<String> removeMatchingAttribute(final String name, final Collection<String> aliases) {
+        final var iterator = attributes.entrySet().iterator();
+        while (iterator.hasNext()) {
+            final var entry = iterator.next();
+            final String key = entry.getKey();
+            if (key.equalsIgnoreCase(name) || aliases.stream().anyMatch(key::equalsIgnoreCase)) {
+                iterator.remove();
+                return Optional.ofNullable(entry.getValue());
+            }
+        }
+        return Optional.empty();
     }
 
     @Override

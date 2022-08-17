@@ -1061,6 +1061,30 @@ public final class Generate {
         generate(args, type, System.out);
     }
 
+    /**
+     * Generates source code for extended logger wrappers that provide convenience methods for the specified custom
+     * levels.
+     *
+     * @param args className of the custom logger to generate, followed by a NAME=intLevel pair for each custom log
+     *            level to generate convenience methods for
+     * @param printStream the stream to write the generated source code to
+     */
+    public static void generateExtend(final String[] args, final PrintStream printStream) {
+        generate(args, Type.EXTEND, printStream);
+    }
+
+    /**
+     * Generates source code for custom logger wrappers that only provide convenience methods for the specified
+     * custom levels, not for the standard built-in levels.
+     *
+     * @param args className of the custom logger to generate, followed by a NAME=intLevel pair for each custom log
+     *            level to generate convenience methods for
+     * @param printStream the stream to write the generated source code to
+     */
+    public static void generateCustom(final String[] args, final PrintStream printStream) {
+        generate(args, Type.CUSTOM, printStream);
+    }
+
     static void generate(final String[] args, final Type type, final PrintStream printStream) {
         if (!validate(args)) {
             usage(printStream, type.generator());

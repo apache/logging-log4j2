@@ -1,12 +1,12 @@
 ////
     Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements. See the NOTICE file distributed with
+    contributor license agreements.  See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
     The ASF licenses this file to You under the Apache License, Version 2.0
     (the "License"); you may not use this file except in compliance with
-    the License. You may obtain a copy of the License at
+    the License.  You may obtain a copy of the License at
 
-        https://www.apache.org/licenses/LICENSE-2.0
+         http://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -397,6 +397,77 @@ appender if the Marker matches:
 </Configuration>
 ----
 
+[#MutableThreadContextMapFilter]
+== MutableThreadContextMapFilter
+
+The MutableThreadContextMapFilter or MutableContextMapFilter allows filtering against data elements that are in the current context. By default this is the ThreadContext Map. The values to compare are defined externally and can be periodically polled for changes.
+
+.Mutable Context Map Filter Parameters
+[cols="1m,1,4"]
+|===
+|Parameter Name |Type |Description
+
+|configLocation
+|String
+|A file path or URI that points to the configuration. See below for a sample configuration.
+
+|operator
+|String
+|If the operator is "or" then a match by any one of
+the key/value pairs will be considered to be a match, otherwise all the
+key/value pairs must match.
+
+|pollInterval
+|int
+|The number of seconds to wait before checking to see if the configuration has been modified. When using HTTP or HTTPS the server must support the If-Modified-Since header and return a Last-Modified header containing the date and time the file was last modified. Note that by default only the https, file, and jar protocols are allowed. Support for other protocols can be enabled by specifying them in the log4j2.Configuration.allowedProtocols system property
+
+|onMatch
+|String
+|Action to take when the filter matches. May be ACCEPT,
+DENY or NEUTRAL. The default value is NEUTRAL.
+
+|onMismatch
+|String
+|Action to take when the filter does not match. May
+be ACCEPT, DENY or NEUTRAL. The default value is DENY.
+|===
+
+A sample configuration that only allows the event to be written by the
+appender if the Marker matches:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp" packages="">
+  <MutableContextMapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or"
+    configLocation="http://localhost:8080/threadContextFilter.json" pollInterval="300"/>
+  <Appenders>
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+                 filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+      <BurstFilter level="INFO" rate="16" maxBurst="100"/>
+      <PatternLayout>
+        <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+      </PatternLayout>
+      <TimeBasedTriggeringPolicy />
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="RollingFile"/>
+    </Root>
+  </Loggers>
+----
+The configuration file supplied to the filter should look similar to:
+[source,json]
+----
+{
+  "configs": {
+    "loginId": ["rgoers@apache.org", "logging@apache.org"],
+    "accountNumber": ["30510263"]
+  }
+}
+----
+
 [#NoMarkerFilter]
 == NoMarkerFilter
 
@@ -580,7 +651,7 @@ Throwable as part of the Message.
 The sample below shows how to declare script fields and then reference
 them in specific components. See
 link:appenders.html#ScriptCondition[ScriptCondition] for an example of
-how the `Script` element can be used to embed script code directly in
+how the `ScriptPlugin` element can be used to embed script code directly in
 the configuration.
 
 [source,xml]

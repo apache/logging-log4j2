@@ -16,6 +16,16 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.time.SystemNanoClock;
+import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.plugins.di.Key;
+import org.apache.logging.log4j.plugins.util.PluginNamespace;
+import org.apache.logging.log4j.plugins.util.PluginType;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -24,14 +34,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.time.SystemNanoClock;
-import org.apache.logging.log4j.plugins.util.PluginManager;
-import org.apache.logging.log4j.plugins.util.PluginType;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Strings;
 
 /**
  * Most of the work of the {@link org.apache.logging.log4j.core.layout.PatternLayout} class is delegated to the
@@ -85,6 +87,8 @@ public final class PatternParser {
 
     private static final int DECIMAL = 10;
 
+    private static final Key<PluginNamespace> PLUGIN_CATEGORY_KEY = Key.forClass(PluginNamespace.class);
+
     private final Configuration config;
 
     private final Map<String, Class<? extends PatternConverter>> converterRules;
@@ -128,12 +132,17 @@ public final class PatternParser {
     public PatternParser(final Configuration config, final String converterKey, final Class<?> expectedClass,
             final Class<?> filterClass) {
         this.config = config;
-        final PluginManager manager = new PluginManager(converterKey);
-        manager.collectPlugins(config == null ? null : config.getPluginPackages());
-        final Map<String, PluginType<?>> plugins = manager.getPlugins();
+        final PluginNamespace plugins;
+        final Key<PluginNamespace> pluginCategoryKey = PLUGIN_CATEGORY_KEY.withNamespace(converterKey);
+        if (config == null) {
+            plugins = DI.createInjector().getInstance(pluginCategoryKey);
+        } else {
+            plugins = config.getComponent(pluginCategoryKey);
+        }
+
         final Map<String, Class<? extends PatternConverter>> converters = new LinkedHashMap<>();
 
-        for (final PluginType<?> type : plugins.values()) {
+        for (final PluginType<?> type : plugins) {
             try {
                 final Class<? extends PatternConverter> clazz = type.getPluginClass().asSubclass(PatternConverter.class);
                 if (filterClass != null && !filterClass.isAssignableFrom(clazz)) {
@@ -152,7 +161,7 @@ public final class PatternParser {
                     }
                 }
             } catch (final Exception ex) {
-                LOGGER.error("Error processing plugin " + type.getElementName(), ex);
+                LOGGER.error("Error processing plugin " + type.getElementType(), ex);
             }
         }
         converterRules = converters;
@@ -191,7 +200,7 @@ public final class PatternParser {
                 pc = (LogEventPatternConverter) converter;
                 handlesThrowable |= pc.handlesThrowable();
             } else {
-                pc = new LiteralPatternConverter(config, Strings.EMPTY, true);
+                pc = SimpleLiteralPatternConverter.of(Strings.EMPTY);
             }
 
             final FormattingInfo field;
@@ -375,8 +384,7 @@ public final class PatternParser {
                     default:
 
                         if (currentLiteral.length() != 0) {
-                            patternConverters.add(new LiteralPatternConverter(config, currentLiteral.toString(),
-                                    convertBackslashes));
+                            patternConverters.add(literalPattern(currentLiteral.toString(), convertBackslashes));
                             formattingInfos.add(FormattingInfo.getDefault());
                         }
 
@@ -493,7 +501,7 @@ public final class PatternParser {
 
         // while
         if (currentLiteral.length() != 0) {
-            patternConverters.add(new LiteralPatternConverter(config, currentLiteral.toString(), convertBackslashes));
+            patternConverters.add(literalPattern(currentLiteral.toString(), convertBackslashes));
             formattingInfos.add(FormattingInfo.getDefault());
         }
     }
@@ -570,7 +578,7 @@ public final class PatternParser {
             boolean errors = false;
             for (final Class<?> clazz : parmTypes) {
                 if (clazz.isArray() && clazz.getName().equals("[Ljava.lang.String;")) {
-                    final String[] optionsArray = options.toArray(new String[options.size()]);
+                    final String[] optionsArray = options.toArray(Strings.EMPTY_ARRAY);
                     parms[i] = optionsArray;
                 } else if (clazz.isAssignableFrom(Configuration.class)) {
                     parms[i] = config;
@@ -668,12 +676,12 @@ public final class PatternParser {
                 msg.append("] starting at position ");
             }
 
-            msg.append(Integer.toString(i));
+            msg.append(i);
             msg.append(" in conversion pattern.");
 
             LOGGER.error(msg.toString());
 
-            patternConverters.add(new LiteralPatternConverter(config, currentLiteral.toString(), convertBackslashes));
+            patternConverters.add(literalPattern(currentLiteral.toString(), convertBackslashes));
             formattingInfos.add(FormattingInfo.getDefault());
         } else {
             patternConverters.add(pc);
@@ -681,7 +689,7 @@ public final class PatternParser {
 
             if (currentLiteral.length() > 0) {
                 patternConverters
-                        .add(new LiteralPatternConverter(config, currentLiteral.toString(), convertBackslashes));
+                        .add(literalPattern(currentLiteral.toString(), convertBackslashes));
                 formattingInfos.add(FormattingInfo.getDefault());
             }
         }
@@ -689,5 +697,13 @@ public final class PatternParser {
         currentLiteral.setLength(0);
 
         return i;
+    }
+
+    // Create a literal pattern converter with support for substitutions if necessary
+    private LogEventPatternConverter literalPattern(String literal, boolean convertBackslashes) {
+        if (config != null && LiteralPatternConverter.containsSubstitutionSequence(literal)) {
+            return new LiteralPatternConverter(config, literal, convertBackslashes);
+        }
+        return SimpleLiteralPatternConverter.of(literal, convertBackslashes);
     }
 }

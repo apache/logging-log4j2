@@ -17,6 +17,16 @@
 
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.logging.log4j.core.script.ScriptConditional;
+import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
+
 import java.io.IOException;
 import java.nio.file.FileVisitor;
 import java.nio.file.Files;
@@ -24,24 +34,16 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.logging.log4j.core.Core;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.plugins.PluginElement;
-import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.core.lookup.StrSubstitutor;
-
 /**
  * Rollover or scheduled action for deleting old log files that are accepted by the specified PathFilters.
  */
-@Plugin(name = "Delete", category = Core.CATEGORY_NAME, printObject = true)
+@Configurable(printObject = true)
+@Plugin("Delete")
 public class DeleteAction extends AbstractPathAction {
 
     private final PathSorter pathSorter;
     private final boolean testMode;
-    private final ScriptCondition scriptCondition;
+    private final ScriptConditional scriptCondition;
 
     /**
      * Creates a new DeleteAction that starts scanning for files to delete from the specified base path.
@@ -60,7 +62,7 @@ public class DeleteAction extends AbstractPathAction {
      * @param scriptCondition
      */
     DeleteAction(final String basePath, final boolean followSymbolicLinks, final int maxDepth, final boolean testMode,
-            final PathSorter sorter, final PathCondition[] pathConditions, final ScriptCondition scriptCondition,
+            final PathSorter sorter, final PathCondition[] pathConditions, final ScriptConditional scriptCondition,
             final StrSubstitutor subst) {
         super(basePath, followSymbolicLinks, maxDepth, pathConditions, subst);
         this.testMode = testMode;
@@ -203,7 +205,7 @@ public class DeleteAction extends AbstractPathAction {
             @PluginAttribute final boolean testMode,
             @PluginElement final PathSorter sorterParameter,
             @PluginElement final PathCondition[] pathConditions,
-            @PluginElement final ScriptCondition scriptCondition,
+            @PluginElement final ScriptConditional scriptCondition,
             @PluginConfiguration final Configuration config) {
             // @formatter:on
         final PathSorter sorter = sorterParameter == null ? new PathSortByModificationTime(true) : sorterParameter;

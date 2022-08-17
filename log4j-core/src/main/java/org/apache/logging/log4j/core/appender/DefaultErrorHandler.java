@@ -24,77 +24,97 @@ import org.apache.logging.log4j.core.ErrorHandler;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.status.StatusLogger;
 
+import static java.util.Objects.requireNonNull;
+
 /**
- *
+ * The default {@link ErrorHandler} implementation falling back to {@link StatusLogger}.
+ * <p>
+ * It avoids flooding the {@link StatusLogger} by allowing either the first 3 errors or errors once every 5 minutes.
+ * </p>
  */
 public class DefaultErrorHandler implements ErrorHandler {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private static final int MAX_EXCEPTIONS = 3;
+    private static final int MAX_EXCEPTION_COUNT = 3;
 
-    private static final long EXCEPTION_INTERVAL = TimeUnit.MINUTES.toNanos(5);
+    private static final long EXCEPTION_INTERVAL_NANOS = TimeUnit.MINUTES.toNanos(5);
 
     private int exceptionCount = 0;
 
-    private long lastException = System.nanoTime() - EXCEPTION_INTERVAL - 1;
+    private long lastExceptionInstantNanos = System.nanoTime() - EXCEPTION_INTERVAL_NANOS - 1;
 
     private final Appender appender;
 
     public DefaultErrorHandler(final Appender appender) {
-        this.appender = appender;
+        this.appender = requireNonNull(appender, "appender");
     }
-
 
     /**
      * Handle an error with a message.
-     * @param msg The message.
+     * @param msg a message
      */
     @Override
     public void error(final String msg) {
-        final long current = System.nanoTime();
-        if (current - lastException > EXCEPTION_INTERVAL || exceptionCount++ < MAX_EXCEPTIONS) {
+        final boolean allowed = acquirePermit();
+        if (allowed) {
             LOGGER.error(msg);
         }
-        lastException = current;
     }
 
     /**
      * Handle an error with a message and an exception.
-     * @param msg The message.
-     * @param t The Throwable.
+     *
+     * @param msg a message
+     * @param error a {@link Throwable}
      */
     @Override
-    public void error(final String msg, final Throwable t) {
-        final long current = System.nanoTime();
-        if (current - lastException > EXCEPTION_INTERVAL || exceptionCount++ < MAX_EXCEPTIONS) {
-            LOGGER.error(msg, t);
+    public void error(final String msg, final Throwable error) {
+        final boolean allowed = acquirePermit();
+        if (allowed) {
+            LOGGER.error(msg, error);
         }
-        lastException = current;
-        if (!appender.ignoreExceptions() && t != null && !(t instanceof AppenderLoggingException)) {
-            throw new AppenderLoggingException(msg, t);
+        if (!appender.ignoreExceptions() && error != null && !(error instanceof AppenderLoggingException)) {
+            throw new AppenderLoggingException(msg, error);
         }
     }
 
     /**
-     * Handle an error with a message, and exception and a logging event.
-     * @param msg The message.
-     * @param event The LogEvent.
-     * @param t The Throwable.
+     * Handle an error with a message, an exception, and a logging event.
+     *
+     * @param msg a message
+     * @param event a {@link LogEvent}
+     * @param error a {@link Throwable}
      */
     @Override
-    public void error(final String msg, final LogEvent event, final Throwable t) {
-        final long current = System.nanoTime();
-        if (current - lastException > EXCEPTION_INTERVAL || exceptionCount++ < MAX_EXCEPTIONS) {
-            LOGGER.error(msg, t);
+    public void error(final String msg, final LogEvent event, final Throwable error) {
+        final boolean allowed = acquirePermit();
+        if (allowed) {
+            LOGGER.error(msg, error);
         }
-        lastException = current;
-        if (!appender.ignoreExceptions() && t != null && !(t instanceof AppenderLoggingException)) {
-            throw new AppenderLoggingException(msg, t);
+        if (!appender.ignoreExceptions() && error != null && !(error instanceof AppenderLoggingException)) {
+            throw new AppenderLoggingException(msg, error);
+        }
+    }
+
+    private boolean acquirePermit() {
+        final long currentInstantNanos = System.nanoTime();
+        synchronized (this) {
+            if (currentInstantNanos - lastExceptionInstantNanos > EXCEPTION_INTERVAL_NANOS) {
+                lastExceptionInstantNanos = currentInstantNanos;
+                return true;
+            } else if (exceptionCount < MAX_EXCEPTION_COUNT) {
+                exceptionCount++;
+                lastExceptionInstantNanos = currentInstantNanos;
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 
     public Appender getAppender() {
         return appender;
     }
+
 }

@@ -16,22 +16,20 @@
  */
 package org.apache.logging.log4j.web;
 
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LifeCycle2;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Strings;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class Log4jShutdownOnContextDestroyedListener implements ServletContextListener {
 
-    private static final int DEFAULT_STOP_TIMEOUT = 30;
-    private static final TimeUnit DEFAULT_STOP_TIMEOUT_TIMEUNIT = TimeUnit.SECONDS;
+    static final int DEFAULT_STOP_TIMEOUT = 30;
+    static final TimeUnit DEFAULT_STOP_TIMEOUT_TIMEUNIT = TimeUnit.SECONDS;
 
     private static final String KEY_STOP_TIMEOUT = "log4j.stop.timeout";
     private static final String KEY_STOP_TIMEOUT_TIMEUNIT = "log4j.stop.timeout.timeunit";
@@ -65,16 +63,12 @@ public class Log4jShutdownOnContextDestroyedListener implements ServletContextLi
 
         this.initializer.clearLoggerContext(); // the application is finished
         // shutting down now
-        if (initializer instanceof LifeCycle2) {
-            final String stopTimeoutStr = servletContext.getInitParameter(KEY_STOP_TIMEOUT);
-            final long stopTimeout = Strings.isEmpty(stopTimeoutStr) ? DEFAULT_STOP_TIMEOUT
-                    : Long.parseLong(stopTimeoutStr);
-            final String timeoutTimeUnitStr = servletContext.getInitParameter(KEY_STOP_TIMEOUT_TIMEUNIT);
-            final TimeUnit timeoutTimeUnit = Strings.isEmpty(timeoutTimeUnitStr) ? DEFAULT_STOP_TIMEOUT_TIMEUNIT
-                    : TimeUnit.valueOf(timeoutTimeUnitStr.toUpperCase(Locale.ROOT));
-            ((LifeCycle2) this.initializer).stop(stopTimeout, timeoutTimeUnit);
-        } else {
-            this.initializer.stop();
-        }
+        final String stopTimeoutStr = servletContext.getInitParameter(KEY_STOP_TIMEOUT);
+        final long stopTimeout = Strings.isEmpty(stopTimeoutStr) ? DEFAULT_STOP_TIMEOUT
+                : Long.parseLong(stopTimeoutStr);
+        final String timeoutTimeUnitStr = servletContext.getInitParameter(KEY_STOP_TIMEOUT_TIMEUNIT);
+        final TimeUnit timeoutTimeUnit = Strings.isEmpty(timeoutTimeUnitStr) ? DEFAULT_STOP_TIMEOUT_TIMEUNIT
+                : TimeUnit.valueOf(timeoutTimeUnitStr.toUpperCase(Locale.ROOT));
+        this.initializer.stop(stopTimeout, timeoutTimeUnit);
     }
 }

@@ -44,11 +44,9 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
      * Create new instance.
      */
     public AppenderSkeleton() {
-        super();
     }
 
     protected AppenderSkeleton(final boolean isActive) {
-        super();
     }
 
     @Override
@@ -108,17 +106,14 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
         return ((threshold == null) || priority.isGreaterOrEqual(threshold));
     }
 
-    /**
-     * This method is never going to be called in Log4j 2 so there isn't much point in having any code in it.
-     * @param event The LoggingEvent.
-     */
     @Override
-    public void doAppend(final LoggingEvent event) {
+    public synchronized void doAppend(final LoggingEvent event) {
+        // Threshold checks and filtering is performed by the AppenderWrapper.
         append(event);
     }
 
     /**
-     * Set the {@link ErrorHandler} for this Appender.
+     * Sets the {@link ErrorHandler} for this Appender.
      *
      * @since 0.9.0
      */

@@ -16,34 +16,34 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The FailoverAppender will capture exceptions in an Appender and then route the event
  * to a different appender. Hopefully it is obvious that the Appenders must be configured
  * to not suppress exceptions for the FailoverAppender to work.
  */
-@Plugin(name = "Failover", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Plugin("Failover")
 public final class FailoverAppender extends AbstractAppender {
 
     private static final int DEFAULT_INTERVAL_SECONDS = 60;
@@ -187,7 +187,7 @@ public final class FailoverAppender extends AbstractAppender {
             @PluginElement @Required(message = "At least one failover Appender must be specified") final String[] failovers,
             @PluginAliases("retryInterval") // deprecated
             @PluginAttribute(defaultInt = DEFAULT_INTERVAL_SECONDS) final int retryIntervalSeconds,
-            @PluginConfiguration final Configuration config,
+            final Configuration config,
             @PluginElement final Filter filter,
             @PluginAttribute(defaultBoolean = true) final boolean ignoreExceptions) {
 

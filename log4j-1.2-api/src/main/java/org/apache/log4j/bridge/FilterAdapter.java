@@ -20,6 +20,7 @@ import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.filter.AbstractFilter;
+import org.apache.logging.log4j.core.filter.CompositeFilter;
 
 /**
  * Binds a Log4j 1.x Filter with Log4j 2.
@@ -28,13 +29,53 @@ public class FilterAdapter extends AbstractFilter {
 
     private final Filter filter;
 
-    public FilterAdapter(Filter filter) {
-        this.filter = filter;
+    /**
+     * Adapts a Log4j 1.x filter into a Log4j 2.x filter. Applying this method to
+     * the result of
+     * {@link FilterWrapper#adapt(org.apache.logging.log4j.core.Filter)} should
+     * return the original Log4j 2.x filter.
+     * 
+     * @param filter a Log4j 1.x filter
+     * @return a Log4j 2.x filter or {@code null} if the parameter is {@code null}
+     */
+    public static org.apache.logging.log4j.core.Filter adapt(Filter filter) {
+        if (filter instanceof org.apache.logging.log4j.core.Filter) {
+            return (org.apache.logging.log4j.core.Filter) filter;
+        }
+        // Don't unwrap the head of a filter chain
+        if (filter instanceof FilterWrapper && filter.getNext() == null) {
+            return ((FilterWrapper) filter).getFilter();
+        }
+        if (filter != null) {
+            return new FilterAdapter(filter);
+        }
+        return null;
     }
 
-    @Override
-    public void start() {
-        filter.activateOptions();
+    /**
+     * Appends one filter to another using Log4j 2.x concatenation utilities.
+     * @param first
+     * @param second
+     * @return
+     */
+    public static Filter addFilter(Filter first, Filter second) {
+        if (first == null) {
+            return second;
+        }
+        if (second == null) {
+            return first;
+        }
+        final CompositeFilter composite;
+        if (first instanceof FilterWrapper && ((FilterWrapper) first).getFilter() instanceof CompositeFilter) {
+            composite = (CompositeFilter) ((FilterWrapper) first).getFilter();
+        } else {
+            composite = CompositeFilter.createFilters(new org.apache.logging.log4j.core.Filter[] {adapt(first)});
+        }
+        return FilterWrapper.adapt(composite.addFilter(adapt(second)));
+    }
+
+    private FilterAdapter(Filter filter) {
+        this.filter = filter;
     }
 
     @Override
@@ -42,15 +83,30 @@ public class FilterAdapter extends AbstractFilter {
         LoggingEvent loggingEvent = new LogEventAdapter(event);
         Filter next = filter;
         while (next != null) {
-            switch (filter.decide(loggingEvent)) {
+            switch (next.decide(loggingEvent)) {
                 case Filter.ACCEPT:
                     return Result.ACCEPT;
                 case Filter.DENY:
                     return Result.DENY;
                 default:
             }
-            next = filter.getNext();
+            next = next.getNext();
         }
         return Result.NEUTRAL;
+    }
+
+    /**
+     * Gets the actual filter.
+     *
+     * @return the actual filter.
+     * @since 2.17.1
+     */
+    public Filter getFilter() {
+        return filter;
+    }
+
+    @Override
+    public void start() {
+        filter.activateOptions();
     }
 }

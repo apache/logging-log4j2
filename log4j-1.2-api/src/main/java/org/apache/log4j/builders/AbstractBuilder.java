@@ -16,105 +16,191 @@
  */
 package org.apache.log4j.builders;
 
+import static org.apache.log4j.xml.XmlConfiguration.NAME_ATTR;
+import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.apache.log4j.bridge.FilterAdapter;
 import org.apache.log4j.bridge.FilterWrapper;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.Filter;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import org.apache.logging.log4j.util.Strings;
+import org.w3c.dom.Element;
 
 /**
  * Base class for Log4j 1 component builders.
+ *
+ * @param <T> The type to build.
  */
-public abstract class AbstractBuilder {
+public abstract class AbstractBuilder<T> implements Builder<T> {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
     protected static final String FILE_PARAM = "File";
     protected static final String APPEND_PARAM = "Append";
     protected static final String BUFFERED_IO_PARAM = "BufferedIO";
     protected static final String BUFFER_SIZE_PARAM = "BufferSize";
+    protected static final String IMMEDIATE_FLUSH_PARAM = "ImmediateFlush";
     protected static final String MAX_SIZE_PARAM = "MaxFileSize";
     protected static final String MAX_BACKUP_INDEX = "MaxBackupIndex";
     protected static final String RELATIVE = "RELATIVE";
+    protected static final String NULL = "NULL";
 
     private final String prefix;
-    private final Properties props;
+    private final Properties properties;
 
     public AbstractBuilder() {
-        this.prefix = null;
-        this.props = new Properties();
+        this(null, new Properties());
     }
 
-    public AbstractBuilder(String prefix, Properties props) {
-        this.prefix = prefix + ".";
-        this.props = props;
+    public AbstractBuilder(final String prefix, final Properties props) {
+        this.prefix = prefix != null ? prefix + "." : null;
+        this.properties = (Properties) props.clone();
+        final Map<String, String> map = new HashMap<>();
+        System.getProperties().forEach((k, v) -> map.put(k.toString(), v.toString()));
+        props.forEach((k, v) -> map.put(k.toString(), v.toString()));
+        // normalize keys to lower case for case-insensitive access.
+        props.forEach((k, v) -> map.put(toBeanKey(k.toString()), v.toString()));
+        props.entrySet().forEach(e -> this.properties.put(toBeanKey(e.getKey().toString()), e.getValue()));
     }
 
-    public String getProperty(String key) {
-        return props.getProperty(prefix + key);
+    protected static org.apache.logging.log4j.core.Filter buildFilters(final String level, final Filter filter) {
+        Filter head = null;
+        if (level != null) {
+            final org.apache.logging.log4j.core.Filter thresholdFilter = ThresholdFilter.createFilter(OptionConverter.convertLevel(level, Level.TRACE),
+                org.apache.logging.log4j.core.Filter.Result.NEUTRAL, org.apache.logging.log4j.core.Filter.Result.DENY);
+            head = new FilterWrapper(thresholdFilter);
+        }
+        if (filter != null) {
+            head = FilterAdapter.addFilter(head, filter);
+        }
+        return FilterAdapter.adapt(head);
     }
 
-    public String getProperty(String key, String defaultValue) {
-        return props.getProperty(prefix + key, defaultValue);
+    private String capitalize(final String value) {
+        if (Strings.isEmpty(value) || Character.isUpperCase(value.charAt(0))) {
+            return value;
+        }
+        final char[] chars = value.toCharArray();
+        chars[0] = Character.toUpperCase(chars[0]);
+        return new String(chars);
     }
 
-    public boolean getBooleanProperty(String key) {
-        return Boolean.parseBoolean(props.getProperty(prefix + key, Boolean.FALSE.toString()));
+    public boolean getBooleanProperty(final String key, final boolean defaultValue) {
+        return Boolean.parseBoolean(getProperty(key, Boolean.toString(defaultValue)));
     }
 
-    public int getIntegerProperty(String key, int defaultValue) {
-        String value = props.getProperty(key);
+    public boolean getBooleanProperty(final String key) {
+        return getBooleanProperty(key, false);
+    }
+
+    protected boolean getBooleanValueAttribute(final Element element) {
+        return Boolean.parseBoolean(getValueAttribute(element));
+    }
+
+    public int getIntegerProperty(final String key, final int defaultValue) {
+        String value = null;
         try {
+            value = getProperty(key);
             if (value != null) {
                 return Integer.parseInt(value);
             }
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             LOGGER.warn("Error converting value {} of {} to an integer: {}", value, key, ex.getMessage());
         }
         return defaultValue;
     }
 
-    public Properties getProperties() {
-        return props;
+    protected String getNameAttribute(final Element element) {
+        return element.getAttribute(NAME_ATTR);
     }
 
+    protected String getNameAttributeKey(final Element element) {
+        return toBeanKey(element.getAttribute(NAME_ATTR));
+    }
 
-    protected org.apache.logging.log4j.core.Filter buildFilters(String level, Filter filter) {
-        if (level != null && filter != null) {
-            List<org.apache.logging.log4j.core.Filter> filterList = new ArrayList<>();
-            org.apache.logging.log4j.core.Filter thresholdFilter =
-                    ThresholdFilter.createFilter(OptionConverter.convertLevel(level, Level.TRACE),
-                            org.apache.logging.log4j.core.Filter.Result.NEUTRAL,
-                            org.apache.logging.log4j.core.Filter.Result.DENY);
-            filterList.add(thresholdFilter);
-            Filter f = filter;
-            while (f != null) {
-                if (filter instanceof FilterWrapper) {
-                    filterList.add(((FilterWrapper) f).getFilter());
-                } else {
-                    filterList.add(new FilterAdapter(f));
-                }
-                f = f.next;
-            }
-            return CompositeFilter.createFilters(filterList.toArray(new org.apache.logging.log4j.core.Filter[0]));
-        } else if (level != null) {
-            return ThresholdFilter.createFilter(OptionConverter.convertLevel(level, Level.TRACE),
-                    org.apache.logging.log4j.core.Filter.Result.NEUTRAL,
-                    org.apache.logging.log4j.core.Filter.Result.DENY);
-        } else if (filter != null) {
-            if (filter instanceof FilterWrapper) {
-                return ((FilterWrapper) filter).getFilter();
-            } else {
-                return new FilterAdapter(filter);
+    public Properties getProperties() {
+        return properties;
+    }
+
+    public String getProperty(final String key) {
+        return getProperty(key, null);
+    }
+
+    public String getProperty(final String key, final String defaultValue) {
+        String value = properties.getProperty(prefix + toJavaKey(key));
+        value = value != null ? value : properties.getProperty(prefix + toBeanKey(key), defaultValue);
+        value = value != null ? substVars(value) : defaultValue;
+        return value != null ? value.trim() : defaultValue;
+    }
+
+    protected String getValueAttribute(final Element element) {
+        return getValueAttribute(element, null);
+    }
+
+    protected String getValueAttribute(final Element element, final String defaultValue) {
+        final String attribute = element.getAttribute(VALUE_ATTR);
+        return substVars(attribute != null ? attribute.trim() : defaultValue);
+    }
+
+    protected String substVars(final String value) {
+        return OptionConverter.substVars(value, properties);
+    }
+
+    String toBeanKey(final String value) {
+        return capitalize(value);
+    }
+
+    String toJavaKey(final String value) {
+        return uncapitalize(value);
+    }
+
+    private String uncapitalize(final String value) {
+        if (Strings.isEmpty(value) || Character.isLowerCase(value.charAt(0))) {
+            return value;
+        }
+        final char[] chars = value.toCharArray();
+        chars[0] = Character.toLowerCase(chars[0]);
+        return new String(chars);
+    }
+
+    protected void set(final String name, final Element element, AtomicBoolean ref) {
+        final String value = getValueAttribute(element);
+        if (value == null) {
+            LOGGER.warn("No value for {} parameter, using default {}", name, ref);
+        } else {
+            ref.set(Boolean.parseBoolean(value));
+        }
+    }
+
+    protected void set(final String name, final Element element, AtomicInteger ref) {
+        final String value = getValueAttribute(element);
+        if (value == null) {
+            LOGGER.warn("No value for {} parameter, using default {}", name, ref);
+        } else {
+            try {
+                ref.set(Integer.parseInt(value));
+            } catch (NumberFormatException e) {
+                LOGGER.warn("{} parsing {} parameter, using default {}: {}", e.getClass().getName(), name, ref, e.getMessage(), e);
             }
         }
-        return null;
+    }
+
+    protected void set(final String name, final Element element, AtomicReference<String> ref) {
+        final String value = getValueAttribute(element);
+        if (value == null) {
+            LOGGER.warn("No value for {} parameter, using default {}", name, ref);
+        } else {
+            ref.set(value);
+        }
     }
 }

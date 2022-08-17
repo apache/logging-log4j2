@@ -217,7 +217,8 @@ public class ExtendedLoggerWrapper extends AbstractLogger {
             final Throwable t) {
         if (requiresLocation()) {
             logger.logMessage(level, marker, fqcn, StackLocatorUtil.calcLocation(fqcn), message, t);
+        } else {
+            logger.logMessage(fqcn, level, marker, message, t);
         }
-        logger.logMessage(fqcn, level, marker, message, t);
     }
 }

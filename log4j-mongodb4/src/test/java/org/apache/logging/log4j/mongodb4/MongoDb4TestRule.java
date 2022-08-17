@@ -20,6 +20,7 @@ package org.apache.logging.log4j.mongodb4;
 import java.util.Objects;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.junit.AssumptionViolatedException;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -124,12 +125,18 @@ public class MongoDb4TestRule implements TestRule {
                 final String value = Objects.requireNonNull(System.getProperty(portSystemPropertyName),
                         "System property '" + portSystemPropertyName + "' is null");
                 final int port = Integer.parseInt(value);
-                mongodExecutable = starter.prepare(
-                // @formatter:off
-                        new MongodConfigBuilder().version(Version.Main.PRODUCTION)
-                                .timeout(new Timeout(BUILDER_TIMEOUT_MILLIS))
-                                .net(new Net("localhost", port, Network.localhostIsIPv6())).build());
-                // @formatter:on
+                try {
+                    mongodExecutable = starter.prepare(
+                    // @formatter:off
+                            new MongodConfigBuilder().version(Version.Main.PRODUCTION)
+                                    .timeout(new Timeout(BUILDER_TIMEOUT_MILLIS))
+                                    .net(new Net("localhost", port, Network.localhostIsIPv6())).build());
+                    // @formatter:on
+                } catch (final IllegalArgumentException e) {
+                    if (e.getMessage().contains("this version does not support 32Bit")) {
+                        throw new AssumptionViolatedException("Unsupported platform: " + e.getMessage());
+                    }
+                }
                 mongodProcess = mongodExecutable.start();
                 mongoClient = MongoClients.create("mongodb://localhost:" + port);
                 try {

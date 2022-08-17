@@ -18,15 +18,15 @@ package org.apache.logging.log4j.core.config.arbiters;
 
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
  * Conditional that determines if the specified class is present.
  */
-@Plugin(name = "ClassArbiter", category = Node.CATEGORY, elementType = Arbiter.ELEMENT_TYPE,
-        printObject = true, deferChildren = true)
+@Configurable(elementType = Arbiter.ELEMENT_TYPE, printObject = true, deferChildren = true)
+@Plugin
 public class ClassArbiter implements Arbiter {
 
     private final String className;
@@ -41,8 +41,8 @@ public class ClassArbiter implements Arbiter {
     }
 
     @PluginBuilderFactory
-    public static SystemPropertyArbiter.Builder newBuilder() {
-        return new SystemPropertyArbiter.Builder();
+    public static ClassArbiter.Builder newBuilder() {
+        return new ClassArbiter.Builder();
     }
 
     public static class Builder implements org.apache.logging.log4j.core.util.Builder<ClassArbiter> {

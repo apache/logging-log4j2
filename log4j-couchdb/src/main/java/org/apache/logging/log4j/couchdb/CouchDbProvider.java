@@ -16,14 +16,15 @@
  */
 package org.apache.logging.log4j.couchdb;
 
-import java.lang.reflect.Method;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.nosql.NoSqlProvider;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.plugins.convert.TypeConverters;
+import org.apache.logging.log4j.plugins.convert.TypeConverter;
+import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.plugins.validation.constraints.ValidHost;
 import org.apache.logging.log4j.plugins.validation.constraints.ValidPort;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -32,10 +33,13 @@ import org.apache.logging.log4j.util.Strings;
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.CouchDbProperties;
 
+import java.lang.reflect.Method;
+
 /**
  * The Apache CouchDB implementation of {@link NoSqlProvider}.
  */
-@Plugin(name = "CouchDB", category = "Core", printObject = true)
+@Configurable(printObject = true)
+@Plugin("CouchDB")
 public final class CouchDbProvider implements NoSqlProvider<CouchDbConnection> {
     private static final int HTTP = 80;
     private static final int HTTPS = 443;
@@ -89,7 +93,8 @@ public final class CouchDbProvider implements NoSqlProvider<CouchDbConnection> {
             @PluginAttribute final String username,
             @PluginAttribute(sensitive = true) final String password,
             @PluginAttribute final String factoryClassName,
-            @PluginAttribute final String factoryMethodName) {
+            @PluginAttribute final String factoryMethodName,
+            final Injector injector) {
         CouchDbClient client;
         String description;
         if (Strings.isNotEmpty(factoryClassName) && Strings.isNotEmpty(factoryMethodName)) {
@@ -139,7 +144,8 @@ public final class CouchDbProvider implements NoSqlProvider<CouchDbConnection> {
                 LOGGER.warn("No protocol specified, using default port [http].");
             }
 
-            final int portInt = TypeConverters.convert(port, int.class, protocol.equals("https") ? HTTPS : HTTP);
+            final TypeConverter<Integer> converter = TypeUtil.cast(injector.getTypeConverter(Integer.class));
+            final int portInt = converter.convert(port, protocol.equals("https") ? HTTPS : HTTP);
 
             if (Strings.isEmpty(username) || Strings.isEmpty(password)) {
                 LOGGER.error("You must provide a username and password for the CouchDB provider.");

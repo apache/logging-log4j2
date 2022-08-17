@@ -17,14 +17,7 @@
 
 package org.apache.logging.log4j.plugins.name;
 
-import org.apache.logging.log4j.plugins.internal.util.BeanUtils;
-import org.apache.logging.log4j.util.ReflectionUtil;
-
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.util.Optional;
 
 /**
@@ -34,48 +27,6 @@ import java.util.Optional;
  * @param <A> plugin configuration annotation
  */
 public interface AnnotatedElementNameProvider<A extends Annotation> {
-
-    static String getName(final AnnotatedElement element) {
-        for (final Annotation annotation : element.getAnnotations()) {
-            final Optional<String> specifiedName = getSpecifiedNameForAnnotation(annotation);
-            if (specifiedName.isPresent()) {
-                return specifiedName.get();
-            }
-        }
-
-        if (element instanceof Field) {
-            return ((Field) element).getName();
-        }
-
-        if (element instanceof Method) {
-            final Method method = (Method) element;
-            final String methodName = method.getName();
-            if (methodName.startsWith("set")) {
-                return BeanUtils.decapitalize(methodName.substring(3));
-            }
-            if (methodName.startsWith("with")) {
-                return BeanUtils.decapitalize(methodName.substring(4));
-            }
-            return methodName;
-        }
-
-        if (element instanceof Parameter) {
-            return ((Parameter) element).getName();
-        }
-
-        throw new IllegalArgumentException("Unknown element type for naming: " + element.getClass());
-    }
-
-    static <A extends Annotation> Optional<String> getSpecifiedNameForAnnotation(final A annotation) {
-        return Optional.ofNullable(annotation.annotationType().getAnnotation(NameProvider.class))
-                .map(NameProvider::value)
-                .flatMap(clazz -> {
-                    @SuppressWarnings("unchecked") final AnnotatedElementNameProvider<A> factory =
-                            (AnnotatedElementNameProvider<A>) ReflectionUtil.instantiate(clazz);
-                    return factory.getSpecifiedName(annotation);
-                });
-    }
-
     /**
      * Returns the specified name from this annotation if given or {@code Optional.empty()} if none given.
      *

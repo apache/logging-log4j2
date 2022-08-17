@@ -16,68 +16,29 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.impl.ContextAnchor;
-import org.apache.logging.log4j.core.selector.ContextSelector;
-
 import java.net.URI;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.selector.BasicContextSelector;
+import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.plugins.Singleton;
+import org.apache.logging.log4j.plugins.di.Injector;
 
 /**
  * Returns either this Thread's context or the default {@link AsyncLoggerContext}.
  * Single-application instances should prefer this implementation over the {@link AsyncLoggerContextSelector}
- * due the the reduced overhead avoiding classloader lookups.
+ * due to the reduced overhead avoiding classloader lookups.
  */
-public class BasicAsyncLoggerContextSelector implements ContextSelector {
+@Singleton
+public class BasicAsyncLoggerContextSelector extends BasicContextSelector {
 
-    private static final AsyncLoggerContext CONTEXT = new AsyncLoggerContext("AsyncDefault");
-
-    @Override
-    public void shutdown(final String fqcn, final ClassLoader loader, final boolean currentContext, final boolean allContexts) {
-        final LoggerContext ctx = getContext(fqcn, loader, currentContext);
-        if (ctx != null && ctx.isStarted()) {
-            ctx.stop(DEFAULT_STOP_TIMEOUT, TimeUnit.MILLISECONDS);
-        }
+    @Inject
+    public BasicAsyncLoggerContextSelector(Injector injector) {
+        super(injector);
     }
 
     @Override
-    public boolean hasContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
-        final LoggerContext ctx = getContext(fqcn, loader, currentContext);
-        return ctx != null && ctx.isStarted();
+    protected LoggerContext createContext() {
+        return new AsyncLoggerContext("AsyncDefault", null, (URI) null, injector);
     }
-
-    @Override
-    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
-        final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
-        return ctx != null ? ctx : CONTEXT;
-    }
-
-
-    @Override
-    public LoggerContext getContext(
-            final String fqcn,
-            final ClassLoader loader,
-            final boolean currentContext,
-            final URI configLocation) {
-        final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
-        return ctx != null ? ctx : CONTEXT;
-    }
-
-    @Override
-    public void removeContext(final LoggerContext context) {
-        // does not remove anything
-    }
-
-    @Override
-    public boolean isClassLoaderDependent() {
-        return false;
-    }
-
-    @Override
-    public List<LoggerContext> getLoggerContexts() {
-        return Collections.singletonList(CONTEXT);
-    }
-
 }

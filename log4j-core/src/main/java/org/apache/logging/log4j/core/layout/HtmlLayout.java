@@ -22,7 +22,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.pattern.DatePatternConverter;
 import org.apache.logging.log4j.core.util.Transform;
-import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -38,6 +38,7 @@ import java.lang.management.ManagementFactory;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Outputs events as rows in an HTML table on an HTML page.
@@ -46,7 +47,8 @@ import java.util.ArrayList;
  * characters could result in corrupted log files.
  * </p>
  */
-@Plugin(name = "HtmlLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
+@Configurable(elementType = Layout.ELEMENT_TYPE, printObject = true)
+@Plugin
 public final class HtmlLayout extends AbstractStringLayout {
 
     /**
@@ -307,7 +309,7 @@ public final class HtmlLayout extends AbstractStringLayout {
         appendLs(sbuf, "</head>");
         appendLs(sbuf, "<body bgcolor=\"#FFFFFF\" topmargin=\"6\" leftmargin=\"6\">");
         appendLs(sbuf, "<hr size=\"1\" noshade=\"noshade\">");
-        appendLs(sbuf, "Log session start time " + new java.util.Date() + "<br>");
+        appendLs(sbuf, "Log session start time " + new Date() + "<br>");
         appendLs(sbuf, "<br>");
         appendLs(sbuf,
                 "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" bordercolor=\"#224466\" width=\"100%\">");

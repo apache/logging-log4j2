@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one or more
+  ~ contributor license agreements. See the NOTICE file distributed with
+  ~ this work for additional information regarding copyright ownership.
+  ~ The ASF licenses this file to You under the Apache license, Version 2.0
+  ~ (the "License"); you may not use this file except in compliance with
+  ~ the License. You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the license for the specific language governing permissions and
+  ~ limitations under the license.
+  -->
+
+<Configuration status="off" verbose="true">
+  <CustomLevels>
+    <CustomLevel name="INFOM1" intLevel="399" />
+    <CustomLevel name="INFOP1" intLevel="401" />
+  </CustomLevels>
+  <Appenders>
+    <File name="info" fileName="target/info.log">
+      <PatternLayout>
+        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+      </PatternLayout>
+      <Filters>
+        <ThresholdFilter level="INFOM1" onMatch="DENY" onMismatch="NEUTRAL" />
+        <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY" />
+      </Filters>
+    </File>
+  </Appenders>
+  <Loggers>
+    <Logger name="HelloWorld" level="ALL">
+      <AppenderRef ref="info" />
+    </Logger>
+    <Root>
+    </Root>
+  </Loggers>
+</Configuration>

@@ -16,19 +16,20 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.plugins.Namespace;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.util.PerformanceSensitive;
+import org.apache.logging.log4j.util.Strings;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.util.PerformanceSensitive;
-import org.apache.logging.log4j.util.Strings;
 
 /**
  * Highlight pattern converter. Formats the result of a pattern using a color appropriate for the Level in the LogEvent.
@@ -75,14 +76,29 @@ import org.apache.logging.log4j.util.Strings;
   * %highlight{%d{ ISO8601 } [%t] %-5level: %msg%n%throwable}{STYLE=DEFAULT, noConsoleNoAnsi=true}
   * </pre>
  */
-@Plugin(name = "highlight", category = PatternConverter.CATEGORY)
+@Namespace(PatternConverter.CATEGORY)
+@Plugin("highlight")
 @ConverterKeys({ "highlight" })
 @PerformanceSensitive("allocation")
 public final class HighlightConverter extends LogEventPatternConverter implements AnsiConverter {
 
-    private static final Map<String, String> DEFAULT_STYLES = new HashMap<>();
+    private static final Map<String, String> DEFAULT_STYLES = Map.of(
+            Level.FATAL.name(), AnsiEscape.createSequence("BRIGHT", "RED"),
+            Level.ERROR.name(), AnsiEscape.createSequence("BRIGHT", "RED"),
+            Level.WARN.name(), AnsiEscape.createSequence("YELLOW"),
+            Level.INFO.name(), AnsiEscape.createSequence("GREEN"),
+            Level.DEBUG.name(), AnsiEscape.createSequence("CYAN"),
+            Level.TRACE.name(), AnsiEscape.createSequence("BLACK")
+    );
 
-    private static final Map<String, String> LOGBACK_STYLES = new HashMap<>();
+    private static final Map<String, String> LOGBACK_STYLES = Map.of(
+            Level.FATAL.name(), AnsiEscape.createSequence("BLINK", "BRIGHT", "RED"),
+            Level.ERROR.name(), AnsiEscape.createSequence("BRIGHT", "RED"),
+            Level.WARN.name(), AnsiEscape.createSequence("RED"),
+            Level.INFO.name(), AnsiEscape.createSequence("BLUE"),
+            Level.DEBUG.name(), AnsiEscape.createSequence((String[]) null),
+            Level.TRACE.name(), AnsiEscape.createSequence((String[]) null)
+    );
 
     private static final String STYLE_KEY = "STYLE";
 
@@ -90,27 +106,10 @@ public final class HighlightConverter extends LogEventPatternConverter implement
 
     private static final String STYLE_KEY_LOGBACK = "LOGBACK";
 
-    private static final Map<String, Map<String, String>> STYLES = new HashMap<>();
-
-    static {
-        // Default styles:
-        DEFAULT_STYLES.put(Level.FATAL.name(), AnsiEscape.createSequence("BRIGHT", "RED"));
-        DEFAULT_STYLES.put(Level.ERROR.name(), AnsiEscape.createSequence("BRIGHT", "RED"));
-        DEFAULT_STYLES.put(Level.WARN.name(), AnsiEscape.createSequence("YELLOW"));
-        DEFAULT_STYLES.put(Level.INFO.name(), AnsiEscape.createSequence("GREEN"));
-        DEFAULT_STYLES.put(Level.DEBUG.name(), AnsiEscape.createSequence("CYAN"));
-        DEFAULT_STYLES.put(Level.TRACE.name(), AnsiEscape.createSequence("BLACK"));
-        // Logback styles:
-        LOGBACK_STYLES.put(Level.FATAL.name(), AnsiEscape.createSequence("BLINK", "BRIGHT", "RED"));
-        LOGBACK_STYLES.put(Level.ERROR.name(), AnsiEscape.createSequence("BRIGHT", "RED"));
-        LOGBACK_STYLES.put(Level.WARN.name(), AnsiEscape.createSequence("RED"));
-        LOGBACK_STYLES.put(Level.INFO.name(), AnsiEscape.createSequence("BLUE"));
-        LOGBACK_STYLES.put(Level.DEBUG.name(), AnsiEscape.createSequence((String[]) null));
-        LOGBACK_STYLES.put(Level.TRACE.name(), AnsiEscape.createSequence((String[]) null));
-        // Style map:
-        STYLES.put(STYLE_KEY_DEFAULT, DEFAULT_STYLES);
-        STYLES.put(STYLE_KEY_LOGBACK, LOGBACK_STYLES);
-    }
+    private static final Map<String, Map<String, String>> STYLES = Map.of(
+            STYLE_KEY_DEFAULT, DEFAULT_STYLES,
+            STYLE_KEY_LOGBACK, LOGBACK_STYLES
+    );
 
     /**
      * Creates a level style map where values are ANSI escape sequences given configuration options in {@code option[1]}

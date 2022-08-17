@@ -16,11 +16,6 @@
  */
 package org.apache.logging.log4j.core.config.builder.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.List;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
@@ -29,9 +24,13 @@ import org.apache.logging.log4j.core.config.builder.api.Component;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
 import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.plugins.Node;
-import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.plugins.util.ResolverUtil;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * This is the general version of the Configuration created by the Builder. It may be extended to
@@ -123,11 +122,11 @@ public class BuiltConfiguration extends AbstractConfiguration {
             if (configSource != null) {
                 final InputStream is = configSource.getInputStream();
                 if (is != null) {
-                    buffer = toByteArray(is);
+                    buffer = is.readAllBytes();
                 }
             }
         } catch (final IOException ioe) {
-            LOGGER.warn("Unable to read configuration source " + configSource.toString());
+            LOGGER.warn("Unable to read configuration source {}", configSource);
         }
         super.createAdvertiser(advertiserString, configSource, buffer, contentType);
     }
@@ -154,14 +153,9 @@ public class BuiltConfiguration extends AbstractConfiguration {
         }
     }
 
-    @Override
-    public PluginManager getPluginManager() {
-        return pluginManager;
-    }
-
     protected Node convertToNode(final Node parent, final Component component) {
         final String name = component.getPluginType();
-        final PluginType<?> pluginType = pluginManager.getPluginType(name);
+        final PluginType<?> pluginType = corePlugins.get(name);
         final Node node = new Node(parent, name, pluginType);
         node.getAttributes().putAll(component.getAttributes());
         node.setValue(component.getValue());

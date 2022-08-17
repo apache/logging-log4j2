@@ -16,16 +16,17 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.util.Map;
-
 import org.apache.logging.log4j.core.net.Advertiser;
-import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
+
+import java.util.Map;
 
 /**
  * The default advertiser does not do anything.
  */
-@Plugin(name = "default", category = Node.CATEGORY, elementType = "advertiser", printObject = false)
+@Configurable(elementType = "advertiser")
+@Plugin("default")
 public class DefaultAdvertiser implements Advertiser {
 
     /**

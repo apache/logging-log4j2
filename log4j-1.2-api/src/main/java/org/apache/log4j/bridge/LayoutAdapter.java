@@ -16,12 +16,12 @@
  */
 package org.apache.log4j.bridge;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.log4j.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Class Description goes here.
@@ -29,10 +29,32 @@ import java.util.Map;
 public class LayoutAdapter implements org.apache.logging.log4j.core.Layout<String> {
     private final Layout layout;
 
-    public LayoutAdapter(Layout layout) {
+    /**
+     * Adapts a Log4j 1.x layout into a Log4j 2.x layout. Applying this method to
+     * the result of
+     * {@link LayoutWrapper#adapt(org.apache.logging.log4j.core.Layout)} should
+     * return the original Log4j 2.x layout.
+     * 
+     * @param layout a Log4j 1.x layout
+     * @return a Log4j 2.x layout or {@code null} if the parameter is {@code null}
+     */
+    public static org.apache.logging.log4j.core.Layout<?> adapt(Layout layout) {
+        if (layout instanceof LayoutWrapper) {
+            return ((LayoutWrapper) layout).getLayout();
+        }
+        if (layout != null) {
+            return new LayoutAdapter(layout);
+        }
+        return null;
+    }
+
+    private LayoutAdapter(Layout layout) {
         this.layout = layout;
     }
 
+    public Layout getLayout() {
+        return layout;
+    }
 
     @Override
     public byte[] getFooter() {

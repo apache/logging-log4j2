@@ -269,9 +269,9 @@ public class FileManager extends OutputStreamManager {
     }
 
     /**
-     * Returns posix file permissions if defined and the OS supports posix file attribute,
+     * Returns POSIX file permissions if defined and the OS supports POSIX file attribute,
      * null otherwise.
-     * @return File posix permissions
+     * @return File POSIX permissions
      * @see PosixFileAttributeView
      */
     public Set<PosixFilePermission> getFilePermissions() {
@@ -289,7 +289,7 @@ public class FileManager extends OutputStreamManager {
     }
 
     /**
-     * Returns file group if defined and the OS supports posix/group file attribute view,
+     * Returns file group if defined and the OS supports POSIX/group file attribute view,
      * null otherwise.
      * @return File group
      * @see PosixFileAttributeView
@@ -301,7 +301,7 @@ public class FileManager extends OutputStreamManager {
     /**
      * Returns true if file attribute view enabled for this file manager.
      *
-     * @return True if posix or owner supported and defined false otherwise.
+     * @return True if POSIX or owner supported and defined false otherwise.
      */
     public boolean isAttributeViewEnabled() {
         return attributeViewEnabled;

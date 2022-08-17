@@ -20,21 +20,17 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.lookup.AbstractLookup;
-import org.apache.logging.log4j.core.lookup.StrLookup;
+import org.apache.logging.log4j.core.lookup.Lookup;
+import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 
-import java.lang.Override;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-/**
- *
- */
-
-@Plugin(name = "custom", category = StrLookup.CATEGORY)
+@Lookup
+@Plugin("custom")
 public class CustomLookup extends AbstractLookup {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
@@ -50,6 +46,9 @@ public class CustomLookup extends AbstractLookup {
      */
     @Override
     public String lookup(final LogEvent event, final String key) {
+        if (event == null) {
+            return null;
+        }
         try {
             final Map<String, String> properties = loggerProperties.get(event.getLoggerName());
             if (properties == null) {

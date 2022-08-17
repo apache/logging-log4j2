@@ -16,29 +16,27 @@
  */
 package org.apache.logging.log4j.kubernetes;
 
+import io.fabric8.kubernetes.api.model.Container;
+import io.fabric8.kubernetes.api.model.ContainerStatus;
+import io.fabric8.kubernetes.api.model.Pod;
+import io.fabric8.kubernetes.client.Config;
+import io.fabric8.kubernetes.client.KubernetesClient;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.lookup.AbstractLookup;
+import org.apache.logging.log4j.core.lookup.Lookup;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.Strings;
+
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.lookup.AbstractLookup;
-import org.apache.logging.log4j.core.lookup.StrLookup;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.Strings;
-
-import io.fabric8.kubernetes.api.model.Container;
-import io.fabric8.kubernetes.api.model.ContainerStatus;
-import io.fabric8.kubernetes.api.model.Namespace;
-import io.fabric8.kubernetes.api.model.Pod;
-import io.fabric8.kubernetes.client.Config;
-import io.fabric8.kubernetes.client.KubernetesClient;
 
 
 /**
@@ -47,7 +45,8 @@ import io.fabric8.kubernetes.client.KubernetesClient;
  *  labels.podTemplateHash, masterUrl, namespaceId, namespaceName, podId, podIp, podName,
  *  imageId, imageName.
  */
-@Plugin(name = "k8s", category = StrLookup.CATEGORY)
+@Lookup
+@Plugin("k8s")
 public class KubernetesLookup extends AbstractLookup {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
@@ -60,7 +59,7 @@ public class KubernetesLookup extends AbstractLookup {
             LoaderUtil.isClassAvailable("org.apache.logging.log4j.spring.cloud.config.client.SpringEnvironmentHolder")
                     || LoaderUtil.isClassAvailable("org.apache.logging.log4j.spring.boot.SpringEnvironmentHolder");
     private Pod pod;
-    private Namespace namespace;
+    private io.fabric8.kubernetes.api.model.Namespace namespace;
     private URL masterUrl;
 
     public KubernetesLookup() {
@@ -70,7 +69,7 @@ public class KubernetesLookup extends AbstractLookup {
         initialize();
     }
 
-    KubernetesLookup(Pod pod, Namespace namespace, URL masterUrl) {
+    KubernetesLookup(Pod pod, io.fabric8.kubernetes.api.model.Namespace namespace, URL masterUrl) {
         this.pod = pod;
         this.namespace = namespace;
         this.masterUrl = masterUrl;

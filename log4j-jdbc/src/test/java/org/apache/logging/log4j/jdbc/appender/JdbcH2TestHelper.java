@@ -16,10 +16,14 @@
  */
 package org.apache.logging.log4j.jdbc.appender;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import org.apache.commons.io.file.PathUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 public class JdbcH2TestHelper {
@@ -27,13 +31,12 @@ public class JdbcH2TestHelper {
     /**
      * A JDBC connection string for an H2 in-memory database.
      */
-    public static final String CONNECTION_STRING_MEM = "jdbc:h2:mem:Log4j";
+    public static final String CONNECTION_STRING_IN_MEMORY = "jdbc:h2:mem:Log4j";
 
     /**
      * A JDBC connection string for an H2 database in the Java temporary directory.
      */
-    static final String CONNECTION_STRING_TMPDIR = "jdbc:h2:" + SystemUtils.JAVA_IO_TMPDIR
-            + "/h2/test_log4j;TRACE_LEVEL_SYSTEM_OUT=0";
+    static final String CONNECTION_STRING_TEMP_DIR = "jdbc:h2:" + getH2Path() + ";TRACE_LEVEL_SYSTEM_OUT=0";
 
     public static final String USER_NAME = "sa";
     public static final String PASSWORD = "";
@@ -41,23 +44,37 @@ public class JdbcH2TestHelper {
     public static ConnectionSource TEST_CONFIGURATION_SOURCE_MEM = new AbstractConnectionSource() {
         @Override
         public Connection getConnection() throws SQLException {
-            return JdbcH2TestHelper.getConnectionMem();
+            return JdbcH2TestHelper.getConnectionInMemory();
         }
     };
 
     public static ConnectionSource TEST_CONFIGURATION_SOURCE_TMPDIR = new AbstractConnectionSource() {
         @Override
         public Connection getConnection() throws SQLException {
-            return JdbcH2TestHelper.getConnectionTmpDir();
+            return JdbcH2TestHelper.getConnectionTempDir();
         }
     };
 
-    public static Connection getConnectionMem() throws SQLException {
-        return DriverManager.getConnection(CONNECTION_STRING_MEM, USER_NAME, PASSWORD);
+    /** Directory used in configuration files and connection strings. */
+    static final String H2_TEST_RELATIVE_DIR = "h2/test_log4j";
+
+    static void deleteDir() throws IOException {
+        final Path resolve = getH2Path();
+        if (Files.exists(resolve)) {
+            PathUtils.deleteDirectory(resolve);
+        }
     }
 
-    public static Connection getConnectionTmpDir() throws SQLException {
-        return DriverManager.getConnection(CONNECTION_STRING_TMPDIR, USER_NAME, PASSWORD);
+    public static Connection getConnectionInMemory() throws SQLException {
+        return DriverManager.getConnection(CONNECTION_STRING_IN_MEMORY, USER_NAME, PASSWORD);
+    }
+
+    public static Connection getConnectionTempDir() throws SQLException {
+        return DriverManager.getConnection(CONNECTION_STRING_TEMP_DIR, USER_NAME, PASSWORD);
+    }
+
+    private static Path getH2Path() {
+        return SystemUtils.getJavaIoTmpDir().toPath().resolve(H2_TEST_RELATIVE_DIR).normalize();
     }
 
 }

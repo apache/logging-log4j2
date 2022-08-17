@@ -16,22 +16,23 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.message.StructuredDataId;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.core.util.KeyValuePair;
-import org.apache.logging.log4j.message.StructuredDataId;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A LoggerFields container.
  */
-@Plugin(name = "LoggerFields", category = Node.CATEGORY, printObject = true)
+@Configurable(printObject = true)
+@Plugin
 public final class LoggerFields {
 
     private final Map<String, String> map;

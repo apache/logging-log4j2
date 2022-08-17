@@ -16,23 +16,6 @@
  */
 package org.apache.logging.log4j.core.config.xml;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import javax.xml.XMLConstants;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -54,6 +37,23 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Creates a Node hierarchy from an XML file.
@@ -80,7 +80,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
         try {
             final InputStream configStream = configSource.getInputStream();
             try {
-                buffer = toByteArray(configStream);
+                buffer = configStream.readAllBytes();
             } finally {
                 Closer.closeSilently(configStream);
             }
@@ -110,7 +110,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             int monitorIntervalSeconds = 0;
             for (final Map.Entry<String, String> entry : attrs.entrySet()) {
                 final String key = entry.getKey();
-                final String value = getStrSubstitutor().replace(entry.getValue());
+                final String value = getConfigurationStrSubstitutor().replace(entry.getValue());
                 if ("status".equalsIgnoreCase(key)) {
                     statusConfig.setStatus(value);
                 } else if ("dest".equalsIgnoreCase(key)) {
@@ -287,7 +287,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             if (w3cNode instanceof Element) {
                 final Element child = (Element) w3cNode;
                 final String name = getType(child);
-                final PluginType<?> type = pluginManager.getPluginType(name);
+                final PluginType<?> type = corePlugins.get(name);
                 final Node childNode = new Node(node, name, type);
                 constructHierarchy(childNode, child);
                 if (type == null) {

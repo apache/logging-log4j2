@@ -18,14 +18,17 @@ package org.apache.logging.log4j.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodHandles.Lookup;
 import java.nio.charset.Charset;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.ServiceLoader;
@@ -50,7 +53,8 @@ public final class PropertiesUtil {
 
     private static final String LOG4J_PROPERTIES_FILE_NAME = "log4j2.component.properties";
     private static final String LOG4J_SYSTEM_PROPERTIES_FILE_NAME = "log4j2.system.properties";
-    private static final PropertiesUtil LOG4J_PROPERTIES = new PropertiesUtil(LOG4J_PROPERTIES_FILE_NAME);
+    private static final LazyValue<PropertiesUtil> COMPONENT_PROPERTIES =
+            LazyValue.from(() -> new PropertiesUtil(LOG4J_PROPERTIES_FILE_NAME));
 
     private final Environment environment;
 
@@ -60,7 +64,7 @@ public final class PropertiesUtil {
      * @param props the Properties to use by default
      */
     public PropertiesUtil(final Properties props) {
-        this.environment = new Environment(new PropertiesPropertySource(props));
+        this(new PropertiesPropertySource(props));
     }
 
     /**
@@ -70,7 +74,19 @@ public final class PropertiesUtil {
      * @param propertiesFileName the location of properties file to load
      */
     public PropertiesUtil(final String propertiesFileName) {
-        this.environment = new Environment(new PropertyFilePropertySource(propertiesFileName));
+        this(propertiesFileName, true);
+    }
+
+    private PropertiesUtil(final String propertiesFileName, final boolean useTccl) {
+        this.environment = new Environment(new PropertyFilePropertySource(propertiesFileName, useTccl));
+    }
+
+    /**
+     * Constructs a PropertiesUtil for a give property source as source of additional properties.
+     * @param source a property source
+     */
+    PropertiesUtil(final PropertySource source) {
+        this.environment = new Environment(source);
     }
 
     /**
@@ -104,7 +120,7 @@ public final class PropertiesUtil {
      * @return the main Log4j PropertiesUtil instance.
      */
     public static PropertiesUtil getProperties() {
-        return LOG4J_PROPERTIES;
+        return COMPONENT_PROPERTIES.get();
     }
 
     /**
@@ -420,8 +436,15 @@ public final class PropertiesUtil {
     private static class Environment {
 
         private final Set<PropertySource> sources = new TreeSet<>(new PropertySource.Comparator());
-        private final Map<CharSequence, String> literal = new ConcurrentHashMap<>();
-        private final Map<CharSequence, String> normalized = new ConcurrentHashMap<>();
+        /**
+         * Maps a key to its value in the lowest priority source that contains it.
+         */
+        private final Map<String, String> literal = new ConcurrentHashMap<>();
+        /**
+         * Maps a key to the value associated to its normalization in the lowest
+         * priority source that contains it.
+         */
+        private final Map<String, String> normalized = new ConcurrentHashMap<>();
         private final Map<List<CharSequence>, String> tokenized = new ConcurrentHashMap<>();
 
         private Environment(final PropertySource propertySource) {
@@ -436,18 +459,8 @@ public final class PropertiesUtil {
                 // Access to System Properties is restricted so just skip it.
             }
             sources.add(propertySource);
-			for (final ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
-				try {
-					for (final PropertySource source : ServiceLoader.load(PropertySource.class, classLoader)) {
-						sources.add(source);
-					}
-				} catch (final Throwable ex) {
-					/* Don't log anything to the console. It may not be a problem that a PropertySource
-					 * isn't accessible.
-					 */
-				}
-			}
-
+            final ServiceRegistry registry = ServiceRegistry.getInstance();
+            sources.addAll(registry.getServices(PropertySource.class, MethodHandles.lookup(), null));
             reload();
         }
 
@@ -455,28 +468,33 @@ public final class PropertiesUtil {
             literal.clear();
             normalized.clear();
             tokenized.clear();
-            for (final PropertySource source : sources) {
-                source.forEach((key, value) -> {
-                    if (key != null && value != null) {
-                        literal.put(key, value);
-                        final List<CharSequence> tokens = PropertySource.Util.tokenize(key);
-                        if (tokens.isEmpty()) {
-                            normalized.put(source.getNormalForm(Collections.singleton(key)), value);
-                        } else {
-                            normalized.put(source.getNormalForm(tokens), value);
-                            tokenized.put(tokens, value);
+            // 1. Collects all property keys from enumerable sources.
+            final Set<String> keys = new HashSet<>();
+            sources.stream()
+                   .map(PropertySource::getPropertyNames)
+                   .forEach(sourceKeys -> keys.addAll(sourceKeys));
+            // 2. Fills the property caches. Sources with higher priority values don't override the previous ones.
+            keys.stream()
+                .filter(Objects::nonNull)
+                .forEach(key -> {
+                    final List<CharSequence> tokens = PropertySource.Util.tokenize(key);
+                    sources.forEach(source -> {
+                        final String value = source.getProperty(key);
+                        if (value != null) {
+                            literal.putIfAbsent(key, value);
+                            if (!tokens.isEmpty()) {
+                                tokenized.putIfAbsent(tokens, value);
+                            }
                         }
-                    }
+                        final CharSequence normalKey = source.getNormalForm(tokens);
+                        if (normalKey != null) {
+                            final String normalValue = source.getProperty(normalKey.toString());
+                            if (normalValue != null) {
+                                normalized.putIfAbsent(key, normalValue);
+                            }
+                        }
+                    });
                 });
-            }
-        }
-
-        private static boolean hasSystemProperty(final String key) {
-            try {
-                return System.getProperties().containsKey(key);
-            } catch (final SecurityException ignored) {
-                return false;
-            }
         }
 
         private String get(final String key) {
@@ -486,22 +504,33 @@ public final class PropertiesUtil {
             if (literal.containsKey(key)) {
                 return literal.get(key);
             }
-            if (hasSystemProperty(key)) {
-                return System.getProperty(key);
-            }
+            final List<CharSequence> tokens = PropertySource.Util.tokenize(key);
             for (final PropertySource source : sources) {
+                final String normalKey = Objects.toString(source.getNormalForm(tokens), null);
+                if (normalKey != null && source.containsProperty(normalKey)) {
+                    final String normalValue = source.getProperty(normalKey);
+                    // Caching previously unknown keys breaks many tests which set and unset system properties
+                    // normalized.put(key, normalValue);
+                    return normalValue;
+                }
                 if (source.containsProperty(key)) {
-                    return source.getProperty(key);
+                    final String value = source.getProperty(key);
+                    // literal.put(key, value);
+                    return value;
                 }
             }
-            return tokenized.get(PropertySource.Util.tokenize(key));
+            return tokenized.get(tokens);
         }
 
         private boolean containsKey(final String key) {
+            List<CharSequence> tokens = PropertySource.Util.tokenize(key);
             return normalized.containsKey(key) ||
-                literal.containsKey(key) ||
-                hasSystemProperty(key) ||
-                tokenized.containsKey(PropertySource.Util.tokenize(key));
+                   literal.containsKey(key) ||
+                   tokenized.containsKey(tokens) ||
+                   sources.stream().anyMatch(s -> {
+                        final CharSequence normalizedKey = s.getNormalForm(tokens);
+                        return s.containsProperty(key) || normalizedKey != null && s.containsProperty(normalizedKey.toString());
+                   });
         }
     }
 
@@ -550,13 +579,37 @@ public final class PropertiesUtil {
      * @since 2.6
      */
     public static Map<String, Properties> partitionOnCommonPrefixes(final Properties properties) {
+        return partitionOnCommonPrefixes(properties, false);
+    }
+
+    /**
+     * Partitions a properties map based on common key prefixes up to the first period.
+     *
+     * @param properties properties to partition
+     * @param includeBaseKey when true if a key exists with no '.' the key will be included.
+     * @return the partitioned properties where each key is the common prefix (minus the period) and the values are
+     * new property maps without the prefix and period in the key
+     * @since 2.17.2
+     */
+    public static Map<String, Properties> partitionOnCommonPrefixes(final Properties properties,
+            final boolean includeBaseKey) {
         final Map<String, Properties> parts = new ConcurrentHashMap<>();
         for (final String key : properties.stringPropertyNames()) {
-            final String prefix = key.substring(0, key.indexOf('.'));
+            final int idx = key.indexOf('.');
+            if (idx < 0) {
+                if (includeBaseKey) {
+                    if (!parts.containsKey(key)) {
+                        parts.put(key, new Properties());
+                    }
+                    parts.get(key).setProperty("", properties.getProperty(key));
+                }
+                continue;
+            }
+            final String prefix = key.substring(0, idx);
             if (!parts.containsKey(prefix)) {
                 parts.put(prefix, new Properties());
             }
-            parts.get(prefix).setProperty(key.substring(key.indexOf('.') + 1), properties.getProperty(key));
+            parts.get(prefix).setProperty(key.substring(idx + 1), properties.getProperty(key));
         }
         return parts;
     }

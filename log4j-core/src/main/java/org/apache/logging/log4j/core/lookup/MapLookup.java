@@ -16,18 +16,20 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.message.MapMessage;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.util.Strings;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.message.MapMessage;
-
 /**
  * A map-based lookup.
  */
-@Plugin(name = "map", category = StrLookup.CATEGORY)
+@Lookup
+@Plugin("map")
 public class MapLookup implements StrLookup {
 
     /**
@@ -43,7 +45,7 @@ public class MapLookup implements StrLookup {
     }
 
     /**
-     * Creates a new instance backed by a Map. Used by the default lookup.
+     * Creates a new instance backed by a Map.
      *
      * @param map
      *        the map of keys to values, may be null
@@ -71,7 +73,7 @@ public class MapLookup implements StrLookup {
             return null;
         }
         final int size = args.size();
-        return initMap(args.toArray(new String[size]), newMap(size));
+        return initMap(args.toArray(Strings.EMPTY_ARRAY), newMap(size));
     }
 
     static Map<String, String> toMap(final String[] args) {
@@ -88,17 +90,14 @@ public class MapLookup implements StrLookup {
     @Override
     public String lookup(final LogEvent event, final String key) {
         final boolean isMapMessage = event != null && event.getMessage() instanceof MapMessage;
-        if (map == null && !isMapMessage) {
-            return null;
-        }
-        if (map != null && map.containsKey(key)) {
-            final String obj = map.get(key);
+        if (isMapMessage) {
+            final String obj = ((MapMessage) event.getMessage()).get(key);
             if (obj != null) {
                 return obj;
             }
         }
-        if (isMapMessage) {
-            return ((MapMessage) event.getMessage()).get(key);
+        if (map != null) {
+            return map.get(key);
         }
         return null;
     }
@@ -115,7 +114,7 @@ public class MapLookup implements StrLookup {
      */
     @Override
     public String lookup(final String key) {
-        if (map == null) {
+        if (key == null || map == null) {
             return null;
         }
         return map.get(key);

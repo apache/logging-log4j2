@@ -16,236 +16,209 @@
  */
 package org.apache.log4j;
 
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.log4j.helpers.NullEnumeration;
 import org.apache.log4j.legacy.core.ContextUtil;
-import org.apache.log4j.or.ObjectRenderer;
-import org.apache.log4j.or.RendererSupport;
-import org.apache.log4j.spi.HierarchyEventListener;
+import org.apache.log4j.spi.DefaultRepositorySelector;
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.spi.NOPLoggerRepository;
 import org.apache.log4j.spi.RepositorySelector;
+import org.apache.log4j.spi.RootLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
-import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.StackLocatorUtil;
+
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.stream.Collectors;
 
 /**
- *
+ * The main entry point to Log4j 1.
  */
 public final class LogManager {
 
     /**
-     * @deprecated This variable is for internal use only. It will
-     * become package protected in future versions.
-     * */
+     * @deprecated This variable is for internal use only. It will become package protected in future versions.
+     */
     @Deprecated
     public static final String DEFAULT_CONFIGURATION_FILE = "log4j.properties";
 
     /**
-     * @deprecated This variable is for internal use only. It will
-     * become private in future versions.
-     * */
+     * @deprecated This variable is for internal use only. It will become private in future versions.
+     */
     @Deprecated
     public static final String DEFAULT_CONFIGURATION_KEY = "log4j.configuration";
 
     /**
-     * @deprecated This variable is for internal use only. It will
-     * become private in future versions.
-     * */
+     * @deprecated This variable is for internal use only. It will become private in future versions.
+     */
     @Deprecated
     public static final String CONFIGURATOR_CLASS_KEY = "log4j.configuratorClass";
 
     /**
-     * @deprecated This variable is for internal use only. It will
-     * become private in future versions.
+     * @deprecated This variable is for internal use only. It will become private in future versions.
      */
     @Deprecated
     public static final String DEFAULT_INIT_OVERRIDE_KEY = "log4j.defaultInitOverride";
 
     static final String DEFAULT_XML_CONFIGURATION_FILE = "log4j.xml";
 
-    private static final LoggerRepository REPOSITORY = new Repository();
+    static private RepositorySelector repositorySelector;
 
-    private static final boolean isLog4jCore;
+    private static final boolean LOG4J_CORE_PRESENT;
 
     static {
-        boolean core = false;
-        try {
-            if (Class.forName("org.apache.logging.log4j.core.LoggerContext") != null) {
-                core = true;
-            }
-        } catch (Exception ex) {
-            // Ignore the exception;
-        }
-        isLog4jCore = core;
+        LOG4J_CORE_PRESENT = LoaderUtil.isClassAvailable("org.apache.logging.log4j.core.LoggerContext");
+        // By default, we use a DefaultRepositorySelector which always returns 'hierarchy'.
+        final Hierarchy hierarchy = new Hierarchy(new RootLogger(Level.DEBUG));
+        repositorySelector = new DefaultRepositorySelector(hierarchy);
     }
 
-    private LogManager() {
-    }
-
-    public static Logger getRootLogger() {
-        return Category.getInstance(PrivateManager.getContext(), Strings.EMPTY);
-    }
-
-    public static Logger getLogger(final String name) {
-        return Category.getInstance(PrivateManager.getContext(), name);
-    }
-
-    public static Logger getLogger(final Class<?> clazz) {
-        return Category.getInstance(PrivateManager.getContext(), clazz.getName());
-    }
-
-    public static Logger getLogger(final String name, final LoggerFactory factory) {
-        return Category.getInstance(PrivateManager.getContext(), name);
-    }
-
+    /**
+     * Tests if a logger for the given name exists.
+     *
+     * @param name logger name to test.
+     * @return whether a logger for the given name exists.
+     */
     public static Logger exists(final String name) {
-        final LoggerContext ctx = PrivateManager.getContext();
-        if (!ctx.hasLogger(name)) {
-            return null;
-        }
-        return Logger.getLogger(name);
+        return exists(name, StackLocatorUtil.getCallerClassLoader(2));
+    }
+
+    static Logger exists(final String name, final ClassLoader classLoader) {
+        return getHierarchy().exists(name, classLoader);
+    }
+
+    /**
+     * Gets a LoggerContext.
+     *
+     * @param classLoader The ClassLoader for the context. If null the context will attempt to determine the appropriate
+     *        ClassLoader.
+     * @return a LoggerContext.
+     */
+    static LoggerContext getContext(final ClassLoader classLoader) {
+        return org.apache.logging.log4j.LogManager.getContext(classLoader, false);
+    }
+
+    /**
+     * Gets an enumeration of the current loggers.
+     *
+     * @return an enumeration of the current loggers.
+     */
+    @SuppressWarnings("rawtypes")
+    public static Enumeration getCurrentLoggers() {
+        return getCurrentLoggers(StackLocatorUtil.getCallerClassLoader(2));
     }
 
     @SuppressWarnings("rawtypes")
-    public static Enumeration getCurrentLoggers() {
-        return NullEnumeration.getInstance();
+    static Enumeration getCurrentLoggers(final ClassLoader classLoader) {
+        // @formatter:off
+        return Collections.enumeration(
+            LogManager.getContext(classLoader).getLoggerRegistry()
+                .getLoggers().stream().map(e -> LogManager.getLogger(e.getName(), classLoader))
+                .collect(Collectors.toList()));
+        // @formatter:on
     }
 
-    static void reconfigure() {
-        if (isLog4jCore) {
-            final LoggerContext ctx = PrivateManager.getContext();
-            ContextUtil.reconfigure(ctx);
-        }
-    }
-
-    /**
-     * No-op implementation.
-     */
-    public static void shutdown() {
+    static Hierarchy getHierarchy() {
+        final LoggerRepository loggerRepository = getLoggerRepository();
+        return loggerRepository instanceof Hierarchy ? (Hierarchy) loggerRepository : null;
     }
 
     /**
-     * No-op implementation.
+     * Gets the logger for the given class.
      */
-    public static void resetConfiguration() {
+    public static Logger getLogger(final Class<?> clazz) {
+        final Hierarchy hierarchy = getHierarchy();
+        return hierarchy != null ? hierarchy.getLogger(clazz.getName(), StackLocatorUtil.getCallerClassLoader(2))
+            : getLoggerRepository().getLogger(clazz.getName());
     }
 
     /**
-     * No-op implementation.
-     * @param selector The RepositorySelector.
-     * @param guard prevents calls at the incorrect time.
-     * @throws IllegalArgumentException if a parameter is invalid.
+     * Gets the logger for the given name.
      */
-    public static void setRepositorySelector(final RepositorySelector selector, final Object guard)
-        throws IllegalArgumentException {
+    public static Logger getLogger(final String name) {
+        final Hierarchy hierarchy = getHierarchy();
+        return hierarchy != null ? hierarchy.getLogger(name, StackLocatorUtil.getCallerClassLoader(2)) : getLoggerRepository().getLogger(name);
+    }
+
+    static Logger getLogger(final String name, final ClassLoader classLoader) {
+        final Hierarchy hierarchy = getHierarchy();
+        return hierarchy != null ? hierarchy.getLogger(name, classLoader) : getLoggerRepository().getLogger(name);
+    }
+
+    public static Logger getLogger(final String name, final LoggerFactory factory) {
+        final Hierarchy hierarchy = getHierarchy();
+        return hierarchy != null ? hierarchy.getLogger(name, factory, StackLocatorUtil.getCallerClassLoader(2))
+            : getLoggerRepository().getLogger(name, factory);
+    }
+
+    static Logger getLogger(final String name, final LoggerFactory factory, final ClassLoader classLoader) {
+        final Hierarchy hierarchy = getHierarchy();
+        return hierarchy != null ? hierarchy.getLogger(name, factory, classLoader) : getLoggerRepository().getLogger(name, factory);
     }
 
     public static LoggerRepository getLoggerRepository() {
-        return REPOSITORY;
+        if (repositorySelector == null) {
+            repositorySelector = new DefaultRepositorySelector(new NOPLoggerRepository());
+        }
+        return repositorySelector.getLoggerRepository();
     }
 
     /**
-     * The Repository.
+     * Gets the root logger.
      */
-    private static class Repository implements LoggerRepository, RendererSupport {
+    public static Logger getRootLogger() {
+        return getRootLogger(StackLocatorUtil.getCallerClassLoader(2));
+    }
 
-        private final Map<Class<?>, ObjectRenderer> rendererMap = new HashMap<>();
+    static Logger getRootLogger(final ClassLoader classLoader) {
+        final Hierarchy hierarchy = getHierarchy();
+        return hierarchy != null ? hierarchy.getRootLogger(classLoader) : getLoggerRepository().getRootLogger();
+    }
 
-        @Override
-        public Map<Class<?>, ObjectRenderer> getRendererMap() {
-            return rendererMap;
+    static boolean isLog4jCorePresent() {
+        return LOG4J_CORE_PRESENT;
+    }
+
+    static void reconfigure(final ClassLoader classLoader) {
+        if (isLog4jCorePresent()) {
+            ContextUtil.reconfigure(LogManager.getContext(classLoader));
         }
+    }
 
-        @Override
-        public void addHierarchyEventListener(final HierarchyEventListener listener) {
+    public static void resetConfiguration() {
+        resetConfiguration(StackLocatorUtil.getCallerClassLoader(2));
+    }
 
+    static void resetConfiguration(final ClassLoader classLoader) {
+        final Hierarchy hierarchy = getHierarchy();
+        if (hierarchy != null) {
+            hierarchy.resetConfiguration(classLoader);
+        } else {
+            getLoggerRepository().resetConfiguration();
         }
+    }
 
-        @Override
-        public boolean isDisabled(final int level) {
-            return false;
+    public static void setRepositorySelector(final RepositorySelector selector, final Object guard) throws IllegalArgumentException {
+        if (selector == null) {
+            throw new IllegalArgumentException("RepositorySelector must be non-null.");
         }
-
-        @Override
-        public void setThreshold(final Level level) {
-
-        }
-
-        @Override
-        public void setThreshold(final String val) {
-
-        }
-
-        @Override
-        public void emitNoAppenderWarning(final Category cat) {
-
-        }
-
-        @Override
-        public Level getThreshold() {
-            return Level.OFF;
-        }
-
-        @Override
-        public Logger getLogger(final String name) {
-            return Category.getInstance(PrivateManager.getContext(), name);
-        }
-
-        @Override
-        public Logger getLogger(final String name, final LoggerFactory factory) {
-            return Category.getInstance(PrivateManager.getContext(), name);
-        }
-
-        @Override
-        public Logger getRootLogger() {
-            return Category.getRoot(PrivateManager.getContext());
-        }
-
-        @Override
-        public Logger exists(final String name) {
-            return LogManager.exists(name);
-        }
-
-        @Override
-        public void shutdown() {
-        }
-
-        @Override
-        @SuppressWarnings("rawtypes")
-        public Enumeration getCurrentLoggers() {
-            return NullEnumeration.getInstance();
-        }
-
-        @Override
-        @SuppressWarnings("rawtypes")
-        public Enumeration getCurrentCategories() {
-            return NullEnumeration.getInstance();
-        }
-
-        @Override
-        public void fireAddAppenderEvent(final Category logger, final Appender appender) {
-        }
-
-        @Override
-        public void resetConfiguration() {
-        }
+        LogManager.repositorySelector = selector;
     }
 
     /**
-     * Internal LogManager.
+     * Shuts down the current configuration.
      */
-    private static class PrivateManager extends org.apache.logging.log4j.LogManager {
-        private static final String FQCN = LogManager.class.getName();
+    public static void shutdown() {
+        shutdown(StackLocatorUtil.getCallerClassLoader(2));
+    }
 
-        public static LoggerContext getContext() {
-            return getContext(FQCN, false);
-        }
-
-        public static org.apache.logging.log4j.Logger getLogger(final String name) {
-            return getLogger(FQCN, name);
+    static void shutdown(final ClassLoader classLoader) {
+        final Hierarchy hierarchy = getHierarchy();
+        if (hierarchy != null) {
+            hierarchy.shutdown(classLoader);
+        } else {
+            getLoggerRepository().shutdown();
         }
     }
+
 }

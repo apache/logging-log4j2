@@ -27,9 +27,7 @@
   <name>Apache Log4j Samples: Flume - Embedded</name>
   <url>http://maven.apache.org</url>
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <deploy.plugin.version>2.8.2</deploy.plugin.version>
-    <log4jParentDir>../..</log4jParentDir>
   </properties>
   <dependencies>
     <dependency>
@@ -111,14 +109,6 @@
         </configuration>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <version>${deploy.plugin.version}</version>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>maven-jetty-plugin</artifactId>
         <version>6.1.26</version>
@@ -135,10 +125,6 @@
             </systemProperty>
           </systemProperties>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
       </plugin>
     </plugins>
   </build>

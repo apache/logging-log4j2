@@ -18,8 +18,9 @@ package org.apache.logging.log4j.spring.boot;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.lookup.StrLookup;
+import org.apache.logging.log4j.core.lookup.Lookup;
+import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.springframework.core.env.Environment;
 
@@ -29,7 +30,8 @@ import java.util.regex.Pattern;
 /**
  * Lookup for Spring properties.
  */
-@Plugin(name = "spring", category = StrLookup.CATEGORY)
+@Lookup
+@Plugin("spring")
 public class SpringLookup extends SpringEnvironmentHolder implements StrLookup {
 
     private static final Logger LOGGER = StatusLogger.getLogger();

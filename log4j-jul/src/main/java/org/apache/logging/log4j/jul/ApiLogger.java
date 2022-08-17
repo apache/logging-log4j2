@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.ExtendedLogger;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Log4j API implementation of the JUL {@link Logger} class. <strong>Note that this implementation does
@@ -94,7 +95,8 @@ public class ApiLogger extends Logger {
 
     @Override
     public void setLevel(final Level newLevel) throws SecurityException {
-        throw new UnsupportedOperationException("Cannot set level through log4j-api");
+        StatusLogger.getLogger().error("Cannot set JUL log level through log4j-api: " +
+                "ignoring call to Logger.setLevel({})", newLevel);
     }
 
     /**

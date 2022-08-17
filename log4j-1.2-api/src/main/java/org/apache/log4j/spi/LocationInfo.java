@@ -16,64 +16,120 @@
  */
 package org.apache.log4j.spi;
 
+import java.io.Serializable;
+import java.util.Objects;
+
 /**
- The internal representation of caller location information.
-
- @since 0.8.3
+ * The internal representation of caller location information.
+ *
+ * @since 0.8.3
  */
-public class LocationInfo implements java.io.Serializable {
-
-    private final StackTraceElement element;
-
-    public String fullInfo;
+public class LocationInfo implements Serializable {
 
     /**
-     * Constructor for LocationInfo.
-     * @param element The StackTraceElement representing the caller.
+     * When location information is not available the constant <code>NA</code> is returned. Current value of this string
+     * constant is <b>?</b>.
      */
-    public LocationInfo(StackTraceElement element) {
-        this.element = element;
-    }
-
-    /**
-     When location information is not available the constant
-     <code>NA</code> is returned. Current value of this string
-     constant is <b>?</b>.  */
     public final static String NA = "?";
 
     static final long serialVersionUID = -1325822038990805636L;
 
+    private final StackTraceElement stackTraceElement;
+
+    public String fullInfo;
 
     /**
-     Return the fully qualified class name of the caller making the
-     logging request.
-     @return The class name.
+     * Constructs a new instance.
+     */
+    public LocationInfo(final StackTraceElement stackTraceElement) {
+        this.stackTraceElement = Objects.requireNonNull(stackTraceElement, "stackTraceElement");
+        this.fullInfo = stackTraceElement.toString();
+    }
+
+    /**
+     * Constructs a new instance.
+     *
+     * @param file source file name
+     * @param declaringClass class name
+     * @param methodName method
+     * @param line source line number
+     *
+     * @since 1.2.15
+     */
+    public LocationInfo(final String file, final String declaringClass, final String methodName, final String line) {
+        this(new StackTraceElement(declaringClass, methodName, file, Integer.parseInt(line)));
+    }
+
+    /**
+     * Constructs a new instance.
+     */
+    public LocationInfo(final Throwable throwable, final String fqnOfCallingClass) {
+        String declaringClass = null, methodName = null, file = null, line = null;
+        if (throwable != null && fqnOfCallingClass != null) {
+            final StackTraceElement[] elements = throwable.getStackTrace();
+            String prevClass = NA;
+            for (int i = elements.length - 1; i >= 0; i--) {
+                final String thisClass = elements[i].getClassName();
+                if (fqnOfCallingClass.equals(thisClass)) {
+                    final int caller = i + 1;
+                    if (caller < elements.length) {
+                        declaringClass = prevClass;
+                        methodName = elements[caller].getMethodName();
+                        file = elements[caller].getFileName();
+                        if (file == null) {
+                            file = NA;
+                        }
+                        final int lineNo = elements[caller].getLineNumber();
+                        if (lineNo < 0) {
+                            line = NA;
+                        } else {
+                            line = String.valueOf(lineNo);
+                        }
+                        final StringBuilder builder = new StringBuilder();
+                        builder.append(declaringClass);
+                        builder.append(".");
+                        builder.append(methodName);
+                        builder.append("(");
+                        builder.append(file);
+                        builder.append(":");
+                        builder.append(line);
+                        builder.append(")");
+                        this.fullInfo = builder.toString();
+                    }
+                    break;
+                }
+                prevClass = thisClass;
+            }
+        }
+        this.stackTraceElement = new StackTraceElement(declaringClass, methodName, file, Integer.parseInt(line));
+        this.fullInfo = stackTraceElement.toString();
+    }
+
+    /**
+     * Gets the fully qualified class name of the caller making the logging request.
      */
     public String getClassName() {
-        return element.getClassName();
+        return stackTraceElement.getClassName();
     }
 
     /**
-     Return the file name of the caller.
-     @return the file name.
+     * Gets the file name of the caller.
      */
     public String getFileName() {
-        return element.getFileName();
+        return stackTraceElement.getFileName();
     }
 
     /**
-     Returns the line number of the caller.
-     @return The line number.
+     * Gets the line number of the caller.
      */
     public String getLineNumber() {
-        return Integer.toString(element.getLineNumber());
+        return Integer.toString(stackTraceElement.getLineNumber());
     }
 
     /**
-     Returns the method name of the caller.
-     @return The method name.
+     * Gets the method name of the caller.
      */
     public String getMethodName() {
-        return element.getMethodName();
+        return stackTraceElement.getMethodName();
     }
 }

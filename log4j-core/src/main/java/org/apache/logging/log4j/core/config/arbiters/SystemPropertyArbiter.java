@@ -18,14 +18,14 @@ package org.apache.logging.log4j.core.config.arbiters;
 
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 
 /**
  * Condition that determines if the specified property is set.
  */
-@Plugin(name = "SystemPropertyArbiter", category = Node.CATEGORY, elementType = Arbiter.ELEMENT_TYPE,
-        deferChildren = true, printObject = true)
+@Configurable(elementType = Arbiter.ELEMENT_TYPE, printObject = true, deferChildren = true)
+@Plugin
 public class SystemPropertyArbiter implements Arbiter {
 
     private final String propertyName;
@@ -74,11 +74,11 @@ public class SystemPropertyArbiter implements Arbiter {
 
         /**
          * Sets the Property Value.
-         * @param propertyValue the property name.
+         * @param propertyValue the property value.
          * @return this
          */
         public Builder setPropertyValue(final String propertyValue) {
-            this.propertyName = propertyValue;
+            this.propertyValue = propertyValue;
             return asBuilder();
         }
 

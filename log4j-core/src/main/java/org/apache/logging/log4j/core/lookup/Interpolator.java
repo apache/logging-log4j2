@@ -16,20 +16,20 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.ConfigurationAware;
-import org.apache.logging.log4j.core.util.Loader;
-import org.apache.logging.log4j.util.ReflectionUtil;
-import org.apache.logging.log4j.plugins.util.PluginManager;
-import org.apache.logging.log4j.plugins.util.PluginType;
+import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.di.Keys;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Constants;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * Proxies other {@link StrLookup}s using a keys within ${} markers.
@@ -53,12 +53,12 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private final Map<String, StrLookup> strLookupMap = new HashMap<>();
+    private final Map<String, Supplier<? extends StrLookup>> strLookups = new ConcurrentHashMap<>();
 
     private final StrLookup defaultLookup;
 
     public Interpolator(final StrLookup defaultLookup) {
-        this(defaultLookup, null);
+        this(defaultLookup, List.of());
     }
 
     /**
@@ -69,94 +69,46 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
      * @since 2.1
      */
     public Interpolator(final StrLookup defaultLookup, final List<String> pluginPackages) {
-        this.defaultLookup = defaultLookup == null ? new MapLookup(new HashMap<String, String>()) : defaultLookup;
-        final PluginManager manager = new PluginManager(CATEGORY);
-        manager.collectPlugins(pluginPackages);
-        final Map<String, PluginType<?>> plugins = manager.getPlugins();
+        this.defaultLookup = defaultLookup == null ? new PropertiesLookup(Map.of()) : defaultLookup;
+        final Injector injector = DI.createInjector();
+        injector.registerBinding(Keys.PLUGIN_PACKAGES_KEY, () -> pluginPackages);
+        injector.getInstance(PLUGIN_CATEGORY_KEY)
+                .forEach((key, value) -> {
+                    try {
+                        strLookups.put(key, injector.getFactory(value.getPluginClass().asSubclass(StrLookup.class)));
+                    } catch (final Throwable t) {
+                        handleError(key, t);
+                    }
+                });
+    }
 
-        for (final Map.Entry<String, PluginType<?>> entry : plugins.entrySet()) {
-            try {
-                final Class<? extends StrLookup> clazz = entry.getValue().getPluginClass().asSubclass(StrLookup.class);
-                strLookupMap.put(entry.getKey().toLowerCase(), ReflectionUtil.instantiate(clazz));
-            } catch (final Throwable t) {
-                handleError(entry.getKey(), t);
-            }
-        }
+    public Interpolator(final StrLookup defaultLookup, final Map<String, Supplier<StrLookup>> strLookupPlugins) {
+        this.defaultLookup = defaultLookup;
+        strLookups.putAll(strLookupPlugins);
     }
 
     /**
-     * Create the default Interpolator using only Lookups that work without an event.
+     * Create the default Interpolator.
      */
     public Interpolator() {
-        this((Map<String, String>) null);
+        this(Map.of());
     }
 
     /**
-     * Creates the Interpolator using only Lookups that work without an event and initial properties.
+     * Creates the default Interpolator with the provided properties.
      */
     public Interpolator(final Map<String, String> properties) {
-        this.defaultLookup = new MapLookup(properties == null ? new HashMap<String, String>() : properties);
-        // TODO: this ought to use the PluginManager
-        strLookupMap.put("log4j", new Log4jLookup());
-        strLookupMap.put("sys", new SystemPropertiesLookup());
-        strLookupMap.put("env", new EnvironmentLookup());
-        strLookupMap.put("main", MainMapLookup.MAIN_SINGLETON);
-        strLookupMap.put("marker", new MarkerLookup());
-        strLookupMap.put("java", new JavaLookup());
-        strLookupMap.put("base64", new Base64StrLookup());
-        strLookupMap.put("lower", new LowerLookup());
-        strLookupMap.put("upper", new UpperLookup());
-        // JNDI
-        try {
-            // [LOG4J2-703] We might be on Android
-            strLookupMap.put(LOOKUP_KEY_JNDI,
-                Loader.newCheckedInstanceOf("org.apache.logging.log4j.core.lookup.JndiLookup", StrLookup.class));
-        } catch (final LinkageError | Exception e) {
-            handleError(LOOKUP_KEY_JNDI, e);
-        }
-        // JMX input args
-        try {
-            // We might be on Android
-            strLookupMap.put(LOOKUP_KEY_JVMRUNARGS,
-                Loader.newCheckedInstanceOf("org.apache.logging.log4j.core.lookup.JmxRuntimeInputArgumentsLookup",
-                        StrLookup.class));
-        } catch (final LinkageError | Exception e) {
-            handleError(LOOKUP_KEY_JVMRUNARGS, e);
-        }
-        strLookupMap.put("date", new DateLookup());
-        strLookupMap.put("ctx", new ContextMapLookup());
-        if (Constants.IS_WEB_APP) {
-            try {
-                strLookupMap.put(LOOKUP_KEY_WEB,
-                    Loader.newCheckedInstanceOf("org.apache.logging.log4j.web.WebLookup", StrLookup.class));
-            } catch (final Exception ignored) {
-                handleError(LOOKUP_KEY_WEB, ignored);
-            }
-        } else {
-            LOGGER.debug("Not in a ServletContext environment, thus not loading WebLookup plugin.");
-        }
-        try {
-            strLookupMap.put(LOOKUP_KEY_DOCKER,
-                    Loader.newCheckedInstanceOf("org.apache.logging.log4j.docker.DockerLookup", StrLookup.class));
-        } catch (final Exception ignored) {
-            handleError(LOOKUP_KEY_DOCKER, ignored);
-        }
-        try {
-            strLookupMap.put(LOOKUP_KEY_SPRING,
-                    Loader.newCheckedInstanceOf("org.apache.logging.log4j.spring.cloud.config.client.SpringLookup", StrLookup.class));
-        } catch (final Exception ignored) {
-            handleError(LOOKUP_KEY_SPRING, ignored);
-        }
-        try {
-            strLookupMap.put(LOOKUP_KEY_KUBERNETES,
-                    Loader.newCheckedInstanceOf("org.apache.logging.log4j.kubernetes.KubernetesLookup", StrLookup.class));
-        } catch (final Exception | NoClassDefFoundError error) {
-            handleError(LOOKUP_KEY_KUBERNETES, error);
-        }
+        this(new PropertiesLookup(properties), List.of());
+    }
+
+    public StrLookup getDefaultLookup() {
+        return defaultLookup;
     }
 
     public Map<String, StrLookup> getStrLookupMap() {
-        return strLookupMap;
+        return strLookups.entrySet()
+                .stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().get()));
     }
 
     private void handleError(final String lookupKey, final Throwable t) {
@@ -213,12 +165,13 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
         if (prefixPos >= 0) {
             final String prefix = var.substring(0, prefixPos).toLowerCase(Locale.US);
             final String name = var.substring(prefixPos + 1);
-            final StrLookup lookup = strLookupMap.get(prefix);
-            if (lookup instanceof ConfigurationAware) {
-                ((ConfigurationAware) lookup).setConfiguration(configuration);
-            }
+            final Supplier<? extends StrLookup> lookupSupplier = strLookups.get(prefix);
             String value = null;
-            if (lookup != null) {
+            if (lookupSupplier != null) {
+                final StrLookup lookup = lookupSupplier.get();
+                if (lookup instanceof ConfigurationAware) {
+                    ((ConfigurationAware) lookup).setConfiguration(configuration);
+                }
                 value = event == null ? lookup.lookup(name) : lookup.lookup(event, name);
             }
 
@@ -236,7 +189,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        for (final String name : strLookupMap.keySet()) {
+        for (final String name : strLookups.keySet()) {
             if (sb.length() == 0) {
                 sb.append('{');
             } else {

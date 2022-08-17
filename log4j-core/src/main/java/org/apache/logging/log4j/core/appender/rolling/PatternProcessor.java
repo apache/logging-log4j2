@@ -16,12 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
@@ -33,6 +27,12 @@ import org.apache.logging.log4j.core.pattern.FormattingInfo;
 import org.apache.logging.log4j.core.pattern.PatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.status.StatusLogger;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Parses the rollover pattern.
@@ -85,8 +85,7 @@ public class PatternProcessor {
         final List<PatternConverter> converters = new ArrayList<>();
         final List<FormattingInfo> fields = new ArrayList<>();
         parser.parse(pattern, converters, fields, false, false, false);
-        final FormattingInfo[] infoArray = new FormattingInfo[fields.size()];
-        patternFields = fields.toArray(infoArray);
+        patternFields = fields.toArray(FormattingInfo.EMPTY_ARRAY);
         final ArrayPatternConverter[] converterArray = new ArrayPatternConverter[converters.size()];
         patternConverters = converters.toArray(converterArray);
         this.fileExtension = FileExtension.lookupForFile(pattern);
@@ -113,6 +112,14 @@ public class PatternProcessor {
         this.prevFileTime = copy.prevFileTime;
         this.nextFileTime = copy.nextFileTime;
         this.currentFileTime = copy.currentFileTime;
+    }
+
+    public FormattingInfo[] getPatternFields() {
+        return patternFields;
+    }
+
+    public ArrayPatternConverter[] getPatternConverters() {
+        return patternConverters;
     }
 
     public void setTimeBased(final boolean isTimeBased) {
@@ -156,7 +163,7 @@ public class PatternProcessor {
         final long nextTime;
 
         if (frequency == null) {
-            throw new IllegalStateException("Pattern does not contain a date");
+            throw new IllegalStateException("Pattern '" + pattern + "' does not contain a date");
         }
         final Calendar currentCal = Calendar.getInstance();
         currentCal.setTimeInMillis(currentMillis);

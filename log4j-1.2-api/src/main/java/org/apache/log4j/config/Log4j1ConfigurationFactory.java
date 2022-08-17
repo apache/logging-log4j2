@@ -16,9 +16,6 @@
  */
 package org.apache.log4j.config;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationException;
@@ -27,17 +24,21 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
  * Experimental ConfigurationFactory for Log4j 1.2 properties configuration files.
  */
 // TODO
-// @Plugin(name = "Log4j1ConfigurationFactory", category = ConfigurationFactory.CATEGORY)
+// @Category(ConfigurationFactory.CATEGORY)
+// @Plugin("Log4j1ConfigurationFactory")
 //
 // Best Value?
 // @Order(50)
 public class Log4j1ConfigurationFactory extends ConfigurationFactory {
 
-    private static final String[] SUFFIXES = {".properties"};
+    private static final String[] SUFFIXES = { ".properties" };
 
     @Override
     public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {

@@ -17,12 +17,13 @@
 package org.apache.logging.log4j.core.appender.routing;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.script.AbstractScript;
+import org.apache.logging.log4j.core.script.Script;
+import org.apache.logging.log4j.core.script.ScriptBindings;
 import org.apache.logging.log4j.core.script.ScriptManager;
+import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -30,7 +31,6 @@ import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.status.StatusLogger;
 
-import javax.script.Bindings;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentMap;
 
@@ -39,21 +39,22 @@ import static org.apache.logging.log4j.core.appender.routing.RoutingAppender.STA
 /**
  * Contains the individual Route elements.
  */
-@Plugin(name = "Routes", category = Core.CATEGORY_NAME, printObject = true)
+@Configurable(printObject = true)
+@Plugin
 public final class Routes {
 
     private static final String LOG_EVENT_KEY = "logEvent";
 
     public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<Routes> {
 
-        @PluginConfiguration
+        @Inject
         private Configuration configuration;
 
         @PluginAttribute
         private String pattern;
 
         @PluginElement("Script")
-        private AbstractScript patternScript;
+        private Script patternScript;
 
         @PluginElement
         @Required
@@ -72,7 +73,18 @@ public final class Routes {
                 if (configuration == null) {
                     LOGGER.error("No Configuration defined for Routes; required for Script");
                 } else {
-                    configuration.getScriptManager().addScript(patternScript);
+                    ScriptManager scriptManager = configuration.getScriptManager();
+                    if (scriptManager == null) {
+                        LOGGER.error("Script support is not enabled");
+                        return null;
+                    }
+                    if (!scriptManager.addScript(patternScript)) {
+                        if (!scriptManager.isScriptRef(patternScript)) {
+                            if (!scriptManager.addScript(patternScript)) {
+                                return null;
+                            }
+                        }
+                    }
                 }
             }
             return new Routes(configuration, patternScript, pattern, routes);
@@ -86,7 +98,7 @@ public final class Routes {
             return pattern;
         }
 
-        public AbstractScript getPatternScript() {
+        public Script getPatternScript() {
             return patternScript;
         }
 
@@ -104,7 +116,7 @@ public final class Routes {
             return this;
         }
 
-        public Builder setPatternScript(@SuppressWarnings("hiding") final AbstractScript patternScript) {
+        public Builder setPatternScript(@SuppressWarnings("hiding") final Script patternScript) {
             this.patternScript = patternScript;
             return this;
         }
@@ -127,12 +139,12 @@ public final class Routes {
 
     private final String pattern;
 
-    private final AbstractScript patternScript;
+    private final Script patternScript;
 
     // TODO Why not make this a Map or add a Map.
     private final Route[] routes;
 
-    private Routes(final Configuration configuration, final AbstractScript patternScript, final String pattern, final Route... routes) {
+    private Routes(final Configuration configuration, final Script patternScript, final String pattern, final Route... routes) {
         this.configuration = configuration;
         this.patternScript = patternScript;
         this.pattern = pattern;
@@ -148,7 +160,7 @@ public final class Routes {
     public String getPattern(final LogEvent event, final ConcurrentMap<Object, Object> scriptStaticVariables) {
         if (patternScript != null) {
             final ScriptManager scriptManager = configuration.getScriptManager();
-            final Bindings bindings = scriptManager.createBindings(patternScript);
+            final ScriptBindings bindings = scriptManager.createBindings(patternScript);
             bindings.put(STATIC_VARIABLES_KEY, scriptStaticVariables);
             bindings.put(LOG_EVENT_KEY, event);
             final Object object = scriptManager.execute(patternScript.getName(), bindings);
@@ -162,7 +174,7 @@ public final class Routes {
      * Gets the optional script that decides which route to pick.
      * @return the optional script that decides which route to pick. May be null.
      */
-    public AbstractScript getPatternScript() {
+    public Script getPatternScript() {
         return patternScript;
     }
 

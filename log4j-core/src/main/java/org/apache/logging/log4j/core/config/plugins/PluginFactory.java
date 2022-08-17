@@ -16,7 +16,13 @@
  */
 package org.apache.logging.log4j.core.config.plugins;
 
-import java.lang.annotation.*;
+import org.apache.logging.log4j.plugins.FactoryType;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Identifies a Method as the factory to create the plugin. This annotation should only be used on a {@code static}
@@ -29,6 +35,8 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
+@FactoryType
+@Deprecated(since = "3.0.0")
 public @interface PluginFactory {
     // empty
 }

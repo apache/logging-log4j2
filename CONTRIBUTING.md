@@ -27,7 +27,7 @@ follow so that we can have a chance of keeping on top of things.
 ## Getting Started
 
 + Make sure you have a [JIRA account](https://issues.apache.org/jira/).
-+ Make sure you have a [GitHub account](https://github.com/signup/free).
++ Make sure you have a [GitHub account](https://github.com/join).
 + If you're planning to implement a new feature it makes sense to discuss your changes on the [dev list](https://logging.apache.org/log4j/2.x/mail-lists.html) first. This way you can make sure you're not wasting your time on something that isn't considered to be in Apache Log4j's scope.
 + Submit a ticket for your issue, assuming one does not already exist.
   + Clearly describe the issue including steps to reproduce when it is a bug.
@@ -62,9 +62,9 @@ In this case, it is appropriate to start the first line of a commit with '(doc)'
 
 + [Project Guidelines](https://logging.apache.org/log4j/2.x/guidelines.html)
 + [Code Style Guide](https://logging.apache.org/log4j/2.x/javastyle.html)
-+ [Apache Log4j 2 JIRA project page](https://issues.apache.org/jira/browse/LOG4J2)
++ [Apache Log4j 2 JIRA project page](https://issues.apache.org/jira/projects/LOG4J2/issues)
 + [Contributor License Agreement][cla]
-+ [General GitHub documentation](https://help.github.com/)
-+ [GitHub pull request documentation](https://help.github.com/send-pull-requests/)
++ [General GitHub documentation](https://docs.github.com/)
++ [GitHub pull request documentation](https://docs.github.com/en/pull-requests)
 
 [cla]:https://www.apache.org/licenses/#clas

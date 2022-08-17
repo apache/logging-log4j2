@@ -1,0 +1,56 @@
+{
+  "name": "ConfigTest",
+  "status": "ERROR",
+  "monitorInterval": 5,
+  "Appenders": {
+    "SystemPropertyArbiter": [
+      {
+        "propertyName": "env",
+        "propertyValue": "dev",
+        "Console": {
+          "name": "Out",
+          "PatternLayout": {
+            "pattern": "%m%n"
+          }
+        }
+      },
+      {
+        "propertyName": "env",
+        "propertyValue": "prod",
+        "List": {
+          "name": "Out"
+        }
+      }
+    ],
+    "ClassArbiter": [
+      {
+        "className": "org.apache.logging.log4j.core.config.arbiters.ClassArbiter",
+        "List": {
+          "name": "ShouldExist"
+        }
+      },
+      {
+        "className": "org.apache.logging.log4j.core.DoesNotExist",
+        "List": {
+          "name": "ShouldNotExist"
+        }
+      }
+    ]
+  },
+  "Loggers": {
+    "Logger": {
+      "name": "org.apache.test",
+      "level": "trace",
+      "additivity": false,
+      "AppenderRef": {
+        "ref": "Out"
+      }
+    },
+    "Root": {
+      "level": "error",
+      "AppenderRef": {
+        "ref": "Out"
+      }
+    }
+  }
+}

@@ -16,13 +16,14 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.util.List;
-
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.impl.ThreadContextDataInjector;
+import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringMap;
+
+import java.util.List;
 
 /**
  * Responsible for initializing the context data of LogEvents. Context data is data that is set by the application to be
@@ -55,6 +56,8 @@ import org.apache.logging.log4j.util.StringMap;
  * @since 2.7
  */
 public interface ContextDataInjector {
+    Key<ContextDataInjector> KEY = new Key<>() {};
+
     /**
      * Returns a {@code StringMap} object initialized with the specified properties and the appropriate
      * context data. The returned value may be the specified parameter or a different object.

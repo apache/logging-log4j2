@@ -20,12 +20,8 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.Order;
-import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.util.Loader;
 
-@Plugin(name = "JsonConfigurationFactory", category = ConfigurationFactory.CATEGORY)
-@Order(6)
 public class JsonConfigurationFactory extends ConfigurationFactory {
 
     /**

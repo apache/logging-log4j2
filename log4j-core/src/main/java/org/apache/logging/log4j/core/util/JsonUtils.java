@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import org.apache.logging.log4j.util.LazyValue;
+
+import java.util.function.Supplier;
+
 /**
  * This class is borrowed from <a href="https://github.com/FasterXML/jackson-core">Jackson</a>.
  */
@@ -29,8 +33,7 @@ public final class JsonUtils {
      * to use after backslash; and negative values that generic (backslash - u)
      * escaping is to be used.
      */
-    private static final int[] ESC_CODES;
-    static {
+    private static final Supplier<int[]> ESC_CODES = LazyValue.from(() -> {
         final int[] table = new int[128];
         // Control chars need generic escape sequence
         for (int i = 0; i < 32; ++i) {
@@ -48,8 +51,8 @@ public final class JsonUtils {
         table[0x0C] = 'f';
         table[0x0A] = 'n';
         table[0x0D] = 'r';
-        ESC_CODES = table;
-    }
+        return table;
+    });
 
     /**
      * Temporary buffer used for composing quote/escape sequences
@@ -74,7 +77,8 @@ public final class JsonUtils {
      */
     public static void quoteAsString(final CharSequence input, final StringBuilder output) {
         final char[] qbuf = getQBuf();
-        final int escCodeCount = ESC_CODES.length;
+        final int[] escCodes = ESC_CODES.get();
+        final int escCodeCount = escCodes.length;
         int inPtr = 0;
         final int inputLen = input.length();
 
@@ -83,7 +87,7 @@ public final class JsonUtils {
             tight_loop:
             while (true) {
                 final char c = input.charAt(inPtr);
-                if (c < escCodeCount && ESC_CODES[c] != 0) {
+                if (c < escCodeCount && escCodes[c] != 0) {
                     break tight_loop;
                 }
                 output.append(c);
@@ -93,7 +97,7 @@ public final class JsonUtils {
             }
             // something to escape; 2 or 6-char variant?
             final char d = input.charAt(inPtr++);
-            final int escCode = ESC_CODES[d];
+            final int escCode = escCodes[d];
             final int length = (escCode < 0)
                     ? _appendNumeric(d, qbuf)
                     : _appendNamed(escCode, qbuf);

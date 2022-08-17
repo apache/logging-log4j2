@@ -22,7 +22,8 @@ import org.apache.logging.log4j.plugins.Plugin;
 /**
  * Looks up values from the log event.
  */
-@Plugin(name = "event", category = StrLookup.CATEGORY)
+@Lookup
+@Plugin("event")
 public class EventLookup extends AbstractLookup {
 
     /**
@@ -33,6 +34,9 @@ public class EventLookup extends AbstractLookup {
      */
     @Override
     public String lookup(final LogEvent event, final String key) {
+        if (event == null) {
+            return null;
+        }
         switch (key) {
             case "Marker": {
                 return event.getMarker() != null ? event.getMarker().getName() : null;

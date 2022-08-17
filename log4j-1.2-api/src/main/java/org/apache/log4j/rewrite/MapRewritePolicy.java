@@ -16,6 +16,9 @@
  */
 package org.apache.log4j.rewrite;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.log4j.bridge.LogEventAdapter;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.LocationInfo;
@@ -26,9 +29,6 @@ import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * This policy rewrites events where the message of the
@@ -44,11 +44,13 @@ import java.util.Map;
  * <p>
  * The combination of the RewriteAppender and this policy
  * performs the same actions as the MapFilter from log4j 1.3.
+ * </p>
  */
 public class MapRewritePolicy implements RewritePolicy {
     /**
      * {@inheritDoc}
      */
+    @Override
     public LoggingEvent rewrite(final LoggingEvent source) {
         Object msg = source.getMessage();
         if (msg instanceof MapMessage || msg instanceof Map) {
@@ -105,9 +107,8 @@ public class MapRewritePolicy implements RewritePolicy {
                         .build();
             }
             return new LogEventAdapter(event);
-        } else {
-            return source;
         }
+        return source;
 
     }
 

@@ -16,26 +16,30 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Objects;
-import java.util.TimeZone;
-import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
 import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
 import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedFormat;
+import org.apache.logging.log4j.plugins.Namespace;
+import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.PerformanceSensitive;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.TimeZone;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 
 /**
  * Converts and formats the event's date in a StringBuilder.
  */
-@Plugin(name = "DatePatternConverter", category = PatternConverter.CATEGORY)
+@Namespace(PatternConverter.CATEGORY)
+@Plugin("DatePatternConverter")
 @ConverterKeys({"d", "date"})
 @PerformanceSensitive("allocation")
 public final class DatePatternConverter extends LogEventPatternConverter implements ArrayPatternConverter {
@@ -236,8 +240,13 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
             tz = TimeZone.getTimeZone(options[1]);
         }
 
+        Locale locale = null;
+        if (options.length > 2 && options[2] != null) {
+            locale = Locale.forLanguageTag(options[2]);
+        }
+
         try {
-            final FastDateFormat tempFormat = FastDateFormat.getInstance(pattern, tz);
+            final FastDateFormat tempFormat = FastDateFormat.getInstance(pattern, tz, locale);
             return new PatternFormatter(tempFormat);
         } catch (final IllegalArgumentException e) {
             LOGGER.warn("Could not instantiate FastDateFormat with pattern " + pattern, e);
@@ -272,7 +281,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     }
 
     private MutableInstant getMutableInstant() {
-        if (Constants.ENABLE_THREADLOCALS) {
+        if (isThreadLocalsEnabled()) {
             MutableInstant result = threadLocalMutableInstant.get();
             if (result == null) {
                 result = new MutableInstant();
@@ -284,7 +293,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     }
 
     public void format(final Instant instant, final StringBuilder output) {
-        if (Constants.ENABLE_THREADLOCALS) {
+        if (isThreadLocalsEnabled()) {
             formatWithoutAllocation(instant, output);
         } else {
             formatWithoutThreadLocals(instant, output);

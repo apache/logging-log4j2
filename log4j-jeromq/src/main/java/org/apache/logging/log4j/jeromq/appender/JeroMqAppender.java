@@ -17,25 +17,25 @@
 
 package org.apache.logging.log4j.jeromq.appender;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
-import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
-import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.util.Strings;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Sends log events to one or more ZeroMQ (JeroMQ) endpoints.
@@ -47,7 +47,8 @@ import org.apache.logging.log4j.util.Strings;
 // Some methods are synchronized because a ZMQ.Socket is not thread-safe
 // Using a ThreadLocal for the publisher hangs tests on shutdown. There must be
 // some issue on threads owning certain resources as opposed to others.
-@Plugin(name = "JeroMQ", category = Node.CATEGORY, elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
+@Plugin("JeroMQ")
 public final class JeroMqAppender extends AbstractAppender {
 
     private static final int DEFAULT_BACKLOG = 100;

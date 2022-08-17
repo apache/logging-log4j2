@@ -16,22 +16,22 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.StringEncoder;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
+
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Abstract base class for Layouts that result in a String.
@@ -82,13 +82,14 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
 
     }
 
-    public interface Serializer {
+    public interface Serializer extends Serializer2 {
         String toSerializable(final LogEvent event);
 
         default boolean requiresLocation() {
             return false;
         }
 
+        @Override
         default StringBuilder toSerializable(final LogEvent event, final StringBuilder builder) {
             builder.append(toSerializable(event));
             return builder;
@@ -234,7 +235,8 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
     }
 
     private DefaultLogEventFactory getLogEventFactory() {
-        return DefaultLogEventFactory.getInstance();
+        // TODO: inject this
+        return DefaultLogEventFactory.newInstance();
     }
 
     /**

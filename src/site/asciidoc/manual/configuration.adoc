@@ -1,12 +1,12 @@
 ////
     Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements. See the NOTICE file distributed with
+    contributor license agreements.  See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
     The ASF licenses this file to You under the Apache License, Version 2.0
     (the "License"); you may not use this file except in compliance with
-    the License. You may obtain a copy of the License at
+    the License.  You may obtain a copy of the License at
 
-        https://www.apache.org/licenses/LICENSE-2.0
+         http://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -38,6 +38,13 @@ This page focuses primarily on configuring Log4j through a configuration
 file. Information on programmatically configuring Log4j can be found at
 link:extending.html[Extending Log4j 2] and
 link:customconfig.html[Programmatic Log4j Configuration].
+
+All available formats are functionally equivalent. For example, a
+configuration file in XML can be rewritten using the properties format
+(and the opposite) without any loss of functionality. However, the
+hierarchical nature of a Log4j configuration can be captured better in
+formats which naturally support nesting so XML, JSON, and YAML files,
+are usually easier to use.
 
 Note that unlike Log4j 1.x, the public Log4j 2 API does not expose
 methods to add, modify or remove appenders and filters or manipulate the
@@ -163,7 +170,7 @@ include the Console Appender. If the result is false then a List Appender will b
 </Configuration>
 ----
 
-Natively Log4j contains the SystemProperty Arbister that can evaluate whether to include elements based on
+Natively Log4j contains the SystemProperty Arbiter that can evaluate whether to include elements based on
 whether a SystemProperty is non-null or has a specific value, a ClassArbiter that makes its decision
 based on whether the specified class is present, and a ScriptArbiter that makes its decision based
 on the result of the script configured with it.
@@ -347,6 +354,28 @@ trace will result in results similar to:
 
 Note that status logging is disabled when the default configuration is
 used.
+
+[#Configuration_From_a_URI]
+== Configuration From a URI
+
+When `log4j2.configurationFile` references a URL, Log4j will first determine if the URL reference
+a file using the file protocol. If it does Log4j will validate that the file URL is valid and continue
+processing as previously described. If it contains a protocol other than file then Log4j will inspect
+the value of the `log4j2.Configuration.allowedProtocols` system property. If the provided list
+contains the protocol specified then Log4j will use the URI to locate the specified configuration file. If
+not an exception will be thrown and an error message will be logged. If no value is provided for the
+system property it will default to "https". Use of any protocol other than "file" can be prevented by
+setting the system property value to "_none". This value would be an invalid protocol so cannot conflict
+with any custom protocols that may be present.
+
+Log4j supports access to remote URLs that require authentication. Log4j supports basic authentication
+out of the box. If the `log4j2.Configuration.username` and `log4j2.Configuration.password`
+are specified those values will be used to perform the authentication. If the password is encrypted a custom
+password decryptor may be supplied by specifying the fully qualified class name in the
+`log4j2.Configuration.passwordDecryptor` system property. A custom
+`AuthenticationProvider` may be used by setting the
+`log4j2.Configuration.authenticationProvider` system property to the fully qualified class name
+of the provider.
 
 [#Additivity]
 == Additivity
@@ -598,8 +627,8 @@ java.util.concurrent.TimeUnit)]. (Not used if `shutdownHook` is set to
 
 |status
 |The level of internal Log4j events that should be logged to the console.
-Valid values for this attribute are "trace", "debug", "info", "warn",
-"error" and "fatal". Log4j will log details about initialization,
+Valid values for this attribute are "off", "trace", "debug", "info", "warn",
+"error", "fatal", and "all". Log4j will log details about initialization,
 rollover and other internal actions to the status logger. Setting
 `status="trace"` is one of the first tools available to you if you need
 to troubleshoot log4j.
@@ -619,8 +648,11 @@ configurations.
 [[XML]]
 === Configuration with XML
 
-Log4j can be configured using two XML flavors; concise and strict. The
-concise format makes configuration very easy as the element names match
+Log4j can be configured using two XML flavors; concise and strict.
+
+=== Concise Syntax
+
+The concise format makes configuration very easy as the element names match
 the components they represent however it cannot be validated with an XML
 schema. For example, the ConsoleAppender is configured by declaring an
 XML element named Console under its parent appenders element. However,
@@ -968,6 +1000,33 @@ the subcomponents below that wrapper element, as the
 TimeBasedTriggeringPolicy and SizeBasedTriggeringPolicy are defined
 below.
 
+As of version 2.17.2, `rootLogger` and `logger._key_` properties can be specified to set the
+level and zero or more appender refs to create for that logger. The level and appender refs are
+separated by comma `,` characters with optional whitespace surrounding the comma. The
+following example demonstrates how the shorthand is expanded when reading properties configurations.
+
+[source,properties]
+----
+appender.stdout.type = Console
+# ... other appender properties
+appender.file.type = File
+# ... other appender properties
+logger.app = INFO, stdout, file
+logger.app.name = com.example.app
+
+# is equivalent to:
+# appender.stdout.type = Console
+# appender.stdout.name = stdout
+# ...
+appender.file.type = File
+appender.file.name = file
+# ...
+logger.app.name = com.example.app
+logger.app.level = INFO
+logger.app.appenderRef.$1.ref = stdout
+logger.app.appenderRef.$2.ref = file
+----
+
 Properties configuration files support the advertiser, monitorInterval,
 name, packages, shutdownHook, shutdownTimeout, status, verbose, and dest
 attributes. See link:#ConfigurationSyntax[Configuration Syntax] for the
@@ -1305,12 +1364,11 @@ included, such as ``${main:\--file:-app.properties}`. This would use the
 `MainMapLookup` for a key named `--file`. If the key is not found then
 <code>app.properties</code> would be used as the default value.
 
-[#DisablingMessagePatternLookups]
-== Disables Message Pattern Lookups
-A message is processed (by default) by lookups, for example if you defined
-`<Property name="foo.bar">FOO_BAR</Property>`, then `logger.info("${foo.bar}")` will output `FOO_BAR` instead of `${foo.bar}`.
-You could disable message pattern lookups globally by setting system property `log4j2.formatMsgNoLookups` to true,
-or defining message pattern using %m{nolookups}.
+[#EnablingMessagePatternLookups]
+== Enabling Message Pattern Lookups
+A message is processed (by default) without using lookups, for example if you defined
+`<Property name="foo.bar">FOO_BAR</Property>`, then `logger.info("${foo.bar}")` will output `${foo.bar}` instead of `FOO_BAR`.
+You could enable message pattern lookups by defining the message pattern using %m{lookups}.
 
 [#RuntimeLookup]
 == Lookup Variables with Multiple Leading '$' Characters
@@ -1365,6 +1423,9 @@ https://java.net/projects/scripting/sources/svn/show/trunk/engines[Scripting
 Engine] web site. However, some of the languages listed there, such as
 JavaScript, Groovy and Beanshell, directly support the JSR 223 scripting
 framework and only require that the jars for that language be installed.
+
+As of Log4j 2.17.2 the languages to be supported must be specified as a comma separated list in the
+`log4j2.Script.enableLanguages` system property.
 
 The components that support using scripts do so by allowing a `<script>`,
 `<scriptFile>`, or `<scriptRef>` element to be configured on them. The
@@ -1565,7 +1626,7 @@ file that includes two other files:
 
 Log4j allows multiple configuration files to be used by specifying them
 as a list of comma separated file paths on log4j.configurationFile or,
-when using urls, by adding secondary configuration locations as query
+when using URLs, by adding secondary configuration locations as query
 parameters named "override". The merge logic can be controlled by specifying
 a class that implements the MergeStrategy interface on the log4j.mergeStrategy
 property. The default merge strategy will merge the files using the following rules:
@@ -1816,8 +1877,21 @@ by default:
 |===
 |Source |Priority |Description
 
-|Environment Variables
+|Spring Boot Properties
 |-100
+|This property source is enabled only if the Java application uses Spring Boot and the
+`log4j-spring` module is present. It resolves properties using a Spring
+link:https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/core/env/Environment.html[Environment].
+
+|System Properties
+|0
+|All properties can be set using normal system
+property patterns. These have the lowest numerical priority among commonly available property sources
+and can override included `log4j2.component.properties` files or environment variables. If a `log4j2.system.properties` file is available on the classpath its contents are
+sourced into Java system properties at Log4j startup.
+
+|Environment Variables
+|100
 |Environment variables are all prefixed
 with `LOG4J_`, are in all caps, and words are all separated by
 underscores. Only this naming scheme is support for environment
@@ -1825,17 +1899,10 @@ variables as there were no old naming schemes to maintain compatibility
 with.
 
 |`log4j2.component.properties` file
-|0
-|Including this file on the
-classpath can be used as an alternative to providing properties as
-system properties. This has priority over system properties, but they
-can be overridden by environment variables as described above.
-
-|System Properties
-|100
-|All properties can be set using normal system
-property patterns. These have the lowest priority and can be overridden
-by included properties files or environment variables.
+|200
+|Including this file on the classpath can be used as an alternative to providing properties as system
+properties. This is the property source with highest numerical priority and can be used to provide
+default values that can be overridden by the system administrator.
 |===
 
 The following is a list of available global configuration properties.
@@ -1921,6 +1988,37 @@ extending
 `org.apache.logging.log4j.core .config.ConfigurationFactory`.
 If specified, an instance of this class is added to the list of
 configuration factories.
+
+|[[configurationAllowedProtocols]]log4j2.Configuration.allowedProtocols +
+([[log4j.configurationAllowedProtocols]]log4j.configurationAllowedProtocols)
+|LOG4J_CONFIGURATION_ALLOWED_PROTOCOLS
+| 
+|A comma separated list of the protocols that may be used to load a configuration file. The default is https.
+To completely prevent accessing the configuration via a URL specify a value of "_none".
+
+|[[configurationAuthorizationProvider]]log4j2.Configuration.authorizationProvider +
+([[log4j.configurationAuthorizationProvider]]log4j.configurationAuthorizationProvider)
+|LOG4J_CONFIGURATION_AUTHORIZATION_PROVIDER
+|org.apache.logging.log4j.core.util.BasicAuthorizationProvider
+|The fully qualified class name of the AuthorizationProvider.
+
+|[[configurationPassword]]log4j2.Configuration.password +
+([[log4j.configurationPassword]]log4j.configurationPassword)
+|LOG4J_CONFIGURATION_PASSWORD
+| 
+|The password required to access the remote logging configuration file.
+
+|[[configurationPasswordDecryptor]]log4j2.Configuration.passwordDecryptor +
+([[log4j.configurationPasswordDecryptor]]log4j.configurationPasswordDecryptor)
+|LOG4J_CONFIGURATION_DECRYPTOR
+| 
+|If the password is encrypted this class will be used to decrypt it.
+
+|[[configurationUsername]]log4j2.Configuration.username+
+([[log4j.configurationUsername]]log4j.configurationUsername)
+|LOG4J_CONFIGURATION_USERNAME
+| 
+|The user name required to access the remote logging configuration file.
 
 |[[shutdownHookEnabled]]log4j2.shutdownHookEnabled +
 ([[log4j.shutdownHookEnabled]]log4j.shutdownHookEnabled)
@@ -2063,6 +2161,32 @@ context class loader before falling back to the default class loader.
 |false
 |If `true`, classes and configuration are only loaded with the default context class loader.
 Otherwise, log4j also uses the log4j classloader, parent classloaders and the system classloader.
+
+|[[enableJndi]]log4j2.enableJndi +
+([[log4j.enableJndi]]log4j.enableJndi)
+|LOG4J_ENABLE_JNDI
+|false
+| When true, Log4j components that use JNDI are enabled. When false, the default, they are disabled.
+
+|[[allowedLdapClasses]]log4j2.allowedLdapClasses +
+([[log4j.allowedLdapClasses]]log4j.allowedLdapClasses)
+|LOG4J_ALLOWED_LDAP_CLASSES
+|&nbsp;
+| System property that specifies fully qualified class names that may be accessed by LDAP. The classes
+must implement Serializable. By default only Java primative classes are allowed.
+
+|[[allowedLdapHosts]]log4j2.allowedLdapHosts +
+([[log4j.allowedLdapHosts]]log4j.allowedLdapHosts)
+|LOG4J_ALLOWED_LDAP_HOSTS
+|&nbsp;
+| System property that adds host names or ip addresses that may be access by LDAP. By default it only allows
+the local host names and ip addresses.
+
+|[[allowedJndiProtocols]]log4j2.allowedJndiProtocols +
+([[log4j.allowedJndiProtocols]]log4j.allowedJndiProtocols)
+|LOG4J_ALLOWED_JNDI_PROTOCOLS
+|&nbsp;
+| System property that adds protocol names that JNDI will allow. By default it only allows java, ldap, and ldaps.
 
 |[[uuidSequence]]log4j2.uuidSequence +
 ([[org.apache.logging.log4j.uuidSequence]]org.apache.logging.log4j.uuidSequence)
@@ -2470,8 +2594,8 @@ LoggerContext is started. For debug purposes.
 
 |[[formatMsgNoLookups]]log4j2.formatMsgNoLookups +
 ([[log4j2.formatMsgNoLookups]]log4j2.formatMsgNoLookups)
-|FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS
-|false
+|LOG4J_FORMAT_MSG_NO_LOOKUPS
+|true
 |Disables message
 pattern lookups globally when set to `true`. This is equivalent to
 defining all message patterns using `%m{nolookups}`.
@@ -2554,6 +2678,13 @@ defining all message patterns using `%m{nolookups}`.
 |LOG4J_SSL_VERIFY_HOSTNAME
 |false
 |true or false if the host name should be verified
+
+|[[log4j2.Script.enableLanguages]]log4j2.Script.enableLanguages
+|LOG4J_SCRIPT_ENABLE_LANGUAGES
+|
+| The list of script languages that are allowed to execute. The names specified must have a ScriptEngine installed
+that advertises the same language(s) in order for scripting to be enabled. If no languages are specified, which is
+the default, the ScriptManager will not be installed.
 
 |[[defaultThreadPriority]]log4j2.defaultThreadPriority
 |LOG4J_DEFAULT_THREAD_PRIORITY

@@ -1,7 +1,31 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
 = Migrating from Log4j 1.x
 Ralph Goers <rgoers@apache.org>
 
 [#Log4j1.2Bridge]
+== When to use this the Log4j 1.x bridge
+
+This bridge is useful as a dependency of an "application" which would like to use Log4j v2 as its main logging framework, if either that application itself hasn't been changed from using the Log4j 1.x API to the 1.x API, or if such an application depends on one or several (perhaps old) libraries that are "out of your control", and which themselves still contain code and thus a compile dependency on Log 1.x only. 
+
+Once you have migrated all of your own application & library code under your control, you may not need this bridge. Note that when you use a library/framework that can be configured to use several logging frameworks, then you typically don't need this bridge either anymore, as you may be able to directly configure it to use Log4j v2 instead v1.  Some libraries/frameworks even auto-detect the presence of certain logging framework implementations on their classpath, and automagically switch their internal logging delegation accordingly; try simple removing the Log4j v1 dependency instead of replacing it with this bridge, and test if logging from all of your depenencies still work.
+
+If you own or can contribute open source to the library you depend on, then you likely would prefer replacing its use of the Log4j v1 Logging API with the v2 API. (It typically does not make sense for libraries to depend on this bridge and support both the v1 and v2 Log4j API, because end-users of such a library would still have to replace their Log4j configuration v1 with a different v2 config anyway; see below.)
+
 == Using the Log4j 1.x bridge
 
 Perhaps the simplest way to convert to using Log4j 2 is to replace the

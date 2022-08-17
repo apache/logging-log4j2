@@ -16,7 +16,12 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
+
 import java.io.File;
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.NetworkInterface;
@@ -25,11 +30,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
-
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.status.StatusLogger;
+import java.util.List;
 
 /**
  * Networking-related convenience methods.
@@ -77,6 +81,49 @@ public final class NetUtils {
             }
             LOGGER.error("Could not determine local host name", uhe);
             return UNKNOWN_LOCALHOST;
+        }
+    }
+
+    /**
+     * Returns all the local host names and ip addresses.
+     * @return The local host names and ip addresses.
+     */
+    public static List<String> getLocalIps() {
+        List<String> localIps = new ArrayList<>();
+        localIps.add("localhost");
+        localIps.add("127.0.0.1");
+        try {
+            final InetAddress addr = Inet4Address.getLocalHost();
+            setHostName(addr, localIps);
+        } catch (final UnknownHostException ex) {
+            // Ignore this.
+        }
+        try {
+            final Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            if (interfaces != null) {
+                while (interfaces.hasMoreElements()) {
+                    final NetworkInterface nic = interfaces.nextElement();
+                    final Enumeration<InetAddress> addresses = nic.getInetAddresses();
+                    while (addresses.hasMoreElements()) {
+                        final InetAddress address = addresses.nextElement();
+                        setHostName(address, localIps);
+                    }
+                }
+            }
+        } catch (final SocketException se) {
+            // ignore.
+        }
+        return localIps;
+    }
+
+    private static void setHostName(InetAddress address, List<String> localIps) {
+        String[] parts = address.toString().split("\\s*/\\s*");
+        if (parts.length > 0) {
+            for (String part : parts) {
+                if (Strings.isNotBlank(part) && !localIps.contains(part)) {
+                    localIps.add(part);
+                }
+            }
         }
     }
 
@@ -162,6 +209,20 @@ public final class NetUtils {
                 return new File(path).toURI();
             }
         }
+    }
+
+    public static List<URI> toURIs(final String path) {
+        final String[] parts = path.split(",");
+        String scheme = null;
+        final List<URI> uris = new ArrayList<>(parts.length);
+        for (final String part : parts) {
+            final URI uri = NetUtils.toURI(scheme != null ? scheme + ":" + part.trim() : part.trim());
+            if (scheme == null && uri.getScheme() != null) {
+                scheme = uri.getScheme();
+            }
+            uris.add(uri);
+        }
+        return uris;
     }
 
 }

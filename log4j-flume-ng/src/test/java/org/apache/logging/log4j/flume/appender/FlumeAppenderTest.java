@@ -16,16 +16,6 @@
  */
 package org.apache.logging.log4j.flume.appender;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.zip.GZIPInputStream;
-
 import org.apache.flume.Channel;
 import org.apache.flume.ChannelException;
 import org.apache.flume.ChannelSelector;
@@ -45,14 +35,26 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.core.test.AvailablePortFinder;
+import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.zip.GZIPInputStream;
 
 /**
  *
@@ -63,6 +65,7 @@ public class FlumeAppenderTest {
     private Channel channel;
     private Logger avroLogger;
     private String testPort;
+    private Injector injector;
 
     @BeforeClass
     public static void setupClass() {
@@ -71,6 +74,8 @@ public class FlumeAppenderTest {
 
     @Before
     public void setUp() throws Exception {
+        injector = DI.createInjector();
+        injector.init();
         eventSource = new AvroSource();
         channel = new MemoryChannel();
 
@@ -121,7 +126,7 @@ public class FlumeAppenderTest {
         final FlumeAppender avroAppender = FlumeAppender.createAppender(agents,
                 null, null, "false", "Avro", null, "1000", "1000", "1", "1000",
                 "avro", "false", null, null, null, null, null, "true", "1",
-                null, null, null, null);
+                null, null, null, null, injector);
         avroAppender.start();
         avroLogger.addAppender(avroAppender);
         avroLogger.setLevel(Level.ALL);
@@ -149,7 +154,7 @@ public class FlumeAppenderTest {
         final FlumeAppender avroAppender = FlumeAppender.createAppender(null,
                 null, hosts, "false", "Avro", null, "1000", "1000", "1", "1000",
                 "avro", "false", null, null, null, null, null, "true", "1",
-                null, null, null, null);
+                null, null, null, null, injector);
         avroAppender.start();
         avroLogger.addAppender(avroAppender);
         avroLogger.setLevel(Level.ALL);
@@ -178,7 +183,7 @@ public class FlumeAppenderTest {
         final FlumeAppender avroAppender = FlumeAppender.createAppender(agents,
                 null, null, "false", "Avro", null, "1000", "1000", "1", "1000",
                 "avro", "false", null, null, null, "ReqCtx_", null, "true",
-                "1", null, null, null, null);
+                "1", null, null, null, null, injector);
         avroAppender.start();
         final Logger eventLogger = (Logger) LogManager.getLogger("EventLogger");
         Assert.assertNotNull(eventLogger);
@@ -217,7 +222,7 @@ public class FlumeAppenderTest {
         final FlumeAppender avroAppender = FlumeAppender.createAppender(agents,
                 null, null, "false", "Avro", null, "1000", "1000", "1", "1000",
                 "avro", "false", null, null, null, null, null, "true", "1",
-                null, null, null, null);
+                null, null, null, null, injector);
         avroAppender.start();
         avroLogger.addAppender(avroAppender);
         avroLogger.setLevel(Level.ALL);
@@ -252,7 +257,7 @@ public class FlumeAppenderTest {
         final FlumeAppender avroAppender = FlumeAppender.createAppender(agents,
                 null, null, "false", "Avro", null, "1000", "1000", "1", "500",
                 "avro", "false", null, null, null, null, null, "true", "10",
-                null, null, null, null);
+                null, null, null, null, injector);
         avroAppender.start();
         avroLogger.addAppender(avroAppender);
         avroLogger.setLevel(Level.ALL);
@@ -292,7 +297,7 @@ public class FlumeAppenderTest {
         final FlumeAppender avroAppender = FlumeAppender.createAppender(agents,
                 null, null, "false", "Avro", null, "1000", "1000", "1", "500",
                 "avro", "false", null, null, null, null, null, "true", "10",
-                null, null, null, null);
+                null, null, null, null, injector);
         avroAppender.start();
         avroLogger.addAppender(avroAppender);
         avroLogger.setLevel(Level.ALL);
@@ -326,7 +331,7 @@ public class FlumeAppenderTest {
         final FlumeAppender avroAppender = FlumeAppender.createAppender(agents,
                 null, null, "false", "Avro", null, "1000", "1000", "1", "1000",
                 "avro", "false", null, null, null, null, null, "true", "10",
-                null, null, null, null);
+                null, null, null, null, injector);
         avroAppender.start();
         avroLogger.addAppender(avroAppender);
         avroLogger.setLevel(Level.ALL);
@@ -360,7 +365,7 @@ public class FlumeAppenderTest {
         final FlumeAppender avroAppender = FlumeAppender.createAppender(agents,
                 null, null, "false", "Avro", null, "1000", "1000", "1", "1000",
                 "avro", "false", null, null, null, null, null, "true", "1",
-                null, null, null, null);
+                null, null, null, null, injector);
         avroAppender.start();
         avroLogger.addAppender(avroAppender);
         avroLogger.setLevel(Level.ALL);
@@ -390,7 +395,7 @@ public class FlumeAppenderTest {
         final FlumeAppender avroAppender = FlumeAppender.createAppender(agents,
                 null, null, "false", "Avro", null, "1000", "1000", "1", "1000",
                 "avro", "false", null, null, null, null, null, "true", "1",
-                null, null, null, null);
+                null, null, null, null, injector);
         avroAppender.start();
         Assert.assertTrue("Appender Not started", avroAppender.isStarted());
         avroLogger.addAppender(avroAppender);
@@ -438,7 +443,7 @@ public class FlumeAppenderTest {
         final FlumeAppender avroAppender = FlumeAppender.createAppender(agents,
                 null, null, "false", "Avro", null, "1000", "1000", "1", "1000",
                 "avro", "false", null, null, null, null, null, "true", "1",
-                null, null, null, null);
+                null, null, null, null, injector);
         avroAppender.start();
         avroLogger.addAppender(avroAppender);
         avroLogger.setLevel(Level.ALL);

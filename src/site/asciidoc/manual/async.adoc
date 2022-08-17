@@ -1,12 +1,12 @@
 ////
     Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements. See the NOTICE file distributed with
+    contributor license agreements.  See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
     The ASF licenses this file to You under the Apache License, Version 2.0
     (the "License"); you may not use this file except in compliance with
-    the License. You may obtain a copy of the License at
+    the License.  You may obtain a copy of the License at
 
-        https://www.apache.org/licenses/LICENSE-2.0
+         http://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -217,20 +217,21 @@ link:../log4j-core/apidocs/org/apache/logging/log4j/core/async/AsyncQueueFullPol
 |`Timeout`
 |Valid values: Block,
 Timeout, Sleep, Yield.
+(See also the <<Custom WaitStrategy>> section below.) +
 `Block` is a strategy that uses a lock and condition variable for the
 I/O thread waiting for log events. Block can be used when throughput and
 low-latency are not as important as CPU resource. Recommended for
-resource constrained/virtualised environments.
+resource constrained/virtualised environments. +
 `Timeout` is a variation of the `Block` strategy that will periodically
 wake up from the lock condition await() call. This ensures that if a
 notification is missed somehow the consumer thread is not stuck but will
-recover with a small latency delay (default 10ms).
+recover with a small latency delay (default 10ms). +
 `Sleep` is a strategy that initially spins, then uses a Thread.yield(),
 and eventually parks for the minimum number of nanos the OS and JVM will
 allow while the I/O thread is waiting for log events. Sleep is a good
 compromise between performance and CPU resource. This strategy has very
 low impact on the application thread, in exchange for some additional
-latency for actually getting the message logged.
+latency for actually getting the message logged. +
 `Yield` is a strategy that uses a Thread.yield() for waiting for log
 events after an initially spinning. Yield is a good compromise between
 performance and CPU resource, but may use more CPU than Sleep in order
@@ -399,7 +400,8 @@ link:../log4j-core/apidocs/org/apache/logging/log4j/core/async/AsyncQueueFullPol
 |[[asyncLoggerConfigWaitStrategy]]log4j2.asyncLoggerConfigWaitStrategy
 |`Timeout`
 |Valid values: Block,
-Timeout, Sleep, Yield. +
+Timeout, Sleep, Yield.
+(See also the <<Custom WaitStrategy>> section below.) +
 `Block` is a strategy that uses a lock and condition variable for the
 I/O thread waiting for log events. Block can be used when throughput and
 low-latency are not as important as CPU resource. Recommended for
@@ -451,6 +453,57 @@ with the logging rate and the queue is filling up. See the details for
 system properties
 link:configuration.html#asyncQueueFullPolicy[`log4j2.asyncQueueFullPolicy`
 and `log4j2.discardThreshold`].
+
+[#WaitStrategy]
+== Custom WaitStrategy
+The system properties mentioned above allow only choice from among a fixed set of predefined WaitStrategies.
+There may be cases where you want to configure a custom WaitStrategy that is not in this list.
+This is possible by using a `AsyncWaitStrategyFactory` element in the Log4j configuration.
+
+A configuration that configures a custom WaitStrategy can look as follows:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+
+  <AsyncWaitStrategyFactory
+      class="my.custom.AsyncWaitStrategyFactory" />
+
+  <Appenders>
+    <File name="MyFile" fileName="logs/app.log">
+      <PatternLayout pattern="%d %p %c{1.} [%t] %m%n" />
+    </File>
+  </Appenders>
+  <Loggers>
+    <AsyncRoot level="info">
+      <AppenderRef ref="MyFile"/>
+    </AsyncRoot>
+  </Loggers>
+</Configuration>
+----
+
+The specified class must implement the
+`org.apache.logging.log4j.core.async.AsyncWaitStrategyFactory` interface, which is defined as follows:
+
+[source,java]
+----
+public interface AsyncWaitStrategyFactory {
+  /**
+  * Returns a non-null implementation of the LMAX Disruptor's WaitStrategy interface.
+  * This WaitStrategy will be used by Log4j Async Loggers and Async LoggerConfigs.
+  *
+  * @return the WaitStrategy instance to be used by Async Loggers and Async LoggerConfigs
+  */
+  WaitStrategy createWaitStrategy();
+}
+----
+
+The specified class must also have a public no-argument constructor;
+Log4j will instantiate an instance of the specified factory class and use this factory to create the WaitStrategy used by all Async Loggers.
+
+WaitStrategy-related system properties are ignored if a `AsyncWaitStrategyFactory` is configured.
+
 
 [#Location]
 == Location, location, location...
@@ -664,7 +717,7 @@ image:../images/ResponseTimeAsyncLogging16Threads@8kEachLog4j2Only-labeled.png[i
 == Under The Hood
 
 Asynchronous Loggers are implemented using the
-http://lmax-exchange.github.com/disruptor/[LMAX Disruptor] inter-thread
+https://lmax-exchange.github.io/disruptor/[LMAX Disruptor] inter-thread
 messaging library. From the LMAX web site:
 
 ____

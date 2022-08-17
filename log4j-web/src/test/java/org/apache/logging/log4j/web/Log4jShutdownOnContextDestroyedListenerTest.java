@@ -16,7 +16,9 @@
  */
 package org.apache.logging.log4j.web;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.apache.logging.log4j.web.Log4jShutdownOnContextDestroyedListener.DEFAULT_STOP_TIMEOUT;
+import static org.apache.logging.log4j.web.Log4jShutdownOnContextDestroyedListener.DEFAULT_STOP_TIMEOUT_TIMEUNIT;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.never;
@@ -60,7 +62,7 @@ public class Log4jShutdownOnContextDestroyedListenerTest {
         this.listener.contextDestroyed(this.event);
 
         then(initializer).should().clearLoggerContext();
-        then(initializer).should().stop();
+        then(initializer).should().stop(DEFAULT_STOP_TIMEOUT, DEFAULT_STOP_TIMEOUT_TIMEUNIT);
     }
 
     @Test
@@ -69,7 +71,7 @@ public class Log4jShutdownOnContextDestroyedListenerTest {
         this.listener.contextDestroyed(this.event);
 
         then(initializer).should(never()).clearLoggerContext();
-        then(initializer).should(never()).stop();
+        then(initializer).should(never()).stop(DEFAULT_STOP_TIMEOUT, DEFAULT_STOP_TIMEOUT_TIMEUNIT);
     }
 
     @Test

@@ -26,7 +26,7 @@ import java.util.concurrent.BlockingQueue;
 public interface BlockingQueueFactory<E> {
 
     /**
-     * The {@link org.apache.logging.log4j.plugins.Plugin#elementType() element type} to use for plugins
+     * The {@link org.apache.logging.log4j.plugins.Configurable#elementType() element type} to use for plugins
      * implementing this interface.
      */
     String ELEMENT_TYPE = "BlockingQueueFactory";

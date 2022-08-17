@@ -21,7 +21,7 @@ import org.apache.logging.log4j.core.config.arbiters.Arbiter;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
@@ -30,8 +30,8 @@ import org.springframework.util.StringUtils;
 /**
  * An Arbiter that uses the active Spring profile to determine if configuration should be included.
  */
-@Plugin(name = "SpringProfile", category = Node.CATEGORY, elementType = Arbiter.ELEMENT_TYPE,
-        deferChildren = true, printObject = true)
+@Configurable(elementType = Arbiter.ELEMENT_TYPE, deferChildren = true, printObject = true)
+@Plugin("SpringProfile")
 public class SpringProfileArbiter extends SpringEnvironmentHolder implements Arbiter {
 
     private final String[] profileNames;

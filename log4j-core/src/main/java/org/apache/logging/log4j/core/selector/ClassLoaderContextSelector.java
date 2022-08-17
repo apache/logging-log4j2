@@ -16,6 +16,16 @@
  */
 package org.apache.logging.log4j.core.selector;
 
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.impl.ContextAnchor;
+import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.plugins.Singleton;
+import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LazyValue;
+import org.apache.logging.log4j.util.StackLocatorUtil;
+
 import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.util.ArrayList;
@@ -24,15 +34,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.impl.ContextAnchor;
-import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.StackLocatorUtil;
 
 /**
  * This ContextSelector chooses a LoggerContext based upon the ClassLoader of the caller. This allows Loggers assigned
@@ -40,23 +43,30 @@ import org.apache.logging.log4j.util.StackLocatorUtil;
  * Loggers associated with classes loaded from different ClassLoaders to be co-mingled. This is a problem if, for
  * example, a web application is undeployed as some of the Loggers being released may be associated with a Class in a
  * parent ClassLoader, which will generally have negative consequences.
- *
+ * <p>
  * The main downside to this ContextSelector is that Configuration is more challenging.
- *
+ * <p>
  * This ContextSelector should not be used with a Servlet Filter such as the Log4jServletFilter.
  */
+@Singleton
 public class ClassLoaderContextSelector implements ContextSelector, LoggerContextShutdownAware {
-
-    private static final AtomicReference<LoggerContext> DEFAULT_CONTEXT = new AtomicReference<>();
 
     protected static final StatusLogger LOGGER = StatusLogger.getLogger();
 
-    protected static final ConcurrentMap<String, AtomicReference<WeakReference<LoggerContext>>> CONTEXT_MAP =
-            new ConcurrentHashMap<>();
+    protected final LazyValue<LoggerContext> defaultContext = LazyValue.from(() -> createContext(defaultContextName(), null));
+    protected final Map<String, AtomicReference<WeakReference<LoggerContext>>> contextMap = new ConcurrentHashMap<>();
+
+    protected final Injector injector;
+
+    @Inject
+    public ClassLoaderContextSelector(final Injector injector) {
+        this.injector = injector;
+    }
 
     @Override
-    public void shutdown(final String fqcn, final ClassLoader loader, final boolean currentContext,
-                         final boolean allContexts) {
+    public void shutdown(
+            final String fqcn, final ClassLoader loader, final boolean currentContext,
+            final boolean allContexts) {
         LoggerContext ctx = null;
         if (currentContext) {
             ctx = ContextAnchor.THREAD_CONTEXT.get();
@@ -104,7 +114,7 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
     private LoggerContext findContext(final ClassLoader loaderOrNull) {
         final ClassLoader loader = loaderOrNull != null ? loaderOrNull : ClassLoader.getSystemClassLoader();
         final String name = toContextMapKey(loader);
-        final AtomicReference<WeakReference<LoggerContext>> ref = CONTEXT_MAP.get(name);
+        final AtomicReference<WeakReference<LoggerContext>> ref = contextMap.get(name);
         if (ref != null) {
             final WeakReference<LoggerContext> weakRef = ref.get();
             return weakRef.get();
@@ -118,13 +128,15 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
     }
 
     @Override
-    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext,
+    public LoggerContext getContext(
+            final String fqcn, final ClassLoader loader, final boolean currentContext,
             final URI configLocation) {
         return getContext(fqcn, loader, null, currentContext, configLocation);
     }
 
     @Override
-    public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Map.Entry<String, Object> entry,
+    public LoggerContext getContext(
+            final String fqcn, final ClassLoader loader, final Map.Entry<String, Object> entry,
             final boolean currentContext, final URI configLocation) {
         if (currentContext) {
             final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
@@ -149,10 +161,10 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
 
     @Override
     public void removeContext(final LoggerContext context) {
-        for (final Map.Entry<String, AtomicReference<WeakReference<LoggerContext>>> entry : CONTEXT_MAP.entrySet()) {
+        for (final Map.Entry<String, AtomicReference<WeakReference<LoggerContext>>> entry : contextMap.entrySet()) {
             final LoggerContext ctx = entry.getValue().get().get();
             if (ctx == context) {
-                CONTEXT_MAP.remove(entry.getKey());
+                contextMap.remove(entry.getKey());
             }
         }
     }
@@ -166,7 +178,7 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
     @Override
     public List<LoggerContext> getLoggerContexts() {
         final List<LoggerContext> list = new ArrayList<>();
-        final Collection<AtomicReference<WeakReference<LoggerContext>>> coll = CONTEXT_MAP.values();
+        final Collection<AtomicReference<WeakReference<LoggerContext>>> coll = contextMap.values();
         for (final AtomicReference<WeakReference<LoggerContext>> ref : coll) {
             final LoggerContext ctx = ref.get().get();
             if (ctx != null) {
@@ -176,18 +188,30 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
         return Collections.unmodifiableList(list);
     }
 
-    private LoggerContext locateContext(final ClassLoader loaderOrNull, final Map.Entry<String, Object> entry,
+    private Injector getOrCopyInjector(final Map.Entry<String, Object> entry) {
+        if (entry != null) {
+            final Object value = entry.getValue();
+            if (value instanceof Injector) {
+                return (Injector) value;
+            }
+        }
+        final Injector injector = this.injector;
+        return injector != null ? injector.copy() : null;
+    }
+
+    private LoggerContext locateContext(
+            final ClassLoader loaderOrNull, final Map.Entry<String, Object> entry,
             final URI configLocation) {
         // LOG4J2-477: class loader may be null
         final ClassLoader loader = loaderOrNull != null ? loaderOrNull : ClassLoader.getSystemClassLoader();
         final String name = toContextMapKey(loader);
-        AtomicReference<WeakReference<LoggerContext>> ref = CONTEXT_MAP.get(name);
+        AtomicReference<WeakReference<LoggerContext>> ref = contextMap.get(name);
         if (ref == null) {
             if (configLocation == null) {
                 ClassLoader parent = loader.getParent();
                 while (parent != null) {
 
-                    ref = CONTEXT_MAP.get(toContextMapKey(parent));
+                    ref = contextMap.get(toContextMapKey(parent));
                     if (ref != null) {
                         final WeakReference<LoggerContext> r = ref.get();
                         final LoggerContext ctx = r.get();
@@ -215,11 +239,11 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
                     } */
                 }
             }
-            final LoggerContext ctx = createContext(name, configLocation);
+            final LoggerContext ctx = createContext(name, configLocation, getOrCopyInjector(entry));
             if (entry != null) {
                 ctx.putObject(entry.getKey(), entry.getValue());
             }
-            final LoggerContext newContext = CONTEXT_MAP.computeIfAbsent(name,
+            final LoggerContext newContext = contextMap.computeIfAbsent(name,
                     k -> new AtomicReference<>(new WeakReference<>(ctx))).get().get();
             if (newContext != null && newContext == ctx) {
                 newContext.addShutdownListener(this);
@@ -242,7 +266,7 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
             }
             return ctx;
         }
-        ctx = createContext(name, configLocation);
+        ctx = createContext(name, configLocation, getOrCopyInjector(entry));
         if (entry != null) {
             ctx.putObject(entry.getKey(), entry.getValue());
         }
@@ -253,7 +277,12 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
     }
 
     protected LoggerContext createContext(final String name, final URI configLocation) {
-        return new LoggerContext(name, null, configLocation);
+        final Injector injector = this.injector;
+        return createContext(name, configLocation, injector != null ? injector.copy() : null);
+    }
+
+    protected LoggerContext createContext(final String name, final URI configLocation, final Injector injector) {
+        return new LoggerContext(name, null, configLocation, injector);
     }
 
     protected String toContextMapKey(final ClassLoader loader) {
@@ -261,12 +290,7 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
     }
 
     protected LoggerContext getDefault() {
-        final LoggerContext ctx = DEFAULT_CONTEXT.get();
-        if (ctx != null) {
-            return ctx;
-        }
-        DEFAULT_CONTEXT.compareAndSet(null, createContext(defaultContextName(), null));
-        return DEFAULT_CONTEXT.get();
+        return defaultContext.get();
     }
 
     protected String defaultContextName() {

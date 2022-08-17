@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one or more
+  ~ contributor license agreements. See the NOTICE file distributed with
+  ~ this work for additional information regarding copyright ownership.
+  ~ The ASF licenses this file to You under the Apache license, Version 2.0
+  ~ (the "License"); you may not use this file except in compliance with
+  ~ the License. You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the license for the specific language governing permissions and
+  ~ limitations under the license.
+  -->
+
+<Configuration status="off">
+    <properties>		
+        <property name="name">app</property>
+        <property name="pattern">%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %-10.10t | %-20.20C:%-5.5L | %msg%n</property>
+    </properties>
+     <Appenders>  
+         <Console name="CONSOLE" target="SYSTEM_OUT">  
+             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />  
+         </Console>
+        <RollingFile name="RollingFile" fileName="logs/${name}.log" filePattern="logs/$${date:yyyy-MM}/${name}-%d{yyyy-MM-dd}-%i.log.gz">
+            <XMLLayout complete="true" />
+            <Policies>
+                <SizeBasedTriggeringPolicy size="100"/> 
+            </Policies>
+        </RollingFile>       
+     </Appenders>  
+     <Loggers>  
+         <Root level="error">  
+             <AppenderRef ref="Console" />  
+        </Root>
+         <logger name="log4j2poc.Log4J2Example" level="TRACE" />  
+         <Root level="ERROR">  
+             <AppenderRef ref="CONSOLE"/>  
+             <AppenderRef ref="RollingFile" /> 
+         </Root>  
+     </Loggers>  
+ </Configuration> 

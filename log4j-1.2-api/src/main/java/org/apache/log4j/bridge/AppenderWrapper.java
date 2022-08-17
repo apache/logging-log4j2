@@ -18,8 +18,7 @@ package org.apache.log4j.bridge;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
-import org.apache.log4j.helpers.AppenderAttachableImpl;
-import org.apache.log4j.spi.AppenderAttachable;
+import org.apache.log4j.bridge.AppenderAdapter.Adapter;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggingEvent;
@@ -27,23 +26,54 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.status.StatusLogger;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-
 /**
- * Holds a Log4j 2 Appender in an empty Log4j 1 Appender so it can be extracted when constructing the configuration.
+ * Wraps a Log4j 2 Appender in an empty Log4j 1 Appender so it can be extracted when constructing the configuration.
  * Allows a Log4j 1 Appender to reference a Log4j 2 Appender.
  */
-public class AppenderWrapper extends AppenderAttachableImpl implements Appender {
+public class AppenderWrapper implements Appender {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
     private final org.apache.logging.log4j.core.Appender appender;
 
+    /**
+     * Adapts a Log4j 2.x appender into a Log4j 1.x appender. Applying this method
+     * on the result of {@link AppenderAdapter#adapt(Appender)} should return the
+     * original Log4j 1.x appender.
+     * 
+     * @param appender a Log4j 2.x appender
+     * @return a Log4j 1.x appender or {@code null} if the parameter is {@code null}
+     */
+    public static Appender adapt(org.apache.logging.log4j.core.Appender appender) {
+        if (appender instanceof Appender) {
+            return (Appender) appender;
+        }
+        if (appender instanceof Adapter) {
+            Adapter adapter = (Adapter) appender;
+            // Don't unwrap an appender with filters
+            if (!adapter.hasFilter()) {
+                return adapter.getAppender();
+            }
+        }
+        if (appender != null) {
+            return new AppenderWrapper(appender);
+        }
+        return null;
+    }
+
+    /**
+     * Constructs a new instance for a Core Appender.
+     *
+     * @param appender a Core Appender.
+     */
     public AppenderWrapper(org.apache.logging.log4j.core.Appender appender) {
         this.appender = appender;
     }
 
+    /**
+     * Gets the wrapped Core Appender.
+     *
+     * @return the wrapped Core Appender.
+     */
     public org.apache.logging.log4j.core.Appender getAppender() {
         return appender;
     }
@@ -51,11 +81,7 @@ public class AppenderWrapper extends AppenderAttachableImpl implements Appender 
     @Override
     public void addFilter(Filter newFilter) {
         if (appender instanceof AbstractFilterable) {
-            if (newFilter instanceof FilterWrapper) {
-                ((AbstractFilterable) appender).addFilter(((FilterWrapper) newFilter).getFilter());
-            } else {
-                ((AbstractFilterable) appender).addFilter(new FilterAdapter(newFilter));
-            }
+            ((AbstractFilterable) appender).addFilter(FilterAdapter.adapt(newFilter));
         } else {
             LOGGER.warn("Unable to add filter to appender {}, it does not support filters", appender.getName());
         }
@@ -68,7 +94,7 @@ public class AppenderWrapper extends AppenderAttachableImpl implements Appender 
 
     @Override
     public void clearFilters() {
-
+        // noop
     }
 
     @Override
@@ -95,7 +121,7 @@ public class AppenderWrapper extends AppenderAttachableImpl implements Appender 
 
     @Override
     public ErrorHandler getErrorHandler() {
-        return ((ErrorHandlerAdapter)appender.getHandler()).getHandler();
+        return ((ErrorHandlerAdapter) appender.getHandler()).getHandler();
     }
 
     @Override

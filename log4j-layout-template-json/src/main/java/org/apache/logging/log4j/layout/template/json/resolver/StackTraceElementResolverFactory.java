@@ -32,16 +32,6 @@ final class StackTraceElementResolverFactory
     }
 
     @Override
-    public Class<StackTraceElement> getValueClass() {
-        return StackTraceElement.class;
-    }
-
-    @Override
-    public Class<StackTraceElementResolverContext> getContextClass() {
-        return StackTraceElementResolverContext.class;
-    }
-
-    @Override
     public String getName() {
         return StackTraceElementResolver.getName();
     }

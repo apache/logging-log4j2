@@ -16,18 +16,18 @@
  */
 package org.apache.logging.log4j.core.config.composite;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.plugins.Node;
-import org.apache.logging.log4j.plugins.util.PluginManager;
+import org.apache.logging.log4j.plugins.util.PluginNamespace;
 import org.apache.logging.log4j.plugins.util.PluginType;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * The default merge strategy for composite configurations.
@@ -108,19 +108,19 @@ public class DefaultMergeStrategy implements MergeStrategy {
     /**
      * Merge the source Configuration into the target Configuration.
      *
-     * @param target        The target node to merge into.
-     * @param source        The source node.
-     * @param pluginManager The PluginManager.
+     * @param target      The target node to merge into.
+     * @param source      The source node.
+     * @param corePlugins The Core plugins to use.
      */
     @Override
-    public void mergeConfigurations(final Node target, final Node source, final PluginManager pluginManager) {
+    public void mergeConfigurations(final Node target, final Node source, final PluginNamespace corePlugins) {
         for (final Node sourceChildNode : source.getChildren()) {
             final boolean isFilter = isFilterNode(sourceChildNode);
             boolean isMerged = false;
             for (final Node targetChildNode : target.getChildren()) {
                 if (isFilter) {
                     if (isFilterNode(targetChildNode)) {
-                        updateFilterNode(target, targetChildNode, sourceChildNode, pluginManager);
+                        updateFilterNode(target, targetChildNode, sourceChildNode, corePlugins);
                         isMerged = true;
                         break;
                     }
@@ -163,7 +163,7 @@ public class DefaultMergeStrategy implements MergeStrategy {
                                         for (final Node targetChild : targetNode.getChildren()) {
                                             if (isFilterNode(targetChild)) {
                                                 updateFilterNode(loggerNode, targetChild, sourceLoggerChild,
-                                                        pluginManager);
+                                                        corePlugins);
                                                 foundFilter = true;
                                                 break;
                                             }
@@ -240,14 +240,14 @@ public class DefaultMergeStrategy implements MergeStrategy {
     }
 
     private void updateFilterNode(final Node target, final Node targetChildNode, final Node sourceChildNode,
-            final PluginManager pluginManager) {
+            final PluginNamespace corePlugins) {
         if (CompositeFilter.class.isAssignableFrom(targetChildNode.getType().getPluginClass())) {
             final Node node = new Node(targetChildNode, sourceChildNode.getName(), sourceChildNode.getType());
             node.getChildren().addAll(sourceChildNode.getChildren());
             node.getAttributes().putAll(sourceChildNode.getAttributes());
             targetChildNode.getChildren().add(node);
         } else {
-            final PluginType pluginType = pluginManager.getPluginType(FILTERS);
+            final PluginType<?> pluginType = corePlugins.get(FILTERS);
             final Node filtersNode = new Node(targetChildNode, FILTERS, pluginType);
             final Node node = new Node(filtersNode, sourceChildNode.getName(), sourceChildNode.getType());
             node.getAttributes().putAll(sourceChildNode.getAttributes());
@@ -266,11 +266,11 @@ public class DefaultMergeStrategy implements MergeStrategy {
 
     private boolean isSameName(final Node node1, final Node node2) {
         final String value = node1.getAttributes().get(NAME);
-        return value != null && value.toLowerCase().equals(node2.getAttributes().get(NAME).toLowerCase());
+        return value != null && value.equalsIgnoreCase(node2.getAttributes().get(NAME));
     }
 
     private boolean isSameReference(final Node node1, final Node node2) {
         final String value = node1.getAttributes().get(REF);
-        return value != null && value.toLowerCase().equals(node2.getAttributes().get(REF).toLowerCase());
+        return value != null && value.equalsIgnoreCase(node2.getAttributes().get(REF));
     }
 }

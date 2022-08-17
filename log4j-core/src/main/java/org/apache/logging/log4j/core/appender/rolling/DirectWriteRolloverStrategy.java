@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
 import org.apache.logging.log4j.core.appender.rolling.action.CompositeAction;
 import org.apache.logging.log4j.core.appender.rolling.action.FileRenameAction;
@@ -26,6 +25,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.Integers;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -54,7 +54,8 @@ import java.util.zip.Deflater;
  *
  * @since 2.8
  */
-@Plugin(name = "DirectWriteRolloverStrategy", category = Core.CATEGORY_NAME, printObject = true)
+@Configurable(printObject = true)
+@Plugin
 public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implements DirectFileRolloverStrategy {
 
     private static final int DEFAULT_MAX_FILES = 7;
@@ -266,8 +267,11 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
     public String getCurrentFileName(final RollingFileManager manager) {
         if (currentFileName == null) {
             final SortedMap<Integer, Path> eligibleFiles = getEligibleFiles(manager);
-            final int fileIndex = eligibleFiles.size() > 0 ? (nextIndex > 0 ? nextIndex : eligibleFiles.size()) : 1;
+            final int fileIndex = eligibleFiles.size() > 0 ? (nextIndex > 0 ? nextIndex :
+                    eligibleFiles.lastKey()) : 1;
             final StringBuilder buf = new StringBuilder(255);
+            // LOG4J2-3339 - Always use the current time for new direct write files.
+            manager.getPatternProcessor().setCurrentFileTime(System.currentTimeMillis());
             manager.getPatternProcessor().formatFileName(strSubstitutor, buf, true, fileIndex);
             final int suffixLength = suffixLength(buf.toString());
             final String name = suffixLength > 0 ? buf.substring(0, buf.length() - suffixLength) : buf.toString();
@@ -330,7 +334,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
         }
 
         if (compressAction != null && manager.isAttributeViewEnabled()) {
-            // Propagate posix attribute view to compressed file
+            // Propagate POSIX attribute view to compressed file
             // @formatter:off
             final Action posixAttributeViewAction = PosixViewAttributeAction.newBuilder()
                                                     .setBasePath(compressedName)

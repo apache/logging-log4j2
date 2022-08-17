@@ -16,23 +16,24 @@
  */
 package org.apache.logging.log4j.core.filter;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.ParameterizedMessage;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.message.Message;
+
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This filter returns the onMatch result if the message matches the regular expression.
@@ -41,7 +42,8 @@ import org.apache.logging.log4j.message.Message;
  * calling Message.getMessageFormat (true) or Message.getFormattedMessage() (false). The default is false.
  *
  */
-@Plugin(name = "RegexFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
+@Configurable(elementType = Filter.ELEMENT_TYPE, printObject = true)
+@Plugin
 public final class RegexFilter extends AbstractFilter {
 
     private static final int DEFAULT_PATTERN_FLAGS = 0;
@@ -57,7 +59,10 @@ public final class RegexFilter extends AbstractFilter {
     @Override
     public Result filter(final Logger logger, final Level level, final Marker marker, final String msg,
             final Object... params) {
-        return filter(msg);
+        if (useRawMessage || params == null || params.length == 0) {
+            return filter(msg);
+        }
+        return filter(ParameterizedMessage.format(msg, params));
     }
 
     @Override

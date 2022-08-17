@@ -17,11 +17,12 @@
 package org.apache.logging.log4j.jul;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
+import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.util.Constants;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -29,10 +30,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 @Category(AsyncLoggers.class)
+@Ignore("https://issues.apache.org/jira/browse/LOG4J2-3523")
 public class AsyncLoggerThreadsTest {
 
     @BeforeClass

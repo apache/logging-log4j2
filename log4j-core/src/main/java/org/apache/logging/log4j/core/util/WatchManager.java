@@ -17,13 +17,12 @@
 package org.apache.logging.log4j.core.util;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.lang.invoke.MethodHandles;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.ServiceLoader;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -35,8 +34,10 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.config.ConfigurationFileWatcher;
 import org.apache.logging.log4j.core.config.ConfigurationScheduler;
+import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.ServiceRegistry;
 
 /**
  * Manages {@link FileWatcher}s.
@@ -44,9 +45,10 @@ import org.apache.logging.log4j.util.LoaderUtil;
  * @see FileWatcher
  * @see ConfigurationScheduler
  */
+@Singleton
 public class WatchManager extends AbstractLifeCycle {
 
-    private final class ConfigurationMonitor {
+    private static final class ConfigurationMonitor {
         private volatile long lastModifiedMillis;
         private final Watcher watcher;
 
@@ -132,9 +134,11 @@ public class WatchManager extends AbstractLifeCycle {
 
     private final ConcurrentMap<Source, ConfigurationMonitor> watchers = new ConcurrentHashMap<>();
 
+    @Inject
     public WatchManager(final ConfigurationScheduler scheduler) {
         this.scheduler = Objects.requireNonNull(scheduler, "scheduler");
-        eventServiceList = getEventServices();
+        eventServiceList = ServiceRegistry.getInstance()
+                .getServices(WatchEventService.class, MethodHandles.lookup(), null);
     }
 
     public void checkFiles() {
@@ -154,22 +158,6 @@ public class WatchManager extends AbstractLifeCycle {
             map.put(entry.getKey(), entry.getValue().getWatcher());
         }
         return map;
-    }
-
-    private List<WatchEventService> getEventServices() {
-        final List<WatchEventService> list = new ArrayList<>();
-        for (final ClassLoader classLoader : LoaderUtil.getClassLoaders()) {
-            try {
-                final ServiceLoader<WatchEventService> serviceLoader =
-                        ServiceLoader.load(WatchEventService.class, classLoader);
-                for (final WatchEventService service : serviceLoader) {
-                    list.add(service);
-                }
-            } catch (final Throwable ex) {
-                LOGGER.debug("Unable to retrieve WatchEventService from ClassLoader {}", classLoader, ex);
-            }
-        }
-        return list;
     }
 
     public UUID getId() {

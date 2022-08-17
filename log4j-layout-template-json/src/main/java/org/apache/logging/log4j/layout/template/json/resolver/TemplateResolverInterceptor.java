@@ -30,16 +30,6 @@ public interface TemplateResolverInterceptor<V, C extends TemplateResolverContex
     String CATEGORY = "JsonTemplateResolverInterceptor";
 
     /**
-     * The targeted value class.
-     */
-    Class<V> getValueClass();
-
-    /**
-     * The targeted {@link TemplateResolverContext} class.
-     */
-    Class<C> getContextClass();
-
-    /**
      * Intercept the read template before compiler (i.e.,
      * {@link TemplateResolvers#ofTemplate(TemplateResolverContext, String)}
      * starts injecting resolvers.

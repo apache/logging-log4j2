@@ -18,12 +18,15 @@ package org.apache.logging.log4j.core.config.composite;
 
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.plugins.Node;
-import org.apache.logging.log4j.plugins.util.PluginManager;
+import org.apache.logging.log4j.plugins.di.Key;
+import org.apache.logging.log4j.plugins.util.PluginNamespace;
 
 /**
  * Merges two configurations together
  */
 public interface MergeStrategy {
+
+    Key<MergeStrategy> KEY = new Key<>() {};
 
     /**
      * Merge the root node properties into the configuration.
@@ -34,8 +37,10 @@ public interface MergeStrategy {
 
     /**
      * Merge the source node tree into the target node tree.
-     * @param target The target Node tree.
-     * @param source The source Node tree.
+     *
+     * @param target      The target Node tree.
+     * @param source      The source Node tree.
+     * @param corePlugins The Core plugins to merge.
      */
-    void mergeConfigurations(Node target, Node source, PluginManager pluginManager);
+    void mergeConfigurations(Node target, Node source, PluginNamespace corePlugins);
 }

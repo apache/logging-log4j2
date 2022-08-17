@@ -20,84 +20,61 @@ import org.apache.log4j.ListAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.bridge.AppenderAdapter;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.xml.XmlConfigurationFactory;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.spi.LoggerContextFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test configuration from XML.
  */
+@Tag("sleepy")
 public class AsyncAppenderTest {
 
     @Test
     public void testAsyncXml() throws Exception {
-        LoggerContext loggerContext = configure("target/test-classes/log4j1-async.xml");
-        Logger logger = LogManager.getLogger("test");
-        logger.debug("This is a test of the root logger");
-        Thread.sleep(50);
-        Configuration configuration = loggerContext.getConfiguration();
-        Map<String, Appender> appenders = configuration.getAppenders();
-        ListAppender messageAppender = null;
-        for (Map.Entry<String, Appender> entry : appenders.entrySet()) {
-            if (entry.getKey().equals("list")) {
-                messageAppender = (ListAppender) ((AppenderAdapter.Adapter) entry.getValue()).getAppender();
+        try (final LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/log4j1-async.xml")) {
+            final Logger logger = LogManager.getLogger("test");
+            logger.debug("This is a test of the root logger");
+            Thread.sleep(50);
+            final Configuration configuration = loggerContext.getConfiguration();
+            final Map<String, Appender> appenders = configuration.getAppenders();
+            ListAppender messageAppender = null;
+            for (final Map.Entry<String, Appender> entry : appenders.entrySet()) {
+                if (entry.getKey().equals("list")) {
+                    messageAppender = (ListAppender) ((AppenderAdapter.Adapter) entry.getValue()).getAppender();
+                }
             }
+            assertNotNull(messageAppender, "No Message Appender");
+            final List<String> messages = messageAppender.getMessages();
+            assertTrue(messages != null && messages.size() > 0, "No messages");
         }
-        assertNotNull("No Message Appender", messageAppender);
-        List<String> messages = messageAppender.getMessages();
-        assertTrue("No messages", messages != null && messages.size() > 0);
     }
 
     @Test
     public void testAsyncProperties() throws Exception {
-        LoggerContext loggerContext = configure("target/test-classes/log4j1-async.properties");
-        Logger logger = LogManager.getLogger("test");
-        logger.debug("This is a test of the root logger");
-        Thread.sleep(50);
-        Configuration configuration = loggerContext.getConfiguration();
-        Map<String, Appender> appenders = configuration.getAppenders();
-        ListAppender messageAppender = null;
-        for (Map.Entry<String, Appender> entry : appenders.entrySet()) {
-            if (entry.getKey().equals("list")) {
-                messageAppender = (ListAppender) ((AppenderAdapter.Adapter) entry.getValue()).getAppender();
+        try (final LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/log4j1-async.properties")) {
+            final Logger logger = LogManager.getLogger("test");
+            logger.debug("This is a test of the root logger");
+            Thread.sleep(50);
+            final Configuration configuration = loggerContext.getConfiguration();
+            final Map<String, Appender> appenders = configuration.getAppenders();
+            ListAppender messageAppender = null;
+            for (final Map.Entry<String, Appender> entry : appenders.entrySet()) {
+                if (entry.getKey().equals("list")) {
+                    messageAppender = (ListAppender) ((AppenderAdapter.Adapter) entry.getValue()).getAppender();
+                }
             }
+            assertNotNull(messageAppender, "No Message Appender");
+            final List<String> messages = messageAppender.getMessages();
+            assertTrue(messages != null && messages.size() > 0, "No messages");
         }
-        assertNotNull("No Message Appender", messageAppender);
-        List<String> messages = messageAppender.getMessages();
-        assertTrue("No messages", messages != null && messages.size() > 0);
     }
-
-
-    private LoggerContext configure(String configLocation) throws Exception {
-        File file = new File(configLocation);
-        InputStream is = new FileInputStream(file);
-        ConfigurationSource source = new ConfigurationSource(is, file);
-        LoggerContextFactory factory = org.apache.logging.log4j.LogManager.getFactory();
-        LoggerContext context = (LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
-        Configuration configuration;
-        if (configLocation.endsWith(".xml")) {
-            configuration = new XmlConfigurationFactory().getConfiguration(context, source);
-        } else {
-            configuration = new PropertiesConfigurationFactory().getConfiguration(context, source);
-        }
-        assertNotNull("No configuration created", configuration);
-        Configurator.reconfigure(configuration);
-        return context;
-    }
-
 }

@@ -43,12 +43,13 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.test.junit.JndiRule;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.jndi.test.junit.JndiRule;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StringMapMessage;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -82,6 +83,11 @@ public class JmsAppenderTest {
 
     @Rule
     public RuleChain rules = RuleChain.outerRule(jndiRule).around(ctx);
+
+    @BeforeClass
+    public static void beforeClass() throws Exception {
+        System.setProperty("log4j2.enableJndiJms", "true");
+    }
 
     public JmsAppenderTest() throws Exception {
         // this needs to set up before LoggerContextRule

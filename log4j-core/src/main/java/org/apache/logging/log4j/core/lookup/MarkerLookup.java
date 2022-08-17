@@ -27,7 +27,8 @@ import org.apache.logging.log4j.plugins.Plugin;
  *
  * @since 2.4
  */
-@Plugin(name = "marker", category = StrLookup.CATEGORY)
+@Lookup
+@Plugin("marker")
 public class MarkerLookup extends AbstractLookup {
 
     static final String MARKER = "marker";

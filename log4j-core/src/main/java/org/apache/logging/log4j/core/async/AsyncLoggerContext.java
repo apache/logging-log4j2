@@ -16,16 +16,17 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.net.URI;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.status.StatusLogger;
+
+import java.net.URI;
+import java.util.concurrent.TimeUnit;
 
 /**
  * {@code LoggerContext} that creates {@code AsyncLogger} objects.
@@ -36,22 +37,33 @@ public class AsyncLoggerContext extends LoggerContext {
 
     public AsyncLoggerContext(final String name) {
         super(name);
-        loggerDisruptor = new AsyncLoggerDisruptor(name);
+        loggerDisruptor = new AsyncLoggerDisruptor(name, () -> getConfiguration().getAsyncWaitStrategyFactory());
     }
 
     public AsyncLoggerContext(final String name, final Object externalContext) {
         super(name, externalContext);
-        loggerDisruptor = new AsyncLoggerDisruptor(name);
+        loggerDisruptor = new AsyncLoggerDisruptor(name, () -> getConfiguration().getAsyncWaitStrategyFactory());
     }
 
     public AsyncLoggerContext(final String name, final Object externalContext, final URI configLocn) {
         super(name, externalContext, configLocn);
-        loggerDisruptor = new AsyncLoggerDisruptor(name);
+        loggerDisruptor = new AsyncLoggerDisruptor(name, () -> getConfiguration().getAsyncWaitStrategyFactory());
+    }
+
+    public AsyncLoggerContext(final String name, final Object externalContext, final URI configLocn, final Injector injector) {
+        super(name, externalContext, configLocn, injector);
+        loggerDisruptor = new AsyncLoggerDisruptor(name, () -> getConfiguration().getAsyncWaitStrategyFactory());
     }
 
     public AsyncLoggerContext(final String name, final Object externalContext, final String configLocn) {
         super(name, externalContext, configLocn);
-        loggerDisruptor = new AsyncLoggerDisruptor(name);
+        loggerDisruptor = new AsyncLoggerDisruptor(name, () -> getConfiguration().getAsyncWaitStrategyFactory());
+    }
+
+    public AsyncLoggerContext(
+            final String name, final Object externalContext, final String configLocn, final Injector injector) {
+        super(name, externalContext, configLocn, injector);
+        loggerDisruptor = new AsyncLoggerDisruptor(name, () -> getConfiguration().getAsyncWaitStrategyFactory());
     }
 
     @Override

@@ -1,0 +1,124 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements. See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache license, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License. You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the license for the specific language governing permissions and
+# limitations under the license.
+
+name: build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+permissions: read-all
+
+jobs:
+
+  build:
+
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748   # 3.0.1
+
+      - name: Setup JDK 11
+        uses: actions/setup-java@9519cf1382ac8dc61ad461f7f7cb45f033220189   # 3.1.1
+        with:
+          distribution: temurin
+          java-version: 11
+          java-package: jdk
+          architecture: x64
+          cache: maven
+
+      - name: Inspect environment (Linux)
+        if: runner.os == 'Linux'
+        run: env | grep '^JAVA'
+
+      - name: Inspect environment (Windows)
+        if: runner.os == 'Windows'
+        run: set java
+
+      - name: Inspect environment (MacOS)
+        if: runner.os == 'macOS'
+        run: env | grep '^JAVA'
+
+      - name: Maven "verify"
+        timeout-minutes: 60
+        shell: bash
+        run: |
+          ./mvnw \
+            --show-version --batch-mode --errors --no-transfer-progress --fail-at-end \
+            -DtrimStackTrace=false \
+            -Dsurefire.rerunFailingTestsCount=2 \
+            -Dlog4j2.junit.fileCleanerSleepPeriodMillis=1000 \
+            verify
+
+      # Maven `site` goal takes ~1 hour and mostly irrelevant for typical PRs.
+      # Hence, we only execute that for `dependabot` PRs, which tend to break `site` occasionally.
+      - name: Maven "site"
+        if: ${{ github.actor == 'dependabot[bot]' }}
+        timeout-minutes: 60
+        shell: bash
+        run: |
+          ./mvnw \
+            --show-version --batch-mode --errors --no-transfer-progress --fail-at-end \
+            --non-recursive \
+            -Dmaven.doap.skip \
+            -DskipTests \
+            site
+
+  deploy:
+
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.repository == 'apache/logging-log4j2' && github.ref == 'refs/heads/master'
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748   # 3.0.1
+
+      - name: Setup JDK 11
+        uses: actions/setup-java@9519cf1382ac8dc61ad461f7f7cb45f033220189   # 3.1.1
+        with:
+          distribution: temurin
+          java-version: 11
+          java-package: jdk
+          architecture: x64
+          cache: maven
+
+      - name: Inspect environment
+        run: env | grep '^JAVA'
+
+      - name: Maven "deploy"
+        timeout-minutes: 15
+        shell: bash
+        # `package install:install deploy:deploy` goal is needed to deploy without configuring the plugin in the POM.
+        # For details see: https://maven.apache.org/plugins/maven-gpg-plugin/examples/deploy-signed-artifacts.html
+        run: |
+          ./mvnw \
+            --show-version --batch-mode --errors --no-transfer-progress \
+            -Dgpg.skip=true \
+            -DskipTests=true \
+            --settings .github/workflows/maven-settings.xml \
+            package install:install deploy:deploy
+        env:
+          NEXUS_USER: ${{ secrets.NEXUS_USER }}
+          NEXUS_PW: ${{ secrets.NEXUS_PW }}

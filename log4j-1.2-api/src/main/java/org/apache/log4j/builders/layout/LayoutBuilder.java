@@ -17,16 +17,11 @@
 package org.apache.log4j.builders.layout;
 
 import org.apache.log4j.Layout;
-import org.apache.log4j.config.PropertiesConfiguration;
-import org.apache.log4j.xml.XmlConfiguration;
-import org.w3c.dom.Element;
+import org.apache.log4j.builders.Parser;
 
 /**
  * Define a Layout Builder.
  */
-public interface LayoutBuilder {
-
-    Layout parseLayout(Element element, XmlConfiguration config);
-
-    Layout parseLayout(PropertiesConfiguration config);
+public interface LayoutBuilder extends Parser<Layout> {
+    // empty
 }

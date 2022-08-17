@@ -16,26 +16,28 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+
 /**
  * Lookup properties of Log4j
  */
-@Plugin(name = "log4j", category = StrLookup.CATEGORY)
+@Lookup
+@Plugin("log4j")
 public class Log4jLookup extends AbstractConfigurationAwareLookup {
 
     public final static String KEY_CONFIG_LOCATION = "configLocation";
     public final static String KEY_CONFIG_PARENT_LOCATION = "configParentLocation";
 
-    private static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private static String asPath(final URI uri) {
         if (uri.getScheme() == null || uri.getScheme().equals("file")) {

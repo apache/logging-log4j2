@@ -19,39 +19,42 @@ package org.apache.log4j.spi;
 import java.io.InputStream;
 import java.net.URL;
 
-import org.apache.logging.log4j.core.LoggerContext;
-
 /**
  * Log4j 1.x Configurator interface.
  */
 public interface Configurator {
 
+    /**
+     * Special level value signifying inherited behavior. The current value of this string constant is <b>inherited</b>.
+     * {@link #NULL} is a synonym.
+     */
     public static final String INHERITED = "inherited";
 
+    /**
+     * Special level signifying inherited behavior, same as {@link #INHERITED}. The current value of this string constant
+     * is <b>null</b>.
+     */
     public static final String NULL = "null";
 
+    /**
+     * Interpret a resource pointed by a InputStream and set up log4j accordingly.
+     * 
+     * The configuration is done relative to the <code>hierarchy</code> parameter.
+     * 
+     * @param inputStream The InputStream to parse
+     * @param loggerRepository The hierarchy to operation upon.
+     *
+     * @since 1.2.17
+     */
+    void doConfigure(InputStream inputStream, final LoggerRepository loggerRepository);
 
     /**
-     Interpret a resource pointed by a InputStream and set up log4j accordingly.
-
-     The configuration is done relative to the <code>hierarchy</code>
-     parameter.
-
-     @param inputStream The InputStream to parse.
-     @param loggerContext The LoggerContext.
-
-     @since 1.2.17
+     * Interpret a resource pointed by a URL and set up log4j accordingly.
+     * 
+     * The configuration is done relative to the <code>hierarchy</code> parameter.
+     * 
+     * @param url The URL to parse
+     * @param loggerRepository The hierarchy to operation upon.
      */
-    void doConfigure(InputStream inputStream, final LoggerContext loggerContext);
-
-    /**
-     Interpret a resource pointed by a URL and set up log4j accordingly.
-
-     The configuration is done relative to the <code>hierarchy</code>
-     parameter.
-
-     @param url The URL to parse
-     @param loggerContext The LoggerContext.
-     */
-    void doConfigure(URL url, final LoggerContext loggerContext);
+    void doConfigure(URL url, final LoggerRepository loggerRepository);
 }

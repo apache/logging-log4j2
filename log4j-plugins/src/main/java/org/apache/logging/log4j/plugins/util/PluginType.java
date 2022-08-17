@@ -16,8 +16,11 @@
  */
 package org.apache.logging.log4j.plugins.util;
 
-
 import org.apache.logging.log4j.plugins.processor.PluginEntry;
+import org.apache.logging.log4j.util.LazyValue;
+
+import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * Plugin Descriptor. This is a memento object for Plugin annotations paired to their annotated classes.
@@ -28,57 +31,62 @@ import org.apache.logging.log4j.plugins.processor.PluginEntry;
 public class PluginType<T> {
 
     private final PluginEntry pluginEntry;
-    private volatile Class<T> pluginClass;
-    private final ClassLoader classLoader;
-    private final String elementName;
+    private final Supplier<Class<T>> pluginClass;
+    private final Supplier<Set<Class<?>>> implementedInterfaces;
 
     /**
      * Constructor.
      * @param pluginEntry The PluginEntry.
      * @param pluginClass The plugin Class.
-     * @param elementName The name of the element.
-     * @since 2.1
+     * @since 3.0.0
      */
-    public PluginType(final PluginEntry pluginEntry, final Class<T> pluginClass, final String elementName) {
+    public PluginType(
+            final PluginEntry pluginEntry, final Class<T> pluginClass) {
         this.pluginEntry = pluginEntry;
-        this.pluginClass = pluginClass;
-        this.elementName = elementName;
-        this.classLoader = null;
+        this.pluginClass = () -> pluginClass;
+        final var interfaces = Set.of(pluginClass.getInterfaces());
+        this.implementedInterfaces = () -> interfaces;
     }
 
     /**
      * The Constructor.
-     * @since 3.0
+     * @since 3.0.0
      * @param pluginEntry The PluginEntry.
-     * @param classLoader The ClassLoader to use to load the Plugin.
      */
     public PluginType(final PluginEntry pluginEntry, final ClassLoader classLoader) {
         this.pluginEntry = pluginEntry;
-        this.classLoader = classLoader;
-        this.elementName = pluginEntry.getName();
-        this.pluginClass = null;
+        final LazyValue<Class<T>> classProvider = LazyValue.from(() -> {
+            try {
+                return TypeUtil.cast(classLoader.loadClass(pluginEntry.getClassName()));
+            } catch (final ClassNotFoundException e) {
+                throw new IllegalStateException("No class named " + pluginEntry.getClassName() +
+                        " located for element " + pluginEntry.getName(), e);
+            }
+        });
+        this.pluginClass = classProvider;
+        final Class<?>[] interfaces = pluginEntry.getInterfaces();
+        if (interfaces != null) {
+            final var implementedInterfaces = Set.of(interfaces);
+            this.implementedInterfaces = () -> implementedInterfaces;
+        } else {
+            this.implementedInterfaces = classProvider.map(clazz -> Set.of(clazz.getInterfaces()));
+        }
     }
-
 
     public PluginEntry getPluginEntry() {
         return this.pluginEntry;
     }
 
-    @SuppressWarnings("unchecked")
     public Class<T> getPluginClass() {
-        if (pluginClass == null) {
-            try {
-                pluginClass = (Class<T>) this.classLoader.loadClass(pluginEntry.getClassName());
-            } catch (ClassNotFoundException | LinkageError ex) {
-                throw new IllegalStateException("No class named " + pluginEntry.getClassName() +
-                        " located for element " + elementName, ex);
-            }
-        }
-        return this.pluginClass;
+        return pluginClass.get();
     }
 
-    public String getElementName() {
-        return this.elementName;
+    public Set<Class<?>> getImplementedInterfaces() {
+        return implementedInterfaces.get();
+    }
+
+    public String getElementType() {
+        return pluginEntry.getElementType();
     }
 
     /**
@@ -95,26 +103,30 @@ public class PluginType<T> {
     }
 
     public boolean isDeferChildren() {
-        return this.pluginEntry.isDefer();
+        return this.pluginEntry.isDeferChildren();
     }
 
     /**
-     * Return the plugin category.
-     * @return the Plugin category.
+     * Return the plugin namespace.
+     * @return the Plugin namespace.
      * @since 2.1
      */
-    public String getCategory() {
-        return this.pluginEntry.getCategory();
+    public String getNamespace() {
+        return this.pluginEntry.getNamespace();
+    }
+
+    public String getName() {
+        return pluginEntry.getName();
     }
 
     @Override
     public String toString() {
-        return "PluginType [pluginClass=" + pluginClass +
+        return "PluginType [pluginClass=" + pluginClass.get() +
                 ", key=" + pluginEntry.getKey() +
-                ", elementName=" + pluginEntry.getName() +
+                ", elementType=" + pluginEntry.getElementType() +
                 ", isObjectPrintable=" + pluginEntry.isPrintable() +
-                ", isDeferChildren==" + pluginEntry.isDefer() +
-                ", category=" + pluginEntry.getCategory() +
+                ", isDeferChildren==" + pluginEntry.isDeferChildren() +
+                ", namespace=" + pluginEntry.getNamespace() +
                 "]";
     }
 }

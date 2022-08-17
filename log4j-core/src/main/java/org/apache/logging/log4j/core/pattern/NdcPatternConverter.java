@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
@@ -24,7 +25,8 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 /**
  * Returns the event's NDC in a StringBuilder.
  */
-@Plugin(name = "NdcPatternConverter", category = PatternConverter.CATEGORY)
+@Namespace(PatternConverter.CATEGORY)
+@Plugin("NdcPatternConverter")
 @ConverterKeys({"x", "NDC"})
 public final class NdcPatternConverter extends LogEventPatternConverter {
     /**

@@ -34,6 +34,12 @@ public final class Strings {
      * The empty string.
      */
     public static final String EMPTY = "";
+    private static final String COMMA_DELIMITED_RE = "\\s*,\\s*";
+
+    /**
+     * The empty string array.
+     */
+    public static final String[] EMPTY_ARRAY = {};
     
     /**
      * OS-dependent line separator, defaults to {@code "\n"} if the system property {@code ""line.separator"} cannot be
@@ -295,6 +301,15 @@ public final class Strings {
         }
 
         return buf.toString();
+    }
+
+    /**
+     * Splits a comma separated list ignoring whitespace surrounding the list item.
+     * @param string The string to split.
+     * @return An array of strings.
+     */
+    public static String[] splitList(String string) {
+        return string != null ? string.split(COMMA_DELIMITED_RE) : new String[0];
     }
 
     /**

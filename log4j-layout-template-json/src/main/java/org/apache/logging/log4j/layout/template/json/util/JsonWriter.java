@@ -16,8 +16,8 @@
  */
 package org.apache.logging.log4j.layout.template.json.util;
 
-import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
+import org.apache.logging.log4j.util.LazyValue;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.StringMap;
 
@@ -27,6 +27,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 /**
  * A simple JSON writer with support for common Java data types.
@@ -66,8 +68,7 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
      * character to use after backslash; and negative values, that generic
      * (backslash - u) escaping is to be used.
      */
-    private final static int[] ESC_CODES;
-    static {
+    private static final Supplier<int[]> ESC_CODES = LazyValue.from(() -> {
         final int[] table = new int[128];
         // Control chars need generic escape sequence
         for (int i = 0; i < 32; ++i) {
@@ -83,8 +84,8 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
         table[0x0C] = 'f';
         table[0x0A] = 'n';
         table[0x0D] = 'r';
-        ESC_CODES = table;
-    }
+        return table;
+    });
 
     private final char[] quoteBuffer;
 
@@ -234,20 +235,22 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
         } else {
             writeObjectStart();
             final boolean[] firstEntry = {true};
-            map.forEach((final String key, final Object value) -> {
-                if (key == null) {
-                    throw new IllegalArgumentException("null keys are not allowed");
-                }
-                if (firstEntry[0]) {
-                    firstEntry[0] = false;
-                } else {
-                    writeSeparator();
-                }
-                writeObjectKey(key);
-                writeValue(value);
-            });
+            map.forEach(this::writeStringMap, firstEntry);
             writeObjectEnd();
         }
+    }
+
+    private void writeStringMap(final String key, final Object value, final boolean[] firstEntry) {
+        if (key == null) {
+            throw new IllegalArgumentException("null keys are not allowed");
+        }
+        if (firstEntry[0]) {
+            firstEntry[0] = false;
+        } else {
+            writeSeparator();
+        }
+        writeObjectKey(key);
+        writeValue(value);
     }
 
     public void writeObject(final IndexedReadOnlyStringMap map) {
@@ -597,11 +600,12 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
                         : 0;
         final int limit = offset + length + surrogateCorrection;
         int i = offset;
+        final int[] escCodes = ESC_CODES.get();
         outer:
         while (i < limit) {
             while (true) {
                 final char c = seq.charAt(i);
-                if (c < ESC_CODES.length && ESC_CODES[c] != 0) {
+                if (c < escCodes.length && escCodes[c] != 0) {
                     break;
                 }
                 stringBuilder.append(c);
@@ -610,7 +614,7 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
                 }
             }
             final char d = seq.charAt(i++);
-            final int escCode = ESC_CODES[d];
+            final int escCode = escCodes[d];
             final int quoteBufferLength = escCode < 0
                     ? quoteNumeric(d)
                     : quoteNamed(escCode);
@@ -674,11 +678,12 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
                         : 0;
         final int limit = offset + length + surrogateCorrection;
         int i = offset;
+        final int[] escCodes = ESC_CODES.get();
         outer:
         while (i < limit) {
             while (true) {
                 final char c = buffer[i];
-                if (c < ESC_CODES.length && ESC_CODES[c] != 0) {
+                if (c < escCodes.length && escCodes[c] != 0) {
                     break;
                 }
                 stringBuilder.append(c);
@@ -687,7 +692,7 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
                 }
             }
             final char d = buffer[i++];
-            final int escCode = ESC_CODES[d];
+            final int escCode = escCodes[d];
             final int quoteBufferLength = escCode < 0
                     ? quoteNumeric(d)
                     : quoteNamed(escCode);
@@ -854,7 +859,7 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
 
     private void trimStringBuilder(final StringBuilder stringBuilder, final int length) {
         final int trimLength = Math.max(maxStringLength, length);
-        if (stringBuilder.length() > trimLength) {
+        if (stringBuilder.capacity() > trimLength) {
             stringBuilder.setLength(trimLength);
             stringBuilder.trimToSize();
         }

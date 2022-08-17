@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.perf.jmh;
 
-import java.io.Serializable;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.time.Clock;
+import org.apache.logging.log4j.core.time.internal.FixedPreciseClock;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -29,17 +29,21 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.infra.Blackhole;
 
+import java.io.Serializable;
+
 @State(Scope.Thread)
 public class Log4jLogEventBenchmark {
     private static Message MESSAGE;
     private static Throwable ERROR;
     private static TestClass TESTER;
+    private static Clock CLOCK;
 
     @Setup
     public void setup() {
         MESSAGE = new SimpleMessage("Test message");
         ERROR = new Exception("test");
         TESTER = new TestClass();
+        CLOCK = new FixedPreciseClock();
     }
 
     @Benchmark
@@ -47,20 +51,26 @@ public class Log4jLogEventBenchmark {
     }
 
     @Benchmark
-    public LogEvent createLogEventWithoutException() {
-        return new Log4jLogEvent("a.b.c", null, "a.b.c", Level.INFO, MESSAGE, null, null);
-    }
-
-    @Benchmark
     public LogEvent createLogEventWithoutExceptionUsingBuilder() {
-        return Log4jLogEvent.newBuilder().setLoggerName("a.b.c").setLoggerFqcn("a.b.c").setLevel(Level.INFO)
-                .setMessage(MESSAGE).build();
+        return Log4jLogEvent.newBuilder()
+                .setLoggerName("a.b.c")
+                .setLoggerFqcn("a.b.c")
+                .setLevel(Level.INFO)
+                .setMessage(MESSAGE)
+                .setClock(CLOCK)
+                .build();
     }
 
     @Benchmark
     public LogEvent createLogEventWithExceptionUsingBuilder() {
-        return Log4jLogEvent.newBuilder().setLoggerName("a.b.c").setLoggerFqcn("a.b.c").setLevel(Level.INFO)
-                .setMessage(MESSAGE).setThrown(ERROR).build();
+        return Log4jLogEvent.newBuilder()
+                .setLoggerName("a.b.c")
+                .setLoggerFqcn("a.b.c")
+                .setLevel(Level.INFO)
+                .setMessage(MESSAGE)
+                .setThrown(ERROR)
+                .setClock(CLOCK)
+                .build();
     }
 
     @Benchmark
@@ -71,7 +81,13 @@ public class Log4jLogEventBenchmark {
 
     @Benchmark
     public Serializable createSerializableLogEventProxyWithoutException(final Blackhole bh) {
-        final Log4jLogEvent event = new Log4jLogEvent("a.b.c", null, "a.b.c", Level.INFO, MESSAGE, null, null);
+        final Log4jLogEvent event = Log4jLogEvent.newBuilder()
+                .setLoggerName("a.b.c")
+                .setLoggerFqcn("a.b.c")
+                .setLevel(Level.INFO)
+                .setMessage(MESSAGE)
+                .setClock(CLOCK)
+                .build();
         final Serializable obj = Log4jLogEvent.serialize(event, false);
         bh.consume(obj);
         return obj;
@@ -79,7 +95,13 @@ public class Log4jLogEventBenchmark {
 
     @Benchmark
     public Serializable createSerializableLogEventProxyWithoutExceptionWithLocation(final Blackhole bh) {
-        final Log4jLogEvent event = new Log4jLogEvent("a.b.c", null, "a.b.c", Level.INFO, MESSAGE, null, null);
+        final Log4jLogEvent event = Log4jLogEvent.newBuilder()
+                .setLoggerName("a.b.c")
+                .setLoggerFqcn("a.b.c")
+                .setLevel(Level.INFO)
+                .setMessage(MESSAGE)
+                .setClock(CLOCK)
+                .build();
         final Serializable obj = Log4jLogEvent.serialize(event, true);
         bh.consume(obj);
         return obj;
@@ -87,7 +109,14 @@ public class Log4jLogEventBenchmark {
 
     @Benchmark
     public Serializable createSerializableLogEventProxyWithException(final Blackhole bh) {
-        final Log4jLogEvent event = new Log4jLogEvent("a.b.c", null, "a.b.c", Level.INFO, MESSAGE, null, ERROR);
+        final Log4jLogEvent event = Log4jLogEvent.newBuilder()
+                .setLoggerName("a.b.c")
+                .setLoggerFqcn("a.b.c")
+                .setLevel(Level.INFO)
+                .setMessage(MESSAGE)
+                .setThrown(ERROR)
+                .setClock(CLOCK)
+                .build();
         final Serializable obj = Log4jLogEvent.serialize(event, false);
         bh.consume(obj);
         return obj;
@@ -97,8 +126,13 @@ public class Log4jLogEventBenchmark {
         private static final String FQCN = TestClass.class.getName();
 
         public StackTraceElement getEventSource(final String loggerName) {
-            final LogEvent event = Log4jLogEvent.newBuilder().setLoggerName(loggerName)
-                    .setLoggerFqcn(FQCN).setLevel(Level.INFO).setMessage(MESSAGE).build();
+            final LogEvent event = Log4jLogEvent.newBuilder()
+                    .setLoggerName(loggerName)
+                    .setLoggerFqcn(FQCN)
+                    .setLevel(Level.INFO)
+                    .setMessage(MESSAGE)
+                    .setClock(CLOCK)
+                    .build();
             event.setIncludeLocation(true);
             return event.getSource();
         }
