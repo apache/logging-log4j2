@@ -163,13 +163,13 @@ final class Log4jWebInitializerImpl extends AbstractLifeCycle implements Log4jWe
         }
         if (location != null && location.contains(",")) {
             final List<URI> uris = getConfigURIs(location);
-            this.loggerContext = Configurator.initialize(this.name, this.getClassLoader(), uris,
+            this.loggerContext = Configurator.initialize(this.name, servletContext.getClassLoader(), uris,
                     WebLoggerContextUtils.createExternalEntry(this.servletContext));
             return;
         }
 
         final URI uri = getConfigURI(location);
-        this.loggerContext = Configurator.initialize(this.name, this.getClassLoader(), uri,
+        this.loggerContext = Configurator.initialize(this.name, servletContext.getClassLoader(), uri,
                 WebLoggerContextUtils.createExternalEntry(this.servletContext));
     }
 
