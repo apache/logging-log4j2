@@ -37,9 +37,9 @@ You can build and verify the sources as follows:
     ./mvnw verify
 
 `verify` goal runs validation and test steps next to building (i.e., compiling) the sources.
-To speed up the build, you can skip verification and try increasing the concurrency:
+To speed up the build, you can skip verification:
 
-    ./mvwn -DskipTests -T8C package
+    ./mvwn -DskipTests package
 
 If you want to install generated artifacts to your local Maven repository, replace above `verify` and/or `package` goals with `install`.
 
@@ -51,9 +51,7 @@ many unit tests may execute slow due to DNS lookups to translate your hostname t
 [`InetAddress.getLocalHost()`](http://docs.oracle.com/javase/7/docs/api/java/net/InetAddress.html#getLocalHost()).
 To remedy this, you can execute the following:
 
-```
-printf '127.0.0.1 %s\n::1 %s\n' `hostname` `hostname` | sudo tee -a /etc/hosts
-```
+    printf '127.0.0.1 %s\n::1 %s\n' `hostname` `hostname` | sudo tee -a /etc/hosts
 
 <a name="website"></a>
 # Building the website and manual
