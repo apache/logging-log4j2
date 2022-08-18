@@ -133,6 +133,7 @@ public class SyslogAppender extends SocketAppender {
                         .setUseTLSMessageFormat(useTlsMessageFormat)
                         .setLoggerFields(loggerFields)
                         .setConfig(configuration)
+                        .setCharset(charsetName)
                         .build() :
                         // @formatter:off
                         SyslogLayout.newBuilder()
