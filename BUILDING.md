@@ -14,36 +14,40 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-# Building Log4j 3.x
 
-To build Log4j 3.x, you need a JDK implementation version 11 (at least version 11.0.13 if building on macOS) or greater and Apache Maven 3.x.
+# Requirements
 
-To perform the license release audit, a.k.a. "RAT check", run.
+* JDK 11
+* Apache Maven 3.x
+* A modern Linux, OSX, or Windows host
 
-    mvn apache-rat:check
+<a name="building"></a>
+# Building the sources
 
-To install the jars in your local Maven repository, from a command line, run:
+You can build and verify the sources as follows:
 
-    mvn clean install
+    ./mvnw verify
 
-Once install is run, you can run the Clirr check on the API and 1.2 API modules:
+`verify` goal runs validation and test steps next to building (i.e., compiling) the sources.
+To speed up the build, you can skip verification:
 
-    mvn clirr:check -pl log4j-api
+    ./mvwn -DskipTests package
 
-    mvn clirr:check -pl log4j-1.2-api
+If you want to install generated artifacts to your local Maven repository, replace above `verify` and/or `package` goals with `install`.
 
-Next, to build the site:
+<a name="dns"></a>
+## DNS lookups in tests
 
-    mvn site
+Note that if your `/etc/hosts` file does not include an entry for your computer's hostname, then
+many unit tests may execute slow due to DNS lookups to translate your hostname to an IP address in
+[`InetAddress.getLocalHost()`](http://docs.oracle.com/javase/7/docs/api/java/net/InetAddress.html#getLocalHost()).
+To remedy this, you can execute the following:
 
-On Windows, use a local staging directory, for example:
+    printf '127.0.0.1 %s\n::1 %s\n' `hostname` `hostname` | sudo tee -a /etc/hosts
 
-    mvn site:stage-deploy -DstagingSiteURL=file:///%HOMEDRIVE%%HOMEPATH%/log4j
+<a name="website"></a>
+# Building the website and manual
 
-On UNIX, use a local staging directory, for example:
+You can build the website and manual as follows:
 
-    mvn site:stage-deploy -DstagingSiteURL=file:///$HOME/log4j
-
-To test, run:
-
-    mvn clean install
+    ./mvnw --non-recursive -Dmaven.doap.skip -DskipTests site

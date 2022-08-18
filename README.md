@@ -1,3 +1,20 @@
+<!---
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
 # [Apache Log4j 3.x](https://logging.apache.org/log4j/2.x/)
 
 Apache Log4j 3.x is an upgrade to Log4j that provides significant improvements over its predecessor, Log4j 1.x,
@@ -80,12 +97,12 @@ Apache Log4j 3.x is distributed under the [Apache License, version 2.0](http://w
 
 [How to download Log4j](http://logging.apache.org/log4j/2.x/download.html),
 and [how to use it from Maven, Ivy and Gradle](http://logging.apache.org/log4j/2.x/maven-artifacts.html).
-You can access the latest development snapshot by using the Maven repository `https://repository.apache.org/snapshots`, 
+You can access the latest development snapshot by using the Maven repository `https://repository.apache.org/snapshots`,
 see [Snapshot builds](https://logging.apache.org/log4j/2.x/maven-artifacts.html#Snapshot_builds).
 
 ## Issue Tracking
 
-Issues, bugs, and feature requests should be submitted to the 
+Issues, bugs, and feature requests should be submitted to the
 [JIRA issue tracking system for this project](https://issues.apache.org/jira/browse/LOG4J2).
 
 Pull requests on GitHub are welcome, but please open a ticket in the JIRA issue tracker first, and mention the 
@@ -93,13 +110,9 @@ JIRA issue in the Pull Request.
 
 ## Building From Source
 
-Log4j 3.x requires Java 11 (at least version 11.0.13 when building on macOS) and Apache Maven 3.x. To build from source and install to your local Maven repository, execute the following:
-
-```sh
-mvn install
-```
+See [the detailed build instructions](BUILDING.md) on how to build to the project and website from sources.
 
 ## Contributing
 
-We love contributions! Take a look at
-[our contributing page](https://github.com/apache/logging-log4j2/blob/master/CONTRIBUTING.md).
+We love contributions!
+Take a look at [our contributing page](CONTRIBUTING.md).
