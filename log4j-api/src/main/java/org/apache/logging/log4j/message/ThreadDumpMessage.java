@@ -22,6 +22,8 @@ import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,6 +65,17 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
     }
 
     private static ThreadInfoFactory initFactory() {
+        if (System.getSecurityManager() != null) {
+            return AccessController.doPrivileged(
+                    (PrivilegedAction<ThreadInfoFactory>)
+                            () -> initFactory0()
+            );
+        } else {
+            return initFactory0();
+        }
+    }
+
+    private static ThreadInfoFactory initFactory0() {
         return ServiceLoaderUtil.loadServices(ThreadInfoFactory.class, MethodHandles.lookup(), false)
                 .findFirst()
                 .orElseGet(BasicThreadInfoFactory::new);

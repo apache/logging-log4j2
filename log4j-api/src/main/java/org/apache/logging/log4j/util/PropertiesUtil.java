@@ -20,11 +20,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.Charset;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -446,22 +447,36 @@ public final class PropertiesUtil {
         private final Map<List<CharSequence>, String> tokenized = new ConcurrentHashMap<>();
 
         private Environment(final PropertySource propertySource) {
-            PropertyFilePropertySource sysProps = new PropertyFilePropertySource(LOG4J_SYSTEM_PROPERTIES_FILE_NAME, false);
-            try {
-                sysProps.forEach((key, value) -> {
-                    if (System.getProperty(key) == null) {
-                        System.setProperty(key, value);
-                    }
-                });
-            } catch (SecurityException ex) {
-                // Access to System Properties is restricted so just skip it.
-            }
+            PropertyFilePropertySource sysProps = new PropertyFilePropertySource(LOG4J_SYSTEM_PROPERTIES_FILE_NAME,
+                false);
+            sysProps.forEach((key, value) -> {
+                if (System.getProperty(key) == null) {
+                    System.setProperty(key, value);
+                }
+            });
             sources.add(propertySource);
+            sources.add(new SystemPropertiesPropertySource());
+            sources.add(new EnvironmentPropertySource());
+
+            // Additional non-default log4j2 PropertySource are loaded by ServiceLoader
+            if (System.getSecurityManager() != null) {
+                AccessController.doPrivileged(
+                        (PrivilegedAction<Void>)
+                                () -> {
+                                    loadPropertyService0();
+                                    return null;
+                                }
+                );
+            } else {
+                loadPropertyService0();
+            }
+            reload();
+        }
+
+        private void loadPropertyService0() {
             // We don't log anything on the status logger.
             ServiceLoaderUtil.loadServices(PropertySource.class, MethodHandles.lookup(), false, false)
                     .forEach(sources::add);
-
-            reload();
         }
 
         private synchronized void reload() {

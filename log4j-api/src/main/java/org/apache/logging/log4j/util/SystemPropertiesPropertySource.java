@@ -39,17 +39,8 @@ public class SystemPropertiesPropertySource implements PropertySource {
 
 	@Override
 	public void forEach(final BiConsumer<String, String> action) {
-		Properties properties;
-		try {
-			properties = System.getProperties();
-		} catch (final SecurityException e) {
-			// (1) There is no status logger.
-			// (2) LowLevelLogUtil also consults system properties ("line.separator") to
-			// open a BufferedWriter, so this may fail as well. Just having a hard reference
-			// in this code to LowLevelLogUtil would cause a problem.
-			// (3) We could log to System.err (nah) or just be quiet as we do now.
-			return;
-		}
+		Properties properties = System.getProperties();
+
 		// Lock properties only long enough to get a thread-safe SAFE snapshot of its
 		// current keys, an array.
 		final Object[] keySet;
@@ -71,20 +62,12 @@ public class SystemPropertiesPropertySource implements PropertySource {
 
 	@Override
 	public Collection<String> getPropertyNames() {
-		try {
 			return System.getProperties().stringPropertyNames();
-		} catch (final SecurityException e) {
-			return PropertySource.super.getPropertyNames();
-		}
 	}
 
 	@Override
 	public String getProperty(String key) {
-		try {
 			return System.getProperty(key);
-		} catch (final SecurityException e) {
-			return PropertySource.super.getProperty(key);
-		}
 	}
 
 	@Override

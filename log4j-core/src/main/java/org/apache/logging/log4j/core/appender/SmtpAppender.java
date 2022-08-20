@@ -19,6 +19,8 @@ package org.apache.logging.log4j.core.appender;
 
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
@@ -283,9 +285,15 @@ public final class SmtpAppender extends AbstractAppender {
             final FactoryData data = new FactoryData(to, cc, bcc, from, replyTo, subject, subjectSerializer,
                     smtpProtocol, smtpHost, smtpPort, smtpUsername, smtpPassword, smtpDebug, bufferSize,
                     sslConfiguration, getFilter().toString());
-            final MailManagerFactory factory = ServiceLoaderUtil.loadServices(MailManagerFactory.class, MethodHandles.lookup())
-                    .findAny()
-                    .orElseGet(() -> SmtpManager.FACTORY);
+            final MailManagerFactory factory;
+            if (System.getSecurityManager() != null) {
+                factory = AccessController.doPrivileged(
+                        (PrivilegedAction<MailManagerFactory>)
+                                () -> loadMailManagerFactory0()
+                );
+            } else {
+                factory = loadMailManagerFactory0();
+            }
             final MailManager smtpManager = AbstractManager.getManager(data.getManagerName(), factory, data);
             if (smtpManager == null) {
                 LOGGER.error("Unabled to instantiate SmtpAppender named {}", getName());
@@ -294,6 +302,12 @@ public final class SmtpAppender extends AbstractAppender {
 
             return new SmtpAppender(getName(), getFilter(), getLayout(), smtpManager, isIgnoreExceptions(), getPropertyArray());
         }
+    }
+
+    private static MailManagerFactory loadMailManagerFactory0() {
+        return ServiceLoaderUtil.loadServices(MailManagerFactory.class, MethodHandles.lookup())
+                .findAny()
+                .orElseGet(() -> SmtpManager.FACTORY);
     }
 
     /**

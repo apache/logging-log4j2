@@ -38,21 +38,11 @@ public class EnvironmentPropertySource implements PropertySource {
 		return DEFAULT_PRIORITY;
 	}
 
-	private void logException(SecurityException e) {
-		// There is no status logger yet.
-		LowLevelLogUtil.logException(
-				"The system environment variables are not available to Log4j due to security restrictions: " + e, e);
-	}
-
 	@Override
 	public void forEach(final BiConsumer<String, String> action) {
 		final Map<String, String> getenv;
-		try {
-			getenv = System.getenv();
-		} catch (final SecurityException e) {
-			logException(e);
-			return;
-		}
+		getenv = System.getenv();
+
 		for (final Map.Entry<String, String> entry : getenv.entrySet()) {
 			final String key = entry.getKey();
 			if (key.startsWith(PREFIX)) {
@@ -75,32 +65,17 @@ public class EnvironmentPropertySource implements PropertySource {
 
 	@Override
 	public Collection<String> getPropertyNames() {
-		try {
 			return System.getenv().keySet();
-		} catch (final SecurityException e) {
-			logException(e);
-			return PropertySource.super.getPropertyNames();
-		}
 	}
 
 	@Override
 	public String getProperty(String key) {
-		try {
 			return System.getenv(key);
-		} catch (final SecurityException e) {
-			logException(e);
-			return PropertySource.super.getProperty(key);
-		}
 	}
 
 	@Override
 	public boolean containsProperty(String key) {
-		try {
 			return System.getenv().containsKey(key);
-		} catch (final SecurityException e) {
-			logException(e);
-			return PropertySource.super.containsProperty(key);
-		}
 	}
 
 }

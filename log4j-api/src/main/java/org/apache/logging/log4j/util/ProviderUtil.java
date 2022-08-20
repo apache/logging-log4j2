@@ -19,11 +19,12 @@ package org.apache.logging.log4j.util;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Properties;
-import java.util.ServiceLoader;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -64,13 +65,27 @@ public final class ProviderUtil {
     private static volatile ProviderUtil instance;
 
     private ProviderUtil() {
-        ServiceLoaderUtil.loadServices(Provider.class, MethodHandles.lookup(), false)
-                .filter(provider -> validVersion(provider.getVersions()))
-                .forEach(PROVIDERS::add);
+        if (System.getSecurityManager() != null) {
+            AccessController.doPrivileged(
+                    (PrivilegedAction<Void>)
+                            () -> {
+                                loadServices0();
+                                return null;
+                            }
+            );
+        } else {
+            loadServices0();
+        }
 
         for (final LoaderUtil.UrlResource resource : LoaderUtil.findUrlResources(PROVIDER_RESOURCE, false)) {
             loadProvider(resource.getUrl(), resource.getClassLoader());
         }
+    }
+
+    private static void loadServices0() {
+        ServiceLoaderUtil.loadServices(Provider.class, MethodHandles.lookup(), false)
+                .filter(provider -> validVersion(provider.getVersions()))
+                .forEach(PROVIDERS::add);
     }
 
     protected static void addProvider(final Provider provider) {
@@ -103,6 +118,20 @@ public final class ProviderUtil {
      * @param classLoader null can be used to mark the bootstrap class loader.
      */
     protected static void loadProviders(final ClassLoader classLoader) {
+        if(System.getSecurityManager() != null) {
+            AccessController.doPrivileged(
+                    (PrivilegedAction<Void>)
+                            () -> {
+                                loadProviders0(classLoader);
+                                return null;
+                            }
+            );
+        } else {
+            loadProviders0(classLoader);
+        }
+    }
+
+    private static void loadProviders0(final ClassLoader classLoader) {
         ServiceLoaderUtil.loadClassloaderServices(Provider.class, MethodHandles.lookup(), classLoader, true)
                 .filter(provider -> validVersion(provider.getVersions()))
                 .forEach(PROVIDERS::add);

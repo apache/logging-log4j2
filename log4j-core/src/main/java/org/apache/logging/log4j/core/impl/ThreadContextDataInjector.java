@@ -17,6 +17,8 @@
 package org.apache.logging.log4j.core.impl;
 
 import java.lang.invoke.MethodHandles;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -74,9 +76,23 @@ public class ThreadContextDataInjector {
 
     private static List<ContextDataProvider> getServiceProviders() {
         List<ContextDataProvider> providers = new ArrayList<>();
+        if (System.getSecurityManager() != null) {
+            AccessController.doPrivileged(
+                    (PrivilegedAction<Void>)
+                            () -> {
+                                loadContextDataProvider0(providers);
+                                return null;
+                            }
+            );
+        } else {
+            loadContextDataProvider0(providers);
+        }
+        return Collections.unmodifiableList(providers);
+    }
+
+    private static void loadContextDataProvider0(List<ContextDataProvider> providers){
         ServiceLoaderUtil.loadServices(ContextDataProvider.class, MethodHandles.lookup(), false)
                 .forEach(providers::add);
-        return Collections.unmodifiableList(providers);
     }
 
     /**

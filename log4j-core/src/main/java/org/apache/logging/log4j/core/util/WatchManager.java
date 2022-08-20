@@ -18,6 +18,8 @@ package org.apache.logging.log4j.core.util;
 
 import java.io.File;
 import java.lang.invoke.MethodHandles;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -134,7 +136,18 @@ public class WatchManager extends AbstractLifeCycle {
 
     public WatchManager(final ConfigurationScheduler scheduler) {
         this.scheduler = Objects.requireNonNull(scheduler, "scheduler");
-        eventServiceList = ServiceLoaderUtil.loadServices(WatchEventService.class, MethodHandles.lookup(), true)
+        if (System.getSecurityManager() != null) {
+            eventServiceList = AccessController.doPrivileged(
+                    (PrivilegedAction<List<WatchEventService>>)
+                            () -> loadWatchEventService0()
+            );
+        } else {
+            eventServiceList = loadWatchEventService0();
+        }
+    }
+
+    private List<WatchEventService> loadWatchEventService0() {
+        return ServiceLoaderUtil.loadServices(WatchEventService.class, MethodHandles.lookup(), true)
                 .collect(Collectors.toList());
     }
 
