@@ -20,11 +20,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.Charset;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -457,11 +458,24 @@ public final class PropertiesUtil {
                 // Access to System Properties is restricted so just skip it.
             }
             sources.add(propertySource);
+            if (System.getSecurityManager() != null) {
+                AccessController.doPrivileged(
+                        (PrivilegedAction<Void>)
+                                () -> {
+                                    loadPropertyService0();
+                                    return null;
+                                }
+                );
+            } else {
+                loadPropertyService0();
+            }
+            reload();
+        }
+
+        private void loadPropertyService0() {
             // We don't log anything on the status logger.
             ServiceLoaderUtil.loadServices(PropertySource.class, MethodHandles.lookup(), false, false)
                     .forEach(sources::add);
-
-            reload();
         }
 
         private synchronized void reload() {

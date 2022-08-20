@@ -17,9 +17,14 @@
 
 package org.apache.logging.log4j.util;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
+
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -30,9 +35,6 @@ import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * This class should be considered internal.
@@ -120,26 +122,57 @@ public final class ServiceLoaderUtil {
         private final Logger logger;
         private final String serviceName;
 
+        private final Lookup lookup;
+
+
         public ServiceLoaderSpliterator(final Class<S> serviceType, final Lookup lookup, final ClassLoader classLoader,
                 final boolean verbose) {
             this.serviceIterator = callServiceLoader(lookup, serviceType, classLoader, verbose).iterator();
             this.logger = verbose ? StatusLogger.getLogger() : null;
+            this.lookup = lookup;
             this.serviceName = serviceType.toString();
         }
 
         @Override
-        public boolean tryAdvance(Consumer<? super S> action) {
+        public boolean tryAdvance(final Consumer<? super S> action) {
+            Boolean ret = Boolean.FALSE;
+            if (System.getSecurityManager() != null) {
+                try {
+                    // Never refactor this to a utility method. You would screw security.
+                    final MethodHandle accessControllerDoPrivileged = lookup.findStatic(AccessController.class, "doPrivileged", MethodType.methodType(Object.class, PrivilegedAction.class));
+                    ret = (Boolean) accessControllerDoPrivileged.invokeExact((PrivilegedAction<Boolean>) () -> tryAdvance0(action));
+                } catch (final Throwable e) {
+                    // This Throwable MUST NOT be suppressed. The SecurityManager is present and service loading is not possible.
+                    // A lack of privileges must not be dealt within user code.
+                    if (logger != null) {
+                        logger.error("Failed to invoke tryAdvance0 in doPrivileged", e);
+                    }
+                    if (e instanceof Error) {
+                        throw (Error) e;
+                    } else if (e instanceof RuntimeException) {
+                        throw (RuntimeException) e;
+                    } else {
+                        throw new RuntimeException(e);
+                    }
+                }
+            } else {
+                ret = tryAdvance0(action);
+            }
+            return ret;
+        }
+
+        private Boolean tryAdvance0(Consumer<? super S> action) {
             while (serviceIterator.hasNext()) {
                 try {
                     action.accept(serviceIterator.next());
-                    return true;
+                    return Boolean.TRUE;
                 } catch (ServiceConfigurationError e) {
                     if (logger != null) {
                         logger.warn("Unable to load service class for service {}", serviceName, e);
                     }
                 }
             }
-            return false;
+            return Boolean.FALSE;
         }
 
         @Override
