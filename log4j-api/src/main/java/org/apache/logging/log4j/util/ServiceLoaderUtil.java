@@ -17,9 +17,13 @@
 
 package org.apache.logging.log4j.util;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -38,9 +42,6 @@ import org.apache.logging.log4j.status.StatusLogger;
  * This class should be considered internal.
  */
 public final class ServiceLoaderUtil {
-
-    private static final MethodType LOAD_CLASS_CLASSLOADER = MethodType.methodType(ServiceLoader.class, Class.class,
-            ClassLoader.class);
 
     private ServiceLoaderUtil() {
     }
@@ -102,8 +103,28 @@ public final class ServiceLoaderUtil {
     static <T> Iterable<T> callServiceLoader(Lookup lookup, Class<T> serviceType, ClassLoader classLoader,
             boolean verbose) {
         try {
-            final MethodHandle handle = lookup.findStatic(ServiceLoader.class, "load", LOAD_CLASS_CLASSLOADER);
-            final ServiceLoader<T> serviceLoader = (ServiceLoader<T>) handle.invokeExact(serviceType, classLoader);
+            // Creates a lambda in the caller's domain that calls `ServiceLoader`
+            final MethodHandle loadHandle = lookup.findStatic(ServiceLoader.class, "load",
+                    MethodType.methodType(ServiceLoader.class, Class.class, ClassLoader.class));
+            final CallSite callSite = LambdaMetafactory.metafactory(lookup,
+                    "run",
+                    MethodType.methodType(PrivilegedAction.class, Class.class, ClassLoader.class),
+                    MethodType.methodType(Object.class),
+                    loadHandle,
+                    MethodType.methodType(ServiceLoader.class));
+            final PrivilegedAction<ServiceLoader<T>> action = (PrivilegedAction<ServiceLoader<T>>) callSite
+                    .getTarget()//
+                    .bindTo(serviceType)
+                    .bindTo(classLoader)
+                    .invoke();
+            final ServiceLoader<T> serviceLoader;
+            if (System.getSecurityManager() == null) {
+                serviceLoader = action.run();
+            } else {
+                final MethodHandle privilegedHandle = lookup.findStatic(AccessController.class, "doPrivileged",
+                        MethodType.methodType(Object.class, PrivilegedAction.class));
+                serviceLoader = (ServiceLoader<T>) privilegedHandle.invoke(action);
+            }
             return serviceLoader;
         } catch (Throwable e) {
             if (verbose) {
@@ -111,7 +132,6 @@ public final class ServiceLoaderUtil {
             }
         }
         return Collections.emptyList();
-
     }
 
     private static class ServiceLoaderSpliterator<S> implements Spliterator<S> {
