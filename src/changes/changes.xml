@@ -197,11 +197,14 @@
       <action issue="LOG4J2-2572" dev="ggregory" type="update">
         Update Apache Flume from 1.8.0 to 1.9.0.
       </action>
-	  <action issue="LOG4J2-2850" dev="vy" type="fix" due-to="sandeepbarnwal">
-		Fixes incorrect constructor call in LocalizedMessageFactory.
+	    <action issue="LOG4J2-2850" dev="vy" type="fix" due-to="sandeepbarnwal">
+		    Fixes incorrect constructor call in LocalizedMessageFactory.
       </action>
     </release>
-    <release version="2.18.1" date="2022-MM-DD" description="GA Release 2.18.1">
+    <release version="2.19.0" date="2022-MM-DD" description="GA Release 2.19.0">
+      <action issue="LOG4J2-3578" dev="rgoers" type="fix">
+        Generate new SSL certs for testing.
+      </action>
       <action issue="LOG4J2-3573" dev="vy" type="remove" due-to=" Wolff Bock von Wuelfingen">
         Removed build page in favor of a single build instructions file.
       </action>
