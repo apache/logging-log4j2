@@ -29,7 +29,10 @@
          - "update" - Change
          - "remove" - Removed
     -->
-    <release version="2.18.1" date="2022-MM-DD" description="GA Release 2.18.1">
+    <release version="2.19.0" date="2022-MM-DD" description="GA Release 2.18.1">
+      <action issue="LOG4J2-3556" dev="vy" type="fix" due-to=" Arthur Gavlyukovskiy">
+        Make JsonTemplateLayout stack trace truncation operate for each label block.
+      </action>
       <action issue="LOG4J2-3573" dev="vy" type="remove" due-to=" Wolff Bock von Wuelfingen">
         Removed build page in favor of a single build instructions file.
       </action>

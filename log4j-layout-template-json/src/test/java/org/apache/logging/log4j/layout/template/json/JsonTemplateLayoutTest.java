@@ -34,31 +34,14 @@ import org.apache.logging.log4j.core.lookup.MainMapLookup;
 import org.apache.logging.log4j.core.net.Severity;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
-import org.apache.logging.log4j.layout.template.json.resolver.EventResolver;
-import org.apache.logging.log4j.layout.template.json.resolver.EventResolverContext;
-import org.apache.logging.log4j.layout.template.json.resolver.EventResolverFactory;
-import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolver;
-import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolverConfig;
-import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolverFactory;
+import org.apache.logging.log4j.layout.template.json.resolver.*;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
-import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.message.ObjectMessage;
-import org.apache.logging.log4j.message.ParameterizedMessageFactory;
-import org.apache.logging.log4j.message.ReusableMessageFactory;
-import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.message.StringMapMessage;
+import org.apache.logging.log4j.message.*;
 import org.apache.logging.log4j.test.AvailablePortFinder;
 import org.apache.logging.log4j.util.Strings;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.math.BigDecimal;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -67,11 +50,7 @@ import java.nio.charset.Charset;
 import java.time.Instant;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -81,6 +60,7 @@ import java.util.stream.IntStream;
 
 import static org.apache.logging.log4j.layout.template.json.TestHelpers.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SuppressWarnings("DoubleBraceInitialization")
 class JsonTemplateLayoutTest {
@@ -770,85 +750,17 @@ class JsonTemplateLayoutTest {
 
     }
 
-    private static final class NonAsciiUtf8MethodNameContainingException extends RuntimeException {
-
-        public static final long serialVersionUID = 0;
-
-        private static final String NON_ASCII_UTF8_TEXT = "அஆஇฬ๘";
-
-        private static final NonAsciiUtf8MethodNameContainingException INSTANCE =
-                createInstance();
-
-        private static NonAsciiUtf8MethodNameContainingException createInstance() {
-            try {
-                throwException_அஆஇฬ๘();
-                throw new IllegalStateException("should not have reached here");
-            } catch (final NonAsciiUtf8MethodNameContainingException exception) {
-                return exception;
-            }
-        }
-
-        @SuppressWarnings("NonAsciiCharacters")
-        private static void throwException_அஆஇฬ๘() {
-            throw new NonAsciiUtf8MethodNameContainingException(
-                    "exception with non-ASCII UTF-8 method name");
-        }
-
-        private NonAsciiUtf8MethodNameContainingException(final String message) {
-            super(message);
-        }
-
-    }
-
-    @Test
-    void test_exception_with_nonAscii_utf8_method_name() {
-
-        // Create the log event.
-        final SimpleMessage message = new SimpleMessage("Hello, World!");
-        final RuntimeException exception = NonAsciiUtf8MethodNameContainingException.INSTANCE;
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
-                .setLoggerName(LOGGER_NAME)
-                .setLevel(Level.ERROR)
-                .setMessage(message)
-                .setThrown(exception)
-                .build();
-
-        // Create the event template.
-        final String eventTemplate = writeJson(asMap(
-                "ex_stacktrace", asMap(
-                        "$resolver", "exception",
-                        "field", "stackTrace",
-                        "stringified", true)));
-
-        // Create the layout.
-        final JsonTemplateLayout layout = JsonTemplateLayout
-                .newBuilder()
-                .setConfiguration(CONFIGURATION)
-                .setStackTraceEnabled(true)
-                .setEventTemplate(eventTemplate)
-                .build();
-
-        // Check the serialized event.
-        usingSerializedLogEventAccessor(layout, logEvent, accessor ->
-                assertThat(accessor.getString("ex_stacktrace"))
-                        .contains(NonAsciiUtf8MethodNameContainingException.NON_ASCII_UTF8_TEXT));
-
-    }
-
     @Test
     void test_event_template_additional_fields() {
 
         // Create the log event.
         final SimpleMessage message = new SimpleMessage("Hello, World!");
-        final RuntimeException exception = NonAsciiUtf8MethodNameContainingException.INSTANCE;
         final Level level = Level.ERROR;
         final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()
                 .setLoggerName(LOGGER_NAME)
                 .setLevel(level)
                 .setMessage(message)
-                .setThrown(exception)
                 .build();
 
         // Create the event template.
@@ -971,8 +883,7 @@ class JsonTemplateLayoutTest {
             // Verify the test case.
             usingSerializedLogEventAccessor(layout, logEvent, accessor ->
                     testCase.forEach((key, expectedValue) ->
-                            Assertions
-                                    .assertThat(accessor.getObject(key))
+                            assertThat(accessor.getObject(key))
                                     .describedAs("key=%s", key)
                                     .isEqualTo(expectedValue)));
 
@@ -1140,161 +1051,6 @@ class JsonTemplateLayoutTest {
     }
 
     @Test
-    void test_stringified_exception_resolver_with_maxStringLength() {
-
-        // Create the event template.
-        final String eventTemplate = writeJson(asMap(
-                "stackTrace", asMap(
-                        "$resolver", "exception",
-                        "field", "stackTrace",
-                        "stringified", true)));
-
-        // Create the layout.
-        final int maxStringLength = eventTemplate.length();
-        final JsonTemplateLayout layout = JsonTemplateLayout
-                .newBuilder()
-                .setConfiguration(CONFIGURATION)
-                .setEventTemplate(eventTemplate)
-                .setMaxStringLength(maxStringLength)
-                .setStackTraceEnabled(true)
-                .build();
-
-        // Create the log event.
-        final SimpleMessage message = new SimpleMessage("foo");
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
-                .setLoggerName(LOGGER_NAME)
-                .setMessage(message)
-                .setThrown(NonAsciiUtf8MethodNameContainingException.INSTANCE)
-                .build();
-
-        // Check the serialized event.
-        usingSerializedLogEventAccessor(layout, logEvent, accessor -> {
-            final int expectedLength = maxStringLength +
-                    JsonTemplateLayoutDefaults.getTruncatedStringSuffix().length();
-            assertThat(accessor.getString("stackTrace").length()).isEqualTo(expectedLength);
-        });
-
-    }
-
-    @Test
-    void test_stack_trace_truncation() {
-
-        // Create the exception to be logged.
-        final Exception childError =
-                new Exception("unique child exception message");
-        final Exception parentError =
-                new Exception("unique parent exception message", childError);
-
-        // Create the event template.
-        final String truncationSuffix = "~";
-        final String eventTemplate = writeJson(asMap(
-                // Raw exception.
-                "ex", asMap(
-                        "$resolver", "exception",
-                        "field", "stackTrace",
-                        "stackTrace", asMap(
-                                "stringified", true)),
-                // Exception matcher using strings.
-                "stringMatchedEx", asMap(
-                        "$resolver", "exception",
-                        "field", "stackTrace",
-                        "stackTrace", asMap(
-                                "stringified", asMap(
-                                        "truncation", asMap(
-                                                "suffix", truncationSuffix,
-                                                "pointMatcherStrings", Arrays.asList(
-                                                        "this string shouldn't match with anything",
-                                                        parentError.getMessage()))))),
-                // Exception matcher using regexes.
-                "regexMatchedEx", asMap(
-                        "$resolver", "exception",
-                        "field", "stackTrace",
-                        "stackTrace", asMap(
-                                "stringified", asMap(
-                                        "truncation", asMap(
-                                                "suffix", truncationSuffix,
-                                                "pointMatcherRegexes", Arrays.asList(
-                                                        "this string shouldn't match with anything",
-                                                        parentError
-                                                                .getMessage()
-                                                                .replace("unique", "[xu]n.que")))))),
-                // Raw exception root cause.
-                "rootEx", asMap(
-                        "$resolver", "exceptionRootCause",
-                        "field", "stackTrace",
-                        "stackTrace", asMap(
-                                "stringified", true)),
-                // Exception root cause matcher using strings.
-                "stringMatchedRootEx", asMap(
-                        "$resolver", "exceptionRootCause",
-                        "field", "stackTrace",
-                        "stackTrace", asMap(
-                                "stringified", asMap(
-                                        "truncation", asMap(
-                                                "suffix", truncationSuffix,
-                                                "pointMatcherStrings", Arrays.asList(
-                                                        "this string shouldn't match with anything",
-                                                        childError.getMessage()))))),
-                // Exception root cause matcher using regexes.
-                "regexMatchedRootEx", asMap(
-                        "$resolver", "exceptionRootCause",
-                        "field", "stackTrace",
-                        "stackTrace", asMap(
-                                "stringified", asMap(
-                                        "truncation", asMap(
-                                                "suffix", truncationSuffix,
-                                                "pointMatcherRegexes", Arrays.asList(
-                                                        "this string shouldn't match with anything",
-                                                        childError
-                                                                .getMessage()
-                                                                .replace("unique", "[xu]n.que"))))))));
-
-        // Create the layout.
-        final JsonTemplateLayout layout = JsonTemplateLayout
-                .newBuilder()
-                .setConfiguration(CONFIGURATION)
-                .setEventTemplate(eventTemplate)
-                .setStackTraceEnabled(true)
-                .build();
-
-        // Create the log event.
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
-                .setLoggerName(LOGGER_NAME)
-                .setThrown(parentError)
-                .build();
-
-        // Check the serialized event.
-        final String expectedMatchedExEnd =
-                parentError.getMessage() + truncationSuffix;
-        final String expectedMatchedRootExEnd =
-                childError.getMessage() + truncationSuffix;
-        usingSerializedLogEventAccessor(layout, logEvent, accessor -> {
-
-            // Check the serialized exception.
-            assertThat(accessor.getString("ex"))
-                    .doesNotEndWith(expectedMatchedExEnd)
-                    .doesNotEndWith(expectedMatchedRootExEnd);
-            assertThat(accessor.getString("stringMatchedEx"))
-                    .endsWith(expectedMatchedExEnd);
-            assertThat(accessor.getString("regexMatchedEx"))
-                    .endsWith(expectedMatchedExEnd);
-
-            // Check the serialized exception root cause.
-            assertThat(accessor.getString("rootEx"))
-                    .doesNotEndWith(expectedMatchedExEnd)
-                    .doesNotEndWith(expectedMatchedRootExEnd);
-            assertThat(accessor.getString("stringMatchedRootEx"))
-                    .endsWith(expectedMatchedRootExEnd);
-            assertThat(accessor.getString("regexMatchedRootEx"))
-                    .endsWith(expectedMatchedRootExEnd);
-
-        });
-
-    }
-
-    @Test
     void test_inline_stack_trace_element_template() {
 
         // Create the event template.
@@ -1326,9 +1082,9 @@ class JsonTemplateLayoutTest {
 
         // Check the serialized log event.
         final String expectedClassName = JsonTemplateLayoutTest.class.getCanonicalName();
-        usingSerializedLogEventAccessor(layout, logEvent, accessor -> Assertions
-                .assertThat(accessor.getList("stackTrace", String.class))
-                .contains(expectedClassName));
+        usingSerializedLogEventAccessor(layout, logEvent, accessor ->
+                assertThat(accessor.getList("stackTrace", String.class))
+                        .contains(expectedClassName));
 
     }
 
@@ -1355,9 +1111,9 @@ class JsonTemplateLayoutTest {
                 .build();
 
         // Check the serialized log event.
-        usingSerializedLogEventAccessor(layout, logEvent, accessor -> Assertions
-                .assertThat(accessor.getString("customField"))
-                .matches("CustomValue-[0-9]+"));
+        usingSerializedLogEventAccessor(layout, logEvent, accessor ->
+                assertThat(accessor.getString("customField"))
+                        .matches("CustomValue-[0-9]+"));
 
     }
 
@@ -1422,7 +1178,6 @@ class JsonTemplateLayoutTest {
                 .newBuilder()
                 .setLoggerName(LOGGER_NAME)
                 .setMessage(message)
-                .setThrown(NonAsciiUtf8MethodNameContainingException.INSTANCE)
                 .build();
 
         // Check the serialized event.
@@ -1814,9 +1569,7 @@ class JsonTemplateLayoutTest {
         final String expectedSerializedLogEventJson =
                 "{}" + JsonTemplateLayoutDefaults.getEventDelimiter();
         final String actualSerializedLogEventJson = layout.toSerializable(logEvent);
-        Assertions
-                .assertThat(actualSerializedLogEventJson)
-                .isEqualTo(expectedSerializedLogEventJson);
+        assertThat(actualSerializedLogEventJson).isEqualTo(expectedSerializedLogEventJson);
 
     }
 
@@ -1847,8 +1600,7 @@ class JsonTemplateLayoutTest {
                 .build();
 
         // Check the serialized event.
-        Assertions
-                .assertThatThrownBy(() -> layout.toSerializable(logEvent))
+        assertThatThrownBy(() -> layout.toSerializable(logEvent))
                 .isInstanceOf(StackOverflowError.class);
 
     }
