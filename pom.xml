@@ -236,7 +236,7 @@
     <Log4jReleaseKey>B3D8E1BA</Log4jReleaseKey>
     <Log4jSigningUserName>rgoers@apache.org</Log4jSigningUserName>
     <!-- note that any properties you want available in velocity templates must not use periods! -->
-    <slf4jVersion>1.7.36</slf4jVersion>
+    <slf4jVersion>2.0.0</slf4jVersion>
     <logbackVersion>1.2.11</logbackVersion>
     <jackson1Version>1.9.13</jackson1Version>
     <jackson2Version>2.13.3</jackson2Version>
