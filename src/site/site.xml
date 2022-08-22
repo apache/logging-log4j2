@@ -80,7 +80,6 @@
     </menu>
 
     <menu name="For Contributors" inherit="top" img="img/glyphicons/pencil.png">
-      <item name="Building Log4j from Source" href="/build.html"/>
       <item name="Guidelines" href="/guidelines.html"/>
       <item name="Style Guide" href="/javastyle.html"/>
     </menu>

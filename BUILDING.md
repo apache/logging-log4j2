@@ -14,6 +14,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
+
 # Requirements
 
 * JDK 8 and 9+
@@ -23,23 +24,36 @@
 <a name="toolchains"></a>
 # Configuring Maven Toolchains
 
-Maven Toolchains is used to employ both JDKs during compilation.
+Maven Toolchains is used to employ multiple JDKs required for compilation.
 You either need to have a user-level configuration in `~/.m2/toolchains.xml` or explicitly provide one to the Maven: `./mvnw --global-toolchains /path/to/toolchains.xml`.
-See `.github/workflows/maven-toolchains.xml` used by CI for a sample Maven Toolchains configuration.
+See [`.github/workflows/maven-toolchains.xml`](.github/workflows/maven-toolchains.xml) used by CI for a sample Maven Toolchains configuration.
 Note that this file requires `JAVA_HOME_8_X64` and `JAVA_HOME_11_X64` environment variables to be defined, though these can very well be hardcoded.
 
+<a name="building"></a>
 # Building the sources
 
 You can build and verify the sources as follows:
 
     ./mvnw verify
 
-To speed up build, you can skip verification and increase concurrency:
+`verify` goal runs validation and test steps next to building (i.e., compiling) the sources.
+To speed up the build, you can skip verification:
 
-    ./mvwn -DskipTests -T8C package
+    ./mvwn -DskipTests package
 
-If you want to install generated artifacts to your local Maven repository, replace above `veriy` and/or `package` goals with `install`.
+If you want to install generated artifacts to your local Maven repository, replace above `verify` and/or `package` goals with `install`.
 
+<a name="dns"></a>
+## DNS lookups in tests
+
+Note that if your `/etc/hosts` file does not include an entry for your computer's hostname, then
+many unit tests may execute slow due to DNS lookups to translate your hostname to an IP address in
+[`InetAddress.getLocalHost()`](http://docs.oracle.com/javase/7/docs/api/java/net/InetAddress.html#getLocalHost()).
+To remedy this, you can execute the following:
+
+    printf '127.0.0.1 %s\n::1 %s\n' `hostname` `hostname` | sudo tee -a /etc/hosts
+
+<a name="website"></a>
 # Building the website and manual
 
 You can build the website and manual as follows:
