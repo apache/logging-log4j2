@@ -702,9 +702,13 @@ are provided.
 stringified stack traces after the given matching point. If both parameters are
 provided, `pointMatcherStrings` will be checked first.
 
-If a stringified stack trace truncation takes place, it will be indicated with
+If a stringified stack trace truncation takes place, it will be indicated with a
 `suffix`, which by default is set to the configured `truncatedStringSuffix` in
-the layout, unless explicitly provided.
+the layout, unless explicitly provided. Every truncation suffix is prefixed with
+a newline.
+
+Stringified stack trace truncation operates in `Caused by:` and `Suppressed:`
+label blocks. That is, matchers are executed against each label in isolation.
 
 `elementTemplate` is an object describing the template to be used while
 resolving the `StackTraceElement` array. If `stringified` is set to `true`,
@@ -783,7 +787,7 @@ truncated after the given point matcher:
   "stackTrace": {
     "stringified": {
       "truncation": {
-        "suffix": ">",
+        "suffix": "... [truncated]",
         "pointMatcherStrings": ["at javax.servlet.http.HttpServlet.service"]
       }
     }

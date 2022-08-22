@@ -19,6 +19,8 @@ package org.apache.logging.log4j.layout.template.json.util;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.function.Consumer;
+
 class TruncatingBufferedWriterTest {
 
     @Test
@@ -225,7 +227,7 @@ class TruncatingBufferedWriterTest {
         verifyTruncation(writer, 'n');
     }
 
-    private void verifyTruncation(
+    private static void verifyTruncation(
             final TruncatingBufferedWriter writer,
             final char c) {
         Assertions.assertThat(writer.buffer()).isEqualTo(new char[]{c});
@@ -235,10 +237,67 @@ class TruncatingBufferedWriterTest {
         verifyClose(writer);
     }
 
-    private void verifyClose(final TruncatingBufferedWriter writer) {
+    private static void verifyClose(final TruncatingBufferedWriter writer) {
         writer.close();
         Assertions.assertThat(writer.position()).isEqualTo(0);
         Assertions.assertThat(writer.truncated()).isFalse();
+    }
+
+    @Test
+    void test_length_and_position() {
+
+        // Create the writer and the verifier.
+        final TruncatingBufferedWriter writer = new TruncatingBufferedWriter(2);
+        final Consumer<Integer> positionAndLengthVerifier =
+                (final Integer expected) -> Assertions
+                        .assertThat(writer.position())
+                        .isEqualTo(writer.length())
+                        .isEqualTo(expected);
+
+        // Check the initial condition.
+        positionAndLengthVerifier.accept(0);
+
+        // Append the 1st character and verify.
+        writer.write("a");
+        positionAndLengthVerifier.accept(1);
+
+        // Append the 2nd character and verify.
+        writer.write("b");
+        positionAndLengthVerifier.accept(2);
+
+        // Append the 3rd to-be-truncated character and verify.
+        writer.write("c");
+        positionAndLengthVerifier.accept(2);
+
+        // Reposition the writer and verify.
+        writer.position(1);
+        positionAndLengthVerifier.accept(1);
+
+    }
+
+    @Test
+    void subSequence_should_not_be_supported() {
+        final TruncatingBufferedWriter writer = new TruncatingBufferedWriter(2);
+        assertUnsupportedOperation(() -> writer.subSequence(0, 0));
+    }
+
+    @Test
+    void chars_should_not_be_supported() {
+        final TruncatingBufferedWriter writer = new TruncatingBufferedWriter(2);
+        assertUnsupportedOperation(() -> writer.subSequence(0, 0));
+    }
+
+    @Test
+    void codePoints_should_not_be_supported() {
+        final TruncatingBufferedWriter writer = new TruncatingBufferedWriter(2);
+        assertUnsupportedOperation(() -> writer.subSequence(0, 0));
+    }
+
+    private static void assertUnsupportedOperation(final Runnable runnable) {
+        Assertions
+                .assertThatThrownBy(runnable::run)
+                .isInstanceOf(UnsupportedOperationException.class)
+                .hasMessage("operation requires allocation, contradicting with the purpose of the class");
     }
 
 }
