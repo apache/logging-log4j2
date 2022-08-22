@@ -125,13 +125,13 @@
     <dependency>
       <groupId>org.apache.flume</groupId>
       <artifactId>flume-ng-sdk</artifactId>
-      <version>1.9.0</version>
+      <version>1.10.1</version>
     </dependency>
     <!-- Required for Flume embedded -->
     <dependency>
       <groupId>org.apache.flume</groupId>
       <artifactId>flume-ng-embedded-agent</artifactId>
-      <version>1.9.0</version>
+      <version>1.10.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.kafka</groupId>
