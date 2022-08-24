@@ -246,7 +246,7 @@
         </li>
         <li>
           <p>end users (at least point out what the implications are for end users; it
-            doesn't have to be in the most user friendly wording)</p>
+            doesn't have to be in the most user-friendly wording)</p>
         </li>
       </ul>
       <p>If the code change was provided by a non-committer, attribute it using

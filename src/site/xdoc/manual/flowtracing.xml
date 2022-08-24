@@ -63,7 +63,7 @@
             </p>
             <p>
               The throwing() method can be used by an application when it is throwing an exception that is
-              unlikely to be handled, such as a RuntimeException. This will insure that proper diagnostics
+              unlikely to be handled, such as a RuntimeException. This will ensure that proper diagnostics
               are available if needed. The logging event generated will have a level of ERROR and will have
               an associated Marker with a name of "THROWING" which is also an "EXCEPTION" Marker.
             </p>

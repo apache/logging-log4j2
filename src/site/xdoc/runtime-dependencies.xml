@@ -71,7 +71,7 @@
                   <td>exports org.apache.logging.log4j.util</td>
                   <td>Some classes in this package are used by the logging implementation and should be
                     considered private. The module info definition may be modified in the future to export
-                    these only to the logging implmentation.</td>
+                    these only to the logging implementation.</td>
                 </tr>
                 <tr>
                   <td>uses org.apache.logging.log4j.spi.Provider</td>

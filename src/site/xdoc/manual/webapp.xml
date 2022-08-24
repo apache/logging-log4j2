@@ -258,9 +258,9 @@
       <subsection name="JavaServer Pages Logging">
         <a name="JspLogging" />
         <p>
-          You may use Log4j 2 within JSPs just as you would within any other Java code. Simple obtain a
+          You may use Log4j 2 within JSPs just as you would within any other Java code. Simply obtain a
           <code>Logger</code> and call its methods to log events. However, this requires you to use Java code within
-          your JSPs, and some development teams rightly are not comfortable with doing this. If you have a dedicated
+          your JSPs, and some development teams rightly are not comfortable doing this. If you have a dedicated
           user interface development team that is not familiar with using Java, you may even have Java code disabled in
           your JSPs.
         </p>
@@ -299,7 +299,7 @@
           For example, after starting an <code>AsyncContext</code> you could start up a separate thread to process the
           request in the background, possibly writing the response with the <code>ServletOutputStream</code>. Filters
           cannot intercept the execution of this thread. Filters also cannot intercept threads that you start in
-          the background during non-asynchronous requests. This is true whether you use a brand new thread or a thread
+          the background during non-asynchronous requests. This is true whether you use a brand-new thread or a thread
           borrowed from a thread pool. So what can you do for these special threads?
         </p>
         <p>

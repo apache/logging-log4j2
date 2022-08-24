@@ -40,7 +40,7 @@
         Removed build page in favor of a single build instructions file.
       </action>
       <action issue="LOG4J2-3550" dev="rgoers" type="fix" due-to="DongjianPeng">
-        SystemPropertyAribiter was assigning the value as the name.
+        SystemPropertyArbiter was assigning the value as the name.
       </action>
       <action issue="LOG4J2-3560" dev="ckozak" type="fix" due-to="David Schlosnagle">
         Logger$PrivateConfig.filter(Level, Marker, String) was allocating empty varargs array.
@@ -434,70 +434,70 @@
         Add optional additional fields to NoSQLAppender.
       </action>
       <!-- UPDATES -->
-      <action issue="LOG4J2-3368" dev="vy" type="udpate">
+      <action issue="LOG4J2-3368" dev="vy" type="update">
         Bump Tomcat from 8.5.20 to 10.0.14 in log4j-appserver along with some dependency clean-up.
       </action>
-      <action dev="ggregory" type="udpate" due-to="Dependabot">
+      <action dev="ggregory" type="update" due-to="Dependabot">
         Bump mongodb3.version from 3.12.4 to 3.12.10 #605.
       </action>
-      <action dev="ggregory" type="udpate" due-to="Dependabot">
+      <action dev="ggregory" type="update" due-to="Dependabot">
         Bump awaitility from 4.0.3 to 4.1.1 #663.
       </action>
-      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+      <action dev="ggregory" type="update" due-to="Gary Gregory">
         Bump Mockito from 3.11.2 to 4.2.0.
       </action>
-      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+      <action dev="ggregory" type="update" due-to="Gary Gregory">
         Bump Jackson from 2.12.4 to 2.13.1.
       </action>
-      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+      <action dev="ggregory" type="update" due-to="Gary Gregory">
         Bump org.junit.jupiter:junit-* from 5.7.2 to 5.8.2.
       </action>
-      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+      <action dev="ggregory" type="update" due-to="Gary Gregory">
         Bump org.springframework:spring-* from 5.3.13 to 5.3.15.
       </action>
-      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+      <action dev="ggregory" type="update" due-to="Gary Gregory">
         Bump de.flapdoodle.embed:de.flapdoodle.embed.mongo from 3.0.0 to 3.4.1. Update tests for binary incompatibilities in APIs.
       </action>
-      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+      <action dev="ggregory" type="update" due-to="Gary Gregory">
         Bump org.fusesource.jansi:jansi from 2.3.4 to 2.4.0.
       </action>
-      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+      <action dev="ggregory" type="update" due-to="Gary Gregory">
         Bump net.javacrumbs.json-unit:json-unit from 2.27.0 to 2.28.0.
       </action>
-      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+      <action dev="ggregory" type="update" due-to="Gary Gregory">
         Bump org.assertj:assertj-core from 3.20.2 to 3.22.0.
       </action>
-      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+      <action dev="ggregory" type="update" due-to="Gary Gregory">
         Bump org.xmlunit:xmlunit-* from 2.8.3 to 2.8.4.
       </action>
-      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+      <action dev="ggregory" type="update" due-to="Gary Gregory">
         Bump org.codehaus.groovy:groovy-* from 3.0.8 to 3.0.9.
       </action>
-      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+      <action dev="ggregory" type="update" due-to="Gary Gregory">
         Bump org.mongodb:bson from 4.2.2 to 4.5.0.
       </action>
-      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+      <action dev="ggregory" type="update" due-to="Gary Gregory">
         Bump org.mongodb:mongodb-driver-sync from 4.2.2 to 4.5.0.
       </action>
-      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+      <action dev="ggregory" type="update" due-to="Gary Gregory">
         Bump Woodstox 6.2.6 to 6.2.8.
       </action>
-      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+      <action dev="ggregory" type="update" due-to="Gary Gregory">
         Bump maven-compiler-plugin from 3.8.1 to 3.9.0.
       </action>
-      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+      <action dev="ggregory" type="update" due-to="Gary Gregory">
         Bump org.eclipse.persistence:org.eclipse.persistence.jpa from 2.7.9 to 2.7.10.
       </action>
-      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+      <action dev="ggregory" type="update" due-to="Gary Gregory">
         Bump org.junit-pioneer:junit-pioneer from 1.5.0 to 1.6.1.
       </action>
-      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+      <action dev="ggregory" type="update" due-to="Gary Gregory">
         Bump org.apache.activemq:activemq-broker from 5.16.3 to 5.16.4.
       </action>
-      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+      <action dev="ggregory" type="update" due-to="Gary Gregory">
         Bump org.jacoco:jacoco-maven-plugin from 0.8.6 to 0.8.7.
       </action>
-      <action dev="ggregory" type="udpate" due-to="Gary Gregory">
+      <action dev="ggregory" type="update" due-to="Gary Gregory">
         Bump org.apache.maven.plugins:maven-javadoc-plugin from 3.3.1 to 3.3.2.
       </action>
 	</release>
@@ -526,7 +526,7 @@
         Fix MapLookup to lookup MapMessage before DefaultMap
       </action>
       <action issue="LOG4J2-3274" dev="rgoers" type="fix" due-to="Faisal Khan Thayub Khan">
-        Buffered I/O checked had inverted logic in RollingFileAppenderBuidler.
+        Buffered I/O checked had inverted logic in RollingFileAppenderBuilder.
       </action>
       <action dev="ggregory" type="fix">
         Fix NPE when input is null in StrSubstitutor.replace(String, Properties).
@@ -578,7 +578,7 @@
         using '%m{lookups}'.
       </action>
       <action issue="LOG4J2-3194" dev="rgoers" type="add" due-to="markuss">
-        Allow fractional attributes for size attribute of SizeBsaedTriggeringPolicy.
+        Allow fractional attributes for size attribute of SizeBasedTriggeringPolicy.
       </action>
       <action issue="LOG4J2-2978" dev="rgoers" type="add" due-to="Michael Seele">
         Add support for Jakarta EE 9 (Tomcat 10 / Jetty 11)
@@ -625,7 +625,7 @@
         Allow MapMessage and ThreadContext attributes to be prefixed.
       </action>
       <action issue="LOG4J2=3048" dev="rgoers" type="add">
-        Add improved MapMessge support to GelfLayout.
+        Add improved MapMessage support to GelfLayout.
       </action>
       <action issue="LOG4J2-3044" dev="rgoers" type="add">
         Add RepeatPatternConverter.
@@ -660,7 +660,7 @@
         Fix Log Event Level vs Logger Config Level table.
       </action>
       <action issue="LOG4J2-2540" dev="rgoers">
-        Minor documentation correctsion regarding log levels.
+        Minor documentation corrections regarding log levels.
       </action>
       <action issue="LOG4J2-2541" dev="rgoers" due-to="Gerold Broser">
         Minor documentation corrections in the configuration section.
@@ -1095,7 +1095,7 @@
         Move Spring Lookup and Spring PropertySource to its own module.
       </action>
       <action issue="LOG4J2-2910" dev="rgoers" type="fix">
-        Log4j-web should now stores the servlet context as a map entry instead of in the single external context field.
+        Log4j-web should now store the servlet context as a map entry instead of in the single external context field.
       </action>
       <action issue="LOG4J2-2822" dev="rgoers" type="fix">
         Javadoc link in ThreadContext description was incorrect.
@@ -1111,7 +1111,7 @@
         size based rollover after a time based rollover had occurred.
       </action>
       <action issue="LOG4J2-2875" dev="rgoers" type="fix">
-        Rollover was failing to create directories when using a DirectFileeRolloverStrategy.
+        Rollover was failing to create directories when using a DirectFileRolloverStrategy.
       </action>
       <action issue="LOG4J2-2859" dev="rgoers" type="fix" due-to="Yanming Zhou">
         Fixed typos where mergeFactory should be mergeStrategy.
@@ -1286,7 +1286,7 @@
       <action issue="LOG4J2-2717" dev="rgoers" type="fix">
         Slow initialization on Windows due to accessing network interfaces.
       </action>
-      <action issue="LOG4J2-2789" dev="rgeors" type="update" due-to="Marius Volkhart">
+      <action issue="LOG4J2-2789" dev="rgoers" type="update" due-to="Marius Volkhart">
         Conditionally perform status logging calculations in PluginRegistry.
       </action>
       <action issue="LOG4J2-2756" dev="rgoers" type="fix">
@@ -1323,7 +1323,7 @@
         PluginProcessor should use Messager instead of System.out.
       </action>
       <action issue="LOG4J2-2703" dev="rgoers" type="fix" due-to="Volkan Yazici">
-        MapMessage.getFormattedMesssage() would incorrectly format objects.
+        MapMessage.getFormattedMessage() would incorrectly format objects.
       </action>
       <action issue="LOG4J2-2760" dev="rgoers" type="fix" due-to="Christoph Kaser">
         Always write header on a new OutputStream.
@@ -1339,7 +1339,7 @@
         NullPointerException when using a custom DirectFileRolloverStrategy without a file name.
       </action>
       <action issue="LOG4J2-2768" dev="rgoers" type="fix" due-to="Marius Volkhart">
-        Add mulit-parameter overloads to LogBuilder.
+        Add multi-parameter overloads to LogBuilder.
       </action>
       <action issue="LOG4J2-2770" dev="rgoers" type="fix" due-to="Bill Kuker">
         Fixed NullPointerException after reconfiguring via JMX.
@@ -1414,7 +1414,7 @@
         Add ThreadContext.putIfNotNull method.
       </action>
       <action issue="LOG4J2-2731" dev="rgoers" type="add">
-        Add a Level Patttern Selector.
+        Add a Level Pattern Selector.
       </action>
       <action issue="LOG4J2-2701" dev="rgoers" type="update">
         Update Jackson to 2.9.10.
@@ -1510,7 +1510,7 @@
         Restore constructor to ThrowablePatternConverter that was removed in 2.8.2.
       </action>
       <action issue="LOG4J2-2622" dev="rgoers" type="fix">
-        StructuredDataId was ignoring maxLength atribute.
+        StructuredDataId was ignoring maxLength attribute.
       </action>
       <action issue="LOG4J2-2636" dev="rgoers" type="fix">
         RFC5424Layout was not properly setting default Structured Element id for the MDC
@@ -1580,7 +1580,7 @@
         PatternConverter instanceOf methods with unknown parameter types no longer elide those with known parameters.
       </action>
       <action issue="LOG4J2-2611" dev="ckozak" type="add">
-        AsyncQueueFullPolicy configuration short values "Default" and "Discard" are case insensitive to avoid confusion.
+        AsyncQueueFullPolicy configuration short values "Default" and "Discard" are case-insensitive to avoid confusion.
       </action>
       <action issue="LOG4J2-2612" dev="ggregory" type="fix">
         NullPointerException at org.apache.logging.log4j.core.appender.db.jdbc.JdbcDatabaseManager.writeInternal(JdbcDatabaseManager.java:803).
@@ -1894,7 +1894,7 @@
         logged throwable and provided varargs array.
       </action>
       <action issue="LOG4J2-2368" dev="ckozak" type="fix">
-        Nested logging doesn't clobber AbstractStringLayout cached StringBuidlers
+        Nested logging doesn't clobber AbstractStringLayout cached StringBuilders
       </action>
       <action issue="LOG4J2-2373" dev="ckozak" type="fix" due-to="Kevin Meurer">
         StringBuilders.escapeJson implementation runs in linear time. Escaping large JSON strings
@@ -2130,7 +2130,7 @@
         MapMessage should use deep toString for values.
       </action>
       <action issue="LOG4J2-2107" dev="mikes" type="fix" due-to="Carter Douglas Kozak">
-        MapMessage supports both StringBuilderFormattable and MultiformatMessage.
+        MapMessage supports both StringBuilderFormattable and MultiFormatMessage.
       </action>
       <action issue="LOG4J2-2102" dev="mikes" type="fix" due-to="Carter Douglas Kozak">
         MapMessage JSON encoding will escape keys and values.
@@ -2375,7 +2375,7 @@
         Consider the StringBuilder's capacity instead of content length when trimming.
       </action>
       <action issue="LOG4J2-1971" dev="rgoers" type="fix">
-        Register log4j-core as an OSGi service. Skip tests for LOG4J2-1766 on MacOS. Use group "staff" for LOG4J2-1699 test on MacOS.
+        Register log4j-core as an OSGi service. Skip tests for LOG4J2-1766 on macOS. Use group "staff" for LOG4J2-1699 test on macOS.
       </action>
       <action issue="LOG4J2-1994" dev="ggregory" type="fix">
         TcpSocketServer does not close accepted Sockets.
@@ -2435,7 +2435,7 @@
         JMS Appender does not know how to recover from a broken connection.
       </action>
       <action issue="LOG4J2-1955" dev="ggregory" type="add">
-        JMS Appender should be able connect to a broker (later) even it is not present at configuration time.
+        JMS Appender should be able to connect to a broker (later) even it is not present at configuration time.
       </action>
       <action issue="LOG4J2-1956" dev="ggregory" type="update">
         JMS Appender broker password should be a char[], not a String.
@@ -3332,7 +3332,7 @@
         minSize attribute.
       </action>
       <action issue="LOG4J2-1414" dev="rpopma" type="fix" due-to="Ralph Goers">
-        Fixed minor issues with the 2.6.1 web site.
+        Fixed minor issues with the 2.6.1 website.
       </action>
       <action issue="LOG4J2-1434" dev="rpopma" type="fix" due-to="Luke Butters">
         Ensure that the thread-local StringBuilders used by Layouts to format log events to text will not
@@ -3416,7 +3416,7 @@
         Added documentation about plugin builders compared to factories.
       </action>
       <action issue="LOG4J2-1394" dev="mattsicker,mikes" type="fix">
-        Fixed minor issues with the 2.6 web site.
+        Fixed minor issues with the 2.6 website.
       </action>
     </release>
     <release version="2.6" date="2016-05-25" description="GA Release 2.6">
@@ -4137,7 +4137,7 @@
         Avoid creating temporary array object in org.apache.logging.slf4j.Log4jMarker.iterator().
       </action>
       <action issue="LOG4J2-890" dev="ggregory" type="update" due-to="Hassan Kalaldeh, Robert Andersson, Remko Popma">
-        log4j-web-2.1 should workaround a bug in JBOSS EAP 6.2.
+        log4j-web-2.1 should work around a bug in JBOSS EAP 6.2.
       </action>
       <action issue="LOG4J2-403" dev="ggregory" type="update" due-to="Poorna Subhash P, Jeremy Lautman">
         MongoDB appender, username and password should be optional.
@@ -4388,7 +4388,7 @@
         Documentation: add sections on the JUL Adapter, IO Streams and NoSQL Appenders to the Maven and Ivy page.
       </action>
       <action issue="LOG4J2-797" dev="rpopma" type="fix" due-to="Andreas Rytina">
-        Documentation: clarified why log4j-core is a compile time dependency in Maven and Ivy page.
+        Documentation: clarified why log4j-core is a compile-time dependency in Maven and Ivy page.
       </action>
       <action issue="LOG4J2-855" dev="rpopma" type="fix">
         Documentation: fix broken links on Appenders manual page.
@@ -4413,7 +4413,7 @@
         Documentation: added section on XInclude to user manual Configuration page.
       </action>
       <action issue="LOG4J2-678" dev="rpopma" type="fix" due-to="Matt Sicker">
-        Documentation: fixed minor issues with Log4j2 web site/documentation.
+        Documentation: fixed minor issues with Log4j2 website/documentation.
       </action>
       <action issue="LOG4J2-844" dev="rpopma" type="update">
         Update JMH to 1.1 from 0.7.2.
@@ -4761,7 +4761,7 @@
         Create an appender to route log events to the ServletContext log.
       </action>
       <action issue="LOG4J2-419" dev="rgoers" type="update" due-to="Woonsan Ko">
-        Support default value for missing key in look ups with fallback to looking in the properties map.
+        Support default value for missing key in look-ups with fallback to looking in the properties map.
       </action>
       <action issue="LOG4J2-563" dev="rgoers" type="fix" due-to="Michael Friedmann">
         FlumeAvroManager now always uses a client type of default_failover.
@@ -5239,7 +5239,7 @@
         [Pattern Layout] Customize level names to lower-case.
       </action>
       <action issue="LOG4J2-355" dev="ggregory" type="update" due-to="Tibor Benke">
-        Add support for multiple SD-ELEMENTs in a RFC 5424 syslog message.
+        Add support for multiple SD-ELEMENTs in an RFC 5424 syslog message.
       </action>
       <action dev="nickwilliams" type="update">
         Cleaned up tests and cleared up documentation for the JPA appender following the resolution of EclipseLink
@@ -5583,7 +5583,7 @@
         Improved error reporting when misconfigured.
       </action>
       <action issue="LOG4J2-222" dev="rgoers" type="fix" due-to="Steven Yang">
-        Disruptor will now shutdown during Tomcat shutdown.
+        Disruptor will now shut down during Tomcat shutdown.
       </action>
       <action dev="rpopma" type="update">
         Renamed AsynchAppender to AsyncAppender. Plugin name became Async (was Asynch).
@@ -5880,7 +5880,7 @@
         Created combined jar to combine API and Core contents for users who only want the Log4j implementation.
       </action>
       <action issue="LOG4J2-104" dev="rgoers" type="fix">
-        Convert LogManager binding to use "regular" java properties instead of XML properties to workaround a
+        Convert LogManager binding to use "regular" java properties instead of XML properties to work around a
         bug in Oracle's xmlparserv2 jar.
       </action>
       <action issue="LOG4J2-28" dev="rgoers" type="add">

@@ -103,7 +103,7 @@ consider [migrating your configuration](migration.html#Log4j2ConfigurationFormat
 * JMSAppender
 * SMTPAppender
 * SocketAppender (Requires the use of the SerializedLayout which is a security risk)
-* SocketHubAppender (Requires the use of the SerializedLayout which is a securiy risk)
+* SocketHubAppender (Requires the use of the SerializedLayout which is a security risk)
 * TelnetAppender (Security risk)
 
 ###### Rewrite Policies
@@ -131,7 +131,7 @@ if they meet the following requirements:
 
 #### When to stop using the Log4j 1.x bridge
 
-Once you have migrated all of your own application and library code under your control, you may not need the bridge any more.
+Once you have migrated all of your own application and library code under your control, you may not need the bridge anymore.
 Note that when you use a library/framework that can be configured to use several logging frameworks,
 then you typically don't need the log4j-1.2-api bridge either,
 as you may be able to directly configure it to use Log4j v2 instead v1.
@@ -144,7 +144,7 @@ If you own or can contribute open source to the library you depend on, consider 
 
 While the Log4j 1.x bridge supports logging configurations that use the Log4j 1.x properties or XML format,
 migrating to the new 2.x format is not difficult.
-The Log4j 2 web site contains extensive documentation on the 2.x configuration format.
+The Log4j 2 website contains extensive documentation on the 2.x configuration format.
 Examples for migrating logging configurations from the v1 format to the v2 format are below.
 
 <a name="Log4j2API"/>

@@ -2647,7 +2647,7 @@ public class AwesomeTest {
     <td>
       Default LoggerAdapter to use in the JUL adapter. By default, if log4j-core is available, then the class
       <code>org.apache.logging.log4j.jul .CoreLoggerAdapter</code> will be used. Otherwise, the
-      <code>ApiLogggerAdapter</code> will be used. Custom implementations must provide a public default constructor.
+      <code>ApiLoggerAdapter</code> will be used. Custom implementations must provide a public default constructor.
     </td>
   </tr>
   <tr>

@@ -123,11 +123,11 @@
         Log4j 2's Async Loggers use a
         <a href="https://lmax-exchange.github.io/disruptor/">lock-free data structure</a>, whereas
         Logback, Log4j 1.2 and Log4j 2's Asynchronous Appenders use an ArrayBlockingQueue.
-        With a blocking queue, multi-threaded applications often experience lock contention when trying to
+        With a blocking queue, multithreaded applications often experience lock contention when trying to
         enqueue the log event.
       </p>
       <p>The graph below illustrates the difference a lock-free data structure can make to throughput
-        in multi-threaded scenarios. <em>Log4j 2 scales better with the number of threads:
+        in multithreaded scenarios. <em>Log4j 2 scales better with the number of threads:
         an application with more threads can log more. The other logging libraries suffer
         from lock contention and total throughput stays constant or drops when more threads are logging.
         This means that with the other logging libraries, each individual thread will be able to log less.</em></p>
@@ -163,7 +163,7 @@
         the ResponseTimeTest class which can be found in the Log4j 2 unit test source directory,
         running on JDK 1.8.0_45 on
         RHEL 6.5 (Linux 2.6.32-573.1.1.el6.x86_64) with
-        10-core Xeon CPU E5-2660 v3 @2.60GHz with hyperthreading switched on (20 virtual cores).
+        10-core Xeon CPU E5-2660 v3 @2.60GHz with hyper-threading switched on (20 virtual cores).
       </p>
       <a name="asyncLoggingWithParams" />
       <h4>Asynchronous Logging Parameterized Messages</h4>
@@ -249,7 +249,7 @@ if (logger.isDebugEnabled()) {
         about twice as fast as the SimpleFormatter).</p>
       <p><em>Log4j 2's sustained throughput drops a little when more threads are logging simultaneously,
         but its fine-grained locking pays off and throughput stays relatively high.
-        The other logging frameworks' throughput drops dramatically in multi-threaded applications:
+        The other logging frameworks' throughput drops dramatically in multithreaded applications:
         Log4j 1.2 has 1/4th of its single-threaded capacity,
         Logback has 1/10th of its single-threaded capacity, and JUL steadily drops from 1/4th to 1/10th of its
         single-threaded throughput as more threads are added.</em></p>
@@ -265,7 +265,7 @@ if (logger.isDebugEnabled()) {
       <p><img src="images/SynchronousFileResponseTime2T32k-labeled.png" /></p>
       <p>The above result was obtained with the ResponseTimeTest class which can be found in the Log4j 2
         unit test source directory, running on JDK 1.8.0_45 on RHEL 6.5 (Linux 2.6.32-573.1.1.el6.x86_64)
-        with 10-core Xeon CPU E5-2660 v3 @2.60GHz with hyperthreading switched on (20 virtual cores).</p>
+        with 10-core Xeon CPU E5-2660 v3 @2.60GHz with hyper-threading switched on (20 virtual cores).</p>
 <!--
 TODO
       <h4>Synchronous Socket Sustained Throughput Comparison</h4>
@@ -295,7 +295,7 @@ TODO
         to other markers matches the requested Marker. The "Parent Marker" comparison checks to see
         if a Marker that does have references to other markers matches the requested Marker. </p>
       <p>It appears that coarse-grained synchronization in SLF4J can impact performance in
-        multi-threaded scenarios. See
+        multithreaded scenarios. See
         <a href="https://jira.qos.ch/browse/SLF4J-240">SLF4J-240</a>.</p>
       <p><img src="images/MarkerFilterCostComparison.png" /></p>
       <p>Log4j and Logback also support filtering
@@ -339,13 +339,13 @@ TODO
       <p>It turns out that the garbage-free text encoding logic in 2.6 gives
         these appenders a performance boost compared to Log4j 2.5.
         It used to be that the RandomAccessFile appender was significantly faster,
-        especially in multi-threaded scenarios, but with the 2.6 release the File appender
+        especially in multithreaded scenarios, but with the 2.6 release the File appender
         performance has improved and the performance difference between these two appender is smaller.</p>
       <p>Another takeaway is just how much of a performance drag logging to the console can be.
         Considering logging to a file and using a tool like <tt>tail</tt> to watch the file change in real time.</p>
       <p><img src="images/Log4j2AppenderThroughputComparison-linux.png"/></p>
       <p>On Windows, the results are similar but the RandomAccessFile and MemoryMappedFile appenders outperform
-      the plain File appender in multi-threaded scenarios.
+      the plain File appender in multithreaded scenarios.
       The absolute numbers are higher on Windows: we don't know why but it looks like Windows
       handles lock contention better than Linux.</p>
       <p><img src="images/Log4j2AppenderThroughputComparison-windows.png"/></p>

@@ -34,7 +34,7 @@ judged to be non-trivial, you will be asked to actually signing a Contributor Li
 ## Usage
 
 Users should refer to [Maven, Ivy, Gradle, and SBT Artifacts](http://logging.apache.org/log4j/2.x/maven-artifacts.html)
-on the Log4j web site for instructions on how to include Log4j into their project using their chosen build tool.
+on the Log4j website for instructions on how to include Log4j into their project using their chosen build tool.
 
 Basic usage of the `Logger` API:
 

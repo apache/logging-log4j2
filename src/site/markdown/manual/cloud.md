@@ -447,7 +447,7 @@ Log4j. For example, since it cannot add or modify any Filters other than the log
 all log events for a specific user or customer to temporarily be logged 
 (see [DynamicThresholdFilter](filters.html#DynamicThresholdFilter) or 
 [ThreadContextMapFilter](filters.html#ThreadContextMapFilter)) or any other kinds of changes to filters. 
-Also, in a micro-services, clustered environment it is quite likely that these changes will need to be propagated
+Also, in a microservices, clustered environment it is quite likely that these changes will need to be propagated
 to multiple servers at the same time. Trying to achieve this via REST calls could be difficult.
   
 Since its first release Log4j has supported reconfiguration through a file.

@@ -97,8 +97,8 @@
           <p>
             The EnvironmentLookup allows systems to configure environment variables, either in global files
             such as /etc/profile or in the startup scripts for applications, and then retrieve those variables
-            from within the logging configuration. The example below includes the name of the currently logged
-            in user in the application log.
+            from within the logging configuration. The example below includes the name of the currently logged-in
+            user in the application log.
           </p>
           <pre class="prettyprint linenums"><![CDATA[
 <File name="Application" fileName="application.log">
@@ -317,7 +317,7 @@
             <tr><td>imageId</td><td>The id assigned to the container image</td></tr>
             <tr><td>imageName</td><td>The name assigned to the container image</td></tr>
             <tr><td>labels</td><td>All labels formatted in a list</td></tr>
-            <tr><td>labesl.app</td><td>The application name</td></tr>
+            <tr><td>labels.app</td><td>The application name</td></tr>
             <tr><td>labels.podTemplateHash</td><td>The pod's template hash value</td></tr>
             <tr><td>masterUrl</td><td>The URL used to access the API server</td></tr>
             <tr><td>namespaceId</td><td>The id of the namespace the various kubernetes components are located within</td></tr>
@@ -588,7 +588,7 @@ logger.info(PERFORMANCE, "Message in Performance.log");]]></pre>
         <subsection name="Spring Boot Lookup">
           <p>
             The Spring Boot Lookup retrieves the values of Spring properties from the Spring configuration as well as
-            values of the active and default profiles. Specifying a key of "profiles.active" will reutrn the active
+            values of the active and default profiles. Specifying a key of "profiles.active" will return the active
             profiles while a key of "profiles.default" will return the default profiles. The default and active
             profiles can be an array. If more than one profile is present they will be returned as a comma separated
             list. To retrieve a single item from the array append "[{index}]" to the key. For example, to return the

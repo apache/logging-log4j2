@@ -134,8 +134,8 @@
               objects are created for each log event.</li>
             <li><tt>log4j2.enableDirectEncoders</tt> - if "true" (the default) log events are converted to text and this
               text is converted to bytes without creating temporary objects. Note:
-              <em>synchronous</em> logging performance may be worse for multi-threaded applications in this mode due to
-              synchronization on the shared buffer. If your application is multi-threaded and logging performance
+              <em>synchronous</em> logging performance may be worse for multithreaded applications in this mode due to
+              synchronization on the shared buffer. If your application is multithreaded and logging performance
               is important, consider using Async Loggers.
               </li>
             <li>The ThreadContext map is <em>not</em> garbage-free by default, but from Log4j 2.7 it can be configured
@@ -554,7 +554,7 @@ public void garbageFree() {
         <p><img src="../images/ResponseTimeSyncClassicVsGcFree.png" /></p>
         <p>The above results are obtained with the ResponseTimeTest class which can be found in the Log4j 2
           unit test source directory, running on JDK 1.8.0_45 on RHEL 6.5 (Linux 2.6.32-573.1.1.el6.x86_64)
-          with 10-core Xeon CPU E5-2660 v3 @2.60GHz with hyperthreading switched on (20 virtual cores).</p>
+          with 10-core Xeon CPU E5-2660 v3 @2.60GHz with hyper-threading switched on (20 virtual cores).</p>
 
         <a name="Throughput" />
         <h4>Classic Logging has Slightly Higher Throughput</h4>

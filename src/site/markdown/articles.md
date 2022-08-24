@@ -70,7 +70,7 @@ guide for up-to-date and detailed information on how to configure and use Log4j 
 (January 1, 2020)
 * [Programmatic Configuration with Log4j 2](https://www.baeldung.com/log4j2-programmatic-config)
 (December 31, 2019)
-* [Log4j 1 Compatiblity in Log4j 2](https://www.ralphgoers.com/post/log4j-1-compatibility-in-log4j-2)
+* [Log4j 1 Compatibility in Log4j 2](https://www.ralphgoers.com/post/log4j-1-compatibility-in-log4j-2)
 (December 22, 2019)
 * [Why was Log4j 2 created](https://www.ralphgoers.com/post/why-was-log4j-2-created)
 (December 14, 2019)
