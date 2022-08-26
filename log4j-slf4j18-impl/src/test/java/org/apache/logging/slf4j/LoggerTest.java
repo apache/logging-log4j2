@@ -139,7 +139,7 @@ public class LoggerTest {
         logger.debug("Hello, {}", "Log4j {}");
         verify("List", "o.a.l.s.LoggerTest Hello, Log4j {} MDC{}" + Strings.LINE_SEPARATOR);
         xlogger.debug("Hello, {}", "Log4j {}");
-        verify("List", "o.a.l.s.LoggerTest Hello, Log4j Log4j {} MDC{}" + Strings.LINE_SEPARATOR);
+        verify("List", "o.a.l.s.LoggerTest Hello, Log4j {} MDC{}" + Strings.LINE_SEPARATOR);
     }
 
     private void verify(final String name, final String expected) {
