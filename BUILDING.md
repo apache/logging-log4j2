@@ -31,7 +31,7 @@ You can build and verify the sources as follows:
 `verify` goal runs validation and test steps next to building (i.e., compiling) the sources.
 To speed up the build, you can skip verification:
 
-    ./mvwn -DskipTests package
+    ./mvnw -DskipTests package
 
 If you want to install generated artifacts to your local Maven repository, replace above `verify` and/or `package` goals with `install`.
 
