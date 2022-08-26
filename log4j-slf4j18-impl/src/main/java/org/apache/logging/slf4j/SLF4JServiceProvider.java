@@ -22,7 +22,7 @@ import org.slf4j.spi.MDCAdapter;
 
 public class SLF4JServiceProvider implements org.slf4j.spi.SLF4JServiceProvider {
 
-    public static final String REQUESTED_API_VERSION = "1.8.99";
+    public static final String REQUESTED_API_VERSION = "2.0.99";
 
     private ILoggerFactory loggerFactory;
     private Log4jMarkerFactory markerFactory;
@@ -44,7 +44,7 @@ public class SLF4JServiceProvider implements org.slf4j.spi.SLF4JServiceProvider 
     }
 
     @Override
-    public String getRequesteApiVersion() {
+    public String getRequestedApiVersion() {
         return REQUESTED_API_VERSION;
     }
 
