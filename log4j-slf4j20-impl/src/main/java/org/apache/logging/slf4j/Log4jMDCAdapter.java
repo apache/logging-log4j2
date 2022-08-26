@@ -16,6 +16,7 @@
  */
 package org.apache.logging.slf4j;
 
+import java.util.Deque;
 import java.util.Map;
 
 import org.apache.logging.log4j.ThreadContext;
@@ -56,5 +57,27 @@ public class Log4jMDCAdapter implements MDCAdapter {
     public void setContextMap(@SuppressWarnings("rawtypes") final Map map) {
         ThreadContext.clearMap();
         ThreadContext.putAll(map);
+    }
+
+    @Override
+    public void pushByKey(String key, String value) {
+        // not implemented yet
+    }
+
+    @Override
+    public String popByKey(String key) {
+        // not implemented yet
+        return null;
+    }
+
+    @Override
+    public Deque<String> getCopyOfDequeByKey(String key) {
+        // not implemented yet
+        return null;
+    }
+
+    @Override
+    public void clearDequeByKey(String key) {
+        // not implemented yet
     }
 }
