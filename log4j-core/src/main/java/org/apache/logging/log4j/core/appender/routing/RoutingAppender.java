@@ -422,7 +422,7 @@ public final class RoutingAppender extends AbstractAppender {
      * LOG4J2-2629: PurgePolicy implementations can invoke {@link #deleteAppender(String)} after we have looked up
      * an instance of a target appender but before events are appended, which could result in events not being
      * recorded to any appender.
-     * This extension of {@link AppenderControl} allows to to mark usage of an appender, allowing deferral of
+     * This extension of {@link AppenderControl} allows to mark usage of an appender, allowing deferral of
      * {@link Appender#stop()} until events have successfully been recorded.
      * Alternative approaches considered:
      * - More aggressive synchronization: Appenders may do expensive I/O that shouldn't block routing.

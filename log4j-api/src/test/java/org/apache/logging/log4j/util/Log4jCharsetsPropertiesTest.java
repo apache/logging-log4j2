@@ -42,7 +42,7 @@ public class Log4jCharsetsPropertiesTest {
             String value = resourceBundle.getString(key);
             assertTrue(
                     Charset.isSupported(value),
-                    String.format("The Charset %s is is not available and is mapped from %s", value, key));
+                    String.format("The Charset %s is not available and is mapped from %s", value, key));
         }
     }
 }

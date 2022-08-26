@@ -557,7 +557,7 @@ public class OptionConverter {
      * </p>
      *
      * <p>
-     * Case of <code>value</code> is insignificant for the level level, but is
+     * Case of <code>value</code> is insignificant for the level, but is
      * significant for the class name part, if present.
      * </p>
      * 

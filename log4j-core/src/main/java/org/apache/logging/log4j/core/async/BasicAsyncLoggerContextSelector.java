@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Returns either this Thread's context or the default {@link AsyncLoggerContext}.
  * Single-application instances should prefer this implementation over the {@link AsyncLoggerContextSelector}
- * due the the reduced overhead avoiding classloader lookups.
+ * due to the reduced overhead avoiding classloader lookups.
  */
 public class BasicAsyncLoggerContextSelector implements ContextSelector {
 

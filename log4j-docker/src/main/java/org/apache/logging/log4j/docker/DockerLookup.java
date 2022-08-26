@@ -35,7 +35,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Lookups up keys for for a Docker container.
+ * Lookups up keys for a Docker container.
  */
 @Plugin(name = "docker", category = StrLookup.CATEGORY)
 public class DockerLookup extends AbstractLookup {

@@ -62,7 +62,7 @@ public final class Strings {
      * {@code null}, empty, or all characters are {@link Character#isWhitespace(char)}.
      *
      * @param s the String to check, may be {@code null}
-     * @return {@code true} if the String is {@code null}, empty, or or all characters are {@link Character#isWhitespace(char)}
+     * @return {@code true} if the String is {@code null}, empty, or all characters are {@link Character#isWhitespace(char)}
      */
     public static boolean isBlank(final String s) {
         if (s == null || s.isEmpty()) {

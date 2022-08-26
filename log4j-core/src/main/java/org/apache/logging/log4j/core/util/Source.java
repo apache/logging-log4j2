@@ -145,7 +145,7 @@ public class Source {
      * Constructs a new {@code Source} from the specified URL.
      *
      * @param url the URL where the input stream originated
-     * @throws IllegalArgumentException if this URL is not formatted strictly according to to RFC2396 and cannot be
+     * @throws IllegalArgumentException if this URL is not formatted strictly according to RFC2396 and cannot be
      *         converted to a URI.
      */
     public Source(final URL url) {
