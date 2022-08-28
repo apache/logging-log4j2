@@ -78,7 +78,23 @@ public class Log4jMarkerFactory implements IMarkerFactory {
         return addMarkerIfAbsent(marker.getName(), convertMarker(marker));
     }
 
-    private static org.apache.logging.log4j.Marker convertMarker(final Marker original) {
+    /**
+     * Gets the Log4j2 marker associated to this SLF4J marker or creates a new one.
+     * 
+     * @param marker a SLF4J marker
+     * @return a Log4j2 marker
+     */
+    org.apache.logging.log4j.Marker getLog4jMarker(final Marker marker) {
+        if (marker == null) {
+            return null;
+        } else if (marker instanceof Log4jMarker) {
+            return ((Log4jMarker) marker).getLog4jMarker();
+        } else {
+            return ((Log4jMarker) getMarker(marker)).getLog4jMarker();
+        }
+    }
+
+    static org.apache.logging.log4j.Marker convertMarker(final Marker original) {
         if (original == null) {
             throw new IllegalArgumentException("Marker must not be null");
         }

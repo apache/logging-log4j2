@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.internal;
 
+import org.apache.logging.log4j.BridgeAware;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogBuilder;
 import org.apache.logging.log4j.Logger;
@@ -32,7 +33,7 @@ import org.apache.logging.log4j.util.Supplier;
 /**
  * Collects data for a log event and then logs it. This class should be considered private.
  */
-public class DefaultLogBuilder implements LogBuilder {
+public class DefaultLogBuilder implements BridgeAware, LogBuilder {
 
     private static final String FQCN = DefaultLogBuilder.class.getName();
     private static final Logger LOGGER = StatusLogger.getLogger();
@@ -45,6 +46,7 @@ public class DefaultLogBuilder implements LogBuilder {
     private StackTraceElement location;
     private volatile boolean inUse;
     private final long threadId;
+    private String fqcn = FQCN;
 
     public DefaultLogBuilder(final Logger logger, final Level level) {
         this.logger = logger;
@@ -57,6 +59,11 @@ public class DefaultLogBuilder implements LogBuilder {
         this.logger = logger;
         this.inUse = false;
         this.threadId = Thread.currentThread().getId();
+    }
+
+    @Override
+    public void setEntryPoint(String fqcn) {
+        this.fqcn = fqcn;
     }
 
     /**
@@ -228,7 +235,7 @@ public class DefaultLogBuilder implements LogBuilder {
 
     private void logMessage(final Message message) {
         try {
-            logger.logMessage(level, marker, FQCN, location, message, throwable);
+            logger.logMessage(level, marker, fqcn, location, message, throwable);
         } finally {
             inUse = false;
         }
