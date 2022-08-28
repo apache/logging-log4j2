@@ -16,16 +16,26 @@
  */
 package org.apache.logging.slf4j;
 
+import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.ThreadContext.ContextStack;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.slf4j.spi.MDCAdapter;
 
 /**
  *
  */
 public class Log4jMDCAdapter implements MDCAdapter {
+
+    private static Logger LOGGER = StatusLogger.getLogger();
+
+    private final ThreadLocalMapOfStacks mapOfStacks = new ThreadLocalMapOfStacks();
 
     @Override
     public void put(final String key, final String val) {
@@ -53,31 +63,89 @@ public class Log4jMDCAdapter implements MDCAdapter {
     }
 
     @Override
-    @SuppressWarnings("unchecked") // nothing we can do about this, restricted by SLF4J API
-    public void setContextMap(@SuppressWarnings("rawtypes") final Map map) {
+    public void setContextMap(final Map<String, String> map) {
         ThreadContext.clearMap();
         ThreadContext.putAll(map);
     }
 
     @Override
     public void pushByKey(String key, String value) {
-        // not implemented yet
+        if (key == null) {
+            ThreadContext.push(value);
+        } else {
+            final String oldValue = mapOfStacks.peekByKey(key);
+            if (!Objects.equals(ThreadContext.get(key), oldValue)) {
+                LOGGER.warn("The key {} was used in both the string and stack-valued MDC.", key);
+            }
+            mapOfStacks.pushByKey(key, value);
+            ThreadContext.put(key, value);
+        }
     }
 
     @Override
     public String popByKey(String key) {
-        // not implemented yet
-        return null;
+        if (key == null) {
+            return ThreadContext.getDepth() > 0 ? ThreadContext.pop() : null;
+        }
+        final String value = mapOfStacks.popByKey(key);
+        if (!Objects.equals(ThreadContext.get(key), value)) {
+            LOGGER.warn("The key {} was used in both the string and stack-valued MDC.", key);
+        }
+        ThreadContext.put(key, mapOfStacks.peekByKey(key));
+        return value;
     }
 
     @Override
     public Deque<String> getCopyOfDequeByKey(String key) {
-        // not implemented yet
-        return null;
+        if (key == null) {
+            final ContextStack stack = ThreadContext.getImmutableStack();
+            final Deque<String> copy = new ArrayDeque<>(stack.size());
+            stack.forEach(copy::push);
+            return copy;
+        }
+        return mapOfStacks.getCopyOfDequeByKey(key);
     }
 
     @Override
     public void clearDequeByKey(String key) {
-        // not implemented yet
+        if (key == null) {
+            ThreadContext.clearStack();
+        } else {
+            mapOfStacks.clearByKey(key);
+            ThreadContext.put(key, null);
+        }
+    }
+
+    private static class ThreadLocalMapOfStacks {
+
+        private final ThreadLocal<Map<String, Deque<String>>> tlMapOfStacks = ThreadLocal.withInitial(HashMap::new);
+
+        public void pushByKey(String key, String value) {
+            tlMapOfStacks.get()
+                    .computeIfAbsent(key, ignored -> new ArrayDeque<>())
+                    .push(value);
+        }
+
+        public String popByKey(String key) {
+            final Deque<String> deque = tlMapOfStacks.get().get(key);
+            return deque != null ? deque.poll() : null;
+        }
+
+        public Deque<String> getCopyOfDequeByKey(String key) {
+            final Deque<String> deque = tlMapOfStacks.get().get(key);
+            return deque != null ? new ArrayDeque<>(deque) : null;
+        }
+
+        public void clearByKey(String key) {
+            final Deque<String> deque = tlMapOfStacks.get().get(key);
+            if (deque != null) {
+                deque.clear();
+            }
+        }
+
+        public String peekByKey(String key) {
+            final Deque<String> deque = tlMapOfStacks.get().get(key);
+            return deque != null ? deque.peek() : null;
+        }
     }
 }
