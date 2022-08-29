@@ -316,7 +316,7 @@
     <module.name />
     <!-- Used in `log4j-appserver`, so that it does not override `wiremock`'s deps-->
     <jetty.version>9.4.48.v20220622</jetty.version>
-    <netty-all.version>4.1.72.Final</netty-all.version>
+    <netty-all.version>4.1.80.Final</netty-all.version>
   </properties>
   <pluginRepositories>
     <pluginRepository>
