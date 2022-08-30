@@ -618,7 +618,12 @@ public class LoggerContext extends AbstractLifeCycle
                 map.putIfAbsent("hostName", "unknown");
             }
             map.putIfAbsent("contextName", contextName);
-            config.start();
+            try {
+            	config.start();
+            } catch (Exception e) {
+            	config.stop();
+            	throw e;
+            }
             this.configuration = config;
             updateLoggers();
             if (prev != null) {

@@ -705,6 +705,9 @@
       <action issue="LOG4J2-3175" dev="vy" type="fix" due-to="wuqian0808">
         Avoid KafkaManager override when topics differ.
       </action>
+      <action issue="LOG4J2-3182" dev="vy" type="fix" due-to="wuqian0808">
+        Protect KafkaManager against start failures upon config changes.
+      </action>
       <action issue="LOG4J2-3160" dev="vy" type="fix" due-to="Lars Bohl">
         Fix documentation on how to toggle log4j2.debug system property.
       </action>
