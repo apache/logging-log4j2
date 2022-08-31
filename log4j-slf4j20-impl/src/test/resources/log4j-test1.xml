@@ -17,6 +17,7 @@
     <List name="List">
       <PatternLayout pattern="%C{1.} %m MDC%X%n%ex{0}"/>
     </List>
+    <List name="UnformattedList" />
     <SLF4J name="SLF4J"/>
   </Appenders>
 
@@ -27,6 +28,7 @@
 
     <Root level="trace">
       <AppenderRef ref="List"/>
+      <AppenderRef ref="UnformattedList"/>
     </Root>
   </Loggers>
 
