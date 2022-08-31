@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.util.Strings;
@@ -142,13 +143,51 @@ public class LoggerTest {
         verify("List", "o.a.l.s.LoggerTest Hello, Log4j {} MDC{}" + Strings.LINE_SEPARATOR);
     }
 
-    private void verify(final String name, final String expected) {
+    @Test
+    public void testThrowable() {
+        final Throwable expected = new RuntimeException();
+        logger.debug("Hello {}", expected);
+        verifyThrowable(expected);
+        logger.debug("Hello {}", (Object) expected);
+        verifyThrowable(null);
+        logger.debug("Hello", expected);
+        verifyThrowable(expected);
+        logger.debug("Hello {}! {}", "World!", expected);
+        verifyThrowable(null);
+        logger.debug("Hello {}!", "World!", expected);
+        verifyThrowable(expected);
+        final LocationAwareLogger lal = (LocationAwareLogger) logger;
+        lal.log(null, LoggerTest.class.getName(), LocationAwareLogger.DEBUG_INT, "Hello {}", null, expected);
+        verifyThrowable(expected);
+        lal.log(null, LoggerTest.class.getName(), LocationAwareLogger.DEBUG_INT, "Hello {}", new Object[] { expected },
+                null);
+        verifyThrowable(null);
+        lal.log(null, LoggerTest.class.getName(), LocationAwareLogger.DEBUG_INT, "Hello {}",
+                new Object[] { "World!", expected }, null);
+        verifyThrowable(expected);
+    }
+
+    private ListAppender getAppenderByName(final String name) {
         final ListAppender listApp = ctx.getListAppender(name);
         assertNotNull("Missing Appender", listApp);
+        return listApp;
+    }
+
+    private void verify(final String name, final String expected) {
+        final ListAppender listApp = getAppenderByName(name);
         final List<String> events = listApp.getMessages();
         assertTrue("Incorrect number of messages. Expected 1 Actual " + events.size(), events.size()== 1);
         final String actual = events.get(0);
         assertEquals("Incorrect message. Expected " + expected + ". Actual " + actual, expected, actual);
+        listApp.clear();
+    }
+
+    private void verifyThrowable(final Throwable expected) {
+        final ListAppender listApp = getAppenderByName("UnformattedList");
+        final List<LogEvent> events = listApp.getEvents();
+        assertEquals("Incorrect number of messages", 1, events.size());
+        final LogEvent actual = events.get(0);
+        assertEquals("Incorrect throwable.", expected, actual.getThrown());
         listApp.clear();
     }
 
@@ -157,5 +196,6 @@ public class LoggerTest {
     public void cleanup() {
         MDC.clear();
         ctx.getListAppender("List").clear();
+        ctx.getListAppender("UnformattedList").clear();
     }
 }

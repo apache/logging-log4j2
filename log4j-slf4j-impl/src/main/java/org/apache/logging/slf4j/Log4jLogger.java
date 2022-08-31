@@ -355,7 +355,7 @@ public class Log4jLogger implements LocationAwareLogger, Serializable {
     }
 
     @Override
-    public void log(final Marker marker, final String fqcn, final int level, final String message, final Object[] params, Throwable throwable) {
+    public void log(final Marker marker, final String fqcn, final int level, final String message, final Object[] params, final Throwable throwable) {
         final Level log4jLevel = getLevel(level);
         final org.apache.logging.log4j.Marker log4jMarker = getMarker(marker);
 
@@ -363,17 +363,18 @@ public class Log4jLogger implements LocationAwareLogger, Serializable {
             return;
         }
         final Message msg;
+        final Throwable actualThrowable;
         if (CONVERTER != null && eventLogger && marker != null && marker.contains(EVENT_MARKER)) {
             msg = CONVERTER.convertEvent(message, params, throwable);
+            actualThrowable = throwable != null ? throwable : msg.getThrowable();
         } else if (params == null) {
             msg = new SimpleMessage(message);
+            actualThrowable = throwable;
         } else {
             msg = new ParameterizedMessage(message, params, throwable);
-            if (throwable != null) {
-                throwable = msg.getThrowable();
-            }
+            actualThrowable = throwable != null ? throwable : msg.getThrowable();
         }
-        logger.logMessage(fqcn, log4jLevel, log4jMarker, msg, throwable);
+        logger.logMessage(fqcn, log4jLevel, log4jMarker, msg, actualThrowable);
     }
 
     private static org.apache.logging.log4j.Marker getMarker(final Marker marker) {
