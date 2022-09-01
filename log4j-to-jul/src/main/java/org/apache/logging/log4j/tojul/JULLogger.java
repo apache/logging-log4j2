@@ -32,7 +32,7 @@ import org.apache.logging.log4j.spi.AbstractLogger;
  *
  * @author <a href="http://www.vorburger.ch">Michael Vorburger.ch</a> for Google
  */
-final class JULLogger extends AbstractLogger {
+public final class JULLogger extends AbstractLogger {
     private static final long serialVersionUID = 1L;
 
     private final Logger logger;

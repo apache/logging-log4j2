@@ -15,10 +15,11 @@
 * limitations under the license.
 */
 
-package org.apache.logging.log4j.tojul;
+package org.apache.logging.log4j.tojul.test;
 
 import com.google.common.testing.TestLogHandler;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.tojul.JULLogger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
