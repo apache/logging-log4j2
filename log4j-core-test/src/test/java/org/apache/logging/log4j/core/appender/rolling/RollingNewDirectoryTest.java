@@ -20,17 +20,20 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Tests
  */
-public class RollingNewDirectoryTest extends AbstractRollingListenerTest {
+public class RollingNewDirectoryTest implements RolloverListener {
     private static final String CONFIG = "log4j-rolling-new-directory.xml";
 
     private static final String DIR = "target/rolling-new-directory";
@@ -43,12 +46,22 @@ public class RollingNewDirectoryTest extends AbstractRollingListenerTest {
         manager.addRolloverListener(this);
         for (int i = 0; i < 10; ++i) {
             logger.info("AAA");
-            currentTimeMillis.addAndGet(300);
+            Thread.sleep(300);
         }
-        rollover.await();
+        try {
+            if (!rollover.await(5, TimeUnit.SECONDS)) {
+                fail("Timer expired before rollover");
+            }
+        } catch (InterruptedException ie) {
+            fail("Thread was interrupted");
+        }
         final File dir = new File(DIR);
         assertThat(dir).isNotEmptyDirectory();
         assertThat(dir.listFiles()).hasSizeGreaterThan(2);
+    }
+
+    @Override
+    public void rolloverTriggered(final String fileName) {
     }
 
     @Override

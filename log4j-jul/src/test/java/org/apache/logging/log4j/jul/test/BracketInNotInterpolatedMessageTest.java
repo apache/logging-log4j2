@@ -14,14 +14,14 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.jul;
+package org.apache.logging.log4j.jul.test;
 
 import java.util.List;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.jul.LogManager;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

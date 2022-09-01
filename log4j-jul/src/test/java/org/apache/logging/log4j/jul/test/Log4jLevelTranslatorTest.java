@@ -15,7 +15,7 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.jul;
+package org.apache.logging.log4j.jul.test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.jul.LevelTranslator;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;

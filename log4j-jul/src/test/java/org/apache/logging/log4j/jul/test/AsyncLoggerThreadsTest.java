@@ -14,11 +14,10 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.jul;
+package org.apache.logging.log4j.jul.test;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.util.Constants;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -31,7 +30,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
-@Category(AsyncLoggers.class)
+//@Category(AsyncLoggers.class)
 @Ignore("https://issues.apache.org/jira/browse/LOG4J2-3523")
 public class AsyncLoggerThreadsTest {
 
@@ -39,7 +38,7 @@ public class AsyncLoggerThreadsTest {
     public static void beforeClass() {
         System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
                 AsyncLoggerContextSelector.class.getName());
-        System.setProperty("java.util.logging.manager", org.apache.logging.log4j.jul.LogManager.class.getName());
+        System.setProperty("java.util.logging.manager", LogManager.class.getName());
     }
 
     @AfterClass
