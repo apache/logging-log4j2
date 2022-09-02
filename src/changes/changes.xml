@@ -217,6 +217,18 @@
       <action issue="LOG4J2-3560" dev="ckozak" type="fix" due-to="David Schlosnagle">
         Logger$PrivateConfig.filter(Level, Marker, String) was allocating empty varargs array.
       </action>
+      <action issue="LOG4J2-3561" dev="pkarwasz" type="fix" due-to="Robert Papp">
+        Allows a space separated list of style specifiers in the %style pattern for consistency with %highlight.
+      </action>
+      <action issue="LOG4J2-3564" dev="pkarwasz" type="fix">
+        Fix NPE in `log4j-to-jul` in the case the root logger level is null.
+      </action>
+      <action issue="LOG4J2-3565" dev="dafengsu7" type="fix">
+        Fix RollingRandomAccessFileAppender with DirectWriteRolloverStrategy can't create the first log file of different directory.
+      </action>
+      <action issue="LOG4J2-3559" dev="pkarwasz" type="fix" due-to="Gary Gregory">
+        Fix resolution of properties not starting with `log4j2.`.
+      </action>
     </release>
     <release version="2.18.0" date="20YY-06-28" description="GA Release 2.18.0">
       <action issue="LOG4J2-3339" dev="rgoers" type="fix">
