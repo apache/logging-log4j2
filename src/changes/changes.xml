@@ -54,6 +54,9 @@
       <action issue="LOG4J2-3565" dev="dafengsu7" type="fix">
         Fix RollingRandomAccessFileAppender with DirectWriteRolloverStrategy can't create the first log file of different directory.
       </action>
+      <action issue="LOG4J2-3579" dev="pkarwasz" type="fix" due-to="Boris Unckel">
+        Fix ServiceLoaderUtil behavior in the presence of a SecurityManager.
+      </action>
       <action issue="LOG4J2-3559" dev="pkarwasz" type="fix" due-to="Gary Gregory">
         Fix resolution of properties not starting with `log4j2.`.
       </action>
