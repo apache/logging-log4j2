@@ -34,14 +34,20 @@ public class Log4jLoggerFactory extends AbstractLoggerAdapter<Logger> implements
 
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
     private static final String SLF4J_PACKAGE = "org.slf4j";
-    private static final String TO_SLF4J_CONTEXT = "org.apache.logging.slf4j.SLF4JLoggerContext";
     private static final Predicate<Class<?>> CALLER_PREDICATE = clazz ->
             !AbstractLoggerAdapter.class.equals(clazz) && !clazz.getName().startsWith(SLF4J_PACKAGE);
+    private static final String TO_SLF4J_CONTEXT = "org.apache.logging.slf4j.SLF4JLoggerContext";
+
+    private final Log4jMarkerFactory markerFactory;
+
+    public Log4jLoggerFactory(final Log4jMarkerFactory markerFactory) {
+        this.markerFactory = markerFactory;
+    }
 
     @Override
     protected Logger newLogger(final String name, final LoggerContext context) {
         final String key = Logger.ROOT_LOGGER_NAME.equals(name) ? LogManager.ROOT_LOGGER_NAME : name;
-        return new Log4jLogger(validateContext(context).getLogger(key), name);
+        return new Log4jLogger(markerFactory, validateContext(context).getLogger(key), name);
     }
 
     @Override
@@ -53,6 +59,10 @@ public class Log4jLoggerFactory extends AbstractLoggerAdapter<Logger> implements
         return anchor == null
                 ? LogManager.getContext(false)
                 : getContext(anchor);
+    }
+
+    Log4jMarkerFactory getMarkerFactory() {
+        return markerFactory;
     }
 
     private LoggerContext validateContext(final LoggerContext context) {

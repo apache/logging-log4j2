@@ -44,7 +44,6 @@ public class Log4jLoggerFactory extends AbstractLoggerAdapter<Logger> implements
         this.markerFactory = markerFactory;
     }
 
-
     @Override
     protected Logger newLogger(final String name, final LoggerContext context) {
         final String key = Logger.ROOT_LOGGER_NAME.equals(name) ? LogManager.ROOT_LOGGER_NAME : name;
