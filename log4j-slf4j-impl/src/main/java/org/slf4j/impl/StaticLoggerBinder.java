@@ -17,6 +17,7 @@
 package org.slf4j.impl;
 
 import org.apache.logging.slf4j.Log4jLoggerFactory;
+import org.apache.logging.slf4j.Log4jMarkerFactory;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.spi.LoggerFactoryBinder;
 
@@ -50,7 +51,7 @@ public final class StaticLoggerBinder implements LoggerFactoryBinder {
      * Private constructor to prevent instantiation
      */
     private StaticLoggerBinder() {
-        loggerFactory = new Log4jLoggerFactory();
+        loggerFactory = new Log4jLoggerFactory((Log4jMarkerFactory) StaticMarkerBinder.getSingleton().getMarkerFactory());
     }
 
     /**

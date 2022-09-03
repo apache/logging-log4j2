@@ -52,8 +52,7 @@ public class Log4jMDCAdapter implements MDCAdapter {
     }
 
     @Override
-    @SuppressWarnings("unchecked") // nothing we can do about this, restricted by SLF4J API
-    public void setContextMap(@SuppressWarnings("rawtypes") final Map map) {
+    public void setContextMap(final Map<String, String> map) {
         ThreadContext.clearMap();
         ThreadContext.putAll(map);
     }
