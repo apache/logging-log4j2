@@ -235,6 +235,9 @@
       <action issue="LOG4J2-3583" dev="pkarwasz" type="add" due-to="Pierrick Terrettaz">
         Add support for SLF4J2 stack-valued MDC.
       </action>
+      <action issue="LOG4J2-2975" dev="pkarwasz" type="add" due-to="Daniel Gray">
+        Add implementation of SLF4J2 fluent API.
+      </action>
     </release>
     <release version="2.18.0" date="20YY-06-28" description="GA Release 2.18.0">
       <action issue="LOG4J2-3339" dev="rgoers" type="fix">
