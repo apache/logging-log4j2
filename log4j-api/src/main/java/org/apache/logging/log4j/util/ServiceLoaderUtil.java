@@ -116,8 +116,7 @@ public final class ServiceLoaderUtil {
                     return provider.get();
                 } catch (ServiceConfigurationError e) {
                     if (verbose) {
-                        StatusLogger.getLogger().warn("Unable to load service class for service {}",
-                                serviceType.getClass(), e);
+                        StatusLogger.getLogger().warn("Unable to load service class for service {}", serviceType, e);
                     }
                 }
                 return null;
