@@ -60,6 +60,9 @@
       <action issue="LOG4J2-3559" dev="pkarwasz" type="fix" due-to="Gary Gregory">
         Fix resolution of properties not starting with `log4j2.`.
       </action>
+      <action issue="LOG4J2-3583" dev="pkarwasz" type="add" due-to="Pierrick Terrettaz">
+        Add support for SLF4J2 stack-valued MDC.
+      </action>
     </release>
     <release version="2.18.0" date="2022-06-28" description="GA Release 2.18.0">
       <action issue="LOG4J2-3339" dev="rgoers" type="fix">

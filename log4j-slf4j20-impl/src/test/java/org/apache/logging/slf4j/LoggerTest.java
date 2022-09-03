@@ -118,6 +118,22 @@ public class LoggerTest {
         verify("List", "o.a.l.s.LoggerTest Debug message MDC{}" + Strings.LINE_SEPARATOR);
     }
 
+    @Test
+    public void mdcStack() {
+        MDC.pushByKey("TestYear", "2010");
+        logger.debug("Debug message");
+        verify("List", "o.a.l.s.LoggerTest Debug message MDC{TestYear=2010}" + Strings.LINE_SEPARATOR);
+        MDC.pushByKey("TestYear", "2011");
+        logger.debug("Debug message");
+        verify("List", "o.a.l.s.LoggerTest Debug message MDC{TestYear=2011}" + Strings.LINE_SEPARATOR);
+        MDC.popByKey("TestYear");
+        logger.debug("Debug message");
+        verify("List", "o.a.l.s.LoggerTest Debug message MDC{TestYear=2010}" + Strings.LINE_SEPARATOR);
+        MDC.clear();
+        logger.debug("Debug message");
+        verify("List", "o.a.l.s.LoggerTest Debug message MDC{}" + Strings.LINE_SEPARATOR);
+    }
+
     /**
      * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-793">LOG4J2-793</a>
      */
