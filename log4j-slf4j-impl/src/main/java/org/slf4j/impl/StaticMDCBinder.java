@@ -29,6 +29,8 @@ public final class StaticMDCBinder {
      */
     public static final StaticMDCBinder SINGLETON = new StaticMDCBinder();
 
+    private final MDCAdapter mdcAdapter = new Log4jMDCAdapter();
+
     private StaticMDCBinder() {
     }
 
@@ -46,7 +48,7 @@ public final class StaticMDCBinder {
      * @return an MDC adapter
      */
     public MDCAdapter getMDCA() {
-        return new Log4jMDCAdapter();
+        return mdcAdapter;
     }
 
     /**

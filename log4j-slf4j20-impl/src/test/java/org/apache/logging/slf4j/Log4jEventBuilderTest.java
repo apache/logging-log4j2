@@ -52,7 +52,7 @@ public class Log4jEventBuilderTest {
         logger.atDebug().addKeyValue("testKeyValuePairs", "ok").log();
         final List<LogEvent> events = appender.getEvents();
         assertThat(events).hasSize(1);
-        assertThat(events.get(0).getContextMap()).containsEntry("testKeyValuePairs", "ok");
+        assertThat(events.get(0).getContextData().toMap()).containsEntry("testKeyValuePairs", "ok");
     }
 
     @Test
