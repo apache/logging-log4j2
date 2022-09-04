@@ -1649,8 +1649,8 @@
     <module>log4j-redis</module>
     <module>log4j-samples</module>
     <module>log4j-script</module>
-    <module>log4j-slf4j20-impl</module>
     <module>log4j-slf4j-impl</module>
+    <module>log4j-slf4j2-impl</module>
     <module>log4j-smtp</module>
     <module>log4j-spring-boot</module>
     <module>log4j-spring-cloud-config</module>

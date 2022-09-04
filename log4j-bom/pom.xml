@@ -260,7 +260,7 @@
       <!-- SLF4J 2.0.x Compatibility API -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-slf4j20-impl</artifactId>
+        <artifactId>log4j-slf4j2-impl</artifactId>
         <version>${project.version}</version>
       </dependency>
       <!-- SMTP Appender plugin -->
