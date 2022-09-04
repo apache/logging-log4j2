@@ -377,14 +377,14 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
                             configResult.pairs = pairs.toArray(EMPTY_ARRAY);
                             configResult.status = Status.SUCCESS;
                         } else {
-                            LOGGER.debug("No configuration data in {}", source.toString());
                             configResult.status = Status.EMPTY;
                         }
                     } else {
+                        LOGGER.debug("No configuration data in {}", source.toString());
                         configResult.status = Status.EMPTY;
                     }
                 } else {
-                    LOGGER.warn("No config element in MutableThreadContextMapFilter configuration");
+                    LOGGER.warn("No configs element in MutableThreadContextMapFilter configuration");
                     configResult.status = Status.ERROR;
                 }
             } catch (Exception ex) {
@@ -392,7 +392,6 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
                 configResult.status = Status.ERROR;
             }
         } else {
-            LOGGER.warn("No configs element in MutableThreadContextMapFilter configuration");
             configResult.status = result.getStatus();
         }
         return configResult;

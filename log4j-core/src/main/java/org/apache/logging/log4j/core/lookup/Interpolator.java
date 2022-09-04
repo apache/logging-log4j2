@@ -27,6 +27,7 @@ import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.Keys;
 import org.apache.logging.log4j.status.StatusLogger;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -60,7 +61,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup implements Lo
 
     private final StrLookup defaultLookup;
 
-    private LoggerContext loggerContext = null;
+    private WeakReference<LoggerContext> loggerContext = null;
 
     // Used by tests
     public Interpolator(final StrLookup defaultLookup) {
@@ -186,7 +187,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup implements Lo
                     ((ConfigurationAware) lookup).setConfiguration(configuration);
                 }
                 if (lookup instanceof LoggerContextAware) {
-                    ((LoggerContextAware) lookup).setLoggerContext(loggerContext);
+                    ((LoggerContextAware) lookup).setLoggerContext(loggerContext.get());
                 }
                 value = event == null ? lookup.lookup(name) : lookup.lookup(event, name);
             }
@@ -206,7 +207,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup implements Lo
         if (loggerContext == null) {
             return;
         }
-        this.loggerContext = loggerContext;
+        this.loggerContext = new WeakReference<>(loggerContext);
     }
 
     @Override

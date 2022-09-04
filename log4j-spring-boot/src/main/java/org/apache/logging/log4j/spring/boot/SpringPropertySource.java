@@ -22,7 +22,7 @@ import org.springframework.core.env.Environment;
 /**
  * Returns properties from Spring.
  */
-public class SpringPropertySource extends SpringEnvironmentHolder implements PropertySource {
+public class SpringPropertySource implements PropertySource {
 
     private static final int DEFAULT_PRIORITY = -100;
 

@@ -17,13 +17,12 @@
 
 package org.apache.logging.log4j.core.config.plugins.visit;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.Parameter;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Node;
@@ -40,8 +39,8 @@ public class PluginLoggerContextVisitor implements NodeVisitor {
     private LoggerContext loggerContext;
 
     @Inject
-    public PluginLoggerContextVisitor(final LoggerContext loggerContext) {
-        this.loggerContext = loggerContext;
+    public PluginLoggerContextVisitor(final WeakReference<LoggerContext> loggerContext) {
+        this.loggerContext = loggerContext.get();
     }
 
     @Override

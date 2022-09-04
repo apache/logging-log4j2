@@ -46,6 +46,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
@@ -72,7 +73,7 @@ public class LoggerContext extends AbstractLifeCycle
      * Property name of the property change event fired if the configuration is changed.
      */
     public static final String PROPERTY_CONFIG = "config";
-    public  static final Key<LoggerContext> KEY = new Key<>() {};
+    public  static final Key<WeakReference<LoggerContext>> KEY = new Key<>() {};
 
     private static final Configuration NULL_CONFIGURATION = new NullConfiguration();
 
@@ -123,7 +124,7 @@ public class LoggerContext extends AbstractLifeCycle
     public LoggerContext(final String name, final Object externalContext, final URI configLocn) {
         this(name, externalContext, configLocn, DI.createInjector());
         injector.init();
-        injector.registerBindingIfAbsent(KEY, () -> this);
+        injector.registerBindingIfAbsent(KEY, () -> new WeakReference<>(this));
     }
 
     /**
@@ -141,7 +142,7 @@ public class LoggerContext extends AbstractLifeCycle
         }
         this.configLocation = configLocn;
         this.injector = injector.copy();
-        injector.registerBindingIfAbsent(KEY, () -> this);
+        injector.registerBindingIfAbsent(KEY, () -> new WeakReference<>(this));
     }
 
     /**
@@ -155,7 +156,7 @@ public class LoggerContext extends AbstractLifeCycle
     public LoggerContext(final String name, final Object externalContext, final String configLocn) {
         this(name, externalContext, configLocn, DI.createInjector());
         injector.init();
-        injector.registerBindingIfAbsent(KEY, () -> this);
+        injector.registerBindingIfAbsent(KEY, () -> new WeakReference<>(this));
     }
 
     /**
@@ -184,7 +185,7 @@ public class LoggerContext extends AbstractLifeCycle
             configLocation = null;
         }
         this.injector = injector.copy();
-        this.injector.registerBindingIfAbsent(KEY, () -> this);
+        this.injector.registerBindingIfAbsent(KEY, () -> new WeakReference<>(this));
     }
 
     public void addShutdownListener(final LoggerContextShutdownAware listener) {

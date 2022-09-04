@@ -642,7 +642,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     protected void doConfigure() {
         injector.registerBinding(Keys.SUBSTITUTOR_KEY, () -> configurationStrSubstitutor::replace);
-        injector.registerBinding(LoggerContext.KEY, () -> loggerContext.get());
+        injector.registerBinding(LoggerContext.KEY, () -> loggerContext);
         processConditionals(rootNode);
         preConfigure(rootNode);
         configurationScheduler.start();
