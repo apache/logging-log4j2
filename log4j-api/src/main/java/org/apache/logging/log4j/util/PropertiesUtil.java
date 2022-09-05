@@ -35,6 +35,7 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
  * <em>Consider this class private.</em>
@@ -121,6 +122,16 @@ public final class PropertiesUtil {
      */
     public static PropertiesUtil getProperties() {
         return COMPONENT_PROPERTIES.get();
+    }
+
+    /**
+     * Allows a PropertySource to be added after PropertiesUtil has been created.
+     * @param propertySource the PropertySource to add.
+     */
+    public void addPropertySource(PropertySource propertySource) {
+        if (environment != null) {
+            environment.addPropertySource(propertySource);
+        }
     }
 
     /**
@@ -435,7 +446,7 @@ public final class PropertiesUtil {
      */
     private static class Environment {
 
-        private final Set<PropertySource> sources = new TreeSet<>(new PropertySource.Comparator());
+        private final Set<PropertySource> sources = new ConcurrentSkipListSet<>(new PropertySource.Comparator());
         /**
          * Maps a key to its value in the lowest priority source that contains it.
          */
@@ -462,6 +473,14 @@ public final class PropertiesUtil {
             final ServiceRegistry registry = ServiceRegistry.getInstance();
             sources.addAll(registry.getServices(PropertySource.class, MethodHandles.lookup(), null));
             reload();
+        }
+
+        /**
+         * Allow a PropertySource to be added.
+         * @param propertySource The PropertySource to add.
+         */
+        public void addPropertySource(PropertySource propertySource) {
+            sources.add(propertySource);
         }
 
         private synchronized void reload() {

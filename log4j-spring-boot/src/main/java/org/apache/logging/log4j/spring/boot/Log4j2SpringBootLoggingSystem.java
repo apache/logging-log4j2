@@ -37,6 +37,7 @@ import org.springframework.boot.logging.LoggingSystem;
 import org.springframework.boot.logging.LoggingSystemFactory;
 import org.springframework.boot.logging.log4j2.Log4J2LoggingSystem;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.env.Environment;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ResourceUtils;
@@ -87,7 +88,9 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
      */
     @Override
     public void initialize(LoggingInitializationContext initializationContext, String configLocation, LogFile logFile) {
-        getLoggerContext().putObjectIfAbsent(ENVIRONMENT_KEY, initializationContext.getEnvironment());
+        Environment environment = initializationContext.getEnvironment();
+        PropertiesUtil.getProperties().addPropertySource(new SpringPropertySource(environment));
+        getLoggerContext().putObjectIfAbsent(ENVIRONMENT_KEY, environment);
         super.initialize(initializationContext, configLocation, logFile);
     }
 

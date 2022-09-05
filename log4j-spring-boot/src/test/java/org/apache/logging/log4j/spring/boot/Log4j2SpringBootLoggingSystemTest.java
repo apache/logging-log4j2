@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Arrays;
 import java.util.List;
 
-public class Log4j2CloudConfigLoggingSystemTest {
+public class Log4j2SpringBootLoggingSystemTest {
 
     @Test
     public void getStandardConfigLocations() {
