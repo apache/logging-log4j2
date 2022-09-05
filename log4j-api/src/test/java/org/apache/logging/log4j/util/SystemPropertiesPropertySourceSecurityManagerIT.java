@@ -53,8 +53,9 @@ public class SystemPropertiesPropertySourceSecurityManagerIT {
 	private static class TestSecurityManager extends SecurityManager {
 		@Override
 		public void checkPermission(final Permission permission) {
-			if (permission instanceof PropertyPermission) {
-				throw new SecurityException();
+			if (permission instanceof PropertyPermission &&
+					!permission.getName().equals("java.util.secureRandomSeed")) {
+				throw new SecurityException("Unexpected permission: " + permission);
 			}
 		}
 	}

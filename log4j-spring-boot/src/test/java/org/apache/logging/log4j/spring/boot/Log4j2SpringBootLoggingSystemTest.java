@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Arrays;
 import java.util.List;
 
-public class Log4j2CloudConfigLoggingSystemTest {
+public class Log4j2SpringBootLoggingSystemTest {
 
     @Test
     public void getStandardConfigLocations() {
@@ -37,7 +37,7 @@ public class Log4j2CloudConfigLoggingSystemTest {
         LoggerContext lc = LogManager.getContext(); // Initialize LogManager to here to prevent a failure trying to
                                                     // initialize it from StatusLogger.
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, customLog4j2Location);
-        Log4j2CloudConfigLoggingSystem cloudLoggingSystem = new Log4j2CloudConfigLoggingSystem(
+        Log4j2SpringBootLoggingSystem cloudLoggingSystem = new Log4j2SpringBootLoggingSystem(
                 this.getClass().getClassLoader());
         List<String> standardConfigLocations = Arrays.asList(cloudLoggingSystem.getStandardConfigLocations());
         assertTrue(standardConfigLocations.contains(customLog4j2Location));
@@ -45,7 +45,7 @@ public class Log4j2CloudConfigLoggingSystemTest {
     }
 
     @Test
-    @SetSystemProperty(key = Log4j2CloudConfigLoggingSystem.LOG4J2_DISABLE_CLOUD_CONFIG_LOGGING_SYSTEM, value = "true")
+    @SetSystemProperty(key = Log4j2SpringBootLoggingSystem.LOG4J2_DISABLE_CLOUD_CONFIG_LOGGING_SYSTEM, value = "true")
     public void testUseLog4j2LoggingSystem() {
         LoggingSystem loggingSystem = LoggingSystem.get(getClass().getClassLoader());
         assertTrue(loggingSystem.getClass().equals(Log4J2LoggingSystem.class));
@@ -54,6 +54,6 @@ public class Log4j2CloudConfigLoggingSystemTest {
     @Test
     public void testLoggingSystemEnabled() {
         LoggingSystem loggingSystem = LoggingSystem.get(getClass().getClassLoader());
-        assertTrue(loggingSystem.getClass().equals(Log4j2CloudConfigLoggingSystem.class));
+        assertTrue(loggingSystem.getClass().equals(Log4j2SpringBootLoggingSystem.class));
     }
 }

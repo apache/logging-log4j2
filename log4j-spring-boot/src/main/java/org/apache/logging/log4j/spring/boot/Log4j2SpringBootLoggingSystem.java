@@ -30,7 +30,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-import javax.net.ssl.HttpsURLConnection;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -45,19 +44,16 @@ import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
 import org.apache.logging.log4j.core.util.AuthorizationProvider;
 import org.apache.logging.log4j.core.util.FileUtils;
-import org.apache.logging.log4j.internal.LogManagerStatus;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
-import org.springframework.boot.context.properties.bind.BindResult;
-import org.springframework.boot.context.properties.bind.Bindable;
-import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.boot.logging.LogFile;
 import org.springframework.boot.logging.LoggingInitializationContext;
 import org.springframework.boot.logging.LoggingSystem;
 import org.springframework.boot.logging.LoggingSystemFactory;
 import org.springframework.boot.logging.log4j2.Log4J2LoggingSystem;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.env.Environment;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ResourceUtils;
@@ -65,7 +61,7 @@ import org.springframework.util.ResourceUtils;
 /**
  * Override Spring's implementation of the Log4j 2 Logging System to properly support Spring Cloud Config.
  */
-public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
+public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
 
     /**
      * Property that disables the usage of this {@link LoggingSystem}.
@@ -78,7 +74,7 @@ public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
     private static Logger LOGGER = StatusLogger.getLogger();
     private static final int PRECEDENCE = 0;
 
-    public Log4j2CloudConfigLoggingSystem(ClassLoader loader) {
+    public Log4j2SpringBootLoggingSystem(ClassLoader loader) {
         super(loader);
     }
 
@@ -92,7 +88,9 @@ public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
      */
     @Override
     public void initialize(LoggingInitializationContext initializationContext, String configLocation, LogFile logFile) {
-        getLoggerContext().putObjectIfAbsent(ENVIRONMENT_KEY, initializationContext.getEnvironment());
+        Environment environment = initializationContext.getEnvironment();
+        PropertiesUtil.getProperties().addPropertySource(new SpringPropertySource(environment));
+        getLoggerContext().putObjectIfAbsent(ENVIRONMENT_KEY, environment);
         super.initialize(initializationContext, configLocation, logFile);
     }
 
@@ -261,7 +259,7 @@ public class Log4j2CloudConfigLoggingSystem extends Log4J2LoggingSystem {
             if (PropertiesUtil.getProperties().getBooleanProperty(LOG4J2_DISABLE_CLOUD_CONFIG_LOGGING_SYSTEM)) {
                 return null;
             }
-            return new Log4j2CloudConfigLoggingSystem(classLoader);
+            return new Log4j2SpringBootLoggingSystem(classLoader);
         }
 
     }
