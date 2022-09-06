@@ -296,7 +296,7 @@
     <activemq.version>5.17.1</activemq.version>
     <jctoolsVersion>3.3.0</jctoolsVersion>
     <junitVersion>4.13.2</junitVersion>
-    <junitJupiterVersion>5.9.0</junitJupiterVersion>
+    <junit5Version>5.9.0</junit5Version>
     <junitPioneerVersion>1.6.2</junitPioneerVersion>
     <mockitoVersion>4.4.0</mockitoVersion>
     <xmlunitVersion>2.9.0</xmlunitVersion>
@@ -335,11 +335,11 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-	<groupId>org.apache.logging.log4j</groupId>
-	<artifactId>log4j-bom</artifactId>
-	<version>${project.version}</version>
-	<type>pom</type>
-	<scope>import</scope>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-bom</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
@@ -829,36 +829,11 @@
       </dependency>
       <!-- JUnit 5 engine -->
       <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-engine</artifactId>
-        <version>${junitJupiterVersion}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-api</artifactId>
-        <version>${junitJupiterVersion}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.junit.platform</groupId>
-        <artifactId>junit-platform-commons</artifactId>
-        <version>1.8.2</version>
-        <scope>test</scope>
-      </dependency>
-      <!-- JUnit 4 to 5 migration support -->
-      <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-migrationsupport</artifactId>
-        <version>${junitJupiterVersion}</version>
-        <scope>test</scope>
-      </dependency>
-      <!-- JUnit 5 parameterized test support -->
-      <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-params</artifactId>
-        <version>${junitJupiterVersion}</version>
-        <scope>test</scope>
+         <groupId>org.junit</groupId>
+         <artifactId>junit-bom</artifactId>
+         <version>${junit5Version}</version>
+         <type>pom</type>
+         <scope>import</scope>
       </dependency>
       <!-- Environment and system properties support for Jupiter -->
       <dependency>
@@ -872,13 +847,6 @@
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>${junitVersion}</version>
-        <scope>test</scope>
-      </dependency>
-      <!-- JUnit 4 engine -->
-      <dependency>
-        <groupId>org.junit.vintage</groupId>
-        <artifactId>junit-vintage-engine</artifactId>
-        <version>${junitJupiterVersion}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
