@@ -138,7 +138,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private List<CustomLevelConfig> customLevels = List.of();
     private final ConcurrentMap<String, String> properties = new ConcurrentHashMap<>();
     private final InterpolatorFactory interpolatorFactory;
-    private final StrLookup tempLookup;
+    private final Interpolator tempLookup;
     private final StrSubstitutor runtimeStrSubstitutor;
     private final StrSubstitutor configurationStrSubstitutor;
     private LoggerConfig root = new LoggerConfig();
@@ -168,6 +168,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         componentMap.put(Configuration.CONTEXT_PROPERTIES, properties);
         interpolatorFactory = injector.getInstance(InterpolatorFactory.class);
         tempLookup = interpolatorFactory.newInterpolator(new PropertiesLookup(properties));
+        tempLookup.setLoggerContext(loggerContext);
         runtimeStrSubstitutor = new RuntimeStrSubstitutor(tempLookup);
         configurationStrSubstitutor = new ConfigurationStrSubstitutor(runtimeStrSubstitutor);
         configurationScheduler = injector.getInstance(ConfigurationScheduler.class);
@@ -641,6 +642,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     protected void doConfigure() {
         injector.registerBinding(Keys.SUBSTITUTOR_KEY, () -> configurationStrSubstitutor::replace);
+        injector.registerBinding(LoggerContext.KEY, () -> loggerContext.get());
         processConditionals(rootNode);
         preConfigure(rootNode);
         configurationScheduler.start();
@@ -649,6 +651,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             createConfiguration(first, null);
             if (first.getObject() != null) {
                 StrLookup lookup = first.getObject();
+                if (lookup instanceof LoggerContextAware) {
+                    ((LoggerContextAware) lookup).setLoggerContext(loggerContext.get());
+                }
                 runtimeStrSubstitutor.setVariableResolver(lookup);
                 configurationStrSubstitutor.setVariableResolver(lookup);
             }
@@ -656,6 +661,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             final Map<String, String> map = this.getComponent(CONTEXT_PROPERTIES);
             final StrLookup lookup = map == null ? null : new PropertiesLookup(map);
             Interpolator interpolator = interpolatorFactory.newInterpolator(lookup);
+            interpolator.setLoggerContext(loggerContext.get());
             runtimeStrSubstitutor.setVariableResolver(interpolator);
             configurationStrSubstitutor.setVariableResolver(interpolator);
         }

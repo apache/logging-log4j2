@@ -18,7 +18,10 @@ package org.apache.logging.log4j.core.lookup;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationAware;
+import org.apache.logging.log4j.core.config.LoggerContextAware;
+import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.Keys;
@@ -34,7 +37,7 @@ import java.util.stream.Collectors;
 /**
  * Proxies other {@link StrLookup}s using a keys within ${} markers.
  */
-public class Interpolator extends AbstractConfigurationAwareLookup {
+public class Interpolator extends AbstractConfigurationAwareLookup implements LoggerContextAware {
 
     /** Constant for the prefix separator. */
     public static final char PREFIX_SEPARATOR = ':';
@@ -57,12 +60,16 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
 
     private final StrLookup defaultLookup;
 
+    private LoggerContext loggerContext = null;
+
+    // Used by tests
     public Interpolator(final StrLookup defaultLookup) {
         this(defaultLookup, List.of());
     }
 
     /**
      * Constructs an Interpolator using a given StrLookup and a list of packages to find Lookup plugins in.
+     * Only used in the Interpolator.
      *
      * @param defaultLookup  the default StrLookup to use as a fallback
      * @param pluginPackages a list of packages to scan for Lookup plugins
@@ -82,6 +89,12 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
                 });
     }
 
+    /**
+     * Used by interpolatrorFactory.
+     *
+     * @param defaultLookup The default Lookup.
+     * @param strLookupPlugins The Lookup Plugins.
+     */
     public Interpolator(final StrLookup defaultLookup, final Map<String, Supplier<StrLookup>> strLookupPlugins) {
         this.defaultLookup = defaultLookup;
         strLookups.putAll(strLookupPlugins);
@@ -172,6 +185,9 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
                 if (lookup instanceof ConfigurationAware) {
                     ((ConfigurationAware) lookup).setConfiguration(configuration);
                 }
+                if (lookup instanceof LoggerContextAware) {
+                    ((LoggerContextAware) lookup).setLoggerContext(loggerContext);
+                }
                 value = event == null ? lookup.lookup(name) : lookup.lookup(event, name);
             }
 
@@ -184,6 +200,13 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
             return event == null ? defaultLookup.lookup(var) : defaultLookup.lookup(event, var);
         }
         return null;
+    }
+
+    public void setLoggerContext(final LoggerContext loggerContext) {
+        if (loggerContext == null) {
+            return;
+        }
+        this.loggerContext = loggerContext;
     }
 
     @Override

@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.jmx.Server;
+import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.ExecutorServices;
 import org.apache.logging.log4j.core.util.NetUtils;
@@ -32,6 +33,7 @@ import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
@@ -70,6 +72,7 @@ public class LoggerContext extends AbstractLifeCycle
      * Property name of the property change event fired if the configuration is changed.
      */
     public static final String PROPERTY_CONFIG = "config";
+    public  static final Key<LoggerContext> KEY = new Key<>() {};
 
     private static final Configuration NULL_CONFIGURATION = new NullConfiguration();
 
@@ -120,6 +123,7 @@ public class LoggerContext extends AbstractLifeCycle
     public LoggerContext(final String name, final Object externalContext, final URI configLocn) {
         this(name, externalContext, configLocn, DI.createInjector());
         injector.init();
+        injector.registerBindingIfAbsent(KEY, () -> this);
     }
 
     /**
@@ -136,7 +140,8 @@ public class LoggerContext extends AbstractLifeCycle
             externalMap.put(EXTERNAL_CONTEXT_KEY, externalContext);
         }
         this.configLocation = configLocn;
-        this.injector = injector;
+        this.injector = injector.copy();
+        injector.registerBindingIfAbsent(KEY, () -> this);
     }
 
     /**
@@ -150,6 +155,7 @@ public class LoggerContext extends AbstractLifeCycle
     public LoggerContext(final String name, final Object externalContext, final String configLocn) {
         this(name, externalContext, configLocn, DI.createInjector());
         injector.init();
+        injector.registerBindingIfAbsent(KEY, () -> this);
     }
 
     /**
@@ -177,7 +183,8 @@ public class LoggerContext extends AbstractLifeCycle
         } else {
             configLocation = null;
         }
-        this.injector = injector;
+        this.injector = injector.copy();
+        this.injector.registerBindingIfAbsent(KEY, () -> this);
     }
 
     public void addShutdownListener(final LoggerContextShutdownAware listener) {

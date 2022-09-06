@@ -16,9 +16,14 @@
  */
 package org.apache.logging.log4j.spring.boot;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.lookup.Interpolator;
+import org.apache.logging.log4j.core.lookup.InterpolatorFactory;
+import org.apache.logging.log4j.core.lookup.PropertiesLookup;
 import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.junit.Test;
 import org.springframework.mock.env.MockEnvironment;
@@ -41,6 +46,7 @@ public class SpringLookupTest {
         LoggerContext context = (LoggerContext) LogManager.getContext(false);
         context.putObject(Log4j2SpringBootLoggingSystem.ENVIRONMENT_KEY, env);
         SpringLookup lookup = new SpringLookup();
+        lookup.setLoggerContext(context);
         String result = lookup.lookup("profiles.active");
         assertNotNull("No active profiles", result);
         assertEquals("Incorrect active profile", "test", result);
@@ -67,8 +73,10 @@ public class SpringLookupTest {
         env.setProperty("app.property", "test");
         LoggerContext context = (LoggerContext) LogManager.getContext(false);
         context.putObject(Log4j2SpringBootLoggingSystem.ENVIRONMENT_KEY, env);
-
-        StrLookup lookup = new Interpolator();
+        InterpolatorFactory interpolatorFactory = context.getInjector().getInstance(InterpolatorFactory.class);
+        Map<String, String> properties = new HashMap<>();
+        Interpolator lookup = interpolatorFactory.newInterpolator(new PropertiesLookup(properties));
+        lookup.setLoggerContext(context);
         String result = lookup.lookup("spring:profiles.active");
         assertNotNull("No active profiles", result);
         assertEquals("Incorrect active profile", "test", result);

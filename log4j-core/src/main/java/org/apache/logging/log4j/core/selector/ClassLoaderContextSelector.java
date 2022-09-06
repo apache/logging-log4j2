@@ -282,6 +282,7 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
     }
 
     protected LoggerContext createContext(final String name, final URI configLocation, final Injector injector) {
+
         return new LoggerContext(name, null, configLocation, injector);
     }
 
