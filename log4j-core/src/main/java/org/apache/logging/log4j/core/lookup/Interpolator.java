@@ -24,7 +24,9 @@ import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationAware;
+import org.apache.logging.log4j.core.config.LoggerContextAware;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
 import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.net.JndiManager;
@@ -34,7 +36,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Proxies all the other {@link StrLookup}s.
  */
-public class Interpolator extends AbstractConfigurationAwareLookup {
+public class Interpolator extends AbstractConfigurationAwareLookup implements LoggerContextAware {
 
     /** Constant for the prefix separator. */
     public static final char PREFIX_SEPARATOR = ':';
@@ -56,6 +58,8 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
     private final Map<String, StrLookup> strLookupMap = new HashMap<>();
 
     private final StrLookup defaultLookup;
+
+    protected LoggerContext loggerContext;
 
     public Interpolator(final StrLookup defaultLookup) {
         this(defaultLookup, null);
@@ -185,6 +189,9 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
             if (lookup instanceof ConfigurationAware) {
                 ((ConfigurationAware) lookup).setConfiguration(configuration);
             }
+            if (lookup instanceof LoggerContextAware) {
+                ((LoggerContextAware) lookup).setLoggerContext(loggerContext);
+            }
             LookupResult value = null;
             if (lookup != null) {
                 value = event == null ? lookup.evaluate(name) : lookup.evaluate(event, name);
@@ -199,6 +206,14 @@ public class Interpolator extends AbstractConfigurationAwareLookup {
             return event == null ? defaultLookup.evaluate(var) : defaultLookup.evaluate(event, var);
         }
         return null;
+    }
+
+    @Override
+    public void setLoggerContext(LoggerContext loggerContext) {
+        if (loggerContext == null) {
+            return;
+        }
+        this.loggerContext = loggerContext;
     }
 
     @Override

@@ -30,6 +30,9 @@
          - "remove" - Removed
     -->
     <release version="2.19.0" date="2022-MM-DD" description="GA Release 2.19.0">
+      <action issue="LOG4J2-3589" dev="rgoers" type="update">
+        Allow Plugins to be injected with the LoggerContext reference.
+      </action>
       <action issue="LOG4J2-3588" dev="rgoers" type="update">
         Allow PropertySources to be added.
       </action>

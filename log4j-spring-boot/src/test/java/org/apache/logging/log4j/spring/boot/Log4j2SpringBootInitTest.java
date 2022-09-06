@@ -54,7 +54,9 @@ public class Log4j2SpringBootInitTest {
 
         @Override
         public void run(ApplicationArguments args) throws Exception {
+            LoggerContext context = (LoggerContext) LogManager.getContext(false);
             SpringLookup lookup = new SpringLookup();
+            lookup.setLoggerContext(context);
             LOGGER.info("Started: {}", lookup.lookup("spring.application.name"));
         }
     }

@@ -21,7 +21,9 @@ import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.lookup.AbstractLoggerContextAwareLookup;
 import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -31,7 +33,7 @@ import org.springframework.core.env.Environment;
  * Lookup for Spring properties.
  */
 @Plugin(name = "spring", category = StrLookup.CATEGORY)
-public class SpringLookup extends SpringEnvironmentHolder implements StrLookup {
+public class SpringLookup extends AbstractLoggerContextAwareLookup implements StrLookup {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final String ACTIVE = "profiles.active";
@@ -40,30 +42,27 @@ public class SpringLookup extends SpringEnvironmentHolder implements StrLookup {
     private static final Pattern ACTIVE_PATTERN = Pattern.compile(ACTIVE + PATTERN);
     private static final Pattern DEFAULT_PATTERN = Pattern.compile(DEFAULT + PATTERN);
 
-    public SpringLookup() {
-        getEnvironment();
-    }
+    private volatile Environment environment;
 
     @Override
     public String lookup(String key) {
-        Environment env = getEnvironment();
-        if (env != null) {
+        if (environment != null) {
             String lowerKey = key.toLowerCase();
             if (lowerKey.startsWith(ACTIVE)) {
-                switch (env.getActiveProfiles().length) {
+                switch (environment.getActiveProfiles().length) {
                     case 0: {
                         return null;
                     }
                     case 1: {
-                        return env.getActiveProfiles()[0];
+                        return environment.getActiveProfiles()[0];
                     }
                     default: {
                         Matcher matcher = ACTIVE_PATTERN.matcher(key);
                         if (matcher.matches()) {
                             try {
                                 int index = Integers.parseInt(matcher.group(1));
-                                if (index < env.getActiveProfiles().length) {
-                                    return env.getActiveProfiles()[index];
+                                if (index < environment.getActiveProfiles().length) {
+                                    return environment.getActiveProfiles()[index];
                                 }
                                 LOGGER.warn("Index out of bounds for Spring active profiles: {}", index);
                                 return null;
@@ -73,24 +72,24 @@ public class SpringLookup extends SpringEnvironmentHolder implements StrLookup {
                             }
 
                         }
-                        return String.join(",", env.getActiveProfiles());
+                        return String.join(",", environment.getActiveProfiles());
                     }
                 }
             } else if (lowerKey.startsWith(DEFAULT)) {
-                switch (env.getDefaultProfiles().length) {
+                switch (environment.getDefaultProfiles().length) {
                     case 0: {
                         return null;
                     }
                     case 1: {
-                        return env.getDefaultProfiles()[0];
+                        return environment.getDefaultProfiles()[0];
                     }
                     default: {
                         Matcher matcher = DEFAULT_PATTERN.matcher(key);
                         if (matcher.matches()) {
                             try {
                                 int index = Integer.parseInt(matcher.group(1));
-                                if (index < env.getDefaultProfiles().length) {
-                                    return env.getDefaultProfiles()[index];
+                                if (index < environment.getDefaultProfiles().length) {
+                                    return environment.getDefaultProfiles()[index];
                                 }
                                 LOGGER.warn("Index out of bounds for Spring default profiles: {}", index);
                                 return null;
@@ -100,12 +99,12 @@ public class SpringLookup extends SpringEnvironmentHolder implements StrLookup {
                             }
 
                         }
-                        return String.join(",", env.getDefaultProfiles());
+                        return String.join(",", environment.getDefaultProfiles());
                     }
                 }
             }
 
-            return env.getProperty(key);
+            return environment.getProperty(key);
 
         }
         return null;
@@ -114,5 +113,15 @@ public class SpringLookup extends SpringEnvironmentHolder implements StrLookup {
     @Override
     public String lookup(LogEvent event, String key) {
         return lookup((key));
+    }
+
+    @Override
+    public void setLoggerContext(final LoggerContext loggerContext) {
+        if (loggerContext != null) {
+            super.setLoggerContext(loggerContext);
+            environment = (Environment) loggerContext.getObject(Log4j2SpringBootLoggingSystem.ENVIRONMENT_KEY);
+        } else {
+            LOGGER.warn("Attempt to set LoggerContext reference to null in SpringLookup");
+        }
     }
 }
