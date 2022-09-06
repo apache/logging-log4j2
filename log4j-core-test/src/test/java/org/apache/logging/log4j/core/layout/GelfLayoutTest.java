@@ -16,7 +16,13 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import com.fasterxml.jackson.core.io.JsonStringEncoder;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.InflaterInputStream;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
@@ -33,19 +39,16 @@ import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
+import org.apache.logging.log4j.util.Chars;
 import org.apache.logging.log4j.util.LazyValue;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.InflaterInputStream;
+import com.fasterxml.jackson.core.io.JsonStringEncoder;
 
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @UsingAnyThreadContext
@@ -80,25 +83,25 @@ public class GelfLayoutTest {
     Logger root = ctx.getRootLogger();
 
     private void testCompressedLayout(final CompressionType compressionType, final boolean includeStacktrace,
-                                      final boolean includeThreadContext, String host, final boolean includeNullDelimiter,
-                                      final boolean includeNewLineDelimiter) throws IOException {
+            final boolean includeThreadContext, String host, final boolean includeNullDelimiter,
+            final boolean includeNewLineDelimiter) throws IOException {
         for (final Appender appender : root.getAppenders().values()) {
             root.removeAppender(appender);
         }
         // set up appenders
         final GelfLayout layout = GelfLayout.newBuilder()
-            .setConfiguration(ctx.getConfiguration())
-            .setHost(host)
-            .setAdditionalFields(new KeyValuePair[] {
-                new KeyValuePair(KEY1, VALUE1),
-                new KeyValuePair(KEY2, "${java:runtime}"), })
-            .setCompressionType(compressionType)
-            .setCompressionThreshold(1024)
-            .setIncludeStacktrace(includeStacktrace)
-            .setIncludeThreadContext(includeThreadContext)
-            .setIncludeNullDelimiter(includeNullDelimiter)
-            .setIncludeNewLineDelimiter(includeNewLineDelimiter)
-            .build();
+                .setConfiguration(ctx.getConfiguration())
+                .setHost(host)
+                .setAdditionalFields(new KeyValuePair[]{
+                        new KeyValuePair(KEY1, VALUE1),
+                        new KeyValuePair(KEY2, "${java:runtime}"),})
+                .setCompressionType(compressionType)
+                .setCompressionThreshold(1024)
+                .setIncludeStacktrace(includeStacktrace)
+                .setIncludeThreadContext(includeThreadContext)
+                .setIncludeNullDelimiter(includeNullDelimiter)
+                .setIncludeNewLineDelimiter(includeNewLineDelimiter)
+                .build();
         final ListAppender eventAppender = new ListAppender("Events", null, null, true, false);
         final ListAppender rawAppender = new ListAppender("Raw", null, layout, true, true);
         final ListAppender formattedAppender = new ListAppender("Formatted", null, layout, true, false);
@@ -140,6 +143,11 @@ public class GelfLayoutTest {
         final String threadName = Thread.currentThread().getName();
 
         //@formatter:off
+        String message = messages.get(0);
+        if (includeNullDelimiter) {
+            assertThat(message.indexOf(Chars.NUL)).isEqualTo(message.length() - 1);
+            message = message.replace(Chars.NUL, Chars.LF);
+        }
         assertJsonEquals("{" +
                         "\"version\": \"1.1\"," +
                         "\"host\": \"" + host + "\"," +
@@ -151,8 +159,13 @@ public class GelfLayoutTest {
                         "\"_" + KEY1 + "\": \"" + VALUE1 + "\"," +
                         "\"_" + KEY2 + "\": \"" + javaLookup.getRuntime() + "\"" +
                         "}",
-                messages.get(0));
+                message);
 
+        message = messages.get(1);
+        if (includeNullDelimiter) {
+            assertThat(message.indexOf(Chars.NUL)).isEqualTo(message.length() - 1);
+            message = message.replace(Chars.NUL, Chars.LF);
+        }
         assertJsonEquals("{" +
                         "\"version\": \"1.1\"," +
                         "\"host\": \"" + host + "\"," +
@@ -161,15 +174,15 @@ public class GelfLayoutTest {
                         "\"_thread\": \"" + threadName + "\"," +
                         "\"_logger\": \"\"," +
                         "\"short_message\": \"" + LINE2 + "\"," +
-                       (includeThreadContext ?
-                            "\"_" + MDCKEY1 + "\": \"" + MDCVALUE1 + "\"," +
-                           "\"_" + MDCKEY2 + "\": \"" + MDCVALUE2 + "\","
-                                            :
-                           "") +
+                        (includeThreadContext ?
+                                "\"_" + MDCKEY1 + "\": \"" + MDCVALUE1 + "\"," +
+                                        "\"_" + MDCKEY2 + "\": \"" + MDCVALUE2 + "\","
+                                :
+                                "") +
                         "\"_" + KEY1 + "\": \"" + VALUE1 + "\"," +
                         "\"_" + KEY2 + "\": \"" + javaLookup.getRuntime() + "\"" +
                         "}",
-                messages.get(1));
+                message);
         //@formatter:on
         final byte[] compressed = raw.get(2);
         final byte[] compressed2 = raw2.get(2);
@@ -178,27 +191,27 @@ public class GelfLayoutTest {
         InputStream inflaterStream;
         InputStream inflaterStream2;
         switch (compressionType) {
-        case GZIP:
-            inflaterStream = new GZIPInputStream(bais);
-            inflaterStream2 = new GZIPInputStream(bais2);
-            break;
-        case ZLIB:
-            inflaterStream = new InflaterInputStream(bais);
-            inflaterStream2 = new InflaterInputStream(bais2);
-            break;
-        case OFF:
-            inflaterStream = bais;
-            inflaterStream2 = bais2;
-            break;
-        default:
-            throw new IllegalStateException("Missing test case clause");
+            case GZIP:
+                inflaterStream = new GZIPInputStream(bais);
+                inflaterStream2 = new GZIPInputStream(bais2);
+                break;
+            case ZLIB:
+                inflaterStream = new InflaterInputStream(bais);
+                inflaterStream2 = new InflaterInputStream(bais2);
+                break;
+            case OFF:
+                inflaterStream = bais;
+                inflaterStream2 = bais2;
+                break;
+            default:
+                throw new IllegalStateException("Missing test case clause");
         }
         final byte[] uncompressed = IOUtils.toByteArray(inflaterStream);
         final byte[] uncompressed2 = IOUtils.toByteArray(inflaterStream2);
         inflaterStream.close();
         inflaterStream2.close();
-        final String uncompressedString = new String(uncompressed, layout.getCharset());
-        final String uncompressedString2 = new String(uncompressed2, layout.getCharset());
+        String uncompressedString = new String(uncompressed, layout.getCharset());
+        String uncompressedString2 = new String(uncompressed2, layout.getCharset());
         //@formatter:off
         final String expected = "{" +
                 "\"version\": \"1.1\"," +
@@ -211,23 +224,25 @@ public class GelfLayoutTest {
                 "\"full_message\": \"" + String.valueOf(JsonStringEncoder.getInstance().quoteAsString(
                 includeStacktrace ? GelfLayout.formatThrowable(exception).toString() : exception.toString())) + "\"," +
                 (includeThreadContext ?
-                      "\"_" + MDCKEY1 + "\": \"" + MDCVALUE1 + "\"," +
-                       "\"_" + MDCKEY2 + "\": \"" + MDCVALUE2 + "\","
-                    : "") +
+                        "\"_" + MDCKEY1 + "\": \"" + MDCVALUE1 + "\"," +
+                                "\"_" + MDCKEY2 + "\": \"" + MDCVALUE2 + "\","
+                        : "") +
                 "\"_" + KEY1 + "\": \"" + VALUE1 + "\"," +
                 "\"_" + KEY2 + "\": \"" + javaLookup.getRuntime() + "\"" +
                 "}";
         //@formatter:on
-        assertJsonEquals(expected, uncompressedString);
-        assertJsonEquals(expected, uncompressedString2);
         if (includeNullDelimiter) {
-            assertEquals(uncompressedString.indexOf('\0'), uncompressedString.length() - 1);
-            assertEquals(uncompressedString2.indexOf('\0'), uncompressedString2.length() - 1);
+            assertEquals(uncompressedString.indexOf(Chars.NUL), uncompressedString.length() - 1);
+            assertEquals(uncompressedString2.indexOf(Chars.NUL), uncompressedString2.length() - 1);
+            uncompressedString = uncompressedString.replace(Chars.NUL, Chars.LF);
+            uncompressedString2 = uncompressedString2.replace(Chars.NUL, Chars.LF);
         }
         if (includeNewLineDelimiter) {
-            assertEquals(uncompressedString.indexOf('\n'), uncompressedString.length() - 1);
-            assertEquals(uncompressedString2.indexOf('\n'), uncompressedString2.length() - 1);
+            assertEquals(uncompressedString.indexOf(Chars.LF), uncompressedString.length() - 1);
+            assertEquals(uncompressedString2.indexOf(Chars.LF), uncompressedString2.length() - 1);
         }
+        assertJsonEquals(expected, uncompressedString);
+        assertJsonEquals(expected, uncompressedString2);
     }
 
     @Test
@@ -282,9 +297,10 @@ public class GelfLayoutTest {
     }
 
     private void testRequiresLocation(String messagePattern, Boolean requiresLocation) {
+
         GelfLayout layout = GelfLayout.newBuilder()
-            .setMessagePattern(messagePattern)
-            .build();
+                .setMessagePattern(messagePattern)
+                .build();
 
         assertEquals(layout.requiresLocation(), requiresLocation);
     }
