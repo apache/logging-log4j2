@@ -245,7 +245,7 @@
     <kubernetes-client.version>5.12.2</kubernetes-client.version>
     <flumeVersion>1.10.0</flumeVersion>
     <disruptorVersion>3.4.4</disruptorVersion>
-    <conversantDisruptorVersion>1.2.15</conversantDisruptorVersion> <!-- Version 1.2.16 requires Java 9 -->
+    <conversantDisruptorVersion>1.2.20</conversantDisruptorVersion> <!-- Version 1.2.16 requires Java 9 -->
     <elastic.version>7.17.6</elastic.version>
     <mongodb3.version>3.12.11</mongodb3.version>
     <mongodb4.version>4.5.0</mongodb4.version>
