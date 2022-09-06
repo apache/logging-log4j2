@@ -16,7 +16,17 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import com.fasterxml.jackson.core.io.JsonStringEncoder;
+import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.InflaterInputStream;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
@@ -33,19 +43,12 @@ import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.junit.UsingAnyThreadContext;
 import org.apache.logging.log4j.test.appender.EncodingListAppender;
 import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.util.Chars;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.InflaterInputStream;
-
-import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
-import static org.junit.jupiter.api.Assertions.*;
+import com.fasterxml.jackson.core.io.JsonStringEncoder;
 
 @UsingAnyThreadContext
 public class GelfLayoutTest {
@@ -141,6 +144,11 @@ public class GelfLayoutTest {
         final String threadName = Thread.currentThread().getName();
 
         //@formatter:off
+        String message = messages.get(0);
+        if (includeNullDelimiter) {
+            assertThat(message.indexOf(Chars.NUL)).isEqualTo(message.length() - 1);
+            message = message.replace(Chars.NUL, Chars.LF);
+        }
         assertJsonEquals("{" +
                         "\"version\": \"1.1\"," +
                         "\"host\": \"" + host + "\"," +
@@ -152,8 +160,13 @@ public class GelfLayoutTest {
                         "\"_" + KEY1 + "\": \"" + VALUE1 + "\"," +
                         "\"_" + KEY2 + "\": \"" + javaLookup.getRuntime() + "\"" +
                         "}",
-                messages.get(0));
+                message);
 
+        message = messages.get(1);
+        if (includeNullDelimiter) {
+            assertThat(message.indexOf(Chars.NUL)).isEqualTo(message.length() - 1);
+            message = message.replace(Chars.NUL, Chars.LF);
+        }
         assertJsonEquals("{" +
                         "\"version\": \"1.1\"," +
                         "\"host\": \"" + host + "\"," +
@@ -170,7 +183,7 @@ public class GelfLayoutTest {
                         "\"_" + KEY1 + "\": \"" + VALUE1 + "\"," +
                         "\"_" + KEY2 + "\": \"" + javaLookup.getRuntime() + "\"" +
                         "}",
-                messages.get(1));
+                message);
         //@formatter:on
         final byte[] compressed = raw.get(2);
         final byte[] compressed2 = raw2.get(2);
@@ -198,8 +211,8 @@ public class GelfLayoutTest {
         final byte[] uncompressed2 = IOUtils.toByteArray(inflaterStream2);
         inflaterStream.close();
         inflaterStream2.close();
-        final String uncompressedString = new String(uncompressed, layout.getCharset());
-        final String uncompressedString2 = new String(uncompressed2, layout.getCharset());
+        String uncompressedString = new String(uncompressed, layout.getCharset());
+        String uncompressedString2 = new String(uncompressed2, layout.getCharset());
         //@formatter:off
         final String expected = "{" +
                 "\"version\": \"1.1\"," +
@@ -219,16 +232,18 @@ public class GelfLayoutTest {
                 "\"_" + KEY2 + "\": \"" + javaLookup.getRuntime() + "\"" +
                 "}";
         //@formatter:on
-        assertJsonEquals(expected, uncompressedString);
-        assertJsonEquals(expected, uncompressedString2);
         if (includeNullDelimiter) {
-            assertEquals(uncompressedString.indexOf('\0'), uncompressedString.length() - 1);
-            assertEquals(uncompressedString2.indexOf('\0'), uncompressedString2.length() - 1);
+            assertEquals(uncompressedString.indexOf(Chars.NUL), uncompressedString.length() - 1);
+            assertEquals(uncompressedString2.indexOf(Chars.NUL), uncompressedString2.length() - 1);
+            uncompressedString = uncompressedString.replace(Chars.NUL, Chars.LF);
+            uncompressedString2 = uncompressedString2.replace(Chars.NUL, Chars.LF);
         }
         if (includeNewLineDelimiter) {
-            assertEquals(uncompressedString.indexOf('\n'), uncompressedString.length() - 1);
-            assertEquals(uncompressedString2.indexOf('\n'), uncompressedString2.length() - 1);
+            assertEquals(uncompressedString.indexOf(Chars.LF), uncompressedString.length() - 1);
+            assertEquals(uncompressedString2.indexOf(Chars.LF), uncompressedString2.length() - 1);
         }
+        assertJsonEquals(expected, uncompressedString);
+        assertJsonEquals(expected, uncompressedString2);
     }
 
     @Test
