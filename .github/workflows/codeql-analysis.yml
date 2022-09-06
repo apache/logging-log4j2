@@ -49,7 +49,7 @@ jobs:
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@b398f525a5587552e573b247ac661067fafa920b    # 2.1.19
+        uses: github/codeql-action/init@b398f525a5587552e573b247ac661067fafa920b    # 2.1.22
         with:
           languages: ${{ matrix.language }}
           # If you wish to specify custom queries, you can do so here or in a config file.
@@ -89,4 +89,4 @@ jobs:
           --global-toolchains ".github/workflows/maven-toolchains.xml"
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@b398f525a5587552e573b247ac661067fafa920b    # 2.1.19
+        uses: github/codeql-action/analyze@b398f525a5587552e573b247ac661067fafa920b    # 2.1.22
