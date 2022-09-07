@@ -950,7 +950,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             } else {
                 LOGGER.warn("levelAndRefs are only allowed in a properties configuration. The value is ignored.");
                 result.level = level;
-                result.refs = Arrays.asList(refs);
+                result.refs = refs != null ? Arrays.asList(refs) : new ArrayList<>();
             }
         } else {
             result.level = level;
