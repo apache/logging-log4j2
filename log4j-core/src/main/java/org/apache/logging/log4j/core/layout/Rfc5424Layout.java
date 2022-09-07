@@ -73,7 +73,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     /**
      * The default example enterprise number from RFC5424.
      */
-    public static final String DEFAULT_ENTERPRISE_NUMBER = "32473";
+    public static final int DEFAULT_ENTERPRISE_NUMBER = 32473;
     /**
      * The default event id.
      */
@@ -616,7 +616,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             // @formatter:off
             @PluginAttribute(value = "facility", defaultString = "LOCAL0") final Facility facility,
             @PluginAttribute("id") final String id,
-            @PluginAttribute(value = "enterpriseNumber", defaultInt = -1)
+            @PluginAttribute(value = "enterpriseNumber", defaultInt = DEFAULT_ENTERPRISE_NUMBER)
             final int enterpriseNumber,
             @PluginAttribute(value = "includeMDC", defaultBoolean = true) final boolean includeMDC,
             @PluginAttribute(value = "mdcId", defaultString = DEFAULT_MDCID) final String mdcId,
@@ -647,13 +647,13 @@ public final class Rfc5424Layout extends AbstractStringLayout {
 
     public static class Rfc5424LayoutBuilder {
         private Configuration config;
-        private Facility facility;
+        private Facility facility = Facility.LOCAL0;
         private String id;
-        private String ein;
-        private boolean includeMDC;
+        private String ein = String.valueOf(DEFAULT_ENTERPRISE_NUMBER);
+        private boolean includeMDC = true;
         private boolean includeNL;
         private String escapeNL;
-        private String mdcId;
+        private String mdcId = DEFAULT_MDCID;
         private String mdcPrefix;
         private String eventPrefix;
         private String appName;
@@ -843,4 +843,21 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     public Facility getFacility() {
         return facility;
     }
+
+    public String getDefaultId() {
+        return defaultId;
+    }
+
+    public String getEnterpriseNumber() {
+        return enterpriseNumber;
+    }
+
+    public boolean isIncludeMdc() {
+        return includeMdc;
+    }
+
+    public String getMdcId() {
+        return mdcId;
+    }
+
 }

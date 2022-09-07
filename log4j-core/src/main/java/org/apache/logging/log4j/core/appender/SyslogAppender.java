@@ -57,7 +57,7 @@ public class SyslogAppender extends SocketAppender {
         private String id;
 
         @PluginBuilderAttribute(value = "enterpriseNumber")
-        private String enterpriseNumber = Rfc5424Layout.DEFAULT_ENTERPRISE_NUMBER;
+        private String enterpriseNumber = String.valueOf(Rfc5424Layout.DEFAULT_ENTERPRISE_NUMBER);
 
         @PluginBuilderAttribute(value = "includeMdc")
         private boolean includeMdc = true;

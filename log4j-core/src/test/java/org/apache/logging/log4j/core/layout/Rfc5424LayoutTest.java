@@ -37,6 +37,11 @@ import org.apache.logging.log4j.core.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.core.config.Node;
+import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
+import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
+import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.KeyValuePair;
@@ -567,6 +572,29 @@ public class Rfc5424LayoutTest {
             root.removeAppender(appender);
             appender.stop();
         }
+    }
+
+    @Test
+    public void testLayoutBuilderDefaultValues() {
+        final Rfc5424Layout layout = new Rfc5424Layout.Rfc5424LayoutBuilder().build();
+        checkDefaultValues(layout);
+
+        final PluginManager manager = new PluginManager(Node.CATEGORY);
+        manager.collectPlugins();
+        final Object obj = new PluginBuilder(manager.getPluginType("Rfc5424Layout")).withConfigurationNode(new Node())
+                .withConfiguration(new DefaultConfiguration())
+                .build();
+        assertTrue(obj instanceof Rfc5424Layout);
+        checkDefaultValues((Rfc5424Layout) obj);
+    }
+
+    private void checkDefaultValues(final Rfc5424Layout layout) {
+        assertNotNull(layout);
+        assertEquals(Facility.LOCAL0, layout.getFacility());
+        assertEquals(String.valueOf(Rfc5424Layout.DEFAULT_ENTERPRISE_NUMBER), layout.getEnterpriseNumber());
+        assertEquals(true, layout.isIncludeMdc());
+        assertEquals(Rfc5424Layout.DEFAULT_MDCID, layout.getMdcId());
+        assertEquals(Rfc5424Layout.DEFAULT_ID, layout.getDefaultId());
     }
 
     @ParameterizedTest
