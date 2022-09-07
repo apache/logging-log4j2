@@ -60,6 +60,9 @@
       <action issue="LOG4J2-3564" dev="pkarwasz" type="fix">
         Fix NPE in `log4j-to-jul` in the case the root logger level is null.
       </action>
+      <action issue="LOG4J2-3545" dev="pkarwasz" type="fix" due-to="Johan Compagner">
+        Add correct manifest entries for OSGi to log4j-jcl
+      </action>
       <action issue="LOG4J2-3565" dev="dafengsu7" type="fix">
         Fix RollingRandomAccessFileAppender with DirectWriteRolloverStrategy can't create the first log file of different directory.
       </action>
