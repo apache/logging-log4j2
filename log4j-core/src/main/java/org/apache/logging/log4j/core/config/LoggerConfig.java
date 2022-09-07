@@ -385,6 +385,14 @@ public class LoggerConfig extends AbstractFilterable {
     }
 
     /**
+     * Allows callers to determine the Level assigned to this LoggerConfig.
+     * @return the Level associated with this LoggerConfig or null if none is set.
+     */
+    public Level getExplicitLevel() {
+        return level;
+    }
+
+    /**
      * Returns the LogEventFactory.
      *
      * @return the LogEventFactory.
@@ -835,11 +843,11 @@ public class LoggerConfig extends AbstractFilterable {
             } else {
                 LOGGER.warn("levelAndRefs are only allowed in a properties configuration. The value is ignored.");
                 result.level = level;
-                result.refs = Arrays.asList(refs);
+                result.refs = refs != null ? Arrays.asList(refs) : new ArrayList<>();
             }
         } else {
             result.level = level;
-            result.refs = Arrays.asList(refs);
+            result.refs = refs != null ? Arrays.asList(refs) : new ArrayList<>();
         }
         return result;
     }
