@@ -78,6 +78,9 @@
       <action issue="LOG4J2-3590" dev="pkarwasz" type="remove">
 	Remove SLF4J 1.8.x binding.
       </action>
+      <action issue="LOG4J-3557" dev="pkarwasz" type="fix" due-to="Andreas Leitgeb">
+	Fix recursion between Log4j 1.2 LogManager and Category.
+      </action>
     </release>
     <release version="2.18.0" date="2022-06-28" description="GA Release 2.18.0">
       <action issue="LOG4J2-3339" dev="rgoers" type="fix">
