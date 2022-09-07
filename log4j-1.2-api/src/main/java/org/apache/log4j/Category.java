@@ -426,7 +426,7 @@ public class Category implements AppenderAttachable {
     }
 
     /**
-     * Gets the the {@link LoggerRepository} where this <code>Category</code> instance is attached.
+     * Gets the {@link LoggerRepository} where this <code>Category</code> instance is attached.
      *
      * @deprecated Please use {@link #getLoggerRepository()} instead.
      * @since 1.1
@@ -449,7 +449,7 @@ public class Category implements AppenderAttachable {
     }
 
     /**
-     * Gets the the {@link LoggerRepository} where this <code>Category</code> is attached.
+     * Gets the {@link LoggerRepository} where this <code>Category</code> is attached.
      *
      * @since 1.2
      */

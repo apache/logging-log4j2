@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Tests that logged strings appear in the file, that the initial file size is the specified specified region length,
+ * Tests that logged strings appear in the file, that the initial file size is the specified region length,
  * that the file is extended by region length when necessary, and that the file is shrunk to its actual usage when done.
  *
  * @since 2.1

@@ -20,7 +20,7 @@ package org.apache.log4j.xml;
 import org.apache.log4j.Level;
 
 /**
- * This class introduces a new level level called TRACE. TRACE has lower level than DEBUG.
+ * This class introduces a new level called TRACE. TRACE has lower level than DEBUG.
  */
 public class XLevel extends Level {
     private static final long serialVersionUID = 7288304330257085144L;

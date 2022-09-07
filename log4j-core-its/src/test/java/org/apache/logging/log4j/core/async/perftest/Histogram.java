@@ -120,7 +120,7 @@ public final class Histogram
      * Add an observation to the histogram and increment the counter for the interval it matches.
      *
      * @param value for the observation to be added.
-     * @return return true if in the range of intervals and successfully added observation; otherwise false.
+     * @return true if in the range of intervals and successfully added observation; otherwise false.
      */
     public boolean addObservation(final long value)
     {

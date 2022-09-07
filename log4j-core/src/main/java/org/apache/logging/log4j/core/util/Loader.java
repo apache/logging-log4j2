@@ -80,7 +80,7 @@ public final class Loader {
      * class ({@code Loader}). Under JDK 1.1, only the class
      * loader that loaded this class ({@code Loader}) is used.</li>
      * <li>Try one last time with
-     * {@code ClassLoader.getSystemResource(resource)}, that is is
+     * {@code ClassLoader.getSystemResource(resource)}, that is
      * using the system class loader in JDK 1.2 and virtual machine's
      * built-in class loader in JDK 1.1.</li>
      * </ol>
@@ -142,7 +142,7 @@ public final class Loader {
      * class ({@code Loader}). Under JDK 1.1, only the class
      * loader that loaded this class ({@code Loader}) is used.</li>
      * <li>Try one last time with
-     * {@code ClassLoader.getSystemResource(resource)}, that is is
+     * {@code ClassLoader.getSystemResource(resource)}, that is
      * using the system class loader in JDK 1.2 and virtual machine's
      * built-in class loader in JDK 1.1.</li>
      * </ol>

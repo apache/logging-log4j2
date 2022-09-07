@@ -48,7 +48,7 @@ public interface AppenderAttachable {
 
     /**
      * Returns <code>true</code> if the specified appender is in list of
-     * attached attached, <code>false</code> otherwise.
+     * attached, <code>false</code> otherwise.
      * @param appender The Appender to check.
      * @return true if the Appender is attached.
      *

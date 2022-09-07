@@ -48,7 +48,7 @@ public class DateLookup implements StrLookup {
     }
 
     /**
-     * Looks up the the current date or the date in the LogEvent.
+     * Looks up d the current date or the date in the LogEvent.
      * @param event The LogEvent for which the date is returned. If null, current date is returned.
      * @param key the format to use. If null, the default DateFormat will be used.
      * @return The formatted date, never null.
