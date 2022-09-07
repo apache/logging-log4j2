@@ -75,6 +75,9 @@
       <action issue="LOG4J2-2975" dev="pkarwasz" type="add" due-to="Daniel Gray">
         Add implementation of SLF4J2 fluent API.
       </action>
+      <action issue="LOG4J2-3590" dev="pkarwasz" type="remove">
+	Remove SLF4J 1.8.x binding.
+      </action>
     </release>
     <release version="2.18.0" date="2022-06-28" description="GA Release 2.18.0">
       <action issue="LOG4J2-3339" dev="rgoers" type="fix">
