@@ -16,29 +16,28 @@
  */
 package org.apache.logging.log4j.docker;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.lookup.AbstractLookup;
-import org.apache.logging.log4j.core.lookup.Lookup;
-import org.apache.logging.log4j.core.util.NetUtils;
-import org.apache.logging.log4j.docker.model.Container;
-import org.apache.logging.log4j.docker.model.Network;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.PropertiesUtil;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.lookup.AbstractLookup;
+import org.apache.logging.log4j.core.lookup.StrLookup;
+import org.apache.logging.log4j.core.util.NetUtils;
+import org.apache.logging.log4j.docker.model.Container;
+import org.apache.logging.log4j.docker.model.Network;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.PropertiesUtil;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
- *
+ * Looks up keys for a Docker container.
  */
-@Lookup
-@Plugin("docker")
+@Plugin(name = "docker", category = StrLookup.CATEGORY)
 public class DockerLookup extends AbstractLookup {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
@@ -46,10 +45,13 @@ public class DockerLookup extends AbstractLookup {
     private static final String HTTP = "http";
     private final Container container;
 
+    /**
+     * Constructs a new instance.
+     */
     public DockerLookup() {
         String baseUri = System.getenv(DOCKER_URI);
         if (baseUri == null) {
-            final PropertiesUtil props = PropertiesUtil.getProperties();
+            PropertiesUtil props = PropertiesUtil.getProperties();
             baseUri = props.getStringProperty(DOCKER_URI);
         }
         if (baseUri == null) {
@@ -59,18 +61,17 @@ public class DockerLookup extends AbstractLookup {
         }
         Container current = null;
         try {
-            final URL url = new URL(baseUri + "/containers/json");
-
+            URL url= new URL(baseUri + "/containers/json");
             if (url.getProtocol().equals(HTTP)) {
-                final String macAddr = NetUtils.getMacAddressString();
-                final ObjectMapper objectMapper = new ObjectMapper();
-                final List<Container> containerList = objectMapper.readValue(url, new TypeReference<List<Container>>(){});
+                String macAddr = NetUtils.getMacAddressString();
+                ObjectMapper objectMapper = new ObjectMapper();
+                List<Container> containerList = objectMapper.readValue(url, new TypeReference<List<Container>>(){});
 
-                for (final Container container : containerList) {
+                for (Container container : containerList) {
                     if (macAddr != null && container.getNetworkSettings() != null) {
-                        final Map<String, Network> networks = container.getNetworkSettings().getNetworks();
+                        Map<String, Network> networks = container.getNetworkSettings().getNetworks();
                         if (networks != null) {
-                            for (final Network network: networks.values()) {
+                            for (Network network: networks.values()) {
                                 if (macAddr.equals(network.getMacAddress())) {
                                     current = container;
                                     break;
@@ -86,14 +87,14 @@ public class DockerLookup extends AbstractLookup {
             if (current == null) {
                 LOGGER.warn("Unable to determine current container");
             }
-        } catch (final IOException ioe) {
+        } catch (IOException ioe) {
             LOGGER.warn("Unable to read container information: " + ioe.getMessage());
         }
         container = current;
     }
 
     @Override
-    public String lookup(final LogEvent event, final String key) {
+    public String lookup(LogEvent event, String key) {
         if (container == null) {
             return null;
         }

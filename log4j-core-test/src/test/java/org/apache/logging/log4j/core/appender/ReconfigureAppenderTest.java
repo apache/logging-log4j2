@@ -46,7 +46,7 @@ public class ReconfigureAppenderTest {
 		this.createAndAddAppender();
 
 		// let's write something to the logger to ensure the output stream is opened.
-		// We expect this call to create a a new output stream (which is does).
+		// We expect this call to create a new output stream (which is does).
 		// see OutputStreamManager.writeToDestination(...).
 		Logger logger = (Logger)LogManager.getLogger(this.getClass());
 		logger.info("test message 1");

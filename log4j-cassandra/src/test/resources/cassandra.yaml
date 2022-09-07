@@ -380,7 +380,7 @@ memtable_allocation_type: heap_buffers
 # to the number of cores.
 #memtable_flush_writers: 8
 
-# A fixed memory pool size in MB for for SSTable index summaries. If left
+# A fixed memory pool size in MB for SSTable index summaries. If left
 # empty, this will default to 5% of the heap size. If the memory usage of
 # all index summaries exceeds this limit, SSTables with low read rates will
 # shrink their index summaries in order to meet this limit.  However, this
@@ -549,7 +549,7 @@ rpc_server_type: sync
 
 # Uncomment to set socket buffer size for internode communication
 # Note that when setting this, the buffer size is limited by net.core.wmem_max
-# and when not setting it it is defined by net.ipv4.tcp_wmem
+# and when not setting it is defined by net.ipv4.tcp_wmem
 # See:
 # /proc/sys/net/core/wmem_max
 # /proc/sys/net/core/rmem_max

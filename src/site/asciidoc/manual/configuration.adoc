@@ -656,7 +656,7 @@ The concise format makes configuration very easy as the element names match
 the components they represent however it cannot be validated with an XML
 schema. For example, the ConsoleAppender is configured by declaring an
 XML element named Console under its parent appenders element. However,
-element and attribute names are are not case sensitive. In addition,
+element and attribute names are not case sensitive. In addition,
 attributes can either be specified as an XML attribute or as an XML
 element that has no attributes and has a text value. So
 
