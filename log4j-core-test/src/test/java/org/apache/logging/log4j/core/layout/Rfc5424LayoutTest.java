@@ -20,13 +20,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Function;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
@@ -36,6 +39,12 @@ import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.ProcessIdUtil;
 import org.apache.logging.log4j.message.StructuredDataCollectionMessage;
 import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.di.Keys;
+import org.apache.logging.log4j.plugins.util.PluginNamespace;
+import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
 import org.apache.logging.log4j.util.LazyValue;
@@ -52,6 +61,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.*;
 
 @UsingAnyThreadContext
 public class Rfc5424LayoutTest {
@@ -560,6 +570,34 @@ public class Rfc5424LayoutTest {
             root.removeAppender(appender);
             appender.stop();
         }
+    }
+
+    @Test
+    public void testLayoutBuilderDefaultValues() {
+        final Rfc5424Layout layout = new Rfc5424Layout.Rfc5424LayoutBuilder().build();
+        checkDefaultValues(layout);
+
+        final PluginNamespace corePlugins = ctx.getInjector().getInstance(Core.PLUGIN_NAMESPACE_KEY);
+        final PluginType<?> pluginType = corePlugins.get("Rfc5424Layout");
+        assertNotNull(pluginType);
+        final Node node = new Node(null, "Rfc5424Layout", pluginType);
+        node.getAttributes().put("name", "Rfc5242Layout");
+
+        final Injector injector = DI.createInjector()
+                .registerBinding(Keys.SUBSTITUTOR_KEY, Function::identity)
+                .registerBinding(Configuration.KEY, () -> ctx.getConfiguration());
+        final Object obj = injector.configure(node);
+        assertThat(obj).isInstanceOf(Rfc5424Layout.class);
+        checkDefaultValues((Rfc5424Layout) obj);
+    }
+
+    private void checkDefaultValues(final Rfc5424Layout layout) {
+        assertNotNull(layout);
+        assertEquals(Facility.LOCAL0, layout.getFacility());
+        assertEquals(String.valueOf(Rfc5424Layout.DEFAULT_ENTERPRISE_NUMBER), layout.getEnterpriseNumber());
+        assertEquals(true, layout.isIncludeMdc());
+        assertEquals(Rfc5424Layout.DEFAULT_MDCID, layout.getMdcId());
+        assertEquals(Rfc5424Layout.DEFAULT_ID, layout.getDefaultId());
     }
 
     @ParameterizedTest
