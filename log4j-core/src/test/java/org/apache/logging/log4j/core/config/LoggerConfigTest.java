@@ -87,4 +87,25 @@ public class LoggerConfigTest {
             assertEquals(value, actualList.get(i).getValue(), "value[" + i + "]");
         }
     }
+
+    @Test
+    public void testLevel() {
+        Configuration configuration = new DefaultConfiguration();
+        LoggerConfig config1 = LoggerConfig.newBuilder()
+                .withLoggerName("org.apache.logging.log4j.test")
+                .withLevel(Level.ERROR)
+                .withAdditivity(false)
+                .withConfig(configuration)
+                .build();
+        LoggerConfig config2 = LoggerConfig.newBuilder()
+                .withLoggerName("org.apache.logging.log4j")
+                .withAdditivity(false)
+                .withConfig(configuration)
+                .build();
+        config1.setParent(config2);
+        assertEquals(config1.getLevel(), Level.ERROR, "Unexpected Level");
+        assertEquals(config1.getExplicitLevel(), Level.ERROR, "Unexpected explicit level");
+        assertEquals(config2.getLevel(), Level.ERROR, "Unexpected Level");
+        assertNull(config2.getExplicitLevel(),"Unexpected explicit level");
+    }
 }
