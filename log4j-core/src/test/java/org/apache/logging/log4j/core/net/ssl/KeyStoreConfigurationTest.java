@@ -16,13 +16,26 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.security.KeyStore;
+import java.util.Collections;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.OS;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
+@SetSystemProperty(key = "sun.security.mscapi.keyStoreCompatibilityMode", value = "false")
 public class KeyStoreConfigurationTest {
+
     @SuppressWarnings("deprecation")
     @Test
     public void loadEmptyConfigurationDeprecated() {
@@ -43,14 +56,34 @@ public class KeyStoreConfigurationTest {
                         TestConstants.KEYSTORE_TYPE, null);
         final KeyStore ks = ksc.getKeyStore();
         assertNotNull(ks);
+        checkKeystoreConfiguration(ksc);
     }
 
-    @Test
-    public void loadNotEmptyConfiguration() throws StoreConfigurationException {
-        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, new MemoryPasswordProvider(TestConstants.KEYSTORE_PWD()),
-                TestConstants.KEYSTORE_TYPE, null);
+    static Stream<Arguments> configurations() {
+        final Stream.Builder<Arguments> builder = Stream.builder();
+        builder.add(Arguments.of(TestConstants.KEYSTORE_FILE, (Supplier<char[]>) TestConstants::KEYSTORE_PWD,
+                TestConstants.KEYSTORE_TYPE))
+                .add(Arguments.of(TestConstants.KEYSTORE_PKCS12_FILE,
+                        (Supplier<char[]>) TestConstants::KEYSTORE_PKCS12_PWD, TestConstants.KEYSTORE_PKCS12_TYPE))
+                .add(Arguments.of(TestConstants.KEYSTORE_EMPTYPASS_FILE,
+                        (Supplier<char[]>) TestConstants::KEYSTORE_EMPTYPASS_PWD,
+                        TestConstants.KEYSTORE_EMPTYPASS_TYPE));
+        if (OS.WINDOWS.isCurrentOs()) {
+            builder.add(Arguments.of(null, (Supplier<char[]>) () -> null, "Windows-MY"))
+                    .add(Arguments.of(null, (Supplier<char[]>) () -> null, "Windows-ROOT"));
+        }
+        return builder.build();
+    }
+
+    @ParameterizedTest
+    @MethodSource("configurations")
+    public void loadNotEmptyConfiguration(final String keystoreFile, final Supplier<char[]> password,
+            final String keystoreType) throws StoreConfigurationException {
+        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(keystoreFile,
+                new MemoryPasswordProvider(password.get()), keystoreType, null);
         final KeyStore ks = ksc.getKeyStore();
         assertNotNull(ks);
+        checkKeystoreConfiguration(ksc);
     }
 
     @Test
@@ -79,9 +112,42 @@ public class KeyStoreConfigurationTest {
                 () -> new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, "wrongPassword!", null, null));
     }
 
-    @Test
-    public void wrongPassword() {
-        assertThrows(StoreConfigurationException.class, () -> new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE,
-                new MemoryPasswordProvider("wrongPassword!".toCharArray()), null, null));
+    static Stream<Arguments> wrongConfigurations() {
+        final Stream.Builder<Arguments> builder = Stream.builder();
+        builder.add(Arguments.of(TestConstants.KEYSTORE_FILE, (Supplier<char[]>) TestConstants::KEYSTORE_EMPTYPASS_PWD,
+                TestConstants.KEYSTORE_TYPE))
+                .add(Arguments.of(TestConstants.KEYSTORE_FILE, (Supplier<char[]>) () -> "wrongPassword!".toCharArray(),
+                        TestConstants.KEYSTORE_TYPE))
+                .add(Arguments.of(TestConstants.KEYSTORE_PKCS12_FILE,
+                        (Supplier<char[]>) TestConstants::KEYSTORE_EMPTYPASS_PWD, TestConstants.KEYSTORE_PKCS12_TYPE))
+                .add(Arguments.of(TestConstants.KEYSTORE_PKCS12_FILE,
+                        (Supplier<char[]>) TestConstants::KEYSTORE_EMPTYPASS_PWD, TestConstants.KEYSTORE_PKCS12_TYPE));
+        if (OS.WINDOWS.isCurrentOs()) {
+            builder.add(Arguments.of(null, (Supplier<char[]>) () -> new char[0], "Windows-MY"))
+                    .add(Arguments.of(null, (Supplier<char[]>) () -> new char[0], "Windows-ROOT"));
+        }
+        return builder.build();
+    }
+
+    @ParameterizedTest
+    @MethodSource("wrongConfigurations")
+    public void wrongPassword(final String keystoreFile, final Supplier<char[]> password, final String keystoreType) {
+        assertThrows(StoreConfigurationException.class, () -> new KeyStoreConfiguration(keystoreFile,
+                new MemoryPasswordProvider(password.get()), keystoreType, null));
+    }
+
+    static void checkKeystoreConfiguration(final AbstractKeyStoreConfiguration config) {
+        // Not all keystores throw immediately if the password is wrong
+        assertDoesNotThrow(() -> {
+            final KeyStore ks = config.load();
+            for (final String alias : Collections.list(ks.aliases())) {
+                if (ks.isCertificateEntry(alias)) {
+                    ks.getCertificate(alias);
+                }
+                if (ks.isKeyEntry(alias)) {
+                    ks.getKey(alias, config.getPasswordAsCharArray());
+                }
+            }
+        });
     }
 }

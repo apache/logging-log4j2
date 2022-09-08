@@ -36,5 +36,19 @@ public class TestConstants {
     public static final char[] KEYSTORE_PWD() { return "changeit".toCharArray(); }
     public static final String KEYSTORE_TYPE = "JKS";
 
+    public static final String KEYSTORE_PKCS12_PATH = PATH;
+    public static final String KEYSTORE_PKCS12_RESOURCE = RESOURCE_ROOT;
+    public static final String KEYSTORE_PKCS12_FILE = KEYSTORE_PKCS12_PATH + "client.log4j2-keystore.p12";
+    public static final String KEYSTORE_PKCS12_FILE_RESOURCE = KEYSTORE_PKCS12_RESOURCE + "client.log4j2-keystore.p12";
+    public static final char[] KEYSTORE_PKCS12_PWD() { return "changeit".toCharArray(); }
+    public static final String KEYSTORE_PKCS12_TYPE = "PKCS12";
+
+    public static final String KEYSTORE_EMPTYPASS_PATH = PATH;
+    public static final String KEYSTORE_EMPTYPASS_RESOURCE = RESOURCE_ROOT;
+    public static final String KEYSTORE_EMPTYPASS_FILE = KEYSTORE_EMPTYPASS_PATH + "client.log4j2-keystore-nopass.p12";
+    public static final String KEYSTORE_EMPTYPASS_FILE_RESOURCE = KEYSTORE_EMPTYPASS_RESOURCE + "client.log4j-keystore-nopass.p12";
+    public static final char[] KEYSTORE_EMPTYPASS_PWD() { return new char[0]; }
+    public static final String KEYSTORE_EMPTYPASS_TYPE = "PKCS12";
+
     public static final char[] NULL_PWD = null;
 }
