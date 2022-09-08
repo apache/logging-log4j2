@@ -28,7 +28,9 @@ jobs:
   build:
 
     runs-on: ${{ matrix.os }}
-
+    # Based on: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
+    env:
+      MAVEN_OPTS: -Xms3072m -Xmx3072m
     strategy:
       matrix:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
@@ -102,6 +104,8 @@ jobs:
   deploy:
 
     runs-on: ubuntu-latest
+    env:
+      MAVEN_OPTS: -Xms3072m -Xmx3072m
     needs: build
     if: github.repository == 'apache/logging-log4j2' && github.ref == 'refs/heads/release-2.x'
 
