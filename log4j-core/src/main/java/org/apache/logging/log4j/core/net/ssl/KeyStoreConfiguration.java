@@ -169,7 +169,7 @@ public class KeyStoreConfiguration extends AbstractKeyStoreConfiguration {
         final KeyManagerFactory kmFactory = KeyManagerFactory.getInstance(this.keyManagerFactoryAlgorithm);
         final char[] password = this.getPasswordAsCharArray();
         try {
-            kmFactory.init(this.getKeyStore(), password != null ? password : DEFAULT_PASSWORD);
+            kmFactory.init(this.getKeyStore(), password);
         } finally {
             if (password != null) {
                 Arrays.fill(password, '\0');

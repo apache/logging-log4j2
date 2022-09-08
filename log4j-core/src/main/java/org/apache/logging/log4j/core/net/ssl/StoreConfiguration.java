@@ -25,6 +25,9 @@ import org.apache.logging.log4j.status.StatusLogger;
  *
  */
 public class StoreConfiguration<T> {
+
+    static final String PKCS12 = "PKCS12";
+    static final String JKS = "JKS";
     protected static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     private String location;

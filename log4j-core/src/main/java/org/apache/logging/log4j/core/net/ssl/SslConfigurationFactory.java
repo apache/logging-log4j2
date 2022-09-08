@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.net.ssl;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Creates an SSL configuration from Log4j properties.
@@ -46,32 +47,28 @@ public class SslConfigurationFactory {
         KeyStoreConfiguration keyStoreConfiguration = null;
         TrustStoreConfiguration trustStoreConfiguration = null;
         String location = props.getStringProperty(trustStorelocation);
-        if (location != null) {
+        String storeType = props.getStringProperty(trustStoreKeyStoreType);
+        if (Strings.isNotEmpty(location) || storeType != null) {
             String password = props.getStringProperty(trustStorePassword);
-            char[] passwordChars = null;
-            if (password != null) {
-                passwordChars = password.toCharArray();
-            }
+            char[] passwordChars = getPassword(password, storeType);
             try {
-                trustStoreConfiguration = TrustStoreConfiguration.createKeyStoreConfiguration(location, passwordChars,
+                trustStoreConfiguration = TrustStoreConfiguration.createKeyStoreConfiguration(Strings.trimToNull(location), passwordChars,
                     props.getStringProperty(trustStorePasswordEnvVar), props.getStringProperty(trustStorePasswordFile),
-                    props.getStringProperty(trustStoreKeyStoreType), props.getStringProperty(trustStoreKeyManagerFactoryAlgorithm));
+                    storeType, props.getStringProperty(trustStoreKeyManagerFactoryAlgorithm));
             } catch (Exception ex) {
                 LOGGER.warn("Unable to create trust store configuration due to: {} {}", ex.getClass().getName(),
                     ex.getMessage());
             }
         }
         location = props.getStringProperty(keyStoreLocation);
-        if (location != null) {
+        storeType = props.getStringProperty(keyStoreType);
+        if (Strings.isNotEmpty(location) || storeType != null) {
             String password = props.getStringProperty(keyStorePassword);
-            char[] passwordChars = null;
-            if (password != null) {
-                passwordChars = password.toCharArray();
-            }
+            char[] passwordChars = getPassword(password, storeType);
             try {
-                keyStoreConfiguration = KeyStoreConfiguration.createKeyStoreConfiguration(location, passwordChars,
+                keyStoreConfiguration = KeyStoreConfiguration.createKeyStoreConfiguration(Strings.trimToNull(location), passwordChars,
                     props.getStringProperty(keyStorePasswordEnvVar), props.getStringProperty(keyStorePasswordFile),
-                    props.getStringProperty(keyStoreType), props.getStringProperty(keyStoreKeyManagerFactoryAlgorithm));
+                    storeType, props.getStringProperty(keyStoreKeyManagerFactoryAlgorithm));
             } catch (Exception ex) {
                 LOGGER.warn("Unable to create key store configuration due to: {} {}", ex.getClass().getName(),
                     ex.getMessage());
@@ -83,6 +80,22 @@ public class SslConfigurationFactory {
                 trustStoreConfiguration, isVerifyHostName);
         }
         return null;
+    }
+
+    private static char[] getPassword(final String password, final String keyStoreType) {
+        // Note from Tomcat's SSLUtiBase#getStore:
+        //
+        // JKS key stores treat null and "" interchangeably.
+        // PKCS12 key stores don't return the cert if null is used.
+        // Key stores that do not use passwords expect null
+        // Therefore:
+        // - generally use null if pass is null or ""
+        // - for JKS or PKCS12 only use null if pass is null
+        //   (because JKS will auto-switch to PKCS12)
+        if (keyStoreType.equals(StoreConfiguration.JKS) || keyStoreType.equals(StoreConfiguration.PKCS12)) {
+            return password != null ? password.toCharArray() : null;
+        }
+        return Strings.isEmpty(password) ? null : password.toCharArray();
     }
 
     public static SslConfiguration getSslConfiguration() {
