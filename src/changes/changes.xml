@@ -79,13 +79,16 @@
         Add implementation of SLF4J2 fluent API.
       </action>
       <action issue="LOG4J2-3590" dev="pkarwasz" type="remove">
-	Remove SLF4J 1.8.x binding.
+        Remove SLF4J 1.8.x binding.
       </action>
-      <action issue="LOG4J-3557" dev="pkarwasz" type="fix" due-to="Andreas Leitgeb">
-	Fix recursion between Log4j 1.2 LogManager and Category.
+      <action issue="LOG4J2-3557" dev="pkarwasz" type="fix" due-to="Andreas Leitgeb">
+        Fix recursion between Log4j 1.2 LogManager and Category.
       </action>
-      <action issue="LOG4J-3587" dev="pkarwasz" type="fix" due-to="Tomas Micko">
-	Fix regression in Rfc5424Layout default values.
+      <action issue="LOG4J2-3587" dev="pkarwasz" type="fix" due-to="Tomas Micko">
+        Fix regression in Rfc5424Layout default values.
+      </action>
+      <action issue="LOG4J2-3548" dev="pkarwasz" type="fix" due-to="Kristof Farkas-Pall">
+        Improve support for passwordless keystores.
       </action>
     </release>
     <release version="2.18.0" date="2022-06-28" description="GA Release 2.18.0">
