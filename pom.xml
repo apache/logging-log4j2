@@ -298,7 +298,7 @@
     <junitVersion>4.13.2</junitVersion>
     <junit5Version>5.9.0</junit5Version>
     <junitPioneerVersion>1.6.2</junitPioneerVersion>
-    <mockitoVersion>4.4.0</mockitoVersion>
+    <mockitoVersion>4.8.0</mockitoVersion>
     <xmlunitVersion>2.9.0</xmlunitVersion>
     <!-- Java EE 8 artifacts -->
     <javax.activation.version>1.2.0</javax.activation.version>
