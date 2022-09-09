@@ -68,9 +68,8 @@ The artifacts may be downloaded from https://logging.apache.org/log4j/2.x/downlo
 This release primarily contains bug fixes and minor enhancements.
 
 Due to a break in compatibility in the SLF4J binding, Log4j now ships with two versions of the SLF4J to Log4j adapters.
-log4j-slf4j-impl should be used with SLF4J 1.7.x and earlier and log4j-slf4j18-impl should be used with SLF4J 1.8.x and
-later. SLF4J-2.0.0 alpha releases are not fully supported. See https://issues.apache.org/jira/browse/LOG4J2-2975 and
-https://jira.qos.ch/browse/SLF4J-511.
+log4j-slf4j-impl should be used with SLF4J 1.7.x and earlier and log4j-slf4j2-impl should be used with SLF4J 2.x and
+later. SLF4J-1.8.x is no longer supported as a GA release never occurred.
 
 The Log4j ${relVersion} API, as well as many core components, maintains binary compatibility with previous releases.
 

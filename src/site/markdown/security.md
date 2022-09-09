@@ -137,7 +137,9 @@ Alternatively, this infinite recursion issue can be mitigated in configuration:
 
 * In PatternLayout in the logging configuration, replace Context Lookups like `${ctx:loginId}` or `$${ctx:loginId}` with Thread Context Map patterns (%X, %mdc, or %MDC).
 * Otherwise, in the configuration, remove references to Context Lookups like `${ctx:loginId}` or `$${ctx:loginId}` where they originate
-from sources external to the application such as HTTP headers or user input.
+from sources external to the application such as HTTP headers or user input. Note that this mitigation is insufficient in
+releases older than 2.12.2 (Java 7), and 2.16.0 (Java 8 and later) as the issues fixed in those releases will
+still be present.
 
 Note that only the log4j-core JAR file is impacted by this vulnerability.
 Applications using only the log4j-api JAR file without the log4j-core JAR file are not impacted by this vulnerability.
@@ -188,7 +190,10 @@ It was found that the fix to address [CVE-2021-44228](https://cve.mitre.org/cgi-
 When the logging configuration uses a non-default Pattern Layout with a Context Lookup (for example, $${ctx:loginId}),
 attackers with control over Thread Context Map (MDC) input data can craft malicious input data using a JNDI Lookup pattern,
 resulting in an information leak and remote code execution in some environments and local code execution in all environments;
-remote code execution has been demonstrated on macOS, Fedora, Arch Linux, and Alpine Linux.
+remote code execution has been demonstrated on macOS, Fedora, Arch Linux, and Alpine Linux. 
+
+Note that this vulnerability is not limited to just the JDNI lookup. Any other Lookup could also be included in a 
+Thread Context Map variable and possibly have private details exposed to anyone with access to the logs.
 
 ### Mitigation
 
@@ -202,6 +207,11 @@ Implement one of the following mitigation techniques:
 
 * Upgrade to Log4j 2.3.1 (for Java 6), 2.12.3 (for Java 7), or 2.17.0 (for Java 8 and later).
 * Otherwise, in any release other than 2.16.0, you may remove the `JndiLookup` class from the classpath: `zip -q -d log4j-core-*.jar org/apache/logging/log4j/core/lookup/JndiLookup.class`
+
+Users are advised that while removing the JndiLookup class prevents a potential RCE from occuring, it still leaves 
+the application vulnerable to other misuse of Lookups in Thread Context Map data. While the mitigations listed below in 
+the history section help in some situations, the only real solution is to upgarde to one of the releases listed in the
+first bullet above (or a newer release).
 
 Users are advised not to enable JNDI in Log4j 2.16.0, since it still allows LDAP connections.
 If the JMS Appender is required, use one of these versions: 2.3.1, 2.12.2, 2.12.3 or 2.17.0:
@@ -280,7 +290,9 @@ Additional vulnerability details discovered independently by Ash Fox of Google, 
 ## <a name="log4j-2.15.0"/> Fixed in Log4j 2.15.0 (Java 8)
 
 [CVE-2021-44228](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44228):  Apache Log4j2 JNDI
-features do not protect against attacker controlled LDAP and other JNDI related endpoints.
+features do not protect against attacker controlled LDAP and other JNDI related endpoints. Log4j2 allows 
+Lookup expressions in the data being logged exposing the JNDI vulnerability, as well as other problems, 
+to be exploited by end users whose input is being logged.
 
 |[CVE-2021-44228](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44228) | Remote Code Execution |
 | ----------------- | -------- |
@@ -293,7 +305,7 @@ In Apache Log4j2 versions up to and including 2.14.1 (excluding security release
 the JNDI features used in configurations, log messages, and parameters do not
 protect against attacker-controlled LDAP and other JNDI related endpoints.
 An attacker who can control log messages or log message parameters can execute
-arbitrary code loaded from LDAP servers when message lookup substitution is enabled.
+arbitrary code loaded from LDAP servers when message lookup substitution is enabled. 
 
 ### Mitigation
 
@@ -311,6 +323,12 @@ Implement one of the following mitigation techniques:
 
 * Upgrade to Log4j 2.3.1 (for Java 6), 2.12.3 (for Java 7), or 2.17.0 (for Java 8 and later).
 * Otherwise, in any release other than 2.16.0, you may remove the `JndiLookup` class from the classpath: `zip -q -d log4j-core-*.jar org/apache/logging/log4j/core/lookup/JndiLookup.class`
+
+Note that simply removing the JndiLookup only resolves one of the two bugs exposed in CVE-2021-44228. This still 
+allows users to enter lookup strings into input fields and cause them to be evaluated, which can cause StackOverflowExceptions
+or potentially expose private data to anyone provided access to the logs. While the mitigations listed below in the 
+history section help in some situations, the only real solution is to upgarde to one of the releases listed in the 
+first bullet above (or a newer release).
 
 Note that only the log4j-core JAR file is impacted by this vulnerability.
 Applications using only the log4j-api JAR file without the log4j-core JAR file are not impacted by this vulnerability.

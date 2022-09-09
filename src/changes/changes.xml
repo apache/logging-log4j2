@@ -29,7 +29,7 @@
          - "update" - Change
          - "remove" - Removed
     -->
-    <release version="2.19.0" date="2022-MM-DD" description="GA Release 2.19.0">
+    <release version="2.19.0" date="2022-09-09" description="GA Release 2.19.0">
       <action issue="LOG4J2-3572" dev="rgeors" type="update">
         Add getExlicitLevel method to LoggerConfig.
       </action>
