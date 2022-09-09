@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -59,7 +60,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup implements Lo
 
     private final StrLookup defaultLookup;
 
-    protected LoggerContext loggerContext;
+    protected WeakReference<LoggerContext> loggerContext;
 
     public Interpolator(final StrLookup defaultLookup) {
         this(defaultLookup, null);
@@ -190,7 +191,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup implements Lo
                 ((ConfigurationAware) lookup).setConfiguration(configuration);
             }
             if (lookup instanceof LoggerContextAware) {
-                ((LoggerContextAware) lookup).setLoggerContext(loggerContext);
+                ((LoggerContextAware) lookup).setLoggerContext(loggerContext.get());
             }
             LookupResult value = null;
             if (lookup != null) {
@@ -213,7 +214,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup implements Lo
         if (loggerContext == null) {
             return;
         }
-        this.loggerContext = loggerContext;
+        this.loggerContext = new WeakReference<>(loggerContext);
     }
 
     @Override

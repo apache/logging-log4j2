@@ -22,8 +22,8 @@ import java.util.regex.Pattern;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.LoggerContextAware;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.lookup.AbstractLoggerContextAwareLookup;
 import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -33,7 +33,7 @@ import org.springframework.core.env.Environment;
  * Lookup for Spring properties.
  */
 @Plugin(name = "spring", category = StrLookup.CATEGORY)
-public class SpringLookup extends AbstractLoggerContextAwareLookup implements StrLookup {
+public class SpringLookup implements LoggerContextAware, StrLookup {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final String ACTIVE = "profiles.active";
@@ -118,7 +118,6 @@ public class SpringLookup extends AbstractLoggerContextAwareLookup implements St
     @Override
     public void setLoggerContext(final LoggerContext loggerContext) {
         if (loggerContext != null) {
-            super.setLoggerContext(loggerContext);
             environment = (Environment) loggerContext.getObject(Log4j2SpringBootLoggingSystem.ENVIRONMENT_KEY);
         } else {
             LOGGER.warn("Attempt to set LoggerContext reference to null in SpringLookup");
