@@ -29,6 +29,11 @@
          - "update" - Change
          - "remove" - Removed
     -->
+    <release version="2.19.0" date="TBD" description="GA Release 2.19.1">
+      <action issue="LOG4J2-708" dev="pkarwasz" type="fix">
+        Add async support to `Log4jServletFilter`.
+      </action>
+    </release>
     <release version="2.19.0" date="2022-09-09" description="GA Release 2.19.0">
       <action issue="LOG4J2-3572" dev="rgeors" type="update">
         Add getExlicitLevel method to LoggerConfig.
