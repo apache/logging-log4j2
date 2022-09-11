@@ -43,15 +43,15 @@ public class Log4jShutdownOnContextDestroyedListenerTest {
     public void setUp(boolean mockInitializer) {
         this.listener = new Log4jShutdownOnContextDestroyedListener();
         given(event.getServletContext()).willReturn(servletContext);
-        if (mockInitializer) {        	
-        	given(servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE))
-        			.willReturn(initializer);
+        if (mockInitializer) {            
+            given(servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE))
+                    .willReturn(initializer);
         }
     }
-		
+        
     @Test
     public void testInitAndDestroy() throws Exception {
-    	setUp(true);
+        setUp(true);
         this.listener.contextInitialized(this.event);
 
         then(initializer).should(never()).start();
@@ -65,7 +65,7 @@ public class Log4jShutdownOnContextDestroyedListenerTest {
 
     @Test
     public void testDestroy() throws Exception {
-    	setUp(true);
+        setUp(true);
         this.listener.contextDestroyed(this.event);
 
         then(initializer).should(never()).clearLoggerContext();
@@ -74,10 +74,10 @@ public class Log4jShutdownOnContextDestroyedListenerTest {
     
     @Test
     public void whenNoInitializerInContextTheContextInitializedShouldThrowAnException() {
-    	setUp(false);
-    	
-    	assertThrows(IllegalStateException.class, () -> {
-    		this.listener.contextInitialized(this.event);
-    	});
+        setUp(false);
+        
+        assertThrows(IllegalStateException.class, () -> {
+            this.listener.contextInitialized(this.event);
+        });
     }
 }

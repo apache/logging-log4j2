@@ -72,9 +72,9 @@ public class Log4jServletFilterTest {
 
     @Test
     public void testDestroy() {
-    	assertThrows(IllegalStateException.class, () -> {
-    		this.filter.destroy();
-    	});
+        assertThrows(IllegalStateException.class, () -> {
+            this.filter.destroy();
+        });
     }
 
     @Test

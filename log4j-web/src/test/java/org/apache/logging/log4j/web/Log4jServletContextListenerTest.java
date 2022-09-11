@@ -34,12 +34,12 @@ import static org.mockito.BDDMockito.willThrow;
 
 @ExtendWith(MockitoExtension.class)
 public class Log4jServletContextListenerTest {
-	/* event and servletContext are marked lenient because they aren't used in the
-	 * testDestroyWithNoInit but are only accessed during initialization
-	 */
-	@Mock(lenient = true)
-	private ServletContextEvent event;
-	@Mock(lenient = true)
+    /* event and servletContext are marked lenient because they aren't used in the
+     * testDestroyWithNoInit but are only accessed during initialization
+     */
+    @Mock(lenient = true)
+    private ServletContextEvent event;
+    @Mock(lenient = true)
     private ServletContext servletContext;
     @Mock
     private Log4jWebLifeCycle initializer;

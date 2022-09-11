@@ -44,12 +44,12 @@ public class Log4jShutdownOnContextDestroyedListener implements ServletContextLi
     @Override
     public void contextInitialized(final ServletContextEvent event) {
         LOGGER.debug(Log4jShutdownOnContextDestroyedListener.class.getSimpleName() + 
-        		" ensuring that Log4j started up properly.");
+                " ensuring that Log4j started up properly.");
         servletContext = event.getServletContext();
         if (null == servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)) {
-        	throw new IllegalStateException(
-        			"Context did not contain required Log4jWebLifeCycle in the " 
-        			+ Log4jWebSupport.SUPPORT_ATTRIBUTE + " attribute.");
+            throw new IllegalStateException(
+                    "Context did not contain required Log4jWebLifeCycle in the " 
+                    + Log4jWebSupport.SUPPORT_ATTRIBUTE + " attribute.");
         }
         this.initializer = WebLoggerContextUtils.getWebLifeCycle(servletContext);
     }
@@ -61,7 +61,7 @@ public class Log4jShutdownOnContextDestroyedListener implements ServletContextLi
             return;
         }
         LOGGER.debug(Log4jShutdownOnContextDestroyedListener.class.getSimpleName() +
-        		" ensuring that Log4j shuts down properly.");
+                " ensuring that Log4j shuts down properly.");
 
         this.initializer.clearLoggerContext(); // the application is finished
         // shutting down now

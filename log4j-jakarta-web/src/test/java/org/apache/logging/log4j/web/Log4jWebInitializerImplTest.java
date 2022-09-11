@@ -45,11 +45,11 @@ import static org.mockito.BDDMockito.then;
 
 @ExtendWith(MockitoExtension.class)
 public class Log4jWebInitializerImplTest {
-	/* Marking servletContext lenient because otherwise testCompositeLocationParameterWithEmptyUriListSetsDefaultConfiguration fails
-	 * when null is passed in as the initial param because Mockito deciced null isn't a String rather than the absence of a string.
-	 */
-	@Mock(lenient = true)
-	private ServletContext servletContext;
+    /* Marking servletContext lenient because otherwise testCompositeLocationParameterWithEmptyUriListSetsDefaultConfiguration fails
+     * when null is passed in as the initial param because Mockito deciced null isn't a String rather than the absence of a string.
+     */
+    @Mock(lenient = true)
+    private ServletContext servletContext;
     @Captor
     private ArgumentCaptor<Log4jWebLifeCycle> initializerCaptor;
     @Captor
@@ -73,9 +73,9 @@ public class Log4jWebInitializerImplTest {
 
     @Test
     public void testDeinitializeBeforeInitialize() {
-    	assertThrows(IllegalStateException.class, () -> {
-    		this.initializerImpl.stop();
-    	});
+        assertThrows(IllegalStateException.class, () -> {
+            this.initializerImpl.stop();
+        });
     }
 
     @Test
@@ -214,9 +214,9 @@ public class Log4jWebInitializerImplTest {
 
         then(servletContext).should().removeAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE));
 
-    	assertThrows(IllegalStateException.class, () -> {
-    		this.initializerImpl.start();
-    	});
+        assertThrows(IllegalStateException.class, () -> {
+            this.initializerImpl.start();
+        });
     }
 
     @Test
@@ -248,9 +248,9 @@ public class Log4jWebInitializerImplTest {
         given(servletContext.getResourcePaths("/WEB-INF/")).willReturn(null);
         assertNull(ContextAnchor.THREAD_CONTEXT.get(), "The context should be null.");
 
-    	assertThrows(IllegalStateException.class, () -> {
-    		this.initializerImpl.start();
-    	});
+        assertThrows(IllegalStateException.class, () -> {
+            this.initializerImpl.start();
+        });
     }
 
     @Test
