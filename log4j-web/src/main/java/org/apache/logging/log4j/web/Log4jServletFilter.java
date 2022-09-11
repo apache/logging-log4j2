@@ -87,6 +87,8 @@ public class Log4jServletFilter implements Filter {
             } finally {
                 this.initializer.clearLoggerContext();
                 CURRENT_REQUEST.remove();
+                // Execute once per thread
+                request.removeAttribute(ALREADY_FILTERED_ATTRIBUTE);
             }
         }
     }
