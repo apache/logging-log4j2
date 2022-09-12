@@ -67,10 +67,12 @@
     <dependency>
       <groupId>uk.org.webcompere</groupId>
       <artifactId>system-stubs-jupiter</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.tycho</groupId>
@@ -102,6 +104,7 @@
     <dependency>
       <groupId>org.junit-pioneer</groupId>
       <artifactId>junit-pioneer</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
   <build>
