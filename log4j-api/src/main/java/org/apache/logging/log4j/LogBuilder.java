@@ -25,113 +25,194 @@ import org.apache.logging.log4j.util.Supplier;
  * by calling one of the Logger methods that return a LogBuilder.
  */
 public interface LogBuilder {
+    /**
+     * LogBuilder which does nothing.
+     */
+    LogBuilder NOOP = new LogBuilder() {
 
-    LogBuilder NOOP = new LogBuilder() {};
+        @Override
+        public LogBuilder withMarker(Marker marker) {
+            return this;
+        }
+
+        @Override
+        public LogBuilder withThrowable(Throwable throwable) {
+            return this;
+        }
+
+        @Override
+        public LogBuilder withLocation() {
+            return this;
+        }
+
+        @Override
+        public LogBuilder withLocation(StackTraceElement location) {
+            return this;
+        }
+
+        @Override
+        public void log(CharSequence message) {
+        }
+
+        @Override
+        public void log(String message) {
+        }
+
+        @Override
+        public void log(String message, Object... params) {
+        }
+
+        @Override
+        public void log(String message, Supplier<?>... params) {
+        }
+
+        @Override
+        public void log(Message message) {
+        }
+
+        @Override
+        public void log(Supplier<Message> messageSupplier) {
+        }
+
+        @Override
+        public void log(Object message) {
+        }
+
+        @Override
+        public void log(String message, Object p0) {
+        }
+
+        @Override
+        public void log(String message, Object p0, Object p1) {
+        }
+
+        @Override
+        public void log(String message, Object p0, Object p1, Object p2) {
+        }
+
+        @Override
+        public void log(String message, Object p0, Object p1, Object p2, Object p3) {
+        }
+
+        @Override
+        public void log(String message, Object p0, Object p1, Object p2, Object p3, Object p4) {
+        }
+
+        @Override
+        public void log(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5) {
+        }
+
+        @Override
+        public void log(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6) {
+        }
+
+        @Override
+        public void log(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
+                Object p7) {
+        }
+
+        @Override
+        public void log(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
+                Object p7, Object p8) {
+        }
+
+        @Override
+        public void log(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
+                Object p7, Object p8, Object p9) {
+        }
+
+        @Override
+        public void log() {
+        }
+    };
 
     /**
-     * Includes a Marker in the log event. Interface default method does nothing.
+     * Includes a Marker in the log event.
      * @param marker The Marker to log.
      * @return The LogBuilder.
      */
-    default LogBuilder withMarker(final Marker marker) {
-        return this;
-    }
+    LogBuilder withMarker(Marker marker);
 
     /**
-     * Includes a Throwable in the log event. Interface default method does nothing.
+     * Includes a Throwable in the log event.
      * @param throwable The Throwable to log.
-     * @return the LogBuilder.
+     * @return The LogBuilder.
      */
-    default LogBuilder withThrowable(final Throwable throwable) {
-        return this;
-    }
+    LogBuilder withThrowable(Throwable throwable);
 
     /**
      * An implementation will calculate the caller's stack frame and include it in the log event.
-     * Interface default method does nothing.
      * @return The LogBuilder.
      */
-    default LogBuilder withLocation() {
-        return this;
-    }
+    LogBuilder withLocation();
 
     /**
-     * Adds the specified stack trace element to the log event. Interface default method does nothing.
+     * Adds the specified stack trace element to the log event.
      * @param location The stack trace element to include in the log event.
      * @return The LogBuilder.
      */
-    default LogBuilder withLocation(final StackTraceElement location) {
-        return this;
-    }
+    LogBuilder withLocation(StackTraceElement location);
 
     /**
-     * Causes all the data collected to be logged along with the message. Interface default method does nothing.
+     * Causes all the data collected to be logged along with the message.
      * @param message The message to log.
      */
-    default void log(final CharSequence message) {
-    }
+    void log(CharSequence message);
 
     /**
-     * Causes all the data collected to be logged along with the message. Interface default method does nothing.
+     * Causes all the data collected to be logged along with the message.
      * @param message The message to log.
      */
-    default void log(final String message) {
-    }
+    void log(String message);
 
     /**
-     * Logs a message with parameters. Interface default method does nothing.
+     * Logs a message with parameters.
      *
      * @param message the message to log; the format depends on the message factory.
      * @param params parameters to the message.
      *
      * @see org.apache.logging.log4j.util.Unbox
      */
-    default void log(final String message, final Object... params) {
-    }
+    void log(String message, Object... params);
 
     /**
      * Causes all the data collected to be logged along with the message and parameters.
-     * Interface default method does nothing.
+     *
      * @param message The message.
      * @param params Parameters to the message.
      */
-    default void log(final String message, final Supplier<?>... params) {
-    }
+    void log(String message, Supplier<?>... params);
 
     /**
-     * Causes all the data collected to be logged along with the message. Interface default method does nothing.
+     * Causes all the data collected to be logged along with the message.
      * @param message The message to log.
      */
-    default void log(final Message message) {
-    }
+    void log(Message message);
 
     /**
-     * Causes all the data collected to be logged along with the message. Interface default method does nothing.
+     * Causes all the data collected to be logged along with the message.
      * @param messageSupplier The supplier of the message to log.
      */
-    default void log(final Supplier<Message> messageSupplier) {
-    }
+    void log(Supplier<Message> messageSupplier);
 
     /**
-     * Causes all the data collected to be logged along with the message. Interface default method does nothing.
+     * Causes all the data collected to be logged along with the message.
      * @param message The message to log.
      */
-    default void log(final Object message) {
-    }
+    void log(Object message);
 
     /**
-     * Logs a message with parameters. Interface default method does nothing.
+     * Logs a message with parameters.
      *
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
      *
      * @see org.apache.logging.log4j.util.Unbox
      */
-    default void log(final String message, final Object p0) {
-    }
+    void log(String message, Object p0);
 
     /**
-     * Logs a message with parameters. Interface default method does nothing.
+     * Logs a message with parameters.
      *
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
@@ -139,11 +220,10 @@ public interface LogBuilder {
      *
      * @see org.apache.logging.log4j.util.Unbox
      */
-    default void log(final String message, final Object p0, final Object p1) {
-    }
+    void log(String message, Object p0, Object p1);
 
     /**
-     * Logs a message with parameters. Interface default method does nothing.
+     * Logs a message with parameters.
      *
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
@@ -152,11 +232,10 @@ public interface LogBuilder {
      *
      * @see org.apache.logging.log4j.util.Unbox
      */
-    default void log(final String message, final Object p0, final Object p1, final Object p2) {
-    }
+    void log(String message, Object p0, Object p1, Object p2);
 
     /**
-     * Logs a message with parameters. Interface default method does nothing.
+     * Logs a message with parameters.
      *
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
@@ -166,11 +245,10 @@ public interface LogBuilder {
      *
      * @see org.apache.logging.log4j.util.Unbox
      */
-    default void log(final String message, final Object p0, final Object p1, final Object p2, final Object p3) {
-    }
+    void log(String message, Object p0, Object p1, Object p2, Object p3);
 
     /**
-     * Logs a message with parameters. Interface default method does nothing.
+     * Logs a message with parameters.
      *
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
@@ -181,11 +259,10 @@ public interface LogBuilder {
      *
      * @see org.apache.logging.log4j.util.Unbox
      */
-    default void log(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
-    }
+    void log(String message, Object p0, Object p1, Object p2, Object p3, Object p4);
 
     /**
-     * Logs a message with parameters. Interface default method does nothing.
+     * Logs a message with parameters.
      *
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
@@ -197,8 +274,7 @@ public interface LogBuilder {
      *
      * @see org.apache.logging.log4j.util.Unbox
      */
-    default void log(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5) {
-    }
+    void log(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5);
 
     /**
      * Logs a message with parameters.
@@ -214,11 +290,10 @@ public interface LogBuilder {
      *
      * @see org.apache.logging.log4j.util.Unbox
      */
-    default void log(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5, final Object p6) {
-    }
+    void log(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6);
 
     /**
-     * Logs a message with parameters. Interface default method does nothing.
+     * Logs a message with parameters.
      *
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
@@ -232,12 +307,11 @@ public interface LogBuilder {
      *
      * @see org.apache.logging.log4j.util.Unbox
      */
-    default void log(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5, final Object p6,
-                     final Object p7) {
-    }
+    void log(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
+                     Object p7);
 
     /**
-     * Logs a message with parameters. Interface default method does nothing.
+     * Logs a message with parameters.
      *
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
@@ -252,12 +326,11 @@ public interface LogBuilder {
      *
      * @see org.apache.logging.log4j.util.Unbox
      */
-    default void log(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5, final Object p6,
-                     final Object p7, final Object p8) {
-    }
+    void log(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
+                     Object p7, Object p8);
 
     /**
-     * Logs a message with parameters. Interface default method does nothing.
+     * Logs a message with parameters.
      *
      * @param message the message to log; the format depends on the message factory.
      * @param p0 parameter to the message.
@@ -273,13 +346,11 @@ public interface LogBuilder {
      *
      * @see org.apache.logging.log4j.util.Unbox
      */
-    default void log(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5, final Object p6,
-                     final Object p7, final Object p8, final Object p9) {
-    }
+    void log(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
+                     Object p7, Object p8, Object p9);
 
     /**
-     * Causes all the data collected to be logged. Default implementation does nothing.
+     * Causes all the data collected to be logged.
      */
-    default void log() {
-    }
+    void log();
 }
