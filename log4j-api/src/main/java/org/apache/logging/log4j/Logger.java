@@ -285,6 +285,10 @@ public interface Logger {
     /**
      * Logs a message object with the {@link Level#DEBUG DEBUG} level.
      *
+     * <p>The message argument should not be a {@link Throwable}. The default {@link MessageFactory} might
+     * only log the {@code toString()} value of the throwable but ignore its stack trace. Prefer
+     * one of the logging methods with explicit {@code Throwable} parameter.
+     *
      * @param message the message object to log.
      */
     void debug(Object message);
@@ -811,6 +815,10 @@ public interface Logger {
     /**
      * Logs a message object with the {@link Level#ERROR ERROR} level.
      *
+     * <p>The message argument should not be a {@link Throwable}. The default {@link MessageFactory} might
+     * only log the {@code toString()} value of the throwable but ignore its stack trace. Prefer
+     * one of the logging methods with explicit {@code Throwable} parameter.
+     *
      * @param message the message object to log.
      */
     void error(Object message);
@@ -1336,6 +1344,10 @@ public interface Logger {
 
     /**
      * Logs a message object with the {@link Level#FATAL FATAL} level.
+     *
+     * <p>The message argument should not be a {@link Throwable}. The default {@link MessageFactory} might
+     * only log the {@code toString()} value of the throwable but ignore its stack trace. Prefer
+     * one of the logging methods with explicit {@code Throwable} parameter.
      *
      * @param message the message object to log.
      */
@@ -1884,6 +1896,10 @@ public interface Logger {
 
     /**
      * Logs a message object with the {@link Level#INFO INFO} level.
+     *
+     * <p>The message argument should not be a {@link Throwable}. The default {@link MessageFactory} might
+     * only log the {@code toString()} value of the throwable but ignore its stack trace. Prefer
+     * one of the logging methods with explicit {@code Throwable} parameter.
      *
      * @param message the message object to log.
      */
@@ -3148,6 +3164,10 @@ public interface Logger {
     /**
      * Logs a message object with the {@link Level#TRACE TRACE} level.
      *
+     * <p>The message argument should not be a {@link Throwable}. The default {@link MessageFactory} might
+     * only log the {@code toString()} value of the throwable but ignore its stack trace. Prefer
+     * one of the logging methods with explicit {@code Throwable} parameter.
+     *
      * @param message the message object to log.
      */
     void trace(Object message);
@@ -3862,6 +3882,10 @@ public interface Logger {
 
     /**
      * Logs a message object with the {@link Level#WARN WARN} level.
+     *
+     * <p>The message argument should not be a {@link Throwable}. The default {@link MessageFactory} might
+     * only log the {@code toString()} value of the throwable but ignore its stack trace. Prefer
+     * one of the logging methods with explicit {@code Throwable} parameter.
      *
      * @param message the message object to log.
      */

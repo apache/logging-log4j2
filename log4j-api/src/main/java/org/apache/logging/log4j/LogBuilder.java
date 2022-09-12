@@ -17,12 +17,13 @@
 package org.apache.logging.log4j;
 
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.util.Supplier;
 
 
 /**
  * Interface for constructing log events before logging them. Instances of LogBuilders should only be created
- * by calling one of the Logger methods that return a LogBuilder.
+ * by calling one of the {@link Logger} methods that return a LogBuilder, such as {@link Logger#atInfo()}.
  */
 public interface LogBuilder {
 
@@ -40,7 +41,7 @@ public interface LogBuilder {
     /**
      * Includes a Throwable in the log event. Interface default method does nothing.
      * @param throwable The Throwable to log.
-     * @return the LogBuilder.
+     * @return The LogBuilder.
      */
     default LogBuilder withThrowable(final Throwable throwable) {
         return this;
@@ -114,6 +115,11 @@ public interface LogBuilder {
 
     /**
      * Causes all the data collected to be logged along with the message. Interface default method does nothing.
+     *
+     * <p>The message argument should not be a {@link Throwable}. The default {@link MessageFactory} might
+     * only log the {@code toString()} value of the throwable but ignore its stack trace. Prefer
+     * {@link #withThrowable(Throwable)} to set the throwable.
+     *
      * @param message The message to log.
      */
     default void log(final Object message) {
