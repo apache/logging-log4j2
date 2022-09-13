@@ -29,11 +29,6 @@
          - "update" - Change
          - "remove" - Removed
     -->
-    <release version="2.19.0" date="TBD" description="GA Release 2.19.1">
-      <action issue="LOG4J2-708" dev="pkarwasz" type="fix">
-        Add async support to `Log4jServletFilter`.
-      </action>
-    </release>
     <release version="2.19.0" date="2022-09-09" description="GA Release 2.19.0">
       <action issue="LOG4J2-3572" dev="rgeors" type="update">
         Add getExlicitLevel method to LoggerConfig.
@@ -94,6 +89,12 @@
       </action>
       <action issue="LOG4J2-3548" dev="pkarwasz" type="fix" due-to="Kristof Farkas-Pall">
         Improve support for passwordless keystores.
+      </action>
+      <action issue="LOG4J2-3564" dev="pkarwasz" type="fix">
+        Fix Log4j-to-JUL's NPE, when running on alternative log managers.
+      </action>
+      <action issue="LOG4J2-708" dev="pkarwasz" type="fix">
+        Add async support to `Log4jServletFilter`.
       </action>
     </release>
     <release version="2.18.0" date="2022-06-28" description="GA Release 2.18.0">
