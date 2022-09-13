@@ -31,7 +31,7 @@
     -->
     <release version="2.19.0" date="2022-09-09" description="GA Release 2.19.0">
       <action issue="LOG4J2-3572" dev="rgeors" type="update">
-        Add getExlicitLevel method to LoggerConfig.
+        Add getExplicitLevel method to LoggerConfig.
       </action>
       <action issue="LOG4J2-3589" dev="rgoers" type="update">
         Allow Plugins to be injected with the LoggerContext reference.

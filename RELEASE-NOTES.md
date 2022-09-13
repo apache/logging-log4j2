@@ -72,10 +72,12 @@ Fix recursion between Log4j 1.2 LogManager and Category. Thanks to Andreas Leitg
 Fix regression in Rfc5424Layout default values. Thanks to Tomas Micko.
 * [LOG4J2-3548](https://issues.apache.org/jira/browse/LOG4J2-3548):
 Improve support for passwordless keystores. Thanks to Kristof Farkas-Pall.
+* [LOG4J2-708](https://issues.apache.org/jira/browse/LOG4J2-708):
+Add async support to `Log4jServletFilter`.
 
 ### Changes
 * [LOG4J2-3572](https://issues.apache.org/jira/browse/LOG4J2-3572):
-Add getExlicitLevel method to LoggerConfig.
+Add getExplicitLevel method to LoggerConfig.
 * [LOG4J2-3589](https://issues.apache.org/jira/browse/LOG4J2-3589):
 Allow Plugins to be injected with the LoggerContext reference.
 * [LOG4J2-3588](https://issues.apache.org/jira/browse/LOG4J2-3588):
