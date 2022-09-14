@@ -25,7 +25,9 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.BridgeAware;
 import org.apache.logging.log4j.CloseableThreadContext;
 import org.apache.logging.log4j.CloseableThreadContext.Instance;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogBuilder;
+import org.apache.logging.log4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.spi.LoggingEventBuilder;
 
@@ -34,28 +36,29 @@ public class Log4jEventBuilder implements LoggingEventBuilder {
     private static final String FQCN = Log4jEventBuilder.class.getName();
 
     private final Log4jMarkerFactory markerFactory;
-    private final LogBuilder logBuilder;
+    private final Logger logger;
     private final List<Object> arguments = new ArrayList<>();
     private String message = null;
+    private org.apache.logging.log4j.Marker marker = null;
+    private Throwable throwable = null;
     private Map<String, String> keyValuePairs = null;
+    private final Level level;
 
-    public Log4jEventBuilder(final Log4jMarkerFactory markerFactory, final LogBuilder logBuilder) {
+    public Log4jEventBuilder(final Log4jMarkerFactory markerFactory, final Logger logger, final Level level) {
         this.markerFactory = markerFactory;
-        this.logBuilder = logBuilder;
-        if (logBuilder instanceof BridgeAware) {
-            ((BridgeAware) logBuilder).setEntryPoint(FQCN);
-        }
+        this.logger = logger;
+        this.level = level;
     }
 
     @Override
     public LoggingEventBuilder setCause(Throwable cause) {
-        logBuilder.withThrowable(cause);
+        this.throwable = cause;
         return this;
     }
 
     @Override
     public LoggingEventBuilder addMarker(Marker marker) {
-        logBuilder.withMarker(markerFactory.getLog4jMarker(marker));
+        this.marker = markerFactory.getLog4jMarker(marker);
         return this;
     }
 
@@ -103,6 +106,12 @@ public class Log4jEventBuilder implements LoggingEventBuilder {
 
     @Override
     public void log() {
+        final LogBuilder logBuilder = logger.atLevel(level)
+                .withMarker(marker)
+                .withThrowable(throwable);
+        if (logBuilder instanceof BridgeAware) {
+            ((BridgeAware) logBuilder).setEntryPoint(FQCN);
+        }
         if (keyValuePairs == null || keyValuePairs.isEmpty()) {
             logBuilder.log(message, arguments.toArray());
         } else {
