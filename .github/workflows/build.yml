@@ -139,7 +139,16 @@ jobs:
       - name: Inspect environment
         run: env | grep '^JAVA'
 
+      - name: Inspect project version
+        run: |
+          echo ::set-output name=version::$(./mvnw \
+            -q -Dexec.executable=echo \
+            -Dexec.args='${project.version}' --non-recursive exec:exec)
+        id: get_version
+
       - name: Maven "deploy"
+        # Do not deploy release versions
+        if: ${{ endsWith(steps.get_version.outputs.version, '-SNAPSHOT') }}
         timeout-minutes: 15
         shell: bash
         # `package install:install deploy:deploy` goal is needed to deploy without configuring the plugin in the POM.
