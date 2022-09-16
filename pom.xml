@@ -355,14 +355,12 @@
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-core</artifactId>
         <version>${logbackVersion}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-core</artifactId>
         <type>test-jar</type>
         <version>${logbackVersion}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.eclipse.tycho</groupId>
@@ -403,14 +401,12 @@
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
         <version>${logbackVersion}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
         <version>${logbackVersion}</version>
         <type>test-jar</type>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -428,7 +424,6 @@
         <artifactId>log4j-api</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -446,7 +441,6 @@
         <artifactId>log4j-core</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -539,7 +533,6 @@
         <groupId>org.osgi</groupId>
         <artifactId>org.osgi.core</artifactId>
         <version>${osgi.api.version}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.fusesource.jansi</groupId>
@@ -678,13 +671,11 @@
         <groupId>org.codehaus.jackson</groupId>
         <artifactId>jackson-core-asl</artifactId>
         <version>${jackson1Version}</version>
-        <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>org.codehaus.jackson</groupId>
         <artifactId>jackson-mapper-asl</artifactId>
         <version>${jackson1Version}</version>
-        <scope>runtime</scope>
       </dependency>
       <!-- Jackson 1 end -->
       <!-- Jackson 2 start -->
@@ -729,73 +720,61 @@
         <groupId>javax.activation</groupId>
         <artifactId>javax.activation-api</artifactId>
         <version>${javax.activation.version}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>javax.inject</groupId>
         <artifactId>javax.inject</artifactId>
         <version>${javax.inject.version}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>javax.jms</groupId>
         <artifactId>javax.jms-api</artifactId>
         <version>${javax.jms.version}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>javax.servlet.jsp</groupId>
         <artifactId>javax.servlet.jsp-api</artifactId>
         <version>${javax.jsp.version}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>javax.mail</groupId>
         <artifactId>javax.mail-api</artifactId>
         <version>${javax.mail.version}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>javax.persistence</groupId>
         <artifactId>javax.persistence-api</artifactId>
         <version>${javax.persistence.version}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>javax.servlet-api</artifactId>
         <version>${javax.servlet.version}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>com.sun.mail</groupId>
         <artifactId>javax.mail</artifactId>
         <version>${javax.mail.version}</version>
-        <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>jakarta.activation</groupId>
         <artifactId>jakarta.activation-api</artifactId>
         <version>${jakarta.activation.version}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>jakarta.mail</groupId>
         <artifactId>jakarta.mail-api</artifactId>
         <version>${jakarta.mail.version}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>com.sun.mail</groupId>
         <artifactId>smtp</artifactId>
         <version>${jakarta.mail.version}</version>
-        <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>com.sun.activation</groupId>
         <artifactId>jakarta.activation</artifactId>
         <version>${jakarta.activation.version}</version>
-        <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.activemq</groupId>
@@ -840,56 +819,47 @@
         <groupId>uk.org.webcompere</groupId>
         <artifactId>system-stubs-jupiter</artifactId>
         <version>2.0.1</version>
-        <scope>test</scope>
       </dependency>
       <!-- JUnit 4 API dependency -->
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>${junitVersion}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit-pioneer</groupId>
         <artifactId>junit-pioneer</artifactId>
         <version>${junitPioneerVersion}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.assertj</groupId>
         <artifactId>assertj-core</artifactId>
         <version>3.23.1</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.hamcrest</groupId>
         <artifactId>hamcrest</artifactId>
         <version>2.2</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.awaitility</groupId>
         <artifactId>awaitility</artifactId>
         <version>4.2.0</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-utils</artifactId>
         <version>3.4.2</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
         <version>${mockitoVersion}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-junit-jupiter</artifactId>
         <version>${mockitoVersion}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
@@ -981,25 +951,21 @@
         <groupId>net.javacrumbs.json-unit</groupId>
         <artifactId>json-unit</artifactId>
         <version>2.35.0</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.xmlunit</groupId>
         <artifactId>xmlunit-core</artifactId>
         <version>${xmlunitVersion}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.xmlunit</groupId>
         <artifactId>xmlunit-matchers</artifactId>
         <version>${xmlunitVersion}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
         <version>2.11.0</version>
-        <scope>test</scope>
       </dependency>
       <!-- Used for testing JsonTemplateLayout -->
       <dependency>
@@ -1016,7 +982,6 @@
       <dependency>
         <groupId>com.github.tomakehurst</groupId>
         <artifactId>wiremock</artifactId>
-        <scope>test</scope>
         <!--  2.27.2 causes WatchHttpTest to fail. -->
         <version>2.26.3</version>
       </dependency>
@@ -1030,7 +995,6 @@
         <groupId>org.tukaani</groupId>
         <artifactId>xz</artifactId>
         <version>1.9</version>
-        <scope>test</scope>
       </dependency>
       <!-- Used for the CSV layout -->
       <dependency>
@@ -1069,21 +1033,18 @@
         <groupId>de.flapdoodle.embed</groupId>
         <artifactId>de.flapdoodle.embed.mongo</artifactId>
         <version>3.4.6</version>
-        <scope>test</scope>
       </dependency>
       <!-- Testing LDAP -->
       <dependency>
         <groupId>org.zapodot</groupId>
         <artifactId>embedded-ldap-junit</artifactId>
         <version>0.8.1</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>com.google.guava</groupId>
         <!-- https://javadoc.io/doc/com.google.guava/guava-testlib/latest/com/google/common/testing/TestLogHandler.html used in log4j-to-jul tests -->
         <artifactId>guava-testlib</artifactId>
         <version>31.1-jre</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>net.java.dev.jna</groupId>
@@ -1094,7 +1055,6 @@
         <groupId>io.netty</groupId>
         <artifactId>netty-all</artifactId>
         <version>${netty-all.version}</version>
-        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>

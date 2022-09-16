@@ -48,22 +48,24 @@
     <dependency>
       <groupId>jakarta.activation</groupId>
       <artifactId>jakarta.activation-api</artifactId>
-      <!-- the implementation jar contains the API -->
+      <scope>provided</scope>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>com.sun.activation</groupId>
       <artifactId>jakarta.activation</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>jakarta.mail</groupId>
       <artifactId>jakarta.mail-api</artifactId>
-      <!-- the implementation jar contains the API -->
+      <scope>provided</scope>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>com.sun.mail</groupId>
       <artifactId>smtp</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <!-- Test Dependencies -->
     <dependency>
@@ -85,6 +87,7 @@
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core</artifactId>
       <type>test-jar</type>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.lmax</groupId>

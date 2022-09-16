@@ -111,6 +111,7 @@
     <dependency>
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.ops4j.pax.exam</groupId>
