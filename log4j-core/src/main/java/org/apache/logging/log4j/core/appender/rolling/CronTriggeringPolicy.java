@@ -48,11 +48,14 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
     private volatile Date lastRollDate;
     private CronScheduledFuture<?> future;
 
+    private final boolean useCurrentDate;
+
     private CronTriggeringPolicy(final CronExpression schedule, final boolean checkOnStartup,
-            final Configuration configuration) {
+            final Configuration configuration, final boolean useCurrentDate) {
         this.cronExpression = Objects.requireNonNull(schedule, "schedule");
         this.configuration = Objects.requireNonNull(configuration, "configuration");
         this.checkOnStartup = checkOnStartup;
+        this.useCurrentDate = useCurrentDate;
     }
 
     /**
@@ -106,6 +109,7 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
         return cronExpression;
     }
 
+
     /**
      * Creates a ScheduledTriggeringPolicy.
      *
@@ -119,8 +123,8 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
      */
     @PluginFactory
     public static CronTriggeringPolicy createPolicy(@PluginConfiguration final Configuration configuration,
-            @PluginAttribute("evaluateOnStartup") final String evaluateOnStartup,
-            @PluginAttribute("schedule") final String schedule) {
+                                                    @PluginAttribute("evaluateOnStartup") final String evaluateOnStartup,
+                                                    @PluginAttribute("schedule") final String schedule) {
         CronExpression cronExpression;
         final boolean checkOnStartup = Boolean.parseBoolean(evaluateOnStartup);
         if (schedule == null) {
@@ -133,7 +137,40 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
                 cronExpression = getSchedule(defaultSchedule);
             }
         }
-        return new CronTriggeringPolicy(cronExpression, checkOnStartup, configuration);
+        return new CronTriggeringPolicy(cronExpression, checkOnStartup, configuration, false);
+    }
+
+    /**
+     * Creates a ScheduledTriggeringPolicy.
+     *
+     * @param configuration
+     *            the Configuration.
+     * @param evaluateOnStartup
+     *            check if the file should be rolled over immediately.
+     * @param schedule
+     *            the cron expression.
+     * @param useCurrentDate
+     *            whether use trigger time or use default last trigger cycle time
+     * @return a ScheduledTriggeringPolicy.
+     */
+    @PluginFactory
+    public static CronTriggeringPolicy createPolicy(@PluginConfiguration final Configuration configuration,
+            @PluginAttribute("evaluateOnStartup") final String evaluateOnStartup,
+            @PluginAttribute("schedule") final String schedule, @PluginAttribute("useCurrentDate") final String useCurrentDate) {
+        CronExpression cronExpression;
+        final boolean checkOnStartup = Boolean.parseBoolean(evaluateOnStartup);
+        final boolean useCurrent = Boolean.parseBoolean(useCurrentDate);
+        if (schedule == null) {
+            LOGGER.info("No schedule specified, defaulting to Daily");
+            cronExpression = getSchedule(defaultSchedule);
+        } else {
+            cronExpression = getSchedule(schedule);
+            if (cronExpression == null) {
+                LOGGER.error("Invalid expression specified. Defaulting to Daily");
+                cronExpression = getSchedule(defaultSchedule);
+            }
+        }
+        return new CronTriggeringPolicy(cronExpression, checkOnStartup, configuration, useCurrent);
     }
 
     private static CronExpression getSchedule(final String expression) {
@@ -146,7 +183,11 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
     }
 
     private void rollover() {
-    	manager.rollover(cronExpression.getPrevFireTime(new Date()), lastRollDate);
+        if (useCurrentDate) {
+            manager.rollover(new Date(), lastRollDate);
+        } else {
+            manager.rollover(cronExpression.getPrevFireTime(new Date()), lastRollDate);
+        }
         if (future != null) {
             lastRollDate = future.getFireTime();
         }
