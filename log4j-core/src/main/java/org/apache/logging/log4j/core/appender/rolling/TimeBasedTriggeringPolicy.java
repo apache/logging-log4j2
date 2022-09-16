@@ -45,10 +45,13 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
         @PluginBuilderAttribute
         private int maxRandomDelay = 0;
 
+        @PluginBuilderAttribute
+        private boolean useCurrentDate = false;
+
         @Override
         public TimeBasedTriggeringPolicy build() {
             final long maxRandomDelayMillis = TimeUnit.SECONDS.toMillis(maxRandomDelay);
-            return new TimeBasedTriggeringPolicy(interval, modulate, maxRandomDelayMillis);
+            return new TimeBasedTriggeringPolicy(interval, modulate, maxRandomDelayMillis, useCurrentDate);
         }
 
         public int getInterval() {
@@ -87,10 +90,13 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
 
     private RollingFileManager manager;
 
-    private TimeBasedTriggeringPolicy(final int interval, final boolean modulate, final long maxRandomDelayMillis) {
+    private boolean useCurrentDate;
+
+    private TimeBasedTriggeringPolicy(final int interval, final boolean modulate, final long maxRandomDelayMillis, final boolean useCurrentDate) {
         this.interval = interval;
         this.modulate = modulate;
         this.maxRandomDelayMillis = maxRandomDelayMillis;
+        this.useCurrentDate = useCurrentDate;
     }
 
     public int getInterval() {
@@ -133,6 +139,9 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
             nextRolloverMillis = ThreadLocalRandom.current().nextLong(0, 1 + maxRandomDelayMillis)
                     + manager.getPatternProcessor().getNextTime(nowMillis, interval, modulate);
             manager.getPatternProcessor().setCurrentFileTime(System.currentTimeMillis());
+            if (useCurrentDate) {
+                manager.getPatternProcessor().setPrevFileTime(System.currentTimeMillis());
+            }
             return true;
         }
         return false;
@@ -163,7 +172,7 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
     @Override
     public String toString() {
         return "TimeBasedTriggeringPolicy(nextRolloverMillis=" + nextRolloverMillis + ", interval=" + interval
-                + ", modulate=" + modulate + ")";
+                + ", modulate=" + modulate + ", useCurrentDate=" + useCurrentDate + ")";
     }
 
 }
