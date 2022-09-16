@@ -22,14 +22,21 @@ import org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.core.util.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Method;
+import java.util.Date;
+
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CronTriggeringPolicyTest {
 
     private static final String CRON_EXPRESSION = "0 0 0 * * ?";
+
+    private static final String INTERVAL_CRON_EXPRESSION = "0 0 0/3 * * ?";
 
     private NullConfiguration configuration;
 
@@ -40,12 +47,16 @@ public class CronTriggeringPolicyTest {
     @BeforeEach
     public void before() {
         configuration = new NullConfiguration();
+
+    }
+
+    private CronTriggeringPolicy createPolicy(String useCurrentTime, String cron) {
+        return CronTriggeringPolicy.createPolicy(configuration, Boolean.TRUE.toString(), cron, useCurrentTime);
     }
 
     private CronTriggeringPolicy createPolicy() {
         return CronTriggeringPolicy.createPolicy(configuration, Boolean.TRUE.toString(), CRON_EXPRESSION);
     }
-
     private DefaultRolloverStrategy createStrategy() {
         return DefaultRolloverStrategy.createStrategy("7", "1", "max", null, null, false, configuration);
     }
@@ -134,5 +145,43 @@ public class CronTriggeringPolicyTest {
     public void testFactoryMethodSequence() {
         testFactoryMethod();
         testFactoryMethod();
+    }
+
+    @Test
+    public void testUseTriggerTime() {
+        DefaultRolloverStrategy rolloverStrategy = createStrategy();
+        CronTriggeringPolicy triggerPolicy = createPolicy(Boolean.TRUE.toString(), INTERVAL_CRON_EXPRESSION);
+        RollingFileManager fileManager = RollingFileManager.getFileManager("target/testcmd3.log",
+                "target/testcmd3.log.%d{yyyy-MM-dd}", true, true, triggerPolicy, rolloverStrategy, null,
+                PatternLayout.createDefaultLayout(), 0, true, false, null, null, null, configuration);
+        triggerPolicy.initialize(fileManager);
+        Method rollOver = null;
+        for (Method method : triggerPolicy.getClass().getDeclaredMethods()) {
+            if (method.getName().equalsIgnoreCase("rollover")) {
+                rollOver = method;
+            }
+        }
+        rollOver.setAccessible(true);
+        try {
+            Thread.sleep(3000);
+            Date date = new Date();
+            Thread.sleep(100);
+            rollOver.invoke(triggerPolicy);
+            assertTrue(fileManager.getPatternProcessor().getPrevFileTime() > date.getTime());
+        } catch (Exception e) {
+
+        }
+
+        triggerPolicy = createPolicy(Boolean.FALSE.toString(), INTERVAL_CRON_EXPRESSION);
+        triggerPolicy.initialize(fileManager);
+        try {
+            Thread.sleep(3000);
+            Date date = new Date();
+            Thread.sleep(100);
+            rollOver.invoke(triggerPolicy);
+            assertTrue(fileManager.getPatternProcessor().getPrevFileTime() <= date.getTime());
+        } catch (Exception e) {
+
+        }
     }
 }
