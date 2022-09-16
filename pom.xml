@@ -21,7 +21,7 @@
   <artifactId>log4j</artifactId>
   <packaging>pom</packaging>
   <name>Apache Log4j 2</name>
-  <version>2.29.1-SNAPSHOT</version>
+  <version>2.19.1-SNAPSHOT</version>
   <parent>
     <groupId>org.apache.logging</groupId>
     <artifactId>logging-parent</artifactId>
@@ -287,7 +287,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- See https://maven.apache.org/guides/mini/guide-reproducible-builds.html -->
     <!-- 1641056400 = Jan 1 2022, instead of 1969, which shows up in Javadoc -->
-    <project.build.outputTimestamp>1641056400</project.build.outputTimestamp>
+    <project.build.outputTimestamp>1663368682</project.build.outputTimestamp>
     <docLabel>Site Documentation</docLabel>
     <projectDir />
     <commonsLoggingVersion>1.2</commonsLoggingVersion>
