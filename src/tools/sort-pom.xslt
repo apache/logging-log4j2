@@ -15,35 +15,115 @@
   ~ See the license for the specific language governing permissions and
   ~ limitations under the license.
   -->
+<!--
+  To sort a POM file use:
+      java com.sun.org.apache.xalan.internal.xslt.Process -IN pom.xml -OUT pom.xml.out -XSL this.file.xslt
+  --> 
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:pom="http://maven.apache.org/POM/4.0.0" xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xalan="http://xml.apache.org/xslt" exclude-result-prefixes="pom xalan">
+  xmlns:xalan="http://xml.apache.org/xslt" xmlns:exslt="http://exslt.org/common" exclude-result-prefixes="pom xalan">
   <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" xalan:indent-amount="2" />
-  <xsl:template match="pom:dependencies">
-    <dependencies>
-      <xsl:apply-templates select="pom:dependency[pom:scope = 'import']">
-        <xsl:sort select="concat(pom:artifactId, ' ', pom:groupId)" />
-      </xsl:apply-templates>
-      <xsl:apply-templates select="pom:dependency[pom:scope = 'provided']">
-        <xsl:sort select="concat(pom:artifactId, ' ', pom:groupId)" />
-      </xsl:apply-templates>
-      <xsl:apply-templates select="pom:dependency[not(pom:scope) or pom:scope = 'compile']">
-        <xsl:sort select="concat(pom:artifactId, ' ', pom:groupId)" />
-      </xsl:apply-templates>
-      <xsl:apply-templates select="pom:dependency[pom:scope = 'runtime']">
-        <xsl:sort select="concat(pom:artifactId, ' ', pom:groupId)" />
-      </xsl:apply-templates>
-      <xsl:apply-templates select="pom:dependency[pom:scope = 'test']">
-        <xsl:sort select="concat(pom:artifactId, ' ', pom:groupId)" />
-      </xsl:apply-templates>
-    </dependencies>
+  <xsl:template name="determine-sort-order">
+    <xsl:param name="element" />
+    <!-- 1. Order by scope -->
+    <xsl:choose>
+      <xsl:when test="$element/pom:scope = 'import'">
+        <xsl:text>1</xsl:text>
+      </xsl:when>
+      <xsl:when test="$element/pom:scope = 'provided'">
+        <xsl:text>2</xsl:text>
+      </xsl:when>
+      <xsl:when test="$element/pom:scope = 'system'">
+        <xsl:text>3</xsl:text>
+      </xsl:when>
+      <xsl:when test="$element/pom:scope = 'compile'">
+        <xsl:text>4</xsl:text>
+      </xsl:when>
+      <xsl:when test="$element/pom:scope = 'runtime'">
+        <xsl:text>5</xsl:text>
+      </xsl:when>
+      <xsl:when test="$element/pom:scope = 'test'">
+        <xsl:text>6</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>4</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:text>:</xsl:text>
+    <!-- 2. Put Log4j2 artifacts first -->
+    <xsl:choose>
+      <xsl:when test="$element/pom:groupId = 'org.apache.logging.log4j'">
+        <xsl:text>1</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>2</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:text>:</xsl:text>
+    <!-- 3. Order by artifact id. -->
+    <xsl:value-of select="$element/pom:artifactId" />
+    <xsl:text>:</xsl:text>
+    <!-- 4. Order by group id. -->
+    <xsl:value-of select="$element/pom:groupId" />
   </xsl:template>
-  <xsl:template match="pom:exclusions">
-    <exclusions>
-      <xsl:apply-templates select="pom:exclusion">
-        <xsl:sort select="concat(pom:artifactId, ' ', pom:groupId)" />
+  <xsl:template match="pom:dependencies|pom:exclusions|pom:plugins">
+    <!-- Augment the nodeset with a 'sort-order' attribute -->
+    <xsl:variable name="extended">
+      <xsl:for-each select="comment()|pom:dependency|pom:exclusion|pom:plugin">
+        <xsl:copy>
+          <xsl:attribute name="sort-order">
+            <xsl:call-template name="determine-sort-order">
+              <xsl:with-param name="element" select="." />
+            </xsl:call-template>
+          </xsl:attribute>
+          <xsl:apply-templates/>
+        </xsl:copy>
+      </xsl:for-each>
+    </xsl:variable>
+    <xsl:copy>
+      <xsl:apply-templates select="exslt:node-set($extended)/node()[not(self::comment())]">
+        <xsl:sort select="@sort-order"/>
       </xsl:apply-templates>
-    </exclusions>
+    </xsl:copy>
+  </xsl:template>
+  <!-- Copy with comments -->
+  <xsl:template match="pom:dependency">
+    <xsl:variable name="current" select="." />
+    <xsl:apply-templates
+      select="preceding-sibling::comment()[following-sibling::pom:dependency[1] = $current]" />
+    <xsl:copy>
+      <xsl:apply-templates />
+    </xsl:copy>
+  </xsl:template>
+  <xsl:template match="pom:exclusion">
+    <xsl:variable name="current" select="." />
+    <xsl:apply-templates
+      select="preceding-sibling::comment()[following-sibling::pom:exclusion[1] = $current]" />
+    <xsl:copy>
+      <xsl:apply-templates />
+    </xsl:copy>
+  </xsl:template>
+  <xsl:template match="pom:plugin">
+    <xsl:variable name="current" select="." />
+    <xsl:apply-templates
+      select="preceding-sibling::comment()[following-sibling::pom:plugin[1] = $current]" />
+    <xsl:copy>
+      <xsl:apply-templates />
+    </xsl:copy>
+  </xsl:template>
+  <xsl:template match="pom:modules">
+    <xsl:copy>
+      <xsl:apply-templates select="pom:module">
+        <xsl:sort />
+      </xsl:apply-templates>
+    </xsl:copy>
+  </xsl:template>
+  <!-- Fixes the license formatting -->
+  <xsl:template match="/">
+    <xsl:text>&#10;</xsl:text>
+    <xsl:copy-of select="comment()"/>
+    <xsl:text>&#10;</xsl:text>
+    <xsl:apply-templates select="pom:project"/>
   </xsl:template>
   <!-- standard copy template -->
   <xsl:template match="@*|node()">

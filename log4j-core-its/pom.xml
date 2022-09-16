@@ -118,6 +118,18 @@
       <artifactId>jackson-dataformat-xml</artifactId>
       <optional>true</optional>
     </dependency>
+    <!-- Replacement for `jakarta.xml.bind` Jackson dependency -->
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <!-- Replacement for `jakarta.xml.bind` Jackson dependency -->
+    <dependency>
+      <groupId>javax.activation</groupId>
+      <artifactId>javax.activation-api</artifactId>
+      <optional>true</optional>
+    </dependency>
     <!-- POM for jackson-dataformat-xml 2.9.2 depends on woodstox-core 5.0.3 -->
     <dependency>
       <groupId>com.fasterxml.woodstox</groupId>
