@@ -259,15 +259,21 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <executions>
           <execution>
-            <id>default-manifest</id>
             <phase>process-classes</phase>
             <goals>
               <goal>manifest</goal>
             </goals>
             <configuration>
               <instructions>
-                <Export-Package>org.apache.logging.log4j.*</Export-Package>
+                <Private-Package>
+                  *.internal
+                </Private-Package>
+                <Export-Package>
+                  !*.internal,
+                  org.apache.logging.log4j.*
+                </Export-Package>
                 <Import-Package>
+                  !*.internal,
                   sun.reflect;resolution:=optional,
                   *
                 </Import-Package>
