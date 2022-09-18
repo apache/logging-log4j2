@@ -34,6 +34,8 @@
   </parent>
 
   <properties>
+    <!-- Overrides version from `spring-boot-dependencies` ancestor -->
+    <log4j2.version>${project.version}</log4j2.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <log4jParentDir>${basedir}/../../..</log4jParentDir>
