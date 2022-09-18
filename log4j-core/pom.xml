@@ -232,7 +232,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>${javadoc.plugin.version}</version>
         <configuration>
           <failOnError>false</failOnError>
           <source>8</source>

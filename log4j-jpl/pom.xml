@@ -184,7 +184,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>${javadoc.plugin.version}</version>
         <configuration>
           <bottom>&lt;p align="center"&gt;Copyright &amp;#169; {inceptionYear}-{currentYear} {organizationName}. All Rights Reserved.&lt;br /&gt;
             Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, the Apache Logging project logo,
@@ -236,8 +235,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
-            <!-- Use Maven Surefire 2.21 which brings module support -->
-            <version>${surefire.plugin.version}</version>
             <!-- Disable forked VM as 2.21 yields https://issues.apache.org/jira/browse/SUREFIRE-720 -->
             <configuration combine.self="override"/>
             <executions>

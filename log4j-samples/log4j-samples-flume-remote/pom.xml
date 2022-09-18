@@ -25,6 +25,10 @@
   <artifactId>log4j-samples-flume-remote</artifactId>
   <packaging>war</packaging>
   <name>Apache Log4j Samples: Flume - Remote</name>
+  <properties>
+    <module.name>org.apache.logging.log4j.samples.flume.remote</module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>javax.servlet</groupId>

@@ -24,8 +24,6 @@
     <java.version>1.8</java.version>
     <spring-cloud.version>Hoxton.SR9</spring-cloud.version>
 
-    <maven.deploy.skip>true</maven.deploy.skip>
-    <maven.site.skip>true</maven.site.skip>
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
 
     <!-- paths -->
@@ -41,7 +39,6 @@
     <maven.pmd.version>3.9.0</maven.pmd.version>
     <!-- maven plugin config -->
     <pmd.failurePriority>2</pmd.failurePriority>
-
   </properties>
 
   <dependencyManagement>

@@ -28,6 +28,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <log4jParentDir>../..</log4jParentDir>
+    <module.name>org.apache.logging.log4j.samples.flume.common</module.name>
   </properties>
   <dependencies>
     <dependency>

@@ -26,6 +26,9 @@
   <packaging>jar</packaging>
   <name>Apache Log4j Samples: LoggerProperties</name>
   <url>http://maven.apache.org</url>
+  <properties>
+    <module.name>org.apache.logging.log4j.samples.logger_properties</module.name>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>

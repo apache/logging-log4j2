@@ -25,6 +25,11 @@
   <artifactId>log4j-samples-configuration</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4j Samples: Configuration</name>
+  <url>http://maven.apache.org</url>
+  <properties>
+    <module.name>org.apache.logging.log4j.samples.configuration</module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>

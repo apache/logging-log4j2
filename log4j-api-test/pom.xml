@@ -122,7 +122,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>${compiler.plugin.version}</version>
         <configuration>
           <annotationProcessorPaths>
             <path>
@@ -150,7 +149,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
-        <version>${deploy.plugin.version}</version>
       </plugin>
       <!-- Include the standard NOTICE and LICENSE -->
       <plugin>
