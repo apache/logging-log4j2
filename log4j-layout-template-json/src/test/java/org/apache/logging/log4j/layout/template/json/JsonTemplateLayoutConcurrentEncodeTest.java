@@ -20,14 +20,11 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.layout.StringBuilderEncoder;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -55,9 +52,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  * </p>
  */
 @SuppressWarnings("SameParameterValue")
-// Running tests in parallel is causing strange issues at the Log4j configuration level.
-// Falling back to sequential test run for the moment.
-@Execution(ExecutionMode.SAME_THREAD)
 class JsonTemplateLayoutConcurrentEncodeTest {
 
     @ParameterizedTest
@@ -133,7 +127,9 @@ class JsonTemplateLayoutConcurrentEncodeTest {
                 .build(false);
 
         // Initialize the configuration and pass it to the consumer.
-        try (final LoggerContext loggerContext = Configurator.initialize(config)) {
+        final String loggerContextName = String.format("LC-%s", appenderFilepath);
+        try (final LoggerContext loggerContext = new LoggerContext(loggerContextName)) {
+            loggerContext.reconfigure(config);
             loggerContextConsumer.accept(loggerContext);
         }
 
