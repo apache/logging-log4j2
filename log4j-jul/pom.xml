@@ -15,7 +15,6 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <artifactId>log4j</artifactId>
@@ -51,18 +50,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
     <!-- Required for AsyncLogger testing -->
@@ -71,10 +60,30 @@
       <artifactId>disruptor</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
+            <Export-Package>org.apache.logging.log4j.jul</Export-Package>
+          </instructions>
+        </configuration>
+      </plugin>
       <!-- Include the standard NOTICE and LICENSE -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -91,58 +100,48 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${surefire.plugin.version}</version>
         <configuration>
-          <instructions>
-            <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
-            <Export-Package>org.apache.logging.log4j.jul</Export-Package>
-          </instructions>
+          <systemPropertyVariables>
+            <java.awt.headless>true</java.awt.headless>
+          </systemPropertyVariables>
+          <argLine>-Xms256m -Xmx1024m</argLine>
+          <forkCount>1</forkCount>
+          <reuseForks>false</reuseForks>
         </configuration>
-      </plugin>
-      <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>${surefire.plugin.version}</version>
-          <configuration>
+        <executions>
+          <execution>
+            <id>default-test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <excludes>
+                <exclude>Log4jBridgeHandlerTest.java</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+          <execution>
+            <!-- this test needs some special configuration, thus its own run -->
+            <id>bridgeHandler-test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>Log4jBridgeHandlerTest.java</include>
+              </includes>
               <systemPropertyVariables>
-                  <java.awt.headless>true</java.awt.headless>
+                <java.util.logging.config.file>src/test/resources/logging-test.properties</java.util.logging.config.file>
+                <log4j2.configurationFile>log4j2-julBridge-test.xml</log4j2.configurationFile>
               </systemPropertyVariables>
-              <argLine>-Xms256m -Xmx1024m</argLine>
-              <forkCount>1</forkCount>
-              <reuseForks>false</reuseForks>
-          </configuration>
-          <executions>
-              <execution>
-                  <id>default-test</id>
-                  <phase>test</phase>
-                  <goals>
-                      <goal>test</goal>
-                  </goals>
-                  <configuration>
-                      <excludes>
-                          <exclude>Log4jBridgeHandlerTest.java</exclude>
-                      </excludes>
-                  </configuration>
-              </execution>
-              <execution>
-                  <!-- this test needs some special configuration, thus its own run -->
-                  <id>bridgeHandler-test</id>
-                  <phase>test</phase>
-                  <goals>
-                      <goal>test</goal>
-                  </goals>
-                  <configuration>
-                      <includes>
-                          <include>Log4jBridgeHandlerTest.java</include>
-                      </includes>
-                      <systemPropertyVariables>
-                          <java.util.logging.config.file>src/test/resources/logging-test.properties</java.util.logging.config.file>
-                          <log4j2.configurationFile>log4j2-julBridge-test.xml</log4j2.configurationFile>
-                      </systemPropertyVariables>
-                  </configuration>
-              </execution>
-          </executions>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
@@ -182,9 +181,9 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>${javadoc.plugin.version}</version>
         <configuration>
-          <bottom><![CDATA[<p align="center">Copyright &#169; {inceptionYear}-{currentYear} {organizationName}. All Rights Reserved.<br />
+          <bottom>&lt;p align="center"&gt;Copyright &amp;#169; {inceptionYear}-{currentYear} {organizationName}. All Rights Reserved.&lt;br /&gt;
             Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, the Apache Logging project logo,
-            and the Apache Log4j logo are trademarks of The Apache Software Foundation.</p>]]></bottom>
+            and the Apache Log4j logo are trademarks of The Apache Software Foundation.&lt;/p&gt;</bottom>
           <!-- module link generation is completely broken in the javadoc plugin for a multi-module non-aggregating
                project -->
           <detectOfflineLinks>false</detectOfflineLinks>
@@ -198,10 +197,6 @@
             </reports>
           </reportSet>
         </reportSets>
-      </plugin>
-      <plugin>
-        <groupId>com.github.spotbugs</groupId>
-        <artifactId>spotbugs-maven-plugin</artifactId>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -229,6 +224,10 @@
         <configuration>
           <targetJdk>${maven.compiler.target}</targetJdk>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </reporting>

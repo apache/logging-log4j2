@@ -41,82 +41,16 @@
 
   <dependencyManagement>
     <dependencies>
-      <!-- Log4j API -->
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <!-- Core Log4j -->
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-core</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <!-- SMTP appender -->
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-jakarta-smtp</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <!-- JSON template layout -->
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-layout-template-json</artifactId>
-        <version>${project.version}</version>
-      </dependency>
       <!-- Legacy Log4j 1.2 API -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-1.2-api</artifactId>
         <version>${project.version}</version>
       </dependency>
-      <!-- Commons Logging Compatibility API -->
+      <!-- Log4j API -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-jcl</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <!-- Apache Flume Bridge -->
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-flume-ng</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <!-- JSP Tag Library -->
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-taglib</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <!-- JMX GUI -->
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-jmx-gui</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <!-- SLF4J Compatibility API -->
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-slf4j-impl</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <!-- SLF4J 2.0 Compatibility API -->
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-slf4j2-impl</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <!-- SLF4J Adapter -->
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-to-slf4j</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <!-- JUL Adapter -->
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-to-jul</artifactId>
+        <artifactId>log4j-api</artifactId>
         <version>${project.version}</version>
       </dependency>
       <!-- Application Service Support -->
@@ -125,15 +59,16 @@
         <artifactId>log4j-appserver</artifactId>
         <version>${project.version}</version>
       </dependency>
-      <!-- Web Application Support -->
+      <!-- Cassandra Appender Plugin -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-web</artifactId>
+        <artifactId>log4j-cassandra</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <!-- Core Log4j -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-jakarta-web</artifactId>
+        <artifactId>log4j-core</artifactId>
         <version>${project.version}</version>
       </dependency>
       <!-- CouchDB Appender Plugin -->
@@ -142,28 +77,16 @@
         <artifactId>log4j-couchdb</artifactId>
         <version>${project.version}</version>
       </dependency>
-      <!-- MongoDB 4 Appender Plugin -->
+      <!-- Docker support -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-mongodb4</artifactId>
+        <artifactId>log4j-docker</artifactId>
         <version>${project.version}</version>
       </dependency>
-      <!-- MongoDB 3 Appender Plugin -->
+      <!-- Apache Flume Bridge -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-mongodb3</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <!-- Cassandra Appender Plugin -->
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-cassandra</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <!-- JPA Appender Plugin -->
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-jpa</artifactId>
+        <artifactId>log4j-flume-ng</artifactId>
         <version>${project.version}</version>
       </dependency>
       <!-- Streaming API -->
@@ -172,10 +95,33 @@
         <artifactId>log4j-iostreams</artifactId>
         <version>${project.version}</version>
       </dependency>
-      <!-- java.util.logging adapter -->
+      <!-- SMTP appender -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-jul</artifactId>
+        <artifactId>log4j-jakarta-smtp</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-jakarta-web</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- Commons Logging Compatibility API -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-jcl</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- JMX GUI -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-jmx-gui</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- JPA Appender Plugin -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-jpa</artifactId>
         <version>${project.version}</version>
       </dependency>
       <!-- Java System Platform Loggerr -->
@@ -184,22 +130,52 @@
         <artifactId>log4j-jpl</artifactId>
         <version>${project.version}</version>
       </dependency>
-      <!-- Liquibase adapter -->
+      <!-- java.util.logging adapter -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-liquibase</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <!-- Docker support -->
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-docker</artifactId>
+        <artifactId>log4j-jul</artifactId>
         <version>${project.version}</version>
       </dependency>
       <!-- Kubernetes support -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-kubernetes</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- JSON template layout -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-layout-template-json</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- Liquibase adapter -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-liquibase</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- MongoDB 3 Appender Plugin -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-mongodb3</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- MongoDB 4 Appender Plugin -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-mongodb4</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- SLF4J 2.0 Compatibility API -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j2-impl</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- SLF4J Compatibility API -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j-impl</artifactId>
         <version>${project.version}</version>
       </dependency>
       <!-- Spring Boot support  -->
@@ -214,19 +190,34 @@
         <artifactId>log4j-spring-cloud-config-client</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <!-- JSP Tag Library -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-taglib</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- JUL Adapter -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-to-jul</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- SLF4J Adapter -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-to-slf4j</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- Web Application Support -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-web</artifactId>
+        <version>${project.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
-        <version>3.11.0</version>
-        <configuration>
-          <skip>true</skip>
-          <skipDeploy>true</skipDeploy>
-        </configuration>
-      </plugin>
       <!-- RAT report -->
       <plugin>
         <groupId>org.apache.rat</groupId>
@@ -239,6 +230,15 @@
         <version>1.2</version>
         <configuration>
           <skip>true</skip>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>3.11.0</version>
+        <configuration>
+          <skip>true</skip>
+          <skipDeploy>true</skipDeploy>
         </configuration>
       </plugin>
     </plugins>

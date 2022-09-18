@@ -40,12 +40,20 @@
   </properties>
 
   <dependencies>
-
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>org.jctools</groupId>
+      <artifactId>jctools-core</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-1.2-api</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core</artifactId>
@@ -53,72 +61,50 @@
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
-
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-1.2-api</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jctools</groupId>
-      <artifactId>jctools-core</artifactId>
-      <optional>true</optional>
-    </dependency>
-
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-params</artifactId>
-      <scope>test</scope>
-    </dependency>
-
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
-
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>co.elastic.logging</groupId>
-      <artifactId>log4j2-ecs-layout</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>com.google.code.java-allocation-instrumenter</groupId>
-      <artifactId>java-allocation-instrumenter</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.elasticsearch.client</groupId>
-      <artifactId>elasticsearch-rest-high-level-client</artifactId>
-      <scope>test</scope>
-    </dependency>
-
     <dependency>
       <groupId>org.awaitility</groupId>
       <artifactId>awaitility</artifactId>
       <scope>test</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.elasticsearch.client</groupId>
+      <artifactId>elasticsearch-rest-high-level-client</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.java-allocation-instrumenter</groupId>
+      <artifactId>java-allocation-instrumenter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>co.elastic.logging</groupId>
+      <artifactId>log4j2-ecs-layout</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
     <plugins>
-
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
@@ -130,7 +116,22 @@
           </instructions>
         </configuration>
       </plugin>
-
+      <!-- Disable ITs, which are Docker-dependent, by default. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -182,7 +183,6 @@
           </execution>
         </executions>
       </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -198,24 +198,6 @@
           </systemPropertyVariables>
         </configuration>
       </plugin>
-
-      <!-- Disable ITs, which are Docker-dependent, by default. -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-
     </plugins>
   </build>
 
@@ -227,25 +209,6 @@
       </activation>
       <build>
         <plugins>
-
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-failsafe-plugin</artifactId>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>integration-test</goal>
-                  <goal>verify</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <includes>
-                <include>**/*IT.java</include>
-              </includes>
-            </configuration>
-          </plugin>
-
           <plugin>
             <groupId>io.fabric8</groupId>
             <artifactId>docker-maven-plugin</artifactId>
@@ -322,19 +285,19 @@
                         <arg>1</arg>
                         <arg>-e</arg>
                         <arg>
-                          <![CDATA[
+                          
                           input {
                             gelf {
-                              host => "logstash"
-                              use_tcp => true
-                              use_udp => false
-                              port => 12222
-                              type => "gelf"
+                              host =&gt; "logstash"
+                              use_tcp =&gt; true
+                              use_udp =&gt; false
+                              port =&gt; 12222
+                              type =&gt; "gelf"
                             }
                             tcp {
-                              port => 12345
-                              codec => json
-                              type => "tcp"
+                              port =&gt; 12345
+                              codec =&gt; json
+                              type =&gt; "tcp"
                             }
                           }
 
@@ -343,17 +306,17 @@
                               # These are GELF/Syslog logging levels as defined in RFC 3164.
                               # Map the integer level to its human readable format.
                               translate {
-                                field => "[level]"
-                                destination => "[levelName]"
-                                dictionary => {
-                                  "0" => "EMERG"
-                                  "1" => "ALERT"
-                                  "2" => "CRITICAL"
-                                  "3" => "ERROR"
-                                  "4" => "WARN"
-                                  "5" => "NOTICE"
-                                  "6" => "INFO"
-                                  "7" => "DEBUG"
+                                field =&gt; "[level]"
+                                destination =&gt; "[levelName]"
+                                dictionary =&gt; {
+                                  "0" =&gt; "EMERG"
+                                  "1" =&gt; "ALERT"
+                                  "2" =&gt; "CRITICAL"
+                                  "3" =&gt; "ERROR"
+                                  "4" =&gt; "WARN"
+                                  "5" =&gt; "NOTICE"
+                                  "6" =&gt; "INFO"
+                                  "7" =&gt; "DEBUG"
                                 }
                               }
                             }
@@ -361,13 +324,13 @@
 
                           output {
                             # (Un)comment for debugging purposes
-                            # stdout { codec => rubydebug }
+                            # stdout { codec =&gt; rubydebug }
                             elasticsearch {
-                              hosts => ["http://elasticsearch:9200"]
-                              index => "log4j"
+                              hosts =&gt; ["http://elasticsearch:9200"]
+                              index =&gt; "log4j"
                             }
                           }
-                          ]]>
+                          
                         </arg>
                       </exec>
                     </entrypoint>
@@ -380,6 +343,23 @@
               </images>
             </configuration>
           </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>integration-test</goal>
+                  <goal>verify</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <includes>
+                <include>**/*IT.java</include>
+              </includes>
+            </configuration>
+          </plugin>
         </plugins>
       </build>
     </profile>
@@ -387,7 +367,6 @@
 
   <reporting>
     <plugins>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-changes-plugin</artifactId>
@@ -404,7 +383,6 @@
           <useJql>true</useJql>
         </configuration>
       </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
@@ -418,15 +396,14 @@
           <propertyExpansion>licensedir=${log4jParentDir}/checkstyle-header.txt</propertyExpansion>
         </configuration>
       </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>${javadoc.plugin.version}</version>
         <configuration>
-          <bottom><![CDATA[<p align="center">Copyright &#169; {inceptionYear}-{currentYear} {organizationName}. All Rights Reserved.<br />
+          <bottom>&lt;p align="center"&gt;Copyright &amp;#169; {inceptionYear}-{currentYear} {organizationName}. All Rights Reserved.&lt;br /&gt;
             Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, the Apache Logging project logo,
-            and the Apache Log4j logo are trademarks of The Apache Software Foundation.</p>]]></bottom>
+            and the Apache Log4j logo are trademarks of The Apache Software Foundation.&lt;/p&gt;</bottom>
           <!-- module link generation is completely broken in the javadoc plugin for a multi-module non-aggregating project -->
           <detectOfflineLinks>false</detectOfflineLinks>
           <linksource>true</linksource>
@@ -440,12 +417,6 @@
           </reportSet>
         </reportSets>
       </plugin>
-
-      <plugin>
-        <groupId>com.github.spotbugs</groupId>
-        <artifactId>spotbugs-maven-plugin</artifactId>
-      </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jxr-plugin</artifactId>
@@ -465,7 +436,6 @@
           </reportSet>
         </reportSets>
       </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
@@ -474,7 +444,10 @@
           <targetJdk>${maven.compiler.target}</targetJdk>
         </configuration>
       </plugin>
-
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+      </plugin>
     </plugins>
   </reporting>
 
