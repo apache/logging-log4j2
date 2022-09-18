@@ -28,8 +28,8 @@
   <url>http://maven.apache.org</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <deploy.plugin.version>2.8.2</deploy.plugin.version>
     <log4jParentDir>${basedir}/../..</log4jParentDir>
+    <module.name>org.apache.logging.log4j.samples.flume.remote</module.name>
   </properties>
   <dependencies>
     <dependency>
@@ -97,7 +97,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
-        <version>${deploy.plugin.version}</version>
         <configuration>
           <skip>true</skip>
         </configuration>
@@ -105,7 +104,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-install-plugin</artifactId>
-        <version>2.5.2</version>
         <configuration>
           <skip>true</skip>
         </configuration>

@@ -29,6 +29,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <log4jParentDir>${basedir}/../..</log4jParentDir>
+    <module.name>org.apache.logging.log4j.samples.flume.common</module.name>
   </properties>
   <dependencies>
     <dependency>
@@ -75,7 +76,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
-        <version>${deploy.plugin.version}</version>
         <configuration>
           <skip>true</skip>
         </configuration>

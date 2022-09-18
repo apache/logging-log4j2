@@ -41,7 +41,6 @@
     <log4jParentDir>${basedir}/../../..</log4jParentDir>
     <java.version>1.8</java.version>
     <spring-cloud.version>Hoxton.SR9</spring-cloud.version>
-    <deploy.plugin.version>2.8.2</deploy.plugin.version>
 
     <!-- paths -->
     <sonar.dependencyCheck.reportPath>${project.build.directory}/dependency-check-report.xml
@@ -54,10 +53,8 @@
     <maven.google.code.findbugs.findbugs.version>3.0.1</maven.google.code.findbugs.findbugs.version>
     <maven.jacoco.version>0.8.8</maven.jacoco.version>
     <maven.pmd.version>3.9.0</maven.pmd.version>
-    <site.plugin.version>3.11.0</site.plugin.version>
     <!-- maven plugin config -->
     <pmd.failurePriority>2</pmd.failurePriority>
-    <deploy.plugin.version>2.8.2</deploy.plugin.version>
     <rat.plugin.version>0.13</rat.plugin.version>
     <maven.doap.skip>true</maven.doap.skip>
   </properties>
@@ -143,7 +140,6 @@
       <plugin>
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
-        <version>${rat.plugin.version}</version>
         <configuration>
           <excludes>
             <exclude>**/*.yaml</exclude>
@@ -189,7 +185,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
-        <version>${deploy.plugin.version}</version>
         <configuration>
           <skip>true</skip>
         </configuration>
@@ -220,7 +215,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-        <version>${site.plugin.version}</version>
         <configuration>
           <skip>true</skip>
           <skipDeploy>true</skipDeploy>

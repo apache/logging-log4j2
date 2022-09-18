@@ -19,7 +19,7 @@
   <parent>
     <groupId>org.apache.logging</groupId>
     <artifactId>logging-parent</artifactId>
-    <version>5</version>
+    <version>7</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <name>Apache Log4j BOM</name>
@@ -28,16 +28,6 @@
   <artifactId>log4j-bom</artifactId>
   <version>2.19.1-SNAPSHOT</version>
   <packaging>pom</packaging>
-
-  <!-- `log4j-bom` doesn't inherit from the room POM, but `org.apache.logging:logging-parent`.
-       Hence Maven repositories need to be explicitly provided for SNAPSHOT artifact deployments. -->
-  <distributionManagement>
-    <snapshotRepository>
-      <id>asf-snapshots</id>
-      <name>ASF snapshot repository</name>
-      <url>https://repository.apache.org/content/repositories/snapshots</url>
-    </snapshotRepository>
-  </distributionManagement>
 
   <dependencyManagement>
     <dependencies>
@@ -222,7 +212,6 @@
       <plugin>
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
-        <version>0.13</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

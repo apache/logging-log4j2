@@ -41,6 +41,7 @@
     <uberjar.name>benchmarks</uberjar.name>
     <revapi.skip>true</revapi.skip>
     <maven.doap.skip>true</maven.doap.skip>
+    <module.name>org.apache.logging.log4j.perf</module.name>
   </properties>
 
   <dependencies>
@@ -171,7 +172,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>${compiler.plugin.version}</version>
         <configuration>
           <compilerVersion>9</compilerVersion>
           <source>9</source>
@@ -181,7 +181,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
-        <version>${deploy.plugin.version}</version>
         <configuration>
           <skip>true</skip>
         </configuration>
