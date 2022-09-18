@@ -43,6 +43,7 @@
     <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.core</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -102,7 +103,6 @@
       <artifactId>logback-core</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- Place Felix before Equinox because Felix is signed. / also place it before org.osgi.core so that its versions of the OSGi classes are used -->
     <dependency>
       <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.framework</artifactId>
@@ -201,6 +201,9 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
+          <classpathDependencyExcludes>
+            org.osgi:org.osgi.core
+          </classpathDependencyExcludes>
           <systemPropertyVariables>
             <!-- PAX logging has a copy of Log4j2 API-->
             <pax.exam.logging>false</pax.exam.logging>
