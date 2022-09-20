@@ -67,7 +67,7 @@ public class Log4jLoggerFactory extends AbstractLoggerAdapter<Logger> implements
 
     private LoggerContext validateContext(final LoggerContext context) {
         if (TO_SLF4J_CONTEXT.equals(context.getClass().getName())) {
-            throw new LoggingException("log4j-slf4j-impl cannot be present with log4j-to-slf4j");
+            throw new LoggingException("log4j-slf4j2-impl cannot be present with log4j-to-slf4j");
         }
         return context;
     }
