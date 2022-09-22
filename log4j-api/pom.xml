@@ -38,6 +38,11 @@
       <artifactId>org.osgi.framework</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.resource</artifactId>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

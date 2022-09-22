@@ -49,6 +49,12 @@
       <artifactId>org.osgi.framework</artifactId>
       <scope>provided</scope>
     </dependency>
+    <!-- Used for OSGi bundle support -->
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.resource</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <!-- Required for AsyncLoggers -->
     <dependency>
       <groupId>com.lmax</groupId>
@@ -89,7 +95,7 @@
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-xml</artifactId>
-      <scope>runtime</scope>
+      <optional>true</optional>
     </dependency>
     <!-- Required for console color support in Windows -->
     <dependency>
