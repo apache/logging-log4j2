@@ -15,7 +15,6 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <artifactId>log4j</artifactId>
@@ -49,34 +48,13 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.hamcrest</groupId>
-        <artifactId>hamcrest</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.junit.platform</groupId>
-      <artifactId>junit-platform-commons</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit-pioneer</groupId>
-      <artifactId>junit-pioneer</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openjdk.nashorn</groupId>
-      <artifactId>nashorn-core</artifactId>
-      <version>15.3</version>
+      <groupId>org.apache-extras.beanshell</groupId>
+      <artifactId>bsh</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -86,23 +64,54 @@
     </dependency>
     <dependency>
       <groupId>org.apache.groovy</groupId>
-      <artifactId>groovy-jsr223</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-dateutil</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache-extras.beanshell</groupId>
-      <artifactId>bsh</artifactId>
+      <groupId>org.apache.groovy</groupId>
+      <artifactId>groovy-jsr223</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit-pioneer</groupId>
+      <artifactId>junit-pioneer</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-commons</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openjdk.nashorn</groupId>
+      <artifactId>nashorn-core</artifactId>
+      <version>15.3</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
+            <Export-Package>org.apache.logging.log4j.script.*</Export-Package>
+          </instructions>
+        </configuration>
+      </plugin>
       <!-- Include the standard NOTICE and LICENSE -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -117,16 +126,6 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
-            <Export-Package>org.apache.logging.log4j.script.*</Export-Package>
-          </instructions>
-        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -167,9 +166,9 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>${javadoc.plugin.version}</version>
         <configuration>
-          <bottom><![CDATA[<p align="center">Copyright &#169; {inceptionYear}-{currentYear} {organizationName}. All Rights Reserved.<br />
+          <bottom>&lt;p align="center"&gt;Copyright &amp;#169; {inceptionYear}-{currentYear} {organizationName}. All Rights Reserved.&lt;br /&gt;
             Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, the Apache Logging project logo,
-            and the Apache Log4j logo are trademarks of The Apache Software Foundation.</p>]]></bottom>
+            and the Apache Log4j logo are trademarks of The Apache Software Foundation.&lt;/p&gt;</bottom>
           <!-- module link generation is completely broken in the javadoc plugin for a multi-module non-aggregating
                project -->
           <detectOfflineLinks>false</detectOfflineLinks>
@@ -184,10 +183,6 @@
             </reports>
           </reportSet>
         </reportSets>
-      </plugin>
-      <plugin>
-        <groupId>com.github.spotbugs</groupId>
-        <artifactId>spotbugs-maven-plugin</artifactId>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -215,6 +210,10 @@
         <configuration>
           <targetJdk>${maven.compiler.target}</targetJdk>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </reporting>

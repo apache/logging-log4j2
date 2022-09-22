@@ -34,15 +34,6 @@
     <maven.doap.skip>true</maven.doap.skip>
   </properties>
   <dependencies>
-    <!-- Naturally, all implementations require the log4j-api JAR -->
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-plugins</artifactId>
-    </dependency>
     <!-- Used for OSGi bundle support -->
     <dependency>
       <groupId>org.osgi</groupId>
@@ -55,10 +46,19 @@
       <artifactId>org.osgi.resource</artifactId>
       <scope>provided</scope>
     </dependency>
-    <!-- Required for AsyncLoggers -->
+    <!-- Naturally, all implementations require the log4j-api JAR -->
     <dependency>
-      <groupId>com.lmax</groupId>
-      <artifactId>disruptor</artifactId>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-plugins</artifactId>
+    </dependency>
+    <!-- Used for compressing to formats other than zip and gz -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
       <optional>true</optional>
     </dependency>
     <!-- Alternative implementation of BlockingQueue using Conversant Disruptor for AsyncAppender -->
@@ -67,10 +67,10 @@
       <artifactId>disruptor</artifactId>
       <optional>true</optional>
     </dependency>
-    <!-- Alternative implementation of BlockingQueue using JCTools for AsyncAppender -->
+    <!-- Required for AsyncLoggers -->
     <dependency>
-      <groupId>org.jctools</groupId>
-      <artifactId>jctools-core</artifactId>
+      <groupId>com.lmax</groupId>
+      <artifactId>disruptor</artifactId>
       <optional>true</optional>
     </dependency>
     <!-- Required for JSON support -->
@@ -85,29 +85,17 @@
       <artifactId>jackson-databind</artifactId>
       <optional>true</optional>
     </dependency>
-    <!-- Required for YAML support (including JSON requirements) -->
-    <dependency>
-      <groupId>com.fasterxml.jackson.dataformat</groupId>
-      <artifactId>jackson-dataformat-yaml</artifactId>
-      <optional>true</optional>
-    </dependency>
     <!-- Required for XML layout and receiver support -->
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-xml</artifactId>
       <optional>true</optional>
     </dependency>
-    <!-- Replacement for `jakarta.xml.bind` Jackson dependency -->
+    <!-- Required for YAML support (including JSON requirements) -->
     <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <!-- Replacement for `jakarta.xml.bind` Jackson dependency -->
-    <dependency>
-      <groupId>javax.activation</groupId>
-      <artifactId>javax.activation-api</artifactId>
-      <scope>runtime</scope>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-yaml</artifactId>
+      <optional>true</optional>
     </dependency>
     <!-- Required for console color support in Windows -->
     <dependency>
@@ -115,29 +103,47 @@
       <artifactId>jansi</artifactId>
       <optional>true</optional>
     </dependency>
-    <!-- Used for compressing to formats other than zip and gz -->
+    <!-- Alternative implementation of BlockingQueue using JCTools for AsyncAppender -->
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-compress</artifactId>
+      <groupId>org.jctools</groupId>
+      <artifactId>jctools-core</artifactId>
       <optional>true</optional>
+    </dependency>
+    <!-- Replacement for `jakarta.xml.bind` Jackson dependency -->
+    <dependency>
+      <groupId>javax.activation</groupId>
+      <artifactId>javax.activation-api</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <!-- Replacement for `jakarta.xml.bind` Jackson dependency -->
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <scope>runtime</scope>
     </dependency>
   </dependencies>
   <build>
     <plugins>
-      <!-- Include the standard NOTICE and LICENSE -->
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
-        <version>3.2.0</version>
-        <executions>
-          <execution>
-            <id>default-resources</id>
-            <goals>
-              <goal>resources</goal>
-            </goals>
-            <phase>generate-resources</phase>
-          </execution>
-        </executions>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>org.apache.logging.log4j.core</Bundle-SymbolicName>
+            <!-- TODO: exclude internal classes from export -->
+            <Export-Package>org.apache.logging.log4j.core.*</Export-Package>
+            <Import-Package>
+              javax.activation;version="[1.2,2)";resolution:=optional,
+              javax.jms;version="[1.1,3)";resolution:=optional,
+              javax.mail;version="[1.6,2)";resolution:=optional,
+              javax.mail.internet;version="[1.6,2)";resolution:=optional,
+              javax.mail.util;version="[1.6,2)";resolution:=optional,
+              sun.reflect;resolution:=optional,
+              *
+            </Import-Package>
+            <Bundle-Activator>org.apache.logging.log4j.core.osgi.Activator</Bundle-Activator>
+          </instructions>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -174,26 +180,20 @@
           </execution>
         </executions>
       </plugin>
+      <!-- Include the standard NOTICE and LICENSE -->
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Bundle-SymbolicName>org.apache.logging.log4j.core</Bundle-SymbolicName>
-            <!-- TODO: exclude internal classes from export -->
-            <Export-Package>org.apache.logging.log4j.core.*</Export-Package>
-            <Import-Package>
-              javax.activation;version="[1.2,2)";resolution:=optional,
-              javax.jms;version="[1.1,3)";resolution:=optional,
-              javax.mail;version="[1.6,2)";resolution:=optional,
-              javax.mail.internet;version="[1.6,2)";resolution:=optional,
-              javax.mail.util;version="[1.6,2)";resolution:=optional,
-              sun.reflect;resolution:=optional,
-              *
-            </Import-Package>
-            <Bundle-Activator>org.apache.logging.log4j.core.osgi.Activator</Bundle-Activator>
-          </instructions>
-        </configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.2.0</version>
+        <executions>
+          <execution>
+            <id>default-resources</id>
+            <goals>
+              <goal>resources</goal>
+            </goals>
+            <phase>generate-resources</phase>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
@@ -236,9 +236,9 @@
         <configuration>
           <failOnError>false</failOnError>
           <source>8</source>
-          <bottom><![CDATA[<p align="center">Copyright &#169; {inceptionYear}-{currentYear} {organizationName}. All Rights Reserved.<br />
+          <bottom>&lt;p align="center"&gt;Copyright &amp;#169; {inceptionYear}-{currentYear} {organizationName}. All Rights Reserved.&lt;br /&gt;
             Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, the Apache Logging project logo,
-            and the Apache Log4j logo are trademarks of The Apache Software Foundation.</p>]]></bottom>
+            and the Apache Log4j logo are trademarks of The Apache Software Foundation.&lt;/p&gt;</bottom>
           <!-- module link generation is completely broken in the javadoc plugin for a multi-module non-aggregating
                project -->
           <additionalparam>${javadoc.opts}</additionalparam>
@@ -282,10 +282,6 @@
         </reportSets>
       </plugin>
       <plugin>
-        <groupId>com.github.spotbugs</groupId>
-        <artifactId>spotbugs-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jxr-plugin</artifactId>
         <version>${jxr.plugin.version}</version>
@@ -312,7 +308,10 @@
           <targetJdk>${maven.compiler.target}</targetJdk>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+      </plugin>
     </plugins>
   </reporting>
 </project>
-

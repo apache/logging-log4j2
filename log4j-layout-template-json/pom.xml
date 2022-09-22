@@ -41,7 +41,6 @@
   </properties>
 
   <dependencies>
-
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
@@ -54,18 +53,26 @@
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-plugins</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.jctools</groupId>
       <artifactId>jctools-core</artifactId>
       <optional>true</optional>
     </dependency>
-
   </dependencies>
 
   <build>
     <plugins>
-
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
+            <Bundle-SymbolicName>org.apache.logging.log4j.layout.template.json</Bundle-SymbolicName>
+            <Export-Package>org.apache.logging.log4j.layout.template.json</Export-Package>
+          </instructions>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -100,7 +107,7 @@
           </compilerArgs>
           <compilerArguments>
             <Xmaxwarns>10000</Xmaxwarns>
-            <Xlint />
+            <Xlint/>
           </compilerArguments>
           <annotationProcessorPaths>
             <path>
@@ -128,19 +135,14 @@
           </execution>
         </executions>
       </plugin>
-
+      <!-- Disable Failsafe since tests go to the `-test` module. -->
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
         <configuration>
-          <instructions>
-            <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
-            <Bundle-SymbolicName>org.apache.logging.log4j.layout.template.json</Bundle-SymbolicName>
-            <Export-Package>org.apache.logging.log4j.layout.template.json</Export-Package>
-          </instructions>
+          <skip>true</skip>
         </configuration>
       </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -170,7 +172,6 @@
           </execution>
         </executions>
       </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -178,22 +179,11 @@
           <skip>true</skip>
         </configuration>
       </plugin>
-
-      <!-- Disable Failsafe since tests go to the `-test` module. -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-
     </plugins>
   </build>
 
   <reporting>
     <plugins>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-changes-plugin</artifactId>
@@ -210,7 +200,6 @@
           <useJql>true</useJql>
         </configuration>
       </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
@@ -223,15 +212,14 @@
           <propertyExpansion>licensedir=${log4jParentDir}/checkstyle-header.txt</propertyExpansion>
         </configuration>
       </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>${javadoc.plugin.version}</version>
         <configuration>
-          <bottom><![CDATA[<p align="center">Copyright &#169; {inceptionYear}-{currentYear} {organizationName}. All Rights Reserved.<br />
+          <bottom>&lt;p align="center"&gt;Copyright &amp;#169; {inceptionYear}-{currentYear} {organizationName}. All Rights Reserved.&lt;br /&gt;
             Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, the Apache Logging project logo,
-            and the Apache Log4j logo are trademarks of The Apache Software Foundation.</p>]]></bottom>
+            and the Apache Log4j logo are trademarks of The Apache Software Foundation.&lt;/p&gt;</bottom>
           <!-- Module link generation is completely broken in the javadoc plugin for a multi-module non-aggregating project: -->
           <detectOfflineLinks>false</detectOfflineLinks>
           <linksource>true</linksource>
@@ -245,12 +233,6 @@
           </reportSet>
         </reportSets>
       </plugin>
-
-      <plugin>
-        <groupId>com.github.spotbugs</groupId>
-        <artifactId>spotbugs-maven-plugin</artifactId>
-      </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jxr-plugin</artifactId>
@@ -270,7 +252,6 @@
           </reportSet>
         </reportSets>
       </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
@@ -279,7 +260,10 @@
           <targetJdk>${maven.compiler.target}</targetJdk>
         </configuration>
       </plugin>
-
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+      </plugin>
     </plugins>
   </reporting>
 

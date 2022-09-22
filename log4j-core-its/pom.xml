@@ -38,6 +38,83 @@
     <maven.test.skip>true</maven.test.skip>
   </properties>
   <dependencies>
+    <!-- Used for JMS appenders (needs an implementation of course) -->
+    <dependency>
+      <groupId>org.jboss.spec.javax.jms</groupId>
+      <artifactId>jboss-jms-api_1.1_spec</artifactId>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+    <!-- Alternative implementation of BlockingQueue using Conversant Disruptor for AsyncAppender -->
+    <dependency>
+      <groupId>com.conversantmedia</groupId>
+      <artifactId>disruptor</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <!-- Required for AsyncLoggers -->
+    <dependency>
+      <groupId>com.lmax</groupId>
+      <artifactId>disruptor</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <!-- Required for JSON support -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <!-- Required for JSON support -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <!-- Required for XML layout and receiver support -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-xml</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <!-- Required for YAML support (including JSON requirements) -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-yaml</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <!-- Replacement for `jakarta.xml.bind` Jackson dependency -->
+    <dependency>
+      <groupId>javax.activation</groupId>
+      <artifactId>javax.activation-api</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <!-- Replacement for `jakarta.xml.bind` Jackson dependency -->
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <!-- Alternative implementation of BlockingQueue using JCTools for AsyncAppender -->
+    <dependency>
+      <groupId>org.jctools</groupId>
+      <artifactId>jctools-core</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+    </dependency>
+    <!-- JUnit, naturally -->
+    <dependency>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+    </dependency>
+    <!-- POM for jackson-dataformat-xml 2.9.2 depends on woodstox-core 5.0.3 -->
+    <dependency>
+      <groupId>com.fasterxml.woodstox</groupId>
+      <artifactId>woodstox-core</artifactId>
+      <version>5.0.3</version>
+      <optional>true</optional>
+    </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
@@ -55,6 +132,11 @@
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-layout-jackson-json</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
@@ -64,141 +146,6 @@
       <artifactId>log4j-layout-jackson-xml</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!-- Used for testing HttpAppender -->
-    <dependency>
-      <groupId>com.github.tomakehurst</groupId>
-      <artifactId>wiremock</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!-- Required for AsyncLoggers -->
-    <dependency>
-      <groupId>com.lmax</groupId>
-      <artifactId>disruptor</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <!-- Alternative implementation of BlockingQueue using Conversant Disruptor for AsyncAppender -->
-    <dependency>
-      <groupId>com.conversantmedia</groupId>
-      <artifactId>disruptor</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <!-- Alternative implementation of BlockingQueue using JCTools for AsyncAppender -->
-    <dependency>
-      <groupId>org.jctools</groupId>
-      <artifactId>jctools-core</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <!-- Required for JSON support -->
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-core</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <!-- Required for JSON support -->
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <!-- Required for YAML support (including JSON requirements) -->
-    <dependency>
-      <groupId>com.fasterxml.jackson.dataformat</groupId>
-      <artifactId>jackson-dataformat-yaml</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <!-- Required for XML layout and receiver support -->
-    <dependency>
-      <groupId>com.fasterxml.jackson.dataformat</groupId>
-      <artifactId>jackson-dataformat-xml</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <!-- Replacement for `jakarta.xml.bind` Jackson dependency -->
-    <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <!-- Replacement for `jakarta.xml.bind` Jackson dependency -->
-    <dependency>
-      <groupId>javax.activation</groupId>
-      <artifactId>javax.activation-api</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <!-- POM for jackson-dataformat-xml 2.9.2 depends on woodstox-core 5.0.3 -->
-    <dependency>
-      <groupId>com.fasterxml.woodstox</groupId>
-      <artifactId>woodstox-core</artifactId>
-      <version>5.0.3</version>
-      <optional>true</optional>
-    </dependency>
-
-    <!-- TEST DEPENDENCIES -->
-    <!-- Log4j 1.2 tests -->
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.17</version>
-      <scope>test</scope>
-    </dependency>
-    <!-- SLF4J tests -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-ext</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!-- JUnit, naturally -->
-    <dependency>
-      <groupId>org.junit.vintage</groupId>
-      <artifactId>junit-vintage-engine</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!-- Useful mock classes and utilities -->
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!-- Logback performance tests -->
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!-- Used for JMS appenders (needs an implementation of course) -->
-    <dependency>
-      <groupId>org.jboss.spec.javax.jms</groupId>
-      <artifactId>jboss-jms-api_1.1_spec</artifactId>
-      <scope>provided</scope>
-      <optional>true</optional>
     </dependency>
     <!-- JPA, JNDI and JMS tests -->
     <dependency>
@@ -212,9 +159,65 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- TEST DEPENDENCIES -->
+    <!-- Log4j 1.2 tests -->
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.17</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Logback performance tests -->
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- SLF4J tests -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-ext</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Useful mock classes and utilities -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Used for testing HttpAppender -->
+    <dependency>
+      <groupId>com.github.tomakehurst</groupId>
+      <artifactId>wiremock</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+      </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <executions>
@@ -228,8 +231,23 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <configuration>
+          <additionalClasspathElements>
+            <additionalClasspathElement>${project.basedir}/src/test/resources</additionalClasspathElement>
+          </additionalClasspathElements>
+          <includes>
+            <include>**/*.java</include>
+          </includes>
+          <excludes>
+            <exclude>**/ForceNoDefClassFoundError.*</exclude>
+          </excludes>
+          <groups>
+            org.apache.logging.log4j.core.test.categories.PerformanceTests,
+            org.apache.logging.log4j.core.test.categories.Appenders$Jms
+          </groups>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -270,26 +288,6 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <configuration>
-          <additionalClasspathElements>
-            <additionalClasspathElement>${project.basedir}/src/test/resources</additionalClasspathElement>
-          </additionalClasspathElements>
-          <includes>
-            <include>**/*.java</include>
-          </includes>
-          <excludes>
-            <exclude>**/ForceNoDefClassFoundError.*</exclude>
-          </excludes>
-          <groups>
-            org.apache.logging.log4j.core.test.categories.PerformanceTests,
-            org.apache.logging.log4j.core.test.categories.Appenders$Jms
-          </groups>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 </project>
-

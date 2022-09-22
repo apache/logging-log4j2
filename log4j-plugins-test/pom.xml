@@ -33,6 +33,17 @@
     <maven.doap.skip>true</maven.doap.skip>
   </properties>
   <dependencies>
+    <!-- Used for OSGi bundle support -->
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.framework</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.resource</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
@@ -45,20 +56,7 @@
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-plugins</artifactId>
     </dependency>
-    <!-- Used for OSGi bundle support -->
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.framework</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.resource</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- TEST DEPENDENCIES -->
-
     <!-- Pull in useful test classes from API -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -66,8 +64,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.junit.vintage</groupId>
-      <artifactId>junit-vintage-engine</artifactId>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -76,13 +74,31 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest</artifactId>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>org.apache.logging.log4j.plugins</Bundle-SymbolicName>
+            <!-- TODO: exclude internal classes from export -->
+            <Export-Package>org.apache.logging.log4j.plugins.*</Export-Package>
+            <Import-Package>
+              org.apache.logging.log4j,
+              org.apache.logging.log4j.status,
+              org.apache.logging.log4j.util,
+              org.osgi.framework.*
+            </Import-Package>
+            <Bundle-Activator>org.apache.logging.log4j.plugins.osgi.Activator</Bundle-Activator>
+          </instructions>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -111,13 +127,6 @@
         </executions>
       </plugin>
       <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <useModulePath>false</useModulePath>
-          <argLine>--add-opens java.base/java.net=ALL-UNNAMED</argLine>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
         <configuration>
@@ -125,21 +134,10 @@
         </configuration>
       </plugin>
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
+        <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <instructions>
-            <Bundle-SymbolicName>org.apache.logging.log4j.plugins</Bundle-SymbolicName>
-            <!-- TODO: exclude internal classes from export -->
-            <Export-Package>org.apache.logging.log4j.plugins.*</Export-Package>
-            <Import-Package>
-              org.apache.logging.log4j,
-              org.apache.logging.log4j.status,
-              org.apache.logging.log4j.util,
-              org.osgi.framework.*
-            </Import-Package>
-            <Bundle-Activator>org.apache.logging.log4j.plugins.osgi.Activator</Bundle-Activator>
-          </instructions>
+          <useModulePath>false</useModulePath>
+          <argLine>--add-opens java.base/java.net=ALL-UNNAMED</argLine>
         </configuration>
       </plugin>
     </plugins>
@@ -183,9 +181,9 @@
         <configuration>
           <failOnError>false</failOnError>
           <source>8</source>
-          <bottom><![CDATA[<p align="center">Copyright &#169; {inceptionYear}-{currentYear} {organizationName}. All Rights Reserved.<br />
+          <bottom>&lt;p align="center"&gt;Copyright &amp;#169; {inceptionYear}-{currentYear} {organizationName}. All Rights Reserved.&lt;br /&gt;
             Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, the Apache Logging project logo,
-            and the Apache Log4j logo are trademarks of The Apache Software Foundation.</p>]]></bottom>
+            and the Apache Log4j logo are trademarks of The Apache Software Foundation.&lt;/p&gt;</bottom>
           <!-- module link generation is completely broken in the javadoc plugin for a multi-module non-aggregating
                project -->
           <additionalparam>${javadoc.opts}</additionalparam>
@@ -205,10 +203,6 @@
             </reports>
           </reportSet>
         </reportSets>
-      </plugin>
-      <plugin>
-        <groupId>com.github.spotbugs</groupId>
-        <artifactId>spotbugs-maven-plugin</artifactId>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -236,6 +230,10 @@
         <configuration>
           <targetJdk>${maven.compiler.target}</targetJdk>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </reporting>
@@ -265,4 +263,3 @@
     </profile>
   </profiles>
 </project>
-

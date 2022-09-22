@@ -15,7 +15,6 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <artifactId>log4j</artifactId>
@@ -58,14 +57,6 @@
           <artifactId>junit-jupiter-engine</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>org.junit.platform</groupId>
-          <artifactId>junit-platform-commons</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.junit.platform</groupId>
-          <artifactId>junit-platform-launcher</artifactId>
-        </exclusion>
-        <exclusion>
           <groupId>org.junit.jupiter</groupId>
           <artifactId>junit-jupiter-migrationsupport</artifactId>
         </exclusion>
@@ -77,6 +68,14 @@
           <groupId>org.junit-pioneer</groupId>
           <artifactId>junit-pioneer</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.junit.platform</groupId>
+          <artifactId>junit-platform-commons</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.junit.platform</groupId>
+          <artifactId>junit-platform-launcher</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -84,11 +83,6 @@
       <artifactId>log4j-core-test</artifactId>
       <scope>test</scope>
       <exclusions>
-        <!-- Exclude Junit 5 - it is hardwired to use java.util.logging and breaks all these tests -->
-        <exclusion>
-          <groupId>org.junit.vintage</groupId>
-          <artifactId>junit-vintage-engine</artifactId>
-        </exclusion>
         <exclusion>
           <groupId>org.junit.jupiter</groupId>
           <artifactId>junit-jupiter-engine</artifactId>
@@ -105,21 +99,16 @@
           <groupId>org.junit-pioneer</groupId>
           <artifactId>junit-pioneer</artifactId>
         </exclusion>
+        <!-- Exclude Junit 5 - it is hardwired to use java.util.logging and breaks all these tests -->
+        <exclusion>
+          <groupId>org.junit.vintage</groupId>
+          <artifactId>junit-vintage-engine</artifactId>
+        </exclusion>
       </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-        <artifactId>hamcrest</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
     <!-- Required for AsyncLogger testing -->
@@ -128,24 +117,29 @@
       <artifactId>disruptor</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
     <plugins>
-      <!-- Include the standard NOTICE and LICENSE -->
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-remote-resources-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>process</goal>
-            </goals>
-            <configuration>
-              <skip>false</skip>
-            </configuration>
-          </execution>
-        </executions>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
+            <Export-Package>org.apache.logging.log4j.jul</Export-Package>
+          </instructions>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -175,27 +169,32 @@
           </execution>
         </executions>
       </plugin>
+      <!-- Include the standard NOTICE and LICENSE -->
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
-            <Export-Package>org.apache.logging.log4j.jul</Export-Package>
-          </instructions>
-        </configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-remote-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>process</goal>
+            </goals>
+            <configuration>
+              <skip>false</skip>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>${surefire.plugin.version}</version>
           <dependencies>
-            <dependency>
+          <dependency>
               <groupId>org.apache.maven.surefire</groupId>
               <artifactId>surefire-junit47</artifactId>
               <version>${surefire.plugin.version}</version>
             </dependency>
-          </dependencies>
+        </dependencies>
           <configuration>
               <systemPropertyVariables>
                   <java.awt.headless>true</java.awt.headless>
@@ -277,9 +276,9 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>${javadoc.plugin.version}</version>
         <configuration>
-          <bottom><![CDATA[<p align="center">Copyright &#169; {inceptionYear}-{currentYear} {organizationName}. All Rights Reserved.<br />
+          <bottom>&lt;p align="center"&gt;Copyright &amp;#169; {inceptionYear}-{currentYear} {organizationName}. All Rights Reserved.&lt;br /&gt;
             Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, the Apache Logging project logo,
-            and the Apache Log4j logo are trademarks of The Apache Software Foundation.</p>]]></bottom>
+            and the Apache Log4j logo are trademarks of The Apache Software Foundation.&lt;/p&gt;</bottom>
           <!-- module link generation is completely broken in the javadoc plugin for a multi-module non-aggregating
                project -->
           <detectOfflineLinks>false</detectOfflineLinks>
@@ -294,10 +293,6 @@
             </reports>
           </reportSet>
         </reportSets>
-      </plugin>
-      <plugin>
-        <groupId>com.github.spotbugs</groupId>
-        <artifactId>spotbugs-maven-plugin</artifactId>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -325,6 +320,10 @@
         <configuration>
           <targetJdk>${maven.compiler.target}</targetJdk>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </reporting>

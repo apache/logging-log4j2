@@ -35,19 +35,6 @@
     <graalvm.version>21.3.0</graalvm.version>
   </properties>
   <dependencies>
-    <!-- Naturally, all implementations require the log4j-api JAR -->
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-plugins</artifactId>
-    </dependency>
     <!-- Used for OSGi bundle support -->
     <dependency>
       <groupId>org.osgi</groupId>
@@ -59,11 +46,44 @@
       <artifactId>org.osgi.resource</artifactId>
       <scope>provided</scope>
     </dependency>
-    <!-- Required for AsyncLoggers -->
+    <!-- Naturally, all implementations require the log4j-api JAR -->
     <dependency>
-      <groupId>com.lmax</groupId>
-      <artifactId>disruptor</artifactId>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+    </dependency>
+    <!-- TEST DEPENDENCIES -->
+    <!-- Pull in useful test classes from API -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api-test</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-plugins</artifactId>
+    </dependency>
+    <!-- And test plugins -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-plugins-test</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+    </dependency>
+    <!-- Used for compressing to formats other than zip and gz -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
       <optional>true</optional>
+    </dependency>
+    <!-- JNDI and JMS tests -->
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
     </dependency>
     <!-- Alternative implementation of BlockingQueue using Conversant Disruptor for AsyncAppender -->
     <dependency>
@@ -71,11 +91,15 @@
       <artifactId>disruptor</artifactId>
       <optional>true</optional>
     </dependency>
-    <!-- Alternative implementation of BlockingQueue using JCTools for AsyncAppender -->
+    <!-- Required for AsyncLoggers -->
     <dependency>
-      <groupId>org.jctools</groupId>
-      <artifactId>jctools-core</artifactId>
+      <groupId>com.lmax</groupId>
+      <artifactId>disruptor</artifactId>
       <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest</artifactId>
     </dependency>
     <!-- Required for JSON support -->
     <dependency>
@@ -89,35 +113,16 @@
       <artifactId>jackson-databind</artifactId>
       <optional>true</optional>
     </dependency>
-    <!-- Required for YAML support (including JSON requirements) -->
-    <dependency>
-      <groupId>com.fasterxml.jackson.dataformat</groupId>
-      <artifactId>jackson-dataformat-yaml</artifactId>
-      <optional>true</optional>
-    </dependency>
     <!-- Required for XML layout and receiver support -->
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-xml</artifactId>
       <optional>true</optional>
     </dependency>
-    <!-- Replacement for `jakarta.xml.bind` Jackson dependency -->
+    <!-- Required for YAML support (including JSON requirements) -->
     <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <!-- Replacement for `jakarta.xml.bind` Jackson dependency -->
-    <dependency>
-      <groupId>javax.activation</groupId>
-      <artifactId>javax.activation-api</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <!-- POM for jackson-dataformat-xml 2.9.2 depends on woodstox-core 5.0.3 -->
-    <dependency>
-      <groupId>com.fasterxml.woodstox</groupId>
-      <artifactId>woodstox-core</artifactId>
-      <version>5.0.3</version>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-yaml</artifactId>
       <optional>true</optional>
     </dependency>
     <!-- Required for console color support in Windows -->
@@ -126,54 +131,29 @@
       <artifactId>jansi</artifactId>
       <optional>true</optional>
     </dependency>
-    <!-- Used for compressing to formats other than zip and gz -->
+    <!-- Replacement for `jakarta.xml.bind` Jackson dependency -->
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-compress</artifactId>
+      <groupId>javax.activation</groupId>
+      <artifactId>javax.activation-api</artifactId>
       <optional>true</optional>
     </dependency>
-
-    <!-- TEST DEPENDENCIES -->
-
-    <!-- Pull in useful test classes from API -->
+    <!-- Replacement for `jakarta.xml.bind` Jackson dependency -->
     <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-api-test</artifactId>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <optional>true</optional>
     </dependency>
-    <!-- And test plugins -->
+    <!-- Alternative implementation of BlockingQueue using JCTools for AsyncAppender -->
     <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-plugins-test</artifactId>
-    </dependency>
-    <!--  Apache Commons Compress -->
-    <dependency>
-      <groupId>org.tukaani</groupId>
-      <artifactId>xz</artifactId>
-      <scope>test</scope>
+      <groupId>org.jctools</groupId>
+      <artifactId>jctools-core</artifactId>
+      <optional>true</optional>
     </dependency>
     <!-- Zeroconf advertiser tests -->
     <dependency>
       <groupId>org.jmdns</groupId>
       <artifactId>jmdns</artifactId>
       <version>3.5.3</version>
-    </dependency>
-    <!-- Log4j 1.2 tests -->
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.17</version>
-      <scope>test</scope>
-    </dependency>
-    <!-- SLF4J tests -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!-- JUnit, naturally -->
-    <dependency>
-      <groupId>org.junit.vintage</groupId>
-      <artifactId>junit-vintage-engine</artifactId>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -192,83 +172,21 @@
       <artifactId>junit-pioneer</artifactId>
       <optional>true</optional>
     </dependency>
+    <!-- JUnit, naturally -->
     <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest</artifactId>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+    </dependency>
+    <!-- POM for jackson-dataformat-xml 2.9.2 depends on woodstox-core 5.0.3 -->
+    <dependency>
+      <groupId>com.fasterxml.woodstox</groupId>
+      <artifactId>woodstox-core</artifactId>
+      <version>5.0.3</version>
+      <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
-    </dependency>
-    <!-- Mocking framework for use with JUnit -->
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-junit-jupiter</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!-- Embedded JDBC drivers for database appender tests -->
-    <dependency>
-      <groupId>org.hsqldb</groupId>
-      <artifactId>hsqldb</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!-- Useful mock classes and utilities -->
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!-- JNDI and JMS tests -->
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-    </dependency>
-    <!-- Logback performance tests -->
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!--  GELF -->
-    <dependency>
-      <groupId>net.javacrumbs.json-unit</groupId>
-      <artifactId>json-unit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.xmlunit</groupId>
-      <artifactId>xmlunit-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.xmlunit</groupId>
-      <artifactId>xmlunit-matchers</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!-- Used for testing HTTP Watcher -->
-    <dependency>
-      <groupId>com.github.tomakehurst</groupId>
-      <artifactId>wiremock</artifactId>
+      <groupId>org.awaitility</groupId>
+      <artifactId>awaitility</artifactId>
       <scope>test</scope>
     </dependency>
     <!-- Other -->
@@ -278,14 +196,18 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.graalvm.truffle</groupId>
-      <artifactId>truffle-api</artifactId>
-      <version>21.3.0</version>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -293,16 +215,23 @@
       <artifactId>HdrHistogram</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- Embedded JDBC drivers for database appender tests -->
     <dependency>
-      <groupId>org.awaitility</groupId>
-      <artifactId>awaitility</artifactId>
+      <groupId>org.hsqldb</groupId>
+      <artifactId>hsqldb</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- For testing log4j 2 2.x plugins -->
+    <!--  GELF -->
     <dependency>
-      <groupId>com.vlkan.log4j2</groupId>
-      <artifactId>log4j2-logstash-layout</artifactId>
-      <version>${log4j2-logstash-layout.version}</version>
+      <groupId>net.javacrumbs.json-unit</groupId>
+      <artifactId>json-unit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Log4j 1.2 tests -->
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.17</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -317,9 +246,101 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <!-- For testing log4j 2 2.x plugins -->
+    <dependency>
+      <groupId>com.vlkan.log4j2</groupId>
+      <artifactId>log4j2-logstash-layout</artifactId>
+      <version>${log4j2-logstash-layout.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Logback performance tests -->
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Mocking framework for use with JUnit -->
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- SLF4J tests -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Useful mock classes and utilities -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.graalvm.truffle</groupId>
+      <artifactId>truffle-api</artifactId>
+      <version>21.3.0</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- Used for testing HTTP Watcher -->
+    <dependency>
+      <groupId>com.github.tomakehurst</groupId>
+      <artifactId>wiremock</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.xmlunit</groupId>
+      <artifactId>xmlunit-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.xmlunit</groupId>
+      <artifactId>xmlunit-matchers</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!--  Apache Commons Compress -->
+    <dependency>
+      <groupId>org.tukaani</groupId>
+      <artifactId>xz</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>org.apache.logging.log4j.core</Bundle-SymbolicName>
+            <!-- TODO: exclude internal classes from export -->
+            <Export-Package>org.apache.logging.log4j.core.*</Export-Package>
+            <Import-Package>
+              sun.reflect;resolution:=optional,
+              org.apache.logging.log4j.util,
+              org.apache.logging.log4j.plugins,
+              org.apache.logging.log4j.plugins.convert,
+              org.apache.logging.log4j.plugins.processor,
+              org.apache.logging.log4j.plugins.util,
+              org.apache.logging.log4j.plugins.validation,
+              org.apache.logging.log4j.plugins.inject,
+              *
+            </Import-Package>
+            <Bundle-Activator>org.apache.logging.log4j.core.osgi.Activator</Bundle-Activator>
+          </instructions>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -349,42 +370,19 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <systemPropertyVariables>
-            <log4j2.is.webapp>false</log4j2.is.webapp>
-          </systemPropertyVariables>
-          <runOrder>random</runOrder>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
         <configuration>
           <skipTests>true</skipTests>
         </configuration>
       </plugin>
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <instructions>
-            <Bundle-SymbolicName>org.apache.logging.log4j.core</Bundle-SymbolicName>
-            <!-- TODO: exclude internal classes from export -->
-            <Export-Package>org.apache.logging.log4j.core.*</Export-Package>
-            <Import-Package>
-              sun.reflect;resolution:=optional,
-              org.apache.logging.log4j.util,
-              org.apache.logging.log4j.plugins,
-              org.apache.logging.log4j.plugins.convert,
-              org.apache.logging.log4j.plugins.processor,
-              org.apache.logging.log4j.plugins.util,
-              org.apache.logging.log4j.plugins.validation,
-              org.apache.logging.log4j.plugins.inject,
-              *
-            </Import-Package>
-            <Bundle-Activator>org.apache.logging.log4j.core.osgi.Activator</Bundle-Activator>
-          </instructions>
+          <systemPropertyVariables>
+            <log4j2.is.webapp>false</log4j2.is.webapp>
+          </systemPropertyVariables>
+          <runOrder>random</runOrder>
         </configuration>
       </plugin>
     </plugins>
@@ -428,9 +426,9 @@
         <configuration>
           <failOnError>false</failOnError>
           <source>8</source>
-          <bottom><![CDATA[<p align="center">Copyright &#169; {inceptionYear}-{currentYear} {organizationName}. All Rights Reserved.<br />
+          <bottom>&lt;p align="center"&gt;Copyright &amp;#169; {inceptionYear}-{currentYear} {organizationName}. All Rights Reserved.&lt;br /&gt;
             Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, the Apache Logging project logo,
-            and the Apache Log4j logo are trademarks of The Apache Software Foundation.</p>]]></bottom>
+            and the Apache Log4j logo are trademarks of The Apache Software Foundation.&lt;/p&gt;</bottom>
           <!-- module link generation is completely broken in the javadoc plugin for a multi-module non-aggregating
                project -->
           <additionalparam>${javadoc.opts}</additionalparam>
@@ -450,10 +448,6 @@
             </reports>
           </reportSet>
         </reportSets>
-      </plugin>
-      <plugin>
-        <groupId>com.github.spotbugs</groupId>
-        <artifactId>spotbugs-maven-plugin</artifactId>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -482,6 +476,10 @@
           <targetJdk>${maven.compiler.target}</targetJdk>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+      </plugin>
     </plugins>
   </reporting>
   <profiles>
@@ -500,4 +498,3 @@
     </profile>
   </profiles>
 </project>
-

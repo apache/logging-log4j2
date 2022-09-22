@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
@@ -31,8 +31,9 @@
   </properties>
   <dependencies>
     <dependency>
-      <groupId>org.apache.logging.log4j.samples</groupId>
-      <artifactId>log4j-samples-flume-common</artifactId>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -47,6 +48,10 @@
       <artifactId>log4j-flume-ng</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.apache.flume.flume-ng-channels</groupId>
+      <artifactId>flume-file-channel</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.apache.flume</groupId>
       <artifactId>flume-ng-node</artifactId>
     </dependency>
@@ -55,8 +60,8 @@
       <artifactId>hadoop-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.flume.flume-ng-channels</groupId>
-      <artifactId>flume-file-channel</artifactId>
+      <groupId>org.apache.logging.log4j.samples</groupId>
+      <artifactId>log4j-samples-flume-common</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -73,11 +78,6 @@
     <dependency>
       <groupId>org.springframework.ws</groupId>
       <artifactId>spring-ws-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

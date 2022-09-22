@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
@@ -27,8 +27,9 @@
   <name>Apache Log4j Samples: Flume - Remote</name>
   <dependencies>
     <dependency>
-      <groupId>org.apache.logging.log4j.samples</groupId>
-      <artifactId>log4j-samples-flume-common</artifactId>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -41,6 +42,10 @@
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-flume-ng</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j.samples</groupId>
+      <artifactId>log4j-samples-flume-common</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -57,11 +62,6 @@
     <dependency>
       <groupId>org.springframework.ws</groupId>
       <artifactId>spring-ws-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

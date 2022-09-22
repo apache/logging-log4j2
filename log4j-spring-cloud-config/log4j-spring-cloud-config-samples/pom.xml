@@ -37,6 +37,12 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>servlet-api</artifactId>
+        <version>2.5</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-beans</artifactId>
       </dependency>
@@ -54,12 +60,6 @@
         <version>2.1.4.RELEASE</version>
       </dependency>
       <dependency>
-        <groupId>javax.servlet</groupId>
-        <artifactId>servlet-api</artifactId>
-        <version>2.5</version>
-        <scope>provided</scope>
-      </dependency>
-      <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>4.13.1</version>
@@ -68,8 +68,8 @@
     </dependencies>
   </dependencyManagement>
   <modules>
-    <module>log4j-spring-cloud-config-sample-server</module>
     <module>log4j-spring-cloud-config-sample-application</module>
+    <module>log4j-spring-cloud-config-sample-server</module>
   </modules>
   <build>
     <plugins>

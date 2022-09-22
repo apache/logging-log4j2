@@ -17,12 +17,17 @@
   -->
 <!--
   To sort a POM file use:
-      java com.sun.org.apache.xalan.internal.xslt.Process -IN pom.xml -OUT pom.xml.out -XSL this.file.xslt
+      java -cp Xalan_bin_distribution_jars org.apache.xalan.xslt.Process -IN pom.xml -OUT pom.xml.out -XSL this.file.xslt
   --> 
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:pom="http://maven.apache.org/POM/4.0.0" xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xalan="http://xml.apache.org/xslt" xmlns:exslt="http://exslt.org/common" exclude-result-prefixes="pom xalan">
-  <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" xalan:indent-amount="2" />
+  xmlns:xalan="http://xml.apache.org/xalan" xmlns:exslt="http://exslt.org/common" exclude-result-prefixes="pom xalan">
+  <xsl:output method="xml"
+              version="1.0"
+              encoding="UTF-8"
+              indent="yes"
+              xalan:indent-amount="2"
+              xalan:line-separator="&#10;"/>
   <xsl:template name="determine-sort-order">
     <xsl:param name="element" />
     <!-- 1. Order by scope -->
