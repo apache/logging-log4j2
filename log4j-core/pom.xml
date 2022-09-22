@@ -49,11 +49,6 @@
       <artifactId>org.osgi.framework</artifactId>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.resource</artifactId>
-      <scope>provided</scope>
-    </dependency>
     <!-- Required for AsyncLoggers -->
     <dependency>
       <groupId>com.lmax</groupId>
@@ -94,14 +89,7 @@
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-xml</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <!-- POM for jackson-dataformat-xml 2.9.2 depends on woodstox-core 5.0.3 -->
-    <dependency>
-      <groupId>com.fasterxml.woodstox</groupId>
-      <artifactId>woodstox-core</artifactId>
-      <version>5.0.3</version>
-      <optional>true</optional>
+      <scope>runtime</scope>
     </dependency>
     <!-- Required for console color support in Windows -->
     <dependency>
