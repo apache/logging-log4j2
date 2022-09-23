@@ -80,7 +80,7 @@ public abstract class AbstractLoadBundleTest {
     }
 
     private Bundle getApiTestsBundle() throws BundleException {
-        return installBundle("org.apache.logging.log4j.api.tests");
+        return installBundle("org.apache.logging.log4j.api-test");
     }
 
     protected abstract FrameworkFactory getFactory();
