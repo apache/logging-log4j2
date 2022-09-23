@@ -259,7 +259,7 @@
     <!-- surefire.plugin.version 2.18 yields http://jira.codehaus.org/browse/SUREFIRE-1121, which is fixed in 2.18.1 -->
     <!-- surefire.plugin.version 2.19 yields https://issues.apache.org/jira/browse/SUREFIRE-1193. -->
     <!-- all versions after 2.13 yield https://issues.apache.org/jira/browse/SUREFIRE-720 -->
-    <surefire.plugin.version>3.0.0-M6</surefire.plugin.version>
+    <surefire.plugin.version>3.0.0-M7</surefire.plugin.version>
     <failsafe.plugin.version>3.0.0-M6</failsafe.plugin.version>
     <checkstyle.plugin.version>3.1.2</checkstyle.plugin.version>
     <!-- checkstyle 10.0 requires Java 11 -->
