@@ -14,22 +14,26 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
-package org.apache.logging.log4j.junit;
+package org.apache.logging.log4j.test.junit;
 
 /**
- * Helper class for JUnit tests.
+ * Restores the ThreadContext to it's initial stack values after a JUnit test.
+ * 
+ * Usage:
+ * 
+ * <pre>
+ * &#64;Rule
+ * public final ThreadContextStackRule threadContextRule = new ThreadContextStackRule();
+ * </pre>
+ * @deprecated use {@link UsingThreadContextStack} with JUnit 5
  */
-public class Mutable {
-    private String value;
+@Deprecated
+public class ThreadContextStackRule extends ThreadContextRule {
 
-    public Mutable set(final String value) {
-        this.value = value;
-        return this;
-    }
-
-    @Override
-    public String toString() {
-        return this.value;
+    /**
+     * Constructs an initialized instance.
+     */
+    public ThreadContextStackRule() {
+        super(false, true);
     }
 }

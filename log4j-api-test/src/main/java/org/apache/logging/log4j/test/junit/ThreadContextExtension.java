@@ -15,10 +15,10 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.junit;
+package org.apache.logging.log4j.test.junit;
 
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.ThreadContextHolder;
+import org.apache.logging.log4j.test.ThreadContextHolder;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;

@@ -18,8 +18,8 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.junit.CleanUpDirectories;
 import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;

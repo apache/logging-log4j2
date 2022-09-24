@@ -15,7 +15,7 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.junit;
+package org.apache.logging.log4j.test.junit;
 
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
@@ -30,8 +30,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marks a test class as using {@link org.apache.logging.log4j.spi.ThreadContextMap} APIs. This will automatically clear and
- * restore the thread context map (MDC) for each test invocation.
+ * Marks a test class as using {@link org.apache.logging.log4j.spi.ThreadContextStack} APIs. This will automatically clear and
+ * restore the thread context stack (NDC) for each test invocation.
  *
  * @since 2.14.0
  */
@@ -41,5 +41,5 @@ import java.lang.annotation.Target;
 @Inherited
 @ExtendWith(ThreadContextExtension.class)
 @ResourceLock(value = Resources.SYSTEM_PROPERTIES, mode = ResourceAccessMode.READ)
-public @interface UsingThreadContextMap {
+public @interface UsingThreadContextStack {
 }

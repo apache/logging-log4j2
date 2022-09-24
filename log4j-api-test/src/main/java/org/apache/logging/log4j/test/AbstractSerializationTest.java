@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j;
+package org.apache.logging.log4j.test;
 
 import java.io.Serializable;
 
@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import static org.apache.logging.log4j.SerializableMatchers.serializesRoundTrip;
+import static org.apache.logging.log4j.test.SerializableMatchers.serializesRoundTrip;
 import static org.junit.Assert.assertThat;
 
 /**

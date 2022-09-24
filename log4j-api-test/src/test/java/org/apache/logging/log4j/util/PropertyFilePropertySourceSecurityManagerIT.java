@@ -23,7 +23,7 @@ import java.nio.file.Paths;
 import java.security.Permission;
 import java.util.PropertyPermission;
 
-import org.apache.logging.log4j.junit.SecurityManagerTestRule;
+import org.apache.logging.log4j.test.junit.SecurityManagerTestRule;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;

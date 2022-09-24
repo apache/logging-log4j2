@@ -24,7 +24,7 @@ import java.io.ObjectOutputStream;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import org.apache.logging.log4j.junit.Mutable;
+import org.apache.logging.log4j.test.junit.Mutable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;

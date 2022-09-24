@@ -23,8 +23,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.apache.logging.log4j.junit.CleanUpFiles;
 import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.CleanUpFiles;
 import org.junit.jupiter.api.Test;
 
 @CleanUpFiles("target/test.log") // File name MUST match the one in log4j-filetest.xml.

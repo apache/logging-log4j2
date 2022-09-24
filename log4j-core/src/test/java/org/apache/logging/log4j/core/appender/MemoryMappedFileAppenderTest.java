@@ -19,8 +19,8 @@ package org.apache.logging.log4j.core.appender;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.util.Integers;
-import org.apache.logging.log4j.junit.CleanUpFiles;
 import org.apache.logging.log4j.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.CleanUpFiles;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Files;

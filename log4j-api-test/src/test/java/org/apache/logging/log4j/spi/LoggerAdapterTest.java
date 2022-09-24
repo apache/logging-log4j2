@@ -17,10 +17,10 @@
 package org.apache.logging.log4j.spi;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.TestLogger;
-import org.apache.logging.log4j.TestLoggerContext;
-import org.apache.logging.log4j.TestLoggerContextFactory;
 import org.apache.logging.log4j.simple.SimpleLoggerContext;
+import org.apache.logging.log4j.test.TestLogger;
+import org.apache.logging.log4j.test.TestLoggerContext;
+import org.apache.logging.log4j.test.TestLoggerContextFactory;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;

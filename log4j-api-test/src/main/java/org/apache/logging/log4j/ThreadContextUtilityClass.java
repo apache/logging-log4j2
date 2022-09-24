@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j;
 
+import org.apache.logging.log4j.ThreadContext;
+
 public class ThreadContextUtilityClass {
 
     public static void reset() {

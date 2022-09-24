@@ -15,10 +15,11 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j;
+package org.apache.logging.log4j.test;
 
 import java.util.Map;
 
+import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 
 /**

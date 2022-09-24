@@ -16,8 +16,8 @@
  */
 package org.apache.logging.log4j;
 
-import org.apache.logging.log4j.junit.UsingAnyThreadContext;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
+import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;

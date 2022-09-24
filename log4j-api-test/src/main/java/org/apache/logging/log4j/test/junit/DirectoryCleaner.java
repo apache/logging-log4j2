@@ -15,28 +15,31 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.junit;
+package org.apache.logging.log4j.test.junit;
 
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collection;
 import java.util.HashSet;
 
-class FileCleaner extends AbstractFileCleaner {
+class DirectoryCleaner extends AbstractFileCleaner {
     @Override
     Collection<Path> getPathsForTest(final ExtensionContext context) {
         final Collection<Path> paths = new HashSet<>();
-        final CleanUpFiles testClassAnnotation = context.getRequiredTestClass().getAnnotation(CleanUpFiles.class);
+        final CleanUpDirectories testClassAnnotation = context.getRequiredTestClass().getAnnotation(CleanUpDirectories.class);
         if (testClassAnnotation != null) {
             for (final String path : testClassAnnotation.value()) {
                 paths.add(Paths.get(path));
             }
         }
-        final CleanUpFiles testMethodAnnotation = context.getRequiredTestMethod().getAnnotation(CleanUpFiles.class);
+        final CleanUpDirectories testMethodAnnotation = context.getRequiredTestMethod().getAnnotation(CleanUpDirectories.class);
         if (testMethodAnnotation != null) {
             for (final String path : testMethodAnnotation.value()) {
                 paths.add(Paths.get(path));
@@ -47,6 +50,21 @@ class FileCleaner extends AbstractFileCleaner {
 
     @Override
     boolean delete(final Path path) throws IOException {
-        return Files.deleteIfExists(path);
+        if (Files.exists(path) && Files.isDirectory(path)) {
+            Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+                    Files.deleteIfExists(file);
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
+                    Files.deleteIfExists(dir);
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        }
+        return true;
     }
 }

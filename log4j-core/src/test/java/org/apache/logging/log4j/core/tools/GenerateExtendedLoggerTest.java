@@ -37,10 +37,10 @@ import javax.tools.ToolProvider;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.TestLogger;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.ExtendedLogger;
+import org.apache.logging.log4j.test.TestLogger;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.Supplier;
 import org.junit.jupiter.api.BeforeAll;
@@ -54,7 +54,7 @@ public class GenerateExtendedLoggerTest {
     
     @BeforeAll
     public static void beforeClass() {
-        System.setProperty("log4j2.loggerContextFactory", "org.apache.logging.log4j.TestLoggerContextFactory");
+        System.setProperty("log4j2.loggerContextFactory", "org.apache.logging.log4j.test.TestLoggerContextFactory");
     }
 
     @Test

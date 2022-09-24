@@ -329,7 +329,7 @@ public abstract class AbstractLoadBundleTest {
         core.start();
         assertEquals("api-tests is not in RESOLVED state", Bundle.RESOLVED, apiTests.getState());
 
-        final Class<?> osgiServiceLocatorTest = api.loadClass("org.apache.logging.log4j.util.OsgiServiceLocatorTest");
+        final Class<?> osgiServiceLocatorTest = api.loadClass("org.apache.logging.log4j.test.util.OsgiServiceLocatorTest");
 
         final Method loadProviders = osgiServiceLocatorTest.getDeclaredMethod("loadProviders");
         Object obj = loadProviders.invoke(null);

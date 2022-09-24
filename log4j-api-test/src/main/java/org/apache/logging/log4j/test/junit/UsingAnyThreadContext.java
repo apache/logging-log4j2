@@ -15,9 +15,12 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.junit;
+package org.apache.logging.log4j.test.junit;
 
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.parallel.ResourceAccessMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -27,20 +30,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * JUnit extension to automatically clean up a list of files before and after test execution.
- * This will automatically retry deletion up to 10 times per file while pausing for 200ms each time.
- * These can be overridden with system properties {@code log4j2.junit.fileCleanerMaxTries} and
- * {@code log4j2.junit.fileCleanerSleepPeriodMillis}.
+ * Marks a test class as using {@link org.apache.logging.log4j.ThreadContext} APIs. This will automatically clear and restore
+ * both the thread context map and stack for each test invocation.
  *
- * @see FileCleaner
- * @see CleanUpDirectories
  * @since 2.14.0
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target(ElementType.TYPE)
 @Documented
 @Inherited
-@ExtendWith(FileCleaner.class)
-public @interface CleanUpFiles {
-    String[] value();
+@ExtendWith(ThreadContextExtension.class)
+@ResourceLock(value = Resources.SYSTEM_PROPERTIES, mode = ResourceAccessMode.READ)
+public @interface UsingAnyThreadContext {
 }

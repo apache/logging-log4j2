@@ -17,8 +17,8 @@
 package org.apache.logging.log4j.util;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.TestLoggerContext;
 import org.apache.logging.log4j.spi.LoggerContext;
+import org.apache.logging.log4j.test.TestLoggerContext;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;

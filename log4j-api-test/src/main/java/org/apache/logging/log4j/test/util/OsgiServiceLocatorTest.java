@@ -14,27 +14,28 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.junit;
+package org.apache.logging.log4j.test.util;
 
-/**
- * Restores the ThreadContext to it's initial map values after a JUnit test.
- * 
- * Usage:
- * 
- * <pre>
- * &#64;Rule
- * public final ThreadContextMapRule threadContextRule = new ThreadContextMapRule();
- * </pre>
- *
- * @deprecated use {@link UsingThreadContextMap} with JUnit 5
- */
-@Deprecated
-public class ThreadContextMapRule extends ThreadContextRule {
+import java.lang.invoke.MethodHandles;
+import java.util.stream.Stream;
+
+import org.apache.logging.log4j.spi.Provider;
+import org.apache.logging.log4j.util.OsgiServiceLocator;
+import org.apache.logging.log4j.util.PropertySource;
+
+public class OsgiServiceLocatorTest {
 
     /**
-     * Constructs an initialized instance.
+     * Used by OSGI {@link AbstractLoadBundleTest} to preserve caller
+     * sensitivity.
+     * 
+     * @return
      */
-    public ThreadContextMapRule() {
-        super(true, false);
+    public static Stream<Provider> loadProviders() {
+        return OsgiServiceLocator.loadServices(Provider.class, MethodHandles.lookup());
+    }
+
+    public static Stream<PropertySource> loadPropertySources() {
+        return OsgiServiceLocator.loadServices(PropertySource.class, MethodHandles.lookup());
     }
 }

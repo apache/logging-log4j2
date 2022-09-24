@@ -24,8 +24,8 @@ import java.util.Arrays;
 
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.categories.Appenders;
-import org.apache.logging.log4j.junit.ThreadContextStackRule;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
+import org.apache.logging.log4j.test.junit.ThreadContextStackRule;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

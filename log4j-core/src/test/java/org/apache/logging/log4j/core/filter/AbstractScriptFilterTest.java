@@ -22,8 +22,8 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.junit.Named;
-import org.apache.logging.log4j.junit.UsingThreadContextMap;
 import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
