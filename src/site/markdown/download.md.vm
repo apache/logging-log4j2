@@ -19,7 +19,7 @@
 #set($h2='##')
 #set($h3='###')
 
-$h1 Download Apache Log4j 2
+$h1 Download Apache Log4j™ 2
 
 Apache Log4j 2 is distributed under the [Apache License, version 2.0](https://www.apache.org/licenses/LICENSE-2.0.html).
 
