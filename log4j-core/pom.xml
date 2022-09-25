@@ -137,22 +137,23 @@
       <artifactId>kafka-clients</artifactId>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>com.sun.mail</groupId>
+      <artifactId>javax.mail</artifactId>
+      <scope>runtime</scope>
+      <optional>true</optional>
+    </dependency>
     <!-- Kafka needs slf4j -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
+      <scope>runtime</scope>
       <optional>true</optional>
     </dependency>
     <!-- POM for jackson-dataformat-xml depends on woodstox-core -->
     <dependency>
       <groupId>com.fasterxml.woodstox</groupId>
       <artifactId>woodstox-core</artifactId>
-      <version>${woodstox.version}</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.mail</groupId>
-      <artifactId>javax.mail</artifactId>
       <scope>runtime</scope>
       <optional>true</optional>
     </dependency>

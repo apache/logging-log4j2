@@ -34,6 +34,9 @@
     <projectDir>/log4j-mongodb3</projectDir>
     <module.name>org.apache.logging.log4j.mongodb3</module.name>
     <maven.doap.skip>true</maven.doap.skip>
+
+    <!-- Override of the parent POM version -->
+    <mongodb.version>3.12.11</mongodb.version>
   </properties>
 
   <dependencies>
@@ -44,12 +47,10 @@
     <dependency>
       <groupId>org.mongodb</groupId>
       <artifactId>bson</artifactId>
-      <version>${mongodb3.version}</version>
     </dependency>
     <dependency>
       <groupId>org.mongodb</groupId>
-      <artifactId>mongodb-driver</artifactId>
-      <version>${mongodb3.version}</version>
+      <artifactId>mongodb-driver-legacy</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>

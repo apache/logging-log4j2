@@ -34,23 +34,14 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <log4jParentDir>${basedir}/../../..</log4jParentDir>
-    <java.version>1.8</java.version>
     <module.name>org.apache.logging.log4j.spring.cloud.config.sample.server</module.name>
 
     <!-- paths -->
     <sonar.dependencyCheck.reportPath>${project.build.directory}/dependency-check-report.xml
     </sonar.dependencyCheck.reportPath>
 
-    <!-- maven plugin versions -->
-    <maven.checkstyle.version>3.0.0</maven.checkstyle.version>
-    <maven.findbugs.version>3.0.5</maven.findbugs.version>
-    <maven.google.code.findbugs.version>3.0.2</maven.google.code.findbugs.version>
-    <maven.google.code.findbugs.findbugs.version>3.0.1</maven.google.code.findbugs.findbugs.version>
-    <maven.jacoco.version>0.8.8</maven.jacoco.version>
-    <maven.pmd.version>3.9.0</maven.pmd.version>
     <!-- maven plugin config -->
     <pmd.failurePriority>2</pmd.failurePriority>
-    <rat.plugin.version>0.13</rat.plugin.version>
     <maven.doap.skip>true</maven.doap.skip>
   </properties>
 
@@ -58,17 +49,14 @@
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-slf4j-impl</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>

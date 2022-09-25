@@ -43,6 +43,11 @@
         <artifactId>log4j-api</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-api-test</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <!-- Application Service Support -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -59,6 +64,11 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-core-test</artifactId>
         <version>${project.version}</version>
       </dependency>
       <!-- CouchDB Appender Plugin -->
@@ -136,6 +146,11 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-layout-template-json</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-layout-template-json-test</artifactId>
         <version>${project.version}</version>
       </dependency>
       <!-- Liquibase adapter -->

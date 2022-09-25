@@ -93,7 +93,6 @@
     <dependency>
       <groupId>com.fasterxml.woodstox</groupId>
       <artifactId>woodstox-core</artifactId>
-      <version>${woodstox.version}</version>
       <optional>true</optional>
     </dependency>
     <dependency>
@@ -150,7 +149,6 @@
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-      <version>1.2.17</version>
       <scope>test</scope>
     </dependency>
     <dependency>

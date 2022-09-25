@@ -28,16 +28,11 @@
   <name>Apache Log4J Performance Tests</name>
   <description>The Apache Log4j development-time performance tests</description>
 
-  <prerequisites>
-    <maven>3.0</maven>
-  </prerequisites>
-
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Apache Log4J Performance Tests</docLabel>
     <projectDir>/log4j-perf</projectDir>
-    <jmh.version>1.35</jmh.version>
     <uberjar.name>benchmarks</uberjar.name>
     <revapi.skip>true</revapi.skip>
     <maven.doap.skip>true</maven.doap.skip>
@@ -48,7 +43,6 @@
     <dependency>
       <groupId>org.openjdk.jmh</groupId>
       <artifactId>jmh-generator-annprocess</artifactId>
-      <version>${jmh.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -62,12 +56,10 @@
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-jpa</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-layout-template-json</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -100,6 +92,7 @@
       <artifactId>jackson-databind</artifactId>
       <optional>true</optional>
     </dependency>
+    <!-- Used for JPA appenders (needs an implementation of course) -->
     <dependency>
       <groupId>javax.persistence</groupId>
       <artifactId>javax.persistence-api</artifactId>
@@ -111,12 +104,10 @@
     <dependency>
       <groupId>org.openjdk.jmh</groupId>
       <artifactId>jmh-core</artifactId>
-      <version>${jmh.version}</version>
     </dependency>
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-      <version>1.2.17</version>
     </dependency>
     <dependency>
       <groupId>co.elastic.logging</groupId>
@@ -233,7 +224,7 @@
           <dependency>
             <groupId>com.github.edwgiz</groupId>
             <artifactId>maven-shade-plugin.log4j2-cachefile-transformer</artifactId>
-            <version>2.15.0</version>
+            <version>${log4j2-cachefile-transformer.version}</version>
           </dependency>
         </dependencies>
       </plugin>

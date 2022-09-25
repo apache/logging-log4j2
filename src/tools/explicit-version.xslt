@@ -50,38 +50,52 @@
       <xsl:text>&#xa;</xsl:text>
     </xsl:for-each>
   </xsl:template>
-  <xsl:template match="pom:dependencyManagement/pom:dependencies">
-    <xsl:if test="pom:dependency[pom:version]">
-      <xsl:text>Dependency management:&#xa;</xsl:text>
-    </xsl:if>
-    <xsl:apply-templates select="pom:dependency[pom:version]"/>
-  </xsl:template>
   <xsl:template match="pom:dependencies">
-    <xsl:if test="pom:dependency[pom:version]">
-      <xsl:text>Dependencies:&#xa;</xsl:text>
-    </xsl:if>
+    <xsl:choose>
+      <xsl:when test="parent::pom:dependencyManagement">
+        <xsl:text>Dependency management:&#xa;</xsl:text>
+      </xsl:when>
+      <xsl:when test="parent::pom:project">
+        <xsl:text>Project dependencies:&#xa;</xsl:text>
+      </xsl:when>
+      <xsl:when test="parent::pom:plugin">
+        <xsl:text>Dependencies for plugin </xsl:text>
+        <xsl:value-of select="parent::pom:plugin/child::pom:artifactId"/>
+        <xsl:text>:&#xa;</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>Other dependencies:&#xa;</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:apply-templates select="pom:dependency[pom:version]"/>
-  </xsl:template>
-  <xsl:template match="pom:pluginManagement/pom:plugins">
-    <xsl:if test="pom:plugin[pom:version]">
-      <xsl:text>Plugin management:&#xa;</xsl:text>
-    </xsl:if>
-    <xsl:apply-templates select="pom:plugin[pom:version]"/>
   </xsl:template>
   <xsl:template match="pom:plugins">
-    <xsl:if test="pom:plugin[pom:version]">
-      <xsl:text>Plugins:&#xa;</xsl:text>
-    </xsl:if>
+    <xsl:choose>
+      <xsl:when test="parent::pom:pluginManagement">
+        <xsl:text>Plugin management:&#xa;</xsl:text>
+      </xsl:when>
+      <xsl:when test="parent::pom:build">
+        <xsl:text>Build plugins:&#xa;</xsl:text>
+      </xsl:when>
+      <xsl:when test="parent::pom:reporting">
+        <xsl:text>Reporting plugins:&#xa;</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>Other plugins:&#xa;</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:apply-templates select="pom:plugin[pom:version]"/>
   </xsl:template>
   <xsl:template match="pom:project">
-    <xsl:text>&#xa;Artifact:</xsl:text>
-    <xsl:value-of select="pom:artifactId"/>
-    <xsl:text>&#xa;</xsl:text>
-    <xsl:apply-templates select="pom:properties"/>
-    <xsl:apply-templates select="pom:dependencyManagement/pom:dependencies"/>
-    <xsl:apply-templates select="pom:dependencies"/>
-    <xsl:apply-templates select="pom:build/pom:pluginManagement/pom:plugins"/>
-    <xsl:apply-templates select="pom:build/pom:plugins"/>
+    <xsl:if test="pom:properties/node()[fn:ends-with(local-name(), '.version')]|//pom:dependency[pom:version]|//pom:plugin[pom:version]">
+      <xsl:text>&#xa;Artifact:</xsl:text>
+      <xsl:value-of select="pom:artifactId"/>
+      <xsl:text>&#xa;</xsl:text>
+    </xsl:if>
+    <xsl:if test="pom:properties/node()[fn:ends-with(local-name(), '.version')]">
+      <xsl:apply-templates select="pom:properties"/>
+    </xsl:if>
+    <xsl:apply-templates select="//pom:dependencies[pom:dependency/pom:version]"/>
+    <xsl:apply-templates select="//pom:plugins[pom:plugin/pom:version]"/>
   </xsl:template>
 </xsl:stylesheet>
