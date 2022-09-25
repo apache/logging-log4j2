@@ -21,9 +21,9 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Integers;
-import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;

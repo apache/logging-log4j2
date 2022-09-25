@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import org.apache.logging.log4j.junit.JdbcRule;
+import org.apache.logging.log4j.core.test.junit.JdbcRule;
 import org.junit.Before;
 
 /**

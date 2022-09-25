@@ -20,20 +20,21 @@ import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.core.util.IOUtils;
-import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 
+import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
+import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
+
 import java.io.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.apache.logging.log4j.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
 import static org.junit.Assert.*;

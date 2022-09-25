@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;

@@ -31,8 +31,8 @@ import java.util.Collections;
 import java.util.Enumeration;
 
 import org.apache.logging.log4j.core.config.plugins.util.PluginRegistry.PluginTest;
-import org.apache.logging.log4j.junit.CleanFolders;
-import org.apache.logging.log4j.junit.URLStreamHandlerFactoryRule;
+import org.apache.logging.log4j.core.test.junit.CleanFolders;
+import org.apache.logging.log4j.core.test.junit.URLStreamHandlerFactoryRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;

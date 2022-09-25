@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.apache.logging.log4j.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
 import static org.junit.Assert.assertNotNull;
@@ -34,12 +32,15 @@ import java.nio.file.WatchService;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
+
+import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
+import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
 
 /**
  * LOG4J2-1766.

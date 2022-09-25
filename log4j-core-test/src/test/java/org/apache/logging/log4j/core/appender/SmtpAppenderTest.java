@@ -34,12 +34,12 @@ import org.apache.logging.dumbster.smtp.SimpleSmtpServer;
 import org.apache.logging.dumbster.smtp.SmtpMessage;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.categories.Appenders;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.net.MimeMessageBuilder;
 import org.apache.logging.log4j.core.net.SmtpManager;
-import org.apache.logging.log4j.test.AvailablePortFinder;
+import org.apache.logging.log4j.core.test.AvailablePortFinder;
+import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 

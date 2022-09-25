@@ -44,7 +44,7 @@ import org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.TestConstants;
 import org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusListener;

@@ -17,7 +17,7 @@
 
 package org.apache.logging.log4j.core.jackson;
 
-import org.apache.logging.log4j.categories.Layouts;
+import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.junit.Ignore;
 
 import com.fasterxml.jackson.databind.ObjectMapper;

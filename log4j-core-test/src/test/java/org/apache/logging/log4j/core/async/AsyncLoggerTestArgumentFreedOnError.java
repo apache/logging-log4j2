@@ -22,8 +22,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.GarbageCollectionHelper;
+import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.StringBuilderFormattable;

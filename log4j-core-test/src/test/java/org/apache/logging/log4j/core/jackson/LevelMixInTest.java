@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.categories.Layouts;
+import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

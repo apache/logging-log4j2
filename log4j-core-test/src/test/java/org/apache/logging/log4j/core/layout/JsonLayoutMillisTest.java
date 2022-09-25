@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import org.apache.logging.log4j.categories.Layouts;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.categories.Layouts;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

@@ -20,9 +20,9 @@ package org.apache.logging.log4j.core.appender.mom.kafka;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.kafka.clients.producer.MockProducer;
-import org.apache.logging.log4j.categories.Appenders;
 import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.categories.Appenders;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;

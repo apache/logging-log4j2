@@ -24,6 +24,11 @@ import org.apache.logging.log4j.core.util.NullOutputStream;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
 
+import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.beforeNow;
+import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasLength;
+import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.isEmpty;
+import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.lastModified;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -37,10 +42,6 @@ import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Set;
 import java.util.concurrent.locks.LockSupport;
 
-import static org.apache.logging.log4j.hamcrest.FileMatchers.beforeNow;
-import static org.apache.logging.log4j.hamcrest.FileMatchers.hasLength;
-import static org.apache.logging.log4j.hamcrest.FileMatchers.isEmpty;
-import static org.apache.logging.log4j.hamcrest.FileMatchers.lastModified;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.Assert.assertEquals;

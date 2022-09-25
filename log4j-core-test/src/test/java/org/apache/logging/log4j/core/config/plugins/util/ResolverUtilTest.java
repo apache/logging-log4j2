@@ -37,7 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.core.config.plugins.util.PluginRegistry.PluginTest;
-import org.apache.logging.log4j.junit.CleanFolders;
+import org.apache.logging.log4j.core.test.junit.CleanFolders;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;

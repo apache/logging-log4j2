@@ -21,11 +21,11 @@ import java.util.concurrent.CountDownLatch;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.categories.AsyncLoggers;
-import org.apache.logging.log4j.core.CoreLoggerContexts;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.test.CoreLoggerContexts;
+import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;

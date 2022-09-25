@@ -26,11 +26,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.core.util.KeyValuePair;
-import org.apache.logging.log4j.junit.LoggerContextSource;
-import org.apache.logging.log4j.junit.Named;
 import org.apache.logging.log4j.message.StringMapMessage;
-import org.apache.logging.log4j.test.appender.ListAppender;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
 import org.junit.jupiter.api.Test;
 

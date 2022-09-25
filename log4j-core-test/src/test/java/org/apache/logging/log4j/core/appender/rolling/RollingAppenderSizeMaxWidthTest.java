@@ -28,7 +28,7 @@ import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.pattern.ArrayPatternConverter;
 import org.apache.logging.log4j.core.pattern.FormattingInfo;
 import org.apache.logging.log4j.core.pattern.IntegerPatternConverter;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

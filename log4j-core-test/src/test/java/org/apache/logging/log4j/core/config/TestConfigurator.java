@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import static org.apache.logging.log4j.hamcrest.MapMatchers.hasSize;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
@@ -64,6 +63,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
+
+import static org.apache.logging.log4j.core.test.hamcrest.MapMatchers.hasSize;
 
 @SetSystemProperty(key = Constants.SCRIPT_LANGUAGES, value = "beanshell, Groovy, Javascript")
 @Tag("functional")

@@ -20,6 +20,7 @@ package org.apache.logging.log4j.core.appender.rolling.action;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.script.Script;
+import org.apache.logging.log4j.core.test.appender.rolling.action.DummyFileAttributes;
 import org.apache.logging.log4j.core.util.Constants;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;

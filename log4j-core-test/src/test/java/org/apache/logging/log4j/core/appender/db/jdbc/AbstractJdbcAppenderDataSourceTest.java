@@ -33,10 +33,10 @@ import javax.sql.DataSource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.test.junit.JdbcRule;
+import org.apache.logging.log4j.core.test.junit.JndiRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.core.util.Throwables;
-import org.apache.logging.log4j.junit.JdbcRule;
-import org.apache.logging.log4j.junit.JndiRule;
-import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.h2.util.IOUtils;
 import org.junit.Rule;
 import org.junit.Test;

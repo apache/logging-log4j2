@@ -21,9 +21,9 @@ import java.io.File;
 import java.io.FileReader;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.categories.AsyncLoggers;
-import org.apache.logging.log4j.core.CoreLoggerContexts;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.test.CoreLoggerContexts;
+import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.DummyNanoClock;
 import org.apache.logging.log4j.util.Strings;

@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.apache.logging.log4j.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
 import static org.hamcrest.Matchers.endsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -32,14 +30,17 @@ import java.util.Calendar;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.core.util.CronExpression;
-import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.hamcrest.Matcher;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
+
+import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
+import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
 
 /**
  * This test currently takes about a minute to run.

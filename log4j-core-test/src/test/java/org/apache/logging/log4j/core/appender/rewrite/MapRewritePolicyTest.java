@@ -31,11 +31,12 @@ import org.apache.logging.log4j.util.StringMap;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import static org.apache.logging.log4j.core.test.hamcrest.MapMatchers.hasSize;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.apache.logging.log4j.hamcrest.MapMatchers.hasSize;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;

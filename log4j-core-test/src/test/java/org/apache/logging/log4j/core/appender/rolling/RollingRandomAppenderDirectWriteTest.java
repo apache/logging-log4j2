@@ -19,13 +19,14 @@ package org.apache.logging.log4j.core.appender.rolling;
 import java.io.File;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
-import static org.apache.logging.log4j.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
+
+import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
+import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
 import static org.junit.Assert.*;

@@ -18,10 +18,10 @@ package org.apache.logging.log4j.core.layout;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.categories.Layouts;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;

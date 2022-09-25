@@ -27,7 +27,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.junit.JndiRule;
+import org.apache.logging.log4j.core.test.junit.JndiRule;
 import org.apache.logging.log4j.message.StringMapMessage;
 import org.junit.ClassRule;
 import org.junit.Test;
