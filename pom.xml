@@ -1644,14 +1644,16 @@
     </snapshotRepository>
   </distributionManagement>
   <modules>
-    <module>log4j-1.2-api</module>
+    <!-- Unpublished modules first: -->
     <module>log4j-api-java9</module>
+    <module>log4j-core-java9</module>
+    <!-- Alphabetical order -->
+    <module>log4j-1.2-api</module>
     <module>log4j-api</module>
     <module>log4j-api-test</module>
     <module>log4j-appserver</module>
     <module>log4j-bom</module>
     <module>log4j-cassandra</module>
-    <module>log4j-core-java9</module>
     <module>log4j-core</module>
     <module>log4j-core-its</module>
     <module>log4j-core-test</module>
