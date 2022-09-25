@@ -70,8 +70,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-layout-template-json</artifactId>
-      <type>test-jar</type>
+      <artifactId>log4j-layout-template-json-test</artifactId>
     </dependency>
     <dependency>
       <groupId>com.conversantmedia</groupId>

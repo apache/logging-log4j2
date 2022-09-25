@@ -419,9 +419,8 @@
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-layout-template-json</artifactId>
+        <artifactId>log4j-layout-template-json-test</artifactId>
         <version>${project.version}</version>
-        <type>test-jar</type>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -1671,6 +1670,7 @@
     <module>log4j-jul</module>
     <module>log4j-kubernetes</module>
     <module>log4j-layout-template-json</module>
+    <module>log4j-layout-template-json-test</module>
     <module>log4j-liquibase</module>
     <module>log4j-mongodb3</module>
     <module>log4j-mongodb4</module>
