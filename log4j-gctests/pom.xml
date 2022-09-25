@@ -30,7 +30,6 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Core Documentation</docLabel>
     <projectDir>/core</projectDir>
-    <log4j2-logstash-layout.version>0.18</log4j2-logstash-layout.version>
     <maven.doap.skip>true</maven.doap.skip>
     <maven.deploy.skip>true</maven.deploy.skip>
     <maven.install.skip>true</maven.install.skip>
@@ -130,7 +129,6 @@
     <dependency>
       <groupId>com.fasterxml.woodstox</groupId>
       <artifactId>woodstox-core</artifactId>
-      <version>5.0.3</version>
       <optional>true</optional>
     </dependency>
     <!-- TEST DEPENDENCIES -->
@@ -144,7 +142,6 @@
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core-test</artifactId>
       <scope>test</scope>
-      <version>${project.version}</version>
     </dependency>
     <!-- And test plugins -->
     <dependency>
@@ -226,7 +223,6 @@
     <dependency>
       <groupId>org.jmdns</groupId>
       <artifactId>jmdns</artifactId>
-      <version>3.5.3</version>
       <scope>test</scope>
     </dependency>
     <!--  GELF -->
@@ -239,26 +235,17 @@
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-      <version>1.2.17</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.github.ivandzf</groupId>
       <artifactId>log4j2-custom-layout</artifactId>
-      <version>1.1.0</version>
       <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.logging.log4j</groupId>
-          <artifactId>log4j-core</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <!-- For testing log4j 2 2.x plugins -->
     <dependency>
       <groupId>com.vlkan.log4j2</groupId>
       <artifactId>log4j2-logstash-layout</artifactId>
-      <version>${log4j2-logstash-layout.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>

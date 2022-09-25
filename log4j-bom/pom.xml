@@ -36,7 +36,6 @@
     <maven.doap.skip>true</maven.doap.skip>
     <maven.site.skip>true</maven.site.skip>
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
-    <maven-doap-plugin.version>1.2</maven-doap-plugin.version>
   </properties>
 
   <dependencyManagement>
@@ -218,6 +217,11 @@
         <artifactId>log4j-layout-template-json</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-layout-template-json-test</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <!-- Liquibase adapter -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -252,16 +256,16 @@
         <artifactId>log4j-plugins-test</artifactId>
         <version>${project.version}</version>
       </dependency>
-      <!-- SLF4J Compatibility API -->
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-slf4j-impl</artifactId>
-        <version>${project.version}</version>
-      </dependency>
       <!-- SLF4J 2.0.x Compatibility API -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-slf4j2-impl</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- SLF4J Compatibility API -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j-impl</artifactId>
         <version>${project.version}</version>
       </dependency>
       <!-- SMTP Appender plugin -->

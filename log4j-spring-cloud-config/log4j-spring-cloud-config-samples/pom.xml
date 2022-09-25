@@ -33,13 +33,15 @@
     <maven.deploy.skip>true</maven.deploy.skip>
     <maven.site.skip>true</maven.site.skip>
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
+
+    <spring-ws.version>2.1.4.RELEASE</spring-ws.version>
   </properties>
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.springframework.ws</groupId>
         <artifactId>spring-ws-core</artifactId>
-        <version>2.1.4.RELEASE</version>
+        <version>${spring-ws.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

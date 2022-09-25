@@ -45,20 +45,17 @@
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-1.2-api</artifactId>
-      <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core-test</artifactId>
-      <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
     <!-- needed for `JsonLayoutTest` -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-layout-jackson-json</artifactId>
-      <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -74,7 +71,6 @@
     <dependency>
       <groupId>org.elasticsearch.client</groupId>
       <artifactId>elasticsearch-rest-high-level-client</artifactId>
-      <version>7.17.4</version>
       <scope>test</scope>
     </dependency>
     <dependency>
