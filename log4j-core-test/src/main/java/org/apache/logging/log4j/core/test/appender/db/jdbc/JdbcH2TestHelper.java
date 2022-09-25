@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.appender.db.jdbc;
+package org.apache.logging.log4j.core.test.appender.db.jdbc;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,21 +25,23 @@ import java.sql.SQLException;
 
 import org.apache.commons.io.file.PathUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.core.appender.db.jdbc.AbstractConnectionSource;
+import org.apache.logging.log4j.core.appender.db.jdbc.ConnectionSource;
 
 public class JdbcH2TestHelper {
 
     /**
      * A JDBC connection string for an H2 in-memory database.
      */
-    static final String CONNECTION_STRING_IN_MEMORY = "jdbc:h2:mem:Log4j";
+    public static final String CONNECTION_STRING_IN_MEMORY = "jdbc:h2:mem:Log4j";
 
     /**
      * A JDBC connection string for an H2 database in the Java temporary directory.
      */
-    static final String CONNECTION_STRING_TEMP_DIR = "jdbc:h2:" + getH2Path() + "/test_log4j;TRACE_LEVEL_SYSTEM_OUT=0";
+    public static final String CONNECTION_STRING_TEMP_DIR = "jdbc:h2:" + getH2Path() + "/test_log4j;TRACE_LEVEL_SYSTEM_OUT=0";
 
-    static final String USER_NAME = "sa";
-    static final String PASSWORD = "";
+    public static final String USER_NAME = "sa";
+    public static final String PASSWORD = "";
 
     public static ConnectionSource TEST_CONFIGURATION_SOURCE_MEM = new AbstractConnectionSource() {
         @Override
@@ -58,7 +60,7 @@ public class JdbcH2TestHelper {
     /** Directory used in configuration files and connection strings. */
     static final String H2_TEST_RELATIVE_DIR = "h2";
 
-    static void deleteDir() throws IOException {
+    public static void deleteDir() throws IOException {
         final Path resolve = getH2Path();
         if (Files.exists(resolve)) {
             PathUtils.deleteDirectory(resolve);

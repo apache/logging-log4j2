@@ -20,7 +20,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.Serializable;
 
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.slf4j.Logger;

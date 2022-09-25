@@ -21,12 +21,12 @@ import static org.junit.Assert.fail;
 
 import java.util.Iterator;
 
-import org.apache.logging.dumbster.smtp.SimpleSmtpServer;
-import org.apache.logging.dumbster.smtp.SmtpMessage;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.apache.logging.log4j.test.AvailablePortFinder;
+import org.apache.logging.log4j.core.test.AvailablePortFinder;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.smtp.SimpleSmtpServer;
+import org.apache.logging.log4j.core.test.smtp.SmtpMessage;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

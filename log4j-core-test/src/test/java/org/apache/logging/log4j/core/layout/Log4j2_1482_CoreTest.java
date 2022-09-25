@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.layout;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.test.layout.Log4j2_1482_Test;
 
 public class Log4j2_1482_CoreTest extends Log4j2_1482_Test {
 

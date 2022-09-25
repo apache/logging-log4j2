@@ -488,7 +488,7 @@ public abstract class AbstractLog4j1ConfigurationTest {
             assertNotNull(appender);
             assertEquals(3, checkFilters(((Filterable)appender).getFilter()));
             final ListAppender legacyAppender = (ListAppender) ((Adapter) appender).getAppender();
-            final org.apache.logging.log4j.test.appender.ListAppender nativeAppender = configuration.getAppender("LIST2");
+            final org.apache.logging.log4j.core.test.appender.ListAppender nativeAppender = configuration.getAppender("LIST2");
             assertEquals(3, checkFilters(((Filterable)nativeAppender).getFilter()));
             final Logger logger = LogManager.getLogger(PropertiesConfigurationTest.class);
             int expected = 0;

@@ -18,8 +18,8 @@ package org.apache.logging.slf4j;
 
 import java.util.List;
 
-import org.apache.logging.log4j.junit.LoggerContextRule;
-import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Before;
 import org.junit.ClassRule;

@@ -21,6 +21,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.test.appender.db.jdbc.JdbcH2TestHelper;
 import org.junit.Assert;
 import org.junit.Test;
 

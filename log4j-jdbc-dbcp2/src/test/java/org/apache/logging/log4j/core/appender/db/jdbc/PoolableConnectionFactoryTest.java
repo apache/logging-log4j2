@@ -18,7 +18,7 @@
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
 import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;

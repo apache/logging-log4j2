@@ -21,8 +21,8 @@ import java.util.concurrent.Executors;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.test.categories.PerformanceTests;
 import org.apache.logging.log4j.util.Timer;
-import org.apache.logging.log4j.categories.PerformanceTests;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 

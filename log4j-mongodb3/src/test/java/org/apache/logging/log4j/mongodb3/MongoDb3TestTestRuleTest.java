@@ -19,9 +19,9 @@ package org.apache.logging.log4j.mongodb3;
 
 import org.apache.commons.lang3.JavaVersion;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.core.test.AvailablePortSystemPropertyTestRule;
+import org.apache.logging.log4j.core.test.RuleChainFactory;
 import org.apache.logging.log4j.mongodb3.MongoDb3TestRule.LoggingTarget;
-import org.apache.logging.log4j.test.AvailablePortSystemPropertyTestRule;
-import org.apache.logging.log4j.test.RuleChainFactory;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.BeforeClass;

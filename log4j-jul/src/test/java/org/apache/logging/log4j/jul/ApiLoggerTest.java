@@ -25,7 +25,7 @@ import static org.junit.Assert.fail;
 
 import java.util.logging.Logger;
 
-import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

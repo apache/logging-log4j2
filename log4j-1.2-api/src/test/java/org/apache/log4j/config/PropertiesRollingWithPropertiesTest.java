@@ -24,7 +24,7 @@ import java.nio.file.Paths;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.apache.logging.log4j.test.SystemPropertyTestRule;
+import org.apache.logging.log4j.core.test.SystemPropertyTestRule;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;

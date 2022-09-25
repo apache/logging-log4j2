@@ -17,8 +17,8 @@
 package org.apache.logging.log4j.jul;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
+import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.util.Constants;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

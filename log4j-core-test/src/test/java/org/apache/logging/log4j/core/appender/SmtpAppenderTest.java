@@ -30,8 +30,6 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 
-import org.apache.logging.dumbster.smtp.SimpleSmtpServer;
-import org.apache.logging.dumbster.smtp.SmtpMessage;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Logger;
@@ -40,6 +38,8 @@ import org.apache.logging.log4j.core.net.MimeMessageBuilder;
 import org.apache.logging.log4j.core.net.SmtpManager;
 import org.apache.logging.log4j.core.test.AvailablePortFinder;
 import org.apache.logging.log4j.core.test.categories.Appenders;
+import org.apache.logging.log4j.core.test.smtp.SimpleSmtpServer;
+import org.apache.logging.log4j.core.test.smtp.SmtpMessage;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 

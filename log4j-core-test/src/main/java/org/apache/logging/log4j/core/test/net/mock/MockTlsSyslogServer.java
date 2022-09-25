@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.net.mock;
+package org.apache.logging.log4j.core.test.net.mock;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,10 +24,10 @@ import java.util.List;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSocket;
 
-import org.apache.logging.log4j.core.net.ssl.LegacyBsdTlsSyslogInputStreamReader;
-import org.apache.logging.log4j.core.net.ssl.TlsSyslogInputStreamReader;
-import org.apache.logging.log4j.core.net.ssl.TlsSyslogInputStreamReaderBase;
-import org.apache.logging.log4j.core.net.ssl.TlsSyslogMessageFormat;
+import org.apache.logging.log4j.core.test.net.ssl.LegacyBsdTlsSyslogInputStreamReader;
+import org.apache.logging.log4j.core.test.net.ssl.TlsSyslogInputStreamReader;
+import org.apache.logging.log4j.core.test.net.ssl.TlsSyslogInputStreamReaderBase;
+import org.apache.logging.log4j.core.test.net.ssl.TlsSyslogMessageFormat;
 
 public class MockTlsSyslogServer extends MockSyslogServer {
     private final SSLServerSocket serverSocket;

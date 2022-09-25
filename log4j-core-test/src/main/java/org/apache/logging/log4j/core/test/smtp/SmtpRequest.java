@@ -15,7 +15,7 @@
  * limitations under the license.
  */
 
-package org.apache.logging.dumbster.smtp;
+package org.apache.logging.log4j.core.test.smtp;
 
 import org.apache.logging.log4j.util.Strings;
 

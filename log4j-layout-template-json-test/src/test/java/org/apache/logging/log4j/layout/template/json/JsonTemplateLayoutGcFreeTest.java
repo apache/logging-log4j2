@@ -16,8 +16,8 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
-import org.apache.logging.log4j.core.GcFreeLoggingTestUtil;
 import org.junit.jupiter.api.Test;
+import org.apache.logging.log4j.core.test.GcFreeLoggingTestUtil;
 import org.junit.jupiter.api.Tag;
 
 @Tag("allocation")

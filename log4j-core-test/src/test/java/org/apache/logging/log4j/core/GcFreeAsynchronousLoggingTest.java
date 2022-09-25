@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core;
 
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
+import org.apache.logging.log4j.core.test.GcFreeLoggingTestUtil;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 

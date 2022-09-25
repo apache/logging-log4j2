@@ -52,8 +52,8 @@ public class ConfigurationSourceTest {
      */
     @Test
     public void testNoJarFileLeak() throws Exception {
-        final Path original = Paths.get("target", "test-classes", "jarfile.jar");
-        final Path copy = Paths.get("target", "test-classes", "jarfile-copy.jar");
+        final Path original = Paths.get("target", "classes", "jarfile.jar");
+        final Path copy = Paths.get("target", "classes", "jarfile-copy.jar");
         Files.copy(original, copy);
         final URL jarUrl = new URL("jar:" + copy.toUri().toURL() + "!/config/console.xml");
         final long expected = getOpenFileDescriptorCount();

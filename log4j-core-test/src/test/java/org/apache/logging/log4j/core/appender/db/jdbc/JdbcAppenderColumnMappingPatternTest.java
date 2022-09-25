@@ -29,6 +29,7 @@ import java.sql.Statement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.RuleChainFactory;
+import org.apache.logging.log4j.core.test.appender.db.jdbc.JdbcH2TestHelper;
 import org.apache.logging.log4j.core.test.junit.JdbcRule;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.h2.util.IOUtils;

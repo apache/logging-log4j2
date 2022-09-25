@@ -15,7 +15,7 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.core.layout;
+package org.apache.logging.log4j.core.test.layout;
 
 import java.io.File;
 import java.io.IOException;

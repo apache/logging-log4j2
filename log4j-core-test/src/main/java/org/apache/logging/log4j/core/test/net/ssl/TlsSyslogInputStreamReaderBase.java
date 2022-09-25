@@ -14,10 +14,22 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.net.ssl;
+package org.apache.logging.log4j.core.test.net.ssl;
 
-public enum TlsSyslogMessageFormat {
-    LEGACY_BSD,
-    SYSLOG
+import java.io.IOException;
+import java.io.InputStream;
+
+public abstract class TlsSyslogInputStreamReaderBase {
+
+    protected InputStream inputStream;
+    protected TlsSyslogMessageFormat messageFormat;
+
+    protected TlsSyslogInputStreamReaderBase(final InputStream inputStream, final TlsSyslogMessageFormat messageFormat) {
+        this.inputStream = inputStream;
+        this.messageFormat = messageFormat;
+    }
+
+    public String read() throws IOException {
+        throw new UnsupportedOperationException();
+    }
 }
-

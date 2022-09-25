@@ -20,7 +20,7 @@ package org.apache.logging.log4j.io;
 import java.util.List;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.junit.Before;
 import org.junit.ClassRule;

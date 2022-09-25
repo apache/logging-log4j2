@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.net.mock;
+package org.apache.logging.log4j.core.test.net.mock;
 
 import java.io.IOException;
 import java.io.InputStream;

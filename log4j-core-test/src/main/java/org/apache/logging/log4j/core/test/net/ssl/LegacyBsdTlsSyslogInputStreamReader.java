@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.net.ssl;
+package org.apache.logging.log4j.core.test.net.ssl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;

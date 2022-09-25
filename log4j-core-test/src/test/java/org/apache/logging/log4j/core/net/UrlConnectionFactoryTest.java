@@ -127,7 +127,7 @@ public class UrlConnectionFactoryTest {
         final long lastModified = source.getLastModified();
         int result = verifyNotModified(uri, lastModified);
         assertEquals(SC_NOT_MODIFIED, result,"File was modified");
-        File file = new File("target/test-classes/log4j2-config.xml");
+        File file = new File("target/classes/log4j2-config.xml");
         if (!file.setLastModified(System.currentTimeMillis())) {
             fail("Unable to set last modified time");
         }
@@ -150,7 +150,7 @@ public class UrlConnectionFactoryTest {
 
     @Test
     public void testNoJarFileLeak() throws Exception {
-        final URL url = new File("target/test-classes/jarfile.jar").toURI().toURL();
+        final URL url = new File("target/classes/jarfile.jar").toURI().toURL();
         // Retrieve using 'file:'
         URL jarUrl = new URL("jar:" + url.toString() + "!/config/console.xml");
         long expected = getOpenFileDescriptorCount();
@@ -195,7 +195,7 @@ public class UrlConnectionFactoryTest {
             }
             final String servletPath = request.getServletPath();
             if (servletPath != null) {
-                final File file = new File("target/test-classes" + servletPath);
+                final File file = new File("target/classes" + servletPath);
                 if (!file.exists()) {
                     response.sendError(SC_NOT_FOUND);
                     return;

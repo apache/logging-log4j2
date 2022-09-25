@@ -32,12 +32,12 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.lookup.MainMapLookup;
 import org.apache.logging.log4j.core.net.Severity;
+import org.apache.logging.log4j.core.test.AvailablePortFinder;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
 import org.apache.logging.log4j.layout.template.json.resolver.*;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.apache.logging.log4j.message.*;
-import org.apache.logging.log4j.test.AvailablePortFinder;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 

@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.appender.db.jdbc;
 
 import java.io.IOException;
 
+import org.apache.logging.log4j.core.test.appender.db.jdbc.JdbcH2TestHelper;
 import org.apache.logging.log4j.core.test.junit.JdbcRule;
 import org.junit.Before;
 
