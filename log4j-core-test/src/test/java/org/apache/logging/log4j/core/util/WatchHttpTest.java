@@ -84,11 +84,12 @@ public class WatchHttpTest {
     public static StatusLoggerRule RULE = new StatusLoggerRule(Level.OFF);
 
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort().dynamicHttpsPort()
-        .keystorePath(TestConstants.KEYSTORE_FILE)
-        .keystorePassword(String.valueOf(TestConstants.KEYSTORE_PWD()))
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort()
+            .dynamicHttpsPort()
+            .keystorePath(TestConstants.KEYSTORE_FILE)
+            .keystorePassword(String.valueOf(TestConstants.KEYSTORE_PWD()))
             .keyManagerPassword(String.valueOf(TestConstants.KEYSTORE_PWD()))
-        .keystoreType(TestConstants.KEYSTORE_TYPE));
+            .keystoreType(TestConstants.KEYSTORE_TYPE));
 
     @Test
     public void testWatchManager() throws Exception {

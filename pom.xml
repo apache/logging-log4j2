@@ -291,6 +291,7 @@
     <javaTargetVersion>11</javaTargetVersion>
     <module.name/>
     <netty-all.version>4.1.72.Final</netty-all.version>
+    <wiremock.version>2.34.0</wiremock.version>
   </properties>
   <pluginRepositories>
     <pluginRepository>
@@ -909,8 +910,8 @@
       <!-- Used for testing HttpAppender -->
       <dependency>
         <groupId>com.github.tomakehurst</groupId>
-        <artifactId>wiremock</artifactId>
-        <version>2.27.2</version>
+        <artifactId>wiremock-jre8</artifactId>
+        <version>${wiremock.version}</version>
         <exclusions>
           <exclusion>
             <groupId>com.github.jknack</groupId>
