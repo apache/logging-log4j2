@@ -17,7 +17,7 @@
 package org.apache.logging.slf4j;
 
 import static org.apache.logging.log4j.test.SerializableMatchers.serializesRoundTrip;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.Serializable;
 
