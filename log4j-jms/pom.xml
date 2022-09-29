@@ -53,7 +53,6 @@
       <artifactId>log4j-core-test</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- Test Dependencies -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-jndi-test</artifactId>
