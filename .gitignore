@@ -24,6 +24,7 @@ target/
 .cache-tests
 .toDelete
 .factorypath
+.surefire-*
 velocity.log
 felix-cache/
 /.metadata/
