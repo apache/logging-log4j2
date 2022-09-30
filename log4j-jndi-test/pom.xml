@@ -51,6 +51,15 @@
       <artifactId>commons-logging</artifactId>
     </dependency>
     <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+    <!-- Useful mock classes and utilities -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core-test</artifactId>
       <scope>test</scope>
@@ -73,12 +82,6 @@
     <dependency>
       <groupId>org.junit.vintage</groupId>
       <artifactId>junit-vintage-engine</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!-- Useful mock classes and utilities -->
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-test</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
