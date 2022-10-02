@@ -133,8 +133,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <!-- Do not upgrade until https://issues.apache.org/jira/browse/SUREFIRE-720 is fixed -->
-        <version>2.13</version>
         <configuration>
           <excludes combine.self="override"/>
         </configuration>
@@ -155,7 +153,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-changes-plugin</artifactId>
-        <version>${changes.plugin.version}</version>
         <reportSets>
           <reportSet>
             <reports>
@@ -171,7 +168,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>${checkstyle.plugin.version}</version>
         <configuration>
           <configLocation>${log4jParentDir}/checkstyle.xml</configLocation>
           <suppressionsLocation>${log4jParentDir}/checkstyle-suppressions.xml</suppressionsLocation>
@@ -206,7 +202,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jxr-plugin</artifactId>
-        <version>${jxr.plugin.version}</version>
         <reportSets>
           <reportSet>
             <id>non-aggregate</id>
@@ -255,7 +250,6 @@
             <!-- pmd is not compatible with toolchain and needs same JDK than one use to compile -->
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-pmd-plugin</artifactId>
-            <version>${pmd.plugin.version}</version>
             <configuration>
               <targetJdk>${maven.compiler.target}</targetJdk>
             </configuration>

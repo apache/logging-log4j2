@@ -146,7 +146,7 @@
       <name>Piotr P. Karwasz</name>
       <email>pkarwasz@apache.org</email>
       <roles>
-	<role>Committer</role>
+        <role>PMC Member</role>
       </roles>
       <timezone>Europe/Warsaw</timezone>
     </developer>
@@ -220,6 +220,61 @@
     <Log4jReleaseKey>B3D8E1BA</Log4jReleaseKey>
     <!--<Log4jReleaseManager>Matt Sicker</Log4jReleaseManager> -->
     <!--<Log4jReleaseKey>748F15B2CF9BA8F024155E6ED7C92B70FA1C814D</Log4jReleaseKey> -->
+    <revapi.skip>true</revapi.skip>
+    <manifestfile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestfile>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.release>11</maven.compiler.release>
+    <maven.compiler.parameters>true</maven.compiler.parameters>
+    <maven.doap.skip>false</maven.doap.skip>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- 1641056400 = Jan 1 2022, instead of 1969, which shows up in Javadoc -->
+    <project.build.outputTimestamp>1641056400</project.build.outputTimestamp>
+    <docLabel>Site Documentation</docLabel>
+    <projectDir/>
+    <!-- Allow Clirr severity to be overriden by the command-line option -DminSeverity=level -->
+    <minSeverity>info</minSeverity>
+    <argLine>-Xms256m -Xmx1024m</argLine>
+    <javaTargetVersion>11</javaTargetVersion>
+    <module.name/>
+
+    <!-- Plugin versions -->
+    <!-- Properties in the format `<artifactId>.version` -->
+    <!-- Spring Boot uses the same convention. -->
+    <asciidoctor-maven-plugin.version>1.5.6</asciidoctor-maven-plugin.version>
+    <build-helper-maven-plugin.version>3.3.0</build-helper-maven-plugin.version>
+    <!-- checkstyle 10.0 requires Java 11 -->
+    <checkstyle.version>8.45.1</checkstyle.version>
+    <checksum-maven-plugin.version>1.11</checksum-maven-plugin.version>
+    <coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
+    <docker-maven-plugin.version>0.40.2</docker-maven-plugin.version>
+    <exam-maven-plugin.version>4.13.5</exam-maven-plugin.version>
+    <findsecbugs-plugin.version>1.12.0</findsecbugs-plugin.version>
+    <jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
+    <maven-bundle-plugin.version>5.1.8</maven-bundle-plugin.version>
+    <maven-changes-plugin.version>2.12.1</maven-changes-plugin.version>
+    <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
+    <maven-dependency-plugin.version>3.3.0</maven-dependency-plugin.version>
+    <maven-doap-plugin.version>1.2</maven-doap-plugin.version>
+    <maven-jxr-plugin.version>2.5</maven-jxr-plugin.version>
+    <!-- Do not update the pdf plugin version without verifying the new version works by running mvn site -->
+    <maven-pdf-plugin.version>1.2</maven-pdf-plugin.version>
+    <maven-pmd-plugin.version>3.13.0</maven-pmd-plugin.version>
+    <maven-scm-plugin.version>1.9.5</maven-scm-plugin.version>
+    <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+    <maven-taglib-plugin.version>2.4</maven-taglib-plugin.version>
+    <maven-toolchains-plugin.version>3.0.0</maven-toolchains-plugin.version>
+    <revapi-maven-plugin.version>0.12.2</revapi-maven-plugin.version>
+    <spotbugs-maven-plugin.version>4.0.4</spotbugs-maven-plugin.version>
+    <!-- surefire.plugin.version 2.18 yields http://jira.codehaus.org/browse/SUREFIRE-1121, which is fixed in 2.18.1 -->
+    <!-- surefire.plugin.version 2.19 yields https://issues.apache.org/jira/browse/SUREFIRE-1193. -->
+    <!-- all versions after 2.13 yield https://issues.apache.org/jira/browse/SUREFIRE-720 -->
+    <!-- property used in `apache.org:apache` -->
+    <surefire.version>3.0.0-M5</surefire.version>
+    <!-- Maven site depends on Velocity and the escaping rules are different in newer versions. -->
+    <!-- See https://maven.apache.org/plugins/maven-site-plugin/migrate.html -->
+    <velocity.plugin.version>1.5</velocity.plugin.version>
+
     <!-- note that any properties you want available in velocity templates must not use periods! -->
     <slf4jVersion>1.7.30</slf4jVersion>
     <logbackVersion>1.2.3</logbackVersion>
@@ -237,55 +292,21 @@
     <!-- POM for jackson-dataformat-xml 2.13.1 depends on woodstox-core 6.2.7 -->
     <woodstox.version>6.3.1</woodstox.version>
     <groovy.version>4.0.2</groovy.version>
-    <pmd.plugin.version>3.13.0</pmd.plugin.version>
-    <spotbugs.plugin.version>4.0.4</spotbugs.plugin.version>
     <spotbugs.version>4.1.2</spotbugs.version>
-    <changes.plugin.version>2.12.1</changes.plugin.version>
-    <!-- surefire.plugin.version 2.18 yields http://jira.codehaus.org/browse/SUREFIRE-1121, which is fixed in 2.18.1 -->
-    <!-- surefire.plugin.version 2.19 yields https://issues.apache.org/jira/browse/SUREFIRE-1193. -->
-    <!-- all versions after 2.13 yield https://issues.apache.org/jira/browse/SUREFIRE-720 -->
-    <surefire.version>3.0.0-M5</surefire.version>
-    <checkstyle.plugin.version>3.0.0</checkstyle.plugin.version>
-    <pdf.plugin.version>1.2</pdf.plugin.version>
-    <cobertura.plugin.version>2.7</cobertura.plugin.version>
-    <jacoco.plugin.version>0.8.6</jacoco.plugin.version>
-    <scm.plugin.version>1.9.5</scm.plugin.version>
-    <jxr.plugin.version>2.5</jxr.plugin.version>
-    <revapi.plugin.version>0.12.2</revapi.plugin.version>
-    <revapi.skip>true</revapi.skip>
-    <!-- Maven site depends on Velocity and the escaping rules are different in newer versions. -->
-    <!-- See https://maven.apache.org/plugins/maven-site-plugin/migrate.html -->
-    <velocity.plugin.version>1.5</velocity.plugin.version>
-    <asciidoc.plugin.version>1.5.6</asciidoc.plugin.version>
     <errorprone.version>2.7.1</errorprone.version>
     <plexus.errorprone.version>2.8.8</plexus.errorprone.version>
-    <manifestfile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestfile>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
-    <maven.compiler.release>11</maven.compiler.release>
-    <maven.compiler.parameters>true</maven.compiler.parameters>
-    <maven.doap.skip>false</maven.doap.skip>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <!-- 1641056400 = Jan 1 2022, instead of 1969, which shows up in Javadoc -->
-    <project.build.outputTimestamp>1641056400</project.build.outputTimestamp>
-    <docLabel>Site Documentation</docLabel>
-    <projectDir/>
     <commonsLoggingVersion>1.2</commonsLoggingVersion>
     <javax.persistence>2.2.1</javax.persistence>
     <osgi.api.version>1.10.0</osgi.api.version>
     <activemq.version>5.16.2</activemq.version>
-    <!-- Allow Clirr severity to be overriden by the command-line option -DminSeverity=level -->
-    <minSeverity>info</minSeverity>
     <jctoolsVersion>3.3.0</jctoolsVersion>
     <junitVersion>4.13.2</junitVersion>
     <junitJupiterVersion>5.9.0</junitJupiterVersion>
     <junitPioneerVersion>1.5.0</junitPioneerVersion>
     <mockitoVersion>4.2.0</mockitoVersion>
     <byteBuddyVersion>1.11.0</byteBuddyVersion>
-    <argLine>-Xms256m -Xmx1024m</argLine>
-    <javaTargetVersion>11</javaTargetVersion>
-    <module.name/>
     <netty-all.version>4.1.80.Final</netty-all.version>
+    <wagon.version>3.1.0</wagon.version>
     <wiremock.version>2.34.0</wiremock.version>
   </properties>
 
@@ -947,19 +968,29 @@
     <pluginManagement>
       <plugins>
         <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>${build-helper-maven-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>net.nicoulaj.maven.plugins</groupId>
+          <artifactId>checksum-maven-plugin</artifactId>
+          <version>${checksum-maven-plugin.version}</version>
+        </plugin>
+        <plugin>
           <groupId>org.eluder.coveralls</groupId>
           <artifactId>coveralls-maven-plugin</artifactId>
-          <version>4.3.0</version>
+          <version>${coveralls-maven-plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>io.fabric8</groupId>
           <artifactId>docker-maven-plugin</artifactId>
-          <version>0.33.0</version>
+          <version>${docker-maven-plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
-          <version>${jacoco.plugin.version}</version>
+          <version>${jacoco-maven-plugin.version}</version>
           <executions>
             <execution>
                 <id>prepare-agent</id>
@@ -977,14 +1008,9 @@
           </executions>
         </plugin>
         <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-assembly-plugin</artifactId>
-          <version>3.1.0</version>
-        </plugin>
-        <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
-          <version>5.1.2</version>
+          <version>${maven-bundle-plugin.version}</version>
           <inherited>true</inherited>
           <extensions>true</extensions>
           <executions>
@@ -999,12 +1025,12 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-changes-plugin</artifactId>
-          <version>${changes.plugin.version}</version>
+          <version>${maven-changes-plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>${checkstyle.plugin.version}</version>
+          <version>${maven-checkstyle-plugin.version}</version>
           <configuration>
             <excludes>**/module-info.java</excludes>
           </configuration>
@@ -1055,7 +1081,13 @@
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-failsafe-plugin</artifactId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>${maven-dependency-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-doap-plugin</artifactId>
+          <version>${maven-doap-plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -1089,7 +1121,6 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>${javadoc.plugin.version}</version>
           <configuration>
             <bottom>&lt;p align="center"&gt;Copyright &amp;#169; {inceptionYear}-{currentYear} {organizationName}. All Rights Reserved.&lt;br /&gt;
             Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, the Apache Logging project logo,
@@ -1100,12 +1131,12 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jxr-plugin</artifactId>
-          <version>${jxr.plugin.version}</version>
+          <version>${maven-jxr-plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-pmd-plugin</artifactId>
-          <version>${pmd.plugin.version}</version>
+          <artifactId>maven-pdf-plugin</artifactId>
+          <version>${maven-pdf-plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.bsc.maven</groupId>
@@ -1114,18 +1145,18 @@
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-release-plugin</artifactId>
-          <version>${release.plugin.version}</version>
+          <artifactId>maven-pmd-plugin</artifactId>
+          <version>${maven-pmd-plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-scm-plugin</artifactId>
-          <version>${scm.plugin.version}</version>
+          <version>${maven-scm-plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-          <version>3.0.1</version>
+          <version>${maven-source-plugin.version}</version>
           <executions>
             <execution>
               <id>attach-sources</id>
@@ -1138,9 +1169,24 @@
           </executions>
         </plugin>
         <plugin>
+          <groupId>net.sourceforge.maven-taglib</groupId>
+          <artifactId>maven-taglib-plugin</artifactId>
+          <version>${maven-taglib-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-toolchains-plugin</artifactId>
+          <version>${maven-toolchains-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.revapi</groupId>
+          <artifactId>revapi-maven-plugin</artifactId>
+          <version>${revapi-maven-plugin.version}</version>
+        </plugin>
+        <plugin>
           <groupId>com.github.spotbugs</groupId>
           <artifactId>spotbugs-maven-plugin</artifactId>
-          <version>${spotbugs.plugin.version}</version>
+          <version>${spotbugs-maven-plugin.version}</version>
           <dependencies>
             <!-- overwrite dependency on spotbugs if you want to specify the version of spotbugs -->
             <dependency>
@@ -1154,7 +1200,7 @@
               <plugin>
                 <groupId>com.h3xstream.findsecbugs</groupId>
                 <artifactId>findsecbugs-plugin</artifactId>
-                <version>1.10.1</version>
+                <version>${findsecbugs-plugin.version}</version>
               </plugin>
             </plugins>
             <excludeFilterFile>${log4jParentDir}/spotbugs-exclude-filter.xml</excludeFilterFile>
@@ -1220,7 +1266,6 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
-        <version>1.12</version>
         <executions>
           <execution>
             <id>timestamp-property</id>
@@ -1247,7 +1292,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-doap-plugin</artifactId>
-        <version>1.2</version>
         <configuration>
           <doapOptions>
             <programmingLanguage>Java</programmingLanguage>
@@ -1296,7 +1340,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pdf-plugin</artifactId>
-        <version>${pdf.plugin.version}</version>
         <executions>
           <execution>
             <id>pdf</id>
@@ -1310,18 +1353,6 @@
           </execution>
         </executions>
       </plugin>
-      <!-- <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>cobertura-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>clean</id>
-            <goals>
-              <goal>clean</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin> -->
       <!-- We need to disable the standard ASF configuration to be able to publish our own notice and license files -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -1339,8 +1370,8 @@
         </executions>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>3.2.0</version>
         <executions>
           <execution>
             <id>copy-sitecss</id>
@@ -1371,7 +1402,7 @@
           <dependency>
             <groupId>org.apache.maven.wagon</groupId>
             <artifactId>wagon-ssh</artifactId>
-            <version>3.1.0</version>
+            <version>${wagon.version}</version>
           </dependency>
         </dependencies>
         <configuration>
@@ -1413,7 +1444,6 @@
       <plugin>
         <groupId>org.revapi</groupId>
         <artifactId>revapi-maven-plugin</artifactId>
-        <version>${revapi.plugin.version}</version>
         <dependencies>
           <dependency>
             <groupId>org.revapi</groupId>
@@ -1517,7 +1547,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-changes-plugin</artifactId>
-        <version>${changes.plugin.version}</version>
         <reportSets>
           <reportSet>
             <reports>
@@ -1667,7 +1696,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-pdf-plugin</artifactId>
-            <version>${pdf.plugin.version}</version>
             <executions>
               <execution>
                 <id>pdf</id>
@@ -1691,7 +1719,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-changes-plugin</artifactId>
-            <version>${changes.plugin.version}</version>
             <configuration>
               <template>announcement.vm</template>
               <templateDirectory>src/changes</templateDirectory>

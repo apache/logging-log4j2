@@ -35,6 +35,7 @@
     <maven.install.skip>true</maven.install.skip>
     <maven.site.skip>true</maven.site.skip>
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
+    <maven-jetty-plugin.version>6.1.26</maven-jetty-plugin.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -90,6 +91,15 @@
     <module>log4j-samples-loggerProperties</module>
   </modules>
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.mortbay.jetty</groupId>
+          <artifactId>maven-jetty-plugin</artifactId>
+          <version>${maven-jetty-plugin.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>org.apache.felix</groupId>

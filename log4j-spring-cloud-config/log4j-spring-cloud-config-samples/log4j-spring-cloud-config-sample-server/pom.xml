@@ -128,7 +128,6 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>${maven.jacoco.version}</version>
         <configuration>
           <excludes>
             <exclude>com/oracle/brm/**/*.class</exclude>
@@ -182,7 +181,6 @@
       <plugin>
         <groupId>com.github.spotbugs</groupId>
         <artifactId>spotbugs-maven-plugin</artifactId>
-        <version>${spotbugs.plugin.version}</version>
         <configuration>
           <skip>true</skip>
         </configuration>

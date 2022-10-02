@@ -36,6 +36,7 @@
     <maven.doap.skip>true</maven.doap.skip>
     <maven.site.skip>true</maven.site.skip>
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
+    <maven-doap-plugin.version>1.2</maven-doap-plugin.version>
   </properties>
 
   <dependencyManagement>
@@ -307,14 +308,6 @@
       <plugin>
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>com.github.spotbugs</groupId>
-        <artifactId>spotbugs-maven-plugin</artifactId>
-        <version>4.0.4</version>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
       </plugin>
     </plugins>
   </build>
