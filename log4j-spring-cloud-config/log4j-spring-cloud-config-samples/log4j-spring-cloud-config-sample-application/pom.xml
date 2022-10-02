@@ -24,37 +24,38 @@
     <version>3.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>sample-app</artifactId>
+  <artifactId>log4j-spring-cloud-config-sample-application</artifactId>
   <packaging>jar</packaging>
 
   <name>Apache Log4j Spring Cloud Config Sample Application</name>
   <url>http://maven.apache.org</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <!--<manifestfile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestfile>-->
+    <log4jParentDir>${basedir}/../../..</log4jParentDir>
+    <module.name>org.apache.logging.log4j.spring.cloud.config.sample.application</module.name>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-docker</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <!-- Required for Flume -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-flume-ng</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-jcl</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-kubernetes</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -69,7 +70,6 @@
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-spring-cloud-config-client</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <!-- Required for Async Loggers -->
     <dependency>
@@ -156,8 +156,11 @@
   </dependencies>
 
   <build>
-    <finalName>sampleapp</finalName>
     <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
