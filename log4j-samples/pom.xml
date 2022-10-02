@@ -30,6 +30,8 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <revapi.skip>true</revapi.skip>
+
+    <maven-jetty-plugin.version>6.1.26</maven-jetty-plugin.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -85,6 +87,15 @@
     <module>log4j-samples-loggerProperties</module>
   </modules>
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.mortbay.jetty</groupId>
+          <artifactId>maven-jetty-plugin</artifactId>
+          <version>${maven-jetty-plugin.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

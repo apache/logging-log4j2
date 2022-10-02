@@ -129,7 +129,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-toolchains-plugin</artifactId>
-        <version>3.0.0</version>
         <executions>
           <execution>
             <goals>

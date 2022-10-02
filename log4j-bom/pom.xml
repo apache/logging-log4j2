@@ -215,16 +215,8 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-doap-plugin</artifactId>
-        <version>1.2</version>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-        <version>3.11.0</version>
+        <!-- version inherited from ASF Parent -->
         <configuration>
           <skip>true</skip>
           <skipDeploy>true</skipDeploy>

@@ -126,7 +126,6 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>${maven.jacoco.version}</version>
         <configuration>
           <excludes>
             <exclude>com/oracle/brm/**/*.class</exclude>
@@ -235,7 +234,6 @@
           <plugin>
             <groupId>org.apache.rat</groupId>
             <artifactId>apache-rat-plugin</artifactId>
-            <version>${rat.plugin.version}</version>
             <configuration>
               <excludes>
                 <exclude>**/*.yaml</exclude>
