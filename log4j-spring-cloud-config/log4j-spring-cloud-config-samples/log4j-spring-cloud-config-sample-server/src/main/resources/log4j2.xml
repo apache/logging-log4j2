@@ -15,14 +15,14 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<Configuration status="ERROR" name="ConfigService">
+<Configuration status="WARN" name="ConfigService">
   <Appenders>
     <Console name="STDOUT">
       <PatternLayout pattern="%d %-5level [%t][%logger]%notEmpty{[%markerSimpleName]} %msg%n%xThrowable" />
     </Console>
   </Appenders>
   <Loggers>
-    <Root level="ERROR">
+    <Root level="INFO">
       <AppenderRef ref="STDOUT" />
     </Root>
   </Loggers>

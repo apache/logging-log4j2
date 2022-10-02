@@ -28,15 +28,23 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <revapi.skip>true</revapi.skip>
-    <spring-cloud-version>2020.0.4</spring-cloud-version>
+    <spring-cloud.version>2021.0.4</spring-cloud.version>
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <maven.doap.skip>true</maven.doap.skip>
   </properties>
   <dependencyManagement>
     <dependencies>
+      <!-- First BOM declaring a version wins, so it must be ours. -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-bom</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <dependency>
         <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
+        <artifactId>spring-boot-dependencies</artifactId>
         <version>${spring-boot.version}</version>
         <type>pom</type>
         <scope>import</scope>
@@ -44,7 +52,7 @@
       <dependency>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-dependencies</artifactId>
-        <version>${spring-cloud-version}</version>
+        <version>${spring-cloud.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

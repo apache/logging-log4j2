@@ -18,29 +18,24 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <parent>
+    <groupId>org.apache.logging.log4j.samples</groupId>
+    <artifactId>log4j-spring-cloud-config-samples</artifactId>
+    <version>2.19.1-SNAPSHOT</version>
+  </parent>
   <groupId>org.apache.logging.log4j.samples</groupId>
   <artifactId>log4j-spring-cloud-config-sample-server</artifactId>
   <packaging>jar</packaging>
-  <version>2.19.1-SNAPSHOT</version>
 
   <name>Apache Log4j Sample Configuration Service</name>
   <description>Sample Cloud Config Server</description>
 
-  <parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.3.6.RELEASE</version>
-    <relativePath/> <!-- lookup parent from repository -->
-  </parent>
-
   <properties>
-    <!-- Overrides version from `spring-boot-dependencies` ancestor -->
-    <log4j2.version>${project.version}</log4j2.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <log4jParentDir>${basedir}/../../..</log4jParentDir>
     <java.version>1.8</java.version>
-    <spring-cloud.version>Hoxton.SR9</spring-cloud.version>
+    <module.name>org.apache.logging.log4j.spring.cloud.config.sample.server</module.name>
 
     <!-- paths -->
     <sonar.dependencyCheck.reportPath>${project.build.directory}/dependency-check-report.xml
@@ -58,18 +53,6 @@
     <rat.plugin.version>0.13</rat.plugin.version>
     <maven.doap.skip>true</maven.doap.skip>
   </properties>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-dependencies</artifactId>
-        <version>${spring-cloud.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <dependencies>
     <dependency>
@@ -97,7 +80,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <!-- log dependencies -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-log4j2</artifactId>
@@ -127,6 +109,11 @@
       <artifactId>spring-cloud-starter-config</artifactId>
     </dependency>
     <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
@@ -136,25 +123,6 @@
 
   <build>
     <plugins>
-      <!-- RAT report -->
-      <plugin>
-        <groupId>org.apache.rat</groupId>
-        <artifactId>apache-rat-plugin</artifactId>
-        <configuration>
-          <excludes>
-            <exclude>**/*.yaml</exclude>
-            <exclude>**/readme.txt</exclude>
-          </excludes>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>verify</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
@@ -183,6 +151,10 @@
         </executions>
       </plugin>
       <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
         <configuration>
@@ -190,8 +162,8 @@
         </configuration>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>3.2.0</version>
         <executions>
           <execution>
             <id>copy-resources</id>
@@ -237,21 +209,6 @@
   </distributionManagement>
 
   <repositories>
-    <repository>
-      <id>apache</id>
-      <url>https://repository.apache.org/content/repositories/releases/</url>
-      <snapshots> 
-        <enabled>false</enabled>
-      </snapshots> 
-    </repository>
-    <repository>
-      <id>apache.snapshots</id>
-      <name>Apache snapshots repository</name> 
-      <url>https://repository.apache.org/content/groups/snapshots</url> 
-      <snapshots> 
-        <enabled>true</enabled>
-      </snapshots> 
-    </repository>
     <repository>
       <id>spring-snapshots</id>
       <name>Spring Snapshots</name>
