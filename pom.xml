@@ -1604,7 +1604,7 @@
       <plugin>
         <groupId>org.revapi</groupId>
         <artifactId>revapi-maven-plugin</artifactId>
-        <version>${revapi.plugin.version}</version>
+        <version>${revapi-maven-plugin.version}</version>
         <reportSets>
           <reportSet>
             <reports>
