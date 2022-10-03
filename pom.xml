@@ -256,7 +256,7 @@
     <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
     <maven-dependency-plugin.version>3.3.0</maven-dependency-plugin.version>
     <maven-doap-plugin.version>1.2</maven-doap-plugin.version>
-    <maven-jxr-plugin.version>2.5</maven-jxr-plugin.version>
+    <maven-jxr-plugin.version>3.3.0</maven-jxr-plugin.version>
     <!-- Do not update the pdf plugin version without verifying the new version works by running mvn site -->
     <maven-pdf-plugin.version>1.2</maven-pdf-plugin.version>
     <maven-pmd-plugin.version>3.13.0</maven-pmd-plugin.version>
