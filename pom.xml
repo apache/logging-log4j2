@@ -271,7 +271,7 @@
     <maven-jxr-plugin.version>3.2.0</maven-jxr-plugin.version>
     <!-- Do not update the pdf plugin version without verifying the new version works by running mvn site -->
     <maven-pdf-plugin.version>1.2</maven-pdf-plugin.version>
-    <maven-pmd-plugin.version>3.16.0</maven-pmd-plugin.version>
+    <maven-pmd-plugin.version>3.19.0</maven-pmd-plugin.version>
     <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
     <maven-taglib-plugin.version>2.4</maven-taglib-plugin.version>
     <maven-toolchains-plugin.version>3.0.0</maven-toolchains-plugin.version>
