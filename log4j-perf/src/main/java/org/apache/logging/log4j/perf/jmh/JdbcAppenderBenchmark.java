@@ -173,7 +173,7 @@ public class JdbcAppenderBenchmark {
 
     private String toCreateTableSqlStringH2(final String tableName) {
         return "CREATE TABLE " + tableName + " ( "
-                + "id INTEGER IDENTITY, eventDate DATETIME, literalColumn VARCHAR(255), level NVARCHAR(10), "
+                + "id INTEGER GENERATED ALWAYS AS IDENTITY, eventDate DATETIME, literalColumn VARCHAR(255), level NVARCHAR(10), "
                 + "logger NVARCHAR(255), message VARCHAR(1024), exception NCLOB" + " )";
     }
 
