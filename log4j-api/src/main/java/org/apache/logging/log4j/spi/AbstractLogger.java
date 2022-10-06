@@ -84,7 +84,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
     private final MessageFactory messageFactory;
     private final FlowMessageFactory flowMessageFactory;
     private static final ThreadLocal<int[]> recursionDepthHolder = new ThreadLocal<>(); // LOG4J2-1518, LOG4J2-2031
-    protected final transient ThreadLocal<DefaultLogBuilder> logBuilder;
+    private final transient ThreadLocal<DefaultLogBuilder> logBuilder;
 
 
     /**
