@@ -370,7 +370,7 @@
     <spring.version>5.3.20</spring.version>
     <spring-boot.version>2.6.7</spring-boot.version>
     <system-stubs.version>2.0.1</system-stubs.version>
-    <tomcat-juli.version>10.0.23</tomcat-juli.version>
+    <tomcat-juli.version>10.1.0</tomcat-juli.version>
     <velocity.version>1.7</velocity.version>
     <wiremock.version>2.34.0</wiremock.version>
     <woodstox.version>6.3.1</woodstox.version>
