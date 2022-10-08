@@ -14,10 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.config.builder;
-
-import java.util.List;
-import java.util.Map;
+package org.apache.logging.log4j.script.config.builder;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -39,6 +36,9 @@ import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.Constants;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
@@ -66,7 +66,7 @@ public class ConfigurationAssemblerTest {
     public void testCustomConfigurationFactory() throws Exception {
         try {
             System.setProperty(ConfigurationFactory.CONFIGURATION_FACTORY_PROPERTY,
-                    "org.apache.logging.log4j.core.config.builder.CustomConfigurationFactory");
+                    "org.apache.logging.log4j.script.config.builder.CustomConfigurationFactory");
             System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
                     "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
             final Configuration config = ((LoggerContext) LogManager.getContext(false)).getConfiguration();

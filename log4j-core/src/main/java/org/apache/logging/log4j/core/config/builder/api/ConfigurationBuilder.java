@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.core.config.builder.api;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.plugins.util.Builder;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Interface for building logging configurations.
@@ -94,7 +94,7 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
 
 
     /**
-     * Returns a builder for creating Async Loggers.
+     * Returns a builder for creating scripts. Requires {@code log4j-script}.
      * @param name The name of the Logger.
      * @param language The script language
      * @param text The script to execute.
@@ -103,7 +103,7 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
     ScriptComponentBuilder newScript(String name, String language, String text);
 
     /**
-     * Returns a builder for creating Async Loggers.
+     * Returns a builder for creating script files. Requires {@code log4j-script}.
      * @param path The location of the script file.
      * @return A new ScriptFileComponentBuilder.
      */
@@ -111,7 +111,7 @@ public interface ConfigurationBuilder<T extends Configuration> extends Builder<T
 
 
     /**
-     * Returns a builder for creating Async Loggers.
+     * Returns a builder for creating script files. Requires {@code log4j-script}.
      * @param name The name of the script file.
      * @param path The location of the script file.
      * @return A new ScriptFileComponentBuilder.

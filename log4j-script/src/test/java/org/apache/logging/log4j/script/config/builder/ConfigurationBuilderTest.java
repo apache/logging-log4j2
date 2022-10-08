@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.config.builder;
+package org.apache.logging.log4j.script.config.builder;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
