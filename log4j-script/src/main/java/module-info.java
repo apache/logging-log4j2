@@ -1,3 +1,5 @@
+import org.apache.logging.log4j.plugins.model.PluginService;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
@@ -31,6 +33,6 @@ module org.apache.logging.log4j.script {
     requires org.apache.logging.log4j;
     requires org.apache.logging.log4j.plugins;
     requires org.apache.logging.log4j.core;
-    provides org.apache.logging.log4j.plugins.processor.PluginService with org.apache.logging.log4j.script.plugins.Log4jPlugins;
+    provides PluginService with org.apache.logging.log4j.script.plugins.Log4jPlugins;
     provides org.apache.logging.log4j.core.script.ScriptManagerFactory with org.apache.logging.log4j.script.factory.ScriptManagerFactoryImpl;
 }

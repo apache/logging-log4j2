@@ -20,7 +20,7 @@ package org.apache.logging.log4j.plugins.visit;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.di.Keys;
-import org.apache.logging.log4j.plugins.util.PluginType;
+import org.apache.logging.log4j.plugins.model.PluginType;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StringBuilders;

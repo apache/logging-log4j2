@@ -21,8 +21,8 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFileWatcher;
 import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.Reconfigurable;
-import org.apache.logging.log4j.plugins.util.PluginNamespace;
-import org.apache.logging.log4j.plugins.util.PluginType;
+import org.apache.logging.log4j.plugins.model.PluginNamespace;
+import org.apache.logging.log4j.plugins.model.PluginType;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import java.lang.reflect.Constructor;

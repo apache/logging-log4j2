@@ -26,7 +26,7 @@ import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.Key;
-import org.apache.logging.log4j.plugins.util.PluginNamespace;
+import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;

@@ -23,7 +23,7 @@ import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
-import org.apache.logging.log4j.plugins.processor.PluginEntry;
+import org.apache.logging.log4j.plugins.model.PluginEntry;
 import org.apache.logging.log4j.util.Strings;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -74,7 +74,7 @@ public class PluginProcessor extends AbstractProcessor {
     // TODO: this could be made more abstract to allow for compile-time and run-time plugin processing
 
     private static final String SERVICE_FILE_NAME =
-            "META-INF/services/org.apache.logging.log4j.plugins.processor.PluginService";
+            "META-INF/services/org.apache.logging.log4j.plugins.model.PluginService";
 
     public PluginProcessor() {
     }
@@ -165,8 +165,8 @@ public class PluginProcessor extends AbstractProcessor {
         try (final PrintWriter writer = createSourceFile(fqcn)) {
             writer.println("package " + pkg + ".plugins;");
             writer.println("");
-            writer.println("import org.apache.logging.log4j.plugins.processor.PluginEntry;");
-            writer.println("import org.apache.logging.log4j.plugins.processor.PluginService;");
+            writer.println("import org.apache.logging.log4j.plugins.model.PluginEntry;");
+            writer.println("import org.apache.logging.log4j.plugins.model.PluginService;");
             writer.println("");
             writer.println("public class Log4jPlugins extends PluginService {");
             writer.println("");

@@ -87,6 +87,6 @@ open module org.apache.logging.log4j.core {
     provides org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory with org.apache.logging.log4j.core.message.ExtendedThreadInfoFactory;
     provides org.apache.logging.log4j.core.util.ContextDataProvider with org.apache.logging.log4j.core.impl.ThreadContextDataProvider;
     provides org.apache.logging.log4j.spi.Provider with org.apache.logging.log4j.core.impl.Log4jProvider;
-    provides org.apache.logging.log4j.plugins.processor.PluginService with org.apache.logging.log4j.core.plugins.Log4jPlugins,
+    provides org.apache.logging.log4j.plugins.model.PluginService with org.apache.logging.log4j.core.plugins.Log4jPlugins,
             org.apache.logging.log4j.core.test.plugins.Log4jPlugins;
 }

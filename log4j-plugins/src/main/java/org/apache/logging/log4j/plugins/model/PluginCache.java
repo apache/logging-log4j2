@@ -15,7 +15,7 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.processor;
+package org.apache.logging.log4j.plugins.model;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;

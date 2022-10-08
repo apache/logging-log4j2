@@ -18,8 +18,8 @@
 package org.apache.logging.log4j.plugins.osgi;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.plugins.processor.PluginService;
-import org.apache.logging.log4j.plugins.util.PluginRegistry;
+import org.apache.logging.log4j.plugins.model.PluginRegistry;
+import org.apache.logging.log4j.plugins.model.PluginService;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.osgi.framework.AdaptPermission;
 import org.osgi.framework.AdminPermission;

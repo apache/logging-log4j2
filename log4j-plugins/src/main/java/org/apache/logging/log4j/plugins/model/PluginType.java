@@ -14,9 +14,9 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.plugins.util;
+package org.apache.logging.log4j.plugins.model;
 
-import org.apache.logging.log4j.plugins.processor.PluginEntry;
+import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.util.LazyValue;
 
 import java.util.Set;

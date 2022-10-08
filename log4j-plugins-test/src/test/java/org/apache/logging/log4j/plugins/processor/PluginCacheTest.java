@@ -17,6 +17,8 @@
 
 package org.apache.logging.log4j.plugins.processor;
 
+import org.apache.logging.log4j.plugins.model.PluginCache;
+import org.apache.logging.log4j.plugins.model.PluginEntry;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

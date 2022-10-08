@@ -20,7 +20,7 @@ package org.apache.logging.log4j.core;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.di.Key;
-import org.apache.logging.log4j.plugins.util.PluginNamespace;
+import org.apache.logging.log4j.plugins.model.PluginNamespace;
 
 public class Core {
 

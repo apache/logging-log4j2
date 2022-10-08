@@ -28,7 +28,7 @@ import org.apache.logging.log4j.core.script.ScriptBindings;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.util.PluginType;
+import org.apache.logging.log4j.plugins.model.PluginType;
 import org.apache.logging.log4j.script.ScriptManagerImpl;
 import org.apache.logging.log4j.script.ScriptRef;
 import org.apache.logging.log4j.status.StatusLogger;

@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.plugins.util;
 
+import org.apache.logging.log4j.plugins.model.PluginRegistry;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 

@@ -15,11 +15,12 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.util;
+package org.apache.logging.log4j.plugins.model;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.Singleton;
+import org.apache.logging.log4j.plugins.util.OrderedComparator;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import java.util.AbstractCollection;

@@ -15,6 +15,9 @@
  * limitations under the license.
  */
 
+import org.apache.logging.log4j.plugins.di.InjectorCallback;
+import org.apache.logging.log4j.plugins.model.PluginService;
+
 /**
  * Log4j plugin annotations and dependency injection system. Plugins encompass a variety of customizable
  * Log4j interfaces and classes that are addressable by {@linkplain org.apache.logging.log4j.plugins.Named name} or type
@@ -32,8 +35,8 @@ module org.apache.logging.log4j.plugins {
     exports org.apache.logging.log4j.plugins.condition;
     exports org.apache.logging.log4j.plugins.convert;
     exports org.apache.logging.log4j.plugins.di;
+    exports org.apache.logging.log4j.plugins.model;
     exports org.apache.logging.log4j.plugins.name;
-    exports org.apache.logging.log4j.plugins.processor;
     exports org.apache.logging.log4j.plugins.util;
     exports org.apache.logging.log4j.plugins.validation;
     exports org.apache.logging.log4j.plugins.validation.constraints;
@@ -43,6 +46,6 @@ module org.apache.logging.log4j.plugins {
     requires org.apache.logging.log4j;
     requires static org.osgi.framework;
 
-    uses org.apache.logging.log4j.plugins.processor.PluginService;
-    uses org.apache.logging.log4j.plugins.di.InjectorCallback;
+    uses PluginService;
+    uses InjectorCallback;
 }

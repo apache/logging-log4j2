@@ -16,7 +16,8 @@
  */
 package org.apache.logging.log4j.plugins;
 
-import org.apache.logging.log4j.plugins.util.PluginType;
+import org.apache.logging.log4j.plugins.model.PluginType;
+import org.apache.logging.log4j.plugins.util.TypeUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;

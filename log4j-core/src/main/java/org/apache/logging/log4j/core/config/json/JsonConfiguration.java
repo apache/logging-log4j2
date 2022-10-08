@@ -28,11 +28,10 @@ import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
 import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.plugins.Node;
-import org.apache.logging.log4j.plugins.util.PluginType;
+import org.apache.logging.log4j.plugins.model.PluginType;
 import org.apache.logging.log4j.plugins.util.ResolverUtil;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -52,7 +51,6 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
 
     public JsonConfiguration(final LoggerContext loggerContext, final ConfigurationSource configSource) {
         super(loggerContext, configSource);
-        final File configFile = configSource.getFile();
         final byte[] buffer;
         try {
             try (final InputStream configStream = configSource.getInputStream()) {

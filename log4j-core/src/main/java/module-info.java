@@ -1,3 +1,16 @@
+import org.apache.logging.log4j.core.impl.DefaultCallback;
+import org.apache.logging.log4j.core.impl.Log4jProvider;
+import org.apache.logging.log4j.core.impl.ThreadContextDataProvider;
+import org.apache.logging.log4j.core.message.ExtendedThreadInfoFactory;
+import org.apache.logging.log4j.core.plugins.Log4jPlugins;
+import org.apache.logging.log4j.core.script.ScriptManagerFactory;
+import org.apache.logging.log4j.core.util.ContextDataProvider;
+import org.apache.logging.log4j.core.util.WatchEventService;
+import org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory;
+import org.apache.logging.log4j.plugins.di.InjectorCallback;
+import org.apache.logging.log4j.plugins.model.PluginService;
+import org.apache.logging.log4j.spi.Provider;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
@@ -80,12 +93,12 @@ module org.apache.logging.log4j.core {
     // sun.misc.Unsafe::invokeCleaner via MemoryMappedFileManager
     requires static jdk.unsupported;
 
-    uses org.apache.logging.log4j.core.util.ContextDataProvider;
-    uses org.apache.logging.log4j.core.util.WatchEventService;
-    uses org.apache.logging.log4j.core.script.ScriptManagerFactory;
-    provides org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory with org.apache.logging.log4j.core.message.ExtendedThreadInfoFactory;
-    provides org.apache.logging.log4j.core.util.ContextDataProvider with org.apache.logging.log4j.core.impl.ThreadContextDataProvider;
-    provides org.apache.logging.log4j.spi.Provider with org.apache.logging.log4j.core.impl.Log4jProvider;
-    provides org.apache.logging.log4j.plugins.processor.PluginService with org.apache.logging.log4j.core.plugins.Log4jPlugins;
-    provides org.apache.logging.log4j.plugins.di.InjectorCallback with org.apache.logging.log4j.core.impl.DefaultCallback;
+    uses ContextDataProvider;
+    uses WatchEventService;
+    uses ScriptManagerFactory;
+    provides ThreadInfoFactory with ExtendedThreadInfoFactory;
+    provides ContextDataProvider with ThreadContextDataProvider;
+    provides Provider with Log4jProvider;
+    provides PluginService with Log4jPlugins;
+    provides InjectorCallback with DefaultCallback;
 }

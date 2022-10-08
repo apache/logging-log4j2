@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.plugins.util;
 
+import org.apache.logging.log4j.plugins.model.PluginRegistry;
 import org.apache.logging.log4j.test.junit.UsingURLStreamHandlerFactory;
 import org.junit.jupiter.api.Test;
 

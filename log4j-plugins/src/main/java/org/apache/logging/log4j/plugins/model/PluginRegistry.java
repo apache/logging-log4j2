@@ -15,7 +15,7 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.plugins.util;
+package org.apache.logging.log4j.plugins.model;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.Configurable;
@@ -23,9 +23,7 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.plugins.di.Keys;
-import org.apache.logging.log4j.plugins.processor.PluginCache;
-import org.apache.logging.log4j.plugins.processor.PluginEntry;
-import org.apache.logging.log4j.plugins.processor.PluginService;
+import org.apache.logging.log4j.plugins.util.ResolverUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LazyValue;
 import org.apache.logging.log4j.util.LoaderUtil;

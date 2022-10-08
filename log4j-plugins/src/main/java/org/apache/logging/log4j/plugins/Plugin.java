@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.plugins;
 
+import org.apache.logging.log4j.plugins.model.PluginService;
 import org.apache.logging.log4j.plugins.name.NameProvider;
 import org.apache.logging.log4j.plugins.name.PluginNameProvider;
 import org.apache.logging.log4j.util.Strings;
@@ -33,7 +34,7 @@ import java.lang.annotation.Target;
  * used for dependency injection purposes.</p>
  *
  * <p>Plugins are indexed by the plugin annotation processor which generates
- * {@link org.apache.logging.log4j.plugins.processor.PluginService} service provider classes containing essential
+ * {@link PluginService} service provider classes containing essential
  * plugin metadata. All plugin namespaces support dependency injection, though some namespaces use alternative
  * factory strategies specific to their plugin types; these plugins will only have their members injected after
  * that factory returns a new instance.</p>

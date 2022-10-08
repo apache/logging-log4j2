@@ -21,8 +21,8 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.plugins.Node;
-import org.apache.logging.log4j.plugins.util.PluginNamespace;
-import org.apache.logging.log4j.plugins.util.PluginType;
+import org.apache.logging.log4j.plugins.model.PluginNamespace;
+import org.apache.logging.log4j.plugins.model.PluginType;
 
 import java.util.HashMap;
 import java.util.List;
