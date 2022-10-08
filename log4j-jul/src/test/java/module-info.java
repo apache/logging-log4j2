@@ -27,5 +27,5 @@ module org.apache.logging.log4j.jul.test {
 
     requires junit;
 
-    provides org.apache.logging.log4j.plugins.processor.PluginService with org.apache.logging.log4j.jul.test.plugins.Log4jPlugins;
+    provides org.apache.logging.log4j.plugins.model.PluginService with org.apache.logging.log4j.jul.test.plugins.Log4jPlugins;
 }
