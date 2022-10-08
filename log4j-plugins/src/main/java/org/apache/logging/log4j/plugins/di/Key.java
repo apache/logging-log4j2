@@ -127,21 +127,21 @@ public class Key<T> {
      * Returns a new key using the provided name and the same type and qualifier type as this instance.
      */
     public final Key<T> withName(final String name) {
-        return new Key<>(type, rawType, qualifierType, name, namespace, order);
+        return builder(this).setName(name).get();
     }
 
     /**
      * Returns a new key using the provided namespace otherwise populated with the same values as this instance.
      */
     public final Key<T> withNamespace(final String namespace) {
-        return new Key<>(type, rawType, qualifierType, name, namespace, order);
+        return builder(this).setNamespace(namespace).get();
     }
 
     /**
      * Returns a new key using the provided qualifier type and the same type and name as this instance.
      */
     public final Key<T> withQualifierType(final Class<? extends Annotation> qualifierType) {
-        return new Key<>(type, rawType, qualifierType, name, namespace, order);
+        return builder(this).setQualifierType(qualifierType).get();
     }
 
     /**
@@ -150,8 +150,8 @@ public class Key<T> {
      */
     public final <P> Key<P> getSuppliedType() {
         if (type instanceof ParameterizedType && Supplier.class.isAssignableFrom(rawType)) {
-            return forQualifiedNamedType(qualifierType, name, ((ParameterizedType) type).getActualTypeArguments()[0], namespace,
-                    order);
+            final Type typeArgument = ((ParameterizedType) type).getActualTypeArguments()[0];
+            return builder(this).<P>setType(typeArgument).get();
         }
         return null;
     }
@@ -162,8 +162,8 @@ public class Key<T> {
      */
     public final <P> Key<P> getParameterizedTypeArgument(final int arg) {
         if (type instanceof ParameterizedType) {
-            return forQualifiedNamedType(qualifierType, name, ((ParameterizedType) type).getActualTypeArguments()[arg],
-                    namespace, order);
+            final Type typeArgument = ((ParameterizedType) type).getActualTypeArguments()[arg];
+            return builder(this).<P>setType(typeArgument).get();
         }
         return null;
     }
@@ -202,51 +202,64 @@ public class Key<T> {
      * Creates a Key for the class.
      */
     public static <T> Key<T> forClass(final Class<T> clazz) {
-        return forQualifiedNamedType(getQualifierType(clazz),
-                Keys.getName(clazz),
-                clazz,
-                Keys.getNamespace(clazz),
-                getOrder(clazz));
+        return builder()
+                .setType(clazz)
+                .setQualifierType(getQualifierType(clazz))
+                .setName(Keys.getName(clazz))
+                .setNamespace(Keys.getNamespace(clazz))
+                .setOrder(getOrder(clazz))
+                .get();
     }
 
     /**
      * Creates a Key for the return type of the method.
      */
     public static <T> Key<T> forMethod(final Method method) {
-        return forQualifiedNamedType(getQualifierType(method),
-                Keys.getName(method),
-                method.getGenericReturnType(),
-                Keys.getNamespace(method),
-                getOrder(method));
+        return builder()
+                .<T>setType(method.getGenericReturnType())
+                .setQualifierType(getQualifierType(method))
+                .setName(Keys.getName(method))
+                .setNamespace(Keys.getNamespace(method))
+                .setOrder(getOrder(method))
+                .get();
     }
 
     /**
      * Creates a Key for the parameter.
      */
     public static <T> Key<T> forParameter(final Parameter parameter) {
-        return forQualifiedNamedType(getQualifierType(parameter),
-                Keys.getName(parameter),
-                parameter.getParameterizedType(),
-                Keys.getNamespace(parameter),
-                0);
+        return builder()
+                .<T>setType(parameter.getParameterizedType())
+                .setQualifierType(getQualifierType(parameter))
+                .setName(Keys.getName(parameter))
+                .setNamespace(Keys.getNamespace(parameter))
+                .get();
     }
 
     /**
      * Creates a Key for the field.
      */
     public static <T> Key<T> forField(final Field field) {
-        return forQualifiedNamedType(getQualifierType(field),
-                Keys.getName(field),
-                field.getGenericType(),
-                Keys.getNamespace(field),
-                0);
+        return builder()
+                .<T>setType(field.getGenericType())
+                .setQualifierType(getQualifierType(field))
+                .setName(Keys.getName(field))
+                .setNamespace(Keys.getNamespace(field))
+                .get();
     }
 
-    private static <T> Key<T> forQualifiedNamedType(
-            final Class<? extends Annotation> qualifierType, final String name, final Type type, final String namespace,
-            final int order) {
-        final Class<T> rawType = TypeUtil.cast(TypeUtil.getRawType(type));
-        return new Key<>(type, rawType, qualifierType, name, namespace, order);
+    /**
+     * Creates a new key builder.
+     */
+    public static <T> Builder<T> builder() {
+        return new Builder<>();
+    }
+
+    /**
+     * Creates a new key builder from an existing key's properties.
+     */
+    public static <T> Builder<T> builder(final Key<T> original) {
+        return new Builder<>(original);
     }
 
     private static Class<? extends Annotation> getQualifierType(final AnnotatedElement element) {
@@ -257,5 +270,95 @@ public class Key<T> {
     private static int getOrder(final AnnotatedElement element) {
         final Ordered annotation = element.getAnnotation(Ordered.class);
         return annotation != null ? annotation.value() : 0;
+    }
+
+    /**
+     * Builder class for configuring a new {@link Key} instance.
+     *
+     * @param <T> type of key
+     */
+    public static class Builder<T> implements Supplier<Key<T>> {
+        private Type type;
+        private Class<? extends Annotation> qualifierType;
+        private String name;
+        private String namespace;
+        private Integer order;
+
+        private Builder() {
+        }
+
+        private Builder(final Key<T> original) {
+            type = original.type;
+            qualifierType = original.qualifierType;
+            name = original.name;
+            namespace = original.namespace;
+            order = original.order;
+        }
+
+        /**
+         * Specifies the generic type of the key.
+         */
+        public <U> Builder<U> setType(final Type type) {
+            this.type = type;
+            return TypeUtil.cast(this);
+        }
+
+        /**
+         * Specifies the type of key using a class reference.
+         */
+        public <U> Builder<U> setType(final Class<U> type) {
+            this.type = type;
+            return TypeUtil.cast(this);
+        }
+
+        /**
+         * Specifies a qualifier annotation type. Qualifiers are optional and are used for an additional comparison
+         * property for keys.
+         */
+        public Builder<T> setQualifierType(final Class<? extends Annotation> qualifierType) {
+            this.qualifierType = qualifierType;
+            return this;
+        }
+
+        /**
+         * Specifies the name of this key. The default name for keys is the empty string.
+         */
+        public Builder<T> setName(final String name) {
+            this.name = name;
+            return this;
+        }
+
+        /**
+         * Specifies the namespace of this key. The default namespace for keys is the empty string.
+         */
+        public Builder<T> setNamespace(final String namespace) {
+            this.namespace = namespace;
+            return this;
+        }
+
+        /**
+         * Specifies the order of this key for disambiguation. This overrides any value discovered from
+         * the {@link Ordered} annotation on the type of the key.
+         */
+        public Builder<T> setOrder(final int order) {
+            this.order = order;
+            return this;
+        }
+
+        /**
+         * Creates a new {@link Key} from this builder's properties.
+         */
+        @Override
+        public Key<T> get() {
+            if (name == null) {
+                name = Strings.EMPTY;
+            }
+            if (namespace == null) {
+                namespace = Strings.EMPTY;
+            }
+            final Class<T> rawType = TypeUtil.cast(TypeUtil.getRawType(type));
+            int order = this.order != null ? this.order : getOrder(rawType);
+            return new Key<>(type, rawType, qualifierType, name, namespace, order);
+        }
     }
 }
