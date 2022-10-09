@@ -314,18 +314,18 @@ public class PluginRegistry {
      * Bundles plugins by namespace from a plugin source.
      */
     private static class Namespaces implements Iterable<PluginNamespace> {
-        private final Map<String, PluginNamespace> categories;
+        private final Map<String, PluginNamespace> namespaces;
 
         private Namespaces() {
-            categories = new LinkedHashMap<>();
+            namespaces = new LinkedHashMap<>();
         }
 
-        private Namespaces(final Map<String, PluginNamespace> categories) {
-            this.categories = categories;
+        private Namespaces(final Map<String, PluginNamespace> namespaces) {
+            this.namespaces = namespaces;
         }
 
         public boolean isEmpty() {
-            return categories.isEmpty();
+            return namespaces.isEmpty();
         }
 
         public int merge(final PluginNamespace category) {
@@ -344,16 +344,16 @@ public class PluginRegistry {
         }
 
         public PluginNamespace get(final String category) {
-            return categories.get(category.toLowerCase(Locale.ROOT));
+            return namespaces.get(category.toLowerCase(Locale.ROOT));
         }
 
         public PluginNamespace getOrCreate(final String category) {
-            return categories.computeIfAbsent(category.toLowerCase(Locale.ROOT), key -> new PluginNamespace(key, category));
+            return namespaces.computeIfAbsent(category.toLowerCase(Locale.ROOT), key -> new PluginNamespace(key, category));
         }
 
         @Override
         public Iterator<PluginNamespace> iterator() {
-            return categories.values().iterator();
+            return namespaces.values().iterator();
         }
     }
 }
