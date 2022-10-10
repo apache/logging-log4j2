@@ -75,14 +75,19 @@ public final class StatusLogger extends AbstractLogger {
 
     private static final String NOT_AVAIL = "?";
 
-    private static final PropertiesUtil PROPS = new PropertiesUtil("log4j2.StatusLogger.properties");
+    static final PropertiesUtil PROPS = new PropertiesUtil("log4j2.StatusLogger.properties");
 
     private static final int MAX_ENTRIES = PROPS.getIntegerProperty(MAX_STATUS_ENTRIES, 200);
 
     private static final String DEFAULT_STATUS_LEVEL = PROPS.getStringProperty(DEFAULT_STATUS_LISTENER_LEVEL);
 
+    static final String DATE_FORMAT = PROPS.getStringProperty(STATUS_DATE_FORMAT);
+
+    static final boolean DATE_FORMAT_PROVIDED = Strings.isNotBlank(DATE_FORMAT);
+
     // LOG4J2-1176: normal parameterized message remembers param object, causing memory leaks.
-    private static final StatusLogger STATUS_LOGGER = new StatusLogger(StatusLogger.class.getName(),
+    private static final StatusLogger STATUS_LOGGER = new StatusLogger(
+            StatusLogger.class.getName(),
             ParameterizedNoReferenceMessageFactory.INSTANCE);
 
     private final SimpleLogger logger;
@@ -131,10 +136,8 @@ public final class StatusLogger extends AbstractLogger {
      */
     private StatusLogger(final String name, final MessageFactory messageFactory) {
         super(name, messageFactory);
-        final String dateFormat = PROPS.getStringProperty(STATUS_DATE_FORMAT, Strings.EMPTY);
-        final boolean showDateTime = !Strings.isEmpty(dateFormat);
         final Level loggerLevel = isDebugPropertyEnabled() ? Level.TRACE : Level.ERROR;
-        this.logger = new SimpleLogger("StatusLogger", loggerLevel, false, true, showDateTime, false, dateFormat, messageFactory, PROPS, System.err);
+        this.logger = new SimpleLogger("StatusLogger", loggerLevel, false, true, DATE_FORMAT_PROVIDED, false, DATE_FORMAT, messageFactory, PROPS, System.err);
         this.listenersLevel = Level.toLevel(DEFAULT_STATUS_LEVEL, Level.WARN).intLevel();
     }
 

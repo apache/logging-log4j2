@@ -16,10 +16,13 @@
  */
 package org.apache.logging.log4j.status;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
+import org.apache.logging.log4j.simple.SimpleLogger;
+
 import java.io.IOException;
 import java.io.PrintStream;
-
-import org.apache.logging.log4j.Level;
 
 /**
  * StatusListener that writes to the Console.
@@ -27,9 +30,13 @@ import org.apache.logging.log4j.Level;
 @SuppressWarnings("UseOfSystemOutOrSystemErr")
 public class StatusConsoleListener implements StatusListener {
 
-    private Level level = Level.FATAL;
+    private Level level;
+
     private String[] filters;
+
     private final PrintStream stream;
+
+    private final Logger logger;
 
     /**
      * Creates the StatusConsoleListener using the supplied Level.
@@ -52,6 +59,17 @@ public class StatusConsoleListener implements StatusListener {
         }
         this.level = level;
         this.stream = stream;
+        this.logger = new SimpleLogger(
+                "StatusConsoleListener",
+                level,
+                false,
+                true,
+                StatusLogger.DATE_FORMAT_PROVIDED,
+                false,
+                StatusLogger.DATE_FORMAT,
+                ParameterizedNoReferenceMessageFactory.INSTANCE,
+                StatusLogger.PROPS,
+                stream);
     }
 
     /**
@@ -78,7 +96,12 @@ public class StatusConsoleListener implements StatusListener {
     @Override
     public void log(final StatusData data) {
         if (!filtered(data)) {
-            stream.println(data.getFormattedStatus());
+            logger
+                    // Logging using _only_ the following 4 fields set by `StatusLogger#logMessage()`:
+                    .atLevel(data.getLevel())
+                    .withThrowable(data.getThrowable())
+                    .withLocation(data.getStackTraceElement())
+                    .log(data.getMessage());
         }
     }
 
@@ -110,4 +133,5 @@ public class StatusConsoleListener implements StatusListener {
             this.stream.close();
         }
     }
+
 }
