@@ -30,6 +30,9 @@
          - "remove" - Removed
     -->
     <release version="2.19.0" date="2022-09-09" description="GA Release 2.19.0">
+      <action issue="LOG4J2-3614" dev="vy" type="fix" due-to="strainu">
+        Harden InstantFormatter against delegate failures.
+      </action>
       <action issue="LOG4J2-3572" dev="rgeors" type="update">
         Add getExplicitLevel method to LoggerConfig.
       </action>
@@ -42,10 +45,10 @@
       <action issue="LOG4J2-3578" dev="rgoers" type="fix">
         Generate new SSL certs for testing.
       </action>
-      <action issue="LOG4J2-3556" dev="vy" type="fix" due-to=" Arthur Gavlyukovskiy">
+      <action issue="LOG4J2-3556" dev="vy" type="fix" due-to="Arthur Gavlyukovskiy">
         Make JsonTemplateLayout stack trace truncation operate for each label block.
       </action>
-      <action issue="LOG4J2-3573" dev="vy" type="remove" due-to=" Wolff Bock von Wuelfingen">
+      <action issue="LOG4J2-3573" dev="vy" type="remove" due-to="Wolff Bock von Wuelfingen">
         Removed build page in favor of a single build instructions file.
       </action>
       <action issue="LOG4J2-3550" dev="rgoers" type="fix" due-to="DongjianPeng">
