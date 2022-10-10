@@ -202,6 +202,9 @@
       </action>
     </release>
     <release version="2.19.0" date="2022-MM-DD" description="GA Release 2.19.0">
+      <action issue="LOG4J2-3614" dev="vy" type="fix" due-to="strainu">
+        Harden InstantFormatter against delegate failures.
+      </action>
       <action issue="LOG4J2-3572" dev="rgeors" type="update">
         Add getExplicitLevel method to LoggerConfig.
       </action>

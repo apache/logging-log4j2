@@ -16,11 +16,14 @@
  */
 package org.apache.logging.log4j.core.time;
 
+import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
+import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.util.Locale;
 import java.util.TimeZone;
 
 class InstantFormatterTest {
@@ -57,6 +60,47 @@ class InstantFormatterTest {
         Assertions
                 .assertThat(formatter.format(instant))
                 .isEqualTo("1970-01-01T00:00:00.123456789Z");
+    }
+
+    /**
+     * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-3614">LOG4J2-3614</a>
+     */
+    @Test
+    void FastDateFormat_failures_should_be_handled() {
+
+        // Define a pattern causing `FastDateFormat` to fail.
+        final String pattern = "ss.nnnnnnnnn";
+        final TimeZone timeZone = TimeZone.getTimeZone("UTC");
+        final Locale locale = Locale.US;
+
+        // Assert that the pattern is not supported by `FixedDateFormat`.
+        final FixedDateFormat fixedDateFormat = FixedDateFormat.createIfSupported(pattern, timeZone.getID());
+        Assertions.assertThat(fixedDateFormat).isNull();
+
+        // Assert that the pattern indeed causes a `FastDateFormat` failure.
+        Assertions
+                .assertThatThrownBy(() -> FastDateFormat.getInstance(pattern, timeZone, locale))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Illegal pattern component: nnnnnnnnn");
+
+        // Assert that `InstantFormatter` falls back to `DateTimeFormatter`.
+        final InstantFormatter formatter = InstantFormatter
+                .newBuilder()
+                .setPattern(pattern)
+                .setTimeZone(timeZone)
+                .build();
+        Assertions
+                .assertThat(formatter.getInternalImplementationClass())
+                .asString()
+                .endsWith(".DateTimeFormatter");
+
+        // Assert that formatting works.
+        MutableInstant instant = new MutableInstant();
+        instant.initFromEpochSecond(0, 123_456_789);
+        Assertions
+                .assertThat(formatter.format(instant))
+                .isEqualTo("00.123456789");
+
     }
 
 }

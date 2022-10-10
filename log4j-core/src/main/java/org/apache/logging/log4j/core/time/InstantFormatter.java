@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.time;
 
 import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
 import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
 import java.time.format.DateTimeFormatter;
@@ -36,6 +37,8 @@ import java.util.TimeZone;
  */
 public final class InstantFormatter {
 
+    private static final StatusLogger LOGGER = StatusLogger.getLogger();
+
     /**
      * The list of formatter factories in decreasing efficiency order.
      */
@@ -50,10 +53,17 @@ public final class InstantFormatter {
     private InstantFormatter(final Builder builder) {
         this.formatter = Arrays
                 .stream(FORMATTER_FACTORIES)
-                .map(formatterFactory -> formatterFactory.createIfSupported(
-                        builder.getPattern(),
-                        builder.getLocale(),
-                        builder.getTimeZone()))
+                .map(formatterFactory -> {
+                    try {
+                        return formatterFactory.createIfSupported(
+                                builder.getPattern(),
+                                builder.getLocale(),
+                                builder.getTimeZone());
+                    } catch (final Exception error) {
+                        LOGGER.warn("skipping the failed formatter factory \"{}\"", formatterFactory, error);
+                        return null;
+                    }
+                })
                 .filter(Objects::nonNull)
                 .findFirst()
                 .orElseThrow(() -> new AssertionError("could not find a matching formatter"));
