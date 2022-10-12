@@ -13,7 +13,8 @@
 # See the license for the specific language governing permissions and
 # limitations under the license.
 
-name: build
+name: log4j-kafka tests
+on: [workflow_dispatch]
 
 permissions: read-all
 
@@ -22,7 +23,6 @@ jobs:
   log4j-kafka-test:
 
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         version: [ 1.1.1, 2.8.2, 3.3.1 ]
@@ -51,9 +51,7 @@ jobs:
         run: |
           ./mvnw \
             --show-version --batch-mode --errors --no-transfer-progress --fail-at-end \
-            -DtrimStackTrace=false \
-            -Dsurefire.rerunFailingTestsCount=2 \
-            -Dlog4j2.junit.fileCleanerSleepPeriodMillis=1000 \
             -Dkafka.version=${{ matrix.version }} \
+            -pl log4j-kafka \
             test
 
