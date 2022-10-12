@@ -14,8 +14,7 @@
   ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   ~ See the license for the specific language governing permissions and
   ~ limitations under the license.
-  -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
+  --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.logging.log4j</groupId>
   <artifactId>log4j</artifactId>
@@ -347,7 +346,7 @@
     <junit.version>4.13.2</junit.version>
     <junit-jupiter.version>5.9.0</junit-jupiter.version>
     <junit-pioneer.version>1.6.2</junit-pioneer.version>
-    <kafka.version>1.1.1</kafka.version>
+    <kafka.version>2.7.2</kafka.version>
     <kubernetes-client.version>5.12.2</kubernetes-client.version>
     <lightcouch.version>0.2.0</lightcouch.version>
     <liquibase.version>3.5.5</liquibase.version>
