@@ -1,0 +1,59 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements. See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache license, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License. You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the license for the specific language governing permissions and
+# limitations under the license.
+
+name: build
+
+permissions: read-all
+
+jobs:
+
+  log4j-kafka-test:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        version: [ 1.1.1, 2.8.2, 3.3.1 ]
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748   # 3.0.1
+
+      - name: Setup JDK 11
+        uses: actions/setup-java@9519cf1382ac8dc61ad461f7f7cb45f033220189   # 3.1.1
+        with:
+          distribution: temurin
+          java-version: 11
+          java-package: jdk
+          architecture: x64
+          cache: maven
+
+      - name: Inspect environment (Linux)
+        if: runner.os == 'Linux'
+        run: env | grep '^JAVA'
+
+      - name: Maven "test"
+        timeout-minutes: 60
+        shell: bash
+        run: |
+          ./mvnw \
+            --show-version --batch-mode --errors --no-transfer-progress --fail-at-end \
+            -DtrimStackTrace=false \
+            -Dsurefire.rerunFailingTestsCount=2 \
+            -Dlog4j2.junit.fileCleanerSleepPeriodMillis=1000 \
+            -Dkafka.version=${{ matrix.version }} \
+            test
+

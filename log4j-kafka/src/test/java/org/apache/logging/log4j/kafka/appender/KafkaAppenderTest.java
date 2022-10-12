@@ -22,14 +22,18 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.kafka.clients.producer.MockProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.ByteArraySerializer;
+import org.apache.kafka.common.serialization.Serializer;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.apache.logging.log4j.core.Appender;
@@ -49,12 +53,20 @@ import static org.junit.Assert.*;
 @Category(Appenders.Kafka.class)
 public class KafkaAppenderTest {
 
-    private static final MockProducer<byte[], byte[]> kafka = new MockProducer<byte[], byte[]>(true, null, null) {
+    private static final Serializer<byte[]> SERIALIZER = new ByteArraySerializer();
 
-        @Override
+    private static final MockProducer<byte[], byte[]> kafka = new MockProducer<byte[], byte[]>(true, SERIALIZER,
+            SERIALIZER) {
+
+        // @Override in version 1.1.1
         public void close(final long timeout, final TimeUnit timeUnit) {
+            // Intentionally do not close in order to reuse
         }
 
+        // @Override in version 3.3.1
+        public void close(final Duration timeout) {
+            // Intentionally do no close in order to reuse
+        }
     };
 
     private static final String LOG_MESSAGE = "Hello, world!";
