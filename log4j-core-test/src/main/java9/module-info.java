@@ -14,6 +14,8 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+import org.apache.logging.log4j.core.test.plugins.Log4jPlugins;
+import org.apache.logging.log4j.plugins.model.PluginService;
 module org.apache.logging.log4j.core.test {
     exports org.apache.logging.log4j.core.test;
     exports org.apache.logging.log4j.core.test.appender;
@@ -26,6 +28,9 @@ module org.apache.logging.log4j.core.test {
     exports org.apache.logging.log4j.core.test.parser;
     exports org.apache.logging.log4j.core.test.util;
 
+    opens org.apache.logging.log4j.core.test.junit to
+      org.junit.platform.commons;
+
     requires java.naming;
     requires org.apache.logging.log4j;
     requires org.apache.logging.log4j.test;
@@ -34,9 +39,11 @@ module org.apache.logging.log4j.core.test {
     requires org.apache.logging.log4j.core;
     requires com.fasterxml.jackson.core;
     requires com.fasterxml.jackson.databind;
+    requires junit;
     requires org.junit.jupiter.api;
     requires org.junit.jupiter.engine;
     requires org.junit.jupiter.params;
     requires org.junit.platform.commons;
     requires org.junit.platform.engine;
+    provides PluginService with Log4jPlugins;
 }

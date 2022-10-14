@@ -305,6 +305,23 @@
   </dependencies>
   <build>
     <plugins>
+      <!-- We add the module descriptor to the source path -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${project.basedir}/src/main/java9</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
@@ -327,6 +344,31 @@
             <Bundle-Activator>org.apache.logging.log4j.core.osgi.Activator</Bundle-Activator>
           </instructions>
         </configuration>
+      </plugin>
+      <!-- We delete the module descriptor to prevent compiling tests as a module -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>remove-module-info</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+            <configuration>
+              <excludeDefaultDirectories>true</excludeDefaultDirectories>
+              <filesets>
+                <fileset>
+                  <directory>${project.build.outputDirectory}</directory>
+                  <includes>
+                    <include>module-info.class</include>
+                  </includes>
+                </fileset>
+              </filesets>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -365,10 +407,11 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
+          <runOrder>random</runOrder>
           <systemPropertyVariables>
             <log4j2.is.webapp>false</log4j2.is.webapp>
           </systemPropertyVariables>
-          <runOrder>random</runOrder>
+          <useModulePath>false</useModulePath>
         </configuration>
       </plugin>
     </plugins>

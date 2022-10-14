@@ -33,8 +33,7 @@ import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 import org.junit.jupiter.api.extension.ExtensionContext.Store;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
-import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
-import org.junit.platform.commons.util.AnnotationUtils;
+import org.junit.platform.commons.support.AnnotationSupport;
 
 import java.net.URI;
 import java.util.Map;
@@ -47,17 +46,21 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
     private static final String FQCN = LoggerContextResolver.class.getName();
     private static final Namespace BASE_NAMESPACE = Namespace.create(LoggerContext.class);
 
+    public LoggerContextResolver() {
+        super(LoggerContext.class);
+    }
+
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
         final Class<?> testClass = context.getRequiredTestClass();
-        AnnotationUtils.findAnnotation(testClass, LoggerContextSource.class)
+        AnnotationSupport.findAnnotation(testClass, LoggerContextSource.class)
                 .ifPresent(testSource -> setUpLoggerContext(testSource, context));
     }
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
         final Class<?> testClass = context.getRequiredTestClass();
-        if (AnnotationUtils.isAnnotated(testClass, LoggerContextSource.class)) {
+        if (AnnotationSupport.isAnnotated(testClass, LoggerContextSource.class)) {
             final Store testClassStore = context.getStore(BASE_NAMESPACE.append(testClass));
             final LoggerContextAccessor accessor = testClassStore.get(LoggerContextAccessor.class, LoggerContextAccessor.class);
             if (accessor == null) {
@@ -69,7 +72,7 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
                 accessor.getLoggerContext().reconfigure();
             }
         }
-        AnnotationUtils.findAnnotation(context.getRequiredTestMethod(), LoggerContextSource.class)
+        AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), LoggerContextSource.class)
                 .ifPresent(source -> {
                     final LoggerContext loggerContext = setUpLoggerContext(source, context);
                     if (source.reconfigure() == ReconfigurationPolicy.BEFORE_EACH) {
@@ -81,7 +84,7 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
     @Override
     public void afterEach(ExtensionContext context) throws Exception {
         final Class<?> testClass = context.getRequiredTestClass();
-        if (AnnotationUtils.isAnnotated(testClass, LoggerContextSource.class)) {
+        if (AnnotationSupport.isAnnotated(testClass, LoggerContextSource.class)) {
             final Store testClassStore = getTestStore(context);
             if (testClassStore.get(ReconfigurationPolicy.class, ReconfigurationPolicy.class) == ReconfigurationPolicy.AFTER_EACH) {
                 testClassStore.get(LoggerContextAccessor.class, LoggerContextAccessor.class).getLoggerContext().reconfigure();

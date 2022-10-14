@@ -1,16 +1,3 @@
-import org.apache.logging.log4j.core.impl.DefaultCallback;
-import org.apache.logging.log4j.core.impl.Log4jProvider;
-import org.apache.logging.log4j.core.impl.ThreadContextDataProvider;
-import org.apache.logging.log4j.core.message.ExtendedThreadInfoFactory;
-import org.apache.logging.log4j.core.plugins.Log4jPlugins;
-import org.apache.logging.log4j.core.script.ScriptManagerFactory;
-import org.apache.logging.log4j.core.util.ContextDataProvider;
-import org.apache.logging.log4j.core.util.WatchEventService;
-import org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory;
-import org.apache.logging.log4j.plugins.di.InjectorCallback;
-import org.apache.logging.log4j.plugins.model.PluginService;
-import org.apache.logging.log4j.spi.Provider;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
@@ -27,6 +14,19 @@ import org.apache.logging.log4j.spi.Provider;
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+import org.apache.logging.log4j.core.impl.DefaultCallback;
+import org.apache.logging.log4j.core.impl.Log4jProvider;
+import org.apache.logging.log4j.core.impl.ThreadContextDataProvider;
+import org.apache.logging.log4j.core.message.ExtendedThreadInfoFactory;
+import org.apache.logging.log4j.core.plugins.Log4jPlugins;
+import org.apache.logging.log4j.core.script.ScriptManagerFactory;
+import org.apache.logging.log4j.core.util.ContextDataProvider;
+import org.apache.logging.log4j.core.util.WatchEventService;
+import org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory;
+import org.apache.logging.log4j.plugins.di.InjectorCallback;
+import org.apache.logging.log4j.plugins.model.PluginService;
+import org.apache.logging.log4j.spi.Provider;
+
 module org.apache.logging.log4j.core {
     exports org.apache.logging.log4j.core;
     exports org.apache.logging.log4j.core.appender;

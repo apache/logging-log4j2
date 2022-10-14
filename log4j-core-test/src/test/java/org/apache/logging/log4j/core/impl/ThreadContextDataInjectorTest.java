@@ -33,7 +33,7 @@ import java.util.Collection;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.ThreadContextUtilityClass;
+import org.apache.logging.log4j.test.ThreadContextUtilityClass;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.util.PropertiesUtil;
