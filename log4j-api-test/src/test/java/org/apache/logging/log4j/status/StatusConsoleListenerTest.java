@@ -17,67 +17,68 @@
 package org.apache.logging.log4j.status;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogBuilder;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
 import org.apache.logging.log4j.simple.SimpleLogger;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.parallel.ResourceLock;
-import org.junit.jupiter.api.parallel.Resources;
 import org.mockito.Mockito;
-import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
-import uk.org.webcompere.systemstubs.properties.SystemProperties;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.lang.reflect.Field;
 
 public class StatusConsoleListenerTest {
 
     public static final MessageFactory MESSAGE_FACTORY = ParameterizedNoReferenceMessageFactory.INSTANCE;
 
-    @Nested
-    @ExtendWith(SystemStubsExtension.class)
-    @ResourceLock(value = Resources.SYSTEM_PROPERTIES)
-    class SimpleLogger_should_be_used {
+    @Test
+    void SimpleLogger_should_be_used() throws Exception {
 
-        @Test
-        void test(final SystemProperties properties) throws Exception {
+        // Create the listener.
+        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final String encoding = "UTF-8";
+        final PrintStream printStream = new PrintStream(outputStream, false, encoding);
+        final StatusConsoleListener listener = new StatusConsoleListener(Level.WARN, printStream);
 
-            // Customize the date-time formatting to be passed on to the `SimpleLogger`.
-            properties.set(StatusLogger.STATUS_DATE_FORMAT, "'LOG4J2-3584 'ss.SSS");
+        // Verify the internal `SimpleLogger`.
+        Assertions
+                .assertThat(listener)
+                .extracting("logger")
+                .isInstanceOf(SimpleLogger.class);
 
-            // Create the listener.
-            final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            final String encoding = "UTF-8";
-            final PrintStream printStream = new PrintStream(outputStream, false, encoding);
-            final StatusConsoleListener listener = new StatusConsoleListener(Level.WARN, printStream);
+        // Create a mock `SimpleLogger`.
+        final SimpleLogger logger = Mockito.mock(SimpleLogger.class);
+        final LogBuilder logBuilder = Mockito.mock(LogBuilder.class);
+        Mockito.when(logger.atLevel(Mockito.any())).thenReturn(logBuilder);
+        Mockito.when(logBuilder.withThrowable(Mockito.any())).thenReturn(logBuilder);
+        Mockito.when(logBuilder.withLocation(Mockito.any())).thenReturn(logBuilder);
 
-            // Verify the internal `SimpleLogger`.
-            Assertions
-                    .assertThat(listener)
-                    .extracting("logger")
-                    .isInstanceOf(SimpleLogger.class);
+        // Replace the internal `SimpleLogger` with the mock one.
+        final Field loggerField = listener.getClass().getDeclaredField("logger");
+        loggerField.setAccessible(true);
+        loggerField.set(listener, logger);
 
-            // Log a message.
-            final Message message = MESSAGE_FACTORY.newMessage("foo");
-            listener.log(new StatusData(
-                    null,               // since ignored by `SimpleLogger`
-                    Level.ERROR,
-                    message,
-                    null,
-                    null));             // as set by `StatusLogger` itself
+        // Log a message.
+        final StackTraceElement caller = Mockito.mock(StackTraceElement.class);
+        final Level level = Mockito.mock(Level.class);
+        final Message message = Mockito.mock(Message.class);
+        final Throwable throwable = Mockito.mock(Throwable.class);
+        final StatusData statusData = new StatusData(
+                caller,
+                level,
+                message,
+                throwable,
+                null);
+        listener.log(statusData);
 
-            // Verify the output.
-            printStream.flush();
-            final String output = outputStream.toString(encoding);
-            Assertions
-                    .assertThat(output)
-                    .matches("(?s)LOG4J2-3584 \\d{2}\\.\\d{3} ERROR StatusConsoleListener foo\\r?\\n$");
-
-        }
+        // Verify the call.
+        Mockito.verify(logger).atLevel(Mockito.same(level));
+        Mockito.verify(logBuilder).withThrowable(Mockito.same(throwable));
+        Mockito.verify(logBuilder).withLocation(Mockito.same(caller));
+        Mockito.verify(logBuilder).log(Mockito.same(message));
 
     }
 
