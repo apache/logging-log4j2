@@ -17,17 +17,21 @@
 module org.apache.logging.log4j.test {
     exports org.apache.logging.log4j.test;
     exports org.apache.logging.log4j.test.junit;
+
     opens org.apache.logging.log4j.test.junit to org.junit.platform.commons;
 
-    requires org.apache.commons.lang3;
-    requires org.apache.logging.log4j;
+    requires transitive org.apache.logging.log4j;
     requires com.fasterxml.jackson.core;
     requires com.fasterxml.jackson.databind;
+    requires org.apache.commons.lang3;
     requires org.assertj.core;
-    requires org.junit.jupiter.api;
+    requires transitive org.hamcrest;
+    requires transitive org.junit.jupiter.api;
     requires org.junit.jupiter.engine;
-    requires org.junit.jupiter.params;
+    requires transitive org.junit.jupiter.params;
     requires org.junit.platform.commons;
     requires org.junit.platform.engine;
-    requires junit;
+    requires transitive org.junit.platform.launcher;
+    requires org.junitpioneer;
+    requires transitive junit;
 }

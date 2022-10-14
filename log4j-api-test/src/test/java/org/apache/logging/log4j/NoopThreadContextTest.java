@@ -26,13 +26,13 @@ import org.junitpioneer.jupiter.SetSystemProperty;
 /**
  * Tests {@link ThreadContext}.
  */
-@SetSystemProperty(key = "disableThreadContext", value = "true")
-@SetSystemProperty(key = "disableThreadContextMap", value = "true")
-@InitializesThreadContext
-@UsingThreadContextMap
+@SetSystemProperty(key = "log4j2.disableThreadContext", value = "true")
+@SetSystemProperty(key = "log4j2.disableThreadContextMap", value = "true")
 public class NoopThreadContextTest {
 
     @Test
+    @InitializesThreadContext
+    @UsingThreadContextMap
     public void testNoop() {
         ThreadContext.put("Test", "Test");
         final String value = ThreadContext.get("Test");
