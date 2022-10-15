@@ -19,7 +19,6 @@ package org.apache.logging.log4j.plugins.model;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.util.LazyValue;
 
-import java.util.Set;
 import java.util.function.Supplier;
 
 /**
@@ -32,7 +31,6 @@ public class PluginType<T> {
 
     private final PluginEntry pluginEntry;
     private final Supplier<Class<T>> pluginClass;
-    private final Supplier<Set<Class<?>>> implementedInterfaces;
 
     /**
      * Constructor.
@@ -44,8 +42,6 @@ public class PluginType<T> {
             final PluginEntry pluginEntry, final Class<T> pluginClass) {
         this.pluginEntry = pluginEntry;
         this.pluginClass = () -> pluginClass;
-        final var interfaces = Set.of(pluginClass.getInterfaces());
-        this.implementedInterfaces = () -> interfaces;
     }
 
     /**
@@ -55,7 +51,7 @@ public class PluginType<T> {
      */
     public PluginType(final PluginEntry pluginEntry, final ClassLoader classLoader) {
         this.pluginEntry = pluginEntry;
-        final LazyValue<Class<T>> classProvider = LazyValue.from(() -> {
+        this.pluginClass = LazyValue.from(() -> {
             try {
                 return TypeUtil.cast(classLoader.loadClass(pluginEntry.getClassName()));
             } catch (final ClassNotFoundException e) {
@@ -63,14 +59,6 @@ public class PluginType<T> {
                         " located for element " + pluginEntry.getName(), e);
             }
         });
-        this.pluginClass = classProvider;
-        final Class<?>[] interfaces = pluginEntry.getInterfaces();
-        if (interfaces != null) {
-            final var implementedInterfaces = Set.of(interfaces);
-            this.implementedInterfaces = () -> implementedInterfaces;
-        } else {
-            this.implementedInterfaces = classProvider.map(clazz -> Set.of(clazz.getInterfaces()));
-        }
     }
 
     public PluginEntry getPluginEntry() {
@@ -79,10 +67,6 @@ public class PluginType<T> {
 
     public Class<T> getPluginClass() {
         return pluginClass.get();
-    }
-
-    public Set<Class<?>> getImplementedInterfaces() {
-        return implementedInterfaces.get();
     }
 
     public String getElementType() {

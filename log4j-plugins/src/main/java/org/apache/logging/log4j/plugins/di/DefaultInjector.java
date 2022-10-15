@@ -319,10 +319,8 @@ class DefaultInjector implements Injector {
         }
         final PluginNamespace namespace = getInstance(PluginRegistry.class).getNamespace(itemKey.getNamespace(), getPluginPackages());
         final Type type = itemKey.getType();
-        final Class<T> rawType = itemKey.getRawType();
         return namespace.stream()
-                .filter(pluginType -> rawType.isInterface() && pluginType.getImplementedInterfaces().contains(rawType) ||
-                        TypeUtil.isAssignable(type, pluginType.getPluginClass()))
+                .filter(pluginType -> TypeUtil.isAssignable(type, pluginType.getPluginClass()))
                 .sorted(Comparator.comparing(PluginType::getPluginClass, OrderedComparator.INSTANCE))
                 .map(TypeUtil::cast);
     }
@@ -574,22 +572,7 @@ class DefaultInjector implements Injector {
                 .allMatch(condition -> condition.matches(key, rawType))) {
             return null;
         }
-        final Executable factory = Stream.of(rawType.getDeclaredMethods())
-                .filter(method -> Modifier.isStatic(method.getModifiers()) &&
-                        AnnotationUtil.isMetaAnnotationPresent(method, FactoryType.class))
-                .min(Comparator.comparingInt(Method::getParameterCount).thenComparing(Method::getReturnType, (c1, c2) -> {
-                    if (c1.equals(c2)) {
-                        return 0;
-                    } else if (Supplier.class.isAssignableFrom(c1)) {
-                        return -1;
-                    } else if (Supplier.class.isAssignableFrom(c2)) {
-                        return 1;
-                    } else {
-                        return c1.getName().compareTo(c2.getName());
-                    }
-                }))
-                .map(Executable.class::cast)
-                .orElseGet(() -> getInjectableConstructor(key, Set.of()));
+        final Executable factory = getInjectablePluginFactory(rawType);
         final List<InjectionPoint<?>> points = InjectionPoint.fromExecutable(factory);
         if (!factory.canAccess(null)) {
             accessor.makeAccessible(factory);
@@ -781,6 +764,25 @@ class DefaultInjector implements Injector {
         final var newChain = new LinkedHashSet<>(chain);
         newChain.add(newKey);
         return newChain;
+    }
+
+    private static Executable getInjectablePluginFactory(final Class<?> pluginClass) {
+        return Stream.of(pluginClass.getDeclaredMethods())
+                .filter(method -> Modifier.isStatic(method.getModifiers()) &&
+                        AnnotationUtil.isMetaAnnotationPresent(method, FactoryType.class))
+                .min(Comparator.comparingInt(Method::getParameterCount).thenComparing(Method::getReturnType, (c1, c2) -> {
+                    if (c1.equals(c2)) {
+                        return 0;
+                    } else if (Supplier.class.isAssignableFrom(c1)) {
+                        return -1;
+                    } else if (Supplier.class.isAssignableFrom(c2)) {
+                        return 1;
+                    } else {
+                        return c1.getName().compareTo(c2.getName());
+                    }
+                }))
+                .map(Executable.class::cast)
+                .orElseGet(() -> getInjectableConstructor(Key.forClass(pluginClass), Set.of()));
     }
 
     private static <T> Constructor<T> getInjectableConstructor(final Key<T> key, final Set<Key<?>> chain) {

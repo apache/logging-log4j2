@@ -34,16 +34,10 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementVisitor;
-import javax.lang.model.element.Modifier;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.ElementKindVisitor9;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.SimpleElementVisitor8;
-import javax.lang.model.util.SimpleTypeVisitor9;
-import javax.lang.model.util.Types;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
 import javax.tools.JavaFileObject;
@@ -55,7 +49,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -170,33 +163,27 @@ public class PluginProcessor extends AbstractProcessor {
             writer.println("");
             writer.println("public class Log4jPlugins extends PluginService {");
             writer.println("");
-            writer.println("    private static final PluginEntry[] ENTRIES = new PluginEntry[] {");
-            StringBuilder sb = new StringBuilder();
+            writer.println("  private static final PluginEntry[] ENTRIES = new PluginEntry[] {");
             int max = list.size() - 1;
             for (int i = 0; i < list.size(); ++i) {
                 PluginEntryMirror mirror = list.get(i);
                 final PluginEntry entry = mirror.entry;
-                sb.append("        ").append("new PluginEntry(\"");
-                sb.append(entry.getKey()).append("\", \"");
-                sb.append(entry.getClassName()).append("\", \"");
-                sb.append(entry.getName()).append("\", \"");
-                final String elementName = entry.getElementType();
-                if (elementName != null) {
-                    sb.append(elementName);
+                writer.println("    PluginEntry.builder()");
+                writer.println(String.format("      .setKey(\"%s\")", entry.getKey()));
+                writer.println(String.format("      .setClassName(\"%s\")", entry.getClassName()));
+                writer.println(String.format("      .setName(\"%s\")", entry.getName()));
+                writer.println(String.format("      .setNamespace(\"%s\")", entry.getNamespace()));
+                final String elementType = entry.getElementType();
+                if (Strings.isNotEmpty(elementType)) {
+                    writer.println(String.format("      .setElementType(\"%s\")", elementType));
                 }
-                sb.append("\", ");
-                sb.append(entry.isPrintable()).append(", ");
-                sb.append(entry.isDeferChildren()).append(", \"");
-                sb.append(entry.getNamespace()).append("\"");
-                for (final Name implementedInterface : getImplementedInterfaces(mirror.element.asType())) {
-                    sb.append(", ").append(implementedInterface).append(".class");
+                if (entry.isPrintable()) {
+                    writer.println("      .setPrintable(true)");
                 }
-                sb.append(')');
-                if (i < max) {
-                    sb.append(",");
+                if (entry.isDeferChildren()) {
+                    writer.println("      .setDeferChildren(true)");
                 }
-                writer.println(sb);
-                sb.setLength(0);
+                writer.println("      .get()" + (i < max ? "," : Strings.EMPTY));
             }
             writer.println("    };");
             writer.println("    @Override");
@@ -272,30 +259,6 @@ public class PluginProcessor extends AbstractProcessor {
             }
             return new PluginEntryMirror(e, builder.get());
         }
-    }
-
-    private Set<Name> getImplementedInterfaces(final TypeMirror base) {
-        final Set<Name> implementedInterfaces = new LinkedHashSet<>();
-        final Types types = processingEnv.getTypeUtils();
-        base.accept(new SimpleTypeVisitor9<Void, Void>() {
-            @Override
-            public Void visitDeclared(final DeclaredType t, final Void unused) {
-                for (final TypeMirror directSupertype : types.directSupertypes(t)) {
-                    directSupertype.accept(this, null);
-                }
-                t.asElement().accept(new ElementKindVisitor9<Void, Void>() {
-                    @Override
-                    public Void visitTypeAsInterface(final TypeElement e, final Void unused) {
-                        if (e.getModifiers().contains(Modifier.PUBLIC)) {
-                            implementedInterfaces.add(e.getQualifiedName());
-                        }
-                        return null;
-                    }
-                }, null);
-                return null;
-            }
-        }, null);
-        return implementedInterfaces;
     }
 
     private String commonPrefix(String str1, String str2) {
