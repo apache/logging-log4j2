@@ -106,6 +106,23 @@
 
   <build>
     <plugins>
+      <!-- For Eclipse users' sake we move the module descriptor to a separate source folder -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${project.basedir}/src/main/module</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
@@ -127,6 +144,28 @@
             </goals>
             <configuration>
               <skip>false</skip>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Workaround Surefire 3.0.0-M7 limitation: it does not add the main classes with 'patch-module' -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>shade-test-module</id>
+            <phase>process-test-classes</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.build.outputDirectory}</directory>
+                </resource>
+              </resources>
             </configuration>
           </execution>
         </executions>

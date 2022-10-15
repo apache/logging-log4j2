@@ -1,5 +1,3 @@
-import org.apache.logging.log4j.plugins.model.PluginService;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
@@ -16,23 +14,32 @@ import org.apache.logging.log4j.plugins.model.PluginService;
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-module org.apache.logging.log4j.script {
+import org.apache.logging.log4j.core.script.ScriptManagerFactory;
+import org.apache.logging.log4j.plugins.model.PluginService;
+import org.apache.logging.log4j.script.factory.ScriptManagerFactoryImpl;
+import org.apache.logging.log4j.script.plugins.Log4jPlugins;
 
+module org.apache.logging.log4j.script {
     exports org.apache.logging.log4j.script;
     exports org.apache.logging.log4j.script.appender;
+    opens org.apache.logging.log4j.script.appender to
+      org.apache.logging.log4j.core;
     exports org.apache.logging.log4j.script.appender.rolling.action;
     exports org.apache.logging.log4j.script.config.arbiter;
+    opens org.apache.logging.log4j.script.config.arbiter to
+      org.apache.logging.log4j.core;
+    opens org.apache.logging.log4j.script.config.builder to
+      org.apache.logging.log4j.core;
     exports org.apache.logging.log4j.script.filter;
     exports org.apache.logging.log4j.script.layout;
+    opens org.apache.logging.log4j.script.layout to
+      org.apache.logging.log4j.core;
 
-    opens org.apache.logging.log4j.script.appender;
-    opens org.apache.logging.log4j.script.config.arbiter to org.apache.logging.log4j.core;
-    opens org.apache.logging.log4j.script.layout to org.apache.logging.log4j.core;
-
-    requires java.scripting;
     requires org.apache.logging.log4j;
-    requires org.apache.logging.log4j.plugins;
     requires org.apache.logging.log4j.core;
-    provides PluginService with org.apache.logging.log4j.script.plugins.Log4jPlugins;
-    provides org.apache.logging.log4j.core.script.ScriptManagerFactory with org.apache.logging.log4j.script.factory.ScriptManagerFactoryImpl;
+    requires org.apache.logging.log4j.plugins;
+    requires java.scripting;
+
+    provides PluginService with Log4jPlugins;
+    provides ScriptManagerFactory with ScriptManagerFactoryImpl;
 }

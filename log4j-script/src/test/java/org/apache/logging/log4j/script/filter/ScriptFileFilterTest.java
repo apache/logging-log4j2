@@ -17,10 +17,11 @@
 package org.apache.logging.log4j.script.filter;
 
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.ReconfigurationPolicy;
 import org.apache.logging.log4j.script.factory.ScriptManagerFactoryImpl;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
 @SetSystemProperty(key = ScriptManagerFactoryImpl.SCRIPT_LANGUAGES, value = "Groovy, Javascript")
-@LoggerContextSource("log4j-scriptFile-filters.xml")
+@LoggerContextSource(value = "log4j-scriptFile-filters.xml", reconfigure = ReconfigurationPolicy.BEFORE_EACH)
 public class ScriptFileFilterTest extends AbstractScriptFilterTest {
 }
