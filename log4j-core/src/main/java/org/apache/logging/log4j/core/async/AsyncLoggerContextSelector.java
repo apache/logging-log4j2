@@ -22,7 +22,7 @@ import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.plugins.di.Injector;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util3.PropertiesUtil;
 
 import java.net.URI;
 

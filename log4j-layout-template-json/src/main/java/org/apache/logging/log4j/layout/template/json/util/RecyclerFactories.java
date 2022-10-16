@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.layout.template.json.util;
 
-import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util3.LoaderUtil;
 import org.jctools.queues.MpmcArrayQueue;
 
 import java.lang.reflect.Constructor;
@@ -28,7 +28,7 @@ import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.function.Supplier;
 
-import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
+import static org.apache.logging.log4j.util3.Constants.isThreadLocalsEnabled;
 
 public final class RecyclerFactories {
 

@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.kubernetes;
 
-import java.time.Duration;
-
-import org.apache.logging.log4j.util.PropertiesUtil;
-
 import io.fabric8.kubernetes.client.Config;
+import org.apache.logging.log4j.util.PropertyEnvironment;
+import org.apache.logging.log4j.util3.PropertiesUtil;
+
+import java.time.Duration;
 
 /**
  * Obtains properties used to configure the Kubernetes client.
@@ -54,7 +54,7 @@ public class KubernetesClientProperties {
     private static final String WATCH_RECONNECT_INTERVAL = "watchReconnectInterval";
     private static final String WATCH_RECONNECT_LIMIT = "watchReconnectLimit";
 
-    private final PropertiesUtil props = PropertiesUtil.getProperties();
+    private final PropertyEnvironment props = PropertiesUtil.getProperties();
     private final Config base;
 
     public KubernetesClientProperties(Config base) {

@@ -56,13 +56,13 @@ import org.apache.logging.log4j.spi.CopyOnWrite;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyEnvironment;
+import org.apache.logging.log4j.util3.PropertiesUtil;
 
 import java.util.Map;
 import java.util.function.Supplier;
 
-import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
+import static org.apache.logging.log4j.util3.Constants.isThreadLocalsEnabled;
 
 /**
  * Contains default bindings for Log4j including support for {@link PropertiesUtil}-based configuration.

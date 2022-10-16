@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.configuration;
 
-import java.io.Serializable;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Layout;
@@ -27,7 +25,9 @@ import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util3.PropertiesUtil;
+
+import java.io.Serializable;
 
 /**
  * This Configuration is the same as the DefaultConfiguration but shows how a custom configuration can be built

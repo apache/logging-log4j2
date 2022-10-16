@@ -17,15 +17,6 @@
 
 package org.apache.log4j.helpers;
 
-import java.io.InputStream;
-import java.io.InterruptedIOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
 import org.apache.log4j.Level;
 import org.apache.log4j.Priority;
 import org.apache.log4j.PropertyConfigurator;
@@ -34,9 +25,18 @@ import org.apache.log4j.spi.LoggerRepository;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.spi.StandardLevel;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util3.LoaderUtil;
+import org.apache.logging.log4j.util3.PropertiesUtil;
+
+import java.io.InputStream;
+import java.io.InterruptedIOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * A convenience class to convert property values to specific types.

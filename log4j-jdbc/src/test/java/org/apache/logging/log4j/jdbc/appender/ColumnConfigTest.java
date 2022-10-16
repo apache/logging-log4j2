@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.jdbc.appender;
 
-import org.apache.logging.log4j.jdbc.appender.ColumnConfig;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
 

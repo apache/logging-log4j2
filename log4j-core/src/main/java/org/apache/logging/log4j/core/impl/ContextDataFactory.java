@@ -16,18 +16,18 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import java.lang.reflect.Constructor;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.util.IndexedStringMap;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
+import org.apache.logging.log4j.util3.PropertiesUtil;
+
+import java.lang.reflect.Constructor;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Factory for creating the StringMap instances used to initialize LogEvents' {@linkplain LogEvent#getContextData()

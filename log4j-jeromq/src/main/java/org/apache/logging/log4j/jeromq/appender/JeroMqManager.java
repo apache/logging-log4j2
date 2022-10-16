@@ -17,17 +17,17 @@
 
 package org.apache.logging.log4j.jeromq.appender;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util3.PropertiesUtil;
 import org.zeromq.ZMQ;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Manager for publishing messages via JeroMq.

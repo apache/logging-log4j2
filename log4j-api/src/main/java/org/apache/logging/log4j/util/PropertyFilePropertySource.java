@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.util;
 
+import org.apache.logging.log4j.util3.LoaderUtil;
+import org.apache.logging.log4j.util3.LowLevelLogUtil;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;

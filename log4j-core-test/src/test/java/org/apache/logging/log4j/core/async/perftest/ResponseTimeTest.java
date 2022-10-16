@@ -32,7 +32,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
+import static org.apache.logging.log4j.util3.Constants.isThreadLocalsEnabled;
 
 /**
  * Latency test showing both service time and response time.

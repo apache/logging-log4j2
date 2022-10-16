@@ -37,7 +37,7 @@ import org.apache.logging.log4j.core.net.UrlConnectionFactory;
 import org.apache.logging.log4j.core.test.net.ssl.TestConstants;
 import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
 import org.apache.logging.log4j.test.junit.StatusLoggerRule;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util3.PropertiesUtil;
 import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;

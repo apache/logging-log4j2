@@ -16,8 +16,8 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.apache.logging.log4j.util.Chars;
-import org.apache.logging.log4j.util.StringBuilders;
+import org.apache.logging.log4j.util3.Chars;
+import org.apache.logging.log4j.util3.StringBuilders;
 
 /**
  * Generates information about the current Thread. Used internally by ThreadDumpMessage.

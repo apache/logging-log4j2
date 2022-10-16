@@ -17,14 +17,14 @@
 
 package org.apache.log4j.xml;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Constants;
+import org.apache.logging.log4j.util3.Constants;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 /**
  * An {@link EntityResolver} specifically designed to return

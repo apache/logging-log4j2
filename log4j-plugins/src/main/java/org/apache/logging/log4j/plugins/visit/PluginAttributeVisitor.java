@@ -24,8 +24,8 @@ import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.Keys;
-import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util3.StringBuilders;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Parameter;

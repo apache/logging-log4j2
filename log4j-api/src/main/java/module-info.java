@@ -15,6 +15,10 @@
  * limitations under the license.
  */
 
+import org.apache.logging.log4j.util.PropertySource;
+import org.apache.logging.log4j.util3.EnvironmentPropertySource;
+import org.apache.logging.log4j.util3.SystemPropertiesPropertySource;
+
 /**
  * <p>Log4j public API for libraries and applications. This module is provided as a portable
  * {@linkplain org.apache.logging.log4j.Logger logging API} which supports independent
@@ -33,11 +37,22 @@ module org.apache.logging.log4j {
     exports org.apache.logging.log4j.spi;
     exports org.apache.logging.log4j.status;
     exports org.apache.logging.log4j.util;
+    exports org.apache.logging.log4j.util3 to
+            org.apache.logging.log4j.plugin.processor,
+            org.apache.logging.log4j.plugins,
+            org.apache.logging.log4j.core,
+            org.apache.logging.log4j.test,
+            org.apache.logging.log4j.core.test,
+            org.apache.logging.log4j.jpl,
+            org.apache.logging.log4j.jul,
+            org.apache.logging.log4j.tojul,
+            org.apache.logging.log4j.layout.template.json,
+            org.apache.logging.log4j.script;
 
     requires static org.osgi.framework;
     uses org.apache.logging.log4j.spi.Provider;
-    uses org.apache.logging.log4j.util.PropertySource;
+    uses PropertySource;
     uses org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory;
-    provides org.apache.logging.log4j.util.PropertySource with org.apache.logging.log4j.util.EnvironmentPropertySource,
-        org.apache.logging.log4j.util.SystemPropertiesPropertySource;
+
+    provides PropertySource with EnvironmentPropertySource, SystemPropertiesPropertySource;
 }

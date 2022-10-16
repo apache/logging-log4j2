@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.spi;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util3.LoaderUtil;
 
 import java.util.HashSet;
 import java.util.Map;

@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
 import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedFormat;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.util.PerformanceSensitive;
+import org.apache.logging.log4j.util3.PerformanceSensitive;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -33,7 +33,7 @@ import java.util.Objects;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
+import static org.apache.logging.log4j.util3.Constants.isThreadLocalsEnabled;
 
 /**
  * Converts and formats the event's date in a StringBuilder.

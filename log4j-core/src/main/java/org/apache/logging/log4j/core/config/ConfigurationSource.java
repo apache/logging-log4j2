@@ -24,8 +24,8 @@ import org.apache.logging.log4j.core.util.AuthorizationProvider;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Source;
-import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util3.LoaderUtil;
+import org.apache.logging.log4j.util3.PropertiesUtil;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.ByteArrayInputStream;

@@ -18,11 +18,11 @@ package org.apache.logging.log4j.spi;
 
 import org.apache.logging.log4j.util.LazyBoolean;
 import org.apache.logging.log4j.util.LazyInt;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
+import org.apache.logging.log4j.util3.PropertiesUtil;
 
 import java.util.Collections;
 import java.util.HashMap;

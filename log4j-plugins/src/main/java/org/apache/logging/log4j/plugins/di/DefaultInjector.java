@@ -39,10 +39,10 @@ import org.apache.logging.log4j.plugins.validation.ConstraintValidationException
 import org.apache.logging.log4j.plugins.validation.ConstraintValidator;
 import org.apache.logging.log4j.plugins.visit.NodeVisitor;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.EnglishEnums;
 import org.apache.logging.log4j.util.Lazy;
-import org.apache.logging.log4j.util.ServiceRegistry;
-import org.apache.logging.log4j.util.StringBuilders;
+import org.apache.logging.log4j.util3.EnglishEnums;
+import org.apache.logging.log4j.util3.ServiceRegistry;
+import org.apache.logging.log4j.util3.StringBuilders;
 
 import java.lang.annotation.Annotation;
 import java.lang.invoke.MethodHandles;
@@ -705,7 +705,7 @@ class DefaultInjector implements Injector {
         return false;
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private static void initializeConstraintValidator(
             final ConstraintValidator<? extends Annotation> validator, final Annotation annotation) {
         // runtime type checking ensures this raw type usage is correct

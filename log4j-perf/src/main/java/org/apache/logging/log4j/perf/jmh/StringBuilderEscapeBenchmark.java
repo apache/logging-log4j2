@@ -17,7 +17,7 @@
 
 package org.apache.logging.log4j.perf.jmh;
 
-import org.apache.logging.log4j.util.StringBuilders;
+import org.apache.logging.log4j.util3.StringBuilders;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Mode;

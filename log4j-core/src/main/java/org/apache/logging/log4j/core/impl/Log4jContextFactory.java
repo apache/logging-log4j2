@@ -34,7 +34,7 @@ import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util3.PropertiesUtil;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static org.apache.logging.log4j.util.Constants.isWebApp;
+import static org.apache.logging.log4j.util3.Constants.isWebApp;
 
 /**
  * Factory to locate a ContextSelector and then load a LoggerContext.

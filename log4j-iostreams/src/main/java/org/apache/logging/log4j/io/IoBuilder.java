@@ -16,6 +16,14 @@
  */
 package org.apache.logging.log4j.io;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LoggingException;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.spi.ExtendedLogger;
+import org.apache.logging.log4j.util3.StackLocatorUtil;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -25,14 +33,6 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.Objects;
-
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LoggingException;
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.spi.ExtendedLogger;
-import org.apache.logging.log4j.util.StackLocatorUtil;
 
 /**
  * Builder class to wrap {@link Logger Loggers} into Java IO compatible classes.

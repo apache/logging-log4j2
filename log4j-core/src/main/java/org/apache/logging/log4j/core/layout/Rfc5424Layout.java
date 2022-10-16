@@ -46,7 +46,7 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.util.StringBuilders;
+import org.apache.logging.log4j.util3.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
 
 import java.nio.charset.Charset;

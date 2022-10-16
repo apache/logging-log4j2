@@ -20,7 +20,7 @@ package org.apache.logging.log4j.core.impl;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.InjectorCallback;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util3.PropertiesUtil;
 
 public class DefaultCallback implements InjectorCallback {
     @Override

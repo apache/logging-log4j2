@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.message;
 
+import org.apache.logging.log4j.util3.StringBuilders;
+
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -25,8 +27,6 @@ import java.util.Date;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.logging.log4j.util.StringBuilders;
 
 /**
  * Supports parameter formatting as used in ParameterizedMessage and ReusableParameterizedMessage.

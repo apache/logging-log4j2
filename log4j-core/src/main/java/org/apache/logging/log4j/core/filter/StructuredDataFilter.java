@@ -30,8 +30,8 @@ import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
-import org.apache.logging.log4j.util.PerformanceSensitive;
-import org.apache.logging.log4j.util.StringBuilders;
+import org.apache.logging.log4j.util3.PerformanceSensitive;
+import org.apache.logging.log4j.util3.StringBuilders;
 
 import java.util.ArrayList;
 import java.util.HashMap;

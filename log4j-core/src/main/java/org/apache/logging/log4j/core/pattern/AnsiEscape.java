@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import org.apache.logging.log4j.core.util.Patterns;
+import org.apache.logging.log4j.util3.EnglishEnums;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
-import org.apache.logging.log4j.core.util.Patterns;
-import org.apache.logging.log4j.util.EnglishEnums;
 
 /**
  * Converts text into ANSI escape sequences.

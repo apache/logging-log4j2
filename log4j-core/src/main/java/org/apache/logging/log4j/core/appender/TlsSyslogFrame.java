@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.appender;
 
 import java.nio.charset.StandardCharsets;
 
-import org.apache.logging.log4j.util.Chars;
+import org.apache.logging.log4j.util3.Chars;
 
 /**
  * Wraps messages that are formatted according to RFC 5425.

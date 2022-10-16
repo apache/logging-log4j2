@@ -17,10 +17,6 @@
 
 package org.apache.logging.log4j.core.config.plugins.visit;
 
-import java.lang.ref.WeakReference;
-import java.lang.reflect.Field;
-import java.lang.reflect.Parameter;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
@@ -29,7 +25,11 @@ import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.plugins.visit.NodeVisitor;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.StringBuilders;
+import org.apache.logging.log4j.util3.StringBuilders;
+
+import java.lang.ref.WeakReference;
+import java.lang.reflect.Field;
+import java.lang.reflect.Parameter;
 
 /**
  * PluginVisitor implementation for {@link PluginConfiguration}.

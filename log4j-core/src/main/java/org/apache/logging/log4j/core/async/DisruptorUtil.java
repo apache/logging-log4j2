@@ -23,12 +23,12 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util3.PropertiesUtil;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
-import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
+import static org.apache.logging.log4j.util3.Constants.isThreadLocalsEnabled;
 
 /**
  * Utility methods for getting Disruptor related configuration.

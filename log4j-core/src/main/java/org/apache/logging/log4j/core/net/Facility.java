@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.net;
 
-import org.apache.logging.log4j.util.EnglishEnums;
+import org.apache.logging.log4j.util3.EnglishEnums;
 
 /**
  *  The facility codes used by the Syslog system.

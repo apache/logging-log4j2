@@ -17,7 +17,7 @@
 
 package org.apache.logging.log4j.core.pattern;
 
-import org.apache.logging.log4j.util.PerformanceSensitive;
+import org.apache.logging.log4j.util3.PerformanceSensitive;
 
 /**
  * Modifies the output of a pattern converter for a specified minimum and maximum width and alignment.

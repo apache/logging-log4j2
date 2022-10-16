@@ -37,8 +37,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
 import static java.lang.System.getProperty;
-import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
-import static org.apache.logging.log4j.util.Constants.isWebApp;
+import static org.apache.logging.log4j.util3.Constants.isThreadLocalsEnabled;
+import static org.apache.logging.log4j.util3.Constants.isWebApp;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

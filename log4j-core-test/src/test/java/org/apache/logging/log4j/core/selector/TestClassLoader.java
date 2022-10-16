@@ -25,7 +25,7 @@ import java.net.URLConnection;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.Throwables;
-import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util3.LoaderUtil;
 
 /**
  * ClassLoader that loads class in this package (or sub-package) by hand, otherwise delegating to the TCCL.

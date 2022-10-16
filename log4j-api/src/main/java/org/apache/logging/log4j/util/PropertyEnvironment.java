@@ -17,6 +17,9 @@
 
 package org.apache.logging.log4j.util;
 
+import org.apache.logging.log4j.util3.LowLevelLogUtil;
+import org.apache.logging.log4j.util3.PropertiesUtil;
+
 import java.nio.charset.Charset;
 import java.time.Duration;
 import java.util.ResourceBundle;
@@ -218,7 +221,7 @@ public interface PropertyEnvironment {
     default Duration getDurationProperty(String name, Duration defaultValue) {
         final String prop = getStringProperty(name);
         if (prop != null) {
-            return PropertiesUtil.TimeUnit.getDuration(prop);
+            return TimeUnit.getDuration(prop);
         }
         return defaultValue;
     }

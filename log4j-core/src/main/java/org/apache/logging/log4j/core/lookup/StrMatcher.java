@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.lookup;
 
 import java.util.Arrays;
 
-import org.apache.logging.log4j.util.Chars;
+import org.apache.logging.log4j.util3.Chars;
 import org.apache.logging.log4j.util.Strings;
 
 /**

@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.net.ssl;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Lazy;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util3.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyEnvironment;
 
 /**

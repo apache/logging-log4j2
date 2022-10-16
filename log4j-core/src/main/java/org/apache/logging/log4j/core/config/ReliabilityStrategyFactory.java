@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.config;
 
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util3.PropertiesUtil;
 
 /**
  * Factory for ReliabilityStrategies.

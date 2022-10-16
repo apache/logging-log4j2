@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.util;
 
+import org.apache.logging.log4j.util3.Chars;
+import org.apache.logging.log4j.util3.PropertiesUtil;
+
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Objects;

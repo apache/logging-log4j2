@@ -27,7 +27,7 @@ import java.util.Set;
 
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util3.LoaderUtil;
 
 /**
  * {@link ThrowableProxyHelper} provides utilities required to initialize a new {@link ThrowableProxy}

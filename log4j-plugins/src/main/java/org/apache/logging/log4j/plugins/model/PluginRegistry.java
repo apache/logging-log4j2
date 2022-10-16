@@ -26,8 +26,8 @@ import org.apache.logging.log4j.plugins.di.Keys;
 import org.apache.logging.log4j.plugins.util.ResolverUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Lazy;
-import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util3.LoaderUtil;
 
 import java.io.IOException;
 import java.net.URI;

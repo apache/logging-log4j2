@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.jul;
 
-import java.util.logging.Logger;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.spi.LoggerContext;
-import org.apache.logging.log4j.util.StackLocatorUtil;
+import org.apache.logging.log4j.util3.StackLocatorUtil;
+
+import java.util.logging.Logger;
 
 /**
  * Abstract Logger registry. Due to the optionality of using log4j-core, there are two registries available at runtime

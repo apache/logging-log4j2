@@ -64,6 +64,7 @@
               org.apache.logging.log4j,
               org.apache.logging.log4j.status,
               org.apache.logging.log4j.util,
+              org.apache.logging.log4j.util3,
               org.osgi.framework.*
             </Import-Package>
             <Bundle-Activator>org.apache.logging.log4j.plugins.osgi.Activator</Bundle-Activator>

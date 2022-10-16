@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.message;
 
 import org.apache.logging.log4j.util.Lazy;
-import org.apache.logging.log4j.util.ServiceRegistry;
+import org.apache.logging.log4j.util3.ServiceRegistry;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.Strings;
 

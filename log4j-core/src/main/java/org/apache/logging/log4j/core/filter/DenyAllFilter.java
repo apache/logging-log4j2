@@ -25,7 +25,7 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.util.PerformanceSensitive;
+import org.apache.logging.log4j.util3.PerformanceSensitive;
 
 /**
  * This filter causes all logging events to be dropped.

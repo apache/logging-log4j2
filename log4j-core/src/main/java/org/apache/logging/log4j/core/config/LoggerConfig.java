@@ -44,9 +44,9 @@ import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
-import org.apache.logging.log4j.util.PerformanceSensitive;
-import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util3.PerformanceSensitive;
+import org.apache.logging.log4j.util3.StackLocatorUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.plugins.convert;
 
-import org.apache.logging.log4j.util.EnglishEnums;
+import org.apache.logging.log4j.util3.EnglishEnums;
 
 /**
  * Converts a {@link String} into a {@link Enum}. Returns {@code null} for invalid enum names.

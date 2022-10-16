@@ -21,13 +21,6 @@
 
 package org.apache.log4j;
 
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Vector;
-import java.util.WeakHashMap;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.legacy.core.ContextUtil;
@@ -42,7 +35,14 @@ import org.apache.log4j.spi.ThrowableRendererSupport;
 import org.apache.logging.log4j.core.appender.AsyncAppender;
 import org.apache.logging.log4j.spi.AbstractLoggerAdapter;
 import org.apache.logging.log4j.spi.LoggerContext;
-import org.apache.logging.log4j.util.StackLocatorUtil;
+import org.apache.logging.log4j.util3.StackLocatorUtil;
+
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
+import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * This class is specialized in retrieving loggers by name and also maintaining the logger hierarchy.

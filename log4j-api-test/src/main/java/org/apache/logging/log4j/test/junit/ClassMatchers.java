@@ -17,7 +17,7 @@
 
 package org.apache.logging.log4j.test.junit;
 
-import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util3.LoaderUtil;
 import org.hamcrest.CustomTypeSafeMatcher;
 import org.hamcrest.Matcher;
 

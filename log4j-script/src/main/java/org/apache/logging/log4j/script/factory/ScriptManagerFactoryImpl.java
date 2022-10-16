@@ -20,11 +20,10 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.script.ScriptManager;
 import org.apache.logging.log4j.core.script.ScriptManagerFactory;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.script.ScriptManagerImpl;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util3.PropertiesUtil;
 
 /**
  * Creates a ScriptManager.

@@ -29,8 +29,6 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 /**
  * Plugin namespaces are mappings of plugin keys to plugin classes where plugin keys are lower-cased
@@ -141,11 +139,4 @@ public class PluginNamespace extends AbstractCollection<PluginType<?>> {
         plugins.forEach(biConsumer);
     }
 
-    public void forEachMatching(
-            final Predicate<? super PluginType<?>> predicate, final Consumer<? super PluginType<?>> consumer) {
-        plugins.values()
-                .stream()
-                .filter(predicate)
-                .forEach(consumer);
-    }
 }

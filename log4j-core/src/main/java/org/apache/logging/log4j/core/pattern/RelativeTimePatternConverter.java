@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import java.lang.management.ManagementFactory;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.util.PerformanceSensitive;
+import org.apache.logging.log4j.util3.PerformanceSensitive;
+
+import java.lang.management.ManagementFactory;
 
 /**
  * Returns the relative time in milliseconds since JVM Startup.

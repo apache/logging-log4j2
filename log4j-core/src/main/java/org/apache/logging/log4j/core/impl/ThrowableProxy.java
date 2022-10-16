@@ -27,7 +27,7 @@ import java.util.Set;
 
 import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
 import org.apache.logging.log4j.core.pattern.TextRenderer;
-import org.apache.logging.log4j.util.StackLocatorUtil;
+import org.apache.logging.log4j.util3.StackLocatorUtil;
 import org.apache.logging.log4j.util.Strings;
 
 /**

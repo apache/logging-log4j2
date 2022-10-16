@@ -18,8 +18,8 @@ package org.apache.logging.log4j.core.util;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util3.LoaderUtil;
+import org.apache.logging.log4j.util3.PropertiesUtil;
 
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -58,7 +58,7 @@ public final class Loader {
      * available.
      *
      * @return the TCCL.
-     * @see org.apache.logging.log4j.util.LoaderUtil#getThreadContextClassLoader()
+     * @see LoaderUtil#getThreadContextClassLoader()
      */
     public static ClassLoader getThreadContextClassLoader() {
         return LoaderUtil.getThreadContextClassLoader();
