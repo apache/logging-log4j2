@@ -37,6 +37,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
+import org.apache.logging.log4j.core.util.Integers;
 
 /**
  * Sends log events to an Apache Kafka topic.
@@ -46,14 +47,15 @@ public final class KafkaAppender extends AbstractAppender {
 
     /**
      * Builds KafkaAppender instances.
-     * 
-     * @param <B> The type to build
+     *
+     * @param <B>
+     *            The type to build
      */
     public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
             implements org.apache.logging.log4j.core.util.Builder<KafkaAppender> {
 
         @PluginAttribute("retryCount")
-        private String retryCount;
+        private int retryCount;
 
         @PluginAttribute("topic")
         private String topic;
@@ -64,6 +66,9 @@ public final class KafkaAppender extends AbstractAppender {
         @PluginAttribute(value = "syncSend", defaultBoolean = true)
         private boolean syncSend;
 
+        @PluginAttribute(value = "sendEventTimestamp", defaultBoolean = false)
+        private boolean sendEventTimestamp;
+
         @SuppressWarnings("resource")
         @Override
         public KafkaAppender build() {
@@ -73,7 +78,7 @@ public final class KafkaAppender extends AbstractAppender {
                 return null;
             }
             final KafkaManager kafkaManager = KafkaManager.getManager(getConfiguration().getLoggerContext(), getName(),
-                    topic, syncSend, getPropertyArray(), key);
+                    topic, syncSend, sendEventTimestamp, getPropertyArray(), key);
             return new KafkaAppender(getName(), layout, getFilter(), isIgnoreExceptions(), kafkaManager,
                     getPropertyArray(), getRetryCount());
         }
@@ -86,11 +91,14 @@ public final class KafkaAppender extends AbstractAppender {
 
             }
             return intRetryCount;
-
         }
 
         public String getTopic() {
             return topic;
+        }
+
+        public boolean isSendEventTimestamp() {
+            return sendEventTimestamp;
         }
 
         public boolean isSyncSend() {
@@ -99,6 +107,22 @@ public final class KafkaAppender extends AbstractAppender {
 
         public B setKey(final String key) {
             this.key = key;
+            return asBuilder();
+        }
+
+        @Deprecated
+        public B setRetryCount(final String retryCount) {
+          this.retryCount = Integers.parseInt(retryCount, 0);
+          return asBuilder();
+        }
+
+        public B setRetryCount(final int retryCount) {
+            this.retryCount = retryCount;
+            return asBuilder();
+        }
+
+        public B setSendEventTimestamp(boolean sendEventTimestamp) {
+            this.sendEventTimestamp = sendEventTimestamp;
             return asBuilder();
         }
 
@@ -128,7 +152,7 @@ public final class KafkaAppender extends AbstractAppender {
         }
         final KafkaManager kafkaManager = KafkaManager.getManager(configuration.getLoggerContext(), name, topic, true,
                 properties, key);
-        return new KafkaAppender(name, layout, filter, ignoreExceptions, kafkaManager, null, null);
+        return new KafkaAppender(name, layout, filter, ignoreExceptions, kafkaManager, null, 0);
     }
 
     /**
@@ -143,7 +167,7 @@ public final class KafkaAppender extends AbstractAppender {
 
     /**
      * Creates a builder for a KafkaAppender.
-     * 
+     *
      * @return a builder for a KafkaAppender.
      */
     @PluginBuilderFactory
@@ -151,13 +175,13 @@ public final class KafkaAppender extends AbstractAppender {
         return new Builder<B>().asBuilder();
     }
 
-    private final Integer retryCount;
+	private final Integer retryCount;
 
     private final KafkaManager manager;
 
     private KafkaAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
             final boolean ignoreExceptions, final KafkaManager manager, final Property[] properties,
-            final Integer retryCount) {
+            final int retryCount) {
         super(name, filter, layout, ignoreExceptions, properties);
         this.manager = Objects.requireNonNull(manager, "manager");
         this.retryCount = retryCount;
@@ -221,6 +245,6 @@ public final class KafkaAppender extends AbstractAppender {
         } else {
             data = layout.toByteArray(event);
         }
-        manager.send(data);
+        manager.send(data, event.getTimeMillis());
     }
 }
