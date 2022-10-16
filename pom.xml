@@ -296,7 +296,7 @@
     <disruptor.version>3.4.4</disruptor.version>
     <elasticsearch.version>7.17.6</elasticsearch.version>
     <embedded-ldap.version>0.8.1</embedded-ldap.version>
-    <embedded-mongo.version>2.2.0</embedded-mongo.version>
+    <embedded-mongo.version>3.5.0</embedded-mongo.version>
     <errorprone.version>2.7.1</errorprone.version>
     <felix.version>7.0.5</felix.version>
     <flume.version>1.10.1</flume.version>

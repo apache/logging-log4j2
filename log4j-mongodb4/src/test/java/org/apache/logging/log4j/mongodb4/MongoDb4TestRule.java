@@ -20,7 +20,7 @@ package org.apache.logging.log4j.mongodb4;
 import java.util.Objects;
 
 import org.apache.commons.lang3.NotImplementedException;
-import org.junit.AssumptionViolatedException;
+import org.apache.logging.log4j.core.util.Integers;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -30,17 +30,15 @@ import org.slf4j.LoggerFactory;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 
-import de.flapdoodle.embed.mongo.Command;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodProcess;
 import de.flapdoodle.embed.mongo.MongodStarter;
-import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
+import de.flapdoodle.embed.mongo.config.Defaults;
+import de.flapdoodle.embed.mongo.config.MongodConfig;
 import de.flapdoodle.embed.mongo.config.Net;
-import de.flapdoodle.embed.mongo.config.RuntimeConfigBuilder;
 import de.flapdoodle.embed.mongo.config.Timeout;
 import de.flapdoodle.embed.mongo.distribution.Version;
-import de.flapdoodle.embed.process.config.IRuntimeConfig;
-import de.flapdoodle.embed.process.config.io.ProcessOutput;
+import de.flapdoodle.embed.mongo.packageresolver.Command;
 import de.flapdoodle.embed.process.runtime.Network;
 
 /**
@@ -71,13 +69,13 @@ public class MongoDb4TestRule implements TestRule {
         switch (loggingTarget) {
         case NULL:
             final Logger logger = LoggerFactory.getLogger(MongoDb4TestRule.class.getName());
-            final IRuntimeConfig runtimeConfig = new RuntimeConfigBuilder()
             // @formatter:off
-                    .defaultsWithLogger(Command.MongoD, logger).processOutput(ProcessOutput.getDefaultInstanceSilent())
-                    .build();
+            return MongodStarter.getInstance(
+                    Defaults
+                        .runtimeConfigFor(Command.MongoD, logger)
+                        //.processOutput(ProcessOutput.builder().build())
+                        .build());
             // @formatter:on
-
-            return MongodStarter.getInstance(runtimeConfig);
         case CONSOLE:
             return MongodStarter.getDefaultInstance();
         default:
@@ -124,19 +122,14 @@ public class MongoDb4TestRule implements TestRule {
             public void evaluate() throws Throwable {
                 final String value = Objects.requireNonNull(System.getProperty(portSystemPropertyName),
                         "System property '" + portSystemPropertyName + "' is null");
-                final int port = Integer.parseInt(value);
-                try {
-                    mongodExecutable = starter.prepare(
-                    // @formatter:off
-                            new MongodConfigBuilder().version(Version.Main.PRODUCTION)
-                                    .timeout(new Timeout(BUILDER_TIMEOUT_MILLIS))
-                                    .net(new Net("localhost", port, Network.localhostIsIPv6())).build());
-                    // @formatter:on
-                } catch (final IllegalArgumentException e) {
-                    if (e.getMessage().contains("this version does not support 32Bit")) {
-                        throw new AssumptionViolatedException("Unsupported platform: " + e.getMessage());
-                    }
-                }
+                final int port = Integers.parseInt(value);
+                mongodExecutable = starter.prepare(
+                // @formatter:off
+                        MongodConfig.builder()
+                                .version(Version.Main.PRODUCTION)
+                                .timeout(new Timeout(BUILDER_TIMEOUT_MILLIS))
+                                .net(new Net("localhost", port, Network.localhostIsIPv6())).build());
+                // @formatter:on
                 mongodProcess = mongodExecutable.start();
                 mongoClient = MongoClients.create("mongodb://localhost:" + port);
                 try {
