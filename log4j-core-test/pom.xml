@@ -316,7 +316,7 @@
             </goals>
             <configuration>
               <sources>
-                <source>${project.basedir}/src/main/java9</source>
+                <source>${project.basedir}/src/main/module</source>
               </sources>
             </configuration>
           </execution>
@@ -390,7 +390,7 @@
             <phase>prepare-package</phase>
             <configuration>
               <compileSourceRoots>
-                <compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
+                <compileSourceRoot>${project.basedir}/src/main/module</compileSourceRoot>
               </compileSourceRoots>
             </configuration>
           </execution>

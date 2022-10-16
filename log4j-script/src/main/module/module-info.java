@@ -28,8 +28,6 @@ module org.apache.logging.log4j.script {
     exports org.apache.logging.log4j.script.config.arbiter;
     opens org.apache.logging.log4j.script.config.arbiter to
       org.apache.logging.log4j.core;
-    opens org.apache.logging.log4j.script.config.builder to
-      org.apache.logging.log4j.core;
     exports org.apache.logging.log4j.script.filter;
     exports org.apache.logging.log4j.script.layout;
     opens org.apache.logging.log4j.script.layout to

@@ -14,29 +14,20 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j;
+module org.apache.logging.log4j.test {
+    exports org.apache.logging.log4j.test;
+    exports org.apache.logging.log4j.test.junit;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
+    opens org.apache.logging.log4j.test.junit to org.junit.platform.commons;
 
-import org.apache.logging.log4j.test.junit.InitializesThreadContext;
-import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
-import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.SetSystemProperty;
-
-/**
- * Tests {@link ThreadContext}.
- */
-public class NoopThreadContextTest {
-
-    @Test
-    @SetSystemProperty(key = "log4j2.disableThreadContext", value = "true")
-    @SetSystemProperty(key = "log4j2.disableThreadContextMap", value = "true")
-    @InitializesThreadContext
-    @UsingThreadContextMap
-    public void testNoop() {
-        ThreadContext.put("Test", "Test");
-        final String value = ThreadContext.get("Test");
-        assertNull(value, "value was saved");
-    }
-
+    requires transitive org.apache.logging.log4j;
+    requires static org.apache.commons.lang3;
+    requires static org.assertj.core;
+    requires static org.hamcrest;
+    requires static org.junit.jupiter.api;
+    requires static org.junit.jupiter.params;
+    requires static org.junit.platform.commons;
+    requires static org.junit.platform.launcher;
+    requires static org.junitpioneer;
+    requires static junit;
 }

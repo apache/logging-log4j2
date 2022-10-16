@@ -34,16 +34,12 @@ module org.apache.logging.log4j.core.test {
     requires java.naming;
     requires org.apache.logging.log4j;
     requires org.apache.logging.log4j.test;
-    requires org.apache.logging.log4j.plugins;
+    requires transitive org.apache.logging.log4j.plugins;
     requires org.apache.logging.log4j.plugins.test;
-    requires org.apache.logging.log4j.core;
-    requires com.fasterxml.jackson.core;
-    requires com.fasterxml.jackson.databind;
-    requires junit;
-    requires org.junit.jupiter.api;
-    requires org.junit.jupiter.engine;
-    requires org.junit.jupiter.params;
-    requires org.junit.platform.commons;
-    requires org.junit.platform.engine;
+    requires transitive org.apache.logging.log4j.core;
+    requires static org.hamcrest;
+    requires static junit;
+    requires static org.junit.jupiter.api;
+    requires static org.junit.platform.commons;
     provides PluginService with Log4jPlugins;
 }
