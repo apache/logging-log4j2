@@ -19,10 +19,9 @@ package org.apache.logging.log4j.core.time.internal;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.plugins.Factory;
-import org.apache.logging.log4j.util.LazyValue;
+import org.apache.logging.log4j.util.Lazy;
 
 import java.util.concurrent.locks.LockSupport;
-import java.util.function.Supplier;
 
 /**
  * Implementation of the {@code Clock} interface that tracks the time in a
@@ -34,7 +33,7 @@ import java.util.function.Supplier;
  */
 public final class CachedClock implements Clock {
     private static final int UPDATE_THRESHOLD = 1000;
-    private static final Supplier<CachedClock> INSTANCE = new LazyValue<>(CachedClock::new);
+    private static final Lazy<CachedClock> INSTANCE = Lazy.lazy(CachedClock::new);
     private volatile long millis = System.currentTimeMillis();
     private short count = 0;
 
@@ -54,7 +53,7 @@ public final class CachedClock implements Clock {
     @Factory
     public static CachedClock instance() {
         // LOG4J2-819: use lazy initialization of threads
-        return INSTANCE.get();
+        return INSTANCE.value();
     }
 
     /**

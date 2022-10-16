@@ -45,7 +45,7 @@ import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
-import org.apache.logging.log4j.util.LazyValue;
+import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
@@ -89,7 +89,7 @@ public class JsonLayoutTest {
     @BeforeAll
     public static void setupClass() {
         final LoggerContext ctx = LoggerContext.getContext();
-        ctx.getInjector().registerBinding(ConfigurationFactory.KEY, new LazyValue<>(BasicConfigurationFactory::new));
+        ctx.getInjector().registerBinding(ConfigurationFactory.KEY, Lazy.lazy(BasicConfigurationFactory::new)::value);
         ctx.reconfigure();
     }
 

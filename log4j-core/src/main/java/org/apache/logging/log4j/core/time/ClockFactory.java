@@ -21,7 +21,7 @@ import org.apache.logging.log4j.core.time.internal.CoarseCachedClock;
 import org.apache.logging.log4j.core.time.internal.SystemClock;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
-import org.apache.logging.log4j.util.LazyValue;
+import org.apache.logging.log4j.util.Lazy;
 
 /**
  * Factory for {@code Clock} objects.
@@ -35,7 +35,8 @@ public final class ClockFactory {
      * implementation class. The value of this property is {@value}.
      */
     public static final String PROPERTY_NAME = "log4j.Clock";
-    private static final LazyValue<Clock> FALLBACK = new LazyValue<>(() -> {
+    private static final Lazy<Clock> FALLBACK = Lazy.lazy(() -> {
+        // TODO(ms): split out clock bindings for smaller fallback init
         final Injector injector = DI.createInjector();
         injector.init();
         return injector.getInstance(Clock.KEY);
@@ -65,7 +66,7 @@ public final class ClockFactory {
      */
     @Deprecated
     public static Clock getClock() {
-        return FALLBACK.get();
+        return FALLBACK.value();
     }
 
 }

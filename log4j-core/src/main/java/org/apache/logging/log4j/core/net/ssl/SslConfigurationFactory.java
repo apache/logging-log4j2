@@ -18,10 +18,8 @@ package org.apache.logging.log4j.core.net.ssl;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.LazyValue;
+import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.PropertiesUtil;
-
-import java.util.function.Supplier;
 
 /**
  * Creates an SSL configuration from Log4j properties.
@@ -44,7 +42,7 @@ public class SslConfigurationFactory {
     private static final String keyStoreKeyManagerFactoryAlgorithm = "log4j2.keyStore.keyManagerFactoryAlgorithm";
     private static final String verifyHostName = "log4j2.ssl.verifyHostName";
 
-    private static final Supplier<SslConfiguration> SSL_CONFIGURATION = LazyValue.from(() -> {
+    private static final Lazy<SslConfiguration> SSL_CONFIGURATION = Lazy.lazy(() -> {
         final PropertiesUtil props = PropertiesUtil.getProperties();
         return createSslConfiguration(props);
     });
@@ -93,6 +91,6 @@ public class SslConfigurationFactory {
     }
 
     public static SslConfiguration getSslConfiguration() {
-        return SSL_CONFIGURATION.get();
+        return SSL_CONFIGURATION.value();
     }
 }

@@ -35,7 +35,7 @@ import org.apache.logging.log4j.jackson.yaml.Log4jYamlObjectMapper;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
-import org.apache.logging.log4j.util.LazyValue;
+import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -63,7 +63,7 @@ public class YamlLayoutTest {
     @BeforeAll
     public static void setupClass() {
         final LoggerContext ctx = LoggerContext.getContext();
-        ctx.getInjector().registerBinding(ConfigurationFactory.KEY, new LazyValue<>(BasicConfigurationFactory::new));
+        ctx.getInjector().registerBinding(ConfigurationFactory.KEY, Lazy.lazy(BasicConfigurationFactory::new));
         ctx.reconfigure();
     }
 

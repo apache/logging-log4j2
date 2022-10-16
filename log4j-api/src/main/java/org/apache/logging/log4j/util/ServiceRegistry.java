@@ -24,9 +24,10 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static org.apache.logging.log4j.util.LazyUtil.cast;
 
 /**
  * Registry for service instances loaded from {@link ServiceLoader}. This abstracts the differences between using a flat
@@ -35,18 +36,13 @@ import java.util.stream.Stream;
  * @since 3.0.0
  */
 public class ServiceRegistry {
-    private static final Supplier<ServiceRegistry> INSTANCE = new LazyValue<>(ServiceRegistry::new);
+    private static final Lazy<ServiceRegistry> INSTANCE = Lazy.relaxed(ServiceRegistry::new);
 
     /**
      * Returns the singleton ServiceRegistry instance.
      */
     public static ServiceRegistry getInstance() {
         return INSTANCE.get();
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T> T cast(final Object o) {
-        return (T) o;
     }
 
     private final Map<Class<?>, List<?>> mainServices = new ConcurrentHashMap<>();
@@ -61,7 +57,7 @@ public class ServiceRegistry {
      * load services.
      *
      * @param serviceType         service class
-     * @param loaderCallerContext function located in same module as caller context
+     * @param lookup              MethodHandle lookup created in same module as caller context
      *                            to use for loading services
      * @param validator           if non-null, used to validate service instances,
      *                            removing invalid instances from the returned list

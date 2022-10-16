@@ -23,7 +23,7 @@ import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.LazyValue;
+import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 
 import java.lang.ref.WeakReference;
@@ -53,7 +53,7 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
 
     protected static final StatusLogger LOGGER = StatusLogger.getLogger();
 
-    protected final LazyValue<LoggerContext> defaultContext = LazyValue.from(() -> createContext(defaultContextName(), null));
+    protected final Lazy<LoggerContext> defaultContext = Lazy.lazy(() -> createContext(defaultContextName(), null));
     protected final Map<String, AtomicReference<WeakReference<LoggerContext>>> contextMap = new ConcurrentHashMap<>();
 
     protected final Injector injector;
@@ -291,7 +291,7 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
     }
 
     protected LoggerContext getDefault() {
-        return defaultContext.get();
+        return defaultContext.value();
     }
 
     protected String defaultContextName() {

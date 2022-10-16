@@ -25,7 +25,7 @@ import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.plugins.di.Keys;
 import org.apache.logging.log4j.plugins.util.ResolverUtil;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.LazyValue;
+import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.Strings;
 
@@ -61,7 +61,7 @@ public class PluginRegistry {
     /**
      * Contains plugins found from {@link PluginService} services and legacy Log4j2Plugins.dat cache files in the main CLASSPATH.
      */
-    private final LazyValue<Namespaces> mainPluginNamespaces = LazyValue.from(() -> {
+    private final Lazy<Namespaces> mainPluginNamespaces = Lazy.lazy(() -> {
         final Namespaces namespaces = decodeCacheFiles(LoaderUtil.getClassLoader());
         Throwable throwable = null;
         ClassLoader errorClassLoader = null;
@@ -253,7 +253,7 @@ public class PluginRegistry {
         final var pluginNamespace = new PluginNamespace(namespace);
 
         // First, iterate the PluginService services and legacy Log4j2Plugin.dat files found in the main CLASSPATH
-        final Namespaces builtInPlugins = mainPluginNamespaces.get();
+        final Namespaces builtInPlugins = mainPluginNamespaces.value();
         if (builtInPlugins != null) {
             pluginNamespace.mergeAll(builtInPlugins.get(namespace));
         }

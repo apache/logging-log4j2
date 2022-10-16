@@ -17,9 +17,7 @@
 package org.apache.logging.log4j.plugins.model;
 
 import org.apache.logging.log4j.plugins.util.TypeUtil;
-import org.apache.logging.log4j.util.LazyValue;
-
-import java.util.function.Supplier;
+import org.apache.logging.log4j.util.Lazy;
 
 /**
  * Plugin Descriptor. This is a memento object for Plugin annotations paired to their annotated classes.
@@ -30,7 +28,7 @@ import java.util.function.Supplier;
 public class PluginType<T> {
 
     private final PluginEntry pluginEntry;
-    private final Supplier<Class<T>> pluginClass;
+    private final Lazy<Class<T>> pluginClass;
 
     /**
      * Constructor.
@@ -41,7 +39,7 @@ public class PluginType<T> {
     public PluginType(
             final PluginEntry pluginEntry, final Class<T> pluginClass) {
         this.pluginEntry = pluginEntry;
-        this.pluginClass = () -> pluginClass;
+        this.pluginClass = Lazy.value(pluginClass);
     }
 
     /**
@@ -51,7 +49,7 @@ public class PluginType<T> {
      */
     public PluginType(final PluginEntry pluginEntry, final ClassLoader classLoader) {
         this.pluginEntry = pluginEntry;
-        this.pluginClass = LazyValue.from(() -> {
+        this.pluginClass = Lazy.lazy(() -> {
             try {
                 return TypeUtil.cast(classLoader.loadClass(pluginEntry.getClassName()));
             } catch (final ClassNotFoundException e) {
@@ -66,7 +64,7 @@ public class PluginType<T> {
     }
 
     public Class<T> getPluginClass() {
-        return pluginClass.get();
+        return pluginClass.value();
     }
 
     public String getElementType() {
@@ -105,7 +103,7 @@ public class PluginType<T> {
 
     @Override
     public String toString() {
-        return "PluginType [pluginClass=" + pluginClass.get() +
+        return "PluginType [pluginClass=" + pluginClass.toString() +
                 ", key=" + pluginEntry.getKey() +
                 ", elementType=" + pluginEntry.getElementType() +
                 ", isObjectPrintable=" + pluginEntry.isPrintable() +

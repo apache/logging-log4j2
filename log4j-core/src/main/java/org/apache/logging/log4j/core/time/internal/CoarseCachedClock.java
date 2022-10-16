@@ -18,17 +18,16 @@ package org.apache.logging.log4j.core.time.internal;
 
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.util.Log4jThread;
-import org.apache.logging.log4j.util.LazyValue;
+import org.apache.logging.log4j.util.Lazy;
 
 import java.util.concurrent.locks.LockSupport;
-import java.util.function.Supplier;
 
 /**
  * This Clock implementation is similar to CachedClock. It is slightly faster at
  * the cost of some accuracy.
  */
 public final class CoarseCachedClock implements Clock {
-    private static final Supplier<CoarseCachedClock> INSTANCE = new LazyValue<>(CoarseCachedClock::new);
+    private static final Lazy<CoarseCachedClock> INSTANCE = Lazy.lazy(CoarseCachedClock::new);
     // ignore IDE complaints; volatile long is fine
     private volatile long millis = System.currentTimeMillis();
 
@@ -55,7 +54,7 @@ public final class CoarseCachedClock implements Clock {
      */
     public static CoarseCachedClock instance() {
         // LOG4J2-819: use lazy initialization of threads
-        return INSTANCE.get();
+        return INSTANCE.value();
     }
 
     /**

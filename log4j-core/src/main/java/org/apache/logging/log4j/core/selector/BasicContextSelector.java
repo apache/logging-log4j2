@@ -16,10 +16,6 @@
  */
 package org.apache.logging.log4j.core.selector;
 
-import java.net.URI;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
@@ -28,7 +24,11 @@ import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.LazyValue;
+import org.apache.logging.log4j.util.Lazy;
+
+import java.net.URI;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Returns either this Thread's context or the default LoggerContext.
@@ -38,7 +38,7 @@ public class BasicContextSelector implements ContextSelector, LoggerContextShutd
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    protected final LazyValue<LoggerContext> context = LazyValue.from(this::createContext);
+    protected final Lazy<LoggerContext> context = Lazy.lazy(this::createContext);
     protected final Injector injector;
 
     @Inject
@@ -108,7 +108,7 @@ public class BasicContextSelector implements ContextSelector, LoggerContextShutd
 
     @Override
     public List<LoggerContext> getLoggerContexts() {
-        return List.of(context.get());
+        return List.of(context.value());
     }
 
     protected LoggerContext createContext() {

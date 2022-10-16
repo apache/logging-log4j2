@@ -40,7 +40,7 @@ import org.apache.logging.log4j.plugins.validation.ConstraintValidator;
 import org.apache.logging.log4j.plugins.visit.NodeVisitor;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.EnglishEnums;
-import org.apache.logging.log4j.util.LazyValue;
+import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.ServiceRegistry;
 import org.apache.logging.log4j.util.StringBuilders;
 
@@ -305,7 +305,7 @@ class DefaultInjector implements Injector {
     }
 
     private Supplier<PluginNamespace> createPluginNamespaceFactory(final Key<PluginNamespace> key) {
-        return LazyValue.from(() -> getInstance(PluginRegistry.class).getNamespace(key.getNamespace(), getPluginPackages()));
+        return Lazy.lazy(() -> getInstance(PluginRegistry.class).getNamespace(key.getNamespace(), getPluginPackages()))::value;
     }
 
     private List<String> getPluginPackages() {
@@ -829,7 +829,7 @@ class DefaultInjector implements Injector {
 
         @Override
         public <T> Supplier<T> get(final Key<T> key, final Supplier<T> unscoped) {
-            return TypeUtil.cast(singletonProviders.computeIfAbsent(key, ignored -> new LazyValue<>(unscoped)));
+            return TypeUtil.cast(singletonProviders.computeIfAbsent(key, ignored -> Lazy.lazy(unscoped)::value));
         }
 
         @Override

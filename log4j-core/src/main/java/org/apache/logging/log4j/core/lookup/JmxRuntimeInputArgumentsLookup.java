@@ -19,12 +19,11 @@ package org.apache.logging.log4j.core.lookup;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.util.LazyValue;
+import org.apache.logging.log4j.util.Lazy;
 
 import java.lang.management.ManagementFactory;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 
 /**
  * Maps JVM input arguments (but not main arguments) using JMX to acquire JVM arguments.
@@ -36,14 +35,14 @@ import java.util.function.Supplier;
 @Plugin("jvmrunargs")
 public class JmxRuntimeInputArgumentsLookup extends MapLookup {
 
-    private static final Supplier<JmxRuntimeInputArgumentsLookup> INSTANCE = LazyValue.from(() -> {
+    private static final Lazy<JmxRuntimeInputArgumentsLookup> INSTANCE = Lazy.lazy(() -> {
         final List<String> argsList = ManagementFactory.getRuntimeMXBean().getInputArguments();
         return new JmxRuntimeInputArgumentsLookup(MapLookup.toMap(argsList));
     });
 
     @PluginFactory
     public static JmxRuntimeInputArgumentsLookup getInstance() {
-        return INSTANCE.get();
+        return INSTANCE.value();
     }
 
     /**

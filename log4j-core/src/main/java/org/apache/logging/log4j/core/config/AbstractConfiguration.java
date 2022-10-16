@@ -60,7 +60,7 @@ import org.apache.logging.log4j.plugins.di.Keys;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.plugins.model.PluginType;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
-import org.apache.logging.log4j.util.LazyValue;
+import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ServiceRegistry;
@@ -308,7 +308,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         if (configSource.getLastModified() > 0) {
             final Source cfgSource = new Source(configSource);
             final Key<WatcherFactory> key = Key.forClass(WatcherFactory.class);
-            injector.registerBindingIfAbsent(key, LazyValue.from(() ->
+            injector.registerBindingIfAbsent(key, Lazy.lazy(() ->
                     new WatcherFactory(injector.getInstance(Watcher.PLUGIN_CATEGORY_KEY))));
             final Watcher watcher = injector.getInstance(key)
                     .newWatcher(cfgSource, this, reconfigurable, listeners, configSource.getLastModified());

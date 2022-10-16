@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.layout.template.json.util;
 
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
-import org.apache.logging.log4j.util.LazyValue;
+import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.StringMap;
 
@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
-import java.util.function.Supplier;
 
 /**
  * A simple JSON writer with support for common Java data types.
@@ -68,7 +67,7 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
      * character to use after backslash; and negative values, that generic
      * (backslash - u) escaping is to be used.
      */
-    private static final Supplier<int[]> ESC_CODES = LazyValue.from(() -> {
+    private static final Lazy<int[]> ESC_CODES = Lazy.relaxed(() -> {
         final int[] table = new int[128];
         // Control chars need generic escape sequence
         for (int i = 0; i < 32; ++i) {
@@ -600,7 +599,7 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
                         : 0;
         final int limit = offset + length + surrogateCorrection;
         int i = offset;
-        final int[] escCodes = ESC_CODES.get();
+        final int[] escCodes = ESC_CODES.value();
         outer:
         while (i < limit) {
             while (true) {
@@ -678,7 +677,7 @@ public final class JsonWriter implements AutoCloseable, Cloneable {
                         : 0;
         final int limit = offset + length + surrogateCorrection;
         int i = offset;
-        final int[] escCodes = ESC_CODES.get();
+        final int[] escCodes = ESC_CODES.value();
         outer:
         while (i < limit) {
             while (true) {

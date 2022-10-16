@@ -16,9 +16,7 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import org.apache.logging.log4j.util.LazyValue;
-
-import java.util.function.Supplier;
+import org.apache.logging.log4j.util.Lazy;
 
 /**
  * This class is borrowed from <a href="https://github.com/FasterXML/jackson-core">Jackson</a>.
@@ -33,7 +31,7 @@ public final class JsonUtils {
      * to use after backslash; and negative values that generic (backslash - u)
      * escaping is to be used.
      */
-    private static final Supplier<int[]> ESC_CODES = LazyValue.from(() -> {
+    private static final Lazy<int[]> ESC_CODES = Lazy.relaxed(() -> {
         final int[] table = new int[128];
         // Control chars need generic escape sequence
         for (int i = 0; i < 32; ++i) {
@@ -77,7 +75,7 @@ public final class JsonUtils {
      */
     public static void quoteAsString(final CharSequence input, final StringBuilder output) {
         final char[] qbuf = getQBuf();
-        final int[] escCodes = ESC_CODES.get();
+        final int[] escCodes = ESC_CODES.value();
         final int escCodeCount = escCodes.length;
         int inPtr = 0;
         final int inputLen = input.length();

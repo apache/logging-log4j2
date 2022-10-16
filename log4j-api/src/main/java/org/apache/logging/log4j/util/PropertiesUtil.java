@@ -19,7 +19,6 @@ package org.apache.logging.log4j.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodHandles.Lookup;
 import java.nio.charset.Charset;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -33,7 +32,6 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.ServiceLoader;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 
@@ -54,8 +52,8 @@ public final class PropertiesUtil {
 
     private static final String LOG4J_PROPERTIES_FILE_NAME = "log4j2.component.properties";
     private static final String LOG4J_SYSTEM_PROPERTIES_FILE_NAME = "log4j2.system.properties";
-    private static final LazyValue<PropertiesUtil> COMPONENT_PROPERTIES =
-            LazyValue.from(() -> new PropertiesUtil(LOG4J_PROPERTIES_FILE_NAME));
+    private static final Lazy<PropertiesUtil> COMPONENT_PROPERTIES =
+            Lazy.lazy(() -> new PropertiesUtil(LOG4J_PROPERTIES_FILE_NAME));
 
     private final Environment environment;
 
@@ -121,7 +119,7 @@ public final class PropertiesUtil {
      * @return the main Log4j PropertiesUtil instance.
      */
     public static PropertiesUtil getProperties() {
-        return COMPONENT_PROPERTIES.get();
+        return COMPONENT_PROPERTIES.value();
     }
 
     /**

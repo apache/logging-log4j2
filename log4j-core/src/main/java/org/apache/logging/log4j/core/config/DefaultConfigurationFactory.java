@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.di.Injector;
-import org.apache.logging.log4j.util.LazyValue;
+import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
@@ -36,7 +36,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 /**
  * Default factory for using a plugin selected based on the configuration source.
@@ -46,11 +45,11 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
     private static final String ALL_TYPES = "*";
     private static final String OVERRIDE_PARAM = "override";
 
-    private final Supplier<List<ConfigurationFactory>> configurationFactories;
+    private final Lazy<List<ConfigurationFactory>> configurationFactories;
 
     @Inject
     public DefaultConfigurationFactory(final Injector injector) {
-        configurationFactories = new LazyValue<>(() -> loadConfigurationFactories(injector));
+        configurationFactories = Lazy.lazy(() -> loadConfigurationFactories(injector));
     }
 
     /**
@@ -98,7 +97,7 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
                     return getConfiguration(LOG4J1_VERSION, loggerContext, log4j1ConfigStr);
                 }
             }
-            for (final ConfigurationFactory factory : configurationFactories.get()) {
+            for (final ConfigurationFactory factory : configurationFactories.value()) {
                 final String[] types = factory.getSupportedTypes();
                 if (types != null) {
                     for (final String type : types) {
@@ -128,7 +127,7 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
                 return new CompositeConfiguration(configs);
             }
             final String configLocationStr = configLocation.toString();
-            for (final ConfigurationFactory factory : configurationFactories.get()) {
+            for (final ConfigurationFactory factory : configurationFactories.value()) {
                 final String[] types = factory.getSupportedTypes();
                 if (types != null) {
                     for (final String type : types) {
@@ -180,7 +179,7 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
             LOGGER.catching(Level.DEBUG, ex);
         }
         if (source != null) {
-            for (final ConfigurationFactory factory : configurationFactories.get()) {
+            for (final ConfigurationFactory factory : configurationFactories.value()) {
                 if (requiredVersion != null && !factory.getVersion().equals(requiredVersion)) {
                     continue;
                 }
@@ -203,7 +202,7 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
     private Configuration getConfiguration(final LoggerContext loggerContext, final boolean isTest, final String name) {
         final boolean named = Strings.isNotEmpty(name);
         final ClassLoader loader = LoaderUtil.getThreadContextClassLoader();
-        for (final ConfigurationFactory factory : configurationFactories.get()) {
+        for (final ConfigurationFactory factory : configurationFactories.value()) {
             String configName;
             final String prefix = isTest ? factory.getTestPrefix() : factory.getDefaultPrefix();
             final String[] types = factory.getSupportedTypes();
@@ -239,7 +238,7 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
     public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
         if (source != null) {
             final String config = source.getLocation();
-            for (final ConfigurationFactory factory : configurationFactories.get()) {
+            for (final ConfigurationFactory factory : configurationFactories.value()) {
                 final String[] types = factory.getSupportedTypes();
                 if (types != null) {
                     for (final String type : types) {

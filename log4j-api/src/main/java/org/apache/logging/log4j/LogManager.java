@@ -25,7 +25,7 @@ import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.spi.Terminable;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.LazyValue;
+import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ProviderUtil;
@@ -68,7 +68,7 @@ public class LogManager {
      * Scans the classpath to find all logging implementation. Currently, only one will be used but this could be
      * extended to allow multiple implementations to be used.
      */
-    private static final LazyValue<LoggerContextFactory> PROVIDER = LazyValue.from(() -> {
+    private static final Lazy<LoggerContextFactory> PROVIDER = Lazy.lazy(() -> {
         // Shortcut binding to force a specific logging implementation.
         final PropertiesUtil managerProps = PropertiesUtil.getProperties();
         final String factoryClassName = managerProps.getStringProperty(FACTORY_PROPERTY_NAME);
