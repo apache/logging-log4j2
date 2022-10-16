@@ -22,20 +22,28 @@ import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
+import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.platform.commons.support.AnnotationSupport;
 
-public class ContextSelectorCallback implements BeforeAllCallback {
+public class ContextSelectorCallback implements BeforeAllCallback, AfterAllCallback {
     @Override
     public void beforeAll(final ExtensionContext context) throws Exception {
-        final Class<?> testClass = context.getRequiredTestClass();
-        final ContextSelectorType source = testClass.getAnnotation(ContextSelectorType.class);
-        if (source != null) {
-            final Injector injector = DI.createInjector();
-            injector.registerBinding(ContextSelector.KEY, injector.getFactory(source.value()));
-            injector.init();
-            final Log4jContextFactory factory = injector.getInstance(Log4jContextFactory.class);
-            LogManager.setFactory(factory);
-        }
+        AnnotationSupport.findAnnotation(context.getTestClass(), ContextSelectorType.class)
+                .map(ContextSelectorType::value)
+                .ifPresent(contextSelectorClass -> {
+                    final Injector injector = DI.createInjector();
+                    injector.registerBinding(ContextSelector.KEY, injector.getFactory(contextSelectorClass));
+                    injector.init();
+                    final Log4jContextFactory factory = injector.getInstance(Log4jContextFactory.class);
+                    LogManager.setFactory(factory);
+                });
+    }
+
+    @Override
+    public void afterAll(final ExtensionContext context) throws Exception {
+        AnnotationSupport.findAnnotation(context.getTestClass(), ContextSelectorType.class)
+                .ifPresent(ignored -> LogManager.setFactory(null));
     }
 }
