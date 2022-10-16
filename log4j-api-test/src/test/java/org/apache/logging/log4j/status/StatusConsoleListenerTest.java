@@ -28,42 +28,36 @@ import org.mockito.Mockito;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.lang.reflect.Field;
 
 public class StatusConsoleListenerTest {
 
     public static final MessageFactory MESSAGE_FACTORY = ParameterizedNoReferenceMessageFactory.INSTANCE;
 
     @Test
-    void SimpleLogger_should_be_used() throws Exception {
+    void SimpleLogger_should_be_used() {
 
-        // Create the listener.
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        final String encoding = "UTF-8";
-        final PrintStream printStream = new PrintStream(outputStream, false, encoding);
-        final StatusConsoleListener listener = new StatusConsoleListener(Level.WARN, printStream);
-
-        // Verify the internal `SimpleLogger`.
-        Assertions
-                .assertThat(listener)
-                .extracting("logger")
-                .isInstanceOf(SimpleLogger.class);
-
-        // Create a mock `SimpleLogger`.
+        // Create a mock `SimpleLoggerFactory`.
         final SimpleLogger logger = Mockito.mock(SimpleLogger.class);
         final LogBuilder logBuilder = Mockito.mock(LogBuilder.class);
         Mockito.when(logger.atLevel(Mockito.any())).thenReturn(logBuilder);
         Mockito.when(logBuilder.withThrowable(Mockito.any())).thenReturn(logBuilder);
         Mockito.when(logBuilder.withLocation(Mockito.any())).thenReturn(logBuilder);
+        final SimpleLoggerFactory loggerFactory = Mockito.mock(SimpleLoggerFactory.class);
+        Mockito
+                .when(loggerFactory.createSimpleLogger(
+                        Mockito.any(),
+                        Mockito.any(),
+                        Mockito.any(),
+                        Mockito.any()))
+                .thenReturn(logger);
 
-        // Replace the internal `SimpleLogger` with the mock one.
-        final Field loggerField = listener.getClass().getDeclaredField("logger");
-        loggerField.setAccessible(true);
-        loggerField.set(listener, logger);
+        // Create the listener.
+        final PrintStream stream = Mockito.mock(PrintStream.class);
+        final Level level = Mockito.mock(Level.class);
+        final StatusConsoleListener listener = new StatusConsoleListener(level, stream, loggerFactory);
 
         // Log a message.
         final StackTraceElement caller = Mockito.mock(StackTraceElement.class);
-        final Level level = Mockito.mock(Level.class);
         final Message message = Mockito.mock(Message.class);
         final Throwable throwable = Mockito.mock(Throwable.class);
         final StatusData statusData = new StatusData(
@@ -75,6 +69,13 @@ public class StatusConsoleListenerTest {
         listener.log(statusData);
 
         // Verify the call.
+        Mockito
+                .verify(loggerFactory)
+                .createSimpleLogger(
+                        Mockito.eq("StatusConsoleListener"),
+                        Mockito.same(level),
+                        Mockito.any(),
+                        Mockito.same(stream));
         Mockito.verify(logger).atLevel(Mockito.same(level));
         Mockito.verify(logBuilder).withThrowable(Mockito.same(throwable));
         Mockito.verify(logBuilder).withLocation(Mockito.same(caller));
