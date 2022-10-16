@@ -27,17 +27,22 @@
       <Property name="bootstrap.servers">localhost:9092</Property>
       <Property name="syncSend">false</Property>
     </Kafka>
-    <Kafka name="KafkaAppenderWithKey" topic="kafka-topic" key="key">
+    <Kafka name="KafkaAppenderWithKey" topic="kafka-topic" key="key" sendEventTimestamp="true">
       <PatternLayout pattern="%m"/>
       <Property name="timeout.ms">1000</Property>
       <Property name="bootstrap.servers">localhost:9092</Property>
     </Kafka>
-    <Kafka name="KafkaAppenderWithKeyLookup" topic="kafka-topic" key="$${date:dd-MM-yyyy}">
+    <Kafka name="KafkaAppenderWithKeyLookup" topic="kafka-topic" key="$${date:dd-MM-yyyy}" sendEventTimestamp="true">
       <PatternLayout pattern="%m"/>
       <Property name="timeout.ms">1000</Property>
       <Property name="bootstrap.servers">localhost:9092</Property>
     </Kafka>
-    <Kafka name="KafkaAppenderNoEventTimestamp" topic="kafka-topic" key="key" eventTimestamp="false">
+    <Kafka name="KafkaAppenderWithRetryCount" topic="kafka-topic" retryCount="3" >
+      <PatternLayout pattern="%m"/>
+      <Property name="timeout.ms">1000</Property>
+      <Property name="bootstrap.servers">fakeLocalhost:9092</Property>
+    </Kafka>
+    <Kafka name="KafkaAppenderNoEventTimestamp" topic="kafka-topic" key="key" sendEventTimestamp="false">
       <PatternLayout pattern="%m"/>
       <Property name="timeout.ms">1000</Property>
       <Property name="bootstrap.servers">localhost:9092</Property>

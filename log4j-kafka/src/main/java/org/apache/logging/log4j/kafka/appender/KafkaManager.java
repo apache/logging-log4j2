@@ -25,14 +25,16 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
+import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Log4jThread;
 
 public class KafkaManager extends AbstractManager {
@@ -59,25 +61,15 @@ public class KafkaManager extends AbstractManager {
      * The Constructor should have been declared private as all Managers are create by the internal factory;
      */
     private KafkaManager(final LoggerContext loggerContext, final String name, final String topic, final boolean syncSend,
-            final boolean sendTimestamp, final Property[] properties, final String key, final String retryCount) {
+            final boolean sendTimestamp, final Property[] properties, final String key) {
         super(loggerContext, name);
         this.topic = Objects.requireNonNull(topic, "topic");
         this.syncSend = syncSend;
         this.sendTimestamp = sendTimestamp;
-        config.setProperty("key.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
-        config.setProperty("value.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer");
-        config.setProperty("batch.size", "0");
 
-        if(retryCount!=null) {
-        	try {
-        		Integer.parseInt(retryCount);
-        		config.setProperty("retries", retryCount);
-        	}catch(NumberFormatException numberFormatException) {
-
-        	}
-
-
-        }
+        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class);
+        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class);
+        config.put(ProducerConfig.BATCH_SIZE_CONFIG, 0);
 
         for (final Property property : properties) {
             config.setProperty(property.getName(), property.getValue());
@@ -85,7 +77,11 @@ public class KafkaManager extends AbstractManager {
 
         this.key = key;
 
-        this.timeoutMillis = Integer.parseInt(config.getProperty("timeout.ms", DEFAULT_TIMEOUT_MILLIS));
+        String timeoutMillis = config.getProperty("timeout.ms");
+        if (timeoutMillis == null) {
+            timeoutMillis = config.getProperty(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, DEFAULT_TIMEOUT_MILLIS);
+        }
+        this.timeoutMillis = Integers.parseInt(timeoutMillis);
     }
 
     @Override
@@ -100,12 +96,13 @@ public class KafkaManager extends AbstractManager {
 
     private void closeProducer(final long timeout, final TimeUnit timeUnit) {
         if (producer != null) {
-            // This thread is a workaround for this Kafka issue: https://issues.apache.org/jira/browse/KAFKA-1660
-           final Thread closeThread = new Log4jThread(() -> {
-               if (producer != null) {
-                   producer.close();
-               }
-           }, "KafkaManager-CloseThread");
+            // This thread is a workaround for this Kafka issue:
+            // https://issues.apache.org/jira/browse/KAFKA-1660
+            final Thread closeThread = new Log4jThread(() -> {
+                if (producer != null) {
+                    producer.close();
+                }
+            }, "KafkaManager-CloseThread");
             closeThread.setDaemon(true); // avoid blocking JVM shutdown
             closeThread.start();
             try {
@@ -120,17 +117,15 @@ public class KafkaManager extends AbstractManager {
     public void send(final byte[] msg, final Long eventTimestamp) throws ExecutionException, InterruptedException, TimeoutException {
         if (producer != null) {
             byte[] newKey = null;
-            Long timestamp = null;
 
-            if(key != null && key.contains("${")) {
-                newKey = getLoggerContext().getConfiguration().getStrSubstitutor().replace(key).getBytes(StandardCharsets.UTF_8);
+            if (key != null && key.contains("${")) {
+                newKey = getLoggerContext().getConfiguration().getStrSubstitutor().replace(key)
+                        .getBytes(StandardCharsets.UTF_8);
             } else if (key != null) {
                 newKey = key.getBytes(StandardCharsets.UTF_8);
             }
 
-            if(sendTimestamp) {
-                timestamp = eventTimestamp;
-            }
+            final Long timestamp = sendTimestamp ? eventTimestamp : null;
 
             final ProducerRecord<byte[], byte[]> newRecord = new ProducerRecord<>(topic, null, timestamp, newKey, msg);
             if (syncSend) {
@@ -156,16 +151,20 @@ public class KafkaManager extends AbstractManager {
         return topic;
     }
 
-    public static KafkaManager getManager(final LoggerContext loggerContext, final String name, final String topic,
-            final boolean syncSend, final boolean sendTimestamp, final Property[] properties, final String key,
-            final String retryCount) {
+    static KafkaManager getManager(final LoggerContext loggerContext, final String name, final String topic,
+            final boolean syncSend, final boolean sendTimestamp, final Property[] properties, final String key) {
         StringBuilder sb = new StringBuilder(name);
-        sb.append(" ").append(topic).append(" ").append(syncSend + "");
-        for (Property prop: properties) {
+        sb.append(" ")
+            .append(topic)
+            .append(" ")
+            .append(syncSend)
+            .append(" ")
+            .append(sendTimestamp);
+        for (Property prop : properties) {
             sb.append(" ").append(prop.getName()).append("=").append(prop.getValue());
         }
         return getManager(sb.toString(), factory, new FactoryData(loggerContext, topic, syncSend, sendTimestamp,
-                properties, key, retryCount));
+                properties, key));
     }
 
     private static class FactoryData {
@@ -175,17 +174,15 @@ public class KafkaManager extends AbstractManager {
         private final boolean sendTimestamp;
         private final Property[] properties;
         private final String key;
-        private final String retryCount;
 
         public FactoryData(final LoggerContext loggerContext, final String topic, final boolean syncSend,
-                final boolean sendTimestamp, final Property[] properties, final String key, final String retryCount) {
+                final boolean sendTimestamp, final Property[] properties, final String key) {
             this.loggerContext = loggerContext;
             this.topic = topic;
             this.syncSend = syncSend;
             this.sendTimestamp = sendTimestamp;
             this.properties = properties;
             this.key = key;
-            this.retryCount = retryCount;
         }
 
     }
@@ -194,7 +191,7 @@ public class KafkaManager extends AbstractManager {
         @Override
         public KafkaManager createManager(String name, FactoryData data) {
             return new KafkaManager(data.loggerContext, name, data.topic, data.syncSend, data.sendTimestamp,
-                    data.properties, data.key, data.retryCount);
+                    data.properties, data.key);
         }
     }
 
