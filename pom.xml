@@ -307,7 +307,7 @@
     <disruptor.version>3.4.4</disruptor.version>
     <elasticsearch.version>7.17.6</elasticsearch.version>
     <embedded-ldap.version>0.8.1</embedded-ldap.version>
-    <embedded-mongo.version>3.4.6</embedded-mongo.version>
+    <embedded-mongo.version>3.5.0</embedded-mongo.version>
     <felix.version>7.0.5</felix.version>
     <flume.version>1.10.1</flume.version>
     <groovy.version>3.0.10</groovy.version>
