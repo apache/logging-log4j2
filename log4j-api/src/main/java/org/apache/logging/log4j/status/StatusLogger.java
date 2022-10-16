@@ -16,6 +16,19 @@
  */
 package org.apache.logging.log4j.status;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
+import org.apache.logging.log4j.simple.SimpleLogger;
+import org.apache.logging.log4j.simple.SimpleLoggerContext;
+import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.util.Constants;
+import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyEnvironment;
+import org.apache.logging.log4j.util.Strings;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,18 +41,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
-import org.apache.logging.log4j.simple.SimpleLogger;
-import org.apache.logging.log4j.simple.SimpleLoggerContext;
-import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.util.Constants;
-import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.Strings;
 
 /**
  * Records events that occur in the logging system. By default, only error messages are logged to {@link System#err}.
@@ -75,7 +76,7 @@ public final class StatusLogger extends AbstractLogger {
 
     private static final String NOT_AVAIL = "?";
 
-    private static final PropertiesUtil PROPS = new PropertiesUtil("log4j2.StatusLogger.properties");
+    private static final PropertyEnvironment PROPS = PropertiesUtil.getProperties("StatusLogger");
 
     private static final int MAX_ENTRIES = PROPS.getIntegerProperty(MAX_STATUS_ENTRIES, 200);
 

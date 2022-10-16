@@ -29,7 +29,7 @@ import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 
 import java.net.URI;
 
@@ -121,7 +121,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
         return LoggerContext.getContext(false).getInjector().getInstance(KEY);
     }
 
-    public static AuthorizationProvider authorizationProvider(final PropertiesUtil props) {
+    public static AuthorizationProvider authorizationProvider(final PropertyEnvironment props) {
         final String authClass = props.getStringProperty(PREFIXES, "authorizationProvider", null);
         AuthorizationProvider provider = null;
         if (authClass != null) {

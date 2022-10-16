@@ -26,7 +26,7 @@ import org.junit.experimental.categories.Category;
 
 import java.util.Locale;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests the AsyncQueueFullPolicyFactory class.
@@ -39,7 +39,7 @@ public class AsyncQueueFullPolicyFactoryTest {
     public void resetProperties() throws Exception {
         System.clearProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER);
         System.clearProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_DISCARDING_THRESHOLD_LEVEL);
-        PropertiesUtil.getProperties().reload();
+        ((PropertiesUtil) PropertiesUtil.getProperties()).reload();
     }
 
     @Test

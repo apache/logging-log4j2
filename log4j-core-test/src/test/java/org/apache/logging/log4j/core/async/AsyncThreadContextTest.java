@@ -94,7 +94,7 @@ public class AsyncThreadContextTest {
             System.clearProperty("log4j2.threadContextMap");
             final String PACKAGE = "org.apache.logging.log4j.spi.";
             System.setProperty("log4j2.threadContextMap", PACKAGE + implClassSimpleName());
-            PropertiesUtil.getProperties().reload();
+            ((PropertiesUtil) PropertiesUtil.getProperties()).reload();
             ThreadContextTestAccess.init();
         }
 

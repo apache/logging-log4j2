@@ -19,6 +19,7 @@ package org.apache.logging.log4j.spi;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.LazyBoolean;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.TriConsumer;
 
@@ -65,7 +66,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
         return new ThreadLocal<>();
     }
 
-    static void init(final PropertiesUtil properties) {
+    static void init(final PropertyEnvironment properties) {
         inheritableMap.setAsBoolean(properties.getBooleanProperty(INHERITABLE_MAP));
     }
     

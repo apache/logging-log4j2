@@ -30,6 +30,7 @@ import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.util.Chars;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
@@ -186,8 +187,8 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         } catch (final UnsupportedEncodingException ex) { // should never happen
             throw new IllegalStateException("Unsupported default encoding " + enc, ex);
         }
-        final PropertiesUtil propsUtil = PropertiesUtil.getProperties();
-        if (!propsUtil.isOsWindows() || propsUtil.getBooleanProperty("log4j.skipJansi", true) || direct) {
+        final PropertyEnvironment properties = PropertiesUtil.getProperties();
+        if (!properties.isOsWindows() || properties.getBooleanProperty("log4j.skipJansi", true) || direct) {
             return outputStream;
         }
         try {

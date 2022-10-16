@@ -16,26 +16,10 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import static java.util.Arrays.asList;
-import static java.util.concurrent.Executors.newSingleThreadExecutor;
-import static org.apache.logging.log4j.ThreadContext.getThreadContextMap;
-import static org.apache.logging.log4j.core.impl.ContextDataInjectorFactory.createInjector;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.Matchers.hasKey;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-
-import java.util.Collection;
-import java.util.concurrent.ExecutionException;
-
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.test.ThreadContextUtilityClass;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
+import org.apache.logging.log4j.test.ThreadContextUtilityClass;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
@@ -46,6 +30,16 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
+
+import java.util.Collection;
+import java.util.concurrent.ExecutionException;
+
+import static java.util.Arrays.asList;
+import static java.util.concurrent.Executors.newSingleThreadExecutor;
+import static org.apache.logging.log4j.ThreadContext.getThreadContextMap;
+import static org.apache.logging.log4j.core.impl.ContextDataInjectorFactory.createInjector;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 @RunWith(Parameterized.class)
 public class ThreadContextDataInjectorTest {
@@ -108,7 +102,7 @@ public class ThreadContextDataInjectorTest {
 
     private void prepareThreadContext(boolean isThreadContextMapInheritable) {
         System.setProperty("log4j2.isThreadContextMapInheritable", Boolean.toString(isThreadContextMapInheritable));
-        PropertiesUtil.getProperties().reload();
+        ((PropertiesUtil) PropertiesUtil.getProperties()).reload();
         ThreadContextUtilityClass.reset();
         ThreadContext.remove("baz");
         ThreadContext.put("foo", "bar");

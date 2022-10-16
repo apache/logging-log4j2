@@ -32,6 +32,7 @@ import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.Strings;
 
 import java.nio.charset.Charset;
@@ -573,9 +574,9 @@ public final class PatternLayout extends AbstractStringLayout {
         }
 
         private boolean useAnsiEscapeCodes() {
-            final PropertiesUtil propertiesUtil = PropertiesUtil.getProperties();
-            final boolean isPlatformSupportsAnsi = !propertiesUtil.isOsWindows();
-            final boolean isJansiRequested = !propertiesUtil.getBooleanProperty("log4j.skipJansi", true);
+            final PropertyEnvironment properties = PropertiesUtil.getProperties();
+            final boolean isPlatformSupportsAnsi = !properties.isOsWindows();
+            final boolean isJansiRequested = !properties.getBooleanProperty("log4j.skipJansi", true);
             return isPlatformSupportsAnsi || isJansiRequested;
         }
 

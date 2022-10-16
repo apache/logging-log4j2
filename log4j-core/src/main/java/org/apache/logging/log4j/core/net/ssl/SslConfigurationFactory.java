@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 
 /**
  * Creates an SSL configuration from Log4j properties.
@@ -43,11 +44,11 @@ public class SslConfigurationFactory {
     private static final String verifyHostName = "log4j2.ssl.verifyHostName";
 
     private static final Lazy<SslConfiguration> SSL_CONFIGURATION = Lazy.lazy(() -> {
-        final PropertiesUtil props = PropertiesUtil.getProperties();
+        final PropertyEnvironment props = PropertiesUtil.getProperties();
         return createSslConfiguration(props);
     });
 
-    static final SslConfiguration createSslConfiguration(final PropertiesUtil props) {
+    static final SslConfiguration createSslConfiguration(final PropertyEnvironment props) {
         KeyStoreConfiguration keyStoreConfiguration = null;
         TrustStoreConfiguration trustStoreConfiguration = null;
         String location = props.getStringProperty(trustStorelocation);

@@ -55,7 +55,7 @@ class OnPropertyConditionTest {
     @Test
     @ClearSystemProperty(key = "foo.bar")
     void whenPropertyAbsent() {
-        PropertiesUtil.getProperties().reload();
+        ((PropertiesUtil) PropertiesUtil.getProperties()).reload();
         final String value = DI.createInjector(OnProperty.class).getInstance(String.class);
         assertEquals("goodbye", value);
     }
@@ -63,7 +63,7 @@ class OnPropertyConditionTest {
     @Test
     @SetSystemProperty(key = "foo.bar", value = "whatever")
     void whenPropertyPresent() {
-        PropertiesUtil.getProperties().reload();
+        ((PropertiesUtil) PropertiesUtil.getProperties()).reload();
         final String value = DI.createInjector(OnProperty.class).getInstance(String.class);
         assertEquals("hello", value);
     }
@@ -71,7 +71,7 @@ class OnPropertyConditionTest {
     @Test
     @SetSystemProperty(key = "foo.bar", value = "true")
     void whenPropertyMatches() {
-        PropertiesUtil.getProperties().reload();
+        ((PropertiesUtil) PropertiesUtil.getProperties()).reload();
         final String value = DI.createInjector(OnProperty.class).getInstance(String.class);
         assertEquals("truth", value);
     }

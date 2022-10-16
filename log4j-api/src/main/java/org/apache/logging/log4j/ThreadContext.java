@@ -17,6 +17,19 @@
 
 package org.apache.logging.log4j;
 
+import org.apache.logging.log4j.message.ParameterizedMessage;
+import org.apache.logging.log4j.spi.CleanableThreadContextMap;
+import org.apache.logging.log4j.spi.DefaultThreadContextMap;
+import org.apache.logging.log4j.spi.DefaultThreadContextStack;
+import org.apache.logging.log4j.spi.NoOpThreadContextMap;
+import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
+import org.apache.logging.log4j.spi.ThreadContextMap;
+import org.apache.logging.log4j.spi.ThreadContextMap2;
+import org.apache.logging.log4j.spi.ThreadContextMapFactory;
+import org.apache.logging.log4j.spi.ThreadContextStack;
+import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyEnvironment;
+
 import java.io.Serializable;
 import java.util.AbstractCollection;
 import java.util.Collection;
@@ -25,18 +38,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-
-import org.apache.logging.log4j.message.ParameterizedMessage;
-import org.apache.logging.log4j.spi.DefaultThreadContextMap;
-import org.apache.logging.log4j.spi.DefaultThreadContextStack;
-import org.apache.logging.log4j.spi.NoOpThreadContextMap;
-import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
-import org.apache.logging.log4j.spi.ThreadContextMap;
-import org.apache.logging.log4j.spi.ThreadContextMap2;
-import org.apache.logging.log4j.spi.CleanableThreadContextMap;
-import org.apache.logging.log4j.spi.ThreadContextMapFactory;
-import org.apache.logging.log4j.spi.ThreadContextStack;
-import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * The ThreadContext allows applications to store information either in a Map or a Stack.
@@ -212,7 +213,7 @@ public final class ThreadContext {
     public static void init() {
         ThreadContextMapFactory.init();
         contextMap = null;
-        final PropertiesUtil managerProps = PropertiesUtil.getProperties();
+        final PropertyEnvironment managerProps = PropertiesUtil.getProperties();
         final boolean disableAll = managerProps.getBooleanProperty(DISABLE_ALL);
         useStack = !(managerProps.getBooleanProperty(DISABLE_STACK) || disableAll);
         final boolean useMap = !(managerProps.getBooleanProperty(DISABLE_MAP) || disableAll);

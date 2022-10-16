@@ -28,6 +28,7 @@ import org.apache.logging.log4j.docker.model.Network;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 
 import java.io.IOException;
 import java.net.URL;
@@ -52,7 +53,7 @@ public class DockerLookup extends AbstractLookup {
     public DockerLookup() {
         String baseUri = System.getenv(DOCKER_URI);
         if (baseUri == null) {
-            final PropertiesUtil props = PropertiesUtil.getProperties();
+            final PropertyEnvironment props = PropertiesUtil.getProperties();
             baseUri = props.getStringProperty(DOCKER_URI);
         }
         if (baseUri == null) {

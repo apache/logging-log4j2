@@ -22,6 +22,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.ProviderUtil;
 import org.apache.logging.log4j.util.ReflectionUtil;
 
@@ -63,7 +64,7 @@ public final class ThreadContextMapFactory {
      * and when Log4j is reconfigured.
      */
     public static void init() {
-        final PropertiesUtil properties = PropertiesUtil.getProperties();
+        final PropertyEnvironment properties = PropertiesUtil.getProperties();
         CopyOnWriteSortedArrayThreadContextMap.init(properties);
         GarbageFreeSortedArrayThreadContextMap.init(properties);
         DefaultThreadContextMap.init(properties);
@@ -74,7 +75,7 @@ public final class ThreadContextMapFactory {
      * Initializes static variables based on system properties. Normally called when this class is initialized by the VM
      * and when Log4j is reconfigured.
      */
-    private static void initPrivate(final PropertiesUtil properties) {
+    private static void initPrivate(final PropertyEnvironment properties) {
         ThreadContextMapName = properties.getStringProperty(THREAD_CONTEXT_KEY);
         GcFreeThreadContextKey = properties.getBooleanProperty(GC_FREE_THREAD_CONTEXT_KEY);
     }

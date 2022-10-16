@@ -19,6 +19,7 @@ package org.apache.logging.log4j.spi;
 import org.apache.logging.log4j.util.LazyBoolean;
 import org.apache.logging.log4j.util.LazyInt;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
@@ -66,7 +67,7 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
      * Initializes static variables based on system properties. Normally called when this class is initialized by the VM
      * and when Log4j is reconfigured.
      */
-    static void init(final PropertiesUtil properties) {
+    static void init(final PropertyEnvironment properties) {
         initialCapacity.setAsInt(properties.getIntegerProperty(PROPERTY_NAME_INITIAL_CAPACITY, DEFAULT_INITIAL_CAPACITY));
         inheritableMap.setAsBoolean(properties.getBooleanProperty(INHERITABLE_MAP));
     }

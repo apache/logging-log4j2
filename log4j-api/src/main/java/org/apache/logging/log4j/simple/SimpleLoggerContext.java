@@ -16,10 +16,6 @@
  */
 package org.apache.logging.log4j.simple;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
@@ -27,6 +23,11 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerRegistry;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyEnvironment;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 
 /**
  * A simple {@link LoggerContext} implementation.
@@ -46,7 +47,7 @@ public class SimpleLoggerContext implements LoggerContext {
     /** All system properties used by <code>SimpleLog</code> start with this */
     protected static final String SYSTEM_PREFIX = "org.apache.logging.log4j.simplelog.";
 
-    private final PropertiesUtil props;
+    private final PropertyEnvironment props;
 
     /** Include the instance name in the log message? */
     private final boolean showLogName;
@@ -76,7 +77,7 @@ public class SimpleLoggerContext implements LoggerContext {
      * Constructs a new initialized instance.
      */
     public SimpleLoggerContext() {
-        props = new PropertiesUtil("log4j2.simplelog.properties");
+        props = PropertiesUtil.getProperties("simplelog");
 
         showContextMap = props.getBooleanProperty(SYSTEM_PREFIX + "showContextMap", false);
         showLogName = props.getBooleanProperty(SYSTEM_PREFIX + "showlogname", false);

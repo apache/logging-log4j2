@@ -57,6 +57,7 @@ import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 
 import java.util.Map;
 import java.util.function.Supplier;
@@ -82,10 +83,10 @@ public class DefaultBundle {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final Injector injector;
-    private final PropertiesUtil properties;
+    private final PropertyEnvironment properties;
     private final ClassLoader classLoader;
 
-    public DefaultBundle(final Injector injector, final PropertiesUtil properties, final ClassLoader classLoader) {
+    public DefaultBundle(final Injector injector, final PropertyEnvironment properties, final ClassLoader classLoader) {
         this.injector = injector;
         this.properties = properties;
         this.classLoader = classLoader;

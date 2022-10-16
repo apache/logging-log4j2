@@ -28,6 +28,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.ProviderUtil;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.Strings;
@@ -70,7 +71,7 @@ public class LogManager {
      */
     private static final Lazy<LoggerContextFactory> PROVIDER = Lazy.lazy(() -> {
         // Shortcut binding to force a specific logging implementation.
-        final PropertiesUtil managerProps = PropertiesUtil.getProperties();
+        final PropertyEnvironment managerProps = PropertiesUtil.getProperties();
         final String factoryClassName = managerProps.getStringProperty(FACTORY_PROPERTY_NAME);
         if (factoryClassName != null) {
             try {

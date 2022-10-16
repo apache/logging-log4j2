@@ -21,6 +21,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 
 /**
  * Creates {@link AsyncQueueFullPolicy} instances based on user-specified system properties. The {@code AsyncQueueFullPolicy}
@@ -99,8 +100,8 @@ public class AsyncQueueFullPolicyFactory {
     }
 
     private static AsyncQueueFullPolicy createDiscardingAsyncQueueFullPolicy() {
-        final PropertiesUtil util = PropertiesUtil.getProperties();
-        final String level = util.getStringProperty(PROPERTY_NAME_DISCARDING_THRESHOLD_LEVEL, Level.INFO.name());
+        final PropertyEnvironment properties = PropertiesUtil.getProperties();
+        final String level = properties.getStringProperty(PROPERTY_NAME_DISCARDING_THRESHOLD_LEVEL, Level.INFO.name());
         final Level thresholdLevel = Level.toLevel(level, Level.INFO);
         LOGGER.debug("Creating custom DiscardingAsyncQueueFullPolicy(discardThreshold:{})", thresholdLevel);
         return new DiscardingAsyncQueueFullPolicy(thresholdLevel);

@@ -27,6 +27,7 @@ import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.Strings;
 
 import java.net.URI;
@@ -63,7 +64,7 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
     public Configuration getConfiguration(final LoggerContext loggerContext, final String name, final URI configLocation) {
 
         if (configLocation == null) {
-            final PropertiesUtil properties = PropertiesUtil.getProperties();
+            final PropertyEnvironment properties = PropertiesUtil.getProperties();
             final String configLocationStr = substitutor.replace(properties.getStringProperty(CONFIGURATION_FILE_PROPERTY));
             if (configLocationStr != null) {
                 final String[] sources = parseConfigLocations(configLocationStr);

@@ -19,6 +19,7 @@ package org.apache.logging.log4j.layout.template.json;
 import org.apache.logging.log4j.layout.template.json.util.RecyclerFactories;
 import org.apache.logging.log4j.layout.template.json.util.RecyclerFactory;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -29,7 +30,7 @@ public final class JsonTemplateLayoutDefaults {
 
     private JsonTemplateLayoutDefaults() {}
 
-    private static final PropertiesUtil PROPERTIES = PropertiesUtil.getProperties();
+    private static final PropertyEnvironment PROPERTIES = PropertiesUtil.getProperties();
 
     public static Charset getCharset() {
         final String charsetName =
