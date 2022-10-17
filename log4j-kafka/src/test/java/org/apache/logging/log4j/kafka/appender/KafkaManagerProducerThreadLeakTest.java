@@ -31,7 +31,7 @@ import static org.junit.Assert.assertEquals;
  * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-2916">LOG4J2-2916</a>
  */
 @Category(Appenders.Kafka.class)
-@LoggerContextSource("KafkaAppenderTest.xml")
+@LoggerContextSource("KafkaManagerProducerThreadLeakTest.xml")
 class KafkaManagerProducerThreadLeakTest {
 
     @Test
