@@ -16,6 +16,17 @@
  */
 package org.apache.logging.log4j.status;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
+import org.apache.logging.log4j.simple.SimpleLogger;
+import org.apache.logging.log4j.simple.SimpleLoggerContext;
+import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.util.Constants;
+import org.apache.logging.log4j.util.PropertiesUtil;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,18 +39,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
-import org.apache.logging.log4j.simple.SimpleLogger;
-import org.apache.logging.log4j.simple.SimpleLoggerContext;
-import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.util.Constants;
-import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.Strings;
 
 /**
  * Records events that occur in the logging system. By default, only error messages are logged to {@link System#err}.
@@ -75,15 +74,21 @@ public final class StatusLogger extends AbstractLogger {
 
     private static final String NOT_AVAIL = "?";
 
-    private static final PropertiesUtil PROPS = new PropertiesUtil("log4j2.StatusLogger.properties");
+    static final PropertiesUtil PROPS = new PropertiesUtil("log4j2.StatusLogger.properties");
 
     private static final int MAX_ENTRIES = PROPS.getIntegerProperty(MAX_STATUS_ENTRIES, 200);
 
     private static final String DEFAULT_STATUS_LEVEL = PROPS.getStringProperty(DEFAULT_STATUS_LISTENER_LEVEL);
 
+    static final boolean DEBUG_ENABLED = PropertiesUtil
+            .getProperties()
+            .getBooleanProperty(Constants.LOG4J2_DEBUG, false, true);
+
     // LOG4J2-1176: normal parameterized message remembers param object, causing memory leaks.
-    private static final StatusLogger STATUS_LOGGER = new StatusLogger(StatusLogger.class.getName(),
-            ParameterizedNoReferenceMessageFactory.INSTANCE);
+    private static final StatusLogger STATUS_LOGGER = new StatusLogger(
+            StatusLogger.class.getName(),
+            ParameterizedNoReferenceMessageFactory.INSTANCE,
+            SimpleLoggerFactory.getInstance());
 
     private final SimpleLogger logger;
 
@@ -129,18 +134,14 @@ public final class StatusLogger extends AbstractLogger {
      * @param name The logger name.
      * @param messageFactory The message factory.
      */
-    private StatusLogger(final String name, final MessageFactory messageFactory) {
+    private StatusLogger(
+            final String name,
+            final MessageFactory messageFactory,
+            final SimpleLoggerFactory loggerFactory) {
         super(name, messageFactory);
-        final String dateFormat = PROPS.getStringProperty(STATUS_DATE_FORMAT, Strings.EMPTY);
-        final boolean showDateTime = !Strings.isEmpty(dateFormat);
-        final Level loggerLevel = isDebugPropertyEnabled() ? Level.TRACE : Level.ERROR;
-        this.logger = new SimpleLogger("StatusLogger", loggerLevel, false, true, showDateTime, false, dateFormat, messageFactory, PROPS, System.err);
+        final Level loggerLevel = DEBUG_ENABLED ? Level.TRACE : Level.ERROR;
+        this.logger = loggerFactory.createSimpleLogger("StatusLogger", loggerLevel, messageFactory, System.err);
         this.listenersLevel = Level.toLevel(DEFAULT_STATUS_LEVEL, Level.WARN).intLevel();
-    }
-
-    // LOG4J2-1813 if system property "log4j2.debug" is defined, print all status logging
-    private boolean isDebugPropertyEnabled() {
-        return PropertiesUtil.getProperties().getBooleanProperty(Constants.LOG4J2_DEBUG, false, true);
     }
 
     /**
@@ -292,7 +293,7 @@ public final class StatusLogger extends AbstractLogger {
             msgLock.unlock();
         }
         // LOG4J2-1813 if system property "log4j2.debug" is defined, all status logging is enabled
-        if (isDebugPropertyEnabled() || (listeners.size() <= 0)) {
+        if (DEBUG_ENABLED || (listeners.size() <= 0)) {
             logger.logMessage(fqcn, level, marker, msg, t);
         } else {
             for (final StatusListener listener : listeners) {
@@ -422,8 +423,7 @@ public final class StatusLogger extends AbstractLogger {
 
     @Override
     public boolean isEnabled(final Level level, final Marker marker) {
-        // LOG4J2-1813 if system property "log4j2.debug" is defined, all status logging is enabled
-        if (isDebugPropertyEnabled()) {
+        if (DEBUG_ENABLED) {
             return true;
         }
         if (listeners.size() > 0) {

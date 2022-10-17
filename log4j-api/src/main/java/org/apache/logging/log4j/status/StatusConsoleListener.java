@@ -16,42 +16,65 @@
  */
 package org.apache.logging.log4j.status;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
+
 import java.io.IOException;
 import java.io.PrintStream;
-
-import org.apache.logging.log4j.Level;
+import java.util.Objects;
 
 /**
- * StatusListener that writes to the Console.
+ * {@link StatusListener} that writes to the console.
  */
 @SuppressWarnings("UseOfSystemOutOrSystemErr")
 public class StatusConsoleListener implements StatusListener {
 
-    private Level level = Level.FATAL;
+    private Level level;
+
     private String[] filters;
+
     private final PrintStream stream;
 
+    private final Logger logger;
+
     /**
-     * Creates the StatusConsoleListener using the supplied Level.
-     * @param level The Level of status messages that should appear on the console.
+     * Constructs a {@link StatusConsoleListener} instance writing to {@link System#out} using the supplied level.
+     *
+     * @param level the level of status messages that should appear on the console
+     * @throws NullPointerException on null {@code level}
      */
     public StatusConsoleListener(final Level level) {
         this(level, System.out);
     }
 
     /**
-     * Creates the StatusConsoleListener using the supplied Level. Make sure not to use a logger stream of some sort
-     * to avoid creating an infinite loop of indirection!
-     * @param level The Level of status messages that should appear on the console.
-     * @param stream The PrintStream to write to.
-     * @throws IllegalArgumentException if the PrintStream argument is {@code null}.
+     * Constructs a {@link StatusConsoleListener} instance using the supplied level and stream.
+     * <p>
+     * Make sure not to use a logger stream of some sort to avoid creating an infinite loop of indirection!
+     * </p>
+     *
+     * @param level the level of status messages that should appear on the console
+     * @param stream the stream to write to
+     * @throws NullPointerException on null {@code level} or {@code stream}
      */
     public StatusConsoleListener(final Level level, final PrintStream stream) {
-        if (stream == null) {
-            throw new IllegalArgumentException("You must provide a stream to use for this listener.");
-        }
-        this.level = level;
-        this.stream = stream;
+        this(level, stream, SimpleLoggerFactory.getInstance());
+    }
+
+    StatusConsoleListener(
+            final Level level,
+            final PrintStream stream,
+            final SimpleLoggerFactory loggerFactory) {
+        this.level = Objects.requireNonNull(level, "level");
+        this.stream = Objects.requireNonNull(stream, "stream");
+        this.logger = Objects
+                .requireNonNull(loggerFactory, "loggerFactory")
+                .createSimpleLogger(
+                        "StatusConsoleListener",
+                        level,
+                        ParameterizedNoReferenceMessageFactory.INSTANCE,
+                        stream);
     }
 
     /**
@@ -77,8 +100,14 @@ public class StatusConsoleListener implements StatusListener {
      */
     @Override
     public void log(final StatusData data) {
-        if (!filtered(data)) {
-            stream.println(data.getFormattedStatus());
+        final boolean filtered = filtered(data);
+        if (!filtered) {
+            logger
+                    // Logging using _only_ the following 4 fields set by `StatusLogger#logMessage()`:
+                    .atLevel(data.getLevel())
+                    .withThrowable(data.getThrowable())
+                    .withLocation(data.getStackTraceElement())
+                    .log(data.getMessage());
         }
     }
 
@@ -110,4 +139,5 @@ public class StatusConsoleListener implements StatusListener {
             this.stream.close();
         }
     }
+
 }

@@ -35,6 +35,9 @@
       </action>
     </release>
     <release version="2.19.0" date="2022-09-09" description="GA Release 2.19.0">
+      <action issue="LOG4J2-3584" dev="vy" type="fix">
+        Make StatusConsoleListener use SimpleLogger internally.
+      </action>
       <action issue="LOG4J2-3614" dev="vy" type="fix" due-to="strainu">
         Harden InstantFormatter against delegate failures.
       </action>
