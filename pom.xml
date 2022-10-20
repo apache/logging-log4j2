@@ -317,7 +317,7 @@
     <hamcrest.version>2.2</hamcrest.version>
     <HdrHistogram.version>2.1.12</HdrHistogram.version>
     <hsqldb.version>2.5.2</hsqldb.version>
-    <icu4j.version>71.1</icu4j.version>
+    <icu4j.version>72.1</icu4j.version>
     <jackson1.version>1.9.13</jackson1.version>
     <jackson-bom.version>2.13.4.20221013</jackson-bom.version>
     <!-- Implementation of `jakarta.activation-api` -->
