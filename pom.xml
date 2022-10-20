@@ -347,7 +347,7 @@
     <junit.version>4.13.2</junit.version>
     <junit-jupiter.version>5.9.0</junit-jupiter.version>
     <junit-pioneer.version>1.6.2</junit-pioneer.version>
-    <kafka.version>1.1.1</kafka.version>
+    <kafka.version>3.3.1</kafka.version>
     <kubernetes-client.version>5.12.2</kubernetes-client.version>
     <lightcouch.version>0.2.0</lightcouch.version>
     <liquibase.version>3.5.5</liquibase.version>
