@@ -73,8 +73,7 @@ jobs:
         run: |
           ./mvnw \
           --show-version --batch-mode --errors --no-transfer-progress \
-          -DskipTests \
-          --global-toolchains ".github/workflows/maven-toolchains.xml"
+          -DskipTests
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@cc7986c02bac29104a72998e67239bb5ee2ee110    # 2.1.28
