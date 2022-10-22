@@ -19,10 +19,10 @@ updates:
 - package-ecosystem: maven
   directory: "/"
   schedule:
-    interval: daily
+    interval: monthly
   open-pull-requests-limit: 50
-- directory: /
+- package-ecosystem: github-actions
+  directory: /
   schedule:
-    interval: daily
-  package-ecosystem: github-actions
+    interval: monthly
   open-pull-requests-limit: 5
