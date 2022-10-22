@@ -25,9 +25,9 @@ import org.apache.logging.log4j.plugins.name.AnnotatedElementAliasesProvider;
 import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
 import org.apache.logging.log4j.plugins.name.NameProvider;
 import org.apache.logging.log4j.plugins.util.AnnotationUtil;
-import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.util.ReflectionUtil;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util3.Cast;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -159,7 +159,7 @@ public final class Keys {
     private static <A extends Annotation> Optional<String> getSpecifiedNameForAnnotation(final A annotation) {
         return Optional.ofNullable(annotation.annotationType().getAnnotation(NameProvider.class))
                 .map(NameProvider::value)
-                .map(TypeUtil::<Class<? extends AnnotatedElementNameProvider<A>>>cast)
+                .map(Cast::<Class<? extends AnnotatedElementNameProvider<A>>>cast)
                 .map(ReflectionUtil::instantiate)
                 .flatMap(provider -> provider.getSpecifiedName(annotation));
     }

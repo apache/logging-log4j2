@@ -17,7 +17,7 @@
 
 package org.apache.logging.log4j.plugins.di;
 
-import org.apache.logging.log4j.plugins.util.TypeUtil;
+import org.apache.logging.log4j.util3.Cast;
 
 import java.util.Collection;
 import java.util.Map;
@@ -36,7 +36,7 @@ class BindingMap {
     }
 
     public <T> Binding<T> get(final Key<T> key) {
-        return TypeUtil.cast(bindings.get(key));
+        return Cast.cast(bindings.get(key));
     }
 
     public <T> Binding<T> get(final Key<T> key, final Collection<String> aliases) {
@@ -49,7 +49,7 @@ class BindingMap {
                 }
             }
         }
-        return TypeUtil.cast(binding);
+        return Cast.cast(binding);
     }
 
     public <T> void put(final Key<T> key, final Supplier<T> factory) {
@@ -62,7 +62,7 @@ class BindingMap {
     public <T> Supplier<T> merge(final Key<T> key, final Supplier<T> factory) {
         final Binding<?> newBinding = bindings.merge(key, Binding.bind(key, factory), (oldBinding, binding) ->
                 oldBinding.getKey().getOrder() <= binding.getKey().getOrder() ? oldBinding : binding);
-        return TypeUtil.cast(newBinding.getSupplier());
+        return Cast.cast(newBinding.getSupplier());
     }
 
     public <T> void bindIfAbsent(final Key<T> key, final Supplier<T> factory) {

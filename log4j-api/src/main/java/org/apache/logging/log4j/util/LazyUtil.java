@@ -17,6 +17,8 @@
 
 package org.apache.logging.log4j.util;
 
+import org.apache.logging.log4j.util3.Cast;
+
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 import java.util.concurrent.locks.Lock;
@@ -36,12 +38,7 @@ final class LazyUtil {
     }
 
     static <T> T unwrapNull(final Object value) {
-        return value == NULL ? null : cast(value);
-    }
-
-    @SuppressWarnings("unchecked")
-    static <T> T cast(final Object o) {
-        return (T) o;
+        return value == NULL ? null : Cast.cast(value);
     }
 
     static class Constant<T> implements Lazy<T> {

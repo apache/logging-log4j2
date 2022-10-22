@@ -59,8 +59,8 @@ import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.di.Keys;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.plugins.model.PluginType;
-import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.util.Lazy;
+import org.apache.logging.log4j.util3.Cast;
 import org.apache.logging.log4j.util3.NameUtil;
 import org.apache.logging.log4j.util3.PropertiesUtil;
 import org.apache.logging.log4j.util3.ServiceRegistry;
@@ -519,7 +519,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     @Override
     public <T> T getComponent(final String componentName) {
-        return TypeUtil.cast(componentMap.get(componentName));
+        return Cast.cast(componentMap.get(componentName));
     }
 
     @Override
@@ -806,7 +806,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     @Override
     public <T extends Appender> T getAppender(final String appenderName) {
-        return appenderName != null ? TypeUtil.cast(appenders.get(appenderName)) : null;
+        return appenderName != null ? Cast.cast(appenders.get(appenderName)) : null;
     }
 
     /**

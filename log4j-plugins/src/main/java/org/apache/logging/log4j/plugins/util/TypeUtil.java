@@ -261,11 +261,6 @@ public final class TypeUtil {
         return clazz;
     }
 
-    public static <T> T cast(final Object o) {
-        @SuppressWarnings("unchecked") final T t = (T) o;
-        return t;
-    }
-
     public static Type getSuperclassTypeParameter(final Class<?> type) {
         final Type genericSuperclass = type.getGenericSuperclass();
         if (genericSuperclass instanceof ParameterizedType) {

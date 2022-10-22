@@ -20,10 +20,10 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.di.Injector;
-import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.plugins.validation.ConstraintValidator;
 import org.apache.logging.log4j.plugins.validation.constraints.ValidPort;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util3.Cast;
 
 /**
  * Validator that checks an object to verify it is a valid port number (an integer between 0 and 65535).
@@ -39,7 +39,7 @@ public class ValidPortValidator implements ConstraintValidator<ValidPort> {
 
     @Inject
     public ValidPortValidator(final Injector injector) {
-        converter = TypeUtil.cast(injector.getTypeConverter(Integer.class));
+        converter = Cast.cast(injector.getTypeConverter(Integer.class));
     }
 
     @Override

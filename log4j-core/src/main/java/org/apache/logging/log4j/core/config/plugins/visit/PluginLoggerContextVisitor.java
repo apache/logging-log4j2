@@ -25,6 +25,7 @@ import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.plugins.visit.NodeVisitor;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util3.Cast;
 import org.apache.logging.log4j.util3.StringBuilders;
 
 import java.lang.ref.WeakReference;
@@ -47,7 +48,7 @@ public class PluginLoggerContextVisitor implements NodeVisitor {
     public Object visitField(final Field field, final Node node, final StringBuilder debugLog) {
         if (TypeUtil.isAssignable(field.getGenericType(), LoggerContext.class)) {
             StringBuilders.appendKeyDqValueWithJoiner(debugLog, "loggerContext", loggerContext, ", ");
-            return TypeUtil.cast(loggerContext);
+            return Cast.cast(loggerContext);
         } else {
             LOGGER.error("Field {} annotated with @PluginLoggerContext is not compatible with type {}", field,
                     loggerContext.getClass());
@@ -59,7 +60,7 @@ public class PluginLoggerContextVisitor implements NodeVisitor {
     public Object visitParameter(final Parameter parameter, final Node node, final StringBuilder debugLog) {
         if (TypeUtil.isAssignable(parameter.getParameterizedType(), loggerContext.getClass())) {
             StringBuilders.appendKeyDqValueWithJoiner(debugLog, "loggerContext", loggerContext, ", ");
-            return TypeUtil.cast(loggerContext);
+            return Cast.cast(loggerContext);
         } else {
             LOGGER.error("Parameter {} annotated with @PluginLoggerContext is not compatible with type {}",
                     parameter, loggerContext.getClass());

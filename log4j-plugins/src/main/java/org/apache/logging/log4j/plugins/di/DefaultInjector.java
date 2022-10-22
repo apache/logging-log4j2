@@ -40,6 +40,7 @@ import org.apache.logging.log4j.plugins.validation.ConstraintValidator;
 import org.apache.logging.log4j.plugins.visit.NodeVisitor;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Lazy;
+import org.apache.logging.log4j.util3.Cast;
 import org.apache.logging.log4j.util3.EnglishEnums;
 import org.apache.logging.log4j.util3.ServiceRegistry;
 import org.apache.logging.log4j.util3.StringBuilders;
@@ -230,9 +231,9 @@ class DefaultInjector implements Injector {
         final NodeVisitor visitor = visitorKey != null ? getInstance(visitorKey) : null;
         if (visitor != null) {
             if (element instanceof Field) {
-                return () -> TypeUtil.cast(visitor.visitField((Field) element, node, debugLog));
+                return () -> Cast.cast(visitor.visitField((Field) element, node, debugLog));
             } else {
-                return () -> TypeUtil.cast(visitor.visitParameter((Parameter) element, node, debugLog));
+                return () -> Cast.cast(visitor.visitParameter((Parameter) element, node, debugLog));
             }
         }
         final Key<T> key = point.getKey();
@@ -253,34 +254,34 @@ class DefaultInjector implements Injector {
 
         // @Namespace PluginNamespace injection
         if (rawType == PluginNamespace.class && !key.getNamespace().isEmpty()) {
-            final Key<PluginNamespace> pluginNamespaceKey = TypeUtil.cast(key);
+            final Key<PluginNamespace> pluginNamespaceKey = Cast.cast(key);
             final Supplier<PluginNamespace> pluginNamespaceFactory = createPluginNamespaceFactory(pluginNamespaceKey);
-            return TypeUtil.cast(bindingMap.merge(pluginNamespaceKey, pluginNamespaceFactory));
+            return Cast.cast(bindingMap.merge(pluginNamespaceKey, pluginNamespaceFactory));
         }
 
         // @Namespace Collection<T>/Map<String, T>/Stream<T>/etc. injection
         if (COLLECTION_INJECTION_TYPES.contains(rawType) && !key.getNamespace().isEmpty()) {
             if (Stream.class.isAssignableFrom(rawType)) {
-                final Key<Stream<T>> streamKey = TypeUtil.cast(key);
+                final Key<Stream<T>> streamKey = Cast.cast(key);
                 final Supplier<Stream<T>> streamFactory =
                         () -> streamPluginInstancesFromNamespace(key.getParameterizedTypeArgument(0));
-                return TypeUtil.cast(bindingMap.merge(streamKey, streamFactory));
+                return Cast.cast(bindingMap.merge(streamKey, streamFactory));
             } else if (Set.class.isAssignableFrom(rawType)) {
-                final Key<Set<T>> setKey = TypeUtil.cast(key);
+                final Key<Set<T>> setKey = Cast.cast(key);
                 final Supplier<Set<T>> setFactory = () -> getPluginSet(key.getParameterizedTypeArgument(0));
-                return TypeUtil.cast(bindingMap.merge(setKey, setFactory));
+                return Cast.cast(bindingMap.merge(setKey, setFactory));
             } else if (Map.class.isAssignableFrom(rawType)) {
-                final Key<Map<String, T>> mapKey = TypeUtil.cast(key);
+                final Key<Map<String, T>> mapKey = Cast.cast(key);
                 final Supplier<Map<String, T>> mapFactory = () -> getPluginMap(key.getParameterizedTypeArgument(1));
-                return TypeUtil.cast(bindingMap.merge(mapKey, mapFactory));
+                return Cast.cast(bindingMap.merge(mapKey, mapFactory));
             } else if (Iterable.class.isAssignableFrom(rawType)) {
-                final Key<Iterable<T>> iterableKey = TypeUtil.cast(key);
+                final Key<Iterable<T>> iterableKey = Cast.cast(key);
                 final Supplier<Iterable<T>> iterableFactory = () -> getPluginList(key.getParameterizedTypeArgument(0));
-                return TypeUtil.cast(bindingMap.merge(iterableKey, iterableFactory));
+                return Cast.cast(bindingMap.merge(iterableKey, iterableFactory));
             } else if (Optional.class.isAssignableFrom(rawType)) {
-                final Key<Optional<T>> optionalKey = TypeUtil.cast(key);
+                final Key<Optional<T>> optionalKey = Cast.cast(key);
                 final Supplier<Optional<T>> optionalFactory = () -> getOptionalPlugin(key.getParameterizedTypeArgument(0));
-                return TypeUtil.cast(bindingMap.merge(optionalKey, optionalFactory));
+                return Cast.cast(bindingMap.merge(optionalKey, optionalFactory));
             } else {
                 throw new InjectException("Cannot inject plugins into " + key);
             }
@@ -288,16 +289,16 @@ class DefaultInjector implements Injector {
 
         // Optional<T> injection
         if (rawType == Optional.class) {
-            final Key<Optional<T>> optionalKey = TypeUtil.cast(key);
+            final Key<Optional<T>> optionalKey = Cast.cast(key);
             final Supplier<Optional<T>> optionalFactory = () ->
                     getOptionalInstance(key.getParameterizedTypeArgument(0), aliases, node, chain);
-            return TypeUtil.cast(bindingMap.merge(optionalKey, optionalFactory));
+            return Cast.cast(bindingMap.merge(optionalKey, optionalFactory));
         }
 
         // default namespace generic T injection
         final Supplier<T> instanceSupplier = () -> {
             final StringBuilder debugLog = new StringBuilder();
-            final T instance = TypeUtil.cast(getInjectableInstance(key, node, chain, debugLog));
+            final T instance = Cast.cast(getInjectableInstance(key, node, chain, debugLog));
             injectMembers(key, node, instance, chain, debugLog);
             return instance;
         };
@@ -322,7 +323,7 @@ class DefaultInjector implements Injector {
         return namespace.stream()
                 .filter(pluginType -> TypeUtil.isAssignable(type, pluginType.getPluginClass()))
                 .sorted(Comparator.comparing(PluginType::getPluginClass, OrderedComparator.INSTANCE))
-                .map(TypeUtil::cast);
+                .map(o -> Cast.cast(o));
     }
 
     private <T> Stream<T> streamPluginInstancesFromNamespace(final Key<T> key) {
@@ -333,7 +334,7 @@ class DefaultInjector implements Injector {
             final Key<T> itemKey = key.getParameterizedTypeArgument(0);
             final Stream<Supplier<T>> factoryStream = streamPluginsFromNamespace(itemKey)
                     .map(pluginType -> getFactory(pluginType.getPluginClass()));
-            return TypeUtil.cast(factoryStream);
+            return Cast.cast(factoryStream);
         }
         return streamPluginsFromNamespace(key)
                 .map(pluginType -> getInstance(pluginType.getPluginClass()));
@@ -351,7 +352,7 @@ class DefaultInjector implements Injector {
                     pluginType -> getFactory(pluginType.getPluginClass()),
                     (lhs, rhs) -> lhs,
                     LinkedHashMap::new));
-            return TypeUtil.cast(map);
+            return Cast.cast(map);
         }
         return streamPluginsFromNamespace(key).collect(Collectors.toMap(
                 PluginType::getKey,
@@ -628,7 +629,7 @@ class DefaultInjector implements Injector {
                         return value;
                     })
                     .toArray();
-            return TypeUtil.cast(accessor.invokeMethod(method, instance, args));
+            return Cast.cast(accessor.invokeMethod(method, instance, args));
         };
         final Supplier<T> factory = getScopeForMethod(method).get(primaryKey, unscoped);
         final Collection<String> aliases = Keys.getAliases(method);
@@ -794,7 +795,7 @@ class DefaultInjector implements Injector {
             throw new InjectException("Multiple @Inject constructors found in " + rawType);
         }
         if (injectConstructors.size() == 1) {
-            return TypeUtil.cast(injectConstructors.get(0));
+            return Cast.cast(injectConstructors.get(0));
         }
         try {
             return rawType.getDeclaredConstructor();
@@ -829,7 +830,7 @@ class DefaultInjector implements Injector {
 
         @Override
         public <T> Supplier<T> get(final Key<T> key, final Supplier<T> unscoped) {
-            return TypeUtil.cast(singletonProviders.computeIfAbsent(key, ignored -> Lazy.lazy(unscoped)::value));
+            return Cast.cast(singletonProviders.computeIfAbsent(key, ignored -> Lazy.lazy(unscoped)::value));
         }
 
         @Override

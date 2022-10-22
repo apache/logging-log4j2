@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.plugins;
 
 import org.apache.logging.log4j.plugins.model.PluginType;
-import org.apache.logging.log4j.plugins.util.TypeUtil;
+import org.apache.logging.log4j.util3.Cast;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -136,7 +136,7 @@ public class Node {
 
     @SuppressWarnings("unchecked")
     public <T> T getObject() {
-        return (T) object;
+        return Cast.cast(object);
     }
 
     /**

@@ -24,6 +24,7 @@ import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.plugins.visit.NodeVisitor;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util3.Cast;
 import org.apache.logging.log4j.util3.StringBuilders;
 
 import java.lang.reflect.Field;
@@ -43,7 +44,7 @@ public class PluginConfigurationVisitor implements NodeVisitor {
     public Object visitField(final Field field, final Node node, final StringBuilder debugLog) {
         if (TypeUtil.isAssignable(field.getGenericType(), configuration.getClass())) {
             StringBuilders.appendKeyDqValueWithJoiner(debugLog, "configuration", configuration, ", ");
-            return TypeUtil.cast(configuration);
+            return Cast.cast(configuration);
         } else {
             LOGGER.error("Field {} annotated with @PluginConfiguration is not compatible with type {}", field,
                     configuration.getClass());
@@ -55,7 +56,7 @@ public class PluginConfigurationVisitor implements NodeVisitor {
     public Object visitParameter(final Parameter parameter, final Node node, final StringBuilder debugLog) {
         if (TypeUtil.isAssignable(parameter.getParameterizedType(), configuration.getClass())) {
             StringBuilders.appendKeyDqValueWithJoiner(debugLog, "configuration", configuration, ", ");
-            return TypeUtil.cast(configuration);
+            return Cast.cast(configuration);
         } else {
             LOGGER.error("Parameter {} annotated with @PluginConfiguration is not compatible with type {}", parameter,
                     configuration.getClass());

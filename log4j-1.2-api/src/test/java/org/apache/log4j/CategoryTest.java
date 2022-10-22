@@ -29,8 +29,8 @@ import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util3.Cast;
 import org.apache.logging.log4j.util3.Constants;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -331,7 +331,7 @@ public class CategoryTest {
         final Class<? extends Message> actualMessageClass = message.getClass();
         assertTrue(expectedMessageClass.isAssignableFrom(actualMessageClass),
                 "was expecting message to be instance of " + expectedMessageClass + ", found: " + actualMessageClass);
-        final M typedMessage = TypeUtil.cast(message);
+        final M typedMessage = Cast.cast(message);
         messageTester.accept(typedMessage);
 
     }

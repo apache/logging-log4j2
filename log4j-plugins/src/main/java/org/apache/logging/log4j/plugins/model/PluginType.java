@@ -16,8 +16,8 @@
  */
 package org.apache.logging.log4j.plugins.model;
 
-import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.util.Lazy;
+import org.apache.logging.log4j.util3.Cast;
 
 /**
  * Plugin Descriptor. This is a memento object for Plugin annotations paired to their annotated classes.
@@ -51,7 +51,7 @@ public class PluginType<T> {
         this.pluginEntry = pluginEntry;
         this.pluginClass = Lazy.lazy(() -> {
             try {
-                return TypeUtil.cast(classLoader.loadClass(pluginEntry.getClassName()));
+                return Cast.cast(classLoader.loadClass(pluginEntry.getClassName()));
             } catch (final ClassNotFoundException e) {
                 throw new IllegalStateException("No class named " + pluginEntry.getClassName() +
                         " located for element " + pluginEntry.getName(), e);

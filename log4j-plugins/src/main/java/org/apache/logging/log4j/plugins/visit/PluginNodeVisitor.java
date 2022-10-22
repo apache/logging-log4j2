@@ -21,6 +21,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util3.Cast;
 import org.apache.logging.log4j.util3.StringBuilders;
 
 import java.lang.reflect.Field;
@@ -33,7 +34,7 @@ public class PluginNodeVisitor implements NodeVisitor {
     public Object visitField(final Field field, final Node node, final StringBuilder debugLog) {
         if (TypeUtil.isAssignable(field.getGenericType(), node.getClass())) {
             StringBuilders.appendKeyDqValueWithJoiner(debugLog, "node", node.getName(), ", ");
-            return TypeUtil.cast(node);
+            return Cast.cast(node);
         } else {
             LOGGER.error("Cannot inject Node instance into field {}", field);
             return null;
@@ -44,7 +45,7 @@ public class PluginNodeVisitor implements NodeVisitor {
     public Object visitParameter(final Parameter parameter, final Node node, final StringBuilder debugLog) {
         if (TypeUtil.isAssignable(parameter.getParameterizedType(), node.getClass())) {
             StringBuilders.appendKeyDqValueWithJoiner(debugLog, "node", node.getName(), ", ");
-            return TypeUtil.cast(node);
+            return Cast.cast(node);
         } else {
             LOGGER.error("Cannot inject Node instance into parameter {}", parameter);
             return null;

@@ -17,8 +17,8 @@
 
 package org.apache.logging.log4j.plugins.convert;
 
-import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util3.Cast;
 
 /**
  * Interface for doing automatic String conversion to a specific type.
@@ -55,7 +55,7 @@ public interface TypeConverter<T> {
             return null;
         }
         if (!(defaultValue instanceof String)) {
-            return TypeUtil.cast(defaultValue);
+            return Cast.cast(defaultValue);
         }
         try {
             return convert((String) defaultValue);

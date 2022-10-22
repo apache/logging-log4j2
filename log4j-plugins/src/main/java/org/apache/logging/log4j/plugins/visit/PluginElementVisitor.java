@@ -24,6 +24,7 @@ import org.apache.logging.log4j.plugins.model.PluginType;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util3.Cast;
 import org.apache.logging.log4j.util3.StringBuilders;
 
 import java.lang.reflect.Array;
@@ -45,7 +46,7 @@ public class PluginElementVisitor implements NodeVisitor {
         final Collection<String> aliases = Keys.getAliases(field);
         final Type targetType = field.getGenericType();
         final Class<?> componentType = getComponentType(targetType);
-        return TypeUtil.cast(componentType != null ? parseArrayElement(node, name, aliases, componentType, debugLog) :
+        return Cast.cast(componentType != null ? parseArrayElement(node, name, aliases, componentType, debugLog) :
                 parseChildElement(node, name, aliases, targetType, debugLog));
     }
 
@@ -55,7 +56,7 @@ public class PluginElementVisitor implements NodeVisitor {
         final Collection<String> aliases = Keys.getAliases(parameter);
         final Type targetType = parameter.getParameterizedType();
         final Class<?> componentType = getComponentType(targetType);
-        return TypeUtil.cast(componentType != null ? parseArrayElement(node, name, aliases, componentType, debugLog) :
+        return Cast.cast(componentType != null ? parseArrayElement(node, name, aliases, componentType, debugLog) :
                 parseChildElement(node, name, aliases, targetType, debugLog));
     }
 

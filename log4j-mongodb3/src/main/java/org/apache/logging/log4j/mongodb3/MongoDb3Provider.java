@@ -32,12 +32,12 @@ import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.di.Injector;
-import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.plugins.validation.constraints.ValidHost;
 import org.apache.logging.log4j.plugins.validation.constraints.ValidPort;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util3.Cast;
 import org.apache.logging.log4j.util3.LoaderUtil;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -185,7 +185,7 @@ public final class MongoDb3Provider implements NoSqlProvider<MongoDb3Connection>
                     mongoCredential = MongoCredential.createCredential(userName, databaseName, password.toCharArray());
                 }
                 try {
-                    final TypeConverter<Integer> converter = TypeUtil.cast(injector.getTypeConverter(Integer.class));
+                    final TypeConverter<Integer> converter = Cast.cast(injector.getTypeConverter(Integer.class));
                     final int portInt = converter.convert(port, DEFAULT_PORT);
                     description += ", server=" + server + ", port=" + portInt;
                     final WriteConcern writeConcern = toWriteConcern(writeConcernConstant, writeConcernConstantClassName);

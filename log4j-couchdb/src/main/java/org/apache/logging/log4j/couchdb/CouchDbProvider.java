@@ -24,11 +24,11 @@ import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.di.Injector;
-import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.plugins.validation.constraints.ValidHost;
 import org.apache.logging.log4j.plugins.validation.constraints.ValidPort;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util3.Cast;
 import org.apache.logging.log4j.util3.LoaderUtil;
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.CouchDbProperties;
@@ -144,7 +144,7 @@ public final class CouchDbProvider implements NoSqlProvider<CouchDbConnection> {
                 LOGGER.warn("No protocol specified, using default port [http].");
             }
 
-            final TypeConverter<Integer> converter = TypeUtil.cast(injector.getTypeConverter(Integer.class));
+            final TypeConverter<Integer> converter = Cast.cast(injector.getTypeConverter(Integer.class));
             final int portInt = converter.convert(port, protocol.equals("https") ? HTTPS : HTTP);
 
             if (Strings.isEmpty(username) || Strings.isEmpty(password)) {

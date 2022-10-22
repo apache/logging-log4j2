@@ -29,7 +29,7 @@ import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.model.PluginType;
 import org.apache.logging.log4j.plugins.util.ResolverUtil;
-import org.apache.logging.log4j.plugins.util.TypeUtil;
+import org.apache.logging.log4j.util3.Cast;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -52,11 +52,11 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
             final byte[] bytes;
             try (final var configStream = configurationSource.getInputStream()) {
                 bytes = configStream.readAllBytes();
-                root = TypeUtil.cast(JsonReader.read(new String(bytes, StandardCharsets.UTF_8)));
+                root = Cast.cast(JsonReader.read(new String(bytes, StandardCharsets.UTF_8)));
             }
             if (root.size() == 1) {
                 for (final Object value : root.values()) {
-                    root = TypeUtil.cast(value);
+                    root = Cast.cast(value);
                 }
             }
             processAttributes(rootNode, root);
@@ -101,7 +101,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
         root.forEach((key, value) -> {
             if (value instanceof Map) {
                 LOGGER.debug("Processing node for object {}", key);
-                children.add(constructNode(key, rootNode, TypeUtil.cast(value)));
+                children.add(constructNode(key, rootNode, Cast.cast(value)));
             }
         });
         LOGGER.debug("Completed parsing configuration");
@@ -131,7 +131,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
                 LOGGER.debug("Processing node for array {}", k);
                 ((List<?>) v).forEach(object -> {
                     if (object instanceof Map<?, ?>) {
-                        final Map<String, Object> map = TypeUtil.cast(object);
+                        final Map<String, Object> map = Cast.cast(object);
                         final String type = getType(map).orElse(k);
                         final PluginType<?> entryType = corePlugins.get(type);
                         final Node child = new Node(node, k, entryType);
@@ -145,12 +145,12 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
                         map.forEach((itemKey, itemValue) -> {
                             if (itemValue instanceof Map<?, ?>) {
                                 LOGGER.debug("Processing node for object {}", itemKey);
-                                grandchildren.add(constructNode(itemKey, child, TypeUtil.cast(itemValue)));
+                                grandchildren.add(constructNode(itemKey, child, Cast.cast(itemValue)));
                             } else if (itemValue instanceof List<?>) {
                                 final List<?> list = (List<?>) itemValue;
                                 LOGGER.debug("Processing array for object {}", itemKey);
                                 list.forEach(subValue -> grandchildren.add(
-                                        constructNode(itemKey, child, TypeUtil.cast(subValue))));
+                                        constructNode(itemKey, child, Cast.cast(subValue))));
                             }
                         });
                         children.add(child);
@@ -158,7 +158,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
                 });
             } else {
                 LOGGER.debug("Processing node for object {}", k);
-                children.add(constructNode(k, node, TypeUtil.cast(v)));
+                children.add(constructNode(k, node, Cast.cast(v)));
             }
         });
 

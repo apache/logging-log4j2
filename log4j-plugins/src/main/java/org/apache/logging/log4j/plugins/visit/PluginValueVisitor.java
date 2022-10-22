@@ -22,9 +22,9 @@ import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.di.Keys;
-import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util3.Cast;
 import org.apache.logging.log4j.util3.StringBuilders;
 
 import java.lang.reflect.Field;
@@ -66,13 +66,13 @@ public class PluginValueVisitor implements NodeVisitor {
     public Object visitField(final Field field, final Node node, final StringBuilder debugLog) {
         final String name = Keys.getName(field);
         final Collection<String> aliases = Keys.getAliases(field);
-        return TypeUtil.cast(parseValue(node, name, aliases, debugLog));
+        return Cast.cast(parseValue(node, name, aliases, debugLog));
     }
 
     @Override
     public Object visitParameter(final Parameter parameter, final Node node, final StringBuilder debugLog) {
         final String name = Keys.getName(parameter);
         final Collection<String> aliases = Keys.getAliases(parameter);
-        return TypeUtil.cast(parseValue(node, name, aliases, debugLog));
+        return Cast.cast(parseValue(node, name, aliases, debugLog));
     }
 }

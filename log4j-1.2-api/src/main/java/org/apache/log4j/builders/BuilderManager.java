@@ -36,8 +36,8 @@ import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.plugins.model.PluginType;
-import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util3.Cast;
 import org.w3c.dom.Element;
 
 import java.util.Locale;
@@ -100,7 +100,7 @@ public class BuilderManager {
         if (pluginType == null) {
             LOGGER.warn("Unable to load plugin class name {} with key {}", className, key);
         }
-        return TypeUtil.cast(pluginType);
+        return Cast.cast(pluginType);
     }
 
     private <T extends Builder<U>, U> U newInstance(final PluginType<T> plugin, final Function<T, U> consumer,

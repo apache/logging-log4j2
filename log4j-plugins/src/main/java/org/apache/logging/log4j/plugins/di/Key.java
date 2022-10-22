@@ -22,6 +22,7 @@ import org.apache.logging.log4j.plugins.QualifierType;
 import org.apache.logging.log4j.plugins.util.AnnotationUtil;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util3.Cast;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -64,7 +65,7 @@ public class Key<T> {
      */
     protected Key() {
         type = TypeUtil.getSuperclassTypeParameter(getClass());
-        rawType = TypeUtil.cast(TypeUtil.getRawType(type));
+        rawType = Cast.cast(TypeUtil.getRawType(type));
         final AnnotatedType superclass = getClass().getAnnotatedSuperclass();
         final Annotation qualifier = AnnotationUtil.getMetaAnnotation(superclass, QualifierType.class);
         qualifierType = qualifier != null ? qualifier.annotationType() : null;
@@ -300,7 +301,7 @@ public class Key<T> {
          */
         public <U> Builder<U> setType(final Type type) {
             this.type = type;
-            return TypeUtil.cast(this);
+            return Cast.cast(this);
         }
 
         /**
@@ -308,7 +309,7 @@ public class Key<T> {
          */
         public <U> Builder<U> setType(final Class<U> type) {
             this.type = type;
-            return TypeUtil.cast(this);
+            return Cast.cast(this);
         }
 
         /**
@@ -356,7 +357,7 @@ public class Key<T> {
             if (namespace == null) {
                 namespace = Strings.EMPTY;
             }
-            final Class<T> rawType = TypeUtil.cast(TypeUtil.getRawType(type));
+            final Class<T> rawType = Cast.cast(TypeUtil.getRawType(type));
             int order = this.order != null ? this.order : getOrder(rawType);
             return new Key<>(type, rawType, qualifierType, name, namespace, order);
         }
