@@ -24,7 +24,7 @@ package org.apache.logging.log4j.util;
  * @see ReadOnlyStringMap
  * @since 2.7
  */
-public interface BiConsumer<K, V> {
+public interface BiConsumer<K, V> extends java.util.function.BiConsumer<K, V> {
 
     /**
      * Performs the operation given the specified arguments.

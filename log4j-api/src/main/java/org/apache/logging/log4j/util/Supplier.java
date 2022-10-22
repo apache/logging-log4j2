@@ -32,12 +32,5 @@ package org.apache.logging.log4j.util;
  *
  * @since 2.4
  */
-public interface Supplier<T> {
-
-    /**
-     * Gets a value.
-     *
-     * @return a value
-     */
-    T get();
+public interface Supplier<T> extends java.util.function.Supplier<T> {
 }

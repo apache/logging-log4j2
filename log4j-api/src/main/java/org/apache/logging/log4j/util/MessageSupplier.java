@@ -34,12 +34,5 @@ import org.apache.logging.log4j.message.Message;
  *
  * @since 2.4
  */
-public interface MessageSupplier {
-
-    /**
-     * Gets a Message.
-     *
-     * @return a Message
-     */
-    Message get();
+public interface MessageSupplier extends java.util.function.Supplier<Message> {
 }
