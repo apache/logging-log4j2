@@ -62,4 +62,25 @@ public class NoOpThreadContextMap implements ThreadContextMap {
     @Override
     public void remove(final String key) {
     }
+
+    @Override
+    public void putAll(final Map<String, String> map) {
+    }
+
+    @Override
+    public void removeAll(final Iterable<String> keys) {
+    }
+
+    @Override
+    public <V> V getValue(final String key) {
+        return null;
+    }
+
+    @Override
+    public <V> void putValue(final String key, final V value) {
+    }
+
+    @Override
+    public <V> void putAllValues(final Map<String, V> values) {
+    }
 }
