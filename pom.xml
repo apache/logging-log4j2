@@ -242,6 +242,7 @@
     <!-- Properties in the format `<artifactId>.version` -->
     <!-- Spring Boot uses the same convention. -->
     <asciidoctor-maven-plugin.version>1.5.6</asciidoctor-maven-plugin.version>
+    <asm.version>9.4</asm.version>
     <build-helper-maven-plugin.version>3.3.0</build-helper-maven-plugin.version>
     <!-- checkstyle 10.0 requires Java 11 -->
     <checkstyle.version>9.3</checkstyle.version>
@@ -383,6 +384,13 @@
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-bom</artifactId>
         <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm-bom</artifactId>
+        <version>${asm.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -1865,6 +1873,7 @@
     <module>log4j-layout-template-json</module>
     <module>log4j-layout-template-json-test</module>
     <module>log4j-liquibase</module>
+    <module>log4j-migration</module>
     <module>log4j-mongodb3</module>
     <module>log4j-mongodb4</module>
     <module>log4j-osgi</module>
