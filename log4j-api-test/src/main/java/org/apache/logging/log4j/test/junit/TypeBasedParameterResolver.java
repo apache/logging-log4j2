@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.test.junit;
+package org.apache.logging.log4j.test.junit;
 
 import java.lang.reflect.Type;
 
@@ -23,7 +23,7 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 
-abstract class TypeBasedParameterResolver<T> implements ParameterResolver {
+public abstract class TypeBasedParameterResolver<T> implements ParameterResolver {
 
     private final Type supportedParameterType;
 

@@ -14,24 +14,27 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-import org.apache.logging.log4j.util.PropertySource;
-import org.apache.logging.log4j.test.junit.TestPropertySource;
-module org.apache.logging.log4j.test {
-    exports org.apache.logging.log4j.test;
-    exports org.apache.logging.log4j.test.junit;
 
-    opens org.apache.logging.log4j.test.junit to org.junit.platform.commons;
+package org.apache.logging.log4j.test;
 
-    requires transitive org.apache.logging.log4j;
-    requires static org.apache.commons.lang3;
-    requires static org.assertj.core;
-    requires static org.hamcrest;
-    requires static org.junit.jupiter.api;
-    requires static org.junit.jupiter.params;
-    requires static org.junit.platform.commons;
-    requires static org.junit.platform.launcher;
-    requires static org.junitpioneer;
-    requires static junit;
+/**
+ * A container for per-test properties.
+ */
+public interface TestProperties {
 
-    provides PropertySource with TestPropertySource;
+    String getProperty(final String key);
+
+    boolean containsProperty(final String key);
+
+    void setProperty(final String key, final String value);
+
+    default void setProperty(final String key, final boolean value) {
+        setProperty(key, value ? "true" : "false");
+    }
+
+    default void setProperty(final String key, final int value) {
+        setProperty(key, Integer.toString(value));
+    }
+
+    void clearProperty(final String key);
 }
