@@ -14,31 +14,30 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+package org.apache.logging.log4j.test.junit;
 
-package org.apache.logging.log4j.core.test.junit;
+import java.lang.reflect.Type;
 
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.test.junit.TypeBasedParameterResolver;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
+import org.junit.jupiter.api.extension.ParameterResolver;
 
-import static org.apache.logging.log4j.core.test.junit.LoggerContextResolver.getParameterLoggerContext;
+public abstract class TypeBasedParameterResolver<T> implements ParameterResolver {
 
-class ConfigurationResolver extends TypeBasedParameterResolver<Configuration> {
+    private final Type supportedParameterType;
 
-    public ConfigurationResolver() {
-        super(Configuration.class);
+    public TypeBasedParameterResolver(Type supportedParameterType) {
+        this.supportedParameterType = supportedParameterType;
     }
 
     @Override
-    public Configuration resolveParameter(
-            ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        final LoggerContext loggerContext = getParameterLoggerContext(parameterContext, extensionContext);
-        if (loggerContext == null) {
-            throw new ParameterResolutionException("No LoggerContext defined");
-        }
-        return loggerContext.getConfiguration();
+    public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
+            throws ParameterResolutionException {
+        return this.supportedParameterType.equals(parameterContext.getParameter().getParameterizedType());
     }
+
+    @Override
+    public abstract T resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
+            throws ParameterResolutionException;
 }

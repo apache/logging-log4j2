@@ -17,6 +17,10 @@
 
 package org.apache.logging.log4j.core.test.junit;
 
+import java.lang.reflect.Method;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.test.junit.TypeBasedParameterResolver;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.LoggerContextAccessor;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -27,13 +31,14 @@ import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
-import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
-
-import java.lang.reflect.Method;
-import java.util.concurrent.TimeUnit;
 
 class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> implements BeforeAllCallback,
         AfterAllCallback, BeforeEachCallback, AfterEachCallback {
+
+    public LoggerContextResolver() {
+        super(LoggerContext.class);
+    }
+
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
         final Class<?> testClass = context.getRequiredTestClass();
