@@ -1416,8 +1416,6 @@
           <excludes>
             <!-- Matches other RAT configurations in this POM -->
             <exclude>src/main/resources/META-INF/services/**/*</exclude>
-            <!-- IntelliJ files -->
-            <exclude>.idea/**/*</exclude>
             <exclude>src/test/resources/**/*</exclude>
             <!-- IDE settings imports -->
             <exclude>src/ide/**</exclude>
@@ -1435,6 +1433,7 @@
             <exclude>**/.toDelete</exclude>
             <exclude>velocity.log</exclude>
             <!-- Other -->
+            <exclude>.java-version</exclude>
             <exclude>felix-cache/**</exclude>
             <exclude>**/*.md</exclude>
             <exclude>**/*.yml</exclude>
@@ -1444,9 +1443,9 @@
             <exclude>**/fluent-bit.conf</exclude>
             <exclude>**/rabbitmq.config</exclude>
             <exclude>**/MANIFEST.MF</exclude>
+            <exclude>.surefire-*</exclude>
           </excludes>
         </configuration>
-        <!-- Turn this one once it passes, not before.
         <executions>
           <execution>
             <phase>verify</phase>
@@ -1455,7 +1454,6 @@
             </goals>
           </execution>
         </executions>
-        -->
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
