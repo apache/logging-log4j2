@@ -18,11 +18,7 @@ package org.apache.logging.log4j.core.layout;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.AbstractLogEvent;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.*;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
@@ -45,6 +41,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import static org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedFormat;
@@ -237,7 +234,7 @@ public class HtmlLayoutTest {
 
     @Test
     public void testLayoutWithDatePatternFixedFormat() {
-        for (final String timeZone : new String[] {"GMT+8", "UTC", null}) {
+        for (final String timeZone : new String[] {"GMT+8", "GMT+0530", "UTC", null}) {
             for (final FixedDateFormat.FixedFormat format : FixedDateFormat.FixedFormat.values()) {
                 testLayoutWithDatePatternFixedFormat(format, timeZone);
             }
@@ -262,13 +259,29 @@ public class HtmlLayoutTest {
             zonedDateTime = zonedDateTime.withZoneSameInstant(ZoneId.of(timezone));
         }
 
+        // LOG4J2-3019 HtmlLayoutTest.testLayoutWithDatePatternFixedFormat test fails on windows
+        // https://issues.apache.org/jira/browse/LOG4J2-3019
+        // java.time.format.DateTimeFormatterBuilder.toFormatter() defaults to using 
+        // Locale.getDefault(Locale.Category.FORMAT)
+        final Locale formatLocale = Locale.getDefault(Locale.Category.FORMAT);
+        final Locale locale = Locale.getDefault().equals(formatLocale) ? formatLocale : Locale.getDefault();
+
         // For DateTimeFormatter of jdk,
         // Pattern letter 'S' means fraction-of-second, 'n' means nano-of-second. Log4j2 needs S.
         // Pattern letter 'X' (upper case) will output 'Z' when the offset to be output would be zero,
         // whereas pattern letter 'x' (lower case) will output '+00', '+0000', or '+00:00'. Log4j2 needs x.
         DateTimeFormatter dateTimeFormatter =
-            DateTimeFormatter.ofPattern(format.getPattern().replace('n', 'S').replace('X', 'x'));
+            DateTimeFormatter.ofPattern(format.getPattern().replace('n', 'S').replace('X', 'x'), locale);
         String expected = zonedDateTime.format(dateTimeFormatter);
+
+        String offset = zonedDateTime.getOffset().toString();
+
+        //Truncate minutes if timeZone format is HH and timeZone has minutes. This is required because according to DateTimeFormatter,
+        //One letter outputs just the hour, such as '+01', unless the minute is non-zero in which case the minute is also output, such as '+0130'
+        //ref : https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html
+        if (FixedDateFormat.FixedTimeZoneFormat.HH.equals(format.getTimeZoneFormat()) && offset.contains(":") && !"00".equals(offset.split(":")[1])) {
+            expected = expected.substring(0, expected.length() - 2);
+        }
 
         assertEquals("<td>" + expected + "</td>", actual,
             MessageFormat.format("Incorrect date={0}, format={1}, timezone={2}", actual, format.name(), timezone));
