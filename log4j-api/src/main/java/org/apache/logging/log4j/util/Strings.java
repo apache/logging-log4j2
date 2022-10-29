@@ -18,6 +18,7 @@ package org.apache.logging.log4j.util;
 
 import org.apache.logging.log4j.util3.Chars;
 import org.apache.logging.log4j.util3.PropertiesUtil;
+import org.apache.logging.log4j.util3.SystemPropertiesPropertySource;
 
 import java.util.Iterator;
 import java.util.Locale;
@@ -48,7 +49,7 @@ public final class Strings {
      * OS-dependent line separator, defaults to {@code "\n"} if the system property {@code ""line.separator"} cannot be
      * read.
      */
-    public static final String LINE_SEPARATOR = PropertiesUtil.getProperties().getStringProperty("line.separator",
+    public static final String LINE_SEPARATOR = SystemPropertiesPropertySource.getSystemProperty("line.separator",
             "\n");
 
     private Strings() {
