@@ -32,6 +32,18 @@ public class SystemPropertiesPropertySource implements PropertySource {
 	private static final int DEFAULT_PRIORITY = 0;
 	private static final String PREFIX = "log4j2.";
 
+	/**
+	 * Used by bootstrap code to get system properties without loading PropertiesUtil.
+	 */
+	public static String getSystemProperty(final String key, final String defaultValue) {
+		try {
+			return System.getProperty(key, defaultValue);
+		} catch (SecurityException e) {
+			// Silently ignore the exception
+			return defaultValue;
+		}
+	}
+
 	@Override
 	public int getPriority() {
 		return DEFAULT_PRIORITY;
