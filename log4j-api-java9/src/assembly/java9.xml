@@ -29,20 +29,12 @@
       <directory>${project.build.outputDirectory}</directory>
       <outputDirectory>/classes/META-INF/versions/9</outputDirectory>
       <includes>
-        <include>**/*.class</include>
+        <include>module-info.class</include>
+        <include>org/apache/logging/log4j/util/Base64Util.class</include>
+        <include>org/apache/logging/log4j/util/ProcessIdUtil.class</include>
+        <include>org/apache/logging/log4j/util/StackLocator.class</include>
+        <include>org/apache/logging/log4j/util/internal/DefaultObjectInputFilter.class</include>
       </includes>
-      <excludes>
-        <exclude>**/Dummy.class</exclude>
-        <exclude>**/spi/Provider.class</exclude>
-        <exclude>**/status/StatusLogger.class</exclude>
-        <exclude>**/util/EnvironmentPropertySource.class</exclude>
-        <exclude>**/util/LoaderUtil.class</exclude>
-        <exclude>**/util/PropertySource.class</exclude>
-        <exclude>**/util/PrivateSecurityManagerStackTraceUtil.class</exclude>
-        <exclude>**/util/SystemPropertiesPropertySource.class</exclude>
-        <exclude>**/message/ThreadDumpMessage.class</exclude>
-        <exclude>**/message/ThreadDumpMessage$ThreadInfoFactory.class</exclude>
-      </excludes>
     </fileSet>
   </fileSets>
 </assembly>

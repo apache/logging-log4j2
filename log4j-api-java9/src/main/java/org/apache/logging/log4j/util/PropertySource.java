@@ -24,11 +24,4 @@ import java.util.stream.Stream;
  * be copied into the log4j-api module.
  */
 public interface PropertySource {
-
-    /**
-     * This method's only purpose is to test {@link ServiceLoaderUtil} from inside the module.
-     */
-    public static Stream<PropertySource> loadPropertySources() {
-        return ServiceLoaderUtil.loadServices(PropertySource.class, MethodHandles.lookup());
-    }
 }
