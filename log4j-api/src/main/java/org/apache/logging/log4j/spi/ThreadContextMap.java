@@ -168,6 +168,11 @@ public interface ThreadContextMap {
         values.forEach(this::putValue);
     }
 
+    /**
+     * Factory for creating {@link ThreadContextMap} instances.
+     *
+     * @see DefaultContextMapFactory
+     */
     interface Factory {
         /**
          * Creates a new ThreadContextMap.
