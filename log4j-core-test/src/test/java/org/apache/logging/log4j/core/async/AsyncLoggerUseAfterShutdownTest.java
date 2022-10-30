@@ -19,38 +19,24 @@ package org.apache.logging.log4j.core.async;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.util.Strings;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 /**
- * Test for https://issues.apache.org/jira/browse/LOG4J2-639
+ * Test for <a href="https://issues.apache.org/jira/browse/LOG4J2-639">LOG4J2-639</a>
  */
-@Category(AsyncLoggers.class)
+@Tag("async")
+@Tag("functional")
 public class AsyncLoggerUseAfterShutdownTest {
-
-    @BeforeClass
-    public static void beforeClass() {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
-                AsyncLoggerContextSelector.class.getName());
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "AsyncLoggerTest.xml");
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, Strings.EMPTY);
-    }
-
     @Test
+    @SetSystemProperty(key = Constants.LOG4J_CONTEXT_SELECTOR, value = "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector")
+    @SetSystemProperty(key = ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, value = "AsyncLoggerTest.xml")
     public void testNoErrorIfLogAfterShutdown() throws Exception {
         final Logger log = LogManager.getLogger("com.foo.Bar");
         final String msg = "Async logger msg";

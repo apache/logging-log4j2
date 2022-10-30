@@ -16,11 +16,18 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import java.io.File;
+import org.apache.commons.io.file.PathUtils;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributeView;
 import java.nio.file.attribute.FileTime;
@@ -28,77 +35,53 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configurator;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  *
  */
 public class RollingAppenderOnStartupTest {
 
-    private static final String SOURCE = "src/test/resources/__files";
-    private static final String DIR = "target/onStartup";
-    private static final String CONFIG = "log4j-rollOnStartup.xml";
+    private static final Path SOURCE = Path.of("src", "test", "resources", "__files");
+    private static final Path DIR = Path.of("target", "onStartup");
     private static final String FILENAME = "onStartup.log";
     private static final String PREFIX = "This is test message number ";
     private static final String ROLLED = "onStartup-";
 
-    private static LoggerContext loggerContext;
-
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        if (Files.exists(Paths.get("target/onStartup"))) {
-            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
-                for (final Path path : directoryStream) {
-                    Files.delete(path);
-                }
-                Files.delete(Paths.get(DIR));
-            }
+    @BeforeAll
+    static void setUp() throws IOException {
+        if (Files.isDirectory(DIR)) {
+            PathUtils.deleteDirectory(DIR);
         }
-        Files.createDirectory(new File(DIR).toPath());
-        Path target = Paths.get(DIR, FILENAME);
-        Files.copy(Paths.get(SOURCE, FILENAME), target, StandardCopyOption.COPY_ATTRIBUTES);
-        FileTime newTime = FileTime.from(Instant.now().minus(1, ChronoUnit.DAYS));
+        Files.createDirectory(DIR);
+        final Path target = Files.copy(SOURCE.resolve(FILENAME), DIR.resolve(FILENAME), StandardCopyOption.COPY_ATTRIBUTES);
+        final FileTime newTime = FileTime.from(Instant.now().minus(1, ChronoUnit.DAYS));
         Files.getFileAttributeView(target, BasicFileAttributeView.class).setTimes(newTime, newTime, newTime);
     }
 
+    @AfterAll
+    static void tearDown() throws IOException {
+        PathUtils.deleteDirectory(DIR);
+    }
+
     @Test
-    public void performTest() throws Exception {
+    @LoggerContextSource("log4j-rollOnStartup.xml")
+    public void performTest(final LoggerContext loggerContext) throws Exception {
         boolean rolled = false;
-        loggerContext = Configurator.initialize("Test", CONFIG);
         final Logger logger = loggerContext.getLogger(RollingAppenderOnStartupTest.class);
         for (int i = 3; i < 10; ++i) {
             logger.debug(PREFIX + i);
         }
-        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(DIR)) {
             for (final Path path : directoryStream) {
                 if (path.toFile().getName().startsWith(ROLLED)) {
                     rolled = true;
                     List<String> lines = Files.readAllLines(path);
-                    assertTrue("No messages in " + path.toFile().getName(), lines.size() > 0);
-                    assertTrue("Missing message for " + path.toFile().getName(),
-                            lines.get(0).startsWith(PREFIX + "1"));
+                    assertTrue(lines.size() > 0, "No messages in " + path.toFile().getName());
+                    assertTrue(lines.get(0).startsWith(PREFIX + "1"), "Missing message for " + path.toFile().getName());
                 }
             }
         }
-        assertTrue("File did not roll", rolled);
+        assertTrue(rolled, "File did not roll");
     }
-
-    @AfterClass
-    public static void afterClass() throws Exception {
-        Configurator.shutdown(loggerContext);
-        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
-            for (final Path path : directoryStream) {
-                Files.delete(path);
-            }
-        }
-        Files.delete(Paths.get(DIR));
-    }
-
 }
