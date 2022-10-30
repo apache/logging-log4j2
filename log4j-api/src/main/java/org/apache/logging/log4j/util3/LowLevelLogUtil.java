@@ -17,10 +17,9 @@
 
 package org.apache.logging.log4j.util3;
 
-import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.io.Writer;
-import java.util.Objects;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * PrintWriter-based logging utility for classes too low level to use {@link org.apache.logging.log4j.status.StatusLogger}.
@@ -30,8 +29,25 @@ import java.util.Objects;
  * @since 2.6
  */
 public final class LowLevelLogUtil {
+    private static final PrintWriter STDERR = new PrintWriter(System.err, true);
+    private static Consumer<String> logErrorMessage = message -> STDERR.println("ERROR: " + message);
+    private static Consumer<Throwable> logException = exception -> exception.printStackTrace(STDERR);
+    private static BiConsumer<String, Throwable> logErrorWithException = (message, exception) -> {
+        log(message);
+        logException(exception);
+    };
 
-    private static PrintWriter writer = new PrintWriter(System.err, true);
+    public static void setLogErrorMessage(final Consumer<String> logErrorMessage) {
+        LowLevelLogUtil.logErrorMessage = logErrorMessage;
+    }
+
+    public static void setLogException(final Consumer<Throwable> logException) {
+        LowLevelLogUtil.logException = logException;
+    }
+
+    public static void setLogErrorWithException(final BiConsumer<String, Throwable> logErrorWithException) {
+        LowLevelLogUtil.logErrorWithException = logErrorWithException;
+    }
 
     /**
      * Logs the given message.
@@ -41,37 +57,18 @@ public final class LowLevelLogUtil {
      */
     public static void log(final String message) {
         if (message != null) {
-            writer.println(message);
+            logErrorMessage.accept(message);
         }
     }
 
     public static void logException(final Throwable exception) {
         if (exception != null) {
-            exception.printStackTrace(writer);
+            logException.accept(exception);
         }
     }
 
     public static void logException(final String message, final Throwable exception) {
-        log(message);
-        logException(exception);
-    }
-
-    /**
-     * Sets the underlying OutputStream where exceptions are printed to.
-     *
-     * @param out the OutputStream to log to
-     */
-    public static void setOutputStream(final OutputStream out) {
-        LowLevelLogUtil.writer = new PrintWriter(Objects.requireNonNull(out), true);
-    }
-
-    /**
-     * Sets the underlying Writer where exceptions are printed to.
-     *
-     * @param writer the Writer to log to
-     */
-    public static void setWriter(final Writer writer) {
-        LowLevelLogUtil.writer = new PrintWriter(Objects.requireNonNull(writer), true);
+        logErrorWithException.accept(message, exception);
     }
 
     private LowLevelLogUtil() {
