@@ -41,5 +41,6 @@ module org.apache.logging.log4j.core.test {
     requires static junit;
     requires static org.junit.jupiter.api;
     requires static org.junit.platform.commons;
+    requires org.assertj.core;
     provides PluginService with Log4jPlugins;
 }
