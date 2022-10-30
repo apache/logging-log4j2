@@ -57,7 +57,6 @@ import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertyEnvironment;
-import org.apache.logging.log4j.util3.PropertiesUtil;
 
 import java.util.Map;
 import java.util.function.Supplier;
@@ -65,7 +64,7 @@ import java.util.function.Supplier;
 import static org.apache.logging.log4j.util3.Constants.isThreadLocalsEnabled;
 
 /**
- * Contains default bindings for Log4j including support for {@link PropertiesUtil}-based configuration.
+ * Contains default bindings for Log4j including support for {@link PropertyEnvironment}-based configuration.
  *
  * @see Constants
  * @see ContextSelector
