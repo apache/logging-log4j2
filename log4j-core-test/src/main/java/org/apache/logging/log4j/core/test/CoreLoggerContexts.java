@@ -17,10 +17,13 @@
 
 package org.apache.logging.log4j.core.test;
 
-import java.io.File;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LifeCycle;
+import org.apache.logging.log4j.spi.LoggerContext;
+
+import java.io.File;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CoreLoggerContexts {
 
@@ -32,11 +35,15 @@ public class CoreLoggerContexts {
     }
 
     public static void stopLoggerContext() {
-        ((LifeCycle) LogManager.getContext()).stop(); // stops async thread
+        final LoggerContext context = LogManager.getContext();
+        assertThat(context).isInstanceOf(LifeCycle.class);
+        ((LifeCycle) context).stop(); // stops async thread
     }
 
     public static void stopLoggerContext(final boolean currentContext) {
-        ((LifeCycle) LogManager.getContext(currentContext)).stop(); // stops async thread
+        final LoggerContext context = LogManager.getContext(currentContext);
+        assertThat(context).isInstanceOf(LifeCycle.class);
+        ((LifeCycle) context).stop(); // stops async thread
     }
 
     public static void stopLoggerContext(final boolean currentContext, final File checkFilePresence) throws InterruptedException {
