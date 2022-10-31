@@ -14,15 +14,27 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.slf4j;
 
-import org.apache.logging.log4j.spi.Provider;
+package org.apache.logging.log4j.simple;
+
+import org.apache.logging.log4j.spi.AbstractLoggingSystemProvider;
 
 /**
- * Bind the Log4j API to SLF4J.
+ * Provides a simple fallback logging system implementation.
  */
-public class SLF4JProvider extends Provider {
-    public SLF4JProvider() {
-        super(15, "2.6.0", SLF4JLoggerContextFactory.class, MDCContextMap.class);
+public class SimpleLoggingSystemProvider extends AbstractLoggingSystemProvider<SimpleLoggerContextFactory> {
+    @Override
+    protected SimpleLoggerContextFactory createLoggerContextFactory() {
+        return SimpleLoggerContextFactory.INSTANCE;
+    }
+
+    @Override
+    public int getPriority() {
+        return Integer.MIN_VALUE;
+    }
+
+    @Override
+    public String getVersion() {
+        return "2.6.0";
     }
 }

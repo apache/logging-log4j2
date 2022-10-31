@@ -15,38 +15,32 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.util;
+package org.apache.logging.log4j.internal;
 
-import java.util.function.IntSupplier;
+import java.util.function.Supplier;
 
-public class LazyInt implements IntSupplier {
-    private final IntSupplier supplier;
-    private volatile boolean initialized;
-    private volatile int value;
+/**
+ * Combination of a class key and a supplier function to get a bound value for the key.
+ * @param <T> type of key
+ */
+public class Binding<T> {
+    private final Class<T> key;
+    private final Supplier<? extends T> supplier;
 
-    public LazyInt(final IntSupplier supplier) {
+    private Binding(final Class<T> key, final Supplier<? extends T> supplier) {
+        this.key = key;
         this.supplier = supplier;
     }
 
-    @Override
-    public int getAsInt() {
-        boolean uninitialized = !initialized;
-        int value = this.value;
-        if (uninitialized) {
-            synchronized (this) {
-                uninitialized = !initialized;
-                if (uninitialized) {
-                    this.value = value = supplier.getAsInt();
-                    initialized = true;
-                }
-            }
-        }
-        return value;
+    public Class<T> getKey() {
+        return key;
     }
 
-    public synchronized void setAsInt(final int i) {
-        initialized = false;
-        value = i;
-        initialized = true;
+    public Supplier<? extends T> getSupplier() {
+        return supplier;
+    }
+
+    public static <T> Binding<T> bind(final Class<T> key, final Supplier<? extends T> supplier) {
+        return new Binding<>(key, supplier);
     }
 }

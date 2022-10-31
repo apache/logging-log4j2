@@ -14,16 +14,33 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j;
 
-import org.apache.logging.log4j.spi.Provider;
-import org.apache.logging.log4j.test.TestLoggerContextFactory;
+package org.apache.logging.slf4j;
+
+import org.apache.logging.log4j.spi.AbstractLoggingSystemProvider;
+import org.apache.logging.log4j.spi.ThreadContextMap;
 
 /**
- * Binding for the Log4j API.
+ * Bind the Log4j API to SLF4J.
  */
-public class TestProvider extends Provider {
-    public TestProvider() {
-        super(0, "2.6.0", TestLoggerContextFactory.class);
+public class SLF4JSystemProvider extends AbstractLoggingSystemProvider<SLF4JLoggerContextFactory> {
+    @Override
+    protected SLF4JLoggerContextFactory createLoggerContextFactory() {
+        return new SLF4JLoggerContextFactory();
+    }
+
+    @Override
+    protected ThreadContextMap.Factory createContextMapFactory() {
+        return new MDCContextMap.Factory();
+    }
+
+    @Override
+    public int getPriority() {
+        return 15;
+    }
+
+    @Override
+    public String getVersion() {
+        return "2.6.0";
     }
 }

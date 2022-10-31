@@ -25,7 +25,6 @@ import org.apache.logging.log4j.plugins.di.InjectorCallback;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.model.PluginRegistry;
 import org.apache.logging.log4j.plugins.model.PluginService;
-import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.util3.PropertiesUtil;
 import org.apache.logging.log4j.util3.ServiceRegistry;
 import org.osgi.framework.Bundle;
@@ -68,10 +67,10 @@ public final class Activator implements BundleActivator {
         final ServiceRegistry registry = ServiceRegistry.getInstance();
         final Bundle bundle = context.getBundle();
         final long bundleId = bundle.getBundleId();
+
         final ClassLoader classLoader = bundle.adapt(BundleWiring.class).getClassLoader();
         registry.registerBundleServices(InjectorCallback.class, bundleId, List.of(injectorCallback));
         registry.loadServicesFromBundle(PluginService.class, bundleId, classLoader);
-        registry.loadServicesFromBundle(Provider.class, bundleId, classLoader);
         registry.loadServicesFromBundle(ContextDataProvider.class, bundleId, classLoader);
         registry.loadServicesFromBundle(InjectorCallback.class, bundleId, classLoader);
         // allow the user to override the default ContextSelector (e.g., by using BasicContextSelector for a global cfg)
@@ -83,7 +82,6 @@ public final class Activator implements BundleActivator {
 
     @Override
     public void stop(final BundleContext context) throws Exception {
-        ServiceRegistry.getInstance().unregisterBundleServices(context.getBundle().getBundleId());
         if (injectorCallback != null) {
             injectorCallback = null;
             injectorCallbackServiceRegistration.unregister();

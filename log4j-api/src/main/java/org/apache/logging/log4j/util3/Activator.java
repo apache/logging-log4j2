@@ -17,8 +17,9 @@
 package org.apache.logging.log4j.util3;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.spi.LegacyLoggingSystemProvider;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
-import org.apache.logging.log4j.spi.Provider;
+import org.apache.logging.log4j.spi.LoggingSystemProvider;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.osgi.framework.AdaptPermission;
 import org.osgi.framework.AdminPermission;
@@ -26,15 +27,13 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
 import org.osgi.framework.SynchronousBundleListener;
 import org.osgi.framework.wiring.BundleWire;
 import org.osgi.framework.wiring.BundleWiring;
 
+import java.io.IOException;
 import java.net.URL;
 import java.security.Permission;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -50,9 +49,12 @@ public class Activator implements BundleActivator, SynchronousBundleListener {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    // until we have at least one Provider, we'll lock ProviderUtil which locks LogManager.<clinit> by extension.
+    // until we have at least one LoggingSystemProvider, we'll acquire an initialization lock on LoggingSystem
+    // which in turn locks LogManager and ThreadContext internally
     // this variable needs to be reset once the lock has been released
-    private boolean lockingProviderUtil;
+    private boolean acquiredLoggingSystemInitializationLock;
+    private LoggingSystem loggingSystem;
+    private ServiceRegistry serviceRegistry;
 
     private static void checkPermission(final Permission permission) {
         if (SECURITY_MANAGER != null) {
@@ -100,32 +102,25 @@ public class Activator implements BundleActivator, SynchronousBundleListener {
     }
 
     private void loadProvider(final BundleContext bundleContext, final BundleWiring bundleWiring) {
-        final String filter = "(APIVersion>=2.6.0)";
-        try {
-            final Collection<ServiceReference<Provider>> serviceReferences = bundleContext.getServiceReferences(Provider.class, filter);
-            Provider maxProvider = null;
-            for (final ServiceReference<Provider> serviceReference : serviceReferences) {
-                final Provider provider = bundleContext.getService(serviceReference);
-                if (maxProvider == null || provider.getPriority() > maxProvider.getPriority()) {
-                    maxProvider = provider;
-                }
+        final ClassLoader classLoader = bundleWiring.getClassLoader();
+        final long bundleId = bundleContext.getBundle().getBundleId();
+        serviceRegistry.loadServicesFromBundle(LoggingSystemProvider.class, bundleId, classLoader);
+        for (final URL url : bundleWiring.findEntries("META-INF", "log4j-provider.properties", 0)) {
+            try {
+                serviceRegistry.registerBundleServices(LoggingSystemProvider.class, bundleId,
+                        List.of(new LegacyLoggingSystemProvider<>(url, classLoader)));
+            } catch (final IOException e) {
+                LOGGER.error("Unable to load {}", url, e);
             }
-            if (maxProvider != null) {
-                ProviderUtil.addProvider(maxProvider);
-            }
-        } catch (final InvalidSyntaxException ex) {
-            LOGGER.error("Invalid service filter: " + filter, ex);
-        }
-        final List<URL> urls = bundleWiring.findEntries("META-INF", "log4j-provider.properties", 0);
-        for (final URL url : urls) {
-            ProviderUtil.loadProvider(url, bundleWiring.getClassLoader());
         }
     }
 
     @Override
     public void start(final BundleContext bundleContext) throws Exception {
-        ProviderUtil.STARTUP_LOCK.lock();
-        lockingProviderUtil = true;
+        serviceRegistry = ServiceRegistry.getInstance();
+        loggingSystem = LoggingSystem.getInstance();
+        loggingSystem.acquireInitializationLock();
+        acquiredLoggingSystemInitializationLock = true;
         final BundleWiring self = bundleContext.getBundle().adapt(BundleWiring.class);
         final List<BundleWire> required = self.getRequiredWires(LoggerContextFactory.class.getName());
         for (final BundleWire wire : required) {
@@ -140,9 +135,9 @@ public class Activator implements BundleActivator, SynchronousBundleListener {
     }
 
     private void unlockIfReady() {
-        if (lockingProviderUtil && !ProviderUtil.PROVIDERS.isEmpty()) {
-            ProviderUtil.STARTUP_LOCK.unlock();
-            lockingProviderUtil = false;
+        if (acquiredLoggingSystemInitializationLock && loggingSystem.hasProvider()) {
+            loggingSystem.releaseInitializationLock();
+            acquiredLoggingSystemInitializationLock = false;
         }
     }
 
@@ -158,6 +153,10 @@ public class Activator implements BundleActivator, SynchronousBundleListener {
             case BundleEvent.STARTED:
                 loadProvider(event.getBundle());
                 unlockIfReady();
+                break;
+
+            case BundleEvent.STOPPED:
+                serviceRegistry.unregisterBundleServices(event.getBundle().getBundleId());
                 break;
 
             default:

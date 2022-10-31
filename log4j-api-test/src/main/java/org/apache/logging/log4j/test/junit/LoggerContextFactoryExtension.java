@@ -17,8 +17,8 @@
 
 package org.apache.logging.log4j.test.junit;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
+import org.apache.logging.log4j.util3.LoggingSystem;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -30,7 +30,6 @@ import org.junit.jupiter.api.extension.ExtensionContext;
  */
 public class LoggerContextFactoryExtension implements BeforeAllCallback, AfterAllCallback {
 
-    private static final String KEY = "previousFactory";
     private final LoggerContextFactory loggerContextFactory;
 
     public LoggerContextFactoryExtension(LoggerContextFactory loggerContextFactory) {
@@ -39,16 +38,11 @@ public class LoggerContextFactoryExtension implements BeforeAllCallback, AfterAl
 
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
-        getStore(context).put(KEY, LogManager.getFactory());
-        LogManager.setFactory(loggerContextFactory);
+        LoggingSystem.getInstance().setLoggerContextFactory(loggerContextFactory);
     }
 
     @Override
     public void afterAll(ExtensionContext context) throws Exception {
-        LogManager.setFactory(getStore(context).get(KEY, LoggerContextFactory.class));
-    }
-
-    private ExtensionContext.Store getStore(ExtensionContext context) {
-        return context.getStore(ExtensionContext.Namespace.create(getClass(), context.getRequiredTestClass()));
+        LoggingSystem.getInstance().setLoggerContextFactory(null);
     }
 }

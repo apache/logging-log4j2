@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.test.junit;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
@@ -35,6 +34,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.CleanFiles;
 import org.apache.logging.log4j.test.junit.CleanFolders;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util3.LoggingSystem;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -129,7 +129,7 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
                 }
                 injector.init();
                 final Log4jContextFactory factory = new Log4jContextFactory(injector);
-                LogManager.setFactory(factory);
+                LoggingSystem.getInstance().setLoggerContextFactory(factory);
                 final String fqcn = getClass().getName();
                 final ClassLoader classLoader = description.getTestClass().getClassLoader();
 
@@ -153,6 +153,7 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
                     loggerContext = null;
                     contextSelectorClass = null;
                     StatusLogger.getLogger().reset();
+                    LoggingSystem.getInstance().setLoggerContextFactory(null);
                     System.clearProperty(SYS_PROP_KEY_CLASS_NAME);
                     System.clearProperty(SYS_PROP_KEY_DISPLAY_NAME);
                 }

@@ -17,7 +17,6 @@
 
 package org.apache.logging.log4j.core.test.junit;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.LoggerContextAccessor;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -25,7 +24,9 @@ import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.test.junit.TypeBasedParameterResolver;
+import org.apache.logging.log4j.util3.LoggingSystem;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -114,12 +115,15 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
         final String displayName = extensionContext.getDisplayName();
         final Injector injector = extensionContext.getTestInstance().map(DI::createInjector).orElseGet(DI::createInjector);
         injector.init();
+        final LoggingSystem system = LoggingSystem.getInstance();
         final Log4jContextFactory loggerContextFactory;
         if (source.bootstrap()) {
             loggerContextFactory = new Log4jContextFactory(injector);
-            LogManager.setFactory(loggerContextFactory);
+            system.setLoggerContextFactory(loggerContextFactory);
+            getTestStore(extensionContext).put(LoggerContextFactory.class,
+                    (Store.CloseableResource) () -> system.setLoggerContextFactory(null));
         } else {
-            loggerContextFactory = (Log4jContextFactory) LogManager.getFactory();
+            loggerContextFactory = (Log4jContextFactory) system.getLoggerContextFactory();
         }
         final Class<?> testClass = extensionContext.getRequiredTestClass();
         final ClassLoader classLoader = testClass.getClassLoader();

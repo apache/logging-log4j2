@@ -27,12 +27,9 @@ supported by the Log4j 3 implementation.
 The `LoggerContextFactory` binds the Log4j API to its implementation.
 The Log4j `LogManager` locates a `LoggerContextFactory` by using
 `java.util.ServiceLoader` to locate all instances of
-`org.apache.logging.log4j.spi.Provider`. Each implementation must
-provide a class that extends `org.apache.logging.log4j.spi.Provider` and
-should have a no-arg constructor that delegates to Provider's
-constructor passing the Priority, the API versions it is compatible
-with, and the class that implements
-`org.apache.logging.log4j.spi.LoggerContextFactory`. Log4j will compare
+`org.apache.logging.log4j.spi.LoggingSystemProvider`. Each implementation must
+provide a class that implements `org.apache.logging.log4j.spi.LoggingSystemProvider` and
+should have a no-arg constructor. Log4j will compare
 the current API version and if it is compatible the implementation 
 will be added to the list of providers. The API version in
 `org.apache.logging.log4j.LogManager` is only changed when a feature is
@@ -48,13 +45,12 @@ Applications may change the LoggerContextFactory that will be used by
 
 1.  Create a binding to the logging implementation.
 ..  Implement a new link:../log4j-core/apidocs/org/apache/logging/log4j/core/impl/Log4jContextFactory.html[`LoggerContextFactory`].
-..  Implement a class that extends link:../log4j-core/apidocs/org/apache/logging/spi/Provider.html[`org.apache.logging.spi.Provider`] 
-with a no-arg constructor that calls super-class's constructor with the
-Priority, the API version(s), `LoggerContextFactory` class, and
-optionally, a link:../log4j-core/apidocs/org/apache/logging/log4j/spi/ThreadContextMap.html[`ThreadContextMap`] implementation class.
-..  Create a `META-INF/services/org.apache.logging.spi.Provider` file
+..  Implement a class that implements link:../log4j-core/apidocs/org/apache/logging/spi/LoggingSystemProvider.html[`org.apache.logging.spi.LoggingSystemProvider`]
+with a no-arg constructor.
+..  Create a `META-INF/services/org.apache.logging.spi.LoggingSystemProvider` file
 that contains the name of the class that implements
-`org.apache.logging.spi.Provider`.
+`org.apache.logging.spi.LoggingSystemProvider`.
+..  Add `provides org.apache.logging.spi.LoggingSystemProvider with com.example.MyLoggingSystemProvider;` to `module-info.java`.
 2.  Setting the system property "log4j2.loggerContextFactory" to the name
 of the `LoggerContextFactory` class to use.
 3.  Setting the property "log4j2.loggerContextFactory" in a properties

@@ -25,9 +25,21 @@ import org.apache.logging.log4j.util.LazyBoolean;
  */
 public final class Constants {
 
-    private static final LazyBoolean isWebApp = new LazyBoolean(() -> PropertiesUtil.getProperties()
-            .getBooleanProperty("log4j2.is.webapp",
-                    isClassAvailable("javax.servlet.Servlet") || isClassAvailable("jakarta.servlet.Servlet")));
+    /**
+     * Property name ({@value} ) for selecting {@code InheritableThreadLocal} (value "true") or plain
+     * {@code ThreadLocal} (value is not "true") in the implementation.
+     */
+    public static final String INHERITABLE_MAP = "isThreadContextMapInheritable";
+
+    /**
+     * The default initial capacity.
+     */
+    public static final int DEFAULT_INITIAL_CAPACITY = 16;
+
+    /**
+     * System property name that can be used to control the data structure's initial capacity.
+     */
+    public static final String PROPERTY_NAME_INITIAL_CAPACITY = "log4j2.ThreadContext.initial.capacity";
 
     /**
      * {@code true} if we think we are running in a web container, based on the boolean value of system property
@@ -35,25 +47,16 @@ public final class Constants {
      * is present in the classpath.
      */
     public static boolean isWebApp() {
-        return isWebApp.getAsBoolean();
+        return PropertiesUtil.getProperties().getBooleanProperty("log4j2.is.webapp", hasServletClass());
     }
 
-    public static void setWebApp(final boolean webApp) {
-        isWebApp.setAsBoolean(webApp);
+    private static boolean hasServletClass() {
+        return isClassAvailable("javax.servlet.Servlet") || isClassAvailable("jakarta.servlet.Servlet");
     }
 
-    public static void resetWebApp() {
-        isWebApp.reset();
-    }
-
-    /**
-     * @deprecated use {@link #isWebApp()}
-     */
-    @Deprecated(since = "3.0.0", forRemoval = true)
-    public static final boolean IS_WEB_APP = isWebApp();
-
+    public static final String THREAD_LOCALS_ENABLED = "log4j2.enable.threadlocals";
     private static final LazyBoolean threadLocalsEnabled = new LazyBoolean(
-            () -> !isWebApp() && PropertiesUtil.getProperties().getBooleanProperty("log4j2.enable.threadlocals", true));
+            () -> !isWebApp() && PropertiesUtil.getProperties().getBooleanProperty(THREAD_LOCALS_ENABLED, true));
 
     /**
      * Kill switch for object pooling in ThreadLocals that enables much of the LOG4J2-1270 no-GC behaviour.
@@ -73,12 +76,6 @@ public final class Constants {
     public static void resetThreadLocalsEnabled() {
         threadLocalsEnabled.reset();
     }
-
-    /**
-     * @deprecated use {@link #isThreadLocalsEnabled()}
-     */
-    @Deprecated(since = "3.0.0", forRemoval = true)
-    public static final boolean ENABLE_THREADLOCALS = isThreadLocalsEnabled();
 
     public static final int JAVA_MAJOR_VERSION = getMajorVersion();
 

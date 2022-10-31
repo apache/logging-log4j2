@@ -17,18 +17,13 @@
 
 package org.apache.logging.log4j;
 
+import org.apache.logging.log4j.util3.LoggingSystem;
 import org.apache.logging.log4j.message.ParameterizedMessage;
-import org.apache.logging.log4j.spi.CleanableThreadContextMap;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
-import org.apache.logging.log4j.spi.DefaultThreadContextStack;
-import org.apache.logging.log4j.spi.NoOpThreadContextMap;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextMap;
-import org.apache.logging.log4j.spi.ThreadContextMap2;
-import org.apache.logging.log4j.spi.ThreadContextMapFactory;
 import org.apache.logging.log4j.spi.ThreadContextStack;
-import org.apache.logging.log4j.util3.PropertiesUtil;
-import org.apache.logging.log4j.util.PropertyEnvironment;
+import org.apache.logging.log4j.util.Lazy;
 
 import java.io.Serializable;
 import java.util.AbstractCollection;
@@ -190,45 +185,43 @@ public final class ThreadContext {
     @SuppressWarnings("PublicStaticCollectionField")
     public static final ThreadContextStack EMPTY_STACK = new EmptyThreadContextStack();
 
-    private static final String DISABLE_MAP = "disableThreadContextMap";
-    private static final String DISABLE_STACK = "disableThreadContextStack";
-    private static final String DISABLE_ALL = "disableThreadContext";
+    private static final Lazy<ThreadContext> INSTANCE = Lazy.relaxed(() -> new ThreadContext(LoggingSystem.getInstance()));
 
-    private static boolean useStack;
-    private static ThreadContextMap contextMap;
-    private static ThreadContextStack contextStack;
-    private static ReadOnlyThreadContextMap readOnlyContextMap;
+    private final ThreadContextMap contextMap;
+    private final ThreadContextStack contextStack;
+    private final ReadOnlyThreadContextMap readOnlyThreadContextMap;
 
-    static {
-        init();
+    private ThreadContext(final LoggingSystem system) {
+        this(system.createContextMap(), system.createContextStack());
     }
 
-    private ThreadContext() {
-        // empty
+    private ThreadContext(final ThreadContextMap contextMap, final ThreadContextStack contextStack) {
+        this.contextMap = contextMap;
+        this.contextStack = contextStack;
+        readOnlyThreadContextMap = contextMap instanceof ReadOnlyThreadContextMap ? (ReadOnlyThreadContextMap) contextMap : null;
     }
 
     /**
      * <em>Consider private, used for testing.</em>
      */
     public static void init() {
-        ThreadContextMapFactory.init();
-        contextMap = null;
-        final PropertyEnvironment managerProps = PropertiesUtil.getProperties();
-        final boolean disableAll = managerProps.getBooleanProperty(DISABLE_ALL);
-        useStack = !(managerProps.getBooleanProperty(DISABLE_STACK) || disableAll);
-        final boolean useMap = !(managerProps.getBooleanProperty(DISABLE_MAP) || disableAll);
+        final LoggingSystem system = LoggingSystem.getInstance();
+        // clear out cached values and allow them to be recalculated
+        system.setContextMapFactory(null);
+        system.setContextStackFactory(null);
+        INSTANCE.set(null);
+    }
 
-        contextStack = new DefaultThreadContextStack(useStack);
-        if (!useMap) {
-            contextMap = new NoOpThreadContextMap();
-        } else {
-            contextMap = ThreadContextMapFactory.createThreadContextMap();
-        }
-        if (contextMap instanceof ReadOnlyThreadContextMap) {
-            readOnlyContextMap = (ReadOnlyThreadContextMap) contextMap;
-        } else {
-            readOnlyContextMap = null;
-        }
+    private static ThreadContextMap map() {
+        return INSTANCE.value().contextMap;
+    }
+
+    private static ThreadContextStack stack() {
+        return INSTANCE.value().contextStack;
+    }
+
+    private static ReadOnlyThreadContextMap readOnlyMap() {
+        return INSTANCE.value().readOnlyThreadContextMap;
     }
 
     /**
@@ -243,7 +236,7 @@ public final class ThreadContext {
      * @param value The key value.
      */
     public static void put(final String key, final String value) {
-        contextMap.put(key, value);
+        map().put(key, value);
     }
 
     /**
@@ -259,8 +252,8 @@ public final class ThreadContext {
      * @since 2.13.0
      */
     public static void putIfNull(final String key, final String value) {
-        if(!contextMap.containsKey(key)) {
-            contextMap.put(key, value);
+        if (!map().containsKey(key)) {
+            map().put(key, value);
         }
     }
 
@@ -274,15 +267,7 @@ public final class ThreadContext {
      * @since 2.7
      */
     public static void putAll(final Map<String, String> m) {
-        if (contextMap instanceof ThreadContextMap2) {
-            ((ThreadContextMap2) contextMap).putAll(m);
-        } else if (contextMap instanceof DefaultThreadContextMap) {
-            ((DefaultThreadContextMap) contextMap).putAll(m);
-        } else {
-            for (final Map.Entry<String, String> entry: m.entrySet()) {
-                contextMap.put(entry.getKey(), entry.getValue());
-            }
-        }
+        map().putAll(m);
     }
 
     /**
@@ -296,7 +281,7 @@ public final class ThreadContext {
      * @return The value associated with the key or null.
      */
     public static String get(final String key) {
-        return contextMap.get(key);
+        return map().get(key);
     }
 
     /**
@@ -305,7 +290,7 @@ public final class ThreadContext {
      * @param key The key to remove.
      */
     public static void remove(final String key) {
-        contextMap.remove(key);
+        map().remove(key);
     }
 
     /**
@@ -316,22 +301,14 @@ public final class ThreadContext {
      * @since 2.8
      */
     public static void removeAll(final Iterable<String> keys) {
-        if (contextMap instanceof CleanableThreadContextMap) {
-            ((CleanableThreadContextMap) contextMap).removeAll(keys);
-        } else if (contextMap instanceof DefaultThreadContextMap) {
-            ((DefaultThreadContextMap) contextMap).removeAll(keys);
-        } else {
-            for (final String key : keys) {
-                contextMap.remove(key);
-            }
-        }
+        map().removeAll(keys);
     }
 
     /**
      * Clears the context map.
      */
     public static void clearMap() {
-        contextMap.clear();
+        map().clear();
     }
 
     /**
@@ -349,7 +326,7 @@ public final class ThreadContext {
      * @return True if the key is in the context, false otherwise.
      */
     public static boolean containsKey(final String key) {
-        return contextMap.containsKey(key);
+        return map().containsKey(key);
     }
 
     /**
@@ -358,7 +335,7 @@ public final class ThreadContext {
      * @return a mutable copy of the context.
      */
     public static Map<String, String> getContext() {
-        return contextMap.getCopy();
+        return map().getCopy();
     }
 
     /**
@@ -367,7 +344,7 @@ public final class ThreadContext {
      * @return An immutable view of the ThreadContext Map.
      */
     public static Map<String, String> getImmutableContext() {
-        final Map<String, String> map = contextMap.getImmutableMapOrNull();
+        final Map<String, String> map = map().getImmutableMapOrNull();
         return map == null ? EMPTY_MAP : map;
     }
 
@@ -381,14 +358,14 @@ public final class ThreadContext {
      * </p>
      *
      * @return the internal data structure used to store thread context key-value pairs or {@code null}
-     * @see ThreadContextMapFactory
+     * @see ThreadContextMap.Factory
      * @see DefaultThreadContextMap
      * @see org.apache.logging.log4j.spi.CopyOnWriteSortedArrayThreadContextMap
      * @see org.apache.logging.log4j.spi.GarbageFreeSortedArrayThreadContextMap
      * @since 2.8
      */
     public static ReadOnlyThreadContextMap getThreadContextMap() {
-        return readOnlyContextMap;
+        return readOnlyMap();
     }
 
     /**
@@ -397,14 +374,14 @@ public final class ThreadContext {
      * @return true if the Map is empty, false otherwise.
      */
     public static boolean isEmpty() {
-        return contextMap.isEmpty();
+        return map().isEmpty();
     }
 
     /**
      * Clears the stack for this thread.
      */
     public static void clearStack() {
-        contextStack.clear();
+        stack().clear();
     }
 
     /**
@@ -413,7 +390,7 @@ public final class ThreadContext {
      * @return A copy of this thread's stack.
      */
     public static ContextStack cloneStack() {
-        return contextStack.copy();
+        return stack().copy();
     }
 
     /**
@@ -422,7 +399,7 @@ public final class ThreadContext {
      * @return an immutable copy of the ThreadContext stack.
      */
     public static ContextStack getImmutableStack() {
-        final ContextStack result = contextStack.getImmutableStackOrNull();
+        final ContextStack result = stack().getImmutableStackOrNull();
         return result == null ? EMPTY_STACK : result;
     }
 
@@ -432,9 +409,11 @@ public final class ThreadContext {
      * @param stack The stack to use.
      */
     public static void setStack(final Collection<String> stack) {
-        if (stack.isEmpty() || !useStack) {
+        final LoggingSystem system = LoggingSystem.getInstance();
+        if (stack.isEmpty() || !system.isContextStackEnabled()) {
             return;
         }
+        final ThreadContextStack contextStack = stack();
         contextStack.clear();
         contextStack.addAll(stack);
     }
@@ -447,7 +426,7 @@ public final class ThreadContext {
      * @see #trim
      */
     public static int getDepth() {
-        return contextStack.getDepth();
+        return stack().getDepth();
     }
 
     /**
@@ -461,7 +440,7 @@ public final class ThreadContext {
      * @return String The innermost diagnostic context.
      */
     public static String pop() {
-        return contextStack.pop();
+        return stack().pop();
     }
 
     /**
@@ -475,7 +454,7 @@ public final class ThreadContext {
      * @return String The innermost diagnostic context.
      */
     public static String peek() {
-        return contextStack.peek();
+        return stack().peek();
     }
 
     /**
@@ -488,7 +467,7 @@ public final class ThreadContext {
      * @param message The new diagnostic context information.
      */
     public static void push(final String message) {
-        contextStack.push(message);
+        stack().push(message);
     }
 
     /**
@@ -504,7 +483,7 @@ public final class ThreadContext {
      * @param args Parameters for the message.
      */
     public static void push(final String message, final Object... args) {
-        contextStack.push(ParameterizedMessage.format(message, args));
+        stack().push(ParameterizedMessage.format(message, args));
     }
 
     /**
@@ -524,7 +503,7 @@ public final class ThreadContext {
      * </p>
      */
     public static void removeStack() {
-        contextStack.clear();
+        stack().clear();
     }
 
     /**
@@ -560,7 +539,7 @@ public final class ThreadContext {
      * @param depth The number of elements to keep.
      */
     public static void trim(final int depth) {
-        contextStack.trim(depth);
+        stack().trim(depth);
     }
 
     /**
