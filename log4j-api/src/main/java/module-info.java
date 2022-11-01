@@ -15,7 +15,6 @@
  * limitations under the license.
  */
 
-import org.apache.logging.log4j.spi.LoggingSystemProvider;
 import org.apache.logging.log4j.util.PropertySource;
 import org.apache.logging.log4j.util3.EnvironmentPropertySource;
 import org.apache.logging.log4j.util3.SystemPropertiesPropertySource;
@@ -23,7 +22,7 @@ import org.apache.logging.log4j.util3.SystemPropertiesPropertySource;
 /**
  * <p>Log4j public API for libraries and applications. This module is provided as a portable
  * {@linkplain org.apache.logging.log4j.Logger logging API} which supports independent
- * {@linkplain LoggingSystemProvider logging provider} backends for configuring
+ * {@linkplain org.apache.logging.log4j.spi.Provider logging provider} backends for configuring
  * the underlying logging system. The {@link org.apache.logging.log4j} package contains the main APIs for loggers,
  * markers, logging levels, thread context maps (aka MDC), and thread context stacks (aka NDC).</p>
  *
@@ -51,7 +50,7 @@ module org.apache.logging.log4j {
             org.apache.logging.log4j.script;
 
     requires static org.osgi.framework;
-    uses LoggingSystemProvider;
+    uses org.apache.logging.log4j.spi.Provider;
     uses PropertySource;
     uses org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory;
 

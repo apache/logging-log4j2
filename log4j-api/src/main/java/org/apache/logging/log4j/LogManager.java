@@ -16,18 +16,27 @@
  */
 package org.apache.logging.log4j;
 
-import org.apache.logging.log4j.util3.LoggingSystem;
+import org.apache.logging.log4j.internal.LogManagerStatus;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
+import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.spi.Terminable;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Lazy;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util3.LoaderUtil;
+import org.apache.logging.log4j.util3.PropertiesUtil;
+import org.apache.logging.log4j.util3.ProviderUtil;
 import org.apache.logging.log4j.util3.StackLocatorUtil;
 
 import java.net.URI;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * The anchor point for the Log4j logging system. The most common usage of this class is to obtain a named
@@ -55,6 +64,67 @@ public class LogManager {
 
     // for convenience
     private static final String FQCN = LogManager.class.getName();
+
+    /**
+     * Scans the classpath to find all logging implementation. Currently, only one will be used but this could be
+     * extended to allow multiple implementations to be used.
+     */
+    private static final Lazy<LoggerContextFactory> PROVIDER = Lazy.lazy(() -> {
+        // Shortcut binding to force a specific logging implementation.
+        final PropertyEnvironment managerProps = PropertiesUtil.getProperties();
+        final String factoryClassName = managerProps.getStringProperty(FACTORY_PROPERTY_NAME);
+        if (factoryClassName != null) {
+            try {
+                return LoaderUtil.newCheckedInstanceOf(factoryClassName, LoggerContextFactory.class);
+            } catch (final ClassNotFoundException cnfe) {
+                LOGGER.error("Unable to locate configured LoggerContextFactory {}", factoryClassName);
+            } catch (final Exception ex) {
+                LOGGER.error("Unable to create configured LoggerContextFactory {}", factoryClassName, ex);
+            }
+        }
+
+        // note that the following initial call to ProviderUtil may block until a Provider has been installed when
+        // running in an OSGi environment
+        if (!ProviderUtil.hasProviders()) {
+            LOGGER.error("Log4j2 could not find a logging implementation. "
+                    + "Please add log4j-core to the classpath. Using SimpleLogger to log to the console...");
+            return SimpleLoggerContextFactory.INSTANCE;
+        }
+
+        final SortedMap<Integer, LoggerContextFactory> factories = new TreeMap<>();
+        for (final Provider provider : ProviderUtil.getProviders()) {
+            final Class<? extends LoggerContextFactory> factoryClass = provider.loadLoggerContextFactory();
+            if (factoryClass != null) {
+                try {
+                    factories.put(provider.getPriority(), factoryClass.newInstance());
+                } catch (final Exception e) {
+                    LOGGER.error("Unable to create class {} specified in provider URL {}", factoryClass.getName(), provider
+                            .getUrl(), e);
+                }
+            }
+        }
+
+        if (factories.isEmpty()) {
+            LOGGER.error("Log4j2 could not find a logging implementation. "
+                    + "Please add log4j-core to the classpath. Using SimpleLogger to log to the console...");
+            return SimpleLoggerContextFactory.INSTANCE;
+        } else if (factories.size() == 1) {
+            return factories.get(factories.lastKey());
+        } else {
+            final StringBuilder sb = new StringBuilder("Multiple logging implementations found: \n");
+            for (final Map.Entry<Integer, LoggerContextFactory> entry : factories.entrySet()) {
+                sb.append("Factory: ").append(entry.getValue().getClass().getName());
+                sb.append(", Weighting: ").append(entry.getKey()).append('\n');
+            }
+            final var factory = factories.get(factories.lastKey());
+            sb.append("Using factory: ").append(factory.getClass().getName());
+            LOGGER.warn(sb.toString());
+            return factory;
+        }
+    }).map(factory -> {
+        LogManagerStatus.setInitialized(true);
+        return factory;
+    });
 
     /**
      * Prevents instantiation
@@ -363,7 +433,7 @@ public class LogManager {
      * @return The LoggerContextFactory.
      */
     public static LoggerContextFactory getFactory() {
-        return LoggingSystem.getInstance().getLoggerContextFactory();
+        return PROVIDER.get();
     }
 
     /**
@@ -380,7 +450,7 @@ public class LogManager {
      * @param factory the LoggerContextFactory to use.
      */
     public static void setFactory(final LoggerContextFactory factory) {
-        LoggingSystem.getInstance().setLoggerContextFactory(factory);
+        PROVIDER.set(factory);
     }
 
     /**

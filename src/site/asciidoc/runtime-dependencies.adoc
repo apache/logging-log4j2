@@ -48,7 +48,7 @@ characteristics of the modules are:
 !Some classes in this package are used by the logging implementation and should be considered private.
 The module info definition may be modified in the future to export these only to the logging implementation.
 
-!uses org.apache.logging.log4j.spi.LoggingSystemProvider
+!uses org.apache.logging.log4j.spi.Provider
 !Service that must be provided by the logging implementation.
 !===
 

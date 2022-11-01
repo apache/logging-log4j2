@@ -14,9 +14,8 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 import org.apache.logging.log4j.core.impl.DefaultCallback;
-import org.apache.logging.log4j.core.impl.Log4jSystemProvider;
+import org.apache.logging.log4j.core.impl.Log4jProvider;
 import org.apache.logging.log4j.core.impl.ThreadContextDataProvider;
 import org.apache.logging.log4j.core.message.ExtendedThreadInfoFactory;
 import org.apache.logging.log4j.core.plugins.Log4jPlugins;
@@ -26,7 +25,7 @@ import org.apache.logging.log4j.core.util.WatchEventService;
 import org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory;
 import org.apache.logging.log4j.plugins.di.InjectorCallback;
 import org.apache.logging.log4j.plugins.model.PluginService;
-import org.apache.logging.log4j.spi.LoggingSystemProvider;
+import org.apache.logging.log4j.spi.Provider;
 
 module org.apache.logging.log4j.core {
     exports org.apache.logging.log4j.core;
@@ -99,7 +98,7 @@ module org.apache.logging.log4j.core {
     uses ScriptManagerFactory;
     provides ThreadInfoFactory with ExtendedThreadInfoFactory;
     provides ContextDataProvider with ThreadContextDataProvider;
-    provides LoggingSystemProvider with Log4jSystemProvider;
+    provides Provider with Log4jProvider;
     provides PluginService with Log4jPlugins;
     provides InjectorCallback with DefaultCallback;
 }

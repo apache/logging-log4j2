@@ -17,11 +17,11 @@
 
 package org.apache.logging.log4j.core.test.junit;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
-import org.apache.logging.log4j.util3.LoggingSystem;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -30,21 +30,20 @@ import org.junit.platform.commons.support.AnnotationSupport;
 public class ContextSelectorCallback implements BeforeAllCallback, AfterAllCallback {
     @Override
     public void beforeAll(final ExtensionContext context) throws Exception {
-        final Class<?> testClass = context.getRequiredTestClass();
-        AnnotationSupport.findAnnotation(testClass, ContextSelectorType.class)
+        AnnotationSupport.findAnnotation(context.getTestClass(), ContextSelectorType.class)
                 .map(ContextSelectorType::value)
                 .ifPresent(contextSelectorClass -> {
                     final Injector injector = DI.createInjector();
                     injector.registerBinding(ContextSelector.KEY, injector.getFactory(contextSelectorClass));
                     injector.init();
                     final Log4jContextFactory factory = injector.getInstance(Log4jContextFactory.class);
-                    LoggingSystem.getInstance().setLoggerContextFactory(factory);
+                    LogManager.setFactory(factory);
                 });
     }
 
     @Override
     public void afterAll(final ExtensionContext context) throws Exception {
         AnnotationSupport.findAnnotation(context.getTestClass(), ContextSelectorType.class)
-                .ifPresent(ignored -> LoggingSystem.getInstance().setLoggerContextFactory(null));
+                .ifPresent(ignored -> LogManager.setFactory(null));
     }
 }

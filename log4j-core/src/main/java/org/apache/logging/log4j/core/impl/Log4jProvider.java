@@ -14,33 +14,15 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+package org.apache.logging.log4j.core.impl;
 
-package org.apache.logging.log4j.tojul;
-
-import org.apache.logging.log4j.spi.AbstractLoggingSystemProvider;
+import org.apache.logging.log4j.spi.Provider;
 
 /**
- * Bind the Log4j API to JUL.
- *
- * @author <a href="http://www.vorburger.ch">Michael Vorburger.ch</a> for Google
+ * Binding for the Log4j API.
  */
-public class JULSystemProvider extends AbstractLoggingSystemProvider<JULLoggerContextFactory> {
-    public JULSystemProvider() {
-        super();
-    }
-
-    @Override
-    protected JULLoggerContextFactory createLoggerContextFactory() {
-        return new JULLoggerContextFactory();
-    }
-
-    @Override
-    public int getPriority() {
-        return 20;
-    }
-
-    @Override
-    public String getVersion() {
-        return "2.6.0";
+public class Log4jProvider extends Provider {
+    public Log4jProvider() {
+        super(10, "2.6.0", Log4jContextFactory.class);
     }
 }

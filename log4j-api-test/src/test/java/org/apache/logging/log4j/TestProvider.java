@@ -14,33 +14,16 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+package org.apache.logging.log4j;
 
-package org.apache.logging.log4j.internal;
-
-import java.util.function.Supplier;
+import org.apache.logging.log4j.spi.Provider;
+import org.apache.logging.log4j.test.TestLoggerContextFactory;
 
 /**
- * Combination of a class key and a supplier function to get a bound value for the key.
- * @param <T> type of key
+ * Binding for the Log4j API.
  */
-public class Binding<T> {
-    private final Class<T> key;
-    private final Supplier<? extends T> supplier;
-
-    private Binding(final Class<T> key, final Supplier<? extends T> supplier) {
-        this.key = key;
-        this.supplier = supplier;
-    }
-
-    public Class<T> getKey() {
-        return key;
-    }
-
-    public Supplier<? extends T> getSupplier() {
-        return supplier;
-    }
-
-    public static <T> Binding<T> bind(final Class<T> key, final Supplier<? extends T> supplier) {
-        return new Binding<>(key, supplier);
+public class TestProvider extends Provider {
+    public TestProvider() {
+        super(0, "2.6.0", TestLoggerContextFactory.class);
     }
 }

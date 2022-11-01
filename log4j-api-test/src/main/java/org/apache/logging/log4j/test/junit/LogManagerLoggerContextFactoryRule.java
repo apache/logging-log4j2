@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.test.junit;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
-import org.apache.logging.log4j.util3.LoggingSystem;
 import org.junit.rules.ExternalResource;
 
 /**
- * Sets the {@link LoggingSystem}'s {@link LoggerContextFactory} to the given instance before the test and restores it to
+ * Sets the {@link LogManager}'s {@link LoggerContextFactory} to the given instance before the test and restores it to
  * the original value after the test.
  *
  * @deprecated Use {@link LoggerContextFactoryExtension} with JUnit 5
@@ -40,14 +40,13 @@ public class LogManagerLoggerContextFactoryRule extends ExternalResource {
 
     @Override
     protected void after() {
-        LoggingSystem.getInstance().setLoggerContextFactory(this.restoreLoggerContextFactory);
+        LogManager.setFactory(this.restoreLoggerContextFactory);
     }
 
     @Override
     protected void before() throws Throwable {
-        final LoggingSystem system = LoggingSystem.getInstance();
-        this.restoreLoggerContextFactory = system.getLoggerContextFactory();
-        system.setLoggerContextFactory(this.loggerContextFactory);
+        this.restoreLoggerContextFactory = LogManager.getFactory();
+        LogManager.setFactory(this.loggerContextFactory);
     }
 
 }

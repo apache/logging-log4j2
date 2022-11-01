@@ -1,6 +1,3 @@
-import org.apache.logging.log4j.spi.LoggingSystemProvider;
-import org.apache.logging.log4j.tojul.JULSystemProvider;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
@@ -23,5 +20,5 @@ module org.apache.logging.log4j.tojul {
     requires org.apache.logging.log4j;
     requires java.logging;
 
-    provides LoggingSystemProvider with JULSystemProvider;
+    provides org.apache.logging.log4j.spi.Provider with org.apache.logging.log4j.tojul.JULProvider;
 }

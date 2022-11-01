@@ -19,7 +19,6 @@ package org.apache.logging.log4j.spi;
 import org.apache.logging.log4j.perf.nogc.OpenHashStringMap;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringMap;
-import org.apache.logging.log4j.util3.Constants;
 import org.apache.logging.log4j.util3.PropertiesUtil;
 
 /**
@@ -40,7 +39,7 @@ public class GarbageFreeOpenHashMapThreadContextMap extends GarbageFreeSortedArr
     @Override
     protected StringMap createStringMap() {
         return new OpenHashStringMap<>(PropertiesUtil.getProperties().getIntegerProperty(
-                Constants.PROPERTY_NAME_INITIAL_CAPACITY, Constants.DEFAULT_INITIAL_CAPACITY));
+                PROPERTY_NAME_INITIAL_CAPACITY, DEFAULT_INITIAL_CAPACITY));
     }
 
     @Override

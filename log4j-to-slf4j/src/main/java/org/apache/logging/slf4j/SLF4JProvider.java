@@ -14,33 +14,15 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.slf4j;
 
-import org.apache.logging.log4j.spi.AbstractLoggingSystemProvider;
-import org.apache.logging.log4j.spi.ThreadContextMap;
+import org.apache.logging.log4j.spi.Provider;
 
 /**
  * Bind the Log4j API to SLF4J.
  */
-public class SLF4JSystemProvider extends AbstractLoggingSystemProvider<SLF4JLoggerContextFactory> {
-    @Override
-    protected SLF4JLoggerContextFactory createLoggerContextFactory() {
-        return new SLF4JLoggerContextFactory();
-    }
-
-    @Override
-    protected ThreadContextMap.Factory createContextMapFactory() {
-        return new MDCContextMap.Factory();
-    }
-
-    @Override
-    public int getPriority() {
-        return 15;
-    }
-
-    @Override
-    public String getVersion() {
-        return "2.6.0";
+public class SLF4JProvider extends Provider {
+    public SLF4JProvider() {
+        super(15, "2.6.0", SLF4JLoggerContextFactory.class, MDCContextMap.class);
     }
 }

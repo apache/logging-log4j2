@@ -22,6 +22,8 @@ import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.PropertyFilePropertySource;
 import org.apache.logging.log4j.util.PropertySource;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -36,14 +38,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
+ * <em>Consider this class private.</em>
+ * <p>
  * Provides utility methods for managing {@link Properties} instances as well as access to the global configuration
  * system. Properties by default are loaded from the system properties, system environment, and a classpath resource
  * file named {@value #LOG4J_PROPERTIES_FILE_NAME}. Additional properties can be loaded by implementing a custom
  * {@link PropertySource} service and specifying it via a {@link ServiceLoader} file called
  * {@code META-INF/services/org.apache.logging.log4j.util.PropertySource} with a list of fully qualified class names
  * implementing that interface.
+ * </p>
  *
- * @see PropertyEnvironment
  * @see PropertySource
  */
 public class PropertiesUtil implements PropertyEnvironment {
@@ -84,6 +88,31 @@ public class PropertiesUtil implements PropertyEnvironment {
      */
     PropertiesUtil(final PropertySource source) {
         this.environment = new Environment(source);
+    }
+
+    /**
+     * Loads and closes the given property input stream. If an error occurs, log to the status logger.
+     *
+     * @param in     a property input stream.
+     * @param source a source object describing the source, like a resource string or a URL.
+     * @return a new Properties object
+     */
+    static Properties loadClose(final InputStream in, final Object source) {
+        final Properties props = new Properties();
+        if (null != in) {
+            try {
+                props.load(in);
+            } catch (final IOException e) {
+                LowLevelLogUtil.logException("Unable to read " + source, e);
+            } finally {
+                try {
+                    in.close();
+                } catch (final IOException e) {
+                    LowLevelLogUtil.logException("Unable to close " + source, e);
+                }
+            }
+        }
+        return props;
     }
 
     /**
