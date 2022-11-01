@@ -299,7 +299,7 @@
     <embedded-mongo.version>3.5.1</embedded-mongo.version>
     <errorprone.version>2.7.1</errorprone.version>
     <felix.version>7.0.5</felix.version>
-    <flume.version>1.10.1</flume.version>
+    <flume.version>1.11.0</flume.version>
     <graalvm.version>21.3.0</graalvm.version>
     <groovy.version>4.0.6</groovy.version>
     <guava.version>31.1-jre</guava.version>
