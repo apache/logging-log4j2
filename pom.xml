@@ -361,7 +361,7 @@
     <osgi.resource.version>1.0.1</osgi.resource.version>
     <pax-exam.version>4.13.5</pax-exam.version>
     <plexus.errorprone.version>2.8.8</plexus.errorprone.version>
-    <plexus-utils.version>3.2.0</plexus-utils.version>
+    <plexus-utils.version>3.5.0</plexus-utils.version>
     <revapi.version>0.22.1</revapi.version>
     <slf4j.version>1.7.36</slf4j.version>
     <spotbugs.version>4.1.2</spotbugs.version>
