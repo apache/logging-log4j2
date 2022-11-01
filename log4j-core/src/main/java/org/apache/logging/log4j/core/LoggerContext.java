@@ -811,7 +811,7 @@ public class LoggerContext extends AbstractLifeCycle
     }
 
     private void initApiModule() {
-        ThreadContext.init();
+        ThreadContextMapFactory.init(); // Or make public and call ThreadContext.init() which calls ThreadContextMapFactory.init().
     }
 
     // LOG4J2-151: changed visibility from private to protected
