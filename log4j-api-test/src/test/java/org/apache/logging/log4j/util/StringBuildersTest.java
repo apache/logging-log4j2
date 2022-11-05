@@ -14,13 +14,12 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.util3;
+package org.apache.logging.log4j.util;
 
-import org.apache.logging.log4j.util.Constants;
-import org.apache.logging.log4j.util.StringBuilders;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests the StringBuilders class.

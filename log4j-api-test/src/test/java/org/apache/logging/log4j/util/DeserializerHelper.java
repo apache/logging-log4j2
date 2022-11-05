@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.util;
 
-import org.apache.logging.log4j.util3.SortedArrayStringMapTest;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;

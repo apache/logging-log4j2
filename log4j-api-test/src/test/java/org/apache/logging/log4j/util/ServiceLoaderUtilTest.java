@@ -14,10 +14,11 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.util3;
+package org.apache.logging.log4j.util;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import org.apache.logging.log4j.test.BetterService;
+import org.apache.logging.log4j.test.Service;
+import org.junit.jupiter.api.Test;
 
 import java.lang.invoke.MethodHandles;
 import java.util.Collections;
@@ -25,11 +26,8 @@ import java.util.List;
 import java.util.ServiceConfigurationError;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.test.BetterService;
-import org.apache.logging.log4j.test.Service;
-import org.apache.logging.log4j.util.PropertySource;
-import org.apache.logging.log4j.util.ServiceLoaderUtil;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ServiceLoaderUtilTest {
 

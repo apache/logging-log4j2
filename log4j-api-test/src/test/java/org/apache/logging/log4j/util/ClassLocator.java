@@ -14,9 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.util3;
-
-import org.apache.logging.log4j.util.StackLocatorUtil;
+package org.apache.logging.log4j.util;
 
 /**
  * Created by rgoers on 3/15/17.

@@ -14,17 +14,9 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.util3;
+package org.apache.logging.log4j.util;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -44,12 +36,7 @@ import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.util.BiConsumer;
-import org.apache.logging.log4j.util.DeserializerHelper;
-import org.apache.logging.log4j.util.FilteredObjectInputStream;
-import org.apache.logging.log4j.util.TriConsumer;
-import org.apache.logging.log4j.util.SortedArrayStringMap;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the SortedArrayStringMap class.

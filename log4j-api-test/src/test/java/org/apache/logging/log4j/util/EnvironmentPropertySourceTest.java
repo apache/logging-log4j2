@@ -14,10 +14,8 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.util3;
+package org.apache.logging.log4j.util;
 
-import org.apache.logging.log4j.util.EnvironmentPropertySource;
-import org.apache.logging.log4j.util.PropertySource;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 

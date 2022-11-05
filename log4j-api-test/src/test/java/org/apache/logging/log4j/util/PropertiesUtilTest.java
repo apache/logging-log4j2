@@ -15,9 +15,8 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.util3;
+package org.apache.logging.log4j.util;
 
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;

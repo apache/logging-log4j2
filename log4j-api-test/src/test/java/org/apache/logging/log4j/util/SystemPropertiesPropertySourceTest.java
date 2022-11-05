@@ -15,9 +15,8 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.util3;
+package org.apache.logging.log4j.util;
 
-import org.apache.logging.log4j.util.SystemPropertiesPropertySource;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.WritesSystemProperty;
@@ -44,7 +43,7 @@ public class SystemPropertiesPropertySourceTest {
      * java.util.ConcurrentModificationException
      *  at java.util.Hashtable$Enumerator.next(Hashtable.java:1167)
      *  at org.apache.logging.log4j.util.SystemPropertiesPropertySource.forEach(SystemPropertiesPropertySource.java:38)
-     *  at org.apache.logging.log4j.util3.SystemPropertiesPropertySourceTest.testMultiThreadedAccess(SystemPropertiesPropertySourceTest.java:47)
+     *  at org.apache.logging.log4j.util.SystemPropertiesPropertySourceTest.testMultiThreadedAccess(SystemPropertiesPropertySourceTest.java:47)
      * </pre>
      * @throws InterruptedException 
      * @throws ExecutionException 
