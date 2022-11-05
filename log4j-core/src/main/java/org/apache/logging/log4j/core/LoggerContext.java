@@ -202,13 +202,6 @@ public class LoggerContext extends AbstractLifeCycle
         return listeners;
     }
 
-    private static LoggerContext downcast(final org.apache.logging.log4j.spi.LoggerContext context) {
-        if (context instanceof LoggerContext) {
-            return (LoggerContext) context;
-        }
-        throw new IllegalStateException("Expected org.apache.logging.log4j.core.LoggerContext but got " + context.getClass());
-    }
-
     /**
      * Returns the current LoggerContext.
      * <p>
@@ -228,7 +221,7 @@ public class LoggerContext extends AbstractLifeCycle
      * @see LogManager#getContext()
      */
     public static LoggerContext getContext() {
-        return downcast(LogManager.getContext());
+        return (LoggerContext) LogManager.getContext();
     }
 
     /**
@@ -249,7 +242,7 @@ public class LoggerContext extends AbstractLifeCycle
      * @see LogManager#getContext(boolean)
      */
     public static LoggerContext getContext(final boolean currentContext) {
-        return downcast(LogManager.getContext(currentContext));
+        return (LoggerContext) LogManager.getContext(currentContext);
     }
 
     /**
@@ -274,7 +267,7 @@ public class LoggerContext extends AbstractLifeCycle
      */
     public static LoggerContext getContext(final ClassLoader loader, final boolean currentContext,
             final URI configLocation) {
-        return downcast(LogManager.getContext(loader, currentContext, configLocation));
+        return (LoggerContext) LogManager.getContext(loader, currentContext, configLocation);
     }
 
     @Override
