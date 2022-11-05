@@ -21,10 +21,8 @@ import org.apache.logging.log4j.util.Lazy;
 
 import java.lang.invoke.MethodHandles.Lookup;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
@@ -39,6 +37,11 @@ import java.util.stream.Stream;
  */
 public class ServiceRegistry {
     private static final Lazy<ServiceRegistry> INSTANCE = Lazy.relaxed(ServiceRegistry::new);
+    @SuppressWarnings("unchecked")
+    private static <T> T cast(final Object o) {
+        return (T) o;
+    }
+
 
     /**
      * Returns the singleton ServiceRegistry instance.
@@ -74,23 +77,14 @@ public class ServiceRegistry {
      * Set 'verbose' to false if the `StatusLogger` is not available yet.
      */
     <S> List<S> getServices(final Class<S> serviceType, final Lookup lookup, final Predicate<S> validator, boolean verbose) {
-        final List<S> services = getMainServices(serviceType, lookup, validator, verbose);
+        final List<S> services = cast(mainServices.computeIfAbsent(serviceType,
+                ignored -> ServiceLoaderUtil.loadServices(serviceType, lookup, false, verbose)
+                        .filter(validator != null ? validator : unused -> true)
+                        .collect(Collectors.toList())));
         return Stream.concat(services.stream(), bundleServices.values().stream().flatMap(map -> {
             final Stream<S> stream = map.getOrDefault(serviceType, List.of()).stream().map(serviceType::cast);
             return validator != null ? stream.filter(validator) : stream;
         })).distinct().collect(Collectors.toCollection(ArrayList::new));
-    }
-
-    <S> List<S> getMainServices(final Class<S> serviceType, final Lookup lookup, final Predicate<S> validator, boolean verbose) {
-        final List<?> existing = mainServices.get(serviceType);
-        if (existing != null) {
-            return Cast.cast(existing);
-        }
-        final List<S> services = ServiceLoaderUtil.loadServices(serviceType, lookup, false, verbose)
-                .filter(validator != null ? validator : unused -> true)
-                .collect(Collectors.toList());
-        final List<S> oldValue = Cast.cast(mainServices.putIfAbsent(serviceType, services));
-        return oldValue != null ? oldValue : services;
     }
 
     /**
@@ -119,9 +113,9 @@ public class ServiceRegistry {
      * @param <S>         type of service
      */
     public <S> void registerBundleServices(final Class<S> serviceType, final long bundleId, final List<S> services) {
-        final List<S> currentServices = Cast.cast(bundleServices.computeIfAbsent(bundleId, ignored -> new ConcurrentHashMap<>())
-                .computeIfAbsent(serviceType, ignored -> new ArrayList<S>()));
-        currentServices.addAll(services);
+        bundleServices.computeIfAbsent(bundleId, ignored -> new ConcurrentHashMap<>())
+                .computeIfAbsent(serviceType, ignored -> new ArrayList<>())
+                .addAll(cast(services));
     }
 
     /**
