@@ -23,22 +23,4 @@ import org.apache.logging.log4j.ThreadContext;
  */
 public interface ThreadContextStack extends ThreadContext.ContextStack {
     // empty
-
-     /**
-     * Factory for creating {@link ThreadContextStack} instances.
-     *
-     * @see DefaultContextStackFactory
-     */
-    interface Factory {
-        /**
-         * Creates a new ThreadContextStack.
-         */
-        ThreadContextStack createThreadContextStack();
-
-        /**
-         * Indicates if context stacks are enabled. When disabled, {@link ThreadContextStack} instances are all
-         * empty operations.
-         */
-        boolean isEnabled();
-    }
 }
