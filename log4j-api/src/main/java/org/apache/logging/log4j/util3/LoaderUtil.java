@@ -223,7 +223,6 @@ public final class LoaderUtil {
      * @param className The class name.
      * @return the Class for the given name.
      * @throws ClassNotFoundException if the specified class name could not be found
-     * @throws LinkageError if the linkage fails
      * @since 2.1
      */
     public static Class<?> loadClass(final String className) throws ClassNotFoundException {
@@ -268,7 +267,6 @@ public final class LoaderUtil {
      * @param <T> The class's type.
      * @return new instance of the class.
      * @throws ClassNotFoundException if the class isn't available to the usual ClassLoaders
-     * @throws LinkageError if the linkage fails
      * @throws IllegalAccessException if the class can't be instantiated through a public constructor
      * @throws InstantiationException if there was an exception whilst instantiating the class
      * @throws InvocationTargetException if there was an exception whilst constructing the class
@@ -288,7 +286,6 @@ public final class LoaderUtil {
      * @param <T> The type of the class to check.
      * @return new instance of the class cast to {@code T}
      * @throws ClassNotFoundException if the class isn't available to the usual ClassLoaders
-     * @throws LinkageError if the linkage fails
      * @throws IllegalAccessException if the class can't be instantiated through a public constructor
      * @throws InstantiationException if there was an exception whilst instantiating the class
      * @throws InvocationTargetException if there was an exception whilst constructing the class
