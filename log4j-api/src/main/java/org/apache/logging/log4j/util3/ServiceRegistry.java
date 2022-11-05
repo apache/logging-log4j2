@@ -104,22 +104,8 @@ public class ServiceRegistry {
     public <S> void loadServicesFromBundle(
             final Class<S> serviceType, final long bundleId, final ClassLoader bundleClassLoader) {
         final List<S> services = new ArrayList<>();
-        try {
-            final ServiceLoader<S> serviceLoader = ServiceLoader.load(serviceType, bundleClassLoader);
-            final Iterator<S> iterator = serviceLoader.iterator();
-            while (iterator.hasNext()) {
-                try {
-                    services.add(iterator.next());
-                } catch (final ServiceConfigurationError sce) {
-                    final String message = String.format("Unable to load %s service in bundle id %d",
-                            serviceType.getName(), bundleId);
-                    LowLevelLogUtil.logException(message, sce);
-                }
-            }
-        } catch (final ServiceConfigurationError e) {
-            final String message = String.format("Unable to load any %s services in bundle id %d",
-                    serviceType.getName(), bundleId);
-            LowLevelLogUtil.logException(message, e);
+        for (final S service : ServiceLoader.load(serviceType, bundleClassLoader)) {
+            services.add(service);
         }
         registerBundleServices(serviceType, bundleId, services);
     }
