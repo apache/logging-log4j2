@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.plugins.util;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.util3.LoaderUtil;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.wiring.BundleWiring;

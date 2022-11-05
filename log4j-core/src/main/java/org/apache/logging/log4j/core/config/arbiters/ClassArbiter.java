@@ -20,7 +20,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.util3.LoaderUtil;
+import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
  * Conditional that determines if the specified class is present.

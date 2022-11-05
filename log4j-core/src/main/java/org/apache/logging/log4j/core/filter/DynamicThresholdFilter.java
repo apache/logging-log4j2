@@ -35,7 +35,7 @@ import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringMap;
-import org.apache.logging.log4j.util3.PerformanceSensitive;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 import java.util.Map;
 import java.util.Objects;

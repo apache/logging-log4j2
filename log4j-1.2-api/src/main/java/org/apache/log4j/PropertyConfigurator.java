@@ -35,7 +35,7 @@ import org.apache.log4j.spi.ThrowableRenderer;
 import org.apache.log4j.spi.ThrowableRendererSupport;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
-import org.apache.logging.log4j.util3.StackLocatorUtil;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 
 import java.io.IOException;
 import java.io.InputStream;

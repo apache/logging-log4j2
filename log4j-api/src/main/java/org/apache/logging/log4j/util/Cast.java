@@ -15,8 +15,9 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.util3;
+package org.apache.logging.log4j.util;
 
+@InternalApi
 public final class Cast {
     public static <T> T cast(final Object o) {
         @SuppressWarnings("unchecked") final T t = (T) o;

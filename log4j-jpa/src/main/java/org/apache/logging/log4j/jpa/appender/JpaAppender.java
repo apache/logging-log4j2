@@ -29,7 +29,7 @@ import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.util.Strings;
-import org.apache.logging.log4j.util3.LoaderUtil;
+import org.apache.logging.log4j.util.LoaderUtil;
 
 import java.lang.reflect.Constructor;
 

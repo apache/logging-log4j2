@@ -18,8 +18,8 @@ package org.apache.logging.log4j.jul;
 
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util3.LoaderUtil;
-import org.apache.logging.log4j.util3.PropertiesUtil;
+import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 import java.util.Collections;
 import java.util.Enumeration;

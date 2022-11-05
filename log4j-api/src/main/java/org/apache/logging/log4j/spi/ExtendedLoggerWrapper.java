@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.util3.StackLocatorUtil;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 
 /**
  * Wrapper class that exposes the protected AbstractLogger methods to support wrapped loggers.

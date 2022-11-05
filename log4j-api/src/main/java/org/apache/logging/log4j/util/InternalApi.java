@@ -15,26 +15,19 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.util3;
+package org.apache.logging.log4j.util;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Indicates that a particular annotated construct was written with certain performance constraints in mind that
- * should be considered when modifying or testing. Descriptive values should be similar to the conventions used by
- * {@link SuppressWarnings}. For example, code that should not be allocating objects (like iterators) could use the
- * description "allocation".
+ * Indicates that the annotated element is considered an internal API to Log4j and should not be used by external
+ * code. Internal APIs do not provide any stability guarantees between versions.
  *
- * @since 2.6
+ * @since 3.0.0
  */
-// Not @Documented: Do not (yet) make this annotation part of the public API of annotated elements.
-// No @Target: No restrictions yet on what code elements may be annotated or not.
-@Retention(RetentionPolicy.CLASS) // Currently no need to reflectively discover this annotation at runtime.
-public @interface PerformanceSensitive {
-    /**
-     * Is this ever used?
-     * @return An array of strings.
-     */
-    String[] value() default "";
+@Retention(RetentionPolicy.CLASS)
+@Documented
+public @interface InternalApi {
 }

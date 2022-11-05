@@ -27,7 +27,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LambdaUtil;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Supplier;
-import org.apache.logging.log4j.util3.StackLocatorUtil;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 
 
 /**

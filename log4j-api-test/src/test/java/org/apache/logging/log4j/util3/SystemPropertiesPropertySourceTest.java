@@ -17,7 +17,7 @@
 
 package org.apache.logging.log4j.util3;
 
-import org.apache.logging.log4j.util3.SystemPropertiesPropertySource;
+import org.apache.logging.log4j.util.SystemPropertiesPropertySource;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.WritesSystemProperty;
@@ -43,7 +43,7 @@ public class SystemPropertiesPropertySourceTest {
      * <pre>
      * java.util.ConcurrentModificationException
      *  at java.util.Hashtable$Enumerator.next(Hashtable.java:1167)
-     *  at org.apache.logging.log4j.util3.SystemPropertiesPropertySource.forEach(SystemPropertiesPropertySource.java:38)
+     *  at org.apache.logging.log4j.util.SystemPropertiesPropertySource.forEach(SystemPropertiesPropertySource.java:38)
      *  at org.apache.logging.log4j.util3.SystemPropertiesPropertySourceTest.testMultiThreadedAccess(SystemPropertiesPropertySourceTest.java:47)
      * </pre>
      * @throws InterruptedException 

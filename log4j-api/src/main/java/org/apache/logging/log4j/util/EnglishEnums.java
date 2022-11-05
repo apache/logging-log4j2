@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.util3;
+package org.apache.logging.log4j.util;
 
 import java.util.Locale;
 
@@ -29,6 +29,7 @@ import java.util.Locale;
  * avoid problems on the Turkish locale. Do not use with Turkish enum values.
  * </p>
  */
+@InternalApi
 public final class EnglishEnums {
 
     private EnglishEnums() {

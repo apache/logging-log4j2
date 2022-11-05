@@ -22,7 +22,7 @@ import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.util.AnnotationUtil;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util3.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 import java.lang.reflect.AnnotatedElement;
 

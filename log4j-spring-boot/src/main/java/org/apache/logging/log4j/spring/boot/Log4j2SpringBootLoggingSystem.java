@@ -30,7 +30,7 @@ import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
 import org.apache.logging.log4j.core.util.AuthorizationProvider;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util3.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.springframework.boot.logging.LogFile;
 import org.springframework.boot.logging.LoggingInitializationContext;
 import org.springframework.boot.logging.LoggingSystem;

@@ -25,7 +25,7 @@ import java.util.Date;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.Message;
 
-import static org.apache.logging.log4j.util3.Chars.*;
+import static org.apache.logging.log4j.util.Chars.*;
 
 /**
  * The Status data.

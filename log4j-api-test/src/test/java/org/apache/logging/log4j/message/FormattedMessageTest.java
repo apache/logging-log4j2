@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.message;
 
 import org.apache.logging.log4j.test.junit.Mutable;
-import org.apache.logging.log4j.util3.Constants;
+import org.apache.logging.log4j.util.Constants;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;

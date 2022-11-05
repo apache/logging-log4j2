@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.pattern;
 
 
-import org.apache.logging.log4j.util3.PerformanceSensitive;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * Abstract base class for other pattern converters which can return only parts of their name.

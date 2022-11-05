@@ -18,7 +18,7 @@ package org.apache.logging.log4j.layout.template.json.util;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util3.LoaderUtil;
+import org.apache.logging.log4j.util.LoaderUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -19,7 +19,7 @@ package org.apache.logging.log4j.spi;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.Strings;
-import org.apache.logging.log4j.util3.StringBuilders;
+import org.apache.logging.log4j.util.StringBuilders;
 
 import java.util.Collection;
 import java.util.Collections;

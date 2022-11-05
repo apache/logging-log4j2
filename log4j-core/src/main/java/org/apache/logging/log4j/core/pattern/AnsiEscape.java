@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.util.Patterns;
-import org.apache.logging.log4j.util3.EnglishEnums;
+import org.apache.logging.log4j.util.EnglishEnums;
 
 import java.util.Arrays;
 import java.util.HashMap;

@@ -20,7 +20,7 @@ import org.apache.logging.log4j.core.pattern.ConverterKeys;
 import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.util3.StringBuilders;
+import org.apache.logging.log4j.util.StringBuilders;
 
 /**
  * {@link TestPatternConverters} provides {@link LogEventPatternConverter} implementations that may be

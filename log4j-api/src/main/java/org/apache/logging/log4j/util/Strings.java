@@ -16,10 +16,6 @@
  */
 package org.apache.logging.log4j.util;
 
-import org.apache.logging.log4j.util3.Chars;
-import org.apache.logging.log4j.util3.PropertiesUtil;
-import org.apache.logging.log4j.util3.SystemPropertiesPropertySource;
-
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Objects;
@@ -30,6 +26,7 @@ import java.util.Optional;
  * 
  * @see <a href="http://commons.apache.org/proper/commons-lang/">Apache Commons Lang</a>
  */
+@InternalApi
 public final class Strings {
 
     private static final ThreadLocal<StringBuilder> tempStr = ThreadLocal.withInitial(StringBuilder::new);

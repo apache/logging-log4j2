@@ -24,7 +24,7 @@ import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Lazy;
-import org.apache.logging.log4j.util3.StackLocatorUtil;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 
 import java.lang.ref.WeakReference;
 import java.net.URI;

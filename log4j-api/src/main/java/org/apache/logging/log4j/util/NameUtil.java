@@ -14,9 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.util3;
-
-import org.apache.logging.log4j.util.Strings;
+package org.apache.logging.log4j.util;
 
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
@@ -26,6 +24,7 @@ import java.util.Objects;
 /**
  *
  */
+@InternalApi
 public final class NameUtil {
 
     private NameUtil() {}

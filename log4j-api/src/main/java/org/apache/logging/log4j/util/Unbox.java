@@ -18,9 +18,6 @@ package org.apache.logging.log4j.util;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util3.Constants;
-import org.apache.logging.log4j.util3.PerformanceSensitive;
-import org.apache.logging.log4j.util3.PropertiesUtil;
 
 /**
  * Utility for preventing primitive parameter values from being auto-boxed. Auto-boxing creates temporary objects

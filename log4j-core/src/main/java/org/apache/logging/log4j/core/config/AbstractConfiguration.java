@@ -60,10 +60,10 @@ import org.apache.logging.log4j.plugins.di.Keys;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.plugins.model.PluginType;
 import org.apache.logging.log4j.util.Lazy;
-import org.apache.logging.log4j.util3.Cast;
-import org.apache.logging.log4j.util3.NameUtil;
-import org.apache.logging.log4j.util3.PropertiesUtil;
-import org.apache.logging.log4j.util3.ServiceRegistry;
+import org.apache.logging.log4j.util.Cast;
+import org.apache.logging.log4j.util.NameUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.ServiceRegistry;
 
 import java.io.IOException;
 import java.io.InputStream;

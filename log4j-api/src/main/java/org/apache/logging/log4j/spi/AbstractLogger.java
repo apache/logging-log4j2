@@ -37,11 +37,11 @@ import org.apache.logging.log4j.util.LambdaUtil;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Supplier;
-import org.apache.logging.log4j.util3.Constants;
-import org.apache.logging.log4j.util3.LoaderUtil;
-import org.apache.logging.log4j.util3.PerformanceSensitive;
-import org.apache.logging.log4j.util3.PropertiesUtil;
-import org.apache.logging.log4j.util3.StackLocatorUtil;
+import org.apache.logging.log4j.util.Constants;
+import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.PerformanceSensitive;
+import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

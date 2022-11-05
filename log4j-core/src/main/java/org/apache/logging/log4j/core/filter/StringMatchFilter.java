@@ -26,7 +26,7 @@ import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.util3.PerformanceSensitive;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * This filter returns the onMatch result if the logging level in the event matches the specified logging level

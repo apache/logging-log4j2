@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.message;
 
 import org.apache.logging.log4j.message.ThreadInformation;
-import org.apache.logging.log4j.util3.StringBuilders;
+import org.apache.logging.log4j.util.StringBuilders;
 
 import java.lang.management.LockInfo;
 import java.lang.management.MonitorInfo;

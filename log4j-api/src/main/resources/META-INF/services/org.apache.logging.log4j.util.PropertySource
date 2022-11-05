@@ -12,5 +12,5 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the license for the specific language governing permissions and
 # limitations under the license.
-org.apache.logging.log4j.util3.EnvironmentPropertySource
-org.apache.logging.log4j.util3.SystemPropertiesPropertySource
+org.apache.logging.log4j.util.EnvironmentPropertySource
+org.apache.logging.log4j.util.SystemPropertiesPropertySource

@@ -29,7 +29,7 @@ import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.model.PluginType;
 import org.apache.logging.log4j.plugins.util.ResolverUtil;
-import org.apache.logging.log4j.util3.Cast;
+import org.apache.logging.log4j.util.Cast;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.util3;
 
+import org.apache.logging.log4j.util.Chars;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;

@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
+import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.engine.execution.InterceptingExecutableInvoker;
 import org.junit.jupiter.engine.execution.InvocationInterceptorChain;

@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.apache.logging.log4j.util3.StringBuilders;
+import org.apache.logging.log4j.util.StringBuilders;
 
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;

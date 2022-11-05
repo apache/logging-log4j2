@@ -17,8 +17,6 @@
 
 package org.apache.logging.log4j.util;
 
-import org.apache.logging.log4j.util3.Cast;
-
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 import java.util.concurrent.locks.Lock;

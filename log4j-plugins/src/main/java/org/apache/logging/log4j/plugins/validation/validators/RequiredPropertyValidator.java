@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.validation.ConstraintValidator;
 import org.apache.logging.log4j.plugins.validation.constraints.RequiredProperty;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util3.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Validator that checks that a property exists and has the correct value if a value is required.

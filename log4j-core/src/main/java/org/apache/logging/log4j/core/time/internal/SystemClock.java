@@ -21,7 +21,7 @@ import java.time.Instant;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.time.PreciseClock;
-import org.apache.logging.log4j.util3.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Implementation of the {@code Clock} interface that returns the system time.

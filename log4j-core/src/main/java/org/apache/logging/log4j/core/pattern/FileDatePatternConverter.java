@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.util3.PerformanceSensitive;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * Formats a date by delegating to {@link DatePatternConverter}.  The default

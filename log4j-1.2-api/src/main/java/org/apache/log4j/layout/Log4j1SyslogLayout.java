@@ -30,7 +30,7 @@ import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
-import org.apache.logging.log4j.util3.Chars;
+import org.apache.logging.log4j.util.Chars;
 
 import java.io.Serializable;
 import java.nio.charset.Charset;

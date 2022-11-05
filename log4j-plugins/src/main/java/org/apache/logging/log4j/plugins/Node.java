@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.plugins;
 
 import org.apache.logging.log4j.plugins.model.PluginType;
-import org.apache.logging.log4j.util3.Cast;
+import org.apache.logging.log4j.util.Cast;
 
 import java.util.ArrayList;
 import java.util.Collection;

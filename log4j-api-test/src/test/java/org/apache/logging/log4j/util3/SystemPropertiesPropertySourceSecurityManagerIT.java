@@ -17,8 +17,8 @@
 
 package org.apache.logging.log4j.util3;
 
-import org.apache.logging.log4j.util3.PropertiesUtil;
-import org.apache.logging.log4j.util3.SystemPropertiesPropertySource;
+import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.SystemPropertiesPropertySource;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledForJreRange;
 import org.junit.jupiter.api.condition.JRE;
@@ -72,7 +72,7 @@ public class SystemPropertiesPropertySourceSecurityManagerIT {
 	 * 	at org.apache.logging.log4j.util.SystemPropertiesPropertySourceSecurityManagerTest$TestSecurityManager.checkPermission(SystemPropertiesPropertySourceSecurityManagerTest.java:49)
 	 * 	at java.lang.SecurityManager.checkPropertiesAccess(SecurityManager.java:1265)
 	 * 	at java.lang.System.getProperties(System.java:624)
-	 * 	at org.apache.logging.log4j.util3.SystemPropertiesPropertySource.forEach(SystemPropertiesPropertySource.java:40)
+	 * 	at org.apache.logging.log4j.util.SystemPropertiesPropertySource.forEach(SystemPropertiesPropertySource.java:40)
 	 * 	at org.apache.logging.log4j.util.PropertiesUtil$Environment.reload(PropertiesUtil.java:330)
 	 * 	at org.apache.logging.log4j.util.PropertiesUtil$Environment.<init>(PropertiesUtil.java:322)
 	 * 	at org.apache.logging.log4j.util.PropertiesUtil$Environment.<init>(PropertiesUtil.java:310)

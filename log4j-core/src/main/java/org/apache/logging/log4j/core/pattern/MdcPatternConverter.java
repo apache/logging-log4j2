@@ -21,8 +21,8 @@ import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.TriConsumer;
-import org.apache.logging.log4j.util3.PerformanceSensitive;
-import org.apache.logging.log4j.util3.StringBuilders;
+import org.apache.logging.log4j.util.PerformanceSensitive;
+import org.apache.logging.log4j.util.StringBuilders;
 
 /**
  * Able to handle the contents of the LogEvent's MDC and either

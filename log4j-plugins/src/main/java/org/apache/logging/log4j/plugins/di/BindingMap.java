@@ -17,7 +17,7 @@
 
 package org.apache.logging.log4j.plugins.di;
 
-import org.apache.logging.log4j.util3.Cast;
+import org.apache.logging.log4j.util.Cast;
 
 import java.util.Collection;
 import java.util.Map;

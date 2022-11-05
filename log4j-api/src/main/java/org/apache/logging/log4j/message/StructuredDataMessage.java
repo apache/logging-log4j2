@@ -19,8 +19,8 @@ package org.apache.logging.log4j.message;
 
 import java.util.Map;
 
-import org.apache.logging.log4j.util3.EnglishEnums;
-import org.apache.logging.log4j.util3.StringBuilders;
+import org.apache.logging.log4j.util.EnglishEnums;
+import org.apache.logging.log4j.util.StringBuilders;
 
 /**
  * Represents a Message that conforms to an RFC 5424 StructuredData element along with the syslog message.

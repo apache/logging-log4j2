@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.util.Properties;
 
 import org.apache.logging.log4j.core.test.net.ssl.TestConstants;
-import org.apache.logging.log4j.util3.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.jupiter.api.Test;
 
 public class SslConfigurationFactoryTest {

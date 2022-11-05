@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.util3;
+package org.apache.logging.log4j.util;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -34,6 +34,7 @@ import java.util.Objects;
  * @see Thread#getContextClassLoader()
  * @see ClassLoader#getSystemClassLoader()
  */
+@InternalApi
 public final class LoaderUtil {
 
     private static final ClassLoader[] EMPTY_CLASS_LOADER_ARRAY = {};

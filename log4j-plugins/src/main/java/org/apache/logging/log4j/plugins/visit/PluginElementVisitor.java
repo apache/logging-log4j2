@@ -24,8 +24,8 @@ import org.apache.logging.log4j.plugins.model.PluginType;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
-import org.apache.logging.log4j.util3.Cast;
-import org.apache.logging.log4j.util3.StringBuilders;
+import org.apache.logging.log4j.util.Cast;
+import org.apache.logging.log4j.util.StringBuilders;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;

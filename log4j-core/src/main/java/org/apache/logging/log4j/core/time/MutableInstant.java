@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.time;
 
-import org.apache.logging.log4j.util3.PerformanceSensitive;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 import java.io.Serializable;
 import java.time.temporal.ChronoField;

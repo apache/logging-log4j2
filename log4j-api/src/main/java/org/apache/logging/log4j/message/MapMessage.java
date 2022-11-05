@@ -24,10 +24,10 @@ import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.TriConsumer;
-import org.apache.logging.log4j.util3.Chars;
-import org.apache.logging.log4j.util3.EnglishEnums;
-import org.apache.logging.log4j.util3.PerformanceSensitive;
-import org.apache.logging.log4j.util3.StringBuilders;
+import org.apache.logging.log4j.util.Chars;
+import org.apache.logging.log4j.util.EnglishEnums;
+import org.apache.logging.log4j.util.PerformanceSensitive;
+import org.apache.logging.log4j.util.StringBuilders;
 
 import java.util.AbstractMap;
 import java.util.Collections;

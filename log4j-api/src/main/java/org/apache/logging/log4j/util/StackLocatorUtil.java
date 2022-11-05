@@ -14,18 +14,18 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.util3;
+package org.apache.logging.log4j.util;
 
 import java.util.Deque;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Strings;
 
 /**
  * <em>Consider this class private.</em> Provides various methods to determine the caller class. <h3>Background</h3>
  */
+@InternalApi
 public final class StackLocatorUtil {
     private static StackLocator stackLocator = null;
     private static volatile boolean errorLogged;

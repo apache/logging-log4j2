@@ -37,7 +37,7 @@ import org.apache.logging.log4j.core.config.ConfigurationScheduler;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util3.ServiceRegistry;
+import org.apache.logging.log4j.util.ServiceRegistry;
 
 /**
  * Manages {@link FileWatcher}s.

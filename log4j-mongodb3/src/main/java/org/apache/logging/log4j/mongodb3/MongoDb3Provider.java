@@ -37,8 +37,8 @@ import org.apache.logging.log4j.plugins.validation.constraints.ValidHost;
 import org.apache.logging.log4j.plugins.validation.constraints.ValidPort;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
-import org.apache.logging.log4j.util3.Cast;
-import org.apache.logging.log4j.util3.LoaderUtil;
+import org.apache.logging.log4j.util.Cast;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 

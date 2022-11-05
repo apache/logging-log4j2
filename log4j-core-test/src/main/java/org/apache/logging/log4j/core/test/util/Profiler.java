@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.test.util;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
-import org.apache.logging.log4j.util3.LoaderUtil;
+import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
  * YourKit Java Profiler helper class.

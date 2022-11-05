@@ -25,8 +25,8 @@ import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.plugins.visit.NodeVisitor;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util3.Cast;
-import org.apache.logging.log4j.util3.StringBuilders;
+import org.apache.logging.log4j.util.Cast;
+import org.apache.logging.log4j.util.StringBuilders;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;

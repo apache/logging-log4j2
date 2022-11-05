@@ -21,8 +21,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util3.Constants;
-import org.apache.logging.log4j.util3.PropertiesUtil;
+import org.apache.logging.log4j.util.Constants;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Strategy for deciding whether thread name should be cached or not.

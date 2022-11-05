@@ -23,7 +23,7 @@ import org.apache.logging.log4j.core.util.CronExpression;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.convert.TypeConverters;
-import org.apache.logging.log4j.util3.LoaderUtil;
+import org.apache.logging.log4j.util.LoaderUtil;
 
 import java.io.File;
 import java.math.BigDecimal;

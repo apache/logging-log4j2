@@ -22,7 +22,7 @@ import java.net.SocketException;
 import org.apache.logging.log4j.core.appender.SyslogAppender.Builder;
 import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.test.net.mock.MockSyslogServerFactory;
-import org.apache.logging.log4j.util3.EnglishEnums;
+import org.apache.logging.log4j.util.EnglishEnums;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

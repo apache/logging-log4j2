@@ -14,15 +14,14 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.util3;
-
-import org.apache.logging.log4j.util.LazyBoolean;
+package org.apache.logging.log4j.util;
 
 /**
  * Log4j API Constants.
  *
  * @since 2.6.2
  */
+@InternalApi
 public final class Constants {
 
     private static final LazyBoolean isWebApp = new LazyBoolean(() -> PropertiesUtil.getProperties()

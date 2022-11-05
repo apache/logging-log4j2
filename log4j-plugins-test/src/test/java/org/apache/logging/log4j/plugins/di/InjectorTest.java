@@ -42,7 +42,7 @@ import org.apache.logging.log4j.plugins.test.validation.generic.BetaBean;
 import org.apache.logging.log4j.plugins.test.validation.generic.GammaBean;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.plugins.validation.constraints.RequiredProperty;
-import org.apache.logging.log4j.util3.Cast;
+import org.apache.logging.log4j.util.Cast;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;

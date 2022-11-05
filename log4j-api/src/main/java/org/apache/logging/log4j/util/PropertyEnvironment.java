@@ -17,9 +17,6 @@
 
 package org.apache.logging.log4j.util;
 
-import org.apache.logging.log4j.util3.LowLevelLogUtil;
-import org.apache.logging.log4j.util3.PropertiesUtil;
-
 import java.nio.charset.Charset;
 import java.time.Duration;
 import java.util.ResourceBundle;

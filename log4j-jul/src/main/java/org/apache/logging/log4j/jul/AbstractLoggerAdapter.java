@@ -18,7 +18,7 @@ package org.apache.logging.log4j.jul;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.spi.LoggerContext;
-import org.apache.logging.log4j.util3.StackLocatorUtil;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 
 import java.util.logging.Logger;
 

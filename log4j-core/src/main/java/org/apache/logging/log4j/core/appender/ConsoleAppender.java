@@ -29,8 +29,8 @@ import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.util.PropertyEnvironment;
-import org.apache.logging.log4j.util3.Chars;
-import org.apache.logging.log4j.util3.PropertiesUtil;
+import org.apache.logging.log4j.util.Chars;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;

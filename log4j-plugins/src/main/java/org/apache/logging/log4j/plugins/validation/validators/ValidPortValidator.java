@@ -23,7 +23,7 @@ import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.validation.ConstraintValidator;
 import org.apache.logging.log4j.plugins.validation.constraints.ValidPort;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util3.Cast;
+import org.apache.logging.log4j.util.Cast;
 
 /**
  * Validator that checks an object to verify it is a valid port number (an integer between 0 and 65535).

@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.util3;
 
+import org.apache.logging.log4j.util.Constants;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

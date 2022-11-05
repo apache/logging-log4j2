@@ -17,7 +17,7 @@
 package org.apache.logging.log4j;
 
 import org.apache.logging.log4j.util.StringBuilderFormattable;
-import org.apache.logging.log4j.util3.PerformanceSensitive;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;

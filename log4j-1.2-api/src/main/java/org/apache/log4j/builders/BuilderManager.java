@@ -37,7 +37,7 @@ import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.plugins.model.PluginType;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util3.Cast;
+import org.apache.logging.log4j.util.Cast;
 import org.w3c.dom.Element;
 
 import java.util.Locale;

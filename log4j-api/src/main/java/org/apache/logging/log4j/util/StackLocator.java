@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.util3;
+package org.apache.logging.log4j.util;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -23,6 +23,7 @@ import java.util.function.Predicate;
 /**
  * <em>Consider this class private.</em> Determines the caller's class.
  */
+@InternalApi
 public final class StackLocator {
 
     private final static StackWalker WALKER = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);

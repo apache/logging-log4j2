@@ -18,9 +18,9 @@ package org.apache.logging.log4j.message;
 
 import java.util.Arrays;
 
-import org.apache.logging.log4j.util3.Constants;
-import org.apache.logging.log4j.util3.PerformanceSensitive;
-import org.apache.logging.log4j.util3.StringBuilders;
+import org.apache.logging.log4j.util.Constants;
+import org.apache.logging.log4j.util.PerformanceSensitive;
+import org.apache.logging.log4j.util.StringBuilders;
 
 /**
  * Reusable parameterized message. This message is mutable and is not safe to be accessed or modified by multiple

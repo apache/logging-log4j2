@@ -20,7 +20,7 @@ package org.apache.logging.log4j.jpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.spi.AbstractLoggerAdapter;
 import org.apache.logging.log4j.spi.LoggerContext;
-import org.apache.logging.log4j.util3.StackLocatorUtil;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 
 import java.lang.System.Logger;
 import java.lang.System.LoggerFinder;

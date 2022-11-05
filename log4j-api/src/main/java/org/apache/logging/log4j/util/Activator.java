@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.util3;
+package org.apache.logging.log4j.util;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
@@ -44,6 +44,7 @@ import java.util.List;
  * {@code META-INF/log4j-provider.properties} files. As with all OSGi BundleActivator classes, this class is not for
  * public use and is only useful in an OSGi framework environment.
  */
+@InternalApi
 public class Activator implements BundleActivator, SynchronousBundleListener {
 
     private static final SecurityManager SECURITY_MANAGER = System.getSecurityManager();

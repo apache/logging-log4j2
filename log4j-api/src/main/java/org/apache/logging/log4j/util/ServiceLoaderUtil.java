@@ -15,7 +15,7 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.util3;
+package org.apache.logging.log4j.util;
 
 import java.lang.invoke.CallSite;
 import java.lang.invoke.LambdaMetafactory;
@@ -41,6 +41,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * This class should be considered internal.
  */
+@InternalApi
 public final class ServiceLoaderUtil {
 
     private ServiceLoaderUtil() {

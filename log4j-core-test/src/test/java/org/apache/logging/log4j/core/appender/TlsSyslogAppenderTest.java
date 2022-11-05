@@ -32,7 +32,7 @@ import org.apache.logging.log4j.core.test.net.ssl.TestConstants;
 import org.apache.logging.log4j.core.test.net.ssl.TlsSyslogMessageFormat;
 import org.apache.logging.log4j.core.net.ssl.TlsSyslogTestUtil;
 import org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration;
-import org.apache.logging.log4j.util3.EnglishEnums;
+import org.apache.logging.log4j.util.EnglishEnums;
 import org.junit.Test;
 
 public class TlsSyslogAppenderTest extends SyslogAppenderTest {

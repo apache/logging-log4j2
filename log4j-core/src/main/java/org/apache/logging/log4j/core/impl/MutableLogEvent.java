@@ -35,8 +35,8 @@ import org.apache.logging.log4j.message.TimestampMessage;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
-import org.apache.logging.log4j.util3.StackLocatorUtil;
-import org.apache.logging.log4j.util3.StringBuilders;
+import org.apache.logging.log4j.util.StackLocatorUtil;
+import org.apache.logging.log4j.util.StringBuilders;
 
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;

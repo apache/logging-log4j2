@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.util3;
+package org.apache.logging.log4j.util;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.spi.Provider;
@@ -34,6 +34,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * container framework, any Log4j Providers not accessible through standard classpath scanning should
  * {@link #loadProvider(java.net.URL, ClassLoader)} a classpath accordingly.
  */
+@InternalApi
 public final class ProviderUtil {
 
     /**

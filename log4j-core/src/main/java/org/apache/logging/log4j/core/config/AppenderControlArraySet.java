@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.core.config;
 
 import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.util3.PerformanceSensitive;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 import java.util.Arrays;
 import java.util.HashMap;

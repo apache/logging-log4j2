@@ -23,7 +23,7 @@ import org.apache.logging.log4j.core.script.ScriptManagerFactory;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.script.ScriptManagerImpl;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util3.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Creates a ScriptManager.

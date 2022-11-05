@@ -17,6 +17,7 @@
 
 package org.apache.logging.log4j.util3;
 
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.Charset;

@@ -18,7 +18,7 @@ package org.apache.logging.log4j.message;
 
 import java.io.Serializable;
 
-import org.apache.logging.log4j.util3.PerformanceSensitive;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
  * Implementation of the {@link MessageFactory} interface that avoids allocating temporary objects where possible.

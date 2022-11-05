@@ -15,7 +15,7 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.util3;
+package org.apache.logging.log4j.util;
 
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -29,6 +29,7 @@ import java.util.Objects;
  *
  * @since 2.6
  */
+@InternalApi
 public final class LowLevelLogUtil {
 
     private static PrintWriter writer = new PrintWriter(System.err, true);

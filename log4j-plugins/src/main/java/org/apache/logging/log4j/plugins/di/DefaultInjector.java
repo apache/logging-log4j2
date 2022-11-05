@@ -40,10 +40,10 @@ import org.apache.logging.log4j.plugins.validation.ConstraintValidator;
 import org.apache.logging.log4j.plugins.visit.NodeVisitor;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Lazy;
-import org.apache.logging.log4j.util3.Cast;
-import org.apache.logging.log4j.util3.EnglishEnums;
-import org.apache.logging.log4j.util3.ServiceRegistry;
-import org.apache.logging.log4j.util3.StringBuilders;
+import org.apache.logging.log4j.util.Cast;
+import org.apache.logging.log4j.util.EnglishEnums;
+import org.apache.logging.log4j.util.ServiceRegistry;
+import org.apache.logging.log4j.util.StringBuilders;
 
 import java.lang.annotation.Annotation;
 import java.lang.invoke.MethodHandles;

@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.util;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertyEnvironment;
-import org.apache.logging.log4j.util3.LoaderUtil;
+import org.apache.logging.log4j.util.LoaderUtil;
 
 import java.net.URLConnection;
 import java.util.Base64;

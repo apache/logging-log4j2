@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.util;
 
+@InternalApi
 public class ProcessIdUtil {
 
     public static final String DEFAULT_PROCESSID = "-";

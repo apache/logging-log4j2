@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.test.BetterService;
 import org.apache.logging.log4j.test.Service;
 import org.apache.logging.log4j.util.PropertySource;
-import org.apache.logging.log4j.util3.ServiceLoaderUtil;
+import org.apache.logging.log4j.util.ServiceLoaderUtil;
 import org.junit.jupiter.api.Test;
 
 public class ServiceLoaderUtilTest {

@@ -41,7 +41,7 @@ import org.apache.logging.log4j.core.filter.AbstractFilter.AbstractFilterBuilder
 import org.apache.logging.log4j.plugins.util.Builder;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
-import org.apache.logging.log4j.util3.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 import java.util.Map;
 import java.util.Objects;

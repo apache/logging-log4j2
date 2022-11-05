@@ -27,8 +27,8 @@ import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.Strings;
-import org.apache.logging.log4j.util3.LoaderUtil;
-import org.apache.logging.log4j.util3.PropertiesUtil;
+import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 import java.net.URI;
 import java.net.URISyntaxException;

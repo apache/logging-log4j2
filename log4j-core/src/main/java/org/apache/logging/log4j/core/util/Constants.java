@@ -19,10 +19,10 @@ package org.apache.logging.log4j.core.util;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.di.Key;
-import org.apache.logging.log4j.util3.LoaderUtil;
-import org.apache.logging.log4j.util3.PropertiesUtil;
+import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
-import static org.apache.logging.log4j.util3.Constants.isThreadLocalsEnabled;
+import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 
 /**
  * Log4j Constants.
@@ -102,7 +102,7 @@ public final class Constants {
      * is present in the classpath.
      */
     @Deprecated(forRemoval = true)
-    public static final boolean IS_WEB_APP = org.apache.logging.log4j.util3.Constants.isWebApp();
+    public static final boolean IS_WEB_APP = org.apache.logging.log4j.util.Constants.isWebApp();
 
     /**
      * Kill switch for object pooling in ThreadLocals that enables much of the LOG4J2-1270 no-GC behaviour.

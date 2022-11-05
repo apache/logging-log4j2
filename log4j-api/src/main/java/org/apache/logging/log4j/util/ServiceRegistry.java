@@ -15,9 +15,7 @@
  * limitations under the license.
  */
 
-package org.apache.logging.log4j.util3;
-
-import org.apache.logging.log4j.util.Lazy;
+package org.apache.logging.log4j.util;
 
 import java.lang.invoke.MethodHandles.Lookup;
 import java.util.ArrayList;
@@ -35,6 +33,7 @@ import java.util.stream.Stream;
  *
  * @since 3.0.0
  */
+@InternalApi
 public class ServiceRegistry {
     private static final Lazy<ServiceRegistry> INSTANCE = Lazy.relaxed(ServiceRegistry::new);
     @SuppressWarnings("unchecked")

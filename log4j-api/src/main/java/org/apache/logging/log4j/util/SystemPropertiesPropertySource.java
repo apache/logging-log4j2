@@ -14,11 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.util3;
-
-import org.apache.logging.log4j.util.BiConsumer;
-import org.apache.logging.log4j.util.PropertiesPropertySource;
-import org.apache.logging.log4j.util.PropertySource;
+package org.apache.logging.log4j.util;
 
 import java.util.Collection;
 import java.util.Objects;

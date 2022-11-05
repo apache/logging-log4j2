@@ -25,8 +25,8 @@ import org.apache.logging.log4j.simple.SimpleLogger;
 import org.apache.logging.log4j.simple.SimpleLoggerContext;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.PropertyEnvironment;
-import org.apache.logging.log4j.util3.Constants;
-import org.apache.logging.log4j.util3.PropertiesUtil;
+import org.apache.logging.log4j.util.Constants;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 import java.io.Closeable;
 import java.io.IOException;

@@ -18,7 +18,7 @@
 package org.apache.logging.log4j.plugins.convert;
 
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util3.Cast;
+import org.apache.logging.log4j.util.Cast;
 
 /**
  * Interface for doing automatic String conversion to a specific type.

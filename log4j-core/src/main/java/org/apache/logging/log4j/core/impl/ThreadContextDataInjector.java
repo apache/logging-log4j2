@@ -31,7 +31,7 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.util.ContextDataProvider;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
-import org.apache.logging.log4j.util3.ServiceRegistry;
+import org.apache.logging.log4j.util.ServiceRegistry;
 import org.apache.logging.log4j.util.StringMap;
 
 /**

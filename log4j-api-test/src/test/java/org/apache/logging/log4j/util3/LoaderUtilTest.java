@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.util3;
 
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -17,6 +17,8 @@
 
 package org.apache.logging.log4j.util3;
 
+import org.apache.logging.log4j.util.EnvironmentPropertySource;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledForJreRange;
 import org.junit.jupiter.api.condition.JRE;

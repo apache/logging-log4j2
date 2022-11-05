@@ -35,7 +35,7 @@ import org.apache.log4j.spi.ThrowableRendererSupport;
 import org.apache.logging.log4j.core.appender.AsyncAppender;
 import org.apache.logging.log4j.spi.AbstractLoggerAdapter;
 import org.apache.logging.log4j.spi.LoggerContext;
-import org.apache.logging.log4j.util3.StackLocatorUtil;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
