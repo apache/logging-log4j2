@@ -24,9 +24,10 @@ import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
 import org.apache.logging.log4j.simple.SimpleLogger;
 import org.apache.logging.log4j.simple.SimpleLoggerContext;
 import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.Constants;
+import org.apache.logging.log4j.util.LowLevelLogUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -90,6 +91,11 @@ public final class StatusLogger extends AbstractLogger {
             StatusLogger.class.getName(),
             ParameterizedNoReferenceMessageFactory.INSTANCE,
             SimpleLoggerFactory.getInstance());
+
+    static {
+        // now safe to use StatusLogger in LowLevelLogUtil
+        LowLevelLogUtil.setLogger(STATUS_LOGGER);
+    }
 
     private final SimpleLogger logger;
 
