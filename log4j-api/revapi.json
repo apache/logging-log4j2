@@ -11,8 +11,7 @@
             "org\\.apache\\.logging\\.log4j\\.util\\.PropertiesUtil",
             "org\\.apache\\.logging\\.log4j\\.util\\.ProviderUtil",
             "org\\.apache\\.logging\\.log4j\\.util\\.StackLocator",
-            "org\\.apache\\.logging\\.log4j\\.util\\.StackLocatorUtil",
-            "org\\.apache\\.logging\\.log4j\\.util3\\..*"
+            "org\\.apache\\.logging\\.log4j\\.util\\.StackLocatorUtil"
           ]
         }
       }
