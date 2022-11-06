@@ -16,6 +16,12 @@
  */
 package org.apache.logging.log4j.perf.nogc;
 
+import org.apache.logging.log4j.spi.ThreadContextMap;
+import org.apache.logging.log4j.util.BiConsumer;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.StringMap;
+import org.apache.logging.log4j.util.TriConsumer;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -25,12 +31,6 @@ import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
-import org.apache.logging.log4j.util.ReadOnlyStringMap;
-import org.apache.logging.log4j.util.StringMap;
-import org.apache.logging.log4j.spi.ThreadContextMap;
-import org.apache.logging.log4j.util.BiConsumer;
-import org.apache.logging.log4j.util.TriConsumer;
 
 /**
  * Open hash map-based implementation of the {@code ReadOnlyStringMap} interface.
@@ -485,7 +485,8 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
     }
 
     /** {@inheritDoc} */
-    public void putAll(final Map<? extends K, ? extends V> map) {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public void putAll(final Map map) {
         if (loadFactor <= .5) {
             // The resulting map will be sized for m.size() elements
             ensureCapacity(map.size());
@@ -493,9 +494,7 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
             // The resulting map will be tentatively sized for size() +  m.size() elements
             tryCapacity(size() + map.size());
         }
-        for (final Map.Entry<? extends K, ? extends V> entry : map.entrySet()) {
-            putObjectValue(entry.getKey(), entry.getValue());
-        }
+        map.forEach((key, value) -> putObjectValue((K) key, (V) value));
     }
 
     private V putObjectValue(final K k, final V v) {

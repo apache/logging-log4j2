@@ -18,10 +18,10 @@ package org.apache.logging.log4j.spi;
 
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.LazyBoolean;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.TriConsumer;
-import org.apache.logging.log4j.util.PropertiesUtil;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -90,6 +90,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
         localMap.set(Collections.unmodifiableMap(map));
     }
 
+    @Override
     public void putAll(final Map<String, String> m) {
         if (!useMap) {
             return;
@@ -116,6 +117,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
         }
     }
 
+    @Override
     public void removeAll(final Iterable<String> keys) {
         final Map<String, String> map = localMap.get();
         if (map != null) {

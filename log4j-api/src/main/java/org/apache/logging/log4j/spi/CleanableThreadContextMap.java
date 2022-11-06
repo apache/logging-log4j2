@@ -17,23 +17,13 @@
 package org.apache.logging.log4j.spi;
 
 /**
- * Extension service provider interface to implement additional custom MDC behavior for
- * {@link org.apache.logging.log4j.ThreadContext}.
+ * Legacy interface for backward compatibility with extensions to ThreadContextMap.
+ * These methods have since been moved to default methods on ThreadContextMap.
  *
  * @see ThreadContextMap
  * @since 2.8
+ * @deprecated use {@link ThreadContextMap} directly
  */
+@Deprecated(since = "3.0.0")
 public interface CleanableThreadContextMap extends ThreadContextMap2 {
-
-    /**
-     * Removes all given context map keys from the current thread's context map.
-     *
-     * <p>If the current thread does not have a context map it is
-     * created as a side effect.</p>
-
-     * @param keys The keys.
-     * @since 2.8
-     */
-    void removeAll(final Iterable<String> keys);
-
 }

@@ -115,7 +115,7 @@ public class PropertiesUtil implements PropertyEnvironment {
      *
      * @return the main Log4j PropertiesUtil instance.
      */
-    public static PropertyEnvironment getProperties() {
+    public static PropertiesUtil getProperties() {
         return COMPONENT_PROPERTIES.value();
     }
 

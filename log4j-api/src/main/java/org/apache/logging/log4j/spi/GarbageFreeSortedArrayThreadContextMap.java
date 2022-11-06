@@ -18,11 +18,11 @@ package org.apache.logging.log4j.spi;
 
 import org.apache.logging.log4j.util.LazyBoolean;
 import org.apache.logging.log4j.util.LazyInt;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
-import org.apache.logging.log4j.util.PropertiesUtil;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -38,7 +38,7 @@ import java.util.Objects;
  * </p>
  * @since 2.7
  */
-class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap, ObjectThreadContextMap  {
+class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap, ThreadContextMap  {
 
     /**
      * Property name ({@value} ) for selecting {@code InheritableThreadLocal} (value "true") or plain
