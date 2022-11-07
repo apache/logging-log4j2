@@ -33,6 +33,52 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ExtendedThrowablePatternConverterTest {
+    /**
+     * TODO: Needs better a better exception? NumberFormatException is NOT helpful.
+     */
+    @Test
+    public void testBadShortOption() {
+        final String[] options = { "short.UNKNOWN" };
+        assertThrows(NumberFormatException.class, () -> ThrowablePatternConverter.newInstance(null, options));
+    }
+
+    @Test
+    public void testShortStacktrace() {
+        final String[] options = { "short" };
+        final ExtendedThrowablePatternConverter converter = ExtendedThrowablePatternConverter.newInstance(null, options);
+        final Throwable parent = new IllegalArgumentException("IllegalArgument", new NullPointerException());
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("testLogger") //
+                .setLoggerFqcn(this.getClass().getName()) //
+                .setLevel(Level.DEBUG) //
+                .setMessage(new SimpleMessage("test exception")) //
+                .setThrown(parent).build();
+        final StringBuilder sb = new StringBuilder();
+        converter.format(event, sb);
+        final String result = sb.toString();
+        String[] lines = result.split(Strings.LINE_SEPARATOR);
+        assertEquals(2, lines.length, "Invalid number of lines in stacktrace");
+        assertFalse(result.contains("NullPointerException"), "Exception should not be visible");
+    }
+
+    @Test
+    public void testLenghLimitedStacktrace() {
+        final String[] options = { "10" };
+        final ExtendedThrowablePatternConverter converter = ExtendedThrowablePatternConverter.newInstance(null, options);
+        final Throwable parent = new IllegalArgumentException("IllegalArgument", new NullPointerException());
+        final LogEvent event = Log4jLogEvent.newBuilder() //
+                .setLoggerName("testLogger") //
+                .setLoggerFqcn(this.getClass().getName()) //
+                .setLevel(Level.DEBUG) //
+                .setMessage(new SimpleMessage("test exception")) //
+                .setThrown(parent).build();
+        final StringBuilder sb = new StringBuilder();
+        converter.format(event, sb);
+        final String result = sb.toString();
+        String[] lines = result.split(Strings.LINE_SEPARATOR);
+        assertEquals(10, lines.length, "Invalid number of lines in stacktrace");
+        assertFalse(result.contains("NullPointerException"), "Exception should not be visible");
+    }
 
     @Test
     public void testSuffixFromNormalPattern() {
