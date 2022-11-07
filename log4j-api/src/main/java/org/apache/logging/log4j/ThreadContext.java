@@ -19,14 +19,11 @@ package org.apache.logging.log4j;
 
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
-import org.apache.logging.log4j.spi.DefaultThreadContextStack;
-import org.apache.logging.log4j.spi.NoOpThreadContextMap;
+import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextMap;
-import org.apache.logging.log4j.spi.ThreadContextMapFactory;
 import org.apache.logging.log4j.spi.ThreadContextStack;
-import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.PropertyEnvironment;
+import org.apache.logging.log4j.util.InternalApi;
 
 import java.io.Serializable;
 import java.util.AbstractCollection;
@@ -188,11 +185,6 @@ public final class ThreadContext {
     @SuppressWarnings("PublicStaticCollectionField")
     public static final ThreadContextStack EMPTY_STACK = new EmptyThreadContextStack();
 
-    private static final String DISABLE_MAP = "disableThreadContextMap";
-    private static final String DISABLE_STACK = "disableThreadContextStack";
-    private static final String DISABLE_ALL = "disableThreadContext";
-
-    private static boolean useStack;
     private static ThreadContextMap contextMap;
     private static ThreadContextStack contextStack;
     private static ReadOnlyThreadContextMap readOnlyContextMap;
@@ -208,20 +200,10 @@ public final class ThreadContext {
     /**
      * <em>Consider private, used for testing.</em>
      */
+    @InternalApi
     public static void init() {
-        ThreadContextMapFactory.init();
-        contextMap = null;
-        final PropertyEnvironment managerProps = PropertiesUtil.getProperties();
-        final boolean disableAll = managerProps.getBooleanProperty(DISABLE_ALL);
-        useStack = !(managerProps.getBooleanProperty(DISABLE_STACK) || disableAll);
-        final boolean useMap = !(managerProps.getBooleanProperty(DISABLE_MAP) || disableAll);
-
-        contextStack = new DefaultThreadContextStack(useStack);
-        if (!useMap) {
-            contextMap = new NoOpThreadContextMap();
-        } else {
-            contextMap = ThreadContextMapFactory.createThreadContextMap();
-        }
+        contextMap = LoggingSystem.createContextMap();
+        contextStack = LoggingSystem.createContextStack();
         if (contextMap instanceof ReadOnlyThreadContextMap) {
             readOnlyContextMap = (ReadOnlyThreadContextMap) contextMap;
         } else {
@@ -363,7 +345,6 @@ public final class ThreadContext {
      * </p>
      *
      * @return the internal data structure used to store thread context key-value pairs or {@code null}
-     * @see ThreadContextMapFactory
      * @see DefaultThreadContextMap
      * @see org.apache.logging.log4j.spi.CopyOnWriteSortedArrayThreadContextMap
      * @see org.apache.logging.log4j.spi.GarbageFreeSortedArrayThreadContextMap
@@ -414,7 +395,7 @@ public final class ThreadContext {
      * @param stack The stack to use.
      */
     public static void setStack(final Collection<String> stack) {
-        if (stack.isEmpty() || !useStack) {
+        if (stack.isEmpty()) {
             return;
         }
         contextStack.clear();
