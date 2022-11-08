@@ -17,7 +17,7 @@
 -->
 <document xmlns="http://maven.apache.org/changes/1.0.0"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/xsd/changes-1.0.0.xsd">
+          xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 https://maven.apache.org/xsd/changes-1.0.0.xsd">
   <properties>
     <title>Changes</title>
   </properties>
@@ -30,6 +30,9 @@
          - "remove" - Removed
     -->
     <release version="2.19.1" date="TBD" description="GA Release 2.19.1">
+      <action issue="LOG4J2-3627" dev="vy" type="fix" due-to="Thorsten Heit">
+        PatternLayout: %xEx{ [ "short" | depth ] } not working
+      </action>
       <action issue="LOG4J2-2678" dev="pkarwasz" type="update" due-to="Federico D'Ambrosio">
         Add LogEvent timestamp to ProducerRecord in KafkaAppender.
       </action>
