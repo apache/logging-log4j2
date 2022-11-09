@@ -47,8 +47,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat;
+import static org.junit.jupiter.api.Assertions.*;
 
 @UsingAnyThreadContext
 public class HtmlLayoutTest {
@@ -266,7 +266,7 @@ public class HtmlLayoutTest {
 
         // LOG4J2-3019 HtmlLayoutTest.testLayoutWithDatePatternFixedFormat test fails on windows
         // https://issues.apache.org/jira/browse/LOG4J2-3019
-        // java.time.format.DateTimeFormatterBuilder.toFormatter() defaults to using 
+        // java.time.format.DateTimeFormatterBuilder.toFormatter() defaults to using
         // Locale.getDefault(Locale.Category.FORMAT)
         final Locale formatLocale = Locale.getDefault(Locale.Category.FORMAT);
         final Locale locale = Locale.getDefault().equals(formatLocale) ? formatLocale : Locale.getDefault();

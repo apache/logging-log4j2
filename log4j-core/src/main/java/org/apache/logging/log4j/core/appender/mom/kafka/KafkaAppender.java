@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.appender.mom.kafka;
 
 import java.io.Serializable;
@@ -175,7 +174,7 @@ public final class KafkaAppender extends AbstractAppender {
         return new Builder<B>().asBuilder();
     }
 
-	private final Integer retryCount;
+    private final Integer retryCount;
 
     private final KafkaManager manager;
 

@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.status;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogBuilder;
 import org.apache.logging.log4j.message.Message;
@@ -25,9 +28,6 @@ import org.apache.logging.log4j.simple.SimpleLogger;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 
 public class StatusConsoleListenerTest {
 

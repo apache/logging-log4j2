@@ -134,7 +134,7 @@ public class DefaultThreadContextMapTest {
         assertEquals("value2", map.get("key2"));
         return map;
     }
-    
+
     @Test
     public void testGetCopyReturnsMutableMap() {
         final DefaultThreadContextMap map = new DefaultThreadContextMap(true);
@@ -227,7 +227,7 @@ public class DefaultThreadContextMapTest {
         final ThreadLocal<Map<String, String>> threadLocal = DefaultThreadContextMap.createThreadLocalMap(true);
         assertFalse(threadLocal instanceof InheritableThreadLocal<?>);
     }
-    
+
     @Test
     @SetSystemProperty(key = DefaultThreadContextMap.INHERITABLE_MAP, value = "true")
     @InitializesThreadContext
