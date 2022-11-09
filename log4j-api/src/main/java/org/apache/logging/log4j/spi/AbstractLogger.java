@@ -117,7 +117,8 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
      * Creates a new logger named after this class (or subclass).
      */
     public AbstractLogger() {
-        this.name = getClass().getName();
+        final String canonicalName = getClass().getCanonicalName();
+        this.name = canonicalName != null ? canonicalName : getClass().getName();
         this.messageFactory = createDefaultMessageFactory();
         this.flowMessageFactory = createDefaultFlowMessageFactory();
         this.logBuilder = new LocalLogBuilder(this);

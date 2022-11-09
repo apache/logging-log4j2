@@ -19,10 +19,12 @@ package org.apache.logging.log4j.core.config;
 import java.io.File;
 import java.net.URI;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("functional")
@@ -69,5 +71,24 @@ public class ConfiguratorTest {
         try (final LoggerContext loggerContext = Configurator.initialize(getClass().getName(), null, path)) {
             assertNotNull(loggerContext.getConfiguration().getAppender("List"));
         }
+    }
+
+    /**
+     * LOG4J2-3631: Configurator uses getName() instead of getCanonicalName().
+     */
+    @Test
+    public void testSetLevelUsesCanonicalName() {
+        final String path = new File("src/test/resources/log4j-list.xml").getAbsolutePath();
+        try (final LoggerContext loggerContext = Configurator.initialize(getClass().getName(), null, path)) {
+            Configurator.setLevel(Internal.class, Level.DEBUG);
+            final Configuration config = loggerContext.getConfiguration();
+            assertNotNull(config);
+            final String canonicalName = Internal.class.getCanonicalName();
+            assertThat(config.getLoggerConfig(canonicalName)).extracting(LoggerConfig::getName, LoggerConfig::getExplicitLevel)
+                    .containsExactly(canonicalName, Level.DEBUG);
+        }
+    }
+
+    private static class Internal {
     }
 }

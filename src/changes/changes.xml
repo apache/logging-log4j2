@@ -33,6 +33,9 @@
       <action issue="LOG4J2-2678" dev="pkarwasz" type="update" due-to="Federico D'Ambrosio">
         Add LogEvent timestamp to ProducerRecord in KafkaAppender.
       </action>
+      <action issue="LOG4J2-3631" dev="pkarwasz" type="fix" due-to="Jeff Thomas">
+        Fix `Configurator#setLevel` for internal classes.
+      </action>
     </release>
     <release version="2.19.0" date="2022-09-09" description="GA Release 2.19.0">
       <action issue="LOG4J2-3584" dev="vy" type="fix">
