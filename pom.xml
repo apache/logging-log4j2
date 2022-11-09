@@ -265,6 +265,7 @@
     <maven-taglib-plugin.version>2.4</maven-taglib-plugin.version>
     <revapi-maven-plugin.version>0.12.2</revapi-maven-plugin.version>
     <spotbugs-maven-plugin.version>4.7.2.1</spotbugs-maven-plugin.version>
+    <spotless-maven-plugin.version>2.27.2</spotless-maven-plugin.version>
     <!-- surefire.plugin.version 2.18 yields http://jira.codehaus.org/browse/SUREFIRE-1121, which is fixed in 2.18.1 -->
     <!-- surefire.plugin.version 2.19 yields https://issues.apache.org/jira/browse/SUREFIRE-1193. -->
     <!-- all versions after 2.13 yield https://issues.apache.org/jira/browse/SUREFIRE-720 -->
@@ -1404,6 +1405,33 @@
             <threshold>Normal</threshold>
           </configuration>
         </plugin>
+        <plugin>
+          <groupId>com.diffplug.spotless</groupId>
+          <artifactId>spotless-maven-plugin</artifactId>
+          <version>${spotless-maven-plugin.version}</version>
+          <configuration>
+            <!-- Check only files modified since 2022-10-01 -->
+            <ratchetFrom>7a088eb05ba6e341c9fd19ca1ad3db4557624b02</ratchetFrom>
+            <java>
+              <licenseHeader>
+                <file>${log4jParentDir}/checkstyle-header.txt</file>
+              </licenseHeader>
+
+              <!-- Whitespace -->
+              <trimTrailingWhitespace/>
+              <endWithNewline/>
+              <indent>
+                <spaces>true</spaces>
+                <spacesPerTab>4</spacesPerTab>
+              </indent>
+
+              <!-- Imports -->
+              <importOrder>
+                <order>java,org,com,\#</order>
+              </importOrder>
+            </java>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -1622,6 +1650,18 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>com.diffplug.spotless</groupId>
+        <artifactId>spotless-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-spotless</id>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
