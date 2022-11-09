@@ -1298,8 +1298,8 @@
           <artifactId>spotless-maven-plugin</artifactId>
           <version>${spotless-maven-plugin.version}</version>
           <configuration>
-            <!-- Check only files modified since 2022-10-01 -->
-            <ratchetFrom>3164c0dac25df0205498c683f9d5ae5ad34015bd</ratchetFrom>
+            <!-- Check last 32 commits -->
+            <ratchetFrom>HEAD~31</ratchetFrom>
             <java>
               <licenseHeader>
                 <file>${log4jParentDir}/checkstyle-header.txt</file>
