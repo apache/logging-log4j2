@@ -23,6 +23,6 @@ import org.apache.logging.log4j.spi.Provider;
  */
 public class SLF4JProvider extends Provider {
     public SLF4JProvider() {
-        super(15, "2.6.0", SLF4JLoggerContextFactory.class, MDCContextMap.class);
+        super(15, "3.0.0", SLF4JLoggerContextFactory.class, MDCContextMap.class);
     }
 }

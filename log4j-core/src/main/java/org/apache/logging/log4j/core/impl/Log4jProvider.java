@@ -23,6 +23,6 @@ import org.apache.logging.log4j.spi.Provider;
  */
 public class Log4jProvider extends Provider {
     public Log4jProvider() {
-        super(10, "2.6.0", Log4jContextFactory.class);
+        super(10, "3.0.0", Log4jContextFactory.class);
     }
 }

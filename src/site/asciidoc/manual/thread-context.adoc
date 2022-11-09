@@ -202,9 +202,9 @@ link:../log4j-api/apidocs/org/apache/logging/log4j/ThreadContext.html[`ThreadCon
 class are static.
 
 ==== Configuration
-Set the system property `disableThreadContextMap` to `true` to disable the Thread Context Map.
-Set the system property `disableThreadContextStack` to `true` to disable the Thread Context Stack.
-Set the system property `disableThreadContext` to `true` to disable both the Thread Context Map and Stack.
+Set the system property `log4j2.disableThreadContextMap` to `true` to disable the Thread Context Map.
+Set the system property `log4j2.disableThreadContextStack` to `true` to disable the Thread Context Stack.
+Set the system property `log4j2.disableThreadContext` to `true` to disable both the Thread Context Map and Stack.
 Set the system property `log4j2.isThreadContextMapInheritable` to `true` to enable child threads to inherit the Thread
 Context Map.
 

@@ -17,9 +17,12 @@
 package org.apache.logging.log4j.spi;
 
 import org.apache.logging.log4j.perf.nogc.OpenHashStringMap;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringMap;
-import org.apache.logging.log4j.util.PropertiesUtil;
+
+import static org.apache.logging.log4j.spi.LoggingSystem.THREAD_CONTEXT_DEFAULT_INITIAL_CAPACITY;
+import static org.apache.logging.log4j.spi.LoggingSystem.THREAD_CONTEXT_INITIAL_CAPACITY;
 
 /**
  * {@code OpenHashStringMap}-based implementation of the {@code ThreadContextMap} interface that attempts not to
@@ -37,9 +40,9 @@ public class GarbageFreeOpenHashMapThreadContextMap extends GarbageFreeSortedArr
     public static final Class<? extends ThreadContextMap> SUPER = GarbageFreeSortedArrayThreadContextMap.class;
 
     @Override
-    protected StringMap createStringMap() {
+    protected StringMap createStringMap(final int initialCapacity) {
         return new OpenHashStringMap<>(PropertiesUtil.getProperties().getIntegerProperty(
-                PROPERTY_NAME_INITIAL_CAPACITY, DEFAULT_INITIAL_CAPACITY));
+                THREAD_CONTEXT_INITIAL_CAPACITY, THREAD_CONTEXT_DEFAULT_INITIAL_CAPACITY));
     }
 
     @Override

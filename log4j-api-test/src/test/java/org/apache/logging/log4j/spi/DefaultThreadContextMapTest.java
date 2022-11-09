@@ -16,20 +16,13 @@
  */
 package org.apache.logging.log4j.spi;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.test.junit.InitializesThreadContext;
-import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
-import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.ClearSystemProperty;
-import org.junitpioneer.jupiter.SetSystemProperty;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the {@code DefaultThreadContextMap} class.
@@ -220,20 +213,14 @@ public class DefaultThreadContextMapTest {
     }
 
     @Test
-    @ClearSystemProperty(key = DefaultThreadContextMap.INHERITABLE_MAP)
-    @InitializesThreadContext
     public void testThreadLocalNotInheritableByDefault() {
-        ThreadContextMapFactory.init();
-        final ThreadLocal<Map<String, String>> threadLocal = DefaultThreadContextMap.createThreadLocalMap(true);
+        final ThreadLocal<Map<String, String>> threadLocal = DefaultThreadContextMap.createThreadLocalMap(true, false);
         assertFalse(threadLocal instanceof InheritableThreadLocal<?>);
     }
     
     @Test
-    @SetSystemProperty(key = DefaultThreadContextMap.INHERITABLE_MAP, value = "true")
-    @InitializesThreadContext
     public void testThreadLocalInheritableIfConfigured() {
-        ThreadContextMapFactory.init();
-        final ThreadLocal<Map<String, String>> threadLocal = DefaultThreadContextMap.createThreadLocalMap(true);
+        final ThreadLocal<Map<String, String>> threadLocal = DefaultThreadContextMap.createThreadLocalMap(true, true);
         assertTrue(threadLocal instanceof InheritableThreadLocal<?>);
     }
 }

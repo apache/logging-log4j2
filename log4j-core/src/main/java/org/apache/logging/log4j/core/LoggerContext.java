@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core;
 
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationListener;
@@ -39,7 +40,6 @@ import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
 import org.apache.logging.log4j.spi.LoggerContextShutdownEnabled;
 import org.apache.logging.log4j.spi.LoggerRegistry;
 import org.apache.logging.log4j.spi.Terminable;
-import org.apache.logging.log4j.spi.ThreadContextMapFactory;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 import java.beans.PropertyChangeEvent;
@@ -804,7 +804,7 @@ public class LoggerContext extends AbstractLifeCycle
     }
 
     private void initApiModule() {
-        ThreadContextMapFactory.init(); // Or make public and call ThreadContext.init() which calls ThreadContextMapFactory.init().
+        ThreadContext.init();
     }
 
     // LOG4J2-151: changed visibility from private to protected
