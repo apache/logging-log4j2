@@ -28,6 +28,7 @@
   <name>Apache Log4j Samples</name>
   <url>http://maven.apache.org</url>
   <properties>
+    <log4jParentDir>${basedir}/..</log4jParentDir>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <revapi.skip>true</revapi.skip>
 
