@@ -16,17 +16,6 @@
  */
 package org.apache.logging.log4j.status;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
-import org.apache.logging.log4j.simple.SimpleLogger;
-import org.apache.logging.log4j.simple.SimpleLoggerContext;
-import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.util.Constants;
-import org.apache.logging.log4j.util.PropertiesUtil;
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,6 +28,17 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
+import org.apache.logging.log4j.simple.SimpleLogger;
+import org.apache.logging.log4j.simple.SimpleLoggerContext;
+import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.util.Constants;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Records events that occur in the logging system. By default, only error messages are logged to {@link System#err}.
@@ -130,7 +130,7 @@ public final class StatusLogger extends AbstractLogger {
      * <li>LOG4J2-3340 StatusLogger's log Level cannot be changed as advertised.</li>
      * </ol>
      * </p>
-     * 
+     *
      * @param name The logger name.
      * @param messageFactory The message factory.
      */

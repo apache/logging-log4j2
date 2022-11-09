@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.layout.template.json.util;
 
+import java.util.Locale;
+import java.util.TimeZone;
+
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.util.datetime.FastDateFormat;
 import org.apache.logging.log4j.core.util.datetime.FixedDateFormat;
@@ -23,9 +26,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-
-import java.util.Locale;
-import java.util.TimeZone;
 
 class InstantFormatterTest {
 

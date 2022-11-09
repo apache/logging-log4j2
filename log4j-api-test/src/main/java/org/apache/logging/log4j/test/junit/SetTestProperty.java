@@ -14,12 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.test.junit;
-
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Inherited;
@@ -30,6 +25,10 @@ import java.lang.annotation.Target;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junitpioneer.jupiter.ReadsEnvironmentVariable;
 import org.junitpioneer.jupiter.ReadsSystemProperty;
+
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Registers a Log4j2 system property with the {@link TestPropertySource}. The
