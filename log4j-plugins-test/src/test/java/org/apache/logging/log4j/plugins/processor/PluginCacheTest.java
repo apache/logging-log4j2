@@ -14,18 +14,17 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.plugins.processor;
-
-import org.apache.logging.log4j.plugins.model.PluginCache;
-import org.apache.logging.log4j.plugins.model.PluginEntry;
-import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import org.apache.logging.log4j.plugins.model.PluginCache;
+import org.apache.logging.log4j.plugins.model.PluginEntry;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

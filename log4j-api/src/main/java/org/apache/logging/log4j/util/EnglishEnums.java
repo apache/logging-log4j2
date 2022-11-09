@@ -20,7 +20,7 @@ import java.util.Locale;
 
 /**
  * <em>Consider this class private.</em>
- * 
+ *
  * <p>
  * Helps convert English Strings to English Enum values.
  * </p>

@@ -14,12 +14,11 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.plugins.model;
 
-import org.apache.logging.log4j.util.Strings;
-
 import java.util.function.Supplier;
+
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Descriptor for {@link org.apache.logging.log4j.plugins.Plugin} metadata.

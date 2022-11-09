@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.script.config.builder;
 
+import java.net.URI;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -26,8 +28,6 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
-
-import java.net.URI;
 
 /**
  * Normally this would be a plugin. However, we don't want it used for everything so it will be defined

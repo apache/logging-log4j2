@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import java.util.Collection;
+import java.util.concurrent.ExecutionException;
+
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
@@ -30,9 +33,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
-
-import java.util.Collection;
-import java.util.concurrent.ExecutionException;
 
 import static java.util.Arrays.asList;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;

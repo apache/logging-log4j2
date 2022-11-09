@@ -16,12 +16,6 @@
  */
 package org.apache.logging.log4j.perf.nogc;
 
-import org.apache.logging.log4j.spi.ThreadContextMap;
-import org.apache.logging.log4j.util.BiConsumer;
-import org.apache.logging.log4j.util.ReadOnlyStringMap;
-import org.apache.logging.log4j.util.StringMap;
-import org.apache.logging.log4j.util.TriConsumer;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -31,6 +25,12 @@ import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import org.apache.logging.log4j.spi.ThreadContextMap;
+import org.apache.logging.log4j.util.BiConsumer;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.StringMap;
+import org.apache.logging.log4j.util.TriConsumer;
 
 /**
  * Open hash map-based implementation of the {@code ReadOnlyStringMap} interface.
@@ -296,7 +296,7 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
     }
 
     @Override
-	public boolean equals(final Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == this) {
             return true;
         }
@@ -641,8 +641,8 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
     public boolean trim(final int n) {
         final int l = HashCommon.nextPowerOfTwo((int) Math.ceil(n / loadFactor));
         if (l >= n || size > HashCommon.maxFill(l, loadFactor)) {
-			return true;
-		}
+            return true;
+        }
         try {
             rehash(l);
         } catch (final OutOfMemoryError cantDoIt) { // unusual to catch OOME but in this case appropriate
@@ -697,7 +697,7 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
      * @return a hash code for this map.
      */
     @Override
-	public int hashCode() {
+    public int hashCode() {
         int result = 0;
         for (int j = realSize(), i = 0, t = 0; j-- != 0;) {
             while (keys[i] == null) {
@@ -898,8 +898,8 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
          * @return the maximum number of entries before rehashing.
          */
         public static int maxFill(final int n, final float f) {
-		/* We must guarantee that there is always at least
-		 * one free entry (even with pathological load factors). */
+        /* We must guarantee that there is always at least
+         * one free entry (even with pathological load factors). */
             return Math.min((int) Math.ceil(n * f), n - 1);
         }
 

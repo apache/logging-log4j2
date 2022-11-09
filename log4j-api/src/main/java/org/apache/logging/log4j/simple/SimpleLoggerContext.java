@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.simple;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
@@ -25,10 +29,6 @@ import org.apache.logging.log4j.spi.LoggerRegistry;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyEnvironment;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
-
 /**
  * A simple {@link LoggerContext} implementation.
  */
@@ -36,7 +36,7 @@ public class SimpleLoggerContext implements LoggerContext {
 
     /** Singleton instance. */
     static final SimpleLoggerContext INSTANCE = new SimpleLoggerContext();
-    
+
     private static final String SYSTEM_OUT = "system.out";
 
     private static final String SYSTEM_ERR = "system.err";
@@ -63,7 +63,7 @@ public class SimpleLoggerContext implements LoggerContext {
 
     /** Include the ThreadContextMap in the log message */
     private final boolean showContextMap;
-    
+
     /** The date and time format to use in the log message */
     private final String dateTimeFormat;
 

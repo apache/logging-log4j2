@@ -14,18 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.plugins.visit;
-
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.plugins.Node;
-import org.apache.logging.log4j.plugins.di.Keys;
-import org.apache.logging.log4j.plugins.model.PluginType;
-import org.apache.logging.log4j.plugins.util.TypeUtil;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Strings;
-import org.apache.logging.log4j.util.Cast;
-import org.apache.logging.log4j.util.StringBuilders;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -36,6 +25,16 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.di.Keys;
+import org.apache.logging.log4j.plugins.model.PluginType;
+import org.apache.logging.log4j.plugins.util.TypeUtil;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Cast;
+import org.apache.logging.log4j.util.StringBuilders;
+import org.apache.logging.log4j.util.Strings;
 
 public class PluginElementVisitor implements NodeVisitor {
     private static final Logger LOGGER = StatusLogger.getLogger();

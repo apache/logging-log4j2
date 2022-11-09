@@ -14,20 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.plugins.di;
-
-import org.apache.logging.log4j.plugins.Named;
-import org.apache.logging.log4j.plugins.Namespace;
-import org.apache.logging.log4j.plugins.internal.util.BeanUtils;
-import org.apache.logging.log4j.plugins.name.AliasesProvider;
-import org.apache.logging.log4j.plugins.name.AnnotatedElementAliasesProvider;
-import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
-import org.apache.logging.log4j.plugins.name.NameProvider;
-import org.apache.logging.log4j.plugins.util.AnnotationUtil;
-import org.apache.logging.log4j.util.ReflectionUtil;
-import org.apache.logging.log4j.util.Strings;
-import org.apache.logging.log4j.util.Cast;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -39,6 +26,18 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+
+import org.apache.logging.log4j.plugins.Named;
+import org.apache.logging.log4j.plugins.Namespace;
+import org.apache.logging.log4j.plugins.internal.util.BeanUtils;
+import org.apache.logging.log4j.plugins.name.AliasesProvider;
+import org.apache.logging.log4j.plugins.name.AnnotatedElementAliasesProvider;
+import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
+import org.apache.logging.log4j.plugins.name.NameProvider;
+import org.apache.logging.log4j.plugins.util.AnnotationUtil;
+import org.apache.logging.log4j.util.Cast;
+import org.apache.logging.log4j.util.ReflectionUtil;
+import org.apache.logging.log4j.util.Strings;
 
 public final class Keys {
     private Keys() {

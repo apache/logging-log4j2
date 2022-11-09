@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j;
 
+import java.net.URI;
+
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
@@ -26,8 +28,6 @@ import org.apache.logging.log4j.spi.Terminable;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.Strings;
-
-import java.net.URI;
 
 /**
  * The anchor point for the Log4j logging system. The most common usage of this class is to obtain a named

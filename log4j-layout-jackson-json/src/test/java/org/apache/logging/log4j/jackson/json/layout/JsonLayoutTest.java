@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.jackson.json.layout;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
@@ -53,11 +58,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
-
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -68,16 +68,16 @@ import static org.junit.jupiter.api.Assertions.*;
 @UsingAnyThreadContext
 public class JsonLayoutTest {
     private static class TestClass {
-		private int value;
+        private int value;
 
-		public int getValue() {
-			return value;
-		}
+        public int getValue() {
+            return value;
+        }
 
-		public void setValue(final int value) {
-			this.value = value;
-		}
-	}
+        public void setValue(final int value) {
+            this.value = value;
+        }
+    }
 
     private static final String DQUOTE = "\"";
 
@@ -144,10 +144,10 @@ public class JsonLayoutTest {
     }
 
     private String prepareJsonForObjectMessageAsJsonObjectTests(final int value, final boolean objectMessageAsJsonObject) {
-    	final TestClass testClass = new TestClass();
-		testClass.setValue(value);
-		// @formatter:off
-		final Log4jLogEvent expected = Log4jLogEvent.newBuilder()
+        final TestClass testClass = new TestClass();
+        testClass.setValue(value);
+        // @formatter:off
+        final Log4jLogEvent expected = Log4jLogEvent.newBuilder()
             .setLoggerName("a.B")
             .setLoggerFqcn("f.q.c.n")
             .setLevel(Level.DEBUG)
@@ -155,10 +155,10 @@ public class JsonLayoutTest {
             .setThreadName("threadName")
             .setTimeMillis(1).build();
         // @formatter:off
-		final AbstractJacksonLayout layout = JsonLayout.newBuilder()
-				.setCompact(true)
-				.setObjectMessageAsJsonObject(objectMessageAsJsonObject)
-				.build();
+        final AbstractJacksonLayout layout = JsonLayout.newBuilder()
+                .setCompact(true)
+                .setObjectMessageAsJsonObject(objectMessageAsJsonObject)
+                .build();
         // @formatter:off
         return layout.toSerializable(expected);
     }
@@ -603,14 +603,14 @@ public class JsonLayoutTest {
 
     @Test
     public void testObjectMessageAsJsonObject() {
-    		final String str = prepareJsonForObjectMessageAsJsonObjectTests(1234, true);
-    		assertTrue(str.contains("\"message\":{\"value\":1234}"), str);
+            final String str = prepareJsonForObjectMessageAsJsonObjectTests(1234, true);
+            assertTrue(str.contains("\"message\":{\"value\":1234}"), str);
     }
 
     @Test
     public void testObjectMessageAsJsonString() {
-    		final String str = prepareJsonForObjectMessageAsJsonObjectTests(1234, false);
-		assertTrue(str.contains("\"message\":\"" + this.getClass().getCanonicalName() + "$TestClass@"), str);
+            final String str = prepareJsonForObjectMessageAsJsonObjectTests(1234, false);
+        assertTrue(str.contains("\"message\":\"" + this.getClass().getCanonicalName() + "$TestClass@"), str);
     }
 
     @Test
@@ -625,7 +625,7 @@ public class JsonLayoutTest {
         assertTrue(str.contains("\"extendedStackTrace\":\"java.lang.NullPointerException"), str);
     }
 
-	private String toPropertySeparator(final boolean compact) {
+    private String toPropertySeparator(final boolean compact) {
         return compact ? ":" : " : ";
     }
 

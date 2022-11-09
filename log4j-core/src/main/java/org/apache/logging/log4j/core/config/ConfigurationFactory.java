@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.net.URI;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
@@ -28,10 +30,8 @@ import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.LoaderUtil;
-
-import java.net.URI;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 
 /**
  * Factory class for parsed {@link Configuration} objects from a configuration file.

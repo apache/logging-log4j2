@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.util;
 
-import org.apache.logging.log4j.test.BetterService;
-import org.apache.logging.log4j.test.Service;
-import org.junit.jupiter.api.Test;
-
 import java.lang.invoke.MethodHandles;
 import java.util.Collections;
 import java.util.List;
 import java.util.ServiceConfigurationError;
 import java.util.stream.Collectors;
+
+import org.apache.logging.log4j.test.BetterService;
+import org.apache.logging.log4j.test.Service;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;

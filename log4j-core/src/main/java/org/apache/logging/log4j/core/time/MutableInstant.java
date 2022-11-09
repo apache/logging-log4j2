@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.time;
 
-import org.apache.logging.log4j.util.PerformanceSensitive;
-
 import java.io.Serializable;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
@@ -26,6 +24,8 @@ import java.time.temporal.TemporalQueries;
 import java.time.temporal.TemporalQuery;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
+
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 import static java.time.temporal.ChronoField.*;
 import static java.time.temporal.ChronoUnit.NANOS;

@@ -27,6 +27,7 @@
   <name>Apache Log4j Samples: Flume - Embedded</name>
   <url>http://maven.apache.org</url>
   <properties>
+    <log4jParentDir>${basedir}/../..</log4jParentDir>
     <module.name>org.apache.logging.log4j.samples.flume.embedded</module.name>
   </properties>
   <dependencies>

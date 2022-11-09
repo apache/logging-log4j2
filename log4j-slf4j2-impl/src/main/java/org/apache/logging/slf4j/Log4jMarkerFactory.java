@@ -80,7 +80,7 @@ public class Log4jMarkerFactory implements IMarkerFactory {
 
     /**
      * Gets the Log4j2 marker associated to this SLF4J marker or creates a new one.
-     * 
+     *
      * @param marker a SLF4J marker
      * @return a Log4j2 marker
      */

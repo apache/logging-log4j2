@@ -16,17 +16,17 @@
  */
 package org.apache.logging.log4j.test;
 
+import java.util.Map;
+
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.util.Timer;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Map;
-
-import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.util.Timer;
 
 public class ThreadContextUtilityClass {
 

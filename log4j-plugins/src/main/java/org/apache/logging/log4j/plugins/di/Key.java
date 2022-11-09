@@ -14,15 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.plugins.di;
-
-import org.apache.logging.log4j.plugins.Ordered;
-import org.apache.logging.log4j.plugins.QualifierType;
-import org.apache.logging.log4j.plugins.util.AnnotationUtil;
-import org.apache.logging.log4j.plugins.util.TypeUtil;
-import org.apache.logging.log4j.util.Strings;
-import org.apache.logging.log4j.util.Cast;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -35,6 +27,13 @@ import java.lang.reflect.Type;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Supplier;
+
+import org.apache.logging.log4j.plugins.Ordered;
+import org.apache.logging.log4j.plugins.QualifierType;
+import org.apache.logging.log4j.plugins.util.AnnotationUtil;
+import org.apache.logging.log4j.plugins.util.TypeUtil;
+import org.apache.logging.log4j.util.Cast;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Type with an optional {@link QualifierType} type, name, and namespace. Keys are used for binding to and looking up instance

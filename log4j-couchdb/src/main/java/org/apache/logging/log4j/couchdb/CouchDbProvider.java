@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.couchdb;
 
+import java.lang.reflect.Method;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.nosql.NoSqlProvider;
 import org.apache.logging.log4j.plugins.Configurable;
@@ -27,13 +29,11 @@ import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.validation.constraints.ValidHost;
 import org.apache.logging.log4j.plugins.validation.constraints.ValidPort;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.Strings;
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.CouchDbProperties;
-
-import java.lang.reflect.Method;
 
 /**
  * The Apache CouchDB implementation of {@link NoSqlProvider}.

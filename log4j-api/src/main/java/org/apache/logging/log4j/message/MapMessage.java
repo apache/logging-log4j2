@@ -16,23 +16,23 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.apache.logging.log4j.util.BiConsumer;
-import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
-import org.apache.logging.log4j.util.IndexedStringMap;
-import org.apache.logging.log4j.util.MultiFormatStringBuilderFormattable;
-import org.apache.logging.log4j.util.ReadOnlyStringMap;
-import org.apache.logging.log4j.util.SortedArrayStringMap;
-import org.apache.logging.log4j.util.Strings;
-import org.apache.logging.log4j.util.TriConsumer;
-import org.apache.logging.log4j.util.Chars;
-import org.apache.logging.log4j.util.EnglishEnums;
-import org.apache.logging.log4j.util.PerformanceSensitive;
-import org.apache.logging.log4j.util.StringBuilders;
-
 import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
+
+import org.apache.logging.log4j.util.BiConsumer;
+import org.apache.logging.log4j.util.Chars;
+import org.apache.logging.log4j.util.EnglishEnums;
+import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
+import org.apache.logging.log4j.util.IndexedStringMap;
+import org.apache.logging.log4j.util.MultiFormatStringBuilderFormattable;
+import org.apache.logging.log4j.util.PerformanceSensitive;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.SortedArrayStringMap;
+import org.apache.logging.log4j.util.StringBuilders;
+import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util.TriConsumer;
 
 /**
  * Represents a Message that consists of a Map.

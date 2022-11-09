@@ -16,8 +16,8 @@
  */
 package org.apache.logging.log4j.plugins.model;
 
-import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.Cast;
+import org.apache.logging.log4j.util.Lazy;
 
 /**
  * Plugin Descriptor. This is a memento object for Plugin annotations paired to their annotated classes.

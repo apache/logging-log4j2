@@ -16,6 +16,15 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.time.SystemNanoClock;
@@ -25,15 +34,6 @@ import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.plugins.model.PluginType;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 /**
  * Most of the work of the {@link org.apache.logging.log4j.core.layout.PatternLayout} class is delegated to the
@@ -466,16 +466,16 @@ public final class PatternParser {
 
                 default:
 
-	                if (c >= '0' && c <= '9') {
-	                    formattingInfo = new FormattingInfo(formattingInfo.isLeftAligned(), formattingInfo.getMinLength(),
-	                            c - '0', formattingInfo.isLeftTruncate(), formattingInfo.isZeroPad());
-	                    state = ParserState.MAX_STATE;
-	                } else {
-	                    LOGGER.error("Error occurred in position " + i + ".\n Was expecting digit, instead got char \"" + c
-	                            + "\".");
+                    if (c >= '0' && c <= '9') {
+                        formattingInfo = new FormattingInfo(formattingInfo.isLeftAligned(), formattingInfo.getMinLength(),
+                                c - '0', formattingInfo.isLeftTruncate(), formattingInfo.isZeroPad());
+                        state = ParserState.MAX_STATE;
+                    } else {
+                        LOGGER.error("Error occurred in position " + i + ".\n Was expecting digit, instead got char \"" + c
+                                + "\".");
 
-	                    state = ParserState.LITERAL_STATE;
-	                }
+                        state = ParserState.LITERAL_STATE;
+                    }
                 }
 
                 break;

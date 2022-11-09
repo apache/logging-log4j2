@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.plugins;
 
-import org.apache.logging.log4j.plugins.model.PluginService;
-import org.apache.logging.log4j.plugins.name.NameProvider;
-import org.apache.logging.log4j.plugins.name.PluginNameProvider;
-import org.apache.logging.log4j.util.Strings;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import org.apache.logging.log4j.plugins.model.PluginService;
+import org.apache.logging.log4j.plugins.name.NameProvider;
+import org.apache.logging.log4j.plugins.name.PluginNameProvider;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * <p>Annotation that identifies a Class as a Plugin. Plugins are indexed classes with a name that can typically

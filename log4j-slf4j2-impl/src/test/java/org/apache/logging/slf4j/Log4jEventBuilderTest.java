@@ -16,8 +16,6 @@
  */
 package org.apache.logging.slf4j;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.List;
 
 import org.apache.logging.log4j.core.Appender;
@@ -29,6 +27,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @LoggerContextSource("log4j2-config.xml")
 public class Log4jEventBuilderTest {

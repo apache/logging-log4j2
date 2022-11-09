@@ -16,6 +16,17 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.lang.management.ManagementFactory;
+import java.nio.charset.StandardCharsets;
+import java.text.MessageFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.*;
@@ -32,17 +43,6 @@ import org.apache.logging.log4j.util.Lazy;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import java.lang.management.ManagementFactory;
-import java.nio.charset.StandardCharsets;
-import java.text.MessageFormat;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 import static org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedFormat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -261,7 +261,7 @@ public class HtmlLayoutTest {
 
         // LOG4J2-3019 HtmlLayoutTest.testLayoutWithDatePatternFixedFormat test fails on windows
         // https://issues.apache.org/jira/browse/LOG4J2-3019
-        // java.time.format.DateTimeFormatterBuilder.toFormatter() defaults to using 
+        // java.time.format.DateTimeFormatterBuilder.toFormatter() defaults to using
         // Locale.getDefault(Locale.Category.FORMAT)
         final Locale formatLocale = Locale.getDefault(Locale.Category.FORMAT);
         final Locale locale = Locale.getDefault().equals(formatLocale) ? formatLocale : Locale.getDefault();

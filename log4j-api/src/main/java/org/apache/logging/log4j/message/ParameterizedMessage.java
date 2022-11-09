@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.apache.logging.log4j.util.StringBuilderFormattable;
-import org.apache.logging.log4j.util.Constants;
-import org.apache.logging.log4j.util.StringBuilders;
-
 import java.util.Arrays;
+
+import org.apache.logging.log4j.util.Constants;
+import org.apache.logging.log4j.util.StringBuilderFormattable;
+import org.apache.logging.log4j.util.StringBuilders;
 
 /**
  * Handles messages that consist of a format string containing '{}' to represent each replaceable token, and

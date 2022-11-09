@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.time.internal;
 
+import java.util.concurrent.locks.LockSupport;
+
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.util.Lazy;
-
-import java.util.concurrent.locks.LockSupport;
 
 /**
  * Implementation of the {@code Clock} interface that tracks the time in a

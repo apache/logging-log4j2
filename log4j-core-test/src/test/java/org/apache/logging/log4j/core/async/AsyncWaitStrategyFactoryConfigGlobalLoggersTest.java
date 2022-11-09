@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import com.lmax.disruptor.YieldingWaitStrategy;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -27,6 +26,8 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import com.lmax.disruptor.YieldingWaitStrategy;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

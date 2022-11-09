@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.jul;
 
-import org.apache.logging.log4j.LoggingException;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.PropertiesUtil;
-
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
+
+import org.apache.logging.log4j.LoggingException;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Log4j implementation of {@link java.util.logging.LogManager}. Note that the system property

@@ -16,9 +16,6 @@
  */
 package org.apache.logging.slf4j;
 
-import static org.apache.logging.log4j.test.SerializableMatchers.serializesRoundTrip;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import java.io.Serializable;
 
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
@@ -26,6 +23,9 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.apache.logging.log4j.test.SerializableMatchers.serializesRoundTrip;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  *

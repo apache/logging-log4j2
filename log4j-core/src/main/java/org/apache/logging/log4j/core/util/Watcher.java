@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import java.util.List;
+
 import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
-
-import java.util.List;
 
 /**
  * Watches for changes in a Source and performs an action when it is modified.

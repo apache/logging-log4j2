@@ -23,7 +23,7 @@ import java.util.Optional;
 
 /**
  * <em>Consider this class private.</em>
- * 
+ *
  * @see <a href="http://commons.apache.org/proper/commons-lang/">Apache Commons Lang</a>
  */
 @InternalApi
@@ -41,7 +41,7 @@ public final class Strings {
      * The empty string array.
      */
     public static final String[] EMPTY_ARRAY = {};
-    
+
     /**
      * OS-dependent line separator, defaults to {@code "\n"} if the system property {@code ""line.separator"} cannot be
      * read.
@@ -55,7 +55,7 @@ public final class Strings {
 
     /**
      * Returns a double quoted string.
-     * 
+     *
      * @param str a String
      * @return {@code "str"}
      */
@@ -165,7 +165,7 @@ public final class Strings {
      * <p>
      * Copied from Apache Commons Lang org.apache.commons.lang3.StringUtils.
      * </p>
-     * 
+     *
      * @param str  the String to get the leftmost characters from, may be null
      * @param len  the length of the required String
      * @return the leftmost characters, {@code null} if null String input
@@ -185,7 +185,7 @@ public final class Strings {
 
     /**
      * Returns a quoted string.
-     * 
+     *
      * @param str a String
      * @return {@code 'str'}
      */
@@ -202,7 +202,7 @@ public final class Strings {
     public static String toRootUpperCase(final String str) {
         return str.toUpperCase(Locale.ROOT);
     }
-    
+
     /**
      * <p>
      * Removes control characters (char &lt;= 32) from both ends of this String returning {@code null} if the String is

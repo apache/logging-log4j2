@@ -14,12 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.plugins.util;
-
-import org.apache.logging.log4j.plugins.model.PluginRegistry;
-import org.apache.logging.log4j.test.junit.UsingURLStreamHandlerFactory;
-import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +27,10 @@ import java.net.URLStreamHandlerFactory;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+
+import org.apache.logging.log4j.plugins.model.PluginRegistry;
+import org.apache.logging.log4j.test.junit.UsingURLStreamHandlerFactory;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;

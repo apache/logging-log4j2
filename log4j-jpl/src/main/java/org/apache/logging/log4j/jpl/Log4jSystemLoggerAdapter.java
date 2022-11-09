@@ -14,16 +14,15 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.jpl;
+
+import java.lang.System.Logger;
+import java.lang.System.LoggerFinder;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.spi.AbstractLoggerAdapter;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.util.StackLocatorUtil;
-
-import java.lang.System.Logger;
-import java.lang.System.LoggerFinder;
 
 /**
  * {@link Logger} registry implementation using just log4j-api.

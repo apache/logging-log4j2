@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.status;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
-
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Objects;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
 
 /**
  * {@link StatusListener} that writes to the console.

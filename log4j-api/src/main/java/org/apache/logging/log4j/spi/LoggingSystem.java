@@ -14,19 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.spi;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
-import org.apache.logging.log4j.util.Constants;
-import org.apache.logging.log4j.util.Lazy;
-import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.LowLevelLogUtil;
-import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.PropertyEnvironment;
-import org.apache.logging.log4j.util.ServiceRegistry;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,6 +31,17 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
+import org.apache.logging.log4j.util.Constants;
+import org.apache.logging.log4j.util.Lazy;
+import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.LowLevelLogUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyEnvironment;
+import org.apache.logging.log4j.util.ServiceRegistry;
 
 /**
  * Handles initializing the Log4j API through {@link Provider} discovery. This keeps track of which

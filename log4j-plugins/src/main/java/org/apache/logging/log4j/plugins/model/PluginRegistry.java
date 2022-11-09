@@ -14,20 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.plugins.model;
-
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.plugins.Configurable;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginAliases;
-import org.apache.logging.log4j.plugins.Singleton;
-import org.apache.logging.log4j.plugins.di.Keys;
-import org.apache.logging.log4j.plugins.util.ResolverUtil;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Lazy;
-import org.apache.logging.log4j.util.Strings;
-import org.apache.logging.log4j.util.LoaderUtil;
 
 import java.io.IOException;
 import java.net.URI;
@@ -42,6 +29,18 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAliases;
+import org.apache.logging.log4j.plugins.Singleton;
+import org.apache.logging.log4j.plugins.di.Keys;
+import org.apache.logging.log4j.plugins.util.ResolverUtil;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Lazy;
+import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.Strings;
 
 import static org.apache.logging.log4j.util.Unbox.box;
 

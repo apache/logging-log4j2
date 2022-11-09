@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import java.io.InvalidObjectException;
+import java.io.ObjectInputStream;
+import java.util.Arrays;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
@@ -33,14 +37,10 @@ import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
-import org.apache.logging.log4j.util.StringMap;
-import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.StringBuilders;
-
-import java.io.InvalidObjectException;
-import java.io.ObjectInputStream;
-import java.util.Arrays;
+import org.apache.logging.log4j.util.StringMap;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Mutable implementation of the {@code LogEvent} interface.

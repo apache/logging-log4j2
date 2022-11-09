@@ -15,8 +15,8 @@
  * limitations under the license.
  */
 
-import org.apache.logging.log4j.util.PropertySource;
 import org.apache.logging.log4j.util.EnvironmentPropertySource;
+import org.apache.logging.log4j.util.PropertySource;
 import org.apache.logging.log4j.util.SystemPropertiesPropertySource;
 
 /**

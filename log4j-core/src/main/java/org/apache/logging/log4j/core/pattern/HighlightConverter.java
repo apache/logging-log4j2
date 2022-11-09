@@ -16,20 +16,20 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.PerformanceSensitive;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Highlight pattern converter. Formats the result of a pattern using a color appropriate for the Level in the LogEvent.

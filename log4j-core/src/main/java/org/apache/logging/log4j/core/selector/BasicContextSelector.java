@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.selector;
 
+import java.net.URI;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
@@ -25,10 +29,6 @@ import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Lazy;
-
-import java.net.URI;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Returns either this Thread's context or the default LoggerContext.

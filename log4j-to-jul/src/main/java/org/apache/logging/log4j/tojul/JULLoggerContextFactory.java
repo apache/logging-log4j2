@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.tojul;
 
+import java.net.URI;
+
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
-
-import java.net.URI;
 
 /**
  * Implementation of Log4j {@link LoggerContextFactory} SPI.

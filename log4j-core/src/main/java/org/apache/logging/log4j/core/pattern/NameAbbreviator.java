@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import org.apache.logging.log4j.util.PerformanceSensitive;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.logging.log4j.util.PerformanceSensitive;
 
 
 /**
@@ -260,7 +260,7 @@ public abstract class NameAbbreviator {
      * Fragment of an pattern abbreviator.
      */
     private static final class PatternAbbreviatorFragment {
-        
+
         static final PatternAbbreviatorFragment[] EMPTY_ARRAY = {};
 
         /**

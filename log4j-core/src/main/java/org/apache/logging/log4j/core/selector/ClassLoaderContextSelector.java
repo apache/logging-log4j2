@@ -16,16 +16,6 @@
  */
 package org.apache.logging.log4j.core.selector;
 
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.impl.ContextAnchor;
-import org.apache.logging.log4j.plugins.Inject;
-import org.apache.logging.log4j.plugins.Singleton;
-import org.apache.logging.log4j.plugins.di.Injector;
-import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Lazy;
-import org.apache.logging.log4j.util.StackLocatorUtil;
-
 import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.util.ArrayList;
@@ -36,6 +26,16 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.impl.ContextAnchor;
+import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.plugins.Singleton;
+import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Lazy;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 
 /**
  * This ContextSelector chooses a LoggerContext based upon the ClassLoader of the caller. This allows Loggers assigned

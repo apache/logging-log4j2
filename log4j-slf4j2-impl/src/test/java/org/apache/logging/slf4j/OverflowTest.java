@@ -16,11 +16,11 @@
  */
 package org.apache.logging.slf4j;
 
-import static org.junit.Assert.fail;
-
 import org.apache.logging.log4j.LoggingException;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.Assert.fail;
 
 /**
  * Tests StackOverflow when slf4j-impl and to-slf4j are both present.

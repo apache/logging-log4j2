@@ -14,8 +14,13 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.plugins.visit;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Parameter;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.function.Function;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.Inject;
@@ -23,15 +28,9 @@ import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.di.Keys;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.StringBuilders;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Parameter;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.function.Function;
+import org.apache.logging.log4j.util.Strings;
 
 public class PluginValueVisitor implements NodeVisitor {
     private static final Logger LOGGER = StatusLogger.getLogger();

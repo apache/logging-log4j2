@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.spi;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
+import java.lang.reflect.Field;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogBuilder;
 import org.apache.logging.log4j.LoggingException;
@@ -33,20 +38,15 @@ import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.LambdaUtil;
-import org.apache.logging.log4j.util.MessageSupplier;
-import org.apache.logging.log4j.util.Strings;
-import org.apache.logging.log4j.util.Supplier;
 import org.apache.logging.log4j.util.Constants;
+import org.apache.logging.log4j.util.LambdaUtil;
 import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.StackLocatorUtil;
-
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
-import java.lang.reflect.Field;
+import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util.Supplier;
 
 /**
  * Base implementation of a Logger. It is highly recommended that any Logger implementation extend this class.
@@ -2792,7 +2792,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     public LogBuilder atDebug() {
         return atLevel(Level.DEBUG);
     }
-    
+
     /**
      * Construct an informational log event.
      * @return a LogBuilder.
@@ -2802,7 +2802,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     public LogBuilder atInfo() {
         return atLevel(Level.INFO);
     }
-    
+
     /**
      * Construct a warning log event.
      * @return a LogBuilder.
@@ -2812,7 +2812,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     public LogBuilder atWarn() {
         return atLevel(Level.WARN);
     }
-    
+
     /**
      * Construct an error log event.
      * @return a LogBuilder.
@@ -2822,7 +2822,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     public LogBuilder atError() {
         return atLevel(Level.ERROR);
     }
-    
+
     /**
      * Construct a fatal log event.
      * @return a LogBuilder.
@@ -2832,7 +2832,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     public LogBuilder atFatal() {
         return atLevel(Level.FATAL);
     }
-    
+
     /**
      * Construct a log event that will always be logged.
      * @return a LogBuilder.
@@ -2846,7 +2846,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         }
         return builder.reset(Level.OFF);
     }
-    
+
     /**
      * Construct a log event.
      * @return a LogBuilder.

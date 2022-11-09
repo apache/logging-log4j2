@@ -28,6 +28,7 @@
   <name>Apache Log4j Spring Cloud Config Samples</name>
   <url>http://maven.apache.org</url>
   <properties>
+    <log4jParentDir>${basedir}/../..</log4jParentDir>
     <revapi.skip>true</revapi.skip>
     <maven.doap.skip>true</maven.doap.skip>
     <maven.deploy.skip>true</maven.deploy.skip>

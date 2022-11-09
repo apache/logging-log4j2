@@ -26,6 +26,7 @@
   <packaging>war</packaging>
   <name>Apache Log4j Samples: Flume - Remote</name>
   <properties>
+    <log4jParentDir>${basedir}/../..</log4jParentDir>
     <module.name>org.apache.logging.log4j.samples.flume.remote</module.name>
   </properties>
 

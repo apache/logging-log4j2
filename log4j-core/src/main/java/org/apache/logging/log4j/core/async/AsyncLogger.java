@@ -16,8 +16,8 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import com.lmax.disruptor.EventTranslatorVararg;
-import com.lmax.disruptor.dsl.Disruptor;
+import java.util.List;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
@@ -37,10 +37,11 @@ import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.StackLocatorUtil;
+import org.apache.logging.log4j.util.StringMap;
 
-import java.util.List;
+import com.lmax.disruptor.EventTranslatorVararg;
+import com.lmax.disruptor.dsl.Disruptor;
 
 /**
  * AsyncLogger is a logger designed for high throughput and low latency logging. It does not perform any I/O in the

@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.util;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.engine.execution.InterceptingExecutableInvoker;
 import org.junit.jupiter.engine.execution.InvocationInterceptorChain;
-
-import java.util.ArrayDeque;
-import java.util.Deque;
 
 import static org.junit.jupiter.api.Assertions.*;
 

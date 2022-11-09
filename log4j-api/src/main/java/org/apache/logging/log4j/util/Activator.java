@@ -16,6 +16,13 @@
  */
 package org.apache.logging.log4j.util;
 
+import java.security.Permission;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ServiceConfigurationError;
+import java.util.ServiceLoader;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.spi.Provider;
@@ -28,13 +35,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.SynchronousBundleListener;
 import org.osgi.framework.wiring.BundleWiring;
-
-import java.security.Permission;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ServiceConfigurationError;
-import java.util.ServiceLoader;
 
 /**
  * <em>Consider this class private.</em>

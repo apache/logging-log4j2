@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.message;
 
-import org.apache.logging.log4j.message.ThreadInformation;
-import org.apache.logging.log4j.util.StringBuilders;
-
 import java.lang.management.LockInfo;
 import java.lang.management.MonitorInfo;
 import java.lang.management.ThreadInfo;
+
+import org.apache.logging.log4j.message.ThreadInformation;
+import org.apache.logging.log4j.util.StringBuilders;
 
 /**
  * Provides information on locks and monitors in the thread dump. This class requires Java 1.6 to compile and

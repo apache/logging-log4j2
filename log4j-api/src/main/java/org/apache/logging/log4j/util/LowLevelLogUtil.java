@@ -14,12 +14,11 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.util;
 
-import org.apache.logging.log4j.Logger;
-
 import java.io.PrintWriter;
+
+import org.apache.logging.log4j.Logger;
 
 /**
  * PrintWriter-based logging utility for classes too low level to use {@link org.apache.logging.log4j.status.StatusLogger}.

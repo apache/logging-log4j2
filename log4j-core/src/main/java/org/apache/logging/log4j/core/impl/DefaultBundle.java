@@ -14,8 +14,10 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.impl;
+
+import java.util.Map;
+import java.util.function.Supplier;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
@@ -56,11 +58,8 @@ import org.apache.logging.log4j.spi.CopyOnWrite;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.PropertiesUtil;
-
-import java.util.Map;
-import java.util.function.Supplier;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 
 import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 

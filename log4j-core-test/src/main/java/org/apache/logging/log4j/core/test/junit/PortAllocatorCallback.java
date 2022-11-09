@@ -14,8 +14,9 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.test.junit;
+
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.core.test.AvailablePortFinder;
 import org.junit.jupiter.api.extension.AfterAllCallback;
@@ -24,8 +25,6 @@ import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.platform.commons.support.AnnotationSupport;
-
-import java.util.stream.Stream;
 
 class PortAllocatorCallback implements BeforeEachCallback, AfterEachCallback, BeforeAllCallback, AfterAllCallback {
     @Override

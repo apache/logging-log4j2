@@ -14,20 +14,20 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.util;
+
+import java.io.InputStream;
+import java.util.Properties;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
+
 import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
 import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
 import uk.org.webcompere.systemstubs.properties.SystemProperties;
-
-import java.io.InputStream;
-import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -183,7 +183,7 @@ public class PropertiesUtilOrderTest {
     /**
      * Checks the for missing null checks. The {@link NullPropertySource} returns
      * {@code null} in almost every call.
-     * 
+     *
      * @param sysProps
      */
     @Test

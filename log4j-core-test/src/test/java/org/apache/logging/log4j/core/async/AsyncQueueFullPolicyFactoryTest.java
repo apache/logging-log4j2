@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import java.util.Locale;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -23,8 +25,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import java.util.Locale;
 
 import static org.junit.Assert.assertEquals;
 

@@ -14,8 +14,15 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.config;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -25,18 +32,10 @@ import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.util.Lazy;
-import org.apache.logging.log4j.util.PropertyEnvironment;
-import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import org.apache.logging.log4j.util.PropertyEnvironment;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Default factory for using a plugin selected based on the configuration source.

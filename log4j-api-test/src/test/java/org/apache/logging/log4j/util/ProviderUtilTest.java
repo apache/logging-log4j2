@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.util;
 
+import java.io.File;
+import java.net.URL;
+import java.net.URLClassLoader;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.test.TestLoggerContext;
 import org.junit.jupiter.api.Test;
-
-import java.io.File;
-import java.net.URL;
-import java.net.URLClassLoader;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

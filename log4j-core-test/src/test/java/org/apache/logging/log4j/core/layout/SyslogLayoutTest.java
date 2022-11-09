@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.util.List;
+import java.util.Locale;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
@@ -32,9 +35,6 @@ import org.apache.logging.log4j.util.Lazy;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

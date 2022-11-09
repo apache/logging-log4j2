@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
+import java.util.function.Function;
+
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.di.DI;
@@ -27,8 +29,6 @@ import org.apache.logging.log4j.plugins.test.validation.ValidatingPluginWithType
 import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
 

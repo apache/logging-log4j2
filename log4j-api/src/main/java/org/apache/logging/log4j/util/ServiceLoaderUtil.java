@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.util;
 
 import java.lang.invoke.CallSite;
@@ -49,9 +48,9 @@ public final class ServiceLoaderUtil {
 
     /**
      * Retrieves the available services from the caller's classloader.
-     * 
+     *
      * Broken services will be ignored.
-     * 
+     *
      * @param <T>         The service type.
      * @param serviceType The class of the service.
      * @param lookup      The calling class data.
@@ -64,9 +63,9 @@ public final class ServiceLoaderUtil {
     /**
      * Retrieves the available services from the caller's classloader and possibly
      * the thread context classloader.
-     * 
+     *
      * Broken services will be ignored.
-     * 
+     *
      * @param <T>         The service type.
      * @param serviceType The class of the service.
      * @param lookup      The calling class data.

@@ -24,7 +24,6 @@ import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
@@ -650,8 +649,8 @@ public class XmlConfiguration extends Log4j1Configuration {
             return layout;
         } catch (Exception e) {
             Throwable cause = e.getCause();
-            if (e instanceof InterruptedException 
-                || e instanceof InterruptedIOException 
+            if (e instanceof InterruptedException
+                || e instanceof InterruptedIOException
                 || cause instanceof InterruptedException
                 || cause instanceof InterruptedIOException) {
                 Thread.currentThread().interrupt();
@@ -749,7 +748,7 @@ public class XmlConfiguration extends Log4j1Configuration {
 
         forEachElement(element.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
-                case CATEGORY: 
+                case CATEGORY:
                 case LOGGER_ELEMENT:
                     parseCategory(currentElement);
                     break;
@@ -762,7 +761,7 @@ public class XmlConfiguration extends Log4j1Configuration {
                 case THROWABLE_RENDERER_TAG:
                     LOGGER.warn("Log4j 1 throwable renderers are not supported by Log4j 2 and will be ignored.");
                     break;
-                case CATEGORY_FACTORY_TAG: 
+                case CATEGORY_FACTORY_TAG:
                 case LOGGER_FACTORY_TAG:
                     LOGGER.warn("Log4j 1 logger factories are not supported by Log4j 2 and will be ignored.");
                     break;

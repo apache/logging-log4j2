@@ -14,8 +14,11 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.plugins.osgi;
+
+import java.security.Permission;
+import java.util.Collection;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.model.PluginRegistry;
@@ -31,10 +34,6 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.SynchronousBundleListener;
 import org.osgi.framework.wiring.BundleWiring;
-
-import java.security.Permission;
-import java.util.Collection;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * OSGi BundleActivator.

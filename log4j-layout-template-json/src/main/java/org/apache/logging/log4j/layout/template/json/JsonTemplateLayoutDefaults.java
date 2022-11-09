@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
-import org.apache.logging.log4j.layout.template.json.util.RecyclerFactories;
-import org.apache.logging.log4j.layout.template.json.util.RecyclerFactory;
-import org.apache.logging.log4j.util.PropertyEnvironment;
-import org.apache.logging.log4j.util.PropertiesUtil;
-
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.TimeZone;
+
+import org.apache.logging.log4j.layout.template.json.util.RecyclerFactories;
+import org.apache.logging.log4j.layout.template.json.util.RecyclerFactory;
+import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 
 public final class JsonTemplateLayoutDefaults {
 

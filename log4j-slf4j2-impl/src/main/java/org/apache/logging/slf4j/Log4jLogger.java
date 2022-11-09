@@ -464,5 +464,5 @@ public class Log4jLogger implements LocationAwareLogger, Serializable {
         return logger.isEnabled(getLevel(level.toInt()));
     }
 
-    
+
 }

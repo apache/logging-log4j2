@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.spi;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.TriConsumer;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 
 import static org.apache.logging.log4j.spi.LoggingSystem.THREAD_CONTEXT_MAP_INHERITABLE_ENABLED;
 
@@ -59,7 +59,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
         // if not inheritable, return plain ThreadLocal with null as initial value
         return new ThreadLocal<>();
     }
-    
+
     public DefaultThreadContextMap() {
         this(true);
     }

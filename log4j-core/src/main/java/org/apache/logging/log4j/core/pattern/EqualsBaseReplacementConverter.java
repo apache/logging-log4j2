@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import java.util.List;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.util.PerformanceSensitive;
-
-import java.util.List;
 
 /**
  * Equals pattern converter.

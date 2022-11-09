@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import java.lang.management.ManagementFactory;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.util.Lazy;
-
-import java.lang.management.ManagementFactory;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Maps JVM input arguments (but not main arguments) using JMX to acquire JVM arguments.

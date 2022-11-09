@@ -16,17 +16,17 @@
  */
 package org.apache.logging.log4j.core.time;
 
-import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
-import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Strings;
-
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.TimeZone;
+
+import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
+import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * A composite {@link Instant} formatter trying to employ either {@link FixedDateFormat}, {@link FastDateFormat}, or {@link DateTimeFormatter} in the given order due to performance reasons.

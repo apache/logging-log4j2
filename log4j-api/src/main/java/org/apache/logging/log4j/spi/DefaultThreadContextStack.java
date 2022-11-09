@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.spi;
 
-import org.apache.logging.log4j.ThreadContext.ContextStack;
-import org.apache.logging.log4j.util.StringBuilderFormattable;
-import org.apache.logging.log4j.util.Strings;
-import org.apache.logging.log4j.util.StringBuilders;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.logging.log4j.ThreadContext.ContextStack;
+import org.apache.logging.log4j.util.StringBuilderFormattable;
+import org.apache.logging.log4j.util.StringBuilders;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * A copy-on-write thread-safe variant of {@code org.apache.logging.log4j.spi.ThreadContextStack} in which all mutative

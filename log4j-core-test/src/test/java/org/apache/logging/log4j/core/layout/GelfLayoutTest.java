@@ -16,7 +16,13 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import com.fasterxml.jackson.core.io.JsonStringEncoder;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.InflaterInputStream;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
@@ -33,18 +39,13 @@ import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
-import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.Chars;
+import org.apache.logging.log4j.util.Lazy;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.InflaterInputStream;
+import com.fasterxml.jackson.core.io.JsonStringEncoder;
 
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 import static org.assertj.core.api.Assertions.assertThat;

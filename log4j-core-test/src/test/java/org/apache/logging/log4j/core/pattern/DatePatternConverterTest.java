@@ -16,24 +16,24 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import org.apache.logging.log4j.core.AbstractLogEvent;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.time.Instant;
-import org.apache.logging.log4j.core.time.MutableInstant;
-import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
-import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedTimeZoneFormat;
-import org.apache.logging.log4j.util.Strings;
-import org.apache.logging.log4j.util.Constants;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.TimeZone;
+
+import org.apache.logging.log4j.core.AbstractLogEvent;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.time.Instant;
+import org.apache.logging.log4j.core.time.MutableInstant;
+import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
+import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedTimeZoneFormat;
+import org.apache.logging.log4j.util.Constants;
+import org.apache.logging.log4j.util.Strings;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;

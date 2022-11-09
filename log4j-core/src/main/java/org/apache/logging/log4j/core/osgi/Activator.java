@@ -14,8 +14,11 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.osgi;
+
+import java.util.Hashtable;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.util.Constants;
@@ -32,10 +35,6 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.wiring.BundleWiring;
-
-import java.util.Hashtable;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * OSGi BundleActivator.

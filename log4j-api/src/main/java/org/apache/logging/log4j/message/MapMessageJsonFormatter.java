@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.apache.logging.log4j.util.IndexedStringMap;
-import org.apache.logging.log4j.util.StringBuilderFormattable;
-import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.StringBuilders;
-
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.logging.log4j.util.IndexedStringMap;
+import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.StringBuilderFormattable;
+import org.apache.logging.log4j.util.StringBuilders;
 
 /**
  * The default JSON formatter for {@link MapMessage}s.

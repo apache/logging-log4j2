@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.io.IOException;
+import java.net.Socket;
+
 import org.apache.logging.log4j.core.appender.SocketAppenderTest.TcpSocketTestServer;
 import org.apache.logging.log4j.core.net.AbstractSocketManager;
 import org.apache.logging.log4j.core.net.Rfc1349TrafficClass;
@@ -28,9 +31,6 @@ import org.apache.logging.log4j.plugins.Named;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.net.Socket;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;

@@ -16,17 +16,17 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.apache.logging.log4j.util.Lazy;
-import org.apache.logging.log4j.util.ServiceRegistry;
-import org.apache.logging.log4j.util.StringBuilderFormattable;
-import org.apache.logging.log4j.util.Strings;
-
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.logging.log4j.util.Lazy;
+import org.apache.logging.log4j.util.ServiceRegistry;
+import org.apache.logging.log4j.util.StringBuilderFormattable;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Captures information about all running Threads.

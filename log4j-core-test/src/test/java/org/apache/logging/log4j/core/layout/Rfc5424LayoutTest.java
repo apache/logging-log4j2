@@ -16,6 +16,12 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.function.Function;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
@@ -48,12 +54,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -334,7 +334,7 @@ public class Rfc5424LayoutTest {
 
             assertTrue(list.size() > 1, "Not enough list entries");
             final String string = list.get(1);
-			      assertTrue(string.contains("IllegalArgumentException"), "No Exception in " + string);
+                  assertTrue(string.contains("IllegalArgumentException"), "No Exception in " + string);
 
             appender.clear();
         } finally {

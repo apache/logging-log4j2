@@ -16,16 +16,6 @@
  */
 package org.apache.logging.log4j.core.net;
 
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
-import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
-import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
-import org.apache.logging.log4j.core.util.AuthorizationProvider;
-import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.PropertyEnvironment;
-import org.apache.logging.log4j.util.Strings;
-
-import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.JarURLConnection;
@@ -35,6 +25,16 @@ import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import javax.net.ssl.HttpsURLConnection;
+
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
+import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
+import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
+import org.apache.logging.log4j.core.util.AuthorizationProvider;
+import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyEnvironment;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Constructs an HTTPURLConnection. This class should be considered to be internal

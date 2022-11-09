@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.plugins;
 
-import org.apache.logging.log4j.plugins.model.PluginType;
-import org.apache.logging.log4j.util.Cast;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import org.apache.logging.log4j.plugins.model.PluginType;
+import org.apache.logging.log4j.util.Cast;
 
 /**
  * Configurations are represented as a tree of Node instances. Each Node may have

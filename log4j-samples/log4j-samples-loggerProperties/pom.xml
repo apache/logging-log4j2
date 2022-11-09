@@ -27,6 +27,7 @@
   <name>Apache Log4j Samples: LoggerProperties</name>
   <url>http://maven.apache.org</url>
   <properties>
+    <log4jParentDir>${basedir}/../..</log4jParentDir>
     <module.name>org.apache.logging.log4j.samples.logger_properties</module.name>
   </properties>
   <dependencies>

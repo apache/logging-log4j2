@@ -14,14 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.plugins.model;
-
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.plugins.Ordered;
-import org.apache.logging.log4j.plugins.Singleton;
-import org.apache.logging.log4j.plugins.util.OrderedComparator;
-import org.apache.logging.log4j.status.StatusLogger;
 
 import java.util.AbstractCollection;
 import java.util.Iterator;
@@ -29,6 +22,12 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.BiConsumer;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.plugins.Ordered;
+import org.apache.logging.log4j.plugins.Singleton;
+import org.apache.logging.log4j.plugins.util.OrderedComparator;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Plugin namespaces are mappings of plugin keys to plugin classes where plugin keys are lower-cased

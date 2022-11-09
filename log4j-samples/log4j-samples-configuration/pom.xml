@@ -27,6 +27,7 @@
   <name>Apache Log4j Samples: Configuration</name>
   <url>http://maven.apache.org</url>
   <properties>
+    <log4jParentDir>${basedir}/../..</log4jParentDir>
     <module.name>org.apache.logging.log4j.samples.configuration</module.name>
   </properties>
 

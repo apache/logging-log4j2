@@ -14,8 +14,12 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.config.properties;
+
+import java.util.Map;
+import java.util.Objects;
+import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
@@ -40,13 +44,8 @@ import org.apache.logging.log4j.core.config.builder.api.ScriptFileComponentBuild
 import org.apache.logging.log4j.core.filter.AbstractFilter.AbstractFilterBuilder;
 import org.apache.logging.log4j.plugins.util.Builder;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.PropertiesUtil;
-
-import java.util.Map;
-import java.util.Objects;
-import java.util.Properties;
-import java.util.concurrent.TimeUnit;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Helper builder for parsing properties files into a PropertiesConfiguration.

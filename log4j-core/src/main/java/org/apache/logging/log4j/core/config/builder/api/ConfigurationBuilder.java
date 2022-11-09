@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.core.config.builder.api;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.plugins.util.Builder;
-
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Interface for building logging configurations.

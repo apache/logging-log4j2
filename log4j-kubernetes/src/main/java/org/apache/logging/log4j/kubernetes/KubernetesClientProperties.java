@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.kubernetes;
 
-import io.fabric8.kubernetes.client.Config;
-import org.apache.logging.log4j.util.PropertyEnvironment;
-import org.apache.logging.log4j.util.PropertiesUtil;
-
 import java.time.Duration;
+
+import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyEnvironment;
+
+import io.fabric8.kubernetes.client.Config;
 
 /**
  * Obtains properties used to configure the Kubernetes client.

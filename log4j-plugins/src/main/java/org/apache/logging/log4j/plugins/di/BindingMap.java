@@ -14,15 +14,14 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.plugins.di;
-
-import org.apache.logging.log4j.util.Cast;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
+
+import org.apache.logging.log4j.util.Cast;
 
 class BindingMap {
     private final Map<Key<?>, Binding<?>> bindings;

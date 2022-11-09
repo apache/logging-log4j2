@@ -14,16 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j;
-
-import org.apache.logging.log4j.message.ParameterizedMessage;
-import org.apache.logging.log4j.spi.DefaultThreadContextMap;
-import org.apache.logging.log4j.spi.LoggingSystem;
-import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
-import org.apache.logging.log4j.spi.ThreadContextMap;
-import org.apache.logging.log4j.spi.ThreadContextStack;
-import org.apache.logging.log4j.util.InternalApi;
 
 import java.io.Serializable;
 import java.util.AbstractCollection;
@@ -33,6 +24,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+
+import org.apache.logging.log4j.message.ParameterizedMessage;
+import org.apache.logging.log4j.spi.DefaultThreadContextMap;
+import org.apache.logging.log4j.spi.LoggingSystem;
+import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
+import org.apache.logging.log4j.spi.ThreadContextMap;
+import org.apache.logging.log4j.spi.ThreadContextStack;
+import org.apache.logging.log4j.util.InternalApi;
 
 /**
  * The ThreadContext allows applications to store information either in a Map or a Stack.

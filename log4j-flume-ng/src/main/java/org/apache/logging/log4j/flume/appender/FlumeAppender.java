@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.flume.appender;
 
+import java.io.Serializable;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -34,10 +38,6 @@ import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.util.Timer;
-
-import java.io.Serializable;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 /**
  * An Appender that uses the Avro protocol to route events to Flume.

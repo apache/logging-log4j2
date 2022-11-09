@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.spi;
 
+import java.util.Map;
+
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
-
-import java.util.Map;
 
 /**
  * Service provider interface to implement custom MDC behavior for {@link org.apache.logging.log4j.ThreadContext}.
