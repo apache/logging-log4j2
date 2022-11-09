@@ -16,12 +16,6 @@
  */
 package org.apache.logging.log4j;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.test.ThreadContextUtilityClass;
 import org.apache.logging.log4j.test.junit.InitializesThreadContext;
 import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
@@ -30,10 +24,13 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
+import static org.apache.logging.log4j.spi.LoggingSystem.THREAD_CONTEXT_MAP_INHERITABLE_ENABLED;
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * Tests {@link ThreadContext}.
  */
-@SetSystemProperty(key = DefaultThreadContextMap.INHERITABLE_MAP, value = "true")
+@SetSystemProperty(key = THREAD_CONTEXT_MAP_INHERITABLE_ENABLED, value = "true")
 @InitializesThreadContext
 public class ThreadContextInheritanceTest {
 
@@ -48,7 +45,7 @@ public class ThreadContextInheritanceTest {
     }
 
     @Test
-    @SetSystemProperty(key = DefaultThreadContextMap.INHERITABLE_MAP, value = "true")
+    @SetSystemProperty(key = THREAD_CONTEXT_MAP_INHERITABLE_ENABLED, value = "true")
     @InitializesThreadContext
     public void testInheritanceSwitchedOn() throws Exception {
         ThreadContext.put("Greeting", "Hello");

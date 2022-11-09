@@ -18,9 +18,7 @@ package org.apache.logging.log4j.spi;
 
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.Cast;
-import org.apache.logging.log4j.util.LazyBoolean;
 import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.TriConsumer;
 
@@ -28,6 +26,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import static org.apache.logging.log4j.spi.LoggingSystem.THREAD_CONTEXT_MAP_INHERITABLE_ENABLED;
 
 /**
  * The actual ThreadContext Map. A new ThreadContext Map is created each time it is updated and the Map stored is always
@@ -42,33 +42,22 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
      * Property name ({@value} ) for selecting {@code InheritableThreadLocal} (value "true") or plain
      * {@code ThreadLocal} (value is not "true") in the implementation.
      */
-    public static final String INHERITABLE_MAP = "isThreadContextMapInheritable";
+    public static final String INHERITABLE_MAP = THREAD_CONTEXT_MAP_INHERITABLE_ENABLED;
 
     private final boolean useMap;
     private final ThreadLocal<Map<String, String>> localMap;
 
-    private static final LazyBoolean inheritableMap = new LazyBoolean(() -> PropertiesUtil.getProperties()
-            .getBooleanProperty(INHERITABLE_MAP));
-
-    // LOG4J2-479: by default, use a plain ThreadLocal, only use InheritableThreadLocal if configured.
-    // (This method is package protected for JUnit tests.)
-    static ThreadLocal<Map<String, String>> createThreadLocalMap(final boolean isMapEnabled) {
-        if (inheritableMap.getAsBoolean()) {
+    static ThreadLocal<Map<String, String>> createThreadLocalMap(final boolean isMapEnabled, final boolean inheritableMap) {
+        if (inheritableMap) {
             return new InheritableThreadLocal<>() {
                 @Override
                 protected Map<String, String> childValue(final Map<String, String> parentValue) {
-                    return parentValue != null && isMapEnabled //
-                            ? Map.copyOf(parentValue) //
-                            : null;
+                    return parentValue != null && isMapEnabled ? Map.copyOf(parentValue) : null;
                 }
             };
         }
         // if not inheritable, return plain ThreadLocal with null as initial value
         return new ThreadLocal<>();
-    }
-
-    static void init(final PropertyEnvironment properties) {
-        inheritableMap.setAsBoolean(properties.getBooleanProperty(INHERITABLE_MAP));
     }
     
     public DefaultThreadContextMap() {
@@ -76,8 +65,12 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
     }
 
     public DefaultThreadContextMap(final boolean useMap) {
+        this(useMap, PropertiesUtil.getProperties().getBooleanProperty(THREAD_CONTEXT_MAP_INHERITABLE_ENABLED));
+    }
+
+    DefaultThreadContextMap(final boolean useMap, final boolean inheritableMap) {
         this.useMap = useMap;
-        this.localMap = createThreadLocalMap(useMap);
+        this.localMap = createThreadLocalMap(useMap, inheritableMap);
     }
 
     @Override

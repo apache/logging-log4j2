@@ -16,11 +16,8 @@
  */
 package org.apache.logging.log4j.spi;
 
-import org.apache.logging.log4j.test.junit.InitializesThreadContext;
 import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.ClearSystemProperty;
-import org.junitpioneer.jupiter.SetSystemProperty;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -216,18 +213,14 @@ public class DefaultThreadContextMapTest {
     }
 
     @Test
-    @ClearSystemProperty(key = DefaultThreadContextMap.INHERITABLE_MAP)
-    @InitializesThreadContext
     public void testThreadLocalNotInheritableByDefault() {
-        final ThreadLocal<Map<String, String>> threadLocal = DefaultThreadContextMap.createThreadLocalMap(true);
+        final ThreadLocal<Map<String, String>> threadLocal = DefaultThreadContextMap.createThreadLocalMap(true, false);
         assertFalse(threadLocal instanceof InheritableThreadLocal<?>);
     }
     
     @Test
-    @SetSystemProperty(key = DefaultThreadContextMap.INHERITABLE_MAP, value = "true")
-    @InitializesThreadContext
     public void testThreadLocalInheritableIfConfigured() {
-        final ThreadLocal<Map<String, String>> threadLocal = DefaultThreadContextMap.createThreadLocalMap(true);
+        final ThreadLocal<Map<String, String>> threadLocal = DefaultThreadContextMap.createThreadLocalMap(true, true);
         assertTrue(threadLocal instanceof InheritableThreadLocal<?>);
     }
 }

@@ -16,10 +16,7 @@
  */
 package org.apache.logging.log4j.spi;
 
-import org.apache.logging.log4j.util.LazyBoolean;
-import org.apache.logging.log4j.util.LazyInt;
 import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
@@ -28,6 +25,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import static org.apache.logging.log4j.spi.LoggingSystem.*;
 
 /**
  * {@code SortedArrayStringMap}-based implementation of the {@code ThreadContextMap} interface that attempts not to
@@ -40,46 +39,25 @@ import java.util.Objects;
  */
 class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap, ThreadContextMap  {
 
-    /**
-     * Property name ({@value} ) for selecting {@code InheritableThreadLocal} (value "true") or plain
-     * {@code ThreadLocal} (value is not "true") in the implementation.
-     */
-    public static final String INHERITABLE_MAP = "isThreadContextMapInheritable";
-
-    /**
-     * The default initial capacity.
-     */
-    protected static final int DEFAULT_INITIAL_CAPACITY = 16;
-
-    /**
-     * System property name that can be used to control the data structure's initial capacity.
-     */
-    protected static final String PROPERTY_NAME_INITIAL_CAPACITY = "log4j2.ThreadContext.initial.capacity";
-
     protected final ThreadLocal<StringMap> localMap;
-
-    private static final LazyInt initialCapacity = new LazyInt(() -> PropertiesUtil.getProperties()
-            .getIntegerProperty(PROPERTY_NAME_INITIAL_CAPACITY, DEFAULT_INITIAL_CAPACITY));
-    private static final LazyBoolean inheritableMap = new LazyBoolean(() -> PropertiesUtil.getProperties()
-            .getBooleanProperty(INHERITABLE_MAP));
-
-    /**
-     * Initializes static variables based on system properties. Normally called when this class is initialized by the VM
-     * and when Log4j is reconfigured.
-     */
-    static void init(final PropertyEnvironment properties) {
-        initialCapacity.setAsInt(properties.getIntegerProperty(PROPERTY_NAME_INITIAL_CAPACITY, DEFAULT_INITIAL_CAPACITY));
-        inheritableMap.setAsBoolean(properties.getBooleanProperty(INHERITABLE_MAP));
-    }
+    protected final int initialCapacity;
 
     public GarbageFreeSortedArrayThreadContextMap() {
-        this.localMap = createThreadLocalMap();
+        this(
+                PropertiesUtil.getProperties().getBooleanProperty(THREAD_CONTEXT_MAP_INHERITABLE_ENABLED),
+                PropertiesUtil.getProperties().getIntegerProperty(THREAD_CONTEXT_INITIAL_CAPACITY, THREAD_CONTEXT_DEFAULT_INITIAL_CAPACITY)
+        );
+    }
+
+    GarbageFreeSortedArrayThreadContextMap(final boolean inheritableMap, final  int initialCapacity) {
+        this.localMap = createThreadLocalMap(inheritableMap);
+        this.initialCapacity = initialCapacity;
     }
 
     // LOG4J2-479: by default, use a plain ThreadLocal, only use InheritableThreadLocal if configured.
     // (This method is package protected for JUnit tests.)
-    private ThreadLocal<StringMap> createThreadLocalMap() {
-        if (inheritableMap.getAsBoolean()) {
+    private ThreadLocal<StringMap> createThreadLocalMap(final boolean inheritableMap) {
+        if (inheritableMap) {
             return new InheritableThreadLocal<>() {
                 @Override
                 protected StringMap childValue(final StringMap parentValue) {
@@ -99,7 +77,19 @@ class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
      * @return an implementation of the {@code StringMap} used to back this thread context map
      */
     protected StringMap createStringMap() {
-        return new SortedArrayStringMap(initialCapacity.getAsInt());
+        return createStringMap(initialCapacity);
+    }
+
+    /**
+     * Returns an implementation of the {@code StringMap} used to back this thread context map.
+     * <p>
+     * Subclasses may override.
+     * </p>
+     * @return an implementation of the {@code StringMap} used to back this thread context map
+     * @param initialCapacity initial capacity of the StringMap
+     */
+    protected StringMap createStringMap(final int initialCapacity) {
+        return new SortedArrayStringMap(initialCapacity);
     }
 
     /**

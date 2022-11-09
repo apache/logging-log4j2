@@ -48,6 +48,8 @@ import java.util.stream.Collectors;
  * Handles initializing the Log4j API through {@link Provider} discovery. This keeps track of which
  * {@link LoggerContextFactory} to use in {@link LogManager} along with factories for {@link ThreadContextMap}
  * and {@link ThreadContextStack} to use in {@link ThreadContext}.
+ *
+ * @since 3.0.0
  */
 public class LoggingSystem {
     /**
@@ -56,11 +58,20 @@ public class LoggingSystem {
     private static final String PROVIDER_RESOURCE = "META-INF/log4j-provider.properties";
     private static final String API_VERSION = "Log4jAPIVersion";
     private static final String[] COMPATIBLE_API_VERSIONS = {"3.0.0"};
-    private static final String DISABLE_MAP = "disableThreadContextMap";
-    private static final String DISABLE_STACK = "disableThreadContextStack";
-    private static final String DISABLE_ALL = "disableThreadContext";
-    private static final String THREAD_CONTEXT_MAP = "log4j2.threadContextMap";
-    private static final String GARBAGEFREE_THREAD_CONTEXT_MAP = "log4j2.garbagefree.threadContextMap";
+
+    public static final String THREAD_CONTEXT_MAP_DISABLED = "log4j2.disableThreadContextMap";
+    public static final String THREAD_CONTEXT_STACK_DISABLED = "log4j2.disableThreadContextStack";
+    public static final String THREAD_CONTEXT_DISABLED = "log4j2.disableThreadContext";
+    /**
+     * Property name ({@value} ) for selecting {@code InheritableThreadLocal} (value "true") or plain
+     * {@code ThreadLocal} (value is not "true") in the {@link ThreadContextMap} implementation.
+     */
+    public static final String THREAD_CONTEXT_MAP_INHERITABLE_ENABLED = "log4j2.isThreadContextMapInheritable";
+    public static final String THREAD_CONTEXT_MAP_CLASS_NAME = "log4j2.threadContextMap";
+    public static final String THREAD_CONTEXT_INITIAL_CAPACITY = "log4j2.threadContextInitialCapacity";
+    public static final int THREAD_CONTEXT_DEFAULT_INITIAL_CAPACITY = 16;
+    public static final String THREAD_CONTEXT_GARBAGE_FREE_ENABLED = "log4j2.garbagefreeThreadContextMap";
+
     private static final Lazy<LoggingSystem> SYSTEM = Lazy.relaxed(LoggingSystem::new);
 
     private final Lock initializationLock = new ReentrantLock();
@@ -291,10 +302,10 @@ public class LoggingSystem {
          * Creates the ThreadContextMap instance used by the ThreadContext.
          * <p>
          * If {@linkplain Constants#isThreadLocalsEnabled() Log4j can use ThreadLocals}, a garbage-free StringMap-based context map can
-         * be installed by setting system property {@code log4j2.garbagefree.threadContextMap} to {@code true}.
+         * be installed by setting system property {@value #THREAD_CONTEXT_GARBAGE_FREE_ENABLED} to {@code true}.
          * </p><p>
          * Furthermore, any custom {@code ThreadContextMap} can be installed by setting system property
-         * {@code log4j2.threadContextMap} to the fully qualified class name of the class implementing the
+         * {@value #THREAD_CONTEXT_MAP_CLASS_NAME} to the fully qualified class name of the class implementing the
          * {@code ThreadContextMap} interface. (Also implement the {@code ReadOnlyThreadContextMap} interface if your custom
          * {@code ThreadContextMap} implementation should be accessible to applications via the
          * {@link ThreadContext#getThreadContextMap()} method.)
@@ -309,18 +320,15 @@ public class LoggingSystem {
          */
         public ThreadContextMap createContextMap() {
             final PropertyEnvironment environment = PropertiesUtil.getProperties();
-            // TODO(ms): make property lookup lazier here to avoid eager init
-            GarbageFreeSortedArrayThreadContextMap.init(environment);
-            CopyOnWriteSortedArrayThreadContextMap.init(environment);
-            DefaultThreadContextMap.init(environment);
-            final String customThreadContextMap = environment.getStringProperty(THREAD_CONTEXT_MAP);
+            final String customThreadContextMap = environment.getStringProperty(THREAD_CONTEXT_MAP_CLASS_NAME);
             if (customThreadContextMap != null) {
                 final ThreadContextMap customContextMap = createCustomContextMap(customThreadContextMap);
                 if (customContextMap != null) {
                     return customContextMap;
                 }
             }
-            final boolean disableMap = environment.getBooleanProperty(DISABLE_MAP, environment.getBooleanProperty(DISABLE_ALL));
+            final boolean disableMap = environment.getBooleanProperty(THREAD_CONTEXT_MAP_DISABLED,
+                    environment.getBooleanProperty(THREAD_CONTEXT_DISABLED));
             if (disableMap) {
                 return new NoOpThreadContextMap();
             }
@@ -331,18 +339,24 @@ public class LoggingSystem {
                     return map;
                 }
             }
-            if (Constants.isThreadLocalsEnabled()) {
-                if (environment.getBooleanProperty(GARBAGEFREE_THREAD_CONTEXT_MAP)) {
-                    return new GarbageFreeSortedArrayThreadContextMap();
+            final boolean threadLocalsEnabled = Constants.isThreadLocalsEnabled();
+            final boolean garbageFreeEnabled = environment.getBooleanProperty(THREAD_CONTEXT_GARBAGE_FREE_ENABLED);
+            final boolean inheritableMap = environment.getBooleanProperty(THREAD_CONTEXT_MAP_INHERITABLE_ENABLED);
+            final int initialCapacity = environment.getIntegerProperty(THREAD_CONTEXT_INITIAL_CAPACITY,
+                    THREAD_CONTEXT_DEFAULT_INITIAL_CAPACITY);
+            if (threadLocalsEnabled) {
+                if (garbageFreeEnabled) {
+                    return new GarbageFreeSortedArrayThreadContextMap(inheritableMap, initialCapacity);
                 }
-                return new CopyOnWriteSortedArrayThreadContextMap();
+                return new CopyOnWriteSortedArrayThreadContextMap(inheritableMap, initialCapacity);
             }
-            return new DefaultThreadContextMap();
+            return new DefaultThreadContextMap(true, inheritableMap);
         }
 
         public ThreadContextStack createContextStack() {
             final PropertyEnvironment environment = PropertiesUtil.getProperties();
-            final boolean disableStack = environment.getBooleanProperty(DISABLE_STACK, environment.getBooleanProperty(DISABLE_ALL));
+            final boolean disableStack = environment.getBooleanProperty(THREAD_CONTEXT_STACK_DISABLED,
+                    environment.getBooleanProperty(THREAD_CONTEXT_DISABLED));
             return new DefaultThreadContextStack(!disableStack);
         }
     }
