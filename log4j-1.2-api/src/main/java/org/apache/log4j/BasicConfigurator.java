@@ -20,12 +20,12 @@ import org.apache.logging.log4j.util.StackLocatorUtil;
 
 /**
  * Configures the package.
- * 
+ *
  * <p>
  * For file based configuration, see {@link PropertyConfigurator}. For XML based configuration, see
  * {@link org.apache.log4j.xml.DOMConfigurator DOMConfigurator}.
  * </p>
- * 
+ *
  * @since 0.8.1
  */
 public class BasicConfigurator {

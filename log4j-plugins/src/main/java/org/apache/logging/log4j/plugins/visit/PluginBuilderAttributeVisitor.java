@@ -14,8 +14,14 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.plugins.visit;
+
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Field;
+import java.lang.reflect.Parameter;
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.function.Function;
 
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Named;
@@ -25,13 +31,6 @@ import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.Keys;
 import org.apache.logging.log4j.util.StringBuilders;
-
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Field;
-import java.lang.reflect.Parameter;
-import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.function.Function;
 
 public class PluginBuilderAttributeVisitor implements NodeVisitor {
     private final Function<String, String> stringSubstitutionStrategy;

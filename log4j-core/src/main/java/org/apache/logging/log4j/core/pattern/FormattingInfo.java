@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.util.PerformanceSensitive;
@@ -131,8 +130,8 @@ public final class FormattingInfo {
      * @return true if left truncated.
      */
     public boolean isLeftTruncate() {
-		return leftTruncate;
-	}
+        return leftTruncate;
+    }
 
     /**
      * Determine if zero-padded.
@@ -173,11 +172,11 @@ public final class FormattingInfo {
         final int rawLength = buffer.length() - fieldStart;
 
         if (rawLength > maxLength) {
-			if (leftTruncate) {
-				buffer.delete(fieldStart, buffer.length() - maxLength);
-			} else {
-				buffer.delete(fieldStart + maxLength, fieldStart + buffer.length());
-			}
+            if (leftTruncate) {
+                buffer.delete(fieldStart, buffer.length() - maxLength);
+            } else {
+                buffer.delete(fieldStart + maxLength, fieldStart + buffer.length());
+            }
         } else if (rawLength < minLength) {
             if (leftAlign) {
                 final int fieldEnd = buffer.length();

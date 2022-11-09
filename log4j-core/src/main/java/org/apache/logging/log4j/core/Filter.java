@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core;
 
 import org.apache.logging.log4j.Level;
@@ -37,7 +36,7 @@ public interface Filter extends LifeCycle {
      * Empty array.
      */
     Filter[] EMPTY_ARRAY = {};
-    
+
     /**
      * Main {@linkplain org.apache.logging.log4j.plugins.Configurable#elementType() plugin element type} for
      * Filter plugins.

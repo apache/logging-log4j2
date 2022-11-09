@@ -16,7 +16,9 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import com.lmax.disruptor.EventFactory;
+import java.io.IOException;
+import java.util.Arrays;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
@@ -41,8 +43,7 @@ import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
 
-import java.io.IOException;
-import java.util.Arrays;
+import com.lmax.disruptor.EventFactory;
 
 import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 

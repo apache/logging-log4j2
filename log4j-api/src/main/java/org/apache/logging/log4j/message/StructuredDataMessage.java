@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.message;
 
 import java.util.Map;
@@ -83,7 +82,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
         this.type = type;
         this.maxLength = maxLength;
     }
-    
+
     /**
      * Creates a StructuredDataMessage using an ID (max 32 characters), message, type (max 32 characters), and an
      * initial map of structured data to include.
@@ -464,7 +463,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
     protected void validate(final String key, final char value) {
         validateKey(key);
     }
-    
+
     /**
      * @since 2.9
      */
@@ -472,7 +471,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
     protected void validate(final String key, final double value) {
         validateKey(key);
     }
-    
+
     /**
      * @since 2.9
      */

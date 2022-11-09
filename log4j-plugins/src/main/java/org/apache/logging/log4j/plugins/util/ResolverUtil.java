@@ -16,12 +16,6 @@
  */
 package org.apache.logging.log4j.plugins.util;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.wiring.BundleWiring;
-
 import java.io.*;
 import java.net.JarURLConnection;
 import java.net.URI;
@@ -33,6 +27,12 @@ import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.wiring.BundleWiring;
 
 /**
  * <p>

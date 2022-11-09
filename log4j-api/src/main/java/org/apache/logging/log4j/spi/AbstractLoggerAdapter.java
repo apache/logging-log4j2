@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.spi;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.util.LoaderUtil;
-
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -27,9 +24,12 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.util.LoaderUtil;
+
 /**
  * Provides an abstract base class to use for implementing LoggerAdapter.
- * 
+ *
  * @param <L> the Logger class to adapt
  * @since 2.1
  */

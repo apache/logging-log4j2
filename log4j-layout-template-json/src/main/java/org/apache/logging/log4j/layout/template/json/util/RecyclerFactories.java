@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.layout.template.json.util;
 
-import org.apache.logging.log4j.util.LoaderUtil;
-import org.jctools.queues.MpmcArrayQueue;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -27,6 +24,9 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.function.Supplier;
+
+import org.apache.logging.log4j.util.LoaderUtil;
+import org.jctools.queues.MpmcArrayQueue;
 
 import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 

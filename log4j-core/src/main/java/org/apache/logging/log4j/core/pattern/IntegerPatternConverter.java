@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import java.util.Date;
+
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.PerformanceSensitive;
-
-import java.util.Date;
 
 /**
  * Formats an integer.

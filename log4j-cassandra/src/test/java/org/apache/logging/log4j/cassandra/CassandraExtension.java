@@ -14,11 +14,16 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.cassandra;
 
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.Session;
+import java.net.InetAddress;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.Permission;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.apache.cassandra.service.CassandraDaemon;
 import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.Closer;
@@ -33,13 +38,8 @@ import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 import org.opentest4j.TestAbortedException;
 
-import java.net.InetAddress;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.security.Permission;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicReference;
+import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.Session;
 
 import static org.junit.jupiter.api.Assertions.fail;
 

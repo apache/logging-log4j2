@@ -16,16 +16,6 @@
  */
 package org.apache.logging.log4j.gctests;
 
-import com.google.monitoring.runtime.instrumentation.AllocationRecorder;
-import com.google.monitoring.runtime.instrumentation.Sampler;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.MarkerManager;
-import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.message.StringMapMessage;
-
 import java.io.File;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -35,6 +25,17 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.message.StringMapMessage;
+
+import com.google.monitoring.runtime.instrumentation.AllocationRecorder;
+import com.google.monitoring.runtime.instrumentation.Sampler;
 
 import static java.lang.System.getProperty;
 import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;

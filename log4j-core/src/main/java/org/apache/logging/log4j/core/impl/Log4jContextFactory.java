@@ -16,6 +16,12 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
@@ -35,12 +41,6 @@ import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
-
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 import static org.apache.logging.log4j.util.Constants.isWebApp;
 
@@ -245,7 +245,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
             ctx.setExternalContext(externalContext);
         }
         if (name != null) {
-        	ctx.setName(name);
+            ctx.setName(name);
         }
         if (ctx.getState() == LifeCycle.State.INITIALIZED) {
             if (configLocation != null || name != null) {
@@ -360,15 +360,15 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
         return selector;
     }
 
-	/**
-	 * Returns the ShutdownCallbackRegistry
-	 *
-	 * @return the ShutdownCallbackRegistry
-	 * @since 2.4
-	 */
-	public ShutdownCallbackRegistry getShutdownCallbackRegistry() {
-		return shutdownCallbackRegistry;
-	}
+    /**
+     * Returns the ShutdownCallbackRegistry
+     *
+     * @return the ShutdownCallbackRegistry
+     * @since 2.4
+     */
+    public ShutdownCallbackRegistry getShutdownCallbackRegistry() {
+        return shutdownCallbackRegistry;
+    }
 
     /**
      * Removes knowledge of a LoggerContext.

@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.util;
 
+import java.net.URL;
+import java.util.Collections;
+import java.util.Enumeration;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.ReadsSystemProperty;
-
-import java.net.URL;
-import java.util.Collections;
-import java.util.Enumeration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

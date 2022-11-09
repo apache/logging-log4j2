@@ -16,6 +16,10 @@
  */
 package org.apache.log4j;
 
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.stream.Collectors;
+
 import org.apache.log4j.legacy.core.ContextUtil;
 import org.apache.log4j.spi.DefaultRepositorySelector;
 import org.apache.log4j.spi.LoggerFactory;
@@ -26,10 +30,6 @@ import org.apache.log4j.spi.RootLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.StackLocatorUtil;
-
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.stream.Collectors;
 
 /**
  * The main entry point to Log4j 1.

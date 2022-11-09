@@ -111,4 +111,3 @@ public class ReusableSimpleMessage implements ReusableMessage, CharSequence, Par
         charSequence = null;
     }
 }
-

@@ -14,8 +14,9 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.plugins.condition;
+
+import java.lang.reflect.AnnotatedElement;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.Singleton;
@@ -23,8 +24,6 @@ import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.util.AnnotationUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
-
-import java.lang.reflect.AnnotatedElement;
 
 @Singleton
 public class OnPropertyCondition implements Condition {

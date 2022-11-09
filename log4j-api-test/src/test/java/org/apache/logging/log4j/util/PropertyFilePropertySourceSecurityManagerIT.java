@@ -14,19 +14,18 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.util;
+
+import java.io.FilePermission;
+import java.nio.file.Paths;
+import java.security.Permission;
+import java.util.PropertyPermission;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledForJreRange;
 import org.junit.jupiter.api.condition.JRE;
 import org.junit.jupiter.api.parallel.ResourceLock;
-
-import java.io.FilePermission;
-import java.nio.file.Paths;
-import java.security.Permission;
-import java.util.PropertyPermission;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,7 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * integration tests (classes that end in "IT" instead of "Test" and
  * "TestCase".)
  * </p>
- * 
+ *
  * @see PropertyFilePropertySource
  * @see SecurityManager
  * @see System#setSecurityManager(SecurityManager)
@@ -72,7 +71,7 @@ public class PropertyFilePropertySourceSecurityManagerIT {
      * Makes sure we do not blow up with exception below due to a security manager
      * rejecting environment variable access in
      * {@link SystemPropertiesPropertySource}.
-     * 
+     *
      * <pre>
      * </pre>
      */

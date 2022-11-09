@@ -29,7 +29,7 @@ public class Logger extends Category {
      * The fully qualified name of the Logger class.
      */
     private static final String FQCN = Logger.class.getName();
- 
+
     public static Logger getLogger(final Class<?> clazz) {
         // Depth 2 gets the call site of this method.
         return LogManager.getLogger(clazz.getName(), StackLocatorUtil.getCallerClassLoader(2));
@@ -37,7 +37,7 @@ public class Logger extends Category {
 
     public static Logger getLogger(final String name) {
         // Depth 2 gets the call site of this method.
-        return LogManager.getLogger(name, StackLocatorUtil.getCallerClassLoader(2)); 
+        return LogManager.getLogger(name, StackLocatorUtil.getCallerClassLoader(2));
     }
 
     public static Logger getLogger(final String name, final LoggerFactory factory) {

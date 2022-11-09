@@ -14,16 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.config.plugins.convert;
-
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.appender.rolling.action.Duration;
-import org.apache.logging.log4j.core.util.CronExpression;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.convert.TypeConverter;
-import org.apache.logging.log4j.plugins.convert.TypeConverters;
-import org.apache.logging.log4j.util.LoaderUtil;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -42,6 +33,14 @@ import java.time.ZoneId;
 import java.util.Base64;
 import java.util.UUID;
 import java.util.regex.Pattern;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.appender.rolling.action.Duration;
+import org.apache.logging.log4j.core.util.CronExpression;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.convert.TypeConverter;
+import org.apache.logging.log4j.plugins.convert.TypeConverters;
+import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
  * General {@link TypeConverter} implementations.

@@ -30,13 +30,13 @@ import java.util.Map;
  */
 public class EnvironmentPropertySource implements PropertySource {
 
-	private static final String PREFIX = "LOG4J_";
-	private static final int DEFAULT_PRIORITY = 100;
+    private static final String PREFIX = "LOG4J_";
+    private static final int DEFAULT_PRIORITY = 100;
 
-	@Override
-	public int getPriority() {
-		return DEFAULT_PRIORITY;
-	}
+    @Override
+    public int getPriority() {
+        return DEFAULT_PRIORITY;
+    }
 
     private void logException(SecurityException e) {
         // There is no status logger yet.
@@ -44,36 +44,36 @@ public class EnvironmentPropertySource implements PropertySource {
                 "The system environment variables are not available to Log4j due to security restrictions: " + e, e);
     }
 
-	@Override
-	public void forEach(final BiConsumer<String, String> action) {
-		final Map<String, String> getenv;
-		try {
-			getenv = System.getenv();
-		} catch (final SecurityException e) {
-			logException(e);
-			return;
-		}
-		for (final Map.Entry<String, String> entry : getenv.entrySet()) {
-			final String key = entry.getKey();
-			if (key.startsWith(PREFIX)) {
-				action.accept(key.substring(PREFIX.length()), entry.getValue());
-			}
-		}
-	}
+    @Override
+    public void forEach(final BiConsumer<String, String> action) {
+        final Map<String, String> getenv;
+        try {
+            getenv = System.getenv();
+        } catch (final SecurityException e) {
+            logException(e);
+            return;
+        }
+        for (final Map.Entry<String, String> entry : getenv.entrySet()) {
+            final String key = entry.getKey();
+            if (key.startsWith(PREFIX)) {
+                action.accept(key.substring(PREFIX.length()), entry.getValue());
+            }
+        }
+    }
 
-	@Override
-	public CharSequence getNormalForm(final Iterable<? extends CharSequence> tokens) {
-		final StringBuilder sb = new StringBuilder("LOG4J");
-		boolean empty = true;
-		for (final CharSequence token : tokens) {
-			empty = false;
-			sb.append('_');
-			for (int i = 0; i < token.length(); i++) {
-				sb.append(Character.toUpperCase(token.charAt(i)));
-			}
-		}
-		return empty ? null : sb.toString();
-	}
+    @Override
+    public CharSequence getNormalForm(final Iterable<? extends CharSequence> tokens) {
+        final StringBuilder sb = new StringBuilder("LOG4J");
+        boolean empty = true;
+        for (final CharSequence token : tokens) {
+            empty = false;
+            sb.append('_');
+            for (int i = 0; i < token.length(); i++) {
+                sb.append(Character.toUpperCase(token.charAt(i)));
+            }
+        }
+        return empty ? null : sb.toString();
+    }
 
     @Override
     public Collection<String> getPropertyNames() {

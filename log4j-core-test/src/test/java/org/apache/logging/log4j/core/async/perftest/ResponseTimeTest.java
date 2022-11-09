@@ -16,13 +16,6 @@
  */
 package org.apache.logging.log4j.core.async.perftest;
 
-import org.HdrHistogram.Histogram;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.async.DefaultAsyncQueueFullPolicy;
-import org.apache.logging.log4j.core.async.EventRoute;
-import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.core.util.Loader;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -31,6 +24,13 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+
+import org.HdrHistogram.Histogram;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.async.DefaultAsyncQueueFullPolicy;
+import org.apache.logging.log4j.core.async.EventRoute;
+import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.Loader;
 
 import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 

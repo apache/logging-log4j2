@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import java.net.URI;
+
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.util.Constants;
@@ -23,8 +25,6 @@ import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.util.PropertiesUtil;
-
-import java.net.URI;
 
 /**
  * {@code ContextSelector} that manages {@code AsyncLoggerContext} instances.

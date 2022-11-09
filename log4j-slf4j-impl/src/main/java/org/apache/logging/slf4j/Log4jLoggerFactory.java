@@ -16,6 +16,8 @@
  */
 package org.apache.logging.slf4j;
 
+import java.util.function.Predicate;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.spi.AbstractLoggerAdapter;
@@ -24,8 +26,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
-
-import java.util.function.Predicate;
 
 /**
  * Log4j implementation of SLF4J ILoggerFactory interface.

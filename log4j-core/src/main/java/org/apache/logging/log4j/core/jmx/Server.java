@@ -16,6 +16,20 @@
  */
 package org.apache.logging.log4j.core.jmx;
 
+import java.lang.management.ManagementFactory;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import javax.management.InstanceAlreadyExistsException;
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanRegistrationException;
+import javax.management.MBeanServer;
+import javax.management.NotCompliantMBeanException;
+import javax.management.ObjectName;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -31,20 +45,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
-import javax.management.InstanceAlreadyExistsException;
-import javax.management.InstanceNotFoundException;
-import javax.management.MBeanRegistrationException;
-import javax.management.MBeanServer;
-import javax.management.NotCompliantMBeanException;
-import javax.management.ObjectName;
-import java.lang.management.ManagementFactory;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 /**
  * Creates MBeans to instrument various classes in the log4j class hierarchy.
  * <p>
@@ -54,7 +54,7 @@ import java.util.concurrent.Executors;
 public final class Server {
 
     private static final String CONTEXT_NAME_ALL = "*";
-	/**
+    /**
      * The domain part, or prefix ({@value}) of the {@code ObjectName} of all MBeans that instrument Log4J2 components.
      */
     public static final String DOMAIN = "org.apache.logging.log4j2";
@@ -168,8 +168,8 @@ public final class Server {
                 if (ctx instanceof AsyncLoggerContext) {
                     final RingBufferAdmin rbmbean = ((AsyncLoggerContext) ctx).createRingBufferAdmin();
                     if (rbmbean.getBufferSize() > 0) {
-                    	// don't register if Disruptor not started (DefaultConfiguration: config not found)
-                    	register(mbs, rbmbean, rbmbean.getObjectName());
+                        // don't register if Disruptor not started (DefaultConfiguration: config not found)
+                        register(mbs, rbmbean, rbmbean.getObjectName());
                     }
                 }
 
@@ -205,18 +205,18 @@ public final class Server {
      *
      * @param mbs the MBean server to unregister from.
      */
-	public static void unregisterMBeans(final MBeanServer mbs) {
-		if (mbs != null) {
-			unregisterStatusLogger(CONTEXT_NAME_ALL, mbs);
-			unregisterContextSelector(CONTEXT_NAME_ALL, mbs);
-			unregisterContexts(mbs);
-			unregisterLoggerConfigs(CONTEXT_NAME_ALL, mbs);
-			unregisterAsyncLoggerRingBufferAdmins(CONTEXT_NAME_ALL, mbs);
-			unregisterAsyncLoggerConfigRingBufferAdmins(CONTEXT_NAME_ALL, mbs);
-			unregisterAppenders(CONTEXT_NAME_ALL, mbs);
-			unregisterAsyncAppenders(CONTEXT_NAME_ALL, mbs);
-		}
-	}
+    public static void unregisterMBeans(final MBeanServer mbs) {
+        if (mbs != null) {
+            unregisterStatusLogger(CONTEXT_NAME_ALL, mbs);
+            unregisterContextSelector(CONTEXT_NAME_ALL, mbs);
+            unregisterContexts(mbs);
+            unregisterLoggerConfigs(CONTEXT_NAME_ALL, mbs);
+            unregisterAsyncLoggerRingBufferAdmins(CONTEXT_NAME_ALL, mbs);
+            unregisterAsyncLoggerConfigRingBufferAdmins(CONTEXT_NAME_ALL, mbs);
+            unregisterAppenders(CONTEXT_NAME_ALL, mbs);
+            unregisterAsyncAppenders(CONTEXT_NAME_ALL, mbs);
+        }
+    }
 
     /**
      * Returns the {@code ContextSelector} of the current {@code Log4jContextFactory}.
@@ -333,15 +333,15 @@ public final class Server {
             final ObjectName pattern = new ObjectName(search);
             final Set<ObjectName> found = mbs.queryNames(pattern, null);
             if (found == null || found.isEmpty()) {
-            	LOGGER.trace("Unregistering but no MBeans found matching '{}'", search);
+                LOGGER.trace("Unregistering but no MBeans found matching '{}'", search);
             } else {
-            	LOGGER.trace("Unregistering {} MBeans: {}", found.size(), found);
+                LOGGER.trace("Unregistering {} MBeans: {}", found.size(), found);
             }
-			if (found != null) {
-				for (final ObjectName objectName : found) {
-					mbs.unregisterMBean(objectName);
-				}
-			}
+            if (found != null) {
+                for (final ObjectName objectName : found) {
+                    mbs.unregisterMBean(objectName);
+                }
+            }
         } catch (final InstanceNotFoundException ex) {
             LOGGER.debug("Could not unregister MBeans for " + search + ". Ignoring " + ex);
         } catch (final Exception ex) {
