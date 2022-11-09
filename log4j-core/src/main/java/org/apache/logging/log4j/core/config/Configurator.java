@@ -327,7 +327,21 @@ public final class Configurator {
         setLevel(logger.getName(), level);
         return logger;
     }
-    
+
+    /**
+     * Sets a logger's level.
+     *
+     * @param clazz
+     *            the logger
+     * @param level
+     *            the new level
+     */
+    public static void setLevel(final Class<?> clazz, final Level level) {
+        final String canonicalName = clazz.getCanonicalName();
+        setLevel(LoggerContext.getContext(StackLocatorUtil.getCallerClassLoader(2), false, null),
+                canonicalName != null ? canonicalName : clazz.getName(), level);
+    }
+
     private static boolean setLevel(final LoggerConfig loggerConfig, final Level level) {
         final boolean set = !loggerConfig.getLevel().equals(level);
         if (set) {
