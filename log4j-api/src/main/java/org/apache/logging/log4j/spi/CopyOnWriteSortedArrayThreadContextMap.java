@@ -86,7 +86,7 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
     // (This method is package protected for JUnit tests.)
     private ThreadLocal<StringMap> createThreadLocalMap() {
         if (inheritableMap.getAsBoolean()) {
-            return new InheritableThreadLocal<StringMap>() {
+            return new InheritableThreadLocal<>() {
                 @Override
                 protected StringMap childValue(final StringMap parentValue) {
                     if (parentValue == null) {
@@ -170,13 +170,13 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
 
     @Override
     public String get(final String key) {
-        return (String) getValue(key);
+        return getValue(key);
     }
 
     @Override
     public <V> V getValue(final String key) {
         final StringMap map = localMap.get();
-        return map == null ? null : map.<V>getValue(key);
+        return map == null ? null : map.getValue(key);
     }
 
     @Override
@@ -217,7 +217,7 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
     @Override
     public Map<String, String> getCopy() {
         final StringMap map = localMap.get();
-        return map == null ? new HashMap<String, String>() : map.toMap();
+        return map == null ? new HashMap<>() : map.toMap();
     }
 
     /**

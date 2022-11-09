@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.spi;
 
 import org.apache.logging.log4j.util.BiConsumer;
+import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.LazyBoolean;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyEnvironment;
@@ -153,7 +154,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
         }
         for (final Map.Entry<String, String> entry : map.entrySet()) {
             //BiConsumer should be able to handle values of any type V. In our case the values are of type String.
-            @SuppressWarnings("unchecked") final V value = (V) entry.getValue();
+            final V value = Cast.cast(entry.getValue());
             action.accept(entry.getKey(), value);
         }
     }
@@ -166,16 +167,15 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
         }
         for (final Map.Entry<String, String> entry : map.entrySet()) {
             //TriConsumer should be able to handle values of any type V. In our case the values are of type String.
-            @SuppressWarnings("unchecked") final V value = (V) entry.getValue();
+            final V value = Cast.cast(entry.getValue());
             action.accept(entry.getKey(), value, state);
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <V> V getValue(final String key) {
         final Map<String, String> map = localMap.get();
-        return (V) (map == null ? null : map.get(key));
+        return map == null ? null : Cast.cast(map.get(key));
     }
 
     @Override

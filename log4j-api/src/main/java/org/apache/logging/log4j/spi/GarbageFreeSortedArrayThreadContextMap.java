@@ -80,7 +80,7 @@ class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
     // (This method is package protected for JUnit tests.)
     private ThreadLocal<StringMap> createThreadLocalMap() {
         if (inheritableMap.getAsBoolean()) {
-            return new InheritableThreadLocal<StringMap>() {
+            return new InheritableThreadLocal<>() {
                 @Override
                 protected StringMap childValue(final StringMap parentValue) {
                     return parentValue != null ? createStringMap(parentValue) : null;
@@ -158,13 +158,13 @@ class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
 
     @Override
     public String get(final String key) {
-        return (String) getValue(key);
+        return getValue(key);
     }
 
     @Override
     public <V> V getValue(final String key) {
         final StringMap map = localMap.get();
-        return map == null ? null : map.<V>getValue(key);
+        return map == null ? null : map.getValue(key);
     }
 
     @Override
