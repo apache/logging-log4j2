@@ -43,6 +43,8 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.ServiceRegistry;
 
+import static org.apache.logging.log4j.spi.LoggingSystemProperties.*;
+
 /**
  * Handles initializing the Log4j API through {@link Provider} discovery. This keeps track of which
  * {@link LoggerContextFactory} to use in {@link LogManager} along with factories for {@link ThreadContextMap}
@@ -58,18 +60,7 @@ public class LoggingSystem {
     private static final String API_VERSION = "Log4jAPIVersion";
     private static final String[] COMPATIBLE_API_VERSIONS = {"3.0.0"};
 
-    public static final String THREAD_CONTEXT_MAP_DISABLED = "log4j2.disableThreadContextMap";
-    public static final String THREAD_CONTEXT_STACK_DISABLED = "log4j2.disableThreadContextStack";
-    public static final String THREAD_CONTEXT_DISABLED = "log4j2.disableThreadContext";
-    /**
-     * Property name ({@value} ) for selecting {@code InheritableThreadLocal} (value "true") or plain
-     * {@code ThreadLocal} (value is not "true") in the {@link ThreadContextMap} implementation.
-     */
-    public static final String THREAD_CONTEXT_MAP_INHERITABLE_ENABLED = "log4j2.isThreadContextMapInheritable";
-    public static final String THREAD_CONTEXT_MAP_CLASS_NAME = "log4j2.threadContextMap";
-    public static final String THREAD_CONTEXT_INITIAL_CAPACITY = "log4j2.threadContextInitialCapacity";
     public static final int THREAD_CONTEXT_DEFAULT_INITIAL_CAPACITY = 16;
-    public static final String THREAD_CONTEXT_GARBAGE_FREE_ENABLED = "log4j2.garbagefreeThreadContextMap";
 
     private static final Lazy<LoggingSystem> SYSTEM = Lazy.relaxed(LoggingSystem::new);
 
@@ -301,10 +292,10 @@ public class LoggingSystem {
          * Creates the ThreadContextMap instance used by the ThreadContext.
          * <p>
          * If {@linkplain Constants#isThreadLocalsEnabled() Log4j can use ThreadLocals}, a garbage-free StringMap-based context map can
-         * be installed by setting system property {@value #THREAD_CONTEXT_GARBAGE_FREE_ENABLED} to {@code true}.
+         * be installed by setting system property {@value LoggingSystemProperties#THREAD_CONTEXT_GARBAGE_FREE_ENABLED} to {@code true}.
          * </p><p>
          * Furthermore, any custom {@code ThreadContextMap} can be installed by setting system property
-         * {@value #THREAD_CONTEXT_MAP_CLASS_NAME} to the fully qualified class name of the class implementing the
+         * {@value LoggingSystemProperties#THREAD_CONTEXT_MAP_CLASS} to the fully qualified class name of the class implementing the
          * {@code ThreadContextMap} interface. (Also implement the {@code ReadOnlyThreadContextMap} interface if your custom
          * {@code ThreadContextMap} implementation should be accessible to applications via the
          * {@link ThreadContext#getThreadContextMap()} method.)
@@ -319,7 +310,7 @@ public class LoggingSystem {
          */
         public ThreadContextMap createContextMap() {
             final PropertyEnvironment environment = PropertiesUtil.getProperties();
-            final String customThreadContextMap = environment.getStringProperty(THREAD_CONTEXT_MAP_CLASS_NAME);
+            final String customThreadContextMap = environment.getStringProperty(THREAD_CONTEXT_MAP_CLASS);
             if (customThreadContextMap != null) {
                 final ThreadContextMap customContextMap = createCustomContextMap(customThreadContextMap);
                 if (customContextMap != null) {
@@ -340,7 +331,7 @@ public class LoggingSystem {
             }
             final boolean threadLocalsEnabled = Constants.isThreadLocalsEnabled();
             final boolean garbageFreeEnabled = environment.getBooleanProperty(THREAD_CONTEXT_GARBAGE_FREE_ENABLED);
-            final boolean inheritableMap = environment.getBooleanProperty(THREAD_CONTEXT_MAP_INHERITABLE_ENABLED);
+            final boolean inheritableMap = environment.getBooleanProperty(THREAD_CONTEXT_MAP_INHERITABLE);
             final int initialCapacity = environment.getIntegerProperty(THREAD_CONTEXT_INITIAL_CAPACITY,
                     THREAD_CONTEXT_DEFAULT_INITIAL_CAPACITY);
             if (threadLocalsEnabled) {

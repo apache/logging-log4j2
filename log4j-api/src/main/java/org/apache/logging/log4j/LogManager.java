@@ -24,6 +24,7 @@ import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggingSystem;
+import org.apache.logging.log4j.spi.LoggingSystemProperties;
 import org.apache.logging.log4j.spi.Terminable;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StackLocatorUtil;
@@ -44,7 +45,7 @@ public class LogManager {
      * Log4j property to set to the fully qualified class name of a custom implementation of
      * {@link org.apache.logging.log4j.spi.LoggerContextFactory}.
      */
-    public static final String FACTORY_PROPERTY_NAME = "log4j2.loggerContextFactory";
+    public static final String FACTORY_PROPERTY_NAME = LoggingSystemProperties.LOGGER_CONTEXT_FACTORY_CLASS;
 
     /**
      * The name of the root Logger is {@value #ROOT_LOGGER_NAME}.

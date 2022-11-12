@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.util;
 
+import org.apache.logging.log4j.spi.LoggingSystemProperties;
+
 /**
  * Log4j API Constants.
  *
@@ -25,7 +27,7 @@ package org.apache.logging.log4j.util;
 public final class Constants {
 
     private static final LazyBoolean isWebApp = new LazyBoolean(() -> PropertiesUtil.getProperties()
-            .getBooleanProperty("log4j2.is.webapp",
+            .getBooleanProperty(LoggingSystemProperties.SYSTEM_IS_WEBAPP,
                     isClassAvailable("javax.servlet.Servlet") || isClassAvailable("jakarta.servlet.Servlet")));
 
     /**
@@ -52,7 +54,7 @@ public final class Constants {
     public static final boolean IS_WEB_APP = isWebApp();
 
     private static final LazyBoolean threadLocalsEnabled = new LazyBoolean(
-            () -> !isWebApp() && PropertiesUtil.getProperties().getBooleanProperty("log4j2.enable.threadlocals", true));
+            () -> !isWebApp() && PropertiesUtil.getProperties().getBooleanProperty(LoggingSystemProperties.SYSTEM_THREAD_LOCALS_ENABLED, true));
 
     /**
      * Kill switch for object pooling in ThreadLocals that enables much of the LOG4J2-1270 no-GC behaviour.
@@ -86,22 +88,11 @@ public final class Constants {
      * After a large message has been delivered to the appenders, the StringBuilder is trimmed to this size.
      * <p>
      * The default value is 518, which allows the StringBuilder to resize three times from its initial size.
-     * Users can override with system property "log4j.maxReusableMsgSize".
+     * Users can override with system property {@value LoggingSystemProperties#LOGGER_REUSABLE_MESSAGE_MAX_SIZE}.
      * </p>
      * @since 2.9
      */
-    public static final int MAX_REUSABLE_MESSAGE_SIZE = size("log4j.maxReusableMsgSize", (128 * 2 + 2) * 2 + 2);
-
-    /**
-     * Name of the system property that will turn on TRACE level internal log4j2 status logging.
-     * <p>
-     * If system property {@value} is either defined empty or its value equals to {@code true} (ignoring case), all internal log4j2 logging will be
-     * printed to the console. The presence of this system property overrides any value set in the configuration's
-     * {@code <Configuration status="<level>" ...>} status attribute, as well as any value set for
-     * system property {@code org.apache.logging.log4j.simplelog.StatusLogger.level}.
-     * </p>
-     */
-    public static final String LOG4J2_DEBUG = "log4j2.debug";
+    public static final int MAX_REUSABLE_MESSAGE_SIZE = size(LoggingSystemProperties.LOGGER_REUSABLE_MESSAGE_MAX_SIZE, (128 * 2 + 2) * 2 + 2);
 
     private static int size(final String property, final int defaultValue) {
         return PropertiesUtil.getProperties().getIntegerProperty(property, defaultValue);

@@ -14,9 +14,9 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.util;
 
+import org.apache.logging.log4j.spi.LoggingSystemProperties;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class Unbox1Test {
     @BeforeAll
     public static void beforeClass() {
-        System.clearProperty("log4j.unbox.ringbuffer.size");
+        System.clearProperty(LoggingSystemProperties.UNBOX_RING_BUFFER_SIZE);
     }
 
     @Test

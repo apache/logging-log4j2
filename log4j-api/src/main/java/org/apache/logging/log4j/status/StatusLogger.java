@@ -37,7 +37,7 @@ import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
 import org.apache.logging.log4j.simple.SimpleLogger;
 import org.apache.logging.log4j.simple.SimpleLoggerContext;
 import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.util.Constants;
+import org.apache.logging.log4j.spi.LoggingSystemProperties;
 import org.apache.logging.log4j.util.LowLevelLogUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyEnvironment;
@@ -57,20 +57,20 @@ public final class StatusLogger extends AbstractLogger {
      * System property that can be configured with the number of entries in the queue. Once the limit is reached older
      * entries will be removed as new entries are added.
      */
-    public static final String MAX_STATUS_ENTRIES = "log4j2.status.entries";
+    public static final String MAX_STATUS_ENTRIES = LoggingSystemProperties.STATUS_MAX_ENTRIES;
 
     /**
      * System property that can be configured with the {@link Level} name to use as the default level for
      * {@link StatusListener}s.
      */
-    public static final String DEFAULT_STATUS_LISTENER_LEVEL = "log4j2.StatusLogger.level";
+    public static final String DEFAULT_STATUS_LISTENER_LEVEL = LoggingSystemProperties.STATUS_DEFAULT_LISTENER_LEVEL;
 
     /**
      * System property that can be configured with a date-time format string to use as the format for timestamps
      * in the status logger output. See {@link java.text.SimpleDateFormat} for supported formats.
      * @since 2.11.0
      */
-    public static final String STATUS_DATE_FORMAT = "log4j2.StatusLogger.DateFormat";
+    public static final String STATUS_DATE_FORMAT = LoggingSystemProperties.STATUS_DATE_FORMAT;
 
     private static final long serialVersionUID = 2L;
 
@@ -84,7 +84,7 @@ public final class StatusLogger extends AbstractLogger {
 
     static final boolean DEBUG_ENABLED = PropertiesUtil
             .getProperties()
-            .getBooleanProperty(Constants.LOG4J2_DEBUG, false, true);
+            .getBooleanProperty(LoggingSystemProperties.SYSTEM_DEBUG, false, true);
 
     // LOG4J2-1176: normal parameterized message remembers param object, causing memory leaks.
     private static final StatusLogger STATUS_LOGGER = new StatusLogger(
@@ -119,7 +119,7 @@ public final class StatusLogger extends AbstractLogger {
      * This is now the logger level is set:
      * </p>
      * <ol>
-     * <li>If the property {@value Constants#LOG4J2_DEBUG} is {@code "true"}, then use {@link Level#TRACE}, otherwise,</li>
+     * <li>If the property {@value LoggingSystemProperties#SYSTEM_DEBUG} is {@code "true"}, then use {@link Level#TRACE}, otherwise,</li>
      * <li>Use {@link Level#ERROR}</li>
      * </ol>
      * <p>

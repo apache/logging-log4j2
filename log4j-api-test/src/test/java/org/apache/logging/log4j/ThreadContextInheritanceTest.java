@@ -24,13 +24,13 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
-import static org.apache.logging.log4j.spi.LoggingSystem.THREAD_CONTEXT_MAP_INHERITABLE_ENABLED;
+import static org.apache.logging.log4j.spi.LoggingSystemProperties.THREAD_CONTEXT_MAP_INHERITABLE;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link ThreadContext}.
  */
-@SetSystemProperty(key = THREAD_CONTEXT_MAP_INHERITABLE_ENABLED, value = "true")
+@SetSystemProperty(key = THREAD_CONTEXT_MAP_INHERITABLE, value = "true")
 @InitializesThreadContext
 public class ThreadContextInheritanceTest {
 
@@ -45,7 +45,7 @@ public class ThreadContextInheritanceTest {
     }
 
     @Test
-    @SetSystemProperty(key = THREAD_CONTEXT_MAP_INHERITABLE_ENABLED, value = "true")
+    @SetSystemProperty(key = THREAD_CONTEXT_MAP_INHERITABLE, value = "true")
     @InitializesThreadContext
     public void testInheritanceSwitchedOn() throws Exception {
         ThreadContext.put("Greeting", "Hello");

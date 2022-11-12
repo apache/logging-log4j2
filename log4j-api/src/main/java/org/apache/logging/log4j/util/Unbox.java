@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.util;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.spi.LoggingSystemProperties;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -40,7 +41,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * have up to 32 boxed primitives in a single logger call.
  * </p>
  * <p>
- * If more slots are required, set system property {@code log4j.unbox.ringbuffer.size} to the desired ring buffer size.
+ * If more slots are required, set system property {@value LoggingSystemProperties#UNBOX_RING_BUFFER_SIZE} to the desired ring buffer size.
  * Note that the specified number will be rounded up to the nearest power of 2.
  * </p>
  * @since 2.6
@@ -50,7 +51,7 @@ public class Unbox {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final int BITS_PER_INT = 32;
     private static final int RINGBUFFER_MIN_SIZE = 32;
-    private static final int RINGBUFFER_SIZE = calculateRingBufferSize("log4j.unbox.ringbuffer.size");
+    private static final int RINGBUFFER_SIZE = calculateRingBufferSize(LoggingSystemProperties.UNBOX_RING_BUFFER_SIZE);
     private static final int MASK = RINGBUFFER_SIZE - 1;
 
     /**

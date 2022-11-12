@@ -35,6 +35,7 @@ import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
+import org.apache.logging.log4j.spi.LoggingSystemProperties;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.test.junit.CleanUpFiles;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -69,8 +70,8 @@ public class AsyncThreadContextTest {
     public static void afterClass() {
         System.clearProperty("AsyncLogger.RingBufferSize");
         System.clearProperty("AsyncLoggerConfig.RingBufferSize");
-        System.clearProperty("log4j2.garbagefree.threadContextMap");
-        System.clearProperty("log4j2.threadContextMap");
+        System.clearProperty(LoggingSystemProperties.THREAD_CONTEXT_GARBAGE_FREE_ENABLED);
+        System.clearProperty(LoggingSystemProperties.THREAD_CONTEXT_MAP_CLASS);
     }
 
     enum Mode {
@@ -91,7 +92,7 @@ public class AsyncThreadContextTest {
         WEBAPP, GARBAGE_FREE, COPY_ON_WRITE;
 
         void init() {
-            System.clearProperty("log4j2.threadContextMap");
+            System.clearProperty(LoggingSystemProperties.THREAD_CONTEXT_MAP_CLASS);
             final String PACKAGE = "org.apache.logging.log4j.spi.";
             System.setProperty("log4j2.threadContextMap", PACKAGE + implClassSimpleName());
             ((PropertiesUtil) PropertiesUtil.getProperties()).reload();

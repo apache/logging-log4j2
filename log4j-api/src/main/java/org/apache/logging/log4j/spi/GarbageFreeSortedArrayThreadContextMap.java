@@ -26,7 +26,8 @@ import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 
-import static org.apache.logging.log4j.spi.LoggingSystem.*;
+import static org.apache.logging.log4j.spi.LoggingSystem.THREAD_CONTEXT_DEFAULT_INITIAL_CAPACITY;
+import static org.apache.logging.log4j.spi.LoggingSystemProperties.*;
 
 /**
  * {@code SortedArrayStringMap}-based implementation of the {@code ThreadContextMap} interface that attempts not to
@@ -44,7 +45,7 @@ class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
 
     public GarbageFreeSortedArrayThreadContextMap() {
         this(
-                PropertiesUtil.getProperties().getBooleanProperty(THREAD_CONTEXT_MAP_INHERITABLE_ENABLED),
+                PropertiesUtil.getProperties().getBooleanProperty(THREAD_CONTEXT_MAP_INHERITABLE),
                 PropertiesUtil.getProperties().getIntegerProperty(THREAD_CONTEXT_INITIAL_CAPACITY, THREAD_CONTEXT_DEFAULT_INITIAL_CAPACITY)
         );
     }

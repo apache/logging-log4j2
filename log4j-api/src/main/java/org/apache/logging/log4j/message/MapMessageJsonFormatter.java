@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.logging.log4j.spi.LoggingSystemProperties;
 import org.apache.logging.log4j.util.IndexedStringMap;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
@@ -42,8 +43,8 @@ import org.apache.logging.log4j.util.StringBuilders;
  *     <li>{@link String}
  * </ul>
  * <p>
- * It supports nesting up to a maximum depth of 8, which is set by
- * <tt>log4j2.mapMessage.jsonFormatter.maxDepth</tt> property.
+ * It supports nesting up to a maximum depth of 8, which is set by the
+ * {@value LoggingSystemProperties#LOGGER_MAP_MESSAGE_JSON_FORMATTER_MAX_DEPTH} property.
  */
 enum MapMessageJsonFormatter {;
 
@@ -66,7 +67,7 @@ enum MapMessageJsonFormatter {;
     private static int readMaxDepth() {
         final int maxDepth = PropertiesUtil
                 .getProperties()
-                .getIntegerProperty("log4j2.mapMessage.jsonFormatter.maxDepth", 8);
+                .getIntegerProperty(LoggingSystemProperties.LOGGER_MAP_MESSAGE_JSON_FORMATTER_MAX_DEPTH, 8);
         if (maxDepth < 0) {
             throw new IllegalArgumentException(
                     "was expecting a positive maxDepth, found: " + maxDepth);

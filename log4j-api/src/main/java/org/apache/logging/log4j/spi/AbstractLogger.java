@@ -91,14 +91,14 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * The default MessageFactory class.
      */
     public static final Class<? extends MessageFactory> DEFAULT_MESSAGE_FACTORY_CLASS =
-            createClassForProperty("log4j2.messageFactory", ReusableMessageFactory.class,
+            createClassForProperty(LoggingSystemProperties.LOGGER_MESSAGE_FACTORY_CLASS, ReusableMessageFactory.class,
                     ParameterizedMessageFactory.class);
 
     /**
      * The default FlowMessageFactory class.
      */
     public static final Class<? extends FlowMessageFactory> DEFAULT_FLOW_MESSAGE_FACTORY_CLASS =
-            createFlowClassForProperty("log4j2.flowMessageFactory", DefaultFlowMessageFactory.class);
+            createFlowClassForProperty(LoggingSystemProperties.LOGGER_FLOW_MESSAGE_FACTORY_CLASS, DefaultFlowMessageFactory.class);
 
     private static final long serialVersionUID = 2L;
 

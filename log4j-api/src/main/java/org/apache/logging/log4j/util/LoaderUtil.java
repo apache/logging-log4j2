@@ -26,6 +26,8 @@ import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 
+import org.apache.logging.log4j.spi.LoggingSystemProperties;
+
 /**
  * <em>Consider this class private.</em> Utility class for ClassLoaders.
  *
@@ -38,14 +40,6 @@ import java.util.Objects;
 public final class LoaderUtil {
 
     private static final ClassLoader[] EMPTY_CLASS_LOADER_ARRAY = {};
-
-    /**
-     * System property to set to ignore the thread context ClassLoader.
-     *
-     * @since 2.1
-     */
-    public static final String IGNORE_TCCL_PROPERTY = "log4j.ignoreTCL";
-    public static final String FORCE_TCL_ONLY_PROPERTY = "log4j.forceTCLOnly";
 
     private static final SecurityManager SECURITY_MANAGER = System.getSecurityManager();
 
@@ -218,8 +212,9 @@ public final class LoaderUtil {
     }
 
     /**
-     * Loads a class by name. This method respects the {@link #IGNORE_TCCL_PROPERTY} Log4j property. If this property is
-     * specified and set to anything besides {@code false}, then the default ClassLoader will be used.
+     * Loads a class by name. This method respects the {@value LoggingSystemProperties#LOADER_IGNORE_THREAD_CONTEXT_LOADER}
+     * Log4j property. If this property is specified and set to anything besides {@code false}, then this class's
+     * ClassLoader will be used as specified by {@link Class#forName(String)}.
      *
      * @param className The class name.
      * @return the Class for the given name.
@@ -326,7 +321,7 @@ public final class LoaderUtil {
     private static boolean isIgnoreTccl() {
         // we need to lazily initialize this, but concurrent access is not an issue
         if (ignoreTCCL == null) {
-            final String ignoreTccl = PropertiesUtil.getProperties().getStringProperty(IGNORE_TCCL_PROPERTY, null);
+            final String ignoreTccl = PropertiesUtil.getProperties().getStringProperty(LoggingSystemProperties.LOADER_IGNORE_THREAD_CONTEXT_LOADER, null);
             ignoreTCCL = ignoreTccl != null && !"false".equalsIgnoreCase(ignoreTccl.trim());
         }
         return ignoreTCCL;
@@ -337,8 +332,8 @@ public final class LoaderUtil {
             // PropertiesUtil.getProperties() uses that code path so don't use that!
             try {
                 forceTcclOnly = System.getSecurityManager() == null ?
-                    Boolean.getBoolean(FORCE_TCL_ONLY_PROPERTY) :
-                    AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> Boolean.getBoolean(FORCE_TCL_ONLY_PROPERTY));
+                    Boolean.getBoolean(LoggingSystemProperties.LOADER_FORCE_THREAD_CONTEXT_LOADER) :
+                    AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> Boolean.getBoolean(LoggingSystemProperties.LOADER_FORCE_THREAD_CONTEXT_LOADER));
             } catch (final SecurityException se) {
                 forceTcclOnly = false;
             }
