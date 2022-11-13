@@ -20,14 +20,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerRegistry;
 import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.PropertyEnvironment;
 
 /**
  * A simple {@link LoggerContext} implementation.
@@ -47,27 +45,7 @@ public class SimpleLoggerContext implements LoggerContext {
     /** All system properties used by <code>SimpleLog</code> start with this */
     protected static final String SYSTEM_PREFIX = "org.apache.logging.log4j.simplelog.";
 
-    private final PropertyEnvironment props;
-
-    /** Include the instance name in the log message? */
-    private final boolean showLogName;
-
-    /**
-     * Include the short name (last component) of the logger in the log message. Defaults to true - otherwise we'll be
-     * lost in a flood of messages without knowing who sends them.
-     */
-    private final boolean showShortName;
-
-    /** Include the current time in the log message */
-    private final boolean showDateTime;
-
-    /** Include the ThreadContextMap in the log message */
-    private final boolean showContextMap;
-
-    /** The date and time format to use in the log message */
-    private final String dateTimeFormat;
-
-    private final Level defaultLevel;
+    private final SimpleLoggerConfiguration configuration;
 
     private final PrintStream stream;
 
@@ -77,19 +55,12 @@ public class SimpleLoggerContext implements LoggerContext {
      * Constructs a new initialized instance.
      */
     public SimpleLoggerContext() {
-        props = PropertiesUtil.getProperties("simplelog");
+        this(new SimpleLoggerConfiguration(PropertiesUtil.getProperties("simplelog")));
+    }
 
-        showContextMap = props.getBooleanProperty(SYSTEM_PREFIX + "showContextMap", false);
-        showLogName = props.getBooleanProperty(SYSTEM_PREFIX + "showlogname", false);
-        showShortName = props.getBooleanProperty(SYSTEM_PREFIX + "showShortLogname", true);
-        showDateTime = props.getBooleanProperty(SYSTEM_PREFIX + "showdatetime", false);
-        final String lvl = props.getStringProperty(SYSTEM_PREFIX + "level");
-        defaultLevel = Level.toLevel(lvl, Level.ERROR);
-
-        dateTimeFormat = showDateTime ? props.getStringProperty(SimpleLoggerContext.SYSTEM_PREFIX + "dateTimeFormat",
-                DEFAULT_DATE_TIME_FORMAT) : null;
-
-        final String fileName = props.getStringProperty(SYSTEM_PREFIX + "logFile", SYSTEM_ERR);
+    public SimpleLoggerContext(final SimpleLoggerConfiguration configuration) {
+        this.configuration = configuration;
+        final String fileName = configuration.getLogFileName();
         PrintStream ps;
         if (SYSTEM_ERR.equalsIgnoreCase(fileName)) {
             ps = System.err;
@@ -123,8 +94,7 @@ public class SimpleLoggerContext implements LoggerContext {
             AbstractLogger.checkMessageFactory(extendedLogger, messageFactory);
             return extendedLogger;
         }
-        final SimpleLogger simpleLogger = new SimpleLogger(name, defaultLevel, showLogName, showShortName, showDateTime,
-                showContextMap, dateTimeFormat, messageFactory, props, stream);
+        final SimpleLogger simpleLogger = new SimpleLogger(name, messageFactory, stream, configuration);
         loggerRegistry.putIfAbsent(name, messageFactory, simpleLogger);
         return loggerRegistry.getLogger(name, messageFactory);
     }
