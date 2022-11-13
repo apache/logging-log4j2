@@ -122,7 +122,7 @@ guide for up-to-date and detailed information on how to configure and use Log4j 
 (December 18, 2016)
 * [Loading a Log4j Configuration for a specific EJB](https://garygregory.wordpress.com/2016/11/27/loading-a-log4j-configuration-for-a-specific-ejb/)
 (November 27, 2016)
-* [Log4j2 Logging: A Primer](https://anishekagarwal.medium.com/log4j2-logging-a-primer-f10ed18e9de6#.ojlde7jib)
+* [Log4j2 Logging: A Primer](https://anishekagarwal.medium.com/log4j2-logging-a-primer-f10ed18e9de6)
 (October 15, 2016)
 * [Log4j2 Example Tutorial – Configuration, Levels, Appenders](https://www.digitalocean.com/community/tutorials/log4j2-example-tutorial-configuration-levels-appenders)
 (July 6, 2016)
