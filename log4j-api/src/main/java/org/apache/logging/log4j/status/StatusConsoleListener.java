@@ -22,7 +22,6 @@ import java.util.Objects;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
 
 /**
  * {@link StatusListener} that writes to the console.
@@ -59,22 +58,15 @@ public class StatusConsoleListener implements StatusListener {
      * @throws NullPointerException on null {@code level} or {@code stream}
      */
     public StatusConsoleListener(final Level level, final PrintStream stream) {
-        this(level, stream, SimpleLoggerFactory.getInstance());
+        this(level, stream, StatusLoggerFactory.getInstance());
     }
 
-    StatusConsoleListener(
-            final Level level,
-            final PrintStream stream,
-            final SimpleLoggerFactory loggerFactory) {
+    StatusConsoleListener(final Level level, final PrintStream stream, final StatusLoggerFactory loggerFactory) {
         this.level = Objects.requireNonNull(level, "level");
         this.stream = Objects.requireNonNull(stream, "stream");
         this.logger = Objects
                 .requireNonNull(loggerFactory, "loggerFactory")
-                .createSimpleLogger(
-                        "StatusConsoleListener",
-                        level,
-                        ParameterizedNoReferenceMessageFactory.INSTANCE,
-                        stream);
+                .createSimpleLogger("StatusConsoleListener", level, stream);
     }
 
     /**

@@ -189,7 +189,7 @@ public class Provider {
     public URL getUrl() {
         return url;
     }
-    
+
     @Override
     public String toString() {
         final StringBuilder result = new StringBuilder("Provider[");

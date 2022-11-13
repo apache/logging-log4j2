@@ -18,7 +18,6 @@ package org.apache.logging.log4j.simple;
 
 import java.io.PrintStream;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
@@ -28,7 +27,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.util.PropertyEnvironment;
+import org.apache.logging.log4j.util.InternalApi;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -58,41 +57,36 @@ public class SimpleLogger extends AbstractLogger {
 
     private final String logName;
 
-    public SimpleLogger(final String name, final Level defaultLevel, final boolean showLogName,
-            final boolean showShortLogName, final boolean showDateTime, final boolean showContextMap,
-            final String dateTimeFormat, final MessageFactory messageFactory, final PropertyEnvironment props,
-            final PrintStream stream) {
+    public SimpleLogger(final String name, final MessageFactory messageFactory, final PrintStream stream,
+                        final SimpleLoggerConfiguration configuration) {
         super(name, messageFactory);
-        final String lvl = props.getStringProperty(SimpleLoggerContext.SYSTEM_PREFIX + name + ".level");
-        this.level = Level.toLevel(lvl, defaultLevel);
-        if (showShortLogName) {
+        level = configuration.getLoggerLevel(name);
+        if (configuration.isShortNameShown()) {
             final int index = name.lastIndexOf(".");
-            if (index > 0 && index < name.length()) {
-                this.logName = name.substring(index + 1);
-            } else {
-                this.logName = name;
-            }
-        } else if (showLogName) {
-            this.logName = name;
+            logName = index > 0 ? name.substring(index + 1) : name;
+        } else if (configuration.isLogNameShown()) {
+            logName = name;
         } else {
-            this.logName = null;
+            logName = null;
         }
-        this.showDateTime = showDateTime;
-        this.showContextMap = showContextMap;
+        showDateTime = configuration.isDateTimeShown();
+        showContextMap = configuration.isContextMapShown();
         this.stream = stream;
+        dateFormatter = showDateTime ? configuration.getDateTimeFormat() : null;
+    }
 
-        if (showDateTime) {
-            DateFormat format;
-            try {
-                format = new SimpleDateFormat(dateTimeFormat);
-            } catch (final IllegalArgumentException e) {
-                // If the format pattern is invalid - use the default format
-                format = new SimpleDateFormat(SimpleLoggerContext.DEFAULT_DATE_TIME_FORMAT);
-            }
-            this.dateFormatter = format;
-        } else {
-            this.dateFormatter = null;
-        }
+    // exposed for use in StatusLoggerFactory
+    @InternalApi
+    public SimpleLogger(final String name, final MessageFactory messageFactory, final PrintStream stream,
+                        final Level level, final DateFormat dateFormatter, final boolean showDateTime) {
+        super(name, messageFactory);
+        this.stream = stream;
+        this.level = level;
+        this.dateFormatter = dateFormatter;
+        this.showDateTime = showDateTime;
+        this.showContextMap = false;
+        final int index = name.lastIndexOf(".");
+        logName = index > 0 ? name.substring(index + 1) : name;
     }
 
     @Override
@@ -224,7 +218,7 @@ public class SimpleLogger extends AbstractLogger {
             final Map<String, String> mdc = ThreadContext.getImmutableContext();
             if (mdc.size() > 0) {
                 sb.append(SPACE);
-                sb.append(mdc.toString());
+                sb.append(mdc);
                 sb.append(SPACE);
             }
         }
@@ -236,7 +230,7 @@ public class SimpleLogger extends AbstractLogger {
         } else {
             t = throwable;
         }
-        stream.println(sb.toString());
+        stream.println(sb);
         if (t != null) {
             stream.print(SPACE);
             t.printStackTrace(stream);

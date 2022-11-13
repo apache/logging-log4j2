@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.test.junit;
 
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
@@ -40,8 +42,6 @@ import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
-import java.util.concurrent.TimeUnit;
-
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -58,7 +58,7 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
     public static LoggerContextRule createShutdownTimeoutLoggerContextRule(final String config) {
         return new LoggerContextRule(config, 10, TimeUnit.SECONDS);
     }
-    
+
     private static final String SYS_PROP_KEY_CLASS_NAME = "org.apache.logging.log4j.junit.LoggerContextRule#ClassName";
     private static final String SYS_PROP_KEY_DISPLAY_NAME = "org.apache.logging.log4j.junit.LoggerContextRule#DisplayName";
     private final String configurationLocation;
@@ -199,7 +199,7 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
 
     /**
      * Gets the configuration location.
-     * 
+     *
      * @return the configuration location.
      */
     public String getConfigurationLocation() {
@@ -310,7 +310,7 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
     public void reconfigure() {
         loggerContext.reconfigure();
     }
-    
+
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();
