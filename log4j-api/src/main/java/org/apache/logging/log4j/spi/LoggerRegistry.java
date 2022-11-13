@@ -29,7 +29,6 @@ import org.apache.logging.log4j.message.MessageFactory;
  * Convenience class to be used by {@code LoggerContext} implementations.
  */
 public class LoggerRegistry<T extends ExtendedLogger> {
-    private static final String DEFAULT_FACTORY_KEY = AbstractLogger.DEFAULT_MESSAGE_FACTORY_CLASS.getName();
     private final MapFactory<T> factory;
     private final Map<String, Map<String, T>> map;
 
@@ -96,12 +95,16 @@ public class LoggerRegistry<T extends ExtendedLogger> {
         this.map = factory.createOuterMap();
     }
 
+    private static String defaultFactoryKey() {
+        return LoggingSystem.getMessageFactory().getClass().getName();
+    }
+
     private static String factoryClassKey(final Class<? extends MessageFactory> messageFactoryClass) {
-        return messageFactoryClass == null ? DEFAULT_FACTORY_KEY : messageFactoryClass.getName();
+        return messageFactoryClass == null ? defaultFactoryKey() : messageFactoryClass.getName();
     }
 
     private static String factoryKey(final MessageFactory messageFactory) {
-        return messageFactory == null ? DEFAULT_FACTORY_KEY : messageFactory.getClass().getName();
+        return messageFactory == null ? defaultFactoryKey() : messageFactory.getClass().getName();
     }
 
     /**
@@ -110,7 +113,7 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      * @return The logger with the specified name.
      */
     public T getLogger(final String name) {
-        return getOrCreateInnerMap(DEFAULT_FACTORY_KEY).get(name);
+        return getOrCreateInnerMap(defaultFactoryKey()).get(name);
     }
 
     /**
@@ -150,7 +153,7 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      * @return true if the Logger exists, false otherwise.
      */
     public boolean hasLogger(final String name) {
-        return getOrCreateInnerMap(DEFAULT_FACTORY_KEY).containsKey(name);
+        return getOrCreateInnerMap(defaultFactoryKey()).containsKey(name);
     }
 
     /**

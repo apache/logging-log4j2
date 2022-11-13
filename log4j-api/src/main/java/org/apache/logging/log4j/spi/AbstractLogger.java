@@ -27,23 +27,19 @@ import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.internal.DefaultLogBuilder;
-import org.apache.logging.log4j.message.DefaultFlowMessageFactory;
 import org.apache.logging.log4j.message.EntryMessage;
 import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ParameterizedMessage;
-import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.LambdaUtil;
-import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.PerformanceSensitive;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Supplier;
@@ -87,19 +83,6 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      */
     public static final Marker CATCHING_MARKER = MarkerManager.getMarker("CATCHING").setParents(EXCEPTION_MARKER);
 
-    /**
-     * The default MessageFactory class.
-     */
-    public static final Class<? extends MessageFactory> DEFAULT_MESSAGE_FACTORY_CLASS =
-            createClassForProperty(LoggingSystemProperties.LOGGER_MESSAGE_FACTORY_CLASS, ReusableMessageFactory.class,
-                    ParameterizedMessageFactory.class);
-
-    /**
-     * The default FlowMessageFactory class.
-     */
-    public static final Class<? extends FlowMessageFactory> DEFAULT_FLOW_MESSAGE_FACTORY_CLASS =
-            createFlowClassForProperty(LoggingSystemProperties.LOGGER_FLOW_MESSAGE_FACTORY_CLASS, DefaultFlowMessageFactory.class);
-
     private static final long serialVersionUID = 2L;
 
     private static final String FQCN = AbstractLogger.class.getName();
@@ -119,8 +102,8 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     public AbstractLogger() {
         final String canonicalName = getClass().getCanonicalName();
         this.name = canonicalName != null ? canonicalName : getClass().getName();
-        this.messageFactory = createDefaultMessageFactory();
-        this.flowMessageFactory = createDefaultFlowMessageFactory();
+        this.messageFactory = LoggingSystem.getMessageFactory();
+        this.flowMessageFactory = LoggingSystem.getFlowMessageFactory();
         this.logBuilder = new LocalLogBuilder(this);
     }
 
@@ -130,7 +113,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * @param name the logger name
      */
     public AbstractLogger(final String name) {
-        this(name, createDefaultMessageFactory());
+        this(name, LoggingSystem.getMessageFactory());
     }
 
     /**
@@ -141,15 +124,15 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      */
     public AbstractLogger(final String name, final MessageFactory messageFactory) {
         this.name = name;
-        this.messageFactory = messageFactory == null ? createDefaultMessageFactory() : messageFactory;
-        this.flowMessageFactory = createDefaultFlowMessageFactory();
+        this.messageFactory = messageFactory == null ? LoggingSystem.getMessageFactory() : messageFactory;
+        this.flowMessageFactory = LoggingSystem.getFlowMessageFactory();
         this.logBuilder = new LocalLogBuilder(this);
     }
 
     /**
      * Checks that the message factory a logger was created with is the same as the given messageFactory. If they are
      * different log a warning to the {@linkplain StatusLogger}. A null MessageFactory translates to the default
-     * MessageFactory {@link #DEFAULT_MESSAGE_FACTORY_CLASS}.
+     * MessageFactory {@link LoggingSystem#getMessageFactory()}.
      *
      * @param logger The logger to check
      * @param messageFactory The message factory to check.
@@ -157,18 +140,19 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     public static void checkMessageFactory(final ExtendedLogger logger, final MessageFactory messageFactory) {
         final String name = logger.getName();
         final MessageFactory loggerMessageFactory = logger.getMessageFactory();
+        final MessageFactory currentMessageFactory = LoggingSystem.getMessageFactory();
         if (messageFactory != null && !loggerMessageFactory.equals(messageFactory)) {
             StatusLogger.getLogger().warn(
                     "The Logger {} was created with the message factory {} and is now requested with the "
                             + "message factory {}, which may create log events with unexpected formatting.", name,
                     loggerMessageFactory, messageFactory);
-        } else if (messageFactory == null && !loggerMessageFactory.getClass().equals(DEFAULT_MESSAGE_FACTORY_CLASS)) {
+        } else if (messageFactory == null && loggerMessageFactory != currentMessageFactory) {
             StatusLogger
                     .getLogger()
                     .warn("The Logger {} was created with the message factory {} and is now requested with a null "
                             + "message factory (defaults to {}), which may create log events with unexpected "
                             + "formatting.",
-                            name, loggerMessageFactory, DEFAULT_MESSAGE_FACTORY_CLASS.getName());
+                            name, loggerMessageFactory, currentMessageFactory.getClass().getName());
         }
     }
 
@@ -199,45 +183,6 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
 
     protected Message catchingMsg(final Throwable t) {
         return messageFactory.newMessage(CATCHING);
-    }
-
-    private static Class<? extends MessageFactory> createClassForProperty(final String property,
-            final Class<ReusableMessageFactory> reusableParameterizedMessageFactoryClass,
-            final Class<ParameterizedMessageFactory> parameterizedMessageFactoryClass) {
-        try {
-            final String fallback = Constants.isThreadLocalsEnabled() ? reusableParameterizedMessageFactoryClass.getName()
-                    : parameterizedMessageFactoryClass.getName();
-            final String clsName = PropertiesUtil.getProperties().getStringProperty(property, fallback);
-            return LoaderUtil.loadClass(clsName).asSubclass(MessageFactory.class);
-        } catch (final Throwable t) {
-            return parameterizedMessageFactoryClass;
-        }
-    }
-
-    private static Class<? extends FlowMessageFactory> createFlowClassForProperty(final String property,
-            final Class<DefaultFlowMessageFactory> defaultFlowMessageFactoryClass) {
-        try {
-            final String clsName = PropertiesUtil.getProperties().getStringProperty(property, defaultFlowMessageFactoryClass.getName());
-            return LoaderUtil.loadClass(clsName).asSubclass(FlowMessageFactory.class);
-        } catch (final Throwable t) {
-            return defaultFlowMessageFactoryClass;
-        }
-    }
-
-    private static MessageFactory createDefaultMessageFactory() {
-        try {
-            return DEFAULT_MESSAGE_FACTORY_CLASS.newInstance();
-        } catch (final InstantiationException | IllegalAccessException e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
-    private static FlowMessageFactory createDefaultFlowMessageFactory() {
-        try {
-            return DEFAULT_FLOW_MESSAGE_FACTORY_CLASS.newInstance();
-        } catch (final InstantiationException | IllegalAccessException e) {
-            throw new IllegalStateException(e);
-        }
     }
 
     @Override

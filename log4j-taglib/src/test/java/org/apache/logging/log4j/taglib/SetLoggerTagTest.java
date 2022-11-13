@@ -24,6 +24,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.spi.LoggingSystem;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.mock.web.MockPageContext;
@@ -167,8 +168,7 @@ public class SetLoggerTagTest {
     private static void checkMessageFactory(final String msg, final MessageFactory messageFactory,
             final Logger testLogger) {
         if (messageFactory == null) {
-            assertEquals(msg, AbstractLogger.DEFAULT_MESSAGE_FACTORY_CLASS,
-                    testLogger.getMessageFactory().getClass());
+            assertSame(LoggingSystem.getMessageFactory(), testLogger.getMessageFactory());
         } else {
             MessageFactory actual = testLogger.getMessageFactory();
             assertEquals(msg, messageFactory, actual);

@@ -34,6 +34,11 @@ import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.message.DefaultFlowMessageFactory;
+import org.apache.logging.log4j.message.FlowMessageFactory;
+import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.message.ParameterizedMessageFactory;
+import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.Lazy;
@@ -65,8 +70,29 @@ public class LoggingSystem {
     private static final Lazy<LoggingSystem> SYSTEM = Lazy.relaxed(LoggingSystem::new);
 
     private final Lock initializationLock = new ReentrantLock();
-    private volatile LoggingProvider provider;
-    private final Lazy<LoggerContextFactory> loggerContextFactorySupplier = Lazy.lazy(() -> getProvider().createLoggerContextFactory());
+    private volatile SystemProvider provider;
+    private final Lazy<PropertyEnvironment> environmentLazy = Lazy.relaxed(PropertiesUtil::getProperties);
+    private final Lazy<LoggerContextFactory> loggerContextFactoryLazy = Lazy.lazy(() -> getProvider().createLoggerContextFactory());
+    private final Lazy<MessageFactory> messageFactoryLazy = environmentLazy.map(environment -> {
+        final String className = environment.getStringProperty(LOGGER_MESSAGE_FACTORY_CLASS);
+        if (className != null) {
+            final MessageFactory factory = createInstance(className, MessageFactory.class);
+            if (factory != null) {
+                return factory;
+            }
+        }
+        return Constants.isThreadLocalsEnabled() ? new ReusableMessageFactory() : new ParameterizedMessageFactory();
+    });
+    private final Lazy<FlowMessageFactory> flowMessageFactoryLazy = environmentLazy.map(environment -> {
+        final String className = environment.getStringProperty(LOGGER_FLOW_MESSAGE_FACTORY_CLASS);
+        if (className != null) {
+            final FlowMessageFactory factory = createInstance(className, FlowMessageFactory.class);
+            if (factory != null) {
+                return factory;
+            }
+        }
+        return new DefaultFlowMessageFactory();
+    });
     private Supplier<ThreadContextMap> threadContextMapSupplier = () -> getProvider().createContextMap();
     private Supplier<ThreadContextStack> threadContextStackSupplier = () -> getProvider().createContextStack();
 
@@ -89,7 +115,7 @@ public class LoggingSystem {
         initializationLock.unlock();
     }
 
-    private LoggingProvider getProvider() {
+    private SystemProvider getProvider() {
         var provider = this.provider;
         if (provider == null) {
             try {
@@ -100,7 +126,7 @@ public class LoggingSystem {
                 }
             } catch (InterruptedException e) {
                 LowLevelLogUtil.logException("Interrupted before Log4j Providers could be loaded", e);
-                provider = new LoggingProvider();
+                provider = new SystemProvider();
                 Thread.currentThread().interrupt();
             } finally {
                 releaseInitializationLock();
@@ -109,12 +135,12 @@ public class LoggingSystem {
         return provider;
     }
 
-    private LoggingProvider findProvider() {
+    private SystemProvider findProvider() {
         final SortedMap<Integer, Provider> providers = new TreeMap<>();
         loadDefaultProviders().forEach(p -> providers.put(p.getPriority(), p));
         loadLegacyProviders().forEach(p -> providers.put(p.getPriority(), p));
         if (providers.isEmpty()) {
-            return new LoggingProvider();
+            return new SystemProvider();
         }
         final Provider provider = providers.get(providers.lastKey());
         if (providers.size() > 1) {
@@ -123,11 +149,19 @@ public class LoggingSystem {
             sb.append("Using ").append(provider);
             LowLevelLogUtil.log(sb.toString());
         }
-        return new LoggingProvider(provider);
+        return new SystemProvider(provider);
     }
 
     public void setLoggerContextFactory(final LoggerContextFactory loggerContextFactory) {
-        loggerContextFactorySupplier.set(loggerContextFactory);
+        loggerContextFactoryLazy.set(loggerContextFactory);
+    }
+
+    public void setMessageFactory(final MessageFactory messageFactory) {
+        messageFactoryLazy.set(messageFactory);
+    }
+
+    public void setFlowMessageFactory(final FlowMessageFactory flowMessageFactory) {
+        flowMessageFactoryLazy.set(flowMessageFactory);
     }
 
     public void setThreadContextMapSupplier(final Supplier<ThreadContextMap> threadContextMapSupplier) {
@@ -150,7 +184,15 @@ public class LoggingSystem {
      * requested.
      */
     public static LoggerContextFactory getLoggerContextFactory() {
-        return getInstance().loggerContextFactorySupplier.get();
+        return getInstance().loggerContextFactoryLazy.value();
+    }
+
+    public static MessageFactory getMessageFactory() {
+        return getInstance().messageFactoryLazy.value();
+    }
+
+    public static FlowMessageFactory getFlowMessageFactory() {
+        return getInstance().flowMessageFactoryLazy.value();
     }
 
     /**
@@ -231,36 +273,25 @@ public class LoggingSystem {
         return null;
     }
 
-    private static ThreadContextMap createCustomContextMap(final String className) {
+    private static <T> T createInstance(final String className, final Class<T> type) {
         try {
-            final Class<?> customClass = LoaderUtil.loadClass(className);
-            final Class<? extends ThreadContextMap> contextMapClass = customClass.asSubclass(ThreadContextMap.class);
-            return tryInstantiate(contextMapClass);
+            final Class<?> loadedClass = LoaderUtil.loadClass(className);
+            final Class<? extends T> typedClass = loadedClass.asSubclass(type);
+            return tryInstantiate(typedClass);
         } catch (final ClassNotFoundException | ClassCastException e) {
-            LowLevelLogUtil.logException(String.format("Unable to load custom ThreadContextMap class '%s'", className), e);
+            LowLevelLogUtil.logException(String.format("Unable to load %s class '%s'", type.getSimpleName(), className), e);
             return null;
         }
     }
 
-    private static LoggerContextFactory createCustomFactory(final String className) {
-        try {
-            final Class<?> customClass = LoaderUtil.loadClass(className);
-            final Class<? extends LoggerContextFactory> factoryClass = customClass.asSubclass(LoggerContextFactory.class);
-            return tryInstantiate(factoryClass);
-        } catch (final ClassNotFoundException | ClassCastException e) {
-            LowLevelLogUtil.logException(String.format("Unable to load custom LoggerContextFactory class '%s'", className), e);
-            return null;
-        }
-    }
-
-    private static class LoggingProvider {
+    private static class SystemProvider {
         private final Provider provider;
 
-        private LoggingProvider() {
+        private SystemProvider() {
             this(null);
         }
 
-        private LoggingProvider(final Provider provider) {
+        private SystemProvider(final Provider provider) {
             this.provider = provider;
         }
 
@@ -268,7 +299,7 @@ public class LoggingSystem {
             final PropertyEnvironment environment = PropertiesUtil.getProperties();
             final String customFactoryClass = environment.getStringProperty(LogManager.FACTORY_PROPERTY_NAME);
             if (customFactoryClass != null) {
-                final LoggerContextFactory customFactory = createCustomFactory(customFactoryClass);
+                final LoggerContextFactory customFactory = createInstance(customFactoryClass, LoggerContextFactory.class);
                 if (customFactory != null) {
                     return customFactory;
                 }
@@ -312,7 +343,7 @@ public class LoggingSystem {
             final PropertyEnvironment environment = PropertiesUtil.getProperties();
             final String customThreadContextMap = environment.getStringProperty(THREAD_CONTEXT_MAP_CLASS);
             if (customThreadContextMap != null) {
-                final ThreadContextMap customContextMap = createCustomContextMap(customThreadContextMap);
+                final ThreadContextMap customContextMap = createInstance(customThreadContextMap, ThreadContextMap.class);
                 if (customContextMap != null) {
                     return customContextMap;
                 }

@@ -16,6 +16,15 @@
  */
 package org.apache.logging.log4j.core;
 
+import java.io.File;
+import java.lang.reflect.Method;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Marker;
@@ -34,20 +43,11 @@ import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.spi.LoggingSystem;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-
-import java.io.File;
-import java.lang.reflect.Method;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
@@ -58,7 +58,7 @@ public class LoggerTest {
     static final String CONFIG = "log4j-test2.xml";
     private static void checkMessageFactory(final MessageFactory messageFactory, final Logger testLogger) {
         if (messageFactory == null) {
-            assertEquals(AbstractLogger.DEFAULT_MESSAGE_FACTORY_CLASS, testLogger.getMessageFactory().getClass());
+            assertSame(LoggingSystem.getMessageFactory(), testLogger.getMessageFactory());
         } else {
             MessageFactory actual = testLogger.getMessageFactory();
             assertEquals(messageFactory, actual);
@@ -509,4 +509,3 @@ public class LoggerTest {
         assertEventCount(events, 1);
     }
 }
-
