@@ -72,7 +72,8 @@ public class LoggingSystem {
     private final Lock initializationLock = new ReentrantLock();
     private volatile SystemProvider provider;
     private final Lazy<PropertyEnvironment> environmentLazy = Lazy.relaxed(PropertiesUtil::getProperties);
-    private final Lazy<LoggerContextFactory> loggerContextFactoryLazy = Lazy.lazy(() -> getProvider().createLoggerContextFactory());
+    private final Lazy<LoggerContextFactory> loggerContextFactoryLazy = environmentLazy.map(environment ->
+            getProvider().createLoggerContextFactory(environment));
     private final Lazy<MessageFactory> messageFactoryLazy = environmentLazy.map(environment -> {
         final String className = environment.getStringProperty(LOGGER_MESSAGE_FACTORY_CLASS);
         if (className != null) {
@@ -93,8 +94,10 @@ public class LoggingSystem {
         }
         return new DefaultFlowMessageFactory();
     });
-    private Supplier<ThreadContextMap> threadContextMapSupplier = () -> getProvider().createContextMap();
-    private Supplier<ThreadContextStack> threadContextStackSupplier = () -> getProvider().createContextStack();
+    private final Lazy<Supplier<ThreadContextMap>> threadContextMapFactoryLazy = environmentLazy.map(environment ->
+            () -> getProvider().createContextMap(environment));
+    private final Lazy<Supplier<ThreadContextStack>> threadContextStackFactoryLazy = environmentLazy.map(environment ->
+            () -> getProvider().createContextStack(environment));
 
     /**
      * Acquires a lock on the initialization of locating a logging system provider. This lock should be
@@ -164,12 +167,12 @@ public class LoggingSystem {
         flowMessageFactoryLazy.set(flowMessageFactory);
     }
 
-    public void setThreadContextMapSupplier(final Supplier<ThreadContextMap> threadContextMapSupplier) {
-        this.threadContextMapSupplier = threadContextMapSupplier;
+    public void setThreadContextMapFactory(final Supplier<ThreadContextMap> threadContextMapFactory) {
+        threadContextMapFactoryLazy.set(threadContextMapFactory);
     }
 
-    public void setThreadContextStackSupplier(final Supplier<ThreadContextStack> threadContextStackSupplier) {
-        this.threadContextStackSupplier = threadContextStackSupplier;
+    public void setThreadContextStackFactory(final Supplier<ThreadContextStack> threadContextStackFactory) {
+        threadContextStackFactoryLazy.set(threadContextStackFactory);
     }
 
     /**
@@ -199,14 +202,14 @@ public class LoggingSystem {
      * Creates a new ThreadContextMap.
      */
     public static ThreadContextMap createContextMap() {
-        return getInstance().threadContextMapSupplier.get();
+        return getInstance().threadContextMapFactoryLazy.value().get();
     }
 
     /**
      * Creates a new ThreadContextStack.
      */
     public static ThreadContextStack createContextStack() {
-        return getInstance().threadContextStackSupplier.get();
+        return getInstance().threadContextStackFactoryLazy.value().get();
     }
 
     private static List<Provider> loadDefaultProviders() {
@@ -295,8 +298,7 @@ public class LoggingSystem {
             this.provider = provider;
         }
 
-        public LoggerContextFactory createLoggerContextFactory() {
-            final PropertyEnvironment environment = PropertiesUtil.getProperties();
+        public LoggerContextFactory createLoggerContextFactory(final PropertyEnvironment environment) {
             final String customFactoryClass = environment.getStringProperty(LogManager.FACTORY_PROPERTY_NAME);
             if (customFactoryClass != null) {
                 final LoggerContextFactory customFactory = createInstance(customFactoryClass, LoggerContextFactory.class);
@@ -339,8 +341,7 @@ public class LoggingSystem {
          * @see ReadOnlyThreadContextMap
          * @see org.apache.logging.log4j.ThreadContext
          */
-        public ThreadContextMap createContextMap() {
-            final PropertyEnvironment environment = PropertiesUtil.getProperties();
+        public ThreadContextMap createContextMap(final PropertyEnvironment environment) {
             final String customThreadContextMap = environment.getStringProperty(THREAD_CONTEXT_MAP_CLASS);
             if (customThreadContextMap != null) {
                 final ThreadContextMap customContextMap = createInstance(customThreadContextMap, ThreadContextMap.class);
@@ -374,8 +375,7 @@ public class LoggingSystem {
             return new DefaultThreadContextMap(true, inheritableMap);
         }
 
-        public ThreadContextStack createContextStack() {
-            final PropertyEnvironment environment = PropertiesUtil.getProperties();
+        public ThreadContextStack createContextStack(final PropertyEnvironment environment) {
             final boolean disableStack = environment.getBooleanProperty(THREAD_CONTEXT_STACK_DISABLED,
                     environment.getBooleanProperty(THREAD_CONTEXT_DISABLED));
             return new DefaultThreadContextStack(!disableStack);
