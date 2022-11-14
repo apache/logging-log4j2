@@ -92,7 +92,7 @@ public class Log4jBridgeHandler extends java.util.logging.Handler implements Pro
 
     private boolean doDebugOutput = false;
     private String julSuffixToAppend = null;
-    //not needed:  private boolean installAsLevelPropagator = false;
+    private boolean installAsLevelPropagator = false;
 
 
     /**
@@ -152,15 +152,7 @@ public class Log4jBridgeHandler extends java.util.logging.Handler implements Pro
         }
         this.julSuffixToAppend = suffixToAppend;
 
-        //not needed:  this.installAsLevelPropagator = propagateLevels;
-        if (propagateLevels) {
-            @SuppressWarnings("resource")    // no need to close the AutoCloseable ctx here
-            LoggerContext context = LoggerContext.getContext(false);
-            context.addPropertyChangeListener(this);
-            propagateLogLevels(context.getConfiguration());
-            // note: java.util.logging.LogManager.addPropertyChangeListener() could also
-            // be set here, but a call of JUL.readConfiguration() will be done on purpose
-        }
+        this.installAsLevelPropagator = propagateLevels;
 
         SLOGGER.debug("Log4jBridgeHandler init. with: suffix='{}', lvlProp={}, instance={}",
                 suffixToAppend, propagateLevels, this);
@@ -182,6 +174,16 @@ public class Log4jBridgeHandler extends java.util.logging.Handler implements Pro
     public void publish(LogRecord record) {
         if (record == null) {    // silently ignore null records
             return;
+        }
+
+        if (this.installAsLevelPropagator) {
+            @SuppressWarnings("resource")    // no need to close the AutoCloseable ctx here
+            LoggerContext context = LoggerContext.getContext(false);
+            context.addPropertyChangeListener(this);
+            propagateLogLevels(context.getConfiguration());
+            // note: java.util.logging.LogManager.addPropertyChangeListener() could also
+            // be set here, but a call of JUL.readConfiguration() will be done on purpose
+            this.installAsLevelPropagator = false;
         }
 
         org.apache.logging.log4j.Logger log4jLogger = getLog4jLogger(record);
