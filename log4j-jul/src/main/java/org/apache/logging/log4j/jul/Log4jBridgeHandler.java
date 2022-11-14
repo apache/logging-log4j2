@@ -93,7 +93,7 @@ public class Log4jBridgeHandler extends java.util.logging.Handler implements Con
 
     private boolean doDebugOutput = false;
     private String julSuffixToAppend = null;
-    private LoggerContext context;
+    private boolean installAsLevelPropagator = false;
 
     /**
      * Adds a new Log4jBridgeHandler instance to JUL's root logger.
@@ -153,14 +153,7 @@ public class Log4jBridgeHandler extends java.util.logging.Handler implements Con
         }
         this.julSuffixToAppend = suffixToAppend;
 
-        this.context = LoggerContext.getContext(false);
-
-        if (propagateLevels) {
-            context.addConfigurationStartedListener(this);
-            propagateLogLevels(context.getConfiguration());
-            // note: java.util.logging.LogManager.addPropertyChangeListener() could also
-            // be set here, but a call of JUL.readConfiguration() will be done on purpose
-        }
+        this.installAsLevelPropagator = propagateLevels;
 
         SLOGGER.debug(
                 "Log4jBridgeHandler init. with: suffix='{}', lvlProp={}, instance={}",
@@ -173,10 +166,7 @@ public class Log4jBridgeHandler extends java.util.logging.Handler implements Con
     public void close() {
         // cleanup and remove listener and JUL logger references
         julLoggerRefs = null;
-        if (context != null) {
-            context.removeConfigurationStartedListener(this);
-            context = null;
-        }
+        LoggerContext.getContext(false).removeConfigurationStartedListener(this);
         if (doDebugOutput) {
             System.out.println("sysout:  Log4jBridgeHandler close(): " + this);
         }
@@ -188,8 +178,18 @@ public class Log4jBridgeHandler extends java.util.logging.Handler implements Con
             return;
         }
 
-        final org.apache.logging.log4j.Logger log4jLogger = getLog4jLogger(record);
-        final String msg = julFormatter.formatMessage(record); // use JUL's implementation to get real msg
+        if (this.installAsLevelPropagator) {
+            @SuppressWarnings("resource") // no need to close the AutoCloseable ctx here
+            LoggerContext context = LoggerContext.getContext(false);
+            context.addConfigurationStartedListener(this);
+            propagateLogLevels(context.getConfiguration());
+            // note: java.util.logging.LogManager.addPropertyChangeListener() could also
+            // be set here, but a call of JUL.readConfiguration() will be done on purpose
+            this.installAsLevelPropagator = false;
+        }
+
+        org.apache.logging.log4j.Logger log4jLogger = getLog4jLogger(record);
+        String msg = julFormatter.formatMessage(record); // use JUL's implementation to get real msg
         /* log4j allows nulls:
         if (msg == null) {
             // JUL allows nulls, but other log system may not
