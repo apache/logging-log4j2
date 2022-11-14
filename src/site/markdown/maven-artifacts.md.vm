@@ -190,10 +190,19 @@ then add the following but do not remove any Commons Logging 1.x dependencies.
 
 #dependencies(['log4j-jcl'])
 
-$h3 SLF4J Bridge
+$h3 SLF4J 2.0.x Bridge
 
-If existing components use SLF4J and you want to have this logging routed to Log4j 2, then add the
+If existing components use SLF4J 2.0.x and you want to have this logging routed to Log4j 2, then add the
 following but do not remove any SLF4J dependencies.
+Ensure that all SLF4J artifacts have consistent version.
+
+#dependencies(['log4j-slf4j2-impl'])
+
+$h3 SLF4J 1.7.x Bridge
+
+If existing components use SLF4J 1.7.x and you want to have this logging routed to Log4j 2, then add the
+following but do not remove any SLF4J dependencies.
+Ensure that all SLF4J artifacts have consistent version.
 
 #dependencies(['log4j-slf4j-impl'])
 
