@@ -179,13 +179,15 @@ public class Log4jBridgeHandler extends java.util.logging.Handler implements Con
         }
 
         if (this.installAsLevelPropagator) {
-            @SuppressWarnings("resource") // no need to close the AutoCloseable ctx here
-            LoggerContext context = LoggerContext.getContext(false);
-            context.addConfigurationStartedListener(this);
-            propagateLogLevels(context.getConfiguration());
-            // note: java.util.logging.LogManager.addPropertyChangeListener() could also
-            // be set here, but a call of JUL.readConfiguration() will be done on purpose
-            this.installAsLevelPropagator = false;
+            synchronized (this) {
+                @SuppressWarnings("resource") // no need to close the AutoCloseable ctx here
+                LoggerContext context = LoggerContext.getContext(false);
+                context.addConfigurationStartedListener(this);
+                propagateLogLevels(context.getConfiguration());
+                // note: java.util.logging.LogManager.addPropertyChangeListener() could also
+                // be set here, but a call of JUL.readConfiguration() will be done on purpose
+                this.installAsLevelPropagator = false;
+            }
         }
 
         org.apache.logging.log4j.Logger log4jLogger = getLog4jLogger(record);
