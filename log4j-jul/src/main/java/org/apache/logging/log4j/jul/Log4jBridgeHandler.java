@@ -92,7 +92,7 @@ public class Log4jBridgeHandler extends java.util.logging.Handler implements Pro
 
     private boolean doDebugOutput = false;
     private String julSuffixToAppend = null;
-    private transient boolean installAsLevelPropagator = false;
+    private volatile boolean installAsLevelPropagator = false;
 
     /**
      * Adds a new Log4jBridgeHandler instance to JUL's root logger.
