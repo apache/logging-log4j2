@@ -178,15 +178,19 @@ public class Log4jBridgeHandler extends java.util.logging.Handler implements Con
             return;
         }
 
+        // Only execute synchronized code if we really have to
         if (this.installAsLevelPropagator) {
             synchronized (this) {
-                @SuppressWarnings("resource") // no need to close the AutoCloseable ctx here
-                LoggerContext context = LoggerContext.getContext(false);
-                context.addConfigurationStartedListener(this);
-                propagateLogLevels(context.getConfiguration());
-                // note: java.util.logging.LogManager.addPropertyChangeListener() could also
-                // be set here, but a call of JUL.readConfiguration() will be done on purpose
-                this.installAsLevelPropagator = false;
+                // Check again to make sure we still have to propagate  the levels at this point
+                if (this.installAsLevelPropagator) {
+                    @SuppressWarnings("resource") // no need to close the AutoCloseable ctx here
+                    LoggerContext context = LoggerContext.getContext(false);
+                    context.addConfigurationStartedListener(this);
+                    propagateLogLevels(context.getConfiguration());
+                    // note: java.util.logging.LogManager.addPropertyChangeListener() could also
+                    // be set here, but a call of JUL.readConfiguration() will be done on purpose
+                    this.installAsLevelPropagator = false;
+                }
             }
         }
 
