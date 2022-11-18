@@ -31,7 +31,7 @@ public final class JsonUtils {
      * to use after backslash; and negative values that generic (backslash - u)
      * escaping is to be used.
      */
-    private static final Lazy<int[]> ESC_CODES = Lazy.relaxed(() -> {
+    private static final Lazy<int[]> ESC_CODES = Lazy.pure(() -> {
         final int[] table = new int[128];
         // Control chars need generic escape sequence
         for (int i = 0; i < 32; ++i) {

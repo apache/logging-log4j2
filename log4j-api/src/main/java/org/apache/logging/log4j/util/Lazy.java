@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.util;
 
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -44,6 +45,7 @@ public interface Lazy<T> extends Supplier<T> {
      * Creates a lazy value using the provided Supplier for initialization guarded by a Lock.
      */
     static <T> Lazy<T> lazy(final Supplier<T> supplier) {
+        Objects.requireNonNull(supplier);
         return new LazyUtil.SafeLazy<>(supplier);
     }
 
@@ -59,6 +61,17 @@ public interface Lazy<T> extends Supplier<T> {
      * in order to set the initialized value.
      */
     static <T> Lazy<T> relaxed(final Supplier<T> supplier) {
+        Objects.requireNonNull(supplier);
         return new LazyUtil.ReleaseAcquireLazy<>(supplier);
+    }
+
+    /**
+     * Creates a pure lazy value using the provided Supplier to initialize the value. The supplier may be invoked more
+     * than once, and the return value should be a purely computed value as the result may be a different instance
+     * each time. This is useful for building cache tables and other pure computations.
+     */
+    static <T> Lazy<T> pure(final Supplier<T> supplier) {
+        Objects.requireNonNull(supplier);
+        return new LazyUtil.PureLazy<>(supplier);
     }
 }

@@ -162,4 +162,33 @@ final class LazyUtil {
             return isInitialized() ? String.valueOf(VALUE.getOpaque(value)) : "Lazy value not initialized";
         }
     }
+
+    static class PureLazy<T> implements Lazy<T> {
+        private final Supplier<T> supplier;
+        private Object value;
+
+        public PureLazy(final Supplier<T> supplier) {
+            this.supplier = supplier;
+        }
+
+        @Override
+        public T value() {
+            Object value = this.value;
+            if (value == null) {
+                value = supplier.get();
+                this.value = wrapNull(value);
+            }
+            return unwrapNull(value);
+        }
+
+        @Override
+        public boolean isInitialized() {
+            return value != null;
+        }
+
+        @Override
+        public void set(final T newValue) {
+            value = newValue;
+        }
+    }
 }
