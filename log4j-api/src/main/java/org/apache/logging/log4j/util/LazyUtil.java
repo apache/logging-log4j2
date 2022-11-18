@@ -138,7 +138,7 @@ final class LazyUtil {
                 return unwrapNull(currentValue);
             }
             final T newValue = supplier.get();
-            if (VALUE.compareAndSet(this, (Object) null, wrapNull(newValue))) {
+            if (VALUE.compareAndExchangeRelease(this, null, wrapNull(newValue)) == null) {
                 return newValue;
             }
             final Object value = VALUE.getAcquire(this);
