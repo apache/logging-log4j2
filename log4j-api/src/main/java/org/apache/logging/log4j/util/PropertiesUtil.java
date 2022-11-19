@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.util;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -83,31 +81,6 @@ public class PropertiesUtil implements PropertyEnvironment {
      */
     PropertiesUtil(final PropertySource source) {
         this.environment = new Environment(source);
-    }
-
-    /**
-     * Loads and closes the given property input stream. If an error occurs, log to the status logger.
-     *
-     * @param in     a property input stream.
-     * @param source a source object describing the source, like a resource string or a URL.
-     * @return a new Properties object
-     */
-    static Properties loadClose(final InputStream in, final Object source) {
-        final Properties props = new Properties();
-        if (null != in) {
-            try {
-                props.load(in);
-            } catch (final IOException e) {
-                LowLevelLogUtil.logException("Unable to read " + source, e);
-            } finally {
-                try {
-                    in.close();
-                } catch (final IOException e) {
-                    LowLevelLogUtil.logException("Unable to close " + source, e);
-                }
-            }
-        }
-        return props;
     }
 
     /**
